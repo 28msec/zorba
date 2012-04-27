@@ -473,8 +473,10 @@ void Validator::processChildren(
     const QueryLoc& loc)
 {
   store::Item_t child;
-  bool hasTextNode = false;
+  bool inTextContent = false;
+  bool hasChildrenElements = false;
   zstring textNodeValue = zstring("");
+  std::vector<store::Item*> textContent;
 
   while ( children->next(child) )
   {
@@ -487,12 +489,14 @@ void Validator::processChildren(
       switch ( child->getNodeKind() )
       {
       case store::StoreConsts::elementNode:
-        if (hasTextNode)
+        if (inTextContent)
         {
-          finishTextNode(sctx, typeManager, schemaValidator, parent,
-                         textNodeValue, loc);
+          hasChildrenElements = true;
+          processTextContent(sctx, typeManager, schemaValidator, parent,
+                             hasChildrenElements, textNodeValue, textContent, loc);
           textNodeValue = "";
-          hasTextNode = false;
+          inTextContent = false;
+          textContent.clear();
         }
         processElement(sctx, typeManager, schemaValidator, parent, child, loc);
         break;
@@ -508,25 +512,33 @@ void Validator::processChildren(
       case store::StoreConsts::textNode:
       {
         // keep on adding the text
-        hasTextNode = true;
+        inTextContent = true;
         zstring childStringValue;
         child->getStringValue2(childStringValue);
         textNodeValue += childStringValue;
+        textContent.push_back(child.getp());
       }
       break;
 
       case store::StoreConsts::piNode:
       {
         //cout << "     - pi: " << child->getStringValue() << "\n";cout.flush();
-        store::Item_t piNode;
-        zstring piTarget =child->getTarget();
-        zstring childStringValue;
-        child->getStringValue2(childStringValue);
-        zstring childBaseUri;
-        child->getBaseURI(childBaseUri);
+        if ( inTextContent )
+        {
+          textContent.push_back(child.getp());
+        }
+        else
+        {
+          store::Item_t piNode;
+          zstring piTarget =child->getTarget();
+          zstring childStringValue;
+          child->getStringValue2(childStringValue);
+          zstring childBaseUri;
+          child->getBaseURI(childBaseUri);
 
-        GENV_ITEMFACTORY->createPiNode(piNode, parent, piTarget,
-                                       childStringValue, childBaseUri);
+          GENV_ITEMFACTORY->createPiNode(piNode, parent, piTarget,
+                                         childStringValue, childBaseUri);
+        }
       }
       break;
 
@@ -534,10 +546,17 @@ void Validator::processChildren(
       {
         //cout << "     - comment: " << child->getStringValue() <<
         //        "\n"; cout.flush();
-        store::Item_t commentNode;
-        zstring childStringValue;
-        child->getStringValue2(childStringValue);
-        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, childStringValue);
+        if ( inTextContent )
+        {
+          textContent.push_back(child.getp());
+        }
+        else
+        {
+          store::Item_t commentNode;
+          zstring childStringValue;
+          child->getStringValue2(childStringValue);
+          GENV_ITEMFACTORY->createCommentNode(commentNode, parent, childStringValue);
+        }
       }
       break;
 
@@ -552,12 +571,82 @@ void Validator::processChildren(
     }
   }
 
-  if (hasTextNode)
+  if (inTextContent)
+  {
+    processTextContent(sctx, typeManager, schemaValidator, parent,
+                       hasChildrenElements, textNodeValue, textContent, loc);
+    textNodeValue = "";
+    inTextContent = false;
+  }
+}
+
+void Validator::processTextContent(
+    const static_context* sctx,
+    TypeManager* typeManager,
+    EventSchemaValidator& schemaValidator,
+    store::Item* parent,
+    bool hasChildrenElements,
+    zstring& textNodeValue,
+    std::vector<store::Item*>& textContent,
+    const QueryLoc& loc)
+{
+  for ( std::size_t i = 0; i<textContent.size(); i++)
+  {
+    store::Item* child = textContent[i];
+    switch ( child->getNodeKind() )
+    {
+    case store::StoreConsts::textNode:
+    {
+      if (hasChildrenElements)
+      {
+        zstring childStringValue;
+        child->getStringValue2(childStringValue);
+        finishTextNode(sctx, typeManager, schemaValidator, parent,
+                        childStringValue, loc);
+      }
+    }
+    break;
+
+    case store::StoreConsts::piNode:
+    {
+        store::Item_t piNode;
+        zstring piTarget =child->getTarget();
+        zstring childStringValue;
+        child->getStringValue2(childStringValue);
+        zstring childBaseUri;
+        child->getBaseURI(childBaseUri);
+
+        GENV_ITEMFACTORY->createPiNode(piNode, parent, piTarget,
+                                       childStringValue, childBaseUri);
+    }
+    break;
+
+    case store::StoreConsts::commentNode:
+    {
+        store::Item_t commentNode;
+        zstring childStringValue;
+        child->getStringValue2(childStringValue);
+        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, childStringValue);
+    }
+    break;
+
+    case store::StoreConsts::elementNode:
+    case store::StoreConsts::attributeNode:
+    case store::StoreConsts::documentNode:
+    case store::StoreConsts::anyNode:
+      //cout << "     - any: " << child->getStringValue() <<"\n";cout.flush();
+      ZORBA_ASSERT(false);
+      break;
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+
+  if (!hasChildrenElements)
   {
     finishTextNode(sctx, typeManager, schemaValidator, parent,
-                   textNodeValue, loc);
-    textNodeValue = "";
-    hasTextNode = false;
+                    textNodeValue, loc);
   }
 }
 
@@ -566,7 +655,7 @@ void Validator::finishTextNode(
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Item* parent,
-    zstring textNodeValue,
+    zstring& textNodeValue,
     const QueryLoc& loc)
 {
   schemaValidator.text(textNodeValue);
