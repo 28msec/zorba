@@ -458,7 +458,6 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-5.2.11-expressions-q6 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-5.2.11-expressions-q5 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q3 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q4 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q5 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q6 909375)
 
