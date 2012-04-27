@@ -31,6 +31,9 @@ ft_int to_ft_int( xs_integer const &i ) {
   try {
     return to_xs_unsignedInt( i );
   }
+  catch ( std::invalid_argument const& ) {  // for negative numbers
+    throw XQUERY_EXCEPTION( err::FOCA0003, ERROR_PARAMS( i.toString() ) );
+  }
   catch ( std::range_error const& ) {
     throw XQUERY_EXCEPTION( err::FOCA0003, ERROR_PARAMS( i.toString() ) );
   }
