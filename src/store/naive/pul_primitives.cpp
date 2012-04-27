@@ -1293,19 +1293,11 @@ void UpdTruncateCollection::apply()
   assert(lColl);
   
   lColl->removeAll();
-  theIsApplied = true;
-
 }
 
 void UpdTruncateCollection::undo()
 {
-  if (!theIsApplied) return;
-
-  throw ZORBA_EXCEPTION(
-    zerr::ZDDY0019_UNDO_NOT_POSSIBLE,
-    ERROR_PARAMS( theName->getStringValue(), "truncation" )
-  );
-
+  // NOOP
 }
 
 
