@@ -25,7 +25,7 @@ export CLASSPATH="tck:$XQJ_LOAD_PATH"
 CURRENT_D=$PWD
 cd $XQJ_LOAD_PATH
 
-echo "xqj_test.bat: Deleting old Java API if found..."
+echo "xqj_test.sh: Deleting old Java API if found..."
 if [ -d "$XQJ_LOAD_PATH/tck/org" ]
 then
   rm -rf "$XQJ_LOAD_PATH/tck/org"
@@ -39,7 +39,7 @@ fi
 echo "java_test.sh: Compile Java API ..."
 "@Java_JAVAC_EXECUTABLE@"  -source 1.6 -target 1.6 -d tck $JAVA_LOAD_PATH/*.java
 
-echo "xqj_test.bat: Creating API JAR..."
+echo "xqj_test.sh: Creating API JAR..."
 cd tck
 "@Java_JAR_EXECUTABLE@" -cf "zorba_api.jar" org
 cd ..
@@ -48,11 +48,17 @@ rm -r "$XQJ_LOAD_PATH/tck/org"
 echo "java_test.sh: Compile XQJ API ..."
 "@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck/xqjapi.jar:tck/zorba_api.jar -d tck $XQJ_LOAD_PATH/*.java
 
-echo "xqj_test.bat: Creating XQJ JAR..."
+echo "xqj_test.sh: Creating XQJ JAR..."
 cd tck
 "@Java_JAR_EXECUTABLE@" -cf "zorba_xqj.jar" org
 cd ..
 rm -r "$XQJ_LOAD_PATH/tck/org"
 
+echo "xqj_test.sh: Compiling Managers Tests..."
+"@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck/xqjapi.jar:tck/zorba_api.jar:tck/zorba_xqj.jar -d managers "Api_test.java"
+
 echo "java_test.sh: Executing XQJ TCK ..."
 "@Java_JAVA_EXECUTABLE@" -cp tck/xqjapi.jar:tck/xqjtck.jar:tck/junit-4.9.jar:tck/zorba_api.jar:tck/zorba_xqj.jar -Dcom.oracle.xqj.tck.datasource=tck/zorba.properties com.oracle.xqj.tck.AllTests
+
+echo "xqj_test.sh: Testing Managers ..."
+"@Java_JAVA_EXECUTABLE@" -cp managers:tck/xqjapi.jar:tck/zorba_api.jar:tck/zorba_xqj.jar api_test.Api_test
