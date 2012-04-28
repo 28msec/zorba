@@ -250,7 +250,7 @@ typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 class plan_ftnode_visitor : public ftnode_visitor 
 {
 public:
-  typedef std::list<PlanIter_t> PlanIter_list_t;
+  typedef std::vector<PlanIter_t> PlanIter_list_t;
 
   plan_ftnode_visitor( plan_visitor* v ) : plan_visitor_( v ) { }
 

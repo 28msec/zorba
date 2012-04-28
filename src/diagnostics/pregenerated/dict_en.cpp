@@ -89,7 +89,7 @@ extern entry const dict_en[] = {
   { "FTST0008", "\"$1\": unknown stop-word list" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
-  { "FTST0009", "\"$1\": unsupported language" },
+  { "FTST0009", "\"$1\": unsupported language${ 2}" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0018", "\"$1\": unknown thesaurus" },
@@ -511,6 +511,10 @@ extern entry const dict_en[] = {
   { "~ExprReturnsTooManyUpdateLists", "expression does not return a pending update list" },
   { "~ExternFnDeterministic", "only external functions may be declared deterministic" },
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
+  { "~FTST0009_BadStemmerLang", "for current stemmer" },
+  { "~FTST0009_BadStopWordsLang", "for current stop words" },
+  { "~FTST0009_BadThesaurusLang", "for given thesaurus" },
+  { "~FTST0009_BadTokenizerLang", "for current tokenizer" },
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },

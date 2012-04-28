@@ -43,7 +43,8 @@ StemmerProvider const& StemmerProvider::get_default() {
   return default_provider;
 }
 
-Stemmer::ptr StemmerProvider::get_stemmer( iso639_1::type lang ) const {
+bool StemmerProvider::getStemmer( iso639_1::type lang,
+                                  Stemmer::ptr *result ) const {
   typedef unique_ptr<SnowballStemmer const> cache_ptr;
 
   static cache_ptr cached_stemmers[ iso639_1::NUM_ENTRIES ];
@@ -56,7 +57,12 @@ Stemmer::ptr StemmerProvider::get_stemmer( iso639_1::type lang ) const {
   cache_ptr &ptr_ref = cached_stemmers[ lang ];
   if ( !ptr_ref )
     ptr_ref.reset( SnowballStemmer::create( lang ) );
-  return Stemmer::ptr( ptr_ref.get() );
+  if ( ptr_ref ) {
+    if ( result )
+      result->reset( ptr_ref.get() );
+    return true;
+  }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

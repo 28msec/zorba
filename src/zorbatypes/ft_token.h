@@ -286,7 +286,7 @@ private:
    */
   mutable mod_values_t *mod_values_;
 
-  inline bool is_query_token() const {
+  bool is_query_token() const {
     return sent_ == QueryTokenMagicValue;
   }
 

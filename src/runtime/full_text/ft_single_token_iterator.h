@@ -17,8 +17,6 @@
 #ifndef ZORBA_FULL_TEXT_SINGLE_TOKEN_ITERATOR_H
 #define ZORBA_FULL_TEXT_SINGLE_TOKEN_ITERATOR_H
 
-#include <list>
-
 #include "store/api/ft_token_iterator.h"
 
 namespace zorba {

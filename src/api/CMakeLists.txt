@@ -62,8 +62,9 @@ SET(API_SRCS
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND API_SRCS
     stemmer.cpp
-    stemmer_wrapper.cpp
-    thesaurus.cpp)
+    stemmer_wrappers.cpp
+    thesaurus.cpp
+    thesaurus_wrappers.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
 ADD_SRC_SUBFOLDER(API_SRCS serialization API_SERIALIZATION_SRCS)

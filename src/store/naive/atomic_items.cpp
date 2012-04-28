@@ -1657,10 +1657,13 @@ FTTokenIterator_t StringItem::getTokens(
 {
   typedef NaiveFTTokenIterator::container_type tokens_t;
   unique_ptr<tokens_t> tokens( new tokens_t );
+  AtomicItemTokenizerCallback callback( *tokens );
 
-  Tokenizer::ptr t( provider.getTokenizer( lang, numbers ) );
-  AtomicItemTokenizerCallback cb( *t, lang, *tokens );
-  cb.tokenize( theValue.data(), theValue.size(), wildcards );
+  Tokenizer::ptr tokenizer;
+  if ( provider.getTokenizer( lang, &numbers, &tokenizer ) )
+    tokenizer->tokenize_string(
+      theValue.data(), theValue.size(), lang, wildcards, callback
+    );
 
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
 }
@@ -3603,25 +3606,22 @@ zstring ErrorItem::show() const
 ********************************************************************************/
 
 AtomicItemTokenizerCallback::AtomicItemTokenizerCallback( 
-  Tokenizer &tokenizer,
-  locale::iso639_1::type lang,
   container_type &tokens
 ) :
-  tokenizer_( tokenizer ),
-  lang_( lang ),
   tokens_( tokens )
 {
 }
 
-void AtomicItemTokenizerCallback::operator()(
+void AtomicItemTokenizerCallback::token(
   char const *utf8_s,
   size_type utf8_len,
+  iso639_1::type lang,
   size_type token_no, 
   size_type sent_no,
   size_type para_no,
-  void*
+  Item const*
 ) {
-  FTToken const t( utf8_s, utf8_len, token_no, lang_ );
+  FTToken const t( utf8_s, utf8_len, token_no, lang );
   tokens_.push_back( t );
 }
 

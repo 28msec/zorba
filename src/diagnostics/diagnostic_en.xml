@@ -791,7 +791,19 @@
        raise this error and instead provide some other implementation-defined
        behavior.
       </comment>
-      <value>"$1": unsupported language</value>
+      <value>"$1": unsupported language${ 2}</value>
+      <entry key="BadStopWordsLang">
+        <value>for current stop words</value>
+      </entry>
+      <entry key="BadStemmerLang">
+        <value>for current stemmer</value>
+      </entry>
+      <entry key="BadThesaurusLang">
+        <value>for given thesaurus</value>
+      </entry>
+      <entry key="BadTokenizerLang">
+        <value>for current tokenizer</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FTDY0016" if="!defined(ZORBA_NO_FULL_TEXT)">
@@ -1746,7 +1758,7 @@
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
-       The version of the thesaurus is not the expected version.
+        The version of the thesaurus is not the expected version.
       </comment>
      <value>"$1": wrong WordNet file version; should be "$2"</value>
     </diagnostic>
@@ -1754,15 +1766,15 @@
     <diagnostic code="ZXQP8402" name="THESAURUS_ENDIANNESS_MISMATCH"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
+        The thesaurus data file's endianness does not match that of the CPU.
       </comment>
      <value>thesaurus data endianness does not match CPU</value>
-       The thesaurus data file's endianness does not match that of the CPU.
     </diagnostic>
 
     <diagnostic code="ZXQP8403" name="THESAURUS_DATA_ERROR"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
-       The thesaurus data contains an unexpected value.
+        The thesaurus data contains an unexpected value.
       </comment>
      <value>thesaurus data error${: 1}</value>
     </diagnostic>

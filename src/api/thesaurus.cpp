@@ -25,9 +25,11 @@ Thesaurus::~Thesaurus() {
   // out-of-line since it's virtual
 }
 
-//Thesaurus::iterator::~iterator() {
-//  // out-of-line since it's virtual
-//}
+#if 0
+Thesaurus::iterator::~iterator() {
+  // out-of-line since it's virtual
+}
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

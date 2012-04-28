@@ -28,6 +28,8 @@
 #                       (note: in addition to ICU_LIBRARIES)
 #  ICU_DATA_LIBRARIES - Libraries to link against for ICU data
 #
+#  ICU_VERSION        - ICU's version number.
+#
 
 # Look for the header file.
 find_path(
