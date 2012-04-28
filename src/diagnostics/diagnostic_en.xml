@@ -995,7 +995,7 @@
       <comment>
        Invalid \c fn:format-number() picture string.
       </comment>
-      <value>"$1": invalid fn:format-number() picture string</value>
+      <value>"$1": invalid fn:format-number() picture string$2</value>
     </diagnostic>
 
     <diagnostic code="FODT0001">
@@ -3655,6 +3655,31 @@
     <entry key="ParseFragmentInvalidOptions">
       <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
     </entry>
+    
+    <entry key="FormatNumberDuplicates">
+      <value>: a sub-picture must not contain more than one of the "$3" sign</value>
+    </entry>
+    
+    <entry key="FormatNumberGroupingAdjacentToDecimal">
+      <value>: a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign</value>
+    </entry>
+    
+    <entry key="FormatNumberIntegerPart">
+      <value>: the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign</value>
+    </entry>
+    
+    <entry key="FormatNumberFractionalPart">
+      <value>: the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family</value>
+    </entry>
+    
+    <entry key="FormatNumberPercentPermille">
+      <value>: a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each</value>
+    </entry>
+    
+    <entry key="FormatNumberAtLeastOneOptionalOrDecimal">
+      <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
+    </entry>
+    
 
   </subvalues>
 
