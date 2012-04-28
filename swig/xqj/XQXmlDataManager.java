@@ -18,6 +18,7 @@ package org.zorbaxquery.api.xqj;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
+import org.zorbaxquery.api.ItemSequence;
 import org.zorbaxquery.api.XmlDataManager;
 import org.zorbaxquery.api.Zorba;
 
@@ -81,7 +82,8 @@ public class XQXmlDataManager {
     
     public XQSequence parseXML(String xmlText) throws XQException {
         isClosedXQException();
-        XQSequence result = new XQSequence(dm.parseXML(xmlText));
+        ItemSequence zSequence = new ItemSequence(dm.parseXMLtoItem(xmlText));
+        XQSequence result = new XQSequence(zSequence);
         sequences.add(result);
         return result;
     }

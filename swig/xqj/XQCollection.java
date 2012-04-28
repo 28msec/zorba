@@ -20,7 +20,6 @@ import javax.xml.xquery.XQException;
 import org.zorbaxquery.api.Collection;
 import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQSequence;
-import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.ItemSequence;
 
 public class XQCollection {
@@ -119,9 +118,8 @@ public class XQCollection {
     public void insertNodesFirst(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            Item item = ((org.zorbaxquery.api.xqj.XQItem)aNodes.getItem()).getZorbaItem();
-            ItemSequence seq = new ItemSequence( item );
-            collection.insertNodesFirst(seq);
+            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.XQSequence)aNodes).getItemSequence();
+            collection.insertNodesFirst(sequence);
         } catch (XQException e) {
             throw e;
         }

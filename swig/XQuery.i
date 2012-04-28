@@ -64,7 +64,7 @@
     return StaticCollectionManager( theQuery->getStaticCollectionManager() );
   }
 
-  void XQuery::getExternalVariables(Iterator vars) const 
+  void XQuery::getExternalVariables(Iterator& vars) const 
   { theQuery->getExternalVariables( vars.theIterator ); }
 
 #ifdef SWIGPYTHON

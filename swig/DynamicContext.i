@@ -28,7 +28,7 @@
   int 	DynamicContext::getImplicitTimezone (){
     return theContext->getImplicitTimezone();
   }
-  bool 	DynamicContext::getVariable (const std::string& aNamespace, const std::string& aLocalname, Item& aItem, Iterator aIterator) {
+  bool 	DynamicContext::getVariable (const std::string& aNamespace, const std::string& aLocalname, Item& aItem, Iterator& aIterator) {
     return theContext->getVariable(aNamespace, aLocalname, aItem.theItem, aIterator.theIterator);
   }
 

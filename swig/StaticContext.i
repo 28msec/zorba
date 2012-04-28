@@ -160,7 +160,7 @@ ZorbaConstants::XPath1_0CompatibleMode StaticContext::getXPath1_0CompatibMode ()
 void StaticContext::loadProlog (const std::string & aProlog, const CompilerHints &hints)
   { theStaticContext->loadProlog( aProlog, hints.theCompilerHints); }
 
-void StaticContext::getExternalVariables(Iterator vars) const 
+void StaticContext::getExternalVariables(Iterator& vars) const 
   { theStaticContext->getExternalVariables( vars.theIterator ); }
 
   StaticCollectionManager StaticContext::getStaticCollectionManager()

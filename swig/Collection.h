@@ -18,13 +18,13 @@
 
 class Collection
 {
-friend CollectionManager;
-friend StaticCollectionManager;
 private:
-  zorba::Collection* theCollection;
-  Collection(zorba::Collection* aMgr) : theCollection(aMgr) {}
+  zorba::Collection_t theCollection;
+
 public:
   Collection(const Collection& aMgr) : theCollection(aMgr.theCollection) {}
+  Collection(zorba::Collection* aMgr) : theCollection(aMgr) {}
+
   ItemSequence contents();
   void deleteNodeFirst();
   void deleteNodeLast();

@@ -18,8 +18,6 @@
 
 class XmlDataManager
 {
-friend CollectionManager;
-
 private:
   zorba::XmlDataManager* theManager;
 
@@ -31,6 +29,7 @@ public:
   CollectionManager getCollectionManager();
   CollectionManager getW3CCollectionManager();
   Iterator parseXML(const std::string& aDoc);
+  Item parseXMLtoItem(const std::string& aDoc);
 
 };
 #endif

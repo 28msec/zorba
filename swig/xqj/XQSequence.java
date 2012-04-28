@@ -86,6 +86,12 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
         }
     }
 
+    public XQSequence(org.zorbaxquery.api.Item item) {
+        XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
+        content.add(xItem);
+        size = content.size();
+    }
+
     protected XQSequence(ItemSequence seq) {
         itemSequence = seq;
         org.zorbaxquery.api.Iterator iterator = seq.getIterator();
