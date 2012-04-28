@@ -153,6 +153,9 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
         for (XQItem item: content) {
             item.close();
         }
+        if (itemSequence!=null) {
+            itemSequence.delete();
+        }
     }
 
     @Override

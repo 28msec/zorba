@@ -41,6 +41,9 @@ public class XQCollectionManager {
         for (XQCollection exp : collections ){
             exp.close();  // Notify the dependents objects to close
         }
+        if (collectionManager!=null) {
+            collectionManager.delete();
+        }
         closed = true;
     }
 

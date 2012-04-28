@@ -39,6 +39,7 @@
   Collection CollectionManager::getCollection(const Item &aName )
   {
     return Collection(theManager->getCollection(aName.theItem ));
+    
   }
 
   bool CollectionManager::isAvailableCollection(const Item &aName )

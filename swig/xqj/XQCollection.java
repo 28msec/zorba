@@ -36,6 +36,9 @@ public class XQCollection {
         for (XQSequence exp : sequences ){
             exp.close();  // Notify the dependents objects to close
         }
+        if (collection!=null) {
+            collection.delete();
+        }
         closed = true;
     }
 

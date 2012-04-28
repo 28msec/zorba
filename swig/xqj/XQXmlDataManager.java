@@ -49,6 +49,9 @@ public class XQXmlDataManager {
         for (XQSequence exp : sequences ){
             exp.close();  // Notify the dependents objects to close
         }
+        if (dm!=null) {
+            dm.delete();
+        }
         closed = true;
     }
 
