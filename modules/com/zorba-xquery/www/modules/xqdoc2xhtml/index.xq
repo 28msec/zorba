@@ -839,9 +839,7 @@ declare %private %an:sequential function xqdoc2html:parse-spec-args(
     if(fn:matches($specLine, "Args:")) then
       let $arg_split := fn:substring-after($specLine, "-x")
       return
-      if(fn:string-length($arg_split) eq 0) then
-        fn:error($err:UE008, fn:concat("Unknown Args: in spec file for example <", $exampleSource,"> .
-        Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
+      if(fn:string-length($arg_split) eq 0) then string-join($specLines, " ")
       else
         let $var_value := fn:tokenize($arg_split, "=")
         let $var_name := fn:normalize-space(fn:replace($var_value[1], ":$", ""))

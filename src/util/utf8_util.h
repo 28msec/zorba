@@ -759,9 +759,10 @@ void reverse( InputStringType const &in, OutputStringType *out ) {
  * @tparam OutputStringType The output string type.
  * @param in The input string.
  * @param out The output string.
+ * @return Returns \c true only if the strip succeeded.
  */
 template<class InputStringType,class OutputStringType>
-void strip_diacritics( InputStringType const &in, OutputStringType *out );
+bool strip_diacritics( InputStringType const &in, OutputStringType *out );
 
 /**
  *

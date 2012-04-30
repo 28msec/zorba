@@ -52,6 +52,23 @@ public:
   virtual void destroy() const = 0;
 
   /**
+   * Various properties of this %Stemmer.
+   */
+  struct Properties {
+    /**
+     * The URI that uniquely identifies this %Stemmer.
+     */
+    char const *uri;
+  };
+
+  /**
+   * Gets the Properties of this %Stemmer.
+   *
+   * @param result The Properties to populate.
+   */
+  virtual void properties( Properties *result ) const = 0;
+
+  /**
    * Stems the given word.
    *
    * @param word The word to stem.
@@ -66,7 +83,7 @@ protected:
 };
 
 /**
- * A %StemmerProvider, given an language, provies a stemmer for it.
+ * A %StemmerProvider, given a language, provides a Stemmer for it.
  */
 class ZORBA_DLL_PUBLIC StemmerProvider {
 public:
@@ -76,10 +93,12 @@ public:
    * Gets a Stemmer for the given language.
    *
    * @param lang The language to get a Stemmer for.
-   * @return The relevant Stemmer or \c NULL if no stemmer for the given
-   * language is available.
+   * @param s If not \c null, set to point to a Stemmer for \a lang.
+   * @return Returns \c true only if this provider can provide a stemmer for
+   * \a lang.
    */
-  virtual Stemmer::ptr getStemmer( locale::iso639_1::type lang ) const = 0;
+  virtual bool getStemmer( locale::iso639_1::type lang,
+                           Stemmer::ptr *s = 0 ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -542,6 +542,19 @@ static void test_split( char const *left, char const *right ) {
 }
 
 template<class StringType>
+static void test_strip_diacritics() {
+  StringType result;
+
+  StringType const s1( "x " utf8_aeiou_acute " x" );
+  utf8::strip_diacritics( s1, &result );
+  ASSERT_TRUE( result == "x aeiou x" );
+
+  StringType const s2( "x " utf8_AEIOU_acute " x" );
+  utf8::strip_diacritics( s2, &result );
+  ASSERT_TRUE( result == "x AEIOU x" );
+}
+
+template<class StringType>
 static void test_to_codepoints( char const *s ) {
   StringType const s1( s );
 
@@ -865,6 +878,9 @@ int test_string( int, char*[] ) {
   test_split<zstring>( "", "b" );
   test_split<zstring>( "a", "" );
   test_split<String>( "a", "" );
+
+  test_strip_diacritics<string>();
+  test_strip_diacritics<zstring>();
 
   test_to_codepoints<string>( "hello" );
   test_to_codepoints<string>( utf8_aeiou_acute );

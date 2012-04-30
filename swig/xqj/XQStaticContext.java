@@ -50,6 +50,7 @@ public class XQStaticContext implements javax.xml.xquery.XQStaticContext {
 
     private Zorba zorba;
     private XQuery query;
+    private XQStaticCollectionManager lStaticCollectionManager;
     
     String baseURI = null;  //Patch for Zorba, bug filed on https://bugs.launchpad.net/zorba/+bug/905028
     XQItemType contextItemStaticType = null; //Patch for Zorba, TypeIdentifier is not complete
@@ -416,6 +417,13 @@ public class XQStaticContext implements javax.xml.xquery.XQStaticContext {
         if (i<0) {
             throw new XQException("Value can't be negative.");
         }
+    }
+
+    public XQStaticCollectionManager getStaticCollectionManager() throws XQException {
+        if (lStaticCollectionManager==null) {
+            lStaticCollectionManager = new XQStaticCollectionManager(staticContext.getStaticCollectionManager());
+        }
+        return lStaticCollectionManager;
     }
 
     private void isNullXQException(Object value) throws XQException {

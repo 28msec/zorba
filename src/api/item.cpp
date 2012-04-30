@@ -157,6 +157,18 @@ Item::isNull() const
   return false;
 }
 
+store::SchemaTypeCode
+Item::getTypeCode() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getTypeCode();
+
+  ITEM_CATCH
+    return store::XS_ANY_ATOMIC;
+}
 
 Item Item::getType() const
 {

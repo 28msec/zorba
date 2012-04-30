@@ -47,7 +47,7 @@
 #include "runtime/util/flowctl_exception.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
-#include "stemmer_wrapper.h"
+#include "stemmer_wrappers.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba {
