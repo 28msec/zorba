@@ -13,6 +13,7 @@ New Features:
   * Added full-text module.
   * Added support for NO_ICU (to not use ICU for unicode processing)
   * Added XQJ support.
+  * Added CollectionManager and DocumentManager support for XQJ.
 
 Optimization:
 

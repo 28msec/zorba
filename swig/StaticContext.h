@@ -110,6 +110,7 @@ public:
   bool getOption(const Item &aQName, std::string &aOptionValue) const;
   void loadProlog (const std::string & aProlog, const CompilerHints &hints);
 
+  StaticCollectionManager getStaticCollectionManager();
   void getExternalVariables(Iterator& vars) const;
   
   TypeIdentifier getCollectionType(const std::string &aCollectionUri);

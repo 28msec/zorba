@@ -54,6 +54,7 @@
       if (!theConsumed)
       {
         aItem = theItem;
+        theConsumed = true;
         return true;
       }
       else

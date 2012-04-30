@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef API_COLLECTION_MANAGER_H
-#define API_COLLECTION_MANAGER_H
+#ifndef API_STATIC_COLLECTION_MANAGER_H
+#define API_STATIC_COLLECTION_MANAGER_H
 
-class CollectionManager
+class StaticCollectionManager
 {
 private:
-  zorba::CollectionManager* theManager;
+  zorba::StaticCollectionManager* theStaticManager;
 
 public:
-  CollectionManager(const CollectionManager& aMgr) : theManager(aMgr.theManager) {}
-  CollectionManager(zorba::CollectionManager* aMgr) : theManager(aMgr) {}
+  StaticCollectionManager(const StaticCollectionManager& aMgr) : theStaticManager(aMgr.theStaticManager) {}
+  StaticCollectionManager(zorba::StaticCollectionManager* aMgr) : theStaticManager(aMgr) {}
 
   ItemSequence availableCollections();
+  ItemSequence availableIndexes();
   void createCollection(const Item &aName );
   void createCollection(const Item &aName, const ItemSequence &aContents );
+  void createIndex( const Item & aQName );
+  ItemSequence declaredCollections();
+  ItemSequence declaredIndexes();
   void deleteCollection(const Item &aName );
+  void deleteIndex(const Item &aQName );
   Collection getCollection(const Item &aName );
   bool isAvailableCollection(const Item &aName );
-  void registerDiagnosticHandler(DiagnosticHandler *aDiagnosticHandler);
-  
+  bool isAvailableIndex(const Item &aQName );
+  bool isDeclaredCollection( const Item & aQName );
+  bool isDeclaredIndex( const Item & aQName );
+  void  registerDiagnosticHandler(DiagnosticHandler *aDiagnosticHandler );
 };
 
 #endif
