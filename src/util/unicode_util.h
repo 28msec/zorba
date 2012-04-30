@@ -189,6 +189,7 @@ code_point to_upper( code_point c );
 ////////// normalization //////////////////////////////////////////////////////
 
 #ifndef ZORBA_NO_ICU
+
 /**
  * Normalizes the given string.
  *
@@ -197,6 +198,17 @@ code_point to_upper( code_point c );
  * @return Returns \c true only if the normalization succeeded.
  */
 bool normalize( string const &in, normalization::type n, string *out );
+
+/**
+ * Strips all diacritical marks from all characters converting them to their
+ * closest non-diacritical equivalents.
+ *
+ * @param in The input string.
+ * @param out The output string.
+ * @return Returns \c true only if the strip succeeded.
+ */
+bool strip_diacritics( string const &in, string *out );
+
 #endif /* ZORBA_NO_ICU */
 
 ////////// string conversion //////////////////////////////////////////////////

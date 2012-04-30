@@ -378,10 +378,15 @@ const char*
 static_context::ZORBA_XML_FN_NS =
 "http://www.zorba-xquery.com/modules/xml";
 
+#ifndef ZORBA_NO_FULL_TEXT
+const char*
+static_context::ZORBA_FULL_TEXT_FN_NS =
+"http://www.zorba-xquery.com/modules/full-text";
+#endif /* ZORBA_NO_FULL_TEXT */
+
 const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
 "http://www.zorba-xquery.com/modules/xml-options";
-
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
@@ -451,8 +456,11 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
+#ifndef ZORBA_NO_FULL_TEXT
+            ns == ZORBA_FULL_TEXT_FN_NS ||
+#endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_XML_FN_NS);
-  }
+  } 
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
@@ -488,6 +496,11 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
   Static method to check if a given target namespace identifies a zorba non
   pure builtin module, i.e. a builtin module that, in addition to builtin
   external functions, contains variable declarations and/or udfs.
+
+  Note: The fuul-text module must be included here because it MUST be processed
+  when imported, even in RELEASE mode. The reason is that the tokenize and 
+  tokenizer-properties functions must be registered in the module's sctx (in
+  addition to the root sctx).
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
@@ -499,6 +512,9 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
+#ifndef ZORBA_NO_FULL_TEXT
+            ns == ZORBA_FULL_TEXT_FN_NS ||
+#endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_XML_FN_NS);
   }
 
@@ -1585,7 +1601,7 @@ void static_context::apply_url_resolvers(
     std::auto_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const
 {
-  oErrorMessage = "";
+  oErrorMessage.clear();
 
   // Iterate through all candidate URLs...
   for (std::vector<zstring>::iterator url = aUrls.begin();
@@ -1621,7 +1637,7 @@ void static_context::apply_url_resolvers(
         }
         catch (const std::exception& e)
         {
-          if (oErrorMessage == "")
+          if (oErrorMessage.empty()) 
           {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();

@@ -708,6 +708,30 @@ Item ItemFactoryImpl::createUnsignedShort(unsigned short aValue)
   return &*lItem;
 }
 
+void convertNsBindings(
+    zorba::NsBindings& aInBindings,
+    store::NsBindings& aOutBindings)
+{
+  zorba::NsBindings::iterator lIter;
+  for (lIter = aInBindings.begin(); lIter != aInBindings.end(); ++lIter)
+  {
+    zstring lFirst = Unmarshaller::getInternalString(lIter->first);
+    zstring lSecond = Unmarshaller::getInternalString(lIter->second);
+    aOutBindings.push_back(std::pair<zstring, zstring>(lFirst, lSecond));
+  }
+}
+
+void convertItemVector(
+    std::vector<zorba::Item>& aInItems,
+    std::vector<store::Item_t>& aOutItems)
+{
+  std::vector<Item>::iterator lIter;
+
+  for (lIter = aInItems.begin(); lIter != aInItems.end(); ++lIter)
+  {
+    aOutItems.push_back(Unmarshaller::getInternalItem(*lIter));
+  }
+}
 
 zorba::Item ItemFactoryImpl::createElementNode(
     Item& aParent,
@@ -721,14 +745,7 @@ zorba::Item ItemFactoryImpl::createElementNode(
   store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
   store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
   store::NsBindings lNsBindings;
-  
-  std::vector<std::pair<String, String> >::iterator lIter;
-  for (lIter = aNsBindings.begin(); lIter != aNsBindings.end(); ++lIter) 
-  {
-    zstring lFirst = Unmarshaller::getInternalString(lIter->first);
-    zstring lSecond = Unmarshaller::getInternalString(lIter->second);
-    lNsBindings.push_back(std::pair<zstring, zstring>(lFirst, lSecond));
-    }
+  convertNsBindings(aNsBindings, lNsBindings);
 
   zstring lBaseUri;
   theItemFactory->createElementNode(lItem,
@@ -740,6 +757,33 @@ zorba::Item ItemFactoryImpl::createElementNode(
                                     lNsBindings,
                                     lBaseUri);
   return &*lItem;
+}
+
+void ItemFactoryImpl::assignElementTypedValue(
+    Item &aElement,
+    Item aTypedValue)
+{
+  store::Item_t lStoreElement = Unmarshaller::getInternalItem(aElement);
+
+  // Create the internal text node where the Zorba store holds the typed value.
+  store::Item_t lText;
+  store::Item_t lTypedValue = Unmarshaller::getInternalItem(aTypedValue);
+  theItemFactory->createTextNode(lText, lStoreElement, lTypedValue);
+}
+
+void ItemFactoryImpl::assignElementTypedValue(
+    Item &aElement,
+    std::vector<Item> &aTypedValue)
+{
+  store::Item_t lStoreElement = Unmarshaller::getInternalItem(aElement);
+
+  // Convert typed value vector.
+  std::vector<store::Item_t> lTypedValue;
+  convertItemVector(aTypedValue, lTypedValue);
+
+  // Create the internal text node where the Zorba store holds the typed value.
+  store::Item_t lText;
+  theItemFactory->createTextNode(lText, lStoreElement, lTypedValue);
 }
 
 
@@ -772,12 +816,7 @@ zorba::Item ItemFactoryImpl::createAttributeNode(
   store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
   store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
   std::vector<store::Item_t> lTypedValue;
-  std::vector<Item>::iterator lIter;
-
-  for (lIter = aTypedValue.begin(); lIter != aTypedValue.end(); ++lIter) 
-  {
-    lTypedValue.push_back(Unmarshaller::getInternalItem(*lIter));
-  }
+  convertItemVector(aTypedValue, lTypedValue);
 
   theItemFactory->createAttributeNode(lItem,
                                       Unmarshaller::getInternalItem(aParent),

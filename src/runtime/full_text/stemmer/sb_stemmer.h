@@ -43,6 +43,7 @@ public:
 
   // inherited
   void destroy() const;
+  void properties( Properties* ) const;
   void stem( zstring const &word, locale::iso639_1::type lang,
              zstring *result ) const;
 
