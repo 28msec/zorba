@@ -44,7 +44,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
   * Fixed Bug #933490: Error ItemFactoryImpl::createBase64Binary with istream
   * Fixed bug #867112 (Diagnostic Handler was not working on external APIs)
-
+  * Fixed bug #992304 (Compiling library modules could load data from
+	wrong source)
 
 version 2.2
 
