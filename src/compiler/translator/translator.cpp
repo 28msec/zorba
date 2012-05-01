@@ -85,6 +85,7 @@
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -107,7 +108,6 @@
 
 
 #define NODE_SORT_OPT
-#define XS_URI "http://www.w3.org/2001/XMLSchema"
 
 namespace zorba
 {
@@ -2013,7 +2013,7 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
-  zstring xsdTNS = zstring(XS_URI);
+  zstring xsdTNS = zstring(XML_SCHEMA_NS);
   if ( xsdTNS.compare(targetNS)==0 )
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
