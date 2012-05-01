@@ -33,18 +33,15 @@
 #include "api/staticcontextimpl.h"
 #include "api/documentmanagerimpl.h"
 #include "api/collectionmanagerimpl.h"
-
+#include "context/static_context.h"
 #include "diagnostics/xquery_diagnostics.h"
-
+#include "runtime/util/flowctl_exception.h"
 #include "store/api/collection.h"
 #include "store/api/item.h"
-#include "system/globalenv.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-
-#include "context/static_context.h"
-
-#include "runtime/util/flowctl_exception.h"
+#include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "stemmer_wrappers.h"
@@ -292,7 +289,7 @@ XmlDataManagerImpl::parseXML(
     Item empty_item;
     Item validated_options;
     NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+    Item untyped_type = theFactory->createQName(XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
     Item options_node = theFactory->createElementNode(empty_item,
         theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
         untyped_type, false, false, nsPairs);
@@ -340,7 +337,7 @@ XmlDataManagerImpl::parseXML(
     Item empty_item;
     Item validated_options;
     NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+    Item untyped_type = theFactory->createQName(XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
     Item options_node = theFactory->createElementNode(empty_item,
         theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
         untyped_type, false, false, nsPairs);
