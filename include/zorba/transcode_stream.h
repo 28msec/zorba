@@ -58,6 +58,7 @@ namespace transcode {
  *      os.ios::rdbuf( tbuf.orig_streambuf() );
  *      throw;
  *    }
+ *    os.ios::rdbuf( tbuf.orig_streambuf() );
  *  }
  * \endcode
  * Alternatively, you may wish to use either \c attach(), \c auto_attach, or
