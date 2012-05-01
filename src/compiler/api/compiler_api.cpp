@@ -338,10 +338,8 @@ class FakeLibraryModuleURLResolver : public internal::URLResolver
 {
 public:
   FakeLibraryModuleURLResolver
-  (zstring const& aLibraryModuleNamespace, 
-    zstring const& aLibraryModuleFilename, std::istream& aStream)
-    : theLibraryModuleNamespace(aLibraryModuleNamespace),
-      theLibraryModuleFilename(aLibraryModuleFilename),
+  (zstring const& aLibraryModuleFilename, std::istream& aStream)
+    : theLibraryModuleFilename(aLibraryModuleFilename),
       theStream(aStream)
   {}
   virtual ~FakeLibraryModuleURLResolver()
@@ -350,9 +348,14 @@ public:
   virtual internal::Resource* resolveURL
   (zstring const& aUrl, internal::EntityData const* aEntityData)
   {
-    if (aUrl != theLibraryModuleNamespace) {
-      return NULL;
-    }
+    // Since we know this URL resolver will only be used when compiling the
+    // stub query, and the only URI that query will contain is the one we're
+    // interested in, then we don't actually need to check the URL at all -
+    // just return the stream. This is a good thing, because due to URI
+    // mapping, aUrl will probably be different than the one we're expecting.
+    // If we returned NULL here, Zorba's built-in URL Resolvers would attempt
+    // to load the resource from somewhere else, and that may result in the
+    // wrong information being compiled. See bug 992304.
     assert (theStream.good());
     // Pass a nullptr StreamReleaser; memory ownership of the istream remains
     // with the caller of this method.
@@ -362,7 +365,6 @@ public:
   }
 
 private:
-  zstring theLibraryModuleNamespace;
   zstring theLibraryModuleFilename;
   std::istream& theStream;
 };
@@ -400,7 +402,7 @@ parsenode_t XQueryCompiler::createMainModule(
   aXQuery.clear();
   aXQuery.seekg(0);
   FakeLibraryModuleURLResolver* aFakeResolver =
-    new FakeLibraryModuleURLResolver(lib_namespace.str(), aFileName, aXQuery);
+    new FakeLibraryModuleURLResolver(aFileName, aXQuery);
   theCompilerCB->theRootSctx->add_url_resolver(aFakeResolver);
 
   // create a dummy main module and parse it
