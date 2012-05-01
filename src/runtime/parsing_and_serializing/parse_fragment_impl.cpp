@@ -301,9 +301,11 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
   STACK_END(state);
 }
 
+
 /*******************************************************************************
   14.9.2 fn:parse-xml-fragment
 ********************************************************************************/
+/*
 bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   zstring docString;
@@ -367,5 +369,6 @@ void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
   baseUri = "";
   docUri = "";
 }
+*/
 
 } /* namespace zorba */

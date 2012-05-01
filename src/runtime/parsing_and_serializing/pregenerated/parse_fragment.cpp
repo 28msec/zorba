@@ -62,36 +62,6 @@ void FnZorbaParseXmlFragmentIteratorState::init(PlanState& planState) {
 // </FnZorbaParseXmlFragmentIterator>
 
 
-// <FnParseXmlFragmentIterator>
-FnParseXmlFragmentIterator::class_factory<FnParseXmlFragmentIterator>
-FnParseXmlFragmentIterator::g_class_factory;
-
-
-void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-FnParseXmlFragmentIterator::~FnParseXmlFragmentIterator() {}
-
-FnParseXmlFragmentIteratorState::FnParseXmlFragmentIteratorState() {}
-
-FnParseXmlFragmentIteratorState::~FnParseXmlFragmentIteratorState() {}
-
-
-void FnParseXmlFragmentIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-// </FnParseXmlFragmentIterator>
-
-
 
 }
 
