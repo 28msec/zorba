@@ -29,7 +29,6 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/pul.h"
-#include "store/api/xs_type_codes.h"
 
 #include "properties.h"
 #include "string_pool.h"

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SET(FULLTEXT_SRCS
+    ft_util.cpp
     ft_match.cpp
     ft_query_item.cpp
     ft_single_token_iterator.cpp
@@ -40,6 +41,7 @@ SET(FULLTEXT_SRCS
     thesaurus.cpp
     tokenizer.cpp
     default_tokenizer.cpp
+    ft_module.cpp
     )
 
 IF (ZORBA_NO_ICU)
@@ -51,5 +53,5 @@ ENDIF (ZORBA_NO_ICU)
 ADD_SRC_SUBFOLDER(FULLTEXT_SRCS stemmer LIBSTEMMER_SRCS)
 
 IF (ZORBA_WITH_FILE_ACCESS)
-    ADD_SRC_SUBFOLDER(FULLTEXT_SRCS thesauri THESAURUS_SRCS)
+  ADD_SRC_SUBFOLDER(FULLTEXT_SRCS thesauri THESAURUS_SRCS)
 ENDIF (ZORBA_WITH_FILE_ACCESS)

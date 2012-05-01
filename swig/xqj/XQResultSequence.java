@@ -50,6 +50,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
     private Collection<XQResultItem> items = new ArrayList<XQResultItem>();
     private org.zorbaxquery.api.XQuery lQuery=null;
     private boolean preparedExpression;
+    private XQStaticCollectionManager lStaticCollectionManager;
 
     public XQResultSequence(XQConnection conn, org.zorbaxquery.api.XQuery query, boolean prepared) {
         lQuery = query;
@@ -99,6 +100,9 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
                 if (!preparedExpression) {
                     lQuery.delete();
                 }
+            }
+            if (lStaticCollectionManager != null) {
+                lStaticCollectionManager.close();
             }
         }
     }
@@ -435,6 +439,14 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
         getItem().writeItemToResult(result);
     }
     
+    public XQStaticCollectionManager getStaticCollectionManager() throws XQException {
+        isClosedXQException();
+        if (lStaticCollectionManager==null) {
+            lStaticCollectionManager = new XQStaticCollectionManager(lQuery.getStaticCollectionManager());
+        }
+        return lStaticCollectionManager;
+    }
+
     private void isClosedXQException() throws XQException {
         if (closed) {
             throw new XQException("This sequence is closed");

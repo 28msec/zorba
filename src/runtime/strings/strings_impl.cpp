@@ -1840,7 +1840,7 @@ static void addNonMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
   GENV_ITEMFACTORY->createQName(non_match_element_name,
                                 static_context::W3C_FN_NS, "fn", "non-match");
   GENV_ITEMFACTORY->createElementNode(non_match_elem, parent, non_match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -1969,7 +1969,7 @@ static void addMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
   GENV_ITEMFACTORY->createQName(match_element_name,
                                 static_context::W3C_FN_NS, "fn", "match");
   store::Item_t match_elem;
@@ -2129,7 +2129,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     store::NsBindings   ns_binding;
     zstring baseURI;
     GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                  "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                  XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
     GENV_ITEMFACTORY->createQName(result_element_name,
                                   static_context::W3C_FN_NS, "fn", "analyze-string-result");
     GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);

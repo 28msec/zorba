@@ -163,6 +163,11 @@ void StaticContext::loadProlog (const std::string & aProlog, const CompilerHints
 void StaticContext::getExternalVariables(Iterator& vars) const 
   { theStaticContext->getExternalVariables( vars.theIterator ); }
 
+  StaticCollectionManager StaticContext::getStaticCollectionManager()
+  {
+    return StaticCollectionManager( theStaticContext->getStaticCollectionManager() );
+  }
+
 TypeIdentifier StaticContext::getCollectionType(const std::string & aCollectionUri)
   { return TypeIdentifier(theStaticContext->getCollectionType(aCollectionUri)); }
   

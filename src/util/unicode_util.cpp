@@ -24,6 +24,7 @@
 
 #ifndef ZORBA_NO_ICU
 # include <unicode/normlzr.h>
+# include <unicode/uchar.h>
 # include <unicode/ustring.h>
 #endif /* ZORBA_NO_ICU */
 
@@ -2226,6 +2227,19 @@ bool normalize( string const &in, normalization::type n, string *out ) {
   }
   Normalizer::normalize( in, icu_mode, 0, *out, status );
   return U_SUCCESS( status ) == TRUE;
+}
+
+bool strip_diacritics( string const &in, string *out ) {
+  string in_normalized;
+  if ( !normalize( in, normalization::NFKD, &in_normalized ) )
+    return false;
+  out->truncate( 0 );
+  for ( size_type len = in_normalized.length(), i = 0; i < len; ++i ) {
+    UChar32 const uc32 = in_normalized.char32At( i );
+    if ( u_charType( uc32 ) != U_NON_SPACING_MARK )
+      out->append( uc32 );
+  }
+  return true;
 }
 
 bool to_char( char const *in, char_type *out ) {
