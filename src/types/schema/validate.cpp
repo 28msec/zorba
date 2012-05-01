@@ -252,7 +252,7 @@ bool Validator::realValidationValue(
     {
       //cout << "Validate element" << "\n"; cout.flush();
       schemaValidator.startDoc();
-      
+
       // ask for the type of the root element to populate the cache
       // with anonymous types
       typeManager->getSchema()->

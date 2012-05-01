@@ -123,19 +123,26 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
 #endif /* ZORBA_NO_ICU */
 
 template<class InputStringType,class OutputStringType>
-void strip_diacritics( InputStringType const &in, OutputStringType *out ) {
-  InputStringType in_normalized;
+bool strip_diacritics( InputStringType const &in, OutputStringType *out ) {
 #ifndef ZORBA_NO_ICU
-  normalize( in, unicode::normalization::NFKD, &in_normalized );
+  unicode::string u_in;
+  if ( !unicode::to_string( in, &u_in ) )
+    return false;
+  unicode::string u_out;
+  unicode::strip_diacritics( u_in, &u_out );
+  storage_type *temp;
+  size_type temp_len;
+  if ( !utf8::to_string( u_out.getBuffer(), u_out.length(), &temp, &temp_len ) )
+    return false;
+  out->assign( temp, temp_len );
+  if ( !string_traits<OutputStringType>::takes_pointer_ownership )
+    delete[] temp;
 #else
-  in_normalized = in.c_str();
-#endif /* ZORBA_NO_ICU */
   out->clear();
-  out->reserve( in_normalized.size() );
-  std::copy(
-    in_normalized.begin(), in_normalized.end(),
-    ascii::back_ascii_inserter( *out )
-  );
+  out->reserve( in.size() );
+  std::copy( in.begin(), in.end(), ascii::back_ascii_inserter( *out ) );
+#endif /* ZORBA_NO_ICU */
+  return true;
 }
 
 #ifndef ZORBA_NO_ICU

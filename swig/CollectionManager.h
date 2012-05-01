@@ -22,16 +22,17 @@ private:
   zorba::CollectionManager* theManager;
 
 public:
-  CollectionManager() : theManager(0) {}
   CollectionManager(const CollectionManager& aMgr) : theManager(aMgr.theManager) {}
   CollectionManager(zorba::CollectionManager* aMgr) : theManager(aMgr) {}
 
   ItemSequence availableCollections();
   void createCollection(const Item &aName );
+  void createCollection(const Item &aName, const ItemSequence &aContents );
   void deleteCollection(const Item &aName );
   Collection getCollection(const Item &aName );
   bool isAvailableCollection(const Item &aName );
-  //virtual void  registerDiagnosticHandler(DiagnosticHandler *aDiagnosticHandler )
+  void registerDiagnosticHandler(DiagnosticHandler *aDiagnosticHandler);
+  
 };
 
 #endif

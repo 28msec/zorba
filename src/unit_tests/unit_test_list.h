@@ -28,6 +28,7 @@ namespace zorba {
     int runDebuggerProtocolTest(int argc, char* argv[]);
     int test_string( int, char*[] );
     int test_unique_ptr( int, char*[] );
+    int test_fs_iterator( int, char*[] );
 #ifndef ZORBA_NO_FULL_TEXT
     int test_stemmer( int, char*[] );
     int test_thesaurus( int, char*[] );

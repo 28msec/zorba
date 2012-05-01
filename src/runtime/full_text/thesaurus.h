@@ -34,9 +34,14 @@ namespace internal {
 /**
  * A %Thesaurus is the abstract base class for thesaurus implementations.
  */
-class Thesaurus : public internal::Resource {
+class Thesaurus {
 public:
-  typedef std::unique_ptr<Thesaurus,ztd::destroy_delete<Thesaurus> > ptr;
+  typedef ft_int level_type;
+
+  typedef std::unique_ptr<
+            Thesaurus const,ztd::destroy_delete<Thesaurus const>
+          >
+          ptr;
 
   /**
    * An %iterator is used to iterate over lookup results.
@@ -82,8 +87,9 @@ public:
    * the phrase was not found.
    */
   virtual iterator::ptr lookup( zstring const &phrase,
-                                zstring const &relationship, ft_int at_least,
-                                ft_int at_most ) const = 0;
+                                zstring const &relationship,
+                                level_type at_least,
+                                level_type at_most ) const = 0;
 
 protected:
   Thesaurus() { }
@@ -93,6 +99,26 @@ private:
   // forbid these
   Thesaurus( Thesaurus const& );
   Thesaurus& operator=( Thesaurus const& );
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A %ThesaurusProvider is-a Resource for providing thesauri for a given
+ * language.
+ */
+class ThesaurusProvider : public internal::Resource {
+public:
+  /**
+   * Gets a Thesaurus for the given language.
+   *
+   * @param lang The desired language of the thesaurus.
+   * @param t If not \c null, set to point to a Thesaurus for \a lang.
+   * @return Returns \c true only if this provider can provide a thesaurus for
+   * \a lang.
+   */
+  virtual bool getThesaurus( locale::iso639_1::type lang,
+                             Thesaurus::ptr *t = nullptr ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
