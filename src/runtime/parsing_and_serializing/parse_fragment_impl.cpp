@@ -343,19 +343,12 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
           result = NULL;
       }
 
-      if(result ==NULL)
+      if (result == NULL)
         continue;
-
-      state->theFragmentStream.children = result->getChildren();
-      while (state->theFragmentStream.children->next(result) && result != NULL)
-      {
-        if (result->getNodeKind() == store::StoreConsts::textNode)
-          continue;
-        STACK_PUSH(true, state);
-      }
-    }
-
-  }
+        
+      STACK_PUSH(true, state);
+    } // while
+  } // if 
 
   STACK_END(state)
 }
