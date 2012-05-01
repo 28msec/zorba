@@ -551,7 +551,6 @@ static_context::static_context()
   theParent(NULL),
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
-  theBlockedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -600,7 +599,6 @@ static_context::static_context(static_context* parent)
   theParent(parent),
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
-  theBlockedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -654,7 +652,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theParent(NULL),
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
-  theBlockedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -702,9 +699,6 @@ static_context::~static_context()
 {
   if (theImportedBuiltinModules)
     delete theImportedBuiltinModules;
-
-  if (theBlockedBuiltinModules)
-    delete theBlockedBuiltinModules;
 
   if (theExternalModulesMap)
   {
@@ -1144,46 +1138,6 @@ bool static_context::is_imported_builtin_module(const zstring& ns)
 }
 
 
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::add_blocked_builtin_module(const zstring& ns)
-{
-  if (theBlockedBuiltinModules == NULL)
-  {
-    theBlockedBuiltinModules = new std::vector<zstring>;
-  }
-
-  theBlockedBuiltinModules->push_back(ns);
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-bool static_context::is_blocked_builtin_module(const zstring& ns)
-{
-  static_context* sctx = this;
-
-  while (sctx != NULL)
-  {
-    std::vector<zstring>* lBlockedModules = sctx->theBlockedBuiltinModules;
-    if (lBlockedModules != NULL)
-    {
-      if (std::find(lBlockedModules->begin(), lBlockedModules->end(), ns)
-          != lBlockedModules->end())
-      {
-        return true;
-      }
-    }
-
-    sctx = sctx->theParent;
-  }
-
-  return false;
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Base URI                                                                   //
@@ -1550,6 +1504,21 @@ void static_context::get_component_uris(
   internal::EntityData const lData(aEntityKind);
 
   apply_uri_mappers(aUri, &lData, internal::URIMapper::COMPONENT, oComponents);
+  if (oComponents.size() == 0)
+  {
+    oComponents.push_back(aUri);
+  }
+}
+
+void static_context::get_candidate_uris(
+    zstring const& aUri,
+    internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const
+{
+  // Create a simple EntityData that just reports the specified Kind
+  internal::EntityData const lData(aEntityKind);
+
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::CANDIDATE, oComponents);
   if (oComponents.size() == 0)
   {
     oComponents.push_back(aUri);

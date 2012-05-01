@@ -2838,10 +2838,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // importing module that X has been imported.
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
-    if (theRootSctx->is_blocked_builtin_module(targetNS))
-    {
-      RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS));
-    }
+    // hust a test, this will throw, if the access is denied
+    std::vector<zstring> candidateURIs;
+    theRootSctx->get_candidate_uris(targetNS,
+                                    internal::EntityData::MODULE,
+                                    candidateURIs);
     theRootSctx->add_imported_builtin_module(targetNS);
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they

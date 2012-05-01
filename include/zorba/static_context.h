@@ -361,15 +361,6 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual bool
   registerModule(ExternalModule* aModule) = 0;
 
-  /** \brief Block the usage of an internal module.
-   *
-   * Register a module to be non-accessible by a query.
-   *
-   * @param aModuleNS the module namespace of the module that is blocked
-   */
-  virtual void
-  blockBuiltInModule(const String& aModuleNS) = 0;
-
   /**
    * \brief Register a URI Mapper which will transform a given URI
    * into several alternate potential URIs.

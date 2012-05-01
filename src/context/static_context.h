@@ -500,8 +500,6 @@ protected:
 
   std::vector<zstring>                  * theImportedBuiltinModules;
 
-  std::vector<zstring>                  * theBlockedBuiltinModules;
-
   BaseUriInfo                           * theBaseUriInfo;
 
   ztd::auto_vector<internal::URIMapper>   theURIMappers;
@@ -635,10 +633,6 @@ public:
 
   bool is_imported_builtin_module(const zstring& ns);
 
-  void add_blocked_builtin_module(const zstring& ns);
-
-  bool is_blocked_builtin_module(const zstring& ns);
-
   //
   // Base uri
   //
@@ -705,6 +699,15 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const;
+
+  /**
+   * Given a URI, populate a vector with a list of candidate URIs.  If
+   * no candidate URIs are available, the vector will be populated
+   * with (only) the input URI.
+   */
+  void get_candidate_uris
   (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
