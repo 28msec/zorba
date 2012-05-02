@@ -208,6 +208,7 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
     state->theProperties.setBaseUri(theSctx->get_base_uri());
     state->theProperties.setStoreDocument(false);
     processOptions(tempItem, state->theProperties, theSctx, loc);
+    state->theProperties.setCreateDocParentLink(false);
 
     // baseURI serves both as the base URI used by the XML parser
     // to resolve relative entity references within the document,
@@ -327,9 +328,9 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     }
 
     state->theProperties.setBaseUri(theSctx->get_base_uri());
-    state->baseUri = state->theProperties.getBaseUri();
-    
+    state->baseUri = state->theProperties.getBaseUri();    
     state->theProperties.setParseExternalParsedEntity(true);
+    state->theFragmentStream.parsed_nodes_batch_size = 0; // disable batching and return all the nodes
   
     while ( ! state->theFragmentStream.stream_is_consumed() )
     {

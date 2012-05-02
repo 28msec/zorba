@@ -32,7 +32,7 @@ class FragmentIStream : public std::istream
 public:
   static const unsigned int BUFFER_SIZE = 4096;
   static const unsigned int LOOKAHEAD_BYTES = 3; // lookahead fetching is implemented, but currently not used
-  static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
+  static const unsigned int DEFAULT_PARSED_NODES_BATCH_SIZE = 1024;
 
 public:
   FragmentIStream()
@@ -50,7 +50,8 @@ public:
     forced_parser_stop(false),
     reached_eof(false),
     parsed_nodes_count(0),
-    children(NULL)
+    children(NULL),
+    parsed_nodes_batch_size(DEFAULT_PARSED_NODES_BATCH_SIZE)
   {
   };
 
@@ -90,6 +91,7 @@ public:
     reached_eof = false;
     parsed_nodes_count = 0;
     children = NULL;
+    parsed_nodes_batch_size = DEFAULT_PARSED_NODES_BATCH_SIZE;
   }
 
   virtual ~FragmentIStream()
@@ -111,6 +113,8 @@ public:
   bool reached_eof;
   unsigned int parsed_nodes_count;
   store::Iterator_t children;
+  unsigned int parsed_nodes_batch_size; // if set to 0, the batching is disabled. All the 
+                                        // nodes in the fragment will be parsed and then returned.
 };
 
 }

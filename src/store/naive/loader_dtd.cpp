@@ -382,7 +382,9 @@ void FragmentXmlLoader::checkStopParsing(void* ctx, bool force)
       ||
       (loader.theFragmentStream->current_element_depth <= loader.theFragmentStream->root_elements_to_skip
           &&
-          loader.theFragmentStream->parsed_nodes_count >= FragmentIStream::PARSED_NODES_BATCH_SIZE))
+          loader.theFragmentStream->parsed_nodes_batch_size > 0
+          &&
+          loader.theFragmentStream->parsed_nodes_count >= loader.theFragmentStream->parsed_nodes_batch_size))
   {
     loader.theFragmentStream->current_offset = offset;
     xmlStopParser(loader.theFragmentStream->ctxt);
@@ -968,7 +970,7 @@ void DtdXmlLoader::startDocument(void * ctx)
 {
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-
+  
   try
   {
     DocumentNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
@@ -1066,7 +1068,7 @@ void DtdXmlLoader::endDocument(void * ctx)
       loader.theGuideStack.pop();
       assert(loader.theGuideStack.empty());
 
-        loader.theTree->setDataGuide(rootGNode);
+      loader.theTree->setDataGuide(rootGNode);
 
 #ifndef NDEBUG
       std::cout << rootGNode->show(0) << std::endl;
