@@ -56,21 +56,24 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
 
 typedef std::ostream& (*std_omanip_type)(std::ostream&);
 
-inline std::ostream& if_do( std::ostream &o, bool expr, std_omanip_type fn ) {
+inline std::ostream& if_do_impl( std::ostream &o, bool expr,
+                                 std_omanip_type fn ) {
   if ( expr )
     o << fn;
   return o;
 }
-DEF_OMANIP2( if_do, bool, std_omanip_type )
+DEF_OMANIP2( if_do_impl, bool, std_omanip_type )
+#define if_do(EXPR,FN) if_do_impl( !!(EXPR), (FN) )
 
 #define if_indent(WS,FN) if_do( (WS) == whitespace::indent, FN )
 
-inline std::ostream& if_emit( std::ostream &o, bool expr, char c ) {
+inline std::ostream& if_emit_impl( std::ostream &o, bool expr, char c ) {
   if ( expr )
     o << c;
   return o;
 }
-DEF_OMANIP2( if_emit, bool, char )
+DEF_OMANIP2( if_emit_impl, bool, char )
+#define if_emit(EXPR,C) if_emit_impl( !!(EXPR), (C) )
 
 ///////////////////////////////////////////////////////////////////////////////
 
