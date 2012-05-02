@@ -85,6 +85,7 @@
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -107,7 +108,6 @@
 
 
 #define NODE_SORT_OPT
-#define XS_URI "http://www.w3.org/2001/XMLSchema"
 
 namespace zorba
 {
@@ -694,6 +694,10 @@ TranslatorImpl(
   xquery_fns_def_dot.set(FunctionConsts::FN_DATA_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_DOCUMENT_URI_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_NODE_NAME_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_NILLED_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_HAS_CHILDREN_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_PATH_0);
+
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
@@ -2013,7 +2017,7 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
-  zstring xsdTNS = zstring(XS_URI);
+  zstring xsdTNS = zstring(XML_SCHEMA_NS);
   if ( xsdTNS.compare(targetNS)==0 )
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
@@ -11783,7 +11787,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);  
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
