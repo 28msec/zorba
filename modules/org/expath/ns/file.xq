@@ -422,11 +422,7 @@ declare %an:nondeterministic function file:read-text-lines(
 declare %an:nondeterministic function file:read-text-lines(
   $file as xs:string,
   $encoding as xs:string
-) as xs:string*
-{
-  let $content := file:read-text($file, $encoding)
-  return fn:tokenize($content, "\n")
-};
+) as xs:string* external;
 
 (:~
  : This is an internal function that copies an entire source directory to an
@@ -623,7 +619,7 @@ declare %an:nondeterministic function file:list(
  :)
 declare function file:glob-to-regex(
   $pattern as xs:string
-) {
+) as xs:string {
   let $pattern := fn:replace($pattern, '(\.|\[|\]|\\|/|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
   let $pattern := fn:replace($pattern, '\\\?', '.')
   let $pattern := fn:replace($pattern, '\\\*', '.*')

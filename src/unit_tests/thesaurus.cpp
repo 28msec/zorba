@@ -42,47 +42,48 @@ public:
   iterator::ptr lookup( String const &phrase, String const &relationship,
                         range_type at_least, range_type at_most ) const;
 private:
-  typedef std::list<String> synonyms_t;
-  typedef std::map<String,synonyms_t const*> thesaurus_t;
+  typedef std::list<String> synonyms_type;
+  typedef std::map<String,synonyms_type const*> thesaurus_data_type;
 
-  static thesaurus_t const& get_thesaurus();
+  static thesaurus_data_type const& get_thesaurus_data();
 
   class iterator : public Thesaurus::iterator {
   public:
-    iterator( synonyms_t const &s ) : synonyms_( s ), i_( s.begin() ) { }
+    iterator( synonyms_type const &s ) : synonyms_( s ), i_( s.begin() ) { }
     void destroy() const;
     bool next( String *synonym );
   private:
-    synonyms_t const &synonyms_;
-    synonyms_t::const_iterator i_;
+    synonyms_type const &synonyms_;
+    synonyms_type::const_iterator i_;
   };
 };
-
-TestThesaurus::thesaurus_t const& TestThesaurus::get_thesaurus() {
-  static thesaurus_t thesaurus;
-  if ( thesaurus.empty() ) {
-    static synonyms_t synonyms;
-    synonyms.push_back( "foo" );
-    synonyms.push_back( "foobar" );
-
-    thesaurus[ "foo"    ] = &synonyms;
-    thesaurus[ "foobar" ] = &synonyms;
-  }
-  return thesaurus;
-}
 
 void TestThesaurus::destroy() const {
   destroy_called = true;
 }
 
+TestThesaurus::thesaurus_data_type const& TestThesaurus::get_thesaurus_data() {
+  static thesaurus_data_type thesaurus_data;
+  if ( thesaurus_data.empty() ) {
+    static synonyms_type synonyms;
+    synonyms.push_back( "foo" );
+    synonyms.push_back( "foobar" );
+
+    thesaurus_data[ "foo"    ] = &synonyms;
+    thesaurus_data[ "foobar" ] = &synonyms;
+  }
+  return thesaurus_data;
+}
+
 Thesaurus::iterator::ptr
 TestThesaurus::lookup( String const &phrase, String const &relationship,
                        range_type at_least, range_type at_most ) const {
-  static thesaurus_t const &thesaurus = get_thesaurus();
-  thesaurus_t::const_iterator const i = thesaurus.find( phrase );
-  Thesaurus::iterator::ptr result;
-  if ( i != thesaurus.end() )
-    result.reset( new iterator( *i->second ) );
+  static thesaurus_data_type const &thesaurus_data = get_thesaurus_data();
+  thesaurus_data_type::const_iterator const entry =
+    thesaurus_data.find( phrase );
+  iterator::ptr result;
+  if ( entry != thesaurus_data.end() )
+    result.reset( new iterator( *entry->second ) );
   return std::move( result );
 }
 
@@ -101,6 +102,28 @@ bool TestThesaurus::iterator::next( String *synonym ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+class TestThesaurusProvider : public ThesaurusProvider {
+public:
+  bool getThesaurus( iso639_1::type lang, Thesaurus::ptr* = 0 ) const;
+
+  // inherited
+  void destroy() const;
+};
+
+void TestThesaurusProvider::destroy() const {
+  // do nothing
+}
+
+bool TestThesaurusProvider::getThesaurus( iso639_1::type lang,
+                                          Thesaurus::ptr *result ) const {
+  static TestThesaurus thesaurus;
+  if ( result )
+    result->reset( &thesaurus );
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 class TestThesaurusResolver : public URLResolver {
 public:
   TestThesaurusResolver( String const &uri ) : uri_( uri ) { }
@@ -112,9 +135,13 @@ private:
 };
 
 Resource*
-TestThesaurusResolver::resolveURL( String const &uri, EntityData const *ed ) {
-  static TestThesaurus thesaurus;
-  return uri == uri_ ? &thesaurus : 0;
+TestThesaurusResolver::resolveURL( String const &uri, EntityData const *data ) {
+  if ( data->getKind() == EntityData::THESAURUS ) {
+    static TestThesaurusProvider provider;
+    if ( uri == uri_ )
+      return &provider;
+  }
+  return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

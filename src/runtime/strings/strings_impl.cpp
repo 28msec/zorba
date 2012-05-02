@@ -810,7 +810,9 @@ bool NormalizeUnicodeIterator::nextImpl(
   zstring normForm;
   zstring resStr;
   unicode::normalization::type normType;
+#ifndef ZORBA_NO_ICU
   bool success;
+#endif /* ZORBA_NO_ICU */
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -860,10 +862,10 @@ bool NormalizeUnicodeIterator::nextImpl(
     }
 
     item0->getStringValue2(resStr);
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
     success = utf8::normalize(resStr, normType, &resStr);
     ZORBA_ASSERT(success);
-#endif//#ifndef ZORBA_NO_UNICODE
+#endif//#ifndef ZORBA_NO_ICU
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state );
   }
   else
@@ -992,7 +994,7 @@ bool TranslateIterator::nextImpl(
         trans_map[ *map_i ] = *trans_i;
 
       for ( ; map_i != map_end; ++map_i )
-        trans_map[ *map_i ] = ~0;
+        trans_map[ *map_i ] = static_cast<unicode::code_point>( ~0 );
     }
 
     utf8_string<zstring> u_result_string( result_string );
@@ -1007,7 +1009,7 @@ bool TranslateIterator::nextImpl(
       cp_map_type::const_iterator const found_i = trans_map.find( cp );
       if ( found_i != trans_map.end() ) {
         cp = found_i->second;
-        if ( cp == ~0 )
+        if ( cp == static_cast<unicode::code_point>( ~0 ) )
           continue;
       }
       u_result_string += cp;
@@ -1795,16 +1797,33 @@ static void copyUtf8Chars(const char *&sin,
                           int &utf8start,
                           unsigned int &bytestart,
                           int utf8end,
+                          unsigned int byteend,
                           zstring &out)
 {
+#ifndef ZORBA_NO_ICU
   utf8::size_type clen;
-  while(utf8start < utf8end)
+  if(utf8end)
   {
-    clen = utf8::char_length(*sin);
-    out.append(sin, clen);
-    utf8start++;
-    bytestart += clen;
-    sin += clen;
+    while(utf8start < utf8end)
+    {
+      clen = utf8::char_length(*sin);
+      if(clen == 0)
+        clen = 1;
+      out.append(sin, clen);
+      utf8start++;
+      bytestart += clen;
+      sin += clen;
+    }
+  }
+  else
+#endif
+  {
+    if(!utf8end)
+      utf8end = byteend;
+    out.append(sin, utf8end-bytestart);
+    sin += utf8end-bytestart;
+    utf8start = utf8end;
+    bytestart = utf8end;
   }
 }
 
@@ -1812,6 +1831,7 @@ static void addNonMatchElement(store::Item_t &parent,
                                int &match_end1,
                                unsigned int &match_end1_bytes,
                                int match_start2,
+                               unsigned int match_start2_bytes,
                                const char *&strin)
 {
   store::Item_t non_match_elem;
@@ -1820,7 +1840,7 @@ static void addNonMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
   GENV_ITEMFACTORY->createQName(non_match_element_name,
                                 static_context::W3C_FN_NS, "fn", "non-match");
   GENV_ITEMFACTORY->createElementNode(non_match_elem, parent, non_match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -1833,7 +1853,7 @@ static void addNonMatchElement(store::Item_t &parent,
   //  utf8_it++;
   //  match_end1++;
   //}
-  copyUtf8Chars(strin, match_end1, match_end1_bytes, match_start2, non_match_str);
+  copyUtf8Chars(strin, match_end1, match_end1_bytes, match_start2, match_start2_bytes, non_match_str);
   store::Item_t non_match_text_item;
   GENV_ITEMFACTORY->createTextNode(non_match_text_item, non_match_elem, non_match_str);
 }
@@ -1864,19 +1884,31 @@ static void addGroupElement(store::Item_t &parent,
       i--;
       break;
     }
+#ifndef ZORBA_NO_ICU
     match_startg = rx.get_match_start(i+1);
     if((match_startg < 0) && (gparent < 0))
       continue;
+#else
+    int temp_endg;
+    match_startg = -1;
+    temp_endg = -1;
+    if(!rx.get_match_start_end_bytes(i+1, &match_startg, &temp_endg) && (gparent < 0))
+      continue;
+#endif
     if(match_endgood < match_startg)
     {
       //add non-group match text
       zstring                non_group_str;
 
-      copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_startg, non_group_str);
+      copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_startg, 0, non_group_str);
       store::Item_t non_group_text_item;
       GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent.getp(), non_group_str);
     }
+#ifndef ZORBA_NO_ICU
     match_endg = rx.get_match_end(i+1);
+#else
+    match_endg = temp_endg;
+#endif
     //add group match text
     GENV_ITEMFACTORY->createQName(group_element_name,
                                   static_context::W3C_FN_NS, "fn", "group");
@@ -1907,7 +1939,7 @@ static void addGroupElement(store::Item_t &parent,
     }
     zstring                group_str;
 
-    copyUtf8Chars(sin, match_startg, match_end1_bytes, match_endg, group_str);
+    copyUtf8Chars(sin, match_startg, match_end1_bytes, match_endg, 0, group_str);
     store::Item_t group_text_item;
     GENV_ITEMFACTORY->createTextNode(group_text_item, group_elem.getp(), group_str);
   }
@@ -1916,7 +1948,7 @@ static void addGroupElement(store::Item_t &parent,
   {
     zstring                non_group_str;
 
-    copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_end2, non_group_str);
+    copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_end2, 0, non_group_str);
     store::Item_t non_group_text_item;
     GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent, non_group_str);
   }
@@ -1937,7 +1969,7 @@ static void addMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
   GENV_ITEMFACTORY->createQName(match_element_name,
                                 static_context::W3C_FN_NS, "fn", "match");
   store::Item_t match_elem;
@@ -2097,7 +2129,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     store::NsBindings   ns_binding;
     zstring baseURI;
     GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                  "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                  XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
     GENV_ITEMFACTORY->createQName(result_element_name,
                                   static_context::W3C_FN_NS, "fn", "analyze-string-result");
     GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -2144,8 +2176,14 @@ bool FnAnalyzeStringIterator::nextImpl(
       reachedEnd = false;
       while(rx.find_next_match(&reachedEnd))
       {
-        int    match_start2 = rx.get_match_start();
-        int    match_end2 = rx.get_match_end();
+        int    match_start2;
+        int    match_end2;
+#ifndef ZORBA_NO_ICU
+        match_start2 = rx.get_match_start();
+        match_end2 = rx.get_match_end();
+#else
+        rx.get_match_start_end_bytes(0, &match_start2, &match_end2);
+#endif
         ZORBA_ASSERT(match_start2 >= 0);
 
         if(is_input_stream && reachedEnd && !instream->eof())
@@ -2157,7 +2195,7 @@ bool FnAnalyzeStringIterator::nextImpl(
         //construct the fn:non-match
         if(match_start2 > match_end1)
         {
-          addNonMatchElement(result, match_end1, match_end1_bytes, match_start2, instr);
+          addNonMatchElement(result, match_end1, match_end1_bytes, match_start2, 0, instr);
         }
 
         //construct the fn:match
@@ -2165,7 +2203,7 @@ bool FnAnalyzeStringIterator::nextImpl(
         match_end1 = match_end2;
       }
 
-      if(is_input_stream && reachedEnd && !instream->eof())
+      if(is_input_stream && !instream->eof())
       {
         //load some more data, maybe the match will be different
         if(match_end1_bytes)
@@ -2213,7 +2251,7 @@ bool FnAnalyzeStringIterator::nextImpl(
       else
       {
         if(match_end1_bytes < streambuf_read)
-          addNonMatchElement(result, match_end1, match_end1_bytes, streambuf_read, instr);
+          addNonMatchElement(result, match_end1, match_end1_bytes, 0, streambuf_read, instr);
         if(is_input_stream && instream->eof())
           reachedEnd = true;
       }

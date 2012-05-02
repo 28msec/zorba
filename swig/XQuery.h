@@ -32,7 +32,6 @@ public:
   std::string printPlanAsDOT();
   void compile (const std::string &aQuery);
   void compile (const std::string &aQuery, StaticContext &aStaticContext);
-
 #ifdef SWIGPYTHON
   void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy);
 #endif
@@ -41,6 +40,7 @@ public:
   Iterator iterator();
   DynamicContext getDynamicContext();
   StaticContext getStaticContext();
+  StaticCollectionManager getStaticCollectionManager();
   void getExternalVariables(Iterator& vars) const;
 }; // class XQuery
 

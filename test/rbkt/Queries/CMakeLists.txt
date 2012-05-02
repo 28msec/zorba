@@ -54,6 +54,8 @@ IF(${cxqNO} STRGREATER "0")
 
   SET(PARAM 0)
 
+  LIST(SORT CHAINED_TESTFILES)
+
   # create a list with the folders containg *.cxq files
   FOREACH(CHAINED_TESTFILE ${CHAINED_TESTFILES})
     GET_FILENAME_COMPONENT(TF_PATH ${CHAINED_TESTFILE} PATH)
@@ -109,10 +111,15 @@ SET(FOUND_XQFTTS 0)
 # depend on module features into the modules themselves.
 
 
-# Check if WordNet thesaurus is installed in the location tests expect
-IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
+# Check if WordNet thesaurus is installed
+SET(WORDNET_THESAURUS_FILE 
+  "${CMAKE_BINARY_DIR}/LIB_PATH/edu/princeton/wordnet/wordnet-en.zth")
+IF(EXISTS "${WORDNET_THESAURUS_FILE}")
   SET(ZORBA_WORDNET_FOUND 1)
-ENDIF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
+  # Kind of a weird place to put this directive, but convenient
+  INSTALL(FILES "${WORDNET_THESAURUS_FILE}"
+    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet")
+ENDIF(EXISTS "${WORDNET_THESAURUS_FILE}")
 
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
@@ -273,6 +280,7 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-SCORE/score-queries-results-q1 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-SCORE/score-queries-results-q3 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-SCORE/score-queries-results-q3b 866923)
+  EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q1 987632)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q4 866926)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9 866926)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9b 866926)
@@ -341,6 +349,7 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q2b 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q3 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-unconstrained-q1h 866923)
+  EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q4 909375)
 
   #the bug #11950 is a W3C bug, http://www.w3.org/Bugs/Public/show_bug.cgi?id=11950
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-ACROSS/across-queries-results-q2 11950)
@@ -355,6 +364,7 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-SCORE/score-queries-results-q1 866923)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-SCORE/score-queries-results-q3 866923)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-SCORE/score-queries-results-q3b 866923)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q1 987632)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q4 866926)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9 866926)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9b 866926)
@@ -432,9 +442,9 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-STOP-WORD/stop-word-queries-results-q3 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.7-StopWordOption/ft-5.2.11-examples-q5 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.7-StopWordOption/ft-5.2.11-examples-q4 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q3 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q2 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q1 909375)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q2 909375)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q3 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/ftmatchoptions-q1 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/ftmatchoptions-q2 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-3.4.7-expressions-q5 909375)
@@ -450,8 +460,8 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-5.2.11-expressions-q6 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-5.2.11-expressions-q5 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q3 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q6 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q5 909375)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q6 909375)
 
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q3  909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q3b  909375)
@@ -476,11 +486,13 @@ ENDIF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 #  EXPECTED_FAILURE (test/rbkt/zorba/file/dirname_basename ????need bugnum???)
 #ENDIF ()
 
+# test that must fail to pass, to check testdriver BOM bug that gives false positives
+EXPECTED_FAILURE (test/rbkt/zorba/testdriver/bom_bug 3381121)
+
 # Bug 921624. If this test takes more than a couple seconds, it must be
 # hitting w3.org for the DTD, which is bad.
 SET_TESTS_PROPERTIES(test/rbkt/zorba/schemas/local-xhtml
   PROPERTIES TIMEOUT 5)
-
 
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
@@ -520,6 +532,21 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
+IF(NOT ZORBA_NO_ICU)
+  IF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err17 974477)
+  ENDIF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
+  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
+  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m40 866874)
+  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m41 866874)
+ENDIF(NOT ZORBA_NO_ICU)
+
+IF(ZORBA_NO_ICU)
+  SET_TESTS_PROPERTIES(
+                      test/rbkt/zorba/string/CodepointToStringFunc/UnicodeNormalization1
+                      PROPERTIES WILL_FAIL TRUE)
+ENDIF(ZORBA_NO_ICU)
+
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 

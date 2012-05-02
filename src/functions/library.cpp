@@ -57,6 +57,7 @@
 #include "functions/func_sequences.h"
 #include "functions/func_sequences_impl.h"
 #include "functions/func_strings.h"
+#include "functions/func_strings_impl.h"
 #include "functions/func_uris.h"
 #include "functions/func_json.h"
 #include "functions/func_var_decl.h"
@@ -67,6 +68,10 @@
 #include "functions/func_reflection.h"
 #include "functions/func_apply.h"
 #include "functions/func_fetch.h"
+#ifndef ZORBA_NO_FULL_TEXT
+#include "functions/func_ft_module.h"
+#include "runtime/full_text/ft_module_impl.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "functions/func_function_item_iter.h"
 
@@ -122,6 +127,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_schema(sctx);
   populate_context_sctx(sctx);
   populate_context_strings(sctx);
+  populate_context_strings_impl(sctx);
   populate_context_uris(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
@@ -142,6 +148,10 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_apply(sctx);
 
   populate_context_fetch(sctx);
+#ifndef ZORBA_NO_FULL_TEXT
+  populate_context_ft_module(sctx);
+  populate_context_ft_module_impl(sctx);
+#endif /* ZORBA_NO_FULL_TEXT */
 
   ar.set_loading_hardcoded_objects(false);
 }

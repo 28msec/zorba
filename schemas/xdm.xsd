@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ******************************************************
+  28msec schema for representing an XDM instance as XML.
+  ******************************************************
+-->
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.zorba-xquery.com/schemas/xdm"
+    xmlns:xdm="http://www.zorba-xquery.com/schemas/xdm"
+    elementFormDefault="qualified">
+
+  <!--
+    ****************
+    The root element
+    ****************
+  -->
+  <xs:element name="sequence-of-items" type="xdm:sequence-of-items-type"/>
+
+  <!--
+    ************************************************
+    Serialization of an atomic item (type specified)
+    ************************************************
+  -->
+  <xs:element name="atomic-value">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="type" type="xs:QName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <!--
+    **********************************************************************************
+    XDM-to-XML Proprietary serialization: the seven kinds of nodes and their accessors
+    For each node kind, the accessors that are always empty are ignored.
+    **********************************************************************************
+  -->
+  <xs:element name="document">
+    <xs:complexType>
+      <xs:sequence>
+        <!--
+          dm:children($n as node()) as node()*
+
+          The dm:children accessor returns the children of a node as a sequence containing
+          zero or more nodes.
+        -->
+        <xs:element name="children" type="xdm:children-sequence-type" minOccurs="0"/>
+      </xs:sequence>
+      <!--
+        dm:base-uri($n as node()) as xs:anyURI?
+        
+        The dm:base-uri accessor returns the base URI of a node as a sequence containing
+        zero or one URI reference. For more information about base URIs, see [XML Base].
+      -->
+      <xs:attribute name="base-uri" type="xs:anyURI"/>
+      <!--
+        dm:document-uri($node as node()) as xs:anyURI?
+        
+        The dm:document-uri accessor returns the absolute URI of the resource from which
+        the Document Node was constructed, if the absolute URI is available. If there is
+        no URI available, or if it cannot be made absolute when the Document Node is
+        constructed, or if it is used on a node other than a Document Node, the empty
+        sequence is returned.
+      -->
+      <xs:attribute name="document-uri" type="xs:anyURI"/>
+      <!--
+        dm:reference-uri($node as node()) as xs:anyURI?
+        
+        An additional, proprietary accessor reference-uri is used to store Sausalito's
+        UUID references.
+      -->
+      <xs:attribute name="reference-uri" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="element">
+    <xs:complexType>
+      <xs:sequence>
+        <!--
+          dm:attributes($n as node()) as attribute()*
+          
+          The dm:attributes accessor returns the attributes of a node as a sequence
+          containing zero or more Attribute Nodes. The order of Attribute Nodes is
+          stable but implementation dependent.
+        -->
+        <xs:element name="attributes" type="xdm:attributes-sequence-type" minOccurs="0"/>
+        <xs:element name="children" type="xdm:children-sequence-type" minOccurs="0"/>
+        <!--
+          dm:namespace-nodes($n as node()) as node()*
+          
+          The dm:namespace-nodes accessor returns the dynamic, in-scope namespaces associated
+          with a node as a sequence containing zero or more Namespace Nodes. The order of Namespace
+          Nodes is stable but implementation dependent.
+        -->
+        <xs:element name="namespace-nodes" type="xdm:namespaces-sequence-type" minOccurs="0"/>
+      </xs:sequence>
+      <!--
+        dm:node-name($n as node()) as xs:QName?
+        
+        The dm:node-name accessor returns the name of the node as a sequence of zero or one
+        xs:QNames. Note that the QName value includes an optional prefix as described in 3.3.3
+        QNames and NOTATIONS.
+      -->
+      <xs:attribute name="node-name" type="xs:QName" use="required"/>
+      <!--
+        dm:type-name($n as node()) as xs:QName?
+        
+        The dm:type-name accessor returns the name of the schema type of a node as a sequence of
+        zero or one xs:QNames.
+      -->
+      <xs:attribute name="type-name" type="xs:QName" use="required"/>
+      <!--
+        dm:is-id($node as node()) as xs:boolean?
+        
+        The dm:is-id accessor returns true if the node is an XML ID. Exactly what constitutes
+        an ID depends in part on how the data model was constructed, see 6.2 Element Nodes
+        and 6.3 Attribute Nodes.
+      -->
+      <xs:attribute name="is-id" type="xs:boolean" default="false"/>
+      <!--
+        dm:is-idrefs($node as node()) as xs:boolean?
+
+        The dm:is-idrefs accessor returns true if the node is an XML IDREF or IDREFS. Exactly
+        what constitutes an IDREF or IDREFS depends in part on how the data model was
+        constructed, see 6.2 Element Nodes and 6.3 Attribute Nodes.
+      -->
+      <xs:attribute name="is-idrefs" type="xs:boolean" default="false"/>
+      <!--
+        dm:nilled($n as node()) as xs:boolean?
+        
+        The dm:nilled accessor returns true if the node is "nilled". [Schema Part 1] introduced
+        the nilled mechanism to signal that an element should be accepted as valid when it has
+        no content even when it has a content type which does not require or even necessarily
+        allow empty content.
+      -->
+      <xs:attribute name="nilled" type="xs:boolean" default="false"/>
+      <xs:attribute name="reference-uri" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="attribute">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="node-name" type="xs:QName" use="required"/>
+          <xs:attribute name="type-name" type="xs:QName" use="required"/>
+          <xs:attribute name="is-id" type="xs:boolean" default="false"/>
+          <xs:attribute name="is-idrefs" type="xs:boolean" default="false"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="namespace">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="node-name" type="xs:QName" use="required"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="processing-instruction">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="node-name" type="xs:NCName" use="required"/>
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="comment">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="text">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="reference-uri" type="xs:anyURI"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+
+  <!--
+    *************************************************************************************
+    Types that are sequences of items (restricted on the kinds of nodes that are allowed)
+    *************************************************************************************
+  -->
+  <xs:complexType name="sequence-of-items-type">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="xdm:document"/>
+      <xs:element ref="xdm:element"/>
+      <xs:element ref="xdm:comment"/>
+      <xs:element ref="xdm:text"/>
+      <xs:element ref="xdm:processing-instruction"/>
+      <xs:element ref="xdm:attribute"/>
+      <xs:element ref="xdm:namespace"/>
+      <xs:element ref="xdm:atomic-value"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="attributes-sequence-type">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="xdm:attribute"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="children-sequence-type">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="xdm:element"/>
+      <xs:element ref="xdm:comment"/>
+      <xs:element ref="xdm:text"/>
+      <xs:element ref="xdm:processing-instruction"/>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="namespaces-sequence-type">
+    <xs:sequence>
+      <xs:element ref="xdm:namespace" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="children-or-attributes-sequence-type">
+    <xs:choice>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="xdm:element"/>
+        <xs:element ref="xdm:comment"/>
+        <xs:element ref="xdm:text"/>
+        <xs:element ref="xdm:processing-instruction"/>
+      </xs:choice>
+      <xs:element ref="xdm:attribute" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="zero-or-one-text-node-type">
+    <xs:sequence>
+      <xs:element ref="xdm:text" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="one-document-or-element-node-type">
+    <xs:choice>
+      <xs:element ref="xdm:document"/>
+      <xs:element ref="xdm:element"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="one-document-node-type">
+    <xs:choice>
+      <xs:element ref="xdm:document"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="nodes-sequence-no-namespaces-type">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="xdm:document"/>
+      <xs:element ref="xdm:element"/>
+      <xs:element ref="xdm:comment"/>
+      <xs:element ref="xdm:text"/>
+      <xs:element ref="xdm:processing-instruction"/>
+      <xs:element ref="xdm:attribute"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="one-node-no-namespace-type">
+    <xs:choice>
+      <xs:element ref="xdm:document"/>
+      <xs:element ref="xdm:element"/>
+      <xs:element ref="xdm:comment"/>
+      <xs:element ref="xdm:text"/>
+      <xs:element ref="xdm:processing-instruction"/>
+      <xs:element ref="xdm:attribute"/>
+    </xs:choice>
+  </xs:complexType>
+</xs:schema>

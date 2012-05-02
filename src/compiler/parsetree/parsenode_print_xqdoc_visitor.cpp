@@ -38,6 +38,8 @@
 #include "store/api/iterator.h"
 
 #include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
+
 
 using namespace std;
 
@@ -140,7 +142,10 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       store::Item_t lAttrValueItem;
       theFactory->createString(lAttrValueItem, lTmp);
 
-      store::Item_t lAttrNamespaceItem, lAttrLocalnameItem;
+      store::Item_t lAttrPrefixItem, lAttrNamespaceItem, lAttrLocalnameItem;
+
+      zstring lPrefix = lAnn->get_qname()->get_prefix();
+      theFactory->createString(lAttrPrefixItem, lPrefix);
 
       lTmp = lAnn->get_qname()->get_prefix();
       lTmp = theNamespaceMap[lTmp];
@@ -149,12 +154,19 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       lTmp = lAnn->get_qname()->get_localname();
       theFactory->createString(lAttrLocalnameItem, lTmp);
 
+      store::Item_t lPrefixQName;
+      theFactory->createQName(lPrefixQName, "", "", "prefix");
       store::Item_t lNamespaceQName;
       theFactory->createQName(lNamespaceQName, "", "", "namespace");
       store::Item_t lLocalnameQName;
       theFactory->createQName(lLocalnameQName, "", "", "localname");
       store::Item_t lValueQName;
       theFactory->createQName(lValueQName, "", "", "value");
+     
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lPrefixQName, lAnnotationElem, lPrefixQName,
+        lTypeName, lAttrPrefixItem);
      
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
@@ -489,10 +501,10 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theVersion("1.0"),
   theFactory(GENV_ITEMFACTORY)
 {
-  theNamespaceMap["fn"] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaceMap[""] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaceMap["xs"] = "http://www.w3.org/2001/XMLSchema";
-  theNamespaceMap["local"] = "http://www.w3.org/2005/xquery-local-functions";
+  theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
+  theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
+  theNamespaceMap[XML_SCHEMA_PREFIX] = XML_SCHEMA_NS;
+  theNamespaceMap["local"] = XQUERY_LOCAL_FN_NS;
 }
 
 

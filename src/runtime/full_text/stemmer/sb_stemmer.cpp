@@ -32,18 +32,21 @@ namespace internal {
 static bool is_lang_supported( iso639_1::type lang ) {
   using namespace iso639_1;
   switch ( lang ) {
-    case da:
-    case de:
-    case en:
-    case es:
-    case fi:
-    case hu:
-    case it:
-    case nl:
-    case no:
-    case pt:
-    case sv:
-    case ru:
+    case da:  // Danish
+    case de:  // German
+    case en:  // English
+    case es:  // Spanish
+    case fi:  // Finnish
+    case fr:  // French
+    case hu:  // Hungarian
+    case it:  // Italian
+    case nl:  // Dutch
+    case no:  // Norwegian
+    case pt:  // Portuguese
+    case ro:  // Romanian
+    case ru:  // Russian
+    case sv:  // Swedish
+    case tr:  // Turkish
       return true;
     default:
       return false;
@@ -70,7 +73,11 @@ void SnowballStemmer::destroy() const {
   // Do nothing since built-in stemmers are cached for re-use.
 }
 
-void SnowballStemmer::stem( zstring const &word, iso639_1::type lang,
+void SnowballStemmer::properties( Properties *p ) const {
+  p->uri = "http://www.zorba-xquery.com/full-text/stemmer/snowball";
+}
+
+void SnowballStemmer::stem( zstring const &word, iso639_1::type,
                             zstring *result ) const {
   //
   // We need a mutex since the libstemmer library is not thread-safe.

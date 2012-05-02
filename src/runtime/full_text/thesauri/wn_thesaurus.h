@@ -34,7 +34,7 @@ namespace wordnet {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %wordnet::thesaurus is an ft_thesaurus for Wordnet.
+ * A %wordnet::thesaurus is a Thesaurus for Wordnet.
  * See: http://wordnet.princeton.edu/
  */
 class thesaurus : public internal::Thesaurus {
@@ -44,7 +44,8 @@ public:
 
   // inherited
   void destroy() const;
-  iterator::ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
+  iterator::ptr lookup( zstring const&, zstring const&, level_type,
+                        level_type ) const;
 
 private:
   /**
@@ -86,7 +87,7 @@ private:
 
   private:
     iterator( thesaurus const&, char const *lemma, pointer::type,
-              ft_int at_least, ft_int at_most );
+              level_type at_least, level_type at_most );
     ~iterator();
 
     thesaurus const &thesaurus_;
@@ -97,8 +98,8 @@ private:
      */
     pointer::type query_ptr_type_;
   
-    ft_int const at_least_, at_most_;
-    ft_int level_;
+    level_type const at_least_, at_most_;
+    level_type level_;
   
     typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
     typedef std::deque<candidate_t> candidate_queue_t;
@@ -120,6 +121,29 @@ private:
   };
 
   friend class iterator;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A %wordnet::provider is a ThesaurusProvider for Wordnet.
+ */
+class provider : public internal::ThesaurusProvider {
+public:
+  /**
+   * Constructs a %provider.
+   *
+   * @param path The relative path of where the wordnet-LL.zth file is located
+   * (where LL is the ISO 639-1 language code of the language).
+   */
+  provider( zstring const &path );
+
+  // inherited
+  bool getThesaurus( locale::iso639_1::type,
+                     internal::Thesaurus::ptr* = nullptr ) const;
+
+private:
+  zstring const path_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -40,7 +40,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(FTContainsIterator,base_type);
   void serialize( serialization::Archiver& );
 
-  typedef std::list<PlanIter_t> sub_iter_list_t;
+  typedef std::vector<PlanIter_t> sub_iter_list_t;
 
   FTContainsIterator(
     static_context*,

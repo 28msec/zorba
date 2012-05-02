@@ -17,6 +17,7 @@
 
 
 #include "context/default_url_resolvers.h"
+#include "util/cxx_util.h"
 #include "util/uri_util.h"
 #include "util/http_util.h"
 #include "util/fs_util.h"
@@ -41,8 +42,15 @@ Resource*
 HTTPURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() == EntityData::COLLECTION)
-    return NULL;
+  switch ( aEntityData->getKind() ) {
+    case EntityData::COLLECTION:
+#ifndef ZORBA_NO_FULL_TEXT
+    case EntityData::THESAURUS:
+#endif /* ZORBA_NO_FULL_TEXT */
+      return nullptr;
+    default:
+      break;
+  }
 
   uri::scheme lScheme = uri::get_scheme(aUrl);
   switch (lScheme) {
@@ -82,8 +90,15 @@ Resource*
 FileURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() == EntityData::COLLECTION)
-    return NULL;
+  switch ( aEntityData->getKind() ) {
+    case EntityData::COLLECTION:
+#ifndef ZORBA_NO_FULL_TEXT
+    case EntityData::THESAURUS:
+#endif /* ZORBA_NO_FULL_TEXT */
+      return nullptr;
+    default:
+      break;
+  }
 
   uri::scheme lScheme = uri::get_scheme(aUrl);
   if (lScheme != uri::file) {
@@ -111,7 +126,6 @@ ZorbaCollectionURLResolver::resolveURL
 {
   if (aEntityData->getKind() != EntityData::COLLECTION)
     return NULL;
-
   store::Item_t lName;
   GENV_STORE.getItemFactory()->createQName(lName, aUrl.c_str(), "", "zorba-internal-name-for-w3c-collections");
   store::Collection_t lColl = GENV_STORE.getCollection(lName.getp(), true);
