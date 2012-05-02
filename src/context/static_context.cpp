@@ -1302,19 +1302,10 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
 ********************************************************************************/
 void static_context::clear_base_uri()
 {
-  if (theBaseUriInfo == NULL)
-  {
+  if (theBaseUriInfo)
+    delete theBaseUriInfo;
+
     theBaseUriInfo = new BaseUriInfo;
-  }
-
-  theBaseUriInfo->thePrologBaseUri = "";
-  theBaseUriInfo->theHavePrologBaseUri = false;
-
-  theBaseUriInfo->theApplicationBaseUri = "";
-  theBaseUriInfo->theHaveApplicationBaseUri = false;
-
-  theBaseUriInfo->theBaseUri = "";
-  theBaseUriInfo->theHaveBaseUri = false;
 }
 
 
