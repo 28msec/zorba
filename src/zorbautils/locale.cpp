@@ -70,7 +70,7 @@ inline int find_index( char const *const *begin, char const *const *end,
 static char* get_win32_locale_info( int constant ) {
   int bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, NULL, 0 );
   ZORBA_FATAL( bytes, "GetLocaleInfoA() failed" );
-  unique_ptr<char[]> info = new char[ bytes ];
+  unique_ptr<char[]> info (new char[ bytes ]);
   bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, info.get(), bytes );
   ZORBA_FATAL( bytes, "GetLocaleInfoA() failed" );
   return info.release();

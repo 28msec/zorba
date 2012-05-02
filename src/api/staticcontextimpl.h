@@ -143,6 +143,9 @@ public:
   getCopyNamespacesMode( preserve_mode_t& preserve,
                          inherit_mode_t& inherit ) const;
 
+  virtual void
+  clearBaseURI();
+
   virtual bool
   setBaseURI( const String& baseURI );
 

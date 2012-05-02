@@ -18,11 +18,12 @@
 #define ZORBA_COMPILER_DATAFLOW_ANNOTATIONS_H
 
 #include "compiler/expression/expr_classes.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
 
 namespace zorba 
 {
 
-class UDFCallChain;
+//class UDFCallChain;
 
 
 /*******************************************************************************

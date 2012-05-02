@@ -1265,8 +1265,7 @@ zstring static_context::get_base_uri() const
 
     sctx = sctx->theParent;
   }
-
-  ZORBA_ASSERT(false);
+  return "";  //undefined
 }
 
 
@@ -1296,6 +1295,26 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
   }
 
   compute_base_uri();
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::clear_base_uri()
+{
+  if (theBaseUriInfo == NULL)
+  {
+    theBaseUriInfo = new BaseUriInfo;
+  }
+
+  theBaseUriInfo->thePrologBaseUri = "";
+  theBaseUriInfo->theHavePrologBaseUri = false;
+
+  theBaseUriInfo->theApplicationBaseUri = "";
+  theBaseUriInfo->theHaveApplicationBaseUri = false;
+
+  theBaseUriInfo->theBaseUri = "";
+  theBaseUriInfo->theHaveBaseUri = false;
 }
 
 
@@ -1419,8 +1438,8 @@ void static_context::compute_base_uri()
     return;
   }
 
-  theBaseUriInfo->theBaseUri = get_implementation_baseuri();
-  theBaseUriInfo->theHaveBaseUri = true;
+  theBaseUriInfo->theBaseUri = "";
+  theBaseUriInfo->theHaveBaseUri = false;
   return;
 }
 

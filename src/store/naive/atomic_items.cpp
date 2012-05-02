@@ -3510,7 +3510,7 @@ void StreamableBase64BinaryItem::materialize() const
     {
       throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
     }
-    if (len == 0)
+    if (len == std::streampos(0))
     {
       return;
     }
