@@ -1187,7 +1187,7 @@ void PULImpl::mergeUpdates(store::Item* other)
     else
     {
       theCollectionPuls[otherIte->first] = otherIte->second;
-      otherIte->second->thePul = this;
+      otherIte->second->switchPul(this);
       otherIte->second = NULL;
       ++otherIte;
     }
