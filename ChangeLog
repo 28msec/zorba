@@ -22,6 +22,8 @@ New Features:
 Bug Fixes/Other Changes:
   * Fixed bugs #931501 and #866987 (improved error messages for fn:format-number(). Additionally, the function now throws the FODF1310 error instead of XTDE1310, as the 3.0 spec requires)
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
+  * Fixed memory leak in case of index truncation
+  * Fixed bug in mergeUpdates() method
   * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
   * Fixed bug #986075 (encountering flwor expr with no clauses; due to common subexression being formed when inlining var in if-then-else expression) 
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
