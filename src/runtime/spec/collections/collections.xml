@@ -1324,32 +1324,32 @@
 14.8.5 fn:uri-collection
 ********************************************************************************/
 -->
-  <zorba:iterator name="FnURICollectionIterator">
-    <zorba:description author="Zorba Team">
-      Returns a sequence of xs:anyURI values representing the document URIs of the 
-      documents in a collection.
-    </zorba:description>
+<zorba:iterator name="FnURICollectionIterator">
+  <zorba:description author="Zorba Team">
+    Returns a sequence of xs:anyURI values representing the document URIs of the 
+    documents in a collection.
+  </zorba:description>
 
-    <zorba:function>
+  <zorba:function>
 
-      <zorba:signature localname="uri-collection" prefix="fn" version="3.0">
-        <zorba:output>xs:anyURI*</zorba:output>
-      </zorba:signature>
+    <zorba:signature localname="uri-collection" prefix="fn" version="3.0">
+      <zorba:output>xs:anyURI*</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="uri-collection" prefix="fn" version="3.0">
-        <zorba:param>xs:string?</zorba:param>
-        <zorba:output>xs:anyURI*</zorba:output>
-      </zorba:signature>
-      
-    </zorba:function>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="theIterator"
-                    brief="the current iterator"/>
-      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
-                    brief="flag indicating whether theIterator was opened"/>
-    </zorba:state>
+    <zorba:signature localname="uri-collection" prefix="fn" version="3.0">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:anyURI*</zorba:output>
+    </zorba:signature>
     
-  </zorba:iterator>
+  </zorba:function>
+
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="theIterator"
+                  brief="the current iterator"/>
+    <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
+                  brief="flag indicating whether theIterator was opened"/>
+  </zorba:state>
+  
+</zorba:iterator>
 
 </zorba:iterators>

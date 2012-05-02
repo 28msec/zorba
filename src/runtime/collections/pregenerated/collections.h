@@ -1469,9 +1469,9 @@ public:
 
 /**
  * 
- *      Returns a sequence of xs:anyURI values representing the document URIs of the 
- *      documents in a collection.
- *    
+ *    Returns a sequence of xs:anyURI values representing the document URIs of the 
+ *    documents in a collection.
+ *  
  * Author: Zorba Team
  */
 class FnURICollectionIteratorState : public PlanIteratorState
