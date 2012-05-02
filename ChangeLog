@@ -17,6 +17,8 @@ Optimization:
 
 Bug Fixes/Other Changes:
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
+  * Fixed memory leak in case of index truncation
+  * Fixed bug in mergeUpdates() method
   * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
   * Fixed bug #986075 (encountering flwor expr with no clauses; due to common 
 	  subexression being formed when inlining var in if-then-else expression) 
