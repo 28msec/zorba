@@ -63,6 +63,7 @@ inline std::ostream& if_do_impl( std::ostream &o, bool expr,
   return o;
 }
 DEF_OMANIP2( if_do_impl, bool, std_omanip_type )
+// A macro with a !! is used to supporess a warning from MSVC++.
 #define if_do(EXPR,FN) if_do_impl( !!(EXPR), (FN) )
 
 #define if_indent(WS,FN) if_do( (WS) == whitespace::indent, FN )
@@ -73,6 +74,7 @@ inline std::ostream& if_emit_impl( std::ostream &o, bool expr, char c ) {
   return o;
 }
 DEF_OMANIP2( if_emit_impl, bool, char )
+// A macro with a !! is used to supporess a warning from MSVC++.
 #define if_emit(EXPR,C) if_emit_impl( !!(EXPR), (C) )
 
 ///////////////////////////////////////////////////////////////////////////////
