@@ -2293,9 +2293,7 @@ void static_context::bind_fn(
 
   if (!is_global_root_sctx() && lookup_local_fn(qname, arity) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0034, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (theFunctionMap == NULL)
