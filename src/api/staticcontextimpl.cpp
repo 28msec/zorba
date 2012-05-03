@@ -42,8 +42,8 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #ifndef ZORBA_NO_FULL_TEXT
-#include "context/stemmer_wrappers.h"
-#include "context/thesaurus_wrappers.h"
+#include "stemmer_wrappers.h"
+#include "thesaurus_wrappers.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 #include "uri_resolver_wrappers.h"
 
@@ -64,7 +64,6 @@
 
 
 namespace zorba {
-
 
 /*******************************************************************************
   Create a StaticContextImpl obj as well as an internal static_context obj S.
@@ -920,7 +919,7 @@ StaticContextImpl::getFunctionAnnotations(
 
   try
   {
-    for (unsigned int i = 0; i < ann_list->size(); i++)
+    for (csize i = 0; i < ann_list->size(); ++i)
       aAnnotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
@@ -938,7 +937,7 @@ StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
   {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
-  theCtx->set_context_item_type(xqType);
+  theCtx->set_context_item_type(xqType, QueryLoc::null);
 }
 
 

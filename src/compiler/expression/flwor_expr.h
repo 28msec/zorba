@@ -706,11 +706,9 @@ public:
 
   void add_where(expr_t e);
 
-  void remove_clause(ulong pos);
+  void remove_clause(csize pos);
 
-  const flwor_clause* operator[](int i) const { return theClauses[i].getp(); }
-
-  flwor_clause* get_clause(ulong i);
+  flwor_clause* get_clause(csize i) const;
 
   clause_list_t::const_iterator clause_begin() const { return theClauses.begin(); }
 

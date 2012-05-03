@@ -39,7 +39,7 @@ namespace zorba {
  * fn-zorba-xml:parse
  * Author: Zorba Team
  */
-class FnParseXmlFragmentIteratorState : public PlanIteratorState
+class FnZorbaParseXmlFragmentIteratorState : public PlanIteratorState
 {
 public:
   FragmentIStream theFragmentStream; //the input fragment
@@ -47,37 +47,37 @@ public:
   zstring baseUri; //
   zstring docUri; //
 
-  FnParseXmlFragmentIteratorState();
+  FnZorbaParseXmlFragmentIteratorState();
 
-  ~FnParseXmlFragmentIteratorState();
+  ~FnZorbaParseXmlFragmentIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class FnParseXmlFragmentIterator : public NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>
+class FnZorbaParseXmlFragmentIterator : public NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(FnParseXmlFragmentIterator);
+  SERIALIZABLE_CLASS(FnZorbaParseXmlFragmentIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseXmlFragmentIterator,
-    NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZorbaParseXmlFragmentIterator,
+    NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>*)this);
+    (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
   }
 
-  FnParseXmlFragmentIterator(
+  FnZorbaParseXmlFragmentIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~FnParseXmlFragmentIterator();
+  virtual ~FnZorbaParseXmlFragmentIterator();
 
   void accept(PlanIterVisitor& v) const;
 

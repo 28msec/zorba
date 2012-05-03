@@ -312,6 +312,15 @@ ValueHashIndex::ValueHashIndex()
 ********************************************************************************/
 ValueHashIndex::~ValueHashIndex()
 {
+  clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ValueHashIndex::clear()
+{
   IndexMap::iterator ite = theMap.begin();
   IndexMap::iterator end = theMap.end();
  
@@ -323,14 +332,7 @@ ValueHashIndex::~ValueHashIndex()
     delete (*ite).first;
     delete (*ite).second;
   }
-}
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void ValueHashIndex::clear()
-{
   theMap.clear();
 }
 
@@ -592,14 +594,7 @@ ValueTreeIndex::ValueTreeIndex()
 ********************************************************************************/
 ValueTreeIndex::~ValueTreeIndex()
 {
-  IndexMap::iterator ite = theMap.begin();
-  IndexMap::iterator end = theMap.end();
- 
-  for (; ite != end; ++ite)
-  {
-    delete (*ite).first;
-    delete (*ite).second;
-  }
+  clear();
 }
 
 
@@ -608,6 +603,15 @@ ValueTreeIndex::~ValueTreeIndex()
 ********************************************************************************/
 void ValueTreeIndex::clear()
 {
+  IndexMap::iterator ite = theMap.begin();
+  IndexMap::iterator end = theMap.end();
+ 
+  for (; ite != end; ++ite)
+  {
+    delete (*ite).first;
+    delete (*ite).second;
+  }
+
   theMap.clear();
 }
 

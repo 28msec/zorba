@@ -879,7 +879,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const flwor_clause* clause = (*flworExpr)[i];
+      const flwor_clause* clause = flworExpr->get_clause(i);
 
       switch (clause->get_kind())
       {

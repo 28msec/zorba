@@ -19,12 +19,16 @@
 class ItemSequence
 {
   friend class Collection;
+  friend class CollectionManager;
+  friend class StaticCollectionManager;
 private:
   zorba::ItemSequence_t theItemSequence;
+  ItemSequence() {}
 
 public:
   ItemSequence(const ItemSequence& aItemSequence) : theItemSequence(aItemSequence.theItemSequence) {}
   ItemSequence(zorba::ItemSequence_t aItemSequence) : theItemSequence(aItemSequence) {}
+  ItemSequence(const Item &aItem);
   Iterator getIterator();
 
 };

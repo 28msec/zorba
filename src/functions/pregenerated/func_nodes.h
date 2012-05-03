@@ -372,6 +372,21 @@ public:
 };
 
 
+//fn:path
+class fn_path_3_0 : public function
+{
+public:
+  fn_path_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

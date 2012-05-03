@@ -35,6 +35,8 @@
 #include "store/api/item_factory.h"
 //#include "store/api/tuples.h"
 
+#include "zorbamisc/ns_consts.h"
+
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/integer.h"
@@ -455,7 +457,7 @@ void operator&(Archiver& ar, store::Item*& obj)
         type = obj->getType();
         name_of_type = type->getLocalName();
         const zstring& ns =type->getNamespace();
-        is_qname = (name_of_type == "QName" && ns == "http://www.w3.org/2001/XMLSchema");
+        is_qname = (name_of_type == "QName" && ns == XML_SCHEMA_NS);
       }
 
       ar & is_qname;
@@ -484,7 +486,7 @@ void operator&(Archiver& ar, store::Item*& obj)
       }
       else if (!ar.is_serializing_out())
       {
-        GENV_ITEMFACTORY->createQName(type, "http://www.w3.org/2001/XMLSchema", "xs", "QName");
+        GENV_ITEMFACTORY->createQName(type, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "QName");
       }
 
       if(!ar.is_serializing_out())
@@ -982,7 +984,7 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       //  store::simplestore::ElementNode *elem_node = dynamic_cast<store::simplestore::ElementNode*>(obj);
       //  haveTypedValue = elem_node->haveTypedValue();
       //  haveEmptyValue = elem_node->haveEmptyValue();
-        if(!ZSTREQ(name_of_type->getNamespace(), "http://www.w3.org/2001/XMLSchema") ||
+        if(!ZSTREQ(name_of_type->getNamespace(), XML_SCHEMA_NS) ||
            !ZSTREQ(name_of_type->getLocalName(), "untyped"))
           haveTypedValue = true;
       }

@@ -68,6 +68,8 @@
 #include "functions/signature.h"
 #include "functions/udf.h"
 #include "functions/external_function.h"
+#include "functions/func_ft_module.h"
+#include "functions/func_ft_module_impl.h"
 
 #include "annotations/annotations.h"
 
@@ -83,6 +85,7 @@
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -105,7 +108,6 @@
 
 
 #define NODE_SORT_OPT
-
 
 namespace zorba
 {
@@ -692,6 +694,10 @@ TranslatorImpl(
   xquery_fns_def_dot.set(FunctionConsts::FN_DATA_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_DOCUMENT_URI_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_NODE_NAME_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_NILLED_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_HAS_CHILDREN_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_PATH_0);
+
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
@@ -859,7 +865,7 @@ ftnode* pop_ftstack(int count = 1)
 {
   ZORBA_ASSERT(count >= 0);
 
-  ftnode *n = NULL;
+  ftnode *n = nullptr;
   while ( count-- > 0 )
   {
     ZORBA_FATAL( !theFTNodeStack.empty(), "" );
@@ -2009,6 +2015,14 @@ void* import_schema(
 
     if (! pfx.empty())
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
+  }
+
+  zstring xsdTNS = zstring(XML_SCHEMA_NS);
+  if ( xsdTNS.compare(targetNS)==0 )
+  {
+    // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
+    // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
+    return no_state;
   }
 
   store::Item_t targetNSItem = NULL;
@@ -3286,6 +3300,41 @@ void* begin_visit(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
+#ifndef ZORBA_NO_FULL_TEXT
+        if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
+            (qnameItem->getLocalName() == "tokenizer-properties" ||
+             qnameItem->getLocalName() == "tokenize"))
+        {
+          FunctionConsts::FunctionKind kind;
+
+          if (qnameItem->getLocalName() == "tokenizer-properties")
+          {
+            assert(numParams <= 1);
+
+            if (numParams == 1)
+              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1;
+            else
+              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_0;
+
+            f = new full_text_tokenizer_properties(f->getSignature(), kind);
+          }
+          else 
+          {
+            assert(numParams == 1 || numParams == 2);
+
+            if (numParams == 2)
+              kind = FunctionConsts::FULL_TEXT_TOKENIZE_2;
+            else
+              kind = FunctionConsts::FULL_TEXT_TOKENIZE_1;
+
+            f = new full_text_tokenize(f->getSignature(), kind);
+          }
+
+          f->setStaticContext(theRootSctx);
+          bind_fn(f, numParams, loc);
+        }
+#endif /* ZORBA_NO_FULL_TEXT */
+
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset
 
@@ -3494,7 +3543,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
       for (csize i = 0; i < numParams; ++i)
       {
-        const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
+        const let_clause* lc = dynamic_cast<const let_clause*>(flwor->get_clause(i));
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
         ZORBA_ASSERT(argVar != NULL);
         args.push_back(argVar);
@@ -3935,7 +3984,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL)
   {
     type = pop_tstack();
-    theSctx->set_context_item_type(type);
+    theSctx->set_context_item_type(type, loc);
   }
   else
   {
@@ -7230,19 +7279,25 @@ void* begin_visit(const CatchExpr& v)
   GENV_ITEMFACTORY->createQName(lStackTrace, ZORBA_ERR_NS, "", "stack-trace");
 
   cc->add_var(catch_clause::err_code,
-      bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE) );
+      bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE));
+
   cc->add_var(catch_clause::err_desc,
-      bind_var(loc, lDesc.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+      bind_var(loc, lDesc.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_value,
-      bind_var(loc, lValue.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_STAR) );
+      bind_var(loc, lValue.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_STAR));
+
   cc->add_var(catch_clause::err_module,
-      bind_var(loc, lModule.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+      bind_var(loc, lModule.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_line_no,
-      bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+      bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_column_no,
-      bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+      bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
   cc->add_var(catch_clause::zerr_stack_trace,
-      bind_var(loc, lStackTrace.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION) );
+      bind_var(loc, lStackTrace.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION));
 
   tce->add_clause(cc);
 
@@ -8718,7 +8773,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // the preds that follow the axis step.
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
-  const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
+  const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
   rchandle<relpath_expr> predPathExpr = new relpath_expr(theRootSctx, loc);
   predPathExpr->add_back(new wrapper_expr(theRootSctx, loc, fcOuterDot->get_var()));
   predPathExpr->add_back(axisExpr.getp());
@@ -9891,7 +9946,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
 
-        const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
+        const for_clause* fc = static_cast<const for_clause*>(flworExpr->get_clause(0));
         expr* flworVarExpr = fc->get_var();
 
         fo_expr_t normExpr;
@@ -10630,7 +10685,7 @@ void end_visit(const InlineFunction& v, void* aState)
     // body, because optimization may remove clauses from the flwor expr
     for (ulong i = 0; i < flwor->num_clauses(); ++i)
     {
-      const flwor_clause* lClause = (*flwor)[i];
+      const flwor_clause* lClause = flwor->get_clause(i);
       const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
       ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
       var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
@@ -11732,7 +11787,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);  
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
@@ -12498,7 +12553,7 @@ void *begin_visit (const FTAnd& v)
 {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -12742,7 +12797,7 @@ void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
 void *begin_visit (const FTMildNot& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -12785,7 +12840,7 @@ void end_visit (const FTOptionDecl& v, void* /*visit_state*/) {
 void *begin_visit (const FTOr& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13044,7 +13099,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     levels = dynamic_cast<ftrange*>( pop_ftstack() );
     ZORBA_ASSERT( levels );
   } else
-    levels = NULL;
+    levels = nullptr;
 
   ftthesaurus_id *const tid = new ftthesaurus_id(
     loc, v.get_uri(), v.get_relationship(), levels
@@ -13056,7 +13111,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 void *begin_visit (const FTThesaurusOption& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13064,10 +13119,8 @@ void *begin_visit (const FTThesaurusOption& v) {
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftthesaurus_id *default_tid = NULL;
-  if ( v.includes_default() ) {
-    default_tid = new ftthesaurus_id( loc, "##default" );
-  }
+  ftthesaurus_id *const default_tid = v.includes_default() ?
+    new ftthesaurus_id( loc, "##default" ) : nullptr;
 
   ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {
