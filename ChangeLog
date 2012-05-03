@@ -29,6 +29,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
   * Fixed bug #891650 (context size var not always declared within path expr)
   * Fixed bug #948879 (--uri-path doesn't work with fetch:content())
+  * Fixed bug in MarkNodeCopyProps rule (static cast to replace_expr without chaing the expr kind first)  
   * Fixed bug in window iterator (binding the end vars in the output tuple stream)
   * Fixed bug #866547 (protect index-join rule from general flwor)
   * Fixed bug #867253 (cdml:delete-nodes should only remove root nodes)
