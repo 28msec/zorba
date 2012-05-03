@@ -457,7 +457,7 @@ XmlNode::XmlNode(
 #ifndef NDEBUG
 XmlNode::~XmlNode()
 {
-  NODE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
+  STORE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
 }
 #endif
 
@@ -1651,7 +1651,7 @@ DocumentNode::DocumentNode()
   :
   InternalNode(store::StoreConsts::documentNode)
 {
-  NODE_TRACE1("Loaded doc node " << this);
+  STORE_TRACE1("Loaded doc node " << this);
 }
 
 
@@ -1667,7 +1667,7 @@ DocumentNode::DocumentNode(
   theBaseUri(baseUri),
   theDocUri(docUri)
 {
-  NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
+  STORE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
               << " doc uri = " << docUri);
 }
@@ -1722,8 +1722,8 @@ XmlNode* DocumentNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("}");
-  NODE_TRACE1("Copied doc node " << this << " to node " << copyNode);
+  STORE_TRACE1("}");
+  STORE_TRACE1("Copied doc node " << this << " to node " << copyNode);
 
   return copyNode;
 }
@@ -1892,7 +1892,7 @@ ElementNode::ElementNode(
     theNodes.resize(numAttributes);
   }
 
-  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
+  STORE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
               << " num bindings = " << numBindings << " num attributes = "
               << numAttributes << std::endl);
 }
@@ -2018,7 +2018,7 @@ ElementNode::ElementNode(
     throw;
   }
 
-  NODE_TRACE1("Constructed element node " << this << " parent = "
+  STORE_TRACE1("Constructed element node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -2359,7 +2359,7 @@ XmlNode* ElementNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied elem node " << this << " to node " << copyNode
               << " name = " << theName->getStringValue() << " parent = "
               << (parent ? parent : 0x0)
               << " pos = " << pos << " copy mode = " << copymode.toString());
@@ -3327,7 +3327,7 @@ AttributeNode::AttributeNode(store::Item_t& attrName)
   if (qn->isBaseUri())
     theFlags |= IsBaseUri;
 
-  NODE_TRACE1("Loaded attr node " << this << " name = " << theName->getStringValue());
+  STORE_TRACE1("Loaded attr node " << this << " name = " << theName->getStringValue());
 }
 
 
@@ -3450,7 +3450,7 @@ AttributeNode::AttributeNode(
     throw;
   }
 
-  NODE_TRACE1("Constructed attribute node " << this << " parent = "
+  STORE_TRACE1("Constructed attribute node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -3533,7 +3533,7 @@ XmlNode* AttributeNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " copy mode = " << copymode.toString());
@@ -3789,7 +3789,7 @@ TextNode::TextNode(zstring& content)
 {
   setText(content);
 
-  NODE_TRACE1("Loaded text node " << this << " content = " << getText());
+  STORE_TRACE1("Loaded text node " << this << " content = " << getText());
 }
 
 
@@ -3834,13 +3834,13 @@ TextNode::TextNode(
   }
 
 #ifdef TEXT_ORDPATH
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " content = " << getText());
 #else
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " content = " << getText());
@@ -3895,12 +3895,12 @@ TextNode::TextNode(
   p->insertChild(this, p->numChildren());
 
 #ifdef TEXT_ORDPATH
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0)
               << " ordpath = " << theOrdPath.show()
               << " content = " << getValue()->getStringValue());
 #else
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0)
               << " content = " << getValue()->getStringValue());
 #endif
@@ -4012,7 +4012,7 @@ XmlNode* TextNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied text node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied text node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4497,7 +4497,7 @@ PiNode::PiNode(zstring& target, zstring& content)
 
   theName = qnpool.insert(zstring(), zstring(), theTarget);
 
-  NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget
+  STORE_TRACE1("Loaded pi node " << this << " target = " << theTarget
               << std::endl);
 }
 
@@ -4530,7 +4530,7 @@ PiNode::PiNode(
     parent->insertChild(this, pos);
   }
 
-  NODE_TRACE1("Constructed pi node " << this << " parent = "
+  STORE_TRACE1("Constructed pi node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " target = " << theTarget);
@@ -4579,7 +4579,7 @@ XmlNode* PiNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied pi node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied pi node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4637,7 +4637,7 @@ CommentNode::CommentNode(zstring& content)
 {
   theContent.take(content);
 
-  NODE_TRACE1("Loaded comment node " << this << " content = " << theContent);
+  STORE_TRACE1("Loaded comment node " << this << " content = " << theContent);
 }
 
 
@@ -4663,7 +4663,7 @@ CommentNode::CommentNode(
     parent->insertChild(this, pos);
   }
 
-  NODE_TRACE1("Constructed comment node " << this << " parent = "
+  STORE_TRACE1("Constructed comment node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " content = "
@@ -4710,7 +4710,7 @@ XmlNode* CommentNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied coment node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied coment node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
