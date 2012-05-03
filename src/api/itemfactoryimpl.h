@@ -222,6 +222,14 @@ namespace zorba {
                         bool aHasEmptyValue,
                         NsBindings aNsBindings);
 
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              Item aTypedValue);
+
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              std::vector<Item>& aTypedValue);
+
       virtual Item
       createAttributeNode(Item aParent,
         Item aNodeName,

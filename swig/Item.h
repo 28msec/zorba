@@ -27,6 +27,8 @@ class Item
   friend class ItemFactory;
   friend class Collection;
   friend class CollectionManager;
+  friend class StaticCollectionManager;
+  friend class ItemSequence;
 private:
   zorba::Item theItem;
 

@@ -25,7 +25,7 @@
 
 #include "runtime/base/binarybase.h" 
 
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 
 
 namespace zorba {
