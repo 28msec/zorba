@@ -770,7 +770,8 @@ void MarkNodeCopyProps::applyInternal(
 
     if (e->getSourceExpr() != NULL &&
         (e->get_expr_kind() == insert_expr_kind ||
-         static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE) &&
+         (e->get_expr_kind() == replace_expr_kind &&
+          static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE)) &&
         (sctx->inherit_mode() != StaticContextConsts::no_inherit_ns ||
          sctx->preserve_mode() != StaticContextConsts::no_preserve_ns))
     {
