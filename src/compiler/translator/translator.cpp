@@ -2840,7 +2840,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // importing module that X has been imported.
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
-    // hust a test, this will throw, if the access is denied
+    // just a test, this will throw, if the access is denied
     std::vector<zstring> candidateURIs;
     theRootSctx->get_candidate_uris(targetNS,
                                     internal::EntityData::MODULE,
