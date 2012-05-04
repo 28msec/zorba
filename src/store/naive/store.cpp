@@ -29,7 +29,6 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/pul.h"
-#include "store/api/xs_type_codes.h"
 
 #include "properties.h"
 #include "string_pool.h"
@@ -524,23 +523,24 @@ store::Index_t Store::createIndex(
 
 ********************************************************************************/
 void Store::populateValueIndex(
-    const store::Index_t& aIndex,
-    store::Iterator* aSourceIter,
-    ulong aNumColumns)
+    const store::Index_t& idx,
+    store::Iterator* sourceIter,
+    ulong numColumns)
 {
-  if (!aSourceIter)
+  if (!sourceIter)
     return;
 
   store::Item_t domainItem;
   store::IndexKey* key = NULL;
+  store::IndexKey* key2 = NULL;
 
-  ValueIndex* index = static_cast<ValueIndex*>(aIndex.getp());
+  ValueIndex* index = static_cast<ValueIndex*>(idx.getp());
 
-  aSourceIter->open();
+  sourceIter->open();
 
   try
   {
-    while (aSourceIter->next(domainItem))
+    while (sourceIter->next(domainItem))
     {
       if (domainItem->isNode() &&
           domainItem->getCollection() == NULL &&
@@ -550,12 +550,12 @@ void Store::populateValueIndex(
         ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
-      if (key == NULL)
-        key = new store::IndexKey(aNumColumns);
+      if (key2 == key)
+        key = new store::IndexKey(numColumns);
 
-      for (ulong i = 0; i < aNumColumns; ++i)
+      for (ulong i = 0; i < numColumns; ++i)
       {
-        if (!aSourceIter->next((*key)[i]))
+        if (!sourceIter->next((*key)[i]))
         {
           // The source iter is a ValueIndexEntryBuilderIterator, whose next()
           // method is guaranteed to return true exactly once. The result from
@@ -565,7 +565,8 @@ void Store::populateValueIndex(
         }
       }
 
-      index->insert(key, domainItem);
+      key2 = key;
+      index->insert(key2, domainItem);
     }
   }
   catch(...)
@@ -573,14 +574,11 @@ void Store::populateValueIndex(
     if (key != NULL)
       delete key;
 
-    aSourceIter->close();
+    sourceIter->close();
     throw;
   }
 
-  if (key != NULL)
-    delete key;
-
-  aSourceIter->close();
+  sourceIter->close();
 }
 
 

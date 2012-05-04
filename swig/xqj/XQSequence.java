@@ -33,6 +33,8 @@ import javax.xml.xquery.XQItemType;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.zorbaxquery.api.Item;
+import org.zorbaxquery.api.ItemSequence;
+import org.zorbaxquery.api.Iterator;
 
 public class XQSequence implements javax.xml.xquery.XQSequence {
 
@@ -40,8 +42,9 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     private boolean forwardOnly = true;
     private boolean currentItemGet = false;
     private Collection<XQItem> content = new ArrayList<XQItem>();
-    private int position = 0;
+    private int position = 1;
     int size = 0;
+    private ItemSequence itemSequence = null;
 
     public XQSequence(javax.xml.xquery.XQSequence sequence) throws XQException {
         try {
@@ -72,6 +75,43 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
         size = content.size();
     }
 
+    public XQSequence(org.zorbaxquery.api.Iterator iterator) {
+        if (iterator.isOpen()) {
+            org.zorbaxquery.api.Item item = new org.zorbaxquery.api.Item();
+            while (iterator.next(item)) {
+                XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
+                content.add(xItem);
+            }
+            size = content.size();
+        }
+    }
+
+    public XQSequence(org.zorbaxquery.api.Item item) {
+        XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
+        content.add(xItem);
+        size = content.size();
+    }
+
+    protected XQSequence(ItemSequence seq) {
+        itemSequence = seq;
+        org.zorbaxquery.api.Iterator iterator = seq.getIterator();
+        if (iterator.isOpen()) {
+            org.zorbaxquery.api.Item item = null;
+            while (iterator.next(item)) {
+                XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
+                content.add(xItem);
+            }
+            size = content.size();
+        }
+    }
+
+    protected ItemSequence getItemSequence() throws XQException {
+        if (itemSequence==null) {
+            throw new XQException("This Sequence doesn't come from Zorba ItemSequence object");
+        }
+        return itemSequence;
+    }
+    
     @Override
     public boolean absolute(int i) throws XQException {
         isClosedXQException();
@@ -112,6 +152,9 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
         closed = true;
         for (XQItem item: content) {
             item.close();
+        }
+        if (itemSequence!=null) {
+            itemSequence.delete();
         }
     }
 

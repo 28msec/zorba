@@ -258,7 +258,7 @@ declare %private function dmh:process-init($init as element(init))
  : @param $message the message.
  : @return ().
  :)
-declare function dmh:process($message as element())
+declare function dmh:process($message as element()) as xs:anyAtomicType*
 {
   let $nodeName := fn:local-name($message)
   let $id := fn:data($message/@transaction_id)
