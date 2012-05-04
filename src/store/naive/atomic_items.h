@@ -82,6 +82,8 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
+  virtual AnyUriTypeCode getAnyUriTypeCode() const;
+
   bool castToLong(store::Item_t& result) const;
 
   void coerceToDouble(store::Item_t& result, bool force, bool& lossy) const;

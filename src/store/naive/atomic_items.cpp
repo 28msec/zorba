@@ -73,6 +73,18 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 
 
 /*******************************************************************************
+
+********************************************************************************/
+AnyUriTypeCode AtomicItem::getAnyUriTypeCode() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+  );
+}
+
+
+/*******************************************************************************
   For numeric items or the untyped item: convert this item to a long item,
   if possible, i.e., if the conversion is going to be lossless.
 ********************************************************************************/
@@ -1287,7 +1299,7 @@ bool StructuralAnyUriItem::isAncestor(const store::Item_t& aOther) const
 {
   // Is the "other" an ancestor of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1312,7 +1324,7 @@ bool StructuralAnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
 {
   // Is the "other" a following sibling of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1339,7 +1351,7 @@ bool StructuralAnyUriItem::isFollowing(const store::Item_t& aOther) const
 {
   // Is the "other" a following node of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1364,7 +1376,7 @@ bool StructuralAnyUriItem::isDescendant(const store::Item_t& aOther) const
 {
   // Is the "other" a descendant of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1389,7 +1401,7 @@ bool StructuralAnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
 {
   // Is the "other" in the subtree rooted at "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1413,7 +1425,7 @@ bool StructuralAnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
 {
   // Is the "other" a preceding sibling of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1439,7 +1451,7 @@ bool StructuralAnyUriItem::isPreceding(const store::Item_t& aOther) const
 {
   // Is the "other" a preceding node of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1463,7 +1475,7 @@ bool StructuralAnyUriItem::isChild(const store::Item_t& aOther) const
 {
   // Is the "other" a child of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1488,7 +1500,7 @@ bool StructuralAnyUriItem::isAttribute(const store::Item_t& aOther) const
 {
   // Is the "other" an attribute of "this"?
 
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1535,7 +1547,7 @@ bool StructuralAnyUriItem::isParent(const store::Item_t& aOther) const
 
 bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
 {
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
@@ -1560,7 +1572,7 @@ bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOthe
 
 bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
 {
-  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+  AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
