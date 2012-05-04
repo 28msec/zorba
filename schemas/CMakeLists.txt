@@ -19,6 +19,18 @@ DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2001/xml.xsd" FILE xml.xsd)
 DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2010/xslt-xquery-serialization"
   FILE xslt-xquery-serialization.xsd)
 
+# XDM and PUL
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/schemas/pul"
+  FILE pul.xsd)
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/schemas/complete-pul"
+  FILE complete-pul.xsd)
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/schemas/xdm"
+  FILE xdm.xsd)
+
+# XQueryX
+DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2005/XQueryX"
+FILE XQueryX.xsd)
+
 # The following are DTDs, not schemas, but (currently at least) we
 # only ever load them when an imported schema file references them
 # (which, in turn, only happens in error cases - see bug 921624). So,

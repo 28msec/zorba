@@ -43,7 +43,7 @@ xquery version "3.0";
 module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 
@@ -80,7 +80,7 @@ declare option ver:module-version "2.0";
  :        the sequence type specified in the corresponding keyspec.
  :
  :)
-declare %ann:variadic function idml:probe-index-point-value(
+declare %an:variadic function idml:probe-index-point-value(
   $name as xs:QName, 
   $key_i as xs:anyAtomicType?) as node()*  external; 
 
@@ -187,7 +187,7 @@ declare function idml:probe-index-point-general(
  :        lower and upper bound, neither T1 is a subtype of T2 nor T2 is a 
  :        subtype of T1.   
  :)
-declare %ann:variadic function idml:probe-index-range-value(
+declare %an:variadic function idml:probe-index-range-value(
   $name                 as xs:QName, 
   $lowerBound-i         as xs:anyAtomicType?,
   $upperBound-i         as xs:anyAtomicType?,

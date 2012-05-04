@@ -29,44 +29,33 @@
 #ifdef WIN32
 #include <util/ascii_util.h>
 #endif
-#include <util/dir.h>
 
 #include "util/uri_util.h"
 #include "zorbaimpl.h"
 
 namespace zorba {
 
-DirectoryIteratorImpl::DirectoryIteratorImpl(std::string const& aPath)
+DirectoryIteratorImpl::DirectoryIteratorImpl(std::string const& aPath) :
+  theInternalDirIter( aPath.c_str() )
 {
-  theInternalDirIter = new dir_iterator(aPath);
-}
-
-DirectoryIteratorImpl::~DirectoryIteratorImpl()
-{
-  delete theInternalDirIter;
 }
 
 bool
 DirectoryIteratorImpl::next(std::string& aPathStr) const
 {
-  if (theInternalDirIter->end()) {
+  if (!theInternalDirIter.next()) {
     return false;
   }
 
   // get the current pointed entry
-  aPathStr = *(*theInternalDirIter);
-
-  // advance to the next entry
-  ++(*theInternalDirIter);
+  aPathStr = theInternalDirIter.entry_name();
 
   return true;
 }
 
 void DirectoryIteratorImpl::reset()
 {
-  std::string aPath = theInternalDirIter->dirpath;
-  delete theInternalDirIter;
-  theInternalDirIter = new dir_iterator(aPath);
+  theInternalDirIter.reset();
 }
 
 FileImpl::FileImpl(std::string const& path)

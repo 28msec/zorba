@@ -20,6 +20,7 @@
 #include <set>
 
 #include <zorba/locale.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "compiler/expression/ftnode.h"
 #include "zorbatypes/zstring.h"
@@ -27,26 +28,29 @@
 namespace zorba {
 
 /**
- * An %ft_stop_words_set is (as its name suggests) a set of stop-wors.
+ * An %ft_stop_words_set is (as its name suggests) a set of stop-words.
  */
 class ft_stop_words_set {
 public:
+  typedef std::unique_ptr<ft_stop_words_set const> ptr;
+
   ~ft_stop_words_set() {
     if ( delete_ )
       delete word_set_;
   }
 
   /**
-   * Constructs an %ft_stop_words_set.
+   * Constructs an %ft_stop_words_set for the given language.
    *
    * @param option The ftstop_word_option to use to possibly add or remove
    * stop-words.
    * @param lang The language of the stop-words.
-   * @return Returns a new %ft_stop_words_set.
+   * @return Returns a new %ft_stop_words_set or \c nullptr if stop-words for
+   * \a lang are unsupported.
    */
-  static ft_stop_words_set const* construct( ftstop_word_option const &option,
-                                             locale::iso639_1::type lang,
-                                             static_context const& sctx );
+  static ptr construct( ftstop_word_option const &option,
+                        locale::iso639_1::type lang,
+                        static_context const& sctx );
 
   /**
    * Checks whether this %ft_stop_words_set contains the given word.
@@ -60,22 +64,33 @@ public:
     return word_set_->find( word ) != word_set_->end();
   }
 
-private:
-  typedef std::set<zstring> set_t;
+  /**
+   * Gets the default %ft_stop_words_set.
+   *
+   * @param lang The language of the stop-words.
+   * @return Returns said default or \c nullptr if stop-words for \a lang are
+   * unsupported.
+   */
+  static ft_stop_words_set const* get_default( locale::iso639_1::type lang );
 
-  set_t const *const word_set_;
+private:
+  typedef std::set<zstring> word_set_t;
+
+  word_set_t const *const word_set_;
   bool const delete_;
 
-  ft_stop_words_set( set_t const *word_set, bool must_delete ) :
+  ft_stop_words_set( word_set_t const *word_set, bool must_delete ) :
     word_set_( word_set ), delete_( must_delete )
   {
   }
 
-  static void apply_word( zstring const&, set_t&, ft_stop_words_unex::type );
-  static void apply_word( char const*, char const*, set_t&,
+  static void apply_word( zstring const&, word_set_t&,
                           ft_stop_words_unex::type );
 
-  static set_t* get_default_word_set_for( locale::iso639_1::type );
+  static void apply_word( char const*, char const*, word_set_t&,
+                          ft_stop_words_unex::type );
+
+  static word_set_t* get_default_word_set_for( locale::iso639_1::type );
 
   // forbid these
   ft_stop_words_set( ft_stop_words_set const& );

@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/store_consts.h>
 #include <zorba/store_manager.h>
 #include <zorba/tokenizer.h>
 #include <zorba/user_exception.h>
@@ -59,14 +60,18 @@ template<> struct less<char const*> :
 
 class TestTokenizer : public Tokenizer {
 public:
-  TestTokenizer( Numbers &num ) : Tokenizer( num, trace_begin ) { }
+  TestTokenizer( Numbers &num ) : Tokenizer( num ) { }
   ~TestTokenizer();
 
   // inherited
   void destroy() const;
-  void element( Item const&, int );
-  void tokenize( char const*, size_type, iso639_1::type, bool, Callback&,
-                 void* );
+  void properties( Properties* ) const;
+  void tokenize_string( char const*, size_type, iso639_1::type, bool,
+                        Callback&, Item const* );
+
+protected:
+  // inherited
+  void item( Item const&, bool );
 
 private:
   typedef std::string token_t;
@@ -83,7 +88,8 @@ private:
   static bool is_word_begin_char( char );
   bool is_word_char( char );
   static char peek( char const *s, char const *end );
-  bool send_token( token_t const &token, Callback&, void* );
+  bool send_token( token_t const &token, iso639_1::type, Callback&,
+                   Item const* );
 };
 
 TestTokenizer::~TestTokenizer() {
@@ -95,10 +101,7 @@ void TestTokenizer::destroy() const {
   delete this;
 }
 
-void TestTokenizer::element( Item const &qname, int trace_options ) {
-  if ( trace_options & trace_end )
-    return;
-
+void TestTokenizer::item( Item const &item, bool entering ) {
   static char const *const block_elements[] = {
     "address",
     "blockquote",
@@ -116,10 +119,14 @@ void TestTokenizer::element( Item const &qname, int trace_options ) {
   static char const *const *const end =
     block_elements + sizeof( block_elements ) / sizeof( char* );
 
-  String const name( qname.getLocalName() );
-  if ( ::binary_search( block_elements, end, name.c_str(),
-                        less<char const*>() ) ) {
-    ++numbers().para;
+  if ( entering && item.isNode() &&
+       item.getNodeKind() == store::StoreConsts::elementNode ) {
+    Item qname;
+    item.getNodeName( qname );
+    if ( ::binary_search( block_elements, end, qname.getLocalName().c_str(),
+                          less<char const*>() ) ) {
+      ++numbers().para;
+    }
   }
 }
 
@@ -170,15 +177,24 @@ inline char TestTokenizer::peek( char const *s, char const *end ) {
   return ++s < end ? *s : '\0';
 }
 
+void TestTokenizer::properties( Properties *p ) const {
+  p->comments_separate_tokens = true;
+  p->elements_separate_tokens = true;
+  p->processing_instructions_separate_tokens = true;
+  p->languages.clear();
+  p->languages.push_back( iso639_1::en );
+  p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/unit-test";
+}
+
 #define HANDLE_BACKSLASH()            \
   if ( !got_backslash ) ; else {      \
     got_backslash = in_wild = false;  \
     break;                            \
   }
 
-void TestTokenizer::tokenize( char const *s, size_type s_len,
-                              iso639_1::type lang, bool wildcards,
-                              Callback &callback, void *payload ) {
+void TestTokenizer::tokenize_string( char const *s, size_type s_len,
+                                     iso639_1::type lang, bool wildcards,
+                                     Callback &callback, Item const *item ) {
   bool got_backslash = false;
   bool in_wild = false;
   token_t token;
@@ -247,7 +263,7 @@ void TestTokenizer::tokenize( char const *s, size_type s_len,
     } else {
       if ( is_word_char( *s ) )
         token += *s;
-      else if ( send_token( token, callback, payload ) ) {
+      else if ( send_token( token, lang, callback, item ) ) {
         token.clear();
         t_type_ = t_generic;
       }
@@ -279,7 +295,7 @@ void TestTokenizer::tokenize( char const *s, size_type s_len,
       }
   } // for
 
-  send_token( token, callback, payload );
+  send_token( token, lang, callback, item );
 }
 
 static char const *const tokens[] = {
@@ -304,8 +320,8 @@ static void check_token( char const *token, Tokenizer::size_type t_no ) {
 
 #define PRINT_TOKENS 0
 
-bool TestTokenizer::send_token( token_t const &token, Callback &callback,
-                                void *payload ) {
+bool TestTokenizer::send_token( token_t const &token, iso639_1::type lang,
+                                Callback &callback, Item const *item ) {
   if ( !token.empty() ) {
 #if PRINT_TOKENS
     cout <<   "t=" << setw(2) << numbers().token
@@ -316,9 +332,9 @@ bool TestTokenizer::send_token( token_t const &token, Callback &callback,
 
     check_token( token.c_str(), numbers().token );
 
-    callback(
-      token.data(), token.size(),
-      numbers().token, numbers().sent, numbers().para, payload
+    callback.token(
+      token.data(), token.size(), lang,
+      numbers().token, numbers().sent, numbers().para, item
     );
     ++numbers().token;
     return true;
@@ -331,13 +347,16 @@ bool TestTokenizer::send_token( token_t const &token, Callback &callback,
 class TestTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  Tokenizer::ptr getTokenizer( iso639_1::type, Tokenizer::Numbers& ) const;
+  bool getTokenizer( iso639_1::type, Tokenizer::Numbers* = 0,
+                     Tokenizer::ptr* = 0 ) const;
 };
 
-Tokenizer::ptr
-TestTokenizerProvider::getTokenizer( iso639_1::type lang,
-                                     Tokenizer::Numbers &num ) const {
-  return Tokenizer::ptr( new TestTokenizer( num ) );
+bool TestTokenizerProvider::getTokenizer( iso639_1::type lang,
+                                          Tokenizer::Numbers *num,
+                                          Tokenizer::ptr *t ) const {
+  if ( num && t )
+    t->reset( new TestTokenizer( *num ) );
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

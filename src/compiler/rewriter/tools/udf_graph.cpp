@@ -39,6 +39,7 @@
 #include "util/indent.h"
 
 #include "diagnostics/util_macros.h"
+#include "diagnostics/xquery_exception.h"
 
 
 namespace zorba

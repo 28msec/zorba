@@ -43,10 +43,9 @@
 
   </zorba:iterator>
 
-
 <!--
 /*******************************************************************************
- * 14.9.2 fn:serialize
+ * 14.9.3 fn:serialize
 ********************************************************************************/
 -->
   <zorba:iterator name="FnSerializeIterator">
@@ -79,5 +78,6 @@
     </zorba:method>
 
   </zorba:iterator>
-  
+
+
 </zorba:iterators>

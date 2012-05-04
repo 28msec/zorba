@@ -35,8 +35,10 @@
 #include <zorbatypes/zstring.h>
 
 #include "zorbatypes/datetime/parse.h"
+
 #include "util/ascii_util.h"
-#include "zorbaserialization/template_serializer.h"
+
+#include "zorbaserialization/serialize_template_types.h"
 
 
 
@@ -44,7 +46,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(DateTime)
-END_SERIALIZABLE_CLASS_VERSIONS(DateTime)
 
   
 static const char separators[] = { '-', '-', 'T', ':', ':', '.'};

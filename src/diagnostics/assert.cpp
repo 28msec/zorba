@@ -59,10 +59,16 @@ static void print_stack_trace( ostream &o ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void assertion_failed( char const *condition, char const *file, int line ) {
+void assertion_failed( char const *condition, 
+                       char const *file, 
+                       int line,
+                       char const *msg) {
   print_stack_trace( cerr );
   throw make_zorba_exception(
-    file, line, zerr::ZXQP0002_ASSERT_FAILED, ERROR_PARAMS( condition )
+    file, 
+    line, 
+    zerr::ZXQP0002_ASSERT_FAILED, 
+    ( msg ? ERROR_PARAMS( condition, msg ) : ERROR_PARAMS( condition ) )
   );
 }
 

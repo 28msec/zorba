@@ -133,7 +133,7 @@ bool SimpleTempSeq::empty()
 ********************************************************************************/
 xs_integer SimpleTempSeq::getSize() const
 {
-  return theItems.size();
+  return xs_integer( theItems.size() );
 }
 
 

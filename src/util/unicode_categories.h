@@ -22,46 +22,53 @@
 namespace zorba {
 namespace unicode {
 
-//Unicode codepoint categories, as from http://www.fileformat.info/info/unicode/category/index.htm
+///////////////////////////////////////////////////////////////////////////////
 
-enum UnicodeCategoriesEnum {
-UNICODE_Cc, //Other, Control
-UNICODE_Cf, //Other, Format
-UNICODE_Co, //Other, Private Use
-UNICODE_Cs, //Other, Surrogate
-UNICODE_Ll, //Letter, Lowercase
-UNICODE_Lm, //Letter, Modifier
-UNICODE_Lo, //Letter, Other
-UNICODE_Lt, //Letter, Titlecase
-UNICODE_Lu, //Letter, Uppercase
-UNICODE_Mc, //Mark, Spacing Combining
-UNICODE_Me, //Mark, Enclosing
-UNICODE_Mn, //Mark, Nonspacing
-UNICODE_Nd, //Number, Decimal Digit
-UNICODE_Nl, //Number, Letter
-UNICODE_No, //Number, Other
-UNICODE_Pc, //Punctuation, Connector
-UNICODE_Pd, //Punctuation, Dash
-UNICODE_Pe, //Punctuation, Close
-UNICODE_Pf, //Punctuation, Final quote (may behave like Ps or Pe depending on usage)
-UNICODE_Pi, //Punctuation, Initial quote (may behave like Ps or Pe depending on usage)
-UNICODE_Po, //Punctuation, Other
-UNICODE_Ps, //Punctuation, Open
-UNICODE_Sc, //Symbol, Currency
-UNICODE_Sk, //Symbol, Modifier
-UNICODE_Sm, //Symbol, Math
-UNICODE_So, //Symbol, Other
-UNICODE_Zl, //Separator, Line
-UNICODE_Zp, //Separator, Paragraph
-UNICODE_Zs  //Separator, Space
+/**
+ * Unicode codepoint categories.
+ * See: http://www.fileformat.info/info/unicode/category/
+ */
+enum category {
+  UNICODE_Cn, // Not Assigned
+  UNICODE_Cc, // Other, Control
+  UNICODE_Cf, // Other, Format
+  UNICODE_Co, // Other, Private Use
+  UNICODE_Cs, // Other, Surrogate
+  UNICODE_Ll, // Letter, Lowercase
+  UNICODE_Lm, // Letter, Modifier
+  UNICODE_Lo, // Letter, Other
+  UNICODE_Lt, // Letter, Titlecase
+  UNICODE_Lu, // Letter, Uppercase
+  UNICODE_Mc, // Mark, Spacing Combining
+  UNICODE_Me, // Mark, Enclosing
+  UNICODE_Mn, // Mark, Nonspacing
+  UNICODE_Nd, // Number, Decimal Digit
+  UNICODE_Nl, // Number, Letter
+  UNICODE_No, // Number, Other
+  UNICODE_Pc, // Punctuation, Connector
+  UNICODE_Pd, // Punctuation, Dash
+  UNICODE_Pe, // Punctuation, Close
+  UNICODE_Pf, // Punctuation, Final quote (like Ps or Pe depending on usage)
+  UNICODE_Pi, // Punctuation, Initial quote (like Ps or Pe depending on usage)
+  UNICODE_Po, // Punctuation, Other
+  UNICODE_Ps, // Punctuation, Open
+  UNICODE_Sc, // Symbol, Currency
+  UNICODE_Sk, // Symbol, Modifier
+  UNICODE_Sm, // Symbol, Math
+  UNICODE_So, // Symbol, Other
+  UNICODE_Zl, // Separator, Line
+  UNICODE_Zp, // Separator, Paragraph
+  UNICODE_Zs  // Separator, Space
 };
 
 bool is_UnicodeNd(code_point cp, code_point *ret_zero);
 
-bool check_codepoint_category(code_point cp, UnicodeCategoriesEnum categ);
+bool check_codepoint_category(code_point cp, category categ);
 
-}
-}
+///////////////////////////////////////////////////////////////////////////////
 
-#endif
+} // namespace unicode
+} // namespaec zorba
+
+#endif /* ZORBA_UNICODE_CATEGORIES */
 /* vim:set et sw=2 ts=2: */

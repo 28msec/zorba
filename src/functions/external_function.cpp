@@ -22,12 +22,14 @@
 
 #include "diagnostics/util_macros.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(external_function)
-END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 
 
 /*******************************************************************************
@@ -43,12 +45,12 @@ external_function::external_function(
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
-  theModuleSctx(modSctx),
   theNamespace(ns),
   theScriptingKind(scriptingType),
   theImpl(impl)
 {
   resetFlag(FunctionConsts::isBuiltin);
+  theModuleSctx = modSctx;
 }
 
 
@@ -60,7 +62,6 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
   zorba::serialization::serialize_baseclass(ar, (function*)this);
 
   ar & theLoc;
-  ar & theModuleSctx;
   ar & theNamespace;
   ar & theScriptingKind;
 

@@ -100,7 +100,6 @@ static void tokenize(
   }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //  Default emitter                                                           //
@@ -180,7 +179,6 @@ int serializer::emitter::emit_expanded_string(
   for (; chars < chars_end; chars++ )
   {
 
-#ifndef ZORBA_NO_UNICODE
     // the input string is UTF-8
     int char_length = utf8::char_length(*chars);
     if (char_length == 0)
@@ -195,7 +193,7 @@ int serializer::emitter::emit_expanded_string(
       unicode::code_point cp = utf8::next_char(temp);
 
       // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
-      if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
+      if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == PARAMETER_VALUE_VERSION_1_0 && !xml::is_valid(cp))
         throw XQUERY_EXCEPTION( err::FOCH0001, ERROR_PARAMS( cp ) );
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
@@ -217,11 +215,10 @@ int serializer::emitter::emit_expanded_string(
 
       continue;
     }
-#endif//ZORBA_NO_UNICODE
 
     // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
     if (ser && ser->method == PARAMETER_VALUE_XML &&
-        ser->version == "1.0" && !xml::is_valid(static_cast<unsigned>(*chars)))
+        ser->version == PARAMETER_VALUE_VERSION_1_0 && !xml::is_valid(static_cast<unsigned>(*chars)))
       throw XQUERY_EXCEPTION(
         err::XQST0090,
         ERROR_PARAMS( static_cast<unsigned>( *chars ), xml::v1_0 )
@@ -332,14 +329,12 @@ void serializer::emitter::emit_declaration()
     {
       tr << (char)0xEF << (char)0xBB << (char)0xBF;
     }
-#ifndef ZORBA_NO_UNICODE
     else if (ser->encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
       tr.verbatim((char)0xFF);
       tr.verbatim((char)0xFE);
     }
-#endif
   }
 }
 
@@ -435,7 +430,7 @@ void serializer::emitter::emit_item(store::Item* item)
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(err::SENR0001, 
+    throw XQUERY_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
   }
   else
@@ -862,13 +857,17 @@ void serializer::xml_emitter::emit_declaration()
   emitter::emit_declaration();
 
   if (ser->omit_xml_declaration == PARAMETER_VALUE_NO) {
-    tr << "<?xml version=\"" << ser->version << "\" encoding=\"";
-    if (ser->encoding == PARAMETER_VALUE_UTF_8) {
-      tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
-    } else if (ser->encoding == PARAMETER_VALUE_UTF_16) {
-      tr << "UTF-16";
-#endif
+    tr << "<?xml version=\"" << ser->version_string;
+    switch (ser->encoding) {
+      case PARAMETER_VALUE_UTF_8:
+      case PARAMETER_VALUE_UTF_16:
+        tr << "\" encoding=\"";
+        switch (ser->encoding) {
+          case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
+          case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
+          default                    : ZORBA_ASSERT(false);
+        }
+        break;
     }
     tr << "\"";
 
@@ -1174,14 +1173,18 @@ void serializer::html_emitter::emit_node(
       }
 
       tr << "<meta http-equiv=\"content-type\" content=\""
-         << ser->media_type << "; charset=";
-
-      if (ser->encoding == PARAMETER_VALUE_UTF_8)
-        tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
-      else if (ser->encoding == PARAMETER_VALUE_UTF_16)
-        tr << "UTF-16";
-#endif
+         << ser->media_type;
+      switch (ser->encoding) {
+        case PARAMETER_VALUE_UTF_8:
+        case PARAMETER_VALUE_UTF_16:
+          tr << "\" charset=\"";
+          switch (ser->encoding) {
+            case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
+            case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
+            default                    : ZORBA_ASSERT(false);
+          }
+          break;
+      }
       tr << "\"";
       // closed_parent_tag = 1;
     }
@@ -1214,7 +1217,7 @@ void serializer::html_emitter::emit_node(
         // an element written as <br/> or <br></br> in an XSLT stylesheet MUST
         // be output as <br>.
         if (is_html_empty_content_model_element(item) &&
-            ztd::equals(ser->version, "4.0", 3))
+            ser->version == PARAMETER_VALUE_VERSION_4_0)
           tr << ">";
         else
           tr << "/>";
@@ -1371,14 +1374,18 @@ void serializer::xhtml_emitter::emit_node(
         }
 
         tr << "<meta http-equiv=\"content-type\" content=\""
-           << ser->media_type << "; charset=";
-
-        if (ser->encoding == PARAMETER_VALUE_UTF_8)
-          tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
-        else if (ser->encoding == PARAMETER_VALUE_UTF_16)
-          tr << "UTF-16";
-#endif
+           << ser->media_type;
+        switch (ser->encoding) {
+          case PARAMETER_VALUE_UTF_8:
+          case PARAMETER_VALUE_UTF_16:
+            tr << "\" charset=\"";
+            switch (ser->encoding) {
+              case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
+              case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
+              default                    : ZORBA_ASSERT(false);
+            }
+            break;
+        }
         tr << "\"/";
         //closed_parent_tag = 1;
       }
@@ -1996,7 +2003,8 @@ void serializer::reset()
 
   undeclare_prefixes = PARAMETER_VALUE_NO;
 
-  version = "1.0";
+  version = PARAMETER_VALUE_VERSION_1_0;
+  version_string = "1.0";
   version_has_default_value = true;
 
   indent = PARAMETER_VALUE_NO;
@@ -2098,10 +2106,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     if (!strcmp(aValue, "UTF-8"))
       encoding = PARAMETER_VALUE_UTF_8;
-#ifndef ZORBA_NO_UNICODE
     else if (!strcmp(aValue, "UTF-16"))
       encoding = PARAMETER_VALUE_UTF_16;
-#endif
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
@@ -2113,8 +2119,18 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else if (!strcmp(aName, "version"))
   {
-    version = aValue;
+    version_string = aValue;
     version_has_default_value = false;
+    if (version_string == "1.0")
+      version = PARAMETER_VALUE_VERSION_1_0;
+    else if (version_string == "1.1")
+      version = PARAMETER_VALUE_VERSION_1_1;
+    else if (version_string == "4.0")
+      version = PARAMETER_VALUE_VERSION_4_0;
+    else if (version_string == "4.01")
+      version = PARAMETER_VALUE_VERSION_4_01;
+    else
+      version = PARAMETER_VALUE_VERSION_OTHER;
   }
   else if (!strcmp(aName, "doctype-system"))
   {
@@ -2150,51 +2166,52 @@ short int serializer::getSerializationMethod() const
 void
 serializer::validate_parameters(void)
 {
-  if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML) 
+  if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML)
   {
     // XML-only validation
-    if (method == PARAMETER_VALUE_XML) 
+    if (method == PARAMETER_VALUE_XML)
     {
-      if (version != "1.0" && version != "1.1")
+      if (version != PARAMETER_VALUE_VERSION_1_0 && version != PARAMETER_VALUE_VERSION_1_1)
         throw XQUERY_EXCEPTION(
           err::SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
         );
     }
 
     // XHTML-only validation
-    if (method == PARAMETER_VALUE_XHTML) 
+    if (method == PARAMETER_VALUE_XHTML)
     {
     }
 
     // XML and XHTML validation
 
-    if (omit_xml_declaration == PARAMETER_VALUE_YES) 
+    if (omit_xml_declaration == PARAMETER_VALUE_YES)
     {
       if (standalone != PARAMETER_VALUE_OMIT)
         throw XQUERY_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
         );
-      if (version != "1.0" && !doctype_system.empty())
+      if (version != PARAMETER_VALUE_VERSION_1_0 && !doctype_system.empty())
         throw XQUERY_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_Not10 ) )
         );
     }
 
-    if (undeclare_prefixes == PARAMETER_VALUE_YES && version == "1.0")
+    if (undeclare_prefixes == PARAMETER_VALUE_YES && version == PARAMETER_VALUE_VERSION_1_0)
       throw XQUERY_EXCEPTION( err::SEPM0010 );
   }
 
-  if (method == PARAMETER_VALUE_HTML) 
+  if (method == PARAMETER_VALUE_HTML)
   {
     // Default value for "version" when method is HTML is "4.0"
-    if (version_has_default_value) 
+    if (version_has_default_value)
     {
-      version = "4.0";
+      version = PARAMETER_VALUE_VERSION_4_0;
+      version_string = "4.0";
     }
-    else if (!(ztd::equals(version, "4.0", 3) || ztd::equals(version, "4.01", 4))) 
+    else if (version != PARAMETER_VALUE_VERSION_4_0 && version != PARAMETER_VALUE_VERSION_4_01)
     {
       throw XQUERY_EXCEPTION(
-        err::SESU0013, ERROR_PARAMS( version, "HTML", "\"4.0\", \"4.01\"" )
+        err::SESU0013, ERROR_PARAMS( version_string, "HTML", "\"4.0\", \"4.01\"" )
       );
     }
   }
@@ -2210,16 +2227,13 @@ bool serializer::setup(std::ostream& os)
   {
     tr = new transcoder(os, false);
   }
-#ifndef ZORBA_NO_UNICODE
   else if (encoding == PARAMETER_VALUE_UTF_16)
   {
     tr = new transcoder(os, true);
   }
-#endif
   else
   {
-    ZORBA_ASSERT(0);
-    return false;
+    ZORBA_ASSERT(false);
   }
 
   if (method == PARAMETER_VALUE_XML)
@@ -2275,13 +2289,13 @@ serializer::serialize(
 
   validate_parameters();
 
-  if (!setup(aOStream)) 
+  if (!setup(aOStream))
   {
     return;
   }
 
   // in case we use SAX event notifications
-  if (aHandler) 
+  if (aHandler)
   {
     // only allow XML-based methods for SAX notifications
     if (method != PARAMETER_VALUE_XML &&
@@ -2300,10 +2314,10 @@ serializer::serialize(
 
   store::Item_t lItem;
   //+  aObject->open();
-  while (aObject->next(lItem)) 
+  while (aObject->next(lItem))
   {
     // PUL's cannot be serialized
-    if (lItem->isPul()) 
+    if (lItem->isPul())
     {
       throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
@@ -2326,7 +2340,7 @@ void serializer::serialize(
 {
   validate_parameters();
 
-  if (!setup(stream)) 
+  if (!setup(stream))
   {
     return;
   }
@@ -2335,27 +2349,27 @@ void serializer::serialize(
 
   store::Item_t lItem;
   //object->open();
-  while (object->next(lItem)) 
+  while (object->next(lItem))
   {
     Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-    if (lSerParams) 
+    if (lSerParams)
     {
       SerializerImpl::setSerializationParameters(*this, *lSerParams);
-      if (!setup(stream)) 
+      if (!setup(stream))
       {
         return;
       }
     }
 
     // PUL's cannot be serialized
-    if (lItem->isPul()) 
+    if (lItem->isPul())
     {
       throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
   }
- 
+
   //object->close();
   e->emit_declaration_end();
 }

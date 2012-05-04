@@ -18,7 +18,7 @@
 #define ZORBA_DYNAMIC_LOADER_H
 
 #include "common/common.h"
-#include <set>
+#include <map>
 #include "common/shared_types.h"
 
 namespace zorba {
@@ -40,15 +40,20 @@ private:
 
   ~DynamicLoader();
 
-  ExternalModule* loadModule(const zstring& aFile) const;
 
 #ifdef WIN32
-  typedef std::set<HMODULE> LibrarySet_t;
+  typedef HMODULE handle_t;
 #else
-  typedef std::set<void*> LibrarySet_t;
+  typedef void *  handle_t;
 #endif
 
-  mutable LibrarySet_t theLibraries;
+  ExternalModule* loadModule(const zstring& aFile) const;
+  ExternalModule* createModule(handle_t handle, const zstring& aFile) const;
+
+
+  typedef std::map<const zstring, handle_t> LibraryMap_t;
+
+  mutable LibraryMap_t theLibraries;
 };
 
 } /* namespace zorba */

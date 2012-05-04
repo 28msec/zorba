@@ -19,49 +19,47 @@
 
 #include "zorbaserialization/archiver.h"
 #include "zorbatypes/rchandle.h"
-namespace zorba{
-  namespace serialization{
+
+namespace zorba
+{
+namespace serialization
+{
+
 
 class MemArchiver : public Archiver
 {
-  archive_field *current_field;
-  bool  is_after_last;
-  archive_field   temp_field;
+  archive_field  * current_field;
+  bool             is_after_last;
+  archive_field    temp_field;
+
 public:
-  MemArchiver(bool is_serializing_out, bool internal_archive=false) : 
-        Archiver(is_serializing_out, internal_archive) , temp_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0)
+  MemArchiver(bool is_serializing_out, bool internal_archive=false)
+    : 
+    Archiver(is_serializing_out, internal_archive) ,
+    temp_field("", false, false, NULL, NULL, ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0)
   {
     current_field = NULL;
     is_after_last = false;
   }
 
-  virtual bool read_next_field_impl( char **type, 
-                                std::string *value,
-                                int *id, 
-                                int *version, 
-                                bool *is_simple, 
-                                bool *is_class,
-                                enum ArchiveFieldKind *field_treat,
-                                int *referencing);
+  virtual bool read_next_field_impl( 
+      char** type, 
+      std::string* value,
+      int* id, 
+      bool* is_simple, 
+      bool* is_class,
+      enum ArchiveFieldKind* field_treat,
+      int* referencing);
 
   virtual void read_end_current_level_impl();
 
-
-///////////////////////////////////
   virtual void serialize_out() {}
 
-public:
   void reset_serialize_in();
-
 };
 
-/*
-class RCClassSerializer : public SimpleRCObject, public ClassSerializer
-{
-};
-extern rchandle<RCClassSerializer>  g_rc_class_serializer;
-*/
 
-}}
+}
+}
 #endif
 /* vim:set et sw=2 ts=2: */

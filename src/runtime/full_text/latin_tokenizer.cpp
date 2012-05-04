@@ -18,8 +18,9 @@
 #include <functional>
 
 #include <zorba/diagnostic_list.h>
-#include <zorba/xquery_exception.h>
-#include <zorba/zorba.h>
+
+#include "diagnostics/dict.h"
+#include "diagnostics/xquery_exception.h"
 
 #include "latin_tokenizer.h"
 
@@ -81,15 +82,26 @@ inline char LatinTokenizer::peek( char const *s, char const *end ) {
   return ++s < end ? *s : '\0';
 }
 
+void LatinTokenizer::properties( Properties *p ) const {
+  p->comments_separate_tokens = true;
+  p->elements_separate_tokens = true;
+  p->processing_instructions_separate_tokens = true;
+
+  p->languages.clear();
+  p->languages.push_back( iso639_1::en );
+
+  p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/latin";
+}
+
 #define HANDLE_BACKSLASH()            \
   if ( !got_backslash ) ; else {      \
     got_backslash = in_wild = false;  \
     break;                            \
   }
 
-void LatinTokenizer::tokenize( char const *s, size_type s_len,
-                                 iso639_1::type lang, bool wildcards,
-                                 Callback &callback, void *payload ) {
+void LatinTokenizer::tokenize_string( char const *s, size_type s_len,
+                                      iso639_1::type lang, bool wildcards,
+                                      Callback &callback, Item const *item ) {
   bool got_backslash = false;
   bool in_wild = false;
   string_type token;
@@ -166,7 +178,7 @@ void LatinTokenizer::tokenize( char const *s, size_type s_len,
     } else {
       if ( is_word_char( *s ) )
         token += *s;
-      else if ( send_token( token, callback, payload ) ) {
+      else if ( send_token( token, lang, callback, item ) ) {
         token.clear();
         t_type_ = t_generic;
       }
@@ -202,13 +214,13 @@ void LatinTokenizer::tokenize( char const *s, size_type s_len,
       }
   } // for
 
-  send_token( token, callback, payload );
+  send_token( token, lang, callback, item );
 }
 
 #define PRINT_TOKENS 0
 
-bool LatinTokenizer::send_token( string_type const &token,
-                                   Callback &callback, void *payload ) {
+bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
+                                 Callback &callback, Item const *item ) {
   if ( !token.empty() ) {
 #if PRINT_TOKENS
     cout <<   "t=" << setw(2) << numbers().token
@@ -218,8 +230,8 @@ bool LatinTokenizer::send_token( string_type const &token,
 #endif /* PRINT_TOKENS */
 
     callback(
-      token.data(), token.size(),
-      numbers().token, numbers().sent, numbers().para, payload
+      token.data(), token.size(), lang,
+      numbers().token, numbers().sent, numbers().para, item
     );
     ++numbers().token;
     return true;
@@ -229,10 +241,17 @@ bool LatinTokenizer::send_token( string_type const &token,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Tokenizer::ptr
-LatinTokenizerProvider::getTokenizer( iso639_1::type lang,
-                                      Tokenizer::Numbers &num ) const {
-  return Tokenizer::ptr( new LatinTokenizer( num ) );
+bool LatinTokenizerProvider::getTokenizer( iso639_1::type lang,
+                                           Tokenizer::Numbers *num,
+                                           Tokenizer::ptr *t ) const {
+  switch ( lang ) {
+    case iso639_1::en:
+      if ( num && t )
+        t->reset( new LatinTokenizer( *num ) );
+      return true;
+    default:
+      return false;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

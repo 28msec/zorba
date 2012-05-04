@@ -17,6 +17,7 @@
 #ifndef ZORBA_ICU_STREAMBUF_H
 #define ZORBA_ICU_STREAMBUF_H
 
+#include <unicode/ucnv.h>
 #include <zorba/transcode_stream.h>
 
 #include "util/utf8_util.h"
@@ -50,6 +51,7 @@ namespace zorba {
  *      os.ios::rdbuf( xbuf.original() );
  *      throw;
  *    }
+ *    os.ios::rdbuf( xbuf.original() );
  *  }
  * \endcode
  *

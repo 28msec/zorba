@@ -27,7 +27,6 @@
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
-#include "zorbatypes/numconversions.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"
@@ -75,15 +74,6 @@ static void replace_match_options( ftmatch_options const &older,
 
 inline double to_double( xs_double const &d ) {
   return d.getNumber();
-}
-
-inline ft_int to_ft_int( xs_integer const &i ) {
-  try {
-    return to_xs_unsignedInt( i );
-  }
-  catch ( std::range_error const& ) {
-    throw XQUERY_EXCEPTION( err::FOCA0003, ERROR_PARAMS( i.toString() ) );
-  }
 }
 
 ////////// PUSH/POP ///////////////////////////////////////////////////////////
