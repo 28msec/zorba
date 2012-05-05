@@ -51,6 +51,7 @@ namespace zorba {
  *      os.ios::rdbuf( xbuf.original() );
  *      throw;
  *    }
+ *    os.ios::rdbuf( xbuf.original() );
  *  }
  * \endcode
  *

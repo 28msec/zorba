@@ -20,7 +20,7 @@
 #ifndef NDEBUG
 #include <iostream>
 #endif /* NDEBUG */
-#include <list>
+#include <vector>
 
 #include "zorbatypes/ft_token.h"
 
@@ -51,7 +51,7 @@ struct ft_token_span {
 /**
  * An %ft_token_spans contains zero or more ft_token_span objects.
  */
-typedef std::list<ft_token_span> ft_token_spans;
+typedef std::vector<ft_token_span> ft_token_spans;
 
 ////////// Comparison operators ///////////////////////////////////////////////
 

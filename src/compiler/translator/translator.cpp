@@ -68,6 +68,8 @@
 #include "functions/signature.h"
 #include "functions/udf.h"
 #include "functions/external_function.h"
+#include "functions/func_ft_module.h"
+#include "functions/func_ft_module_impl.h"
 
 #include "annotations/annotations.h"
 
@@ -83,6 +85,7 @@
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -105,7 +108,6 @@
 
 
 #define NODE_SORT_OPT
-#define XS_URI "http://www.w3.org/2001/XMLSchema"
 
 namespace zorba
 {
@@ -692,6 +694,10 @@ TranslatorImpl(
   xquery_fns_def_dot.set(FunctionConsts::FN_DATA_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_DOCUMENT_URI_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_NODE_NAME_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_NILLED_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_HAS_CHILDREN_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_PATH_0);
+
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
@@ -859,7 +865,7 @@ ftnode* pop_ftstack(int count = 1)
 {
   ZORBA_ASSERT(count >= 0);
 
-  ftnode *n = NULL;
+  ftnode *n = nullptr;
   while ( count-- > 0 )
   {
     ZORBA_FATAL( !theFTNodeStack.empty(), "" );
@@ -2011,7 +2017,7 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
-  zstring xsdTNS = zstring(XS_URI);
+  zstring xsdTNS = zstring(XML_SCHEMA_NS);
   if ( xsdTNS.compare(targetNS)==0 )
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
@@ -3273,6 +3279,11 @@ void* begin_visit(const VFO_DeclList& v)
 
       if (f.getp() != 0)
       {
+        if (f->isUdf())
+        {
+          RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
+
         // We make sure that the types of the parameters and the return type
         // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
@@ -3293,6 +3304,41 @@ void* begin_visit(const VFO_DeclList& v)
                                     '}',
                                     qnameItem->getLocalName())));
         }
+
+#ifndef ZORBA_NO_FULL_TEXT
+        if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
+            (qnameItem->getLocalName() == "tokenizer-properties" ||
+             qnameItem->getLocalName() == "tokenize"))
+        {
+          FunctionConsts::FunctionKind kind;
+
+          if (qnameItem->getLocalName() == "tokenizer-properties")
+          {
+            assert(numParams <= 1);
+
+            if (numParams == 1)
+              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1;
+            else
+              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_0;
+
+            f = new full_text_tokenizer_properties(f->getSignature(), kind);
+          }
+          else 
+          {
+            assert(numParams == 1 || numParams == 2);
+
+            if (numParams == 2)
+              kind = FunctionConsts::FULL_TEXT_TOKENIZE_2;
+            else
+              kind = FunctionConsts::FULL_TEXT_TOKENIZE_1;
+
+            f = new full_text_tokenize(f->getSignature(), kind);
+          }
+
+          f->setStaticContext(theRootSctx);
+          bind_fn(f, numParams, loc);
+        }
+#endif /* ZORBA_NO_FULL_TEXT */
 
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset
@@ -11746,7 +11792,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);  
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
@@ -12512,7 +12558,7 @@ void *begin_visit (const FTAnd& v)
 {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -12756,7 +12802,7 @@ void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
 void *begin_visit (const FTMildNot& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -12799,7 +12845,7 @@ void end_visit (const FTOptionDecl& v, void* /*visit_state*/) {
 void *begin_visit (const FTOr& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13058,7 +13104,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     levels = dynamic_cast<ftrange*>( pop_ftstack() );
     ZORBA_ASSERT( levels );
   } else
-    levels = NULL;
+    levels = nullptr;
 
   ftthesaurus_id *const tid = new ftthesaurus_id(
     loc, v.get_uri(), v.get_relationship(), levels
@@ -13070,7 +13116,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 void *begin_visit (const FTThesaurusOption& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13078,10 +13124,8 @@ void *begin_visit (const FTThesaurusOption& v) {
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftthesaurus_id *default_tid = NULL;
-  if ( v.includes_default() ) {
-    default_tid = new ftthesaurus_id( loc, "##default" );
-  }
+  ftthesaurus_id *const default_tid = v.includes_default() ?
+    new ftthesaurus_id( loc, "##default" ) : nullptr;
 
   ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {

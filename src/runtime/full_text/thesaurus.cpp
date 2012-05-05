@@ -31,6 +31,7 @@
 #include "thesaurus.h"
 #ifdef ZORBA_WITH_FILE_ACCESS
 # include "thesauri/wn_thesaurus.h"
+# include "zorbatypes/URI.h"
 #endif
 #include "thesauri/xqftts_thesaurus.h"
 
@@ -57,7 +58,8 @@ namespace thesaurus_impl {
   type const DEFAULT = wordnet;
 
   /**
-   * Given a thesaurus implementation name, finds its corresponding type.
+   * Given a thesaurus implementation name (as identified by the URI scheme),
+   * finds its corresponding type.
    *
    * @param name The thesaurus implementation's name.
    * @return Returns the implementation's type or \c unknown.
@@ -66,7 +68,6 @@ namespace thesaurus_impl {
     typedef map<char const*,type> impl_map_t;
     static impl_map_t impl_map;
     if ( impl_map.empty() ) {
-      impl_map[ "default" ] = DEFAULT;
       impl_map[ "wordnet" ] = wordnet;
       impl_map[ "xqftts"  ] = xqftts;
     }
@@ -75,28 +76,6 @@ namespace thesaurus_impl {
   }
 
 } // namespace thesaurus_impl
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * Parses a thesaurus mapping string.  A mapping string is of the form:
- *
- *  [implementation_name|]URI
- *
- * @param mapping The mapping to parse.
- * @param t A pointer to receive the implementation type.
- * @param uri A pointer to the string to receive the URI.
- */
-static void parse_mapping( zstring const &mapping, thesaurus_impl::type *t,
-                           zstring *uri ) {
-  zstring impl_name;
-  if ( zorba::ztd::split( mapping, '|', &impl_name, uri ) ) {
-    *t = thesaurus_impl::find( impl_name );
-  } else {
-    *t = thesaurus_impl::DEFAULT;
-    *uri = mapping;
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -112,36 +91,41 @@ Thesaurus::~Thesaurus() {
 
 Resource*
 ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
+  // Only resolve thesaurus URLs
   if ( data->getKind() != internal::EntityData::THESAURUS )
     return nullptr;
-  ThesaurusEntityData const *const t_data =
-    dynamic_cast<ThesaurusEntityData const*>( data );
-  iso639_1::type const lang = t_data->getLanguage();
 
-  thesaurus_impl::type t_impl;
-  zstring mapped_url;
-  parse_mapping( url, &t_impl, &mapped_url );
+  zstring const url_copy(
+    url == "##default" ? "wordnet://wordnet.princeton.edu/": url
+  );
 
-  zstring t_path;
-  switch ( uri::get_scheme( mapped_url ) ) {
-    case uri::file:
-    case uri::none:
-      t_path = fs::get_normalized_path( mapped_url );
-      break;
-    default:
-      throw XQUERY_EXCEPTION(
-        zerr::ZXQP0004_NOT_IMPLEMENTED,
-        ERROR_PARAMS( ZED( NonFileThesaurusURI ) )
-      );
-  }
+  zstring scheme_name;
+  if ( !uri::get_scheme( url_copy, &scheme_name ) )
+    return nullptr;
 
-  switch ( t_impl ) {
+  switch ( thesaurus_impl::find( scheme_name ) ) {
+    case thesaurus_impl::xqftts: {
+      //
+      // Currently, we presume that an "xqftts:" URL should be used exactly
+      // like a "file:" URL.
+      //
+      zstring t_uri( url_copy );
+      t_uri.replace( 0, 6, "file" );    // xqftts -> file
+      zstring const t_path( fs::get_normalized_path( t_uri ) );
+      return new xqftts::provider( t_path );
+    }
 #   ifdef ZORBA_WITH_FILE_ACCESS
-    case thesaurus_impl::wordnet:
-      return new wordnet::thesaurus( t_path, lang );
+    case thesaurus_impl::wordnet: {
+      //
+      // Wordnet, on the other hand, needs to find its data file in Zorba's
+      // library path using the mangled form of the original URI.  So, mangle
+      // here for convenience.
+      //
+      URI const t_uri( url_copy );
+      zstring const t_path( t_uri.toPathNotation() );
+      return new wordnet::provider( t_path );
+    }
 #   endif /* ZORBA_WITH_FILE_ACCESS */
-    case thesaurus_impl::xqftts:
-      return new xqftts::thesaurus( t_path, lang );
     default:
       throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( url ) );
   }

@@ -44,16 +44,16 @@ won't work on a computer having a big-endian CPU.
 To download and install the WordNet database on a Unix-like system,
 follow these steps:
 
-  -# Download the WordNet database from
-     <a href="http://wordnet.princeton.edu/wordnet/download/">here</a>.
-     All you really need are just the database files
-     (<code>WNdb-3.0.tar.gz</code>).
-  -# Un-gzip and untar the files.
-     This will result in a directory dict containing the database files.
-  -# Move the dict directory somewhere of your choosing,
-     e.g., <code>/usr/local/wordnet-3.0/dict</code>.
-  -# Compile the \c dict directory into a Zorba-compatible binary thesaurus
-     as described below.
+-# Download the WordNet database from
+   <a href="http://wordnet.princeton.edu/wordnet/download/">here</a>.
+   All you really need are just the database files
+   (<code>WNdb-3.0.tar.gz</code>).
+-# Un-gzip and untar the files.
+   This will result in a directory dict containing the database files.
+-# Move the dict directory somewhere of your choosing,
+   e.g., <code>/usr/local/wordnet-3.0/dict</code>.
+-# Compile the \c dict directory into a Zorba-compatible binary thesaurus
+   as described below.
 
 To compile the WordNet database files,
 use the \c zt-wn-compile script
@@ -65,12 +65,12 @@ The usage message is:
 zt-wn-compile [-v] wordnet_dict_dir [thesaurus_file]
 \endcode
 
-  - The \c -v option specifies verbose output.
-  - The \e wordnet_dict_dir specifies the full path
-    of the WordNet \c dict directory.
-  - The \e thesaurus_file specifies the name of the resulting binary file.
-    If none is given, it defaults to \c wordnet-en.zth
-    ("en" for English and "zth" for "Zorba Thesaurus file").
+- The \c -v option specifies verbose output.
+- The \e wordnet_dict_dir specifies the full path
+  of the WordNet \c dict directory.
+- The \e thesaurus_file specifies the name of the resulting binary file.
+  If none is given, it defaults to \c wordnet-en.zth
+  ("en" for English and "zth" for "Zorba Thesaurus file").
 
 For example:
 
@@ -78,33 +78,39 @@ For example:
 zt-wn-compile -v /usr/local/wordnet-3.0/dict
 \endcode
 
-Move the \c wordnet-en.zth file to a location of your choosing.
+To install the \c wordnet-en.zth file,
+move it onto Zorba's <i>library path</i>:
+
+\code
+LIB_PATH/edu/princeton/wordnet/wordnet-en.zth
+\endcode
 
 \subsection ft_thesaurus_precompiled Downloading a Precompiled WordNet Database
 
 Alternatively,
-you can download a precompiled WordNet database from
+you can download a precompiled, little-endian (Intel) CPU WordNet database from
 <a href="http://www.zorba-xquery.com/downloads/WordNet-3.0/wordnet-en.zip">here</a>.
 
 \section ft_thesaurus_mappings Thesauri Mappings
 
 In order to use thesauri,
-you need to specify where they are to the Zorba engine
-via one or more thesaurus <i>mappings</i>.
-A <i>mapping</i> maps a symbolic URI to URI for an actual thesaurus.
+you need to specify what symbolic URI(s) <i>map</i>
+to what thesauri.
 A mapping is of the form:
 
-<i>from_uri</i><code>:=</code><b>[</b><i>implementation</i><code>|</code><b>]</b><i>to_uri</i>
+<i>from_uri</i><code>:=</code><i>implementation-scheme</i><code>:</code><i>to_uri</i>
 
 For example:
 
 \code
-http://wordnet.princeton.edu:=wordnet|/usr/local/zorba/thesauri/wordnet-en.zth
+http://wordnet.princeton.edu:=wordnet://wordnet.princeton.edu
 \endcode
 
 says that the symbolic URI \c http://wordnet.princeton.edu
 maps to the WordNet implementation
-having a database file at the given path.
+having a database file at the given sub-path
+\c edu/princeton/wordnet
+on Zorba's library path.
 Once a mapping is established for a symbolic URI,
 it can be used in a query:
 
@@ -114,13 +120,8 @@ return $x contains text "wealthy"
   using thesaurus at "http://wordnet.princeton.edu"
 \endcode
 
-If the \e implementation is omitted,
-it defaults to \c wordnet.
 As a special-case,
-the \e from_uri can be \c default or 
-\code 
-##default
-\endcode
+the \e from_uri can be \c default or \c ##default
 to allow for specifying the default thesaurus
 as was done for the first example on this page.
 
@@ -130,7 +131,7 @@ To specify the location of the thesaurus to Zorba from the command-line,
 use one or more –thesaurus options:
 
 \code
-zorba --thesaurus default:=/usr/local/zorba/thesauri/wordnet-en.zth ...
+zorba --thesaurus default:=wordnet://wordnet.princeton.edu ...
 \endcode
 
 \section ft_thesaurus_rels Thesaurus Relationships
@@ -423,25 +424,26 @@ These relationships are:
 
 If no levels are specified in a query,
 Zorba defaults the WordNet implementation to be 2 levels.
-The rationale can be found
-<a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444">here</a>.
+(The rationale can be found
+<a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444">here</a>.)
 
 \section ft_thesaurus_providing Providing Your Own Thesaurus
 
 Using the Zorba C++ API,
 you can provide your own thesaurus
-by deriving from three classes:
+by deriving from four classes:
 \c Thesaurus,
 \c Thesaurus::iterator,
+\c ThesaurusProvider,
 and
-\c ThesaurusProvider.
+\c URLResolver.
 
 \subsection ft_class_thesaurus The Thesaurus Class
 
 The \c Thesaurus class is:
 
 \code
-class Thesaurus : public Resource {
+class Thesaurus {
 public:
   typedef /* implementation-defined */ ptr;
   typedef /* implementation-defined */ range_type;
@@ -457,15 +459,15 @@ public:
 
   virtual iterator::ptr lookup( String const &phrase, String const &relationship, range_type at_least, range_type at_most ) const = 0;
 
-  virtual void destroy() const = 0;     // interited from Resource
+  virtual void destroy() const = 0;
 protected:
   virtual ~Thesaurus();
 };
 \endcode
 
-For details about the \c ptr type,
-the \c destroy() function,
-and why the destructor is \c protected,
+For details about the \c ptr types,
+the \c destroy() functions,
+and why the destructors are \c protected,
 see the \ref memory_management document.
 
 To implement the \c Thesaurus
@@ -482,18 +484,19 @@ you need to implement the \c lookup() function where:
   </tr>
   <tr>
     <td>\c at_least</td>
-    <td>The The minimum number of levels within the thesaurus to be traversed.</td>
+    <td>The minimum number of levels within the thesaurus to be traversed.</td>
   </tr>
   <tr>
     <td>\c at_most</td>
-    <td>The The maximum number of levels within the thesaurus to be traversed.</td>
+    <td>The maximum number of levels within the thesaurus to be traversed.</td>
   </tr>
 </table>
 
 The \c lookup() function returns a pointer to an \c iterator
 that is used to iterate over the phrase's synonyms.
-
-A very simple thesaurus
+You also need to implement an \c iterator.
+A very simple \c Thesaurus
+and its \c iterator
 can be implemented as:
 
 \code
@@ -505,53 +508,49 @@ private:
   //
   // Define a simple thesaurus data structure as a map from a phrase to a list of its synonyms.
   //
-  typedef std::list<String> synonyms_t;
-  typedef std::map<String,synonyms_t const*> thesaurus_t;
+  typedef std::list<String> synonyms_type;
+  typedef std::map<String,synonyms_type const*> thesaurus_data_type;
 
-  static thesaurus_t const& get_thesaurus();
+  static thesaurus_data_type const& get_thesaurus_data();
 
   class iterator : public Thesaurus::iterator {
   public:
-    iterator( synonyms_t const &s ) : synonyms_( s ), i_( s.begin() ) { }
+    iterator( synonyms_type const &s ) : synonyms_( s ), i_( s.begin() ) { }
     void destroy();
     bool next( String *synonym );
   private:
-    synonyms_t const &synonyms_;      // synonyms to iterate over
-    synonyms_t::const_iterator i_;    // current iterator position
+    synonyms_type const &synonyms_;     // synonyms to iterate over
+    synonyms_type::const_iterator i_;   // current iterator position
   };
 };
 
 void MyThesaurus::destroy() const {
-  // Do nothing since we statically allocate a singleton instance of our thesaurus.
+  // Do nothing since we statically allocate a singleton instance of our Thesaurus.
 }
 
-MyThesaurus::thesaurus_t const& MyThesaurus::get_thesaurus() {
-  static thesaurus_t thesaurus;
-  if ( thesaurus.empty() ) {
+MyThesaurus::thesaurus_data_type const& MyThesaurus::get_thesaurus_data() {
+  static thesaurus_data_type thesaurus_data;
+  if ( thesaurus_data.empty() ) {
     //
-    // Construct a thesaurus "by hand" for this example.  A real thesaurus would probably
-    // be read from disk.
-    //
+    // Construct thesaurus data "by hand" for this example.  A real thesaurus would probably be read from disk.
     // Note that every list of synonyms must always include the original phrase.
     //
-    static synonyms_t synonyms;
+    static synonyms_type synonyms;
     synonyms.push_back( "foo" );
     synonyms.push_back( "foobar" );
-    thesaurus[ "foo"    ] = &synonyms;
-    thesaurus[ "foobar" ] = &synonyms;
+    thesaurus_data[ "foo"    ] = &synonyms;
+    thesaurus_data[ "foobar" ] = &synonyms;
   }
-  return thesaurus;
+  return thesaurus_data;
 }
-\endcode
 
-\code
 MyThesaurus::iterator::ptr MyThesaurus::lookup( String const &phrase, String const &relationship,
                                                 range_type at_least, range_type at_most ) const {
-  static thesaurus_t const &thesaurus = get_thesaurus();
-  thesaurus_t::const_iterator const i = thesaurus.find( phrase );
+  static thesaurus_data_type const &thesaurus_data = get_thesaurus_data();
+  thesaurus_data_type::const_iterator const entry = thesaurus_data.find( phrase );
   iterator::ptr result;
-  if ( i != thesaurus.end() )
-    result.reset( new iterator( *i->second ) );
+  if ( entry != thesaurus_data.end() )
+    result.reset( new iterator( *entry->second ) );
   return std::move( result );
 }
 
@@ -572,13 +571,71 @@ bool MyThesaurus::iterator::next( String *synonym ) {
 A real thesaurus would load a large number of synonyms,
 of course.
 
+\subsection ft_class_thesaurus_provider The ThesaurusProvider Class
+
+The \c ThesaurusProvider class is:
+
+\code
+class ThesaurusProvider : public Resource {
+public:
+  typedef /* implementation-defined */ ptr;
+
+  virtual bool getThesaurus( locale::iso639_1::type lang, Thesaurus::ptr *thesaurus = 0 ) const = 0;
+  void destroy() const;                 // inherited from Resource
+};
+\endcode
+
+To implement a \c ThesaurusProvider,
+you need to implement the \c getThesaurus() function where:
+
+<table>
+  <tr>
+    <td>\c lang</td>
+    <td>The desired language of the thesaurus.</td>
+  </tr>
+  <tr>
+    <td>\c thesaurus</td>
+    <td>If not \c null, set to point to a thesaurus for \c lang.</td>
+  </tr>
+</table>
+
+The \c getThesaurus() function returns \c true
+only if it can provide a thesaurus for the given language.
+Continuing with the example,
+a very simple \c ThesaurusProvider
+can be implemented as:
+
+\code
+class MyThesaurusProvider : pulic ThesaurusProvider {
+public:
+  void destroy() const;
+  bool getThesaurus( iso639_1::type lang, Thesaurus::ptr* = 0 ) const;
+};
+
+void MyThesaurusProvider::destroy() const {
+  // Do nothing since we statically allocate a singleton instance of our ThesaurusProvider.
+}
+
+bool MyThesaurusProvider::getThesaurus( iso639_1::type lang, Thesaurus::ptr *result ) const {
+  //
+  // Since our tiny thesaurus contains only universally known words, we don't bother checking lang
+  // and always return true.
+  //
+  static MyThesaurus thesaurus;
+  if ( result )
+    result->reset( &thesaurus );
+  return true;
+}
+\endcode
+
 \subsection ft_class_thesaurus_resolver A Thesaurus URL Resolver Class
 
-In addition to a \c Thesaurus,
+In addition to a \c Thesaurus
+and \c ThesaurusProvider,
 you must also implement a "thesaurus resolver" class
 that,
-given a URL and a language,
-provides a \c Thesaurus for that language.
+given a URI,
+provides a \c ThesaurusProvider for that URI.
 A simple \c ThesaurusURLResolver
 for our simple thesaurus can be implemented as:
 
@@ -591,23 +648,12 @@ private:
   String const url_;
 };
 
-Resource*
-ThesaurusURLResolver::resolveURL( String const &url, EntityData const *data ) const {
-  ThesaurusEntityData const *const t_data = dynamic_cast<ThesaurusEntityData const*>( data );
-  assert( t_data );
-  static MyThesaurus thesaurus;
-  if ( url == url_ )
-    switch ( t_data->getLanguage() ) {
-      case locale::iso639_1::en:
-      case locale::iso639_1::unknown:
-        //
-        // Here, we could test to ensure that the language of our thesaurus matches the
-        // language sought, but in our case, we want our thesaurus to be used for all
-        // languages since "foo" and "foobar" are universal.
-        //
-      default:
-        return &thesaurus;
-    }
+Resource* ThesaurusURLResolver::resolveURL( String const &url, EntityData const *data ) const {
+  if ( data->getKind() == EntityData::THESAURUS )
+    static MyThesaurusProvider provider;
+    if ( uri == uri_ )
+      return &provider;
+  }
   return 0;
 }
 \endcode
