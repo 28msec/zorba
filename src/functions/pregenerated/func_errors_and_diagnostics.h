@@ -68,7 +68,7 @@ public:
 
   }
 
-  bool isMap(ulong producer) const { return producer == 0; }
+  bool isMap(csize producer) const { return producer == 0; }
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 

@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
@@ -24,12 +25,14 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
+#include "compiler/rewriter/tools/dataflow_annotations.h"
 
 #include "functions/udf.h"
 #include "annotations/annotations.h"
 #include "functions/function_impl.h"
 
 #include "diagnostics/xquery_warning.h"
+#include "diagnostics/assert.h"
 
 #include "types/typeops.h"
 
@@ -57,8 +60,8 @@ user_function::user_function(
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
-  theBodyExpr(expr_body),
   theScriptingKind(scriptingKind),
+  theBodyExpr(expr_body),
   theIsExiting(false),
   theIsLeaf(true),
   theIsOptimized(false),
@@ -85,6 +88,8 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
+
+  theIsOptimized = true;
 }
 
 
@@ -126,10 +131,49 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   {
     try
     {
-      //uint32_t planStateSize;
-      //getPlan(ar.compiler_cb, planStateSize);
-      assert(thePlan != NULL);
+      // This assertion is here because of the prepare_for_serialize() call in
+      // xqueryimpl.cpp
       ZORBA_ASSERT(thePlan != NULL);
+
+      uint32_t planStateSize;
+      getPlan(ar.get_ccb(), planStateSize);
+      ZORBA_ASSERT(thePlan != NULL);
+#if 1
+      SourceFinder sourceFinder;
+      std::vector<expr*> sources;
+      sourceFinder.findLocalNodeSources(theBodyExpr, sources);
+
+      if (!sources.empty())
+      {
+        std::vector<expr*>::const_iterator ite = sources.begin();
+        std::vector<expr*>::const_iterator end = sources.end();
+        for (; ite != end; ++ite)
+        {
+          expr* source = (*ite);
+    
+          if (source->get_expr_kind() == doc_expr_kind)
+          {
+            doc_expr* e = static_cast<doc_expr*>(source);
+            if (!e->copyInputNodes())
+              e->setCopyInputNodes();
+          }
+          else if (source->get_expr_kind() == elem_expr_kind)
+          {
+            elem_expr* e = static_cast<elem_expr*>(source);
+            if (!e->copyInputNodes())
+              e->setCopyInputNodes();
+          }
+          else
+          {
+            ZORBA_ASSERT(false);
+          }
+        }
+
+        invalidatePlan();
+        getPlan(ar.get_ccb(), planStateSize);
+        ZORBA_ASSERT(thePlan != NULL);
+      }
+#endif
     }
     catch(...)
     {
@@ -145,13 +189,21 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 
   serialize_baseclass(ar, (function*)this);
   ar & theLoc;
-  //ar & theBodyExpr;
-  ar & theArgVars;
   ar & theScriptingKind;
+  //ar & theBodyExpr;
+  //ar & theArgVars;
+  ar & theIgnoresSortedNodes;
+  ar & theIgnoresDuplicateNodes;
+
+  ar & theMustCopyInputNodes;
+  ar & thePropagatesInputNodes;
+
   ar & theIsExiting;
   ar & theIsLeaf;
   ar & theMutuallyRecursiveUDFs;
-  ar & theIsOptimized;
+
+  // ar & theIsOptimized;
+
   ar & thePlan;
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
@@ -188,13 +240,6 @@ short user_function::getScriptingKind() const
   // but the function body is not really updating/sequential, an error/warning is
   // raised by the translator.
   return theScriptingKind;
-
-#if 0
-  if (theBodyExpr == NULL)
-    return theScriptingKind;
-
-  return theBodyExpr->get_scripting_detail();
-#endif
 }
 
 
@@ -298,8 +343,31 @@ bool user_function::accessesDynCtx() const
     assert(isOptimized());
   }
 
-  // All undeclared functions unfoldable. TODO: better analysis
-  return (theBodyExpr == NULL || theBodyExpr->isUnfoldable());
+  return testFlag(FunctionConsts::AccessesDynCtx);
+}
+
+
+/*******************************************************************************
+  This method may be called after deserializing a query plan, and the query
+  contains an eval expr.
+********************************************************************************/
+bool user_function::mustCopyInputNodes(expr* fo, csize input) const
+{
+  assert(theBodyExpr == NULL);
+
+  return (theMustCopyInputNodes[input] == 0 ? false : true);
+}
+
+
+/*******************************************************************************
+  This method may be called after deserializing a query plan, and the query
+  contains an eval expr.
+********************************************************************************/
+bool user_function::propagatesInputNodes(expr* fo, csize input) const
+{
+  assert(theBodyExpr == NULL);
+
+  return (thePropagatesInputNodes[input] == 0 ? false : true);
 }
 
 
@@ -309,8 +377,14 @@ bool user_function::accessesDynCtx() const
 BoolAnnotationValue user_function::ignoresSortedNodes(expr* fo, csize input) const
 {
   assert(isOptimized());
-  assert(input < theArgVars.size());
 
+  if (theBodyExpr == NULL)
+  {
+    assert(input < theIgnoresSortedNodes.size());
+    return static_cast<BoolAnnotationValue>(theIgnoresSortedNodes[input]);
+  }
+
+  assert(input < theArgVars.size());
   return theArgVars[input]->getIgnoresSortedNodes();
 }
 
@@ -323,8 +397,14 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
     csize input) const
 {
   assert(isOptimized());
-  assert(input < theArgVars.size());
 
+  if (theBodyExpr == NULL)
+  {
+    assert(input < theIgnoresDuplicateNodes.size());
+    return static_cast<BoolAnnotationValue>(theIgnoresDuplicateNodes[input]);
+  }
+
+  assert(input < theArgVars.size());
   return theArgVars[input]->getIgnoresDuplicateNodes();
 }
 
@@ -332,9 +412,61 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
+void user_function::optimize(CompilerCB* ccb)
 {
-  return theArgVarsRefs;
+  ZORBA_ASSERT(theBodyExpr);
+
+  if (!theIsOptimized && 
+      ccb->theConfig.opt_level > CompilerCB::config::O0)
+  {
+    // Set the Optimized flag in advance to prevent an infinte loop (for
+    // recursive functions, an optimization could be attempted again)
+    theIsOptimized = true;
+
+    csize numParams = theArgVars.size();
+
+    expr_t body = getBody();
+
+    RewriterContext rctx(ccb,
+                         body,
+                         this,
+                         zstring(),
+                         body->get_sctx()->is_in_ordered_mode());
+
+    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
+    body = rctx.getRoot();
+    setBody(body);
+
+    if (theBodyExpr->isUnfoldable())
+      setFlag(FunctionConsts::AccessesDynCtx);
+
+    numParams = theArgVars.size();
+
+    theIgnoresSortedNodes.resize(numParams);
+    theIgnoresDuplicateNodes.resize(numParams);
+    theMustCopyInputNodes.resize(numParams);
+    thePropagatesInputNodes.resize(numParams);
+
+    for (csize i = 0; i < numParams; ++i)
+    {
+      theIgnoresSortedNodes[i] = theArgVars[i]->getIgnoresSortedNodes();
+      theIgnoresDuplicateNodes[i] = theArgVars[i]->getIgnoresDuplicateNodes();
+      theMustCopyInputNodes[i] = 1;
+      thePropagatesInputNodes[i] = 1;
+    }
+
+    if (ccb->theConfig.optimize_cb != NULL)
+    {
+      if (getName())
+      {
+        ccb->theConfig.optimize_cb(body, getName()->getStringValue().c_str());
+      }
+      else
+      {
+        ccb->theConfig.optimize_cb(body, "inline function");
+      }
+    }
+  }
 }
 
 
@@ -355,23 +487,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 {
   if (thePlan == NULL)
   {
-    if (!theIsOptimized && 
-        ccb->theConfig.opt_level > CompilerCB::config::O0)
-    {
-      theIsOptimized = true;
-
-      expr_t body = getBody();
-
-      RewriterContext rctx(ccb,
-                           body,
-                           this,
-                           zstring(),
-                           body->get_sctx()->is_in_ordered_mode());
-
-      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
-      body = rctx.getRoot();
-      setBody(body);
-    }
+    optimize(ccb);
 
     csize numArgs = theArgVars.size();
 
@@ -399,6 +515,29 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
   planStateSize = thePlanStateSize;
 
   return thePlan;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t user_function::codegen(
+      CompilerCB* cb,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      expr& ann) const
+{
+  return new UDFunctionCallIterator(sctx, loc, argv, this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
+{
+  return theArgVarsRefs;
 }
 
 
@@ -483,9 +622,9 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-        WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_VARIADIC)),
-        WARN_LOC(theLoc)));
+      NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+      WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_VARIADIC)),
+      WARN_LOC(theLoc)));
     }
     return;
   }
@@ -502,11 +641,11 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-        WARN_PARAMS(getName()->getStringValue(),
-                    ZED(ZWST0005_RETURN_TYPE),
-                    lRes->toString()),
-        WARN_LOC(theLoc)));
+      NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+      WARN_PARAMS(getName()->getStringValue(),
+                  ZED(ZWST0005_RETURN_TYPE),
+                  lRes->toString()),
+      WARN_LOC(theLoc)));
     }
     return;
   }
@@ -523,12 +662,12 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
       if (lExplicitCacheRequest)
       {
         diag->add_warning(
-            NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-            WARN_PARAMS(getName()->getStringValue(),
-                        ZED(ZWST0005_PARAM_TYPE),
-                        i+1,
-                        lArg->toString()),
-            WARN_LOC(theLoc)));
+        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+        WARN_PARAMS(getName()->getStringValue(),
+                    ZED(ZWST0005_PARAM_TYPE),
+                    i+1,
+                    lArg->toString()),
+        WARN_LOC(theLoc)));
       }
       return;
     }
@@ -540,9 +679,9 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-        WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_UPDATING)),
-        WARN_LOC(theLoc)));
+      NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
+      WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_UPDATING)),
+      WARN_LOC(theLoc)));
     }
     return;
   }
@@ -552,10 +691,10 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
     if (lExplicitCacheRequest)
     {
       diag->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
-        WARN_PARAMS(getName()->getStringValue(),
-                    (isSequential()?"sequential":"non-deterministic")),
-        WARN_LOC(theLoc)));
+      NEW_XQUERY_WARNING(zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
+      WARN_PARAMS(getName()->getStringValue(),
+                  (isSequential()?"sequential":"non-deterministic")),
+      WARN_LOC(theLoc)));
 
       lExit.cache();
     }
@@ -570,20 +709,6 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
   }
 
   lExit.cache();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t user_function::codegen(
-      CompilerCB* cb,
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv,
-      expr& ann) const
-{
-  return new UDFunctionCallIterator(sctx, loc, argv, this);
 }
 
 

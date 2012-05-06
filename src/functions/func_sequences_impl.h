@@ -45,7 +45,7 @@ public:
     return caller->get_arg(0)->get_return_type();
   }
 
-  bool isMap(ulong input) const
+  bool isMap(csize input) const
   {
     return true;
   }

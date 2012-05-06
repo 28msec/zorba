@@ -241,7 +241,7 @@ declare function local:add-methods($function) as xs:string*
       else if (name($meth) eq 'zorba:isMap')
       then
         string-join(($gen:newline, $gen:indent,
-                     'bool isMap(ulong producer) const ',
+                     'bool isMap(csize producer) const ',
                      '{ return producer == ', $meth/@producer, '; }',
                       $gen:newline),'')
 

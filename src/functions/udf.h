@@ -113,10 +113,15 @@ public:
 private:
   QueryLoc                    theLoc;
 
+  short                       theScriptingKind;
+
   expr_t                      theBodyExpr;
   std::vector<var_expr_t>     theArgVars;
 
-  short                       theScriptingKind;
+  std::vector<int>            theIgnoresSortedNodes;
+  std::vector<int>            theIgnoresDuplicateNodes;
+  std::vector<int>            theMustCopyInputNodes;
+  std::vector<int>            thePropagatesInputNodes;
 
   bool                        theIsExiting;
   bool                        theIsLeaf;
@@ -152,8 +157,6 @@ public:
 
   virtual ~user_function();
 
-  short getScriptingKind() const;
-
   //xqtref_t getUDFReturnType(static_context* sctx) const;
 
   const QueryLoc& getLoc() const { return theLoc; }
@@ -176,10 +179,6 @@ public:
 
   var_expr* getArgVar(csize i) const { return theArgVars[i].getp(); }
 
-  void setOptimized(bool v) { theIsOptimized = v; }
-
-  bool isOptimized() const { return theIsOptimized; }
-
   void addMutuallyRecursiveUDFs(
       const std::vector<user_function*>& udfs,
       const std::vector<user_function*>::const_iterator& cycle);
@@ -192,15 +191,38 @@ public:
 
   bool isRecursive() const;
 
+  void setOptimized(bool v) { theIsOptimized = v; }
+
+  bool isOptimized() const { return theIsOptimized; }
+
+  void optimize(CompilerCB* ccb);
+
+  PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
+  
+  void invalidatePlan();
+
+  PlanIter_t codegen(
+        CompilerCB* cb,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        expr& ann) const;
+
+  // The next 6 methods are virtual methods of class function, which are redefined here
+
+  short getScriptingKind() const;
+
   bool accessesDynCtx() const;
+
+  bool mustCopyInputNodes(expr* fo, csize input) const;
+
+  bool propagatesInputNodes(expr* fo, csize input) const;
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
-  PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
-  
-  void invalidatePlan();
+  // Runtime-related methods
 
   void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }
 
@@ -213,13 +235,6 @@ public:
   bool cacheResults() const;
 
   void computeResultCaching(XQueryDiagnostics*);
-
-  PlanIter_t codegen(
-        CompilerCB* cb,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        expr& ann) const;
 };
 
 

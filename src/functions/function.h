@@ -157,13 +157,13 @@ public:
 
   bool isSequential() const;
 
-  virtual short getScriptingKind() const { return SIMPLE_EXPR; }
+  virtual short getScriptingKind() const;
 
   virtual xqtref_t getReturnType(const fo_expr* caller) const;
 
-  virtual bool accessesDynCtx() const { return false; }
+  virtual bool accessesDynCtx() const;
 
-  virtual bool isMap(ulong input) const;
+  virtual bool isMap(csize input) const;
 
   virtual bool propagatesInputNodes(expr* fo, csize input) const;
 

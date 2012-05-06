@@ -97,9 +97,6 @@ void operator&(Archiver& ar, T& obj)
                                      &is_simple, &is_class, &field_treat,
                                      &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_class_field(retval, type, obj.get_class_name_str(),
                          is_simple, is_class, 
                          field_treat, ARCHIVE_FIELD_NORMAL, 
@@ -168,9 +165,6 @@ void operator&(Archiver& ar, T*& obj)
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat,
                                       &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_class_field(retval, "", "",
                          is_simple, is_class,
@@ -319,9 +313,6 @@ void operator&(Archiver& ar, checked_vector<T>& obj)
     bool retval = ar.read_next_field(&type, &value, &id,
                                      &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_nonclass_field(retval, type, "checked_vector<T>",
                             is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -386,9 +377,6 @@ void operator&(Archiver& ar, std::vector<T>& obj)
 
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_nonclass_field(retval, type, "std::vector<T>",
                             is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -466,9 +454,6 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
 
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_nonclass_field(retval, type, "std::vector<T>*",
                             is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
@@ -566,9 +551,6 @@ void operator&(Archiver& ar, std::vector<T*>& obj)
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_nonclass_field(retval, type, "std::vector<T*>", 
                             is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -635,9 +617,6 @@ void operator&(Archiver& ar, std::list<T>& obj)
     bool  retval = ar.read_next_field(&type, &value, &id, 
                                       &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_nonclass_field(retval, type, "std::list<T>",
                             is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -691,9 +670,6 @@ void operator&(Archiver& ar, std::pair<T1, T2>& obj)
 
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_nonclass_field(retval, type, "std::pair<T1, T2>",
                             is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -754,9 +730,6 @@ void operator&(Archiver& ar, std::pair<T1, T2>*& obj)
 
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_nonclass_field(retval, type, "std::pair<T1, T2>",
                             is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
@@ -830,25 +803,22 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 
     if (!is_ref)
     {
-      ar.set_is_temp_field_one_level(true);
+      ar.set_is_temp_field(true);
 
       int s = (int)obj->size();
       ar & s;
 
+      ar.set_is_temp_field(false);
+
       typename std::map<T1, T2>::iterator it = obj->begin();
       typename std::map<T1, T2>::iterator end = obj->end();
 
-      for(; it != end; ++it)
+      for (; it != end; ++it)
       {
-        ar.dont_allow_delay();
-        T1  t1 = (*it).first;
-        ar & t1;
-        ar.dont_allow_delay();
-
+        ar & (*it).first;
         ar & (*it).second;
       }
 
-      ar.set_is_temp_field_one_level(false);
 
       ar.add_end_compound_field();
     }
@@ -865,9 +835,6 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat, &referencing);
-
-    if (!retval && ar.get_read_optional_field())
-      return;
 
     ar.check_nonclass_field(retval, type, "std::map<T1, T2>",
                             is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
@@ -887,10 +854,10 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 
       ar.register_reference(id, field_treat, obj);
 
-      ar.set_is_temp_field_one_level(true);
-
+      ar.set_is_temp_field(true);
       int s;
       ar & s;
+      ar.set_is_temp_field(false);
 
       std::pair<T1, T2> p;
 
@@ -901,8 +868,6 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 
         obj->insert(p);
       }
-
-      ar.set_is_temp_field_one_level(false);
 
       ar.read_end_current_level();
     }
@@ -941,26 +906,21 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
                                         ARCHIVE_FIELD_NORMAL);
     if (!is_ref)
     {
-      ar.set_is_temp_field_one_level(true);
+      ar.set_is_temp_field(true);
 
       int s = (int)obj.size();
       ar & s;
+
+      ar.set_is_temp_field(false);
 
       typename std::map<T1, T2, Tcomp>::iterator it = obj.begin();
       typename std::map<T1, T2, Tcomp>::iterator end = obj.end();
 
       for (; it != end; ++it)
       {
-        T1 t1 = (*it).first;
-
-        ar.dont_allow_delay();
-        ar & t1;
-        ar.dont_allow_delay();
-
+        ar & (*it).first;
         ar & (*it).second;
       }
-
-      ar.set_is_temp_field_one_level(false);
 
       ar.add_end_compound_field();
     }
@@ -978,30 +938,25 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
     bool  retval = ar.read_next_field(&type, &value, &id,
                                       &is_simple, &is_class, &field_treat, &referencing);
 
-    if (!retval && ar.get_read_optional_field())
-      return;
-
     ar.check_nonclass_field(retval, type, "std::map<T1, T2>",
                             is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, &obj);
 
-    ar.set_is_temp_field_one_level(true);
-
+    ar.set_is_temp_field(true);
     int s;
     ar & s;
+    ar.set_is_temp_field(false);
 
-    std::pair<T1, T2>   p;
+    std::pair<T1, T2> p;
 
-    for(int i = 0; i < s; ++i)
+    for (int i = 0; i < s; ++i)
     {
       ar & p.first;
       ar & p.second;
 
       obj.insert(p);
     }
-
-    ar.set_is_temp_field_one_level(false);
 
     ar.read_end_current_level();
   }
@@ -1045,9 +1000,6 @@ void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
       bool retval = ar.read_next_field(&type, &value, &id,
                                        &is_simple, &is_class, &field_treat, &referencing);
 
-      if (!retval && ar.get_read_optional_field())
-        return;
-
       ar.check_simple_field(retval, type, "rstring",
                             is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -1087,17 +1039,6 @@ void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
   }
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-template<class T>
-void read_optional_field(Archiver& ar, T& obj)
-{
-  ar.set_read_optional_field(true);
-  ar & obj;
-  ar.set_read_optional_field(false);
-}
 
 } // namespace serialization
 } // namespace zorba

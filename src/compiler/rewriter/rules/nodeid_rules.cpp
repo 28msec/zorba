@@ -681,7 +681,7 @@ void MarkNodeCopyProps::applyInternal(
     fo_expr* e = static_cast<fo_expr *>(node);
     function* f = e->get_func();
 
-    if (f->isUdf())
+    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
     {
       user_function* udf = static_cast<user_function*>(f);
 
@@ -1000,7 +1000,9 @@ void MarkNodeCopyProps::markSources(
 
 
 /*******************************************************************************
-
+  The purpose of this method is to find patrh exprs that are inside the subtree
+  of "node" and which return nodes that may propagated in the result of the
+  "node" expr.
 ********************************************************************************/
 void MarkNodeCopyProps::markForSerialization(expr* node)
 {
@@ -1012,7 +1014,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
     return;
 
-  switch (node->get_expr_kind()) 
+  switch (node->get_expr_kind())
   {
   case const_expr_kind:
   {
@@ -1134,7 +1136,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
     e->setWillBeSerialized(ANNOTATION_TRUE);
 
-    if (f->isUdf())
+    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
     {
       user_function* udf = static_cast<user_function*>(f);
       expr* body = udf->getBody();

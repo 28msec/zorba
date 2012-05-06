@@ -52,7 +52,7 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   *::zorba::serialization::ClassSerializer::getInstance()->
   getArchiverForHardcodedObjects();
 
-  if(ar.is_loading_hardcoded_objects())
+  if (ar.is_loading_hardcoded_objects())
   {
     // register this hardcoded object to help plan serialization
     function* this_ptr = this;
@@ -71,15 +71,6 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   ar & theFlags;
   ar & theAnnotationList;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-xqtref_t function::getReturnType(const fo_expr*) const
-{
-  return theSignature.returnType();
 }
 
 
@@ -117,6 +108,16 @@ void function::setAnnotations(AnnotationList* annotations)
 
 
 /*******************************************************************************
+  This is a virstual method. It is redefined by udf and external-function
+  classes. 
+********************************************************************************/
+short function::getScriptingKind() const 
+{
+  return SIMPLE_EXPR;
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 bool function::isSequential() const
@@ -126,9 +127,33 @@ bool function::isSequential() const
 
 
 /*******************************************************************************
-  Check whether this function is a map with respect to the given input
+  This is a virstual method. It is NOT redefined by udf and external-function
+  classes. However, for UDFs it is possible that the user-declared type is
+  narrowed down to a subtypes; see UDFGraph::optimizeUDFs() in udf_graph.cpp
 ********************************************************************************/
-bool function::isMap(ulong input) const
+xqtref_t function::getReturnType(const fo_expr*) const
+{
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+  This is a virstual method. It is redefined by udf and external-function
+  classes. 
+********************************************************************************/
+bool function::accessesDynCtx() const 
+{
+  return false;
+}
+
+
+/*******************************************************************************
+  Check whether this function is a map with respect to the given input.
+
+  This is a virstual method. It is NOT redefined by udf and external-function
+  classes. TODO ???? redefine it for UDFs
+********************************************************************************/
+bool function::isMap(csize input) const
 {
   if (!theSignature.isVariadic() &&
       theSignature.paramCount() > 0 &&
@@ -148,6 +173,8 @@ bool function::isMap(ulong input) const
 ********************************************************************************/
 bool function::propagatesInputNodes(expr* fo, csize input) const
 {
+  assert(!isUdf());
+
   TypeManager* tm = fo->get_type_manager();
 
   // This method should be called only if the function may indeed return nodes
@@ -176,6 +203,8 @@ bool function::propagatesInputNodes(expr* fo, csize input) const
 ********************************************************************************/
 bool function::mustCopyInputNodes(expr* fo, csize input) const
 {
+  assert(!isUdf());
+
   TypeManager* tm = fo->get_type_manager();
 
   xqtref_t argType = static_cast<fo_expr*>(fo)->get_arg(input)->get_return_type();
@@ -237,6 +266,9 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
   input parameter is in document order or not. The decision may depend on
   whether the result of this function, at the point where it is called, must
   be in doc order or not.
+
+  This is a virstual method. It is redefined by the udf class but not by the
+  external-function class. 
 ********************************************************************************/
 BoolAnnotationValue function::ignoresSortedNodes(expr* fo, csize input) const
 {
@@ -263,6 +295,9 @@ BoolAnnotationValue function::ignoresSortedNodes(expr* fo, csize input) const
   input parameter contains duplicate nodes or not. The decision may depend on
   whether the result of this function, at the point where it is called, must
   contain distinct nodes or not.
+
+  This is a virstual method. It is redefined by the udf class but not by the
+  external-function class. 
 ********************************************************************************/
 BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, csize input) const
 {
