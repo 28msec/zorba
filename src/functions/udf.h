@@ -111,6 +111,8 @@ public:
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 private:
+  CompilerCB                * theCCB;
+
   QueryLoc                    theLoc;
 
   short                       theScriptingKind;
@@ -135,7 +137,7 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  store::Index_t              theCache; //note: not for serialization
+  store::Index_t              theCache;
   bool                        theCacheResults;
   bool                        theCacheComputed;
 
@@ -234,7 +236,7 @@ public:
 
   bool cacheResults() const;
 
-  void computeResultCaching(XQueryDiagnostics*);
+  void computeResultCaching();
 };
 
 

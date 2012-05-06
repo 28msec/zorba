@@ -47,11 +47,13 @@ class static_context;
   created as a copy of the query-level ccb during the execution of the eval/xqdoc
   expr.
 
-  - theXQueryDiagnostics :
+  theXQueryDiagnostics :
+  ----------------------
   Pointer to the query's XQueryDiagnostics obj. (see src/api/xqueryimpl.h). The eval
   CompilerCBs share the query's XQueryDiagnostics.
 
-  - theSctxMap :
+  theSctxMap :
+  ------------
   A query-level (or eval-level) map that stores the sctx objs that need to be
   kept around for the whole duration of a query (including runtime). In non-
   DEBUGGER mode, the map stores only for root sctx of each module. In DEBUGGER
@@ -60,46 +62,60 @@ class static_context;
   numeric ids to their associated sctx objs. The map is modified by the methods
   TranslatorImpl::end_visit(ModuleImport) and TranslatorImpl::push_scope().
 
-  - theRootSctx :
+  theRootSctx :
+  -------------
   The root static ctx for the query or for one of the query's eval exprs. For
   an eval expr, its root sctx is a child of the query's root sctx. For the query,
   its root sctx may be (a) a child of a user-provided sctx, or (b) if the query
   is a load-prolog query, the user-provided sctx, or (c) if the user did not
   provide any sctx, a child of zorba's root sctx.
 
-  - theDebuggerCommons :
+  theDebuggerCommons :
+  --------------------
 
-  - theIsEval :
+  theHasEval :
+  ------------
+  True if there is an eval expr within the compilation unit covered by this CCB.
+
+  theIsEval :
+  -----------
   True if this is the CCB for an eval query. This flag is needed to determine
   if a PUL returned by the main program must be applied or not.
 
-  - theIsLoadProlog :
+  theIsLoadProlog :
+  -----------------
   Whether this is a load-prolog query or not (load-prolog queries are created
   internally by the StaticContextImpl::loadProlog() method).
 
-  - theIsUpdating :
+  theIsUpdating :
+  ---------------
   Set to true if the root expr of the query or eval expr is an updating expr. 
 
-  - theTimeout :
+  theTimeout :
+  ------------
 
-  - theTempIndexCounter :
+  theTempIndexCounter :
+  ---------------------
   A counter used to create unique names for temporary (query-specific) indexes
   created to perform hashjoins (see rewriter/rules/index_join_rule.cpp).
 
-  - theConfig.lib_module :
+  theConfig.lib_module :
+  ----------------------
   If true, then if the query string that is given by the user is a library
   module, zorba will wrap it in a dummy main module and compile/execute that
   dummy module (see  XQueryCompiler::createMainModule() method). This flag is
   a copy of the lib_module flag in Zorba_CompilerHints_t.
 
-  - theConfig.for_serialization_only :
+  theConfig.for_serialization_only :
+  ----------------------------------
   This flag is a copy of the for_serialization_only flag in Zorba_CompilerHints_t.
 
-  - theConfig.parse_cb :
+  theConfig.parse_cb :
   Pointer to the function to call to print the AST that results from parsing
   the query.
 
-  - theConfig.translate_cb :
+  theConfig.translate_cb :
+  ------------------------
   Pointer to the function to call to print the expr tree that results from
   translating the query AST.
 ********************************************************************************/
@@ -151,6 +167,8 @@ public:
 #ifdef ZORBA_WITH_DEBUGGER
   DebuggerCommons*          theDebuggerCommons;
 #endif
+
+  bool                      theHasEval;
 
   bool                      theIsEval;
 

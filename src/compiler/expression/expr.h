@@ -1190,6 +1190,7 @@ public:
 
 public:
   eval_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc, 
       const expr_t& e,

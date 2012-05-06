@@ -2335,7 +2335,7 @@ void end_visit(fo_expr& v)
     {
       // need to computeResultCaching here for iterprint to work
       user_function* udf = static_cast<user_function*>(func);
-      udf->computeResultCaching(theCCB->theXQueryDiagnostics);
+      udf->computeResultCaching();
     }
   }
   else

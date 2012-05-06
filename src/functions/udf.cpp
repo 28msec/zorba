@@ -56,9 +56,10 @@ user_function::user_function(
     const signature& sig,
     expr_t expr_body,
     short scriptingKind,
-    CompilerCB* compilerCB)
+    CompilerCB* ccb)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
+  theCCB(ccb),
   theLoc(loc),
   theScriptingKind(scriptingKind),
   theBodyExpr(expr_body),
@@ -74,7 +75,7 @@ user_function::user_function(
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(true);
   setPrivate(false);
-  theLocalUdfs = compilerCB->get_local_udfs();
+  theLocalUdfs = ccb->get_local_udfs();
   theLocalUdfs->push_back(this);
 }
 
@@ -129,16 +130,18 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
   if (ar.is_serializing_out())
   {
-    try
-    {
-      // This assertion is here because of the prepare_for_serialize() call in
-      // xqueryimpl.cpp
-      ZORBA_ASSERT(thePlan != NULL);
+    // This assertion is here because of the prepare_for_serialize() call in
+    // xqueryimpl.cpp
+    ZORBA_ASSERT(thePlan != NULL);
 
-      uint32_t planStateSize;
-      getPlan(ar.get_ccb(), planStateSize);
-      ZORBA_ASSERT(thePlan != NULL);
-#if 1
+    computeResultCaching();
+
+    uint32_t planStateSize;
+    getPlan(ar.get_ccb(), planStateSize);
+    ZORBA_ASSERT(thePlan != NULL);
+    
+    if (ar.get_ccb()->theHasEval)
+    {
       SourceFinder sourceFinder;
       std::vector<expr*> sources;
       sourceFinder.findLocalNodeSources(theBodyExpr, sources);
@@ -173,12 +176,6 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         getPlan(ar.get_ccb(), planStateSize);
         ZORBA_ASSERT(thePlan != NULL);
       }
-#endif
-    }
-    catch(...)
-    {
-      // cannot compile user defined function, maybe it is not even used,
-      // so don't fire an error yet
     }
   }
   else
@@ -188,7 +185,8 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   }
 
   serialize_baseclass(ar, (function*)this);
-  ar & theLoc;
+  ar & theCCB;
+  //ar & theLoc;
   ar & theScriptingKind;
   //ar & theBodyExpr;
   //ar & theArgVars;
@@ -198,9 +196,9 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theMustCopyInputNodes;
   ar & thePropagatesInputNodes;
 
-  ar & theIsExiting;
-  ar & theIsLeaf;
-  ar & theMutuallyRecursiveUDFs;
+  //ar & theIsExiting;
+  //ar & theIsLeaf;
+  //ar & theMutuallyRecursiveUDFs;
 
   // ar & theIsOptimized;
 
@@ -286,6 +284,8 @@ void user_function::addMutuallyRecursiveUDFs(
     const std::vector<user_function*>& udfs,
     const std::vector<user_function*>::const_iterator& cycle)
 {
+  assert(theBodyExpr != NULL);
+
   theMutuallyRecursiveUDFs.insert(theMutuallyRecursiveUDFs.end(),
                                   cycle,
                                   udfs.end());
@@ -297,6 +297,8 @@ void user_function::addMutuallyRecursiveUDFs(
 ********************************************************************************/
 void user_function::addRecursiveCall(expr* call)
 {
+  assert(theBodyExpr != NULL);
+
   if (std::find(theRecursiveCalls.begin(), theRecursiveCalls.end(), call) ==
       theRecursiveCalls.end())
   {
@@ -311,6 +313,7 @@ void user_function::addRecursiveCall(expr* call)
 bool user_function::isRecursive() const
 {
   assert(isOptimized());
+  assert(theBodyExpr != NULL);
   return !theMutuallyRecursiveUDFs.empty();
 }
 
@@ -321,6 +324,7 @@ bool user_function::isRecursive() const
 bool user_function::isMutuallyRecursiveWith(const user_function* udf)
 {
   assert(isOptimized());
+  assert(theBodyExpr != NULL);
 
   if (std::find(theMutuallyRecursiveUDFs.begin(), 
                 theMutuallyRecursiveUDFs.end(),
@@ -572,7 +576,7 @@ bool user_function::cacheResults() const
  only cache recursive (non-sequential, non-updating, deterministic)
  functions with singleton atomic input and output
 ********************************************************************************/
-void user_function::computeResultCaching(XQueryDiagnostics* diag)
+void user_function::computeResultCaching()
 {
   if (theCacheComputed)
   {
@@ -598,6 +602,8 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
       theCacheComputed = true;
     }
   };
+
+  XQueryDiagnostics* diag = theCCB->theXQueryDiagnostics;
 
   // will be destroyed when the function is exited
   // set caching to true if cache() is called

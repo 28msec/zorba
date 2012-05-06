@@ -114,6 +114,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(0),
 #endif
+  theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
@@ -137,6 +138,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(cb.theDebuggerCommons),
 #endif
+  theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
@@ -160,6 +162,7 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(NULL),
 #endif
+  theHasEval(false),
   theIsEval(false)
 {
 }
@@ -202,6 +205,7 @@ rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
 ********************************************************************************/
 void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
+  ar & theHasEval;
   ar & theIsEval;
   ar & theIsLoadProlog;
   ar & theIsUpdating;

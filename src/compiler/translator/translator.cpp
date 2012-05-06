@@ -10161,7 +10161,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
 
-        rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+        rchandle<eval_expr> evalExpr = new eval_expr(theCCB,
+                                                     theRootSctx,
                                                      loc,
                                                      foExpr->get_arg(0),
                                                      scriptingKind,
@@ -10314,7 +10315,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                 GET_BUILTIN_FUNCTION(FN_CONCAT_N),
                                 concat_args);
 
-        rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+        rchandle<eval_expr> evalExpr = new eval_expr(theCCB,
+                                                     theRootSctx,
                                                      loc,
                                                      qnameExpr,
                                                      scriptingKind,

@@ -42,6 +42,7 @@
 #include "compiler/expression/expr_utils.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
+#include "compiler/api/compilercb.h"
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -1367,6 +1368,7 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 eval_expr::eval_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc, 
     const expr_t& e,
@@ -1378,6 +1380,9 @@ eval_expr::eval_expr(
   theInnerScriptingKind(scriptingKind),
   theDoNodeCopy(false)
 {
+  if (ccb)
+    ccb->theHasEval = true;
+
   compute_scripting_kind();
 }
 
@@ -1417,7 +1422,8 @@ void eval_expr::compute_scripting_kind()
 
 expr_t eval_expr::clone(substitution_t& s) const
 {
-  rchandle<eval_expr> new_eval = new eval_expr(theSctx, 
+  rchandle<eval_expr> new_eval = new eval_expr(NULL,
+                                               theSctx, 
                                                theLoc, 
                                                theExpr->clone(s),
                                                theInnerScriptingKind,
