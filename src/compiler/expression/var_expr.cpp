@@ -129,10 +129,10 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theUniqueId;
   ar & theName;
   ar & theDeclaredType;
-  ar & theFlworClause;
-  ar & theCopyClause;
-  ar & theParamPos;
-  ar & theUDF;
+  //ar & theFlworClause;
+  //ar & theCopyClause;
+  //ar & theParamPos;
+  //ar & theUDF;
   //ar & theSetExprs;
   ar & theIsPrivate;
   ar & theIsExternal;

@@ -135,6 +135,7 @@ fo_expr::fo_expr(
 
 void fo_expr::serialize(::zorba::serialization::Archiver& ar)
 {
+  assert(false);
   serialize_baseclass(ar, (expr*)this);
   ar & theArgs;
   ar & ((function*&)theFunction);

@@ -883,6 +883,7 @@ flwor_expr::flwor_expr(static_context* sctx, const QueryLoc& loc, bool general)
 ********************************************************************************/
 void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
 {
+  assert(false);
   serialize_baseclass(ar, (expr*)this);
   ar & theIsGeneral;
   ar & theHasSequentialClauses;

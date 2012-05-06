@@ -751,8 +751,8 @@ ostream& ftrange::put( ostream &o ) const {
 void ftrange::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   SERIALIZE_ENUM(ft_range_mode::type,mode_);
-  ar & expr1_;
-  ar & expr2_;
+  //ar & expr1_;
+  //ar & expr2_;
   ar & iter1_;
   ar & iter2_;
 }
@@ -1117,7 +1117,7 @@ ostream& ftweight::put( ostream &o ) const {
 
 void ftweight::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
-  ar & weight_expr_;
+  //ar & weight_expr_;
   ar & weight_iter_;
 }
 
@@ -1184,7 +1184,7 @@ ostream& ftwindow_filter::put( ostream &o ) const {
 
 void ftwindow_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftpos_filter*)this );
-  ar & window_expr_;
+  //ar & window_expr_;
   SERIALIZE_ENUM(ft_unit::type,unit_);
   ar & window_iter_;
 }
@@ -1221,7 +1221,7 @@ ostream& ftwords::put( ostream &o ) const {
 void ftwords::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   SERIALIZE_ENUM( ft_anyall_mode::type, mode_ );
-  ar & value_expr_;
+  //ar & value_expr_;
   ar & value_iter_;
 }
 

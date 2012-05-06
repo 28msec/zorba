@@ -4308,7 +4308,7 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
   IndexDecl_t index = theIndexDecl;
   theIndexDecl = NULL;
 
-  index->analyze();
+  index->analyze(theCCB);
 
   // Register the index in the sctx of the current module. Raise error if such
   // a binding exists already in the sctx.

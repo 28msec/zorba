@@ -82,6 +82,7 @@ block_expr::~block_expr()
 
 void block_expr::serialize(::zorba::serialization::Archiver& ar)
 {
+  assert(false);
   serialize_baseclass(ar, (expr*)this);
   ar & theArgs;
 }
