@@ -22,7 +22,6 @@ private:
   zorba::DocumentManager* theManager;
 
 public:
-  DocumentManager() : theManager(0) {}
   DocumentManager(const DocumentManager& aMgr) : theManager(aMgr.theManager) {}
   DocumentManager(zorba::DocumentManager* aMgr) : theManager(aMgr) {}
 

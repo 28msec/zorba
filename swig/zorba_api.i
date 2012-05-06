@@ -64,6 +64,7 @@ namespace std {
 #include <zorba/options.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
+#include <zorba/static_collection_manager.h>
 
   class CompilerHints;
   class DiagnosticHandler;
@@ -81,6 +82,7 @@ namespace std {
   class UserException;
   class ZorbaException;
   class XmlDataManager;
+  class StaticCollectionManager;
 
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
@@ -94,6 +96,7 @@ namespace std {
   #include "ItemSequence.h"
   #include "Collection.h"
   #include "CollectionManager.h"
+  #include "StaticCollectionManager.h"
   #include "DocumentManager.h"
   #include "XmlDataManager.h"
 %}
@@ -123,5 +126,6 @@ namespace std {
 %include "ItemSequence.i"
 %include "Collection.i"
 %include "CollectionManager.i"
+%include "StaticCollectionManager.i"
 %include "DocumentManager.i"
 %include "XmlDataManager.i"

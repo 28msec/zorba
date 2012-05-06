@@ -43,6 +43,7 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   theSignature(sig),
   theKind(kind),
   theFlags(0),
+  theModuleSctx(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_1_0)
 {
   setFlag(FunctionConsts::isBuiltin);
@@ -70,6 +71,7 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;
   ar & theAnnotationList;
+  ar & theModuleSctx;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
 }
 
@@ -82,6 +84,7 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
   ulong n = theSignature.paramCount();
   return n == VARIADIC_SIG_SIZE || argv.size() == n;
 }
+
 
 /*******************************************************************************
 

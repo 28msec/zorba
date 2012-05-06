@@ -42,7 +42,10 @@ class expr;
 
 
 /*******************************************************************************
-
+  theModuleContext:
+  -----------------
+  The root sctx of the module containing the declaration. It is NULL for 
+  functions that must be executed in the static context of the caller.
 ********************************************************************************/
 class function : public SimpleRCObject
 {
@@ -51,6 +54,7 @@ protected:
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
   AnnotationList_t             theAnnotationList;
+  static_context             * theModuleSctx;
 
   StaticContextConsts::xquery_version_t theXQueryVersion;
 
@@ -88,6 +92,10 @@ public:
   size_t getArity() const { return theSignature.paramCount(); }
 
   bool isVariadic() const { return theSignature.isVariadic(); }
+
+  static_context* getStaticContext() const { return theModuleSctx; }
+
+  void setStaticContext(static_context* sctx) { theModuleSctx = sctx; }
 
   void setFlag(FunctionConsts::AnnotationFlags flag)
   {

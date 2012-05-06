@@ -38,7 +38,7 @@ PlanIter_t fn_zorba_xml_parse::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new FnParseXmlFragmentIterator(sctx, loc, argv);
+  return new FnZorbaParseXmlFragmentIterator(sctx, loc, argv);
 }
 
 void populate_context_parse_fragment(static_context* sctx)

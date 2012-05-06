@@ -225,6 +225,13 @@ typedef enum
   OP_HOIST_1,
   OP_UNHOIST_1,
 
+#ifndef ZORBA_NO_FULL_TEXT
+  FULL_TEXT_TOKENIZER_PROPERTIES_1,
+  FULL_TEXT_TOKENIZER_PROPERTIES_0,
+  FULL_TEXT_TOKENIZE_2,
+  FULL_TEXT_TOKENIZE_1,
+#endif
+
 #include "functions/function_enum.h"
 
   FN_MAX_FUNC

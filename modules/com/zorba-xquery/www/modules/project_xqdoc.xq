@@ -59,7 +59,7 @@ declare variable $pxqdoc:serParamXml :=
  : @return empty sequence.
  :)
 declare %an:sequential function pxqdoc:delete-XML-dir(
-  $xqdocPath as xs:string)
+  $xqdocPath as xs:string) as empty-sequence()
 {
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
                                         file:directory-separator(),
@@ -92,7 +92,7 @@ declare %private %an:nondeterministic function pxqdoc:load-manifest(
  :)
 declare %an:sequential function pxqdoc:generate-xqdoc-XML(
   $zorbaManifestPath as xs:string,
-  $xqdocPath as xs:string)
+  $xqdocPath as xs:string) as empty-sequence()
 {
   (: Note: only the modules that are configured in the Zorba version you are using will be build :)                                      
   variable $xqdocXMLPath := concat($xqdocPath, file:directory-separator(), "xml");

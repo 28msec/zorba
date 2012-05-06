@@ -134,11 +134,11 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
     // xqueryimpl.cpp
     ZORBA_ASSERT(thePlan != NULL);
 
-    computeResultCaching();
-
     uint32_t planStateSize;
     getPlan(ar.get_ccb(), planStateSize);
     ZORBA_ASSERT(thePlan != NULL);
+
+    computeResultCaching();
     
     if (ar.get_ccb()->theHasEval)
     {
@@ -637,7 +637,7 @@ void user_function::computeResultCaching()
 
   // parameter and return types are subtype of xs:anyAtomicType?
   const xqtref_t& lRes = theSignature.returnType();
-  TypeManager* tm = lRes->get_manager();
+  TypeManager* tm = theBodyExpr->get_sctx()->get_typemanager();
 
   if (!TypeOps::is_subtype(tm,
                            *lRes,
