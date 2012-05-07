@@ -124,11 +124,6 @@ protected:
   checked_vector<expr_t> theArgs;
 
 public:
-  SERIALIZABLE_CLASS(block_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(block_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   block_expr(
       static_context* sctx,
       const QueryLoc& loc,
@@ -172,11 +167,6 @@ class apply_expr : public expr
 private:
   expr_t theExpr;
   bool   theDiscardXDM;
-
-public:
-  SERIALIZABLE_CLASS(apply_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(apply_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   apply_expr(
@@ -237,11 +227,6 @@ protected:
   expr_t     theInitExpr;
 
 public:
-  SERIALIZABLE_CLASS(var_decl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_decl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   var_decl_expr(
       static_context* sctx,
       const QueryLoc& loc,
@@ -285,11 +270,6 @@ protected:
   expr_t     theExpr;
 
 public:
-  SERIALIZABLE_CLASS(var_set_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_set_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   var_set_expr(
       static_context* sctx,
       const QueryLoc& loc,
@@ -324,11 +304,6 @@ private:
   expr_t               theExpr;
 
   exit_catcher_expr  * theCatcherExpr;
-
-public:
-  SERIALIZABLE_CLASS(exit_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   exit_expr(static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
@@ -371,11 +346,6 @@ private:
   expr_t             theExpr;
 
   std::vector<expr*> theExitExprs;
-
-public:
-  SERIALIZABLE_CLASS(exit_catcher_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_catcher_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   exit_catcher_expr(
@@ -425,11 +395,6 @@ protected:
   enum action theAction;
 
 public:
-  SERIALIZABLE_CLASS(flowctl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
 
   enum action get_action() const { return theAction; }
@@ -458,11 +423,6 @@ class while_expr : public expr
 
 protected:
   expr_t theBody;
-
-public:
-  SERIALIZABLE_CLASS(while_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);

@@ -44,64 +44,11 @@
 #include "compiler/parser/parse_constants.h"
 #include "compiler/api/compilercb.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(catch_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(function_trace_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(eval_expr)
-
-#ifdef ZORBA_WITH_DEBUGGER
-SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
-#endif
-
-SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(promote_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(instanceof_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(treat_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(castable_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(cast_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(if_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(validate_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(pragma)
-
-SERIALIZABLE_CLASS_VERSIONS(extension_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(const_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(order_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(elem_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(doc_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(attr_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(text_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(pi_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
 
 
 /*******************************************************************************
@@ -168,15 +115,6 @@ if_expr::if_expr(
   compute_scripting_kind();
 }
 
-
-void if_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theCondExpr;
-  ar & theThenExpr;
-  ar & theElseExpr;
-}
-  
 
 void if_expr::compute_scripting_kind()
 {
@@ -254,14 +192,6 @@ order_expr::order_expr(
 }
 
 
-void order_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(order_type_t, theType);
-  ar & theExpr;
-}
-
-
 void order_expr::compute_scripting_kind()
 {
   theScriptingKind = theExpr->get_scripting_detail();
@@ -295,16 +225,6 @@ validate_expr::validate_expr(
   theExpr(inExpr)
 {
   compute_scripting_kind();
-}
-
-
-void validate_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(ParseConstants::validation_mode_t, theMode);
-  ar & theTypeName;
-  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypeMgr);
-  ar & theExpr;
 }
 
 
@@ -351,12 +271,6 @@ const namespace_context* namespace_context_base_expr::getNSCtx() const
 }
 
 
-void namespace_context_base_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theNSCtx;
-}
-
 
 /*******************************************************************************
   Base for cast, treat, promote, castable, instanceof
@@ -376,14 +290,6 @@ cast_or_castable_base_expr::cast_or_castable_base_expr(
   assert(input != NULL);
 
   compute_scripting_kind();
-}
-
-
-void cast_or_castable_base_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theInputExpr;
-  ar & theTargetType;
 }
 
 
@@ -426,12 +332,6 @@ cast_base_expr::cast_base_expr(
 }
 
 
-void cast_base_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
-}
-
-
 /***************************************************************************//**
   CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
 
@@ -447,12 +347,6 @@ cast_expr::cast_expr(
 {
   assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
          type->get_quantifier() == TypeConstants::QUANT_QUESTION);
-}
-
-
-void cast_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (cast_base_expr*)this);
 }
 
 
@@ -491,15 +385,6 @@ treat_expr::treat_expr(
 }
 
 
-void treat_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (cast_base_expr*)this);
-  ar & theCheckPrime;
-  ar & theError;
-  ar & theFnQName;
-}
-
-
 expr_t treat_expr::clone(substitution_t& subst) const
 {
   return new treat_expr(theSctx,
@@ -528,13 +413,6 @@ promote_expr::promote_expr(
 }
 
 
-void promote_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (cast_base_expr*)this);
-  ar & theFnQName;
-}
-
-
 expr_t promote_expr::clone(substitution_t& subst) const
 {
   return new promote_expr(theSctx, 
@@ -560,12 +438,6 @@ castable_base_expr::castable_base_expr(
 }
 
 
-void castable_base_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
-}
-
-
 /***************************************************************************//**
   CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
 
@@ -579,12 +451,6 @@ castable_expr::castable_expr(
   :
   castable_base_expr (sctx, loc, castable_expr_kind, inputExpr, type)
 {
-}
-
-
-void castable_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (castable_base_expr*)this);
 }
 
 
@@ -619,13 +485,6 @@ instanceof_expr::instanceof_expr(
 }
 
 
-void instanceof_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (castable_base_expr*)this);
-  ar & theCheckPrimeOnly;
-}
-
-
 expr_t instanceof_expr::clone(substitution_t& subst) const
 {
   return new instanceof_expr(theSctx,
@@ -650,14 +509,6 @@ name_cast_expr::name_cast_expr(
   theIsAttrName(isAttrName)
 {
   compute_scripting_kind();
-}
-
-
-void name_cast_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theInputExpr;
-  ar & theIsAttrName;
 }
 
 
@@ -696,14 +547,6 @@ doc_expr::doc_expr(
   theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
-}
-
-
-void doc_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theContent;
-  ar & theCopyInputNodes;
 }
 
 
@@ -772,17 +615,6 @@ elem_expr::elem_expr(
 }
   
 
-void elem_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theQNameExpr;
-  ar & theAttrs;
-  ar & theContent;
-  ar & theNSCtx;
-  ar & theCopyInputNodes;
-}
-
-
 void elem_expr::compute_scripting_kind()
 {
   checkNonUpdating(theQNameExpr);
@@ -838,14 +670,6 @@ attr_expr::attr_expr(
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
-}
-
-
-void attr_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theQNameExpr;
-  ar & theValueExpr;
 }
 
 
@@ -914,14 +738,6 @@ text_expr::text_expr(
 }
 
 
-void text_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(text_constructor_type, type);
-  ar & theContentExpr;
-}
-
-
 void text_expr::compute_scripting_kind()
 {
   checkNonUpdating(theContentExpr);
@@ -955,14 +771,6 @@ pi_expr::pi_expr(
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
-}
-
-
-void pi_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theTargetExpr;
-  ar & theContentExpr;
 }
 
 
@@ -1010,13 +818,6 @@ wrapper_expr::wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wra
   theWrappedExpr(wrapped)
 {
   compute_scripting_kind();
-}
-
-
-void wrapper_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theWrappedExpr;
 }
 
 
@@ -1139,13 +940,6 @@ const_expr::const_expr(
 }
 
 
-void const_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theValue;
-}
-
-
 void const_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
@@ -1169,13 +963,6 @@ pragma::pragma(store::Item_t name, std::string const& content)
 }
 
 
-void pragma::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theQName;
-  ar & theContent;
-}
-
-
 extension_expr::extension_expr(
     static_context* sctx,
     const QueryLoc& loc)
@@ -1195,14 +982,6 @@ extension_expr::extension_expr(
   theExpr(e)
 {
   compute_scripting_kind();
-}
-
-
-void extension_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & thePragmas;
-  ar & theExpr;
 }
 
 
@@ -1250,14 +1029,6 @@ catch_clause::catch_clause()
 }
 
 
-void catch_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  //serialize_baseclass(ar, (SimpleRCObject*)this);
-  ar & theNameTests;
-  ar & theVarMap;
-}
-
-
 trycatch_expr::trycatch_expr(
     static_context* sctx,
     const QueryLoc& loc,
@@ -1267,15 +1038,6 @@ trycatch_expr::trycatch_expr(
   theTryExpr(tryExpr)
 {
   compute_scripting_kind();
-}
-
-
-void trycatch_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theTryExpr;
-  ar & theCatchExprs;
-  ar & theCatchClauses;
 }
 
 
@@ -1387,17 +1149,6 @@ eval_expr::eval_expr(
 }
 
 
-void eval_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (namespace_context_base_expr*)this);
-  ar & theExpr;
-  ar & theVars;
-  ar & theArgs;
-  SERIALIZE_ENUM(expr_script_kind_t, theInnerScriptingKind);
-  ar & theDoNodeCopy;
-}
-
-
 expr_script_kind_t eval_expr::get_inner_scripting_kind() const 
 {
   return theInnerScriptingKind; 
@@ -1459,15 +1210,6 @@ debugger_expr::debugger_expr(
   compute_scripting_kind();
 }
 
-void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theVars;
-  ar & theArgs;
-  ar & theIsVarDeclaration;
-}
-
 
 void debugger_expr::compute_scripting_kind()
 {
@@ -1509,17 +1251,6 @@ function_trace_expr::function_trace_expr(expr_t aExpr)
 
 function_trace_expr::~function_trace_expr() 
 {
-}
-
-
-void function_trace_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theFunctionName;
-  ar & theFunctionLocation;
-  ar & theFunctionCallLocation;
-  ar & theFunctionArity;
 }
 
 

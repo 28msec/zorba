@@ -25,28 +25,9 @@
 
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-
 
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(block_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(apply_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(var_set_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(exit_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(exit_catcher_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(while_expr)
 
 DEF_EXPR_ACCEPT(block_expr)
 DEF_EXPR_ACCEPT(apply_expr)
@@ -77,14 +58,6 @@ block_expr::block_expr(
 
 block_expr::~block_expr()
 {
-}
-
-
-void block_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  assert(false);
-  serialize_baseclass(ar, (expr*)this);
-  ar & theArgs;
 }
 
 
@@ -219,14 +192,6 @@ apply_expr::apply_expr(
 }
 
 
-void apply_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theDiscardXDM;
-}
-
-
 void apply_expr::compute_scripting_kind()
 {
   if (theExpr->is_updating())
@@ -271,14 +236,6 @@ var_decl_expr::~var_decl_expr()
   // var_decl_expr, because such var_expr objs are also registered in the sctx.
   if (theInitExpr)
     theVarExpr->remove_set_expr(this);
-}
-
-
-void var_decl_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theVarExpr;
-  ar & theInitExpr;
 }
 
 
@@ -343,14 +300,6 @@ var_set_expr::~var_set_expr()
 }
 
 
-void var_set_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theVarExpr;
-  ar & theExpr;
-}
-
-
 void var_set_expr::compute_scripting_kind()
 {
   checkNonUpdating(theExpr);
@@ -406,14 +355,6 @@ exit_expr::~exit_expr()
 }
 
 
-void exit_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theCatcherExpr;
-}
-
-
 void exit_expr::compute_scripting_kind()
 {
   theScriptingKind = EXITING_EXPR;
@@ -465,14 +406,6 @@ exit_catcher_expr::~exit_catcher_expr()
   {
     static_cast<exit_expr*>(*ite)->setCatcherExpr(NULL);
   }
-}
-
-
-void exit_catcher_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theExitExprs;
 }
 
 
@@ -532,13 +465,6 @@ flowctl_expr::flowctl_expr(static_context* sctx, const QueryLoc& loc, enum actio
 }
 
 
-void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(enum action, theAction);
-}
-
-
 void flowctl_expr::compute_scripting_kind()
 {
   theScriptingKind = BREAKING_EXPR;
@@ -560,13 +486,6 @@ while_expr::while_expr(static_context* sctx, const QueryLoc& loc, expr_t body)
   theBody(body)
 {
   compute_scripting_kind();
-}
-
-
-void while_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theBody;
 }
 
 
