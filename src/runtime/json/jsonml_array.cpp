@@ -30,6 +30,7 @@
 #include "util/omanip.h"
 #include "util/oseparator.h"
 #include "util/stl_util.h"
+#include "util/xml_util.h"
 
 #include "jsonml_array.h"
 
@@ -39,20 +40,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void split_name( zstring const &name, zstring *prefix, zstring *local ) {
-  zstring::size_type const colon = name.find( ':' );
-  if ( colon != zstring::npos ) {
-    *prefix = name.substr( 0, colon );
-    *local = name.substr( colon + 1 );
-    if ( prefix->empty() || local->empty() )
-      throw XQUERY_EXCEPTION(
-        zerr::ZJPE0008_ILLEGAL_QNAME,
-        ERROR_PARAMS( name )
-      );
-  } else {
-    prefix->clear();
-    *local = name;
-  }
+inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
+  if ( !xml::split_name( name, prefix, local ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJPE0008_ILLEGAL_QNAME,
+      ERROR_PARAMS( name )
+    );
 }
 
 namespace expect {
