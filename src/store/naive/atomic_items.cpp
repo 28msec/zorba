@@ -3506,7 +3506,7 @@ void StreamableBase64BinaryItem::materialize() const
     lStream.seekg(0, std::ios::end);
     std::streampos len = lStream.tellg();
     lStream.seekg(0, std::ios::beg);
-    if (len < 0)
+    if (len < std::streampos(0))
     {
       throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
     }

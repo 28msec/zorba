@@ -1536,6 +1536,21 @@ void static_context::get_component_uris(
   }
 }
 
+void static_context::get_candidate_uris(
+    zstring const& aUri,
+    internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const
+{
+  // Create a simple EntityData that just reports the specified Kind
+  internal::EntityData const lData(aEntityKind);
+
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::CANDIDATE, oComponents);
+  if (oComponents.size() == 0)
+  {
+    oComponents.push_back(aUri);
+  }
+}
+
 
 /***************************************************************************//**
 
@@ -2303,9 +2318,7 @@ void static_context::bind_fn(
 
   if (!is_global_root_sctx() && lookup_local_fn(qname, arity) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0034, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (theFunctionMap == NULL)

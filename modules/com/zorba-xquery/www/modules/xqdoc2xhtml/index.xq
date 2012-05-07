@@ -268,7 +268,7 @@ declare %private %an:sequential function xqdoc2html:copy-files(
  :)
 declare %an:sequential function xqdoc2html:copy-xhtml-requisites(
   $xhtmlRequisitesPath  as xs:string,
-  $xqdocBuildPath       as xs:string)
+  $xqdocBuildPath       as xs:string) as empty-sequence()
 {
   let $xhtmlPath      := fn:concat($xqdocBuildPath, file:directory-separator(), "xhtml"),
       $xmlPath        := fn:concat($xqdocBuildPath, file:directory-separator(), "xml"),
@@ -370,7 +370,7 @@ declare %an:sequential function xqdoc2html:main(
   $xqdocBuildPath as xs:string,
   $indexHtmlPath  as xs:string,
   $zorbaVersion   as xs:string,
-  $xhtmlRequisitesPath as xs:string)
+  $xhtmlRequisitesPath as xs:string) as empty-sequence()
 {
   (: fill out $xqdoc2html:ZorbaManifest :)
   xqdoc2html:collectZorbaManifestEntries($zorbaManifestPath, $xqdocBuildPath);

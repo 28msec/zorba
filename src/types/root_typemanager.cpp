@@ -20,16 +20,18 @@
 #include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
-#include "zorbatypes/datetime.h"
-#include "zorbatypes/duration.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
 
 #include "system/globalenv.h"
 
 #include "types/root_typemanager.h"
 #include "types/node_test.h"
 
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
+#include "zorbamisc/ns_consts.h"
+
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/duration.h"
 
 
 
@@ -200,14 +202,11 @@ RootTypeManager::RootTypeManager()
   TypeManagerImpl(NULL),
   m_atomic_qnametype_map(ATOMIC_QNAMETYPE_MAP_SIZE, false)
 {
-#define XS_URI "http://www.w3.org/2001/XMLSchema"
-#define XS_PREFIX "xs"
-
 #define ZXSE_URI "http://www.zorba-xquery.com/zorba/schema-extensions"
 #define ZXSE_PREFIX "zxse"
 
 #define XSQNDECL(var, local)  \
-  GENV.getStore().getItemFactory()->createQName(var, XS_URI, XS_PREFIX, local)
+  GENV.getStore().getItemFactory()->createQName(var, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");
