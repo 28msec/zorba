@@ -591,23 +591,6 @@ StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve,
   ZORBA_CATCH
 }
 
-void
-StaticContextImpl::clearBaseURI()
-{
-  try
-  {
-    theCtx->clear_base_uri();
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-  catch (std::exception const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
-  }
-}
-
 
 bool
 StaticContextImpl::setBaseURI( const String& aBaseURI )
@@ -1599,6 +1582,23 @@ StaticContextImpl::fetch(
   }
   ZORBA_CATCH
   return 0;
+}
+
+void
+StaticContextImpl::clearBaseURI()
+{
+  try
+  {
+    theCtx->clear_base_uri();
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
 }
 
 } /* namespace zorba */

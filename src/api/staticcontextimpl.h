@@ -143,9 +143,6 @@ public:
   getCopyNamespacesMode( preserve_mode_t& preserve,
                          inherit_mode_t& inherit ) const;
 
-  virtual void
-  clearBaseURI();
-
   virtual bool
   setBaseURI( const String& baseURI );
 
@@ -296,6 +293,11 @@ protected:
 
   Function_t
   checkInvokable(const Item& aQName, size_t aNumArgs) const;
+
+public:
+  virtual void
+  clearBaseURI();
+r
 };
 
 } // namespace zorba

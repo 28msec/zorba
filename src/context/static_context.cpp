@@ -1298,18 +1298,6 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
 }
 
 /***************************************************************************//**
-
-********************************************************************************/
-void static_context::clear_base_uri()
-{
-  if (theBaseUriInfo)
-    delete theBaseUriInfo;
-
-    theBaseUriInfo = new BaseUriInfo;
-}
-
-
-/***************************************************************************//**
   Base Uri Computation
 
   The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
@@ -4156,6 +4144,17 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       }
     }
   }
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::clear_base_uri()
+{
+  if (theBaseUriInfo)
+    delete theBaseUriInfo;
+
+    theBaseUriInfo = new BaseUriInfo;
 }
 
 } // namespace zorba
