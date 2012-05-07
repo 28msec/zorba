@@ -479,6 +479,10 @@ public:
 
   const rebind_list_t& get_nongrouping_vars() const { return theNonGroupVars; }
 
+  void set_grouping_vars(rebind_list_t& new_group_vars){ theGroupVars = new_group_vars;}
+
+  void set_nongrouping_vars(rebind_list_t& new_nongroup_vars){theNonGroupVars = new_nongroup_vars;}
+
   rebind_list_t::iterator beginGroupVars() { return theGroupVars.begin(); }
 
   rebind_list_t::const_iterator beginGroupVars() const { return theGroupVars.begin(); }

@@ -263,6 +263,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   //     their domain expr.
   // (c) Change a LET var into a FOR var, if its domain expr consists of
   //     exactly one item.
+  // (d) Remove any unused non-group variables from GROUP BY clauses.
   for (csize i = 0; i < numClauses; ++i)
   {
     bool substitute = false;
@@ -272,6 +273,22 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     if (c.get_kind() == flwor_clause::group_clause)
     {
       gc = static_cast<group_clause *>(&c);
+
+      flwor_clause::rebind_list_t filtered_ngVars = flwor_clause::rebind_list_t();
+      filtered_ngVars.reserve(gc->getNumNonGroupingVars());
+
+      for(flwor_clause::rebind_list_t::iterator ngVar = gc->beginNonGroupVars();
+        ngVar != gc->endNonGroupVars();
+        ngVar++)
+      {
+        var_expr_t var = ngVar->second;
+        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+
+        if(uses > 0)
+          filtered_ngVars.push_back(*ngVar);
+      }
+
+      MODIFY(gc->set_nongrouping_vars(filtered_ngVars));
     }
     else if (c.get_kind() == flwor_clause::window_clause)
     {
@@ -434,11 +451,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
       for (; gVarsIte != gVarsEnd; ++gVarsIte)
       {
-         subst_vars(rCtx, flworp, gVarsIte->second.getp(),
-            gVarsIte->first.getp());
-        /*
-        var_expr_t gVar_name = gVarsIte->first;
-        expr_t gVar_value = gVarsIte->second;
+        var_expr_t gVar_name = gVarsIte->second;
+        expr_t gVar_value = gVarsIte->first;
 
         let_clause* letClause = new let_clause(gVar_name->get_sctx(),
                                                 gVar_name->get_loc(),
@@ -446,7 +460,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                                                 gVar_value);
 
         flwor.add_clause(1, letClause);
-                */
+
       }
 
       const flwor_clause::rebind_list_t& ngVars = gc->get_nongrouping_vars();
@@ -454,14 +468,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
       for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
       {
-                /*
-         subst_vars(rCtx,
-            flworp,
-            ngVarsIte->second.getp(),
-            ngVarsIte->first.getp());
-        */
-        var_expr_t ngVar_name = ngVarsIte->first;
-        expr_t ngVar_value = ngVarsIte->second;
+        var_expr_t ngVar_name = ngVarsIte->second;
+        expr_t ngVar_value = ngVarsIte->first;
 
         let_clause* letClause = new let_clause(ngVar_name->get_sctx(),
                                                 ngVar_name->get_loc(),
@@ -472,9 +480,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       }
 
-      flwor.remove_clause(0);
+      MODIFY(flwor.remove_clause(0));
 
-      modified = true;
       continue;
     }
 
