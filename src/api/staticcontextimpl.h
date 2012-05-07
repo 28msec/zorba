@@ -297,7 +297,7 @@ protected:
 public:
   virtual void
   clearBaseURI();
-r
+
 };
 
 } // namespace zorba
