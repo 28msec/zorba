@@ -32,8 +32,25 @@ class FragmentIStream : public std::istream
 public:
   static const unsigned int BUFFER_SIZE = 4096;
   static const unsigned int LOOKAHEAD_BYTES = 3; // lookahead fetching is implemented, but currently not used
-  static const unsigned int DEFAULT_PARSED_NODES_BATCH_SIZE = 1024;
+  static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
 
+public:
+  std::istringstream* theIss;
+  std::istream* theStream;
+  char* theBuffer;
+  unsigned long bytes_in_buffer;
+  unsigned long current_offset;
+  int current_element_depth;
+  int root_elements_to_skip;
+  xmlParserCtxtPtr ctxt;
+  bool first_start_doc;
+  bool forced_parser_stop;
+  bool reached_eof;
+  unsigned int parsed_nodes_count;
+  store::Iterator_t children;
+  bool only_one_doc_node;           // If set to true, all parsed fragments will be added to one
+                                    // single document node, instead of having one for each fragment.
+  
 public:
   FragmentIStream()
     :
@@ -51,7 +68,7 @@ public:
     reached_eof(false),
     parsed_nodes_count(0),
     children(NULL),
-    parsed_nodes_batch_size(DEFAULT_PARSED_NODES_BATCH_SIZE)
+    only_one_doc_node(false)
   {
   };
 
@@ -91,30 +108,13 @@ public:
     reached_eof = false;
     parsed_nodes_count = 0;
     children = NULL;
-    parsed_nodes_batch_size = DEFAULT_PARSED_NODES_BATCH_SIZE;
+    only_one_doc_node = false;
   }
 
   virtual ~FragmentIStream()
   {
     reset();
   }
-
-public:
-  std::istringstream* theIss;
-  std::istream* theStream;
-  char* theBuffer;
-  unsigned long bytes_in_buffer;
-  unsigned long current_offset;
-  int current_element_depth;
-  int root_elements_to_skip;
-  xmlParserCtxtPtr ctxt;
-  bool first_start_doc;
-  bool forced_parser_stop;
-  bool reached_eof;
-  unsigned int parsed_nodes_count;
-  store::Iterator_t children;
-  unsigned int parsed_nodes_batch_size; // if set to 0, the batching is disabled. All the 
-                                        // nodes in the fragment will be parsed and then returned.
 };
 
 }

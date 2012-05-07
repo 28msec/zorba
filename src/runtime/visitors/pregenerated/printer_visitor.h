@@ -690,6 +690,9 @@ namespace zorba {
     void beginVisit( const FnZorbaParseXmlFragmentIterator& );
     void endVisit  ( const FnZorbaParseXmlFragmentIterator& );
 
+    void beginVisit( const FnParseXmlFragmentIterator& );
+    void endVisit  ( const FnParseXmlFragmentIterator& );
+
     void beginVisit( const FnParseXmlIterator& );
     void endVisit  ( const FnParseXmlIterator& );
 

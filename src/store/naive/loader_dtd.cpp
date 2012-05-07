@@ -260,6 +260,12 @@ store::Item_t FragmentXmlLoader::loadXml(
     while ( ! theFragmentStream->forced_parser_stop && fillBuffer(theFragmentStream))
     {
       // std::cerr << "\n==================\n--> skip_root: " << theFragmentStream->root_elements_to_skip << " current_depth: " << theFragmentStream->current_element_depth << " about to parse: [" << theFragmentStream->ctxt->input->cur << "] " << std::endl;
+      
+      if (theFragmentStream->only_one_doc_node && !theFragmentStream->first_start_doc)
+      {
+        theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
+        theFragmentStream->ctxt->disableSAX = false; // xmlStopParser() sets disableSAX to true
+      }
 
       // This case needs to be handled here, otherwise LibXml2 will segfault
       if (theFragmentStream->ctxt->input->cur[0] == '<' &&
@@ -382,14 +388,13 @@ void FragmentXmlLoader::checkStopParsing(void* ctx, bool force)
       ||
       (loader.theFragmentStream->current_element_depth <= loader.theFragmentStream->root_elements_to_skip
           &&
-          loader.theFragmentStream->parsed_nodes_batch_size > 0
-          &&
-          loader.theFragmentStream->parsed_nodes_count >= loader.theFragmentStream->parsed_nodes_batch_size))
+          loader.theFragmentStream->parsed_nodes_count >= loader.theFragmentStream->PARSED_NODES_BATCH_SIZE))
   {
     loader.theFragmentStream->current_offset = offset;
     xmlStopParser(loader.theFragmentStream->ctxt);
-    loader.theFragmentStream->ctxt->errNo = XML_SCHEMAV_MISC; // fake error to force stopping
-    loader.theFragmentStream->forced_parser_stop = true;
+    loader.theFragmentStream->ctxt->errNo = XML_SCHEMAV_MISC; // fake error to force stopping      
+    if (!loader.theFragmentStream->only_one_doc_node)
+      loader.theFragmentStream->forced_parser_stop = true;
   }
 
   loader.theFragmentStream->parsed_nodes_count++;

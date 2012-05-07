@@ -306,7 +306,6 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
 /*******************************************************************************
   14.9.2 fn:parse-xml-fragment
 ********************************************************************************/
-/*
 bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   zstring docString;
@@ -330,7 +329,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     state->theProperties.setBaseUri(theSctx->get_base_uri());
     state->baseUri = state->theProperties.getBaseUri();    
     state->theProperties.setParseExternalParsedEntity(true);
-    state->theFragmentStream.parsed_nodes_batch_size = 0; // disable batching and return all the nodes
+    state->theFragmentStream.only_one_doc_node = 1; // create only one document node holding all fragment nodes
   
     while ( ! state->theFragmentStream.stream_is_consumed() )
     {
@@ -363,6 +362,5 @@ void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
   baseUri = "";
   docUri = "";
 }
-*/
 
 } /* namespace zorba */

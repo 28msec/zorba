@@ -55,6 +55,23 @@ public:
 };
 
 
+//fn:parse-xml-fragment
+class fn_parse_xml_fragment : public function
+{
+public:
+  fn_parse_xml_fragment(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 
