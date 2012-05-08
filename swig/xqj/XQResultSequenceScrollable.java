@@ -44,9 +44,11 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
     private boolean currentItemGet = false;
     private Collection<XQResultItem> content = new ArrayList<XQResultItem>();
     private int position = 0;
-    int size = 0;
+    private int size = 0;
     private XQConnection connection = null;
-    boolean preparedExpression;
+    private boolean preparedExpression;
+    private org.zorbaxquery.api.XQuery lQuery;
+    private XQStaticCollectionManager lStaticCollectionManager;
 
     public XQResultSequenceScrollable(XQConnection conn, org.zorbaxquery.api.XQuery query, boolean prepared) {
         Iterator iter;
@@ -62,6 +64,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
         size = content.size();
         connection = conn;
         preparedExpression = prepared;
+        lQuery = query;
     }
 
     @Override
@@ -104,6 +107,9 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
         closed = true;
         for (XQItem item: content) {
             item.close();
+        }
+        if (lStaticCollectionManager!=null) {
+            lStaticCollectionManager.close();
         }
     }
 
@@ -438,6 +444,14 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
         isClosedXQException();
         isNullXQException(result);
         getItem().writeItemToResult(result);
+    }
+
+    public XQStaticCollectionManager getStaticCollectionManager() throws XQException {
+        isClosedXQException();
+        if (lStaticCollectionManager==null) {
+            lStaticCollectionManager = new XQStaticCollectionManager(lQuery.getStaticCollectionManager());
+        }
+        return lStaticCollectionManager;
     }
 
     private void isClosedXQException() throws XQException {

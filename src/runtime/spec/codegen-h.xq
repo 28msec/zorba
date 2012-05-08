@@ -146,7 +146,7 @@ declare function local:create-function($iter, $function) as xs:string?
     if(count($function/zorba:signature) = 0)
     then
       (: TODO user fn:error :)
-      'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
+      'Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element'
     else
       local:create-function-XQuery-30($iter, $function)
       (: local:create-function-arity($iter, $function, xs:integer(1)) :)

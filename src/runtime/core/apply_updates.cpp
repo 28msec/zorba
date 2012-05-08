@@ -92,19 +92,24 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   store::Item_t item;
   ulong numItems = 0;
-  std::auto_ptr<store::PUL> pul;
+  store::PUL_t pul;
 
   ApplyIteratorState* state;
   DEFAULT_STACK_INIT(ApplyIteratorState, state, planState);
-
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   // Note: updating expr might not return a pul because of vacuous exprs
   while (consumeNext(item, theChild, planState))
   {
     if (item->isPul())
     {
-      pul->mergeUpdates(item);
+      if (pul)
+      {
+        pul->mergeUpdates(item);
+      }
+      else
+      {
+        pul.transfer(item);
+      }
     }
     else if (!theDiscardXDM)
     {
@@ -113,7 +118,8 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  apply_updates(ccb, gdctx, theSctx, pul.get(), loc);
+  if(pul)
+    apply_updates(ccb, gdctx, theSctx, pul, loc);
 
   state->theXDMIte = state->theXDMItems.begin();
   state->theXDMEnd = state->theXDMItems.end();

@@ -41,6 +41,7 @@
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/parser/parse_constants.h"
 
+#include "diagnostics/assert.h"
 #include "functions/function.h"
 #include "functions/udf.h"
 
