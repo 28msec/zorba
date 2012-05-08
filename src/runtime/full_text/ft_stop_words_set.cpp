@@ -75,7 +75,6 @@ static bool is_word_char( char c ) {
 void ft_stop_words_set::apply_word( zstring const &word, word_set_t &word_set,
                                     ft_stop_words_unex::type mode ) {
   // TODO: should "word" be converted to lower-case?
-  std::cout << "applying word " << word << std::endl;
   switch ( mode ) {
     case ft_stop_words_unex::union_:
       word_set.insert( word );
