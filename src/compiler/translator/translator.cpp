@@ -3316,8 +3316,9 @@ void* begin_visit(const VFO_DeclList& v)
              qnameItem->getLocalName() == "tokenize"))
         {
           FunctionConsts::FunctionKind kind;
+          zstring const local_name( qnameItem->getLocalName() );
 
-          if (qnameItem->getLocalName() == "tokenizer-properties")
+          if (local_name == "tokenizer-properties")
           {
             assert(numParams <= 1);
 
@@ -3328,7 +3329,7 @@ void* begin_visit(const VFO_DeclList& v)
 
             f = new full_text_tokenizer_properties(f->getSignature(), kind);
           }
-          else 
+          else if (local_name == "tokenize")
           {
             assert(numParams == 1 || numParams == 2);
 
@@ -3338,6 +3339,11 @@ void* begin_visit(const VFO_DeclList& v)
               kind = FunctionConsts::FULL_TEXT_TOKENIZE_1;
 
             f = new full_text_tokenize(f->getSignature(), kind);
+          }
+          else if (local_name == "current-compare-options")
+          {
+            kind = FunctionConsts::FULL_TEXT_CURRENT_COMPARE_OPTIONS_0;
+            f = new full_text_current_compare_options(f->getSignature(), kind);
           }
 
           f->setStaticContext(theRootSctx);

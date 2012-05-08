@@ -26,12 +26,10 @@ namespace zorba
 
 SERIALIZABLE_CLASS_VERSIONS(full_text_tokenize)
 
-
 void full_text_tokenize::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (function*)this);
 }
-
 
 PlanIter_t full_text_tokenize::codegen(
   CompilerCB*,
@@ -46,12 +44,10 @@ PlanIter_t full_text_tokenize::codegen(
 
 SERIALIZABLE_CLASS_VERSIONS(full_text_tokenizer_properties)
 
-
 void full_text_tokenizer_properties::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (function*)this);
 }
-
 
 PlanIter_t full_text_tokenizer_properties::codegen(
   CompilerCB*,
@@ -63,6 +59,24 @@ PlanIter_t full_text_tokenizer_properties::codegen(
   return new TokenizerPropertiesIterator(theModuleSctx, loc, argv);
 }
 
+
+SERIALIZABLE_CLASS_VERSIONS(full_text_current_compare_options)
+
+void full_text_current_compare_options::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (function*)this);
+}
+
+PlanIter_t full_text_current_compare_options::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new CurrentCompareOptionsIterator(theModuleSctx, loc, argv);
+}
+
 #endif // ZORBA_NO_FULL_TEXT
 
 
@@ -71,6 +85,21 @@ PlanIter_t full_text_tokenizer_properties::codegen(
 void populate_context_ft_module_impl(static_context* sctx) 
 {
 #ifndef ZORBA_NO_FULL_TEXT
+
+  xqtref_t current_compare_options_return_type =
+  GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
+                                   createQName(FT_MODULE_NS, "", "compare-options"),
+                                   NULL,
+                                   TypeConstants::QUANT_ONE,
+                                   false,
+                                   false);
+  {
+    DECL_WITH_KIND(sctx,
+                   full_text_current_compare_options,
+                   (createQName(FT_MODULE_NS, "", "current-compare-options"),
+                    current_compare_options_return_type),
+                   FunctionConsts::FULL_TEXT_CURRENT_COMPARE_OPTIONS_0);
+  }
 
   xqtref_t tokenize_return_type =
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,

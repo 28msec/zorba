@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include "util/cxx_util.h"
+
 #include "ft_types.h"
 
 namespace zorba {
@@ -26,7 +28,7 @@ namespace zorba {
       "all",
       "all words",
       "phrase",
-      0
+      nullptr
     };
   }
 
@@ -34,17 +36,17 @@ namespace zorba {
     char const *const string_of[] = {
       "sentence",
       "paragraph",
-      0
+      nullptr
     };
   }
 
   namespace ft_case_mode {
     char const *const string_of[] = {
-      "insensitive",
-      "sensitive",
+      "case insensitive",
+      "case sensitive",
       "lower",
       "upper",
-      0
+      nullptr
     };
   }
 
@@ -53,15 +55,15 @@ namespace zorba {
       "at start",
       "at end",
       "entire",
-      0
+      nullptr
     };
   };
 
   namespace ft_diacritics_mode {
     char const *const string_of[] = {
-      "insensitive",
-      "sensitive",
-      0
+      "diacritics insensitive",
+      "diacritics sensitive",
+      nullptr
     };
   }
 
@@ -71,7 +73,7 @@ namespace zorba {
       "at least",
       "at most",
       "from to",
-      0
+      nullptr
     };
   }
 
@@ -79,15 +81,15 @@ namespace zorba {
     char const *const string_of[] = {
       "same",
       "different",
-      0
+      nullptr
     };
   }
 
   namespace ft_stem_mode {
     char const *const string_of[] = {
-      "without",
-      "with",
-      0
+      "no stemming",
+      "stemming",
+      nullptr
     };
   }
 
@@ -96,7 +98,7 @@ namespace zorba {
       "without",
       "with",
       "with default",
-      0
+      nullptr
     };
   }
 
@@ -104,7 +106,7 @@ namespace zorba {
     char const *const string_of[] = {
       "union",
       "except",
-      0
+      nullptr
     };
   }
 
@@ -113,7 +115,7 @@ namespace zorba {
       "words",
       "sentences",
       "paragraphs",
-      0
+      nullptr
     };
   }
 
@@ -121,7 +123,7 @@ namespace zorba {
     char const *const string_of[] = {
       "no wildcards",
       "wildcards",
-      0
+      nullptr
     };
   }
 

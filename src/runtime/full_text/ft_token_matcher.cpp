@@ -43,7 +43,7 @@ inline bool get_diacritics_insensitive( ftmatch_options const &options ) {
 
 inline bool get_stemming( ftmatch_options const &options ) {
   if ( ftstem_option const *const s = options.get_stem_option() )
-    return s->get_mode() == ft_stem_mode::with;
+    return s->get_mode() == ft_stem_mode::stemming;
   return false;
 }
 

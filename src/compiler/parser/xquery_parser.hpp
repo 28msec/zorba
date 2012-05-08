@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/Users/wcandillon/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 35 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,7 +84,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -114,7 +114,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 118 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/Users/wcandillon/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 155 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -150,7 +150,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 154 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -659,7 +659,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 663 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 663 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

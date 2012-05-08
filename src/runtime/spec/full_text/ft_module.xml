@@ -14,6 +14,10 @@
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
+<zorba:iterator name="CurrentCompareOptionsIterator"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+</zorba:iterator>
+
 <zorba:iterator name="CurrentLangIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>

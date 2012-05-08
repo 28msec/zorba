@@ -79,8 +79,65 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
   if ( iso639_1::type const lang = find_lang( lang_string.c_str() ) )
     return lang;
   throw XQUERY_EXCEPTION(
-    err::FTST0009, ERROR_PARAMS( lang_string ), ERROR_LOC( loc )
+    err::FTST0009 /* lang not supported */,
+    ERROR_PARAMS( lang_string ),
+    ERROR_LOC( loc )
   );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
+                                              PlanState &plan_state ) const {
+  zstring base_uri;
+  store::Item_t junk, item, name;
+  store::NsBindings const ns_bindings;
+  static_context const *const sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
+  ftmatch_options const *const options = sctx->get_match_options();
+  store::Item_t type_name;
+  zstring value_string;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  GENV_ITEMFACTORY->createQName(
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "compare-options"
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    result, nullptr, name, type_name, false, false, ns_bindings, base_uri
+  );
+
+  // case="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "case" );
+  value_string = ft_case_mode::string_of[
+    options->get_case_option()->get_mode()
+  ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  // diacritics="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "diacritics" );
+  value_string = ft_diacritics_mode::string_of[
+    options->get_diacritics_option()->get_mode()
+  ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  // stem="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "stem" );
+  value_string = ft_stem_mode::string_of[
+    options->get_stem_option()->get_mode()
+  ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -133,8 +190,8 @@ bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
       GENV_STORE.getStemmerProvider();
     is_supported = provider->getStemmer( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -172,7 +229,7 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   stop_words.reset( ft_stop_words_set::get_default( lang ) );
   if ( !stop_words )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadStopWordsLang )
       ),
@@ -198,8 +255,8 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
   try {
     is_supported = ft_stop_words_set::get_default( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -251,8 +308,8 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     ZORBA_ASSERT( provider );
     is_supported = provider->getThesaurus( lang );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 /* lang not supported by Zorba */ )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -278,8 +335,8 @@ bool IsTokenizerLangSupportedIterator::nextImpl( store::Item_t &result,
     TokenizerProvider const *const p = GENV_STORE.getTokenizerProvider();
     is_supported = p && p->getTokenizer( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -325,7 +382,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
     STACK_PUSH( true, state );
   } else {
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadStemmerLang )
       ),
@@ -414,7 +471,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   ZORBA_ASSERT( provider );
   if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadThesaurusLang )
       ),
@@ -630,7 +687,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   ZORBA_ASSERT( tokenizer_provider );
   if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
       )
@@ -774,7 +831,7 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     Tokenizer::ptr tokenizer;
     if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
       throw XQUERY_EXCEPTION(
-        err::FTST0009,
+        err::FTST0009 /* lang not supported */,
         ERROR_PARAMS(
           iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
         )
