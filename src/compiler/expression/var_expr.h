@@ -154,7 +154,7 @@ public:
 protected:
   ulong                 theUniqueId;
 
-  var_kind              theKind;
+  var_kind              theVarKind;
 
   store::Item_t         theName;
 
@@ -180,7 +180,7 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(var_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM2(var_expr, expr,theFlworClause,theCopyClause)
+  var_expr(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -201,9 +201,9 @@ public:
 
   store::Item* get_name() const;
 
-  var_kind get_kind() const { return theKind; }
+  var_kind get_kind() const { return theVarKind; }
 
-  void set_kind(var_kind k) { theKind = k; }
+  void set_kind(var_kind k) { theVarKind = k; }
 
   bool is_private() const { return theIsPrivate; }
 

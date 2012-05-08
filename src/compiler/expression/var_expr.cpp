@@ -24,6 +24,8 @@
 
 #include "types/typeops.h"
 
+#include "context/static_context.h"
+
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
@@ -79,7 +81,7 @@ var_expr::var_expr(
   :
   expr(sctx, loc, var_expr_kind),
   theUniqueId(0),
-  theKind(k),
+  theVarKind(k),
   theName(name),
   theDeclaredType(NULL),
   theFlworClause(NULL),
@@ -104,7 +106,7 @@ var_expr::var_expr(const var_expr& source)
   :
   expr(source),
   theUniqueId(0),
-  theKind(source.theKind),
+  theVarKind(source.theVarKind),
   theName(source.theName),
   theDeclaredType(source.theDeclaredType),
   theFlworClause(NULL),
@@ -119,13 +121,28 @@ var_expr::var_expr(const var_expr& source)
 }
 
 
+var_expr::var_expr(::zorba::serialization::Archiver& ar)
+  :
+  theFlworClause(NULL),
+  theCopyClause(NULL),
+  theUDF(NULL)
+{
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 void var_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(var_kind, theKind);
+  ar & theSctx;
+  ar & theLoc;
+  ar & theType;
+  theKind = var_expr_kind;
+  ar & theScriptingKind;
+  ar & theFlags1;
+
+  SERIALIZE_ENUM(var_kind, theVarKind);
   ar & theUniqueId;
   ar & theName;
   ar & theDeclaredType;
@@ -173,7 +190,7 @@ void var_expr::set_type(xqtref_t t)
 ********************************************************************************/
 const var_expr* var_expr::get_pos_var() const
 {
-  if (theKind == for_var)
+  if (theVarKind == for_var)
   {
     return reinterpret_cast<for_clause*>(theFlworClause)->get_pos_var();
   }
@@ -191,20 +208,20 @@ expr* var_expr::get_domain_expr() const
 {
   if (theFlworClause)
   {
-    if (theKind == for_var ||
-        theKind == let_var ||
-        theKind == win_var ||
-        theKind == wincond_in_var ||
-        theKind == wincond_out_var)
+    if (theVarKind == for_var ||
+        theVarKind == let_var ||
+        theVarKind == win_var ||
+        theVarKind == wincond_in_var ||
+        theVarKind == wincond_out_var)
     {
       return reinterpret_cast<forletwin_clause*>(theFlworClause)->get_expr();
     }
-    else if (theKind == groupby_var)
+    else if (theVarKind == groupby_var)
     {
       return reinterpret_cast<group_clause*>(theFlworClause)->
              get_input_for_group_var(this);
     }
-    else if (theKind == non_groupby_var)
+    else if (theVarKind == non_groupby_var)
     {
       return reinterpret_cast<group_clause*>(theFlworClause)->
              get_input_for_nongroup_var(this);
@@ -242,7 +259,7 @@ for_clause* var_expr::get_for_clause() const
 ********************************************************************************/
 void var_expr::remove_set_expr(expr* e) 
 {
-  assert(theKind == local_var || theKind == prolog_var);
+  assert(theVarKind == local_var || theVarKind == prolog_var);
 
   bool found = false;
   std::vector<expr*>::iterator ite = theSetExprs.begin();

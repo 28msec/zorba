@@ -163,45 +163,46 @@ void expr::compute_return_type(bool deep, bool* modified)
   case var_expr_kind:
   {
     var_expr* e = static_cast<var_expr*>(this);
+    var_expr::var_kind varKind = e->get_kind();
 
     xqtref_t derivedType;
     expr* domainExpr;
 
     // The translator has already set theDeclaredType of pos_vars, count_vars,
     // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
-    if (e->theKind == var_expr::pos_var ||
-        e->theKind == var_expr::wincond_out_pos_var ||
-        e->theKind == var_expr::wincond_in_pos_var)
+    if (varKind == var_expr::pos_var ||
+        varKind == var_expr::wincond_out_pos_var ||
+        varKind == var_expr::wincond_in_pos_var)
     {
       newType = e->theDeclaredType;
     }
-    else if (e->theKind == var_expr::for_var ||
-             e->theKind == var_expr::let_var ||
-             e->theKind == var_expr::win_var ||
-             e->theKind == var_expr::wincond_in_var ||
-             e->theKind == var_expr::wincond_out_var ||
-             e->theKind == var_expr::groupby_var ||
-             e->theKind == var_expr::non_groupby_var ||
-             e->theKind == var_expr::copy_var)
+    else if (varKind == var_expr::for_var ||
+             varKind == var_expr::let_var ||
+             varKind == var_expr::win_var ||
+             varKind == var_expr::wincond_in_var ||
+             varKind == var_expr::wincond_out_var ||
+             varKind == var_expr::groupby_var ||
+             varKind == var_expr::non_groupby_var ||
+             varKind == var_expr::copy_var)
     {
       domainExpr = e->get_domain_expr();
       ZORBA_ASSERT(domainExpr != NULL);
 
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (e->theKind == var_expr::for_var)
+      if (varKind == var_expr::for_var)
       {
         derivedType = TypeOps::prime_type(tm, *domainType);
       }
-      else if (e->theKind == var_expr::wincond_in_var ||
-               e->theKind == var_expr::wincond_out_var)
+      else if (varKind == var_expr::wincond_in_var ||
+               varKind == var_expr::wincond_out_var)
       {
         // TODO: we can be a little more specific here: if the quantifier of the
         // domain type is PLUS or ONE, then the quantifier of the "current" cond
         // var is ONE.
         derivedType = tm->create_type(*domainType, TypeConstants::QUANT_QUESTION);
       }
-      else if (e->theKind == var_expr::non_groupby_var)
+      else if (varKind == var_expr::non_groupby_var)
       {
         derivedType = tm->create_type(*domainType, TypeConstants::QUANT_STAR);
       }

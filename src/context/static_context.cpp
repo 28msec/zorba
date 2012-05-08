@@ -212,10 +212,8 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       // no way to get the module
       if (!module)
       {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-          ERROR_PARAMS( ZED( NoExternalModuleFromDLL ), lURI )
-        );
+        throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+        ERROR_PARAMS(ZED(NoExternalModuleFromDLL), lURI));
       }
     }
     else
@@ -224,20 +222,16 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       SerializationCallback* lCallback = ar.getUserCallback();
       if (!lCallback)
       {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-          ERROR_PARAMS( ZED( NoSerializationCallbackForModule ), lURI )
-        );
+        throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+        ERROR_PARAMS(ZED(NoSerializationCallbackForModule), lURI));
       }
 
       // the life-cycle of the module is managed by the user
       module = lCallback->getExternalModule(lURI.str());
       if (!module)
       {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-          ERROR_PARAMS( ZED( NoRegisteredSerializationCallback_2 ), lURI )
-        );
+        throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+        ERROR_PARAMS(ZED(NoRegisteredSerializationCallback_2), lURI));
       }
     }
   }

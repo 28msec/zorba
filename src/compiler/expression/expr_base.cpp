@@ -36,9 +36,6 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialize_basic_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-#include "zorbaserialization/serialize_template_types.h"
 
 namespace zorba
 {
@@ -143,20 +140,6 @@ expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
 ********************************************************************************/
 expr::~expr()
 {
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theSctx;
-  ar & theLoc;
-  ar & theType;
-  SERIALIZE_ENUM(expr_kind_t, theKind);
-  ar & theScriptingKind;
-  ar & theFlags1;
 }
 
 

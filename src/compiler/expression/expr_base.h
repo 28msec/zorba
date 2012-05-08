@@ -189,11 +189,8 @@ public:
   static void checkNonUpdating(const expr* e);
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
+  expr() : theSctx(NULL), theFlags1(0) {}
 
-public:
   expr(static_context*, const QueryLoc&, expr_kind_t);
 
   virtual ~expr();
