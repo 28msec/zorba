@@ -189,6 +189,8 @@ namespace zorba{
 
     class FetchContentIterator;
 
+    class FetchContentBinaryIterator;
+
     class FetchContentTypeIterator;
 
     class FnPutIterator;
@@ -896,6 +898,9 @@ public:
 
     virtual void beginVisit ( const FetchContentIterator& ) = 0;
     virtual void endVisit   ( const FetchContentIterator& ) = 0;
+
+    virtual void beginVisit ( const FetchContentBinaryIterator& ) = 0;
+    virtual void endVisit   ( const FetchContentBinaryIterator& ) = 0;
 
     virtual void beginVisit ( const FetchContentTypeIterator& ) = 0;
     virtual void endVisit   ( const FetchContentTypeIterator& ) = 0;

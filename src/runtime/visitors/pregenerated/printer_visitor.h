@@ -286,6 +286,9 @@ namespace zorba {
     void beginVisit( const FetchContentIterator& );
     void endVisit  ( const FetchContentIterator& );
 
+    void beginVisit( const FetchContentBinaryIterator& );
+    void endVisit  ( const FetchContentBinaryIterator& );
+
     void beginVisit( const FetchContentTypeIterator& );
     void endVisit  ( const FetchContentTypeIterator& );
 

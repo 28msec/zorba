@@ -96,5 +96,28 @@ declare %an:streamable function fetch:content($uri as xs:string) as xs:string
  : @see <a href="../../html/uriresolvers.html">URI Resolvers</a>.
  : @see <a href="../../html/options_and_annotations.html">Documentation of Zorba's annotations</a>.
  :)
+declare %an:streamable function fetch:content($uri as xs:string, $entityKind as xs:string)
+as xs:string
+{
+  fetch:content($uri, $entityKind, "UTF-8")
+};
 
-declare %an:streamable function fetch:content($uri as xs:string, $entityKind as xs:string) as xs:string external;
+(:~
+ :)
+declare %an:streamable function fetch:content(
+  $uri as xs:string,
+  $entityKind as xs:string,
+  $encoding as xs:string)
+as xs:string external;
+
+(:~
+ :)
+declare %an:streamable function fetch:content-binary($uri as xs:string) as xs:base64Binary
+{
+  fetch:content-binary($uri, "SOME_CONTENT")
+};
+
+(:~
+ :)
+declare %an:streamable function fetch:content-binary($uri as xs:string, $entityKind as xs:string)
+as xs:base64Binary external;
