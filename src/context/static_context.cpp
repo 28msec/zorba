@@ -1526,6 +1526,21 @@ void static_context::get_component_uris(
   }
 }
 
+void static_context::get_candidate_uris(
+    zstring const& aUri,
+    internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const
+{
+  // Create a simple EntityData that just reports the specified Kind
+  internal::EntityData const lData(aEntityKind);
+
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::CANDIDATE, oComponents);
+  if (oComponents.size() == 0)
+  {
+    oComponents.push_back(aUri);
+  }
+}
+
 
 /***************************************************************************//**
 
