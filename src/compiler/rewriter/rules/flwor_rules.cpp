@@ -277,6 +277,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t filtered_ngVars = flwor_clause::rebind_list_t();
       filtered_ngVars.reserve(gc->getNumNonGroupingVars());
 
+      bool modified_ngVar = false;
+
       for(flwor_clause::rebind_list_t::iterator ngVar = gc->beginNonGroupVars();
         ngVar != gc->endNonGroupVars();
         ngVar++)
@@ -286,9 +288,12 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
         if(uses > 0 || var->isNonDiscardable())
           filtered_ngVars.push_back(*ngVar);
+        else
+          modified_ngVar = true;
       }
 
-      MODIFY(gc->set_nongrouping_vars(filtered_ngVars));
+      if(modified_ngVar)
+        MODIFY(gc->set_nongrouping_vars(filtered_ngVars));
     }
     else if (c.get_kind() == flwor_clause::window_clause)
     {
@@ -693,7 +698,7 @@ static bool is_trivial_expr(const expr* e)
   Check if it is OK to fold (inline) a FOR/LET var X that we know is referenced
   only once withing its flwor expr.
 
-  For a LET var, varQuant is always QUNAT_ONE.
+  For a LET var, varQuant is always QUANT_ONE.
 
   For a FOR var, varQuant is the quantifier of the type of the domain expr.
   It can be either QUANT_ONE or QUANT_QUESTION.
