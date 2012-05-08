@@ -73,6 +73,7 @@ namespace zorba {
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
+  theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -97,6 +98,7 @@ StaticContextImpl::StaticContextImpl(
     DiagnosticHandler* aDiagnosticHandler)
   :
   theCtx(aCtx),
+  theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -118,6 +120,7 @@ StaticContextImpl::StaticContextImpl(
 StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
+  theMaxVarId(2),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)
@@ -1023,9 +1026,11 @@ void StaticContextImpl::loadProlog(
   theSctxMap = impl.theCompilerCB->theSctxMap;
 }
 
+
 static void
-toInternalPath(const std::vector<String>& aPublicStrings,
-               std::vector<zstring>& aInternalStrings)
+toInternalPath(
+    const std::vector<String>& aPublicStrings,
+    std::vector<zstring>& aInternalStrings)
 {
   for (std::vector<String>::const_iterator lIter = aPublicStrings.begin();
        lIter != aPublicStrings.end(); ++lIter)
@@ -1042,9 +1047,11 @@ toInternalPath(const std::vector<String>& aPublicStrings,
   }
 }
 
+
 static void
-toPublicPath(const std::vector<zstring>& aInternalStrings,
-             std::vector<String>& aPublicStrings)
+toPublicPath(
+    const std::vector<zstring>& aInternalStrings,
+    std::vector<String>& aPublicStrings)
 {
   for (std::vector<zstring>::const_iterator lIter = aInternalStrings.begin();
        lIter != aInternalStrings.end(); ++lIter)
@@ -1052,6 +1059,7 @@ toPublicPath(const std::vector<zstring>& aInternalStrings,
     aPublicStrings.push_back(lIter->c_str());
   }
 }
+
 
 void
 StaticContextImpl::setURIPath(const std::vector<String> &aURIPath)
