@@ -614,8 +614,14 @@ store::Item* XmlNode::copy(
       pos = parent->numChildren();
     }
   } // have parent
-
-  return copyInternal(parent, parent, pos, NULL, copymode);
+  else if (copymode.theDoCopy)
+  {
+    return copyInternal(parent, parent, pos, NULL, copymode);
+  }
+  else
+  {
+    return const_cast<XmlNode*>(this);
+  }
 }
 
 
