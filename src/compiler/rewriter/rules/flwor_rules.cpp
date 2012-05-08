@@ -284,7 +284,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         var_expr_t var = ngVar->second;
         int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
 
-        if(uses > 0)
+        if(uses > 0 || var->isNonDiscardable())
           filtered_ngVars.push_back(*ngVar);
       }
 
