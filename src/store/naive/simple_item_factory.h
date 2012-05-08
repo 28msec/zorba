@@ -106,6 +106,10 @@ public:
       StreamReleaser,
       bool seekable = false);
 
+  bool createSharedStreamableString(
+      store::Item_t& result,
+      store::Item_t& streamable_dependent);
+
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
 
   bool createBase64Binary(

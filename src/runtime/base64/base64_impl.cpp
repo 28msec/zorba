@@ -52,11 +52,9 @@ bool Base64DecodeIterator::nextImpl(
     else
     {
       // streamable string eventually transcoding
-      GENV_ITEMFACTORY->createStreamableString(
+      GENV_ITEMFACTORY->createSharedStreamableString(
           result,
-          lItem->getStream(),
-          lItem->getStreamReleaser(),
-          lItem->isSeekable());
+          lItem);
     }
   }
   else
