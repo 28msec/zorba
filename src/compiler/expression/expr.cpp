@@ -364,8 +364,8 @@ cast_or_castable_base_expr::cast_or_castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    expr_t input,
-    xqtref_t type)
+    const expr_t& input,
+    const xqtref_t& type)
   :
   expr(sctx, loc, kind),
   theInputExpr(input),
@@ -416,8 +416,8 @@ cast_base_expr::cast_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    expr_t input,
-    xqtref_t type)
+    const expr_t& input,
+    const xqtref_t& type)
   : 
   cast_or_castable_base_expr(sctx, loc, kind, input, type)
 {
@@ -439,8 +439,8 @@ void cast_base_expr::serialize(::zorba::serialization::Archiver& ar)
 cast_expr::cast_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type)
+    const expr_t& inputExpr,
+    const xqtref_t& type)
   :
   cast_base_expr(sctx, loc, cast_expr_kind, inputExpr, type)
 {
@@ -476,16 +476,16 @@ expr_t cast_expr::clone(substitution_t& subst) const
 treat_expr::treat_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type,
-    Error const &err,
+    const expr_t& inputExpr,
+    const xqtref_t& type,
+    TreatIterator::ErrorKind err,
     bool check_prime,
-    store::Item_t fnQname)
+    store::Item* qname)
   :
   cast_base_expr(sctx, loc, treat_expr_kind, inputExpr, type),
-  theError(&err),
+  theErrorKind(err),
   theCheckPrime(check_prime),
-  theFnQName(fnQname)
+  theQName(qname)
 {
 }
 
@@ -494,8 +494,8 @@ void treat_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (cast_base_expr*)this);
   ar & theCheckPrime;
-  ar & theError;
-  ar & theFnQName;
+  SERIALIZE_ENUM(TreatIterator::ErrorKind, theErrorKind);
+  ar & theQName;
 }
 
 
@@ -507,7 +507,7 @@ expr_t treat_expr::clone(substitution_t& subst) const
                         get_target_type(),
                         get_err(),
                         get_check_prime(),
-                        get_fn_qname());
+                        get_qname());
 }
 
 
@@ -517,12 +517,14 @@ expr_t treat_expr::clone(substitution_t& subst) const
 promote_expr::promote_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t input,
-    xqtref_t type,
-    store::Item_t fnQName)
+    const expr_t& input,
+    const xqtref_t& type,
+    PromoteIterator::ErrorKind err,
+    store::Item* qname)
   :
   cast_base_expr(sctx, loc, promote_expr_kind, input, type),
-  theFnQName(fnQName)
+  theErrorKind(err),
+  theQName(qname)
 {
 }
 
@@ -530,7 +532,8 @@ promote_expr::promote_expr(
 void promote_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (cast_base_expr*)this);
-  ar & theFnQName;
+  SERIALIZE_ENUM(PromoteIterator::ErrorKind, theErrorKind);
+  ar & theQName;
 }
 
 
@@ -540,7 +543,8 @@ expr_t promote_expr::clone(substitution_t& subst) const
                           get_loc(),
                           get_input()->clone(subst),
                           get_target_type(),
-                          theFnQName);
+                          theErrorKind,
+                          theQName.getp());
 }
 
 
@@ -551,8 +555,8 @@ castable_base_expr::castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    expr_t input,
-    xqtref_t type)
+    const expr_t& input,
+    const xqtref_t& type)
   :
   cast_or_castable_base_expr(sctx, loc, kind, input, type)
 {
@@ -573,8 +577,8 @@ void castable_base_expr::serialize(::zorba::serialization::Archiver& ar)
 castable_expr::castable_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type)
+    const expr_t& inputExpr,
+    const xqtref_t& type)
   :
   castable_base_expr (sctx, loc, castable_expr_kind, inputExpr, type)
 {
@@ -608,8 +612,8 @@ expr_t castable_expr::clone(substitution_t& subst) const
 instanceof_expr::instanceof_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type,
+    const expr_t& inputExpr,
+    const xqtref_t& type,
     bool checkPrimeOnly)
   :
   castable_base_expr(sctx, loc, instanceof_expr_kind, inputExpr, type),
