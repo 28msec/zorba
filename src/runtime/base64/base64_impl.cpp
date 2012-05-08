@@ -81,10 +81,11 @@ bool Base64DecodeIterator::nextImpl(
       }
       else
       {
-        result = lItem;
+        GENV_ITEMFACTORY->createSharedStreamableString(
+            result,
+            lItem);
       }
     }
-    STACK_PUSH (true, state);
   }
   else
   {
