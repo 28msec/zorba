@@ -84,9 +84,11 @@ public:
    * @param aStreamReleaser A function pointer which is invoked once
    *        the StreamResource is destroyed. Normally this function will delete
    *        the std::istream object passed to it.
+   * @param aIsStreamSeekable Determines whether the given stream is seekable.
    */
   static StreamResource* create(std::istream* aStream,
-                                StreamReleaser aStreamReleaser);
+                                StreamReleaser aStreamReleaser,
+                                bool aIsStreamSeekable = false);
   
   /**
    * @brief Retrieve the istream associated with this Resource.
@@ -99,6 +101,8 @@ public:
   virtual StreamReleaser getStreamReleaser() = 0;
 
   virtual ~StreamResource() = 0;
+
+  virtual bool isStreamSeekable() const = 0;
 };
 
 /**

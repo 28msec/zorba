@@ -146,7 +146,9 @@ namespace zorba
         // StreamResource, by passing the StreamReleaser to it and setting the
         // user's StreamResource's StreamReleaser to nullptr.
         lRetval = new internal::StreamResource(lUserStream->getStream(),
-                                           lUserStream->getStreamReleaser());
+                                           lUserStream->getStreamReleaser(),
+                                           "",
+                                           lUserStream->isStreamSeekable());
         lUserStream->setStreamReleaser(nullptr);
       }
 #ifndef ZORBA_NO_FULL_TEXT
