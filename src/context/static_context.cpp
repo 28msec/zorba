@@ -498,9 +498,9 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
   external functions, contains variable declarations and/or udfs.
 
   Note: The fuul-text module must be included here because it MUST be processed
-  when imported, even in RELEASE mode. The reason is that the tokenize and 
-  tokenizer-properties functions must be registered in the module's sctx (in
-  addition to the root sctx).
+  when imported, even in RELEASE mode. The reason is that the
+  current-compare-options(), tokenize(), and tokenizer-properties() functions
+  must be registered in the module's sctx (in addition to the root sctx).
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
@@ -512,9 +512,6 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
-#ifndef ZORBA_NO_FULL_TEXT
-            ns == ZORBA_FULL_TEXT_FN_NS ||
-#endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_XML_FN_NS);
   }
 
