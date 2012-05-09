@@ -453,9 +453,48 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+TokenizeIterator::TokenizeIterator(
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& children)
+  : NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>(sctx, loc, children)
+{
+  initMembers();
+}
+
+void TokenizeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+     (NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>*)this);
+  if (!ar.is_serializing_out())
+  {
+    initMembers();
+  }
+}
+
+void TokenizeIterator::initMembers() {
+  GENV_ITEMFACTORY->createQName(
+    token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token");
+
+  GENV_ITEMFACTORY->createQName(
+    lang_qname_, "", "", "lang");
+
+  GENV_ITEMFACTORY->createQName(
+    para_qname_, "", "", "paragraph");
+
+  GENV_ITEMFACTORY->createQName(
+    sent_qname_, "", "", "sentence");
+
+  GENV_ITEMFACTORY->createQName(
+    value_qname_, "", "", "value");
+
+  GENV_ITEMFACTORY->createQName(
+    ref_qname_, "", "", "node-ref");
+}
+
 bool TokenizeIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
-  store::Item_t attr_name, attr_node;
+  store::Item_t node_name, attr_node;
   zstring base_uri;
   store::Item_t item;
   iso639_1::type lang;
@@ -488,68 +527,59 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       token = state->doc_tokens_->next();
       ZORBA_ASSERT( token );
 
-      if ( state->token_qname_.isNull() )
-        GENV_ITEMFACTORY->createQName(
-          state->token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "",
-          "token"
-        );
-
       base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      node_name = token_qname_;
       GENV_ITEMFACTORY->createElementNode(
-        result, nullptr, state->token_qname_, type_name, false, false,
+        result, nullptr, node_name, type_name, false, false,
         ns_bindings, base_uri
       );
 
       if ( token->lang() ) {
         value_string = iso639_1::string_of[ token->lang() ];
-        GENV_ITEMFACTORY->createQName( attr_name, "", "", "lang" );
         GENV_ITEMFACTORY->createString( item, value_string );
         type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+        node_name = lang_qname_;
         GENV_ITEMFACTORY->createAttributeNode(
-          attr_node, result, attr_name, type_name, item
+          attr_node, result, node_name, type_name, item
         );
       }
 
       ztd::to_string( token->para(), &value_string );
-      GENV_ITEMFACTORY->createQName( attr_name, "", "", "paragraph" );
       GENV_ITEMFACTORY->createString( item, value_string );
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      node_name = para_qname_;
       GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, attr_name, type_name, item
+        attr_node, result, node_name, type_name, item
       );
 
       ztd::to_string( token->sent(), &value_string );
-      GENV_ITEMFACTORY->createQName( attr_name, "", "", "sentence" );
       GENV_ITEMFACTORY->createString( item, value_string );
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      node_name = sent_qname_;
       GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, attr_name, type_name, item
+        attr_node, result, node_name, type_name, item
       );
 
       value_string = token->value();
-      GENV_ITEMFACTORY->createQName( attr_name, "", "", "value" );
       GENV_ITEMFACTORY->createString( item, value_string );
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      node_name = value_qname_;
       GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, attr_name, type_name, item
+        attr_node, result, node_name, type_name, item
       );
 
       if ( store::Item const *const token_item = token->item() ) {
         if ( GENV_STORE.getNodeReference( item, token_item ) ) {
           item->getStringValue2( value_string );
-          GENV_ITEMFACTORY->createQName( attr_name, "", "", "node-ref" );
           GENV_ITEMFACTORY->createString( item, value_string );
           type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+          node_name = ref_qname_;
           GENV_ITEMFACTORY->createAttributeNode(
-            attr_node, result, attr_name, type_name, item
+            attr_node, result, node_name, type_name, item
           );
         }
       }
-
-#ifndef ZORBA_NO_XMLSCHEMA
-      sctx->validate( result, result, StaticContextConsts::strict_validation );
-#endif /* ZORBA_NO_XMLSCHEMA */
 
       STACK_PUSH( true, state );
     } // while
