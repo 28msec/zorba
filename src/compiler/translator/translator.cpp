@@ -3310,48 +3310,6 @@ void* begin_visit(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-#ifndef ZORBA_NO_FULL_TEXT
-        if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
-            (qnameItem->getLocalName() == "tokenizer-properties" ||
-             qnameItem->getLocalName() == "tokenize") ||
-             qnameItem->getLocalName() == "current-compare-options")
-        {
-          FunctionConsts::FunctionKind kind;
-          zstring const local_name( qnameItem->getLocalName() );
-
-          if (local_name == "tokenizer-properties")
-          {
-            assert(numParams <= 1);
-
-            if (numParams == 1)
-              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1;
-            else
-              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_0;
-
-            f = new full_text_tokenizer_properties(f->getSignature(), kind);
-          }
-          else if (local_name == "tokenize")
-          {
-            assert(numParams == 1 || numParams == 2);
-
-            if (numParams == 2)
-              kind = FunctionConsts::FULL_TEXT_TOKENIZE_2;
-            else
-              kind = FunctionConsts::FULL_TEXT_TOKENIZE_1;
-
-            f = new full_text_tokenize(f->getSignature(), kind);
-          }
-          else if (local_name == "current-compare-options")
-          {
-            kind = FunctionConsts::FULL_TEXT_CURRENT_COMPARE_OPTIONS_0;
-            f = new full_text_current_compare_options(f->getSignature(), kind);
-          }
-
-          f->setStaticContext(theRootSctx);
-          bind_fn(f, numParams, loc);
-        }
-#endif /* ZORBA_NO_FULL_TEXT */
-
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset
 

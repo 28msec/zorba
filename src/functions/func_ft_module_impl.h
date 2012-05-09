@@ -33,17 +33,17 @@ namespace zorba
 class full_text_tokenize : public function
 {
 public:
-  SERIALIZABLE_CLASS(full_text_tokenize);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(full_text_tokenize, function)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
+
+  // Mark the function as accessing the dyn ctx so that it won't be
+  // const-folded. We must prevent const-folding because the function
+  // uses the store to get access to the tokenizer provider.
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -52,11 +52,6 @@ public:
 //full-text:tokenizer-properties
 class full_text_tokenizer_properties : public function
 {
-public:
-  SERIALIZABLE_CLASS(full_text_tokenizer_properties);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(full_text_tokenizer_properties, function)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 public:
   full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
@@ -67,8 +62,7 @@ public:
 
   // Mark the function as accessing the dyn ctx so that it won't be
   // const-folded. We must prevent const-folding because the function
-  // returns a node that is validated with a schema that may not be
-  // imported in the module where the function is invoked from.
+  // uses the store to get access to the tokenizer provider.
   bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
@@ -79,23 +73,12 @@ public:
 class full_text_current_compare_options : public function
 {
 public:
-  SERIALIZABLE_CLASS(full_text_current_compare_options);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(full_text_current_compare_options, function)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   full_text_current_compare_options(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
-
-  // Mark the function as accessing the dyn ctx so that it won't be
-  // const-folded. We must prevent const-folding because the function
-  // returns a node that is validated with a schema that may not be
-  // imported in the module where the function is invoked from.
-  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };

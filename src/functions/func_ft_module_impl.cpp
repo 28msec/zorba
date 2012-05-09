@@ -24,13 +24,6 @@ namespace zorba
 
 #ifndef ZORBA_NO_FULL_TEXT
 
-SERIALIZABLE_CLASS_VERSIONS(full_text_tokenize)
-
-void full_text_tokenize::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (function*)this);
-}
-
 PlanIter_t full_text_tokenize::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -38,16 +31,9 @@ PlanIter_t full_text_tokenize::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new TokenizeIterator(theModuleSctx, loc, argv);
+  return new TokenizeIterator(sctx, loc, argv);
 }
 
-
-SERIALIZABLE_CLASS_VERSIONS(full_text_tokenizer_properties)
-
-void full_text_tokenizer_properties::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (function*)this);
-}
 
 PlanIter_t full_text_tokenizer_properties::codegen(
   CompilerCB*,
@@ -56,16 +42,9 @@ PlanIter_t full_text_tokenizer_properties::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new TokenizerPropertiesIterator(theModuleSctx, loc, argv);
+  return new TokenizerPropertiesIterator(sctx, loc, argv);
 }
 
-
-SERIALIZABLE_CLASS_VERSIONS(full_text_current_compare_options)
-
-void full_text_current_compare_options::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (function*)this);
-}
 
 PlanIter_t full_text_current_compare_options::codegen(
   CompilerCB*,
@@ -74,7 +53,7 @@ PlanIter_t full_text_current_compare_options::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new CurrentCompareOptionsIterator(theModuleSctx, loc, argv);
+  return new CurrentCompareOptionsIterator(sctx, loc, argv);
 }
 
 #endif // ZORBA_NO_FULL_TEXT
