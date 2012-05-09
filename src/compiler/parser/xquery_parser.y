@@ -2924,12 +2924,41 @@ GroupSpecList :
 GroupSpec :
     DOLLAR QNAME
     {
-      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL);
+      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL, NULL, NULL);
+    }
+  | DOLLAR QNAME GETS ExprSingle
+    {
+      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL, $4, NULL);
+    }
+  | DOLLAR QNAME TypeDeclaration GETS ExprSingle
+    {
+      $$ = new GroupSpec(LOC(@$),
+                         static_cast<QName*>($2),
+                         dynamic_cast<SequenceType*>($3),
+                         $5,
+                         NULL);
+    }
+  | DOLLAR QNAME TypeDeclaration GETS ExprSingle GroupCollationSpec
+    {
+      $$ = new GroupSpec(LOC(@$),
+                         static_cast<QName*>($2),
+                         dynamic_cast<SequenceType*>($3),
+                         $5,
+                         dynamic_cast<GroupCollationSpec*>($6));
+    }
+  | DOLLAR QNAME GETS ExprSingle GroupCollationSpec
+    {
+      $$ = new GroupSpec(LOC(@$),
+                         static_cast<QName*>($2),
+                         NULL,
+                         $4,
+                         dynamic_cast<GroupCollationSpec*>($5));
     }
   | DOLLAR QNAME GroupCollationSpec
     {
       $$ = new GroupSpec(LOC(@$),
                          static_cast<QName*>($2),
+                         NULL,
                          dynamic_cast<GroupCollationSpec*>($3));
     }
   ;

@@ -1805,10 +1805,14 @@ void GroupSpecList::accept(parsenode_visitor& v) const
 GroupSpec::GroupSpec(
   const QueryLoc& loc_,
   rchandle<QName> _var_name_h,
+  rchandle<SequenceType> _var_type_h,
+  rchandle<exprnode> _var_value_h,
   rchandle<GroupCollationSpec> _group_coll_spec_h)
   :
   parsenode(loc_),
   var_name_h(_var_name_h),
+  var_type_h(_var_type_h),
+  var_value_h(_var_value_h),
   group_coll_spec_h(_group_coll_spec_h)
 {
 }

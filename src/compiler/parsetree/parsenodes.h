@@ -2207,18 +2207,22 @@ public:
 
 
 /*******************************************************************************
-  GroupSpec ::= "$" VarName ("collation" URILiteral)?
+  GroupSpec ::= "$" VarName (TypeDeclaration? ":=" ExprSingle)? ("collation" URILiteral)?
 ********************************************************************************/
 class GroupSpec : public parsenode
 {
 protected:
   rchandle<QName>              var_name_h;
   rchandle<GroupCollationSpec> group_coll_spec_h;
+  rchandle<exprnode>           var_value_h;
+  rchandle<SequenceType>       var_type_h;
 
 public:
   GroupSpec(
     const QueryLoc&,
     rchandle<QName>,
+    rchandle<SequenceType>,
+    rchandle<exprnode>,
     rchandle<GroupCollationSpec>);
 
   const QName* get_var_name() const { return var_name_h.getp(); }
@@ -3106,7 +3110,7 @@ class StringConcatExpr: public exprnode
   protected:
     rchandle<exprnode> left;
     rchandle<exprnode> right;
-  
+
   public:
     StringConcatExpr(
       const QueryLoc& aLoc,
