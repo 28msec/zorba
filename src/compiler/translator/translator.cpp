@@ -3313,7 +3313,8 @@ void* begin_visit(const VFO_DeclList& v)
 #ifndef ZORBA_NO_FULL_TEXT
         if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
             (qnameItem->getLocalName() == "tokenizer-properties" ||
-             qnameItem->getLocalName() == "tokenize"))
+             qnameItem->getLocalName() == "tokenize") ||
+             qnameItem->getLocalName() == "current-compare-options")
         {
           FunctionConsts::FunctionKind kind;
           zstring const local_name( qnameItem->getLocalName() );

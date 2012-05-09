@@ -96,7 +96,6 @@ bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
   store::NsBindings const ns_bindings;
   static_context const *const sctx = getStaticContext();
   ZORBA_ASSERT( sctx );
-  ftmatch_options const *const options = sctx->get_match_options();
   store::Item_t type_name;
   zstring value_string;
 
@@ -111,29 +110,37 @@ bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
     result, nullptr, name, type_name, false, false, ns_bindings, base_uri
   );
 
+  ft_case_mode::type case_mode;
+  ft_diacritics_mode::type diacritics_mode;
+  ft_stem_mode::type stem_mode;
+
+  if ( ftmatch_options const *const options = sctx->get_match_options() ) {
+    case_mode = options->get_case_option()->get_mode();
+    diacritics_mode = options->get_diacritics_option()->get_mode();
+    stem_mode = options->get_stem_option()->get_mode();
+  } else {
+    case_mode = ft_case_mode::DEFAULT;
+    diacritics_mode = ft_diacritics_mode::DEFAULT;
+    stem_mode = ft_stem_mode::DEFAULT;
+  }
+
   // case="..."
   GENV_ITEMFACTORY->createQName( name, "", "", "case" );
-  value_string = ft_case_mode::string_of[
-    options->get_case_option()->get_mode()
-  ];
+  value_string = ft_case_mode::string_of[ case_mode ];
   GENV_ITEMFACTORY->createString( item, value_string );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
 
   // diacritics="..."
   GENV_ITEMFACTORY->createQName( name, "", "", "diacritics" );
-  value_string = ft_diacritics_mode::string_of[
-    options->get_diacritics_option()->get_mode()
-  ];
+  value_string = ft_diacritics_mode::string_of[ diacritics_mode ];
   GENV_ITEMFACTORY->createString( item, value_string );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
 
-  // stem="..."
-  GENV_ITEMFACTORY->createQName( name, "", "", "stem" );
-  value_string = ft_stem_mode::string_of[
-    options->get_stem_option()->get_mode()
-  ];
+  // stemming="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "stemming" );
+  value_string = ft_stem_mode::string_of[ stem_mode ];
   GENV_ITEMFACTORY->createString( item, value_string );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
