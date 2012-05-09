@@ -144,7 +144,8 @@ FetchContentIterator::nextImpl(
   GENV_ITEMFACTORY->createStreamableString(
         result,
         *lStreamRes->getStream(),
-        lStreamRes->getStreamReleaser()
+        lStreamRes->getStreamReleaser(),
+        lStreamRes->isStreamSeekable()
   );
   lStreamRes->setStreamReleaser(nullptr);
 
@@ -196,7 +197,7 @@ FetchContentBinaryIterator::nextImpl(
         result,
         *lStreamRes->getStream(),
         lStreamRes->getStreamReleaser(),
-        false,
+        lStreamRes->isStreamSeekable(),
         false
   );
   lStreamRes->setStreamReleaser(nullptr);
