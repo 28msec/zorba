@@ -339,47 +339,21 @@ class Archiver
 {
   friend class ClassSerializer;
 
-  struct SIMPLE_HASHOUT_FIELD
-  {
-    std::string    type;
-    const void   * ptr;
-
-    SIMPLE_HASHOUT_FIELD() {}
-
-    SIMPLE_HASHOUT_FIELD(const char* typestr, const void* ptrptr)
-    {
-      type = typestr;
-
-      if (type[type.length()-1] == '*')
-        type.resize(type.length()-1);
-
-      ptr = ptrptr;
-    }
-  };
-
-  class SimpleHashoutFieldCompare
+  class FieldCompare
   {
   public: 
-    uint32_t hash(const SIMPLE_HASHOUT_FIELD& f) const
+    uint32_t hash(const void* f) const
     {
-      uint32_t h = 0;
-      h = hashfun::h32(f.type);
-      h = hashfun::h32((void*)&f.ptr, sizeof(void*), h);
-      return h;
+      return hashfun::h32((void*)&f, sizeof(void*));
     }
 
-    bool equal(const SIMPLE_HASHOUT_FIELD& f1, const SIMPLE_HASHOUT_FIELD& f2) const
+    bool equal(const void* f1, const void* f2) const
     {
-      if (f1.ptr == f2.ptr && f1.type == f2.type)
-        return true;
-      else
-        return false;
+      return (f1 == f2);
     }
   };
 
-  typedef HashMap<SIMPLE_HASHOUT_FIELD, 
-                  archive_field*,
-                  SimpleHashoutFieldCompare> SimpleFieldMap;
+  typedef HashMap<const void*, archive_field*, FieldCompare> FieldMap;
 
 protected:
   std::string                   theArchiveName;
@@ -407,9 +381,9 @@ protected:
 
   unsigned int                  theCurrentLevel;
 
-  SimpleFieldMap              * theNonClassFieldsMap;
+  FieldMap                    * theNonClassFieldsMap;
 
-  hash64map<archive_field*>   * theClassFieldsMap;
+  FieldMap                    * theClassFieldsMap;
 
   int                           theOnlyForEval;
 
@@ -583,9 +557,9 @@ protected:
   // Methods used during serialization only
   //
 
-  archive_field* lookup_nonclass_field(const char* type, const void* ptr);
+  archive_field* lookup_non_class_field(const void* ptr);
 
-  archive_field* lookup_class_field(const SerializeBaseClass* ptr);
+  archive_field* lookup_class_field(const void* ptr);
 
   void prepare_serialize_out();
 

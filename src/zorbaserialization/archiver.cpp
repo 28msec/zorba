@@ -18,10 +18,13 @@
 #include <zorba/error.h>
 #include <zorba/diagnostic_list.h>
 
-#include "functions/function.h"
+//#include "functions/function.h"
+
 #include "store/api/item.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+
 #include "zorbautils/hashmap.h"
 
 #include "archiver.h"
@@ -56,7 +59,15 @@ archive_field::archive_field(
   theIsSimple = is_simple;
   theIsClass = is_class;
 
+#ifdef NDEBUG
+  if (theIsClass)
+    theTypeName = strdup(type);
+  else
+    theTypeName = NULL;
+#else
   theTypeName = strdup(type);
+#endif
+
   theTypeNamePosInPool = 0;//initialy is the number of references to this field
 
   if (value)
@@ -151,9 +162,11 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
 
     theCurrentCompoundField = theRootField;
 
-    theNonClassFieldsMap = new HashMap<SIMPLE_HASHOUT_FIELD, archive_field*,
-                                        SimpleHashoutFieldCompare>(1000, false);
-    theClassFieldsMap = new hash64map<archive_field*>(10000, 0.6f);
+    theNonClassFieldsMap = 
+    new HashMap<const void*, archive_field*, FieldCompare>(1000, false);
+
+    theClassFieldsMap = 
+    new HashMap<const void*, archive_field*, FieldCompare>(1000, false);
   }
 
   if (!internal_archive)
@@ -264,7 +277,7 @@ bool Archiver::add_simple_field(
     if (!get_is_temp_field() &&
         (!get_is_temp_field_one_level() || fieldKind == ARCHIVE_FIELD_PTR))
     {
-      ref_field = lookup_nonclass_field(type, ptr);
+      ref_field = lookup_non_class_field(ptr);
     }
   }
 
@@ -310,8 +323,7 @@ bool Archiver::add_simple_field(
   {
     assert(fieldKind == ARCHIVE_FIELD_NORMAL || fieldKind == ARCHIVE_FIELD_PTR);
 
-    SIMPLE_HASHOUT_FIELD f(type, ptr);
-    theNonClassFieldsMap->insert(f, new_field);
+    theNonClassFieldsMap->insert(ptr, new_field);
   }
 
   new_field->theId = ++theFieldCounter;
@@ -356,10 +368,10 @@ bool Archiver::add_compound_field(
            !get_is_temp_field() &&
            (!get_is_temp_field_one_level() || fieldKind == ARCHIVE_FIELD_PTR))
   {
-    if (!is_class)
-      ref_field = lookup_nonclass_field(type, ptr);
+    if (is_class)
+      ref_field = lookup_class_field(ptr);
     else
-      ref_field = lookup_class_field((SerializeBaseClass*)ptr);
+      ref_field = lookup_non_class_field(ptr);
   }
 
   if (ref_field)
@@ -398,15 +410,10 @@ bool Archiver::add_compound_field(
       !get_is_temp_field() &&
       (!get_is_temp_field_one_level() || fieldKind == ARCHIVE_FIELD_PTR))
   {
-    if (!is_class)
-    {
-      SIMPLE_HASHOUT_FIELD  f(type, ptr);
-      theNonClassFieldsMap->insert(f, new_field);
-    }
+    if (is_class)
+      theClassFieldsMap->insert(ptr, new_field);
     else
-    {
-      theClassFieldsMap->put((uint64_t)ptr, new_field);
-    }
+      theNonClassFieldsMap->insert(ptr, new_field);
   }
 
   new_field->theParent = theCurrentCompoundField;
@@ -444,16 +451,14 @@ void Archiver::add_end_compound_field()
   Check whether there exists already a field for the nonclass object at the given
   memory address.
 ********************************************************************************/
-archive_field* Archiver::lookup_nonclass_field(const char* type, const void* ptr)
+archive_field* Archiver::lookup_non_class_field(const void* ptr)
 {
   if (!ptr)
     return NULL;
 
   archive_field* duplicate_field = NULL;
 
-  SIMPLE_HASHOUT_FIELD f(type, ptr);
-
-  theNonClassFieldsMap->get(f, duplicate_field);
+  theNonClassFieldsMap->get(ptr, duplicate_field);
 
   if (!duplicate_field)
   {
@@ -461,7 +466,7 @@ archive_field* Archiver::lookup_nonclass_field(const char* type, const void* ptr
     getArchiverForHardcodedObjects();
 
     if (har != this)
-      duplicate_field = har->lookup_nonclass_field(type, ptr);
+      duplicate_field = har->lookup_non_class_field(ptr);
   }
 
   return duplicate_field;
@@ -469,17 +474,17 @@ archive_field* Archiver::lookup_nonclass_field(const char* type, const void* ptr
 
 
 /*******************************************************************************
-  Check whether there exists already a field for the class object at the given
-  memory address.
+  Check whether there exists already a field for the non-simple object at the 
+  given memory address.
 ********************************************************************************/
-archive_field* Archiver::lookup_class_field(const SerializeBaseClass* ptr)
+archive_field* Archiver::lookup_class_field(const void* ptr)
 {
   if (!ptr)
     return NULL;
 
   archive_field* duplicate_field = NULL;
 
-  theClassFieldsMap->get((uint64_t)ptr, duplicate_field);
+  theClassFieldsMap->get(ptr, duplicate_field);
 
   if (!duplicate_field)
   {

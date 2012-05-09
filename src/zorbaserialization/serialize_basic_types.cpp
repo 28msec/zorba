@@ -23,6 +23,8 @@
 #include "zorbaserialization/base64impl.h"
 
 #include "zorbatypes/floatimpl.h"
+#include "zorbatypes/collation_manager.h"
+#include "zorbatypes/integer.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
@@ -797,6 +799,118 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len)
                           is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     Base64Impl::Decode((const unsigned char*)value.c_str(), value.length(), obj);
+
+    ar.register_reference(id, field_treat, &obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, XQPCollator*& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    if (obj == NULL)
+    {
+      ar.add_simple_field("XQPCollator*", 
+                          "NULL", 
+                          NULL,//(SerializeBaseClass*)obj, 
+                          ARCHIVE_FIELD_NULL);
+      return;
+    }
+
+    ar.add_simple_field("XQPCollator*", obj->getURI().c_str(), obj, ARCHIVE_FIELD_PTR);
+  }
+  else
+  {
+    char* type;
+    std::string value;
+    int   id;
+    bool  is_simple = true;
+    bool  is_class = false;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    int   referencing;
+
+    bool retval = ar.read_next_field(&type, &value, &id,
+                                     &is_simple, &is_class, &field_treat,
+                                     &referencing);
+
+    ar.check_simple_field(retval, type, "XQPCollator*",
+                          is_simple, field_treat, ARCHIVE_FIELD_PTR, id);
+
+    if (field_treat == ARCHIVE_FIELD_NULL)
+    {
+      obj = NULL;
+      return;
+    }
+
+    if(!value.empty())
+      obj = CollationFactory::createCollator(value);
+    else
+      obj = CollationFactory::createCollator();
+
+    ar.register_reference(id, field_treat, &obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, MAPM& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    int nr_digits = obj.significant_digits();
+    char* lBuffer = (char*)malloc(nr_digits + 20);
+    obj.toString(lBuffer, nr_digits);//ZORBA_FLOAT_POINT_PRECISION);
+
+    if (strchr(lBuffer, '.'))
+    {
+      //save only necessary decimals
+      char* e_ptr = strrchr(lBuffer, 'E');
+      char* tail = e_ptr ? e_ptr-1 : lBuffer+strlen(lBuffer)-1;
+
+      while(*tail == '0')
+        tail--;
+
+      if(*tail == '.')
+        tail++;
+
+      if(e_ptr)
+      {
+        int i;
+        for(i=0;e_ptr[i];i++)
+          tail[i+1] = e_ptr[i];
+        tail[i+1] = 0;
+      }
+      else
+        tail[1] = 0;
+    }
+
+    ar.add_simple_field("MAPM", lBuffer, &obj, ARCHIVE_FIELD_NORMAL);
+    free(lBuffer);
+  }
+  else
+  {
+    char* type;
+    std::string value;
+    int   id;
+    bool  is_simple = true;
+    bool  is_class = false;
+    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    int   referencing;
+
+    bool  retval = ar.read_next_field(&type, &value, &id,
+                                      &is_simple, &is_class, &field_treat,
+                                      &referencing);
+
+    ar.check_simple_field(retval, type, "MAPM",
+                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    obj = value.c_str();
 
     ar.register_reference(id, field_treat, &obj);
   }

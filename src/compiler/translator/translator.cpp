@@ -1898,8 +1898,8 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
 {
   function* varGet = GET_BUILTIN_FUNCTION(OP_VAR_GET_1);
 
-  expr_t initExpr = b.second;
-  var_expr_t varExpr = b.first;
+  expr_t initExpr = b.theExpr;
+  var_expr_t varExpr = b.theVar;
 
   const QueryLoc& loc = varExpr->get_loc();
 
@@ -1916,7 +1916,7 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
   stmts.push_back(declExpr);
 
   // check type for vars that are external or have an init expr
-  if (varType != NULL && (b.is_extern() || b.second != NULL))
+  if (varType != NULL && (b.is_extern() || b.theExpr != NULL))
   {
     expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
 

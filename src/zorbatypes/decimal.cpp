@@ -23,7 +23,7 @@
 #include "util/ascii_util.h"
 #include "util/string_util.h"
 
-#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_basic_types.h"
 
 #include "decimal.h"
 #include "integer.h"

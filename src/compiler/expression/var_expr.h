@@ -269,22 +269,19 @@ public:
 };
 
 
-struct GlobalBinding : public std::pair<var_expr_t, expr_t>,
-                       public ::zorba::serialization::SerializeBaseClass
+struct GlobalBinding 
 {
-  bool theIsExternal;
-
-public:
-  SERIALIZABLE_CLASS(GlobalBinding)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(GlobalBinding)
-  void serialize(::zorba::serialization::Archiver& ar);
+  var_expr_t  theVar;
+  expr_t      theExpr;
+  bool        theIsExternal;
 
 public:
   GlobalBinding() : theIsExternal(false) {}
 
   GlobalBinding(const var_expr_t& v, const expr_t& e, bool external)
     :
-    std::pair<var_expr_t, expr_t>(v, e),
+    theVar(v),
+    theExpr(e),
     theIsExternal(external)
   {
   }

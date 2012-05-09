@@ -18,8 +18,12 @@
 #define ZORBA_BINARY_SERIALIZATION_BINARY_ARCHIVER
 
 #include <iostream>
+
 #include "zorbaserialization/archiver.h"
+
 #include "zorbautils/hashmap_str_obj.h"
+
+#include "store/api/shared_types.h"
 
 namespace zorba
 {
@@ -27,17 +31,14 @@ namespace zorba
 namespace serialization
 {
 
+/*******************************************************************************
+  string_pool :
+  -------------
+  Maps a string to its position within theString vactor
+********************************************************************************/
 class BinArchiver : public Archiver
 {
-  std::istream             * is;
-
-  std::ostream             * os;
-
-  bool                       has_attributes;
-  bool                       is_compound_field_without_children;
-
-  HashCharPtrObj<int>        string_pool;
-
+protected:
   typedef struct
   {
     std::string   str;
@@ -45,8 +46,18 @@ class BinArchiver : public Archiver
     unsigned int  final_pos;//1 based
   } STRING_POS;
 
-  std::vector<STRING_POS>    strings;
-  std::vector<unsigned int>  strings_pos;
+protected:
+  std::istream             * is;
+
+  std::ostream             * os;
+
+  bool                       has_attributes;
+  bool                       is_compound_field_without_children;
+
+  HashCharPtrObj<csize>      string_pool;
+
+  std::vector<STRING_POS>    theStrings;
+  std::vector<csize>         strings_pos;
 
   unsigned int               last_id;
   unsigned char              current_byte;

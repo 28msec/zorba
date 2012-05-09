@@ -21,8 +21,15 @@
 
 #include "zorbamisc/config/platform.h"
 
+
+
+class MAPM;
+
 namespace zorba
 {
+
+class XQPCollator;
+
 
 namespace serialization
 {
@@ -69,6 +76,10 @@ void operator&(Archiver& ar, std::string*& obj);
 void operator&(Archiver& ar, char*& obj);
 
 void serialize_array(Archiver& ar, unsigned char* obj, int len);
+
+void operator&(Archiver& ar, XQPCollator*& obj);
+
+void operator&(Archiver& ar, MAPM& obj);
 
 #define  SERIALIZE_ENUM(enum_type, obj)           \
   {                                               \

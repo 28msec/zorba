@@ -73,7 +73,7 @@ void operator&(Archiver& ar, T& obj)
     
     is_ref = ar.add_compound_field(obj.get_class_name_str(),
                                    FIELD_IS_CLASS,
-                                   "0",
+                                   NULL,
                                    (SerializeBaseClass*)&obj, 
                                    ARCHIVE_FIELD_NORMAL);
     if (!is_ref)
@@ -123,7 +123,7 @@ void operator&(Archiver& ar, T*& obj)
     {
       ar.add_compound_field("NULL", 
                             FIELD_IS_CLASS,
-                            "NULL", 
+                            NULL, 
                             NULL,
                             ARCHIVE_FIELD_NULL);
       return;
@@ -133,7 +133,7 @@ void operator&(Archiver& ar, T*& obj)
                                          obj->T::get_class_name_str() :
                                          obj->get_class_name_str()), 
                                         FIELD_IS_CLASS,
-                                        "0",
+                                        NULL,
                                         (SerializeBaseClass*)obj, 
                                         (ar.is_serialize_base_class() ?
                                          ARCHIVE_FIELD_BASECLASS :
@@ -644,46 +644,12 @@ void operator&(Archiver& ar, std::list<T>& obj)
 template<typename T1, typename T2>
 void operator&(Archiver& ar, std::pair<T1, T2>& obj)
 {
-  if (ar.is_serializing_out())
-  {
-    bool is_ref = ar.add_compound_field("std::pair<T1, T2>",
-                                        !FIELD_IS_CLASS,
-                                        "",
-                                        &obj,
-                                        ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
-    {
-      ar & obj.first;
-      ar & obj.second;
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, type, "std::pair<T1, T2>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    ar.register_reference(id, field_treat, &obj);
-
-    ar & obj.first;
-    ar & obj.second;
-
-    ar.read_end_current_level();
-  }
+  ar & obj.first;
+  ar & obj.second;
 }
 
 
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -773,6 +739,7 @@ void operator&(Archiver& ar, std::pair<T1, T2>*& obj)
     }
   }
 }
+#endif
 
 
 /*******************************************************************************
@@ -789,7 +756,7 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
     {
       ar.add_compound_field("NULL", 
                             !FIELD_IS_CLASS,
-                            "NULL", 
+                            NULL, 
                             NULL,
                             ARCHIVE_FIELD_NULL);
       return;
@@ -797,7 +764,7 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 
     bool is_ref = ar.add_compound_field("std::map<T1, T2>",
                                         !FIELD_IS_CLASS,
-                                        "",
+                                        NULL,
                                         obj,
                                         ARCHIVE_FIELD_PTR);
 
@@ -901,7 +868,7 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
   {
     bool is_ref = ar.add_compound_field("std::map<T1, T2>",
                                         !FIELD_IS_CLASS,
-                                        "",
+                                        NULL,
                                         &obj,
                                         ARCHIVE_FIELD_NORMAL);
     if (!is_ref)

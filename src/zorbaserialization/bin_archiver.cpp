@@ -33,7 +33,8 @@ namespace serialization
 ********************************************************************************/
 BinArchiver::BinArchiver(std::istream* is) 
   :
-  Archiver(false)
+  Archiver(false),
+  string_pool(false, false)
 {
   this->is = is;
   this->os = NULL;
@@ -103,7 +104,8 @@ BinArchiver::BinArchiver(std::istream* is)
 ********************************************************************************/
 BinArchiver::BinArchiver(std::ostream* os)
   :
-  Archiver(true)
+  Archiver(true),
+  string_pool(false, false)
 {
   this->is = NULL;
   this->os = os;
@@ -143,12 +145,13 @@ void add_indentation(std::ostream &os, unsigned int indent)
 ********************************************************************************/
 void write_xml_name(std::ostream& os, const char* type)
 {
-  if(!type || !*type)
+  if (!type || !*type)
   {
     os << "unknown";
     return;
   }
-  while(*type)
+
+  while (*type)
   {
     if(isalpha(*type))
       os << *type;
@@ -172,19 +175,23 @@ void output_statistics_archive_field(
   write_xml_name(os, parent->theTypeName);
   os << " n=\"" << parent->objects_saved << "\"";
   os << " s=\"" << parent->thebytesSaved << "\"";
+
   if(parent->theKind == ARCHIVE_FIELD_REFERENCING)
       os << " t=\"ref\"";
   else if(parent->theKind == ARCHIVE_FIELD_PTR)
       os << " t=\"ptr\"";
-  if((!parent->theIsSimple) && (parent->theKind != ARCHIVE_FIELD_REFERENCING))
+
+  if ((!parent->theIsSimple) && (parent->theKind != ARCHIVE_FIELD_REFERENCING))
   {
     os << ">" << std::endl;
     archive_field   *current_field = parent->first_child;
-    while(current_field)
+
+    while (current_field)
     {
       output_statistics_archive_field(os, indent+2, current_field);
       current_field = current_field->theNextSibling;
     }
+
     add_indentation(os, indent);
     os << "</";
     write_xml_name(os, parent->theTypeName);
@@ -272,44 +279,10 @@ void BinArchiver::serialize_out()
 /*******************************************************************************
 
 ********************************************************************************/
-int BinArchiver::add_to_string_pool(const char* str)
-{
-  if (!str)
-    return 0;
-
-  int str_pos = 0;
-
-  if (string_pool.get(str, str_pos))
-  {
-    STRING_POS& str_struct = strings.at(str_pos-1);
-    str_struct.count++;
-    return str_pos;
-  }
-
-  STRING_POS  str_struct;
-  str_struct.str = str;
-  str_struct.count = 1;
-  str_struct.final_pos = (unsigned int)strings.size()+1;
-
-  strings.push_back(str_struct);
-
-  str_pos = (int)strings.size();
-  strings_pos.push_back(str_pos-1);
-
-  const char* str_dup = strdup(str);
-
-  string_pool.insert(str_dup, str_pos);
-
-  return str_pos;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void BinArchiver::collect_strings(archive_field* parent_field)
 {
   archive_field* current_field = parent_field->theFirstChild;
+
   while (current_field)
   {
     if (current_field->theKind != ARCHIVE_FIELD_NULL)
@@ -340,27 +313,64 @@ void BinArchiver::collect_strings(archive_field* parent_field)
 /*******************************************************************************
 
 ********************************************************************************/
+int BinArchiver::add_to_string_pool(const char* str)
+{
+  if (!str)
+    return 0;
+
+  csize str_pos = 0;
+
+  if (string_pool.get(str, str_pos))
+  {
+    STRING_POS& str_struct = theStrings.at(str_pos-1);
+    str_struct.count++;
+    return str_pos;
+  }
+
+  STRING_POS  str_struct;
+  str_struct.str = str;
+  str_struct.count = 1;
+  str_struct.final_pos = (unsigned int)theStrings.size()+1;
+
+  theStrings.push_back(str_struct);
+
+  str_pos = theStrings.size();
+  strings_pos.push_back(str_pos-1);
+
+  const char* str_dup = str;
+
+  string_pool.insert(str_dup, str_pos);
+
+  return str_pos;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void BinArchiver::serialize_out_string_pool()
 {
+#if 1
   //sort strings based on use count
   unsigned int i,j;
   for (i = 0; i < strings_pos.size(); i++)
   {
     for (j = i+1; j < strings_pos.size(); j++)
     {
-      if (strings.at(strings_pos[i]).count < strings.at(strings_pos[j]).count)
+      if (theStrings.at(strings_pos[i]).count < theStrings.at(strings_pos[j]).count)
       {
         unsigned int temp;
         temp = strings_pos[i];
         strings_pos[i] = strings_pos[j];
         strings_pos[j] = temp;
-        strings.at(strings_pos[i]).final_pos = i+1;
-        strings.at(strings_pos[j]).final_pos = j+1;
+        theStrings.at(strings_pos[i]).final_pos = i+1;
+        theStrings.at(strings_pos[j]).final_pos = j+1;
       }
     }
   }
+#endif
 
-  write_int((unsigned int)strings.size());
+  write_int((unsigned int)theStrings.size());
 
   if (bitfill)
   {
@@ -378,8 +388,20 @@ void BinArchiver::serialize_out_string_pool()
        strings_pos_it != strings_pos.end();
        strings_pos_it++)
   {
-    write_string(strings.at(*strings_pos_it).str.c_str());
+    write_string(theStrings.at(*strings_pos_it).str.c_str());
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void BinArchiver::write_string(const char* str)
+{
+  os->write(str, (std::streamsize)strlen(str)+1);
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  strings_saved += strlen(str)+1;
+#endif
 }
 
 
@@ -425,7 +447,7 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
         if (!current_field->theTypeName)
           write_int_exp2(0);
         else
-          write_int_exp2(strings.at(current_field->theTypeNamePosInPool-1).final_pos);
+          write_int_exp2(theStrings.at(current_field->theTypeNamePosInPool-1).final_pos);
       }
 
       write_int_exp(current_field->theId - this->last_id);
@@ -437,7 +459,7 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
         if (!current_field->theValuePosInPool)
           write_int_exp2(0);
         else
-          write_int_exp2(strings.at(current_field->theValuePosInPool-1).final_pos);
+          write_int_exp2(theStrings.at(current_field->theValuePosInPool-1).final_pos);
       }
       else
         write_int(current_field->referencing);
@@ -469,18 +491,6 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
   //gather statistics for this node
   parent_field->thebytesSaved = bytes_saved - bytes_saved1;
   parent_field->theObjectsSaved = objects_saved - objects_saved1;
-#endif
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void BinArchiver::write_string(const char *str)
-{
-  os->write(str, (std::streamsize)strlen(str)+1);
-#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
-  strings_saved += strlen(str)+1;
 #endif
 }
 
@@ -609,10 +619,42 @@ void BinArchiver::write_int_exp2(unsigned int intval)
 /*******************************************************************************
 
 ********************************************************************************/
-void BinArchiver::read_string(std::string &str)
+void BinArchiver::read_string_pool()
+{
+  theStrings.clear();
+
+  STRING_POS str_pos;
+  int   count;
+  count = read_int();
+
+  if (bitfill != 8)
+  {
+    in_current++;
+    bitfill = 8;
+  }
+
+  for (int i = 0; i < count; ++i)
+  {
+    str_pos.str.clear();
+
+    read_string(str_pos.str);
+
+    theStrings.push_back(str_pos);
+  }
+  bitfill = 8;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void BinArchiver::read_string(std::string& str)
 {
   str = (char*)in_current;
-  while(*in_current) in_current++;
+
+  while (*in_current)
+    ++in_current;
+
   in_current++;
 }
 
@@ -756,31 +798,6 @@ unsigned int BinArchiver::read_int_exp2()
 /*******************************************************************************
 
 ********************************************************************************/
-void BinArchiver::read_string_pool()
-{
-  strings.clear();
-  //std::string   str;
-  STRING_POS str_pos;
-  int   count;
-  count = read_int();
-  if(bitfill != 8)
-  {
-    in_current++;
-    bitfill = 8;
-  }
-  for(int i=0;i<count;i++)
-  {
-    str_pos.str.clear();
-    read_string(str_pos.str);
-    strings.push_back(str_pos);
-  }
-  bitfill = 8;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool BinArchiver::read_next_field_impl(
     char** type, 
     std::string* value,
@@ -808,8 +825,9 @@ bool BinArchiver::read_next_field_impl(
   unsigned char  tempbyte;
 
   tempbyte = read_bits(8);
-  if(tempbyte == 0xFF)
+  if (tempbyte == 0xFF)
     return false;
+
   *is_simple = tempbyte & 0x01 ? true : false;
   *is_class = tempbyte & 0x02 ? true : false;
   *field_treat = (enum ArchiveFieldKind)((tempbyte>>4)&0x0F);
@@ -836,7 +854,7 @@ bool BinArchiver::read_next_field_impl(
       unsigned int field_type_pos = read_int_exp2();
 
       if (field_type_pos)
-        *type = (char*)strings.at(field_type_pos-1).str.c_str();
+        *type = (char*)theStrings.at(field_type_pos-1).str.c_str();
       else
         *type = NULL;
     }
@@ -849,7 +867,7 @@ bool BinArchiver::read_next_field_impl(
       unsigned int value_pos;
       value_pos = read_int_exp2();
       if (value_pos)
-       *value = strings.at(value_pos-1).str;
+       *value = theStrings.at(value_pos-1).str;
     }
     else
     {

@@ -48,24 +48,23 @@ namespace zorba
 namespace serialization
 {
 
-void operator&(Archiver &ar, const XQType *&obj);
-void operator&(Archiver &ar, MAPM &obj);
+void operator&(Archiver& ar, const XQType*& obj);
+
 #ifdef ZORBA_WITH_BIG_INTEGER
-void operator&(Archiver &ar, IntegerImpl &obj);
+void operator&(Archiver& ar, IntegerImpl& obj);
 #else
 template<typename IntType>
-void operator&(Archiver &ar, IntegerImpl<IntType> &obj);
+void operator&(Archiver& ar, IntegerImpl<IntType>& obj);
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-void operator&(Archiver &ar, XQPCollator *&obj);
-void operator&(Archiver &ar, store::Item* &obj);
+void operator&(Archiver& ar, store::Item*& obj);
+void operator&(Archiver& ar, zorba::Item& obj);
 
-void operator&(Archiver &ar, const Diagnostic *&obj);
-void operator&(Archiver &ar, ZorbaException *&obj);
-void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj);
-void operator&(Archiver &ar, zorba::Item &obj);
-void operator&(Archiver &ar, zorba::XQueryStackTrace &obj);
-void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj);
+void operator&(Archiver& ar, const Diagnostic*& obj);
+void operator&(Archiver& ar, ZorbaException*& obj);
+void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj);
+void operator&(Archiver& ar, zorba::XQueryStackTrace& obj);
+void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj);
 
 
 #define SERIALIZE_TYPEMANAGER(type_mgr_type, type_mgr)                  \

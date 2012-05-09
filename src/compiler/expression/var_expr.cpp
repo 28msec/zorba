@@ -37,8 +37,6 @@ namespace zorba
 
 SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
-
 
 /*******************************************************************************
 
@@ -319,16 +317,6 @@ void var_expr::accept(expr_visitor& v)
     accept_children(v);
 
   v.end_visit(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void GlobalBinding::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (std::pair<var_expr_t, expr_t>*)this);
-  ar & theIsExternal;
 }
 
 

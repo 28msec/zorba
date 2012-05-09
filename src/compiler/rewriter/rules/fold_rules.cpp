@@ -1028,9 +1028,9 @@ RULE_REWRITE_POST(InlineFunctions)
 
     if (NULL != udf && 
         //!udf->isSequential() && 
+        (NULL != (body = udf->getBody())) &&
         !udf->isExiting() &&
-        udf->isLeaf() &&
-        (NULL != (body = udf->getBody())))
+        udf->isLeaf())
     {
       const std::vector<var_expr_t>& udfArgs = udf->getArgVars();
 
