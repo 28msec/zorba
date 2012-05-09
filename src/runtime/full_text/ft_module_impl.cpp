@@ -16,38 +16,40 @@
 
 #include <zorba/config.h>
 
+//
 // This entire file should be effectively skipped when building with
 // ZORBA_NO_FULL_TEXT. We can't prevent it from being compiled, but we
 // can prevent it from having any real content.
+//
 #ifndef ZORBA_NO_FULL_TEXT
 
-# include <limits>
-# include <typeinfo>
+#include <limits>
+#include <typeinfo>
 
-# include <zorba/diagnostic_list.h>
+#include <zorba/diagnostic_list.h>
 
-# include "api/unmarshaller.h"
-# include "context/namespace_context.h"
-# include "context/static_context.h"
-# include "diagnostics/assert.h"
-# include "diagnostics/xquery_diagnostics.h"
-# include "store/api/index.h"
-# include "store/api/item.h"
-# include "store/api/item_factory.h"
-# include "store/api/iterator.h"
-# include "store/api/store.h"
-# include "system/globalenv.h"
-# include "types/casting.h"
-# include "types/typeimpl.h"
-# include "types/typeops.h"
-# include "util/utf8_util.h"
-# include "zorbatypes/URI.h"
-# include "zorbautils/locale.h"
+#include "api/unmarshaller.h"
+#include "context/namespace_context.h"
+#include "context/static_context.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "store/api/index.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/iterator.h"
+#include "store/api/store.h"
+#include "system/globalenv.h"
+#include "types/casting.h"
+#include "types/typeimpl.h"
+#include "types/typeops.h"
+#include "util/utf8_util.h"
+#include "zorbatypes/URI.h"
+#include "zorbautils/locale.h"
 
-# include "ft_stop_words_set.h"
-# include "ft_token_seq_iterator.h"
-# include "ft_util.h"
-# include "thesaurus.h"
+#include "ft_stop_words_set.h"
+#include "ft_token_seq_iterator.h"
+#include "ft_util.h"
+#include "thesaurus.h"
 
 #include "runtime/full_text/ft_module.h"
 
@@ -208,15 +210,11 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  static_context const *const sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
   ft_stop_words_set::ptr stop_words;
   zstring word;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
-
-  lang = get_lang_from( sctx );
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
@@ -224,6 +222,10 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
     lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
   }
 
   stop_words.reset( ft_stop_words_set::get_default( lang ) );
@@ -287,9 +289,9 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   }
 
   try {
-    iso639_1::type const lang = get_lang_from( item, loc );
     static_context const *const sctx = getStaticContext();
     ZORBA_ASSERT( sctx );
+    iso639_1::type const lang = get_lang_from( item, loc );
 
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
@@ -354,16 +356,12 @@ bool StemIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   iso639_1::type lang;
   internal::StemmerProvider const *provider;
-  static_context const *sctx;
   internal::Stemmer::ptr stemmer;
   zstring word, stem;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
@@ -372,6 +370,10 @@ bool StemIterator::nextImpl( store::Item_t &result,
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
     lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
   }
 
   provider = GENV_STORE.getStemmerProvider();
@@ -510,43 +512,31 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-TokenizeIterator::TokenizeIterator(
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& children)
-  : NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>(sctx, loc, children)
+TokenizeIterator::TokenizeIterator( static_context *sctx, QueryLoc const &loc,
+                                    std::vector<PlanIter_t>& children ) :
+  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>(sctx, loc, children)
 {
   initMembers();
 }
 
-void TokenizeIterator::serialize( ::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-     (NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>*)this);
-  if (!ar.is_serializing_out())
-  {
-    initMembers();
-  }
-}
-
 void TokenizeIterator::initMembers() {
   GENV_ITEMFACTORY->createQName(
-    token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token");
+    token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token" );
 
   GENV_ITEMFACTORY->createQName(
-    lang_qname_, "", "", "lang");
+    lang_qname_, "", "", "lang" );
 
   GENV_ITEMFACTORY->createQName(
-    para_qname_, "", "", "paragraph");
+    para_qname_, "", "", "paragraph" );
 
   GENV_ITEMFACTORY->createQName(
-    sent_qname_, "", "", "sentence");
+    sent_qname_, "", "", "sentence" );
 
   GENV_ITEMFACTORY->createQName(
-    value_qname_, "", "", "value");
+    value_qname_, "", "", "value" );
 
   GENV_ITEMFACTORY->createQName(
-    ref_qname_, "", "", "node-ref");
+    ref_qname_, "", "", "node-ref" );
 }
 
 bool TokenizeIterator::nextImpl( store::Item_t &result,
@@ -557,8 +547,6 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
-  static_context const *const sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
   TokenizerProvider const *tokenizer_provider;
   store::Item_t type_name;
   zstring value_string;
@@ -566,12 +554,14 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   TokenizeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
 
-  lang = get_lang_from( sctx );
-
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
+    } {
+      static_context const *const sctx = getStaticContext();
+      ZORBA_ASSERT( sctx );
+      lang = get_lang_from( sctx );
     }
 
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
@@ -655,6 +645,14 @@ void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
   state->doc_tokens_->reset();
 }
 
+void TokenizeIterator::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass(
+    ar, (NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>*)this
+  );
+  if ( !ar.is_serializing_out() )
+    initMembers();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
@@ -664,7 +662,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
-  static_context const *sctx;
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
@@ -674,13 +671,13 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
-
   if ( theChildren.size() > 0 ) {
     consumeNext( item, theChildren[0], plan_state );
     lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
   }
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
@@ -772,10 +769,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
     GENV_ITEMFACTORY->createTextNode( junk, lang_element.getp(), value_string );
   }
 
-#ifndef ZORBA_NO_XMLSCHEMA
-  sctx->validate( result, result, StaticContextConsts::strict_validation );
-#endif /* ZORBA_NO_XMLSCHEMA */
-
   STACK_PUSH( true, state );
   STACK_END( state );
 }
@@ -792,9 +785,9 @@ struct TokenizeStringIteratorCallback : Tokenizer::Callback {
 void TokenizeStringIteratorCallback::
 token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
        size_type token_no, size_type sent_no, size_type para_no,
-       Item const *item ) {
+       Item const *api_item ) {
   store::Item const *const store_item =
-    item ? Unmarshaller::getInternalItem( *item ) : nullptr;
+    api_item ? Unmarshaller::getInternalItem( *api_item ) : nullptr;
 
   FTToken const token(
     utf8_s, utf8_len, token_no, sent_no, para_no, store_item, lang
@@ -806,21 +799,20 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  static_context const *sctx;
   zstring value_string;
 
   TokenizeStringIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeStringIteratorState, state, plan_state );
-
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
 
   if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( value_string );
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
+    } else {
+      static_context const *const sctx = getStaticContext();
+      ZORBA_ASSERT( sctx );
+      lang = get_lang_from( sctx );
     }
 
     { // local scope
@@ -872,5 +864,4 @@ void TokenizeStringIterator::resetImpl( PlanState &plan_state ) const {
 } // namespace zorba
 
 #endif /* ZORBA_NO_FULL_TEXT */
-
 /* vim:set et sw=2 ts=2: */
