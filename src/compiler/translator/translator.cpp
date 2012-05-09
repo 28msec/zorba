@@ -2195,7 +2195,7 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (v.get_encoding().length() != 0 &&
+  if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
@@ -2844,6 +2844,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // importing module that X has been imported.
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
+    // just a test, this will throw, if the access is denied
+    std::vector<zstring> candidateURIs;
+    theRootSctx->get_candidate_uris(targetNS,
+                                    internal::EntityData::MODULE,
+                                    candidateURIs);
     theRootSctx->add_imported_builtin_module(targetNS);
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they
