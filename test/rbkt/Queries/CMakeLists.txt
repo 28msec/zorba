@@ -277,6 +277,16 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
   #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
 
+  IF (NOT ZORBA_WITH_BIG_INTEGER)
+    # These test will never pass without big integers beause the integers used
+    # in the queries exceed a 63-bit signed integer.
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
+  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
+
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
 
