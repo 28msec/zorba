@@ -1711,6 +1711,36 @@ FTTokenIterator_t StringItem::getTokens(
 /*******************************************************************************
   class StreamableStringItem
 ********************************************************************************/
+StreamableStringItem::StreamableStringItem(
+    std::istream& aStream,
+    StreamReleaser streamReleaser,
+    bool seekable) :
+  theIstream(aStream),
+  theIsMaterialized(false),
+  theIsConsumed(false),
+  theIsSeekable(seekable),
+  theStreamReleaser(streamReleaser),
+  theStreamableDependent(nullptr)
+{
+}
+
+StreamableStringItem::StreamableStringItem(
+    store::Item_t& aStreamableDependent) :
+  theIstream(aStreamableDependent->getStream()),
+  theIsMaterialized(false),
+  theIsConsumed(false),
+  theIsSeekable(aStreamableDependent->isSeekable()),
+  theStreamReleaser(nullptr),
+  theStreamableDependent(aStreamableDependent)
+{
+  ZORBA_ASSERT(theStreamableDependent->isStreamable());
+
+  // We copied the dependent item's stream and seekable flag in the initializer
+  // above, but did NOT copy the StreamReleaser. The dependent item maintains
+  // memory ownership of the stream in this way.
+}
+
+
 void StreamableStringItem::appendStringValue(zstring& aBuf) const
 {
   if (!theIsMaterialized) 
@@ -3544,11 +3574,11 @@ void StreamableBase64BinaryItem::materialize() const
     lStream.seekg(0, std::ios::end);
     std::streampos len = lStream.tellg();
     lStream.seekg(0, std::ios::beg);
-    if (len < 0)
+    if (len < std::streampos(0))
     {
       throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
     }
-    if (len == 0)
+    if (len == std::streampos(0))
     {
       return;
     }

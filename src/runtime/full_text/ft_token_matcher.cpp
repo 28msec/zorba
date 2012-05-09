@@ -47,12 +47,17 @@ inline bool get_stemming( ftmatch_options const &options ) {
   return false;
 }
 
-inline ft_stop_words_set::ptr
+//
+// This returns a raw pointer to work around a bug where ~ft_stop_words_set()
+// is being called when it shouldn't be due to ~unique_ptr() being called
+// without transferring ownership properly.
+//
+inline ft_stop_words_set const*
 get_stop_words( ftmatch_options const &options, iso639_1::type lang,
                 static_context const& sctx ) {
   if ( ftstop_word_option const *const sw = options.get_stop_word_option() )
-    return ft_stop_words_set::construct( *sw, lang, sctx );
-  return ft_stop_words_set::ptr();
+    return ft_stop_words_set::construct( *sw, lang, sctx ).release();
+  return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
