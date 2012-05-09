@@ -2959,6 +2959,7 @@ GroupSpec :
       $$ = new GroupSpec(LOC(@$),
                          static_cast<QName*>($2),
                          NULL,
+                         NULL,
                          dynamic_cast<GroupCollationSpec*>($3));
     }
   ;
