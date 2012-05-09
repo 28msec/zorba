@@ -56,7 +56,7 @@ getFetchResource(
   else if ( ! lKindStr.compare("THESAURUS")) {
     lKind = internal::EntityData::THESAURUS;
   }
-  else if ( ! lKindStr.compare("STOP_WORDS")){
+  else if ( ! lKindStr.compare("STOP_WORDS")) {
     lKind = internal::EntityData::STOP_WORDS;
   }
 #endif /* ZORBA_NO_FULL_TEXT */
