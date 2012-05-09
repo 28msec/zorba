@@ -568,6 +568,9 @@ void Store::populateValueIndex(
       key2 = key;
       index->insert(key2, domainItem);
     }
+
+    if (key != key2)
+      delete key;
   }
   catch(...)
   {

@@ -424,7 +424,6 @@ class TokenizeIteratorState : public PlanIteratorState
 public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
-  store::Item_t token_qname_; //
 
   TokenizeIteratorState();
 
@@ -435,28 +434,31 @@ public:
 
 class TokenizeIterator : public NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>
 { 
+protected:
+  store::Item_t token_qname_; //
+  store::Item_t lang_qname_; //
+  store::Item_t para_qname_; //
+  store::Item_t sent_qname_; //
+  store::Item_t value_qname_; //
+  store::Item_t ref_qname_; //
 public:
   SERIALIZABLE_CLASS(TokenizeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeIterator,
     NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TokenizeIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>(sctx, loc, children)
-  {}
+    ;
 
   virtual ~TokenizeIterator();
 
+public:
+  void initMembers();
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
