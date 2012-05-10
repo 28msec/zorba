@@ -314,7 +314,7 @@ public:
   ---------------
   If > 0, then the next obj to (de)serialize should not be registered or looked
   up in any of the fields registries. This is the case when, for example, we are
-  seriazing an obj that resides on the program stack
+  seriazing an obj that resides on the program stack.
 
   theFieldCounter:
   ----------------
@@ -394,6 +394,9 @@ protected:
 
   int                           theIsTempField;
   
+  std::stack<unsigned int>      limit_temp_level_stack;
+
+
   int                           theFieldCounter;
 
   archive_field               * theRootField;
@@ -406,20 +409,15 @@ protected:
 
   hash64map<archive_field*>   * theClassFieldsMap;
 
+  int                           theOnlyForEval;
+
 
   void                       ** all_reference_list;
 
+
   std::vector<archive_field*>   orphan_fields;
 
-  int                           current_class_version;
-
-  bool                          read_optional;
-
-  std::stack< std::pair<unsigned int, bool> >   limit_temp_level_stack;
-
   bool                          internal_archive;
-
-  int                           theOnlyForEval;
 
   bool                          theSerializeEverything;
 
@@ -440,6 +438,10 @@ public:
   virtual ~Archiver();
 
   bool is_serializing_out() { return theSerializingOut; }
+
+  void set_loading_hardcoded_objects(bool v) { loading_hardcoded_objects = v; }
+
+  bool is_loading_hardcoded_objects() { return loading_hardcoded_objects; }
 
   SerializationCallback* getUserCallback() const { return theUserCallback; }
 
@@ -463,6 +465,10 @@ public:
       enum ArchiveFieldKind field_treat);
 
   void add_end_compound_field();
+
+  bool is_serialize_everything() { return theSerializeEverything; }
+
+  void set_serialize_everything() { theSerializeEverything = true; }
 
   //
   // Methods used during de-serialization only
@@ -488,97 +494,6 @@ public:
       int* referencing) = 0;
 
   virtual void read_end_current_level_impl() = 0;
-
-protected:
-
-  //
-  // Methods used during serialization only
-  //
-
-  archive_field* lookup_nonclass_field(const char* type, const void* ptr);
-
-  archive_field* lookup_class_field(const SerializeBaseClass* ptr);
-
-  archive_field* get_prev(archive_field* field);
-
-  void prepare_serialize_out();
-
-  void check_compound_fields(archive_field* parent_field);
-
-  bool check_allowed_delays(archive_field* parent_field);
-
-  int check_order(archive_field* field1, archive_field* field2);
-
-  void exchange_mature_fields(archive_field* field1, archive_field* field2);
-
-  virtual void serialize_out() = 0;
-
-  //
-  // Methods used during de-serialization only
-  //
-
-  virtual void read_archive_description(
-      std::string* archive_name,
-      std::string* archive_info,
-      int* archive_version, 
-      int* nr_ids)
-  {
-    *archive_name = theArchiveName;
-    *archive_info = theArchiveInfo;
-    *archive_version = theArchiveVersion;
-    *nr_ids = this->theFieldCounter;
-  }
-
-  //
-  //
-  //
-  void replace_field(archive_field* new_field, archive_field* ref_field);
-
-  void root_tag_is_read();
-
-  void register_pointers_internal(archive_field* fields);
-
-  archive_field* replace_with_null(archive_field* current_field);
-
-  int compute_field_depth(archive_field* field);
-
-  int get_only_for_eval(archive_field* field);
-
-  archive_field* find_top_most_eval_only_field(archive_field* parent_field);
-
-  bool check_only_for_eval_nondelay_referencing(archive_field* parent_field);
-
-  void replace_only_for_eval_with_null(archive_field* parent_field);
-
-  void clean_only_for_eval(archive_field* field, int substract_value);
-
-public:
-  void set_serialize_base_class(bool s)
-  {
-    if (s)
-      theSerializeBaseClass++;
-    else
-      theSerializeBaseClass--;
-
-    assert(theSerializeBaseClass >= 0);
-    assert(theSerializeBaseClass <= 1);
-  }
-
-  bool is_serialize_base_class() { return theSerializeBaseClass > 0; }
-
-  void set_is_temp_field(bool is_temp)
-  {
-    if (is_temp)
-      theIsTempField++;
-    else
-      theIsTempField--;
-
-    assert(theIsTempField >= 0);
-  }
-
-  bool get_is_temp_field() { return (theIsTempField > 0); }
-
-  int get_num_fields() { return theFieldCounter; }
 
   void check_simple_field(
       bool retval, 
@@ -614,68 +529,110 @@ public:
       enum ArchiveFieldKind field_treat,
       const void* ptr);
 
-  void register_item(store::Item* i);
-
   void* get_reference_value(int refid);
 
   void finalize_input_serialization();
 
-  void set_read_optional_field(bool activate_optional)
+  //
+  // Methods used during both serialization and deserialization.
+  //
+  void set_serialize_base_class(bool s)
   {
-    this->read_optional = activate_optional;
+    if (s)
+      theSerializeBaseClass++;
+    else
+      theSerializeBaseClass--;
+
+    assert(theSerializeBaseClass >= 0);
+    assert(theSerializeBaseClass <= 1);
   }
 
-  bool get_read_optional_field() { return this->read_optional; }
+  bool is_serialize_base_class() { return theSerializeBaseClass > 0; }
 
-  void set_is_temp_field_one_level(bool is_temp, bool also_for_ptr = false)
+  void set_is_temp_field(bool is_temp)
   {
     if (is_temp)
-      limit_temp_level_stack.push(std::pair<int, bool>(theCurrentLevel + 1,
-                                                       also_for_ptr));
+      theIsTempField++;
+    else
+      theIsTempField--;
+
+    assert(theIsTempField >= 0);
+  }
+
+  bool get_is_temp_field() { return (theIsTempField > 0); }
+
+ void set_is_temp_field_one_level(bool is_temp)
+  {
+    if (is_temp)
+      limit_temp_level_stack.push(theCurrentLevel + 1);
     else
       limit_temp_level_stack.pop();
   }
 
-  bool get_is_temp_field_one_level() 
+  bool get_is_temp_field_one_level();
+
+protected:
+
+  //
+  // Methods used during serialization only
+  //
+
+  archive_field* lookup_nonclass_field(const char* type, const void* ptr);
+
+  archive_field* lookup_class_field(const SerializeBaseClass* ptr);
+
+  void prepare_serialize_out();
+
+  archive_field* get_prev(archive_field* field);
+
+  void replace_field(archive_field* new_field, archive_field* ref_field);
+
+  archive_field* replace_with_null(archive_field* current_field);
+
+  void register_pointers_internal(archive_field* fields);
+
+  int compute_field_depth(archive_field* field);
+
+  int get_only_for_eval(archive_field* field);
+
+  archive_field* find_top_most_eval_only_field(archive_field* parent_field);
+
+  bool check_only_for_eval_nondelay_referencing(archive_field* parent_field);
+
+  void replace_only_for_eval_with_null(archive_field* parent_field);
+
+  void clean_only_for_eval(archive_field* field, int substract_value);
+
+  void check_compound_fields(archive_field* parent_field);
+
+  bool check_allowed_delays(archive_field* parent_field);
+
+  int check_order(archive_field* field1, archive_field* field2);
+
+  void exchange_mature_fields(archive_field* field1, archive_field* field2);
+
+  virtual void serialize_out() = 0;
+
+  //
+  // Methods used during de-serialization only
+  //
+
+  virtual void read_archive_description(
+      std::string* archive_name,
+      std::string* archive_info,
+      int* archive_version, 
+      int* nr_ids)
   {
-    if (limit_temp_level_stack.empty())
-    {
-      return false;
-    }
-    else if (limit_temp_level_stack.top().first == theCurrentLevel)
-    {
-      return true;
-    }
-    else
-    {
-      unsigned int lastlevel = limit_temp_level_stack.top().first;
-      archive_field* temp_field = theCurrentCompoundField;
+    *archive_name = theArchiveName;
+    *archive_info = theArchiveInfo;
+    *archive_version = theArchiveVersion;
+    *nr_ids = this->theFieldCounter;
+  }
 
-      while (temp_field && (temp_field->theLevel >= lastlevel))
-      {
-        if (temp_field->theKind == ARCHIVE_FIELD_PTR ||
-            temp_field->theKind == ARCHIVE_FIELD_REFERENCING)
-           return false;
+  void root_tag_is_read();
 
-        temp_field = temp_field->theParent;
-      }
-
-      if (temp_field)
-        return true;
-      else
-        return false;
-    }
-  } 
-
-  bool get_is_temp_field_also_for_ptr() 
-  {
-    return (limit_temp_level_stack.top().first == theCurrentLevel &&
-            limit_temp_level_stack.top().second);
-  } 
-
-  bool is_serialize_everything() { return theSerializeEverything; }
-
-  void set_serialize_everything() { theSerializeEverything = true; }
+public:
+  void register_item(store::Item* i);
 
   int get_serialize_only_for_eval() { return theOnlyForEval; }
 
@@ -688,13 +645,6 @@ public:
 
     assert(theOnlyForEval >= 0);
   }
-
-  void set_loading_hardcoded_objects(bool set_hardcoded)
-  {
-    this->loading_hardcoded_objects = set_hardcoded;
-  }
-
-  bool is_loading_hardcoded_objects() { return loading_hardcoded_objects; }
 
   void dont_allow_delay(ENUM_ALLOW_DELAY d = DONT_ALLOW_DELAY)
   {

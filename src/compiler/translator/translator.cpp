@@ -69,6 +69,8 @@
 #include "functions/signature.h"
 #include "functions/udf.h"
 #include "functions/external_function.h"
+#include "functions/func_ft_module.h"
+#include "functions/func_ft_module_impl.h"
 
 #include "annotations/annotations.h"
 
@@ -84,6 +86,7 @@
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -107,7 +110,6 @@
 
 #define NODE_SORT_OPT
 
-
 namespace zorba
 {
 
@@ -118,7 +120,7 @@ static expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -559,7 +561,7 @@ protected:
 
   std::set<std::string>                  theImportedSchemas;
 
-  short                                  theCurrSctxId;
+  int                                    theCurrSctxId;
 
   static_context                       * theRootSctx;
 
@@ -567,7 +569,7 @@ protected:
 
   std::vector<static_context_t>          theSctxList;
 
-  std::stack<short>                      theSctxIdStack;
+  std::stack<int>                        theSctxIdStack;
 
   static_context                       * export_sctx;
 
@@ -643,7 +645,7 @@ public:
 TranslatorImpl(
     TranslatorImpl* rootTranslator,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -691,6 +693,10 @@ TranslatorImpl(
   xquery_fns_def_dot.set(FunctionConsts::FN_DATA_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_DOCUMENT_URI_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_NODE_NAME_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_NILLED_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_HAS_CHILDREN_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_PATH_0);
+
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
@@ -855,7 +861,7 @@ ftnode* pop_ftstack(int count = 1)
 {
   ZORBA_ASSERT(count >= 0);
 
-  ftnode *n = NULL;
+  ftnode *n = nullptr;
   while ( count-- > 0 )
   {
     ZORBA_FATAL( !theFTNodeStack.empty(), "" );
@@ -915,7 +921,7 @@ inline bool inUDFBody()
 /******************************************************************************
 
 *******************************************************************************/
-inline short sctxid()
+inline int sctxid()
 {
   return theCurrSctxId;
 }
@@ -937,7 +943,7 @@ void push_scope()
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
-    theCurrSctxId = (short)theCCB->theSctxMap.size() + 1;
+    theCurrSctxId = (int)theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
   }
   else
@@ -2004,6 +2010,14 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
+  zstring xsdTNS = zstring(XML_SCHEMA_NS);
+  if ( xsdTNS.compare(targetNS)==0 )
+  {
+    // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
+    // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
+    return no_state;
+  }
+
   store::Item_t targetNSItem = NULL;
   zstring tmp = targetNS;
   ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
@@ -2174,7 +2188,7 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (v.get_encoding().length() != 0 &&
+  if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
@@ -2824,6 +2838,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // importing module that X has been imported.
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
+    // just a test, this will throw, if the access is denied
+    std::vector<zstring> candidateURIs;
+    theRootSctx->get_candidate_uris(targetNS,
+                                    internal::EntityData::MODULE,
+                                    candidateURIs);
     theRootSctx->add_imported_builtin_module(targetNS);
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they
@@ -2964,7 +2983,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       moduleRootSctx->set_entity_retrieval_uri(compURI);
       moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
-      short moduleRootSctxId = (short)theCCB->theSctxMap.size() + 1;
+      int moduleRootSctxId = (int)theCCB->theSctxMap.size() + 1;
       (theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register
@@ -3259,6 +3278,11 @@ void* begin_visit(const VFO_DeclList& v)
 
       if (f.getp() != 0)
       {
+        if (f->isUdf())
+        {
+          RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
+
         // We make sure that the types of the parameters and the return type
         // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
@@ -3488,7 +3512,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
       for (csize i = 0; i < numParams; ++i)
       {
-        const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
+        const let_clause* lc = dynamic_cast<const let_clause*>(flwor->get_clause(i));
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
         ZORBA_ASSERT(argVar != NULL);
         args.push_back(argVar);
@@ -3929,7 +3953,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL)
   {
     type = pop_tstack();
-    theSctx->set_context_item_type(type);
+    theSctx->set_context_item_type(type, loc);
   }
   else
   {
@@ -7225,19 +7249,25 @@ void* begin_visit(const CatchExpr& v)
   GENV_ITEMFACTORY->createQName(lStackTrace, ZORBA_ERR_NS, "", "stack-trace");
 
   cc->add_var(catch_clause::err_code,
-      bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE) );
+      bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE));
+
   cc->add_var(catch_clause::err_desc,
-      bind_var(loc, lDesc.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+      bind_var(loc, lDesc.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_value,
-      bind_var(loc, lValue.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_STAR) );
+      bind_var(loc, lValue.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_STAR));
+
   cc->add_var(catch_clause::err_module,
-      bind_var(loc, lModule.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+      bind_var(loc, lModule.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_line_no,
-      bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+      bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_column_no,
-      bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+      bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
   cc->add_var(catch_clause::zerr_stack_trace,
-      bind_var(loc, lStackTrace.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION) );
+      bind_var(loc, lStackTrace.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION));
 
   tce->add_clause(cc);
 
@@ -8778,7 +8808,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // the preds that follow the axis step.
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
-  const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
+  const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
   rchandle<relpath_expr> predPathExpr = new relpath_expr(theRootSctx, loc);
   predPathExpr->add_back(new wrapper_expr(theRootSctx, loc, fcOuterDot->get_var()));
   predPathExpr->add_back(axisExpr.getp());
@@ -9949,7 +9979,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
 
-        const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
+        const for_clause* fc = static_cast<const for_clause*>(flworExpr->get_clause(0));
         expr* flworVarExpr = fc->get_var();
 
         fo_expr_t normExpr;
@@ -10742,7 +10772,7 @@ void end_visit(const InlineFunction& v, void* aState)
     // body, because optimization may remove clauses from the flwor expr
     for (ulong i = 0; i < flwor->num_clauses(); ++i)
     {
-      const flwor_clause* lClause = (*flwor)[i];
+      const flwor_clause* lClause = flwor->get_clause(i);
       const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
       ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
       var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
@@ -13093,7 +13123,7 @@ void *begin_visit (const FTAnd& v)
 {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13337,7 +13367,7 @@ void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
 void *begin_visit (const FTMildNot& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13380,7 +13410,7 @@ void end_visit (const FTOptionDecl& v, void* /*visit_state*/) {
 void *begin_visit (const FTOr& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13639,7 +13669,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     levels = dynamic_cast<ftrange*>( pop_ftstack() );
     ZORBA_ASSERT( levels );
   } else
-    levels = NULL;
+    levels = nullptr;
 
   ftthesaurus_id *const tid = new ftthesaurus_id(
     loc, v.get_uri(), v.get_relationship(), levels
@@ -13651,7 +13681,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 void *begin_visit (const FTThesaurusOption& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13659,10 +13689,8 @@ void *begin_visit (const FTThesaurusOption& v) {
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftthesaurus_id *default_tid = NULL;
-  if ( v.includes_default() ) {
-    default_tid = new ftthesaurus_id( loc, "##default" );
-  }
+  ftthesaurus_id *const default_tid = v.includes_default() ?
+    new ftthesaurus_id( loc, "##default" ) : nullptr;
 
   ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {
@@ -13896,7 +13924,7 @@ expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -13939,7 +13967,7 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   return translate_aux(NULL,
                        root,
                        ccb->theRootSctx,
-                       (short)ccb->theSctxMap.size(),
+                       (int)ccb->theSctxMap.size(),
                        &minfo,
                        modulesStack,
                        false);

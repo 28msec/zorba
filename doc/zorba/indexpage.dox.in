@@ -1,9 +1,7 @@
 /*! \mainpage Zorba ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER} Documentation
 
-\section installbuild Installation and Build
-  - \ref installation
+\section installbuild Building Zorba
   - \ref build
-  - \ref build_ubuntu
   - \ref php_ubuntu_tutorial
   - \ref php_windows_tutorial
   - \ref python_windows_tutorial

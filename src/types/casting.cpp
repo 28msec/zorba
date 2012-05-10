@@ -34,7 +34,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 
 #include "types/typeops.h"
 #include "types/typemanagerimpl.h"

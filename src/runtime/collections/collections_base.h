@@ -103,6 +103,9 @@ protected:
 
     getCopyMode(lCopyMode, this->theSctx);
 
+    lCopyMode.theDoCopy = ! 
+    this->theChildren[this->theChildren.size()-1]->isConstructor();
+
     while (this->consumeNext(node,
                              this->theChildren[this->theChildren.size()-1].getp(),
                              planState))

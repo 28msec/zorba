@@ -231,6 +231,16 @@ PlanIter_t fn_zorba_node_least_common_ancestor::codegen(
   return new LeastCommonAncestor(sctx, loc, argv);
 }
 
+PlanIter_t fn_path_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnPathIterator(sctx, loc, argv);
+}
+
 void populate_context_nodes(static_context* sctx)
 {
 
@@ -347,6 +357,17 @@ void populate_context_nodes(static_context* sctx)
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::FN_NUMBER_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_has_children_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","has-children"), 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FN_HAS_CHILDREN_0);
 
   }
 
@@ -535,6 +556,29 @@ void populate_context_nodes(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
         FunctionConsts::FN_ZORBA_NODE_LEAST_COMMON_ANCESTOR_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_path_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","path"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_PATH_0);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_path_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","path"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_PATH_1);
 
   }
 

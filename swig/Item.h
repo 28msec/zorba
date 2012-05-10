@@ -27,6 +27,8 @@ class Item
   friend class ItemFactory;
   friend class Collection;
   friend class CollectionManager;
+  friend class StaticCollectionManager;
+  friend class ItemSequence;
 private:
   zorba::Item theItem;
 
@@ -49,6 +51,9 @@ public:
   long long getLongValue () const;
   std::string getLocalName () const;
   std::string getNamespace () const;
+
+  std::vector< std::pair< std::string, std::string > > getNamespaceBindings ();
+  
   bool getNodeName (Item &aNodeName) const;
   Item 	getParent () const;
   std::string getPrefix () const;

@@ -474,6 +474,28 @@ LeastCommonAncestor::~LeastCommonAncestor() {}
 // </LeastCommonAncestor>
 
 
+// <FnPathIterator>
+FnPathIterator::class_factory<FnPathIterator>
+FnPathIterator::g_class_factory;
+
+
+void FnPathIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnPathIterator::~FnPathIterator() {}
+
+// </FnPathIterator>
+
+
 
 }
 

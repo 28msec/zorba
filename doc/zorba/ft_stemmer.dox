@@ -56,7 +56,12 @@ class Stemmer {
 public:
   typedef /* implementation-defined */ ptr;
 
+  struct Properties {
+    char const *uri;
+  };
+
   virtual void destroy() const = 0;
+  virtual void properties( Properties *result ) const = 0;
   virtual void stem( String const &word, locale::iso639_1::type lang, String *result ) const = 0;
 protected:
   virtual ~Stemmer();
@@ -89,6 +94,8 @@ you need to implement the \c stem() function where:
 Note that \c result should always be set to something.
 If your stemmer doesn't know how to stem the given word,
 you should set \c result to \c word.
+You also need to implement the \c properties() function
+and set the identifying URI of your stemmer.
 
 A very simple stemmer
 that stems the word "foobar" to "foo"
@@ -98,6 +105,7 @@ can be implemented as:
 class MyStemmer : public Stemmer {
 public:
   void destroy() const;
+  void properties( Properties *result ) const;
   void stem( String const &word, locale::iso639_1::type lang, String *result ) const;
 private:
   MyStemmer();
@@ -106,6 +114,10 @@ private:
 
 void MyStemmer::destroy() const {
   // Do nothing since we statically allocate a singleton instance of our stemmer.
+}
+
+void MyStemmer::properties( Properties *props ) const {
+  props->uri = "http://my.example.com/zorba/full-text/stemmer";
 }
 
 void MyStemmer::stem( String const &word, locale::iso639_1::type lang, String *result ) const {
@@ -120,7 +132,6 @@ A real stemmer would either use a stemming algorithm
 or a dictionary look-up
 to stem many words,
 of course.
-
 Although not used in this simple example,
 \c lang can be used to allow a single stemmer instance
 to stem words in more than one language.
@@ -135,16 +146,24 @@ that, given a language, provides a \c Stemmer for that language:
 class StemmerProvider {
 public:
   virtual ~StemmerProvider();
-  virtual Stemmer::ptr getStemmer( locale::iso639_1::type lang ) const = 0;
+  virtual bool getStemmer( locale::iso639_1::type lang, Stemmer::ptr *s = 0 ) const = 0;
 };
 \endcode
+
+The \c getStemmer() function should return \c true
+only if it can provide a \c Stemmer
+for the given language; \c false otherwise.
+If the \c Stemmer::ptr argument is \c null,
+the caller wants to check only whether the provider
+can provide a stemmer for the given language
+and doesn't want a \c Stemmer instance created or returned.
 
 A simple \c StemmerProvider for our simple stemmer can be implemented as:
 
 \code
 class MyStemmerProvider : public StemmerProvider {
 public:
-  Stemmer::ptr getStemmer( locale::iso639_1::type lang ) const;
+  bool getStemmer( locale::iso639_1::type lang Stemmer::ptr *s = 0 ) const;
 };
 
 Stemmer::ptr MyStemmerProvider::getStemmer( locale::iso639_1::type lang ) const {
@@ -154,15 +173,14 @@ Stemmer::ptr MyStemmerProvider::getStemmer( locale::iso639_1::type lang ) const 
     case iso639_1::en:
     case iso639_1::unknown: // Handle "unknown" language since, in many cases, the language is not known.
       result.reset( &stemmer );
-      break;
+      return true;
     default: 
       //
-      // We have no stemmer for the given language: leave the result as null to indicate this.
+      // We have no stemmer for the given language: return false.
       // Zorba will then use the built-in stemmer for the given language.
       //
-      break;
+      return false;
   }
-  resturn std::move( result );
 }
 \endcode
 

@@ -738,6 +738,13 @@
       <value>properties "$1" and "$2", representing characters used in picture string, do not have distinct values</value>
     </diagnostic>
 
+    <diagnostic code="XQST0099">
+      <comment>
+        If a module contains more than one context item declaration, a static error is raised [err:XQST0099].
+      </comment>
+      <value>module contains more than one context item declaration</value>
+    </diagnostic>
+
     <diagnostic code="XQST0106">
       <comment>
        It is a static error if a function's annotations contain more than one
@@ -806,7 +813,19 @@
        raise this error and instead provide some other implementation-defined
        behavior.
       </comment>
-      <value>"$1": unsupported language</value>
+      <value>"$1": unsupported language${ 2}</value>
+      <entry key="BadStopWordsLang">
+        <value>for current stop words</value>
+      </entry>
+      <entry key="BadStemmerLang">
+        <value>for current stemmer</value>
+      </entry>
+      <entry key="BadThesaurusLang">
+        <value>for given thesaurus</value>
+      </entry>
+      <entry key="BadTokenizerLang">
+        <value>for current tokenizer</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FTDY0016" if="!defined(ZORBA_NO_FULL_TEXT)">
@@ -998,7 +1017,7 @@
       <comment>
        Invalid \c fn:format-number() picture string.
       </comment>
-      <value>"$1": invalid fn:format-number() picture string</value>
+      <value>"$1": invalid fn:format-number() picture string$2</value>
     </diagnostic>
 
     <diagnostic code="FODT0001">
@@ -1713,7 +1732,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0029" name="URI_ACCESS_DENIED">
-      <value>"$1": module import not allowed</value>
+      <value>"$1": URI access not allowed</value>
     </diagnostic>
 
     <diagnostic code="ZXQP0030" name="DEADLOCK">
@@ -1761,7 +1780,7 @@
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
-       The version of the thesaurus is not the expected version.
+        The version of the thesaurus is not the expected version.
       </comment>
      <value>"$1": wrong WordNet file version; should be "$2"</value>
     </diagnostic>
@@ -1769,15 +1788,15 @@
     <diagnostic code="ZXQP8402" name="THESAURUS_ENDIANNESS_MISMATCH"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
+        The thesaurus data file's endianness does not match that of the CPU.
       </comment>
      <value>thesaurus data endianness does not match CPU</value>
-       The thesaurus data file's endianness does not match that of the CPU.
     </diagnostic>
 
     <diagnostic code="ZXQP8403" name="THESAURUS_DATA_ERROR"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
-       The thesaurus data contains an unexpected value.
+        The thesaurus data contains an unexpected value.
       </comment>
      <value>thesaurus data error${: 1}</value>
     </diagnostic>
@@ -3560,7 +3579,7 @@
     </entry>
 
     <entry key="UnbalancedChar_3" if="!defined(ZORBA_NO_ICU)">
-      <value>missing '$3'</value>
+      <value>unbalanced '$3'</value>
     </entry>
 
     <entry key="UnescapedChar_3" if="!defined(ZORBA_NO_ICU)">
@@ -3814,6 +3833,31 @@
     <entry key="ParseFragmentInvalidOptions">
       <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
     </entry>
+    
+    <entry key="FormatNumberDuplicates">
+      <value>: a sub-picture must not contain more than one of the "$3" sign</value>
+    </entry>
+    
+    <entry key="FormatNumberGroupingAdjacentToDecimal">
+      <value>: a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign</value>
+    </entry>
+    
+    <entry key="FormatNumberIntegerPart">
+      <value>: the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign</value>
+    </entry>
+    
+    <entry key="FormatNumberFractionalPart">
+      <value>: the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family</value>
+    </entry>
+    
+    <entry key="FormatNumberPercentPermille">
+      <value>: a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each</value>
+    </entry>
+    
+    <entry key="FormatNumberAtLeastOneOptionalOrDecimal">
+      <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
+    </entry>
+    
 
     <entry key="JSON_ILLEGAL_CHARACTER">
       <value>'$2': illegal JSON character${ at 3}</value>

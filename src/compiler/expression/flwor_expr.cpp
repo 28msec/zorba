@@ -894,8 +894,10 @@ void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-flwor_clause* flwor_expr::get_clause(ulong i)
+flwor_clause* flwor_expr::get_clause(csize i) const
 {
+  assert(i < theClauses.size());
+
   return theClauses[i].getp();
 }
 
@@ -903,8 +905,10 @@ flwor_clause* flwor_expr::get_clause(ulong i)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::remove_clause(ulong pos)
+void flwor_expr::remove_clause(csize pos)
 {
+  assert(pos < theClauses.size());
+
   if (theClauses[pos]->theFlworExpr == this)
     theClauses[pos]->theFlworExpr = NULL;
 

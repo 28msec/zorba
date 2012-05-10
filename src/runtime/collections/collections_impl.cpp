@@ -2308,122 +2308,122 @@ bool DeclaredIndexesIterator::nextImpl(
 /*******************************************************************************
   14.8.5 fn:uri-collection
 ********************************************************************************/
-  FnURICollectionIteratorState::~FnURICollectionIteratorState()
+FnURICollectionIteratorState::~FnURICollectionIteratorState()
+{
+  if(theIterator != NULL)
   {
-    if(theIterator != NULL)
+    if(theIteratorOpened)
     {
-      if(theIteratorOpened)
-      {
-        theIterator->close();
-        theIteratorOpened = false;
-      }
-      theIterator = NULL;
+      theIterator->close();
+      theIteratorOpened = false;
     }
-  }
-
-  void FnURICollectionIteratorState::init(PlanState& planState)
-  {
-    PlanIteratorState::init(planState);
     theIterator = NULL;
   }
+}
 
-  void FnURICollectionIteratorState::reset(PlanState& planState)
+void FnURICollectionIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theIterator = NULL;
+}
+
+void FnURICollectionIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  if(theIterator != NULL)
   {
-    PlanIteratorState::reset(planState);
-
-    if(theIterator != NULL)
+    if(theIteratorOpened)
     {
-      if(theIteratorOpened)
-      {
-        theIterator->close();
-        theIteratorOpened = false;
-      }
-      theIterator = NULL;
+      theIterator->close();
+      theIteratorOpened = false;
     }
+    theIterator = NULL;
   }
-  
-  bool FnURICollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+}
+
+bool FnURICollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lURI, resolvedURIItem, lIte;
+  store::Collection_t coll;
+  std::auto_ptr<internal::Resource> lResource;
+  internal::CollectionResource* lCollResource;
+  zstring resolvedURIString;
+  zstring lErrorMessage;
+  zstring docuri;
+
+  FnURICollectionIteratorState* state;
+  DEFAULT_STACK_INIT(FnURICollectionIteratorState, state, planState);
+
+  if(theChildren.size() == 1 &&
+    consumeNext(lURI, theChildren[0].getp(),planState))
   {
-    store::Item_t lURI, resolvedURIItem, lIte;
-    store::Collection_t coll;
-    std::auto_ptr<internal::Resource> lResource;
-    internal::CollectionResource* lCollResource;
-    zstring resolvedURIString;
-    zstring lErrorMessage;
-    zstring docuri;
-
-    FnURICollectionIteratorState* state;
-    DEFAULT_STACK_INIT(FnURICollectionIteratorState, state, planState);
-
-    if(theChildren.size() == 1 &&
-      consumeNext(lURI, theChildren[0].getp(),planState))
+    try
     {
-      try
-      {
-        resolvedURIString= theSctx->resolve_relative_uri(lURI->getStringValue());
-      }
-      catch (ZorbaException const&)
-      {
-        throw XQUERY_EXCEPTION(
-          err::FODC0004,
-          ERROR_PARAMS(lURI->getStringValue(), ZED( BadAnyURI ) ),
-          ERROR_LOC( loc )
-        );
-      }
+      resolvedURIString= theSctx->resolve_relative_uri(lURI->getStringValue());
     }
-    else
-    {
-      resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
-
-      if ( NULL == resolvedURIItem )
-        throw XQUERY_EXCEPTION(
-        err::FODC0002,
-        ERROR_PARAMS( ZED( DefaultCollection), ZED( NotDefInDynamicCtx ) ),
-        ERROR_LOC( loc )
-      );
-
-      resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
-    }
-
-    lResource = theSctx->resolve_uri(resolvedURIString,
-                                    internal::EntityData::COLLECTION,
-                                    lErrorMessage);
-
-    lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
-
-    if( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
+    catch (ZorbaException const&)
     {
       throw XQUERY_EXCEPTION(
-        err::FODC0002,
-        ERROR_PARAMS( resolvedURIString, lErrorMessage ),
+        err::FODC0004,
+        ERROR_PARAMS(lURI->getStringValue(), ZED( BadAnyURI ) ),
         ERROR_LOC( loc )
       );
     }
-
-    // return collection nodes
-    state->theIterator = coll->getIterator();
-    ZORBA_ASSERT(state->theIterator != NULL);
-    state->theIterator->open();
-    state->theIteratorOpened = true;
-
-    //return the DocumentURI of the Collection
-    while(state->theIterator->next(lIte))
-    {
-      lIte->getDocumentURI(docuri);
-      if(!docuri.empty())
-      {
-        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, docuri), state);
-      }
-    }
-
-    //close iterator
-    state->theIterator->close();
-    state->theIteratorOpened = false;
-
-    STACK_PUSH(false, state);
-    STACK_END(state);
-  
   }
+  else
+  {
+    resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
+
+    if ( NULL == resolvedURIItem )
+      throw XQUERY_EXCEPTION(
+      err::FODC0002,
+      ERROR_PARAMS( ZED( DefaultCollection), ZED( NotDefInDynamicCtx ) ),
+      ERROR_LOC( loc )
+    );
+
+    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
+  }
+
+  lResource = theSctx->resolve_uri(resolvedURIString,
+                                  internal::EntityData::COLLECTION,
+                                  lErrorMessage);
+
+  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
+
+  if( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FODC0002,
+      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
+      ERROR_LOC( loc )
+    );
+  }
+
+  // return collection nodes
+  state->theIterator = coll->getIterator();
+  ZORBA_ASSERT(state->theIterator != NULL);
+  state->theIterator->open();
+  state->theIteratorOpened = true;
+
+  //return the DocumentURI of the Collection
+  while(state->theIterator->next(lIte))
+  {
+    lIte->getDocumentURI(docuri);
+    if(!docuri.empty())
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, docuri), state);
+    }
+  }
+
+  //close iterator
+  state->theIterator->close();
+  state->theIteratorOpened = false;
+
+  STACK_PUSH(false, state);
+  STACK_END(state);
+
+}
 
 
 } // namespace zorba

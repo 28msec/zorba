@@ -6015,11 +6015,11 @@ FTExtensionOption :
 FTStemOption :
         STEMMING
         {
-            $$ = new FTStemOption( LOC(@$), ft_stem_mode::with );
+            $$ = new FTStemOption( LOC(@$), ft_stem_mode::stemming );
         }
     |   NO STEMMING
         {
-            $$ = new FTStemOption( LOC(@$), ft_stem_mode::without );
+            $$ = new FTStemOption( LOC(@$), ft_stem_mode::no_stemming );
         }
     ;
 

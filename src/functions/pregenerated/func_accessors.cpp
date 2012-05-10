@@ -50,6 +50,15 @@ PlanIter_t fn_node_name::codegen(
   return new NodeNameIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_nilled_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new NilledIterator(sctx, loc, argv);
+}
 PlanIter_t fn_nilled::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -131,6 +140,17 @@ void populate_context_accessors(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION),
         FunctionConsts::FN_NODE_NAME_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_nilled_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","nilled"), 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FN_NILLED_0);
 
   }
 

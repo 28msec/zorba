@@ -1240,13 +1240,13 @@ void UpdDeleteNodesFromCollection::apply()
                               << e.what() << "; " << theName << ")")));
   }
 
-  std::size_t numNodes = theNodes.size();
+  csize numNodes = theNodes.size();
 
   bool isLast = theIsLast;
 
   if (theIsLast)
   {
-    for (std::size_t i = numNodes; i > 0; --i)
+    for (csize i = numNodes; i > 0; --i)
     {
       if (theNodes[i-1] != lColl->nodeAt(xs_integer(size - i)))
       {

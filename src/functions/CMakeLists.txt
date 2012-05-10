@@ -89,3 +89,7 @@ IF (ZORBA_WITH_JSON)
     func_jsoniq_functions_impl.cpp
   )
 ENDIF (ZORBA_WITH_JSON)
+
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND FUNCTIONS_SRCS func_ft_module_impl.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)

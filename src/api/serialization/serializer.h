@@ -77,7 +77,15 @@ public:
 #endif
 
     PARAMETER_VALUE_UTF_8,
-    PARAMETER_VALUE_UTF_16
+    PARAMETER_VALUE_UTF_16,
+    
+    // Values for the XML/HTML version
+    PARAMETER_VALUE_VERSION_1_0,          // used for XML 1.0
+    PARAMETER_VALUE_VERSION_1_1,          // used for XML 1.1
+    PARAMETER_VALUE_VERSION_4_0,          // used for HTML 4.0
+    PARAMETER_VALUE_VERSION_4_01,         // used for HTML 4.01
+    PARAMETER_VALUE_VERSION_OTHER         // given by the version string
+    
   } PARAMETER_VALUE_TYPE;
 
 protected:
@@ -104,7 +112,8 @@ protected:
   short int standalone;            // implemented
   short int undeclare_prefixes;    // "yes" or "no", implemented
   void* use_character_maps;        // TODO: list of pairs
-  zstring version;                 // "1.0"
+  short int version;               // "1.0"
+  zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
 #ifdef ZORBA_WITH_JSON
   short int cloudscript_multiple_items;  // "no", "array", "appended", implemented
@@ -268,7 +277,7 @@ protected:
 
     /**
      *  Serializes the given string, performing character expansion
-     *  if necessary. 
+     *  if necessary.
      *
      *  @return returns the number of bytes that have not been written. This
      *          info is used only for streamable items expansion.

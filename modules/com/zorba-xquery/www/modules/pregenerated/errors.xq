@@ -188,6 +188,7 @@ declare variable $zerr:ZXQP8401 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8401
 
 (:~
  :
+ : The thesaurus data file's endianness does not match that of the CPU.
  : 
 :)
 declare variable $zerr:ZXQP8402 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP8402");

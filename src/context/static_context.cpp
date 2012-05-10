@@ -389,10 +389,15 @@ const char*
 static_context::ZORBA_XML_FN_NS =
 "http://www.zorba-xquery.com/modules/xml";
 
+#ifndef ZORBA_NO_FULL_TEXT
+const char*
+static_context::ZORBA_FULL_TEXT_FN_NS =
+"http://www.zorba-xquery.com/modules/full-text";
+#endif /* ZORBA_NO_FULL_TEXT */
+
 const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
 "http://www.zorba-xquery.com/modules/xml-options";
-
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
@@ -465,8 +470,11 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
+#ifndef ZORBA_NO_FULL_TEXT
+            ns == ZORBA_FULL_TEXT_FN_NS ||
+#endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_XML_FN_NS);
-  }
+  } 
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
@@ -506,6 +514,11 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
   Static method to check if a given target namespace identifies a zorba non
   pure builtin module, i.e. a builtin module that, in addition to builtin
   external functions, contains variable declarations and/or udfs.
+
+  Note: The fuul-text module must be included here because it MUST be processed
+  when imported, even in RELEASE mode. The reason is that the
+  current-compare-options(), tokenize(), and tokenizer-properties() functions
+  must be registered in the module's sctx (in addition to the root sctx).
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
@@ -577,7 +590,7 @@ static_context::static_context()
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -625,7 +638,7 @@ static_context::static_context(static_context* parent)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -678,7 +691,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
-  theContextItemType(GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+  theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
@@ -812,7 +825,9 @@ static_context::~static_context()
 ********************************************************************************/
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
-  size_t lNumURIMappers, lNumURLResolvers;
+  csize lNumURIMappers;
+  csize lNumURLResolvers;
+
   if (ar.is_serializing_out())
   {
     lNumURIMappers = theURIMappers.size();
@@ -838,33 +853,36 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     // callback required but not available
     if ((lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-        ERROR_PARAMS( ZED( NoSerializationCallbackForDocColMod ) )
-      );
+      throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+      ERROR_PARAMS(ZED(NoSerializationCallbackForDocColMod)));
     }
 
-    if (lNumURIMappers) {
-      for (size_t i = 0; i < lNumURIMappers; ++i) {
+    if (lNumURIMappers) 
+    {
+      for (size_t i = 0; i < lNumURIMappers; ++i) 
+      {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
-        if (!lURIMapper) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURIMapper) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_uri_mapper(new URIMapperWrapper(*lURIMapper));
       }
     }
-    if (lNumURLResolvers) {
-      for (size_t i = 0; i < lNumURLResolvers; ++i) {
+
+    if (lNumURLResolvers) 
+    {
+      for (size_t i = 0; i < lNumURLResolvers; ++i) 
+      {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
-        if (!lURLResolver) {
-          throw ZORBA_EXCEPTION(
-            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
-          );
+        if (!lURLResolver) 
+        {
+          throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(ZED(NoModuleURIResolver)));
         }
+
         add_url_resolver(new URLResolverWrapper(*lURLResolver));
       }
     }
@@ -1526,6 +1544,21 @@ void static_context::get_component_uris(
   }
 }
 
+void static_context::get_candidate_uris(
+    zstring const& aUri,
+    internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const
+{
+  // Create a simple EntityData that just reports the specified Kind
+  internal::EntityData const lData(aEntityKind);
+
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::CANDIDATE, oComponents);
+  if (oComponents.size() == 0)
+  {
+    oComponents.push_back(aUri);
+  }
+}
+
 
 /***************************************************************************//**
 
@@ -1601,7 +1634,7 @@ void static_context::apply_url_resolvers(
     std::auto_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const
 {
-  oErrorMessage = "";
+  oErrorMessage.clear();
 
   // Iterate through all candidate URLs...
   for (std::vector<zstring>::iterator url = aUrls.begin();
@@ -1637,7 +1670,7 @@ void static_context::apply_url_resolvers(
         }
         catch (const std::exception& e)
         {
-          if (oErrorMessage == "")
+          if (oErrorMessage.empty()) 
           {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();
@@ -2242,8 +2275,13 @@ void static_context::getVariables(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_context_item_type(const xqtref_t& t)
+void static_context::set_context_item_type(const xqtref_t& t, const QueryLoc& loc)
 {
+  if (theContextItemType != NULL)
+  {
+    RAISE_ERROR_NO_PARAMS(err::XQST0099, loc);
+  }
+
   theContextItemType = t;
 }
 
@@ -2256,8 +2294,8 @@ const XQType* static_context::get_context_item_type() const
   const static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theContextItemType != NULL)
-      return theContextItemType.getp();
+    if (sctx->theContextItemType != NULL)
+      return sctx->theContextItemType.getp();
 
     sctx = sctx->theParent;
   }
@@ -2285,9 +2323,7 @@ void static_context::bind_fn(
 
   if (!is_global_root_sctx() && lookup_local_fn(qname, arity) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0034, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (theFunctionMap == NULL)

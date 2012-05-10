@@ -593,7 +593,11 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool copyInput);
+    bool copyInput)
+    : 
+    NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>(sctx, loc, children),
+    theCopyInput(copyInput)
+  {}
 
   virtual ~JSONReplaceValueIterator();
 

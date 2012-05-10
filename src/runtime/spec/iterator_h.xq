@@ -160,26 +160,21 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
     local:children-decl($iter),
     local:add-constructor-param($iter),
     ')',
-
-    if ($iter/zorba:constructor/@generate eq "false")
-    then
-      ';'
+    $gen:newline, gen:indent(2),
+    if (not(exists($iter/@generateConstructor)) or $iter/@generateConstructor = "true")
+    then concat(
+      ': ',
+      $gen:newline, gen:indent(2), $base, '(sctx, loc', local:children-args($iter),
+      if ($iter/@base)
+      then concat(', ',
+              string-join(
+                for $base-param in $iter/zorba:constructor/zorba:parameter[@base = "true"]
+                return $base-param/@name, ', '))
+      else "",
+      local:add-constructor-param-2($iter),
+      $gen:newline, gen:indent(1), '{}')
     else
-      concat(
-        $gen:newline, gen:indent(2), ': ',
-        $gen:newline, gen:indent(2), $base, '(sctx, loc', local:children-args($iter),
-        if ($iter/@base)
-        then 
-          concat(', ',
-            string-join(
-              for $base-param in $iter/zorba:constructor/zorba:parameter[@base = "true"]
-              return $base-param/@name, ', '))
-        else 
-          "",
-        local:add-constructor-param-2($iter),
-        $gen:newline, gen:indent(1), '{}'
-       )
-    ,
+      ';',
     $gen:newline, $gen:newline
   )
 };

@@ -219,6 +219,10 @@ protected:
   std::vector<UpdatePrimitive*>      theJSONArrayReplaceValueList;
 #endif
 
+  std::vector<csize>                 theNumBeforeIndexDeltasApplied;
+  std::vector<csize>                 theNumAfterIndexDeltasApplied;
+  std::vector<csize>                 theNumInsertedDocsIndexDeltasApplied;
+  std::vector<csize>                 theNumDeletedDocsIndexDeltasApplied;
 
 public:
   CollectionPul(PULImpl* pul, Collection* collection);
@@ -227,17 +231,17 @@ public:
 
   void switchPul(PULImpl* pul);
 
-  void applyUpdates();
-
-  void finalizeUpdates();
-
-  void undoUpdates();
-
   void computeIndexBeforeDeltas();
 
   void computeIndexAfterDeltas();
 
-  void refreshIndices();
+  void refreshIndexes();
+
+  void applyUpdates();
+
+  void undoUpdates();
+
+  void finalizeUpdates();
 
   void setAdjustTreePositions() { theAdjustTreePositions = true; }
 
@@ -247,6 +251,12 @@ protected:
   void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);
 
   void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
+
+  void cleanIndexDeltas();
+
+  void truncateIndexes();
+
+  void undoRefreshIndexes();
 };
 
 
@@ -277,11 +287,26 @@ class PULImpl : public store::PUL
   friend class UpdRevalidate;
 
 public:
-  typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
+  enum UpdListKind
+  {
+    UP_LIST_NONE,
+    UP_LIST_DO_FIRST,
+    UP_LIST_REPLACE_NODE,
+    UP_LIST_REPLACE_CONTENT,
+    UP_LIST_DELETE,
+    UP_LIST_PUT,
+    UP_LIST_CREATE_COLLECTION,
+    UP_LIST_CREATE_INDEX
+  };
+
+  typedef std::vector<CollectionPul*> CollectionPuls;
+
+  typedef std::map<const QNameItem*, csize> CollectionPulMap;
 
 protected:
   // XQUF and collection primitives, grouped by the collection that is being updated.
-  CollectionPulMap                   theCollectionPuls;
+  CollectionPuls                     theCollectionPuls;
+  CollectionPulMap                   theCollectionPulsMap;
   CollectionPul                    * theNoCollectionPul;
   CollectionPul                    * theLastPul;
   const QNameItem                  * theLastCollection;

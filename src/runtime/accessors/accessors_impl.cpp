@@ -78,15 +78,23 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(inNode, theChildren[0].getp(), planState))
   {
-    if (inNode->isNode()) {
+    if (inNode->isNode())
+    {
       result = inNode->getNilled();
       STACK_PUSH(result != NULL, state);
-    } else
+    }
+    else
+    {
 			throw XQUERY_EXCEPTION(
 				err::XPTY0004,
 				ERROR_PARAMS( ZED( FnNilledArgNotNode ) ),
 				ERROR_LOC( loc )
 			);
+    }
+  }
+  else
+  {
+    STACK_PUSH(false, state);
   }
 
   STACK_END (state);

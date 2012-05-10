@@ -309,6 +309,13 @@ FIND_PACKAGE (XercesC)
 MESSAGE (STATUS "")
 
 #
+# shlwapi
+#
+IF(WIN32)
+    SET(requiredlibs ${requiredlibs} "shlwapi")
+ENDIF(WIN32)
+
+#
 # SWIG
 #
 IF (NOT ZORBA_SUPPRESS_SWIG)

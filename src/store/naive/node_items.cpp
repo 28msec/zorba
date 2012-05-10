@@ -21,6 +21,7 @@
 #include <zorba/config.h>
 #include <zorba/item.h>
 
+#include "api/unmarshaller.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/URI.h"
@@ -456,7 +457,7 @@ XmlNode::XmlNode(
 #ifndef NDEBUG
 XmlNode::~XmlNode()
 {
-  NODE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
+  STORE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
 }
 #endif
 
@@ -613,7 +614,14 @@ store::Item* XmlNode::copy(
     }
   } // have parent
 
-  return copyInternal(parent, parent, pos, NULL, copymode);
+  if (copymode.theDoCopy)
+  {
+    return copyInternal(parent, parent, pos, NULL, copymode);
+  }
+  else
+  {
+    return const_cast<XmlNode*>(this);
+  }
 }
 
 
@@ -1649,7 +1657,7 @@ DocumentNode::DocumentNode()
   :
   InternalNode(store::StoreConsts::documentNode)
 {
-  NODE_TRACE1("Loaded doc node " << this);
+  STORE_TRACE1("Loaded doc node " << this);
 }
 
 
@@ -1665,7 +1673,7 @@ DocumentNode::DocumentNode(
   theBaseUri(baseUri),
   theDocUri(docUri)
 {
-  NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
+  STORE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
               << " doc uri = " << docUri);
 }
@@ -1720,8 +1728,8 @@ XmlNode* DocumentNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("}");
-  NODE_TRACE1("Copied doc node " << this << " to node " << copyNode);
+  STORE_TRACE1("}");
+  STORE_TRACE1("Copied doc node " << this << " to node " << copyNode);
 
   return copyNode;
 }
@@ -1890,7 +1898,7 @@ ElementNode::ElementNode(
     theNodes.resize(numAttributes);
   }
 
-  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
+  STORE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
               << " num bindings = " << numBindings << " num attributes = "
               << numAttributes << std::endl);
 }
@@ -2016,7 +2024,7 @@ ElementNode::ElementNode(
     throw;
   }
 
-  NODE_TRACE1("Constructed element node " << this << " parent = "
+  STORE_TRACE1("Constructed element node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -2357,7 +2365,7 @@ XmlNode* ElementNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied elem node " << this << " to node " << copyNode
               << " name = " << theName->getStringValue() << " parent = "
               << (parent ? parent : 0x0)
               << " pos = " << pos << " copy mode = " << copymode.toString());
@@ -3325,7 +3333,7 @@ AttributeNode::AttributeNode(store::Item_t& attrName)
   if (qn->isBaseUri())
     theFlags |= IsBaseUri;
 
-  NODE_TRACE1("Loaded attr node " << this << " name = " << theName->getStringValue());
+  STORE_TRACE1("Loaded attr node " << this << " name = " << theName->getStringValue());
 }
 
 
@@ -3448,7 +3456,7 @@ AttributeNode::AttributeNode(
     throw;
   }
 
-  NODE_TRACE1("Constructed attribute node " << this << " parent = "
+  STORE_TRACE1("Constructed attribute node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -3531,7 +3539,7 @@ XmlNode* AttributeNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " copy mode = " << copymode.toString());
@@ -3787,7 +3795,7 @@ TextNode::TextNode(zstring& content)
 {
   setText(content);
 
-  NODE_TRACE1("Loaded text node " << this << " content = " << getText());
+  STORE_TRACE1("Loaded text node " << this << " content = " << getText());
 }
 
 
@@ -3832,13 +3840,13 @@ TextNode::TextNode(
   }
 
 #ifdef TEXT_ORDPATH
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " content = " << getText());
 #else
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " content = " << getText());
@@ -3893,12 +3901,12 @@ TextNode::TextNode(
   p->insertChild(this, p->numChildren());
 
 #ifdef TEXT_ORDPATH
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0)
               << " ordpath = " << theOrdPath.show()
               << " content = " << getValue()->getStringValue());
 #else
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0)
               << " content = " << getValue()->getStringValue());
 #endif
@@ -4010,7 +4018,7 @@ XmlNode* TextNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied text node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied text node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4495,7 +4503,7 @@ PiNode::PiNode(zstring& target, zstring& content)
 
   theName = qnpool.insert(zstring(), zstring(), theTarget);
 
-  NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget
+  STORE_TRACE1("Loaded pi node " << this << " target = " << theTarget
               << std::endl);
 }
 
@@ -4528,7 +4536,7 @@ PiNode::PiNode(
     parent->insertChild(this, pos);
   }
 
-  NODE_TRACE1("Constructed pi node " << this << " parent = "
+  STORE_TRACE1("Constructed pi node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " target = " << theTarget);
@@ -4577,7 +4585,7 @@ XmlNode* PiNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied pi node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied pi node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4635,7 +4643,7 @@ CommentNode::CommentNode(zstring& content)
 {
   theContent.take(content);
 
-  NODE_TRACE1("Loaded comment node " << this << " content = " << theContent);
+  STORE_TRACE1("Loaded comment node " << this << " content = " << theContent);
 }
 
 
@@ -4661,7 +4669,7 @@ CommentNode::CommentNode(
     parent->insertChild(this, pos);
   }
 
-  NODE_TRACE1("Constructed comment node " << this << " parent = "
+  STORE_TRACE1("Constructed comment node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " content = "
@@ -4708,7 +4716,7 @@ XmlNode* CommentNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied coment node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied coment node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4760,105 +4768,54 @@ store::Iterator_t CommentNode::getChildren() const
  ******************************************************************************/
 
 XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
-  TokenizerProvider const &provider,
-  Tokenizer::Numbers &numbers,
-  iso639_1::type lang,
   FTTokenStore &token_store
 ) :
-  provider_( provider ),
-  numbers_( numbers ),
   token_store_( &token_store ),
   tokens_( token_store.getDocumentTokens() )
 {
-  push_lang( lang );
 }
 
 
 XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
-  TokenizerProvider const &provider,
-  Tokenizer::Numbers &numbers,
-  iso639_1::type lang,
   container_type &tokens
 ) :
-  provider_( provider ),
-  numbers_( numbers ),
-  token_store_( NULL ),
+  token_store_( nullptr ),
   tokens_( tokens )
 {
-  push_lang( lang );
 }
 
 
-XmlNodeTokenizerCallback::~XmlNodeTokenizerCallback()
-{
-  while ( !tokenizer_stack_.empty() )
-    ztd::pop_stack( tokenizer_stack_ )->destroy();
-}
-
-
-inline XmlNodeTokenizerCallback::begin_type
-XmlNodeTokenizerCallback::beginTokenization() const 
-{
-  return token_store_->getDocumentTokens().size();
-}
-
-
-inline void XmlNodeTokenizerCallback::endTokenization(
-  XmlNode const *node,
-  XmlNodeTokenizerCallback::begin_type begin )
-{
-  token_store_->putRange(node, begin, token_store_->getDocumentTokens().size());
-}
-
-
-void XmlNodeTokenizerCallback::pop_lang() 
-{
-  lang_stack_.pop();
-  ztd::pop_stack( tokenizer_stack_ )->destroy();
-}
-
-
-void XmlNodeTokenizerCallback::push_lang( iso639_1::type lang ) 
-{
-  lang_stack_.push( lang );
-  Tokenizer::ptr t( provider_.getTokenizer( lang, numbers_ ) );
-  ZORBA_ASSERT( t.get() );
-  tokenizer_stack_.push( t.get() );
-  t.release();
+void XmlNodeTokenizerCallback::item( Item const &api_item, bool entering ) {
+  if ( token_store_ ) {
+    store::Item const *const item = Unmarshaller::getInternalItem( api_item );
+    if ( entering ) {
+      push_item( item );
+      range_stack_.push( token_store_->getDocumentTokens().size() );
+    } else {
+      pop_item();
+      token_store_->putRange(
+        item,
+        ztd::pop_stack( range_stack_ ),
+        token_store_->getDocumentTokens().size()
+      );
+    }
+  }
 }
 
 
 void XmlNodeTokenizerCallback::
-operator()( char const *utf8_s, size_type utf8_len, size_type pos,
-            size_type sent, size_type para, void *payload )
+token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
+       size_type pos, size_type sent, size_type para, Item const *api_item )
 {
-  store::Item const *const item = static_cast<store::Item*>( payload );
-  FTToken t( utf8_s, utf8_len, pos, sent, para, item, get_lang() );
+  store::Item const *const item = Unmarshaller::getInternalItem( *api_item );
+  FTToken t( utf8_s, utf8_len, pos, sent, para, item, lang );
   tokens_.push_back( t );
-}
-
-
-inline void XmlNodeTokenizerCallback::tokenize( char const *utf8_s,
-                                                size_t len ) 
-{
-  tokenizer().tokenize(
-    utf8_s, len, get_lang(), false, *this,
-    element_stack_.empty() ? NULL : static_cast<void*>( get_element() )
-  );
 }
 
 
 void XmlNode::tokenize( XmlNodeTokenizerCallback& )
 {
   // do nothing
-}
-
-
-void AttributeNode::tokenize( XmlNodeTokenizerCallback &cb )
-{
-  zstring text;
-  getStringValue2( text );
-  cb.tokenize( text.data(), text.size() );
 }
 
 
@@ -4874,62 +4831,21 @@ AttributeNode::getTokens( TokenizerProvider const &provider,
       return FTTokenIterator_t(
         new NaiveFTTokenIterator( *tokens, 0, tokens->size() )
       );
+
     FTTokenStore::container_type att_tokens;
-    XmlNodeTokenizerCallback cb( provider, numbers, lang, att_tokens );
-    const_cast<AttributeNode*>( this )->tokenize( cb );
-    token_store.putAttr( this, att_tokens );
-  }
-}
+    XmlNodeTokenizerCallback callback( att_tokens );
 
-
-void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
-{
-  XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
-  for ( csize i = 0; i < numChildren(); ++i )
-    getChild( i )->tokenize( cb );
-  cb.endTokenization( this, begin );
-}
-
-
-void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
-{
-  Tokenizer &tokenizer = cb.tokenizer();
-
-  zorba::Item element_name;
-  if ( tokenizer.trace_options() )
-    element_name = getNodeName();
-
-  if ( tokenizer.trace_options() & Tokenizer::trace_begin )
-    tokenizer.element( element_name, Tokenizer::trace_begin );
-  else if ( !tokenizer.trace_options() )
-    ++tokenizer.numbers().para;
-
-  //
-  // See if this XML element has an xml:lang attribute: if so, switch to that
-  // language.
-  //
-  bool pushed_lang = false;
-  for ( ulong i = 0; i < numAttrs(); ++i ) {
-    AttributeNode *const at = getAttr( i );
-    Item const *const name = at->getNodeName();
-    if ( name->getLocalName() == "lang" && name->getNamespace() == XML_NS ) {
-      cb.push_lang( locale::find_lang( at->getStringValue().c_str() ) );
-      pushed_lang = true;
-      break;
+    zorba::Item const api_attr( this );
+    Tokenizer::ptr tokenizer;
+    if ( provider.getTokenizer( lang, &numbers, &tokenizer ) ) {
+      tokenizer->tokenize_node( api_attr, lang, callback );
+      token_store.putAttr( this, att_tokens );
     }
   }
-
-  cb.push_element( this );
-  InternalNode::tokenize( cb );
-  cb.pop_element();
-  if ( pushed_lang )
-    cb.pop_lang();
-
-  if ( tokenizer.trace_options() & Tokenizer::trace_end )
-    tokenizer.element( element_name, Tokenizer::trace_end );
 }
 
 
+#if 0
 void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
 {
   const zstring* text;
@@ -4985,6 +4901,7 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
   cb.tokenize( text->data(), text->size() );
   cb.endTokenization( this, begin );
 }
+#endif
 
 
 FTTokenIterator_t
@@ -4997,8 +4914,11 @@ XmlNode::getTokens( TokenizerProvider const &provider,
 
   if ( tokens.empty() )
   {
-    XmlNodeTokenizerCallback cb( provider, numbers, lang, token_store );
-    getRoot()->tokenize( cb );
+    zorba::Item const api_root( getRoot() );
+    XmlNodeTokenizerCallback callback( token_store );
+    Tokenizer::ptr tokenizer;
+    if ( provider.getTokenizer( lang, &numbers, &tokenizer ) )
+      tokenizer->tokenize_node( api_root, lang, callback );
   }
 
   FTTokenStore::range_type const &r = token_store.getRange( this );

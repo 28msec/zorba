@@ -32,6 +32,8 @@ class Archiver;
 
 void operator&(Archiver& ar, int& obj);
 
+void operator&(Archiver& ar, const int& obj);
+
 void operator&(Archiver& ar, uint32_t& obj);
 
 void operator&(Archiver& ar, long& obj);
@@ -60,9 +62,11 @@ void operator&(Archiver& ar, bool& obj);
 
 void operator&(Archiver& ar, std::string& obj);
 
+void operator&(Archiver& ar, const std::string& obj);
+
 void operator&(Archiver& ar, std::string*& obj);
 
-void operator&(Archiver& ar, char*& obj);//like char *p=strdup("io");
+void operator&(Archiver& ar, char*& obj);
 
 void serialize_array(Archiver& ar, unsigned char* obj, int len);
 

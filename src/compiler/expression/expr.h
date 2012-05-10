@@ -1015,7 +1015,7 @@ public:
   
   csize clause_count() const { return theCatchClauses.size(); }
   
-  catch_clause_t const& operator[](csize i) const { return theCatchClauses[i]; }
+  const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 

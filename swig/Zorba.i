@@ -124,6 +124,13 @@
   int Zorba::getPatchVersion() {
     return zorba::Zorba::version().getPatchVersion();
   }
+  bool Zorba::isXQueryXSupported() {
+    #ifdef ZORBA_XQUERYX
+      return true;
+    #else //ZORBA_XQUERYX
+      return false;
+    #endif //ZORBA_XQUERYX
+  }
 
 %}  // end Implementation
 

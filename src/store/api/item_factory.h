@@ -97,6 +97,19 @@ public:
       bool seekable = false) = 0;
 
   /**
+   * Create a StreamableStringItem which re-uses the stream from another
+   * Streamable*Item. This will maintain a reference to the original
+   * item to ensure the stream is not cleaned up before we are done with it.
+   *
+   * It only makes sense to use this method if either (a) the dependent item's
+   * stream is seekable and hence re-usable, or (b) you are sure that the
+   * dependent item will not be utilized after this new item is created.
+   */
+  virtual bool createSharedStreamableString(
+      Item_t& result,
+      Item_t& streamble_dependent) = 0;
+
+  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
    * @param value string representation of the value
    */

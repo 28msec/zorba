@@ -42,6 +42,7 @@
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/parser/parse_constants.h"
 
+#include "diagnostics/assert.h"
 #include "functions/function.h"
 #include "functions/udf.h"
 
@@ -357,7 +358,7 @@ ostream& flwor_expr::put(ostream& os) const
 
   for (csize i = 0; i < num_clauses(); i++) 
   {
-    const flwor_clause& c = *((*this)[i]);
+    const flwor_clause& c = *(get_clause(i));
 
     switch (c.get_kind())
     {

@@ -62,6 +62,11 @@
     return StaticContext( zorba::StaticContext_t( const_cast<zorba::StaticContext *>(theQuery->getStaticContext()) ) );
   }
 
+  StaticCollectionManager XQuery::getStaticCollectionManager()
+  {
+    return StaticCollectionManager( theQuery->getStaticCollectionManager() );
+  }
+
   void XQuery::getExternalVariables(Iterator& vars) const 
   { theQuery->getExternalVariables( vars.theIterator ); }
 

@@ -40,7 +40,11 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
+<<<<<<< TREE
 #line 35 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_parser.y"
+=======
+#line 35 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
+>>>>>>> MERGE-SOURCE
 
 
 /*
@@ -86,7 +90,11 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
+<<<<<<< TREE
 #line 90 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
+=======
+#line 88 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+>>>>>>> MERGE-SOURCE
 
 
 #include <string>
@@ -158,7 +166,11 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
+<<<<<<< TREE
 #line 162 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
+=======
+#line 118 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+>>>>>>> MERGE-SOURCE
 
   /// A Bison parser.
   class xquery_parser
@@ -170,7 +182,11 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
+<<<<<<< TREE
 #line 155 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_parser.y"
+=======
+#line 155 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
+>>>>>>> MERGE-SOURCE
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -194,7 +210,11 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
+<<<<<<< TREE
 #line 198 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
+=======
+#line 154 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+>>>>>>> MERGE-SOURCE
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -708,7 +728,11 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
+<<<<<<< TREE
 #line 712 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
+=======
+#line 663 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+>>>>>>> MERGE-SOURCE
 
 
 

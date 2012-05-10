@@ -68,7 +68,7 @@ void assertion_failed( char const *condition,
     file, 
     line, 
     zerr::ZXQP0002_ASSERT_FAILED, 
-    ( msg ? ERROR_PARAMS( condition, msg ) : ERROR_PARAMS( condition ))
+    ( msg ? ERROR_PARAMS( condition, msg ) : ERROR_PARAMS( condition ) )
   );
 }
 

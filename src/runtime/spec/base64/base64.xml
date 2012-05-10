@@ -25,8 +25,13 @@ base64 decode
       <zorba:param>xs:base64Binary</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
+    <zorba:signature localname="decode" prefix="fn-zorba-base64">
+      <zorba:param>xs:base64Binary</zorba:param>
+      <zorba:param>xs:string</zorba:param> <!-- encoding -->
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
   </zorba:function>
-    
+
 </zorba:iterator>
 
 <!--

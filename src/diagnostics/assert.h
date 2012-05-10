@@ -20,6 +20,10 @@
 #ifndef ZORBA_ASSERT_H
 #define ZORBA_ASSERT_H
 
+#include <sstream>
+
+#include "util/cxx_util.h"
+
 namespace zorba {
 
 /**
@@ -35,7 +39,7 @@ namespace zorba {
 void assertion_failed( char const *condition,
                        char const *file, 
                        int line, 
-                       char const *msg = 0);
+                       char const *msg = nullptr );
 
 /**
  * Zorba version of the standard assert(3) macro.
