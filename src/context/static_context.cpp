@@ -498,9 +498,9 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
   external functions, contains variable declarations and/or udfs.
 
   Note: The fuul-text module must be included here because it MUST be processed
-  when imported, even in RELEASE mode. The reason is that the tokenize and 
-  tokenizer-properties functions must be registered in the module's sctx (in
-  addition to the root sctx).
+  when imported, even in RELEASE mode. The reason is that the
+  current-compare-options(), tokenize(), and tokenizer-properties() functions
+  must be registered in the module's sctx (in addition to the root sctx).
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
@@ -512,9 +512,6 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
-#ifndef ZORBA_NO_FULL_TEXT
-            ns == ZORBA_FULL_TEXT_FN_NS ||
-#endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_XML_FN_NS);
   }
 
@@ -1526,6 +1523,21 @@ void static_context::get_component_uris(
   }
 }
 
+void static_context::get_candidate_uris(
+    zstring const& aUri,
+    internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const
+{
+  // Create a simple EntityData that just reports the specified Kind
+  internal::EntityData const lData(aEntityKind);
+
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::CANDIDATE, oComponents);
+  if (oComponents.size() == 0)
+  {
+    oComponents.push_back(aUri);
+  }
+}
+
 
 /***************************************************************************//**
 
@@ -2293,9 +2305,7 @@ void static_context::bind_fn(
 
   if (!is_global_root_sctx() && lookup_local_fn(qname, arity) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0034, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (theFunctionMap == NULL)

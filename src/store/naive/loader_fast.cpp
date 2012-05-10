@@ -495,10 +495,13 @@ void FastXmlLoader::endDocument(void * ctx)
 
     // For each child, make this doc node its parent.
     InternalNode::NodeVector& children = docNode->nodes();
+
     numChildren = nodeStack.size() - firstChildPos - 1;
+
     children.resize(numChildren);
 
     numActualChildren = 0;
+
     for (i = firstChildPos + 1; i < stackSize; ++i)
     {
       currChild = nodeStack[i];
