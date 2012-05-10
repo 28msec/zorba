@@ -260,7 +260,7 @@ store::Item_t FragmentXmlLoader::loadXml(
     while ( ! theFragmentStream->forced_parser_stop && fillBuffer(theFragmentStream))
     {
       // std::cerr << "\n==================\n--> skip_root: " << theFragmentStream->root_elements_to_skip << " current_depth: " << theFragmentStream->current_element_depth << " about to parse: [" << theFragmentStream->ctxt->input->cur << "] " << std::endl;
-      
+
       if (theFragmentStream->only_one_doc_node && !theFragmentStream->first_start_doc)
       {
         theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
@@ -282,20 +282,13 @@ store::Item_t FragmentXmlLoader::loadXml(
       xmlParseChunk(theFragmentStream->ctxt, (const char*)theFragmentStream->ctxt->input->cur,
                     theFragmentStream->ctxt->input->length, 0);
 
-      if (theFragmentStream->ctxt->input->base == (xmlChar*)(theFragmentStream->theBuffer)
-          &&
-          theFragmentStream->current_offset < getCurrentInputOffset())
-        theFragmentStream->current_offset = getCurrentInputOffset();
-
       // If we didn't get an error and we haven't moved, we might have some freestanding text. Parse it as element character data.
       if (theXQueryDiagnostics->errors().empty()
           &&
           theFragmentStream->current_offset == 0)
       {
-        // The input has been reset by xmlStopParser()
-        theFragmentStream->ctxt->input->base = (xmlChar*)(theFragmentStream->theBuffer);
-        theFragmentStream->ctxt->input->cur = theFragmentStream->ctxt->input->base;
         xmlParseCharData(theFragmentStream->ctxt, 0);
+        theFragmentStream->current_offset = getCurrentInputOffset(); // update current offset
       }
 
       if ( ! theXQueryDiagnostics->errors().empty())
@@ -391,8 +384,9 @@ void FragmentXmlLoader::checkStopParsing(void* ctx, bool force)
           loader.theFragmentStream->parsed_nodes_count >= loader.theFragmentStream->PARSED_NODES_BATCH_SIZE))
   {
     loader.theFragmentStream->current_offset = offset;
-    xmlStopParser(loader.theFragmentStream->ctxt);
-    loader.theFragmentStream->ctxt->errNo = XML_SCHEMAV_MISC; // fake error to force stopping      
+    loader.theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
+    loader.theFragmentStream->ctxt->disableSAX = 1;
+    loader.theFragmentStream->ctxt->errNo = XML_SCHEMAV_MISC; // fake error to force stopping
     if (!loader.theFragmentStream->only_one_doc_node)
       loader.theFragmentStream->forced_parser_stop = true;
   }
@@ -975,7 +969,7 @@ void DtdXmlLoader::startDocument(void * ctx)
 {
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-  
+
   try
   {
     DocumentNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
