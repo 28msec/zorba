@@ -717,7 +717,7 @@ TranslatorImpl(
 }
 
 
-~TranslatorImpl() 
+~TranslatorImpl()
 {
 #ifndef ZORBA_NO_FULL_TEXT
   while (!theFTNodeStack.empty())
@@ -1780,7 +1780,7 @@ void collect_flwor_vars (
 
     if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& varDecls = 
+      const VarInDeclList& varDecls =
       *(static_cast<const ForClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
@@ -1795,7 +1795,7 @@ void collect_flwor_vars (
     }
     else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = 
+      const VarGetsDeclList& lV =
       *(static_cast<const LetClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
@@ -2285,7 +2285,7 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
 
   // If an appliaction set a type for the context item via the c++ api, then
   // create a full declaration for it in order to enforce that type.
-  if (!theHaveContextItemDecl && 
+  if (!theHaveContextItemDecl &&
       theSctx->get_context_item_type() != theRTM.ITEM_TYPE_ONE.getp())
   {
     var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
@@ -3328,7 +3328,7 @@ void* begin_visit(const VFO_DeclList& v)
 
             f = new full_text_tokenizer_properties(f->getSignature(), kind);
           }
-          else 
+          else
           {
             assert(numParams == 1 || numParams == 2);
 
@@ -3660,7 +3660,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   {
     //lc->setLazyEval(!f->isSequential());
 
-    const user_function* udf = 
+    const user_function* udf =
     static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
 
     arg_var->set_param_pos(flwor->num_clauses());
@@ -3830,7 +3830,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       bind_var(ve, export_sctx);
 
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
     {
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
@@ -6447,6 +6447,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  // NOTE: Now grouping vars have a expr for the input stream.
   // At this point, the nodestack contains a pair of var_exprs for each var X
   // defined by any clauses appearing before this GroupByClause. The first
   // var_expr in the pair corresponds to the input-stream var X, and the second
@@ -6460,6 +6461,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   std::vector<std::string> collations;
   group_clause::rebind_list_t grouping_rebind;
   group_clause::rebind_list_t nongrouping_rebind;
+  expr_t input_expr;
   var_expr_t input_var;
   var_expr_t output_var;
 
@@ -6468,20 +6470,20 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     const GroupSpec& groupSpec = *groupSpecs[i];
 
     output_var = pop_nodestack_var();
-    input_var = pop_nodestack_var();
+    input_expr = pop_nodestack();
 
     if (groupSpec.group_coll_spec() != NULL)
       collations.push_back(groupSpec.group_coll_spec()->get_uri().str());
     else
       collations.push_back ("");
 
-    wrapper_expr_t input_wrapper;
-    input_wrapper = new wrapper_expr(theRootSctx,
+    if(input_expr->get_expr_kind() == var_expr_kind)
+      input_expr = new wrapper_expr(theRootSctx,
                                      loc,
-                                     static_cast<expr*>(input_var.getp()));
+                                     input_expr.getp());
 
-    grouping_rebind.push_back(std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
-                                                                    output_var));
+    grouping_rebind.push_back(std::pair<expr_t, var_expr_t>(input_expr,
+                                                            output_var));
   }
 
   reverse(collations.begin(), collations.end());
@@ -6525,13 +6527,22 @@ void end_visit(const GroupSpecList& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  GroupSpec ::= "$" VarName ("collation" URILiteral)?
+  GroupSpec ::= "$" VarName (TypeDeclaration? ":=" ExprSingle)? ("collation" URILiteral)?
 ********************************************************************************/
 void* begin_visit(const GroupSpec& v)
 {
   TRACE_VISIT();
+  return no_state;
+}
 
-  var_expr* e = lookup_var(v.get_var_name(), loc, err::XPST0008);
+void end_visit(const GroupSpec& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  expr* e = (v.get_var_expr() != NULL) ?
+    pop_nodestack() : lookup_var(v.get_var_name(), loc, err::XPST0008);
+
+  xqtref_t type = (v.get_var_type() != NULL) ? pop_tstack() : NULL;
 
   // Create a new var_expr gX, corresponding to the input-stream var X that
   // is referenced by this group spec. gX represents X in the output stream.
@@ -6540,15 +6551,9 @@ void* begin_visit(const GroupSpec& v)
 
   push_nodestack(e);
 
-  var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::groupby_var);
+  var_expr_t ve =
+    bind_var(loc, v.get_var_name(), var_expr::groupby_var, type);
   push_nodestack(ve.getp());
-
-  return no_state;
-}
-
-void end_visit(const GroupSpec& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
 }
 
 
@@ -9460,7 +9465,7 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
   expr_t right = pop_nodestack();
   expr_t left  = pop_nodestack();
   concat_args.push_back(left);
- 
+
   //If the right leaf is the concat expr,
   //we add directly its leafs to the new concat expr.
   bool rightLeafIsConcatExpr = false;
@@ -9477,13 +9482,13 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
       }
     }
   }
-  
+
   if(!rightLeafIsConcatExpr)
   {
     concat_args.push_back(right);
   }
 
-  rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
+  rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args);
   push_nodestack(concat);
 }
 
@@ -11797,7 +11802,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);  
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
@@ -12543,7 +12548,7 @@ void end_visit(const VarBinding& v, void*)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-template<typename FTNodeType> bool flatten( ftnode *n ) 
+template<typename FTNodeType> bool flatten( ftnode *n )
 {
   if ( FTNodeType *const n2 = dynamic_cast<FTNodeType*>( n ) ) {
     typename FTNodeType::ftnode_list_t &list = n2->get_node_list();
@@ -12559,7 +12564,7 @@ template<typename FTNodeType> bool flatten( ftnode *n )
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
-void *begin_visit (const FTAnd& v) 
+void *begin_visit (const FTAnd& v)
 {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
@@ -12568,7 +12573,7 @@ void *begin_visit (const FTAnd& v)
   return no_state;
 }
 
-void end_visit (const FTAnd& v, void* /*visit_state*/) 
+void end_visit (const FTAnd& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
@@ -12590,7 +12595,7 @@ void end_visit (const FTAnd& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const FTAnyallOption& v) 
+void *begin_visit (const FTAnyallOption& v)
 {
   TRACE_VISIT ();
   // nothing to do
@@ -12598,14 +12603,14 @@ void *begin_visit (const FTAnyallOption& v)
 }
 
 
-void end_visit (const FTAnyallOption& v, void* /*visit_state*/) 
+void end_visit (const FTAnyallOption& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
 
-void *begin_visit (const FTBigUnit& v) 
+void *begin_visit (const FTBigUnit& v)
 {
   TRACE_VISIT ();
   // nothing to do
@@ -12613,13 +12618,13 @@ void *begin_visit (const FTBigUnit& v)
 }
 
 
-void end_visit (const FTBigUnit& v, void* /*visit_state*/) 
+void end_visit (const FTBigUnit& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
-void *begin_visit (const FTCaseOption& v) 
+void *begin_visit (const FTCaseOption& v)
 {
   TRACE_VISIT ();
   // nothing to do
@@ -12627,7 +12632,7 @@ void *begin_visit (const FTCaseOption& v)
 }
 
 
-void end_visit (const FTCaseOption& v, void* /*visit_state*/) 
+void end_visit (const FTCaseOption& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
@@ -12642,7 +12647,7 @@ void end_visit (const FTCaseOption& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const FTContainsExpr& v) 
+void *begin_visit (const FTContainsExpr& v)
 {
   TRACE_VISIT ();
 #ifdef ZORBA_NO_FULL_TEXT
@@ -12653,7 +12658,7 @@ void *begin_visit (const FTContainsExpr& v)
   return no_state;
 }
 
-void end_visit (const FTContainsExpr& v, void* /*visit_state*/) 
+void end_visit (const FTContainsExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT

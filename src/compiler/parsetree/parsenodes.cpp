@@ -1812,7 +1812,7 @@ GroupSpec::GroupSpec(
   parsenode(loc_),
   var_name_h(_var_name_h),
   var_type_h(_var_type_h),
-  var_value_h(_var_value_h),
+  var_init_expr_h(_var_value_h),
   group_coll_spec_h(_group_coll_spec_h)
 {
 }
@@ -1821,7 +1821,9 @@ GroupSpec::GroupSpec(
 void GroupSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
+  ACCEPT (var_type_h);
   ACCEPT (group_coll_spec_h);
+  ACCEPT (var_init_expr_h);
   END_VISITOR();
 }
 

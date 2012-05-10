@@ -2214,7 +2214,7 @@ class GroupSpec : public parsenode
 protected:
   rchandle<QName>              var_name_h;
   rchandle<GroupCollationSpec> group_coll_spec_h;
-  rchandle<exprnode>           var_value_h;
+  rchandle<exprnode>           var_init_expr_h;
   rchandle<SequenceType>       var_type_h;
 
 public:
@@ -2226,6 +2226,10 @@ public:
     rchandle<GroupCollationSpec>);
 
   const QName* get_var_name() const { return var_name_h.getp(); }
+
+  const rchandle<exprnode> get_var_expr() const {return var_init_expr_h;}
+
+  const rchandle<SequenceType> get_var_type() const {return var_type_h;}
 
   rchandle<GroupCollationSpec> group_coll_spec() const { return group_coll_spec_h; }
 
