@@ -89,6 +89,68 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
+                                              PlanState &plan_state ) const {
+  zstring base_uri;
+  store::Item_t junk, item, name;
+  store::NsBindings const ns_bindings;
+  static_context const *const sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
+  store::Item_t type_name;
+  zstring value_string;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  GENV_ITEMFACTORY->createQName(
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "compare-options"
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    result, nullptr, name, type_name, false, false, ns_bindings, base_uri
+  );
+
+  ft_case_mode::type case_mode;
+  ft_diacritics_mode::type diacritics_mode;
+  ft_stem_mode::type stem_mode;
+
+  if ( ftmatch_options const *const options = sctx->get_match_options() ) {
+    case_mode = options->get_case_option()->get_mode();
+    diacritics_mode = options->get_diacritics_option()->get_mode();
+    stem_mode = options->get_stem_option()->get_mode();
+  } else {
+    case_mode = ft_case_mode::DEFAULT;
+    diacritics_mode = ft_diacritics_mode::DEFAULT;
+    stem_mode = ft_stem_mode::DEFAULT;
+  }
+
+  // case="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "case" );
+  value_string = ft_case_mode::string_of[ case_mode ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  // diacritics="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "diacritics" );
+  value_string = ft_diacritics_mode::string_of[ diacritics_mode ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  // stemming="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "stemming" );
+  value_string = ft_stem_mode::string_of[ stem_mode ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool CurrentLangIterator::nextImpl( store::Item_t &result,
                                     PlanState &plan_state ) const {
   static_context const *const sctx = getStaticContext();
@@ -155,8 +217,6 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  static_context const *const sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
   ft_stop_words_set::ptr stop_words;
   zstring word;
 
@@ -169,8 +229,11 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
     lang = get_lang_from( item, loc );
-  } else
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
     lang = get_lang_from( sctx );
+  }
 
   stop_words.reset( ft_stop_words_set::get_default( lang ) );
   if ( !stop_words )
@@ -300,16 +363,12 @@ bool StemIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   iso639_1::type lang;
   internal::StemmerProvider const *provider;
-  static_context const *sctx;
   internal::Stemmer::ptr stemmer;
   zstring word, stem;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
@@ -318,6 +377,10 @@ bool StemIterator::nextImpl( store::Item_t &result,
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
     lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
   }
 
   provider = GENV_STORE.getStemmerProvider();
@@ -456,43 +519,31 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-TokenizeIterator::TokenizeIterator(
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& children)
-  : NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>(sctx, loc, children)
+TokenizeIterator::TokenizeIterator( static_context *sctx, QueryLoc const &loc,
+                                    std::vector<PlanIter_t>& children ) :
+  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>(sctx, loc, children)
 {
   initMembers();
 }
 
-void TokenizeIterator::serialize( ::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-     (NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>*)this);
-  if (!ar.is_serializing_out())
-  {
-    initMembers();
-  }
-}
-
 void TokenizeIterator::initMembers() {
   GENV_ITEMFACTORY->createQName(
-    token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token");
+    token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token" );
 
   GENV_ITEMFACTORY->createQName(
-    lang_qname_, "", "", "lang");
+    lang_qname_, "", "", "lang" );
 
   GENV_ITEMFACTORY->createQName(
-    para_qname_, "", "", "paragraph");
+    para_qname_, "", "", "paragraph" );
 
   GENV_ITEMFACTORY->createQName(
-    sent_qname_, "", "", "sentence");
+    sent_qname_, "", "", "sentence" );
 
   GENV_ITEMFACTORY->createQName(
-    value_qname_, "", "", "value");
+    value_qname_, "", "", "value" );
 
   GENV_ITEMFACTORY->createQName(
-    ref_qname_, "", "", "node-ref");
+    ref_qname_, "", "", "node-ref" );
 }
 
 bool TokenizeIterator::nextImpl( store::Item_t &result,
@@ -503,8 +554,6 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
-  static_context const *const sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
   TokenizerProvider const *tokenizer_provider;
   store::Item_t type_name;
   zstring value_string;
@@ -512,12 +561,14 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   TokenizeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
 
-  lang = get_lang_from( sctx );
-
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
+    } {
+      static_context const *const sctx = getStaticContext();
+      ZORBA_ASSERT( sctx );
+      lang = get_lang_from( sctx );
     }
 
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
@@ -601,6 +652,14 @@ void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
   state->doc_tokens_->reset();
 }
 
+void TokenizeIterator::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass(
+    ar, (NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>*)this
+  );
+  if ( !ar.is_serializing_out() )
+    initMembers();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
@@ -610,7 +669,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
-  static_context const *sctx;
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
@@ -620,14 +678,14 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-
   if ( theChildren.size() > 0 ) {
     consumeNext( item, theChildren[0], plan_state );
     lang = get_lang_from( item, loc );
-  } else
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
     lang = get_lang_from( sctx );
+  }
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
   ZORBA_ASSERT( tokenizer_provider );
@@ -718,10 +776,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
     GENV_ITEMFACTORY->createTextNode( junk, lang_element.getp(), value_string );
   }
 
-#ifndef ZORBA_NO_XMLSCHEMA
-  sctx->validate( result, result, StaticContextConsts::strict_validation );
-#endif /* ZORBA_NO_XMLSCHEMA */
-
   STACK_PUSH( true, state );
   STACK_END( state );
 }
@@ -738,9 +792,9 @@ struct TokenizeStringIteratorCallback : Tokenizer::Callback {
 void TokenizeStringIteratorCallback::
 token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
        size_type token_no, size_type sent_no, size_type para_no,
-       Item const *item ) {
+       Item const *api_item ) {
   store::Item const *const store_item =
-    item ? Unmarshaller::getInternalItem( *item ) : nullptr;
+    api_item ? Unmarshaller::getInternalItem( *api_item ) : nullptr;
 
   FTToken const token(
     utf8_s, utf8_len, token_no, sent_no, para_no, store_item, lang
@@ -752,22 +806,21 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  static_context const *sctx;
   zstring value_string;
 
   TokenizeStringIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeStringIteratorState, state, plan_state );
-
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
 
   if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( value_string );
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
-    } else
+    } else {
+      static_context const *const sctx = getStaticContext();
+      ZORBA_ASSERT( sctx );
       lang = get_lang_from( sctx );
+    }
 
     { // local scope
     TokenizerProvider const *const tokenizer_provider =
