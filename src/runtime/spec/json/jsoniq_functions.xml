@@ -394,7 +394,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="JSONReplaceValueIterator" arity="nary"
-                preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+                preprocessorGuard="#ifdef ZORBA_WITH_JSON"
+                generateConstructor="false">
 
     <zorba:description author="Zorba Team">
       internal function
