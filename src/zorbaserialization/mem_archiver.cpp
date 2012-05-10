@@ -33,12 +33,39 @@ void MemArchiver::reset_serialize_in()
 }
 
 
+bool MemArchiver::read_next_simple_temp_field(char** value)
+{
+  if (current_field == NULL || is_after_last)
+    return false;
+
+  *value = (char*)current_field->theValue;
+
+  is_after_last = false;
+
+  if (current_field->theFirstChild)
+  {
+    current_field = current_field->theFirstChild;
+  }
+  else if (current_field->theNextSibling)
+  {
+    current_field = current_field->theNextSibling;
+  }
+  else
+  {
+    is_after_last = true;
+  }
+
+  return true;
+}
+
+
 bool MemArchiver::read_next_field_impl( 
     char** type, 
-    std::string* value,
+    char** value,
     int* id, 
-    bool* is_simple, 
-    bool* is_class,
+    bool is_simple,
+    bool is_class,
+    bool have_value,
     enum ArchiveFieldKind* field_treat,
     int* referencing)
 {
@@ -46,29 +73,33 @@ bool MemArchiver::read_next_field_impl(
     return false;
 
   *type = current_field->theTypeName;
-  *value = current_field->theValue;
+  *value = (char*)current_field->theValue;
   *id = current_field->theId;
-  *is_simple = current_field->theIsSimple;
-  *is_class = current_field->theIsClass;
   *field_treat = current_field->theKind;
   *referencing = current_field->referencing;
 
   is_after_last = false;
 
   if (current_field->theFirstChild)
+  {
     current_field = current_field->theFirstChild;
-  else if(!*is_simple &&
-          (*field_treat == ARCHIVE_FIELD_BASECLASS || 
-           *field_treat == ARCHIVE_FIELD_PTR))
+  }
+  else if (!current_field->theIsSimple &&
+           (*field_treat == ARCHIVE_FIELD_BASECLASS || 
+            *field_treat == ARCHIVE_FIELD_PTR))
   {
     //class without childs
     temp_field.theParent = current_field;
     current_field = &temp_field;//prepare for read_end_current_level()
   }
-  else if(current_field->theNextSibling)
+  else if (current_field->theNextSibling)
+  {
     current_field = current_field->theNextSibling;
+  }
   else
+  {
     is_after_last = true;
+  }
   return true;
 }
 

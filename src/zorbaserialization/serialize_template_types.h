@@ -86,21 +86,16 @@ void operator&(Archiver& ar, T& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = true;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
 
-    bool retval = ar.read_next_field(&type, &value, &id,
-                                     &is_simple, &is_class, &field_treat,
-                                     &referencing);
+    bool retval = ar.read_next_field(&type, &value, &id, false, true, false,
+                                     &field_treat, &referencing);
 
     ar.check_class_field(retval, type, obj.get_class_name_str(),
-                         is_simple, is_class, 
-                         field_treat, ARCHIVE_FIELD_NORMAL, 
-                         id);
+                         field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);
 
@@ -155,20 +150,15 @@ void operator&(Archiver& ar, T*& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = true;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat,
-                                      &referencing);
+    bool  retval = ar.read_next_field(&type, &value, &id, false, true, false,
+                                      &field_treat, &referencing);
 
-    ar.check_class_field(retval, "", "",
-                         is_simple, is_class,
-                         field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_class_field(retval, "", "", field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -233,7 +223,8 @@ void operator&(Archiver& ar, T*& obj)
       }
       catch(...)
       {
-        delete new_obj;obj=NULL;
+        delete new_obj;
+        obj = NULL;
         throw;
       }
 
@@ -303,23 +294,20 @@ void operator&(Archiver& ar, checked_vector<T>& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
 
-    bool retval = ar.read_next_field(&type, &value, &id,
-                                     &is_simple, &is_class, &field_treat, &referencing);
+    bool retval = ar.read_next_field(&type, &value, &id, false, false, true,
+                                     &field_treat, &referencing);
 
-    ar.check_nonclass_field(retval, type, "checked_vector<T>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, &obj);
 
     int size;
-    sscanf(value.c_str(), "%d", &size);
+    sscanf(value, "%d", &size);
     obj.resize(size);
 
     typename checked_vector<T>::iterator it = obj.begin();
@@ -368,23 +356,20 @@ void operator&(Archiver& ar, std::vector<T>& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
+                                      &field_treat, &referencing);
 
-    ar.check_nonclass_field(retval, type, "std::vector<T>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, &obj);
 
     int size;
-    sscanf(value.c_str(), "%d", &size);
+    sscanf(value, "%d", &size);
     obj.resize(size);
 
     typename std::vector<T>::iterator it = obj.begin();
@@ -445,18 +430,15 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
     enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
+                                      &field_treat, &referencing);
 
-    ar.check_nonclass_field(retval, type, "std::vector<T>*",
-                            is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -473,7 +455,7 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
       ar.register_reference(id, field_treat, obj);
 
       int size;
-      sscanf(value.c_str(), "%d", &size);
+      sscanf(value, "%d", &size);
       obj->resize(size);
 
       typename std::vector<T>::iterator it = obj->begin();
@@ -541,23 +523,20 @@ void operator&(Archiver& ar, std::vector<T*>& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
+                                      &field_treat, &referencing);
 
-    ar.check_nonclass_field(retval, type, "std::vector<T*>", 
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, &obj);
 
     int size;
-    sscanf(value.c_str(), "%d", &size);
+    sscanf(value, "%d", &size);
     obj.resize(size);
 
     typename std::vector<T*>::iterator it = obj.begin();
@@ -607,23 +586,20 @@ void operator&(Archiver& ar, std::list<T>& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id, 
-                                      &is_simple, &is_class, &field_treat, &referencing);
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
+                                      &field_treat, &referencing);
 
-    ar.check_nonclass_field(retval, type, "std::list<T>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, &obj);
 
     int size;
-    sscanf(value.c_str(), "%d", &size);
+    sscanf(value, "%d", &size);
     obj.resize(size);
 
     typename std::list<T>::iterator it = obj.begin();
@@ -647,99 +623,6 @@ void operator&(Archiver& ar, std::pair<T1, T2>& obj)
   ar & obj.first;
   ar & obj.second;
 }
-
-
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-template<typename T1, typename T2>
-void operator&(Archiver& ar, std::pair<T1, T2>*& obj)
-{
-  assert(!ar.is_serialize_base_class());
-
-  if (ar.is_serializing_out())
-  {
-    if (obj == NULL)
-    {
-      ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS,
-                            "NULL", 
-                            NULL,
-                            ARCHIVE_FIELD_NULL);
-      return;
-    }
-
-    bool is_ref = ar.add_compound_field("std::pair<T1, T2>",
-                                        !FIELD_IS_CLASS,
-                                        "",
-                                        &obj,
-                                        ARCHIVE_FIELD_PTR);
-
-    if (!is_ref)
-    {
-      ar & obj->first;
-      ar & obj->second;
-
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
-
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, type, "std::pair<T1, T2>",
-                            is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
-
-    if (field_treat == ARCHIVE_FIELD_NULL)
-    {
-      obj = NULL;
-      ar.read_end_current_level();
-      return;
-    }
-
-    void* new_obj;
-
-    if (field_treat == ARCHIVE_FIELD_PTR)
-    {
-      obj = new std::pair<T1, T2>;
-
-      ar.register_reference(id, field_treat, &obj);
-
-      ar & obj->first;
-      ar & obj->second;
-
-      ar.read_end_current_level();
-    }
-    else if (field_treat == ARCHIVE_FIELD_BASECLASS)
-    {
-      assert(false);
-    }
-    else if ((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
-    {
-      obj = (std::pair<T1, T2>*)new_obj;
-
-      if (!obj)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-      }
-    }
-    else
-    {
-      ZORBA_ASSERT(false);
-    }
-  }
-}
-#endif
 
 
 /*******************************************************************************
@@ -793,18 +676,15 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
+                                      &field_treat, &referencing);
 
-    ar.check_nonclass_field(retval, type, "std::map<T1, T2>",
-                            is_simple, is_class, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -895,18 +775,15 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
   else
   {
     char* type;
-    std::string value;
+    char* value;
     int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
+                                      &field_treat, &referencing);
 
-    ar.check_nonclass_field(retval, type, "std::map<T1, T2>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, &obj);
 
@@ -952,27 +829,18 @@ void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
   {
     if (ar.is_serializing_out())
     {
-      ar.add_simple_field("rstring", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+      ar.add_simple_temp_field("rstring", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
     }
     else
     {
-      char* type;
-      std::string value;
-      int   id;
-      bool  is_simple = true;
-      bool  is_class = false;
-      enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-      int   referencing;
+      char* value;
+      ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-      bool retval = ar.read_next_field(&type, &value, &id,
-                                       &is_simple, &is_class, &field_treat, &referencing);
+      bool retval = ar.read_next_simple_temp_field(&value);
 
-      ar.check_simple_field(retval, type, "rstring",
-                            is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+      ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
       obj = value;
-
-      ar.register_reference(id, field_treat, &obj);
     }
   }
   else
@@ -1004,6 +872,65 @@ void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
       ar.set_is_temp_field(false);
     }
   }
+}
+
+
+template<class T>
+void operator&(Archiver& ar, zorba::rchandle<T>& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    T* p = obj.getp();
+    ar & p;
+  }
+  else
+  {
+    T* p;
+    ar & p;
+    obj = p;
+  }
+}
+
+
+template<class T>
+void operator&(Archiver& ar, zorba::const_rchandle<T>& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    T* p = (T*)obj.getp();
+    ar & p;
+  }
+  else
+  {
+    T* p;
+    ar & p;
+    obj = p;
+  }
+}
+
+
+template<class T>
+void operator&(Archiver& ar, store::ItemHandle<T>& obj)
+{ 
+  if (ar.is_serializing_out())
+  {
+    T* p = obj.getp();
+    ar & p;
+  }
+  else
+  {
+    T* p;
+    ar & p;
+    obj = p;
+  }
+}
+
+
+template<typename FloatType>
+void operator&(Archiver& ar, FloatImpl<FloatType>& obj)
+{
+  ar & obj.value_;
+  ar & obj.precision_;
 }
 
 

@@ -32,39 +32,55 @@ namespace serialization
 {
 
 /*******************************************************************************
-  string_pool :
+  theStrings :
+  ------------
+  Stores the set of distinct strings that are found in theValue data member of
+  all the fields. During serialization, theStrings is populated after the full
+  tree of fields has been constructed. Then, the order in which the strings are
+  going to be written to disk is determined and the strings are written 
+  consecutively according to this order. theDiskPos data member reflects this
+  order: the 1st string in disk will have theDiskPos == 1, the 2nd string will
+  have theDiskPos == 2, etc. 
+
+  theStringPool :
   -------------
-  Maps a string to its position within theString vactor
+  Maps a string to its position within theStrings vector. It is used during
+  serialization only, to enforce the uniqueness of the strings in theStrings.
+ 
+  theOrderedStrings :
+  -------------------
+  This vector stores an ordering of theStrings, based on their use counts. 
+  Specifically, theOrderedStrings[0] points to the string with the highest
+  string count, theOrderedStrings[1] points to the string with the 2nd highest
+  string count, etc. The string are written to disk in this order.
+
 ********************************************************************************/
 class BinArchiver : public Archiver
 {
 protected:
   typedef struct
   {
-    std::string   str;
-    unsigned int  count;
-    unsigned int  final_pos;//1 based
-  } STRING_POS;
+    const char*  str;
+    csize        count;
+    csize        theDiskPos;//1 based
+  } StringInfo;
 
 protected:
   std::istream             * is;
 
   std::ostream             * os;
 
-  bool                       has_attributes;
-  bool                       is_compound_field_without_children;
+  HashCharPtrObj<csize>      theStringPool;
 
-  HashCharPtrObj<csize>      string_pool;
-
-  std::vector<STRING_POS>    theStrings;
-  std::vector<csize>         strings_pos;
+  std::vector<StringInfo>    theStrings;
+  std::vector<csize>         theOrderedStrings;
 
   unsigned int               last_id;
-  unsigned char              current_byte;
-  unsigned char              bitfill;
+  unsigned char              theCurrentByte;
+  unsigned char              theBitfill;
 
-  unsigned char            * in_buffer;
-  unsigned char            * in_current;
+  unsigned char            * theBuffer;
+  unsigned char            * theCurrentBytePtr;
   size_t                     size_read;
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
@@ -81,30 +97,33 @@ public:
 
   virtual ~BinArchiver();
 
-  virtual bool read_next_field_impl( 
+  bool read_next_simple_temp_field(char** value);
+
+  bool read_next_field_impl( 
       char** type, 
-      std::string* value,
-      int* id, 
-      bool* is_simple, 
-      bool* is_class,
+      char** value,
+      int* id,
+      bool is_simple,
+      bool is_class,
+      bool have_value,
       enum ArchiveFieldKind* field_treat,
       int* referencing);
 
-  virtual void read_end_current_level_impl();
+  void read_end_current_level_impl();
 
-  virtual void serialize_out();
+  void serialize_out();
 
 protected:
   //writing
-  int add_to_string_pool(const char* str);
+  void serialize_out_string_pool();
 
   void collect_strings(archive_field* parent_field);
 
-  void serialize_out_string_pool();
+  int add_to_string_pool(const char* str);
+
+  void write_string(const char* str, csize len);
 
   void serialize_compound_fields(archive_field* parent_field);
-
-  void write_string(const char* str);
 
   void write_bit(unsigned char bit);
 
@@ -117,9 +136,11 @@ protected:
   void write_int_exp2(unsigned int intval);
 
   //reading
-  void read_string(std::string& str);
+  void read_string_pool();
 
-  void read_string(char* str);
+  void read_string(const char*& str);
+
+  void read_string(std::string& str);
 
   unsigned char read_bit();
 
@@ -130,8 +151,6 @@ protected:
   unsigned int read_int_exp();
 
   unsigned int read_int_exp2();
-
-  void read_string_pool();
 };
 
 }}

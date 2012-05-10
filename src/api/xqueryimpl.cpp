@@ -68,7 +68,7 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#include "zorbaserialization/xml_archiver.h"
+//#include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -908,6 +908,8 @@ bool XQueryImpl::saveExecutionPlan(
 
     if (archive_format == ZORBA_USE_XML_ARCHIVE)
     {
+      ZORBA_ASSERT(false);
+    /*
       zorba::serialization::XmlArchiver xmlar(&os);
 
       if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
@@ -915,6 +917,7 @@ bool XQueryImpl::saveExecutionPlan(
 
       serialize(xmlar);
       xmlar.serialize_out();
+    */
     }
     else//ZORBA_USE_BINARY_ARCHIVE
     {
@@ -977,12 +980,16 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
         throw;
       //else go try xml archive reader
     }
+
+#if 0
     is.seekg(0);
+
     zorba::serialization::XmlArchiver xmlar(&is);
     xmlar.setUserCallback(aCallback);
     serialize(xmlar);
     xmlar.finalize_input_serialization();
     return true;
+#endif
   }
   QUERY_CATCH
   return false;

@@ -196,8 +196,8 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theMustCopyInputNodes;
   ar & thePropagatesInputNodes;
 
-  ar & theIsExiting;
-  ar & theIsLeaf;
+  //ar & theIsExiting;
+  //ar & theIsLeaf;
   //ar & theMutuallyRecursiveUDFs;
 
   // ar & theIsOptimized;

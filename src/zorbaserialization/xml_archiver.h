@@ -46,10 +46,11 @@ public:
 
   bool read_next_field_impl( 
       char** type, 
-      std::string* value,
+      char** value,
       int* id, 
-      bool* is_simple, 
-      bool* is_class,
+      bool is_simple, 
+      bool is_class,
+      bool have_value,
       enum ArchiveFieldKind* field_treat,
       int* referencing);
   

@@ -18,7 +18,6 @@ SET(ZORBASERIALIZATION_SRCS
   class_serializer.cpp
   archiver.cpp
   mem_archiver.cpp
-  xml_archiver.cpp
   bin_archiver.cpp
   serialize_basic_types.cpp
   serialize_zorba_types.cpp

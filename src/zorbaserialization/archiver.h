@@ -431,18 +431,24 @@ public:
   // Methods used during serialization only
   //
 
+  void add_simple_temp_field( 
+      const char* type, 
+      const char* value,
+      const void* orig_ptr,
+      ArchiveFieldKind field_treat);
+
   bool add_simple_field( 
       const char* type, 
       const char* value,
       const void* orig_ptr,
-      enum ArchiveFieldKind field_treat);
+      ArchiveFieldKind field_treat);
 
   bool add_compound_field( 
       const char* type,
       bool is_class,
       const void* info,
       const void* ptr,
-      enum ArchiveFieldKind field_treat);
+      ArchiveFieldKind field_treat);
 
   void add_end_compound_field();
 
@@ -455,41 +461,38 @@ public:
   //
   bool read_next_field( 
       char** type, 
-      std::string* value,
-      int* id, 
-      bool* is_simple, 
-      bool* is_class,
-      enum ArchiveFieldKind* field_treat,
+      char** value,
+      int* id,
+      bool is_simple,
+      bool is_class,
+      bool have_value,
+      ArchiveFieldKind* field_treat,
       int* referencing);
+
+  virtual bool read_next_simple_temp_field(char** value) = 0;
 
   void read_end_current_level();
 
   virtual bool read_next_field_impl(
       char** type, 
-      std::string* value,
+      char** value,
       int* id, 
-      bool* is_simple, 
-      bool* is_class,
-      enum ArchiveFieldKind* field_treat,
+      bool is_simple,
+      bool is_class,
+      bool have_value,
+      ArchiveFieldKind* field_treat,
       int* referencing) = 0;
 
   virtual void read_end_current_level_impl() = 0;
 
   void check_simple_field(
       bool retval, 
-      const char* type,
-      const char* required_type, 
-      bool is_simple, 
       enum ArchiveFieldKind field_treat,
       enum ArchiveFieldKind required_field_treat,
       int id);
 
   void check_nonclass_field(
       bool retval, 
-      const char* type,
-      const char* required_type, 
-      bool is_simple, 
-      bool is_class, 
       enum ArchiveFieldKind field_treat,
       enum ArchiveFieldKind required_field_treat,
       int id);
@@ -498,8 +501,6 @@ public:
       bool retval, 
       const char* type,
       const char* required_type, 
-      bool is_simple, 
-      bool is_class, 
       enum ArchiveFieldKind field_treat,
       enum ArchiveFieldKind required_field_treat,
       int id);

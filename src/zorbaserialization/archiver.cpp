@@ -241,6 +241,59 @@ bool Archiver::get_is_temp_field_one_level()
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void Archiver::add_simple_temp_field(
+    const char* type,
+    const char* value,
+    const void* ptr,
+    enum ArchiveFieldKind fieldKind)
+{
+  archive_field* new_field;
+
+  assert(fieldKind != ARCHIVE_FIELD_BASECLASS);
+  assert(fieldKind != ARCHIVE_FIELD_REFERENCING);
+
+  ++theCurrentLevel;
+
+  if (!ptr)
+  {
+    fieldKind = ARCHIVE_FIELD_NULL;
+  }
+  else
+  {
+    assert(fieldKind == ARCHIVE_FIELD_NORMAL || fieldKind == ARCHIVE_FIELD_PTR);
+  }
+
+  new_field = new archive_field(type,
+                                true,       // is_simple
+                                false,      // is_class
+                                value,
+                                ptr,
+                                fieldKind,
+                                NULL,
+                                get_serialize_only_for_eval(),
+                                theAllowDelay2,
+                                theCurrentLevel);
+
+  theAllowDelay2 = ALLOW_DELAY;
+
+  new_field->theId = 0;
+  new_field->theOrder = theFieldCounter + 1;
+  
+  new_field->theParent = theCurrentCompoundField;
+
+  if (theCurrentCompoundField->theLastChild)
+    theCurrentCompoundField->theLastChild->theNextSibling = new_field;
+  else
+    theCurrentCompoundField->theFirstChild = new_field;
+  
+  theCurrentCompoundField->theLastChild = new_field;
+}
+
+
+
+/*******************************************************************************
   Create a "simple" field (ARCHIVE_FIELD_PTR, or ARCHIVE_FIELD_NUL, or
   ARCHIVE_FIELD_NORMAL).
 
@@ -964,17 +1017,19 @@ void Archiver::root_tag_is_read()
 ********************************************************************************/
 bool Archiver::read_next_field(
     char** type,
-    std::string* value,
+    char** value,
     int* id,
-    bool* is_simple,
-    bool* is_class,
-    enum ArchiveFieldKind* fieldKind,
+    bool is_simple,
+    bool is_class,
+    bool have_value,
+    ArchiveFieldKind* fieldKind,
     int* referencing)
 {
   bool retval = read_next_field_impl(type, value, id,
-                                     is_simple, is_class, fieldKind, referencing);
+                                     is_simple, is_class, have_value,
+                                     fieldKind, referencing);
 
-  if (retval && !*is_simple && (*fieldKind != ARCHIVE_FIELD_REFERENCING))
+  if (retval && !is_simple && (*fieldKind != ARCHIVE_FIELD_REFERENCING))
     theCurrentLevel++;
 
   return retval;
@@ -996,9 +1051,6 @@ void Archiver::read_end_current_level()
 ********************************************************************************/
 void Archiver::check_simple_field(
     bool retval,
-    const char* type,
-    const char* required_type,
-    bool is_simple,
     enum ArchiveFieldKind field_treat,
     enum ArchiveFieldKind required_field_treat,
     int id)
@@ -1008,22 +1060,8 @@ void Archiver::check_simple_field(
     throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(id));
   }
 
-#ifndef NDEBUG
-  if (!is_simple)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-#endif
-
-  if(field_treat == ARCHIVE_FIELD_NULL)
+  if (field_treat == ARCHIVE_FIELD_NULL)
     return;
-
-#ifndef NDEBUG
-  if (strcmp(type, required_type))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-#endif
 
   if ((required_field_treat != (enum ArchiveFieldKind)-1) &&
       field_treat != required_field_treat)
@@ -1038,10 +1076,6 @@ void Archiver::check_simple_field(
 ********************************************************************************/
 void Archiver::check_nonclass_field(
     bool retval,
-    const char* type,
-    const char* required_type,
-    bool is_simple,
-    bool is_class,
     enum ArchiveFieldKind field_treat,
     enum ArchiveFieldKind required_field_treat,
     int id)
@@ -1051,22 +1085,8 @@ void Archiver::check_nonclass_field(
     throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(id));
   }
 
-#ifndef NDEBUG
-  if (is_simple || is_class)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-#endif
-
   if (field_treat == ARCHIVE_FIELD_NULL)
     return;
-
-#ifndef NDEBUG
-  if (strcmp(type, required_type))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-#endif
 
   if ((required_field_treat != (enum ArchiveFieldKind)-1) &&
       field_treat != required_field_treat)
@@ -1083,8 +1103,6 @@ void Archiver::check_class_field(
     bool retval,
     const char* type,
     const char* required_type,
-    bool is_simple,
-    bool is_class,
     enum ArchiveFieldKind field_treat,
     enum ArchiveFieldKind required_field_treat,
     int id)
@@ -1093,13 +1111,6 @@ void Archiver::check_class_field(
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(id));
   }
-
-#ifndef NDEBUG
-  if (is_simple || !is_class)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-#endif
 
   if (field_treat == ARCHIVE_FIELD_NULL)
     return;
@@ -1124,7 +1135,7 @@ void Archiver::check_class_field(
 ********************************************************************************/
 void Archiver::register_reference(
     int id,
-    enum ArchiveFieldKind field_treat,
+    ArchiveFieldKind field_treat,
     const void* ptr)
 {
   if (get_is_temp_field())

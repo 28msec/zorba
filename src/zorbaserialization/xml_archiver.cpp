@@ -102,11 +102,12 @@ void XmlArchiver::serialize_out()
 }
 
 
-void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
+void XmlArchiver::serialize_compound_fields(archive_field* parent_field)
 {
-  archive_field   *current_field = parent_field->theFirstChild;
+  archive_field* current_field = parent_field->theFirstChild;
   char strtemp[100];
-  while(current_field)
+
+  while (current_field)
   {
     write_string(indent_off >= 0 ? indent_spaces+indent_off : indent_spaces);
     write_string("<obj_field is_simple=\"");
@@ -157,8 +158,9 @@ void XmlArchiver::serialize_compound_fields(archive_field   *parent_field)
 
 void XmlArchiver::encode_string(const char *value)
 {
-  if(!value)
+  if (!value)
     return;
+
   while(*value)
   {
     switch(*value)
@@ -172,13 +174,13 @@ void XmlArchiver::encode_string(const char *value)
 }
 
 
-void XmlArchiver::write_string(const char *str)
+void XmlArchiver::write_string(const char* str)
 {
   os->write(str, (std::streamsize)strlen(str));
 }
 
 
-const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldKind field_treat)
+const char* XmlArchiver::get_field_treat_string(enum ArchiveFieldKind field_treat)
 {
   switch(field_treat)
   {
@@ -195,15 +197,15 @@ const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldKind field_trea
 ////////////reading archive
 
 bool XmlArchiver::read_next_field_impl(
-    char **type, 
-    std::string *value,
-    int *id, 
-    bool *is_simple, 
-    bool *is_class,
-    enum ArchiveFieldKind *field_treat,
-    int *referencing)
+    char** type, 
+    char** value,
+    int* id, 
+    bool* is_simple, 
+    bool* is_class,
+    enum ArchiveFieldKind* field_treat,
+    int* referencing)
 {
-  if(!is)
+  if (!is)
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
   }
@@ -215,7 +217,7 @@ bool XmlArchiver::read_next_field_impl(
   *field_treat = (enum ArchiveFieldKind)-1;
   *referencing = -1;
 
-  if(is_compound_field_without_children)
+  if (is_compound_field_without_children)
   {
     return false;
   }
@@ -233,24 +235,27 @@ read_tag:
   }
 
   is->read(&c, 1);
-  if(c == '?')//skip pi
+  if (c == '?')//skip pi
   {
     skip_tag();
     goto read_tag;
   }
-  if(c == '!')//skip comment
+
+  if (c == '!')//skip comment
   {
     skip_comment_tag();
     goto read_tag;
   }
-  if(read_tag_level == 0)
+
+  if (read_tag_level == 0)
   {
     if(!read_root_tag(c))
       return false;
     read_tag_level++;
     goto read_tag;
   }
-  if(!match_string(c, "obj_field"))
+
+  if (!match_string(c, "obj_field"))
   {
     return false;
   }
@@ -259,7 +264,7 @@ read_tag:
   char  attrib_value[100];
   int   attr_index = 0;
 
-  while(read_attrib_name(attrib_name))
+  while (read_attrib_name(attrib_name))
   {
 //    write_string("<obj_field is_simple=\"" << (current_field->theIsSimple ? "true" : "false") << "\" "
 //        <<"type=\"" << current_field->theTypeName << "\" "
@@ -273,12 +278,12 @@ process_attr:
     switch(attr_index)
     {
     case 0:
-      if(!strcmp(attrib_name, "is_simple"))
+      if (!strcmp(attrib_name, "is_simple"))
       {
         read_attrib_value(attrib_value);
-        if(!strcmp(attrib_value, "true"))
+        if (!strcmp(attrib_value, "true"))
           *is_simple = true;
-        else if(!strcmp(attrib_value, "false"))
+        else if (!strcmp(attrib_value, "false"))
           *is_simple = false;
         else
         {
@@ -288,7 +293,7 @@ process_attr:
         break;
       }
     case 1:
-      if(!strcmp(attrib_name, "type"))
+      if (!strcmp(attrib_name, "type"))
       {
         read_attrib_value(field_type);
         *type = field_type;
@@ -296,25 +301,26 @@ process_attr:
         break;
       }
     case 2:
-      if(!strcmp(attrib_name, "version"))
+      if (!strcmp(attrib_name, "version"))
       {
         read_attrib_value(attrib_value);
         attr_index++;
         break;
       }
     case 3:
-      if(!strcmp(attrib_name, "field_treat"))
+      if (!strcmp(attrib_name, "field_treat"))
       {
         read_attrib_value(attrib_value);
-        if(!strcmp(attrib_value, "ARCHIVE_FIELD_NORMAL"))
+
+        if (!strcmp(attrib_value, "ARCHIVE_FIELD_NORMAL"))
           *field_treat = ARCHIVE_FIELD_NORMAL;
-        else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_PTR"))
+        else if (!strcmp(attrib_value, "ARCHIVE_FIELD_IS_PTR"))
           *field_treat = ARCHIVE_FIELD_PTR;
-        else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_NULL"))
+        else if (!strcmp(attrib_value, "ARCHIVE_FIELD_IS_NULL"))
           *field_treat = ARCHIVE_FIELD_NULL;
-        else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_BASECLASS"))
+        else if (!strcmp(attrib_value, "ARCHIVE_FIELD_IS_BASECLASS"))
           *field_treat = ARCHIVE_FIELD_BASECLASS;
-        else if(!strcmp(attrib_value, "ARCHIVE_FIELD_IS_REFERENCING"))
+        else if (!strcmp(attrib_value, "ARCHIVE_FIELD_IS_REFERENCING"))
           *field_treat = ARCHIVE_FIELD_REFERENCING;
         else
         {
@@ -324,7 +330,7 @@ process_attr:
         break;
       }
     case 4:
-      if(!strcmp(attrib_name, "referencing"))
+      if (!strcmp(attrib_name, "referencing"))
       {
         read_attrib_value(attrib_value);
         *referencing = atoi(attrib_value);
@@ -355,9 +361,11 @@ process_attr:
         break;
       }
     case 7:
-      if(!strcmp(attrib_name, "value"))
+      if (!strcmp(attrib_name, "value"))
       {
-        read_attrib_value(value);
+        std::string valString;
+        read_attrib_value(&valString);
+        *value = (char*)valString.c_str(); // TODO FIX
         attr_index++;
         break;
       }
@@ -373,9 +381,9 @@ process_attr:
   }
 
   is_compound_field_without_children = false;
-  if(!strcmp(attrib_name, "/"))//empty tag
+  if (!strcmp(attrib_name, "/"))//empty tag
   {
-    if(!*is_simple && (*field_treat != ARCHIVE_FIELD_REFERENCING))
+    if (!*is_simple && (*field_treat != ARCHIVE_FIELD_REFERENCING))
       is_compound_field_without_children = true;
   }
   else
@@ -499,7 +507,7 @@ bool XmlArchiver::match_string(char c, const char *match)
 }
 
 
-bool XmlArchiver::read_attrib_name(char *attrib_name)
+bool XmlArchiver::read_attrib_name(char* attrib_name)
 {
   char c;
   if(!has_attributes)
@@ -550,7 +558,7 @@ read_name:
 }
 
 
-void XmlArchiver::read_attrib_value(char *attrib_value)
+void XmlArchiver::read_attrib_value(char* attrib_value)
 {
   char c = 0;
   while(c!='\"')
@@ -662,10 +670,11 @@ void XmlArchiver::read_attrib_value(char *attrib_value)
 }
 
 
-void XmlArchiver::read_attrib_value(std::string *attrib_value)
+void XmlArchiver::read_attrib_value(std::string* attrib_value)
 {
   char c = 0;
-  while(c!='\"')
+
+  while (c!='\"')
   {
     is->read(&c, 1);
     if(c == 0)
@@ -681,9 +690,11 @@ void XmlArchiver::read_attrib_value(std::string *attrib_value)
     {
       throw ZORBA_EXCEPTION(zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
-    if(c == '\"')
+
+    if (c == '\"')
       break;
-    if(c == '&')
+
+    if (c == '&')
     {
       bool  append_c = true;
       is->read(&c, 1);
@@ -762,6 +773,7 @@ void XmlArchiver::read_attrib_value(std::string *attrib_value)
       if(!append_c)
         continue;
     }
+
     *attrib_value += c;
   }
 }

@@ -28,6 +28,7 @@ namespace serialization
 
 class MemArchiver : public Archiver
 {
+protected:
   archive_field  * current_field;
   bool             is_after_last;
   archive_field    temp_field;
@@ -42,18 +43,21 @@ public:
     is_after_last = false;
   }
 
-  virtual bool read_next_field_impl( 
+  bool read_next_simple_temp_field(char** value);
+
+  bool read_next_field_impl( 
       char** type, 
-      std::string* value,
-      int* id, 
-      bool* is_simple, 
-      bool* is_class,
+      char** value,
+      int* id,
+      bool is_simple,
+      bool is_class,
+      bool have_value,
       enum ArchiveFieldKind* field_treat,
       int* referencing);
 
-  virtual void read_end_current_level_impl();
+  void read_end_current_level_impl();
 
-  virtual void serialize_out() {}
+  void serialize_out() {}
 
   void reset_serialize_in();
 };
