@@ -10509,7 +10509,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(sourceExpr, false);
     fo_expr_t accessorExpr;
 
-    const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
+    const for_clause* fc = reinterpret_cast<const for_clause*>(
+        flworExpr->get_clause(0));
     expr* flworVarExpr = fc->get_var();
 
     if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
