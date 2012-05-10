@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <stdexcept>
 
 #include <zorba/diagnostic_list.h>
 
@@ -101,6 +102,8 @@ UConverter* icu_streambuf::create_conv( char const *charset ) {
 }
 
 bool icu_streambuf::is_necessary( char const *cc_charset ) {
+  if ( !*cc_charset )
+    throw invalid_argument( "empty charset" );
   //
   // Apparently, ucnv_compareNames() doesn't consider "US-ASCII" an alias for
   // "ASCII", so check for "US-ASCII" ourselves.
