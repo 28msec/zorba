@@ -96,7 +96,7 @@ UConverter* icu_streambuf::create_conv( char const *charset ) {
   if ( !conv || U_FAILURE( err ) ) {
     if ( conv )
       ucnv_close( conv );
-    throw invalid_argument( charset );
+    throw invalid_argument( u_errorName( err ) );
   }
   return conv;
 }
