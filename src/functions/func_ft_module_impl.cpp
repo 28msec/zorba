@@ -65,7 +65,6 @@ PlanIter_t full_text_tokenizer_properties::codegen(
 
 #endif // ZORBA_NO_FULL_TEXT
 
-
 ///////////////////////////////////////////////////////////////////////////////
 
 void populate_context_ft_module_impl(static_context* sctx) 
@@ -96,6 +95,27 @@ void populate_context_ft_module_impl(static_context* sctx)
                     tokenize_return_type),
                    FunctionConsts::FULL_TEXT_TOKENIZE_2);
   }
+  {
+    DECL_WITH_KIND(sctx,
+                   full_text_tokenize,
+                   (createQName( FT_MODULE_NS, "", "tokenize"),
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+                    tokenize_return_type),
+                   FunctionConsts::FULL_TEXT_TOKENIZE_3);
+  }
+  {
+    DECL_WITH_KIND(sctx,
+                   full_text_tokenize,
+                   (createQName( FT_MODULE_NS, "", "tokenize"),
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+                    GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE,
+                    tokenize_return_type),
+                   FunctionConsts::FULL_TEXT_TOKENIZE_4);
+  }
 
   xqtref_t tokenizer_properties_return_type =
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
@@ -119,10 +139,10 @@ void populate_context_ft_module_impl(static_context* sctx)
                     tokenizer_properties_return_type),
                    FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1);
   }
-#endif // ZORBA_NO_FULL_TEXT
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

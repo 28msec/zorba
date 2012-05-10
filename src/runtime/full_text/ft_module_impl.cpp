@@ -16,38 +16,40 @@
 
 #include <zorba/config.h>
 
+//
 // This entire file should be effectively skipped when building with
 // ZORBA_NO_FULL_TEXT. We can't prevent it from being compiled, but we
 // can prevent it from having any real content.
+//
 #ifndef ZORBA_NO_FULL_TEXT
 
-# include <limits>
-# include <typeinfo>
+#include <limits>
+#include <typeinfo>
 
-# include <zorba/diagnostic_list.h>
+#include <zorba/diagnostic_list.h>
 
-# include "api/unmarshaller.h"
-# include "context/namespace_context.h"
-# include "context/static_context.h"
-# include "diagnostics/assert.h"
-# include "diagnostics/xquery_diagnostics.h"
-# include "store/api/index.h"
-# include "store/api/item.h"
-# include "store/api/item_factory.h"
-# include "store/api/iterator.h"
-# include "store/api/store.h"
-# include "system/globalenv.h"
-# include "types/casting.h"
-# include "types/typeimpl.h"
-# include "types/typeops.h"
-# include "util/utf8_util.h"
-# include "zorbatypes/URI.h"
-# include "zorbautils/locale.h"
+#include "api/unmarshaller.h"
+#include "context/namespace_context.h"
+#include "context/static_context.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "store/api/index.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/iterator.h"
+#include "store/api/store.h"
+#include "system/globalenv.h"
+#include "types/casting.h"
+#include "types/typeimpl.h"
+#include "types/typeops.h"
+#include "util/utf8_util.h"
+#include "zorbatypes/URI.h"
+#include "zorbautils/locale.h"
 
-# include "ft_stop_words_set.h"
-# include "ft_token_seq_iterator.h"
-# include "ft_util.h"
-# include "thesaurus.h"
+#include "ft_stop_words_set.h"
+#include "ft_token_seq_iterator.h"
+#include "ft_util.h"
+#include "thesaurus.h"
 
 #include "runtime/full_text/ft_module.h"
 
@@ -79,7 +81,9 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
   if ( iso639_1::type const lang = find_lang( lang_string.c_str() ) )
     return lang;
   throw XQUERY_EXCEPTION(
-    err::FTST0009, ERROR_PARAMS( lang_string ), ERROR_LOC( loc )
+    err::FTST0009 /* lang not supported */,
+    ERROR_PARAMS( lang_string ),
+    ERROR_LOC( loc )
   );
 }
 
@@ -133,8 +137,8 @@ bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
       GENV_STORE.getStemmerProvider();
     is_supported = provider->getStemmer( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -159,20 +163,19 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  lang = get_lang_from( sctx );
-
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
 
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
     lang = get_lang_from( item, loc );
-  }
+  } else
+    lang = get_lang_from( sctx );
 
   stop_words.reset( ft_stop_words_set::get_default( lang ) );
   if ( !stop_words )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadStopWordsLang )
       ),
@@ -198,8 +201,8 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
   try {
     is_supported = ft_stop_words_set::get_default( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -230,9 +233,9 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   }
 
   try {
-    iso639_1::type const lang = get_lang_from( item, loc );
     static_context const *const sctx = getStaticContext();
     ZORBA_ASSERT( sctx );
+    iso639_1::type const lang = get_lang_from( item, loc );
 
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
@@ -251,8 +254,8 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     ZORBA_ASSERT( provider );
     is_supported = provider->getThesaurus( lang );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 /* lang not supported by Zorba */ )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -278,8 +281,8 @@ bool IsTokenizerLangSupportedIterator::nextImpl( store::Item_t &result,
     TokenizerProvider const *const p = GENV_STORE.getTokenizerProvider();
     is_supported = p && p->getTokenizer( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -325,7 +328,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
     STACK_PUSH( true, state );
   } else {
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadStemmerLang )
       ),
@@ -414,7 +417,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   ZORBA_ASSERT( provider );
   if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadThesaurusLang )
       ),
@@ -619,18 +622,18 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
 
   sctx = getStaticContext();
   ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
 
   if ( theChildren.size() > 0 ) {
     consumeNext( item, theChildren[0], plan_state );
     lang = get_lang_from( item, loc );
-  }
+  } else
+    lang = get_lang_from( sctx );
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
   ZORBA_ASSERT( tokenizer_provider );
   if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
       )
@@ -757,14 +760,14 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
 
   sctx = getStaticContext();
   ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
 
   if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( value_string );
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
-    }
+    } else
+      lang = get_lang_from( sctx );
 
     { // local scope
     TokenizerProvider const *const tokenizer_provider =
@@ -774,7 +777,7 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     Tokenizer::ptr tokenizer;
     if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
       throw XQUERY_EXCEPTION(
-        err::FTST0009,
+        err::FTST0009 /* lang not supported */,
         ERROR_PARAMS(
           iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
         )
@@ -815,5 +818,4 @@ void TokenizeStringIterator::resetImpl( PlanState &plan_state ) const {
 } // namespace zorba
 
 #endif /* ZORBA_NO_FULL_TEXT */
-
 /* vim:set et sw=2 ts=2: */
