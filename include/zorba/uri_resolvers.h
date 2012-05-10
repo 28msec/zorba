@@ -50,7 +50,8 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC Resource
 {
 public:
-  typedef std::unique_ptr<Resource,internal::ztd::destroy_delete<Resource> > ptr;
+  typedef std::unique_ptr<Resource,internal::ztd::destroy_delete<Resource> >
+          ptr;
 
   virtual ~Resource() = 0;
 
@@ -172,8 +173,8 @@ class ZORBA_DLL_PUBLIC URLResolver
    * object itself will be discarded.
    *
    * In any case, if they create a Resource, Zorba will take memory
-   * ownership of the Resource and delete it when it is no longer
-   * needed.
+   * ownership of the Resource and delete it (by calling destroy() on it)
+   * when it is no longer needed.
    */
   virtual Resource* resolveURL(const zorba::String& aUrl,
     EntityData const* aEntityData) = 0;
@@ -268,7 +269,6 @@ public:
    * Constructor. Specify the Entity Kind you wish to map. Optionally,
    * specify whether this should be a CANDIDATE or COMPONENT mapper;
    * default is CANDIDATE.
-   * QQQ COMPONENT is no longer used; delete?
    */
   OneToOneURIMapper(EntityData::Kind aEntityKind,
                     URIMapper::Kind aMapperKind = URIMapper::CANDIDATE);

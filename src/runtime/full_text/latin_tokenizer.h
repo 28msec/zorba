@@ -38,8 +38,9 @@ public:
 
   // inherited
   void destroy() const;
-  void tokenize( char const*, size_type, locale::iso639_1::type, bool,
-                 Callback&, void* );
+  void properties( Properties* ) const;
+  void tokenize_string( char const*, size_type, iso639_1::type, bool, Callback&,
+                        Item const* );
 
 private:
   typedef zstring string_type;
@@ -56,7 +57,8 @@ private:
   static bool is_word_begin_char( char );
   bool is_word_char( char );
   static char peek( char const *s, char const *end );
-  bool send_token( string_type const &token, Callback&, void* );
+  bool send_token( string_type const &token, locale::iso639_1::type, Callback&,
+                   Item const* );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,8 +66,8 @@ private:
 class LatinTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  Tokenizer::ptr getTokenizer( locale::iso639_1::type,
-                               Tokenizer::Numbers& ) const;
+  bool getTokenizer( locale::iso639_1::type, Tokenizer::Numbers* = 0,
+                     Tokenizer::ptr* = 0 ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

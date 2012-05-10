@@ -29,7 +29,7 @@
 
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "store_defs.h"
 #include "shared_types.h"
 #include "tree_id.h"
@@ -875,6 +875,8 @@ protected:
 
   StreamReleaser theStreamReleaser;
 
+  store::Item_t theStreamableDependent;
+
 public:
   bool equals(
         store::Item const*,
@@ -922,15 +924,10 @@ protected:
   StreamableStringItem(
       std::istream& aStream,
       StreamReleaser streamReleaser,
-      bool seekable = false)
-    :
-    theIstream(aStream),
-    theIsMaterialized(false),
-    theIsConsumed(false),
-    theIsSeekable(seekable),
-    theStreamReleaser(streamReleaser)
-  {
-  }
+      bool seekable = false);
+
+  StreamableStringItem(
+      store::Item_t& aStreamableDependent);
 
   void materialize() const;
 };
@@ -1461,7 +1458,7 @@ public:
 
   xs_integer getIntegerValue() const { return theValue; }
 
-  xs_long getLongValue() const;
+  xs_long getLongValue() const; 
 
   xs_unsignedInt getUnsignedIntValue() const;
 
@@ -2603,28 +2600,15 @@ class AtomicItemTokenizerCallback : public Tokenizer::Callback
 public:
   typedef FTTokenStore::container_type container_type;
 
-  AtomicItemTokenizerCallback( 
-      Tokenizer &tokenizer,
-      locale::iso639_1::type lang,
-      container_type &tokens );
+  AtomicItemTokenizerCallback( container_type &tokens );
 
-  void operator()(
-      char const *utf8_s,
-      size_type utf8_len,
-      size_type token_no,
-      size_type sent_no,
-      size_type para_no,
-      void* = 0 );
-
-  void tokenize( char const *utf8_s, size_t len, bool wildcards = false ) 
-  {
-    tokenizer_.tokenize( utf8_s, len, lang_, wildcards, *this );
-  }
+  // inherited
+  void token( char const *utf8_s, size_type utf8_len, locale::iso639_1::type,
+              size_type token_no, size_type sent_no, size_type para_no,
+              Item const* );
 
 private:
-  Tokenizer                    & tokenizer_;
-  locale::iso639_1::type const   lang_;
-  container_type               & tokens_;
+  container_type &tokens_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 

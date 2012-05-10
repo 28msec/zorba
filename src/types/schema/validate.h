@@ -20,6 +20,8 @@
 #ifndef ZORBA_NO_XMLSCHEMA
 
 
+#include <vector>
+
 #include "common/shared_types.h"
 
 #include "compiler/parser/parse_constants.h"
@@ -115,6 +117,24 @@ private:
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
         store::Iterator_t children,
+        const QueryLoc& loc);
+
+  static void processTextContent(
+        const static_context* sctx,
+        TypeManager* typeManager,
+        EventSchemaValidator& schemaValidator,
+        store::Item* parent,
+        bool hasChildrenElements,
+        zstring& textNodeValue,
+        std::vector<store::Item*>& textContent,
+        const QueryLoc& loc);
+
+  static void finishTextNode(
+        const static_context* sctx,
+        TypeManager* typeManager,
+        EventSchemaValidator& schemaValidator,
+        store::Item* parent,
+        zstring& textNodeValue,
         const QueryLoc& loc);
 
   static store::Item_t processElement(

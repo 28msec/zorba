@@ -72,6 +72,22 @@ public:
 
 
 //fn:nilled
+class fn_nilled_3_0 : public function
+{
+public:
+  fn_nilled_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+
+  CODEGEN_DECL();
+};
+
+//fn:nilled
 class fn_nilled : public function
 {
 public:
@@ -82,7 +98,7 @@ public:
 
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };

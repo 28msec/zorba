@@ -47,7 +47,7 @@ extern entry const dict_en[] = {
   { "FODC0006", "invalid content passed to $1: $2" },
   { "FODC0007", "\"$1\": base URI passed to fn:parse() is not a valid absolute URI" },
   { "FODF1280", "\"$1\": invalid decimal format name for fn:format-number()" },
-  { "FODF1310", "\"$1\": invalid fn:format-number() picture string" },
+  { "FODF1310", "\"$1\": invalid fn:format-number() picture string$2" },
   { "FODT0001", "overflow/underflow in date/time operation" },
   { "FODT0002", "overflow/underflow in duration operation" },
   { "FODT0003", "\"$1\": invalid timezone value" },
@@ -75,7 +75,7 @@ extern entry const dict_en[] = {
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
   { "FOUT1170", "\"$1\": error retrieving resource containing text" },
-  { "FOUT1190", "\"$1\": Cannot decode resource retrieved" },
+  { "FOUT1190", "\"$1\": can not decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -89,7 +89,7 @@ extern entry const dict_en[] = {
   { "FTST0008", "\"$1\": unknown stop-word list" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
-  { "FTST0009", "\"$1\": unsupported language" },
+  { "FTST0009", "\"$1\": unsupported language${ 2}" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0018", "\"$1\": unknown thesaurus" },
@@ -511,9 +511,19 @@ extern entry const dict_en[] = {
   { "~ExprReturnsTooManyUpdateLists", "expression does not return a pending update list" },
   { "~ExternFnDeterministic", "only external functions may be declared deterministic" },
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
+  { "~FTST0009_BadStemmerLang", "for current stemmer" },
+  { "~FTST0009_BadStopWordsLang", "for current stop words" },
+  { "~FTST0009_BadThesaurusLang", "for given thesaurus" },
+  { "~FTST0009_BadTokenizerLang", "for current tokenizer" },
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },
+  { "~FormatNumberAtLeastOneOptionalOrDecimal", ": a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family" },
+  { "~FormatNumberDuplicates", ": a sub-picture must not contain more than one of the \"$3\" sign" },
+  { "~FormatNumberFractionalPart", ": the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family" },
+  { "~FormatNumberGroupingAdjacentToDecimal", ": a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign" },
+  { "~FormatNumberIntegerPart", ": the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign" },
+  { "~FormatNumberPercentPermille", ": a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
   { "~FunctionFailedErrorCodeMessage_123", "$2 failed (error $3): $4" },
   { "~FunctionFailed_12o", "$2 failed${: 3}" },
