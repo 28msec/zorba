@@ -34,6 +34,29 @@
 namespace zorba {
 
 #ifndef ZORBA_NO_FULL_TEXT
+// <CurrentCompareOptionsIterator>
+CurrentCompareOptionsIterator::class_factory<CurrentCompareOptionsIterator>
+CurrentCompareOptionsIterator::g_class_factory;
+
+
+void CurrentCompareOptionsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+CurrentCompareOptionsIterator::~CurrentCompareOptionsIterator() {}
+
+// </CurrentCompareOptionsIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
 CurrentLangIterator::class_factory<CurrentLangIterator>
 CurrentLangIterator::g_class_factory;

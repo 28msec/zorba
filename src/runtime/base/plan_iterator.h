@@ -346,6 +346,8 @@ public:
 
   TypeManager* getTypeManager() const;
 
+  virtual bool isConstructor() const { return false; }
+
   /**
    * Accept method for the PlanIterator-Tree-Visitor
    *
