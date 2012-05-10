@@ -1697,8 +1697,12 @@
       <value>XML does not match schema${: "1"}${ 2}</value>
     </diagnostic>
 
-    <diagnostic code="ZXQP0025" name="ITEM_CREATION_FAILED">
-      <value>item creation failed</value>
+    <diagnostic code="ZXQP0025" name="COULD_NOT_FETCH_RESOURCE">
+      <value>"$1": could not fetch resource${; reason: 2}</value>
+
+      <entry key="RESOURCE_NOT_FOUND">
+        <value>resource not found</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ZXQP0026" name="INVALID_ENUM_VALUE">

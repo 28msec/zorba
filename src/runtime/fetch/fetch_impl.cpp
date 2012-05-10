@@ -78,8 +78,8 @@ getFetchResource(
 
   } catch (ZorbaException const& e) {
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_ITEM_CREATION_FAILED,
-      ERROR_PARAMS( e.what() ),
+      zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+      ERROR_PARAMS( aUri->getStringValue(), e.what() ),
       ERROR_LOC( aLoc )
     );
   }
@@ -119,8 +119,11 @@ FetchContentIterator::nextImpl(
   lStreamRes = dynamic_cast<internal::StreamResource*>(lRes.get());
   if ( !lStreamRes ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_ITEM_CREATION_FAILED,
-      ERROR_PARAMS( "Resource not available." ),
+      zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+      ERROR_PARAMS(
+        lUri->getStringValue(),
+        ZED(ZXQP0025_RESOURCE_NOT_FOUND`)
+      ),
       ERROR_LOC( loc )
     );
   }
@@ -184,8 +187,11 @@ FetchContentBinaryIterator::nextImpl(
   lStreamRes = dynamic_cast<internal::StreamResource*>(lRes.get());
   if ( !lStreamRes ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_ITEM_CREATION_FAILED,
-      ERROR_PARAMS( "Resource not available." ),
+      zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+      ERROR_PARAMS(
+        lUri->getStringValue(),
+        ZED(ZXQP0025_RESOURCE_NOT_FOUND)
+      ),
       ERROR_LOC( loc )
     );
   }

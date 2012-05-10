@@ -324,7 +324,7 @@ bool iterator::next() {
         case DT_DIR: {
           char const *const name = ent_->d_name;
           // skip "." and ".." entries
-          if ( name[0] == '.' && (!name[1] || name[1] == '.' && !name[2]) )
+          if ( name[0] == '.' && (!name[1] || (name[1] == '.' && !name[2])) )
             continue;
           ent_type_ = directory;
           break;
