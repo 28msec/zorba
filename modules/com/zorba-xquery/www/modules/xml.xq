@@ -224,7 +224,7 @@ declare option ver:module-version "2.0";
  :)
 declare function parse-xml:parse(
   $xml-string as xs:string?,
-  $options as element()?) as node()* external;
+  $options as element(parse-xml-options:options)?) as node()* external;
   
 
 (:~
@@ -321,6 +321,8 @@ declare function parse-xml:parse(
  : @error err:XQDY0027 The error will be raised if schema validation was enabled
  :                     and the input document has not passed it.
  :
+ : @deprecated
+ :
  :)
 declare function parse-xml:parse-xml-fragment(
   $xml-string as xs:string?,
@@ -377,6 +379,8 @@ declare function parse-xml:parse-xml-fragment(
  :
  : @error err:FODC0007 This error will be raised if $base-uri parameter passed
  :                     to the function is not a valid absolute URI.
+ :
+ : @deprecated
  :
  :)
 declare function parse-xml:parse-xml-fragment(
