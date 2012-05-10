@@ -69,12 +69,18 @@ namespace http_client {
   
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
                                          ErrorThrower& aErrorThrower,
-                                         std::string aOverridenContentType, bool aStatusOnly)
-  : 
-  theHandler(aHandler), theCurl(aCurl), theErrorThrower(aErrorThrower),
-  theStatus(-1), theStreamBuffer(0), theInsideRead(false),
+                                         std::string aOverridenContentType,
+                                         bool aStatusOnly) : 
+  theHandler(aHandler),
+  theCurl(aCurl),
+  theErrorThrower(aErrorThrower),
+  theCurrentCharset("ISO-8859-1"),      // HTTP/1.1 says this is the default
+  theStatus(-1),
+  theStreamBuffer(0),
+  theInsideRead(false),
   theOverridenContentType(aOverridenContentType),
-  theStatusOnly(aStatusOnly), theSelfContained(true)
+  theStatusOnly(aStatusOnly),
+  theSelfContained(true)
   {
     registerHandler();
     theStreamBuffer = new zorba::curl::streambuf(theCurl);
@@ -102,19 +108,21 @@ namespace http_client {
       }
 
       std::auto_ptr<std::istream> lStream;
-      if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
-        if ( !transcode::is_supported( theCurrentCharset.c_str() ) )
-          theErrorThrower.raiseException(
-            "http://www.zorba-xquery.com/errors", "ZXQP0006",
-            '"' + theCurrentCharset + "\": unknown encoding"
+      try {
+        if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+          lStream.reset(
+            new transcode::stream<std::istream>(
+              theCurrentCharset.c_str(), theStreamBuffer
+            )
           );
-        lStream.reset(
-          new transcode::stream<std::istream>(
-            theCurrentCharset.c_str(), theStreamBuffer
-          )
+        } else
+          lStream.reset(new std::istream(theStreamBuffer));
+      }
+      catch ( std::invalid_argument const &e ) {
+        theErrorThrower.raiseException(
+          "http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
         );
-      } else
-        lStream.reset(new std::istream(theStreamBuffer));
+      }
 
       Item lItem;
       if (theCurrentContentType == "text/xml" ||
