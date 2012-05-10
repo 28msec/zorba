@@ -17,7 +17,7 @@ xquery version "3.0";
 :)
 
 (:~
- : This modules provides a set of functions to modify a collection and retrieve the nodes
+ : This modules provides a set of functions to modify a collection and retrieve the items
  : contained in a particular collection.
  :
  : <p>Please refer to our documentation for <a href="../../html/data_lifecycle.html">
@@ -35,7 +35,7 @@ xquery version "3.0";
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
@@ -52,6 +52,8 @@ declare option ver:module-version "2.0";
  :         which, once applied, inserts the nodes into the collection.
  :
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ : @deprecated please use the cdml:insert-first#2 function
  :
  :)
 declare updating function 
@@ -86,6 +88,8 @@ dml:insert-first($name as xs:QName, $content as item()*) external;
  :         which, once applied, inserts the nodes into the collection.
  :
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ : @deprecated please use the cdml:insert-last#2 function
  :
  :)
 declare updating function 
@@ -124,6 +128,8 @@ dml:insert-last($name as xs:QName, $content as item()*) external;
  :
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  : @error zerr:ZDDY0011 if the target node is not contained in the collection.
+ :
+ : @deprecated please use the cdml:insert-before#3 function
  :
  :)
 declare updating function 
@@ -169,6 +175,8 @@ dml:insert-before($name as xs:QName, $target as item(), $content as item()*) ext
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  : @error zerr:ZDDY0011 if the target node is not contained in the collection.
  :
+ : @deprecated please use the cdml:insert-after#3 function
+ :
  :)
 declare updating function 
 dml:insert-nodes-after(
@@ -213,8 +221,10 @@ dml:insert-after($name as xs:QName, $pos as item(), $content as item()*) externa
  :
  : @see dml:insert-nodes-first
  :
+ : @deprecated please use the cdml:apply-insert-first#2 function
+ :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 dml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()* external;
@@ -235,7 +245,7 @@ dml:apply-insert-nodes-first(
  : @see dml:insert-first
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 dml:apply-insert-first($name as xs:QName, $content as item()*) as item()* external;
 
 
@@ -254,8 +264,10 @@ dml:apply-insert-first($name as xs:QName, $content as item()*) as item()* extern
  :
  : @see dml:insert-nodes-last
  :
+ : @deprecated please use the cdml:apply-insert-last#2 function
+ :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-last(
+declare %an:sequential function dml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()* external;
 
@@ -276,7 +288,7 @@ declare %ann:sequential function dml:apply-insert-nodes-last(
  : @see dml:insert-last
  :
  :)
-declare %ann:sequential function dml:apply-insert-last(
+declare %an:sequential function dml:apply-insert-last(
   $name as xs:QName,
   $content as item()*) as item()* external;
 
@@ -298,8 +310,10 @@ declare %ann:sequential function dml:apply-insert-last(
  :
  : @see dml:insert-nodes-before
  :
+ : @deprecated please use the cdml:apply-insert-before#3 function
+ :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 dml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
@@ -324,7 +338,7 @@ dml:apply-insert-nodes-before(
  : @see dml:insert-before
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 dml:apply-insert-before(
   $name as xs:QName,
   $target as item(),
@@ -348,8 +362,10 @@ dml:apply-insert-before(
  :
  : @see dml:insert-nodes-after
  :
+ : @deprecated please use the cdml:apply-insert-after#3 function
+ :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 dml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
@@ -374,7 +390,7 @@ dml:apply-insert-nodes-after(
  : @see dml:insert-after
  :
  :)
-declare %ann:sequential function 
+declare %an:sequential function 
 dml:apply-insert-after(
   $name as xs:QName,
   $pos as item(),
@@ -393,6 +409,8 @@ dml:apply-insert-after(
  : @error zerr:ZDDY0011 if any nodes in the $target sequence is not a member of
  :        a collection or not all nodes of the $target sequence belong to the same
  :        collection.
+ :
+ : @deprecated please use the cdml:delete#1 function
  :
  :)
 declare updating function 
@@ -428,6 +446,8 @@ dml:delete($target as item()*) external;
  :
  : @error zerr:ZDDY0011 if the collection doesn't contain any node.
  :
+ : @deprecated please use the cdml:delete-first#1 function
+ :
  :)
 declare updating function 
 dml:delete-node-first($name as xs:QName) external;
@@ -461,6 +481,8 @@ dml:delete-first($name as xs:QName) external;
  :         list which, once applied, deletes the nodes from the collection.
  :
  : @error zerr:ZDDY0011 if the collection doesn't contain the given number of nodes.
+ :
+ : @deprecated please use the cdml:delete-first#2 function
  :
  :)
 declare updating function 
@@ -498,6 +520,8 @@ dml:delete-first($name as xs:QName, $number as xs:integer) external;
  :        for the expanded QName $name.
  : @error zerr:ZDDY0011 if the collection doesn't contain any node.
  :
+ : @deprecated please use the cdml:delete-last#1 function
+ :
  :)
 declare updating function 
 dml:delete-node-last($name as xs:QName) external;
@@ -534,6 +558,8 @@ dml:delete-last($name as xs:QName) external;
  : @error zerr:ZDDY0003 If available collections does not provide a mapping
  :        for the expanded QName $name.
  : @error zerr:ZDDY0011 if the collection doesn't contain the given number of nodes.
+ :
+ : @deprecated please use the cdml:delete-last#2 function
  :
  :)
 declare updating function 

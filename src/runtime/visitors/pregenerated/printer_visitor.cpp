@@ -742,6 +742,20 @@ void PrinterVisitor::endVisit ( const DeclaredICsIterator& ) {
 // </DeclaredICsIterator>
 
 
+// <FnURICollectionIterator>
+void PrinterVisitor::beginVisit ( const FnURICollectionIterator& a) {
+  thePrinter.startBeginVisit("FnURICollectionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnURICollectionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnURICollectionIterator>
+
+
 // <CurrentDateTimeIterator>
 void PrinterVisitor::beginVisit ( const CurrentDateTimeIterator& a) {
   thePrinter.startBeginVisit("CurrentDateTimeIterator", ++theId);
@@ -3655,6 +3669,76 @@ void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnDocAvailableIterator>
+
+
+// <FnAvailableEnvironmentVariablesIterator>
+void PrinterVisitor::beginVisit ( const FnAvailableEnvironmentVariablesIterator& a) {
+  thePrinter.startBeginVisit("FnAvailableEnvironmentVariablesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnAvailableEnvironmentVariablesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnAvailableEnvironmentVariablesIterator>
+
+
+// <FnEnvironmentVariableIterator>
+void PrinterVisitor::beginVisit ( const FnEnvironmentVariableIterator& a) {
+  thePrinter.startBeginVisit("FnEnvironmentVariableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnEnvironmentVariableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnEnvironmentVariableIterator>
+
+
+// <FnUnparsedTextIterator>
+void PrinterVisitor::beginVisit ( const FnUnparsedTextIterator& a) {
+  thePrinter.startBeginVisit("FnUnparsedTextIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnUnparsedTextIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnUnparsedTextIterator>
+
+
+// <FnUnparsedTextAvailableIterator>
+void PrinterVisitor::beginVisit ( const FnUnparsedTextAvailableIterator& a) {
+  thePrinter.startBeginVisit("FnUnparsedTextAvailableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnUnparsedTextAvailableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnUnparsedTextAvailableIterator>
+
+
+// <FnUnparsedTextLinesIterator>
+void PrinterVisitor::beginVisit ( const FnUnparsedTextLinesIterator& a) {
+  thePrinter.startBeginVisit("FnUnparsedTextLinesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnUnparsedTextLinesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnUnparsedTextLinesIterator>
 
 
 // <PutDocumentIterator>

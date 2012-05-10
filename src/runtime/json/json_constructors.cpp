@@ -94,7 +94,7 @@ void JSONArrayIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, 
   (NaryBaseIterator<JSONArrayIterator, JSONArrayIteratorState>*)this);
 
-  //ar & theCopyInputs; // TODO
+  SERIALIZE_BOOL_VEC(theCopyInputs);
 }
 
 
@@ -191,7 +191,7 @@ void JSONObjectIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, 
   (NaryBaseIterator<JSONObjectIterator, JSONObjectIteratorState>*)this);
 
-  //ar & theCopyInputs; // TODO
+  SERIALIZE_BOOL_VEC(theCopyInputs);
   ar & theIsAccumulating;
 }
 
@@ -275,7 +275,7 @@ void JSONDirectObjectIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, 
   (NaryBaseIterator<JSONDirectObjectIterator, PlanIteratorState>*)this);
 
-  //ar & theCopyInputs; // TODO
+  SERIALIZE_BOOL_VEC(theCopyInputs);
 }
 
 

@@ -140,7 +140,10 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       store::Item_t lAttrValueItem;
       theFactory->createString(lAttrValueItem, lTmp);
 
-      store::Item_t lAttrNamespaceItem, lAttrLocalnameItem;
+      store::Item_t lAttrPrefixItem, lAttrNamespaceItem, lAttrLocalnameItem;
+
+      zstring lPrefix = lAnn->get_qname()->get_prefix();
+      theFactory->createString(lAttrPrefixItem, lPrefix);
 
       lTmp = lAnn->get_qname()->get_prefix();
       lTmp = theNamespaceMap[lTmp];
@@ -149,6 +152,8 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       lTmp = lAnn->get_qname()->get_localname();
       theFactory->createString(lAttrLocalnameItem, lTmp);
 
+      store::Item_t lPrefixQName;
+      theFactory->createQName(lPrefixQName, "", "", "prefix");
       store::Item_t lNamespaceQName;
       theFactory->createQName(lNamespaceQName, "", "", "namespace");
       store::Item_t lLocalnameQName;
@@ -156,6 +161,11 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       store::Item_t lValueQName;
       theFactory->createQName(lValueQName, "", "", "value");
 
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lPrefixQName, lAnnotationElem, lPrefixQName,
+        lTypeName, lAttrPrefixItem);
+     
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
         lNamespaceQName, lAnnotationElem, lNamespaceQName,

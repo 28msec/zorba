@@ -16,7 +16,11 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store.h"
+#include "store/naive/store.h"
+
+#include "store/naive/node_factory.h"
+#include "store/naive/pul_primitive_factory.h"
+#include "store/naive/tree_id_generator.h"
 
 namespace zorba {
 namespace simplestore {
@@ -72,7 +76,7 @@ protected:
 
   NodeFactory* createNodeFactory() const;
 
-  void destroyNodeFactory(NodeFactory*) const;
+  void destroyNodeFactory(zorba::simplestore::NodeFactory*) const;
 
   store::ItemFactory* createItemFactory() const;
 
@@ -84,7 +88,7 @@ protected:
 
   PULPrimitiveFactory* createPULFactory() const;
 
-  void destroyPULFactory(PULPrimitiveFactory*) const;
+  void destroyPULFactory(zorba::simplestore::PULPrimitiveFactory*) const;
 
   CollectionSet* createCollectionSet() const;
 

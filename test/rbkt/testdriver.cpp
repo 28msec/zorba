@@ -538,11 +538,13 @@ main(int argc, char** argv)
           std::cout << "testdriver: skipping canonicalization "
             "when testing with indent==yes" << std::endl;
         }
+#ifdef ZORBA_WITH_JSON
         // Also skip canonicalization for tests using method==json
         else if (lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_JSON) {
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=json" << std::endl;
         }
+#endif
         else {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
             lIter->c_str(),

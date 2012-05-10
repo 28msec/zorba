@@ -27,7 +27,9 @@
 #include "simple_pul.h"
 #include "pul_primitives.h"
 #include "node_items.h"
-#include "json_items.h"
+#ifdef ZORBA_WITH_JSON
+#  include "json_items.h"
+#endif
 #include "atomic_items.h"
 #include "pul_primitive_factory.h"
 #include "node_factory.h"

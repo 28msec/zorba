@@ -166,7 +166,7 @@ store::Item* SimpleJSONObject::copy(
 
 ********************************************************************************/
 void
-SimpleJSONObject::setCollection(SimpleCollection* collection, csize pos)
+SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
@@ -675,7 +675,7 @@ SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 
 ********************************************************************************/
 void
-SimpleJSONArray::setCollection(SimpleCollection* collection, csize pos)
+SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 

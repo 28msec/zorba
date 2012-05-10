@@ -182,7 +182,6 @@ int serializer::emitter::emit_expanded_string(
   for (; chars < chars_end; chars++ )
   {
 
-#ifndef ZORBA_NO_UNICODE
     // the input string is UTF-8
     int char_length = utf8::char_length(*chars);
     if (char_length == 0)
@@ -225,7 +224,6 @@ int serializer::emitter::emit_expanded_string(
 
       continue;
     }
-#endif//ZORBA_NO_UNICODE
 
     // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
     if (ser && ser->method == PARAMETER_VALUE_XML &&
@@ -340,14 +338,12 @@ void serializer::emitter::emit_declaration()
     {
       tr << (char)0xEF << (char)0xBB << (char)0xBF;
     }
-#ifndef ZORBA_NO_UNICODE
     else if (ser->encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
       tr.verbatim((char)0xFF);
       tr.verbatim((char)0xFE);
     }
-#endif
   }
 }
 
@@ -875,13 +871,17 @@ void serializer::xml_emitter::emit_declaration()
   emitter::emit_declaration();
 
   if (ser->omit_xml_declaration == PARAMETER_VALUE_NO) {
-    tr << "<?xml version=\"" << ser->version << "\" encoding=\"";
-    if (ser->encoding == PARAMETER_VALUE_UTF_8) {
-      tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
-    } else if (ser->encoding == PARAMETER_VALUE_UTF_16) {
-      tr << "UTF-16";
-#endif
+    tr << "<?xml version=\"" << ser->version;
+    switch (ser->encoding) {
+      case PARAMETER_VALUE_UTF_8:
+      case PARAMETER_VALUE_UTF_16:
+        tr << "\" encoding=\"";
+        switch (ser->encoding) {
+          case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
+          case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
+          default                    : ZORBA_ASSERT(false);
+        }
+        break;
     }
     tr << "\"";
 
@@ -1568,14 +1568,18 @@ void serializer::html_emitter::emit_node(
       }
 
       tr << "<meta http-equiv=\"content-type\" content=\""
-         << ser->media_type << "; charset=";
-
-      if (ser->encoding == PARAMETER_VALUE_UTF_8)
-        tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
-      else if (ser->encoding == PARAMETER_VALUE_UTF_16)
-        tr << "UTF-16";
-#endif
+         << ser->media_type;
+      switch (ser->encoding) {
+        case PARAMETER_VALUE_UTF_8:
+        case PARAMETER_VALUE_UTF_16:
+          tr << "\" charset=\"";
+          switch (ser->encoding) {
+            case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
+            case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
+            default                    : ZORBA_ASSERT(false);
+          }
+          break;
+      }
       tr << "\"";
       // closed_parent_tag = 1;
     }
@@ -1765,14 +1769,18 @@ void serializer::xhtml_emitter::emit_node(
         }
 
         tr << "<meta http-equiv=\"content-type\" content=\""
-           << ser->media_type << "; charset=";
-
-        if (ser->encoding == PARAMETER_VALUE_UTF_8)
-          tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
-        else if (ser->encoding == PARAMETER_VALUE_UTF_16)
-          tr << "UTF-16";
-#endif
+           << ser->media_type;
+        switch (ser->encoding) {
+          case PARAMETER_VALUE_UTF_8:
+          case PARAMETER_VALUE_UTF_16:
+            tr << "\" charset=\"";
+            switch (ser->encoding) {
+              case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
+              case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
+              default                    : ZORBA_ASSERT(false);
+            }
+            break;
+        }
         tr << "\"/";
         //closed_parent_tag = 1;
       }
@@ -2510,10 +2518,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     if (!strcmp(aValue, "UTF-8"))
       encoding = PARAMETER_VALUE_UTF_8;
-#ifndef ZORBA_NO_UNICODE
     else if (!strcmp(aValue, "UTF-16"))
       encoding = PARAMETER_VALUE_UTF_16;
-#endif
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
@@ -2741,8 +2747,11 @@ serializer::serialize(
     // the "JSONIQ" method is consider "XML-based", although you will certainly
     // get errors if you attempt to serialize JDM this way.
     if (method != PARAMETER_VALUE_XML &&
-        method != PARAMETER_VALUE_XHTML &&
-        method != PARAMETER_VALUE_JSONIQ) {
+        method != PARAMETER_VALUE_XHTML
+#ifdef ZORBA_WITH_JSON
+        && method != PARAMETER_VALUE_JSONIQ
+#endif
+      ) {
       throw ZORBA_EXCEPTION(
         zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,
         ERROR_PARAMS( method )

@@ -134,7 +134,7 @@ public:
 
   virtual SimpleCollection* getCollection() const = 0;
 
-  virtual void setCollection(SimpleCollection* collection, csize pos) = 0;
+  virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 
 #if 0
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
@@ -198,7 +198,7 @@ public:
 
   JSONObjectPair_t remove(const store::Item_t& aName);
 
-  xs_integer getSize() const { return thePairs.size(); }
+  xs_integer getSize() const { return xs_integer(thePairs.size()); }
 
   store::Iterator_t getPairs() const;
 
@@ -216,7 +216,7 @@ public:
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* collection, csize pos);
+  void setCollection(SimpleCollection* collection, xs_integer pos);
 };
 
 
@@ -271,7 +271,7 @@ public:
 
   virtual SimpleCollection* getCollection() const = 0;
 
-  virtual void setCollection(SimpleCollection* collection, csize pos) = 0;
+  virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 };
 
 
@@ -362,7 +362,7 @@ public:
   replace(const xs_integer& aPos, const store::Item_t& value);
 
   virtual xs_integer
-  getSize() const { return theContent.size(); }
+  getSize() const { return xs_integer(theContent.size()); }
 
   virtual const store::Item*
   operator[](const xs_integer&) const;
@@ -386,7 +386,7 @@ public:
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* collection, csize pos);
+  void setCollection(SimpleCollection* collection, xs_integer pos);
 
 protected:
   void

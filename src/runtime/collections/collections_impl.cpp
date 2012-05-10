@@ -398,7 +398,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 {
   store::Collection_t collection;
   store::Item_t node;
-  xs_integer pos = 1;
+  xs_integer pos( 1 );
   bool found;
 
   PlanIteratorState* state;
@@ -413,8 +413,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos + xs_integer(1)),
-               state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+1), state);
   }
 
   STACK_END (state);
@@ -1440,11 +1439,18 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
-    if (! node->getCollection()) 
+    if (! node->getCollection())
     {
       throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
     }
-
+    if (node->isNode() && node->getParent())
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZDDY0036_NON_ROOT_NODE_DELETION,
+        ERROR_PARAMS(node->getCollection()->getName()->getStringValue()),
+        ERROR_LOC( loc )
+      );
+    }
     if (collection && collection != node->getCollection()) 
     {
       throw XQUERY_EXCEPTION(zerr::ZDDY0018_NODES_NOT_IN_SAME_COLLECTION, ERROR_LOC(loc));
@@ -1528,7 +1534,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   store::Collection_t              collection;
   store::Item_t                    name;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1557,7 +1563,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = 0; i < numNodes; ++i)
+  for (xs_integer i( 0 ); i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
   pul->addDeleteFromCollection(&loc, name, nodes, false, theIsDynamic);
@@ -1620,7 +1626,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   store::Collection_t              collection;
   store::Item_t                    name;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1648,7 +1654,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = numNodes; i > xs_integer(0); --i)
+  for (xs_integer i = numNodes; i > 0; --i)
     nodes.push_back(collection->nodeAt(collection->size() - i));
 
   pul->addDeleteFromCollection(&loc, name, nodes, true, theIsDynamic);
@@ -2297,6 +2303,128 @@ bool DeclaredIndexesIterator::nextImpl(
 
   STACK_END(lState);
 }
+
+
+/*******************************************************************************
+  14.8.5 fn:uri-collection
+********************************************************************************/
+  FnURICollectionIteratorState::~FnURICollectionIteratorState()
+  {
+    if(theIterator != NULL)
+    {
+      if(theIteratorOpened)
+      {
+        theIterator->close();
+        theIteratorOpened = false;
+      }
+      theIterator = NULL;
+    }
+  }
+
+  void FnURICollectionIteratorState::init(PlanState& planState)
+  {
+    PlanIteratorState::init(planState);
+    theIterator = NULL;
+  }
+
+  void FnURICollectionIteratorState::reset(PlanState& planState)
+  {
+    PlanIteratorState::reset(planState);
+
+    if(theIterator != NULL)
+    {
+      if(theIteratorOpened)
+      {
+        theIterator->close();
+        theIteratorOpened = false;
+      }
+      theIterator = NULL;
+    }
+  }
+  
+  bool FnURICollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+  {
+    store::Item_t lURI, resolvedURIItem, lIte;
+    store::Collection_t coll;
+    std::auto_ptr<internal::Resource> lResource;
+    internal::CollectionResource* lCollResource;
+    zstring resolvedURIString;
+    zstring lErrorMessage;
+    zstring docuri;
+
+    FnURICollectionIteratorState* state;
+    DEFAULT_STACK_INIT(FnURICollectionIteratorState, state, planState);
+
+    if(theChildren.size() == 1 &&
+      consumeNext(lURI, theChildren[0].getp(),planState))
+    {
+      try
+      {
+        resolvedURIString= theSctx->resolve_relative_uri(lURI->getStringValue());
+      }
+      catch (ZorbaException const&)
+      {
+        throw XQUERY_EXCEPTION(
+          err::FODC0004,
+          ERROR_PARAMS(lURI->getStringValue(), ZED( BadAnyURI ) ),
+          ERROR_LOC( loc )
+        );
+      }
+    }
+    else
+    {
+      resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
+
+      if ( NULL == resolvedURIItem )
+        throw XQUERY_EXCEPTION(
+        err::FODC0002,
+        ERROR_PARAMS( ZED( DefaultCollection), ZED( NotDefInDynamicCtx ) ),
+        ERROR_LOC( loc )
+      );
+
+      resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
+    }
+
+    lResource = theSctx->resolve_uri(resolvedURIString,
+                                    internal::EntityData::COLLECTION,
+                                    lErrorMessage);
+
+    lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
+
+    if( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
+    {
+      throw XQUERY_EXCEPTION(
+        err::FODC0002,
+        ERROR_PARAMS( resolvedURIString, lErrorMessage ),
+        ERROR_LOC( loc )
+      );
+    }
+
+    // return collection nodes
+    state->theIterator = coll->getIterator();
+    ZORBA_ASSERT(state->theIterator != NULL);
+    state->theIterator->open();
+    state->theIteratorOpened = true;
+
+    //return the DocumentURI of the Collection
+    while(state->theIterator->next(lIte))
+    {
+      lIte->getDocumentURI(docuri);
+      if(!docuri.empty())
+      {
+        STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, docuri), state);
+      }
+    }
+
+    //close iterator
+    state->theIterator->close();
+    state->theIteratorOpened = false;
+
+    STACK_PUSH(false, state);
+    STACK_END(state);
+  
+  }
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

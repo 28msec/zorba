@@ -137,6 +137,7 @@ public:
   xqtref_t JDM_NULL_TYPE_QUESTION;
   xqtref_t JDM_NULL_TYPE_STAR;
   xqtref_t JDM_NULL_TYPE_PLUS;
+#endif
 
   /**
    *  Pre-allocate XQType objects for structured-item(), structured-item()?,
@@ -147,6 +148,7 @@ public:
   xqtref_t STRUCTURED_ITEM_TYPE_STAR;
   xqtref_t STRUCTURED_ITEM_TYPE_PLUS;
 
+#ifdef ZORBA_WITH_JSON
   /**
    * Pre-allocate XQType objects for the following JSONTest sequence types:
    *

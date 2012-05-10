@@ -832,12 +832,15 @@ void SourceFinder::findNodeSources(
       sources.erase(sources.begin() + i);
       --i;
 
-      // If this method is called to find the sources of an expr within the
+      // Note: If this method is called to find the sources of an expr within the
       // body of a function_item, then udfCaller->theFo will be NULL. 
-      if (udfCaller->theFo)
+      while(udfCaller->theFo && varExpr->get_udf() != udfCaller->theFo->get_func())
       {
-        ZORBA_ASSERT(varExpr->get_udf() == udfCaller->theFo->get_func());
+        udfCaller = udfCaller->thePrev;
+      }
 
+      if (udfCaller->theFo)
+      {  
         fo_expr* foExpr = udfCaller->theFo;
         expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
         std::vector<expr*> argSources;

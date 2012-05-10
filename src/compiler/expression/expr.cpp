@@ -52,8 +52,6 @@
 namespace zorba 
 {
 
-SERIALIZABLE_CLASS_VERSIONS(expr)
-
 SERIALIZABLE_CLASS_VERSIONS(catch_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
@@ -68,15 +66,7 @@ SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(namespace_context_base_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(cast_base_expr)
-
 SERIALIZABLE_CLASS_VERSIONS(promote_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(castable_base_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(instanceof_expr)
 

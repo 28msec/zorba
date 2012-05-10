@@ -83,6 +83,41 @@ public:
             sync)
   {
   }
+  
+ ~ItemHandleHashMap()
+  {
+    iterator ite = this->begin();
+    iterator end = this->end();
+
+    for (; ite != end; ++ite)
+    {
+      (*ite).first->removeReference();
+    }
+  }
+
+  void clear()
+  {
+    SYNC_CODE(AutoMutex lock(this->theMutexp);)
+
+    iterator ite = this->begin();
+    iterator end = this->end();
+
+    for (; ite != end; ++ite)
+    {
+      (*ite).first->removeReference();
+    }
+
+    HashMap<store::Item*, V, ItemHandleHashMapCmp>::clearNoSync();
+  }
+  
+  void eraseEntry(
+      HashEntry<store::Item*, V>* entry,
+      HashEntry<store::Item*, V>* preventry)
+  {
+    entry->theItem->removeReference();
+
+    HashMap<store::Item*, V, ItemHandleHashMapCmp>::eraseEntry(entry, preventry);
+  }
 
   iterator find(const store::Item_t& item)
   {
@@ -98,17 +133,6 @@ public:
       item->addReference();
 
     return inserted;
-  }
-
-  ~ItemHandleHashMap()
-  {
-    iterator ite = this->begin();
-    iterator end = this->end();
-
-    for (; ite != end; ++ite)
-    {
-      (*ite).first->removeReference();
-    }
   }
 };
 

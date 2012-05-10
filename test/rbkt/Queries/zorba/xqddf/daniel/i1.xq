@@ -16,4 +16,4 @@ index_ddl:create($xqddf-test:index1);
 
 (: dml:collection($xqddf-test:white-collection)[location eq "United States"] :)
 
-index_dml:probe-index-point-value($xqddf-test:index1, "United States")[1]
+index_dml:probe-index-point-value($xqddf-test:index1, "United States")[@id="item0"]

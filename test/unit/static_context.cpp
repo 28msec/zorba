@@ -26,7 +26,9 @@
 
 using namespace std;
 using namespace zorba;
+#ifndef ZORBA_NO_FULL_TEXT
 using namespace zorba::locale;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 bool
 sctx_test_1(Zorba* const zorba)
@@ -60,12 +62,35 @@ sctx_test_1(Zorba* const zorba)
   return lFooFound && lBindings.size() == 7;
 }
 
+bool
+sctx_test_2(Zorba* const zorba)
+{
+  StaticContext_t lSctx = zorba->createStaticContext();
+
+  Zorba_CompilerHints_t lHints;
+
+  try
+  {
+    Item lFetched = lSctx->fetch("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+
+    return !lFetched.isNull();
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+  }
+  return false;
+}
+
 int static_context( int argc, char *argv[] ) {
   void *const zstore = StoreManager::getStore();
   Zorba *const zorba = Zorba::getInstance( zstore );
 
   if (!sctx_test_1(zorba))
     return 1;
+
+  if (!sctx_test_2(zorba))
+    return 2;
 
   zorba->shutdown();
   StoreManager::shutdownStore( zstore );

@@ -68,7 +68,7 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len);
 
 #define  SERIALIZE_ENUM(enum_type, obj)           \
   {                                               \
-    ar.set_is_temp_field_one_level(true);         \
+    ar.set_is_temp_field(true);                   \
                                                   \
     int int_enum = (int)obj;                      \
     ar & int_enum;                                \
@@ -76,6 +76,34 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len);
     if (!ar.is_serializing_out())                 \
       obj = (enum_type)int_enum;                  \
                                                   \
+    ar.set_is_temp_field(false);                  \
+  }
+
+#define SERIALIZE_BOOL_VEC(vec)                   \
+  {                                               \
+    ar.set_is_temp_field_one_level(true);         \
+    csize lSize = 0;                              \
+    if (ar.is_serializing_out())                  \
+    {                                             \
+      lSize = vec.size();                         \
+      ar & lSize;                                 \
+      for (csize i = 0; i < lSize; ++i)           \
+      {                                           \
+        bool b = vec[i];                          \
+        ar & b;                                   \
+      }                                           \
+    }                                             \
+    else                                          \
+    {                                             \
+      ar & lSize;                                 \
+      vec.reserve(lSize);                         \
+      for (csize i = 0; i < lSize; ++i)           \
+      {                                           \
+        bool b;                                   \
+        ar & b;                                   \
+        vec.push_back(b);                         \
+      }                                           \
+    }                                             \
     ar.set_is_temp_field_one_level(false);        \
   }
 

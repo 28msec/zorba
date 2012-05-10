@@ -138,19 +138,19 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
                  item->getCollection()->getName()->getStringValue()));
   }
 
-  csize pos;
+  xs_long lPosition = to_xs_long(position);
+  xs_integer pos = xs_integer(0);
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
-  if (position < xs_integer(0) ||  position >= xs_integer(theXmlTrees.size()))
+  if (lPosition < 0 || to_xs_unsignedLong(position) >= theXmlTrees.size())
   {
     pos = theXmlTrees.size();
     theXmlTrees.push_back(item);
   }
   else
   {
-    pos = to_xs_unsignedInt(position);
-    theXmlTrees.insert(theXmlTrees.begin() + pos, item);
+    theXmlTrees.insert(theXmlTrees.begin() + lPosition, item);
   }
 
 #ifdef ZORBA_WITH_JSON
@@ -245,14 +245,16 @@ xs_integer SimpleCollection::addNodes(
                    node->getCollection()->getName()->getStringValue()));
     }
 
+    pos = targetPos + i;
+
 #ifdef ZORBA_WITH_JSON
     if (object)
-      object->setCollection(this, targetPos + i);
+      object->setCollection(this, pos);
     else if (array)
-      array->setCollection(this, targetPos + i);
+      array->setCollection(this, pos);
     else
 #endif
-      node->setCollection(this, targetPos + i);
+      node->setCollection(this, pos);
   } // for each new node
 
   theXmlTrees.resize(numNodes + numNewNodes);
@@ -274,7 +276,7 @@ xs_integer SimpleCollection::addNodes(
     theXmlTrees[targetPos + i].transfer(items[i]);
   }
 
-  return targetPos;
+  return xs_integer(targetPos);
 }
 
 
@@ -325,14 +327,16 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
   {
     ZORBA_ASSERT(item->getCollection() == this);
 
+    xs_integer const &zero = xs_integer::zero();
+
 #ifdef ZORBA_WITH_JSON
     if (object)
-      object->setCollection(NULL, 0);
+      object->setCollection(NULL, zero);
     else if (array)
-      array->setCollection(NULL, 0);
+      array->setCollection(NULL, zero);
     else
 #endif
-      node->setCollection(NULL, 0);
+      node->setCollection(NULL, zero);
 
     csize pos = to_xs_unsignedInt(position);
     theXmlTrees.erase(theXmlTrees.begin() + pos);
@@ -366,21 +370,23 @@ bool SimpleCollection::removeNode(xs_integer position)
 
     ZORBA_ASSERT(item->getCollection() == this);
 
+    xs_integer const &zero = xs_integer::zero();
+
     if (item->isNode())
     {
       XmlNode* node = static_cast<XmlNode*>(item);
-      node->setCollection(NULL, 0);
+      node->setCollection(NULL, zero);
     }
 #ifdef ZORBA_WITH_JSON
     else if (item->isJSONObject())
     {
       json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-      object->setCollection(NULL, 0);
+      object->setCollection(NULL, zero);
     }
     else if (item->isJSONArray())
     {
       json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-      array->setCollection(NULL, 0);
+      array->setCollection(NULL, zero);
     }
 #endif
     else
@@ -409,7 +415,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 
   if (num == 0 || pos >= theXmlTrees.size())
   {
-    return 0;
+    return xs_integer::zero();
   }
   else
   {
@@ -418,6 +424,8 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
     {
       last = theXmlTrees.size();
     }
+
+    xs_integer const &zero = xs_integer::zero();
 
     for (csize i = pos; i < last; ++i)
     { 
@@ -428,18 +436,18 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       if (item->isNode())
       {
         XmlNode* node = static_cast<XmlNode*>(item);
-        node->setCollection(NULL, 0);
+        node->setCollection(NULL, zero);
       }
 #ifdef ZORBA_WITH_JSON
       else if (item->isJSONObject())
       {
         json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-        object->setCollection(NULL, 0);
+        object->setCollection(NULL, zero);
       }
       else if (item->isJSONArray())
       {
         json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-        array->setCollection(NULL, 0);
+        array->setCollection(NULL, zero);
       }
 #endif
       else
@@ -450,7 +458,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       theXmlTrees.erase(theXmlTrees.begin() + pos);
     }
 
-    return last - pos;
+    return xs_integer(last - pos);
   }
 }
 
@@ -579,9 +587,9 @@ void SimpleCollection::adjustTreePositions()
   {
 #ifdef ZORBA_WITH_JSON
     if (theXmlTrees[i]->isNode())
-      BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
+      BASE_NODE(theXmlTrees[i])->getTree()->setPosition(xs_integer(i));
 #else
-    BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
+    BASE_NODE(theXmlTrees[i])->getTree()->setPosition(xs_integer(i));
 #endif
   }
 }

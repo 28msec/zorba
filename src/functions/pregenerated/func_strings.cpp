@@ -853,33 +853,6 @@ void populate_context_strings(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_analyze_string_3_0,
-        (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
-        FunctionConsts::FN_ANALYZE_STRING_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_analyze_string_3_0,
-        (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
-        FunctionConsts::FN_ANALYZE_STRING_3);
-
-  }
-
-
-
-
-      {
     DECL_WITH_KIND(sctx, fn_zorba_string_materialize,
         (createQName("http://www.zorba-xquery.com/modules/string","","materialize"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
