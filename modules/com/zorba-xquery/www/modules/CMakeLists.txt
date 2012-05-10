@@ -43,7 +43,7 @@ MARK_AS_ADVANCED(ZORBA_HAVE_CURL)
 DECLARE_ZORBA_SCHEMA(FILE xqdoc.xsd URI "http://www.xqdoc.org/1.0")
 DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/datetime")
-DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 2.1
+DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 3.0
   URI "http://www.zorba-xquery.com/modules/fetch")
 DECLARE_ZORBA_MODULE(FILE math.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/math")
