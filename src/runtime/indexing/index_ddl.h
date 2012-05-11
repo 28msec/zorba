@@ -370,6 +370,7 @@ class ProbeIndexPointValueIterator
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointValueIterator);
@@ -388,7 +389,8 @@ public:
   ProbeIndexPointValueIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& children);
+        std::vector<PlanIter_t>& children,
+        bool aCountOnly = false);
 
   ~ProbeIndexPointValueIterator();
 
@@ -425,6 +427,7 @@ public NaryBaseIterator<ProbeIndexPointGeneralIterator,
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointGeneralIterator);
@@ -438,7 +441,8 @@ public:
   ProbeIndexPointGeneralIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children);
+      std::vector<PlanIter_t>& children,
+      bool aCountOnly = false);
   
   ~ProbeIndexPointGeneralIterator();
 
@@ -495,6 +499,7 @@ public NaryBaseIterator<ProbeIndexRangeValueIterator,
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeValueIterator);
@@ -508,7 +513,8 @@ public:
   ProbeIndexRangeValueIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children);
+      std::vector<PlanIter_t>& children,
+      bool aCountOnly = false);
 
   ~ProbeIndexRangeValueIterator();
 
@@ -566,6 +572,7 @@ public NaryBaseIterator<ProbeIndexRangeGeneralIterator,
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeGeneralIterator);
@@ -579,7 +586,8 @@ public:
   ProbeIndexRangeGeneralIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children);
+      std::vector<PlanIter_t>& children,
+      bool aCountOnly = false);
   
   ~ProbeIndexRangeGeneralIterator();
 

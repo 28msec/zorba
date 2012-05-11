@@ -579,11 +579,13 @@ void ProbeIndexPointValueIteratorState::reset(PlanState& state)
 ProbeIndexPointValueIterator::ProbeIndexPointValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    bool aCountOnly)
   : 
   NaryBaseIterator<ProbeIndexPointValueIterator,
                    ProbeIndexPointValueIteratorState>(sctx, loc, children),
-  theCheckKeyType(true)
+  theCheckKeyType(true),
+  theCountOnly(aCountOnly)
 {
 }
 
@@ -682,10 +684,19 @@ bool ProbeIndexPointValueIterator::nextImpl(
     if (i == numChildren)
     {
       state->theIterator->init(cond);
-      state->theIterator->open();
-      
-      while(state->theIterator->next(result)) 
+
+      if (!theCountOnly)
       {
+        state->theIterator->open();
+        
+        while(state->theIterator->next(result)) 
+        {
+          STACK_PUSH(true, state);
+        }
+      }
+      else
+      {
+        state->theIterator->count(result);
         STACK_PUSH(true, state);
       }
     }
@@ -738,11 +749,13 @@ ProbeIndexPointGeneralIteratorState::~ProbeIndexPointGeneralIteratorState()
 ProbeIndexPointGeneralIterator::ProbeIndexPointGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    bool aCountOnly)
   : 
   NaryBaseIterator<ProbeIndexPointGeneralIterator,
                    ProbeIndexPointGeneralIteratorState>(sctx, loc, children),
-  theCheckKeyType(true)
+  theCheckKeyType(true),
+  theCountOnly(aCountOnly)
 {
 }
 
@@ -758,6 +771,7 @@ void ProbeIndexPointGeneralIterator::serialize(::zorba::serialization::Archiver&
   (NaryBaseIterator<ProbeIndexPointGeneralIterator,
                     ProbeIndexPointGeneralIteratorState>*)this);
 	ar & theCheckKeyType;
+  ar & theCountOnly;
 }
 
 
@@ -933,11 +947,13 @@ void ProbeIndexRangeValueIteratorState::reset(PlanState& state)
 ProbeIndexRangeValueIterator::ProbeIndexRangeValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    bool aCountOnly)
   : 
   NaryBaseIterator<ProbeIndexRangeValueIterator,
                    ProbeIndexRangeValueIteratorState>(sctx, loc, children),
-  theCheckKeyType(true)
+  theCheckKeyType(true),
+  theCountOnly(aCountOnly)
 {
 }
 
@@ -954,6 +970,7 @@ void ProbeIndexRangeValueIterator::serialize(::zorba::serialization::Archiver& a
                     ProbeIndexRangeValueIteratorState>*)this);
 
   ar & theCheckKeyType;
+  ar & theCountOnly;
 }
 
 
@@ -1114,10 +1131,18 @@ bool ProbeIndexRangeValueIterator::nextImpl(
   }
 
   state->theIterator->init(cond);
-  state->theIterator->open();
-
-  while(state->theIterator->next(result)) 
+  if (!theCountOnly)
   {
+    state->theIterator->open();
+
+    while(state->theIterator->next(result)) 
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    state->theIterator->count(result);
     STACK_PUSH(true, state);
   }
 
@@ -1188,11 +1213,13 @@ void ProbeIndexRangeGeneralIteratorState::reset(PlanState& state)
 ProbeIndexRangeGeneralIterator::ProbeIndexRangeGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    bool aCountOnly)
   : 
   NaryBaseIterator<ProbeIndexRangeGeneralIterator,
                    ProbeIndexRangeGeneralIteratorState>(sctx, loc, children),
-  theCheckKeyType(true)
+  theCheckKeyType(true),
+  theCountOnly(aCountOnly)
 {
 }
 
@@ -1209,6 +1236,7 @@ void ProbeIndexRangeGeneralIterator::serialize(::zorba::serialization::Archiver&
                     ProbeIndexRangeGeneralIteratorState>*)this);
 
   ar & theCheckKeyType;
+  ar & theCountOnly;
 }
 
 
@@ -1374,15 +1402,24 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
       cond->pushBound(*state->theSearchItemsIte, false, inclUpper);
 
       state->theIterator->init(cond);
-      state->theIterator->open();
 
-      while(state->theIterator->next(result)) 
+      if (!theCountOnly)
       {
-        if (state->theNodeHashSet->exists(result))
-          STACK_PUSH(true, state);
+        state->theIterator->open();
+
+        while(state->theIterator->next(result)) 
+        {
+          if (state->theNodeHashSet->exists(result))
+            STACK_PUSH(true, state);
+        }
+        
+        state->theIterator->close();
       }
-      
-      state->theIterator->close();
+      else
+      {
+        state->theIterator->count(result);
+        STACK_PUSH(true, state);
+      }
     }
   }
 
@@ -1407,6 +1444,32 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
       cond->pushBound(*state->theSearchItemsIte, haveLower, inclBound);
       
       state->theIterator->init(cond);
+      if (!theCountOnly)
+      {
+        state->theIterator->open();
+
+        while(state->theIterator->next(result)) 
+        {
+          STACK_PUSH(true, state);
+        }
+
+        state->theIterator->close();
+      }
+      else
+      {
+        state->theIterator->count(result);
+        STACK_PUSH(true, state);
+      }
+    }
+  }
+
+  else
+  {
+    getSearchItems(planState, state, false, false, false, false);
+
+    state->theIterator->init(cond);
+    if (!theCountOnly)
+    {
       state->theIterator->open();
 
       while(state->theIterator->next(result)) 
@@ -1416,21 +1479,11 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
 
       state->theIterator->close();
     }
-  }
-
-  else
-  {
-    getSearchItems(planState, state, false, false, false, false);
-
-    state->theIterator->init(cond);
-    state->theIterator->open();
-
-    while(state->theIterator->next(result)) 
+    else
     {
+      state->theIterator->count(result);
       STACK_PUSH(true, state);
     }
-
-    state->theIterator->close();
   }
 
  done:
