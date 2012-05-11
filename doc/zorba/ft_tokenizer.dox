@@ -10,9 +10,12 @@ a string into a sequence of tokens.
 
 \section ft_tokenizer_tokization Tokenization
 
-Using the
-<a href="http://site.icu-project.org/">ICU library</a>,
-Zorba's implementation of tokenization
+By default,
+Zorba uses the
+<a href="http://site.icu-project.org/">ICU library</a>
+for tokenization.
+For Roman alphabets,
+Zorba (ICU)
 considers only alpha-numeric sequences of characters to be part of a token;
 whitespace and punctuation characters are not
 and separate tokens.
@@ -117,7 +120,9 @@ you need to implement the \c %tokenize_string() function where:
   <tr>
     <td>\c lang</td>
     <td>
-      The language of the string.
+      The
+      <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+      of the string.
     </td>
   </tr>
   <tr>
@@ -132,7 +137,7 @@ you need to implement the \c %tokenize_string() function where:
   <tr>
     <td>\c callback</td>
     <td>
-      The Callback to call once per token.
+      The \c Callback to call once per token.
     </td>
   </tr>
   <tr>
@@ -232,7 +237,9 @@ that fills in the \c Properties struct where:
   <tr>
     <td>\c languages</td>
     <td>
-      The list of languages supported by the tokenizer.
+      The list of
+      <a href="http://www.w3.org/TR/xmlschema-2/#language">languages</a>
+      supported by the tokenizer.
     </td>
   </tr>
   <tr>
@@ -247,7 +254,9 @@ that fills in the \c Properties struct where:
 
 In addition to a \c Tokenizer,
 you must also implement a \c TokenizerProvider
-that, given a language, provides a \c Tokenizer for that language:
+that,
+given a <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>,
+provides a \c Tokenizer for that language:
 
 \code
 class TokenizerProvider {
@@ -262,7 +271,11 @@ Specifically, you need to implement the \c getTokenizer() function where:
 <table>
   <tr>
     <td>\c lang</td>
-    <td>The language to tokenize.</td>
+    <td>
+      The
+      <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+      to tokenize.
+    </td>
   </tr>
   <tr>
     <td>\c num</td>
