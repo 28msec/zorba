@@ -43,7 +43,7 @@ PlanIter_t fn_string::codegen(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
+      expr& ann) const
 {
   return new FnStringIterator(sctx, loc, argv, true);
 }
@@ -150,7 +150,7 @@ PlanIter_t fn_data_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
 }
@@ -164,7 +164,7 @@ PlanIter_t fn_name_func::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   PlanIter_t nnIter = new NodeNameIterator(sctx, loc, argv);
   std::vector<PlanIter_t> lVec;
@@ -179,11 +179,11 @@ PlanIter_t fn_name_func::codegen(
 void populate_context_accessors_impl(static_context* sctx)
 {
   DECL(sctx, fn_name_func,
-       (createQName(static_context::W3C_FN_NS.c_str(), "", "name"),
+       (createQName(static_context::W3C_FN_NS, "", "name"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
   DECL(sctx, fn_name_func,
-       (createQName(static_context::W3C_FN_NS.c_str(), "", "name"),
+       (createQName(static_context::W3C_FN_NS, "", "name"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
 

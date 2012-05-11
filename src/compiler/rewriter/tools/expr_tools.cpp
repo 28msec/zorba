@@ -124,20 +124,6 @@ int count_variable_uses(
 
 
 /*******************************************************************************
-
-********************************************************************************/
-const var_ptr_set& get_varset_annotation(const expr* e) 
-{
-  static var_ptr_set no_free_vars;
-
-  AnnotationValue_t ann = e->get_annotation(Annotations::FREE_VARS);
-  return (ann == NULL ?
-          no_free_vars :
-          dynamic_cast<VarSetAnnVal *>(ann.getp())->theVarset);
-}
-
-
-/*******************************************************************************
   copy annotations when wrapping an expression in a new one
 ********************************************************************************/
 expr_t fix_annotations(expr* new_expr, const expr* old_expr) 
@@ -155,25 +141,18 @@ expr_t fix_annotations(expr* new_expr, const expr* old_expr)
     }
   }
   
-  for (int k = 0; k < Annotations::MAX_ANNOTATION; ++k) 
-  {
-    if (k == Annotations::FREE_VARS)
-    {
-      const var_ptr_set& old_set = get_varset_annotation(old_expr);
-      const var_ptr_set& new_set = get_varset_annotation(new_expr);
+  const expr::FreeVars& old_set = old_expr->getFreeVars();
+  const expr::FreeVars& new_set = new_expr->getFreeVars();
 
-      var_ptr_set s;
-      std::set_union(old_set.begin(),
-                     old_set.end(),
-                     new_set.begin(),
-                     new_set.end(),
-                     inserter(s, s.begin()));
+  expr::FreeVars s;
+  std::set_union(old_set.begin(),
+                 old_set.end(),
+                 new_set.begin(),
+                 new_set.end(),
+                 inserter(s, s.begin()));
 
-      new_expr->put_annotation(static_cast<Annotations::Key>(k),
-                               AnnotationValue_t(new VarSetAnnVal(s)));
-    }
-  }
-  
+  new_expr->setFreeVars(s);
+
   return new_expr;
 }
 
@@ -319,6 +298,31 @@ void index_flwor_vars(
 
     index_flwor_vars(flwor->get_return_expr(), numVars, varidmap, idvarmap);
   }
+  else if (e->get_expr_kind() == trycatch_expr_kind)
+  {
+    const trycatch_expr* trycatch = static_cast<const trycatch_expr*>(e);
+
+    index_flwor_vars(trycatch->get_try_expr(), numVars, varidmap, idvarmap);
+
+    csize numClauses = trycatch->clause_count();
+
+    for (csize i = 0; i < numClauses; ++i)
+    {
+      const catch_clause_t& clause = (*trycatch)[i];
+      
+      catch_clause::var_map_t& trycatchVars = clause->get_vars();
+      
+      catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
+      catch_clause::var_map_t::const_iterator end = trycatchVars.end();
+      for (; ite != end; ++ite)
+      {
+        const var_expr_t& trycatchVar = (*ite).second;
+        add_var(trycatchVar.getp(), numVars, varidmap, idvarmap);
+      }
+
+      index_flwor_vars(trycatch->get_catch_expr(i), numVars, varidmap, idvarmap);
+    }
+  }
   else
   {
     ExprConstIterator iter(e);
@@ -399,7 +403,7 @@ void build_expr_to_vars_map(
     return;
   }
 
-  ulong numVars = freeset.size();
+  csize numVars = freeset.size();
 
   DynamicBitset eFreeset(numVars);
   ExprIterator iter(e);
@@ -464,17 +468,17 @@ void build_expr_to_vars_map(
         const group_clause* gc = static_cast<const group_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        unsigned numGroupVars = (unsigned)gvars.size();
+        csize numGroupVars = gvars.size();
 
-        for (unsigned i = 0; i < numGroupVars; ++i)
+        for (csize i = 0; i < numGroupVars; ++i)
         {
           set_bit(gvars[i].second.getp(), varmap, freeset, false);
         }
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        unsigned numNonGroupVars = (unsigned)ngvars.size();
+        csize numNonGroupVars = ngvars.size();
         
-        for (unsigned i = 0; i < numNonGroupVars; ++i)
+        for (csize i = 0; i < numNonGroupVars; ++i)
         {
           set_bit(ngvars[i].second.getp(), varmap, freeset, false);
         }
@@ -484,6 +488,27 @@ void build_expr_to_vars_map(
         const count_clause* cc = static_cast<const count_clause *>(c);
 
         set_bit(cc->get_var(), varmap, freeset, false);
+      }
+    }
+  }
+  else if (e->get_expr_kind() == trycatch_expr_kind)
+  {
+    trycatch_expr* trycatch = static_cast<trycatch_expr*>(e);
+
+    csize numClauses = trycatch->clause_count();
+
+    for (csize i = 0; i < numClauses; ++i)
+    {
+      const catch_clause_t& clause = (*trycatch)[i];
+      
+      catch_clause::var_map_t& trycatchVars = clause->get_vars();
+      
+      catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
+      catch_clause::var_map_t::const_iterator end = trycatchVars.end();
+      for (; ite != end; ++ite)
+      {
+        const var_expr_t& trycatchVar = (*ite).second;
+        set_bit(trycatchVar.getp(), varmap, freeset, false);
       }
     }
   }

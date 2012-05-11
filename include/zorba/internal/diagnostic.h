@@ -185,6 +185,9 @@ public:
    * @param line The line number of the file where the error occurred.
    * @param column The column number, if any, of the file where the error
    * occurred.
+   * @param line_end The end line of the file where the error occured.
+   * @param column_end The column number, if any, where the error ends.
+   * occurred.
    */
   void set(
       char const *file,

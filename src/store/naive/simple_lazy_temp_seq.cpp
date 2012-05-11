@@ -21,7 +21,7 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/item.h"
-#include "store/naive/simple_lazy_temp_seq.h"
+#include "simple_lazy_temp_seq.h"
 
 
 namespace zorba
@@ -233,6 +233,16 @@ void SimpleLazyTempSeq::matNextItem()
 
 
 /*******************************************************************************
+
+********************************************************************************/
+xs_integer SimpleLazyTempSeq::getSize() const
+{
+  ZORBA_ASSERT(false);
+  return xs_integer(0);
+}
+
+
+/*******************************************************************************
   Reads the whole Sequence from beginning to end; it is allowed to have several
   concurrent iterators on the same TempSeq.
 
@@ -240,7 +250,7 @@ void SimpleLazyTempSeq::matNextItem()
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator() const
 {
-  return new SimpleLazyTempSeqIter(this, 1, std::numeric_limits<long>::max());
+  return new SimpleLazyTempSeqIter(this, xs_integer(1), xs_integer(std::numeric_limits<long>::max()));
 }
 
 
@@ -297,9 +307,9 @@ void SimpleLazyTempSeqIter::open()
 
 bool SimpleLazyTempSeqIter::next(store::Item_t& result)
 {
-  if (theCurPos < theEndPos && theTempSeq->containsItem(theCurPos+1))
+  if (theCurPos < theEndPos && theTempSeq->containsItem(xs_integer(theCurPos+1)))
   {
-    theTempSeq->getItem(++theCurPos, result);
+    theTempSeq->getItem(xs_integer(++theCurPos), result);
     return true;
   }
   else

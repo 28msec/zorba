@@ -20,7 +20,7 @@
 #include "common/shared_types.h"
 #include "types/root_typemanager.h"
 
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 
 
 namespace zorba
@@ -40,20 +40,19 @@ class GenericCast
                             zstring& strval,
                             store::ItemFactory*, 
                             namespace_context *nsCtx,
-                            const ErrorInfo& aErrorInfo
-                        );
+                            const ErrorInfo& aErrorInfo);
+
   typedef bool (*DownCastFunc)(
                             store::Item_t&,
                             const store::Item*, 
-                            RootTypeManager& aTS,
                             store::SchemaTypeCode aTargetAtomicType,
                             store::ItemFactory*,
-                            const ErrorInfo& aErrorInfo
-                        ); 
+                            const ErrorInfo& aErrorInfo);
+ 
 private:
   static const int          theMapping[store::XS_LAST];
-  static const CastFunc     theCastMatrix[23][23];
-  static const DownCastFunc theDownCastMatrix[23];
+  static const CastFunc     theCastMatrix[24][24];
+  static const DownCastFunc theDownCastMatrix[24];
 
   GenericCast() {}
     

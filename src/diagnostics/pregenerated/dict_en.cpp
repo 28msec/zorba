@@ -47,7 +47,7 @@ extern entry const dict_en[] = {
   { "FODC0006", "invalid content passed to $1: $2" },
   { "FODC0007", "\"$1\": base URI passed to fn:parse() is not a valid absolute URI" },
   { "FODF1280", "\"$1\": invalid decimal format name for fn:format-number()" },
-  { "FODF1310", "\"$1\": invalid fn:format-number() picture string" },
+  { "FODF1310", "\"$1\": invalid fn:format-number() picture string$2" },
   { "FODT0001", "overflow/underflow in date/time operation" },
   { "FODT0002", "overflow/underflow in duration operation" },
   { "FODT0003", "\"$1\": invalid timezone value" },
@@ -74,6 +74,8 @@ extern entry const dict_en[] = {
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
+  { "FOUT1170", "\"$1\": error retrieving resource containing text" },
+  { "FOUT1190", "\"$1\": can not decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -87,7 +89,7 @@ extern entry const dict_en[] = {
   { "FTST0008", "\"$1\": unknown stop-word list" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
-  { "FTST0009", "\"$1\": unsupported language" },
+  { "FTST0009", "\"$1\": unsupported language${ 2}" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0018", "\"$1\": unknown thesaurus" },
@@ -178,6 +180,7 @@ extern entry const dict_en[] = {
   { "XQST0090", "\"$1\": invalid character reference in XML $2" },
   { "XQST0093", "\"$1\": module must not depend on itself" },
   { "XQST0098", "properties \"$1\" and \"$2\", representing characters used in picture string, do not have distinct values" },
+  { "XQST0099", "module contains more than one context item declaration" },
   { "XQST0106", "$1: multiple annotations with $2 names" },
   { "XQST0111", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
@@ -248,6 +251,7 @@ extern entry const dict_en[] = {
   { "ZAPI0042", "iterator is closed" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
   { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },
+  { "ZAPI0090", "a non root element cannot be validated in place." },
   { "ZCSE0001", "\"$1\": nonexistent input field" },
   { "ZCSE0002", "\"$1\": incompatible input field${: type=2}${, class=3}" },
   { "ZCSE0003", "\"$1\": unrecognized class field" },
@@ -283,6 +287,7 @@ extern entry const dict_en[] = {
   { "ZDDY0016", "\"$1\": multiple attemps to create a collection in the same snapshot" },
   { "ZDDY0017", "node does not belong to any collection" },
   { "ZDDY0018", "all nodes must be in same collection" },
+  { "ZDDY0019", "\"$1\": collection $2 cannot be undone" },
   { "ZDDY0020", "\"$1\": index domain expression yields nodes that are not in collection" },
   { "ZDDY0021", "\"$1\": undeclared index" },
   { "ZDDY0022", "\"$1\": index already exists" },
@@ -299,6 +304,7 @@ extern entry const dict_en[] = {
   { "ZDDY0033", "\"$1\": integrity constraint not met for collection \"$2\"" },
   { "ZDDY0034", "\"$1\": index range-value probe has search keys with incompatible types" },
   { "ZDDY0035", "\"$1\": index inserting more than one key not allowed for general index" },
+  { "ZDDY0036", "attempt to delete non-root node from collection \"$1\"" },
   { "ZDST0001", "\"$1\": collection already declared" },
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },
@@ -332,11 +338,29 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_WITH_DEBUGGER)
   { "ZGDB0001", "" },
 #endif
+  { "ZJPE0001", "'$1': illegal JSON character" },
+  { "ZJPE0002", "\"$1\": illegal Unicode code-point" },
+  { "ZJPE0003", "'\\$1': illegal JSON character escape" },
+  { "ZJPE0004", "illegal JSON literal" },
+  { "ZJPE0005", "illegal JSON number" },
+  { "ZJPE0006", "\"$1\": unexpected JSON token" },
+  { "ZJPE0007", "unterminated JSON string" },
+  { "ZJPE0008", "\"$1\": illegal QName" },
+  { "ZJPE0009", "illegal empty string" },
+  { "ZJSE0001", "JSON serialization requires document or element node" },
+  { "ZJSE0002", "\"$1\" element missing required \"$2\" attribute" },
+  { "ZJSE0003", "\"$1\": illegal value for attribute \"$2\"" },
+  { "ZJSE0004", "\"$1\": illegal element${; must be \"2\"}${ or \"3\"}" },
+  { "ZJSE0005", "\"$1\": illegal child element of \"$2\" type; must be \"$3\"" },
+  { "ZJSE0006", "JSON type \"$1\" can not have a child element node" },
+  { "ZJSE0007", "JSON type \"$1\" can not have a child text node" },
+  { "ZJSE0008", "\"$1\": illegal value for JSON type \"$2\"" },
   { "ZOSE0001", "\"$1\": file not found" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
   { "ZOSE0004", "${\"1\": }I/O error${: 2}" },
   { "ZOSE0005", "\"$1\": error loading dynamic library${: 2}" },
+  { "ZOSE0006", "stream transcoding error ($1)" },
   { "ZSTR0001", "\"$1\": index already exists" },
   { "ZSTR0002", "\"$1\": index does not exist" },
   { "ZSTR0003", "\"$1\": partial key insertion into index \"$2\"" },
@@ -358,6 +382,7 @@ extern entry const dict_en[] = {
   { "ZSTR0050", "\"$1\" not implemented for item type \"$2\"" },
   { "ZSTR0055", "streamable string has already been consumed" },
   { "ZSTR0060", "out of range: $1" },
+  { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
@@ -365,16 +390,17 @@ extern entry const dict_en[] = {
   { "ZWST0006", "\"$1\": function caching might not give the intended result because the function is declared as $2" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
-  { "ZXQD0003", "inconsistent options to the parse-xml-fragment() function: $1" },
+  { "ZXQD0003", "inconsistent options to the parse-xml() function: $1" },
   { "ZXQD0004", "invalid parameter: $1" },
   { "ZXQD0005", "key with type $1 not subtype or castable to target type $2 of map ($3)" },
   { "ZXQD0006", "\"$1\": invalid UTF-8 byte sequence" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
-  { "ZXQP0002", "\"$1\": assertion failed" },
+  { "ZXQP0002", "\"$1\": assertion failed.${ The following information might help: 2}" },
   { "ZXQP0003", "internal error${: 1}" },
   { "ZXQP0004", "not yet implemented: $1" },
   { "ZXQP0005", "\"$1\": feature not enabled" },
+  { "ZXQP0006", "\"$1\": unknown character encoding" },
   { "ZXQP0007", "\"$1\": function signature does not match declaration" },
   { "ZXQP0008", "\"$1\": function implementation not found" },
   { "ZXQP0009", "\"$1\": function referred to by this local-name has the local-name \"$2\" instead" },
@@ -388,7 +414,7 @@ extern entry const dict_en[] = {
   { "ZXQP0025", "item creation failed" },
   { "ZXQP0026", "\"$1\": invalid enumerated value for $2" },
   { "ZXQP0028", "\"$1\": target namespace not provided by module from $2" },
-  { "ZXQP0029", "\"$1\": module import not allowed" },
+  { "ZXQP0029", "\"$1\": URI access not allowed" },
   { "ZXQP0030", "deadlock" },
   { "ZXQP0031", "malformed XQueryX XML input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
@@ -415,8 +441,12 @@ extern entry const dict_en[] = {
   { "~AtomizationOfGroupByMakesMoreThanOneItem", "atomization of groupby variable produces more than one item" },
   { "~AttributeName", "attribute name" },
   { "~AttributeNode", "attribute node" },
+#if !defined(ZORBA_NO_ICU)
   { "~BackRef0Illegal", "\"0\": illegal backreference" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
+#endif
   { "~BadAnyURI", "invalid xs:anyURI" },
   { "~BadArgTypeForFn_2o34o", "${\"2\": }invalid argument type for function $3()${: 4}" },
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
@@ -429,7 +459,9 @@ extern entry const dict_en[] = {
   { "~BadIterator", "invalid iterator" },
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
+#endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },
@@ -442,6 +474,7 @@ extern entry const dict_en[] = {
   { "~BadWordNetPtr_2", "\"$2\": invalid pointer type" },
   { "~BadXMLDocument_2o", "malformed XML document${ at \"2\"}" },
   { "~BadXMLForXQDoc_3", "can not parse as XML for xqdoc: $3" },
+  { "~BadXMLNoOpeningTag", "closing tag without matching opening tag" },
   { "~BadXQueryVersion", "unsupported XQuery version" },
   { "~Base64BadChar", "invalid Base64 character" },
   { "~Base64Equals", "in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]" },
@@ -454,7 +487,6 @@ extern entry const dict_en[] = {
   { "~CloneNotImplemented", "clone() not implemented for expression" },
   { "~ClosingBraceWithoutOpen", "'}' encountered without '{' first" },
   { "~CollectionIteratorNotOpen", "collection iterator not open" },
-  { "~CountClause11", "\"count\" clause only available in XQuery 1.1 or later" },
   { "~DefaultCollation", "default collation" },
   { "~DivisionNoINF", "division can not have +-INF dividend" },
   { "~DivisionNoNaN", "division can not involve NaN" },
@@ -479,9 +511,19 @@ extern entry const dict_en[] = {
   { "~ExprReturnsTooManyUpdateLists", "expression does not return a pending update list" },
   { "~ExternFnDeterministic", "only external functions may be declared deterministic" },
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
+  { "~FTST0009_BadStemmerLang", "for current stemmer" },
+  { "~FTST0009_BadStopWordsLang", "for current stop words" },
+  { "~FTST0009_BadThesaurusLang", "for given thesaurus" },
+  { "~FTST0009_BadTokenizerLang", "for current tokenizer" },
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },
+  { "~FormatNumberAtLeastOneOptionalOrDecimal", ": a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family" },
+  { "~FormatNumberDuplicates", ": a sub-picture must not contain more than one of the \"$3\" sign" },
+  { "~FormatNumberFractionalPart", ": the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family" },
+  { "~FormatNumberGroupingAdjacentToDecimal", ": a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign" },
+  { "~FormatNumberIntegerPart", ": the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign" },
+  { "~FormatNumberPercentPermille", ": a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
   { "~FunctionFailedErrorCodeMessage_123", "$2 failed (error $3): $4" },
   { "~FunctionFailed_12o", "$2 failed${: 3}" },
@@ -494,6 +536,8 @@ extern entry const dict_en[] = {
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
+  { "~JSON parser error", "JSON parser error" },
+  { "~JSON serialization error", "JSON serialization error" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
   { "~ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~ModuleNotFound", "module not found" },
@@ -521,6 +565,7 @@ extern entry const dict_en[] = {
   { "~NoSeqAsArithOp", "sequence of more than one item can not be operand for arithmetic operation" },
   { "~NoSeqAsCollationParam", "sequence of more than one item not allowed as collation parameter" },
   { "~NoSeqCastToTypeWithQuantOneOrQuestion", "sequence of more than one item can not be cast to type with quantifier '1' or '?'" },
+  { "~NoSeqForConcat", "multi-item sequence can not be operand for concatenation" },
   { "~NoSeqForFnOp_2", "sequence of more than one item can not be operand for function \"$2()\"" },
   { "~NoSeqInValueComp", "sequnce of more than one item can not be in value comparisons" },
   { "~NoSeqTestedForAtomicEquiv", "sequence of more than one item can not be tested for atomic value equivalence" },
@@ -542,10 +587,14 @@ extern entry const dict_en[] = {
   { "~NoUntypedKeyNodeValue_2", "node with untyped key value found during probe on index \"$2\"" },
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+#endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+#endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
   { "~NotDefInDynamicCtx", "not defined in dynamic context" },
@@ -558,13 +607,75 @@ extern entry const dict_en[] = {
   { "~OpNodeBeforeMustHaveNodes", "op:node-before() must have nodes as parameters" },
   { "~OperationNotDef_23", "$2 not defined for type \"$3\"" },
   { "~OperationNotPossibleWithTypes_234", "\"$2\": operation not possible with parameters of type \"$3\" and \"$4\"" },
-  { "~OuterForClause11", "\"outer-for\" clause only available in XQuery 1.1 or later" },
-  { "~ParseFragmentOptionCombinationNotAllowed", "specifying both $2 and $3 is an error" },
-  { "~ParseFragmentOptionDSLNotAllowed", "if the e option is specified, none of the options d, s, or l may be enabled" },
+  { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace" },
+  { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schema-validate/>, <DTD-validate/> or <parse-external-parsed-entity/> options can be specified" },
   { "~ParserInitFailed", "parser initialization failed" },
   { "~ParserNoCreateTree", "XML tree creation failed" },
   { "~PromotionImpossible", "promotion not possible" },
   { "~QuotedColon_23", "\"$2\": $3" },
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\p construct" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_ATOM_CHAR", "'$3': invalid character for an atom; forbidden characters are: [{}?*+|^]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_BACK_REF", "\\$3 backreference to a non-existent capture group ($4 groups so far)" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_SUBCLASS", "malformed class subtraction" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_UNICODE_CODEPOINT_u", "invalid unicode hex, should be in form \\uXXXX or \\UXXXXXXXX" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction: it must be the last construct in a class group [xxx-[yyy]]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MISSING_CLOSE_BRACKET", "missing ']' in character group" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MULTICHAR_IN_CHAR_RANGE", "multichars or char categories cannot be part of a char range" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char; supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category; supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "unknown \\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\p{L?} category; supported categories: L, Lu, Ll, Lt, Lm, Lo" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\p{M?} category; supported categories: M, Mn, Mc, Me" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\p{N?} category; supported categories: N, Nd, Nl, No" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\p{P?} category; supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\p{S?} category; supported categories: S, Sm, Sc, Sk, So" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
+#endif
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SchemaAttributeName", "schema-attribute name" },
@@ -582,84 +693,95 @@ extern entry const dict_en[] = {
   { "~StingLiteral", "string literal" },
   { "~StringValue", "string value" },
   { "~SumImpossibleWithTypes_23", "sum not possible with parameters of type \"$2\" and \"$3\"" },
-  { "~SwitchExpr11", "\"switch\" expressions only available in XQuery 1.1 or later" },
   { "~TrailingChar_3", "trailing '$3'" },
-  { "~TryCatchExpr11", "\"try/catch\" expressions only available in XQuery 1.1 or later" },
   { "~TwoDecimalFormatsSameName_2", "\"$2\": two decimal formats with this name" },
   { "~TwoDefaultDecimalFormats", "two default decimal formats" },
   { "~TypeIsNotSubtype", "item type is not a subtype of \"$3\"" },
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_BACK_REF", "backreference to a non-existent capture group" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_FLAG", "invalid value for match mode flags" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_RANGE", "in character range [x-y], x is greater than y" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_STATE", "RegexMatcher in invalid state for requested operation" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_LOOK_BEHIND_LIMIT", "look-behind pattern matches must have a bounded maximum length" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MISSING_CLOSE_BRACKET", "missing ']'" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_NUMBER_TOO_BIG", "decimal number is too large" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_OCTAL_TOO_BIG", "octal character constants must be <= 0377" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_PROPERTY_SYNTAX", "incorrect Unicode property" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_RULE_SYNTAX", "syntax error" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_SET_CONTAINS_STRING", "can not have UnicodeSets containing strings" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_STACK_OVERFLOW", "backtrack stack overflow" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_STOPPED_BY_CALLER", "matching operation aborted by user callback fn" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_TIME_OUT", "maximum allowed match time exceeded" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
 #endif
   { "~UnaryArithOp", "unary arithmetic operator" },
-  { "~UnbalancedChar_3", "missing '$3'" },
+#if !defined(ZORBA_NO_ICU)
+  { "~UnbalancedChar_3", "unbalanced '$3'" },
+#endif
+#if !defined(ZORBA_NO_ICU)
+  { "~UnescapedChar_3", "character '$3' must be escaped here" },
+#endif
   { "~UnexpectedElement", "unexpected element" },
   { "~VarValMustBeSingleItem_2", "\"$2\": variable value must be single item" },
   { "~Variable", "variable" },
   { "~VariabledHasNoValue", "variable has no value" },
   { "~VariabledUndeclared", "undeclared variable" },
-  { "~WindowClause11", "\"window\" clause only available in XQuery 1.1 or later" },
   { "~XMLSchema", "XML schema" },
+  { "~XPST0003_Anotations", "function and variable annotations only available in XQuery 3.0 or later" },
+  { "~XPST0003_CountClause11", "\"count\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_OuterForClause11", "\"outer-for\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_PiTarget", "\"XML\" not allowed as target of a direct processing-instruction constructor" },
+  { "~XPST0003_Scripting", "scripting feature not available" },
+  { "~XPST0003_SwitchExpr11", "\"switch\" expressions only available in XQuery 3.0 or later" },
+  { "~XPST0003_TryCatchExpr11", "\"try/catch\" expressions only available in XQuery 3.0 or later" },
+  { "~XPST0003_WindowClause11", "\"window\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_XQueryVersionAtLeast30_2", "\"$2\": XQuery version must be at least 3.0" },
+  { "~XPTY0004_FormatNumber_2", "\"the first parameter to the format-number() function is of type $2, which is not allowed" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
-  { "~XQueryVersionAtLeast10_2", "\"$2\": XQuery version must be at least 1.0" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },
   { "~XUST0001_IF", "conditional expression with updating and non-updating branch" },

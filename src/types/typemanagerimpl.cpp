@@ -39,7 +39,11 @@
 #include "compiler/parser/query_loc.h"
 
 #include "functions/signature.h"
+
 #include "util/string_util.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
@@ -51,11 +55,16 @@ using namespace zorba;
 XERCES_CPP_NAMESPACE_USE
 #endif
 
-SERIALIZABLE_CLASS_VERSIONS(TypeManager)
-END_SERIALIZABLE_CLASS_VERSIONS(TypeManager)
-
 SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
-END_SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void TypeManager::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & m_level;
+}
 
 
 /***************************************************************************//**
@@ -212,7 +221,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   // Try to resolve the type name as a builtin atomic type
   RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
 
-  store::SchemaTypeCode code;
+  store::SchemaTypeCode code = store::XS_LAST;
 
   if (myMap.get(qname, code))
     return create_builtin_atomic_type(code, quantifier);
@@ -225,11 +234,8 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     {
 			throw XQUERY_EXCEPTION_VAR(
 				error,
-				ERROR_PARAMS(
-					qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
-				),
-				ERROR_LOC( loc )
-			);
+				ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+				ERROR_LOC(loc));
     }
     else
     {
@@ -339,11 +345,11 @@ xqtref_t TypeManagerImpl::create_named_type(
       {
         if (error != zerr::ZXQP0000_NO_ERROR)
         {
-					throw XQUERY_EXCEPTION_VAR(
-						error,
-						ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-						ERROR_LOC( loc )
-					);
+            throw XQUERY_EXCEPTION_VAR(
+                error,
+                ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+                ERROR_LOC( loc )
+            );
         }
         else
         {
@@ -1047,6 +1053,32 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::EMPTY_TYPE:
     return create_empty_type();
+
+  case IdentTypes::SCHEMA_ELEMENT_TYPE:
+  {
+    store::Item_t ename;
+    GENV_ITEMFACTORY->createQName(ename,
+                                  ident.getUri().c_str(),
+                                  NULL,
+                                  ident.getLocalName().c_str());
+
+    return create_schema_element_type(ename.getp(),
+                                      q,
+                                      QueryLoc::null);
+  }
+
+  case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
+  {
+    store::Item_t aname;
+    GENV_ITEMFACTORY->createQName(aname,
+                                  ident.getUri().c_str(),
+                                  NULL,
+                                  ident.getLocalName().c_str());
+
+    return create_schema_attribute_type(aname,
+                                        q,
+                                        QueryLoc::null);
+  }
 
   default:
     break;

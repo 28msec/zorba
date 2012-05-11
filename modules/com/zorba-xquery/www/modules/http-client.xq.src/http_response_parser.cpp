@@ -18,12 +18,15 @@
 #include <assert.h>
 #include <iostream>
 
-#include <zorba/item_factory.h>
-#include <zorba/item.h>
-#include <zorba/xmldatamanager.h>
 #include <zorba/base64.h>
 #include <zorba/config.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/error.h>
+#include <zorba/item.h>
+#include <zorba/item_factory.h>
+#include <zorba/transcode_stream.h>
+#include <zorba/xmldatamanager.h>
+#include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
 
@@ -31,16 +34,53 @@
 #include "http_request_handler.h"
 #include "curl_stream_buffer.h"
 
-namespace zorba { namespace http_client {
+namespace zorba {
+
+static void parse_content_type( std::string const &s, std::string *mime_type,
+                                std::string *charset ) {
+  std::string::size_type pos = s.find( ';' );
+  *mime_type = s.substr( 0, pos );
+
+  // The HTTP/1.1 spec says that the default charset is ISO-8859-1.
+  *charset = "ISO-8859-1";
+
+  if ( pos != std::string::npos ) {
+    //
+    // Parse: charset="?XXXXX"?[ (comment)]
+    //
+    if ( (pos = s.find( '=' )) != std::string::npos ) {
+      std::string t = s.substr( pos + 1 );
+      if ( !t.empty() ) {
+        if ( t[0] == '"' ) {
+          t.erase( 0, 1 );
+          if ( (pos = t.find( '"' )) != std::string::npos )
+            t.erase( pos );
+        } else {
+          if ( (pos = t.find( ' ' )) != std::string::npos )
+            t.erase( pos );
+        }
+        *charset = t;
+      } 
+    }
+  }
+}
+
+namespace http_client {
   
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
                                          ErrorThrower& aErrorThrower,
-                                         std::string aOverridenContentType, bool aStatusOnly)
-  : 
-  theHandler(aHandler), theCurl(aCurl), theErrorThrower(aErrorThrower),
-  theStatus(-1), theStreamBuffer(0), theInsideRead(false),
+                                         std::string aOverridenContentType,
+                                         bool aStatusOnly) : 
+  theHandler(aHandler),
+  theCurl(aCurl),
+  theErrorThrower(aErrorThrower),
+  theCurrentCharset("ISO-8859-1"),      // HTTP/1.1 says this is the default
+  theStatus(-1),
+  theStreamBuffer(0),
+  theInsideRead(false),
   theOverridenContentType(aOverridenContentType),
-  theStatusOnly(aStatusOnly), theSelfContained(true)
+  theStatusOnly(aStatusOnly),
+  theSelfContained(true)
   {
     registerHandler();
     theStreamBuffer = new zorba::curl::streambuf(theCurl);
@@ -60,19 +100,37 @@ namespace zorba { namespace http_client {
     if (lCode)
       return lCode; 
     if (!theStatusOnly) {
-      std::auto_ptr<std::istream> lStream(new std::istream(theStreamBuffer));
-      Item lItem;
-      if (theOverridenContentType != "") {
-        theCurrentContentType = theOverridenContentType;
+
+      if (!theOverridenContentType.empty()) {
+        parse_content_type(
+          theOverridenContentType, &theCurrentContentType, &theCurrentCharset
+        );
       }
+
+      std::auto_ptr<std::istream> lStream;
+      try {
+        if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+          lStream.reset(
+            new transcode::stream<std::istream>(
+              theCurrentCharset.c_str(), theStreamBuffer
+            )
+          );
+        } else
+          lStream.reset(new std::istream(theStreamBuffer));
+      }
+      catch ( std::invalid_argument const &e ) {
+        theErrorThrower.raiseException(
+          "http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
+        );
+      }
+
+      Item lItem;
       if (theCurrentContentType == "text/xml" ||
           theCurrentContentType == "application/xml" ||
           theCurrentContentType == "text/xml-external-parsed-entity" ||
           theCurrentContentType == "application/xml-external-parsed-entity" ||
           theCurrentContentType.find("+xml") == theCurrentContentType.size()-4) {
         lItem = createXmlItem(*lStream.get());
-      } else if (theCurrentContentType.find("text/html") == 0) {
-        lItem = createTextItem(lStream.release());
       } else if (theCurrentContentType.find("text/") == 0) {
         lItem = createTextItem(lStream.release());
       } else {
@@ -106,8 +164,8 @@ namespace zorba { namespace http_client {
     }
     theInsideRead = true;
     theHandler.beginResponse(theStatus, theMessage);
-    std::vector<std::pair<std::string, std::string> >::iterator lIter;
-    for (lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
+    for ( headers_type::const_iterator
+          lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
       theHandler.header(lIter->first, lIter->second);
     }
     if (!theStatusOnly)
@@ -120,23 +178,20 @@ namespace zorba { namespace http_client {
 
   void HttpResponseParser::registerHandler()
   {
-    curl_easy_setopt(theCurl, CURLOPT_HEADERFUNCTION,
-      &HttpResponseParser::headerfunction);
+    curl_easy_setopt(theCurl, CURLOPT_HEADERFUNCTION, &curl_headerfunction);
     curl_easy_setopt(theCurl, CURLOPT_HEADERDATA, this);
   }
 
-  size_t HttpResponseParser::headerfunction(void *ptr,
-                                            size_t size,
-                                            size_t nmemb,
-                                            void *stream)
+  size_t HttpResponseParser::curl_headerfunction( void *ptr, size_t size,
+                                                  size_t nmemb, void *data )
   {
     size_t lSize = size*nmemb;
     size_t lResult = lSize;
-    HttpResponseParser* lParser = static_cast<HttpResponseParser*>(stream);
+    HttpResponseParser* lParser = static_cast<HttpResponseParser*>(data);
     if (lParser->theInsideRead) {
       lParser->theHandler.endBody();
+      lParser->theInsideRead = false;
     }
-    lParser->theInsideRead = false;
     const char* lDataChar = (const char*) ptr;
     while (lSize != 0 && (lDataChar[lSize - 1] == 10
           || lDataChar[lSize - 1] == 13)) {
@@ -173,7 +228,9 @@ namespace zorba { namespace http_client {
     }
     String lNameS = fn::lower_case( lName );
     if (lNameS == "content-type") {
-      lParser->theCurrentContentType = lValue.substr(0, lValue.find(';'));
+      parse_content_type(
+        lValue, &lParser->theCurrentContentType, &lParser->theCurrentCharset
+      );
     } else if (lNameS == "content-id") {
       lParser->theId = lValue;
     } else if (lNameS == "content-description") {
@@ -184,7 +241,7 @@ namespace zorba { namespace http_client {
     return lResult;
   }
 
-  void HttpResponseParser::parseStatusAndMessage(std::string aHeader)
+  void HttpResponseParser::parseStatusAndMessage(std::string const &aHeader)
   {
     std::string::size_type lPos = aHeader.find(' ');
     assert(lPos != std::string::npos);
@@ -215,7 +272,12 @@ namespace zorba { namespace http_client {
   static void streamReleaser(std::istream* aStream)
   {
     // This istream contains our curl stream buffer, so we have to delete it too
-    delete aStream->rdbuf();
+    std::streambuf *const sbuf = aStream->rdbuf();
+    if ( transcode::streambuf *tbuf =
+          dynamic_cast<transcode::streambuf*>( sbuf ) )
+      delete tbuf->orig_streambuf();
+    else
+      delete sbuf;
     delete aStream;
   }
 
@@ -265,4 +327,7 @@ namespace zorba { namespace http_client {
       return Item(); 
     }
   }
-}}
+
+} // namespace http_client
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

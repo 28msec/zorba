@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_STORE_H
 #define ZORBA_STORE_STORE_H
 
-#include <zorba/config.h>
+#include "zorba/config.h"
 #include "zorbatypes/schema_types.h"
 
 #include "store/api/shared_types.h"
@@ -30,6 +30,8 @@ namespace zorba
 { 
 
 SYNC_CODE(class Lock;)
+
+class TokenizerProvider;
 
 
 namespace store 
@@ -97,7 +99,7 @@ public:
    * @param node XDM node
    * @return the identifier as an item of type xs:anyURI
    */
-  virtual bool getNodeReference(Item_t& result, Item* node) = 0;
+  virtual bool getNodeReference(Item_t& result, const Item* node) = 0;
 
   /**
    * Returns whether a reference has already been generated for the given node.
@@ -336,7 +338,7 @@ public:
    *
    * @param provider The TokenizerProvider to use or NULL to use the default.
    */
-  virtual void setTokenizerProvider(TokenizerProvider const *provider) = 0;
+  virtual void setTokenizerProvider(const TokenizerProvider* provider) = 0;
 
   /**
    * Gets the TokenizerProvider in use.

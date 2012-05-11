@@ -25,13 +25,12 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "store/api/item.h"
 
 namespace zorba 
 {
 
-typedef TypeIdentifier_t type_ident_ref_t;
 
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC TypeOps 
@@ -254,9 +253,10 @@ public:
    * The invariant that is guaranteed is:
    *    is_subtype(_t_, create_type(*get_type_identifier(_t_))) == true
    */
-  static type_ident_ref_t get_type_identifier(
+  static TypeIdentifier_t get_type_identifier(
         const TypeManager* tm,
-        const XQType& type);
+        const XQType& type,
+        bool nested = false);
 
   /*
    * Writes a textual representation of the given type to the output stream.

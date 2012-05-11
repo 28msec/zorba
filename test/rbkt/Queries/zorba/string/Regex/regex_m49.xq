@@ -1,0 +1,1 @@
+fn:matches("abc", "b$")

@@ -69,6 +69,9 @@
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
 
+// Platform libraries
+#cmakedefine ZORBA_HAVE_CURL
+
 #ifdef ZORBA_HAVE_STDINT_H
 # include <stdint.h>
 #endif
@@ -92,6 +95,8 @@
 #ifndef ZORBA_HAVE_INT64_T
 typedef __int64 int64_t;
 #endif /* ZORBA_HAVE_INT64_T */
+
+#cmakedefine ZORBA_SIZEOF_WCHAR_T @ZORBA_SIZEOF_WCHAR_T@
 
 // Compiler
 #cmakedefine CLANG
@@ -145,7 +150,7 @@ typedef __int64 int64_t;
 
 // Zorba features
 #cmakedefine ZORBA_NO_FULL_TEXT
-#cmakedefine ZORBA_NO_UNICODE
+#cmakedefine ZORBA_NO_ICU
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NUMERIC_OPTIMIZATION
 #cmakedefine ZORBA_VERIFY_PEER_SSL_CERTIFICATE

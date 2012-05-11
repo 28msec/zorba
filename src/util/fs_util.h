@@ -19,10 +19,12 @@
 
 #include <zorba/config.h>
 
+#include <iostream>
 #include <stdexcept>
 #ifdef WIN32
 # include <windows.h>
 #else
+# include <dirent.h>
 # include <sys/types.h>                 /* for off_t */
 #endif /* WIN32 */
 
@@ -74,6 +76,11 @@ enum type {
   volume,
   other   // named pipe, character/block special, socket, etc.
 };
+extern char const *const type_string[];
+
+inline std::ostream& operator<<( std::ostream &o, type t ) {
+  return o << type_string[ t ];
+}
 
 ////////// Windows ////////////////////////////////////////////////////////////
 
@@ -144,6 +151,90 @@ void mkdir( PathStringType const &path ) {
   mkdir( path.c_str() );
 }
 
+////////// Directory iteration ////////////////////////////////////////////////
+
+/**
+ * An fs::iterator iterates over the entries in a directory.
+ */
+class iterator {
+public:
+  /**
+   * Constructs an %itertor.
+   *
+   * @throws fs::exception if the construction failed, e.g., path not found.
+   */
+  iterator( char const *path );
+
+  /**
+   * Destroys this %iterator.
+   */
+  ~iterator();
+
+  /**
+   * Attempts to get the next directory entry.
+   *
+   * @return Returns \c true only if there is a next directory.
+   */
+  bool next();
+
+  /**
+   * Gets the name of the curent directory entry.
+   *
+   * @return Returns said name.
+   */
+  char const* entry_name() const {
+#   ifndef WIN32
+    return ent_->d_name;
+#   else
+    return ent_name_;
+#   endif /* WIN32 */
+  }
+
+  /**
+   * Gets the type of the current directory entry.
+   *
+   * @return Returns said type.
+   */
+  type entry_type() const {
+    return ent_type_;
+  }
+
+  /**
+   * Gets the directory's path.
+   *
+   * @return Returns said path.
+   */
+  char const* path() const {
+    return dir_path_.c_str();
+  }
+
+  /**
+   * Resets this iterator to the beginning.
+   */
+  void reset();
+
+private:
+  zstring dir_path_;
+  type ent_type_;
+#ifndef WIN32
+  DIR *dir_;
+  struct dirent *ent_;
+#else
+  HANDLE dir_;
+  bool dir_is_empty_;
+  WIN32_FIND_DATA ent_data_;
+  char ent_name_[ MAX_PATH ];
+  bool use_first_;
+
+  void win32_opendir( char const *path );
+  void win32_closedir();
+#endif /* WIN32 */
+
+  // forbid
+  iterator( iterator const& );
+  iterator& operator=( iterator const& );
+};
+
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
 ////////// File creation //////////////////////////////////////////////////////
@@ -154,7 +245,7 @@ void mkdir( PathStringType const &path ) {
  * Creates the given file.
  *
  * @param path The full path of the file to create.
- * *throws fs::exception if the creation failed.
+ * @throws fs::exception if the creation failed.
  */
 void create( char const *path );
 
@@ -475,6 +566,7 @@ void rename( FromStringType const &from, ToStringType const &to ) {
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
+ * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 zstring get_normalized_path( char const *path, char const *base = nullptr );
 
@@ -485,6 +577,7 @@ zstring get_normalized_path( char const *path, char const *base = nullptr );
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
+ * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
 zstring get_normalized_path( PathStringType const &path,
@@ -499,6 +592,7 @@ zstring get_normalized_path( PathStringType const &path,
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
+ * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
 void normalize_path( PathStringType &path, PathStringType const &base = "" ) {
@@ -544,7 +638,8 @@ template<class PathStringType> inline
 void make_absolute( PathStringType &path ) {
   if ( !is_absolute( path ) ) {
 #ifndef WIN32
-    path.insert( 0, 1, '/' );
+    typedef typename PathStringType::size_type size_type;
+    path.insert( static_cast<size_type>(0), static_cast<size_type>(1), '/' );
     path.insert( 0, curdir().c_str() );
 #else
     char temp[ MAX_PATH ];

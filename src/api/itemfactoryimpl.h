@@ -69,6 +69,13 @@ namespace zorba {
       virtual Item 
       createBase64Binary(const unsigned char* aBinData, size_t aLength);
 
+      virtual Item
+      createStreamableBase64Binary(
+          std::istream &stream,
+          StreamReleaser streamReleaser,
+          bool seekable = false,
+          bool encoded = false);
+
       virtual Item 
       createBoolean(bool aValue);
     
@@ -214,6 +221,14 @@ namespace zorba {
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
                         NsBindings aNsBindings);
+
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              Item aTypedValue);
+
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              std::vector<Item>& aTypedValue);
 
       virtual Item
       createAttributeNode(Item aParent,

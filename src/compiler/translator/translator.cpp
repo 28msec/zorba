@@ -68,6 +68,8 @@
 #include "functions/signature.h"
 #include "functions/udf.h"
 #include "functions/external_function.h"
+#include "functions/func_ft_module.h"
+#include "functions/func_ft_module_impl.h"
 
 #include "annotations/annotations.h"
 
@@ -83,6 +85,7 @@
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -106,7 +109,6 @@
 
 #define NODE_SORT_OPT
 
-
 namespace zorba
 {
 
@@ -117,7 +119,7 @@ static expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -559,7 +561,7 @@ protected:
 
   std::set<std::string>                  theImportedSchemas;
 
-  short                                  theCurrSctxId;
+  int                                    theCurrSctxId;
 
   static_context                       * theRootSctx;
 
@@ -567,7 +569,7 @@ protected:
 
   std::vector<static_context_t>          theSctxList;
 
-  std::stack<short>                      theSctxIdStack;
+  std::stack<int>                        theSctxIdStack;
 
   static_context                       * export_sctx;
 
@@ -644,7 +646,7 @@ public:
 TranslatorImpl(
     TranslatorImpl* rootTranslator,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -692,6 +694,10 @@ TranslatorImpl(
   xquery_fns_def_dot.set(FunctionConsts::FN_DATA_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_DOCUMENT_URI_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_NODE_NAME_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_NILLED_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_HAS_CHILDREN_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_PATH_0);
+
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
@@ -859,7 +865,7 @@ ftnode* pop_ftstack(int count = 1)
 {
   ZORBA_ASSERT(count >= 0);
 
-  ftnode *n = NULL;
+  ftnode *n = nullptr;
   while ( count-- > 0 )
   {
     ZORBA_FATAL( !theFTNodeStack.empty(), "" );
@@ -919,7 +925,7 @@ inline bool inUDFBody()
 /******************************************************************************
 
 *******************************************************************************/
-inline short sctxid()
+inline int sctxid()
 {
   return theCurrSctxId;
 }
@@ -941,7 +947,7 @@ void push_scope()
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
-    theCurrSctxId = (short)theCCB->theSctxMap.size() + 1;
+    theCurrSctxId = (int)theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
   }
   else
@@ -1757,9 +1763,9 @@ void collect_flwor_vars (
 
   // Find the ordinal number of the "end-1" clause.
   int i;
-  for (i = (int)clauses.size () - 1; i >= 0; --i)
+  for (i = (int)clauses.size() - 1; i >= 0; --i)
   {
-    if (&*clauses [i] == end)
+    if (&*clauses[i] == end)
     {
       --i;
       break;
@@ -1772,17 +1778,26 @@ void collect_flwor_vars (
   {
     const FLWORClause& c = *clauses[i];
 
-    if (typeid (c) == typeid (ForClause))
+    if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& lV = *(static_cast<const ForClause*>(&c)->get_vardecl_list());
-      for (int j =  (int)lV.size() - 1; j >= 0; --j)
+      const VarInDeclList& varDecls = 
+      *(static_cast<const ForClause*>(&c)->get_vardecl_list());
+
+      for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
+        VarInDecl* varDecl = varDecls[j].getp();
+
+        vars.insert(lookup_var(varDecl->get_name(), loc, err::XPST0008));
+
+        if (varDecl->get_posvar() != NULL)
+          vars.insert(lookup_var(varDecl->get_posvar()->get_name(), loc, err::XPST0008));
       }
     }
-    else if (typeid (c) == typeid (LetClause))
+    else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+      const VarGetsDeclList& lV = 
+      *(static_cast<const LetClause*>(&c)->get_vardecl_list());
+
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
         vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
@@ -2002,6 +2017,14 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
+  zstring xsdTNS = zstring(XML_SCHEMA_NS);
+  if ( xsdTNS.compare(targetNS)==0 )
+  {
+    // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
+    // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
+    return no_state;
+  }
+
   store::Item_t targetNSItem = NULL;
   zstring tmp = targetNS;
   ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
@@ -2172,7 +2195,7 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (v.get_encoding().length() != 0 &&
+  if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
@@ -2821,6 +2844,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // importing module that X has been imported.
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
+    // just a test, this will throw, if the access is denied
+    std::vector<zstring> candidateURIs;
+    theRootSctx->get_candidate_uris(targetNS,
+                                    internal::EntityData::MODULE,
+                                    candidateURIs);
     theRootSctx->add_imported_builtin_module(targetNS);
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they
@@ -2961,7 +2989,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       moduleRootSctx->set_entity_retrieval_uri(compURI);
       moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
-      short moduleRootSctxId = (short)theCCB->theSctxMap.size() + 1;
+      int moduleRootSctxId = (int)theCCB->theSctxMap.size() + 1;
       (theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register
@@ -3148,8 +3176,7 @@ void* begin_visit(const VFO_DeclList& v)
     {
       if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
       {
-        RAISE_ERROR(err::XPST0003, loc,
-        ERROR_PARAMS("functions and variables annotations only available in XQuery 1.1 or later"));
+        RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
       }
 
       lAnns->accept(*this);
@@ -3257,6 +3284,11 @@ void* begin_visit(const VFO_DeclList& v)
 
       if (f.getp() != 0)
       {
+        if (f->isUdf())
+        {
+          RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
+
         // We make sure that the types of the parameters and the return type
         // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
@@ -3331,7 +3363,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
     else // Process UDF (non-external) function declaration
     {
-      f = new user_function(loc, sig, NULL, scriptKind); // no body for now
+      f = new user_function(loc, sig, NULL, scriptKind, theCCB); // no body for now
     }
 
     f->setAnnotations(theAnnotations);
@@ -3486,7 +3518,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
       for (csize i = 0; i < numParams; ++i)
       {
-        const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
+        const let_clause* lc = dynamic_cast<const let_clause*>(flwor->get_clause(i));
         var_expr* argVar = dynamic_cast<var_expr*>(lc->get_expr());
         ZORBA_ASSERT(argVar != NULL);
         args.push_back(argVar);
@@ -3839,7 +3871,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  bool recognised = false;
+  //bool recognised = false;
 
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
@@ -3860,7 +3892,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
                     + ":" + lExpandedQName->getLocalName())));
     }
 
-    recognised = true;
+    //recognised = true;
   }
 
   std::vector<rchandle<const_expr> > lLiterals;
@@ -3907,7 +3939,7 @@ void* begin_visit(const CtxItemDecl& v)
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     RAISE_ERROR(err::XPST0003, loc,
-    ERROR_PARAMS(ZED(XQueryVersionAtLeast10_2), theSctx->xquery_version()));
+    ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
 
   theHaveContextItemDecl = true;
 
@@ -3927,7 +3959,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL)
   {
     type = pop_tstack();
-    theSctx->set_context_item_type(type);
+    theSctx->set_context_item_type(type, loc);
   }
   else
   {
@@ -5324,12 +5356,9 @@ void* begin_visit(const BlockBody& v)
     return NULL;
   }
 
-  if ( !theSctx->is_feature_set(feature::scripting) )
+  if (!theSctx->is_feature_set(feature::scripting))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Scripting)));
   }
 
   bool topLevel = v.isTopLevel();
@@ -5345,14 +5374,14 @@ void* begin_visit(const BlockBody& v)
 
   push_scope();
 
-  ulong numScopes = theAssignedVars.size();
+  csize numScopes = theAssignedVars.size();
 
   theAssignedVars.resize(numScopes + 1);
 
-  ulong numExprs = v.size();
+  csize numExprs = v.size();
   bool declaresVars = false;
 
-  for (ulong i = 0; i < numExprs; ++i)
+  for (csize i = 0; i < numExprs; ++i)
   {
     v[i]->accept(*this);
 
@@ -5460,12 +5489,9 @@ void* begin_visit(const AssignExpr& v)
 {
   TRACE_VISIT();
 
-  if ( !theSctx->is_feature_set(feature::scripting) )
+  if (!theSctx->is_feature_set(feature::scripting))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Scripting)));
   }
   return no_state;
 }
@@ -5763,7 +5789,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       v.is_non_10())
   {
     RAISE_ERROR(err::XPST0003, loc,
-    ERROR_PARAMS(ZED(XQueryVersionAtLeast10_2), theSctx->xquery_version()));
+    ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
   }
 
   rchandle<flwor_expr> flwor = new flwor_expr(theRootSctx, loc, v.is_general());
@@ -5868,7 +5894,7 @@ void* begin_visit(const ForClause& v)
   if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(OuterForClause11)));
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause11)));
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -6078,9 +6104,7 @@ void* begin_visit(const WindowClause& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(
-      err::XPST0003, ERROR_PARAMS( ZED( WindowClause11 ) ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause11)));
 
   return no_state;
 }
@@ -6699,9 +6723,7 @@ void* begin_visit(const CountClause& v)
   TRACE_VISIT ();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(
-      err::XPST0003, ERROR_PARAMS( ZED( CountClause11 ) ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause11)));
 
   return no_state;
 }
@@ -6765,9 +6787,7 @@ void* begin_visit(const SwitchExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    throw XQUERY_EXCEPTION(err::XPST0003,
-                           ERROR_PARAMS(ZED(SwitchExpr11)),
-                           ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr11)));
   }
 
   v.get_switch_expr()->accept(*this);
@@ -7166,9 +7186,7 @@ void* begin_visit(const TryExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    throw XQUERY_EXCEPTION(err::XPST0003,
-                           ERROR_PARAMS(ZED(TryCatchExpr11)),
-                           ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr11)));
   }
 
   theTryStack.push_back(&v);
@@ -7236,19 +7254,25 @@ void* begin_visit(const CatchExpr& v)
   GENV_ITEMFACTORY->createQName(lStackTrace, ZORBA_ERR_NS, "", "stack-trace");
 
   cc->add_var(catch_clause::err_code,
-      bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE) );
+      bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE));
+
   cc->add_var(catch_clause::err_desc,
-      bind_var(loc, lDesc.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+      bind_var(loc, lDesc.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_value,
-      bind_var(loc, lValue.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_STAR) );
+      bind_var(loc, lValue.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_STAR));
+
   cc->add_var(catch_clause::err_module,
-      bind_var(loc, lModule.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+      bind_var(loc, lModule.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_line_no,
-      bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+      bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
   cc->add_var(catch_clause::err_column_no,
-      bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+      bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
   cc->add_var(catch_clause::zerr_stack_trace,
-      bind_var(loc, lStackTrace.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION) );
+      bind_var(loc, lStackTrace.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION));
 
   tce->add_clause(cc);
 
@@ -8606,7 +8630,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   else
   {
     expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr, false);
-    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
+    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, (axisStep == NULL));
     push_nodestack(flworExpr.getp());
   }
 }
@@ -8724,7 +8748,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // the preds that follow the axis step.
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
-  const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
+  const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
   rchandle<relpath_expr> predPathExpr = new relpath_expr(theRootSctx, loc);
   predPathExpr->add_back(new wrapper_expr(theRootSctx, loc, fcOuterDot->get_var()));
   predPathExpr->add_back(axisExpr.getp());
@@ -9050,16 +9074,25 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         case ParseConstants::wild_all:
           cc->add_nametest_h(new NodeNameTest(zstring(), zstring()));
           break;
-        case ParseConstants::wild_elem: {
+        case ParseConstants::wild_elem:
+        {
           // bugfix #3138633; expand the qname and use the namespace instead of the prefix
           zstring localname(":wildcard");
-          store::Item_t qnItem;
-          theSctx->expand_qname(qnItem,
-                                theSctx->default_elem_type_ns(),
-                                wildcard->getNsOrPrefix(),
-                                localname,
-                                wildcard->get_location());
-          cc->add_nametest_h(new NodeNameTest(qnItem->getNamespace(), zstring()));
+
+          if (wildcard->isEQnameMatch())
+          {
+            cc->add_nametest_h(new NodeNameTest(wildcard->getNsOrPrefix(), zstring()));
+          }
+          else
+          {
+            store::Item_t qnItem;
+            theSctx->expand_qname(qnItem,
+                                  theSctx->default_elem_type_ns(),
+                                  wildcard->getNsOrPrefix(),
+                                  localname,
+                                  wildcard->get_location());
+            cc->add_nametest_h(new NodeNameTest(qnItem->getNamespace(), zstring()));
+          }
           break;
         }
         case ParseConstants::wild_prefix:
@@ -9376,6 +9409,48 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
   push_nodestack(new const_expr(theRootSctx, loc,v.get_strval().str()));
 }
 
+/*******************************************************************************
+   StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+*******************************************************************************/
+void* begin_visit(const StringConcatExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const StringConcatExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+  std::vector<expr_t> concat_args;
+  expr_t right = pop_nodestack();
+  expr_t left  = pop_nodestack();
+  concat_args.push_back(left);
+ 
+  //If the right leaf is the concat expr,
+  //we add directly its leafs to the new concat expr.
+  bool rightLeafIsConcatExpr = false;
+  if(right->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right.getp());
+    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N))
+    {
+      rightLeafIsConcatExpr = true;
+      csize i = 0;
+      for(i = 0; i < lFoExpr->num_args(); ++i)
+      {
+        concat_args.push_back(lFoExpr->get_arg(i));
+      }
+    }
+  }
+  
+  if(!rightLeafIsConcatExpr)
+  {
+    concat_args.push_back(right);
+  }
+
+  rchandle<expr> concat = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
+  push_nodestack(concat);
+}
 
 /*******************************************************************************
   VarRef ::= "$" VarName
@@ -9709,8 +9784,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer::one()));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer::one()));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -9719,7 +9794,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(2)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(2)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -9846,7 +9921,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
 
-        const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
+        const for_clause* fc = static_cast<const for_clause*>(flworExpr->get_clause(0));
         expr* flworVarExpr = fc->get_var();
 
         fo_expr_t normExpr;
@@ -10337,11 +10412,8 @@ void* begin_visit(const DynamicFunctionInvocation& v)
   TRACE_VISIT();
   if ( !theSctx->is_feature_set(feature::hof) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "higher-order functions (hof)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("higher-order functions (hof)" ));
   }
   return no_state;
 }
@@ -10424,7 +10496,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     user_function* udf = new user_function(loc,
                                            fn->getSignature(),
                                            NULL, // no body for now
-                                           fn->getScriptingKind());
+                                           fn->getScriptingKind(),
+                                           theCCB);
 
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
@@ -10587,7 +10660,7 @@ void end_visit(const InlineFunction& v, void* aState)
     // body, because optimization may remove clauses from the flwor expr
     for (ulong i = 0; i < flwor->num_clauses(); ++i)
     {
-      const flwor_clause* lClause = (*flwor)[i];
+      const flwor_clause* lClause = flwor->get_clause(i);
       const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
       ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
       var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
@@ -10632,7 +10705,8 @@ void end_visit(const InlineFunction& v, void* aState)
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        body->get_scripting_detail()));
+                                        body->get_scripting_detail(),
+                                        theCCB));
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
@@ -11365,7 +11439,7 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
   utf8::to_upper(target_str, &target_upper);
 
   if (target_upper == "XML")
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_PiTarget)));
 
   expr_t target = new const_expr(theRootSctx, loc, target_str);
   expr_t content = new const_expr(theRootSctx, loc, v.get_pi_content().str());
@@ -11688,7 +11762,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);  
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
@@ -11934,11 +12008,8 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
+  ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
@@ -12437,7 +12508,8 @@ void end_visit(const VarBinding& v, void*)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-template<typename FTNodeType> bool flatten( ftnode *n ) {
+template<typename FTNodeType> bool flatten( ftnode *n ) 
+{
   if ( FTNodeType *const n2 = dynamic_cast<FTNodeType*>( n ) ) {
     typename FTNodeType::ftnode_list_t &list = n2->get_node_list();
     typename FTNodeType::ftnode_list_t::iterator i = list.begin();
@@ -12452,15 +12524,17 @@ template<typename FTNodeType> bool flatten( ftnode *n ) {
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
-void *begin_visit (const FTAnd& v) {
+void *begin_visit (const FTAnd& v) 
+{
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
-void end_visit (const FTAnd& v, void* /*visit_state*/) {
+void end_visit (const FTAnd& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   ftand::ftnode_list_t list;
@@ -12480,35 +12554,46 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTAnyallOption& v) {
+
+void *begin_visit (const FTAnyallOption& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTAnyallOption& v, void* /*visit_state*/) {
+
+void end_visit (const FTAnyallOption& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
-void *begin_visit (const FTBigUnit& v) {
+
+void *begin_visit (const FTBigUnit& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTBigUnit& v, void* /*visit_state*/) {
+
+void end_visit (const FTBigUnit& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
-void *begin_visit (const FTCaseOption& v) {
+void *begin_visit (const FTCaseOption& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
 }
 
-void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
+
+void end_visit (const FTCaseOption& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
@@ -12521,7 +12606,9 @@ void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTContainsExpr& v) {
+
+void *begin_visit (const FTContainsExpr& v) 
+{
   TRACE_VISIT ();
 #ifdef ZORBA_NO_FULL_TEXT
   throw XQUERY_EXCEPTION(
@@ -12531,7 +12618,8 @@ void *begin_visit (const FTContainsExpr& v) {
   return no_state;
 }
 
-void end_visit (const FTContainsExpr& v, void* /*visit_state*/) {
+void end_visit (const FTContainsExpr& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   expr_t ftignore = NULL;
@@ -12684,7 +12772,7 @@ void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
 void *begin_visit (const FTMildNot& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -12727,7 +12815,7 @@ void end_visit (const FTOptionDecl& v, void* /*visit_state*/) {
 void *begin_visit (const FTOr& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -12986,7 +13074,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     levels = dynamic_cast<ftrange*>( pop_ftstack() );
     ZORBA_ASSERT( levels );
   } else
-    levels = NULL;
+    levels = nullptr;
 
   ftthesaurus_id *const tid = new ftthesaurus_id(
     loc, v.get_uri(), v.get_relationship(), levels
@@ -12998,7 +13086,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 void *begin_visit (const FTThesaurusOption& v) {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  push_ftstack( NULL ); // sentinel
+  push_ftstack( nullptr ); // sentinel
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -13006,10 +13094,8 @@ void *begin_visit (const FTThesaurusOption& v) {
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftthesaurus_id *default_tid = NULL;
-  if ( v.includes_default() ) {
-    default_tid = new ftthesaurus_id( loc, "##default" );
-  }
+  ftthesaurus_id *const default_tid = v.includes_default() ?
+    new ftthesaurus_id( loc, "##default" ) : nullptr;
 
   ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {
@@ -13241,7 +13327,7 @@ expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    short rootSctxId,
+    int rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -13276,17 +13362,15 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   std::map<zstring, zstring> modulesStack;
 
   if (typeid(root) != typeid(MainModule))
-    throw XQUERY_EXCEPTION(
-      err::XPST0003, ERROR_PARAMS( ZED( ModuleDeclNotInMain ) ),
-      ERROR_LOC( root.get_location() )
-    );
+    RAISE_ERROR(err::XPST0003, root.get_location(),
+    ERROR_PARAMS(ZED(ModuleDeclNotInMain)));
 
   ModulesInfo minfo(ccb);
 
   return translate_aux(NULL,
                        root,
                        ccb->theRootSctx,
-                       (short)ccb->theSctxMap.size(),
+                       (int)ccb->theSctxMap.size(),
                        &minfo,
                        modulesStack,
                        false);

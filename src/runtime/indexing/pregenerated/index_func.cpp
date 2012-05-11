@@ -34,15 +34,9 @@
 namespace zorba {
 
 // <IndexKeysIterator>
-const char* IndexKeysIterator::class_name_str = "IndexKeysIterator";
 IndexKeysIterator::class_factory<IndexKeysIterator>
 IndexKeysIterator::g_class_factory;
 
-const serialization::ClassVersion 
-IndexKeysIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IndexKeysIterator::class_versions_count =
-sizeof(IndexKeysIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void IndexKeysIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

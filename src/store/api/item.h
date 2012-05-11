@@ -26,7 +26,7 @@
 #include "zorbatypes/rclock.h"
 #include "zorbatypes/schema_types.h"
 
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "store/api/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -51,7 +51,7 @@ typedef StoreConsts::NodeKind NodeKind;
  */
 class ZORBA_DLL_PUBLIC Item
 {
-protected:
+public:
   enum ItemKind
   {
     NODE       = 0x10,
@@ -62,6 +62,7 @@ protected:
     ERROR_     = 0x201
   };
 
+protected:
   typedef union 
   {
     long    * treeRCPtr;
@@ -102,6 +103,11 @@ public:
 
 
   /* -------------------   General Methods for Items ------------------------- */
+
+  /**
+   * @return the kind of the item
+   */
+  ItemKind getKind() const;
 
   /**
    *  @return  "true" if the item is a node
@@ -195,7 +201,7 @@ public:
    *
    *  @return  result of Effective Boolean Value
    */
-  virtual Item_t 
+  virtual bool 
   getEBV() const;
 
   /**
@@ -268,7 +274,14 @@ public:
 
   /** Accessor for xs:base64Binary
    */
-  virtual xs_base64Binary getBase64BinaryValue() const;
+  virtual const char* getBase64BinaryValue(size_t& size) const;
+
+  /**
+   * Checks whether a base64 item's content is already encoded
+   *
+   * @return true only if it is.
+   */
+  virtual bool isEncoded() const;
 
   /** Accessor for xs:boolean
    */
@@ -298,7 +311,7 @@ public:
 
   /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
    */
-  virtual xs_uinteger
+  virtual xs_nonNegativeInteger
   getUnsignedIntegerValue() const;
 
   /** Accessor for xs:long

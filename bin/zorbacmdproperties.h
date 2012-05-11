@@ -92,6 +92,9 @@ public:
   void
   getLibPath(std::string&) const;
 
+  void
+  getJVMClassPath(std::string&) const;
+
   bool isDebug(){ return theDebug; }
 
   bool hasNoLogo(){ return theNoLogo; }

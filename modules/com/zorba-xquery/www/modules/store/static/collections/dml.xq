@@ -42,7 +42,7 @@ xquery version "3.0";
  :)
 module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -195,7 +195,7 @@ declare updating function cdml:insert-nodes-after(
  : @see cdml:insert-nodes
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes(
+declare %an:sequential function cdml:apply-insert-nodes(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -221,7 +221,7 @@ declare %ann:sequential function cdml:apply-insert-nodes(
  : @see cdml:insert-nodes-first
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-first(
+declare %an:sequential function cdml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -246,7 +246,7 @@ declare %ann:sequential function cdml:apply-insert-nodes-first(
  : @see cdml:insert-nodes-last
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-last(
+declare %an:sequential function cdml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -275,7 +275,7 @@ declare %ann:sequential function cdml:apply-insert-nodes-last(
  : @see cdml:insert-nodes-before
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-before(
+declare %an:sequential function cdml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()*  external;
@@ -305,7 +305,7 @@ declare %ann:sequential function cdml:apply-insert-nodes-before(
  : @see cdml:insert-nodes-after
  :
  :)
-declare %ann:sequential function cdml:apply-insert-nodes-after(
+declare %an:sequential function cdml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()*  external;
@@ -407,6 +407,21 @@ declare updating function cdml:delete-node-last($name as xs:QName)  external;
 declare updating function cdml:delete-nodes-last(
   $name as xs:QName,
   $number as xs:integer)  external;
+
+(:~
+ : The truncate function is an updating function that deletes the
+ : entire contents of collection.
+ :
+ : @param $name The name of the collection whose content to delete
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the nodes.
+ :
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ :)
+declare updating function cdml:truncate($name as xs:QName) external;
 
 (:~
  : The index-of function that returns the position of the node in its collection.

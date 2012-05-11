@@ -32,21 +32,22 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/collection.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/item_iterator.h"
-#include "store/naive/node_items.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/ordpath.h"
+#include "qname_pool.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
+#include "store_defs.h"
+#include "item_iterator.h"
+#include "node_items.h"
+#include "atomic_items.h"
+#include "ordpath.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
 #define CREATE_XS_TYPE(aType) \
-  GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
+  GET_STORE().getItemFactory()->createQName(Store::XS_URI, "xs", aType);
 
 #define CREATE_BOOLITEM(item, aValue) \
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
@@ -58,16 +59,6 @@ using namespace zorba::locale;
 
 namespace zorba {
 namespace simplestore {
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t AtomicItem::getAtomizationValue() const
-{
-  store::Item* lItem = const_cast<AtomicItem *>(this);
-  return lItem;
-}
 
 
 /*******************************************************************************
@@ -147,7 +138,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
     {
-      longValue = to_xs_long(item->theValue);
+      longValue = item->getLongValue();
       GET_FACTORY().createLong(result, longValue);
     }
     catch (std::range_error const&)
@@ -217,11 +208,11 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
 
-    doubleValue = item->theValue;
+    doubleValue = item->getIntegerValue();
 
     const xs_integer intValue(doubleValue);
 
-    lossy = (intValue != item->theValue);
+    lossy = (intValue != item->getIntegerValue());
     break;
   }
 
@@ -589,12 +580,9 @@ long UntypedAtomicItem::compare(
 }
 
 
-store::Item_t UntypedAtomicItem::getEBV() const
+bool UntypedAtomicItem::getEBV() const
 {
-  bool b = ! ( theValue == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! ( theValue == "" );
 }
 
 
@@ -610,31 +598,69 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-
-QNameItem::~QNameItem()
+QNameItem::QNameItem(
+    const char* aNamespace,
+    const char* aPrefix,
+    const char* aLocalName)
+  :
+  theNormalizedQName(NULL),
+  theIsInPool(false)
 {
-  if (isValid())
-  {
-    assert(theLocal.empty() || theNormQName == NULL);
-  }
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+QNameItem::QNameItem(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+  :
+  theNormalizedQName(NULL),
+  theIsInPool(false)
+{
+  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+}
+
+
+void QNameItem::initializeAsQNameNotInPool(
+    const zstring& aNamespace,
+    const zstring& aPrefix,
+    const zstring& aLocalName)
+{
+  assert(!isValid());
+
+  store::Item_t lPoolQName =
+      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+
+  QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
+  assert(lNormalized->isNormalized());
+
+  initializeAsUnnormalizedQName(lNormalized, aPrefix);
+
+  theIsInPool = false;
 }
 
 
 void QNameItem::free()
 {
-  GET_STORE().getQNamePool().remove(this);
-}
+  QNamePool& thePool = GET_STORE().getQNamePool();
 
+  if (theIsInPool)
+  {
+    thePool.remove(this);
+    return;
+  }
+  
+  assert(!isNormalized());
 
-QNameItem* QNameItem::getNormalized() const
-{
-  return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
+  invalidate(false, NULL);
+  delete this;
 }
 
 
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  const void* tmp = getNormalized();
+  const void* tmp = theNormalizedQName;
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
 }
 
@@ -645,7 +671,7 @@ store::Item* QNameItem::getType() const
 }
 
 
-store::Item_t QNameItem::getEBV() const
+bool QNameItem::getEBV() const
 {
   throw XQUERY_EXCEPTION(err::FORG0006,
   ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "QName"));
@@ -657,7 +683,8 @@ bool QNameItem::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
+  return theNormalizedQName ==
+      static_cast<const QNameItem*>(item)->theNormalizedQName;
 }
 
 
@@ -711,7 +738,7 @@ bool QNameItem::isIdQName() const
   if (ZSTREQ(getLocalName(), "id"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(theNamespace, SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(theNamespace, Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
@@ -724,7 +751,7 @@ bool QNameItem::isBaseUri() const
   if (ZSTREQ(getLocalName(), "base"))
   {
     if (ZSTREQ(getPrefix(), "xml") ||
-        ztd::equals(getNamespace(), SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+        ztd::equals(getNamespace(), Store::XML_URI, Store::XML_URI_LEN))
       return true;
   }
 
@@ -744,14 +771,14 @@ zstring QNameItem::show() const
   return res;
 }
 
-
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
-NotationItem::NotationItem(const zstring& nameSpace,
-                           const zstring& prefix,
-                           const zstring& localName)
+NotationItem::NotationItem(
+    const zstring& nameSpace,
+    const zstring& prefix,
+    const zstring& localName)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -765,12 +792,13 @@ NotationItem::NotationItem(store::Item* qname)
 }
 
 
-bool NotationItem::equals(const store::Item* item,
-                          long timezone,
-                          const XQPCollator* aCollation) const
+bool NotationItem::equals(
+    const store::Item* item,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
-  return (theQName->getNormalized() == 
-          static_cast<const NotationItem*>(item)->theQName->getNormalized());
+  return theQName->equals(
+      static_cast<const NotationItem*>(item)->theQName);
 }
 
 
@@ -827,12 +855,9 @@ uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t AnyUriItem::getEBV() const
+bool AnyUriItem::getEBV() const
 {
-  bool b = ! (theValue == "");
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! (theValue == "");
 }
 
 
@@ -1059,7 +1084,7 @@ bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 StructuralAnyUriItem::StructuralAnyUriItem(
     zstring& encoded,
     ulong collectionId,
-    ulong treeId, 
+    const TreeId& treeId, 
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
   :
@@ -1076,68 +1101,71 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 {
   theValue.take(value);
 
+  std::istringstream input(theValue.str());
+
   ulong prefixlen = (ulong)strlen("zorba:");
 
-  if (strncmp(theValue.c_str(), "zorba:", prefixlen))
+  input.width(prefixlen);
+
+  std::string prefix;
+  input >> prefix;
+
+  if (!input.good())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  const char* start;
-
-  errno = 0;
-
-  //
-  // Decode collection id
-  //
-  start = theValue.c_str() + prefixlen;
-
-  char* next = const_cast<char*>(start);
-
-  theCollectionId = strtoul(start, &next, 10);
-
-  if (errno != 0 || start == next)
+  if (prefix != "zorba:")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  start = next;
+  input >> theCollectionId;
 
-  if (*start != '.')
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  char period;
+  input >> period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    
+
+  input >> theTreeId;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  
+  input >> period;
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (period != '.')
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  ++start;
-
-  //
-  // Decode tree id
-  //
-  theTreeId = strtoul(start, &next, 10);
-
-  if (errno != 0 || start == next)
+  int lNodeKind;
+  input >> lNodeKind;
+  theNodeKind = static_cast<store::StoreConsts::NodeKind>(lNodeKind);
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (lNodeKind <= 0 || lNodeKind > 6)
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  start = next;
-
-  if (*start != '.')
+  input >> period;
+  if (period != '.')
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+  if (!input.good())
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
+    
+  input >> prefix;
+  if (!input.eof())
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
-  ++start;
-
-  //
-  // Parse the node kind
-  //
-  if (*start > '0' && *start <='6')
-    theNodeKind = static_cast<store::StoreConsts::NodeKind>(*start-'0');
-  else
+  try 
+  {
+    theOrdPath.deserialize(prefix);
+  }
+  catch(...) 
+  {
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
-
-  ++start;
-
-  //
-  // Decode OrdPath
-  //
-  theOrdPath = OrdPath((unsigned char*)start, (ulong)strlen(start));
+  }
+  // = OrdPath(reinterpret_cast<const unsigned char*>(prefix.c_str()), prefix.size());
 }
 
 
@@ -1407,8 +1435,11 @@ bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOthe
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return
     (theCollectionId > other->theCollectionId ||
-    (theCollectionId == other->theCollectionId && theTreeId > other->theTreeId) ||
-    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath > other->theOrdPath));
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId < theTreeId) ||
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId == theTreeId &&
+        theOrdPath > other->theOrdPath));
   }
 }
 
@@ -1429,8 +1460,11 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return
     (theCollectionId < other->theCollectionId ||
-    (theCollectionId == other->theCollectionId && theTreeId < other->theTreeId) ||
-    (theCollectionId == other->theCollectionId && other->theTreeId == theTreeId && theOrdPath < other->theOrdPath));
+    (theCollectionId == other->theCollectionId &&
+        theTreeId < other->theTreeId) ||
+    (theCollectionId == other->theCollectionId &&
+        other->theTreeId == theTreeId &&
+        theOrdPath < other->theOrdPath));
   }
 }
 
@@ -1438,7 +1472,7 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
 store::Item_t StructuralAnyUriItem::getLevel() const
 {
   store::Item_t lResult;
-  GET_FACTORY().createInteger(lResult, theOrdPath.getLevel());
+  GET_FACTORY().createInteger(lResult, xs_integer(theOrdPath.getLevel()));
   return lResult;
 }
 
@@ -1528,7 +1562,7 @@ bool StructuralAnyUriItem::inSameTree(const store::Item_t& aOther) const
   {
     StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
     return (theCollectionId == other->theCollectionId &&
-            theTreeId == other->theTreeId);
+            other->theTreeId == theTreeId);
   }
 }
 
@@ -1600,12 +1634,9 @@ long StringItem::compare(
 }
 
 
-store::Item_t StringItem::getEBV() const
+bool StringItem::getEBV() const
 {
-  bool b = ! ( theValue == "" );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ! ( theValue == "" );
 }
 
 
@@ -1626,10 +1657,13 @@ FTTokenIterator_t StringItem::getTokens(
 {
   typedef NaiveFTTokenIterator::container_type tokens_t;
   unique_ptr<tokens_t> tokens( new tokens_t );
+  AtomicItemTokenizerCallback callback( *tokens );
 
-  Tokenizer::ptr t( provider.getTokenizer( lang, numbers ) );
-  AtomicItemTokenizerCallback cb( *t, lang, *tokens );
-  cb.tokenize( theValue.data(), theValue.size(), wildcards );
+  Tokenizer::ptr tokenizer;
+  if ( provider.getTokenizer( lang, &numbers, &tokenizer ) )
+    tokenizer->tokenize_string(
+      theValue.data(), theValue.size(), lang, wildcards, callback
+    );
 
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
 }
@@ -1639,6 +1673,36 @@ FTTokenIterator_t StringItem::getTokens(
 /*******************************************************************************
   class StreamableStringItem
 ********************************************************************************/
+StreamableStringItem::StreamableStringItem(
+    std::istream& aStream,
+    StreamReleaser streamReleaser,
+    bool seekable) :
+  theIstream(aStream),
+  theIsMaterialized(false),
+  theIsConsumed(false),
+  theIsSeekable(seekable),
+  theStreamReleaser(streamReleaser),
+  theStreamableDependent(nullptr)
+{
+}
+
+StreamableStringItem::StreamableStringItem(
+    store::Item_t& aStreamableDependent) :
+  theIstream(aStreamableDependent->getStream()),
+  theIsMaterialized(false),
+  theIsConsumed(false),
+  theIsSeekable(aStreamableDependent->isSeekable()),
+  theStreamReleaser(nullptr),
+  theStreamableDependent(aStreamableDependent)
+{
+  ZORBA_ASSERT(theStreamableDependent->isStreamable());
+
+  // We copied the dependent item's stream and seekable flag in the initializer
+  // above, but did NOT copy the StreamReleaser. The dependent item maintains
+  // memory ownership of the stream in this way.
+}
+
+
 void StreamableStringItem::appendStringValue(zstring& aBuf) const
 {
   if (!theIsMaterialized) 
@@ -1675,7 +1739,7 @@ bool StreamableStringItem::equals(
 }
 
 
-store::Item_t StreamableStringItem::getEBV() const
+bool StreamableStringItem::getEBV() const
 {
   if (!theIsMaterialized) 
   {
@@ -1768,6 +1832,7 @@ std::istream& StreamableStringItem::getStream()
     std::streambuf * pbuf;
     pbuf = theIstream.rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
+    theIstream.clear();
   }
   theIsConsumed = true;
   return theIstream;
@@ -2062,77 +2127,43 @@ uint32_t DateTimeItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t DateTimeItem::getEBV() const
+bool DateTimeItem::getEBV() const
 {
   switch (theValue.getFacet())
   {
     case DateTime::DATE_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Date"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:Date"));
 
     case DateTime::TIME_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Time"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:Time"));
 
     case DateTime::GYEARMONTH_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-          "xs:GYearMonth"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GYearMonth"));
 
     case DateTime::GYEAR_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GYear"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GYear"));
 
     case DateTime::GMONTH_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GMonth"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GMonth"));
 
     case DateTime::GMONTHDAY_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
-          "xs:GMonthDay"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GMonthDay"));
 
     case DateTime::GDAY_FACET:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GDay"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "xs:GDay"));
 
     default:
-      throw XQUERY_EXCEPTION(
-        err::FORG0006,
-        ERROR_PARAMS(
-          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "dateTime"
-        )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0006,
+      ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "dateTime"));
   }
-  return NULL;
+  return false;
 }
 
 
@@ -2204,7 +2235,7 @@ store::Item* DurationItem::getType() const
 }
 
 
-store::Item_t DurationItem::getEBV() const
+bool DurationItem::getEBV() const
 {
   RAISE_ERROR_NO_LOC(err::FORG0006,
   ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "duration"));
@@ -2227,20 +2258,16 @@ store::Item* DoubleItem::getType() const
 }
 
 
-store::Item_t DoubleItem::getEBV() const
+bool DoubleItem::getEBV() const
 {
-  bool b;
   if (theValue.isNaN())
   {
-    b = false;
+    return false;
   }
   else
   {
-    b = !theValue.isZero();
+    return !theValue.isZero();
   }
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
 }
 
 
@@ -2299,20 +2326,16 @@ store::Item* FloatItem::getType() const
 }
 
 
-store::Item_t FloatItem::getEBV() const
+bool FloatItem::getEBV() const
 {
-  bool b;
   if (theValue.isNaN()) 
   {
-    b = false;
+    return false;
   }
   else
   {
-    b = !theValue.isZero();
+    return !theValue.isZero();
   }
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
 }
 
 
@@ -2371,13 +2394,11 @@ store::Item* DecimalItem::getType() const
 }
 
 
-store::Item_t DecimalItem::getEBV() const
+bool DecimalItem::getEBV() const
 {
-  bool b = ( theValue != xs_decimal::zero() );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ( theValue != xs_decimal::zero() );
 }
+
 
 zstring DecimalItem::getStringValue() const
 {
@@ -2413,10 +2434,11 @@ zstring DecimalItem::show() const
 
 
 /*******************************************************************************
-  class IntegerItem
+  class IntegerItemImpl
 ********************************************************************************/
 
-long IntegerItem::compare( Item const *other, long, const XQPCollator* ) const {
+long IntegerItemImpl::compare( Item const *other, long,
+                               const XQPCollator* ) const {
   try
   {
     return theValue.compare( other->getIntegerValue() );
@@ -2427,8 +2449,8 @@ long IntegerItem::compare( Item const *other, long, const XQPCollator* ) const {
   }
 }
 
-bool IntegerItem::equals( const store::Item* other, long,
-                          const XQPCollator*) const
+bool IntegerItemImpl::equals( const store::Item* other, long,
+                              const XQPCollator*) const
 {
   try
   {
@@ -2440,13 +2462,13 @@ bool IntegerItem::equals( const store::Item* other, long,
   }
 }
 
-xs_decimal IntegerItem::getDecimalValue() const
+xs_decimal IntegerItemImpl::getDecimalValue() const
 {
   return xs_decimal(theValue);
 }
 
 
-xs_long IntegerItem::getLongValue() const
+xs_long IntegerItemImpl::getLongValue() const
 {
   try
   {
@@ -2460,44 +2482,56 @@ xs_long IntegerItem::getLongValue() const
 }
 
 
-store::Item* IntegerItem::getType() const
+xs_unsignedInt IntegerItemImpl::getUnsignedIntValue() const
+{
+  try 
+  {
+    return to_xs_unsignedInt(theValue);
+  }
+  catch ( std::range_error const& ) 
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "unsignedInt"));
+  }
+}
+
+
+store::Item* IntegerItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_INTEGER];
 }
 
 
-store::Item_t IntegerItem::getEBV() const
+bool IntegerItemImpl::getEBV() const
 {
-  bool b = ( theValue != xs_integer::zero() );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return !!theValue.sign();
 }
 
 
-zstring IntegerItem::getStringValue() const
+zstring IntegerItemImpl::getStringValue() const
 {
   return theValue.toString();
 }
 
 
-void IntegerItem::getStringValue2(zstring& val) const
+void IntegerItemImpl::getStringValue2(zstring& val) const
 {
   val = theValue.toString();
 }
 
-uint32_t IntegerItem::hash(long, const XQPCollator*) const
+uint32_t IntegerItemImpl::hash(long, const XQPCollator*) const
 {
   return theValue.hash();
 }
 
-void IntegerItem::appendStringValue(zstring& buf) const
+
+void IntegerItemImpl::appendStringValue(zstring& buf) const
 {
   buf += theValue.toString();
 }
 
 
-zstring IntegerItem::show() const
+zstring IntegerItemImpl::show() const
 {
   zstring res("xs:integer(");
   appendStringValue(res);
@@ -2509,9 +2543,86 @@ zstring IntegerItem::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
+long NonPositiveIntegerItem::compare( Item const *other, long,
+                                      const XQPCollator* ) const {
+  try
+  {
+    return theValue.compare( other->getIntegerValue() );
+  }
+  catch ( ZorbaException const& )
+  {
+    return getDecimalValue().compare( other->getDecimalValue() );
+  }
+}
+
+bool NonPositiveIntegerItem::equals( const store::Item* other, long,
+                                     const XQPCollator* ) const
+{
+  try
+  {
+    return theValue == other->getIntegerValue();
+  }
+  catch (ZorbaException const&)
+  {
+    return getDecimalValue() == other->getDecimalValue();
+  }
+}
+
 store::Item* NonPositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER];
+}
+
+xs_decimal NonPositiveIntegerItem::getDecimalValue() const
+{
+  return xs_decimal(theValue);
+}
+
+xs_integer NonPositiveIntegerItem::getIntegerValue() const
+{
+  return xs_integer(theValue);
+}
+
+xs_long NonPositiveIntegerItem::getLongValue() const
+{
+  try
+  {
+    return to_xs_long(theValue);
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FORG0001,
+      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
+    );
+  }
+}
+
+zstring NonPositiveIntegerItem::getStringValue() const
+{
+  return theValue.toString();
+}
+
+
+void NonPositiveIntegerItem::getStringValue2(zstring& val) const
+{
+  val = theValue.toString();
+}
+
+uint32_t NonPositiveIntegerItem::hash(long, const XQPCollator*) const
+{
+  return theValue.hash();
+}
+
+
+void NonPositiveIntegerItem::appendStringValue(zstring& buf) const
+{
+  buf += theValue.toString();
+}
+
+bool NonPositiveIntegerItem::getEBV() const
+{
+  return !!theValue.sign();
 }
 
 zstring NonPositiveIntegerItem::show() const
@@ -2542,13 +2653,90 @@ zstring NegativeIntegerItem::show() const
 
 
 /*******************************************************************************
-  class NonNegativeINtegerItem
+  class NonNegativeIntegerItem
 ********************************************************************************/
+long NonNegativeIntegerItem::compare( Item const *other, long,
+                                      const XQPCollator* ) const {
+  try
+  {
+    return theValue.compare( other->getUnsignedIntegerValue() );
+  }
+  catch ( ZorbaException const& )
+  {
+    return getDecimalValue().compare( other->getDecimalValue() );
+  }
+}
+
+bool NonNegativeIntegerItem::equals( const store::Item* other, long,
+                                     const XQPCollator* ) const
+{
+  try
+  {
+    return theValue == other->getUnsignedIntegerValue();
+  }
+  catch (ZorbaException const&)
+  {
+    return getDecimalValue() == other->getDecimalValue();
+  }
+}
+
 store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER];
 }
 
+
+xs_decimal NonNegativeIntegerItem::getDecimalValue() const
+{
+  return xs_decimal(theValue);
+}
+
+xs_integer NonNegativeIntegerItem::getIntegerValue() const
+{
+  return xs_integer(theValue);
+}
+
+xs_long NonNegativeIntegerItem::getLongValue() const
+{
+  try
+  {
+    return to_xs_long(theValue);
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FORG0001,
+      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
+    );
+  }
+}
+
+zstring NonNegativeIntegerItem::getStringValue() const
+{
+  return theValue.toString();
+}
+
+
+void NonNegativeIntegerItem::getStringValue2(zstring& val) const
+{
+  val = theValue.toString();
+}
+
+uint32_t NonNegativeIntegerItem::hash(long, const XQPCollator*) const
+{
+  return theValue.hash();
+}
+
+
+void NonNegativeIntegerItem::appendStringValue(zstring& buf) const
+{
+  buf += theValue.toString();
+}
+
+bool NonNegativeIntegerItem::getEBV() const
+{
+  return !!theValue.sign();
+}
 
 zstring NonNegativeIntegerItem::show() const
 {
@@ -2591,6 +2779,9 @@ xs_integer LongItem::getIntegerValue() const
   return xs_integer(theValue);
 }
 
+xs_nonNegativeInteger LongItem::getUnsignedIntegerValue() const {
+  return xs_nonNegativeInteger( theValue >= 0 ? theValue : -theValue );
+}
 
 store::Item* LongItem::getType() const
 {
@@ -2598,12 +2789,9 @@ store::Item* LongItem::getType() const
 }
 
 
-store::Item_t LongItem::getEBV() const
+bool LongItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2659,13 +2847,11 @@ store::Item* IntItem::getType() const
 }
 
 
-store::Item_t IntItem::getEBV() const
+bool IntItem::getEBV() const
 {
-  bool b = ( theValue != (int32_t)0 );
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return ( theValue != (int32_t)0 );
 }
+
 
 zstring IntItem::getStringValue() const
 {
@@ -2719,12 +2905,9 @@ store::Item* ShortItem::getType() const
 }
 
 
-store::Item_t ShortItem::getEBV() const
+bool ShortItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2780,12 +2963,9 @@ store::Item* ByteItem::getType() const
 }
 
 
-store::Item_t ByteItem::getEBV() const
+bool ByteItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2835,9 +3015,9 @@ xs_integer UnsignedLongItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedLongItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedLongItem::getUnsignedIntegerValue() const
 {
-  return xs_uinteger(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2847,12 +3027,9 @@ store::Item* UnsignedLongItem::getType() const
 }
 
 
-store::Item_t UnsignedLongItem::getEBV() const
+bool UnsignedLongItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2902,9 +3079,9 @@ xs_integer UnsignedIntItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedIntItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedIntItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2914,12 +3091,9 @@ store::Item* UnsignedIntItem::getType() const
 }
 
 
-store::Item_t UnsignedIntItem::getEBV() const
+bool UnsignedIntItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -2969,9 +3143,9 @@ xs_integer UnsignedShortItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedShortItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedShortItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2981,12 +3155,9 @@ store::Item* UnsignedShortItem::getType() const
 }
 
 
-store::Item_t UnsignedShortItem::getEBV() const
+bool UnsignedShortItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3032,13 +3203,13 @@ xs_decimal UnsignedByteItem::getDecimalValue() const
 
 xs_integer UnsignedByteItem::getIntegerValue() const
 {
-  return Integer((uint32_t)theValue);
+  return xs_integer((uint32_t)theValue);
 }
 
 
-xs_uinteger UnsignedByteItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedByteItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -3048,12 +3219,9 @@ store::Item* UnsignedByteItem::getType() const
 }
 
 
-store::Item_t UnsignedByteItem::getEBV() const
+bool UnsignedByteItem::getEBV() const
 {
-  bool b = (theValue != 0);
-  store::Item_t bVal;
-  CREATE_BOOLITEM(bVal, b);
-  return bVal;
+  return (theValue != 0);
 }
 
 
@@ -3103,9 +3271,9 @@ uint32_t BooleanItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
-store::Item_t BooleanItem::getEBV() const
+bool BooleanItem::getEBV() const
 {
-  return this->getAtomizationValue();
+  return theValue;
 }
 
 
@@ -3148,6 +3316,45 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
+bool
+Base64BinaryItem::equals(
+      const store::Item* other,
+      long timezone,
+      const XQPCollator* aCollation) const
+{
+  if (isEncoded() == other->isEncoded())
+  {
+    size_t this_size, other_size;
+    const char* this_data = getBase64BinaryValue(this_size);
+    const char* other_data = other->getBase64BinaryValue(other_size);
+    return this_size == other_size &&
+      memcmp(this_data, other_data, this_size) == 0;
+  }
+  else
+  {
+    return getStringValue().compare(other->getStringValue()) == 0;
+  }
+}
+
+
+uint32_t
+Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+{
+  // always need to hash on the string-value because otherwise
+  // a base64 item that is encoded would have a different hash-value
+  // as a base64 item that is decoded but represents the same binary content
+  return utf8::hash(getStringValue(), aCollation);
+}
+
+
+const char*
+Base64BinaryItem::getBase64BinaryValue(size_t& size) const
+{
+  size = theValue.size();
+  return size > 0 ? &theValue[0] : "";
+}
+
+
 store::Item* Base64BinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_BASE64BINARY];
@@ -3156,19 +3363,36 @@ store::Item* Base64BinaryItem::getType() const
 
 zstring Base64BinaryItem::getStringValue() const
 {
-  return theValue.str();
+  zstring lRes;
+  getStringValue2(lRes);
+  return lRes;
 }
 
 
 void Base64BinaryItem::getStringValue2(zstring& val) const
 {
-  val = theValue.str();
+  val.clear();
+  appendStringValue(val);
 }
 
 
 void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.str();
+  if (theValue.empty())
+  {
+    return;
+  }
+  if (theIsEncoded)
+  {
+    buf.insert(buf.size(), &theValue[0], theValue.size());
+  }
+  else
+  {
+    std::vector<char> encoded;
+    encoded.reserve(theValue.size());
+    Base64::encode(theValue, encoded);
+    buf.insert(buf.size(), &encoded[0], encoded.size());
+  }
 }
 
 
@@ -3181,9 +3405,166 @@ zstring Base64BinaryItem::show() const
 }
 
 
-uint32_t Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+/*******************************************************************************
+  class StreamableStringItem
+********************************************************************************/
+zstring StreamableBase64BinaryItem::getStringValue() const
 {
-  return theValue.hash();
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::getStringValue();
+}
+
+
+void StreamableBase64BinaryItem::getStringValue2(zstring& val) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  Base64BinaryItem::getStringValue2(val);
+}
+
+
+void StreamableBase64BinaryItem::appendStringValue(zstring& buf) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  Base64BinaryItem::appendStringValue(buf);
+}
+
+
+zstring StreamableBase64BinaryItem::show() const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  zstring res("xs:base64Binary(");
+  appendStringValue(res);
+  res += ")";
+  return res;
+}
+
+
+uint32_t
+StreamableBase64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::hash(timezone, aCollation);
+}
+
+
+const char*
+StreamableBase64BinaryItem::getBase64BinaryValue(size_t& s) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::getBase64BinaryValue(s);
+}
+
+
+bool StreamableBase64BinaryItem::isStreamable() const
+{
+  return true;
+}
+
+
+bool StreamableBase64BinaryItem::isSeekable() const
+{
+  return theIsSeekable;
+}
+
+
+StreamReleaser StreamableBase64BinaryItem::getStreamReleaser()
+{
+  return theStreamReleaser;
+}
+
+
+void StreamableBase64BinaryItem::setStreamReleaser(StreamReleaser aReleaser)
+{
+  theStreamReleaser = aReleaser;
+}
+
+
+std::istream& StreamableBase64BinaryItem::getStream()
+{
+  // a non-seekable stream can only be consumed once
+  // we raise an error if getStream is called twice
+  // if a query requires a stream to be consumed more than once,
+  // the query needs to make sure that the stream is explicitly
+  // materialized before
+  if (!theIsSeekable && theIsConsumed) 
+  {
+    throw ZORBA_EXCEPTION( zerr::ZSTR0055_STREAMABLE_STRING_CONSUMED );
+  }
+  else
+  {
+    // if the stream is seekable, we seek to the beginning.
+    // We are not using theIstream.seekg because the USER_ERROR that is thrown
+    // by Zorba is lost possibly in an internal try/catch of the seekg
+    std::streambuf * pbuf;
+    pbuf = theIstream.rdbuf();
+    pbuf->pubseekoff(0, std::ios::beg);
+  }
+  theIsConsumed = true;
+  return theIstream;
+}
+
+
+void StreamableBase64BinaryItem::materialize() const
+{
+  StreamableBase64BinaryItem* const s
+    = const_cast<StreamableBase64BinaryItem*>(this);
+  std::istream& lStream = s->getStream();
+
+  s->theIsMaterialized = true;
+  s->theIsConsumed = true;
+
+  if (isSeekable())
+  {
+    lStream.seekg(0, std::ios::end);
+    std::streampos len = lStream.tellg();
+    lStream.seekg(0, std::ios::beg);
+    if (len < std::streampos(0))
+    {
+      throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
+    }
+    if (len == std::streampos(0))
+    {
+      return;
+    }
+    s->theValue.reserve(len);
+    char buf[1024];
+    while (lStream.good())
+    {
+      lStream.read(buf, 1024);
+      s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
+    }
+  }
+  else
+  {
+    char buf[4048];
+    while (lStream.good())
+    {
+      lStream.read(buf, 4048);
+      if (lStream.gcount() > 0)
+      {
+        s->theValue.reserve(s->theValue.size() + lStream.gcount());
+        s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
+      }
+    }
+  }
 }
 
 
@@ -3255,25 +3636,22 @@ zstring ErrorItem::show() const
 ********************************************************************************/
 
 AtomicItemTokenizerCallback::AtomicItemTokenizerCallback( 
-  Tokenizer &tokenizer,
-  locale::iso639_1::type lang,
   container_type &tokens
 ) :
-  tokenizer_( tokenizer ),
-  lang_( lang ),
   tokens_( tokens )
 {
 }
 
-void AtomicItemTokenizerCallback::operator()(
+void AtomicItemTokenizerCallback::token(
   char const *utf8_s,
   size_type utf8_len,
+  iso639_1::type lang,
   size_type token_no, 
   size_type sent_no,
   size_type para_no,
-  void*
+  Item const*
 ) {
-  FTToken const t( utf8_s, utf8_len, token_no, lang_ );
+  FTToken const t( utf8_s, utf8_len, token_no, lang );
   tokens_.push_back( t );
 }
 

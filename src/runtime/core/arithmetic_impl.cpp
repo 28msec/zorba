@@ -18,6 +18,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
@@ -42,8 +43,6 @@
 
 namespace zorba {
 
-SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<AddOperation>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<SubtractOperation>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<MultiplyOperation>, 3)
@@ -107,7 +106,7 @@ bool GenericArithIterator<Operation>::nextImpl(
                        this->loc,
                        n0,
                        n1);
-    
+      /*
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
       {
@@ -117,7 +116,7 @@ bool GenericArithIterator<Operation>::nextImpl(
           ERROR_LOC( this->loc )
         );
       }
-
+      */
       STACK_PUSH ( status, state );
     }
   }
@@ -293,11 +292,8 @@ bool GenericArithIterator<Operation>::compute(
   }
   
   
-  throw XQUERY_EXCEPTION(
-    err::XPTY0004,
-    ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
-    ERROR_LOC( aLoc )
-  );
+  RAISE_ERROR(err::XPTY0004, aLoc,
+  ERROR_PARAMS(ZED(ArithOpNotDefinedBetween_23), *type0, *type1));
 
   return false; // suppresses wanring
 }

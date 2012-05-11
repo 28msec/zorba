@@ -51,19 +51,15 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
 
 SERIALIZABLE_CLASS_VERSIONS(MaterializeClause)
-END_SERIALIZABLE_CLASS_VERSIONS(MaterializeClause)
 
 SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
-END_SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
 
 SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
-END_SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
 
 SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -343,13 +339,14 @@ MaterializeClause::MaterializeClause(
 void MaterializeClause::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theLocation;
-  ar & theOrderSpecs;
-  ar & theStable;
 
   ar & theInputForVars;
   ar & theInputLetVars;
   ar & theOutputForVarsRefs;
   ar & theOutputLetVarsRefs;
+
+  ar & theOrderSpecs;
+  ar & theStable;
 }
 
 
@@ -711,7 +708,7 @@ void FlworState::init(
 {
   PlanIteratorState::init(planState);
 
-  ulong numVars = (ulong)forletClauses.size();
+  csize numVars = forletClauses.size();
   std::vector<long> v(numVars, 0);
   theVarBindingState.swap(v);
   assert(theVarBindingState.size() > 0);
@@ -775,7 +772,7 @@ void FlworState::reset(PlanState& planState)
 
   assert(theVarBindingState.size() > 0);
 
-  size_t size = theVarBindingState.size();
+  csize size = theVarBindingState.size();
 
   ::memset(&theVarBindingState[0], 0, size * sizeof(long));
 
@@ -805,9 +802,9 @@ void FlworState::reset(PlanState& planState)
 ********************************************************************************/
 void FlworState::clearSortTable()
 {
-  ulong numTuples = (ulong)theSortTable.size();
+  csize numTuples = theSortTable.size();
 
-  for (ulong i = 0; i < numTuples; ++i)
+  for (csize i = 0; i < numTuples; ++i)
   {
     theSortTable[i].clear();
   }
@@ -1215,7 +1212,7 @@ bool FLWORIterator::bindVariable(
     if (!flc.thePosVarRefs.empty())
     {
       store::Item_t posItem;
-      GENV_ITEMFACTORY->createInteger(posItem, Integer(bindingState));
+      GENV_ITEMFACTORY->createInteger(posItem, xs_integer(bindingState));
 
       std::vector<PlanIter_t>::const_iterator viter = flc.thePosVarRefs.begin();
       std::vector<PlanIter_t>::const_iterator end = flc.thePosVarRefs.end();
@@ -1339,7 +1336,7 @@ void FLWORIterator::materializeStreamTuple(
   std::vector<store::Item*>& sortTuple = sortTable[numTuples].theKeyValues;
   sortTuple.resize(numSpecs);
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     store::Item_t sortKeyItem;
     if (consumeNext(sortKeyItem, orderSpecs[i].theDomainIter, planState))
@@ -1349,9 +1346,8 @@ void FLWORIterator::materializeStreamTuple(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
-        );
+        RAISE_ERROR(err::XPTY0004, theMaterializeClause->theLocation,
+        ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
     else
@@ -1382,19 +1378,19 @@ void FLWORIterator::materializeSortTupleAndResult(
   FlworState::SortTable& sortTable = iterState->theSortTable;
   FlworState::ResultTable& resultTable = iterState->theResultTable;
 
-  ulong numTuples = (ulong)sortTable.size();
+  csize numTuples = sortTable.size();
   sortTable.resize(numTuples + 1);
   resultTable.resize(numTuples + 1);
 
   // Create the sort tuple
 
   std::vector<OrderSpec>& orderSpecs = theOrderByClause->theOrderSpecs;
-  ulong numSpecs = (ulong)orderSpecs.size();
+  csize numSpecs = orderSpecs.size();
 
   std::vector<store::Item*>& sortKey = sortTable[numTuples].theKeyValues;
   sortKey.resize(numSpecs);
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     store::Item_t sortKeyItem;
     if (consumeNext(sortKeyItem, orderSpecs[i].theDomainIter, planState))
@@ -1404,9 +1400,8 @@ void FLWORIterator::materializeSortTupleAndResult(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
-        );
+        RAISE_ERROR(err::XPTY0004, theOrderByClause->theLocation, 
+        ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
     else
@@ -1473,7 +1468,7 @@ void FLWORIterator::materializeGroupTuple(
           store::Item_t temp;
           if (typedValueIter->next(temp))
           {
-            RAISE_ERROR(err::XPTY0004, loc,
+            RAISE_ERROR(err::XPTY0004, theGroupByClause->theLocation,
             ERROR_PARAMS(ZED(SingletonExpected_2o),
                          ZED(AtomizationHasMoreThanOneValue)));
           }
@@ -1484,7 +1479,8 @@ void FLWORIterator::materializeGroupTuple(
       store::Item_t temp;
       if (consumeNext(temp, specIter->theInput, planState))
       {
-        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(SingletonExpected_2o)));
+        RAISE_ERROR(err::XPTY0004, theGroupByClause->theLocation,
+        ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
 

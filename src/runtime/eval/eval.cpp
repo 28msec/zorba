@@ -45,7 +45,6 @@ namespace zorba {
 
 
 SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 
 
 /****************************************************************************//**
@@ -103,6 +102,7 @@ EvalIterator::~EvalIterator()
 void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   ar.set_serialize_everything();
+
   serialize_baseclass(ar,
   (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
 
@@ -175,6 +175,12 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     ulong maxOuterVarId;
     copyOuterVariables(planState, outerSctx, evalDctx, maxOuterVarId);
 
+    // If we are here after a reet, we must set state->thePlanWrapper to NULL
+    // before reseting the state->thePlan. Otherwise, the current state->thePlan
+    // will be destroyed first, and then we will attempt to close it when 
+    // state->thePlanWrapper is reset later. 
+    state->thePlanWrapper = NULL;
+
     // Compile
     state->thePlan = compile(evalCCB,
                              item->getStringValue(),
@@ -222,38 +228,33 @@ void EvalIterator::copyOuterVariables(
 
   dynamic_context* outerDctx = evalDctx->getParent();
 
-  std::vector<var_expr_t> globalVars;
-  outerSctx->get_parent()->getVariables(globalVars, theForDebugger, true);
-  
-  FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+  const std::vector<dynamic_context::VarValue>& outerVars = outerDctx->get_variables();
+  csize numOuterVars = outerVars.size();
+
+  for (csize i = 0; i < numOuterVars; ++i)
   {
-    var_expr* globalVar = (*ite).getp();
+    const dynamic_context::VarValue& outerVar = outerVars[i];
 
-    ulong globalVarId = globalVar->get_unique_id();
+    if (!outerVar.isSet())
+      continue;
 
-    if (globalVarId > maxOuterVarId)
-      maxOuterVarId = globalVarId;
+    ulong outerVarId = static_cast<ulong>(i);
+
+    if (outerVarId > maxOuterVarId)
+      maxOuterVarId = outerVarId;
 
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 
-    if (!outerDctx->is_set_variable(globalVarId))
-      continue;
-
-    outerDctx->get_variable(globalVarId,
-                            globalVar->get_name(),
-                            loc,
-                            itemValue,
-                            seqValue);
-
-    if (itemValue != NULL)
+    if (outerVar.hasItemValue())
     {
-      evalDctx->add_variable(globalVarId, itemValue);
+      store::Item_t value = outerVar.theValue.item;
+      evalDctx->add_variable(outerVarId, value);
     }
     else
     {
-      store::Iterator_t iteValue = seqValue->getIterator();
-      evalDctx->add_variable(globalVarId, iteValue);
+      store::Iterator_t iteValue = outerVar.theValue.temp_seq->getIterator();
+      evalDctx->add_variable(outerVarId, iteValue);
     }
   }
 

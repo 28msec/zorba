@@ -18,6 +18,7 @@
 #define ZORBA_FULL_TEXT_FT_QUERY_ITEM_H
 
 #include <list>
+#include <vector>
 
 #include "store/api/ft_token_iterator.h"
 
@@ -59,7 +60,7 @@ public:
   void reset();
 
 private:
-  typedef std::list<Mark_t> MarkSeq;
+  typedef std::vector<Mark_t> MarkSeq;
 
   struct LocalMark : Mark {
     MarkSeq marks_;

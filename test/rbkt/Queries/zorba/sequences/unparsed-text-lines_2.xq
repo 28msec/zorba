@@ -1,0 +1,1 @@
+unparsed-text-lines("pi.xml", "ISO-8859-1")[1]

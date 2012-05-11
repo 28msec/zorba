@@ -21,11 +21,11 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/item.h"
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_index.h"
-//#include "store/naive/simple_index_general.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/simple_store.h"
+#include "store_defs.h"
+#include "simple_index.h"
+//#include "simple_index_general.h"
+#include "atomic_items.h"
+#include "simple_store.h"
 
 #include <algorithm>
 
@@ -43,6 +43,13 @@ namespace simplestore
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+/******************************************************************************
+
+********************************************************************************/
+IndexImpl::IndexImpl()
+{
+}
 
 /******************************************************************************
 
@@ -129,6 +136,8 @@ std::string IndexConditionImpl::getKindString(store::IndexCondition::Kind k)
     return "BOX_VALUE";
   case BOX_GENERAL:
     return "BOX_GENERAL";
+  default:
+    return "";
   }
 }
 

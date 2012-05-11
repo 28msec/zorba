@@ -16,7 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_INDEX_HASH_VALUE
 #define ZORBA_SIMPLE_STORE_INDEX_HASH_VALUE
 
-#include "store/naive/simple_index.h"
+#include "simple_index.h"
 #include <map>
 
 namespace zorba
@@ -73,24 +73,28 @@ public:
 *******************************************************************************/
 class ValueIndex : public IndexImpl
 {
-  friend class SimpleStore;
+  friend class Store;
 
 protected:
   ValueIndexCompareFunction   theCompFunction;
 
 protected:
   ValueIndex(const store::Item_t& qname, const store::IndexSpecification& spec);
+  
+  ValueIndex();
 
   virtual ~ValueIndex();
 
 public:
   const XQPCollator* getCollator(ulong i) const;
 
+  virtual bool isTreeIndex() = 0;
+
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 
   virtual bool remove(
         const store::IndexKey* key,
-        store::Item_t& item,
+        const store::Item_t& item,
         bool all = false) = 0;
 };
 
@@ -100,7 +104,7 @@ public:
 *******************************************************************************/
 class ValueHashIndex : public ValueIndex
 {
-  friend class SimpleStore;
+  friend class Store;
   friend class ProbeValueHashIndexIterator;
 
   typedef HashMap<const store::IndexKey*,
@@ -134,10 +138,14 @@ protected:
   ValueHashIndex(
       const store::Item_t& qname,
       const store::IndexSpecification& spec);
+      
+  ValueHashIndex();
 
   ~ValueHashIndex();
 
 public:
+  bool isTreeIndex() { return false; }
+
   void clear();
 
   ulong size() const;
@@ -146,7 +154,7 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all);
 };
 
 
@@ -187,7 +195,7 @@ public:
 ********************************************************************************/
 class ValueTreeIndex : public ValueIndex
 {
-  friend class SimpleStore;
+  friend class Store;
   friend class ProbeValueTreeIndexIterator;
 
   typedef std::pair<const store::IndexKey*, ValueIndexValue*> IndexMapPair;
@@ -222,10 +230,14 @@ protected:
   ValueTreeIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec);
+        
+  ValueTreeIndex();
 
   ~ValueTreeIndex();
 
 public:
+  bool isTreeIndex() { return true; }
+
   void clear();
 
   ulong size() const;
@@ -234,7 +246,7 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all = false);
 };
 
 

@@ -54,7 +54,7 @@ namespace zorba {
       /** \brief Creates a streamable String Item
        *         see [http://www.w3.org/TR/xmlschema-2/#string]
        *
-       * @param stream An istream whence to read the string's content.
+       * @param stream An istream from where to read the string's content.
        * @param streamReleaser A function pointer which is invoked once
        *        the StreamableStringItem is destroyed. Normally this function
        *        will delete the std::istream object passed to it.
@@ -148,6 +148,25 @@ namespace zorba {
        */
       virtual Item 
       createBase64Binary(const unsigned char* aBinData, size_t aLength) = 0;
+
+      /** \brief Creates a streamable Base64Binary Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+       *
+       * @param stream An istream from where to read the binary's content.
+       * @param streamReleaser A function pointer which is invoked once
+       *        the StreamableBase64Binary is destroyed. Normally this function
+       *        will delete the std::istream object passed to it.
+       * @param seekable is the given stream seekable
+       * @param encoded is the contents of the given stream already base64
+       *        encoded
+       * @return The streamable String Item
+       */
+      virtual Item
+      createStreamableBase64Binary(
+          std::istream &stream,
+          StreamReleaser streamReleaser,
+          bool seekable = false,
+          bool encoded = false) = 0;
 
       /** \brief Creates a Boolean Item
        *         see [http://www.w3.org/TR/xmlschema-2/#bool]
@@ -609,7 +628,6 @@ namespace zorba {
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
                         NsBindings aNsBindings) = 0;
-
       /**
       * Create a new attribute node N and place it among the
       * attributes of a given parent node. If no parent is given, N becomes the
@@ -642,8 +660,8 @@ namespace zorba {
        * parent node. If no parent is given, N becomes the root (and single node)
        * of a new XML tree.
        *
-       * @param parent  The parent P of the new node; may be NULL.
-       * @param content The content of the new node.
+       * @param aParent  The parent P of the new node; may be NULL.
+       * @param aContent The content of the new node.
        * @return        The new node N created by this method
        */
       virtual Item createCommentNode (
@@ -679,7 +697,39 @@ namespace zorba {
       virtual Item createTextNode(
         Item   parent,
         String content) = 0;
-}; // class ItemFactory
+
+      /**
+      * @brief Assigns a simple typed value to an element node.
+      *
+      * Creates a simple typed value for an element. Note that this may only
+      * be done once per element. This method should only be used during
+      * creation of a new tree. Using this method to modify elements after
+      * processing has begun has undefined results.
+      *
+      *
+      * @param aElement       The element for the typed value; may not be NULL.
+      * @param aTypedValue    The typed value for the element.
+      */
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              Item aTypedValue) = 0;
+      /**
+      * @brief Assigns a simple typed value to an element node.
+      *
+      * Creates a simple typed value for an element. Note that this may only
+      * be done once per element. This method should only be used during
+      * creation of a new tree. Using this method to modify elements after
+      * processing has begun has undefined results.
+      *
+      *
+      * @param aElement       The element for the typed value; may not be NULL.
+      * @param aTypedValue    The typed value for the element.
+      */
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              std::vector<Item>& aTypedValue) = 0;
+
+  }; // class ItemFactory
 
 } // namespace zorba
 #endif

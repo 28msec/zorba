@@ -57,6 +57,7 @@ namespace zorba { namespace debugger {
   
   class UntypedCommand {
   public:
+    virtual ~UntypedCommand() {}
     virtual std::string getName() const = 0;
     virtual std::set<std::string> getAliases() const = 0;
     virtual std::string getDescription() const = 0;

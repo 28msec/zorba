@@ -25,6 +25,7 @@
 #include <zorba/typeident.h>
 #include <zorba/util/path.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/singleton_item_sequence.h>
 
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
@@ -41,8 +42,8 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #ifndef ZORBA_NO_FULL_TEXT
-#include "context/stemmer_wrappers.h"
-#include "context/thesaurus_wrappers.h"
+#include "stemmer_wrappers.h"
+#include "thesaurus_wrappers.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 #include "uri_resolver_wrappers.h"
 
@@ -64,7 +65,6 @@
 
 namespace zorba {
 
-
 /*******************************************************************************
   Create a StaticContextImpl obj as well as an internal static_context obj S.
   S is created as a child of the zorba root sctx. This constructor is used
@@ -73,6 +73,7 @@ namespace zorba {
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
+  theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -97,6 +98,7 @@ StaticContextImpl::StaticContextImpl(
     DiagnosticHandler* aDiagnosticHandler)
   :
   theCtx(aCtx),
+  theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -118,6 +120,7 @@ StaticContextImpl::StaticContextImpl(
 StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
+  theMaxVarId(2),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)
@@ -215,6 +218,38 @@ StaticContextImpl::getNamespaceURIByPrefix(const String& aPrefix) const
   return "";
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticContextImpl::getNamespaceBindings( NsBindings& aBindings ) const
+{
+  try
+  {
+    store::NsBindings lBindings;
+    theCtx->get_namespace_bindings(lBindings);
+    aBindings.reserve(aBindings.size() + lBindings.size());
+
+    for (store::NsBindings::const_iterator lIter = lBindings.begin();
+         lIter != lBindings.end(); ++lIter)
+    {
+      aBindings.push_back(
+        std::pair<zorba::String, zorba::String>(
+          Unmarshaller::newString(lIter->first),
+          Unmarshaller::newString(lIter->second)
+        )
+      );
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+}
 
 /*******************************************************************************
 
@@ -817,6 +852,59 @@ StaticContextImpl::disableFunction(const Item& aQName, int arity)
 
 
 void
+StaticContextImpl::getFunctions(std::vector<Function_t>& aFunctions) const
+{
+  try
+  {
+    std::vector<function*> lInternalFunctions;
+
+    theCtx->get_functions(lInternalFunctions);
+
+    for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
+         lIter != lInternalFunctions.end(); ++lIter)
+    {
+      Function_t lFunc(new FunctionImpl(*lIter, theDiagnosticHandler));
+      aFunctions.push_back(lFunc);
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+
+void
+StaticContextImpl::getFunctions(
+    const String& aFnNameUri,
+    uint32_t arity,
+    std::vector<Function_t>& aFunctions) const
+{
+  try
+  {
+    std::vector<function*> lInternalFunctions;
+
+    theCtx->get_functions(lInternalFunctions);
+
+    for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
+         lIter != lInternalFunctions.end(); ++lIter)
+    {
+      const zstring& lNamespace = (*lIter)->getName()->getNamespace();
+      if (lNamespace == aFnNameUri.c_str() && (*lIter)->getArity() == arity)
+      {
+        Function_t lFunc(new FunctionImpl(*lIter, theDiagnosticHandler));
+        aFunctions.push_back(lFunc);
+      }
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+
+void
 StaticContextImpl::getFunctionAnnotations(
     const Item& aQName,
     int arity,
@@ -834,7 +922,7 @@ StaticContextImpl::getFunctionAnnotations(
 
   try
   {
-    for (unsigned int i = 0; i < ann_list->size(); i++)
+    for (csize i = 0; i < ann_list->size(); ++i)
       aAnnotations.push_back(new AnnotationImpl(ann_list->get(i)));
   }
   catch (ZorbaException const& e)
@@ -852,7 +940,7 @@ StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
   {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
-  theCtx->set_context_item_type(xqType);
+  theCtx->set_context_item_type(xqType, QueryLoc::null);
 }
 
 
@@ -938,9 +1026,11 @@ void StaticContextImpl::loadProlog(
   theSctxMap = impl.theCompilerCB->theSctxMap;
 }
 
+
 static void
-toInternalPath(const std::vector<String>& aPublicStrings,
-               std::vector<zstring>& aInternalStrings)
+toInternalPath(
+    const std::vector<String>& aPublicStrings,
+    std::vector<zstring>& aInternalStrings)
 {
   for (std::vector<String>::const_iterator lIter = aPublicStrings.begin();
        lIter != aPublicStrings.end(); ++lIter)
@@ -957,9 +1047,11 @@ toInternalPath(const std::vector<String>& aPublicStrings,
   }
 }
 
+
 static void
-toPublicPath(const std::vector<zstring>& aInternalStrings,
-             std::vector<String>& aPublicStrings)
+toPublicPath(
+    const std::vector<zstring>& aInternalStrings,
+    std::vector<String>& aPublicStrings)
 {
   for (std::vector<zstring>::const_iterator lIter = aInternalStrings.begin();
        lIter != aInternalStrings.end(); ++lIter)
@@ -967,6 +1059,7 @@ toPublicPath(const std::vector<zstring>& aInternalStrings,
     aPublicStrings.push_back(lIter->c_str());
   }
 }
+
 
 void
 StaticContextImpl::setURIPath(const std::vector<String> &aURIPath)
@@ -1161,6 +1254,9 @@ StaticContextImpl::validate(
     {
       case validate_lax:
         valMode = StaticContextConsts::lax_validation;
+        break;
+      case validate_lax_dtd:
+        valMode = StaticContextConsts::lax_dtd_validation;
         break;
       case validate_skip:
         valMode = StaticContextConsts::skip_validation;
@@ -1449,6 +1545,51 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
   Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
   aVarsIter = vIter; 
   ZORBA_CATCH
+}
+
+Item
+StaticContextImpl::fetch(const String& aURI) const
+{
+  return fetch(aURI, "SOME_CONTENT");
+}
+
+Item
+StaticContextImpl::fetch(
+    const String& aURI,
+    const String& aEntityKind) const
+{
+  ZORBA_TRY
+  {
+    Zorba* lZorba = Zorba::getInstance(0);
+    ItemFactory* lFactory = lZorba->getItemFactory();
+
+    Item lQName = lFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
+                                          "content");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(lFactory->createString(aURI)));
+    lArgs.push_back(
+        new SingletonItemSequence(lFactory->createString(aEntityKind)));
+
+    StaticContext_t lCtx = createChildContext();
+
+    Zorba_CompilerHints_t lHints;
+    std::ostringstream lProlog;
+    lProlog
+      << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';";
+
+    lCtx->loadProlog(lProlog.str(), lHints);
+
+    ItemSequence_t lSeq = lCtx->invoke(lQName, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+    return lRes;
+  }
+  ZORBA_CATCH
+  return 0;
 }
 
 } /* namespace zorba */

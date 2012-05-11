@@ -1,0 +1,1 @@
+fn:replace("aba", "a", "")

@@ -867,7 +867,7 @@ void SchemaValidatorFilter::attributeEvent(
     }
     --theAttrCount;  // remove att from the list but still needs to be reported
 
-    //cout << "   svf attrEvent: " << StrX(localname) << "  T: " <<
+    //std::cout << "   svf attrEvent: " << StrX(localname) << "  T: " <<
     //    StrX(typeName) << "\n";
     theEventBuffer->attributeEvent(emptyToNull(prefix), emptyToNull(uri),
         localname, value, emptyToNull(typeURI), typeName);
@@ -1062,7 +1062,9 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
     {
       const ElemStack::StackElem* topElem = fElemStack.topElement();
       DatatypeValidator *currentDV = 0;
-      if(topElem->fThisElement->isDeclared())
+      if(topElem->fThisElement->isDeclared() ||
+         theXsiType  // this is when there is no schema import but xsiType is used
+        )
       {
         ComplexTypeInfo *currentTypeInfo = ((XercSchemaValidator*)fValidator)->
             getCurrentTypeInfo();
@@ -1543,13 +1545,19 @@ void SchemaValidatorFilter::error(
   if(!theStrictValidation &&
      errDomain == XMLUni::fgValidityDomain &&
      errType != XMLErrorReporter::ErrType_Fatal &&
-     !( errCode == XMLValid::ElementNotValidForContent ||
+     !( errCode == XMLValid::AttNotDefined ||
+        errCode == XMLValid::AttNotDefinedForElement ||
+        errCode == XMLValid::SimpleTypeHasChild ||
+        errCode == XMLValid::ElementNotValidForContent ||
         errCode == XMLValid::NotEnoughElemsForCM ||
         errCode == XMLValid::EmptyNotValidForContent ||
         errCode == XMLValid::AttNotDefinedForElement ||
         errCode == XMLValid::RequiredAttrNotProvided ||
         errCode == XMLValid::AttributeNotQualified ||
-        errCode == XMLValid::ElementNotQualified) )
+        errCode == XMLValid::ElementNotQualified) &&
+        !(theParentStack &&
+        errCode == XMLValid::ElementNotDefined)
+  )
     return;
 
   theErrorOccurred = true;

@@ -34,7 +34,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 
 #include "types/typeops.h"
 #include "types/typemanagerimpl.h"
@@ -166,6 +166,7 @@ SAME_S_AND_T(hxB)
 SAME_S_AND_T(aURI)
 SAME_S_AND_T(QN)
 SAME_S_AND_T(NOT)
+SAME_S_AND_T(uint)
 
 #undef SAME_S_AND_T
 
@@ -755,7 +756,7 @@ T1_TO_T2(flt, int)
 
 T1_TO_T2(flt, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -811,7 +812,7 @@ T1_TO_T2(dbl, int)
 
 T1_TO_T2(dbl, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -850,7 +851,7 @@ T1_TO_T2(dec, int)
 
 T1_TO_T2(dec, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -890,7 +891,7 @@ T1_TO_T2(int, dec)
 
 T1_TO_T2(int, bool)
 {
-  result = aItem->getEBV();
+  aFactory->createBoolean(result, aItem->getEBV());
   return true;
 }
 
@@ -1267,7 +1268,18 @@ T1_TO_T2(b64, str)
 
 T1_TO_T2(b64, hxB)
 {
-  return aFactory->createHexBinary(result, xs_hexBinary(aItem->getBase64BinaryValue()));
+  size_t s;
+  const char* c = aItem->getBase64BinaryValue(s);
+  Base64 tmp;
+  if (aItem->isEncoded())
+  {
+    Base64::parseString(c, s, tmp);
+  }
+  else
+  {
+    Base64::encode((const unsigned char*)c, s, tmp);
+  }
+  return aFactory->createHexBinary(result, xs_hexBinary(tmp));
 }
 
 
@@ -1333,6 +1345,153 @@ T1_TO_T2(NOT, str)
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
+T1_TO_T2(uint, uA)
+{
+  zstring strval2;
+  aItem->getStringValue2(strval2);
+  return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
+}
+
+
+T1_TO_T2(uint, str)
+{
+  return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
+}
+
+
+T1_TO_T2(uint, flt)
+{
+  return aFactory->createFloat(
+    result, xs_float(aItem->getUnsignedIntegerValue())
+  );
+}
+
+
+T1_TO_T2(uint, dbl)
+{
+  return aFactory->createDouble(
+    result, xs_double(aItem->getUnsignedIntegerValue())
+  );
+}
+
+
+T1_TO_T2(uint, dec)
+{
+  return aFactory->createDecimal(
+    result, xs_decimal(aItem->getUnsignedIntegerValue())
+  );
+}
+
+
+T1_TO_T2(uint, bool)
+{
+  aFactory->createBoolean(result, aItem->getEBV());
+  return true;
+}
+
+
+T1_TO_T2(uA, uint)
+{
+  zstring strval2;
+  aItem->getStringValue2(strval2);
+  return str_int(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
+}
+
+
+T1_TO_T2(flt, uint)
+{
+  try 
+  {
+    xs_nonNegativeInteger const n(aItem->getFloatValue());
+    return aFactory->createNonNegativeInteger(result, n);
+  }
+  catch ( std::exception const& ) 
+  {
+    throwTypeException( err::FOCA0002, aErrorInfo );
+    return NULL;
+  }
+}
+
+
+T1_TO_T2(int, uint)
+{
+  try 
+  {
+    xs_nonNegativeInteger const n(aItem->getIntegerValue());
+    return aFactory->createNonNegativeInteger(result, n);
+  }
+  catch ( std::exception const& ) 
+  {
+    throwTypeException( err::FOCA0002, aErrorInfo );
+    return NULL;
+  }
+}
+
+
+T1_TO_T2(uint, int)
+{
+  try 
+  {
+    xs_integer const n(aItem->getIntegerValue());
+    return aFactory->createInteger(result, n);
+  }
+  catch ( std::exception const& ) 
+  {
+    throwTypeException( err::FOCA0002, aErrorInfo );
+    return NULL;
+  }
+}
+
+
+T1_TO_T2(dbl, uint)
+{
+  try 
+  {
+    xs_nonNegativeInteger const n(aItem->getDoubleValue());
+    return aFactory->createInteger(result, n);
+  }
+  catch ( std::exception const& ) 
+  {
+    throwTypeException( err::FOCA0002, aErrorInfo );
+    return NULL;
+  }
+}
+
+
+T1_TO_T2(dec, uint)
+{
+  xs_nonNegativeInteger const n(aItem->getDecimalValue());
+  return aFactory->createNonNegativeInteger(result, n);
+}
+
+
+T1_TO_T2(bool, uint)
+{
+  if (aItem->getBooleanValue())
+    return aFactory->createNonNegativeInteger(
+      result, xs_nonNegativeInteger::one()
+    );
+  else
+    return aFactory->createNonNegativeInteger(
+      result, xs_nonNegativeInteger::zero()
+    );
+}
+
+
+T1_TO_T2(str, uint)
+{
+  try {
+    xs_nonNegativeInteger const n(strval.c_str());
+    return aFactory->createNonNegativeInteger(result, n);
+  }
+  catch ( std::invalid_argument const& ) {
+    throwTypeException( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::range_error const& ) {
+    throwTypeException( err::FOCA0002, aErrorInfo );
+  }
+  return NULL;
+}
 
 /*******************************************************************************
 
@@ -1340,7 +1499,6 @@ T1_TO_T2(NOT, str)
 bool str_down(
     store::Item_t& result,
     const store::Item* aItem,
-    RootTypeManager& aTS,
     ATOMIC_CODE_T aTargetAtomicType,
     store::ItemFactory* aFactory,
     const ErrorInfo& aErrorInfo)
@@ -1432,7 +1590,6 @@ bool str_down(
 bool int_down(
     store::Item_t& result,
     const store::Item* aItem,
-    RootTypeManager& aTS,
     ATOMIC_CODE_T aTargetAtomicType,
     store::ItemFactory* aFactory,
     const ErrorInfo& aErrorInfo)
@@ -1442,14 +1599,14 @@ bool int_down(
   case store::XS_NON_POSITIVE_INTEGER:
   {
     xs_integer const lInteger = aItem->getIntegerValue();
-    if (lInteger <= xs_integer::zero())
+    if (lInteger.sign() <= 0)
       return aFactory->createNonPositiveInteger(result, lInteger);
     break;
   }
   case store::XS_NEGATIVE_INTEGER:
   {
     xs_integer const lInteger = aItem->getIntegerValue();
-    if (lInteger < xs_integer::zero())
+    if (lInteger.sign() < 0)
       return aFactory->createNegativeInteger(result, lInteger);
     break;
   }
@@ -1457,11 +1614,13 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_long const n = ztd::aton<xs_long>(lString.c_str());
       return aFactory->createLong(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
@@ -1470,11 +1629,13 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_int const n = ztd::aton<xs_int>(lString.c_str());
       return aFactory->createInt(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
@@ -1483,11 +1644,13 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_short const n = ztd::aton<xs_short>(lString.c_str());
       return aFactory->createShort(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
@@ -1507,9 +1670,15 @@ bool int_down(
   }
   case store::XS_NON_NEGATIVE_INTEGER:
   {
-    xs_integer const lInteger = aItem->getIntegerValue();
-    if (lInteger >= xs_integer::zero())
-      return aFactory->createNonNegativeInteger(result, lInteger);
+    xs_decimal const d = aItem->getDecimalValue();
+    if (d.sign() >= 0)
+      try {
+        xs_nonNegativeInteger const i(d);
+        return aFactory->createNonNegativeInteger(result, i);
+      }
+      catch ( std::exception const& ) {
+        // ignore
+      }
     break;
   }
   case store::XS_UNSIGNED_LONG:
@@ -1529,11 +1698,13 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_unsignedInt const n = ztd::aton<xs_unsignedInt>(lString.c_str());
       return aFactory->createUnsignedInt(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
@@ -1542,11 +1713,13 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_unsignedShort const n = ztd::aton<xs_unsignedShort>(lString.c_str());
       return aFactory->createUnsignedShort(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
@@ -1555,20 +1728,22 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_unsignedByte const n = ztd::aton<xs_unsignedByte>(lString.c_str());
       return aFactory->createUnsignedByte(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
   }
   case store::XS_POSITIVE_INTEGER:
   {
-    xs_integer lInteger = aItem->getIntegerValue();
-    if (lInteger > xs_integer::zero())
-      return aFactory->createPositiveInteger(result, lInteger);
+    xs_positiveInteger const i = aItem->getUnsignedIntegerValue();
+    if (i.sign() > 0)
+      return aFactory->createPositiveInteger(result, i);
     break;
   }
   default:
@@ -1613,12 +1788,12 @@ const int GenericCast::theMapping[store::XS_LAST] =
    5,  // 25 XS_INT
    5,  // 26 XS_SHORT
    5,  // 27 XS_BYTE
-   5,  // 28 XS_NON_NEGATIVE_INTEGER
-   5,  // 29 XS_UNSIGNED_LONG
-   5,  // 30 XS_UNSIGNED_INT
-   5,  // 31 XS_UNSIGNED_SHORT
-   5,  // 32 XS_UNSIGNED_BYTE
-   5,  // 33 XS_POSITIVE_INTEGER
+  23,  // 28 XS_NON_NEGATIVE_INTEGER
+  23,  // 29 XS_UNSIGNED_LONG
+  23,  // 30 XS_UNSIGNED_INT
+  23,  // 31 XS_UNSIGNED_SHORT
+  23,  // 32 XS_UNSIGNED_BYTE
+  23,  // 33 XS_POSITIVE_INTEGER
   12,  // 34 XS_GYEAR_MONTH
   13,  // 35 XS_GYEAR
   14,  // 36 XS_GMONTH_DAY
@@ -1636,98 +1811,155 @@ const int GenericCast::theMapping[store::XS_LAST] =
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] =
+const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[24] =
 {
-/*uA*/  0, /*str*/ str_down, /*flt*/ 0, /*dbl*/ 0, /*dec*/ 0, /*int*/ int_down, /*dur*/ 0,
-/*yMD*/ 0, /*dTD*/ 0, /*dT*/  0, /*tim*/ 0, /*dat*/ 0, /*gYM*/ 0, /*gYr*/ 0, /*gMD*/ 0,
-/*gDay*/0, /*gMon*/0, /*bool*/0, /*b64*/ 0, /*hxB*/ 0, /*aURI*/0, /*QN*/  0, /*NOT*/ 0
+/*uA*/    0,
+/*str*/   str_down,
+/*flt*/   0,
+/*dbl*/   0,
+/*dec*/   0,
+/*int*/   int_down,
+/*dur*/   0,
+/*yMD*/   0,
+/*dTD*/   0,
+/*dT*/    0,
+/*tim*/   0,
+/*dat*/   0,
+/*gYM*/   0,
+/*gYr*/   0,
+/*gMD*/   0,
+/*gDay*/  0,
+/*gMon*/  0,
+/*bool*/  0,
+/*b64*/   0,
+/*hxB*/   0,
+/*aURI*/  0,
+/*QN*/    0,
+/*NOT*/   0,
+/*uint*/  int_down,
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::CastFunc GenericCast::theCastMatrix[23][23] =
+const GenericCast::CastFunc GenericCast::theCastMatrix[24][24] =
 {
           /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
           /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/
+          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+
 /*uA*/   {&uA_uA,    &uA_str,   &uA_flt,   &uA_dbl,   &uA_dec,   &uA_int,   &uA_dur,   &uA_yMD,   &uA_dTD,   &uA_dT,
           &uA_tim,   &uA_dat,   &uA_gYM,   &uA_gYr,   &uA_gMD,   &uA_gDay,  &uA_gMon,  &uA_bool,  &uA_b64,   &uA_hxB,
-          &uA_aURI,  0,         0},
+          &uA_aURI,  0,         0,         &uA_uint},
 
 /*str*/  {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur,  &str_yMD,  &str_dTD,  &str_dT,
           &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD,  &str_gDay, &str_gMon, &str_bool, &str_b64,  &str_hxB,
-          &str_aURI, &str_QN,   &str_NOT},
+          &str_aURI, &str_QN,   &str_NOT,  &str_uint},
 
 /*flt*/  {&flt_uA,   &flt_str,  &flt_flt,  &flt_dbl,  &flt_dec,  &flt_int,  0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         &flt_bool, 0,         0,
-          0,         0,         0},
+          0,         0,         0,         &flt_uint},
 
 /*dbl*/  {&dbl_uA,   &dbl_str,  &dbl_flt,  &dbl_dbl,  &dbl_dec,  &dbl_int,  0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         &dbl_bool, 0,         0,
-          0,         0,         0},
+          0,         0,         0,         &dbl_uint},
 
 /*dec*/  {&dec_uA,   &dec_str,  &dec_flt,  &dec_dbl,  &dec_dec,  &dec_int,  0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         &dec_bool, 0,         0,
-          0,         0,         0},
-/*int*/  {&int_uA,   &int_str,  &int_flt,  &int_dbl,  &int_dec,  &int_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &int_bool, 0,         0,
-          0,         0,         0},
-/*dur*/  {&dur_uA,   &dur_str,  0,         0,         0,         0,         &dur_dur,  &dur_yMD,  &dur_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-/*yMD*/  {&yMD_uA,   &yMD_str,  0,         0,         0,         0,         &yMD_dur,  &yMD_yMD,  &yMD_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
-/*dTD*/  {&dTD_uA,   &dTD_str,  0,         0,         0,         0,         &dTD_dur,  &dTD_yMD,  &dTD_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         &dec_uint},
+
           /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
           /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/
+          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+
+/*int*/  {&int_uA,   &int_str,  &int_flt,  &int_dbl,  &int_dec,  &int_int,  0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         &int_bool, 0,         0,
+          0,         0,         0,         &int_uint},
+
+/*dur*/  {&dur_uA,   &dur_str,  0,         0,         0,         0,         &dur_dur,  &dur_yMD,  &dur_dTD,  0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0},
+
+/*yMD*/  {&yMD_uA,   &yMD_str,  0,         0,         0,         0,         &yMD_dur,  &yMD_yMD,  &yMD_dTD,  0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0},
+
+/*dTD*/  {&dTD_uA,   &dTD_str,  0,         0,         0,         0,         &dTD_dur,  &dTD_yMD,  &dTD_dTD,  0,
+          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
+          0,         0,         0,         0},
+
 /*dT*/   {&dT_uA,    &dT_str,   0,         0,         0,         0,         0,         0,         0,         &dT_dT,
           &dT_tim,   &dT_dat,   &dT_gYM,   &dT_gYr,   &dT_gMD,   &dT_gDay,  &dT_gMon,  0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
+          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
+          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
+          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+
 /*tim*/  {&tim_uA,   &tim_str,  0,         0,         0,         0,         0,         0,         0,         0,
           &tim_tim,  0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
 /*dat*/  {&dat_uA,   &dat_str,  0,         0,         0,         0,         0,         0,         0,         &dat_dT,
           0,         &dat_dat,  &dat_gYM,  &dat_gYr,  &dat_gMD,  &dat_gDay, &dat_gMon, 0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
 /*gYM*/  {&gYM_uA,   &gYM_str,  0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         &gYM_gYM,  0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
 /*gYr*/  {&gYr_uA,   &gYr_str,  0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         &gYr_gYr,  0,         0,         0,         0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
 /*gMD*/  {&gMD_uA,   &gMD_str,  0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         &gMD_gMD,  0,         0,         0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
+          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
+          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
+          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+
 /*gDay*/ {&gDay_uA,  &gDay_str, 0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         0,         &gDay_gDay,0,         0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
 /*gMon*/ {&gMon_uA,  &gMon_str, 0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         &gMon_gMon,0,         0,         0,
-          0,         0,         0},
+          0,         0,         0,         0},
+
 /*bool*/ {&bool_uA,  &bool_str, &bool_flt, &bool_dbl, &bool_dec, &bool_int, 0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         &bool_bool,0,         0,
-          0,         0,         0},
+          0,         0,         0,         &bool_uint},
+
 /*b64*/  {&b64_uA,   &b64_str,  0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         0,         &b64_b64,  &b64_hxB,
-          0,         0,         0},
+          0,         0,         0,         0},
+
 /*hxB*/  {&hxB_uA,   &hxB_str,  0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         0,         &hxB_b64,  &hxB_hxB,
-          0,         0,         0},
+          0,         0,         0,         0},
+
+          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
+          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
+          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+
 /*aURI*/ {&aURI_uA,  &aURI_str, 0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          &aURI_aURI,0,         0},
+          &aURI_aURI,0,         0,         0},
+
 /*QN*/   {&QN_uA,    &QN_str,   0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         &QN_QN,    0},
+          0,         &QN_QN,    0,         0},
+
 /*NOT*/  {&NOT_uA,   &NOT_str,  0,         0,         0,         0,         0,         0,         0,         0,
           0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         &NOT_NOT}
+          0,         0,         &NOT_NOT,  0},
+
+/*uint*/ {&uint_uA,  &uint_str, &uint_flt, &uint_dbl, &uint_dec, &uint_int, 0,         0,         0,         0,
+          0,         0,         0,         0,         0,         0,         0,         &uint_bool,0,         0,
+          0,         0,         0,         &uint_uint},
 };
 
 
@@ -1818,7 +2050,6 @@ bool GenericCast::castToAtomic(
   {
     valid = (*lDownCastFunc)(result,
                              &*result,
-                             rtm,
                              targetTypeCode,
                              lFactory,
                              lErrorInfo);
@@ -1842,7 +2073,6 @@ bool GenericCast::castToAtomic(
     namespace_context*   nsCtx,
     const QueryLoc&      loc)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
 
   ZORBA_ASSERT(aItem->isAtomic());
@@ -1925,7 +2155,6 @@ bool GenericCast::castToAtomic(
   {
     valid = (*downCastFunc)(result,
                             &*result,
-                            rtm,
                             targetTypeCode,
                             factory,
                             errorInfo);
@@ -1950,21 +2179,18 @@ bool GenericCast::castToAtomic(
     namespace_context*    nsCtx,
     const QueryLoc&       loc)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   zstring sourceString;
 
-  ZORBA_ASSERT(item->isAtomic());
-
   store::SchemaTypeCode sourceType = item->getTypeCode();
-
-  ErrorInfo errorInfo(sourceType, targetType, loc);
 
   if (sourceType == targetType)
   {
     result.transfer(item);
     return true;
   }
+
+  ErrorInfo errorInfo(sourceType, targetType, loc);
 
   if (targetType == store::XS_NOTATION ||
       targetType == store::XS_ANY_ATOMIC)
@@ -1973,18 +2199,24 @@ bool GenericCast::castToAtomic(
   }
 
   if (sourceType == store::XS_ANY_ATOMIC)
+  {
     throwTypeException(err::XPTY0004, errorInfo);
+  }
 
   if (targetType == store::XS_NCNAME &&
       sourceType != store::XS_STRING &&
       sourceType != store::XS_NCNAME &&
       sourceType != store::XS_UNTYPED_ATOMIC)
+  {
     throwTypeException(err::XPTY0004, errorInfo);
+  }
 
   CastFunc castFunc = theCastMatrix[theMapping[sourceType]]
                                     [theMapping[targetType]];
   if (castFunc == 0)
+  {
     throwTypeException(err::XPTY0004, errorInfo);
+  }
 
   if (theMapping[sourceType] == theMapping[store::XS_STRING])
   {
@@ -2006,7 +2238,6 @@ bool GenericCast::castToAtomic(
   {
     valid = (*downCastFunc)(result,
                             &*result,
-                            rtm,
                             targetType,
                             factory,
                             errorInfo);
@@ -2543,53 +2774,71 @@ bool GenericCast::isCastable(
 ********************************************************************************/
 bool GenericCast::promote(
     store::Item_t& result,
-    store::Item_t& aItem,
-    const XQType* aTargetType,
+    store::Item_t& item,
+    const XQType* targetType,
     const TypeManager* tm,
     const QueryLoc& loc)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t lItemType = tm->create_value_type(aItem);
+  if (targetType->type_kind() == XQType::ATOMIC_TYPE_KIND)
+  {
+    return promote(result, 
+                   item,
+                   static_cast<const AtomicXQType*>(targetType)->get_type_code(),
+                   tm,
+                   loc);
+  }
 
-  if (TypeOps::is_equal(tm, *aTargetType, *rtm.NONE_TYPE))
+  if (targetType->type_kind() == XQType::NONE_KIND)
       return false;
 
-  if (TypeOps::is_subtype(tm, *lItemType, *aTargetType))
+  xqtref_t itemType = tm->create_value_type(item);
+
+  if (TypeOps::is_subtype(tm, *itemType, *targetType))
   {
-    result.transfer(aItem);
+    result.transfer(item);
     return result != NULL;
   }
 
-  if (TypeOps::is_equal(tm, *lItemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
-      ! TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *aTargetType), *rtm.QNAME_TYPE_ONE))
+  // untyped --> target type
+  if (TypeOps::is_equal(tm, *itemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
+      ! TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *targetType), *rtm.QNAME_TYPE_ONE))
   {
-    // untyped --> target type
-    return castToAtomic(result, aItem, aTargetType, tm, NULL, loc);
+    return castToAtomic(result, item, targetType, tm, NULL, loc);
   }
-  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.FLOAT_TYPE_ONE))
-  {
-    // decimal --> xs:float
-    if (TypeOps::is_subtype(tm, *lItemType, *rtm.DECIMAL_TYPE_ONE))
-    {
-      return castToAtomic(result, aItem, aTargetType, tm, NULL, loc);
-    }
-  }
-  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.DOUBLE_TYPE_ONE))
-  {
+
     // Decimal/Float --> xs:double
-    if (TypeOps::is_subtype(tm, *lItemType, *rtm.DECIMAL_TYPE_ONE) ||
-        TypeOps::is_subtype(tm, *lItemType, *rtm.FLOAT_TYPE_ONE))
+  else if (TypeOps::is_subtype(tm, *targetType, *rtm.DOUBLE_TYPE_ONE))
+  {
+    store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+
+    if (TypeOps::is_subtype(itemTypeCode, store::XS_DECIMAL) ||
+        TypeOps::is_subtype(itemTypeCode, store::XS_FLOAT))
     {
-      return castToAtomic(result, aItem, aTargetType, tm, NULL, loc);
+      return castToAtomic(result, item, targetType, tm, NULL, loc);
     }
   }
-  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.STRING_TYPE_ONE))
+
+  // decimal --> xs:float
+  else if (TypeOps::is_subtype(tm, *targetType, *rtm.FLOAT_TYPE_ONE))
   {
-    // URI --> xs:String Promotion
-    if (TypeOps::is_subtype(tm, *lItemType, *rtm.ANY_URI_TYPE_ONE))
+    store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+
+    if (TypeOps::is_subtype(itemTypeCode, store::XS_DECIMAL))
     {
-      return castToAtomic(result, aItem, &*rtm.STRING_TYPE_ONE, tm, NULL, loc);
+      return castToAtomic(result, item, targetType, tm, NULL, loc);
+    }
+  }
+
+  // URI --> xs:String
+  else if (TypeOps::is_subtype(tm, *targetType, *rtm.STRING_TYPE_ONE))
+  {
+    store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+
+    if (TypeOps::is_subtype(itemTypeCode, store::XS_ANY_URI))
+    {
+      return castToAtomic(result, item, store::XS_STRING, tm, NULL, loc);
     }
   }
 
@@ -2623,19 +2872,19 @@ bool GenericCast::promote(
     // untyped --> target type
     return castToAtomic(result, item, targetType, tm, NULL, loc);
   }
-  else if (TypeOps::is_subtype(targetType, store::XS_FLOAT))
-  {
-    // decimal --> xs:float
-    if (TypeOps::is_subtype(itemType, store::XS_DECIMAL))
-    {
-      return castToAtomic(result, item, targetType, tm, NULL, loc);
-    }
-  }
   else if (TypeOps::is_subtype(targetType, store::XS_DOUBLE))
   {
     // Decimal/Float --> xs:double
     if (TypeOps::is_subtype(itemType, store::XS_DECIMAL) ||
         TypeOps::is_subtype(itemType, store::XS_FLOAT))
+    {
+      return castToAtomic(result, item, targetType, tm, NULL, loc);
+    }
+  }
+  else if (TypeOps::is_subtype(targetType, store::XS_FLOAT))
+  {
+    // decimal --> xs:float
+    if (TypeOps::is_subtype(itemType, store::XS_DECIMAL))
     {
       return castToAtomic(result, item, targetType, tm, NULL, loc);
     }

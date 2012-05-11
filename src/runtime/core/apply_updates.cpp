@@ -42,7 +42,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
 
 
 /*******************************************************************************
@@ -93,19 +92,24 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   store::Item_t item;
   ulong numItems = 0;
-  std::auto_ptr<store::PUL> pul;
+  store::PUL_t pul;
 
   ApplyIteratorState* state;
   DEFAULT_STACK_INIT(ApplyIteratorState, state, planState);
-
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   // Note: updating expr might not return a pul because of vacuous exprs
   while (consumeNext(item, theChild, planState))
   {
     if (item->isPul())
     {
-      pul->mergeUpdates(item);
+      if (pul)
+      {
+        pul->mergeUpdates(item);
+      }
+      else
+      {
+        pul.transfer(item);
+      }
     }
     else if (!theDiscardXDM)
     {
@@ -114,7 +118,8 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  apply_updates(ccb, gdctx, theSctx, pul.get(), loc);
+  if(pul)
+    apply_updates(ccb, gdctx, theSctx, pul, loc);
 
   state->theXDMIte = state->theXDMItems.begin();
   state->theXDMEnd = state->theXDMItems.end();
@@ -141,12 +146,13 @@ void apply_updates(
   SchemaValidatorImpl validator(loc, sctx);
   ICCheckerImpl icChecker(sctx, gdctx);
   std::vector<store::Index*> indexes;
+  std::vector<store::Index*> truncate_indexes;
   store::ItemHandle<store::PUL> indexPul;
 
   // Get all the indexes that are associated with any of the collections that
   // are going to be updated by this pul. Check which of those indices can be
   // maintained incrementally, and pass this info back to the pul.
-  pul->getIndicesToRefresh(indexes);
+  pul->getIndicesToRefresh(indexes, truncate_indexes);
 
   ulong numIndices = (ulong)indexes.size();
 
@@ -176,6 +182,17 @@ void apply_updates(
     }
 
     zorbaIndexes[i] = indexDecl;
+  }
+
+  numIndices = (ulong)truncate_indexes.size();
+  for (ulong i = 0; i < numIndices; ++i)
+  {
+    IndexDecl* indexDecl = sctx->lookup_index(indexes[i]->getName());
+
+    if (indexDecl->getMaintenanceMode() == IndexDecl::DOC_MAP)
+    {
+      pul->addIndexTruncator(indexDecl->getSourceName(0), indexes[i]);
+    }
   }
 
   try 

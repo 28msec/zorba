@@ -21,7 +21,7 @@
 #include "diagnostics/util_macros.h"
 
 #include "store/api/item.h"
-#include "store/naive/simple_temp_seq.h"
+#include "simple_temp_seq.h"
 #include "store/api/copymode.h"
 
 namespace zorba { namespace simplestore {
@@ -133,7 +133,7 @@ bool SimpleTempSeq::empty()
 ********************************************************************************/
 xs_integer SimpleTempSeq::getSize() const
 {
-  return theItems.size();
+  return xs_integer( theItems.size() );
 }
 
 
@@ -226,13 +226,22 @@ SimpleTempSeqIter::SimpleTempSeqIter(const SimpleTempSeq* aTempSeq)
 
 
 SimpleTempSeqIter::SimpleTempSeqIter(
-    const SimpleTempSeq* aTempSeq,
+    const SimpleTempSeq* seq,
     xs_integer startPos,
     xs_integer endPos)
-	:
-  theTempSeq(const_cast<SimpleTempSeq*>(aTempSeq)),
-  theBorderType(startEnd)
 {
+  init(const_cast<SimpleTempSeq*>(seq), startPos, endPos);
+}
+
+
+void SimpleTempSeqIter::init(
+    const store::TempSeq_t& aTempSeq,
+    xs_integer startPos,
+    xs_integer endPos)
+{
+  theTempSeq = aTempSeq;
+  theBorderType = startEnd;
+
   xs_long start;
   xs_long end;
 

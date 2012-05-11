@@ -30,6 +30,7 @@
 #include "context/uri_resolver.h"
 #include "context/static_context_consts.h"
 
+#include "compiler/xqddf/value_index.h"
 #include "compiler/xqddf/value_ic.h"
 
 #include "runtime/collections/collections.h"
@@ -325,7 +326,6 @@ store::Collection_t CountCollectionIterator::getZorbaCollection(
 
 
 SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
 
 
 NARY_ACCEPT(CountCollectionIterator);
@@ -451,7 +451,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 {
   store::Collection_t collection;
   store::Item_t node;
-  xs_integer pos = 1;
+  xs_integer pos( 1 );
   bool found;
 
   PlanIteratorState* state;
@@ -466,8 +466,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+xs_integer(1)),
-               state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+1), state);
   }
 
   STACK_END (state);
@@ -1510,8 +1509,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
     PlanState& planState) const
 {
   store::Collection_t              collection;
-  const StaticallyKnownCollection* collectionDecl;
-  store::Item_t                    collectionName;
+  store::Item_t                    name;
   store::Item_t                    node;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
@@ -1521,10 +1519,20 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
-    if (! node->getCollection()) {
+    if (! node->getCollection())
+    {
       throw XQUERY_EXCEPTION( zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC( loc ) );
     }
-    if (collection && collection != node->getCollection()) {
+    if (node->getParent())
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZDDY0036_NON_ROOT_NODE_DELETION,
+        ERROR_PARAMS(node->getCollection()->getName()->getStringValue()),
+        ERROR_LOC( loc )
+      );
+    }
+    if (collection && collection != node->getCollection()) 
+    {
       throw XQUERY_EXCEPTION(
         zerr::ZDDY0018_NODES_NOT_IN_SAME_COLLECTION, ERROR_LOC( loc )
       );
@@ -1536,18 +1544,14 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   if (!nodes.empty())
   {
-    collectionName = collection->getName();
+    name = collection->getName();
 
-    collectionDecl = getCollection(theSctx,
-                                   collectionName,
-                                   loc,
-                                   theDynamicCollection,
-                                   collection);
+    (void)getCollection(theSctx, name, loc, theDynamicCollection, collection);
 
     // create the pul and add the primitive
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-    pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
+    pul->addDeleteFromCollection(&loc, name, nodes, false, theDynamicCollection);
 
     // this should not be necessary. we reset everything in the sequential iterator
     theChildren[theChildren.size()-1]->reset(planState);
@@ -1633,7 +1637,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1645,6 +1649,9 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
 
   collectionDecl = getCollection(
       theSctx, collectionName, loc, theDynamicCollection, collection);
+
+  /* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
 
   if (theChildren.size() > 1)
   {
@@ -1666,7 +1673,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = 0; i < numNodes; ++i)
+  for (xs_integer i( 0 ); i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
@@ -1754,7 +1761,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
   store::Item_t                    numNodesItem;
-  xs_integer                       numNodes = 1;
+  xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1765,6 +1772,9 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
   collectionDecl = getCollection(
       theSctx, collectionName, loc, theDynamicCollection, collection);
+
+	/* added just to remove an unused variable warning in CMake */
+	(void*)collectionDecl;
 
   if (theChildren.size() > 1)
   {
@@ -1785,7 +1795,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_integer i = numNodes; i > xs_integer(0); --i)
+  for (xs_integer i = numNodes; i > 0; --i)
     nodes.push_back(collection->nodeAt(collection->size() - i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theDynamicCollection);
@@ -1794,6 +1804,93 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   STACK_PUSH( result != NULL, state);
 
   STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ZorbaTruncateCollectionIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Collection_t              collection;
+  store::Item_t                    collectionName;
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(collectionName, theChildren[0].getp(), planState);
+
+  (void)getCollection(
+      theSctx, collectionName, loc, theDynamicCollection, collection);
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  pul->addTruncateCollection(&loc, collectionName, theDynamicCollection);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+const StaticallyKnownCollection*
+ZorbaTruncateCollectionIterator::getCollection(
+    const static_context* aSctx,
+    const store::Item_t& aName,
+    const QueryLoc& aLoc,
+    bool aDynamicCollection,
+    store::Collection_t& coll) const
+{
+  const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
+  if (collectionDecl == 0  && !aDynamicCollection)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+      ERROR_PARAMS( aName->getStringValue() ),
+      ERROR_LOC( aLoc )
+    );
+  }
+
+  if (!aDynamicCollection)
+  {
+    // checking collection update mode
+    switch(collectionDecl->getUpdateProperty())
+    {
+      case StaticContextConsts::decl_const:
+        throw XQUERY_EXCEPTION(
+          zerr::ZDDY0004_COLLECTION_CONST_UPDATE,
+          ERROR_PARAMS( aName->getStringValue() ),
+          ERROR_LOC( loc )
+        );
+
+      case StaticContextConsts::decl_append_only:
+        throw XQUERY_EXCEPTION(
+          zerr::ZDDY0005_COLLECTION_APPEND_BAD_INSERT,
+          ERROR_PARAMS( aName->getStringValue() ),
+          ERROR_LOC( loc )
+        );
+      default: break;
+    }
+  }
+
+  coll = GENV_STORE.getCollection(aName, aDynamicCollection);
+
+  if (coll == NULL)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+      ERROR_PARAMS( aName->getStringValue() ),
+      ERROR_LOC( aLoc )
+    );
+  }
+
+  return collectionDecl;
 }
 
 /*******************************************************************************
@@ -2334,19 +2431,20 @@ bool IsDeclaredIndexIterator::nextImpl(
     PlanState& aPlanState) const
 {
   store::Item_t      lName;
+  zorba::IndexDecl*  lDecl;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_index(lName.getp()) == 0)
+  if ((lDecl = theSctx->lookup_index(lName.getp())) && !lDecl->isTemp())
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
   }
 
   STACK_END(lState);
@@ -2389,6 +2487,10 @@ bool DeclaredIndexesIterator::nextImpl(
   for ((lState->nameItState = theSctx->index_names())->open();
        lState->nameItState->next(lName); )
   {
+    if (theSctx->lookup_index(lName.getp())->isTemp()) 
+    {
+      continue;
+    }
     aResult = lName;
     STACK_PUSH(true, lState);
   }
@@ -2397,6 +2499,128 @@ bool DeclaredIndexesIterator::nextImpl(
 
   STACK_END(lState);
 }
+
+
+/*******************************************************************************
+  14.8.5 fn:uri-collection
+********************************************************************************/
+FnURICollectionIteratorState::~FnURICollectionIteratorState()
+{
+  if(theIterator != NULL)
+  {
+    if(theIteratorOpened)
+    {
+      theIterator->close();
+      theIteratorOpened = false;
+    }
+    theIterator = NULL;
+  }
+}
+
+void FnURICollectionIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theIterator = NULL;
+}
+
+void FnURICollectionIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  if(theIterator != NULL)
+  {
+    if(theIteratorOpened)
+    {
+      theIterator->close();
+      theIteratorOpened = false;
+    }
+    theIterator = NULL;
+  }
+}
+
+bool FnURICollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lURI, resolvedURIItem, lIte;
+  store::Collection_t coll;
+  std::auto_ptr<internal::Resource> lResource;
+  internal::CollectionResource* lCollResource;
+  zstring resolvedURIString;
+  zstring lErrorMessage;
+  zstring docuri;
+
+  FnURICollectionIteratorState* state;
+  DEFAULT_STACK_INIT(FnURICollectionIteratorState, state, planState);
+
+  if(theChildren.size() == 1 &&
+    consumeNext(lURI, theChildren[0].getp(),planState))
+  {
+    try
+    {
+      resolvedURIString= theSctx->resolve_relative_uri(lURI->getStringValue());
+    }
+    catch (ZorbaException const&)
+    {
+      throw XQUERY_EXCEPTION(
+        err::FODC0004,
+        ERROR_PARAMS(lURI->getStringValue(), ZED( BadAnyURI ) ),
+        ERROR_LOC( loc )
+      );
+    }
+  }
+  else
+  {
+    resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
+
+    if ( NULL == resolvedURIItem )
+      throw XQUERY_EXCEPTION(
+      err::FODC0002,
+      ERROR_PARAMS( ZED( DefaultCollection), ZED( NotDefInDynamicCtx ) ),
+      ERROR_LOC( loc )
+    );
+
+    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
+  }
+
+  lResource = theSctx->resolve_uri(resolvedURIString,
+                                  internal::EntityData::COLLECTION,
+                                  lErrorMessage);
+
+  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
+
+  if( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FODC0002,
+      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
+      ERROR_LOC( loc )
+    );
+  }
+
+  // return collection nodes
+  state->theIterator = coll->getIterator();
+  ZORBA_ASSERT(state->theIterator != NULL);
+  state->theIterator->open();
+  state->theIteratorOpened = true;
+
+  //return the DocumentURI of the Collection
+  while(state->theIterator->next(lIte))
+  {
+    lIte->getDocumentURI(docuri);
+    if(!docuri.empty())
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, docuri), state);
+    }
+  }
+
+  //close iterator
+  state->theIterator->close();
+  state->theIteratorOpened = false;
+
+  STACK_PUSH(false, state);
+  STACK_END(state);
+
+}
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

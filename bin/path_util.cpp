@@ -49,7 +49,7 @@ getPathFromEnvironment(std::string const& aEnvVar)
 }
 
 
-static void
+void
 tokenizePath(
   const std::string&    aPathStr,
   std::vector<String>&  aResult)
@@ -65,6 +65,23 @@ tokenizePath(
     aResult.push_back(*lIter);
   }
 }
+
+
+String
+concatenatePaths( const std::vector<String>& aPathList)
+{
+  String delimiter(filesystem_path::get_path_separator());
+
+  String lResult;
+  for (std::vector<String>::const_iterator lIter = aPathList.begin();
+       lIter != aPathList.end(); ++lIter)
+  {
+    lResult += delimiter + *lIter;
+  }
+
+  return lResult;
+}
+
 
 void
 setPathsOnContext(
@@ -101,8 +118,8 @@ setPathsOnContext(
     // Compute and set lib path
     aProperties.getLibPath(lPathStr);
     tokenizePath(lPathStr, lPath);
-    lEnvStr = getPathFromEnvironment("ZORBA_LIB_PATH");
     lPath.push_back(lCWD.get_path());
+    lEnvStr = getPathFromEnvironment("ZORBA_LIB_PATH");
     tokenizePath(lEnvStr, lPath);
     aStaticCtx->setLibPath(lPath);
   }

@@ -32,6 +32,7 @@
 #include "api/unmarshaller.h"
 
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
@@ -156,6 +157,18 @@ Item::isNull() const
   return false;
 }
 
+store::SchemaTypeCode
+Item::getTypeCode() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getTypeCode();
+
+  ITEM_CATCH
+    return store::XS_ANY_ATOMIC;
+}
 
 Item Item::getType() const
 {
@@ -264,7 +277,12 @@ Item Item::getEBV() const
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return &*m_item->getEBV();
+    bool value = m_item->getEBV();
+
+    store::Item_t result;
+    GENV_ITEMFACTORY->createBoolean(result, value);
+
+    return result.getp();
 
   ITEM_CATCH
   return Item();
@@ -389,12 +407,18 @@ Item::getNamespaceBindings(NsBindings& aBindings,
 
       store::NsBindings lStoreBindings;
       m_item->getNamespaceBindings(lStoreBindings, aNsScoping);
+      aBindings.reserve(aBindings.size() + lStoreBindings.size());
+
       store::NsBindings::iterator ite = lStoreBindings.begin();
       store::NsBindings::iterator end = lStoreBindings.end();
       for (; ite != end; ++ite) {
         zstring& prefix = ite->first;
         zstring& nsuri = ite->second;
-        aBindings.push_back(std::pair<String, String>(prefix.str(), nsuri.str()));
+        aBindings.push_back(
+            std::pair<String, String>(
+              Unmarshaller::newString(prefix),
+              Unmarshaller::newString(nsuri))
+          );
       }
 
   ITEM_CATCH
@@ -457,6 +481,29 @@ Item::getStream()
   ITEM_CATCH
   // TODO: throw exception
 }
+
+bool
+Item::isEncoded() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->isEncoded();
+  ITEM_CATCH
+  // TODO: throw exception
+}
+
+const char*
+Item::getBase64BinaryValue(size_t& s) const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getBase64BinaryValue(s);
+  ITEM_CATCH
+  // TODO: throw exception
+}
+
 
 Item
 Item::getCollectionName() const

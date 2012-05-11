@@ -84,7 +84,7 @@ void DocIndexer::createIndexEntries(
                         QueryLoc::null,
                         tmp);
 
-  ulong numEntries = delta.size();
+  csize numEntries = delta.size();
   store::Item_t domainNode;
   store::IndexKey* key = NULL;
 
@@ -96,13 +96,11 @@ void DocIndexer::createIndexEntries(
 
       //std::cout << domainNode.getp() << "  " << key << std::endl;
 
-      for (ulong i = 0; i < theNumColumns; ++i)
+      for (csize i = 0; i < theNumColumns; ++i)
       {
         if (!thePlanWrapper->next((*key)[i]))
-          throw ZORBA_EXCEPTION(
-            zerr::ZXQP0003_INTERNAL_ERROR,
-            ERROR_PARAMS( ZED( IncompleteKeyInIndexRefresh ) )
-          );
+          throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+          ERROR_PARAMS(ZED(IncompleteKeyInIndexRefresh)));
       }
       
       delta.resize(numEntries + 1);

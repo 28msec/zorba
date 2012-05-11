@@ -1,46 +1,5 @@
 /** \page xqddf XQuery Data Definition Facility
 
-<ul>
-  <li> Table of Contents </li>
-  <ul>
-    <li> \ref intro </li>
-    <li> \ref collections </li>
-    <ul>
-      <li> \ref collections_in_action </li>
-      <li> \ref collection_declaration </li>
-      <li> \ref creating_collections </li>
-      <li> \ref accessing_collections </li>
-      <li> \ref updating_collections </li>
-      <li> \ref destroying_collections </li>
-    </ul>
-    <li> \ref indexes</li>
-    <ul>
-      <li> \ref indexes_in_action </li>
-      <li> \ref index_declaration </li>
-      <li> \ref index_creation </li>
-      <li> \ref index_deletion </li>
-      <li> \ref index_probing </li>
-      <li> \ref index_keys </li>
-      <li> \ref index_maintenance </li>
-    </ul>
-    <li> \ref integrity_constraints</li>
-    <ul>
-      <li> \ref ic_declaration</li>
-      <ul>
-        <li> \ref ic_entity_integrity</li>
-        <li> \ref ic_domain_integrity</li>
-        <li> \ref ic_referential_integrity</li>
-      </ul>
-      <li> \ref ic_life_cycle</li>
-    </ul>
-    <li> \ref extensions_xquf_updates_routines </li>
-    <li> \ref error_summary </li>
-  </ul>
-</ul>
-
-
-\section intro The Zorba Data Definition Facility
-
 Zorba extends the XQuery language with support for collections, indexes, and
 integrity constraints. This is accomplished via a combination of new prolog
 declarations, new kinds of expressions or extensions to existing expressions,
@@ -334,12 +293,12 @@ associated the collection, and finally destroys the document container itself.
 \subsection collection_declaration Collection Declaration
 
 \code
-  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
-             ((ContextItemDecl | AnnotatedDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
-  
-  CollectionDecl ::= 'declare'  Annotation* 'collection' QName CollectionTypeDecl?
+  AnnotatedDecl
+          ::= 'declare' ( CompatibilityAnnotation | Annotation )*
+              ( VarDecl | FunctionDecl | CollectionDecl | IndexDecl | ICDecl )
+  CollectionDecl ::= 'collection' EQName CollectionTypeDecl?
 
-  CollectionTypeDeclaration ::= 'as' KindTest OccurrenceIndicator?
+  CollectionTypeDecl ::= 'as' KindTest OccurrenceIndicator?
 \endcode
 
 Collections are defined by <strong>collection declaration statements</strong>,
@@ -1356,14 +1315,11 @@ receive an error.
 
 
 \code
-  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
-             ((ContextItemDecl | AnnotatedDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
-  
-  IndexDecl ::= 'declare' Annotation* 'index' IndexName
+  IndexDecl ::= 'index' IndexName
                'on' 'nodes' IndexDomainExpr
                'by' IndexKeySpec (',' IndexKeySpec)*
 
-  IndexName ::= QName
+  IndexName ::= EQName
 
   IndexDomainExpr ::= PathExpr
 
@@ -1373,9 +1329,9 @@ receive an error.
 
   IndexKeyTypeDecl ::= 'as' AtomicType OccurrenceIndicator?
 
-  AtomicType ::= QName
+  AtomicType ::= EQName
 
-  IndexKeyCollation ::= 'collation' UriLiteral
+  IndexKeyCollation ::= 'collation' URILiteral
 
   Note: the following annotations are accepted within the context of an index declaration:
 
@@ -1839,7 +1795,7 @@ if the index is not among the statically known indexes or the available indexes.
 equal to the number of keyspecs found in the index declaration.
 </li>
 <li>
-[err:XPTY0004], if a non-empty seach key is given, whose type does not match 
+[err:XPTY0004], if a non-empty search key is given, whose type does not match 
 the sequence type specified in the corresponding keyspec.
 </li>
 </ul>
@@ -2125,16 +2081,16 @@ function populates an empty index container).</li>
 \section integrity_constraints Integrity Constraints in Zorba 
 
 \code
-  ICDecl                ::=  'declare' 'integrity' 'constraint' QName (ICCollection | ICForeignKey)
+  ICDecl                ::=  'integrity' 'constraint' EQName (ICCollection | ICForeignKey)
 
-  ICCollection          ::=  'on' 'collection' QName
+  ICCollection          ::=  'on' 'collection' EQName
        ( ICCollSequence | ICCollSequenceUnique | ICCollNode )
 
-  ICCollSequence        ::=  '\$' QName 'check' ExprSingle
+  ICCollSequence        ::=  '\$' EQName 'check' ExprSingle
 
-  ICCollSequenceUnique  ::=  'node' '\$' QName 'check' 'unique' 'key' PathExpr
+  ICCollSequenceUnique  ::=  'node' '\$' EQName 'check' 'unique' 'key' PathExpr
 
-  ICCollNode            ::=  'foreach' 'node' '\$' QName 'check' ExprSingle
+  ICCollNode            ::=  'foreach' 'node' '\$' EQName 'check' ExprSingle
 
   ICForeignKey          ::=  'foreign' 'key' ICForeignKeySource ICForeignKeyTarget
 
@@ -2142,7 +2098,7 @@ function populates an empty index container).</li>
 
   ICForeignKeyTarget    ::=  'to' ICForeignKeyValues
 
-  ICForeignKeyValues    ::=  'collection' QName 'node' '\$' QName 'key' PathExpr
+  ICForeignKeyValues    ::=  'collection' EQName 'node' '\$' QName 'key' PathExpr
 \endcode
 
 

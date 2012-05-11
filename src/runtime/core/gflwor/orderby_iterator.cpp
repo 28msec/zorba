@@ -17,6 +17,7 @@
 
 #include "zorbautils/fatal.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbautils/checked_vector.h"
 
@@ -45,10 +46,9 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(OrderByIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderByIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OrderSpec)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderSpec)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -377,18 +377,18 @@ void OrderByIterator::materializeResultForSort(
   OrderByState::SortTable& sortTable = iterState->theSortTable;
   OrderByState::DataTable& dataTable = iterState->theDataTable;
 
-  ulong numTuples = (ulong)sortTable.size();
+  csize numTuples = sortTable.size();
   sortTable.resize(numTuples + 1);
   dataTable.resize(numTuples + 1);
 
   // Create the sort tuple
 
-  ulong numSpecs = (ulong)theOrderSpecs.size();
+  csize numSpecs = theOrderSpecs.size();
 
   std::vector<store::Item*>& sortKey = sortTable[numTuples].theKeyValues;
   sortKey.resize(numSpecs);
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     store::Item_t sortKeyItem;
     if (consumeNext(sortKeyItem, theOrderSpecs[i].theDomainIter, planState)) 
@@ -398,9 +398,8 @@ void OrderByIterator::materializeResultForSort(
       store::Item_t temp;
       if (consumeNext(temp, theOrderSpecs[i].theDomainIter, planState)) 
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
-        );
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
     else
@@ -415,14 +414,14 @@ void OrderByIterator::materializeResultForSort(
 
   // create the data tuple
 
-  ulong numForVars = (ulong)theInputForVars.size();
-  ulong numLetVars = (ulong)theInputLetVars.size();
+  csize numForVars = theInputForVars.size();
+  csize numLetVars = theInputLetVars.size();
 
   StreamTuple& streamTuple = dataTable[numTuples];
   streamTuple.theItems.resize(numForVars);
   streamTuple.theSequences.resize(numLetVars);
 
-  for (ulong i = 0;  i < numForVars; ++i)
+  for (csize i = 0;  i < numForVars; ++i)
   {
     store::Item_t forItem;
     consumeNext(forItem, theInputForVars[i], planState);
@@ -432,7 +431,7 @@ void OrderByIterator::materializeResultForSort(
     theInputForVars[i]->reset(planState);
   }
 
-  for (ulong i = 0; i < numLetVars; ++i)
+  for (csize i = 0; i < numLetVars; ++i)
   {
     store::TempSeq_t letTempSeq;
     createTempSeq(letTempSeq, theInputLetVars[i], planState, false);

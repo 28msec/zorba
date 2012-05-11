@@ -509,7 +509,7 @@ MapSizeIterator::nextImpl(
     );
   }
 
-  GENV_ITEMFACTORY->createInteger(result, lIndex->size());
+  GENV_ITEMFACTORY->createInteger(result, xs_integer(lIndex->size()));
 
   STACK_PUSH(true, state);
 

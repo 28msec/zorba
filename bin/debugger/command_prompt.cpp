@@ -101,10 +101,20 @@ CommandPrompt::execute()
     lBuf = el_gets(theEditLine, &lCharsRead);
     std::string lCommandLine(lBuf, lCharsRead - 1);
 #else
-    std::cout << "(xqdb) ";
+    bool lWithOutput = true;
+    if (lWithOutput) {
+      std::cout << "(xqdb) ";
+    }
+    lWithOutput = true;
     std::string lCommandLine;
     std::getline(std::cin, lCommandLine);
+    if (std::cin.fail()) {
+      lWithOutput = false;
+      std::cin.clear();
+      continue;
+    }
 #endif
+    
     std::vector<std::string> lArgs;
 
     // split the command into arguments

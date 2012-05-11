@@ -16,7 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_STORE_DEFS_H
 #define ZORBA_SIMPLE_STORE_STORE_DEFS_H
 
-#include "store/naive/store_manager_impl.h"
+#include "store_manager_impl.h"
 
 namespace zorba { 
 
@@ -38,8 +38,7 @@ namespace simplestore {
 
 #define GET_PUL_FACTORY() \
   (GET_STORE().getPULFactory())
-
-
+  
 #define BASE_NODE(item) (reinterpret_cast<XmlNode*>((item).getp()))
 
 #define INTERNAL_NODE(item) (reinterpret_cast<InternalNode*>((item).getp()))
@@ -55,6 +54,28 @@ namespace simplestore {
 #define PI_NODE(item) (reinterpret_cast<PiNode*>((item).getp()))
 
 #define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
+
+
+#ifndef NDEBUG
+
+#define STORE_TRACE(level, msg)               \
+{                                             \
+  if (level <= GET_STORE().getTraceLevel())   \
+    std::cout << msg << std::endl;            \
+}
+
+#define STORE_TRACE1(msg) STORE_TRACE(1, msg);
+#define STORE_TRACE2(msg) STORE_TRACE(2, msg);
+#define STORE_TRACE3(msg) STORE_TRACE(3, msg);
+
+#else
+
+#define STORE_TRACE(msg)
+#define STORE_TRACE1(msg)
+#define STORE_TRACE2(msg)
+#define STORE_TRACE3(msg)
+
+#endif
 
 }
 }

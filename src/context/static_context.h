@@ -26,6 +26,8 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/function.h>
+#include <zorba/error.h>
+#include <zorba/diagnostic_list.h>
 
 #ifdef WIN32
 #include "store/api/item.h"
@@ -273,7 +275,7 @@ public:
   theExternalModulesMap :
   -----------------------
 
-  theTypeMnager :
+  theTypeManager :
   ---------------
   If non NULL, then "this" is the root sctx of a module, and theTypeManager stores
   the schemas that are imported by the associated module (in-scope element
@@ -296,7 +298,7 @@ public:
 
   theVariablesMap :
   -----------------
-  
+
   theImportedPrivateVariablesMap :
   --------------------------------
 
@@ -431,58 +433,64 @@ public:
   //
   // W3C namespaces
   //
-  static const zstring W3C_NS_PREFIX; // http://www.w3.org/
+  static const char* W3C_NS_PREFIX; // http://www.w3.org/
 
-  static const zstring W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
+  static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
-  static const zstring W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
+  static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
 
   //
   // Zorba namespaces
   //
 
-  static const zstring ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
+  static const char* ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
 
   // Namespaces of external modules declaring zorba builtin functions
-  static const zstring ZORBA_MATH_FN_NS;
-  static const zstring ZORBA_BASE64_FN_NS;
-  static const zstring ZORBA_NODEREF_FN_NS;
-  static const zstring ZORBA_NODEPOS_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INDEXES_DML_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
-  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
-  static const zstring ZORBA_SCHEMA_FN_NS;
-  static const zstring ZORBA_XQDOC_FN_NS;
-  static const zstring ZORBA_RANDOM_FN_NS;
-  static const zstring ZORBA_INTROSP_SCTX_FN_NS;
-  static const zstring ZORBA_REFLECTION_FN_NS;
-  static const zstring ZORBA_STRING_FN_NS;
-  static const zstring ZORBA_FETCH_FN_NS;
-  static const zstring ZORBA_NODE_FN_NS;
-  static const zstring ZORBA_XML_FN_NS;
+  static const char* ZORBA_MATH_FN_NS;
+  static const char* ZORBA_BASE64_FN_NS;
+  static const char* ZORBA_JSON_FN_NS;
+  static const char* ZORBA_NODEREF_FN_NS;
+  static const char* ZORBA_NODEPOS_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
+  static const char* ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS;
+  static const char* ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INDEXES_DML_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
+  static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
+  static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+  static const char* ZORBA_SCHEMA_FN_NS;
+  static const char* ZORBA_XQDOC_FN_NS;
+  static const char* ZORBA_RANDOM_FN_NS;
+  static const char* ZORBA_INTROSP_SCTX_FN_NS;
+  static const char* ZORBA_REFLECTION_FN_NS;
+  static const char* ZORBA_STRING_FN_NS;
+  static const char* ZORBA_URI_FN_NS;
+  static const char* ZORBA_FETCH_FN_NS;
+  static const char* ZORBA_NODE_FN_NS;
+  static const char* ZORBA_XML_FN_NS;
+#ifndef ZORBA_NO_FULL_TEXT
+  static const char* ZORBA_FULL_TEXT_FN_NS;
+#endif /* ZORBA_NO_FULL_TEXT */
+  static const char* ZORBA_XML_FN_OPTIONS_NS;
 
   // Namespaces of virtual modules declaring zorba builtin functions
-  static const zstring ZORBA_UTIL_FN_NS;
-  static const zstring ZORBA_SCRIPTING_FN_NS;
+  static const char* ZORBA_UTIL_FN_NS;
+  static const char* ZORBA_SCRIPTING_FN_NS;
 
   // Namespaces of virtual modules declaring internal builtin functions of
   // XQUERY or zorba. Internal functions are not visible to xquery programs.
-  static const zstring XQUERY_OP_NS;
-  static const zstring ZORBA_OP_NS;
+  static const char* XQUERY_OP_NS;
+  static const char* ZORBA_OP_NS;
 
   // options-related namepsaces
-  static const zstring ZORBA_OPTIONS_NS;
-  static const zstring ZORBA_OPTION_WARN_NS;
-  static const zstring ZORBA_OPTION_FEATURE_NS;
-  static const zstring ZORBA_OPTION_OPTIM_NS;
-  static const zstring ZORBA_VERSIONING_NS;
+  static const char* ZORBA_OPTIONS_NS;
+  static const char* ZORBA_OPTION_WARN_NS;
+  static const char* ZORBA_OPTION_FEATURE_NS;
+  static const char* ZORBA_OPTION_OPTIM_NS;
+  static const char* ZORBA_VERSIONING_NS;
 
 protected:
   static_context                        * theParent;
@@ -497,9 +505,9 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  ztd::auto_vector<internal::URIMapper>       theURIMappers;
+  ztd::auto_vector<internal::URIMapper>   theURIMappers;
 
-  ztd::auto_vector<internal::URLResolver>     theURLResolvers;
+  ztd::auto_vector<internal::URLResolver> theURLResolvers;
 
   checked_vector<zstring>                 theURIPath;
 
@@ -520,7 +528,7 @@ protected:
   xqtref_t                                theContextItemType;
 
   VariableMap                           * theVariablesMap;
-  
+
   VariableMap                           * theImportedPrivateVariablesMap;
 
   FunctionMap                           * theFunctionMap;
@@ -598,6 +606,8 @@ public:
   void serialize_tracestream(serialization::Archiver& ar);
 
   void serialize(serialization::Archiver& ar);
+
+  void prepare_for_serialize(CompilerCB *compiler_cb);
 
 public:
   static_context(::zorba::serialization::Archiver& ar);
@@ -692,6 +702,15 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const;
+
+  /**
+   * Given a URI, populate a vector with a list of candidate URIs.  If
+   * no candidate URIs are available, the vector will be populated
+   * with (only) the input URI.
+   */
+  void get_candidate_uris
   (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
@@ -794,7 +813,7 @@ public:
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;
 
-  void set_context_item_type(const xqtref_t& t);
+  void set_context_item_type(const xqtref_t& t, const QueryLoc& loc);
 
   const XQType* get_context_item_type() const;
 

@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <stdexcept>
+
 #include "common/common.h"
 #include "util/string_util.h"
 #include "zorbatypes/numconversions.h"
@@ -22,6 +24,9 @@
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#define RANGE_ERROR(N,TYPE) \
+  std::range_error( BUILD_STRING( '"', (N), "\": number can not be represented as an " TYPE ) )
 
 xs_int to_xs_int( xs_double const &d ) {
   zstring const temp( d.toIntegerString() );
@@ -33,7 +38,9 @@ xs_int to_xs_int( xs_integer const &i ) {
   zstring const temp( i.toString() );
   return ztd::aton<xs_int>( temp.c_str() );
 #else
-  return static_cast<xs_int>(i.value_);
+  if ( i.is_xs_int() )
+    return static_cast<xs_int>( i.value_ );
+  throw RANGE_ERROR( i, "xs:int" );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
@@ -42,9 +49,7 @@ xs_long to_xs_long( xs_decimal const &d ) {
     zstring const temp( d.toString() );
     return ztd::aton<xs_long>( temp.c_str() );
   }
-  throw std::range_error(
-    BUILD_STRING( '"', d, "\": number can not be represented as an xs:long" )
-  );
+  throw RANGE_ERROR( d, "xs:long" );
 }
 
 xs_long to_xs_long( xs_integer const &i ) {
@@ -52,16 +57,27 @@ xs_long to_xs_long( xs_integer const &i ) {
   zstring const temp( i.toString() );
   return ztd::aton<xs_long>( temp.c_str() );
 #else
-  return static_cast<xs_long>( i.value_ );
+  if ( i.is_xs_long() )
+    return static_cast<xs_long>( i.value_ );
+  throw RANGE_ERROR( i, "xs:long" );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
+
+#ifndef ZORBA_WITH_BIG_INTEGER
+xs_long to_xs_long( xs_nonNegativeInteger const &i ) {
+  zstring const temp( i.toString() );
+  return ztd::aton<xs_long>( temp.c_str() );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 xs_unsignedInt to_xs_unsignedInt( xs_integer const &i ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   zstring const temp( i.toString() );
   return ztd::aton<xs_unsignedInt>( temp.c_str() );
 #else
-  return static_cast<xs_unsignedInt>( i.value_ );
+  if ( i.is_xs_unsignedInt() )
+    return static_cast<xs_unsignedInt>( i.value_ );
+  throw RANGE_ERROR( i, "xs:unsignedInt" );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
@@ -70,7 +86,9 @@ xs_unsignedLong to_xs_unsignedLong( xs_integer const &i ) {
   zstring const temp( i.toString() );
   return ztd::aton<xs_unsignedLong>( temp.c_str() );
 #else
-  return static_cast<xs_unsignedLong>( i.value_ );
+  if ( i.is_xs_unsignedLong() )
+    return static_cast<xs_unsignedLong>( i.value_ );
+  throw RANGE_ERROR( i, "xs:unsignedLong" );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 

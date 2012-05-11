@@ -36,7 +36,7 @@ PlanIter_t zorba_store_indexes_static_dml_keys::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IndexKeysIterator(sctx, loc, argv);
 }

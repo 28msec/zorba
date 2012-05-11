@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WORK_DEFAULT=/tmp
-XQTSURL_DEFAULT=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_4.zip
+XQTSURL_DEFAULT=http://zorbatest.lambda.nu:8080/~spungi/XQFTTS_250112.zip
 
 die() {
   echo
@@ -148,7 +148,7 @@ if (m/^%thes /) {
   # does not understand $RBKT_SRC_DIR. Should change specification.h to
   # do that replacement universally and eliminate the numerous other places
   # that do it.
-  $thesauri {$id} = "$uri:=xqftts|$test_src_path/$path";
+  $thesauri {$id} = "$uri:=xqftts://$test_src_path/$path";
   next;
 }
 if (m/^%stop /) {

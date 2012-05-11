@@ -35,12 +35,13 @@
 
 #include "zorba/util/uri.h"
 
+#include "debugger_runtime.h"
+
 namespace zorba {
 
 // ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(Breakable)
-END_SERIALIZABLE_CLASS_VERSIONS(Breakable)
 
 void
 Breakable::serialize(serialization::Archiver& ar)
@@ -50,13 +51,6 @@ Breakable::serialize(serialization::Archiver& ar)
 }
 
 // ****************************************************************************
-
-SERIALIZABLE_CLASS_VERSIONS(QueryLocComparator)
-END_SERIALIZABLE_CLASS_VERSIONS(QueryLocComparator)
-
-void
-QueryLocComparator::serialize(serialization::Archiver& ar) {
-}
 
 bool
 QueryLocComparator::operator()(const QueryLoc& a, const QueryLoc& b) const
@@ -111,7 +105,7 @@ QueryLocComparator::operator()(const QueryLoc& a, const QueryLoc& b) const
 // ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
+
 
 DebuggerSingletonIterator::DebuggerSingletonIterator(
   static_context* sctx, QueryLoc loc, DebuggerCommons* lCommons)
@@ -143,7 +137,7 @@ DebuggerSingletonIterator::nextImpl(store::Item_t& result, PlanState& planState)
 // ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
-END_SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
+
 
 DebuggerCommons::DebuggerCommons(static_context* sctx)
   : theBreak(false),
@@ -158,22 +152,61 @@ DebuggerCommons::DebuggerCommons(static_context* sctx)
   thePlanState = NULL;
 }
 
+
 DebuggerCommons::~DebuggerCommons()
 {
 }
+
 
 void
 DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theBreakables;
-  ar & theBreakableIDs;
+
+  if (ar.is_serializing_out())
+  {
+    ar.set_is_temp_field(true);
+    int s = (int)theBreakableIDs.size();
+    ar & s;
+    ar.set_is_temp_field(false);
+
+    BreakableIdMap::iterator it = theBreakableIDs.begin();
+    BreakableIdMap::iterator end = theBreakableIDs.end();
+
+    for (; it != end; ++it)
+    {
+      QueryLoc loc = (*it).first;
+      ar & loc;
+      ar & (*it).second;
+    }
+  }
+  else
+  {
+    ar.set_is_temp_field(true);
+    int s;
+    ar & s;
+    ar.set_is_temp_field(false);
+
+    std::pair<QueryLoc, unsigned int> p;
+
+    for (int i = 0; i < s; ++i)
+    {
+      ar & p.first;
+      ar & p.second;
+
+      theBreakableIDs.insert(p);
+    }
+  }
+
   ar & theStackTrace;
   ar & theUriFileMappingMap;
 
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
     theRuntime = NULL;
+
   ar & theCurrentStaticContext;
-  if(ar.is_serializing_out())
+
+  if (ar.is_serializing_out())
     theCurrentDynamicContext = NULL;
 
   ar & theBreak;
@@ -181,8 +214,9 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
   ar & theIteratorStack;
   ar & theBreakCondition;
 
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
     thePlanState = NULL;
+
   ar & theEvalItem;
   ar & theExecEval;
   ar & theStepping;
@@ -382,8 +416,12 @@ DebuggerCommons::canBreak()
 bool
 DebuggerCommons::mustBreak(SuspensionCause& aCause)
 {
+  if (theRuntime->getAndClearInterruptBreak()) {
+    aCause = CAUSE_USER;
+    return true;
+  }
   if (theBreak) {
-    aCause = CAUSE_STEP;
+    aCause = theCause;
     return true;
   } else if (theStepping) {
     std::size_t lSize = theIteratorStack.size();

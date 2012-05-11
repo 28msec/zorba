@@ -36,10 +36,11 @@ PlanIter_t fn_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnCollectionIterator(sctx, loc, argv);
 }
+
 
 
 
@@ -63,7 +64,7 @@ PlanIter_t zorba_store_collections_static_dml_collection_name::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ZorbaCollectionNameIterator(sctx, loc, argv);
 }
@@ -75,7 +76,7 @@ PlanIter_t zorba_store_indexes_static_ddl_is_available_index::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsAvailableIndexIterator(sctx, loc, argv);
 }
@@ -85,7 +86,7 @@ PlanIter_t zorba_store_indexes_static_ddl_available_indexes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new AvailableIndexesIterator(sctx, loc, argv);
 }
@@ -95,7 +96,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_is_activated_integrity_c
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsActivatedICIterator(sctx, loc, argv);
 }
@@ -105,7 +106,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_activated_integrity_cons
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ActivatedICsIterator(sctx, loc, argv);
 }
@@ -115,7 +116,7 @@ PlanIter_t zorba_store_collections_static_ddl_is_declared_collection::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsDeclaredCollectionIterator(sctx, loc, argv);
 }
@@ -125,7 +126,7 @@ PlanIter_t zorba_store_collections_static_ddl_declared_collections::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeclaredCollectionsIterator(sctx, loc, argv);
 }
@@ -135,7 +136,7 @@ PlanIter_t zorba_store_indexes_static_ddl_is_declared_index::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsDeclaredIndexIterator(sctx, loc, argv);
 }
@@ -145,7 +146,7 @@ PlanIter_t zorba_store_indexes_static_ddl_declared_indexes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeclaredIndexesIterator(sctx, loc, argv);
 }
@@ -155,7 +156,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_is_declared_integrity_co
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsDeclaredICIterator(sctx, loc, argv);
 }
@@ -165,9 +166,19 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_declared_integrity_const
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeclaredICsIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_uri_collection_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnURICollectionIterator(sctx, loc, argv);
 }
 
 void populate_context_collections(static_context* sctx)
@@ -686,6 +697,30 @@ void populate_context_collections(static_context* sctx)
   {
     
 
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_truncate,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","truncate"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_TRUNCATE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_truncate,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","truncate"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_TRUNCATE_1);
+
+  }
+
+
+  {
+    
+
     DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_collection_name,
         (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","collection-name"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -864,6 +899,29 @@ void populate_context_collections(static_context* sctx)
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","declared-integrity-constraints"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
         FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_DECLARED_INTEGRITY_CONSTRAINTS_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_uri_collection_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
+        FunctionConsts::FN_URI_COLLECTION_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_uri_collection_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","uri-collection"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_STAR),
+        FunctionConsts::FN_URI_COLLECTION_1);
 
   }
 

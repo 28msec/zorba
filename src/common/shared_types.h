@@ -140,12 +140,18 @@ typedef rchandle<GDay> GDay_t;
 typedef rchandle<GMonth> GMonth_t;
 
 /* numerics */
-template <class Object> class FloatImpl;
-class Integer;
-
-/* numerics */
+template<typename FloatType> class FloatImpl;
 typedef FloatImpl<double> Double;
 typedef FloatImpl<float>  Float;
+#ifdef ZORBA_WITH_BIG_INTEGER
+class IntegerImpl;
+typedef IntegerImpl Integer;
+typedef IntegerImpl UInteger;
+#else
+template<typename IntType> class IntegerImpl;
+typedef IntegerImpl<long long> Integer;
+typedef IntegerImpl<unsigned long long> UInteger;
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 /* api */
 class serializer;

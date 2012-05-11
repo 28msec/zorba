@@ -26,17 +26,18 @@
 
 #include "system/properties.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "functions/udf.h"
+
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
-END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
-END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 
 
 #define DEF_PRINT_EXPR_TREE( phase )                                    \
@@ -120,6 +121,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theTimeout(timeout),
   theTempIndexCounter(0)
 {
+  theLocalUdfs = new rclist<user_function*>;
 }
 
 
@@ -143,6 +145,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theTempIndexCounter(0),
   theConfig(cb.theConfig)
 {
+  theLocalUdfs = new rclist<user_function*>;
 }
 
 
@@ -167,6 +170,30 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 CompilerCB::~CompilerCB() 
 {
+}
+
+
+/*******************************************************************************
+  Compile all the user_functions so the expr tree is stable at serialize.
+
+  Called from XQueryImpl::serialize(), if serializing out.
+********************************************************************************/
+void CompilerCB::prepare_for_serialize()
+{
+  rclist<user_function*>::iterator udf_it;
+  for (udf_it = theLocalUdfs->begin(); udf_it != theLocalUdfs->end(); udf_it++)
+  {
+    (*udf_it)->prepare_for_serialize(this);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
+{
+  return theLocalUdfs;
 }
 
 
@@ -198,9 +225,9 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-static_context* CompilerCB::getStaticContext(short c)
+static_context* CompilerCB::getStaticContext(int c)
 {
-  std::map<short, static_context_t>::iterator lIter;
+  SctxMap::iterator lIter;
   lIter = theSctxMap.find(c);
   assert(lIter != theSctxMap.end());
   return lIter->second.getp();

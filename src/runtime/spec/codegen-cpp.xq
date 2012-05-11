@@ -95,7 +95,8 @@ declare function local:process($doc,
 
             if (exists($iter/@preprocessorGuard))
             then
-              concat($gen:newline, "#endif")
+              concat($gen:newline, "#endif
+")
             else 
               ""
             )
@@ -194,7 +195,7 @@ declare function local:create-function($iter, $function, $suffix as xs:string) a
     if (count($function/zorba:signature) = 0)
     then 
       (: TODO user fn:error :)
-      'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
+      'Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element'
     else
       let $name := concat(local:function-name($function), $suffix)
       let $ret := if($iter/@name = "") then "return NULL;"
@@ -206,7 +207,7 @@ declare function local:create-function($iter, $function, $suffix as xs:string) a
                      $gen:newline, $gen:indent, 'static_context* sctx,',
                      $gen:newline, $gen:indent, 'const QueryLoc&amp; loc,',
                      $gen:newline, $gen:indent, 'std::vector&lt;PlanIter_t&gt;&amp; argv,',
-                     $gen:newline, $gen:indent, 'AnnotationHolder&amp; ann) const',
+                     $gen:newline, $gen:indent, 'expr&amp; ann) const',
                      $gen:newline,'{', $gen:newline, $gen:indent, $ret, $gen:newline,'}'), '')
   else
     ''
@@ -275,7 +276,8 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
           ($gen:newline,
            if (exists($iter/@preprocessorGuard))
            then
-             concat($gen:newline, $iter/@preprocessorGuard)
+             concat($gen:newline, $iter/@preprocessorGuard, "
+")
            else 
              "",
            $gen:indent,
@@ -336,7 +338,13 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
               '),', $gen:newline, gen:indent(4), 
               'FunctionConsts::', gen:function-kind($sig) ,');',
               $gen:newline, $gen:newline, $gen:indent,
-            '}', $gen:newline, $gen:newline
+            '}', $gen:newline, $gen:newline,
+            if (exists($iter/@preprocessorGuard))
+            then
+              concat($gen:newline, "#endif
+")
+            else 
+              ""
             ),
         ''),
       '')
@@ -351,7 +359,7 @@ declare function local:get-zorba-ns($prefix as xs:string, $mapping) as xs:string
     then 
       $tmp/@uri
     else  (: TODO user fn:error :)
-      'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'  
+      'Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element'  
 };
 
 

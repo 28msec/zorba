@@ -33,27 +33,21 @@
 #include "store/api/item_factory.h"
 
 
-using namespace std;
-
 namespace zorba
 {
+
 SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
+
 
 /*******************************************************************************
 
@@ -78,67 +72,92 @@ InstanceOfIterator::~InstanceOfIterator()
 
 bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lTreatItem;
-  xqtref_t lTreatType;
-  TypeConstants::quantifier_t lQuantifier;
-  bool lResult;
+  store::Item_t item;
+  TypeConstants::quantifier_t quant;
+  bool res = false;
 
-  RootTypeManager& ts = GENV_TYPESYSTEM;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lQuantifier = TypeOps::quantifier(*theSequenceType);
+  quant = TypeOps::quantifier(*theSequenceType);
 
-  if (consumeNext(lTreatItem, theChild.getp(), planState))
+  if (consumeNext(item, theChild.getp(), planState))
   {
-    if (TypeOps::is_treatable(tm, lTreatItem, *theSequenceType, loc))
+    if (theSequenceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+        item->isAtomic())
     {
-      if (consumeNext(lTreatItem, theChild.getp(), planState))
+      store::SchemaTypeCode targetType = 
+      static_cast<const AtomicXQType*>(theSequenceType.getp())->get_type_code();
+
+      store::SchemaTypeCode itemType = item->getTypeCode();
+
+      if (TypeOps::is_subtype(itemType, targetType))
       {
-        if (lQuantifier == TypeConstants::QUANT_ONE ||
-            lQuantifier == TypeConstants::QUANT_QUESTION)
+        if (consumeNext(item, theChild.getp(), planState))
         {
-          lResult = false;
+          if (quant == TypeConstants::QUANT_PLUS || quant == TypeConstants::QUANT_STAR)
+          {
+            res = true;
+            do
+            {
+              if (item->isAtomic())
+              {
+                itemType = item->getTypeCode();
+                res = TypeOps::is_subtype(itemType, targetType);
+              }
+              else 
+              {
+                res = false;
+              }
+
+              if (res == false)
+              {
+                theChild->reset(planState);
+                break;
+              }
+            }
+            while (consumeNext(item, theChild.getp(), planState));
+          }
         }
         else
         {
-          lResult = true;
+          res = true;
+        }
+      }
+    }
+    else if (TypeOps::is_treatable(tm, item, *theSequenceType, loc))
+    {
+      if (consumeNext(item, theChild.getp(), planState))
+      {
+        if (quant == TypeConstants::QUANT_PLUS || quant == TypeConstants::QUANT_STAR)
+        {
+          res = true;
           do
           {
-            if (!TypeOps::is_treatable(tm, lTreatItem, *theSequenceType, loc))
+            if (!TypeOps::is_treatable(tm, item, *theSequenceType, loc))
             {
-              lResult = false;
+              res = false;
+              theChild->reset(planState);
+              break;
             }
-          } while (consumeNext(lTreatItem, theChild.getp(), planState));
+          }
+          while (consumeNext(item, theChild.getp(), planState));
         }
       }
       else
       {
-        lResult = true;
+        res = true;
       }
-    }
-    else
-    {
-      lResult = false;
     }
   }
   else
   {
-    if ((lQuantifier == TypeConstants::QUANT_ONE ||
-         lQuantifier == TypeConstants::QUANT_PLUS) &&
-        !TypeOps::is_equal(tm, *ts.EMPTY_TYPE, *theSequenceType))
-    {
-      lResult = false;
-    }
-    else
-    {
-      lResult = true;
-    }
+    res = !(quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_PLUS);
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lResult), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
   STACK_END (state);
 }
 
@@ -169,7 +188,7 @@ CastIterator::~CastIterator()
 
 bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
+  store::Item_t item;
   bool valid = false;
 
   const TypeManager* tm = theSctx->get_typemanager();
@@ -180,7 +199,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   assert(theQuantifier == TypeConstants::QUANT_ONE ||
          theQuantifier == TypeConstants::QUANT_QUESTION);
 
-  if (!consumeNext(lItem, theChild.getp(), planState))
+  if (!consumeNext(item, theChild.getp(), planState))
   {
     if (theQuantifier == TypeConstants::QUANT_ONE)
     {
@@ -190,20 +209,25 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   else
   {
-    if (theCastType->type_kind() == XQType::USER_DEFINED_KIND)
+    if (theCastType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
+      store::SchemaTypeCode targetType = 
+      static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
+
+      valid = GenericCast::castToAtomic(result, item, targetType, tm, NULL, loc);
+    }
+    else
+    {
+      assert(theCastType->type_kind() == XQType::USER_DEFINED_KIND);
+
       zstring strval;
-      lItem->getStringValue2(strval);
+      item->getStringValue2(strval);
       
       namespace_context tmp_ctx(theSctx);
       valid = GenericCast::castToAtomic(result, strval, theCastType, tm, &tmp_ctx, loc);
     }
-    else
-    {
-      valid = GenericCast::castToAtomic(result, lItem, theCastType, tm, NULL, loc);
-    }
 
-    if (consumeNext(lItem, theChild.getp(), planState))
+    if (consumeNext(item, theChild.getp(), planState))
     {
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(NoSeqCastToTypeWithQuantOneOrQuestion)));
@@ -243,50 +267,50 @@ CastableIterator::~CastableIterator()
 
 bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool lBool;
-  store::Item_t lItem;
+  bool res;
+  store::Item_t item;
 
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!consumeNext(lItem, theChild.getp(), planState))
+  if (!consumeNext(item, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS ||
-        theQuantifier == TypeConstants::QUANT_ONE)
-    {
-      lBool = false;
-    }
-    else
-    {
-      lBool = true;
-    }
+    res = !(theQuantifier == TypeConstants::QUANT_PLUS ||
+            theQuantifier == TypeConstants::QUANT_ONE);
   }
   else
   {
-    lBool = GenericCast::isCastable(lItem, theCastType, tm);
-    if (lBool)
+    res = GenericCast::isCastable(item, theCastType, tm);
+    if (res)
     {
-      if (consumeNext(lItem, theChild.getp(), planState))
+      if (consumeNext(item, theChild.getp(), planState))
       {
         if (theQuantifier == TypeConstants::QUANT_ONE ||
             theQuantifier == TypeConstants::QUANT_QUESTION)
         {
-          lBool = false;
+          res = false;
         }
         else
         {
+          res = true;
           do
           {
-            lBool = GenericCast::isCastable(lItem, theCastType, tm);
-          } while (lBool && consumeNext(lItem, theChild.getp(), planState));
+            if (!GenericCast::isCastable(item, theCastType, tm))
+            {
+              res = false;
+              theChild->reset(planState);
+              break;
+            }
+          } 
+          while (consumeNext(item, theChild.getp(), planState));
         }
       }
     }
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lBool), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
   STACK_END(state);
 }
 
@@ -333,8 +357,8 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring const type = thePromoteType->toSchemaString() + 
-                           (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
+      zstring type = thePromoteType->toSchemaString() + 
+                     (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
 
       if (theFnQName.getp())
       {
@@ -353,9 +377,9 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
            theQuantifier == TypeConstants::QUANT_ONE)
   {
-    if(consumeNext(temp, theChild.getp(), planState))
+    if (consumeNext(temp, theChild.getp(), planState))
     {
-      if ( theFnQName.getp() )
+      if (theFnQName.getp())
       {
         std::string tmp = BUILD_STRING(thePromoteType->toSchemaString(),
                                        (theQuantifier == TypeConstants::QUANT_QUESTION ?
@@ -407,7 +431,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if (theFnQName.getp())
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED( NoTypePromotion_234 ),
+          ERROR_PARAMS(ZED(NoTypePromotion_234),
                        tm->create_value_type(lItem)->toSchemaString(),
                        thePromoteType->toSchemaString(),
                        theFnQName->getStringValue()));
@@ -415,7 +439,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         else
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED( NoTypePromotion_23 ),
+          ERROR_PARAMS(ZED(NoTypePromotion_23),
                        tm->create_value_type(lItem)->toSchemaString(),
                        thePromoteType->toSchemaString()));
         }
@@ -441,15 +465,15 @@ UNARY_ACCEPT(PromoteIterator);
 
 TreatIterator::TreatIterator(
     static_context* sctx,
-    const QueryLoc& aLoc,
+    const QueryLoc& loc,
     PlanIter_t& aChild,
     const xqtref_t& aTreatType,
-    bool check_prime,
+    bool checkPrime,
     const Error& aErrorCode,
     store::Item_t fnQName)
   :
-  UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, aLoc, aChild),
-  theCheckPrime(check_prime),
+  UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, loc, aChild),
+  theCheckPrime(checkPrime),
   theErrorCode(&aErrorCode),
   theFnQName(fnQName)
 {
@@ -474,7 +498,7 @@ void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
 bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t temp;
-
+  bool res;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
@@ -527,59 +551,92 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
     }
 
-    if (theCheckPrime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
+    if (theCheckPrime)
     {
-      xqtref_t valueType = tm->create_value_type(result);
-
-      if (theFnQName.getp() != NULL)
+      if (theTreatType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+          result->isAtomic())
       {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                "Cannot treat " << valueType->toSchemaString() 
-                                << " as " << theTreatType->toSchemaString()
-                                << " when returning the result of the function "
-                                << theFnQName->getStringValue() << "().");
+        store::SchemaTypeCode targetType = 
+        static_cast<const AtomicXQType*>(theTreatType.getp())->get_type_code();
+
+        store::SchemaTypeCode itemType = result->getTypeCode();
+
+        res = TypeOps::is_subtype(itemType, targetType);
       }
       else
       {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
-                                "Cannot treat " << valueType->toSchemaString() 
-                                << " as " << theTreatType->toSchemaString()
-                                << ".");
+        res = TypeOps::is_subtype(tm, result, *theTreatType, loc);
       }
-    }
-    else
-    {
-      STACK_PUSH(true, state);
-    }
-  }
-  else
-  {
-    do
-    {
-      if (theCheckPrime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
+      
+      if (!res)
       {
         xqtref_t valueType = tm->create_value_type(result);
 
         if (theFnQName.getp() != NULL)
         {
           ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                  "Cannot treat " + valueType->toSchemaString() 
+                                  "Cannot treat " << valueType->toSchemaString() 
                                   << " as " << theTreatType->toSchemaString()
                                   << " when returning the result of the function "
                                   << theFnQName->getStringValue() << "().");
         }
         else
         {
-          ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
+          ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
                                   "Cannot treat " << valueType->toSchemaString() 
-                                  << " as " << theTreatType->toSchemaString());
+                                  << " as " << theTreatType->toSchemaString()
+                                  << ".");
         }
       }
-      else
+    }
+
+    STACK_PUSH(true, state);
+  }
+  else
+  {
+    do
+    {
+      if (theCheckPrime) 
       {
-        STACK_PUSH(true, state);
+        if (theTreatType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+            result->isAtomic())
+        {
+          store::SchemaTypeCode targetType = 
+          static_cast<const AtomicXQType*>(theTreatType.getp())->get_type_code();
+
+          store::SchemaTypeCode itemType = result->getTypeCode();
+
+          res = TypeOps::is_subtype(itemType, targetType);
+        }
+        else
+        {
+          res = TypeOps::is_subtype(tm, result, *theTreatType, loc);
+        } 
+        
+        if (!res)
+        {
+          xqtref_t valueType = tm->create_value_type(result);
+
+          if (theFnQName.getp() != NULL)
+          {
+            ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
+                                    "Cannot treat " + valueType->toSchemaString() 
+                                    << " as " << theTreatType->toSchemaString()
+                                    << " when returning the result of the function "
+                                    << theFnQName->getStringValue() << "().");
+          }
+          else
+          {
+            ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
+                                    "Cannot treat " << valueType->toSchemaString() 
+                                    << " as " << theTreatType->toSchemaString());
+          }
+        }
       }
-    } while (consumeNext(result, theChild.getp(), planState));
+
+      STACK_PUSH(true, state);
+    } 
+    while (consumeNext(result, theChild.getp(), planState));
   }
 
   STACK_END(state);
@@ -596,23 +653,25 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  EitherNodesOrAtomicsIteratorState* lState;
-  DEFAULT_STACK_INIT(EitherNodesOrAtomicsIteratorState, lState, planState);
+  EitherNodesOrAtomicsIteratorState* state;
+  DEFAULT_STACK_INIT(EitherNodesOrAtomicsIteratorState, state, planState);
 
-  if (CONSUME (result, 0))
+  if (CONSUME(result, 0))
   {
-    lState->atomics = result->isAtomic ();
-    STACK_PUSH (true, lState);
+    state->atomics = result->isAtomic();
 
-    while (CONSUME (result, 0))
+    STACK_PUSH(true, state);
+
+    while (CONSUME(result, 0))
     {
-      if (lState->atomics != result->isAtomic ())
-        throw XQUERY_EXCEPTION (err::XPTY0018, ERROR_LOC(loc));
-      STACK_PUSH (true, lState);
+      if (state->atomics != result->isAtomic())
+        throw XQUERY_EXCEPTION(err::XPTY0018, ERROR_LOC(loc));
+
+      STACK_PUSH (true, state);
     }
   }
 
-  STACK_END (lState);
+  STACK_END(state);
 }
 
 

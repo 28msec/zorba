@@ -97,6 +97,19 @@ public:
       bool seekable = false) = 0;
 
   /**
+   * Create a StreamableStringItem which re-uses the stream from another
+   * Streamable*Item. This will maintain a reference to the original
+   * item to ensure the stream is not cleaned up before we are done with it.
+   *
+   * It only makes sense to use this method if either (a) the dependent item's
+   * stream is seekable and hence re-usable, or (b) you are sure that the
+   * dependent item will not be utilized after this new item is created.
+   */
+  virtual bool createSharedStreamableString(
+      Item_t& result,
+      Item_t& streamble_dependent) = 0;
+
+  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
    * @param value string representation of the value
    */
@@ -205,6 +218,31 @@ public:
   virtual bool createBase64Binary(Item_t& result, xs_base64Binary value) = 0;
 
   /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   * creates a base64Binary item with the given content
+   * the encoded flag specifies whether the given content is already
+   * base64 encoded or not.
+   */
+  virtual bool createBase64Binary(
+      Item_t& result,
+      const char* value,
+      size_t size,
+      bool encoded) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   * the encoded flag specifies whether the given content is already
+   * base64 encoded or not.
+   */
+  virtual bool createStreamableBase64Binary(
+      Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      bool seekable = false,
+      bool encoded = false) = 0;
+
+
+  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]
    * @param value
    */
@@ -236,13 +274,13 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
    * @param value
    */
-  virtual bool createNonNegativeInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createNonNegativeInteger(Item_t& result, const xs_nonNegativeInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
    * @param value
    */
-  virtual bool createPositiveInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createPositiveInteger(Item_t& result, const xs_positiveInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
@@ -598,8 +636,9 @@ public:
         zstring& content) = 0;
 
   /**
-   * Create a new text node N to store the typed value of an element node P.
-   * In this case, N can be the only child of P. 
+   * Create a new text node N to store the typed value of an element node P, and
+   * place N as the last child of P. Notice that in this case, P cannot have any
+   * subelements. 
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may NOT be NULL.

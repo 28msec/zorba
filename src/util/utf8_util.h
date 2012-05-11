@@ -21,20 +21,22 @@
 #include <cwchar>
 #include <string>
 
-#include <zorba/config.h>
-
 #include "ascii_util.h"
 #include "cxx_util.h"
+#include "string_util.h"
 #include "unicode_util.h"
 #include "utf8_string.h"
 #include "utf8_util_base.h"
 
+#include "zorbatypes/collation_manager.h"
 #include "zorbautils/hashfun.h"
 
-#ifndef ZORBA_NO_UNICODE
-#include "zorbatypes/collation_manager.h"
-#include "zorbatypes/libicu.h"
-#endif
+#ifdef ZORBA_NO_ICU
+# include "diagnostics/assert.h"
+#else
+# include <unicode/coll.h>
+# include <unicode/sortkey.h>
+#endif /* ZORBA_NO_ICU */
 
 namespace zorba {
 namespace utf8 {
@@ -306,7 +308,7 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
 
 ////////// Encoding conversion ////////////////////////////////////////////////
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 /**
  * Converts a unicode::char_type array into a UTF-8 encoded string.
@@ -319,7 +321,6 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
  * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
-ZORBA_DLL_PUBLIC
 bool to_string( unicode::char_type const *in, unicode::size_type in_len,
                 storage_type **out, size_type *out_len = nullptr );
 
@@ -377,6 +378,8 @@ bool to_string( unicode::char_type const *in, StringType *out ) {
   return to_string( in, u_strlen( in ), out );
 }
 
+#endif /* ZORBA_NO_ICU */
+
 /**
  * Converts a unicode::string into a UTF-8 encoded string.
  *
@@ -386,8 +389,15 @@ bool to_string( unicode::char_type const *in, StringType *out ) {
  */
 template<class StringType> inline
 bool to_string( unicode::string const &in, StringType *out ) {
+#ifndef ZORBA_NO_ICU
   return to_string( in.getBuffer(), in.length(), out );
+#else
+  *out = in.c_str();
+  return true;
+#endif /* ZORBA_NO_ICU */
 }
+
+#ifndef ZORBA_NO_ICU
 
 //
 // On Windows, UChar == wchar_t, so these functions would multiply define those
@@ -406,7 +416,6 @@ bool to_string( unicode::string const &in, StringType *out ) {
  * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
-ZORBA_DLL_PUBLIC
 bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
                 size_type *out_len = nullptr );
 
@@ -476,7 +485,6 @@ bool to_string( std::wstring const &in, StringType *out ) {
  * the wchar_t string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
-ZORBA_DLL_PUBLIC
 bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
                  unicode::size_type *out_len );
 
@@ -512,7 +520,7 @@ bool to_wchar_t( StringType const &in, wchar_t **out,
   return to_wchar_t( in.data(), in.size(), out, out_len );
 }
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 ////////// HTML URI ///////////////////////////////////////////////////////////
 
@@ -670,7 +678,7 @@ void iri_to_uri( StringType &s ) {
 
 ////////// Unicode normalization //////////////////////////////////////////////
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 /**
  * Normalizes the Unicode characters in the string.
  *
@@ -682,7 +690,7 @@ void iri_to_uri( StringType &s ) {
 template<class InputStringType,class OutputStringType>
 bool normalize( InputStringType const &in, unicode::normalization::type n,
                 OutputStringType *out );
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 ////////// Whitespace /////////////////////////////////////////////////////////
 
@@ -743,7 +751,6 @@ void reverse( InputStringType const &in, OutputStringType *out ) {
   std::reverse_copy( u_in.begin(), u_in.end(), std::back_inserter( u_out ) );
 }
 
-#ifndef ZORBA_NO_UNICODE
 /**
  * Strips all diacritical marks from all characters converting them to their
  * closest ASCII equivalents.
@@ -752,11 +759,10 @@ void reverse( InputStringType const &in, OutputStringType *out ) {
  * @tparam OutputStringType The output string type.
  * @param in The input string.
  * @param out The output string.
+ * @return Returns \c true only if the strip succeeded.
  */
 template<class InputStringType,class OutputStringType>
-void strip_diacritics( InputStringType const &in, OutputStringType *out );
-
-#endif /* ZORBA_NO_UNICODE */
+bool strip_diacritics( InputStringType const &in, OutputStringType *out );
 
 /**
  *
@@ -765,6 +771,7 @@ template<class StringType1,class StringType2> inline
 int compare(const StringType1 &s1, const StringType2 &s2,
             const XQPCollator* collation)
 {
+#ifndef ZORBA_NO_ICU
   if (collation == NULL || collation->doMemCmp())
     return s1.compare(s2);
 
@@ -775,6 +782,9 @@ int compare(const StringType1 &s1, const StringType2 &s2,
   unicode::to_string(s2, &us2);
 
   return static_cast<Collator*>( collation->getCollator() )->compare(us1, us2);
+#else
+  return s1.compare(s2);
+#endif /* ZORBA_NO_ICU */
 }
 
 
@@ -784,7 +794,9 @@ int compare(const StringType1 &s1, const StringType2 &s2,
 template<class StringType> inline
 uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
 {
+#ifndef ZORBA_NO_ICU
   if (!collation || collation->doMemCmp())
+#endif
   {
     const char* str = s.data();
     ulong len = (ulong)s.size();
@@ -800,7 +812,7 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
     //return hashfun::h32((void*)(s.data()), s.size());
   }
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
   CollationKey collKey;
   UErrorCode status = U_ZERO_ERROR;
 
@@ -818,7 +830,7 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
   return collKey.hashCode();
 #else
   ZORBA_ASSERT(false);
-#endif
+#endif /* ZORBA_NO_ICU */
 }
 
 ///////////////////////////////////////////////////////////////////////////////

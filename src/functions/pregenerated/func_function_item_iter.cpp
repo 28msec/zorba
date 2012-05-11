@@ -36,7 +36,7 @@ PlanIter_t fn_function_name_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FunctionNameIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_function_arity_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FunctionArityIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_partial_apply_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new PartialApplyIterator(sctx, loc, argv);
 }

@@ -15,10 +15,10 @@
  */
 #include "stdafx.h"
 
-#include "store/naive/simple_index_general.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/simple_item_factory.h"
+#include "simple_index_general.h"
+#include "simple_store.h"
+#include "atomic_items.h"
+#include "simple_item_factory.h"
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
@@ -755,6 +755,26 @@ bool GeneralHashIndex::remove(
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralHashIndex::clear()
+{
+  for (ulong i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    theMaps[i]->clear();
+  }
+
+  if (isTyped())
+  {
+    theSingleMap->clear();
+  }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  GeneralHashIndex::KeyIterator                                              //
@@ -906,6 +926,26 @@ bool GeneralTreeIndex::remove(
     bool all)
 {
   return true;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralTreeIndex::clear()
+{
+  for (ulong i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    theMaps[i]->clear();
+  }
+
+  if (isTyped())
+  {
+    theSingleMap->clear();
+  }
 }
 
 
@@ -1627,13 +1667,13 @@ void ProbeGeneralIndexIterator::initBox()
       {
         if (haveLower)
         {
-          xs_double doubleValue = lowerKey->getDecimalValue();
+          xs_double const doubleValue( lowerKey->getDecimalValue() );
           GET_FACTORY().createDouble(lowerAltKey, doubleValue);
         }
 
         if (haveUpper)
         {
-          xs_double doubleValue = upperKey->getDecimalValue();
+          xs_double const doubleValue( upperKey->getDecimalValue() );
           GET_FACTORY().createDouble(upperAltKey, doubleValue);
         }
 
@@ -1657,13 +1697,13 @@ void ProbeGeneralIndexIterator::initBox()
       {
         if (haveLower)
         {
-          xs_decimal decimalValue = lowerKey->getLongValue();
+          xs_decimal const decimalValue( lowerKey->getLongValue() );
           GET_FACTORY().createDecimal(lowerAltKey, decimalValue);
         }
 
         if (haveUpper)
         {
-          xs_decimal decimalValue = upperKey->getLongValue();
+          xs_decimal const decimalValue( upperKey->getLongValue() );
           GET_FACTORY().createDecimal(upperAltKey, decimalValue);
         }
 
@@ -1674,13 +1714,13 @@ void ProbeGeneralIndexIterator::initBox()
       {
         if (haveLower)
         {
-          xs_double doubleValue = lowerKey->getLongValue();
+          xs_double doubleValue( lowerKey->getLongValue() );
           GET_FACTORY().createDouble(lowerAltKey, doubleValue);
         }
 
         if (haveUpper)
         {
-          xs_double doubleValue = upperKey->getLongValue();
+          xs_double const doubleValue( upperKey->getLongValue() );
           GET_FACTORY().createDouble(upperAltKey, doubleValue);
         }
 
@@ -1732,14 +1772,14 @@ void ProbeGeneralIndexIterator::initBox()
 
         if (idx->theMaps[store::XS_DOUBLE])
         {
-          xs_double doubleValue = longItem->getLongValue();
+          xs_double const doubleValue( longItem->getLongValue() );
           GET_FACTORY().createDouble(altKey, doubleValue);
           probeMap(store::XS_DOUBLE, altKey, altKey);
         }
 
         if (idx->theMaps[store::XS_DECIMAL])
         {
-          xs_decimal decimalValue = longItem->getLongValue();
+          xs_decimal const decimalValue( longItem->getLongValue() );
           GET_FACTORY().createDecimal(altKey, decimalValue);
           probeMap(store::XS_DECIMAL, altKey, altKey);
         }
@@ -1766,7 +1806,7 @@ void ProbeGeneralIndexIterator::initBox()
 
         if (idx->theMaps[store::XS_DOUBLE])
         {
-          xs_double doubleValue = decimalItem->getDecimalValue();
+          xs_double const doubleValue( decimalItem->getDecimalValue() );
           GET_FACTORY().createDouble(altKey, doubleValue);
           probeMap(store::XS_DOUBLE, altKey, altKey);
         }

@@ -51,6 +51,41 @@ class dynamic_context
 {
   friend class DebugIterator;
 
+public:
+  struct VarValue
+  {
+    typedef enum
+    {
+      undeclared,
+      declared,
+      item,
+      temp_seq,
+    } ValueState;
+
+    union
+    {
+      store::Item*     item;
+      store::TempSeq*  temp_seq;
+    }           theValue;
+
+    ValueState  theState;
+
+    VarValue() : theState(undeclared)
+    {
+      theValue.item = NULL;
+    }
+
+    VarValue(const VarValue& other);
+
+    ~VarValue();
+
+    bool isSet() const { return (theState == item || theState == temp_seq); }
+
+    bool hasItemValue() const { return (theState == item); }
+
+    bool hasSeqValue() const { return (theState == temp_seq); }
+  };
+
 protected:
 
   struct dctx_value_t
@@ -66,38 +101,11 @@ protected:
     void*       func_param;
   };
 
-
-  struct VarValue
-  {
-    typedef enum
-    {
-      undeclared,
-      declared,
-      item,
-      temp_seq,
-    } ValueState;
-
-    union
-    {
-      store::Item*     item;
-      store::TempSeq*  temp_seq;
-    }          theValue;
-
-    ValueState  theState;
-
-    VarValue() : theState(undeclared)
-    {
-      theValue.item = NULL;
-    }
-
-    VarValue(const VarValue& other);
-
-    ~VarValue(); 
-  };
-
   typedef HashMapZString<dctx_value_t> ValueMap;
 
   typedef ItemPointerHashMap<store::Index_t> IndexMap;
+
+  typedef std::map<const zstring,const zstring> EnvVarMap;
 
 protected:
   dynamic_context            * theParent;
@@ -112,6 +120,9 @@ protected:
   ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
+
+    //MODIFY
+  EnvVarMap                  * theEnvironmentVariables;
 
 public:
   double                       theDocLoadingUserTime;
@@ -136,9 +147,17 @@ public:
 
   store::Item_t get_current_time_millis() const;
 
+  void set_environment_variables();
+
+  store::Item_t get_environment_variable(const zstring& varname);
+
+  store::Iterator_t available_environment_variables();
+
   void set_implicit_timezone(long tzone_seconds);
 
   long get_implicit_timezone() const;
+
+  const std::vector<VarValue>& get_variables() const { return theVarValues; }
 
   void add_variable(ulong varid, store::Item_t& value);
 

@@ -32,49 +32,34 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba
 {
 
-SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(forletwin_clause)
-
 SERIALIZABLE_CLASS_VERSIONS(for_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(for_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(let_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(let_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(window_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(window_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(group_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(group_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(materialize_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(materialize_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(count_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(count_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(where_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(where_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
-END_SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
 
 
 DEF_EXPR_ACCEPT (flwor_expr)
@@ -803,7 +788,13 @@ void materialize_clause::serialize(::zorba::serialization::Archiver& ar)
 
 flwor_clause_t materialize_clause::clone(expr::substitution_t& subst) const
 {
-  ZORBA_ASSERT(false);
+  // we will reach here under the following scenario:
+  // 1. We do plan seriazation
+  // 2. getPlan is called on udf A; this causes a mat clause to be created
+  //    during the codegen on A's body
+  // 3. getPlan is called on udf B, which invokes A, and A's body is
+  //    inlined (and as a result cloned) inside B's body.
+  return new materialize_clause(theContext, get_loc());
 }
 
 
@@ -903,8 +894,10 @@ void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-flwor_clause* flwor_expr::get_clause(ulong i)
+flwor_clause* flwor_expr::get_clause(csize i) const
 {
+  assert(i < theClauses.size());
+
   return theClauses[i].getp();
 }
 
@@ -912,8 +905,10 @@ flwor_clause* flwor_expr::get_clause(ulong i)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::remove_clause(ulong pos)
+void flwor_expr::remove_clause(csize pos)
 {
+  assert(pos < theClauses.size());
+
   if (theClauses[pos]->theFlworExpr == this)
     theClauses[pos]->theFlworExpr = NULL;
 

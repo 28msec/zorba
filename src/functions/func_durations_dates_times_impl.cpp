@@ -517,7 +517,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATETIME_FACET);
   }
@@ -539,7 +539,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATETIME_FACET);
   }
@@ -561,7 +561,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATE_FACET);
   }
@@ -583,7 +583,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::DATE_FACET);
   }
@@ -605,7 +605,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::TIME_FACET);
   }
@@ -627,7 +627,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnFormatDateTimeIterator(sctx, loc, argv, DateTime::TIME_FACET);
   }
@@ -637,8 +637,8 @@ public:
 
 void populate_context_durations_dates_times_impl(static_context *sctx)
 {
-  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
-  const char* fn_ns = static_context::W3C_FN_NS.c_str();
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS;
+  const char* fn_ns = static_context::W3C_FN_NS;
 
 // begin date time
 DECL(sctx, fn_datetime_ctor,

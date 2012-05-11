@@ -22,8 +22,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "store/naive/ordpath.h"
-#include "store/naive/store_defs.h"
+#include "ordpath.h"
+#include "store_defs.h"
 
 
 namespace zorba { namespace simplestore {
@@ -189,9 +189,48 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 
 
 /*******************************************************************************
-  Create a binary ordpath out of a strigified one.
+  If isBinary is true, interprets the supplied char array as binary data. If
+  it is false, interprets it as a hexadecimal representation (with even length)
+  of binary data.
 ********************************************************************************/
-OrdPath::OrdPath(const unsigned char* str, ulong strLen)
+OrdPath::OrdPath(const unsigned char* str, ulong strLen, bool isBinary)
+{
+  if (isBinary)
+  {
+    initFromData(str, strLen);
+  }
+  else
+  {
+    initFromString(str, strLen);
+  }
+}
+
+
+/*******************************************************************************
+  Inits the instance with binary ORDPATH data.
+********************************************************************************/
+void OrdPath::initFromData(const unsigned char* buf, ulong byteLen)
+{
+  memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
+
+  if (byteLen < MAX_EMBEDDED_BYTE_LEN)
+  {
+    memcpy(getLocalData(), buf, byteLen);
+    markLocal();
+  }
+  else
+  {
+    initRemote(byteLen);
+    memcpy(getRemoteData(), buf, byteLen);
+  }
+}
+
+
+/*******************************************************************************
+  Inits the instance with a string containing a hexadecimal representation of 
+  the binary ORDPATH data.
+********************************************************************************/
+void OrdPath::initFromString(const unsigned char* str, ulong strLen)
 {
   unsigned char* buf;
   bool isLocal;
@@ -203,10 +242,8 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
 
   if (byteLen > MAX_BYTE_LEN)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0030_NODEID_ERROR,
-      ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(MAX_BYTE_LEN) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0030_NODEID_ERROR,
+    ERROR_PARAMS(ZED(NodeIDNeedsBytes_2), int(MAX_BYTE_LEN)));
   }
 
   memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
@@ -242,9 +279,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        throw ZORBA_EXCEPTION(
-          zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-        );
+        throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(str));
 
       buf[i] <<= 4;
       start++;
@@ -257,9 +292,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        throw ZORBA_EXCEPTION(
-          zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-        );
+        throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(str));
 
       start++;
       i++;
@@ -273,6 +306,8 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
     if (!isLocal && buf != NULL)
       delete [] buf;
 
+    memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
+    markLocal();
     throw;
   }
 
@@ -288,6 +323,15 @@ void OrdPath::setAsRoot()
   reset();
 
   theBuffer.local[0] = 0x40;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool OrdPath::isRoot() const
+{
+  return isLocal() && theBuffer.local[0] == 0x40;
 }
 
 
@@ -916,7 +960,14 @@ void OrdPath::insertInto(
   while (dewey1[compPos] == dewey2[compPos])
   {
     ++compPos;
-    ZORBA_ASSERT(compPos < numComps1 && compPos < numComps2);
+    ZORBA_ASSERT_WITH_MSG(compPos < numComps1 && compPos < numComps2,      \
+                          "Involved Parameters: "                          \
+                       << "Parent: " << parent.show().c_str() << ", "      \
+                       << "Sib1: " << sib1.show().c_str() << ", "          \
+                       << "Sib2: " << sib2.show().c_str() << ", "          \
+                       << "compPos: " << compPos << ", "                   \
+                       << "numComps1: " << numComps1 << ", "               \
+                       << "numComps2: " << numComps2 << ".");
   }
 
   int32_t comp1 = dewey1[compPos];
@@ -924,7 +975,14 @@ void OrdPath::insertInto(
   bool odd1 = (comp1 % 2 != 0);
   bool odd2 = (comp2 % 2 != 0);
 
-  ZORBA_ASSERT(comp1 < comp2);
+  ZORBA_ASSERT_WITH_MSG(comp1 < comp2,                                  \
+                       "Involved Parameters: "                          \
+                    << "Parent: " << parent.show().c_str() << ", "      \
+                    << "Sib1: " << sib1.show().c_str() << ", "          \
+                    << "Sib2: " << sib2.show().c_str() << ", "          \
+                    << "comp1: " << comp1 << ", "                       \
+                    << "comp2: " << comp2 << ", "                       \
+                    << "compPos: " << compPos << ".");
 
   ulong diff = comp2 - comp1;
 
@@ -1491,6 +1549,18 @@ std::string OrdPath::serialize() const
   return str.str().c_str();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool OrdPath::deserialize(const std::string& input)
+{
+  reset();
+  const char* signed_chars = input.c_str();
+  const unsigned char* unsigned_chars =
+      reinterpret_cast<const unsigned char*>(signed_chars);
+  initFromString(unsigned_chars, input.size());
+  return true;
+}
 
 /*******************************************************************************
 
