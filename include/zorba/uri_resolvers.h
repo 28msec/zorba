@@ -127,7 +127,8 @@ public:
     THESAURUS,
     STOP_WORDS,
     COLLECTION,
-    DOCUMENT
+    DOCUMENT,
+    SOME_CONTENT
   };
 
   /**

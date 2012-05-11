@@ -49,6 +49,8 @@ namespace zorba
         return new EntityDataWrapper(EntityData::COLLECTION);
       case internal::EntityData::DOCUMENT:
         return new EntityDataWrapper(EntityData::DOCUMENT);
+      case internal::EntityData::SOME_CONTENT:
+        return new EntityDataWrapper(EntityData::SOME_CONTENT);
       default:
         return NULL;
       }
