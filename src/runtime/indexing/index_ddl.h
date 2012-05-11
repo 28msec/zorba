@@ -378,13 +378,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexPointValueIterator,
   NaryBaseIterator<ProbeIndexPointValueIterator, ProbeIndexPointValueIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ProbeIndexPointValueIterator,
-                      ProbeIndexPointValueIteratorState>*)this);
-    ar & theCheckKeyType;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
   ProbeIndexPointValueIterator(
         static_context* sctx,

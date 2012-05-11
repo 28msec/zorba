@@ -594,6 +594,16 @@ ProbeIndexPointValueIterator::~ProbeIndexPointValueIterator()
 {
 }
 
+void ProbeIndexPointValueIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ProbeIndexPointValueIterator,
+                    ProbeIndexPointValueIteratorState>*)this);
+
+  ar & theCheckKeyType;
+  ar & theCountOnly;
+}
+
 
 bool ProbeIndexPointValueIterator::nextImpl(
     store::Item_t& result,
