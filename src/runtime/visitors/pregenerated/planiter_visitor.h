@@ -196,6 +196,9 @@ namespace zorba{
     class FnPutIterator;
 
 #ifndef ZORBA_NO_FULL_TEXT
+    class CurrentCompareOptionsIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     class CurrentLangIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
@@ -908,6 +911,10 @@ public:
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
 
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const CurrentCompareOptionsIterator& ) = 0;
+    virtual void endVisit   ( const CurrentCompareOptionsIterator& ) = 0;
+#endif
 #ifndef ZORBA_NO_FULL_TEXT
     virtual void beginVisit ( const CurrentLangIterator& ) = 0;
     virtual void endVisit   ( const CurrentLangIterator& ) = 0;
