@@ -39,7 +39,7 @@ class Archiver;
 
 void operator&(Archiver& ar, int& obj);
 
-void operator&(Archiver& ar, const int& obj);
+void operator&(Archiver& ar, const uint32_t& obj);
 
 void operator&(Archiver& ar, uint32_t& obj);
 
@@ -81,17 +81,17 @@ void operator&(Archiver& ar, XQPCollator*& obj);
 
 void operator&(Archiver& ar, MAPM& obj);
 
-#define  SERIALIZE_ENUM(enum_type, obj)           \
-  {                                               \
-    ar.set_is_temp_field(true);                   \
-                                                  \
-    int int_enum = (int)obj;                      \
-    ar & int_enum;                                \
-                                                  \
-    if (!ar.is_serializing_out())                 \
-      obj = (enum_type)int_enum;                  \
-                                                  \
-    ar.set_is_temp_field(false);                  \
+#define  SERIALIZE_ENUM(enum_type, obj)             \
+  {                                                 \
+    ar.set_is_temp_field(true);                     \
+                                                    \
+    uint32_t int_enum = static_cast<uint32_t>(obj); \
+    ar & int_enum;                                  \
+                                                    \
+    if (!ar.is_serializing_out())                   \
+      obj = (enum_type)int_enum;                    \
+                                                    \
+    ar.set_is_temp_field(false);                    \
   }
 
 

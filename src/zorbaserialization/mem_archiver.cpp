@@ -33,12 +33,51 @@ void MemArchiver::reset_serialize_in()
 }
 
 
-bool MemArchiver::read_next_simple_temp_field(char** value)
+bool MemArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
 {
   if (current_field == NULL || is_after_last)
     return false;
 
-  *value = (char*)current_field->theValue;
+  switch (type)
+  {
+  case TYPE_INT:
+  {
+    value.intv = current_field->theValue.intv;
+    break;
+  }
+  case TYPE_UINT32:
+  {
+    value.uint32v = current_field->theValue.uint32v;
+    break;
+  }
+  case TYPE_SHORT:
+  {
+    value.shortv = current_field->theValue.shortv;
+    break;
+  }
+  case TYPE_USHORT:
+  {
+    value.ushortv = current_field->theValue.ushortv;
+    break;
+  }
+  case TYPE_CHAR:
+  {
+    value.charv = current_field->theValue.charv;
+    break;
+  }
+  case TYPE_UCHAR:
+  {
+    value.ucharv = current_field->theValue.ucharv;
+    break;
+  }
+  case TYPE_BOOL:
+  {
+    value.boolv = current_field->theValue.boolv;
+    break;
+  }
+  default:
+    value.cstrv = current_field->theValue.cstrv;
+  }
 
   is_after_last = false;
 
@@ -73,7 +112,7 @@ bool MemArchiver::read_next_field_impl(
     return false;
 
   *type = current_field->theTypeName;
-  *value = (char*)current_field->theValue;
+  *value = (char*)current_field->theValue.cstrv;
   *id = current_field->theId;
   *field_treat = current_field->theKind;
   *referencing = current_field->referencing;

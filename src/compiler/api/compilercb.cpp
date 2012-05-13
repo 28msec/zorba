@@ -119,9 +119,13 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsLoadProlog(false),
   theIsUpdating(false),
   theIsSequential(false),
+  theHaveTimeout(false),
   theTimeout(timeout),
   theTempIndexCounter(0)
 {
+  if (timeout >= 0)
+    theHaveTimeout = true;
+
   theLocalUdfs = new rclist<user_function*>;
 }
 
@@ -143,6 +147,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theIsLoadProlog(false),
   theIsUpdating(false),
   theIsSequential(false),
+  theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
   theConfig(cb.theConfig)
@@ -220,6 +225,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
     theXQueryDiagnostics = NULL;
   }
   ar & theConfig;
+  ar & theHaveTimeout;
   ar & theTimeout;
   ar & theTempIndexCounter;
 }

@@ -52,9 +52,6 @@ namespace zorba
 ********************************************************************************/
 template <class T, class V>
 class HASHENTRY
-#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-    : public ::zorba::serialization::SerializeBaseClass
-#endif
 {
 public:
   bool         theIsFree;
@@ -62,20 +59,6 @@ public:
   V            theValue;
   ptrdiff_t    theNext;  // offset from "this" to the next entry.
 
-#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-  SERIALIZABLE_TEMPLATE_CLASS(HASHENTRY)
-  HASHENTRY(::zorba::serialization::Archiver& ar) {}
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theIsFree;
-    if(!theIsFree)
-    {
-      ar & theItem;
-      ar & theValue;
-    }
-    ar & theNext;
-  }
-#endif
   HASHENTRY() : theIsFree(true), theNext(0) { }
 
   ~HASHENTRY()

@@ -22,6 +22,7 @@
 
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/plan_settings.h"
+#include "zorbaserialization/archiver_consts.h"
 
 namespace zorba
 {
@@ -37,12 +38,11 @@ class SerializationCallback;
 
 template <class T, class V, class C> class HashMap;
  
+
 namespace serialization
 {
 
-#define FIELD_IS_SIMPLE   true
-#define FIELD_IS_CLASS    true
-
+class archive_field;
 class ClassSerializer;
 
 
@@ -68,222 +68,6 @@ class ClassSerializer;
   Each field has a unique id.
 
 ********************************************************************************/
-
-
-/*******************************************************************************
-
-  ARCHIVE_FIELD_NORMAL:
-  ---------------------
-  A field of kind NORMAL or PTR acts as the root of a tree of fields representing
-  the serialization of a concrete obj. If the kind is PTR, then the obj was 
-  serialized when a pointer to it was encountered. In this case, during 
-  deserialization, the archiver will allocate the obj on the heap and fill-in
-  its data members. If the kind is NORMAL, then the obj was serialized when the 
-  objitself was encountered (e.g., the object was an embedded data member of 
-  another obj, or was residing on the program stack). In this case, during 
-  deserialization, the object exists already (in an uninitialized state) and a
-  reference to it is given to the archiver, which will fill-in the obj's data.
-
-  ARCHIVE_FIELD_PTR:
-  ------------------
-  See comment for ARCHIVE_FIELD_NORMAL.
-
-  ARCHIVE_FIELD_REFERENCING:
-  --------------------------
-  A field A that references another field B (of kind NORMAL or PTR), where both
-  A and B represent the "same" object. 
-
-  ARCHIVE_FIELD_BASECLASS:
-  ------------------------
-  A field representing a "partial" class object: If an obj O belongs to a 
-  concrete class C and C is a subclass of a base class B, then a field of 
-  BASECLASS kind is created to represent the serialization of the data members
-  of B. This field is placed as the 1st child of the NORMAL or PTR field that 
-  represents the serialization of O, and the children of the BASECALSS field
-  represent the serializations of B's data members. If B itself is a subclass
-  of another class A, then the 1st child of the B BASECLASS field is another
-  BASECLASS field representing class A, etc.
-
-  ARCHIVE_FIELD_NULL:
-  -------------------
-  A field representing a NULL pointer.
-
-********************************************************************************/
-enum ArchiveFieldKind
-{
-  ARCHIVE_FIELD_NORMAL,
-  ARCHIVE_FIELD_PTR,
-  ARCHIVE_FIELD_NULL,
-  ARCHIVE_FIELD_BASECLASS,
-  ARCHIVE_FIELD_REFERENCING
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-enum ENUM_ALLOW_DELAY  
-{
-  ALLOW_DELAY,
-  DONT_ALLOW_DELAY,
-  SERIALIZE_NOW
-};
-
-
-/*******************************************************************************
-  theId :
-  -------
-  The unique id of the field. Not initialized by constructor.
-
-  theIsSimple:
-  ------------
-  Whether this field represents a "simple" obj or a "compound" obj. 
-
-  theIsClass:
-  -----------
-  Whether this field represents a class obj or not. Class objs are always 
-  considered as "compound", so if theIsClass is true, theIsSimple is false. 
-  However, the reverse is not true: a non-class obj may be simple or compound.
-  For example, an std::vector<> is a compound, non-class obj.
-
-  theKind:
-  --------
-  The kind of the field. See ArchiveFieldKind enum above.
-
-  theTypeName:
-  ------------
-
-  theTypeNamePosInPool:
-  ---------------------
-  The position of theTypeName string within the string pool. The string pool
-  is created after the fields tree has been fully built and just before we
-  start actually writting stuff out to "disk". theTypeName string is copied
-  into the string pool only if theKind is PTR and theIsClass is true.
-
-  theValue:
-  ---------
-
-  theValuePosInPool:
-  ------------------
-  The position of theValue string within the string pool. The string pool
-  is created after the fields tree has been fully built and just before we
-  start actually writting stuff out to "disk". theValue string is copied
-  into the string pool only if theKind is PTR or NORMAL.
-
-  thePtr :
-  --------
-  Pointer to the obj represented by this field. NULL for FIELD_REFERENCING and
-  FIELD_NULL fields.
-
-  theReferredField:
-  -----------------
-
-  referencing:
-  ------------
-
-  theOrder:
-  ---------
-  Order in the tree. Not initialized by constructor.
-
-  theLevel:
-  ---------
-  The level of this field, i.e., the nuber of fields in the path from this
-  field to the root. The root is at level 0.
-
-  theNextSibling:
-  ---------------
-  The right sibling of this field (if any).
-
-  theFirstChild:
-  --------------
-  The 1st child of this field (if any).
-
-  theLastChild:
-  -------------
-  The last child of this field (if any).
-
-  theParent:
-  ----------
-  The parent field in the fields tree.
-
-  theOnlyForEval:
-  ---------------
-
-  theAllowDelay2:
-  ---------------
-
-  theBytesSaved:
-  --------------
-
-  theObjectsSaved:
-  ----------------
-
-  The following data members are serialized:
-
-  1. theTypeName  : only if theKind is PTR and theIsClass is true.
-  2. theValue     : except if theKind is REFERENCING or NULL
-  3. theReferedId : only if theKind is REFERENCING
-  4. theKind
-  5. theId
-********************************************************************************/
-class archive_field
-{
-public:
-  unsigned int                 theId;
-
-  bool                         theIsSimple;
-  bool                         theIsClass;
-
-  enum ArchiveFieldKind        theKind;
-
-  char                       * theTypeName;
-  unsigned int                 theTypeNamePosInPool;
-
-  const char                 * theValue;
-  unsigned int                 theValuePosInPool;
-
-  union
-  {
-    const SerializeBaseClass * assoc_class_ptr;
-    const void               * assoc_ptr;
-  };
-
-  class archive_field        * theReferredField;
-  unsigned int                 referencing;
-
-  unsigned int                 theOrder;
-
-  unsigned int                 theLevel;
-
-  class archive_field        * theNextSibling;
-  class archive_field        * theFirstChild;
-  class archive_field        * theLastChild;
-  class archive_field        * theParent;
-
-  int                          theOnlyForEval;
-
-  ENUM_ALLOW_DELAY             theAllowDelay2;
-
-#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
-  unsigned int                 theBytesSaved;
-  unsigned int                 theObjectsSaved;
-#endif
-
-public:
-  archive_field(
-      const char* type,
-      bool is_simple,
-      bool is_class, 
-      const void* value,
-      const void* assoc_ptr,
-      enum ArchiveFieldKind kind,
-      archive_field* refered,
-      int only_for_eval,
-      ENUM_ALLOW_DELAY allow_delay,
-      unsigned int level);
-
-  ~archive_field();
-};
 
 
 /*******************************************************************************
@@ -432,15 +216,15 @@ public:
   //
 
   void add_simple_temp_field( 
-      const char* type, 
-      const char* value,
-      const void* orig_ptr,
+      TypeCode type, 
+      SimpleValue value,
+      const void* ptr,
       ArchiveFieldKind field_treat);
 
   bool add_simple_field( 
       const char* type, 
       const char* value,
-      const void* orig_ptr,
+      const void* ptr,
       ArchiveFieldKind field_treat);
 
   bool add_compound_field( 
@@ -469,7 +253,7 @@ public:
       ArchiveFieldKind* field_treat,
       int* referencing);
 
-  virtual bool read_next_simple_temp_field(char** value) = 0;
+  virtual bool read_next_simple_temp_field(SimpleValue& value, TypeCode type) = 0;
 
   void read_end_current_level();
 

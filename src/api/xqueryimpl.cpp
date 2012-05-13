@@ -1340,6 +1340,7 @@ PlanWrapper_t XQueryImpl::generateWrapper()
       theDynamicContext,
       this,
       0, // stack depth
+      theCompilerCB->theHaveTimeout,
       theCompilerCB->theTimeout);
 
   return lPlan;

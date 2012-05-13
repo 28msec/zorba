@@ -213,7 +213,7 @@ declare function local:add-methods($function) as xs:string*
       else if (name($meth) eq 'zorba:getScriptingKind')
       then
         string-join(($gen:newline, $gen:indent,
-                     'short getScriptingKind() const ',
+                     'unsigned short getScriptingKind() const ',
                      '{ return ', $meth/@returnValue, '; }',
                       $gen:newline),'')
 

@@ -80,7 +80,7 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
-bool expr::is_sequential(short theScriptingKind)
+bool expr::is_sequential(unsigned short theScriptingKind)
 {
   return (theScriptingKind & (VAR_SETTING_EXPR |
                               APPLYING_EXPR |

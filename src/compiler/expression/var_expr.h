@@ -123,7 +123,7 @@ class var_expr : public expr
 public:
   enum var_kind
   {
-    eval_var,
+    eval_var = 0,
 
     for_var,
     let_var,

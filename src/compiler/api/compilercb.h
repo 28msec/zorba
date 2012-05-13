@@ -155,7 +155,7 @@ public:
     void serialize(::zorba::serialization::Archiver& ar);
   };
 
-  typedef std::map<int, static_context_t> SctxMap;
+  typedef std::map<csize, static_context_t> SctxMap;
 
 public:  
   XQueryDiagnostics       * theXQueryDiagnostics;
@@ -178,7 +178,9 @@ public:
 
   bool                      theIsSequential;
 
-  long                      theTimeout;
+  bool                      theHaveTimeout;
+
+  unsigned long             theTimeout;
 
   ulong                     theTempIndexCounter;
 

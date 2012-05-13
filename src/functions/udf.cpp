@@ -55,7 +55,7 @@ user_function::user_function(
     const QueryLoc& loc,
     const signature& sig,
     expr_t expr_body,
-    short scriptingKind,
+    unsigned short scriptingKind,
     CompilerCB* ccb)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
@@ -232,7 +232,7 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-short user_function::getScriptingKind() const 
+unsigned short user_function::getScriptingKind() const 
 {
   // Return the declared scripting kind. If the declared kind is updating/sequential,
   // but the function body is not really updating/sequential, an error/warning is

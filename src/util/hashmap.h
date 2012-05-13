@@ -151,7 +151,7 @@ public:
     ar & v;
 
     //compress tab
-    int tab_size = (int)tab.size();
+    csize tab_size = tab.size();
 
     ar.set_is_temp_field(true);
     ar & tab_size;
@@ -160,7 +160,7 @@ public:
     {
       checked_vector<int>::iterator tab_it = tab.begin();
       int last_val = *tab_it;
-      int nr_dupl = 1;
+      csize nr_dupl = 1;
 
       for (tab_it++; tab_it != tab.end(); ++tab_it)
       {
@@ -186,7 +186,7 @@ public:
     {
       tab.resize(tab_size);
       int last_val;
-      int nr_dupl, i;
+      csize nr_dupl, i;
       checked_vector<int>::iterator  tab_it = tab.begin();
 
       while(1)

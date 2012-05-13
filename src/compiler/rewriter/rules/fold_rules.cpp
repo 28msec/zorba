@@ -96,6 +96,7 @@ static expr_t execute (
                                          0,      // dynamic ctx
                                          NULL,   // xquery
                                          0,      // stack depth
+                                         expr_ccb.theHaveTimeout,
                                          expr_ccb.theTimeout));
     for (;;)
     {

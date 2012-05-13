@@ -115,15 +115,15 @@ private:
 
   QueryLoc                    theLoc;
 
-  short                       theScriptingKind;
+  unsigned short              theScriptingKind;
 
   expr_t                      theBodyExpr;
   std::vector<var_expr_t>     theArgVars;
 
-  std::vector<int>            theIgnoresSortedNodes;
-  std::vector<int>            theIgnoresDuplicateNodes;
-  std::vector<int>            theMustCopyInputNodes;
-  std::vector<int>            thePropagatesInputNodes;
+  std::vector<unsigned char>  theIgnoresSortedNodes;
+  std::vector<unsigned char>  theIgnoresDuplicateNodes;
+  std::vector<unsigned char>  theMustCopyInputNodes;
+  std::vector<unsigned char>  thePropagatesInputNodes;
 
   bool                        theIsExiting;
   bool                        theIsLeaf;
@@ -154,7 +154,7 @@ public:
       const QueryLoc& loc,
       const signature& sig,
       expr_t expr_body,
-      short kind,
+      unsigned short scriptingKind,
       CompilerCB* compilerCB);
 
   virtual ~user_function();
@@ -212,7 +212,7 @@ public:
 
   // The next 6 methods are virtual methods of class function, which are redefined here
 
-  short getScriptingKind() const;
+  unsigned short getScriptingKind() const;
 
   bool accessesDynCtx() const;
 

@@ -353,7 +353,7 @@ Schema::Schema(TypeManager* tm)
 #ifndef ZORBA_NO_XMLSCHEMA
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
   // QQQ should be zstring
-  theUdTypesCache = new serializable_hashmap<std::string, xqtref_t>;
+  theUdTypesCache = new serializable_HashMapZString<xqtref_t>(64, false);
 #endif
 }
 
@@ -636,7 +636,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   key += " ";
   key += TypeOps::decode_quantifier(TypeConstants::QUANT_ONE);
 
-  if( theUdTypesCache->get(key.str(), res))
+  if( theUdTypesCache->get(key, res))
     return res;
 
     // not found in cache, make a new one
@@ -659,9 +659,8 @@ xqtref_t Schema::createXQTypeFromTypeName(
     TRACE("lookingFor: key:'" << key);
     checkForAnonymousTypes(typeManager);
 
-    if( theUdTypesCache->get(key.str(), res))
+    if( theUdTypesCache->get(key, res))
       return res;
-
 
     res = NULL;
     TRACE("No type definition for " << xml_local << "@" << xml_uri);
@@ -669,7 +668,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
           << ( res==NULL ? "NULL" :
                TypeOps::decode_quantifier(res->get_quantifier())) );
     // stick it in the cache even if it's NULL
-    theUdTypesCache->put(key.str(), res);
+    theUdTypesCache->insert(key, res);
   }
   else
   {
@@ -1547,10 +1546,10 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   key += TypeOps::decode_quantifier(itemXQType->get_quantifier());
 
   xqtref_t res;
-  if( !theUdTypesCache->get(key.str(), res) )
+  if( !theUdTypesCache->get(key, res) )
   {
     TRACE("key: '" << key << "'");
-    theUdTypesCache->put(key.str(), itemXQType);
+    theUdTypesCache->insert(key, itemXQType);
   }
 }
 

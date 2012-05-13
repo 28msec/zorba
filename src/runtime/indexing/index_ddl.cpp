@@ -260,7 +260,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
-  planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL); 
+  planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL, 0, false, 0); 
 
   createIndexSpec(indexDecl, spec);
 
@@ -389,7 +389,7 @@ bool RefreshIndexIterator::nextImpl(
 
   buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
-  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
+  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL, 0, false, 0); 
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 

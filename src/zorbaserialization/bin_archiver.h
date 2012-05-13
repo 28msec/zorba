@@ -97,7 +97,7 @@ public:
 
   virtual ~BinArchiver();
 
-  bool read_next_simple_temp_field(char** value);
+  bool read_next_simple_temp_field(SimpleValue& value, TypeCode type);
 
   bool read_next_field_impl( 
       char** type, 
@@ -142,15 +142,15 @@ protected:
 
   void read_string(std::string& str);
 
-  unsigned char read_bit();
-
-  unsigned int read_bits(unsigned int bits);
-
   unsigned int read_int();
 
   unsigned int read_int_exp();
 
   unsigned int read_int_exp2();
+
+  unsigned char read_bit();
+
+  unsigned int read_bits(unsigned int bits);
 };
 
 }}

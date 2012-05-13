@@ -18,8 +18,6 @@
 #include <zorba/error.h>
 #include <zorba/diagnostic_list.h>
 
-//#include "functions/function.h"
-
 #include "store/api/item.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -28,6 +26,7 @@
 #include "zorbautils/hashmap.h"
 
 #include "archiver.h"
+#include "archiver_field.h"
 #include "class_serializer.h"
 #include "mem_archiver.h"
 
@@ -43,11 +42,101 @@ namespace serialization
 
 ********************************************************************************/
 archive_field::archive_field(
+    TypeCode type,
+    SimpleValue value,
+    const void* ptr,
+    ArchiveFieldKind kind,
+    int only_for_eval,
+    ENUM_ALLOW_DELAY allow_delay,
+    unsigned int level)
+{
+  theKind = kind;
+
+  theIsSimple = true;
+  theIsClass = false;
+
+  theType = type;
+  theTypeName = NULL;
+  theTypeNamePosInPool = 0;
+
+  switch (type)
+  {
+  case TYPE_INT:
+  {
+    theValue.intv = value.intv;
+    break;
+  }
+  case TYPE_UINT32:
+  {
+    theValue.uint32v = value.uint32v;
+    break;
+  }
+  case TYPE_SHORT:
+  {
+    theValue.shortv = value.shortv;
+    break;
+  }
+  case TYPE_USHORT:
+  {
+    theValue.ushortv = value.ushortv;
+    break;
+  }
+  case TYPE_CHAR:
+  {
+    theValue.charv = value.charv;
+    break;
+  }
+  case TYPE_UCHAR:
+  {
+    theValue.ucharv = value.ucharv;
+    break;
+  }
+  case TYPE_BOOL:
+  {
+    theValue.boolv = value.boolv;
+    break;
+  }
+  default:
+  {
+    if (value.cstrv)
+      theValue.cstrv = strdup((char*)value.cstrv);
+    else
+      theValue.cstrv = NULL; 
+  }
+  }
+
+  assoc_ptr = ptr;
+
+  theReferredField = NULL;
+  this->referencing = 0;
+
+  theLevel = level;
+
+  theNextSibling = NULL;
+  theFirstChild = NULL;
+  theLastChild = NULL;
+  theParent = NULL;
+
+  theOnlyForEval = only_for_eval;
+
+  theAllowDelay2 = allow_delay;
+
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  theBytesSaved = 0;
+  theObjectsSaved = 0;
+#endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+archive_field::archive_field(
     const char* type,
     bool is_simple,
     bool is_class,
     const void* value,
-    const void* assoc_ptr,
+    const void* ptr,
     enum ArchiveFieldKind  kind,
     archive_field* refered,
     int only_for_eval,
@@ -68,14 +157,15 @@ archive_field::archive_field(
   theTypeName = strdup(type);
 #endif
 
-  theTypeNamePosInPool = 0;//initialy is the number of references to this field
+  theType = TYPE_UNKNOWN;
+  theTypeNamePosInPool = 0;
 
   if (value)
-    theValue = strdup((char*)value);
+    theValue.cstrv = strdup((char*)value);
   else
-    theValue = NULL;
+    theValue.cstrv = NULL;
 
-  this->assoc_ptr = assoc_ptr;
+  assoc_ptr = ptr;
 
   theReferredField = refered;
 
@@ -106,8 +196,24 @@ archive_field::~archive_field()
 {
   free(theTypeName);
 
-  if (theValue)
-    free((void*)theValue);
+  switch (theType)
+  {
+  case TYPE_INT:
+  case TYPE_UINT32:
+  case TYPE_SHORT:
+  case TYPE_USHORT:
+  case TYPE_CHAR:
+  case TYPE_UCHAR:
+  case TYPE_BOOL:
+  {
+    break;
+  }
+  default:
+  {
+    if (theValue.cstrv)
+      free((void*)theValue.cstrv);
+  }
+  }
 
   archive_field* temp1 = theFirstChild;
   archive_field* temp2;
@@ -244,10 +350,10 @@ bool Archiver::get_is_temp_field_one_level()
 
 ********************************************************************************/
 void Archiver::add_simple_temp_field(
-    const char* type,
-    const char* value,
+    TypeCode type,
+    SimpleValue value,
     const void* ptr,
-    enum ArchiveFieldKind fieldKind)
+    ArchiveFieldKind fieldKind)
 {
   archive_field* new_field;
 
@@ -266,12 +372,9 @@ void Archiver::add_simple_temp_field(
   }
 
   new_field = new archive_field(type,
-                                true,       // is_simple
-                                false,      // is_class
                                 value,
                                 ptr,
                                 fieldKind,
-                                NULL,
                                 get_serialize_only_for_eval(),
                                 theAllowDelay2,
                                 theCurrentLevel);
@@ -289,6 +392,8 @@ void Archiver::add_simple_temp_field(
     theCurrentCompoundField->theFirstChild = new_field;
   
   theCurrentCompoundField->theLastChild = new_field;
+
+  --theCurrentLevel;
 }
 
 
@@ -1103,8 +1208,8 @@ void Archiver::check_class_field(
     bool retval,
     const char* type,
     const char* required_type,
-    enum ArchiveFieldKind field_treat,
-    enum ArchiveFieldKind required_field_treat,
+    ArchiveFieldKind field_treat,
+    ArchiveFieldKind required_field_treat,
     int id)
 {
   if (!retval)
@@ -1115,18 +1220,18 @@ void Archiver::check_class_field(
   if (field_treat == ARCHIVE_FIELD_NULL)
     return;
 
-#ifndef NDEBUG
-  if (strcmp(type, required_type))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-#endif
-
-  if ((required_field_treat != (enum ArchiveFieldKind)-1) && 
+  if ((required_field_treat != (ArchiveFieldKind)-1) && 
      field_treat != required_field_treat)
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
   }
+
+#ifndef NDEBUG
+  if (field_treat == ARCHIVE_FIELD_PTR && strcmp(type, required_type))
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
+  }
+#endif
 }
 
 
@@ -1192,6 +1297,7 @@ void Archiver::register_pointers_internal(archive_field* fields)
 {
   archive_field* child;
   child = fields->theFirstChild;
+
   while (child)
   {
     register_reference(child->theId, child->theKind, child->assoc_ptr);

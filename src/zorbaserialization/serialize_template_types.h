@@ -170,12 +170,6 @@ void operator&(Archiver& ar, T*& obj)
 
     if (ar.is_serialize_base_class())
     {
-#ifndef NDEBUG
-      if (strcmp(type, T::get_class_name_str_static()))
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-      }
-#endif
       if (field_treat != ARCHIVE_FIELD_BASECLASS)
       {
         throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
@@ -655,7 +649,7 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
     {
       ar.set_is_temp_field(true);
 
-      int s = (int)obj->size();
+      csize s = obj->size();
       ar & s;
 
       ar.set_is_temp_field(false);
@@ -702,13 +696,13 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
       ar.register_reference(id, field_treat, obj);
 
       ar.set_is_temp_field(true);
-      int s;
+      csize s;
       ar & s;
       ar.set_is_temp_field(false);
 
       std::pair<T1, T2> p;
 
-      for (int i = 0; i < s; ++i)
+      for (csize i = 0; i < s; ++i)
       {
         ar & p.first;
         ar & p.second;
@@ -755,7 +749,7 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
     {
       ar.set_is_temp_field(true);
 
-      int s = (int)obj.size();
+      csize s = obj.size();
       ar & s;
 
       ar.set_is_temp_field(false);
@@ -788,13 +782,13 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
     ar.register_reference(id, field_treat, &obj);
 
     ar.set_is_temp_field(true);
-    int s;
+    csize s;
     ar & s;
     ar.set_is_temp_field(false);
 
     std::pair<T1, T2> p;
 
-    for (int i = 0; i < s; ++i)
+    for (csize i = 0; i < s; ++i)
     {
       ar & p.first;
       ar & p.second;
@@ -829,18 +823,20 @@ void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
   {
     if (ar.is_serializing_out())
     {
-      ar.add_simple_temp_field("rstring", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+      SimpleValue v;
+      v.cstrv = obj.c_str();
+      ar.add_simple_temp_field(TYPE_ZSTRING, v, &obj, ARCHIVE_FIELD_NORMAL);
     }
     else
     {
-      char* value;
+      SimpleValue value;
       ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-      bool retval = ar.read_next_simple_temp_field(&value);
+      bool retval = ar.read_next_simple_temp_field(value, TYPE_ZSTRING);
 
       ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-      obj = value;
+      obj = value.cstrv;
     }
   }
   else

@@ -58,7 +58,7 @@ class TypeManager : public SimpleRCObject
 {
     
 protected:
-  int m_level;
+  unsigned int m_level;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(TypeManager)
@@ -66,13 +66,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  TypeManager(int level) : m_level(level) { }
+  TypeManager(unsigned int level) : m_level(level) { }
   
   virtual ~TypeManager() { }
 
   virtual TypeManager* get_parent_type_manager() const = 0;
 
-  virtual int level() const { return m_level; }
+  virtual unsigned int level() const { return m_level; }
 
   virtual void initializeSchema() = 0;
 

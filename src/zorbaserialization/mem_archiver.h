@@ -18,6 +18,7 @@
 #define TEST_ZORBA_SERIALIZATION_ARCHIVER
 
 #include "zorbaserialization/archiver.h"
+#include "zorbaserialization/archiver_field.h"
 #include "zorbatypes/rchandle.h"
 
 namespace zorba
@@ -36,14 +37,15 @@ protected:
 public:
   MemArchiver(bool is_serializing_out, bool internal_archive=false)
     : 
-    Archiver(is_serializing_out, internal_archive) ,
-    temp_field("", false, false, NULL, NULL, ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0)
+    Archiver(is_serializing_out, internal_archive),
+    temp_field("", false, false, NULL, NULL,
+               ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0)
   {
     current_field = NULL;
     is_after_last = false;
   }
 
-  bool read_next_simple_temp_field(char** value);
+  bool read_next_simple_temp_field(SimpleValue& value, TypeCode type);
 
   bool read_next_field_impl( 
       char** type, 

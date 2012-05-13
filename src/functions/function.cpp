@@ -114,7 +114,7 @@ void function::setAnnotations(AnnotationList* annotations)
   This is a virstual method. It is redefined by udf and external-function
   classes. 
 ********************************************************************************/
-short function::getScriptingKind() const 
+unsigned short function::getScriptingKind() const 
 {
   return SIMPLE_EXPR;
 }

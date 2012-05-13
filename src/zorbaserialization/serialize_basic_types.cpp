@@ -45,40 +45,20 @@ void operator&(Archiver& ar, int& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%d", obj);
-
-    ar.add_simple_temp_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.intv = obj;
+    ar.add_simple_temp_field(TYPE_INT, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_INT);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%d", &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, const int& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char strtemp[30];
-    sprintf(strtemp, "%d", obj);
-
-    ar.add_simple_temp_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
+    obj = value.intv;
   }
 }
 
@@ -90,21 +70,38 @@ void operator&(Archiver& ar, uint32_t& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%u", obj);
-
-    ar.add_simple_temp_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.uint32v = obj;
+    ar.add_simple_temp_field(TYPE_UINT32, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool  retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_UINT32);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%u", &obj);
+    obj = value.uint32v;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, const uint32_t& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.uint32v = obj;
+    ar.add_simple_temp_field(TYPE_UINT32, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -116,21 +113,23 @@ void operator&(Archiver& ar, long& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
+    char strtemp[30];
     sprintf(strtemp, "%ld", obj);
 
-    ar.add_simple_temp_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.cstrv = strtemp;
+    ar.add_simple_temp_field(TYPE_LONG, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_LONG);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%ld", &obj);
+    sscanf(value.cstrv, "%ld", &obj);
   }
 }
 
@@ -142,21 +141,23 @@ void operator&(Archiver& ar, unsigned long& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
+    char strtemp[30];
     sprintf(strtemp, "%lu", obj);
 
-    ar.add_simple_temp_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.cstrv = strtemp;
+    ar.add_simple_temp_field(TYPE_ULONG, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool  retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_ULONG);
 
     ar.check_simple_field(retval, field_treat,  ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%lu", &obj);
+    sscanf(value.cstrv, "%lu", &obj);
   }
 }
 
@@ -168,21 +169,23 @@ void operator&(Archiver& ar, long long& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
+    char strtemp[30];
     sprintf(strtemp, "%lld", obj);
 
-    ar.add_simple_temp_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.cstrv = strtemp;
+    ar.add_simple_temp_field(TYPE_LONG_LONG, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_LONG_LONG);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%lld", &obj);
+    sscanf(value.cstrv, "%lld", &obj);
   }
 }
 
@@ -194,21 +197,23 @@ void operator&(Archiver& ar, unsigned long long& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
+    char strtemp[30];
     sprintf(strtemp, "%llu", obj);
 
-    ar.add_simple_temp_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.cstrv = strtemp;
+    ar.add_simple_temp_field(TYPE_ULONG_LONG, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_ULONG_LONG);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%llu", &obj);
+    sscanf(value.cstrv, "%llu", &obj);
   }
 }
 
@@ -220,21 +225,20 @@ void operator&(Archiver& ar, short& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%hd", obj);
-
-    ar.add_simple_temp_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.shortv = obj;
+    ar.add_simple_temp_field(TYPE_SHORT, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_SHORT);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%hd", &obj);
+    obj = value.shortv;
   }
 }
 
@@ -246,21 +250,20 @@ void operator&(Archiver& ar, unsigned short& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%hu", obj);
-
-    ar.add_simple_temp_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.ushortv = obj;
+    ar.add_simple_temp_field(TYPE_USHORT, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_USHORT);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value, "%hu", &obj);
+    obj = value.ushortv;
   }
 }
 
@@ -272,23 +275,166 @@ void operator&(Archiver& ar, char& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%d", (int)obj);
-
-    ar.add_simple_temp_field("char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    SimpleValue v;
+    v.charv = obj;
+    ar.add_simple_temp_field(TYPE_CHAR, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* value;
+    SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(&value);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_CHAR);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    int int_obj;
-    sscanf(value, "%d", &int_obj);
-    obj = (char)int_obj;
+    obj = value.charv;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, signed char& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.charv = obj;
+    ar.add_simple_temp_field(TYPE_CHAR, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_CHAR);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = value.charv;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, unsigned char& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.ucharv = obj;
+    ar.add_simple_temp_field(TYPE_UCHAR, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_UCHAR);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = value.ucharv;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, float& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    char strtemp[100];
+
+    FloatImpl<float> zorba_float(obj);
+    zstring float_str = zorba_float.toString();
+
+    if (isdigit(float_str.c_str()[0]))
+      sprintf(strtemp, "%.7e", (double)obj);
+    else
+      strcpy(strtemp, float_str.c_str());
+
+    SimpleValue v;
+    v.cstrv = strtemp;
+    ar.add_simple_temp_field(TYPE_FLOAT, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_FLOAT);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    FloatImpl<float> zorba_float(value.cstrv);
+    obj = zorba_float.getNumber();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, double& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    char strtemp[100];
+    FloatImpl<double> zorba_double(obj);
+    zstring double_str = zorba_double.toString();
+
+    if (isdigit(double_str.c_str()[0]))
+      sprintf(strtemp, "%.16e", obj);
+    else
+      strcpy(strtemp, double_str.c_str());
+
+    SimpleValue v;
+    v.cstrv = strtemp;
+    ar.add_simple_temp_field(TYPE_DOUBLE, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_DOUBLE);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    FloatImpl<double> zorba_double(value.cstrv);
+    obj = zorba_double.getNumber();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, bool& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.boolv = obj;
+    ar.add_simple_temp_field(TYPE_BOOL, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_BOOL);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = value.boolv;
   }
 }
 
@@ -339,163 +485,6 @@ void operator&(Archiver& ar, char*& obj)
     else if ((obj = (char*)ar.get_reference_value(referencing)) == NULL)
     {
       ZORBA_ASSERT(false);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, signed char& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char  strtemp[30];
-    sprintf(strtemp, "%d", (int)obj);
-
-    ar.add_simple_temp_field("char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool  retval = ar.read_next_simple_temp_field(&value);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    int int_obj;
-    sscanf(value, "%d", &int_obj);
-    obj = (signed char)int_obj;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, unsigned char& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char strtemp[30];
-    sprintf(strtemp, "%u", (unsigned int)obj);
-
-    ar.add_simple_temp_field("unsigned char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(&value);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    unsigned int int_obj;
-    sscanf(value, "%u", &int_obj);
-    obj = (unsigned char)int_obj;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, float& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char strtemp[100];
-
-    FloatImpl<float> zorba_float(obj);
-    zstring float_str = zorba_float.toString();
-
-    if (isdigit(float_str.c_str()[0]))
-      sprintf(strtemp, "%.7e", (double)obj);
-    else
-      strcpy(strtemp, float_str.c_str());
-
-    ar.add_simple_temp_field("float", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(&value);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    FloatImpl<float> zorba_float(value);
-    obj = zorba_float.getNumber();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, double& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char strtemp[100];
-    FloatImpl<double> zorba_double(obj);
-    zstring double_str = zorba_double.toString();
-
-    if (isdigit(double_str.c_str()[0]))
-      sprintf(strtemp, "%.16e", obj);
-    else
-      strcpy(strtemp, double_str.c_str());
-
-    ar.add_simple_temp_field("double", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(&value);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    FloatImpl<double> zorba_double(value);
-    obj = zorba_double.getNumber();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, bool& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    ar.add_simple_temp_field("bool", obj ? "T" : "F", &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool  retval = ar.read_next_simple_temp_field(&value);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    if (!strcmp(value, "T"))
-    {
-      obj = true;
-    }
-    else if (!strcmp(value, "F"))
-    {
-      obj = false;
-    }
-    else
-    {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(0));
     }
   }
 }

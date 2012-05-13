@@ -146,7 +146,7 @@ template void operator&(serialization::Archiver&, IntegerImpl<unsigned long long
 /*******************************************************************************
 
 ********************************************************************************/
-void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &items)
+void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t>& items)
 {
   store::Item_t  i;
   iter->open();
@@ -157,7 +157,7 @@ void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &item
   iter->close();
 }
 
-void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree);
+void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree);
 
 
 /*******************************************************************************
@@ -170,7 +170,7 @@ void serialize_my_children(Archiver& ar, store::Iterator_t iter)
     std::vector<store::Item_t>  childs;
     iterator_to_vector(iter, childs);
     std::vector<store::Item_t>::iterator  child_it;
-    int child_count = (int)childs.size();
+    csize child_count = childs.size();
     ar & child_count;
 
     for(child_it = childs.begin(); child_it != childs.end(); ++child_it)
@@ -184,10 +184,10 @@ void serialize_my_children(Archiver& ar, store::Iterator_t iter)
   }
   else
   {
-    int child_count;
+    csize child_count;
     ar & child_count;
 
-    for(int i = 0; i < child_count; ++i)
+    for(csize i = 0; i < child_count; ++i)
     {
       store::Item*  p = NULL; 
       //ar & p;//should be automatically added to DocumentNode or ElementNode
@@ -200,7 +200,7 @@ void serialize_my_children(Archiver& ar, store::Iterator_t iter)
 /*******************************************************************************
 
 ********************************************************************************/
-void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
+void serialize_my_children2(Archiver& ar, store::Iterator_t iter)
 {
   serialize_my_children(ar, iter);
 }

@@ -334,8 +334,8 @@ TryCatchIterator::bindErrorVars(
 
   typedef std::vector<LetVarIter_t>::const_iterator LetVarConstIter;
 
-  for (CatchClause::VarMap_t::const_iterator lIter = clause->vars.begin();
-       lIter != clause->vars.end();
+  for (CatchClause::VarMap_t::const_iterator lIter = clause->theVars.begin();
+       lIter != clause->theVars.end();
        ++lIter)
   {
     switch (lIter->first)
@@ -346,12 +346,12 @@ TryCatchIterator::bindErrorVars(
         LetVarConstIter lErrorCodeVarIterEnd = lIter->second.end();
         // bind the error code (always)
         store::Item_t lErrorCodeItem;
-	      diagnostic::QName const &err_name = e.diagnostic().qname();
-        GENV_ITEMFACTORY->createQName(
-            lErrorCodeItem,
-            err_name.ns(),
-            err_name.prefix(),
-            err_name.localname());
+	      const diagnostic::QName& err_name = e.diagnostic().qname();
+
+        GENV_ITEMFACTORY->createQName(lErrorCodeItem,
+                                      err_name.ns(),
+                                      err_name.prefix(),
+                                      err_name.localname());
 
         for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ )
         {
@@ -370,7 +370,7 @@ TryCatchIterator::bindErrorVars(
         {
           // bind the description or the empty sequence
           store::Iterator_t lErrorDescIter;
-	      	char const *const what = e.what();
+	      	const char* const what = e.what();
           if (what && *what)
           {
             zstring errDescr = what;

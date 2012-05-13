@@ -172,8 +172,8 @@ protected:
 
   QueryLoc           theLoc;
 
-  short              theKind;
-  short              theScriptingKind;
+  unsigned short     theKind;
+  unsigned short     theScriptingKind;
 
   xqtref_t           theType;
 
@@ -182,7 +182,7 @@ protected:
   FreeVars           theFreeVars;
 
 public:
-  static bool is_sequential(short theScriptingKind);
+  static bool is_sequential(unsigned short theScriptingKind);
 
   static void checkSimpleExpr(const expr* e);
 
@@ -209,7 +209,7 @@ public:
 
   void setFlags(ulong flags) { theFlags1 = flags; }
 
-  short get_scripting_detail() const { return theScriptingKind; }
+  unsigned short get_scripting_detail() const { return theScriptingKind; }
 
   bool is_updating() const;
 

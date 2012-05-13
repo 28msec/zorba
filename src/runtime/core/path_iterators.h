@@ -122,7 +122,7 @@ class AxisState : public PlanIteratorState
 public:
   store::Item_t  theContextNode;   
 
-  xs_long           theCurrentPos;
+  xs_long        theCurrentPos;
 
 public:
   void init(PlanState& planState) 

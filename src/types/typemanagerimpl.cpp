@@ -70,7 +70,7 @@ void TypeManager::serialize(::zorba::serialization::Archiver& ar)
 /***************************************************************************//**
 
 ********************************************************************************/
-void TypeManagerImpl::serialize(::zorba::serialization::Archiver &ar)
+void TypeManagerImpl::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (TypeManager*)this);
   SERIALIZE_TYPEMANAGER(TypeManager, m_parent);

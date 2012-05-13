@@ -60,7 +60,7 @@ void DocIndexer::setup(CompilerCB* ccb)
 {
   if (thePlanWrapper == NULL)
   {
-    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, NULL, NULL);
+    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, NULL, NULL, 0, false, 0);
 
     theDctx = static_cast<PlanWrapper*>(thePlanWrapper.getp())->dctx();
 
