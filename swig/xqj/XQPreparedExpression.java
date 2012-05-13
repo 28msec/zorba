@@ -53,7 +53,53 @@ import org.zorbaxquery.api.DynamicContext;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.Iterator;
 import org.zorbaxquery.api.XmlDataManager;
-
+ /**
+   * This class describes an expression that can be prepared for multiple subsequent executions. A prepared expression can be created from the connection.
+   * 
+   * The preparation of the expression does the static analysis of the expression using the static context information.
+   * 
+   * The dynamic context information, such as values for bind variables, can then be set using the setter methods. When setting values for bind variables, these variables should be present as external variables in the prolog of the prepared expression.
+   * 
+   * The static type information of the query can also be retrieved if the XQuery implementation provides it using the getStaticResultType method.
+   * 
+   * When the expression is executed using the executeQuery method, if the execution is successful, then an XQResultSequence object is returned. The XQResultSequence object is tied to the XQPreparedExpression from which it was prepared and is closed implicitly if that expression is either closed or if re-executed.
+   * 
+   * The XQPreparedExpression object is dependent on the XQConnection object from which it was created and is only valid for the duration of that object. Thus, if the XQConnection object is closed then this XQPreparedExpression object will be implicitly closed and it can no longer be used.
+   * 
+   * An XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call close method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions. Not closing this object implicitly or explicitly might result in serious memory leaks.
+   * 
+   * When the XQPreparedExpression is closed any XQResultSequence object obtained from it is also implicitly closed.
+   * 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = XQDataSource.getconnection();
+   *   XQPreparedExpression expr = conn.prepareExpression
+   *           ("for $i in (1) return 'abc' "); 
+   *  
+   *   // get the sequence type out.. This would be something like xs:string *
+   *   XQSequenceType type = expr.getStaticResultType();
+   * 
+   *   XQSequence result1 = expr.executeQuery();
+   *  
+   *   // process the result..
+   *   result1.next();
+   *   System.out.println(" First result1 "+ result1.getAtomicValue());
+   * 
+   *   XQResultSequence result2 = expr.executeQuery();
+   * 
+   *   // result1 is implicitly closed 
+   *   // recommended to close the result sequences explicitly.
+   * 
+   *   // process the result..
+   *   while (result2.next()) 
+   *      System.out.println(" result is "+ result2.getAtomicValue());
+   *  
+   *   result2.close(); 
+   *   expr.close(); // closing expression implicitly closes all result sequence or
+   *                 // items obtained from this expression.
+   *   conn.close(); // closing connections will close expressions and results.
+   *  \endcode
+   */
 public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpression {
 
     private XQuery query;
@@ -99,17 +145,34 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Attempts to cancel the execution if both the XQuery engine and XQJ driver support aborting the execution of an XQPreparedExpression.
+   * 
+   * Attempts to cancel the execution if both the XQuery engine and XQJ driver support aborting the execution of an XQPreparedExpression. This method can be used by one thread to cancel an XQPreparedExpression, that is being executed in another thread. If cancellation is not supported or the attempt to cancel the execution was not successful, the method returns without any error. If the cancellation is successful, an XQException is thrown, to indicate that it has been aborted, by executeQuery, executeCommand or any method accessing the XQResultSequence returned by executeQuery. If applicable, any open XQResultSequence and XQResultItem objects will also be implicitly closed in this case.
+   * 
+   * @throw XQException - if the prepared expression is in a closed state
+   */
     @Override
     public void cancel() throws XQException {
         isClosedXQException();
-        
     }
 
+  /** \brief Checks if the prepared expression in a closed state.
+   * 
+   * Checks if the prepared expression in a closed state.
+   * 
+   * @return true if the prepared expression is in a closed state, false otherwise.
+   */
     @Override
     public boolean isClosed() {
         return closed;
     }
 
+  /** \brief Closes the expression object and release all resources associated with this prepared expression.
+   * 
+   * Closes the expression object and release all resources associated with this prepared expression. This also closes any result sequences obtained from this expression. Once the expression is closed, all methods on this object other than the close or isClosed will raise exceptions. Calling close on an XQExpression object that is already closed has no effect.
+   * 
+   * @throw XQException - if there are errors when closing the expression
+   */
     @Override
     public void close() throws XQException {
         closed = true;
@@ -121,6 +184,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Executes the prepared query expression.
+   * 
+   * Executes the prepared query expression. Calling this method implicitly closes any previous result sequence obtained from this expression.
+   * 
+   * @return the xquery sequence object containing the result of the query execution
+   * @throw XQException - if (1) there are errors when executing the prepared expression, (2) the prepared expression is in a closed state, or (3) the query execution is cancelled
+   */
     @Override
     public XQResultSequence executeQuery() throws XQException {
         isClosedXQException();
@@ -134,6 +204,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         return result;
     }
 
+  /** \brief Retrieves all the external variables defined in the prolog of the prepared expression.
+   * 
+   * Retrieves all the external variables defined in the prolog of the prepared expression.
+   * 
+   * @return an array of QName objects for all the external variables defined in the prolog of a prepared expression. Empty array if there are no external variables present.
+   * @throw XQException - if the prepared expression is in a closed state
+   */
     @Override
     public QName[] getAllExternalVariables() throws XQException {
         isClosedXQException();
@@ -150,7 +227,6 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         return result.toArray(new QName[0]);
     }
 
-    
     private boolean isExternal(String varName) {
         boolean found=false;
         Iterator iter = new Iterator();
@@ -166,7 +242,14 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         iter.delete();
         return found;
     }
-    
+
+  /** \brief Retrieves the names of all unbound external variables.
+   * 
+   * Gets the static type information of the result sequence. If an implementation does not do static typing of the query, then this method must return an XQSequenceType object corresponding to the XQuery sequence type item()*.
+   * 
+   * @return XQSequenceType containing the static result information.
+   * @throw XQException - if the prepared expression is in a closed state
+   */
     @Override
     public QName[] getAllUnboundExternalVariables() throws XQException {
         isClosedXQException();
@@ -192,6 +275,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         return result.toArray(new QName[0]);
     }
 
+  /** \brief Gets the static type information of the result sequence.
+   * 
+   * Gets the static type information of the result sequence. If an implementation does not do static typing of the query, then this method must return an XQSequenceType object corresponding to the XQuery sequence type item()*.
+   * 
+   * @return XQSequenceType containing the static result information.
+   * @throw XQException - if the prepared expression is in a closed state
+   */
     @Override
     public XQSequenceType getStaticResultType() throws XQException {
         isClosedXQException();
@@ -199,6 +289,14 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         return result;
     }
 
+  /** \brief Retrieves the static type of a given external variable.
+   * 
+   * Retrieves the static type of a given external variable.
+   * 
+   * @param varName - the name of the external variable
+   * @return the static type information of the variable as defined in the prolog of the prepared expression
+   * @throw XQException - if (1) the variable does not exist in the static context of the expression, or (2) the sequence is in a closed state, or (3) the name parameter is null
+   */
     @Override
     public XQSequenceType getStaticVariableType(QName varName) throws XQException {
         isClosedXQException();
@@ -228,6 +326,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         return result;
     }
 
+  /** \brief Gets an XQStaticContext representing the values for all expression properties. 
+   * 
+   * Gets an XQStaticContext representing the values for all expression properties. Note that these properties cannot be changed; in order to change, a new XQPreparedExpression needs to be created.
+   * 
+   * @return an XQStaticContext representing the values for all expression properties
+   * @throw XQException - if the expression is in a closed state
+   */
     @Override
     public XQStaticContext getStaticContext() throws XQException {
         isClosedXQException();
@@ -237,6 +342,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         return staticContext;
     }
 
+  /** \brief Gets the implicit timezone
+   * 
+   * Gets the implicit timezone
+   * 
+   * @return the implicit timezone. This may have been set by an application using the setImplicitTimeZone method or provided by the implementation
+   * @throw XQException - if the expression is in a closed state
+   */
     @Override
     public TimeZone getImplicitTimeZone() throws XQException {
         isClosedXQException();
@@ -245,6 +357,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         return result;
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the casting from xs:string rules outlined in 17.1.1 Casting from xs:string and xs:untypedAtomic, XQuery 1.0 and XPath 2.0 Functions and Operators. If the cast fails, or if there is a mismatch between the static and dynamic types, an XQException is thrown either by this method or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to
+   * @param value - the lexical string value of the type
+   * @param type - the item type of the bind
+   * @throw XQException - if (1) any of the arguments are null, (2) given type is not an atomic type, (3) the conversion of the value to an XDM instance failed, (4) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (5) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (6) the expression is in a closed state
+   */
     @Override
     public void bindAtomicValue(QName varName, String value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -268,6 +389,16 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type, which must represent an xs:string or a type derived by restriction from xs:string. If the specified type is null, it defaults to xs:string.
+   * Subsequently the value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0,. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be converted, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type, xs:string, is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindString(QName varName, String value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -306,6 +437,22 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         
     }
 
+  /** \brief Binds a value to the given external variable or the context item. 
+   * 
+   * Binds a value to the given external variable or the context item. 
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation. If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindDocument(QName varName, String value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
@@ -335,6 +482,22 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         
     }
 
+  /** \brief Binds a value to the given external variable or the context item. 
+   * 
+   * Binds a value to the given external variable or the context item. 
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation. If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindDocument(QName varName, Reader value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
@@ -367,6 +530,22 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         bindDocument(varName, writer.toString(), baseURI, type);
     }
 
+  /** \brief Binds a value to the given external variable or the context item. 
+   * 
+   * Binds a value to the given external variable or the context item. 
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation. If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindDocument(QName varName, InputStream value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
@@ -393,6 +572,22 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         bindDocument(varName, out.toString(), baseURI, type);
     }
 
+  /** \brief Binds a value to the given external variable or the context item. 
+   * 
+   * Binds a value to the given external variable or the context item. 
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation. If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindDocument(QName varName, XMLStreamReader value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -438,6 +633,25 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
      return sw.toString();
     }
 
+  /** \brief Binds a value to the given external variable or the context item. 
+   * 
+   * Binds a value to the given external variable or the context item from the given Source. An XQJ implementation must at least support the following implementations:
+   * - javax.xml.transform.dom.DOMSource
+   * - javax.xml.transform.sax.SAXSource
+   * - javax.xml.transform.stream.StreamSource
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation. If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindDocument(QName varName, Source value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -463,6 +677,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Sets the implicit timezone
+   * 
+   * Sets the implicit timezone
+   * 
+   * @param implicitTimeZone - time zone to be set
+   * @throw XQException - if the expression is in a closed state
+   */
     @Override
     public void setImplicitTimeZone(TimeZone value) throws XQException {
         isClosedXQException();
@@ -474,6 +695,14 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable.
+   * 
+   * Binds a value to the given external variable. The dynamic type of the value is derived from the XQItem. In case of a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @throw XQException - if (1) any of the arguments are null, (2) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (3) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, (4) the expression is in a closed state, or (5) the specified item is closed
+   */
     @Override
     public void bindItem(QName varName, XQItem value) throws XQException {
         isClosedXQException();
@@ -490,6 +719,14 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable.
+   * 
+   * Binds a value to the given external variable or the context item. The input sequence is consumed from its current position to the end, after which the input sequence's position will be set to point after the last item. The dynamic type of the value is derived from the items in the sequence. In case of a mismatch between the static and dynamic types, an XQException is be raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @throw XQException - if (1) any of the arguments are null, (2) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (3) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, (4) the expression is in a closed state, or (5) the specified item is closed
+   */
     @Override
     public void bindSequence(QName varName, XQSequence value) throws XQException {
         isClosedXQException();
@@ -515,6 +752,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindObject(QName varName, Object value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -532,6 +778,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindBoolean(QName varName, boolean value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -548,6 +803,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindByte(QName varName, byte value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -564,6 +828,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindDouble(QName varName, double value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -580,6 +853,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindFloat(QName varName, float value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -596,6 +878,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindInt(QName varName, int value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -612,6 +903,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindLong(QName varName, long value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -628,6 +928,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindNode(QName varName, Node value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -645,6 +954,15 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         }
     }
 
+  /** \brief Binds a value to the given external variable or the context item.
+   * 
+   * Binds a value to the given external variable or the context item. The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, or if there is a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * 
+   * @param varName - the name of the external variable to bind to, cannot be null
+   * @param value - the value to be bound, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
+   */
     @Override
     public void bindShort(QName varName, short value, XQItemType type) throws XQException {
         isClosedXQException();

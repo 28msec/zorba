@@ -22,6 +22,12 @@ import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQSequence;
 import org.zorbaxquery.api.ItemSequence;
 
+/** \brief A Collection is a persistent sequence of node items.
+ *
+ * Instances of this class can be used to modify or retrieve the contents
+ * of a collection.
+ *
+ */
 public class XQCollection {
 
     private boolean closed = false;
@@ -31,7 +37,13 @@ public class XQCollection {
     protected XQCollection(Collection col) {
         collection = col;
     }
-
+    
+  /** \brief Closes the collection.
+   * 
+   * Closes the collection. Once the collection is closed, no method other than close or the isClosed method may be called on the collection object. Calling close on an XQCollection object that is already closed has no effect.
+   * 
+   * @throw XQException - if there is an error during closing the collection.
+   */
     public void close() throws XQException {
         for (XQSequence exp : sequences ){
             exp.close();  // Notify the dependents objects to close
@@ -42,10 +54,20 @@ public class XQCollection {
         closed = true;
     }
 
+  /** \brief Checks if the collection is closed.
+   * 
+   * @return true if the collection is in a closed state, false otherwise
+   */
     public boolean isClosed() {
         return closed;
     }
 
+  /**
+   * \brief This function returns the sequence of nodes of the collection.
+   *
+   * @return The sequence contained in the given collection.
+   *
+   */
     public XQSequence contents() throws XQException {
         isClosedXQException();
         XQSequence result =  new org.zorbaxquery.api.xqj.XQSequence(collection.contents().getIterator());
@@ -53,16 +75,37 @@ public class XQCollection {
         return result;
     }
 
+  /**
+   * \brief This function deletes the first node from a collection.
+   *
+   * @throw XQException if the collection doesn't contain any node.
+   *
+   */
     public void deleteNodeFirst() throws XQException {
         isClosedXQException();
         collection.deleteNodeFirst();
     }
 
+  /**
+   * \brief This function deletes the last node from a collection.
+   *
+   * @throw XQException if the collection doesn't contain any node.
+   *
+   */
     public void deleteNodeLast() throws XQException {
         isClosedXQException();
         collection.deleteNodeLast();
     }
 
+  /**
+   * \brief This function deletes zero of more nodes from a collection. 
+   *
+   * @param aNodes the nodes in the collection that should be deleted.
+   *
+   * @throw XQException if any nodes in the given sequence is not a member of a collection
+   *        or not all nodes of the sequence belong to the same collection.
+   *
+   */
     public void deleteNodes(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
@@ -73,31 +116,80 @@ public class XQCollection {
         }
     }   
 
+  /**
+   * This function deletes the n first nodes from a collection.
+   *
+   * @throw XQException if the collection doesn't contain any node.
+   *
+   */
     public void deleteNodesFirst(long aNumNodes ) throws XQException {
         isClosedXQException();
         collection.deleteNodesFirst(aNumNodes);
     }
 
+  /**
+   * This function deletes the n last nodes from a collection.
+   *
+   * @throw XQException if the collection doesn't contain any node.
+   *
+   */
     public void deleteNodesLast(long aNumNodes ) throws XQException {
         isClosedXQException();
         collection.deleteNodesLast(aNumNodes);
     }
 
+  /**
+   * \brief Get the name of the collection.
+   *
+   * @return The name of the collection.
+   */
     public String getName() throws XQException {
         isClosedXQException();
         return collection.getName().getStringValue();
     }
 
+  /**
+   * \brief Retrieves the sequence type for this (static declared) collection.
+   *
+   * @return the sequence type for the said collection, or 0
+   *  if this collection is not statically declared.
+   *
+   * @see isStatic()
+   */
     public XQItemType getType() throws XQException {
         isClosedXQException();
         return new XQItemType(collection.getType());
     }
 
+  /**
+   * \brief This function returns the index of the given node in the collection.
+   *
+   * @param aNode The node to retrieve the index from.
+   *
+   * @return Returns the position of the given node in the collection.
+   *
+   * @throw XQException if node is not contained in any collection.
+   *
+   */
     public long indexOf(XQItem aNode ) throws XQException {
         isClosedXQException();
         return collection.indexOf(((org.zorbaxquery.api.xqj.XQItem)aNode).getZorbaItem());
     }
 
+  /**
+   * This function inserts copies of the given
+   * nodes into a collection at the position directly following the
+   * given target node.
+   *
+   * @param aTarget the node in the collection after which the
+   *        sequence should be inserted.
+   * @param aNodes The sequences of nodes whose copies should
+   *        be added to the collection.
+   *
+   * @throw XQException if any nodes in the sequence is not a member of a collection
+   *        or not all nodes of the sequence belong to the same collection.
+   *
+   */
     public void insertNodesAfter(XQItem aTarget, XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
@@ -108,6 +200,20 @@ public class XQCollection {
         }
     }
 
+  /**
+   * This function inserts copies of the given
+   * nodes into a collection at the position directly preceding the
+   * given target node.
+   *
+   * @param aTarget the node in the collection before which the
+   *        sequence should be inserted.
+   * @param aNodes The sequences of nodes whose copies should
+   *        be added to the collection.
+   *
+   * @throw XQException if any nodes in the sequence is not a member of a collection
+   *        or not all nodes of the sequence belong to the same collection.
+   *
+   */
     public void insertNodesBefore(XQItem aTarget, XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
@@ -118,6 +224,14 @@ public class XQCollection {
         }
     }
 
+  /**
+   * This function inserts copies of the
+   * given nodes at the beginning of the collection.
+   *
+   * @param aNodes The sequences of nodes whose copies
+   *        should be added to the collection.
+   *
+   */
     public void insertNodesFirst(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
@@ -128,6 +242,14 @@ public class XQCollection {
         }
     }
 
+  /**
+   * This function inserts copies of the
+   * given nodes at the end of the collection.
+   *
+   * @param aNodes The sequences of nodes whose copies
+   *        should be added to the collection.
+   *
+   */
     public void insertNodesLast(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
@@ -138,6 +260,11 @@ public class XQCollection {
         }
     }
 
+  /**
+   * The function checks if this collection has been statically declared.
+   *
+   * @return true if the collection is a static collection, false otherwise.
+   */
     public boolean isStatic() throws XQException {
         isClosedXQException();
         return collection.isStatic();

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include <zorba/config.h>
 
 // This entire file should be effectively skipped when building with

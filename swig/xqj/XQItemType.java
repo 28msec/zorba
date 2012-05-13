@@ -22,7 +22,19 @@ import javax.xml.xquery.XQSequenceType;
 import org.zorbaxquery.api.IdentTypes.Kind;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.TypeIdentifier;
-
+/**
+  * The XQItemType class represents an item type as defined in XQuery 1.0: An XML Query language. 
+  * The XQItemType extends the XQSequenceType but restricts the occurrance indicator to be exactly one. This derivation allows passing an item type wherever a sequence type is expected, but not the other way. The XQItemType interface contains methods to represent information about the following aspects of an item type:
+  * 
+  * - The kind of the item - one of XQITEMKIND_* constants
+  * - The base type of the item - one of the XQBASETYPE_* constants. For atomic types this is the closest matching built-in XML Schema type, for element and attributes the closest matching built-in XML Schema type this node is based on.
+  * - Name of the node, if any
+  * - Type name, if any. If present, then also whether the typename is an anonymous type
+  * - XML Schema URI associated with the type, if any
+  * - The nillability characteristics, if any
+  * 
+  * An instance of the XQItemType is a standalone object that is independant of the XQConnection and any XQuery static or dynamic context.
+  */
 public class XQItemType implements javax.xml.xquery.XQItemType {
     public static final int ZORBA_XQITEMKIND_ANY = 0;
     public static final int ZORBA_XQITEMKIND_DOCUMENT = 1;
@@ -396,7 +408,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         generateTypeName();
     }
     
-    
+
     private void generateTypeName() {
         String namespaceURI = "http://www.w3.org/2001/XMLSchema";
         String localPart = "untyped";
@@ -562,10 +574,16 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
        }
         typeName = new QName(namespaceURI, localPart, prefix);
     }
-    
-    
-    
-    
+
+  /** \brief Returns the base type of the item.
+   * 
+   * Returns the base type of the item. One of the XQBASETYPE_* constants. 
+   * 
+   * XQJ defines a constant for each of the built-in schema types defined in XML Schema. For atomic types this is the closest matching built-in XML Schema type, for element and attributes the closest matching built-in XML Schema type this node is based on.
+   * 
+   * @return int one of the XQBASETYPE_* constants indicating the basic type of the item
+   * @throw XQException - if the item kind is not one of: XQITEMKIND_DOCUMENT_ELEMENT, XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT, XQITEMKIND_ELEMENT, XQITEMKIND_SCHEMA_ELEMENT, XQITEMKIND_ATTRIBUTE, XQITEMKIND_SCHEMA_ATTRIBUTE, or XQITEMKIND_ATOMIC
+   */
     @Override
     public int getBaseType() throws XQException {
         if (!((itemKind==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
@@ -580,16 +598,35 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         return baseType;
     }
 
+  /** \brief Returns the kind of the item.
+   * 
+   * Returns the kind of the item. One of the XQITEMKIND_* constants.
+   * 
+   * @return int one of the XQITEMKIND_* constants indicating the basic kind of the item
+   */
     @Override
     public int getItemKind() {
         return itemKind;
     }
 
+  /** \brief Returns the occurrence indicator for the item type.
+   * 
+   * Returns the occurrence indicator for the item type. This method will always return the value XQSequenceType.OCC_EXACTLY_ONE.
+   * 
+   * @return int indicating the occurrence indicator
+   */
     @Override
     public int getItemOccurrence() {
         return XQSequenceType.OCC_EXACTLY_ONE;
     }
 
+  /** \brief Returns the name of the node.
+   * 
+   * Returns the name of the node in case the item kind is an XQITEMKIND_DOCUMENT_ELEMENT, XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT, XQITEMKIND_ELEMENT, XQITEMKIND_SCHEMA_ELEMENT, XQITEMKIND_ATTRIBUTE, or XQITEMKIND_SCHEMA_ATTRIBUTE. For example, in the case of a type for element "foo" this will return the QName foo. For wildcard entries a null value will be returned.
+   * 
+   * @return QName for the name of the element, attribute, or document element node. null if it is a wildcard
+   * @throw XQException - if the item kind is not one of: XQITEMKIND_DOCUMENT_ELEMENT, XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT, XQITEMKIND_ELEMENT, XQITEMKIND_SCHEMA_ELEMENT, XQITEMKIND_ATTRIBUTE, or XQITEMKIND_SCHEMA_ATTRIBUTE
+   */
     @Override
     public QName getNodeName() throws XQException {
         if (!((itemKind==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
@@ -603,11 +640,24 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         return nodeName;
     }
 
+  /** \brief Returns the schema location URI of the schema that contains the item's element or type definition.
+   * 
+   * Returns the schema location URI of the schema that contains the item's element or type definition. This method is implementation-definied and an implementation will return a null value if it does not support retrieving the schema location URI. If the item corresponds to a validated global element in a schema, the result will be the schema location URI to the XMLSchema containing the element definition. Otherwise if the item is a schema validated node, the result will be the schema location URI of the XMLSchema containing the type definition of that node. If the item is not schema validated, the result is null.
+   * 
+   * @return URI representing the schema location URI of the XMLSchema containing the global element definition or the type definition of the current item. null in case the item is not schema validated or if the implementation does not support retrieving the schema URI.
+   */
     @Override
     public URI getSchemaURI() {
         return schemaURI;
     }
 
+  /** \brief Represents a type name (global or local).
+   * 
+   * Represents a type name (global or local). This can be used to represent specific type name such as, element foo of type hatsize. The schema type name is represented as a single QName. If the return type is an anonymous type, the actual QName value returned is implementation defined.
+   * 
+   * @return the QName of the schema type in case of a user defined or anonoymous types. For a built-in type, returns a predefined type name as QName (e.g.xs:anyType, xs:decimal, etc). Cannot be null.
+   * @throw XQException - if the item kind is not one of: XQITEMKIND_DOCUMENT_ELEMENT, XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT, XQITEMKIND_ATOMIC, XQITEMKIND_ELEMENT, XQITEMKIND_SCHEMA_ELEMENT, XQITEMKIND_ATTRIBUTE, or XQITEMKIND_SCHEMA_ATTRIBUTE
+   */
     @Override
     public QName getTypeName() throws XQException {
         if (!((itemKind==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
@@ -622,16 +672,35 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         return typeName;
     }
 
+  /** \brief Represents whether the item type is an anonymous type in the schema.
+   * 
+   * Represents whether the item type is an anonymous type in the schema.
+   * 
+   * @return true if the item type is an anonymous type in the schema, false otherwise.
+   */
     @Override
     public boolean isAnonymousType() {
         return (itemKind==0);
     }
 
+  /** \brief Returns whether the element type is nillable or not.
+   * 
+   * Returns whether the element type is nillable or not.
+   * 
+   * @return true if the element type is nillable, false otherwise.
+   */
     @Override
     public boolean isElementNillable() {
         return allowNill;
     }
 
+  /** \brief Returns the name of the processing instruction type.
+   * 
+   * Returns the name of the processing instruction type. As such the item kind of this XQItemType must be XQITEMKIND_PI.
+   * 
+   * @return the name of the processing instruction type. null if it is a wildcard.
+   * @throw XQException - if the item kind is not XQITEMKIND_PI
+   */
     @Override
     public String getPIName() throws XQException {
         if (itemKind!=XQItemType.XQITEMKIND_PI) {
@@ -640,11 +709,34 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         return piTarget;
     }
 
+  /** \brief Returns the type of the item in the sequence type.
+   * 
+   * Returns the type of the item in the sequence type.
+   * 
+   * @return XQItemType representing the item type in the sequence. null is returned in case of an empty sequence.
+   */
     @Override
     public XQItemType getItemType() {
         return this;
     }
-    
+
+  /** \brief Compares the specified object with this item type for equality.
+   * 
+   * Compares the specified object with this item type for equality. The result is true only if the argument is an item type object which represents the same XQuery item type. 
+   * 
+   * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used. Return true if and only if both objects are XQItemType and:
+   * - getItemKind() is equal
+   * - if getBaseType() is supported for the item kind, it must be equal
+   * - if getNodeName() is supported for the item kind, it must be equal
+   * - getSchemaURI() is equal
+   * - if getTypeName() is supported for the item kind, it must be equal
+   * - isAnonymousType() is equal
+   * - isElementNillable() is equal
+   * - if getPIName() is supported for the item kind, it must be equal
+   * 
+   * @param o - an XQItemType object representing an XQuery item type
+   * @return true if the input item type object represents the same XQuery item type, false otherwise
+   */
     @Override
     public boolean equals(Object o) {
         boolean result = false;
@@ -685,6 +777,29 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         return result;
     }
 
+  /** \brief Returns a hash code consistent with the definition of the equals method. 
+   * 
+   * Returns a hash code consistent with the definition of the equals method. 
+   * 
+   * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used:
+   * \code{.java}
+   *   hashCode = this.getItemKind();
+   *   if this.getSchemaURI != null
+   *     hashCode = 31*hashCode + this.getSchemaURI().hashCode();
+   *   if this.getBaseType() is supported for the item kind
+   *     hashCode = 31*hashCode + this.getbaseType();
+   *   if this.getNodeName () is supported for the item kind and
+   *     this.getNodeName() != null
+   *     hashCode = 31*hashCode + this.getNodeName().hashCode()
+   *   if this.getTypeName () is supported for the item kind
+   *     hashCode = 31*hashCode + this.getTypeName().hashCode();
+   *   if this.getPIName () is supported for the item kind and
+   *     this.getPIName () != null
+   *     hashCode = 31*hashCode + this.getPIName().hashCode();
+   * \endcode 
+   * 
+   * @return hash code for this item type
+   */
     @Override
     public int hashCode() {
         int hashCode = 0;
@@ -715,6 +830,12 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         return hashCode;
     }
 
+  /** \brief Returns a human-readable implementation-defined string representation of the item type.
+   * 
+   * Returns a human-readable implementation-defined string representation of the item type.
+   * 
+   * @return String a string representation of the item type
+   */
     @Override
     public String toString() {
         StringBuffer result = new StringBuffer();
