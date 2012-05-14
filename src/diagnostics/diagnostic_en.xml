@@ -1198,7 +1198,7 @@
        using the specified encoding, the resulting characters are not 
        permitted XML characters or requested encoding not supported
       </comment>
-      <value>"$1": Cannot decode resource retrieved</value>
+      <value>"$1": can not decode resource retrieved</value>
     </diagnostic>  
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
@@ -2479,6 +2479,9 @@
 
     <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
       <value>illegal empty string</value>
+    </diagnostic>
+    <diagnostic code="ZJPE0010" name="JSONML_ARRAY_REQUIRES_BRACKET">
+      <value>JsonML (array form) must start with '['</value>
     </diagnostic>
 
    <!--////////// JSON Serialization Errors ////////////////////////////////-->
