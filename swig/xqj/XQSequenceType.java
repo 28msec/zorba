@@ -33,8 +33,6 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
 
   /** \brief Returns the type of the item in the sequence type.
    * 
-   * Returns the type of the item in the sequence type.
-   * 
    * @return XQItemType representing the item type in the sequence. null is returned in case of an empty sequence.
    */
     @Override
@@ -44,7 +42,8 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
 
   /** \brief Returns the occurrence indicator for the sequence type.
    * 
-   * Returns the occurrence indicator for the sequence type. One of:
+   * One of:
+   * 
    * Description	Value
    * Zero or one	OCC_ZERO_OR_ONE
    * Exactly one	OCC_EXACTLY_ONE
@@ -60,8 +59,6 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
     }
 
   /** \brief Returns a human-readable implementation-defined string representation of the sequence type.
-   * 
-   * Returns a human-readable implementation-defined string representation of the sequence type.
    * 
    * @return a String representation of the sequence type
    */
@@ -89,7 +86,7 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
 
   /** \brief Compares the specified object with this sequence type for equality.
    * 
-   * Compares the specified object with this sequence type for equality. The result is true only if the argument is a sequence type object which represents the same XQuery sequence type. 
+   * The result is true only if the argument is a sequence type object which represents the same XQuery sequence type. 
    * 
    * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used. Return true if and only if both objects are XQsequenceType and:
    * - getItemOccurrence() is equal
@@ -110,8 +107,6 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
     }
 
   /** \brief Returns a hash code consistent with the definition of the equals method.
-   * 
-   * Returns a hash code consistent with the definition of the equals method.
    * 
    * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used:
    * \code{.java}

@@ -50,8 +50,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Gets the major version of this product.
    * 
-   * Gets the major version of this product.
-   * 
    * @return a integer indicating the major version of this product
    * @throw XQException - if the connection is no longer valid
    */
@@ -62,8 +60,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Gets the minor version of this product.
-   * 
-   * Gets the minor version of this product.
    * 
    * @return a integer indicating the minor version of this product
    * @throw XQException - if the connection is no longer valid
@@ -76,8 +72,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Gets the name of this product.
    * 
-   * Gets the name of this product.
-   * 
    * @return a string indicating the product name
    * @throw XQException - if the connection is no longer valid
    */
@@ -88,8 +82,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Gets the full version of this product.
-   * 
-   * Gets the full version of this product.
    * 
    * @return a string indicating the product version
    * @throw XQException - if the connection is no longer valid
@@ -102,8 +94,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Gets the major version number of XQJ specification supported by this implementation.
    * 
-   * Gets the major version number of XQJ specification supported by this implementation.
-   * 
    * @return an integer indicating the XQJ major version
    * @throw XQException - if the connection is no longer valid
    */
@@ -114,8 +104,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Gets the minor version number of XQJ specification supported by this implementation.
-   * 
-   * Gets the minor version number of XQJ specification supported by this implementation.
    * 
    * @return an integer indicating the XQJ minor version
    * @throw XQException - if the connection is no longer valid
@@ -128,8 +116,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Gets the full version of XQJ specification supported by this implementation.
    * 
-   * Gets the full version of XQJ specification supported by this implementation. 
-   * 
    * @return a string indicating the version of XQJ specification
    * @throw XQException - if the connection is no longer valid
    */
@@ -140,8 +126,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Query if the associated conection is restricted for read only use.
-   * 
-   * Query if the associated conection is restricted for read only use.
    * 
    * @return true if the associated connection is for read-only; false otherwise
    * @throw XQException - if the connection is no longer valid
@@ -154,8 +138,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if XQueryX format is supported in this data source.
    * 
-   * Query if XQueryX format is supported in this data source.
-   * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
    */
@@ -166,8 +148,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Query if transaction is supported in this data source.
-   * 
-   * Query if transaction is supported in this data source.
    * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
@@ -180,8 +160,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if XQuery static typing feature is supported in this data source.
    * 
-   * Query if XQuery static typing feature is supported in this data source.
-   * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
    */
@@ -192,8 +170,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Query if XQuery schema import feature is supported in this connection.
-   * 
-   * Query if XQuery schema import feature is supported in this connection.
    * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
@@ -206,8 +182,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if XQuery schema validation feature is supported in this connection.
    * 
-   * Query if XQuery schema validation feature is supported in this connection.
-   * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
    */
@@ -218,8 +192,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Query if XQuery full axis feature is supported in this connection.
-   * 
-   * Query if XQuery full axis feature is supported in this connection.
    * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
@@ -232,8 +204,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if XQuery module feature is supported in this connection.
    * 
-   * Query if XQuery module feature is supported in this connection.
-   * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
    */
@@ -244,8 +214,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Query if XQuery serialization feature is supported in this connection.
-   * 
-   * Query if XQuery serialization feature is supported in this connection.
    * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
@@ -258,8 +226,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if XQuery static typing extensions are supported in this connection.
    * 
-   * Query if XQuery static typing extensions are supported in this connection.
-   * 
    * @return true if so; otherwise false
    * @throw XQException - if the connection is no longer valid
    */
@@ -270,8 +236,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Gets the user name associated with this connection.
-   * 
-   * Gets the user name associated with this connection.
    * 
    * @return the user's name
    * @throw XQException - if the connection is no longer valid
@@ -284,8 +248,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Gets the maximum number of characters allowed in an expression in this data source.
    * 
-   * Gets the maximum number of characters allowed in an expression in this data source.
-   * 
    * @return the maximum length of expression as an integer. A zero value means that there is no limit or the limit is unknown.
    * @throw XQException - if the connection is no longer valid
    */
@@ -296,8 +258,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Gets the maximum number of characters allowed in a user name.
-   * 
-   * Gets the maximum number of characters allowed in a user name.
    * 
    * @return the maximum length of user name as an integer. A zero value means that there is no limit or the limit is unknown.
    * @throw XQException - if the connection is no longer valid
@@ -310,8 +270,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if this connection was created from a JDBC connection.
    * 
-   * Query if this connection was created from a JDBC connection.
-   * 
    * @return true, if this connection was created from a JDBC connection, false otherwise.
    * @throw XQException - if the connection is no longer valid
    */
@@ -322,8 +280,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
     }
 
   /** \brief Query if the XQuery encoding declaration is supported by the XQJ implementation.
-   * 
-   * Query if the XQuery encoding declaration is supported by the XQJ implementation.
    * 
    * @return true if the XQuery encoding declaration is supported; false otherwise
    * @throw XQException - if the connection is no longer valid
@@ -336,7 +292,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Returns a set of java.lang.String, each of which specifies a character encoding method the XQJ implmentation supports to parse the XQuery query text.
    * 
-   * Returns a set of java.lang.String, each of which specifies a character encoding method the XQJ implmentation supports to parse the XQuery query text. 
    * For an example, for an XQJ impmentation which is able to parse the XQuery encoded in "UTF-8" or "UTF-16", it returns a java.util.Set of "UTF-8" and "UTF-16". If the implemetation is not able to generate a list of encodings supported, an empty set is returned. If a non-empty set is returned, the encodings returned in this set are guaranteed to be supported. Note that encodings not in the returned set might also be supported. For example, if the set has two encoding methods: 'UTF-8' and 'UTF-16', they are supported by the implementation. However, this does not mean 'Shift-Js' is not supported. It might be supported.
    * 
    * @return a java.util.Set of java.lang.String, each of which is an XQuery query text encoding method
@@ -353,8 +308,6 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if a character encoding method of the XQuery query text is supported by the XQJ implmentation.
    * 
-   * Query if a character encoding method of the XQuery query text is supported by the XQJ implmentation.
-   * 
    * @param encoding - String representing the character encoding method of the XQuery query text.
    * @return true if an XQuery query character encoding method is supported, false otherwise
    * @throw XQException - if (1) the connection is no longer valid, or (2) the specified encoding parameter is null
@@ -368,7 +321,7 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Check if the user defined XML schema type is supported in this connection.
    * 
-   * Check if the user defined XML schema type is supported in this connection. If this method returns true, then XQItemAccessor.instanceOf(XQItemType) must be able to determine if the type of an XQItemAccessor is an instance of the XQItemType even if either of them is a user defined XML schema type which is defined by the non-predefined XML schema. The pre-defined XML Schema refers to the XML schema whose schema URL is "http://www.w3.org/2001/XMLSchema"
+   * If this method returns true, then XQItemAccessor.instanceOf(XQItemType) must be able to determine if the type of an XQItemAccessor is an instance of the XQItemType even if either of them is a user defined XML schema type which is defined by the non-predefined XML schema. The pre-defined XML Schema refers to the XML schema whose schema URL is "http://www.w3.org/2001/XMLSchema"
    * 
    * @return true if the user defined XML schema type is supported in this connection, false otherwise.
    * @throw XQException - if the connection is no longer valid

@@ -99,8 +99,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief   Gets the XQuery connection associated with this result sequence
    * 
-   *   Gets the XQuery connection associated with this result sequence
-   * 
    * @return the connection associated with this result sequence
    * @throw XQException - if the result sequence is in a closed state
    */
@@ -112,7 +110,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Moves the XQSequence's position to the given item number in this object.
    * 
-   * Moves the XQSequence's position to the given item number in this object. If the item number is positive, the XQSequence moves to the given item number with respect to the beginning of the XQSequence.
+   * If the item number is positive, the XQSequence moves to the given item number with respect to the beginning of the XQSequence.
    * The first item is item 1, the second is item 2, and so on.
    * 
    * If the given item number is negative, the XQSequence positions itself on an absolute item position with respect to the end of the sequence.
@@ -135,8 +133,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Move to the position after the last item.
    * 
-   * Move to the position after the last item.
-   * 
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
    */
     @Override
@@ -146,8 +142,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
     }
 
   /** \brief Moves to the position before the first item.
-   * 
-   * Moves to the position before the first item.
    * 
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
    */
@@ -159,7 +153,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Closes the sequence and frees all resources associated with this sequence.
    * 
-   * Closes the sequence and frees all resources associated with this sequence. Closing an XQSequence object also implicitly closes all XQItem objects obtained from it. All methods other than the isClosed or close method will raise exceptions when invoked after closing the sequence. Calling close on an XQSequence object that is already closed has no effect.
+   * Closing an XQSequence object also implicitly closes all XQItem objects obtained from it. All methods other than the isClosed or close method will raise exceptions when invoked after closing the sequence. Calling close on an XQSequence object that is already closed has no effect.
    * 
    * @throw XQException - if there are errors during closing of the sequence
    */
@@ -188,8 +182,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Checks if the sequence is closed.
    * 
-   * Checks if the sequence is closed.
-   * 
    * @return true if the sequence is in a closed state, false otherwise
    */
     @Override
@@ -198,8 +190,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
     }
 
   /** \brief Returns a number indicating the number of items in the sequence.
-   * 
-   * Returns a number indicating the number of items in the sequence.
    * 
    * @return the number of items in this sequence
    * @throw XQException - if (1) the sequence is forward-only, or (2) the sequence is closed
@@ -212,7 +202,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current cursor position.
    * 
-   * Gets the current cursor position.
    * 0 indicates that the position is before the first item and count() + 1 indicates position after the last item. A specific position indicates that the cursor is positioned on the item at that position. Use the isOnItem method to verify if the cursor is positioned on the item.
    * 
    * Calling this method on an empty sequence will return 0.
@@ -227,7 +216,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Check if the sequence is positioned on an item or not.
    * 
-   * Check if the sequence is positioned on an item or not. Calling this method on an empty sequence will return false.
+   * Calling this method on an empty sequence will return false.
    * 
    * @return true if the sequence is currently positioned on an item, false if sequence is positioned before the first item, or after the last item
    * @throw XQException - if the sequence is in a closed state
@@ -240,8 +229,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Checks if the sequence is scrollable.
    * 
-   * Checks if the sequence is scrollable.
-   * 
    * @return true if the sequence can be scrolled backward or forward, false otherwise
    * @throw XQException - if the sequence is in a closed state
    */
@@ -253,7 +240,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Moves to the first item in the sequence.
    * 
-   * Moves to the first item in the sequence. The method returns true, if it was able to move to the first item in the sequence false, otherwise. Calling this method on an empty sequence will return false.
+   * The method returns true, if it was able to move to the first item in the sequence false, otherwise. Calling this method on an empty sequence will return false.
    * 
    * @return true if the sequence was positioned on the first item, false otherwise
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
@@ -266,7 +253,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Get the current item as an immutable XQItem object.
    * 
-   * Get the current item as an immutable XQItem object. In case of an XQResultSequence, the item is an XQResultItem. In the case of forward only sequences, this method or any other get or write method may only be called once on the curent item.
+   * In case of an XQResultSequence, the item is an XQResultItem. In the case of forward only sequences, this method or any other get or write method may only be called once on the curent item.
    * 
    * The XQItem object is dependent on the sequence from which it was created and is only valid for the duration of XQSequence lifetime. Thus, the XQSequence is closed, this XQItem object will be implicitly closed and it can no longer be used.
    * 
@@ -349,7 +336,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Checks if the current position is after the last item in the sequence.
    * 
-   * Checks if the current position is after the last item in the sequence. Calling this method on an empty sequence will return false.
+   * Calling this method on an empty sequence will return false.
    * 
    * @return true if the current position is after the last item, false otherwise
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
@@ -362,7 +349,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Checks if the current position before the first item in the sequence.
    * 
-   * Checks if the current position before the first item in the sequence. Calling this method on an empty sequence will return false.
+   * Calling this method on an empty sequence will return false.
    * 
    * @return true if the current position is before the first item, false otherwise
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
@@ -375,7 +362,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Checks if the current position at the first item in the sequence.
    * 
-   * Checks if the current position at the first item in the sequence. Calling this method on an empty sequence will return false.
+   * Calling this method on an empty sequence will return false.
    * 
    * @return true if the current position is at the first item, false otherwise
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
@@ -388,7 +375,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Checks if the current position at the last item in the sequence.
    * 
-   * Checks if the current position at the last item in the sequence. Calling this method on an empty sequence will return false.
+   * Calling this method on an empty sequence will return false.
    * 
    * @return true if the current position is at the last item, false otherwise
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
@@ -401,7 +388,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Moves to the last item in the sequence.
    * 
-   * Moves to the last item in the sequence. This method returns true, if it was able to move to the last item in the sequence false, otherwise. Calling this method on an empty sequence will return false.
+   * This method returns true, if it was able to move to the last item in the sequence false, otherwise. Calling this method on an empty sequence will return false.
    * 
    * @return true if the sequence was positioned on the last item, false otherwise
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state
@@ -414,7 +401,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Moves to the next item in the sequence.
    * 
-   * Moves to the next item in the sequence. Calling this method on an empty sequence will return false.
+   * Calling this method on an empty sequence will return false.
    * 
    * @return true if the new item is valid, false if there are no more items
    * @throw XQException - if the sequence is in a closed state
@@ -435,7 +422,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Moves to the previous item in the sequence.
    * 
-   * Moves to the previous item in the sequence. Calling this method on an empty sequence will return false.
+   * Calling this method on an empty sequence will return false.
    * 
    * @return true if the new current position is within the sequence, (i.e., not before first); false otherwise.
    * @throw XQException - if (1) the sequence is forward only, or (2) the sequence is in a closed state.
@@ -526,7 +513,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Writes the entire sequence starting from the current position to a Result.
    * 
-   * Writes the entire sequence starting from the current position to a Result. First the sequence is normalized as described in XSLT 2.0 and XQuery 1.0 serialization. Subsequently it is serialized to the Result object.
+   * First the sequence is normalized as described in XSLT 2.0 and XQuery 1.0 serialization. Subsequently it is serialized to the Result object.
    * Note that the normalization process can fail, in which case an XQException is thrown. An XQJ implementation must at least support the following implementations: 
    * - javax.xml.transform.dom.DOMResult
    * - javax.xml.transform.sax.SAXResult
@@ -549,7 +536,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as a boolean.
    * 
-   * Gets the current item as a boolean. The current item must be an atomic value of type xs:boolean or a subtype.
+   * The current item must be an atomic value of type xs:boolean or a subtype.
    * 
    * @return a boolean representing the current item
    * @throw XQException - if (1) the conversion of the current item to a boolean fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -563,7 +550,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as a byte.
    * 
-   * Gets the current item as a byte. The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of byte.
+   * The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of byte.
    * 
    * @return a byte representing the current item
    * @throw XQException - if (1) the conversion of the current item to a byte fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -577,7 +564,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as a double.
    * 
-   * Gets the current item as a double. The current item must be an atomic value of type xs:double or a subtype.
+   * The current item must be an atomic value of type xs:double or a subtype.
    * 
    * @return a double representing the current item
    * @throw XQException - if (1) the conversion of the current item to a double fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -591,7 +578,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as a float.
    * 
-   * Gets the current item as a float. The current item must be an atomic value of type xs:float or a subtype.
+   * The current item must be an atomic value of type xs:float or a subtype.
    * 
    * @return a float representing the current item
    * @throw XQException - if (1) the conversion of the current item to a float fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -605,7 +592,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as an int. 
    * 
-   * Gets the current item as an int. The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of int.
+   * The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of int.
    * 
    * @return an int representing the current item
    * @throw XQException - if (1) the conversion of the current item to a int fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -619,7 +606,6 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the type of the item. 
    * 
-   * Gets the type of the item. 
    * On a forward only sequence this method can be called independent of any other get or write method. It will not raise an error if such method has been called already, nor will it affect subsequent invocations of any other get or write method.
    * 
    * @return the type of the item
@@ -634,7 +620,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as a Java String.
    * 
-   * Gets the current item as a Java String. The current item must be an atomic value. This function casts the current item to an xs:string value according to the casting rules defined in 17.1.2 Casting to xs:string and xs:untypedAtomic, XQuery 1.0 and XPath 2.0 Functions and Operators, and then returns the value as a Java String.
+   * The current item must be an atomic value. This function casts the current item to an xs:string value according to the casting rules defined in 17.1.2 Casting to xs:string and xs:untypedAtomic, XQuery 1.0 and XPath 2.0 Functions and Operators, and then returns the value as a Java String.
    * 
    * @return the string representation of the item
    * @throw XQException - if (1) there are errors accessing the item's value, (2) the item is not an atomic value, (3) there is an error when casting the item to a string representation, (4) the underlying sequence or item is in a closed state, or (5) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -648,7 +634,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as a long.
    * 
-   * Gets the current item as a long. The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of long.
+   * The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of long.
    * 
    * @return a long representing the current item
    * @throw XQException - if (1) the conversion of the current item to a long fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -662,7 +648,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the item as a DOM node.
    * 
-   * Gets the item as a DOM node. The current item must be a node. The type of the returned DOM node is governed by Table 7 - XQuery Node Types and Corresponding Java Object Types XQuery API for Java (XQJ) 1.0 The instance of the returned node is implementation dependent. The node may be a reference or a copy of the internal state of the item. It is advisable to make a copy of the node if the application plans to modify it.
+   * The current item must be a node. The type of the returned DOM node is governed by Table 7 - XQuery Node Types and Corresponding Java Object Types XQuery API for Java (XQJ) 1.0 The instance of the returned node is implementation dependent. The node may be a reference or a copy of the internal state of the item. It is advisable to make a copy of the node if the application plans to modify it.
    * 
    * @return a DOM node representing the current item
    * @throw XQException - if (1) if there are errors accessing the current item, (2) the current item is not a node, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -676,7 +662,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Returns the URI for this item.
    * 
-   * Returns the URI for this item. If the item is a document node, then this method returns the absolute URI of the resource from which the document node was constructed. If the document URI is not available, then the empty string is returned. If the document URI is available, the returned value is the same as if fn:document-uri were evaluated on this document node. If the item is of a node kind other than document node, then the returned URI is implementation-defined.
+   * If the item is a document node, then this method returns the absolute URI of the resource from which the document node was constructed. If the document URI is not available, then the empty string is returned. If the document URI is available, the returned value is the same as if fn:document-uri were evaluated on this document node. If the item is of a node kind other than document node, then the returned URI is implementation-defined.
    * On a forward only sequence this method can be called independent of any other get or write method. It will not raise an error if such method has been called already, nor will it affect subsequent invocations of any other get or write method on the current item.
    * 
    * @return the document URI for this document node or the empty string if not available. For other node kinds, the result is implementation-defined
@@ -691,7 +677,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as an Object.
    * 
-   * Gets the current item as an Object. The data type of the returned object will be the Java Object type as specified in 14.4 Mapping an XQuery Atomic Value to a Java Object Type and 14.5 Mapping an XQuery Node to a Java Object Type, XQuery API for Java (XQJ) 1.0.
+   * The data type of the returned object will be the Java Object type as specified in 14.4 Mapping an XQuery Atomic Value to a Java Object Type and 14.5 Mapping an XQuery Node to a Java Object Type, XQuery API for Java (XQJ) 1.0.
    * 
    * @return an object representing the current item
    * @throw XQException - if (1) if there are errors accessing the current item, (2) if the underlying sequence or item is in a closed state, or (3) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -719,7 +705,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Serializes the current item according to the XSLT 2.0 and XQuery 1.0 serialization.
    * 
-   * Serializes the current item according to the XSLT 2.0 and XQuery 1.0 serialization. Serialization parameters, which influence how serialization is performed, can be specified. Refer to the XSLT 2.0 and XQuery 1.0 serialization and Section 12 Serialization, XQuery API for Java (XQJ) 1.0 for more information.
+   * Serialization parameters, which influence how serialization is performed, can be specified. Refer to the XSLT 2.0 and XQuery 1.0 serialization and Section 12 Serialization, XQuery API for Java (XQJ) 1.0 for more information.
    * 
    * @param prprts - specifies the serialization parameters, null is considered equivalent to an empty Properties object
    * @return the serialized representation of the item
@@ -733,7 +719,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Gets the current item as a short.
    * 
-   * Gets the current item as a short. The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of short.
+   * The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of short.
    * 
    * @return a short representing the current item
    * @throw XQException - if (1) the conversion of the current item to a short fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -829,7 +815,7 @@ public class XQResultSequence implements javax.xml.xquery.XQResultSequence {
 
   /** \brief Writes the current item to a Result.
    * 
-   * Writes the current item to a Result. First the item is normalized as described in XSLT 2.0 and XQuery 1.0 serialization. Subsequently it is serialized to the Result object.
+   * First the item is normalized as described in XSLT 2.0 and XQuery 1.0 serialization. Subsequently it is serialized to the Result object.
    * Note that the normalization process can fail, in which case an XQException is thrown. An XQJ implementation must at least support the following implementations:
    * - javax.xml.transform.dom.DOMResult
    * - javax.xml.transform.sax.SAXResult

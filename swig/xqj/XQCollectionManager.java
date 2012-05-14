@@ -40,7 +40,7 @@ public class XQCollectionManager {
 
   /** \brief Closes the collection manager.
    * 
-   * Closes the collection manager. Once the collection manager is closed, no method other than close or the isClosed method may be called on the collection manager object. Calling close on an XQCollectionManager object that is already closed has no effect.
+   * Once the collection manager is closed, no method other than close or the isClosed method may be called on the collection manager object. Calling close on an XQCollectionManager object that is already closed has no effect.
    * 
    * @throw XQException - if there is an error during closing the collection.
    */

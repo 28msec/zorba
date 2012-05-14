@@ -62,8 +62,6 @@ public class XQResultItem extends XQItem implements javax.xml.xquery.XQResultIte
 
   /** \brief   Gets the XQuery connection associated with this result item
    * 
-   *   Gets the XQuery connection associated with this result item
-   * 
    * @return the connection associated with this result item
    * @throw XQException - if the result item is in a closed state
    */

@@ -577,7 +577,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the base type of the item.
    * 
-   * Returns the base type of the item. One of the XQBASETYPE_* constants. 
+   * One of the XQBASETYPE_* constants. 
    * 
    * XQJ defines a constant for each of the built-in schema types defined in XML Schema. For atomic types this is the closest matching built-in XML Schema type, for element and attributes the closest matching built-in XML Schema type this node is based on.
    * 
@@ -600,7 +600,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the kind of the item.
    * 
-   * Returns the kind of the item. One of the XQITEMKIND_* constants.
+   * One of the XQITEMKIND_* constants.
    * 
    * @return int one of the XQITEMKIND_* constants indicating the basic kind of the item
    */
@@ -611,7 +611,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the occurrence indicator for the item type.
    * 
-   * Returns the occurrence indicator for the item type. This method will always return the value XQSequenceType.OCC_EXACTLY_ONE.
+   * This method will always return the value XQSequenceType.OCC_EXACTLY_ONE.
    * 
    * @return int indicating the occurrence indicator
    */
@@ -642,7 +642,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the schema location URI of the schema that contains the item's element or type definition.
    * 
-   * Returns the schema location URI of the schema that contains the item's element or type definition. This method is implementation-definied and an implementation will return a null value if it does not support retrieving the schema location URI. If the item corresponds to a validated global element in a schema, the result will be the schema location URI to the XMLSchema containing the element definition. Otherwise if the item is a schema validated node, the result will be the schema location URI of the XMLSchema containing the type definition of that node. If the item is not schema validated, the result is null.
+   * This method is implementation-definied and an implementation will return a null value if it does not support retrieving the schema location URI. If the item corresponds to a validated global element in a schema, the result will be the schema location URI to the XMLSchema containing the element definition. Otherwise if the item is a schema validated node, the result will be the schema location URI of the XMLSchema containing the type definition of that node. If the item is not schema validated, the result is null.
    * 
    * @return URI representing the schema location URI of the XMLSchema containing the global element definition or the type definition of the current item. null in case the item is not schema validated or if the implementation does not support retrieving the schema URI.
    */
@@ -653,7 +653,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Represents a type name (global or local).
    * 
-   * Represents a type name (global or local). This can be used to represent specific type name such as, element foo of type hatsize. The schema type name is represented as a single QName. If the return type is an anonymous type, the actual QName value returned is implementation defined.
+   * This can be used to represent specific type name such as, element foo of type hatsize. The schema type name is represented as a single QName. If the return type is an anonymous type, the actual QName value returned is implementation defined.
    * 
    * @return the QName of the schema type in case of a user defined or anonoymous types. For a built-in type, returns a predefined type name as QName (e.g.xs:anyType, xs:decimal, etc). Cannot be null.
    * @throw XQException - if the item kind is not one of: XQITEMKIND_DOCUMENT_ELEMENT, XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT, XQITEMKIND_ATOMIC, XQITEMKIND_ELEMENT, XQITEMKIND_SCHEMA_ELEMENT, XQITEMKIND_ATTRIBUTE, or XQITEMKIND_SCHEMA_ATTRIBUTE
@@ -674,8 +674,6 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Represents whether the item type is an anonymous type in the schema.
    * 
-   * Represents whether the item type is an anonymous type in the schema.
-   * 
    * @return true if the item type is an anonymous type in the schema, false otherwise.
    */
     @Override
@@ -684,8 +682,6 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
     }
 
   /** \brief Returns whether the element type is nillable or not.
-   * 
-   * Returns whether the element type is nillable or not.
    * 
    * @return true if the element type is nillable, false otherwise.
    */
@@ -696,7 +692,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the name of the processing instruction type.
    * 
-   * Returns the name of the processing instruction type. As such the item kind of this XQItemType must be XQITEMKIND_PI.
+   * As such the item kind of this XQItemType must be XQITEMKIND_PI.
    * 
    * @return the name of the processing instruction type. null if it is a wildcard.
    * @throw XQException - if the item kind is not XQITEMKIND_PI
@@ -711,8 +707,6 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the type of the item in the sequence type.
    * 
-   * Returns the type of the item in the sequence type.
-   * 
    * @return XQItemType representing the item type in the sequence. null is returned in case of an empty sequence.
    */
     @Override
@@ -722,7 +716,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Compares the specified object with this item type for equality.
    * 
-   * Compares the specified object with this item type for equality. The result is true only if the argument is an item type object which represents the same XQuery item type. 
+   * The result is true only if the argument is an item type object which represents the same XQuery item type. 
    * 
    * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used. Return true if and only if both objects are XQItemType and:
    * - getItemKind() is equal
@@ -779,8 +773,6 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns a hash code consistent with the definition of the equals method. 
    * 
-   * Returns a hash code consistent with the definition of the equals method. 
-   * 
    * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used:
    * \code{.java}
    *   hashCode = this.getItemKind();
@@ -831,8 +823,6 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
     }
 
   /** \brief Returns a human-readable implementation-defined string representation of the item type.
-   * 
-   * Returns a human-readable implementation-defined string representation of the item type.
    * 
    * @return String a string representation of the item type
    */

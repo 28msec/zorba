@@ -40,7 +40,7 @@ public class XQCollection {
     
   /** \brief Closes the collection.
    * 
-   * Closes the collection. Once the collection is closed, no method other than close or the isClosed method may be called on the collection object. Calling close on an XQCollection object that is already closed has no effect.
+   * Once the collection is closed, no method other than close or the isClosed method may be called on the collection object. Calling close on an XQCollection object that is already closed has no effect.
    * 
    * @throw XQException - if there is an error during closing the collection.
    */
@@ -117,7 +117,7 @@ public class XQCollection {
     }   
 
   /**
-   * This function deletes the n first nodes from a collection.
+   * \brief This function deletes the n first nodes from a collection.
    *
    * @throw XQException if the collection doesn't contain any node.
    *
@@ -128,7 +128,7 @@ public class XQCollection {
     }
 
   /**
-   * This function deletes the n last nodes from a collection.
+   * \briefThis function deletes the n last nodes from a collection.
    *
    * @throw XQException if the collection doesn't contain any node.
    *

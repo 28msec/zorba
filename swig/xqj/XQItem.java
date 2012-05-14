@@ -123,7 +123,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief   Close the item and release all the resources associated with this item.
    * 
-   *   Close the item and release all the resources associated with this item. No method other than the isClosed or close method may be called once the item is closed. Calling close on an XQItem object that is already closed has no effect.
+   * No method other than the isClosed or close method may be called once the item is closed. Calling close on an XQItem object that is already closed has no effect.
    * 
    * @throw XQException - if there is an error during closing the item
    */
@@ -138,8 +138,6 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief  Checks if the item is closed.
    * 
-   *  Checks if the item is closed.
-   * 
    * @return boolean true if the item is in a closed state, false otherwise
    */
     @Override
@@ -149,7 +147,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as a boolean.
    * 
-   * Gets the current item as a boolean. The current item must be an atomic value of type xs:boolean or a subtype.
+   * The current item must be an atomic value of type xs:boolean or a subtype.
    * 
    * @return a boolean representing the current item
    * @throw XQException - if (1) the conversion of the current item to a boolean fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -171,7 +169,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as a byte.
    * 
-   * Gets the current item as a byte. The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of byte.
+   * The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of byte.
    * 
    * @return a byte representing the current item
    * @throw XQException - if (1) the conversion of the current item to a byte fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -195,7 +193,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as a double.
    * 
-   * Gets the current item as a double. The current item must be an atomic value of type xs:double or a subtype.
+   * The current item must be an atomic value of type xs:double or a subtype.
    * 
    * @return a double representing the current item
    * @throw XQException - if (1) the conversion of the current item to a double fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -219,7 +217,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as a float.
    * 
-   * Gets the current item as a float. The current item must be an atomic value of type xs:float or a subtype.
+   * The current item must be an atomic value of type xs:float or a subtype.
    * 
    * @return a float representing the current item
    * @throw XQException - if (1) the conversion of the current item to a float fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -267,7 +265,6 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the type of the item. 
    * 
-   * Gets the type of the item. 
    * On a forward only sequence this method can be called independent of any other get or write method. It will not raise an error if such method has been called already, nor will it affect subsequent invocations of any other get or write method.
    * 
    * @return the type of the item
@@ -281,7 +278,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as a Java String.
    * 
-   * Gets the current item as a Java String. The current item must be an atomic value. This function casts the current item to an xs:string value according to the casting rules defined in 17.1.2 Casting to xs:string and xs:untypedAtomic, XQuery 1.0 and XPath 2.0 Functions and Operators, and then returns the value as a Java String.
+   * The current item must be an atomic value. This function casts the current item to an xs:string value according to the casting rules defined in 17.1.2 Casting to xs:string and xs:untypedAtomic, XQuery 1.0 and XPath 2.0 Functions and Operators, and then returns the value as a Java String.
    * 
    * @return the string representation of the item
    * @throw XQException - if (1) there are errors accessing the item's value, (2) the item is not an atomic value, (3) there is an error when casting the item to a string representation, (4) the underlying sequence or item is in a closed state, or (5) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -307,7 +304,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as a long.
    * 
-   * Gets the current item as a long. The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of long.
+   * The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of long.
    * 
    * @return a long representing the current item
    * @throw XQException - if (1) the conversion of the current item to a long fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -331,7 +328,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the item as a DOM node.
    * 
-   * Gets the item as a DOM node. The current item must be a node. The type of the returned DOM node is governed by Table 7 - XQuery Node Types and Corresponding Java Object Types XQuery API for Java (XQJ) 1.0 The instance of the returned node is implementation dependent. The node may be a reference or a copy of the internal state of the item. It is advisable to make a copy of the node if the application plans to modify it.
+   * The current item must be a node. The type of the returned DOM node is governed by Table 7 - XQuery Node Types and Corresponding Java Object Types XQuery API for Java (XQJ) 1.0 The instance of the returned node is implementation dependent. The node may be a reference or a copy of the internal state of the item. It is advisable to make a copy of the node if the application plans to modify it.
    * 
    * @return a DOM node representing the current item
    * @throw XQException - if (1) if there are errors accessing the current item, (2) the current item is not a node, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -388,7 +385,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Returns the URI for this item.
    * 
-   * Returns the URI for this item. If the item is a document node, then this method returns the absolute URI of the resource from which the document node was constructed. If the document URI is not available, then the empty string is returned. If the document URI is available, the returned value is the same as if fn:document-uri were evaluated on this document node. If the item is of a node kind other than document node, then the returned URI is implementation-defined.
+   * If the item is a document node, then this method returns the absolute URI of the resource from which the document node was constructed. If the document URI is not available, then the empty string is returned. If the document URI is available, the returned value is the same as if fn:document-uri were evaluated on this document node. If the item is of a node kind other than document node, then the returned URI is implementation-defined.
    * On a forward only sequence this method can be called independent of any other get or write method. It will not raise an error if such method has been called already, nor will it affect subsequent invocations of any other get or write method on the current item.
    * 
    * @return the document URI for this document node or the empty string if not available. For other node kinds, the result is implementation-defined
@@ -428,7 +425,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as an Object.
    * 
-   * Gets the current item as an Object. The data type of the returned object will be the Java Object type as specified in 14.4 Mapping an XQuery Atomic Value to a Java Object Type and 14.5 Mapping an XQuery Node to a Java Object Type, XQuery API for Java (XQJ) 1.0.
+   * The data type of the returned object will be the Java Object type as specified in 14.4 Mapping an XQuery Atomic Value to a Java Object Type and 14.5 Mapping an XQuery Node to a Java Object Type, XQuery API for Java (XQJ) 1.0.
    * 
    * @return an object representing the current item
    * @throw XQException - if (1) if there are errors accessing the current item, (2) if the underlying sequence or item is in a closed state, or (3) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -608,7 +605,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Serializes the current item according to the XSLT 2.0 and XQuery 1.0 serialization.
    * 
-   * Serializes the current item according to the XSLT 2.0 and XQuery 1.0 serialization. Serialization parameters, which influence how serialization is performed, can be specified. Refer to the XSLT 2.0 and XQuery 1.0 serialization and Section 12 Serialization, XQuery API for Java (XQJ) 1.0 for more information.
+   * Serialization parameters, which influence how serialization is performed, can be specified. Refer to the XSLT 2.0 and XQuery 1.0 serialization and Section 12 Serialization, XQuery API for Java (XQJ) 1.0 for more information.
    * 
    * @param prprts - specifies the serialization parameters, null is considered equivalent to an empty Properties object
    * @return the serialized representation of the item
@@ -635,7 +632,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Gets the current item as a short.
    * 
-   * Gets the current item as a short. The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of short.
+   * The current item must be an atomic value of type xs:decimal or a subtype, and its value must be in the value space of short.
    * 
    * @return a short representing the current item
    * @throw XQException - if (1) the conversion of the current item to a short fails, (2) if there are errors accessing the current item, (3) if the underlying sequence or item is in a closed state, or (4) in the case of forward only sequences, a get or write method was already invoked on the current item
@@ -790,7 +787,7 @@ class XQItem implements javax.xml.xquery.XQItem {
 
   /** \brief Writes the current item to a Result.
    * 
-   * Writes the current item to a Result. First the item is normalized as described in XSLT 2.0 and XQuery 1.0 serialization. Subsequently it is serialized to the Result object.
+   * First the item is normalized as described in XSLT 2.0 and XQuery 1.0 serialization. Subsequently it is serialized to the Result object.
    * Note that the normalization process can fail, in which case an XQException is thrown. An XQJ implementation must at least support the following implementations:
    * - javax.xml.transform.dom.DOMResult
    * - javax.xml.transform.sax.SAXResult
