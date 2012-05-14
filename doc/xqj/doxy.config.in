@@ -702,16 +702,8 @@ EXAMPLE_PATH           = @CMAKE_CURRENT_SOURCE_DIR@/examples \
 # and *.h) to filter out the source-files in the directories. If left
 # blank all files are included.
 
-EXAMPLE_PATTERNS       = *.cpp \
-                         *.cc \
-                         *.h \
-                         *.hh \
-                         *.xq \
-                         INSTALL \
-                         DEPENDENCIES \
-                         CHANGELOG \
-                         LICENSE \
-                         LGPL
+EXAMPLE_PATTERNS       = *.java
+                         *.xq
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be
 # searched for input files to be used with the \include or \dontinclude
