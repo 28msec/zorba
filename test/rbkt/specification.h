@@ -432,12 +432,13 @@ public:
               opt = *(++lIter);
 
               if (opt == "TXT") {
-                theComparisonMethod = "Text";
+                theComparisonMethod = "text";
                 setVarValue(theComparisonMethod.begin(), theComparisonMethod.end());
               }
               else {
                 setVarValue(opt.begin(), opt.end());
               }
+              addSerializerOption();
               continue;
             } else if (lIter->find('=') == std::string::npos) {
               return false;

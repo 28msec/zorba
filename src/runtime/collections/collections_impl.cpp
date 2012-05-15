@@ -439,7 +439,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t node;
   store::Item_t copyNode;
-  store::PUL_t pul;
+  std::auto_ptr<store::PUL> pul;
   store::Item_t lNodeType;
 
   PlanIteratorState* state;
@@ -449,7 +449,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   collectionDecl = getCollection(name, collection);
 
-  pul = GENV_ITEMFACTORY->createPendingUpdateList();
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   if (theIsDynamic)
   {
