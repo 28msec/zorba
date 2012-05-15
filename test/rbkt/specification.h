@@ -426,20 +426,18 @@ public:
               opt = "indent=yes";
               // Fall through to new-style code below
             } else if(*lIter == "--method") {
-              // Have to handle this one manually
-              opt = "method";
-              setVarName(opt.begin(), opt.end());
-              opt = *(++lIter);
+              opt = "method=";
+              std::string lMethod = *(++lIter);
 
-              if (opt == "TXT") {
-                theComparisonMethod = "text";
-                setVarValue(theComparisonMethod.begin(), theComparisonMethod.end());
+              if (lMethod == "TXT") {
+                // --method TXT implies "Text" comparison and "text" serialization
+                theComparisonMethod = "Text";
+                opt.append("text");
               }
               else {
-                setVarValue(opt.begin(), opt.end());
+                opt.append(lMethod);
               }
-              addSerializerOption();
-              continue;
+              // Fall through to new-style code below
             } else if (lIter->find('=') == std::string::npos) {
               return false;
             }
