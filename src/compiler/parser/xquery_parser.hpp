@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,11 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
-#line 35 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_parser.y"
-=======
-#line 35 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
->>>>>>> MERGE-SOURCE
+#line 35 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -90,36 +84,12 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
-#line 90 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
-=======
-#line 88 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
->>>>>>> MERGE-SOURCE
+#line 88 "/Users/zorba/Code/zorba/debug/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 104 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
-  class position;
-  class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 114 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -140,37 +110,11 @@ namespace zorba {
 # define YYTOKEN_TABLE 0
 #endif
 
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
-#line 162 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
-=======
-#line 118 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
->>>>>>> MERGE-SOURCE
+#line 118 "/Users/zorba/Code/zorba/debug/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -182,11 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
-#line 155 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_parser.y"
-=======
-#line 155 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
->>>>>>> MERGE-SOURCE
+#line 155 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -210,11 +150,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
-#line 198 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
-=======
-#line 154 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
->>>>>>> MERGE-SOURCE
+#line 154 "/Users/zorba/Code/zorba/debug/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -625,6 +561,14 @@ namespace zorba {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned short int token_number_type;
     /* Tables.  */
@@ -632,7 +576,7 @@ namespace zorba {
     static const short int yypact_[];
     static const short int yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned short int yydefact_[];
@@ -663,10 +607,8 @@ namespace zorba {
     static const char* const yytname_[];
 #endif
 
-#if YYERROR_VERBOSE
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
+    static std::string yytnamerr_ (const char *n);
 
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
@@ -722,17 +664,10 @@ namespace zorba {
     xquery_driver& driver;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
-#line 712 "/home/mbrantner/zorba/jbuild/src/compiler/parser/xquery_parser.hpp"
-=======
-#line 663 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
->>>>>>> MERGE-SOURCE
+#line 671 "/Users/zorba/Code/zorba/debug/src/compiler/parser/xquery_parser.hpp"
 
 
 
