@@ -310,6 +310,11 @@ protected:
 
   Function_t
   checkInvokable(const Item& aQName, size_t aNumArgs) const;
+
+public:
+  virtual void
+  clearBaseURI();
+
 };
 
 } // namespace zorba
