@@ -75,7 +75,7 @@ extern entry const dict_en[] = {
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
   { "FOUT1170", "\"$1\": error retrieving resource containing text" },
-  { "FOUT1190", "\"$1\": Cannot decode resource retrieved" },
+  { "FOUT1190", "\"$1\": can not decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -347,6 +347,7 @@ extern entry const dict_en[] = {
   { "ZJPE0007", "unterminated JSON string" },
   { "ZJPE0008", "\"$1\": illegal QName" },
   { "ZJPE0009", "illegal empty string" },
+  { "ZJPE0010", "JsonML (array form) must start with '['" },
   { "ZJSE0001", "JSON serialization requires document or element node" },
   { "ZJSE0002", "\"$1\" element missing required \"$2\" attribute" },
   { "ZJSE0003", "\"$1\": illegal value for attribute \"$2\"" },
