@@ -6444,9 +6444,7 @@ void* begin_visit(const GroupByClause& v)
   {
     push_nodestack(const_cast<var_expr *>(*i));
 
-    push_scope();
-
-    var_expr_t ve = bind_var(loc, (*i)->get_name(), var_expr::non_groupby_var);
+    var_expr_t ve = create_var(loc, (*i)->get_name(), var_expr::non_groupby_var);
     push_nodestack(ve.getp());
   }
 
@@ -6476,6 +6474,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   var_expr_t input_var;
   var_expr_t output_var;
 
+  std::vector<var_expr_t> output_vars_helper;
   for (int i = (int)numGroupSpecs - 1; i >= 0; i--)
   {
     const GroupSpec& groupSpec = *groupSpecs[i];
@@ -6483,8 +6482,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     output_var = pop_nodestack_var();
     input_expr = pop_nodestack();
 
-    push_scope();
-    bind_var(output_var, theSctx);
+    output_vars_helper.push_back(output_var);
 
     if (groupSpec.group_coll_spec() != NULL)
       collations.push_back(groupSpec.group_coll_spec()->get_uri().str());
@@ -6500,12 +6498,23 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
                                                             output_var));
   }
 
+  for(std::vector<var_expr_t>::reverse_iterator iter = output_vars_helper.rbegin();
+    iter != output_vars_helper.rend();
+    iter++)
+  {
+    push_scope();
+    bind_var(*iter, theSctx);
+  }
+
   reverse(collations.begin(), collations.end());
   reverse(grouping_rebind.begin(), grouping_rebind.end());
 
   while (NULL != (output_var = pop_nodestack_var()))
   {
     input_var = pop_nodestack_var();
+
+    push_scope();
+    bind_var(output_var, theSctx);
 
     wrapper_expr_t input_wrapper;
     input_wrapper = new wrapper_expr(theRootSctx,
