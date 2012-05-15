@@ -38,6 +38,8 @@ xquery version "3.0";
  :)
 module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
+import schema namespace map-types = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace an = "http://www.zorba-xquery.com/annotations";
@@ -66,6 +68,14 @@ declare option ver:module-version "2.0";
 declare %an:variadic %an:sequential function map:create(
   $name as xs:QName,
   $key-type as xs:QName) as empty-sequence() external;
+
+(:~
+ :
+ :)
+declare %an:variadic %an:sequential function map:create(
+  $name as xs:QName,
+  $key-type as xs:QName,
+  $options as element(map-types:options)) as empty-sequence() external;
 
 (:~
  : Destroys the map with the given name.
