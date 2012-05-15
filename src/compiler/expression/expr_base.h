@@ -177,7 +177,7 @@ protected:
 
   xqtref_t           theType;
 
-  ulong              theFlags1;
+  uint32_t           theFlags1;
 
   FreeVars           theFreeVars;
 
@@ -205,9 +205,9 @@ public:
 
   TypeManager* get_type_manager() const;
 
-  ulong getFlags() const { return theFlags1; }
+  uint32_t getFlags() const { return theFlags1; }
 
-  void setFlags(ulong flags) { theFlags1 = flags; }
+  void setFlags(uint32_t flags) { theFlags1 = flags; }
 
   unsigned short get_scripting_detail() const { return theScriptingKind; }
 

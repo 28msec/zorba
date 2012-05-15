@@ -45,6 +45,7 @@ enum SchemaTypeCode
   XS_DATETIME              = 12,
   XS_DATE                  = 13,
   XS_TIME                  = 14,
+
   XS_DURATION              = 15,
   XS_DT_DURATION           = 16,
   XS_YM_DURATION           = 17,

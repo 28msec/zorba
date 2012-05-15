@@ -129,81 +129,48 @@ void operator&(Archiver& ar, const XQType*& obj)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 #ifdef ZORBA_WITH_BIG_INTEGER
 void operator&(serialization::Archiver& ar, IntegerImpl& obj)
 #else
 template<typename IntType>
 void operator&(serialization::Archiver& ar, IntegerImpl<IntType>& obj)
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#endif
 {
   ar & obj.value_;
 }
+
 #ifndef ZORBA_WITH_BIG_INTEGER
 template void operator&(serialization::Archiver&, IntegerImpl<long long>&);
 template void operator&(serialization::Archiver&, IntegerImpl<unsigned long long>&);
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#endif
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t>& items)
 {
-  store::Item_t  i;
+  store::Item_t i;
+
   iter->open();
-  while(iter->next(i))
+
+  while (iter->next(i))
   {
     items.push_back(i);
   }
+
   iter->close();
 }
 
+void serialize_atomic_item(Archiver& ar, store::Item*& obj);
+void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id);
 void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree);
+void serialize_my_children(Archiver& ar, store::Iterator_t iter);
+void serialize_my_children2(Archiver& ar, store::Iterator_t iter);
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void serialize_my_children(Archiver& ar, store::Iterator_t iter)
-{
-  if (ar.is_serializing_out())
-  {
-    std::vector<store::Item_t>  childs;
-    iterator_to_vector(iter, childs);
-    std::vector<store::Item_t>::iterator  child_it;
-    csize child_count = childs.size();
-    ar & child_count;
-
-    for(child_it = childs.begin(); child_it != childs.end(); ++child_it)
-    {
-      store::Item*  p = (*child_it).getp();
-
-      ar.dont_allow_delay(SERIALIZE_NOW);
-      //ar & p;
-      serialize_node_tree(ar, p, false);
-    }
-  }
-  else
-  {
-    csize child_count;
-    ar & child_count;
-
-    for(csize i = 0; i < child_count; ++i)
-    {
-      store::Item*  p = NULL; 
-      //ar & p;//should be automatically added to DocumentNode or ElementNode
-      serialize_node_tree(ar, p, false);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void serialize_my_children2(Archiver& ar, store::Iterator_t iter)
-{
-  serialize_my_children(ar, iter);
-}
 
 #define SERIALIZE_FIELD(type, var, get_func)\
   type var;                                 \
@@ -218,16 +185,6 @@ void serialize_my_children2(Archiver& ar, store::Iterator_t iter)
     obj->get_func(var);                      \
   ar.dont_allow_delay();                     \
   ar & var;
-
-#define SERIALIZE_REF_FIELD(type, var, get_func)  \
-      type var##_in;                              \
-      if(ar.is_serializing_out())                 \
-      {                                           \
-        const type &var = obj->get_func;          \
-        var##_in = var;                           \
-      }                                           \
-      ar.dont_allow_delay();                      \
-      ar & var##_in;                              \
 
 #define  SERIALIZE_PARENT                         \
       store::Item* parent = NULL;                 \
@@ -298,15 +255,11 @@ void operator&(Archiver& ar, zorba::Item& obj)
 void operator&(Archiver& ar, store::Item*& obj)
 {
   bool is_ref = false;
-  int  is_node = 0;
-  int  is_atomic = 0;
-  int  is_pul = 0;
-  int  is_error = 0;
-  int  is_function = 0;
+  store::Item::ItemKind kind;
   
-  int   id;
+  int id;
   ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-  int   referencing;
+  int referencing;
 
   if (ar.is_serializing_out())
   {
@@ -320,29 +273,71 @@ void operator&(Archiver& ar, store::Item*& obj)
       return;
     }
 
-    char  strtemp[100];
-    is_node = obj->isNode();
-    is_atomic = obj->isAtomic();
-    is_pul = obj->isPul();
-    is_error = obj->isError();
-    is_function = obj->isFunction();
+    kind = obj->getKind();
 
-    assert(is_node || is_atomic || is_pul || is_error || is_function);
-
-    sprintf(strtemp, "n%da%dp%de%df%d",
-                    is_node, is_atomic, is_pul, is_error, is_function);
-
-    if (is_node || is_function)
+    if (kind == store::Item::NODE || kind == store::Item::FUNCTION)
       ar.set_is_temp_field(true);
 
-    is_ref = ar.add_compound_field("store::Item*",
+    is_ref = ar.add_compound_field(NULL,
                                    FIELD_IS_CLASS,
-                                   strtemp,
+                                   NULL,
                                    obj,
                                    ARCHIVE_FIELD_PTR);
 
-    if (is_node || is_function)
+    if (kind == store::Item::NODE || kind == store::Item::FUNCTION)
       ar.set_is_temp_field(false);
+
+    if (!is_ref)
+    {
+      SERIALIZE_ENUM(store::Item::ItemKind, kind);
+
+      switch (kind)
+      {
+      case store::Item::ATOMIC:
+      {
+        serialize_atomic_item(ar, obj);
+        break;
+      }
+      case store::Item::NODE:
+      {
+        ar.set_is_temp_field(true);
+        ar.set_is_temp_field_one_level(true);
+
+        serialize_node_tree(ar, obj, true);
+
+        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(false);
+
+        break;
+      }
+      case store::Item::FUNCTION:
+      {
+        FunctionItem* fitem = static_cast<FunctionItem*>(obj);
+
+        ar & fitem;
+
+        break;
+      }
+      case store::Item::ERROR_:
+      {
+        ZorbaException* val = obj->getError();
+        ar & val;
+        break;
+      }
+      case store::Item::PUL:
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+        ERROR_PARAMS("Pul"));
+      }
+      default:
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+        ERROR_PARAMS("[Unknown item type]"));
+      }
+      }
+
+      ar.add_end_compound_field();
+    }
   }
   else
   {
@@ -351,10 +346,10 @@ void operator&(Archiver& ar, store::Item*& obj)
     bool  retval;
 
     retval = ar.read_next_field(&type, &value, &id,
-                                false, true, true, &field_treat, &referencing);
+                                false, true, false, &field_treat, &referencing);
 
-    ar.check_class_field(retval, type, "store::Item*",
-                         field_treat, (enum  ArchiveFieldKind)-1, id);
+    ar.check_class_field(retval, "", "",
+                         field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -363,7 +358,7 @@ void operator&(Archiver& ar, store::Item*& obj)
       return;
     }
 
-    if ((field_treat != ARCHIVE_FIELD_PTR) && (field_treat != ARCHIVE_FIELD_REFERENCING))
+    if (field_treat != ARCHIVE_FIELD_PTR && field_treat != ARCHIVE_FIELD_REFERENCING)
     {
       throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
     }
@@ -372,414 +367,79 @@ void operator&(Archiver& ar, store::Item*& obj)
 
     if (!is_ref)
     {
-      sscanf(value, "n%da%dp%de%df%d",
-             &is_node, &is_atomic, &is_pul, &is_error, &is_function);
-    }
-  }
+      SERIALIZE_ENUM(store::Item::ItemKind, kind);
 
-  if (!is_ref)
-  {
-    ar.set_is_temp_field(true);
-    ar.set_is_temp_field_one_level(true);
-
-    if (is_atomic)
-    {
-      store::Item_t type;
-      zstring name_of_type;
-      bool is_qname;
-
-      if (ar.is_serializing_out())
+      switch (kind)
       {
-        type = obj->getType();
-        name_of_type = type->getLocalName();
-        const zstring& ns =type->getNamespace();
-        is_qname = (name_of_type == "QName" && ns == XML_SCHEMA_NS);
+      case store::Item::ATOMIC:
+      {
+        deserialize_atomic_item(ar, obj, id);
+        break;
       }
-
-      ar & is_qname;
-
-      if (!is_qname)
+      case store::Item::NODE:
       {
-        ar.dont_allow_delay();
-        ar & type;//save qname of type
+        ar.set_is_temp_field(true);
+        ar.set_is_temp_field_one_level(true);
+
+        serialize_node_tree(ar, obj, true);
 
         ar.set_is_temp_field(false);
-        ar.dont_allow_delay();
+        ar.set_is_temp_field_one_level(false);
 
-        ///check for User Typed Atomic Item
-        store::Item* baseItem;
-        if(ar.is_serializing_out())       
-          baseItem = (store::Item*)obj->getBaseItem();            
+        break;
+      }
+      case store::Item::FUNCTION:
+      {
+        FunctionItem* fitem = NULL;
 
-        ar & baseItem;
-        ar.set_is_temp_field(true);
-        if(baseItem)
-        {
-          store::Item_t baseItem_rc(baseItem);
-          FINALIZE_SERIALIZE(createUserTypedAtomicItem, (result, baseItem_rc, type));
-          goto EndAtomicItem;
-        }
-      }
-      else if (!ar.is_serializing_out())
-      {
-        GENV_ITEMFACTORY->createQName(type, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "QName");
-      }
+        ar & fitem;
 
-      if(!ar.is_serializing_out())
-        name_of_type = type->getLocalName();
-
-      if (name_of_type == "untyped")
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-        ERROR_PARAMS(name_of_type));
-      }
-      else if(name_of_type == "untypedAtomic")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createUntypedAtomic, (result, value));
-      }
-      else if(name_of_type == "anyType")
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-        ERROR_PARAMS(name_of_type));
-      }
-      else if(name_of_type == "anySimpleType")
-      {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-          ERROR_PARAMS( name_of_type )
-        );
-      }
-      else if(name_of_type == "anyAtomicType")
-      {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-          ERROR_PARAMS( name_of_type )
-        );
-      }
-      else if(name_of_type == "string")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createString, (result, value));
-      }
-      else if(name_of_type == "normalizedString")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createNormalizedString, (result, value));
-      }
-      else if(name_of_type == "language")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createLanguage, (result, value));
-      }
-      else if(name_of_type == "token")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createToken, (result, value));
-      }
-      else if(name_of_type == "NMTOKEN")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createNMTOKEN, (result, value));
-      } 
-      else if(name_of_type == "anyURI")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createAnyURI, (result, value));
-      }
-      else if(name_of_type == "Name")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createName, (result, value));
-      }
-      else if(name_of_type == "NCName")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createNCName, (result, value));
-      }
-      else if(name_of_type == "QName")
-      {
-        SERIALIZE_FIELD(zstring, ns, getNamespace());
-        SERIALIZE_FIELD(zstring, prefix, getPrefix());
-        SERIALIZE_FIELD(zstring, local, getLocalName());
-        FINALIZE_SERIALIZE(createQName, (result, ns, prefix, local));
-      }
-      else if(name_of_type == "NOTATION")
-      {
-        SERIALIZE_FIELD(zstring, ns, getNamespace());
-        SERIALIZE_FIELD(zstring, prefix, getPrefix());
-        SERIALIZE_FIELD(zstring, local, getLocalName());
-        FINALIZE_SERIALIZE(createNOTATION, (result, ns, prefix, local));
-      }
-      else if(name_of_type == "ID")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createID, (result, value));
-      }
-      else if(name_of_type == "IDREF")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createIDREF, (result, value));
-      }
-      else if(name_of_type == "ENTITY")
-      {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createENTITY, (result, value));
-      }
-      else if(name_of_type == "dateTime")
-      {
-        SERIALIZE_REF_FIELD(xs_dateTime, value, getDateTimeValue());
-        FINALIZE_SERIALIZE(createDateTime, (result, &value_in));
-      }
-      else if(name_of_type == "date")
-      {
-        SERIALIZE_REF_FIELD(xs_date, value, getDateValue());
-        FINALIZE_SERIALIZE(createDate, (result, &value_in));
-      }
-      else if(name_of_type == "time")
-      {
-        SERIALIZE_REF_FIELD(xs_time, value, getTimeValue());
-        FINALIZE_SERIALIZE(createTime, (result, &value_in));
-      }
-      else if(name_of_type == "duration")
-      {
-        SERIALIZE_REF_FIELD(xs_duration, value, getDurationValue());
-        FINALIZE_SERIALIZE(createDuration, (result, &value_in));
-      }
-      else if(name_of_type == "dayTimeDuration")
-      {
-        SERIALIZE_REF_FIELD(xs_dayTimeDuration, value, getDayTimeDurationValue());
-        FINALIZE_SERIALIZE(createDayTimeDuration, (result, &value_in));
-      }
-      else if(name_of_type == "yearMonthDuration")
-      {
-        SERIALIZE_REF_FIELD(xs_yearMonthDuration, value, getYearMonthDurationValue());
-        FINALIZE_SERIALIZE(createYearMonthDuration, (result, &value_in));
-      }
-         
-      else if(name_of_type == "float")
-      {
-        SERIALIZE_FIELD(xs_float, value, getFloatValue());
-        FINALIZE_SERIALIZE(createFloat, (result, value));
-      }
-      else if(name_of_type == "double")
-      {
-        SERIALIZE_FIELD(xs_double, value, getDoubleValue());
-        FINALIZE_SERIALIZE(createDouble, (result, value));
-      }
-      else if(name_of_type == "decimal")
-      {
-        SERIALIZE_FIELD(xs_decimal, value, getDecimalValue());
-        FINALIZE_SERIALIZE(createDecimal, (result, value));
-      }
-      else if(name_of_type == "integer")
-      {
-        SERIALIZE_FIELD(xs_integer, value, getIntegerValue());
-        FINALIZE_SERIALIZE(createInteger, (result, value));
-      }
-      else if(name_of_type == "nonPositiveInteger")
-      {
-        SERIALIZE_FIELD(xs_integer, value, getIntegerValue());
-        FINALIZE_SERIALIZE(createNonPositiveInteger, (result, value));
-      }
-      else if(name_of_type == "nonNegativeInteger")
-      {
-        SERIALIZE_FIELD(xs_nonNegativeInteger, value, getUnsignedIntegerValue());
-        FINALIZE_SERIALIZE(createNonNegativeInteger, (result, value));
-      }
-      else if(name_of_type == "negativeInteger")
-      {
-        SERIALIZE_FIELD(xs_integer, value, getIntegerValue());
-        FINALIZE_SERIALIZE(createNegativeInteger, (result, value));
-      }
-      else if(name_of_type == "positiveInteger")
-      {
-        SERIALIZE_FIELD(xs_positiveInteger, value, getUnsignedIntegerValue());
-        FINALIZE_SERIALIZE(createPositiveInteger, (result, value));
-      }
-         
-      else if(name_of_type == "long")
-      {
-        SERIALIZE_FIELD(xs_long, value, getLongValue());
-        FINALIZE_SERIALIZE(createLong, (result, value));
-      }
-      else if(name_of_type == "int")
-      {
-        SERIALIZE_FIELD(xs_int, value, getIntValue());
-        FINALIZE_SERIALIZE(createInt, (result, value));
-      }
-      else if(name_of_type == "short")
-      {
-        SERIALIZE_FIELD(xs_short, value, getShortValue());
-        FINALIZE_SERIALIZE(createShort, (result, value));
-      }
-      else if(name_of_type == "byte")
-      {
-        SERIALIZE_FIELD(xs_byte, value, getByteValue());
-        FINALIZE_SERIALIZE(createByte, (result, value));
-      }
-      else if(name_of_type == "unsignedLong")
-      {
-        SERIALIZE_FIELD(xs_unsignedLong, value, getUnsignedLongValue());
-        FINALIZE_SERIALIZE(createUnsignedLong, (result, value));
-      }
-      else if(name_of_type == "unsignedInt")
-      {
-        SERIALIZE_FIELD(xs_unsignedInt, value, getUnsignedIntValue());
-        FINALIZE_SERIALIZE(createUnsignedInt, (result, value));
-      }
-      else if(name_of_type == "unsignedShort")
-      {
-        SERIALIZE_FIELD(xs_unsignedShort, value, getUnsignedShortValue());
-        FINALIZE_SERIALIZE(createUnsignedShort, (result, value));
-      }
-      else if(name_of_type == "unsignedByte")
-      {
-        SERIALIZE_FIELD(xs_unsignedByte, value, getUnsignedByteValue());
-        FINALIZE_SERIALIZE(createUnsignedByte, (result, value));
-      }
-         
-      else if(name_of_type == "gYearMonth")
-      {
-        SERIALIZE_REF_FIELD(xs_gYearMonth, value, getGYearMonthValue());
-        FINALIZE_SERIALIZE(createGYearMonth, (result, &value_in));
-      }
-      else if(name_of_type == "gYear")
-      {
-        SERIALIZE_REF_FIELD(xs_gYear, value, getGYearValue());
-        FINALIZE_SERIALIZE(createGYear, (result, &value_in));
-      }
-      else if(name_of_type == "gMonthDay")
-      {
-        SERIALIZE_REF_FIELD(xs_gMonthDay, value, getGMonthDayValue());
-        FINALIZE_SERIALIZE(createGMonthDay, (result, &value_in));
-      }
-      else if(name_of_type == "gDay")
-      {
-        SERIALIZE_REF_FIELD(xs_gDay, value, getGDayValue());
-        FINALIZE_SERIALIZE(createGDay, (result, &value_in));
-      }
-      else if(name_of_type == "gMonth")
-      {
-        SERIALIZE_REF_FIELD(xs_gMonth, value, getGMonthValue());
-        FINALIZE_SERIALIZE(createGMonth, (result, &value_in));
-      }
-         
-      else if(name_of_type == "base64Binary")
-      {
-        if (ar.is_serializing_out())
-        {
-          size_t s;
-          const char* c = obj->getBase64BinaryValue(s);
-          if (obj->isEncoded())
-          {
-            Base64 tmp;
-            Base64::parseString(c, s, tmp);
-            ar.dont_allow_delay();
-            ar & tmp;
-          }
-          else
-          {
-            Base64 tmp((const unsigned char*)c, s);
-            ar.dont_allow_delay();
-            ar & tmp;
-          }
-        }
-        else
-        {
-          ar.dont_allow_delay();
-          Base64 tmp;
-          ar & tmp;
-          FINALIZE_SERIALIZE(createBase64Binary, (result, tmp));
-        }
-      }
-      else if(name_of_type == "hexBinary")
-      {
-        SERIALIZE_REF_FIELD(xs_hexBinary, value, getHexBinaryValue());
-        FINALIZE_SERIALIZE(createHexBinary, (result, value_in));
-      }
-      else if(name_of_type == "boolean")
-      {
-        SERIALIZE_FIELD(bool, value, getBooleanValue());
-        FINALIZE_SERIALIZE(createBoolean, (result, value));
-      }
-      else
-      {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-          ERROR_PARAMS( name_of_type )
-        );
-      }
-EndAtomicItem:;
-    }
-    else if (is_node)
-    {
-      serialize_node_tree(ar, obj, true);
-    }
-    else if (is_pul)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-      ERROR_PARAMS("Pul"));
-    }
-    else if (is_error)
-    {
-      ZORBA_ASSERT(false);
-      SERIALIZE_FIELD(ZorbaException*, value, getError());
-      FINALIZE_SERIALIZE(createError, (result, value));
-    }
-    else if (is_function)
-    {
-      FunctionItem* fitem = NULL;
-      if (ar.is_serializing_out())
-      {
-        fitem = dynamic_cast<FunctionItem*>(obj);
-      }
-
-      ar.dont_allow_delay();
-      ar.set_is_temp_field(false);                    
-
-      ar & fitem;
-
-      if (!ar.is_serializing_out())
-      {
         assert(fitem);
+
         obj = fitem;
         if (obj)                                         
           obj->addReference();     
 
         ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);                
+
+        break;
+      }
+      case store::Item::ERROR_:
+      {
+        ZORBA_ASSERT(false);
+        ZorbaException* val;
+        ar & val;
+
+        store::Item_t result;
+        GENV_ITEMFACTORY->createError(result, val);
+
+        obj = result.getp();
+        if (obj)
+          obj->addReference(); 
+
+        ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);
+      }
+      case store::Item::PUL:
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+        ERROR_PARAMS("Pul"));
+      }
+      default:
+      {
+        throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+        ERROR_PARAMS("[Unknown item type]"));
+      }
       }
 
-      ar.set_is_temp_field(true);    
-    }
-    else
-    {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-      ERROR_PARAMS("[Unknown item type]"));
-    }
-
-    ar.set_is_temp_field(false);
-    ar.set_is_temp_field_one_level(false);
-  }
-
-  if (ar.is_serializing_out())
-  {
-    if (!is_ref)
-      ar.add_end_compound_field();
-  }
-  else
-  {
-    if (!is_ref)
-    {
-      if (!is_node)
+      if (kind != store::Item::NODE)
         ar.register_item(obj);
 
       ar.read_end_current_level();
-    }
+    } // !is_ref
     else
     {
-      store::Item  *new_obj = NULL;
-      if ((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
+      store::Item* new_obj = NULL;
+      if ((new_obj = (store::Item*)ar.get_reference_value(referencing)))
       {
         obj = dynamic_cast<store::Item*>(new_obj);
         if (!obj)
@@ -797,8 +457,532 @@ EndAtomicItem:;
         obj = NULL;
       }
     }
+  } // de-serializing
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+#define SERIALIZE_ATOMIC_ITEM(type, get_func)        \
+  ar.set_is_temp_field(true);                        \
+  type val = obj->get_func;                          \
+  ar & val;                                          \
+  ar.set_is_temp_field(false);                       \
+  break;
+
+
+void serialize_atomic_item(Archiver& ar, store::Item*& obj)
+{
+  store::Item* typeName;
+  store::SchemaTypeCode typeCode;
+  store::Item* baseItem = NULL;
+  
+  baseItem = obj->getBaseItem();
+    
+  if (baseItem)
+  {
+    typeName = obj->getType();
+    typeCode = store::XS_LAST;
+    
+    SERIALIZE_ENUM(store::SchemaTypeCode, typeCode);
+    
+    ar & baseItem;
+    ar & typeName;
+
+    return;
   }
 
+  typeCode = obj->getTypeCode();
+    
+  SERIALIZE_ENUM(store::SchemaTypeCode, typeCode);
+ 
+  switch (typeCode)
+  {
+  case store::XS_STRING:
+  case store::XS_NORMALIZED_STRING:
+  case store::XS_TOKEN:
+  case store::XS_LANGUAGE:
+  case store::XS_NMTOKEN:
+  case store::XS_NAME:
+  case store::XS_NCNAME:
+  case store::XS_ID:
+  case store::XS_IDREF:
+  case store::XS_ENTITY:
+    
+  case store::XS_UNTYPED_ATOMIC:
+  {
+    SERIALIZE_ATOMIC_ITEM(zstring, getString());
+  }
+  
+  case store::XS_DATETIME:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_dateTime, getDateTimeValue());
+  }
+  case store::XS_DATE:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_date, getDateValue());
+  }
+  case store::XS_TIME:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_time, getTimeValue());
+  }
+
+  case store::XS_DURATION:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_duration, getDurationValue());
+  }
+  case store::XS_DT_DURATION:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_dayTimeDuration, getDayTimeDurationValue());
+  }
+  case store::XS_YM_DURATION: 
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_yearMonthDuration, getYearMonthDurationValue());
+  }
+  
+  case store::XS_FLOAT:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_float, getFloatValue());
+  }
+  case store::XS_DOUBLE:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_double, getDoubleValue());
+  }
+
+  case store::XS_DECIMAL:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_decimal, getDecimalValue());
+  }
+  case store::XS_INTEGER:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_integer, getIntegerValue());
+  }
+  case store::XS_NON_POSITIVE_INTEGER:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_integer, getIntegerValue());
+  }
+  case store::XS_NEGATIVE_INTEGER:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_integer, getIntegerValue());
+  }
+  case store::XS_LONG:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_long, getLongValue());
+  }
+  case store::XS_INT:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_int, getIntValue());
+  }
+  case store::XS_SHORT:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_short, getShortValue());
+  }
+  case store::XS_BYTE:
+  {
+    SERIALIZE_ATOMIC_ITEM(char, getByteValue());
+  }
+  case store::XS_NON_NEGATIVE_INTEGER:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_nonNegativeInteger, getUnsignedIntegerValue());
+  }
+  case store::XS_POSITIVE_INTEGER:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_positiveInteger, getUnsignedIntegerValue());
+  }
+  case store::XS_UNSIGNED_LONG:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_unsignedLong, getUnsignedLongValue());
+  }
+  case store::XS_UNSIGNED_INT:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_unsignedInt, getUnsignedIntValue());
+  }
+  case store::XS_UNSIGNED_SHORT:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_unsignedShort, getUnsignedShortValue());
+  }
+  case store::XS_UNSIGNED_BYTE:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_unsignedByte, getUnsignedByteValue());
+  }
+
+  case store::XS_GYEAR_MONTH:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_gYearMonth, getGYearMonthValue());
+  }
+  case store::XS_GYEAR:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_gYear, getGYearValue());
+  }
+  case store::XS_GMONTH_DAY:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_gMonthDay, getGMonthDayValue());
+  }
+  case store::XS_GDAY:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_gDay, getGDayValue());
+  }
+  case store::XS_GMONTH:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_gMonth, getGMonthValue());
+  }    
+
+  case store::XS_BOOLEAN:
+  {
+    SERIALIZE_ATOMIC_ITEM(bool, getBooleanValue());
+  }
+
+  case store::XS_HEXBINARY:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_hexBinary, getHexBinaryValue());
+  }
+  case store::XS_BASE64BINARY:
+  {
+    ar.set_is_temp_field(true);
+
+    size_t s;
+    const char* c = obj->getBase64BinaryValue(s);
+    if (obj->isEncoded())
+    {
+      Base64 tmp;
+      Base64::parseString(c, s, tmp);
+      ar & tmp;
+    }
+    else
+    {
+      Base64 tmp((const unsigned char*)c, s);
+      ar & tmp;
+    }
+    
+    ar.set_is_temp_field(false);
+
+    break;
+  }
+  
+  case store::XS_ANY_URI:
+  {
+    SERIALIZE_ATOMIC_ITEM(zstring, getString());
+  }
+  
+  case store::XS_QNAME:
+  case store::XS_NOTATION:
+  {
+    zstring ns = obj->getNamespace();
+    zstring prefix = obj->getPrefix();
+    zstring local = obj->getLocalName();
+    ar & ns;
+    ar & prefix;
+    ar & local;
+    
+    break;
+  }
+  
+  default:
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+    ERROR_PARAMS("unknown atomic item type"));
+  }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+
+#define DESERIALIZE_ATOMIC_ITEM(type, create_func)    \
+  ar.set_is_temp_field(true);                         \
+  type val;                                           \
+  ar & val;                                           \
+  ar.set_is_temp_field(false);                        \
+                                                      \
+  store::Item_t result;                               \
+  GENV_ITEMFACTORY->create_func(result, val);         \
+                                                      \
+  obj = result.getp();                                \
+  if(obj)                                             \
+    obj->addReference();                              \
+                                                      \
+  ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);  \
+                                                      \
+  break;
+
+
+#define DESERIALIZE_ATOMIC_ITEM2(type, create_func)   \
+  ar.set_is_temp_field(true);                         \
+  type val;                                           \
+  ar & val;                                           \
+  ar.set_is_temp_field(false);                        \
+                                                      \
+  store::Item_t result;                               \
+  GENV_ITEMFACTORY->create_func(result, &val);        \
+                                                      \
+  obj = result.getp();                                \
+  if(obj)                                             \
+    obj->addReference();                              \
+                                                      \
+  ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);  \
+                                                      \
+  break;
+
+
+void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
+{
+  store::Item_t typeName;
+  store::SchemaTypeCode typeCode;
+  store::Item* baseItem = NULL;
+  
+  SERIALIZE_ENUM(store::SchemaTypeCode, typeCode);
+  
+  // If it's a user-defined item, deserialize the base item and the UDT qname
+  if (typeCode == store::XS_LAST)
+  {
+    ar & baseItem;
+    ar & typeName;
+      
+    store::Item_t result;
+    store::Item_t tmp = baseItem;
+    GENV_ITEMFACTORY->createUserTypedAtomicItem(result, tmp, typeName);
+        
+    obj = result.getp();
+
+    obj->addReference();
+
+    ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);
+
+    return;
+  }
+
+  switch (typeCode)
+  {
+  case store::XS_STRING:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createString);
+  }
+  case store::XS_NORMALIZED_STRING:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createNormalizedString);
+  }
+  case store::XS_TOKEN:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createToken);
+  }
+  case store::XS_LANGUAGE:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createLanguage);
+  }
+  case store::XS_NMTOKEN:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createNMTOKEN);
+  }
+  case store::XS_NAME:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createName);
+  }
+  case store::XS_NCNAME:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createNCName);
+  }
+  case store::XS_ID:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createID);
+  }
+  case store::XS_IDREF:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createIDREF);
+  }
+  case store::XS_ENTITY:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createENTITY);
+  }
+
+  case store::XS_UNTYPED_ATOMIC:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createUntypedAtomic);
+  }
+
+  case store::XS_DATETIME:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_dateTime, createDateTime);
+  }
+  case store::XS_DATE:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_date, createDate);
+  }
+  case store::XS_TIME:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_time, createTime);
+  }
+
+  case store::XS_DURATION:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_duration, createDuration);
+  }
+  case store::XS_DT_DURATION:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_dayTimeDuration, createDayTimeDuration);
+  }
+  case store::XS_YM_DURATION: 
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_yearMonthDuration, createYearMonthDuration);
+  }
+
+  case store::XS_FLOAT:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_float, createFloat);
+  }
+  case store::XS_DOUBLE:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_double, createDouble);
+  }
+
+  case store::XS_DECIMAL:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_decimal, createDecimal);
+  }
+  case store::XS_INTEGER:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_integer, createInteger);
+  }
+  case store::XS_NON_POSITIVE_INTEGER:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_integer, createNonPositiveInteger);
+  }
+  case store::XS_NON_NEGATIVE_INTEGER:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_nonNegativeInteger, createNonNegativeInteger);
+  }
+  case store::XS_NEGATIVE_INTEGER:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_integer, createNegativeInteger);
+  }
+  case store::XS_POSITIVE_INTEGER:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_positiveInteger, createPositiveInteger);
+  }
+  case store::XS_LONG:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_long, createLong);
+  }
+  case store::XS_INT:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_int, createInt);
+  }
+  case store::XS_SHORT:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_short, createShort);
+  }
+  case store::XS_BYTE:
+  {
+    DESERIALIZE_ATOMIC_ITEM(char, createByte);
+  }
+  case store::XS_UNSIGNED_LONG:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_unsignedLong, createUnsignedLong);
+  }
+  case store::XS_UNSIGNED_INT:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_unsignedInt, createUnsignedInt);
+  }
+  case store::XS_UNSIGNED_SHORT:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_unsignedShort, createUnsignedShort);
+  }
+  case store::XS_UNSIGNED_BYTE:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_unsignedByte, createUnsignedByte);
+  }
+
+  case store::XS_GYEAR_MONTH:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_gYearMonth, createGYearMonth);
+  }
+  case store::XS_GYEAR:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_gYear, createGYear);
+  }
+  case store::XS_GMONTH_DAY:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_gMonthDay, createGMonthDay);
+  }
+  case store::XS_GDAY:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_gDay, createGDay);
+  }
+  case store::XS_GMONTH:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_gMonth, createGMonth);
+  }
+
+  case store::XS_BOOLEAN:
+  {
+    DESERIALIZE_ATOMIC_ITEM(bool, createBoolean);
+  }
+
+  case store::XS_ANY_URI:
+  {
+    DESERIALIZE_ATOMIC_ITEM(zstring, createAnyURI);
+  }
+
+  case store::XS_QNAME:
+  {
+    zstring ns;
+    zstring prefix;
+    zstring local;
+    ar & ns;
+    ar & prefix;
+    ar & local;
+
+    store::Item_t result;
+    GENV_ITEMFACTORY->createQName(result, ns, prefix, local);
+
+    obj = result.getp();
+    if(obj)               
+      obj->addReference();
+    
+    ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);
+                        
+    break;
+  }
+
+  case store::XS_NOTATION:
+  {
+    zstring ns;
+    zstring prefix;
+    zstring local;
+    ar & ns;
+    ar & prefix;
+    ar & local;
+
+    store::Item_t result;
+    GENV_ITEMFACTORY->createNOTATION(result, ns, prefix, local);
+
+    obj = result.getp();
+    if(obj)               
+      obj->addReference();
+    
+    ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);
+                        
+    break;
+  }
+
+  case store::XS_BASE64BINARY:
+  {
+    DESERIALIZE_ATOMIC_ITEM(Base64, createBase64Binary);
+  }
+
+  case store::XS_HEXBINARY:
+  {
+    DESERIALIZE_ATOMIC_ITEM(xs_hexBinary, createHexBinary);
+  }
+
+  default:
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+    ERROR_PARAMS("unknown atomic item type"));
+  }
+  }
 }
 
 
@@ -809,31 +993,35 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
 {
   //only for node items
   //serialize first whole tree and then the item (will surely be a reference)
-  if(all_tree)
+  if (all_tree)
   {
-    store::Item *parent = NULL;
-    if(ar.is_serializing_out())
+    store::Item* parent = NULL;
+
+    if (ar.is_serializing_out())
     {
-      if(obj != NULL)
+      if (obj != NULL)
         parent = obj->getParent();
-      if(parent)
+
+      if (parent)
       {
         while(parent->getParent())
           parent = parent->getParent();
       }
-      if(!parent)
+
+      if (!parent)
       {
         parent = obj;
       }
     }
+
     serialize_node_tree(ar, parent, false);
   }
 
   ar.set_is_temp_field(false);
 
-  int   id;
+  int id;
   ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-  int   referencing;
+  int referencing;
   bool is_ref;
 
   if (ar.is_serializing_out())
@@ -972,13 +1160,17 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       {
         FINALIZE_SERIALIZE(createAttributeNode, (result, parent, nodename, name_of_type, val_vector));
       }
-    }break;
+
+      break;
+    }
     case store::StoreConsts::textNode:
     {
       SERIALIZE_PARENT;
       SERIALIZE_FIELD(zstring, content, getStringValue());
       FINALIZE_SERIALIZE(createTextNode, (result, parent, content));
-    }break;
+
+      break;
+    }
     case store::StoreConsts::piNode:
     {
       SERIALIZE_PARENT;
@@ -986,17 +1178,22 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       SERIALIZE_FIELD(zstring, content, getStringValue());
       SERIALIZE_FIELD2(zstring, baseUri, getBaseURI);
       FINALIZE_SERIALIZE(createPiNode, (result, parent, target, content, baseUri));
-    }break;
+
+      break;
+    }
     case store::StoreConsts::commentNode:
     {
       SERIALIZE_PARENT;
       SERIALIZE_FIELD(zstring, content, getStringValue());
       FINALIZE_SERIALIZE(createCommentNode, (result, parent, content));
-    }break;
+
+      break;
+    }
     default:
-      throw ZORBA_EXCEPTION(
-        zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "unknown" )
-      );
+    {
+      throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+      ERROR_PARAMS("unknown"));
+    }
     }
   }//end is_ref
 
@@ -1034,6 +1231,52 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       }
     }
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_my_children(Archiver& ar, store::Iterator_t iter)
+{
+  if (ar.is_serializing_out())
+  {
+    std::vector<store::Item_t>  childs;
+    iterator_to_vector(iter, childs);
+    std::vector<store::Item_t>::iterator  child_it;
+    csize child_count = childs.size();
+    ar & child_count;
+
+    for(child_it = childs.begin(); child_it != childs.end(); ++child_it)
+    {
+      store::Item*  p = (*child_it).getp();
+
+      ar.dont_allow_delay(SERIALIZE_NOW);
+      //ar & p;
+      serialize_node_tree(ar, p, false);
+    }
+  }
+  else
+  {
+    csize child_count;
+    ar & child_count;
+
+    for (csize i = 0; i < child_count; ++i)
+    {
+      store::Item*  p = NULL; 
+      //ar & p;//should be automatically added to DocumentNode or ElementNode
+      serialize_node_tree(ar, p, false);
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_my_children2(Archiver& ar, store::Iterator_t iter)
+{
+  serialize_my_children(ar, iter);
 }
 
 
@@ -1280,7 +1523,7 @@ void operator&(Archiver& ar, ZorbaException*& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     bool is_ref;
     is_ref = ar.add_compound_field("internal::diagnostic::location",
@@ -1330,7 +1573,7 @@ void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, zorba::XQueryStackTrace& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     bool is_ref;
     is_ref = ar.add_compound_field("XQueryStackTrace",
@@ -1338,7 +1581,7 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace& obj)
                                    NULL,
                                    &obj,
                                    ARCHIVE_FIELD_NORMAL);
-    if(!is_ref)
+    if (!is_ref)
     {
       ar & obj.trace_;
       ar.add_end_compound_field();
@@ -1355,9 +1598,9 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace& obj)
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, false, false, false,
-                                &field_treat, &referencing);
+
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
+                                      &field_treat, &referencing);
 
     ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
@@ -1372,7 +1615,7 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj)
 {
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     bool is_ref;
     is_ref = ar.add_compound_field("XQueryStackTrace::Entry",
@@ -1380,7 +1623,7 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj)
                                    NULL,
                                    &obj,
                                    ARCHIVE_FIELD_NORMAL);
-    if(!is_ref)
+    if (!is_ref)
     {
       ar & obj.getFnNameRef();
       ar & obj.getFnArityRef();
@@ -1403,9 +1646,9 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj)
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, false, false, false,
-                                &field_treat, &referencing);
+
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
+                                      &field_treat, &referencing);
 
     ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
 

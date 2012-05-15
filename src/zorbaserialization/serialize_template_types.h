@@ -256,6 +256,57 @@ void operator&(Archiver& ar, T*& obj)
 }
 
 
+template<class T>
+void operator&(Archiver& ar, zorba::rchandle<T>& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    T* p = obj.getp();
+    ar & p;
+  }
+  else
+  {
+    T* p;
+    ar & p;
+    obj = p;
+  }
+}
+
+
+template<class T>
+void operator&(Archiver& ar, zorba::const_rchandle<T>& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    T* p = (T*)obj.getp();
+    ar & p;
+  }
+  else
+  {
+    T* p;
+    ar & p;
+    obj = p;
+  }
+}
+
+
+template<class T>
+void operator&(Archiver& ar, store::ItemHandle<T>& obj)
+{ 
+  if (ar.is_serializing_out())
+  {
+    T* p = obj.getp();
+    ar & p;
+  }
+  else
+  {
+    T* p;
+    ar & p;
+    obj = p;
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -264,45 +315,7 @@ void operator&(Archiver& ar, checked_vector<T>& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[20];
-    sprintf(strtemp, "%d", (int)obj.size());
-
-    bool is_ref = ar.add_compound_field("checked_vector<T>",
-                                        !FIELD_IS_CLASS,
-                                        strtemp,
-                                        &obj,
-                                        ARCHIVE_FIELD_NORMAL);
-
-    if (!is_ref)
-    {
-      typename checked_vector<T>::iterator it = obj.begin();
-      typename checked_vector<T>::iterator end = obj.end();
-      for(; it != end; ++it)
-      {
-        ar & (*it);
-      }
-
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char* type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool retval = ar.read_next_field(&type, &value, &id, false, false, true,
-                                     &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    ar.register_reference(id, field_treat, &obj);
-
-    int size;
-    sscanf(value, "%d", &size);
-    obj.resize(size);
+    ar & obj.size();
 
     typename checked_vector<T>::iterator it = obj.begin();
     typename checked_vector<T>::iterator end = obj.end();
@@ -310,8 +323,21 @@ void operator&(Archiver& ar, checked_vector<T>& obj)
     {
       ar & (*it);
     }
+  }
+  else
+  {
+    csize size;
+    ar & size;
 
-    ar.read_end_current_level();
+    obj.resize(size);
+
+    typename checked_vector<T>::iterator it = obj.begin();
+    typename checked_vector<T>::iterator end = obj.end();
+ 
+    for(; it != end; ++it)
+    {
+      ar & (*it);
+    }
   }
 }
 
@@ -324,46 +350,20 @@ void operator&(Archiver& ar, std::vector<T>& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[20];
-#ifndef WIN32
-    sprintf(strtemp, "%d", (int)obj.size());
-#else
-    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj.size());
-#endif
-    bool is_ref = ar.add_compound_field("std::vector<T>",
-                                        !FIELD_IS_CLASS,
-                                        strtemp,
-                                        &obj,
-                                        ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
-    {
-      typename std::vector<T>::iterator it = obj.begin();
-      typename std::vector<T>::iterator end = obj.end();
-      for(; it != end; ++it)
-      {
-        ar & (*it);
-      }
+    ar & obj.size();
 
-      ar.add_end_compound_field();
+    typename std::vector<T>::iterator it = obj.begin();
+    typename std::vector<T>::iterator end = obj.end();
+    for(; it != end; ++it)
+    {
+      ar & (*it);
     }
   }
   else
   {
-    char* type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
+    csize size;
+    ar & size;
 
-    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
-                                      &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    ar.register_reference(id, field_treat, &obj);
-
-    int size;
-    sscanf(value, "%d", &size);
     obj.resize(size);
 
     typename std::vector<T>::iterator it = obj.begin();
@@ -372,8 +372,41 @@ void operator&(Archiver& ar, std::vector<T>& obj)
     {
       ar & (*it);
     }
+  }
+}
 
-    ar.read_end_current_level();
+
+/*******************************************************************************
+
+********************************************************************************/
+template<typename T>
+void operator&(Archiver& ar, std::vector<T*>& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    ar & obj.size();
+
+    typename std::vector<T*>::iterator it = obj.begin();
+    typename std::vector<T*>::iterator end = obj.end();
+    for(; it != end; ++it)
+    {
+      ar & (*it);
+    }
+  }
+  else
+  {
+    csize size;
+    ar & size;
+
+    obj.resize(size);
+
+    typename std::vector<T*>::iterator it = obj.begin();
+    typename std::vector<T*>::iterator end = obj.end();
+
+    for(; it != end; ++it)
+    {
+      ar & (*it);
+    }
   }
 }
 
@@ -392,8 +425,8 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
     {
       ar.add_compound_field("NULL", 
                             !FIELD_IS_CLASS,
-                            "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
+                            NULL, 
+                            NULL,
                             ARCHIVE_FIELD_NULL);
       return;
     }
@@ -426,7 +459,7 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
     char* type;
     char* value;
     int   id;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
 
     bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
@@ -486,114 +519,23 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
 
 ********************************************************************************/
 template<typename T>
-void operator&(Archiver& ar, std::vector<T*>& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char  strtemp[20];
-#ifndef WIN32
-    sprintf(strtemp, "%d", (int)obj.size());
-#else
-    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj.size());
-#endif
-
-    bool is_ref = ar.add_compound_field("std::vector<T*>",
-                                        !FIELD_IS_CLASS,
-                                        strtemp,
-                                        &obj,
-                                        ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
-    {
-      typename std::vector<T*>::iterator it = obj.begin();
-      typename std::vector<T*>::iterator end = obj.end();
-      for(; it != end; ++it)
-      {
-        ar & (*it);
-      }
-
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char* type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
-                                      &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    ar.register_reference(id, field_treat, &obj);
-
-    int size;
-    sscanf(value, "%d", &size);
-    obj.resize(size);
-
-    typename std::vector<T*>::iterator it = obj.begin();
-    typename std::vector<T*>::iterator end = obj.end();
-    for(; it != end; ++it)
-    {
-      ar & (*it);
-    }
-
-    ar.read_end_current_level();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-template<typename T>
 void operator&(Archiver& ar, std::list<T>& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[20];
-#ifndef WIN32
-    sprintf(strtemp, "%d", (int)obj.size());
-#else
-    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj.size());
-#endif
+    ar & obj.size();
 
-    bool is_ref = ar.add_compound_field("std::list<T>",
-                                        !FIELD_IS_CLASS,
-                                        strtemp,
-                                        &obj,
-                                        ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
+    typename std::list<T>::iterator it = obj.begin();
+    typename std::list<T>::iterator end = obj.end();
+    for (; it != end; ++it)
     {
-      typename std::list<T>::iterator it = obj.begin();
-      typename std::list<T>::iterator end = obj.end();
-      for (; it != end; ++it)
-      {
-        ar & (*it);
-      }
-
-      ar.add_end_compound_field();
+      ar & (*it);
     }
   }
   else
   {
-    char* type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
-                                      &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    ar.register_reference(id, field_treat, &obj);
-
-    int size;
-    sscanf(value, "%d", &size);
+    csize size;
+    ar & size;
     obj.resize(size);
 
     typename std::list<T>::iterator it = obj.begin();
@@ -602,8 +544,6 @@ void operator&(Archiver& ar, std::list<T>& obj)
     {
       ar & (*it);
     }
-
-    ar.read_end_current_level();
   }
 }
 
@@ -740,51 +680,22 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
 {
   if (ar.is_serializing_out())
   {
-    bool is_ref = ar.add_compound_field("std::map<T1, T2>",
-                                        !FIELD_IS_CLASS,
-                                        NULL,
-                                        &obj,
-                                        ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
+    csize s = obj.size();
+    ar & s;
+
+    typename std::map<T1, T2, Tcomp>::iterator it = obj.begin();
+    typename std::map<T1, T2, Tcomp>::iterator end = obj.end();
+
+    for (; it != end; ++it)
     {
-      ar.set_is_temp_field(true);
-
-      csize s = obj.size();
-      ar & s;
-
-      ar.set_is_temp_field(false);
-
-      typename std::map<T1, T2, Tcomp>::iterator it = obj.begin();
-      typename std::map<T1, T2, Tcomp>::iterator end = obj.end();
-
-      for (; it != end; ++it)
-      {
-        ar & (*it).first;
-        ar & (*it).second;
-      }
-
-      ar.add_end_compound_field();
+      ar & (*it).first;
+      ar & (*it).second;
     }
   }
   else
   {
-    char* type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    ar.register_reference(id, field_treat, &obj);
-
-    ar.set_is_temp_field(true);
     csize s;
     ar & s;
-    ar.set_is_temp_field(false);
 
     std::pair<T1, T2> p;
 
@@ -795,8 +706,6 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
 
       obj.insert(p);
     }
-
-    ar.read_end_current_level();
   }
 }
 
@@ -815,9 +724,7 @@ void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
       is_normal_str = false;
   }
 
-  ar.set_is_temp_field(true);
   ar & is_normal_str;
-  ar.set_is_temp_field(false);
 
   if (is_normal_str)
   {
@@ -867,57 +774,6 @@ void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
 
       ar.set_is_temp_field(false);
     }
-  }
-}
-
-
-template<class T>
-void operator&(Archiver& ar, zorba::rchandle<T>& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    T* p = obj.getp();
-    ar & p;
-  }
-  else
-  {
-    T* p;
-    ar & p;
-    obj = p;
-  }
-}
-
-
-template<class T>
-void operator&(Archiver& ar, zorba::const_rchandle<T>& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    T* p = (T*)obj.getp();
-    ar & p;
-  }
-  else
-  {
-    T* p;
-    ar & p;
-    obj = p;
-  }
-}
-
-
-template<class T>
-void operator&(Archiver& ar, store::ItemHandle<T>& obj)
-{ 
-  if (ar.is_serializing_out())
-  {
-    T* p = obj.getp();
-    ar & p;
-  }
-  else
-  {
-    T* p;
-    ar & p;
-    obj = p;
   }
 }
 

@@ -61,9 +61,19 @@ archive_field::archive_field(
 
   switch (type)
   {
-  case TYPE_INT:
+  case TYPE_INT64:
   {
-    theValue.intv = value.intv;
+    theValue.int64v = value.int64v;
+    break;
+  }
+  case TYPE_UINT64:
+  {
+    theValue.uint64v = value.uint64v;
+    break;
+  }
+  case TYPE_INT32:
+  {
+    theValue.int32v = value.int32v;
     break;
   }
   case TYPE_UINT32:
@@ -71,14 +81,14 @@ archive_field::archive_field(
     theValue.uint32v = value.uint32v;
     break;
   }
-  case TYPE_SHORT:
+  case TYPE_INT16:
   {
-    theValue.shortv = value.shortv;
+    theValue.int16v = value.int16v;
     break;
   }
-  case TYPE_USHORT:
+  case TYPE_UINT16:
   {
-    theValue.ushortv = value.ushortv;
+    theValue.uint16v = value.uint16v;
     break;
   }
   case TYPE_CHAR:
@@ -104,6 +114,8 @@ archive_field::archive_field(
       theValue.cstrv = NULL; 
   }
   }
+
+  theValuePosInPool = 0;
 
   assoc_ptr = ptr;
 
@@ -148,22 +160,26 @@ archive_field::archive_field(
   theIsSimple = is_simple;
   theIsClass = is_class;
 
-#ifdef NDEBUG
-  if (theIsClass)
-    theTypeName = strdup(type);
-  else
-    theTypeName = NULL;
-#else
-  theTypeName = strdup(type);
-#endif
-
   theType = TYPE_UNKNOWN;
+  theTypeName = NULL;
   theTypeNamePosInPool = 0;
+
+  if (type)
+  {
+#ifdef NDEBUG
+    if (theIsClass)
+      theTypeName = strdup(type);
+#else
+    theTypeName = strdup(type);
+#endif
+  }
 
   if (value)
     theValue.cstrv = strdup((char*)value);
   else
     theValue.cstrv = NULL;
+
+  theValuePosInPool = 0;
 
   assoc_ptr = ptr;
 
@@ -198,10 +214,12 @@ archive_field::~archive_field()
 
   switch (theType)
   {
-  case TYPE_INT:
+  case TYPE_INT64:
+  case TYPE_UINT64:
+  case TYPE_INT32:
   case TYPE_UINT32:
-  case TYPE_SHORT:
-  case TYPE_USHORT:
+  case TYPE_INT16:
+  case TYPE_UINT16:
   case TYPE_CHAR:
   case TYPE_UCHAR:
   case TYPE_BOOL:
@@ -1276,7 +1294,7 @@ void* Archiver::get_reference_value(int refid)
   }
 
   void* assoc_ptr = NULL;
-  //if(!all_reference_list->get((uint32_t)refid, assoc_ptr))
+
   if (!(assoc_ptr = all_reference_list[refid]))
   {
     Archiver* har = ::zorba::serialization::ClassSerializer::getInstance()->

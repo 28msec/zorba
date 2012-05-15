@@ -37,27 +37,25 @@ namespace serialization
 class Archiver;
 
 
-void operator&(Archiver& ar, int& obj);
+void operator&(Archiver& ar, long& obj);
+
+void operator&(Archiver& ar, ulong& obj);
+
+void operator&(Archiver& ar, int32_t& obj);
 
 void operator&(Archiver& ar, const uint32_t& obj);
 
 void operator&(Archiver& ar, uint32_t& obj);
 
-void operator&(Archiver& ar, long& obj);
+void operator&(Archiver& ar, int64_t& obj);
 
-void operator&(Archiver& ar, unsigned long& obj);
+void operator&(Archiver& ar, uint64_t& obj);
 
-void operator&(Archiver& ar, long long& obj);
+void operator&(Archiver& ar, int16_t& obj);
 
-void operator&(Archiver& ar, unsigned long long& obj);
-
-void operator&(Archiver& ar, short& obj);
-
-void operator&(Archiver& ar, unsigned short& obj);
+void operator&(Archiver& ar, uint16_t& obj);
 
 void operator&(Archiver& ar, char& obj);
-
-void operator&(Archiver& ar, signed char& obj);
 
 void operator&(Archiver& ar, unsigned char& obj);
 
@@ -81,17 +79,13 @@ void operator&(Archiver& ar, XQPCollator*& obj);
 
 void operator&(Archiver& ar, MAPM& obj);
 
-#define  SERIALIZE_ENUM(enum_type, obj)             \
+#define SERIALIZE_ENUM(enum_type, obj)              \
   {                                                 \
-    ar.set_is_temp_field(true);                     \
-                                                    \
     uint32_t int_enum = static_cast<uint32_t>(obj); \
     ar & int_enum;                                  \
                                                     \
     if (!ar.is_serializing_out())                   \
       obj = (enum_type)int_enum;                    \
-                                                    \
-    ar.set_is_temp_field(false);                    \
   }
 
 

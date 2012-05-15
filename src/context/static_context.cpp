@@ -560,7 +560,6 @@ static_context::static_context()
   :
   theParent(NULL),
   theTraceStream(NULL),
-  theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -593,7 +592,6 @@ static_context::static_context()
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
   theAllWarningsErrors(false),
   theFeatures(0)
@@ -608,7 +606,6 @@ static_context::static_context(static_context* parent)
   :
   theParent(parent),
   theTraceStream(NULL),
-  theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -641,7 +638,6 @@ static_context::static_context(static_context* parent)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
   theAllWarningsErrors(false),
   // we copy features from the parent such that it's
@@ -661,7 +657,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   SimpleRCObject(ar),
   theParent(NULL),
   theTraceStream(NULL),
-  theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -694,7 +689,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
   theAllWarningsErrors(false),
   theFeatures(0)
@@ -707,9 +701,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 static_context::~static_context()
 {
-  if (theImportedBuiltinModules)
-    delete theImportedBuiltinModules;
-
   if (theExternalModulesMap)
   {
     ExternalModuleMap::iterator ite = theExternalModulesMap->begin();
@@ -784,9 +775,6 @@ static_context::~static_context()
 #ifndef ZORBA_NO_FULL_TEXT
   delete theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */
-
-  if (theDecimalFormats)
-    delete theDecimalFormats;
 
   if (theBaseUriInfo)
     delete theBaseUriInfo;
@@ -1112,12 +1100,7 @@ std::ostream* static_context::get_trace_stream() const
 ********************************************************************************/
 void static_context::add_imported_builtin_module(const zstring& ns)
 {
-  if (theImportedBuiltinModules == NULL)
-  {
-    theImportedBuiltinModules = new std::vector<zstring>;
-  }
-
-  theImportedBuiltinModules->push_back(ns);
+  theImportedBuiltinModules.push_back(ns);
 }
 
 
@@ -1130,10 +1113,10 @@ bool static_context::is_imported_builtin_module(const zstring& ns)
 
   while (sctx != NULL)
   {
-    if (sctx->theImportedBuiltinModules)
+    if (!sctx->theImportedBuiltinModules.empty())
     {
-      std::vector<zstring>::const_iterator ite = sctx->theImportedBuiltinModules->begin();
-      std::vector<zstring>::const_iterator end = sctx->theImportedBuiltinModules->end();
+      std::vector<zstring>::const_iterator ite = sctx->theImportedBuiltinModules.begin();
+      std::vector<zstring>::const_iterator end = sctx->theImportedBuiltinModules.end();
       for (; ite != end; ++ite)
       {
         if (*ite == ns)
@@ -2525,10 +2508,10 @@ void static_context::get_functions(
 
   while (sctx != NULL)
   {
-    if (sctx->theImportedBuiltinModules)
+    if (!sctx->theImportedBuiltinModules.empty())
     {
-      std::vector<zstring>::const_iterator ite = sctx->theImportedBuiltinModules->begin();
-      std::vector<zstring>::const_iterator end = sctx->theImportedBuiltinModules->end();
+      std::vector<zstring>::const_iterator ite = sctx->theImportedBuiltinModules.begin();
+      std::vector<zstring>::const_iterator end = sctx->theImportedBuiltinModules.end();
       for (; ite != end; ++ite)
       {
         importedBuiltinModules.push_back(*ite);
@@ -3833,40 +3816,31 @@ void static_context::add_decimal_format(
     const DecimalFormat_t& decimalFormat,
     const QueryLoc& loc)
 {
-  if (theDecimalFormats == NULL)
-    theDecimalFormats = new std::vector<DecimalFormat_t>;
-  else {
-    ulong num = (ulong)theDecimalFormats->size();
-    for (ulong i = 0; i < num; ++i)
+  if (!theDecimalFormats.empty())
+  {
+    csize num = theDecimalFormats.size();
+    for (csize i = 0; i < num; ++i)
     {
-      const DecimalFormat_t& format = (*theDecimalFormats)[i];
+      const DecimalFormat_t& format = theDecimalFormats[i];
 
       if (decimalFormat->isDefault() && format->isDefault())
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0111,
-          ERROR_PARAMS( ZED( TwoDefaultDecimalFormats ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0111, loc,
+        ERROR_PARAMS(ZED(TwoDefaultDecimalFormats)));
       }
 
       if (!format->isDefault() &&
           !decimalFormat->isDefault() &&
           format->getName()->equals(decimalFormat->getName()))
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0111,
-          ERROR_PARAMS(
-            ZED( TwoDecimalFormatsSameName_2 ),
-            format->getName()->getStringValue()
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0111, loc,
+        ERROR_PARAMS(ZED(TwoDecimalFormatsSameName_2),
+                     format->getName()->getStringValue()));
       }
     }
   }
 
-  theDecimalFormats->push_back(decimalFormat);
+  theDecimalFormats.push_back(decimalFormat);
 }
 
 
@@ -3875,13 +3849,13 @@ void static_context::add_decimal_format(
 ********************************************************************************/
 DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
 {
-  if (theDecimalFormats != NULL)
+  if (!theDecimalFormats.empty())
   {
-    ulong num = (ulong)theDecimalFormats->size();
+    csize num = theDecimalFormats.size();
 
-    for (ulong i = 0; i < num; ++i)
+    for (csize i = 0; i < num; ++i)
     {
-      const DecimalFormat_t& format = (*theDecimalFormats)[i];
+      const DecimalFormat_t& format = theDecimalFormats[i];
 
       if ((qname == NULL && format->isDefault()) ||
           (qname != NULL && !format->isDefault() && format->getName()->equals(qname)))
@@ -3893,6 +3867,7 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
 
   return (theParent == NULL ? NULL : theParent->get_decimal_format(qname));
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

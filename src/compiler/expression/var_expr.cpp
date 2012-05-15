@@ -26,8 +26,8 @@
 
 #include "context/static_context.h"
 
-#include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 #include "diagnostics/assert.h"
 

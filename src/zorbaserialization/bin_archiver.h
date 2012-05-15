@@ -125,15 +125,21 @@ protected:
 
   void serialize_compound_fields(archive_field* parent_field);
 
-  void write_bit(unsigned char bit);
+  void write_int64(int64_t intval);
 
-  void write_bits(unsigned int value, unsigned int bits);
+  void write_uint64(uint64_t intval);
 
-  void write_int(unsigned int intval);
+  void write_int32(int32_t intval);
+
+  void write_uint32(uint32_t intval);
 
   void write_int_exp(unsigned int intval);
 
   void write_int_exp2(unsigned int intval);
+
+  void write_bits(unsigned int value, unsigned int bits);
+
+  void write_bit(unsigned char bit);
 
   //reading
   void read_string_pool();
@@ -142,7 +148,13 @@ protected:
 
   void read_string(std::string& str);
 
-  unsigned int read_int();
+  int64_t read_int64();
+
+  uint64_t read_uint64();
+
+  int32_t read_int32();
+
+  uint32_t read_uint32();
 
   unsigned int read_int_exp();
 

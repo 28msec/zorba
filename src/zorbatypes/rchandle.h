@@ -35,6 +35,12 @@
 namespace zorba
 {
 
+namespace serialization
+{
+  class archiver;
+}
+
+
 /*******************************************************************************
   
   Base class for reference counted objects
@@ -63,11 +69,8 @@ public:
   {
   }
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    if(!ar.is_serializing_out())
-      theRefCount = 0;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 
 public:
   RCObject()
@@ -91,10 +94,6 @@ public:
   virtual void free() { delete this; }
 
   long getRefCount() const { return theRefCount; }
-
-  //long* getSharedRefCounter() const { ZORBA_FATAL(0, ""); return NULL; } 
- 
-  //SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; });
 
   void addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const;
 

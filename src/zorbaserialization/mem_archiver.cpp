@@ -40,9 +40,19 @@ bool MemArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
 
   switch (type)
   {
-  case TYPE_INT:
+  case TYPE_INT64:
   {
-    value.intv = current_field->theValue.intv;
+    value.int64v = current_field->theValue.int64v;
+    break;
+  }
+  case TYPE_UINT64:
+  {
+    value.uint64v = current_field->theValue.uint64v;
+    break;
+  }
+  case TYPE_INT32:
+  {
+    value.int32v = current_field->theValue.int32v;
     break;
   }
   case TYPE_UINT32:
@@ -50,14 +60,14 @@ bool MemArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
     value.uint32v = current_field->theValue.uint32v;
     break;
   }
-  case TYPE_SHORT:
+  case TYPE_INT16:
   {
-    value.shortv = current_field->theValue.shortv;
+    value.int16v = current_field->theValue.int16v;
     break;
   }
-  case TYPE_USHORT:
+  case TYPE_UINT16:
   {
-    value.ushortv = current_field->theValue.ushortv;
+    value.uint16v = current_field->theValue.uint16v;
     break;
   }
   case TYPE_CHAR:

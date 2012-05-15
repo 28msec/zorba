@@ -41,24 +41,106 @@ namespace serialization
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, int& obj)
+void operator&(Archiver& ar, long& obj)
+{
+  if (sizeof(long) == sizeof(int32_t))
+  {
+    ar & reinterpret_cast<int32_t&>(obj);
+  }
+  else
+  {
+    ar & reinterpret_cast<int64_t&>(obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, ulong& obj)
+{
+  if (sizeof(ulong) == sizeof(uint32_t))
+  {
+    ar & reinterpret_cast<uint32_t&>(obj);
+  }
+  else
+  {
+    ar & reinterpret_cast<uint64_t&>(obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, int64_t& obj)
 {
   if (ar.is_serializing_out())
   {
     SimpleValue v;
-    v.intv = obj;
-    ar.add_simple_temp_field(TYPE_INT, v, &obj, ARCHIVE_FIELD_NORMAL);
+    v.int64v = obj;
+    ar.add_simple_temp_field(TYPE_INT64, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
     SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_INT);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_INT64);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    obj = value.intv;
+    obj = value.int64v;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, uint64_t& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_UINT64);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = value.uint64v;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, int32_t& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.int32v = obj;
+    ar.add_simple_temp_field(TYPE_INT32, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_INT32);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = value.int32v;
   }
 }
 
@@ -109,27 +191,24 @@ void operator&(Archiver& ar, const uint32_t& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, long& obj)
+void operator&(Archiver& ar, int16_t& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%ld", obj);
-
     SimpleValue v;
-    v.cstrv = strtemp;
-    ar.add_simple_temp_field(TYPE_LONG, v, &obj, ARCHIVE_FIELD_NORMAL);
+    v.int16v = obj;
+    ar.add_simple_temp_field(TYPE_INT16, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
     SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_LONG);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_INT16);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value.cstrv, "%ld", &obj);
+    obj = value.int16v;
   }
 }
 
@@ -137,133 +216,24 @@ void operator&(Archiver& ar, long& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, unsigned long& obj)
+void operator&(Archiver& ar, uint16_t& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%lu", obj);
-
     SimpleValue v;
-    v.cstrv = strtemp;
-    ar.add_simple_temp_field(TYPE_ULONG, v, &obj, ARCHIVE_FIELD_NORMAL);
+    v.uint16v = obj;
+    ar.add_simple_temp_field(TYPE_UINT16, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
     SimpleValue value;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
 
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_ULONG);
-
-    ar.check_simple_field(retval, field_treat,  ARCHIVE_FIELD_NORMAL, 0);
-
-    sscanf(value.cstrv, "%lu", &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, long long& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char strtemp[30];
-    sprintf(strtemp, "%lld", obj);
-
-    SimpleValue v;
-    v.cstrv = strtemp;
-    ar.add_simple_temp_field(TYPE_LONG_LONG, v, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    SimpleValue value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_LONG_LONG);
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_UINT16);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
-    sscanf(value.cstrv, "%lld", &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, unsigned long long& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char strtemp[30];
-    sprintf(strtemp, "%llu", obj);
-
-    SimpleValue v;
-    v.cstrv = strtemp;
-    ar.add_simple_temp_field(TYPE_ULONG_LONG, v, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    SimpleValue value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_ULONG_LONG);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    sscanf(value.cstrv, "%llu", &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, short& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    SimpleValue v;
-    v.shortv = obj;
-    ar.add_simple_temp_field(TYPE_SHORT, v, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    SimpleValue value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_SHORT);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    obj = value.shortv;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, unsigned short& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    SimpleValue v;
-    v.ushortv = obj;
-    ar.add_simple_temp_field(TYPE_USHORT, v, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    SimpleValue value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_USHORT);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    obj = value.ushortv;
+    obj = value.uint16v;
   }
 }
 
@@ -272,31 +242,6 @@ void operator&(Archiver& ar, unsigned short& obj)
 
 ********************************************************************************/
 void operator&(Archiver& ar, char& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    SimpleValue v;
-    v.charv = obj;
-    ar.add_simple_temp_field(TYPE_CHAR, v, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    SimpleValue value;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-    bool retval = ar.read_next_simple_temp_field(value, TYPE_CHAR);
-
-    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-    obj = value.charv;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, signed char& obj)
 {
   if (ar.is_serializing_out())
   {

@@ -501,7 +501,7 @@ protected:
 
   std::string                             theModuleNamespace;
 
-  std::vector<zstring>                  * theImportedBuiltinModules;
+  std::vector<zstring>                    theImportedBuiltinModules;
 
   BaseUriInfo                           * theBaseUriInfo;
 
@@ -575,7 +575,7 @@ protected:
 
   StaticContextConsts::validation_mode_t     theValidationMode;
 
-  std::vector<DecimalFormat_t>             * theDecimalFormats;
+  std::vector<DecimalFormat_t>               theDecimalFormats;
 
   bool                                       theAllWarningsDisabled;
 

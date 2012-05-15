@@ -143,7 +143,7 @@ ForLetClause::ForLetClause(
 ********************************************************************************/
 void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
 {
-  ar & theVarName;
+  //ar & theVarName;
   SERIALIZE_ENUM(ForLetType, theType)
   ar & theVarRefs;
   ar & thePosVarRefs;

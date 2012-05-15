@@ -168,9 +168,9 @@ BinArchiver::BinArchiver(std::istream* is)
 
   read_string(theArchiveName);
   read_string(theArchiveInfo);
-  theArchiveVersion = read_int();
-  theFieldCounter = read_int();
-  unsigned int is_release = read_int();
+  theArchiveVersion = read_uint32();
+  theFieldCounter = read_uint32();
+  unsigned int is_release = read_uint32();
 #ifndef NDEBUG
   if(is_release)
   {
@@ -217,6 +217,12 @@ BinArchiver::~BinArchiver()
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  writing archive                                                           //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
 
 /*******************************************************************************
 
@@ -241,14 +247,14 @@ void BinArchiver::serialize_out()
 
   os->write(theArchiveName.c_str(), (std::streamsize)theArchiveName.length()+1);
   os->write(theArchiveInfo.c_str(), (std::streamsize)theArchiveInfo.length()+1);
-  write_int(theArchiveVersion);
+  write_uint32(theArchiveVersion);
 
-  write_int(theFieldCounter);
+  write_uint32(theFieldCounter);
 
 #ifndef NDEBUG
-  write_int(0);//for debug
+  write_uint32(0);//for debug
 #else
-  write_int(1);//for release
+  write_uint32(1);//for release
 #endif
 
   //first gather all strings in a string pool
@@ -309,10 +315,12 @@ void BinArchiver::collect_strings(archive_field* parent_field)
       {
         switch (field->theType)
         {
-        case TYPE_INT:
+        case TYPE_INT64:
+        case TYPE_UINT64:
+        case TYPE_INT32:
         case TYPE_UINT32:
-        case TYPE_SHORT:
-        case TYPE_USHORT:
+        case TYPE_INT16:
+        case TYPE_UINT16:
         case TYPE_CHAR:
         case TYPE_UCHAR:
         case TYPE_BOOL:
@@ -379,6 +387,8 @@ int BinArchiver::add_to_string_pool(const char* str)
 ********************************************************************************/
 void BinArchiver::serialize_out_string_pool()
 {
+  //td::cout << "String pool size = " << theStrings.size() << std::endl;
+
 #if 1
   //sort strings based on use count
   csize i, j;
@@ -397,13 +407,17 @@ void BinArchiver::serialize_out_string_pool()
     }
   }
 
+  //std::cout << std::endl;
+
   for (i = 0; i < theOrderedStrings.size(); ++i)
   {
     theStrings.at(theOrderedStrings[i]).theDiskPos = i+1;
+
+    //std::cout << i << ": " << theStrings.at(theOrderedStrings[i]).str << std::endl;
   }
 #endif
 
-  write_int((unsigned int)theStrings.size());
+  write_uint32((uint32_t)theStrings.size());
 
   if (theBitfill)
   {
@@ -456,34 +470,44 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
     {
       switch (field->theType)
       {
-      case TYPE_INT:
+      case TYPE_INT64:
       {
-        write_int(field->theValue.intv);
+        write_int64(field->theValue.int64v);
+        break;
+      }
+      case TYPE_UINT64:
+      {
+        write_uint64(field->theValue.uint64v);
+        break;
+      }
+      case TYPE_INT32:
+      {
+        write_uint32(field->theValue.int32v);
         break;
       }
       case TYPE_UINT32:
       {
-        write_int(field->theValue.uint32v);
+        write_uint32(field->theValue.uint32v);
         break;
       }
-      case TYPE_SHORT:
+      case TYPE_INT16:
       {
-        write_int(field->theValue.shortv);
+        write_uint32(field->theValue.int16v);
         break;
       }
-      case TYPE_USHORT:
+      case TYPE_UINT16:
       {
-        write_int(field->theValue.ushortv);
+        write_uint32(field->theValue.uint16v);
         break;
       }
       case TYPE_CHAR:
       {
-        write_int(field->theValue.charv);
+        write_bits(field->theValue.charv, 8);
         break;
       }
       case TYPE_UCHAR:
       {
-        write_int(field->theValue.ucharv);
+        write_bits(field->theValue.ucharv, 8);
         break;
       }
       case TYPE_BOOL:
@@ -536,7 +560,7 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
         else
         {
           //write_int_exp2(field->referencing);
-          write_int(field->referencing);
+          write_uint32(field->referencing);
         }
       }
     }
@@ -571,48 +595,51 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
 
 
 /*******************************************************************************
-
+  Pack 7 bits of the intval into a byte, and set the high-order bit of that
+  byte to 0, unless it is the last byte to be written, in which case its
+  high-order bit is set to 1, signifying the end of the number.
 ********************************************************************************/
-void BinArchiver::write_bit(unsigned char bit)
+void BinArchiver::write_int64(int64_t intval)
 {
-  theCurrentByte <<= 1;
-  theCurrentByte |= bit&0x01;
-  theBitfill++;
-
-  if (theBitfill == 8)
+  if (intval < 0)
   {
-    os->write((char*)&theCurrentByte, 1);
-    theCurrentByte = 0;
-    theBitfill = 0;
-#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
-    bytes_saved++;
-#endif
+    write_bit(1);
+    uint64_t absval = -intval;
+
+    write_uint64(absval);
+  }
+  else
+  {
+    write_bit(0);
+    write_uint64((uint64_t)intval);
   }
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-void BinArchiver::write_bits(unsigned int value, unsigned int bits)
+void BinArchiver::write_uint64(uint64_t intval)
 {
-  while (bits)
+  uint64_t shifted_int = (intval >> 7);
+  unsigned char tmp;
+
+  while (shifted_int)
   {
-    write_bit((value>>(bits-1)) & 0x01);
-    bits--;
+    tmp = intval & 0x7F;
+
+    write_bits(tmp, 8);
+
+    intval = shifted_int;
+    shifted_int = (intval >> 7);
   }
+
+  tmp = (intval & 0x7F) | 0x80;
+
+  write_bits(tmp, 8);
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-void BinArchiver::write_int(unsigned int intval)
+void BinArchiver::write_uint32(uint32_t intval)
 {
-  // pack 7 bits of the intval into a byte, and set the high-order bit of that
-  // byte to 0, unless it is the last byte to be written, in which case its
-  // high-order bit is set to 1, signifying the end of the number.
-  unsigned int shifted_int = (intval >> 7);
+  uint32_t shifted_int = (intval >> 7);
   unsigned char tmp;
 
   while (shifted_int)
@@ -696,6 +723,40 @@ void BinArchiver::write_int_exp2(unsigned int intval)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void BinArchiver::write_bits(unsigned int value, unsigned int bits)
+{
+  while (bits)
+  {
+    write_bit((value >> (bits-1)));
+    --bits;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void BinArchiver::write_bit(unsigned char bit)
+{
+  theCurrentByte <<= 1;
+  theCurrentByte |= (bit & 0x01);
+  ++theBitfill;
+
+  if (theBitfill == 8)
+  {
+    os->write((char*)&theCurrentByte, 1);
+    theCurrentByte = 0;
+    theBitfill = 0;
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+    bytes_saved++;
+#endif
+  }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //  reading archive                                                           //
@@ -710,7 +771,7 @@ void BinArchiver::read_string_pool()
 {
   theStrings.clear();
 
-  int count = read_int();
+  csize count = read_uint32();
 
   if (theBitfill != 8)
   {
@@ -720,7 +781,7 @@ void BinArchiver::read_string_pool()
 
   StringInfo str_pos;
 
-  for (int i = 0; i < count; ++i)
+  for (csize i = 0; i < count; ++i)
   {
     read_string(str_pos.str);
 
@@ -758,6 +819,43 @@ void BinArchiver::read_string(std::string& str)
     ++theCurrentBytePtr;
 
   theCurrentBytePtr++;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int64_t BinArchiver::read_int64()
+{
+  unsigned char sign = read_bit();
+
+  if (sign == 0)
+  {
+    return static_cast<int64_t>(read_uint64());
+  }
+  else
+  {
+    uint64_t absval = read_uint64();
+    return -static_cast<int64_t>(absval);
+  }
+}
+
+
+uint64_t BinArchiver::read_uint64()
+{
+  uint64_t outval = 0;
+  unsigned char tmp;
+  int i = 0;
+  
+  do
+  {
+    tmp = read_bits(8);
+    outval |= ((uint64_t)(tmp & 0x7F) << (7*i));
+    ++i;
+  }
+  while(!(tmp & 0x80));
+
+  return outval;
 }
 
 
@@ -983,34 +1081,44 @@ bool BinArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
 
   switch (type)
   {
-  case TYPE_INT:
+  case TYPE_INT64:
   {
-    value.intv = read_int();
+    value.int64v = read_int64();
+    break;
+  }
+  case TYPE_UINT64:
+  {
+    value.uint64v = read_uint64();
+    break;
+  }
+  case TYPE_INT32:
+  {
+    value.int32v = read_uint32();
     break;
   }
   case TYPE_UINT32:
   {
-    value.uint32v = read_int();
+    value.uint32v = read_uint32();
     break;
   }
-  case TYPE_SHORT:
+  case TYPE_INT16:
   {
-    value.shortv = read_int();
+    value.int16v = read_uint32();
     break;
   }
-  case TYPE_USHORT:
+  case TYPE_UINT16:
   {
-    value.ushortv = read_int();
+    value.uint16v = read_uint32();
     break;
   }
   case TYPE_CHAR:
   {
-    value.charv = read_int();
+    value.charv = read_bits(8);
     break;
   }
   case TYPE_UCHAR:
   {
-    value.ucharv = read_int();
+    value.ucharv = read_bits(8);
     break;
   }
   case TYPE_BOOL:
@@ -1089,7 +1197,7 @@ bool BinArchiver::read_next_field_impl(
     else
     {
       //*referencing = read_int_exp2();
-      *referencing = read_int();
+      *referencing = read_uint32();
     }
   }
 
