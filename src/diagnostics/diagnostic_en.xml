@@ -2438,6 +2438,9 @@
     <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
       <value>illegal empty string</value>
     </diagnostic>
+    <diagnostic code="ZJPE0010" name="JSONML_ARRAY_REQUIRES_BRACKET">
+      <value>JsonML (array form) must start with '['</value>
+    </diagnostic>
 
    <!--////////// JSON Serialization Errors ////////////////////////////////-->
 
