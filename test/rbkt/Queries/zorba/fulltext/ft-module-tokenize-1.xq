@@ -1,5 +1,4 @@
 import module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
-
 import schema namespace fts = "http://www.zorba-xquery.com/modules/full-text";
 
 let $doc := <msg>hello, world</msg>

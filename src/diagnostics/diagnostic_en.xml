@@ -1176,7 +1176,7 @@
        using the specified encoding, the resulting characters are not 
        permitted XML characters or requested encoding not supported
       </comment>
-      <value>"$1": Cannot decode resource retrieved</value>
+      <value>"$1": can not decode resource retrieved</value>
     </diagnostic>  
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->

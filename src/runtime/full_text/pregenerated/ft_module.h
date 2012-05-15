@@ -40,6 +40,42 @@ namespace zorba {
  * 
  * Author: 
  */
+class CurrentCompareOptionsIterator : public NaryBaseIterator<CurrentCompareOptionsIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(CurrentCompareOptionsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentCompareOptionsIterator,
+    NaryBaseIterator<CurrentCompareOptionsIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<CurrentCompareOptionsIterator, PlanIteratorState>*)this);
+  }
+
+  CurrentCompareOptionsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<CurrentCompareOptionsIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~CurrentCompareOptionsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifndef ZORBA_NO_FULL_TEXT
+/**
+ * 
+ * Author: 
+ */
 class CurrentLangIterator : public NaryBaseIterator<CurrentLangIterator, PlanIteratorState>
 { 
 public:

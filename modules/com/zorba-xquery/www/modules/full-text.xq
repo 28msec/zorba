@@ -438,6 +438,16 @@ declare variable $ft:lang-tr as xs:language := xs:language("tr");
 (:===========================================================================:)
 
 (:~
+ : Gets the current compare options.
+ :
+ : @return said compare options.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-2.xq
+ :)
+declare function ft:current-compare-options()
+  as element(ft-schema:compare-options) external;
+
+(:~
  : Gets the current
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>:
  : either the language specified by the

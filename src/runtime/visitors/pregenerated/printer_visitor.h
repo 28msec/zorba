@@ -293,6 +293,11 @@ namespace zorba {
     void endVisit  ( const FnPutIterator& );
 
 #ifndef ZORBA_NO_FULL_TEXT
+    void beginVisit( const CurrentCompareOptionsIterator& );
+    void endVisit  ( const CurrentCompareOptionsIterator& );
+#endif
+
+#ifndef ZORBA_NO_FULL_TEXT
     void beginVisit( const CurrentLangIterator& );
     void endVisit  ( const CurrentLangIterator& );
 #endif
