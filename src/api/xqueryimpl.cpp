@@ -195,15 +195,6 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
   else
   {
     ar.set_ccb(theCompilerCB);
-    // This is needed to handle the following scenarion (which occurs in
-    // the scripting/flwor15.xq test): We start serializing the sctx -->
-    // serialize a global var V --> V has a set exrp E, which is inside a
-    // UDF F --> E contains a recursive call to F --> so while serializing
-    // E, we call F->serialize() --> F->serialize() will do codegen on the
-    // body of F, and this codegen may alter E (e.g. by adding a materialize
-    // clause in a flwor expr within E --> so, while serializing E we may
-    // modify E --> PROBLEMS!!  
-    theCompilerCB->prepare_for_serialize();
   }
 
   ar & theCompilerCB;

@@ -20,7 +20,6 @@
 #include "functions/function.h"
 
 #include "compiler/expression/expr_base.h"
-#include "zorbatypes/rclist.h"
 
 
 namespace zorba 
@@ -140,8 +139,6 @@ private:
   store::Index_t              theCache;
   bool                        theCacheResults;
   bool                        theCacheComputed;
-
-  rchandle<rclist<user_function*> > theLocalUdfs;//for plan serializer
 
 public:
   SERIALIZABLE_CLASS(user_function)

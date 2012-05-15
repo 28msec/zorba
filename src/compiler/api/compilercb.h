@@ -29,7 +29,7 @@
 // without having the definition of static_context availble.
 # include "context/static_context.h"
 #endif
-#include "zorbatypes/rclist.h"
+
 #include "zorbaserialization/class_serializer.h"
 
 namespace zorba {
@@ -186,14 +186,10 @@ public:
 
   config                    theConfig;
 
-  rchandle<rclist<user_function*> >    theLocalUdfs;//for plan serializer
-
 public:
   SERIALIZABLE_CLASS(CompilerCB);
   CompilerCB(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
-  void prepare_for_serialize();
-  rchandle<rclist<user_function*> >  get_local_udfs();
 
 public:
   CompilerCB(XQueryDiagnostics*, long timeout = -1);

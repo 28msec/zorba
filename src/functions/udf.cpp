@@ -75,8 +75,6 @@ user_function::user_function(
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(true);
   setPrivate(false);
-  theLocalUdfs = ccb->get_local_udfs();
-  theLocalUdfs->push_back(this);
 }
 
 
@@ -99,8 +97,6 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 user_function::~user_function()
 {
-  if (theLocalUdfs != NULL)
-    theLocalUdfs->remove(this);
 }
 
 
@@ -130,10 +126,6 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
   if (ar.is_serializing_out())
   {
-    // This assertion is here because of the prepare_for_serialize() call in
-    // xqueryimpl.cpp
-    ZORBA_ASSERT(thePlan != NULL);
-
     uint32_t planStateSize;
     getPlan(ar.get_ccb(), planStateSize);
     ZORBA_ASSERT(thePlan != NULL);
