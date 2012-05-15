@@ -331,8 +331,8 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     state->theProperties.setParseExternalParsedEntity(true);
     state->theFragmentStream.only_one_doc_node = 1; // create only one document node holding all fragment nodes
   
-    while ( ! state->theFragmentStream.stream_is_consumed() )
-    {
+    //while ( ! state->theFragmentStream.stream_is_consumed() )
+    //{
       try {
         state->theProperties.setStoreDocument(false);
         result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
@@ -343,11 +343,11 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
           result = NULL;
       }
 
-      if (result == NULL)
-        continue;
+      if (result != NULL)
+        //continue;
         
       STACK_PUSH(true, state);
-    } // while
+    //} // while
   } // if 
 
   STACK_END(state)

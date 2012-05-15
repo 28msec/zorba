@@ -57,7 +57,7 @@
     <zorba:description author="Zorba Team">fn:parse-xml-fragment</zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="parse-xml-fragment" prefix="fn">
+      <zorba:signature localname="parse-xml-fragment" prefix="fn" version="3.0">
         <zorba:param>xs:string?</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>

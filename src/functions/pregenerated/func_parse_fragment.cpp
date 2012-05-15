@@ -41,7 +41,7 @@ PlanIter_t fn_zorba_xml_parse::codegen(
   return new FnZorbaParseXmlFragmentIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_parse_xml_fragment::codegen(
+PlanIter_t fn_parse_xml_fragment_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -69,7 +69,7 @@ void populate_context_parse_fragment(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, fn_parse_xml_fragment,
+    DECL_WITH_KIND(sctx, fn_parse_xml_fragment_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml-fragment"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),

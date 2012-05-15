@@ -56,14 +56,14 @@ public:
 
 
 //fn:parse-xml-fragment
-class fn_parse_xml_fragment : public function
+class fn_parse_xml_fragment_3_0 : public function
 {
 public:
-  fn_parse_xml_fragment(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_parse_xml_fragment_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool accessesDynCtx() const { return true; }
