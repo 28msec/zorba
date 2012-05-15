@@ -125,7 +125,7 @@ FragmentXmlLoader::FragmentXmlLoader(
   theOrdPath.init();
 
   theTraceLevel = GET_STORE().getTraceLevel();
-
+  
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
   theSaxHandler.startDocument = &FragmentXmlLoader::startDocument;
@@ -287,6 +287,8 @@ store::Item_t FragmentXmlLoader::loadXml(
           &&
           theFragmentStream->current_offset == 0)
       {
+        if (theFragmentStream->first_start_doc)
+          FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
         xmlParseCharData(theFragmentStream->ctxt, 0);
         theFragmentStream->current_offset = getCurrentInputOffset(); // update current offset
       }
