@@ -568,7 +568,6 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
    * 
    * @param varName - the name of the external variable to bind to, cannot be null
    * @param value - the value to be converted, cannot be null
-   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
    * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
    * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
    */
@@ -632,7 +631,6 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
    * 
    * @param varName - the name of the external variable to bind to, cannot be null
    * @param value - the value to be converted, cannot be null
-   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
    * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
    * @throw XQException - if (1) the varName or value argument is null, (2) the conversion of the value to an XDM instance failed, (3) in case of an XQPreparedExpression, the dynamic type of the bound value is not compatible with the static type of the variable, (4) in case of an XQPreparedExpression, the variable is not defined in the prolog of the expression, or (5) if the expression is in a closed state
    */
@@ -663,7 +661,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
 
   /** \brief Sets the implicit timezone
    * 
-   * @param implicitTimeZone - time zone to be set
+   * @param value - time zone to be set
    * @throw XQException - if the expression is in a closed state
    */
     @Override

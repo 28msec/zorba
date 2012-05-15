@@ -1612,7 +1612,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * \endcode
    * @param basetype - one of the XQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />XQItemType.XQBASETYPE_UNTYPED<br />XQItemType.XQBASETYPE_ANYTYPE<br />XQItemType.XQBASETYPE_IDREFS<br />XQItemType.XQBASETYPE_NMTOKENS<br />XQItemType.XQBASETYPE_ENTITIES<br />XQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
    * @return a new XQItemType representing the atomic type
-   * @throw 
+   * @throw XQException - if (1) an invalid basetype value is passed in, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createAtomicType(int basetype) throws XQException {
@@ -1640,10 +1640,10 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    *   conn.createAtomicType(XQItemType.XQBASETYPE_INTEGER); 
    * \endcode
    * @param basetype - one of the XQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />XQItemType.XQBASETYPE_UNTYPED<br />XQItemType.XQBASETYPE_ANYTYPE<br />XQItemType.XQBASETYPE_IDREFS<br />XQItemType.XQBASETYPE_NMTOKENS<br />XQItemType.XQBASETYPE_ENTITIES<br />XQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
-   * @param typename - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null
-   * @param schemaURI - the URI to the schema. Can be null. This can only be specified if the typename is also specified
+   * @param qname - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null
+   * @param uri - the URI to the schema. Can be null. This can only be specified if the typename is also specified
    * @return a new XQItemType representing the atomic type
-   * @throw 
+   * @throw XQException - if (1) an invalid basetype value is passed in, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createAtomicType(int basetype, QName qname, URI uri) throws XQException {
@@ -1778,7 +1778,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param nodename - specifies the name of the node
    * @param basetype - the base type of the attribute. One of the XQItemTyupe.XQBASETYPE_* constants other than XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
-   * @param schemaURI - the URI to the schema. Can be null
+   * @param uri - the URI to the schema. Can be null
    * @return a new XQItemType representing the XQuery schema-attribute(nodename,basetype, schemaURI) type
    * @throw XQException - if (1) the node name is null, (2) if the base type is one of: XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE, (3) the underlying object implementing the interface is closed, or (4) the implementation does not support user-defined XML schema types
    */
@@ -1893,7 +1893,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    *                          XQItemType.XQBASETYPE_INTEGER);
    * \endcode
    * @param nodename - specifies the name of the node. null indicates a wildcard for the node name
-   * @param basetype - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
    * @return a new XQItemType representing the XQuery element(nodename, basetype) type
    * @throw XQException - if (1) the underlying object implementing the interface is closed
    */
@@ -1954,7 +1954,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * \endcode 
    * 
    * @param nodename - specifies the name of the element. null indicates a wildcard for the node name
-   * @param basetype - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
    * @param typename - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null
    * @param schemaURI - the URI to the schema. Can be null. This can only be specified if the typename is also specified
    * @param allowNill - the nilled property of the element
@@ -1981,7 +1981,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    *                          new URI("http://customerschema.com"));
    * \endcode
    * @param nodename - specifies the name of the element
-   * @param basetype - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
    * @param schemaURI - the URI to the schema. Can be null
    * @return a new XQItemType representing the XQuery schema-element(nodename,basetype, schemaURI) type
    * @throw XQException - if (1) the node name is null, (2) the underlying object implementing the interface is closed, or (3) the implementation does not support user-defined XML schema types

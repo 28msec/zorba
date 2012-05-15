@@ -308,7 +308,7 @@ public class XQMetaData implements javax.xml.xquery.XQMetaData {
 
   /** \brief Query if a character encoding method of the XQuery query text is supported by the XQJ implmentation.
    * 
-   * @param encoding - String representing the character encoding method of the XQuery query text.
+   * @param string - String representing the character encoding method of the XQuery query text.
    * @return true if an XQuery query character encoding method is supported, false otherwise
    * @throw XQException - if (1) the connection is no longer valid, or (2) the specified encoding parameter is null
    */

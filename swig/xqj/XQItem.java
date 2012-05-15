@@ -720,7 +720,7 @@ class XQItem implements javax.xml.xquery.XQItem {
    * Serializes the current item to a Writer according to XSLT 2.0 and XQuery 1.0 serialization. Serialization parameters, which influence how serialization is performed, can be specified. Refer to the XSLT 2.0 and XQuery 1.0 serialization and Section 12 Serialization, XQuery API for Java (XQJ) 1.0 for more information.
    * 
    * Warning: When outputting to a Writer, make sure the writer's encoding matches the encoding parameter if specified as a property or the default encoding.
-   * @param out - the output stream into which the current item is to be serialized
+   * @param writer - the output stream into which the current item is to be serialized
    * @param prprts - specifies the serialization parameters, null is considered equivalent to an empty Properties object
    * @throw XQException - if (1) there are errors accessing the current item or the underlying sequence, (2) the underlying sequence or item is in a closed state, (3) in the case of a forward only sequence, a get or write method has already been invoked on the current item, (4) if there are errors during serialization, or (5) the os parameter is null
    */
@@ -747,7 +747,7 @@ class XQItem implements javax.xml.xquery.XQItem {
    * 
    * Writes the current item to a SAX handler, as described in in Section 12.2 Serializing an XDM instance into a SAX event stream, XQuery API for Java (XQJ) 1.0. Note that the serialization process might fail, in which case a XQException is thrown. The specified org.xml.sax.ContentHandler can optionally implement the org.xml.sax.LexicalHandler interface. An implementation must check if the specified ContentHandler implements LexicalHandler. If the handler is a LexicalHandler comment nodes are reported, otherwise they will be silently ignored.
    * 
-   * @param saxhdlr - the SAX content handler, optionally a lexical handler
+   * @param ch - the SAX content handler, optionally a lexical handler
    * @throw XQException - if (1) there are errors accessing the current item or the underlying sequence, (2) the underlying sequence or item is in a closed state, (3) in the case of a forward only sequence, a get or write method has already been invoked on the current item, (4) in case of an error while serializing the XDM instance into a SAX event stream, or (5) the saxhdlr parameter is null
    */
     @Override

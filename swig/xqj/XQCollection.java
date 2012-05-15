@@ -128,7 +128,7 @@ public class XQCollection {
     }
 
   /**
-   * \briefThis function deletes the n last nodes from a collection.
+   * \brief This function deletes the n last nodes from a collection.
    *
    * @throw XQException if the collection doesn't contain any node.
    *
