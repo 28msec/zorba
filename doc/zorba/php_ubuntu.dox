@@ -138,5 +138,5 @@ For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.co
 
 <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-"> Building XQuery-powered applications with PHP and Zorba</a>
 
-<a href="http://www.zorba-xquery.com/html/documentation/2.2.0/zorba/build"> Zorba build instructions</a>
+<a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/build"> Zorba build instructions</a>
 */
