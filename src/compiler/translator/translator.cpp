@@ -6412,8 +6412,19 @@ void* begin_visit(const GroupByClause& v)
   for (int i = 0; i < (int)lList->size(); ++i)
   {
     GroupSpec* spec = (*lList)[i];
+    
     const QName* varname = spec->get_var_name();
-    const var_expr* ve = lookup_var(varname, loc, err::XPST0008);
+
+    const var_expr* ve;
+    if(spec->get_var_expr() == NULL)
+    {
+      ve = lookup_var(varname, loc, err::XPST0008);    
+    }
+/*    else
+    {
+      ve = create_var(loc,varname, var_expr::groupby_var);
+    } */
+
     group_vars.insert(ve);
   }
 
