@@ -1839,6 +1839,16 @@ void collect_flwor_vars (
     }
     else if (typeid (c) == typeid (GroupByClause))
     {
+      const GroupByClause groupClause = *static_cast<const GroupByClause*>(&c);
+
+      //Group-by clauses may define new variables, otherwise it shadows existing vars.
+      for(size_t gSpecPos = 0; gSpecPos < groupClause.get_spec_list()->size(); gSpecPos++)
+      {
+        GroupSpec *groupSpec = (*(groupClause.get_spec_list()))[gSpecPos];
+        if(groupSpec->get_var_expr() != NULL)
+          vars.insert(lookup_var(groupSpec->get_var_name(), loc, err::XPST0008));
+      }
+
       // Group-by redefines ALL previous variables, but the GroupByClause lists
       // only the grouping vars. So, to find the var_exprs for the vars defined
       // by the GroupByClause, we exploit the fact that the redefined var_exprs
