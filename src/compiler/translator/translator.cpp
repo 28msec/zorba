@@ -6483,6 +6483,9 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     output_var = pop_nodestack_var();
     input_expr = pop_nodestack();
 
+    push_scope();
+    bind_var(output_var, theSctx);
+
     if (groupSpec.group_coll_spec() != NULL)
       collations.push_back(groupSpec.group_coll_spec()->get_uri().str());
     else
@@ -6550,20 +6553,27 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* e = (v.get_var_expr() != NULL) ?
-    pop_nodestack() : lookup_var(v.get_var_name(), loc, err::XPST0008);
+  //wrap data
+  expr_t e = (v.get_var_expr() != NULL) ?
+    wrap_in_atomization(pop_nodestack()) : lookup_var(v.get_var_name(), loc, err::XPST0008);
 
-  xqtref_t type = (v.get_var_type() != NULL) ? pop_tstack() : NULL;
+  //wrap type
+  xqtref_t type = NULL;
+  if(v.get_var_type() != NULL)
+  {
+    type = pop_tstack();
+    e = wrap_in_type_promotion(e, type);
+  }
 
   // Create a new var_expr gX, corresponding to the input-stream var X that
   // is referenced by this group spec. gX represents X in the output stream.
   // Push the var_exprs for both X and gX into the nodestack.
-  push_scope();
 
-  push_nodestack(e);
+  push_nodestack(e.getp());
 
   var_expr_t ve =
-    bind_var(loc, v.get_var_name(), var_expr::groupby_var, type);
+    create_var(loc, v.get_var_name(), var_expr::groupby_var, type);
+
   push_nodestack(ve.getp());
 }
 
