@@ -79,6 +79,7 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
+#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -109,8 +110,6 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
-#endif /* ! C99 */
-
 #endif /* ! FLEXINT_H */
 
 /* %endif */
@@ -120,7 +119,6 @@ typedef unsigned int flex_uint32_t;
 #include <iostream> 
 #include <errno.h>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
 /* end standard C++ headers. */
 /* %endif */
@@ -192,15 +190,7 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k.
- * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
- * Ditto for the __ia64__ case accordingly.
- */
-#define YY_BUF_SIZE 32768
-#else
 #define YY_BUF_SIZE 16384
-#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -212,13 +202,8 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
 /* %if-not-reentrant */
-extern yy_size_t yyleng;
+extern int yyleng;
 /* %endif */
 
 /* %if-c-only */
@@ -248,6 +233,11 @@ extern yy_size_t yyleng;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -270,7 +260,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -3138,11 +3128,7 @@ static yyconst flex_int16_t yy_rule_linenum[345] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-<<<<<<< TREE
-#line 1 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
@@ -3158,11 +3144,7 @@ static yyconst flex_int16_t yy_rule_linenum[345] =
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-<<<<<<< TREE
-#line 17 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 17 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 17 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 
 
 #if defined (WIN32)
@@ -3429,14 +3411,10 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
 
 
 
-<<<<<<< TREE
 
-#line 385 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 375 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 385 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
   typedef zorba::xquery_parser::token token;
-#line 3428 "xquery_scanner.yy.cpp"
+#line 3418 "xquery_scanner.yy.cpp"
 
 #define INITIAL 0
 #define INITIAL_ACCUMULATOR 1
@@ -3511,12 +3489,7 @@ static int yy_flex_strlen (yyconst char * );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k */
-#define YY_READ_BUF_SIZE 16384
-#else
 #define YY_READ_BUF_SIZE 8192
-#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -3616,11 +3589,7 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-<<<<<<< TREE
-#line 389 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 379 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 389 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 
 
   /*______________________________________________________________________
@@ -3631,7 +3600,7 @@ YY_DECL
    |  expression or subexpression.
    |______________________________________________________________________*/
 
-#line 3619 "xquery_scanner.yy.cpp"
+#line 3604 "xquery_scanner.yy.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -3742,213 +3711,112 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 401 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 389 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 401 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LPAR; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 402 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 390 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 402 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SEMI; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 403 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 391 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 403 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COMMA; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 404 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 392 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 404 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MINUS; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 405 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 393 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 405 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PLUS; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 406 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 394 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 406 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SLASH; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 407 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 395 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 407 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SLASH_SLASH; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 408 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 396 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 408 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::AT_SIGN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 409 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 397 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 409 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::RPAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 410 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 398 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 410 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::STAR; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 411 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 399 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 411 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOT_DOT; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 412 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 400 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 412 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 413 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 401 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 413 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::HOOK; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 414 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 414 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOLLAR; }
-=======
-#line 402 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::RBRACK; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 415 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 415 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::HASH; }
-=======
-#line 403 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DOLLAR; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 416 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 416 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COLON; }
-=======
-#line 404 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::HASH; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 417 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 417 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_COLON; }
-=======
-#line 405 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::COLON; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 418 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 418 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PERCENTAGE; }
-=======
-#line 406 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DOUBLE_COLON; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 419 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 419 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONCAT; }
-=======
-#line 407 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PERCENTAGE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 421 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 421 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   std::string lDocComment = theDriver->theDocComment.str();
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
   theDriver->theDocComment.str("");
   return token::DECLARE;
 }
-=======
-#line 408 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CONCAT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 428 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 410 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{
-  std::string lDocComment = theDriver->theDocComment.str();
-  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
-  theDriver->theDocComment.str("");
-  return token::DECLARE;
-}
-	YY_BREAK
-case 22:
-YY_RULE_SETUP
-#line 417 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 428 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   std::string lDocComment = theDriver->theDocComment.str();
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
@@ -3959,841 +3827,424 @@ YY_RULE_SETUP
 /* Tokens with state transitions */
 case 22:
 YY_RULE_SETUP
-#line 436 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 436 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {  PUSH_STATE(MODE_ELEM_COMP_CONSTR); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 437 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 437 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_ATTR_COMP_CONSTR); }
-=======
-#line 424 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{  PUSH_STATE(MODE_ELEM_COMP_CONSTR); }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 438 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 438 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_PI_COMP_CONSTR); }
-=======
-#line 425 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(MODE_ATTR_COMP_CONSTR); }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 441 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 441 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::IF; }
-=======
-#line 426 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(MODE_PI_COMP_CONSTR); }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 442 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 442 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::RETURNING; }
-=======
-#line 429 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::IF; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 444 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 444 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EXIT; }
-=======
-#line 430 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::RETURNING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 445 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 445 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WITH; }
-=======
-#line 432 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EXIT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 446 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 446 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::BREAK; }
-=======
-#line 433 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WITH; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 447 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 447 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LOOP; }
-=======
-#line 434 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::BREAK; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 448 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 448 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONTINUE; }
-=======
-#line 435 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LOOP; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 449 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 449 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WHILE; }
-=======
-#line 436 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CONTINUE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 450 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 450 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SET; }
-=======
-#line 437 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WHILE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 451 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 451 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VALIDATE; }
-=======
-#line 438 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SET; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 452 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 452 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TYPE; }
-=======
-#line 439 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VALIDATE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 453 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 453 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SWITCH; }
-=======
-#line 440 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::TYPE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 454 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 454 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TYPESWITCH; }
-=======
-#line 441 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SWITCH; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 455 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 455 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOCUMENT; }
-=======
-#line 442 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::TYPESWITCH; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 456 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 456 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TEXT; }
-=======
-#line 443 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DOCUMENT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 457 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 457 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COMMENT; }
-=======
-#line 444 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::TEXT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 458 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 458 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FUNCTION; }
-=======
-#line 445 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::COMMENT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 459 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 459 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SIMPLE; }
-=======
-#line 446 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FUNCTION; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 460 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 460 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::UPDATING; }
-=======
-#line 447 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SIMPLE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 461 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 461 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SEQUENTIAL; }
-=======
-#line 448 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::UPDATING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 462 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 462 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ORDERED;}
-=======
-#line 449 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SEQUENTIAL; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 463 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 463 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::UNORDERED; }
-=======
-#line 450 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ORDERED;}
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 464 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 464 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA_ELEMENT; }
-=======
-#line 451 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::UNORDERED; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 465 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 465 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA_ATTRIBUTE; }
-=======
-#line 452 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SCHEMA_ELEMENT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 466 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 466 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NODE; }
-=======
-#line 453 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SCHEMA_ATTRIBUTE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 467 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 467 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOCUMENT_NODE; }
-=======
-#line 454 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NODE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 468 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 468 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONSTRUCTION; }
-=======
-#line 455 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DOCUMENT_NODE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 469 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 469 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DEFAULT; }
-=======
-#line 456 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CONSTRUCTION; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 470 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 470 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ORDER; }
-=======
-#line 457 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DEFAULT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 471 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 471 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COLLATION; }
-=======
-#line 458 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ORDER; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 472 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 472 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NAMESPACE; }
-=======
-#line 459 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::COLLATION; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 473 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 473 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::BASE_URI; }
-=======
-#line 460 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NAMESPACE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 474 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 474 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::IMPORT; }
-=======
-#line 461 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::BASE_URI; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 475 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 475 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA; }
-=======
-#line 462 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::IMPORT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 476 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 476 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COPY_NAMESPACES; }
-=======
-#line 463 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SCHEMA; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 477 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 477 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FOR; }
-=======
-#line 464 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::COPY_NAMESPACES; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 478 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 478 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LET; }
-=======
-#line 465 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FOR; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 479 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 479 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ALLOWING; }
-=======
-#line 466 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LET; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 480 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 480 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SLIDING; }
-=======
-#line 467 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ALLOWING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 481 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 481 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TUMBLING; }
-=======
-#line 468 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SLIDING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 482 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 482 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PREVIOUS; }
-=======
-#line 469 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::TUMBLING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 483 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 483 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NEXT; }
-=======
-#line 470 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PREVIOUS; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 484 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 484 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ONLY; }
-=======
-#line 471 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NEXT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 485 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 485 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WHEN; }
-=======
-#line 472 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ONLY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 486 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 486 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COUNT; }
-=======
-#line 473 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WHEN; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 487 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 487 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::USING; }
-=======
-#line 474 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::COUNT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 488 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 488 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SOME; }
-=======
-#line 475 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::USING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 489 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 489 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EVERY; }
-=======
-#line 476 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SOME; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 490 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 490 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONTEXT; }
-=======
-#line 477 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EVERY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 491 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 491 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VARIABLE; }
-=======
-#line 478 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CONTEXT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 492 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 492 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::BOUNDARY_SPACE; }
-=======
-#line 479 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VARIABLE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 493 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 493 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ORDERING; }
-=======
-#line 480 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::BOUNDARY_SPACE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 494 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 494 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::XQUERY; }
-=======
-#line 481 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ORDERING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 495 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 495 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VERSION; }
-=======
-#line 482 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::XQUERY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 496 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 496 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::OPTION; }
-=======
-#line 483 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VERSION; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 497 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 497 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::AT; }
-=======
-#line 484 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::OPTION; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 498 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 498 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::REVALIDATION; }
-=======
-#line 485 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::AT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 499 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 499 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::AS; }
-=======
-#line 486 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::REVALIDATION; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 500 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 487 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::AS; }
-	YY_BREAK
-case 84:
-YY_RULE_SETUP
-#line 488 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 500 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TRY; }
 	YY_BREAK
 /* Axes */
 case 84:
 YY_RULE_SETUP
-#line 503 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 503 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ANCESTOR_OR_SELF; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 504 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 504 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ANCESTOR; }
-=======
-#line 491 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ANCESTOR_OR_SELF; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 505 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 505 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CHILD; }
-=======
-#line 492 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ANCESTOR; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 506 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 506 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDANT_OR_SELF; }
-=======
-#line 493 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CHILD; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 507 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 507 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDANT; }
-=======
-#line 494 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DESCENDANT_OR_SELF; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 508 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 508 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWING_SIBLING; }
-=======
-#line 495 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DESCENDANT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 509 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 509 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWING; }
-=======
-#line 496 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FOLLOWING_SIBLING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 510 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 510 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PARENT; }
-=======
-#line 497 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FOLLOWING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 511 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 511 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDING_SIBLING; }
-=======
-#line 498 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PARENT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 512 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 512 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDING; }
-=======
-#line 499 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PRECEDING_SIBLING; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 513 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 500 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PRECEDING; }
-	YY_BREAK
-case 95:
-YY_RULE_SETUP
-#line 501 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 513 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SELF;}
 	YY_BREAK
 /* Decimal format */
 case 95:
 YY_RULE_SETUP
-#line 516 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 516 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DECIMAL_FORMAT; }
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 517 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 517 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DECIMAL_SEPARATOR; }
-=======
-#line 504 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DECIMAL_FORMAT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 518 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 518 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::GROUPING_SEPARATOR; }
-=======
-#line 505 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DECIMAL_SEPARATOR; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 519 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 519 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INFINITY_VALUE; }
-=======
-#line 506 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::GROUPING_SEPARATOR; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 520 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 520 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MINUS_SIGN; }
-=======
-#line 507 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INFINITY_VALUE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 521 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 521 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NaN; }
-=======
-#line 508 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MINUS_SIGN; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 522 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 522 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PERCENT; }
-=======
-#line 509 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NaN; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 523 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 523 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PER_MILLE; }
-=======
-#line 510 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PERCENT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 524 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 524 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ZERO_DIGIT; }
-=======
-#line 511 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PER_MILLE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 525 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 525 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DIGIT; }
-=======
-#line 512 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ZERO_DIGIT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 526 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 513 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DIGIT; }
-	YY_BREAK
-case 106:
-YY_RULE_SETUP
-#line 514 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 526 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PATTERN_SEPARATOR; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4802,228 +4253,118 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 106:
 YY_RULE_SETUP
-#line 533 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 533 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COLLECTION; }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 534 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 534 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONSTOPT; }
-=======
-#line 521 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::COLLECTION; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 535 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 535 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::APPEND_ONLY; }
-=======
-#line 522 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CONSTOPT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 536 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 536 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::QUEUE; }
-=======
-#line 523 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::APPEND_ONLY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 537 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 537 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MUTABLE; }
-=======
-#line 524 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::QUEUE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 538 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 538 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::READ_ONLY; }
-=======
-#line 525 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MUTABLE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 540 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 540 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INDEX; }
-=======
-#line 526 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::READ_ONLY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 541 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 541 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::UNIQUE; }
-=======
-#line 528 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INDEX; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 542 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 542 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NON; }
-=======
-#line 529 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::UNIQUE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 543 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 543 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MANUALLY; }
-=======
-#line 530 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NON; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 544 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 544 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::AUTOMATICALLY; }
-=======
-#line 531 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MANUALLY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 545 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 545 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MAINTAINED; }
-=======
-#line 532 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::AUTOMATICALLY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 546 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 546 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::RANGE; }
-=======
-#line 533 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MAINTAINED; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 547 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 547 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALITY; }
-=======
-#line 534 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::RANGE; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 548 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 548 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ON; }
-=======
-#line 535 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EQUALITY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 549 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 549 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::GENERAL; }
-=======
-#line 536 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ON; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 551 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 551 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INTEGRITY; }
-=======
-#line 537 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::GENERAL; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 552 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 552 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONSTRAINT; }
-=======
-#line 539 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INTEGRITY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 553 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 553 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CHECK; }
-=======
-#line 540 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CONSTRAINT; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 554 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 554 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::KEY; }
-=======
-#line 541 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CHECK; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 555 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 555 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FOREACH; }
-=======
-#line 542 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::KEY; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 556 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 556 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FOREIGN; }
-=======
-#line 543 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FOREACH; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 557 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 557 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::KEYS; }
-=======
-#line 544 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FOREIGN; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 /*______________________________________________________________________
    |
@@ -5033,23 +4374,22 @@ YY_RULE_SETUP
      of the "{[ ]}" grammar construct */
 case 129:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 567 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 567 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACK; }
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 568 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 568 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::RBRACK; }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 570 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 570 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL_ACCUMULATOR); return token::L_ACCUMULATOR_OBJ_UNION; }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 571 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 571 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
         // This if() disambiguates between the "{[ ]}" grammar construct and the
         // plain "[ ]" predicate
@@ -5068,52 +4408,48 @@ YY_RULE_SETUP
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 587 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 587 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::L_SIMPLE_OBJ_UNION; }
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 588 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 588 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::R_SIMPLE_OBJ_UNION; }
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 589 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 589 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::JSON; }
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 590 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 590 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::APPEND; }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 591 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 591 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::POSITION; }
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 592 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 592 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::JSON_ITEM; }
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 593 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 593 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::STRUCTURED_ITEM; }
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 594 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 594 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {  return token::ARRAY; }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 595 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 595 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {  return token::OBJECT; }
-=======
-#line 545 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::KEYS; }
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 /*______________________________________________________________________
      |
@@ -5121,720 +4457,397 @@ YY_RULE_SETUP
      |______________________________________________________________________*/
 case 142:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 603 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 553 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 603 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONTAINS; }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 604 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 554 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 604 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FTAND; }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 605 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 555 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 605 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FTOR; }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 606 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 556 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 606 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FTNOT; }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 607 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 557 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 607 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NOT; }
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 608 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 558 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 608 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::_IN; }
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 609 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 559 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 609 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ALL; }
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 610 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 560 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 610 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WORDS; }
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 611 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 561 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 611 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ANY; }
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 612 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 562 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 612 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WORD; }
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 613 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 563 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 613 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::END; }
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 614 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 564 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 614 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LEAST; }
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 615 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 565 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 615 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MOST; }
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 616 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 566 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 616 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::START; }
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 617 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 567 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 617 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CASE; }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 618 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 568 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 618 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INSENSITIVE; }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 619 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 569 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 619 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SENSITIVE; }
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 620 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 570 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 620 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FT_OPTION; }
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 621 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 571 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 621 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DIACRITICS; }
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 622 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 572 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 622 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DIFFERENT; }
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 623 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 573 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 623 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DISTANCE; }
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 624 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 574 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 624 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ENTIRE; }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 625 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 575 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 625 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CONTENT; }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 626 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 576 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 626 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EXACTLY; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 627 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 577 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 627 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FROM; }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 628 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 578 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 628 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LANGUAGE; }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 629 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 579 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 629 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LEVELS; }
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 630 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 580 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 630 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LOWERCASE; }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 631 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 581 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 631 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NO; }
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 632 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 582 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 632 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::OCCURS; }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 633 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 583 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 633 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PARAGRAPH; }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 634 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 584 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 634 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PARAGRAPHS; }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 635 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 585 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 635 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PHRASE; }
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 636 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 586 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 636 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::RELATIONSHIP; }
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 637 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 587 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 637 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SAME; }
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 638 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 588 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 638 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SCORE; }
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 639 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 589 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 639 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SENTENCE; }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 640 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 590 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 640 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SENTENCES; }
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 641 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 591 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 641 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TIMES; }
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 642 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 592 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 642 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::UPPERCASE; }
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 643 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 593 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 643 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WEIGHT; }
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 644 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 594 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 644 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WINDOW; }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 645 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 595 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 645 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WITHOUT; }
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 646 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 596 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 646 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::STEMMING; }
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 647 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 597 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 647 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::STOP; }
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 648 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 598 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 648 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::THESAURUS; }
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 649 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 599 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 649 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WILDCARDS; }
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 650 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 600 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 650 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::GETS; }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 651 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 601 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 651 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DIV; }
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 652 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 602 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 652 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALS; }
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 653 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 603 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 653 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EXCEPT; }
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 654 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 604 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 654 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_EQ; }
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 655 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 605 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 655 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_GE; }
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 656 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 606 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 656 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_GT; }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 657 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 607 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 657 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_LE; }
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 658 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 608 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 658 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_LT; }
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 659 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 609 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 659 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_NE; }
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 660 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 610 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 660 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::GE; }
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 661 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 611 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 661 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWS; }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 662 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 612 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 662 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::GT; }
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 663 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 613 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 663 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::IDIV; }
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 664 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 614 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 664 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INTERSECT; }
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 665 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 615 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 665 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::IS; }
 	YY_BREAK
-<<<<<<< TREE
 case 205:
 YY_RULE_SETUP
-#line 666 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-case 193:
-YY_RULE_SETUP
-#line 616 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LBRACK; }
-	YY_BREAK
-case 194:
-YY_RULE_SETUP
-#line 617 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 666 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LE; }
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 667 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 618 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 667 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDES; }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 668 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 619 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 668 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MOD; }
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 669 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 620 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 669 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NE; }
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 670 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 621 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 670 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::GROUP; }
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 671 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 622 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 671 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::BY; }
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 672 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 623 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 672 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::STABLE; }
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 673 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 624 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 673 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::OR; }
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 674 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 625 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 674 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::RETURN; }
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 675 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 626 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 675 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SATISFIES; }
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 676 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 627 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 676 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TO; }
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 677 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 628 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 677 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::UNION; }
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 678 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 629 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 678 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VBAR; }
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 679 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 630 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 679 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::WHERE; }
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 680 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 631 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 680 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::PRESERVE; }
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 681 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 632 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 681 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::STRIP; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5843,326 +4856,182 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 221:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 689 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 640 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 689 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INSERT; }
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 690 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 641 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 690 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::_DELETE; }
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 691 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 642 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 691 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::REPLACE; }
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 692 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 643 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 692 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::VALUE; }
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 693 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 644 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 693 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::OF; }
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 694 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 645 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 694 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::RENAME; }
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 695 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 646 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 695 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::COPY; }
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 696 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 647 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 696 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NODES; }
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 697 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 648 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 697 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INTO; }
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 698 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 649 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 698 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::AFTER; }
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 699 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 650 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 699 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::BEFORE; }
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 700 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 651 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 700 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::MODIFY; }
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 702 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 653 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 702 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::_STRICT; }
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 703 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 654 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 703 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LAX; }
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 704 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 655 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 704 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::SKIP; }
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 705 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 656 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 705 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::THEN; }
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 706 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 657 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 706 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ELSE; }
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 707 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 658 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 707 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EXTERNAL; }
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 708 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 659 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 708 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::AND; }
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 710 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 661 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 710 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INHERIT; }
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 711 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 662 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 711 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NO_INHERIT; }
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 712 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 663 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 712 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::NO_PRESERVE; }
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 713 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 664 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 713 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EMPTY_SEQUENCE; }
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 714 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 665 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 714 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ITEM; }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 715 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 666 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 715 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CAST; }
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 716 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 667 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 716 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CASTABLE; }
 	YY_BREAK
 case 247:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 717 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 668 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 717 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::INSTANCE;}
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 718 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 669 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 718 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::TREAT; }
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 719 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 670 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 719 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::FIRST; }
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 720 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 671 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 720 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::LAST; }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 721 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 672 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 721 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::CATCH; }
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 722 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 673 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 722 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::_EMPTY; }
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 723 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 674 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 723 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::GREATEST; }
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 724 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 675 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 724 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ASCENDING; }
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 725 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 676 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 725 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDING; }
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 726 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 677 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 726 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ENCODING; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6171,11 +5040,7 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 257:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 734 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 685 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 734 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   if (yylval->ival == NULL)
@@ -6189,11 +5054,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 745 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 696 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 745 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   return token::DECIMAL_LITERAL;
@@ -6201,11 +5062,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 750 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 701 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 750 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   if (yylval->dval == NULL)
@@ -6220,11 +5077,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 762 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 713 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 762 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   /* invalid integer literal */
   yylval->err = getDriver()->parserErr(std::string("syntax error, unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
@@ -6233,97 +5086,59 @@ YY_RULE_SETUP
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 768 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 719 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 768 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext); }
 	YY_BREAK
 case 262:
 /* rule 262 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 770 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 721 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 770 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+1, yyleng-4), yytext+1); }
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 772 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 723 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 772 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 	YY_BREAK
-<<<<<<< TREE
 case 264:
 /* rule 264 can match eol */
 YY_RULE_SETUP
-#line 774 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 774 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, false, false, true), yytext); }
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 776 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-case 253:
-YY_RULE_SETUP
-#line 725 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 776 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(ANNOTATION_QNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
 	YY_BREAK
 case 266:
 /* rule 266 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 778 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 727 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 778 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(ANNOTATION_EQNAME_SVAL, put_qname(yytext+1, yyleng-1, false, false, true), yytext+1); /* skip the % sign */ }
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 780 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 729 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 780 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext); }
 	YY_BREAK
 case 268:
 /* rule 268 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 782 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 731 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 782 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { if (checkXmlRefs(&yylval->err, yytext, yyleng, this, yylloc)) return token::UNRECOGNIZED; TRY_STRING_LITERAL(STRING_LITERAL, yytext, yyleng); }
 	YY_BREAK
 /* Invalid string literals */
 case 269:
 /* rule 269 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 785 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 734 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 785 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 case 270:
 /* rule 270 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 786 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 735 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 786 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6334,114 +5149,69 @@ YY_RULE_SETUP
 /* ------------------------------ */
 case 271:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 795 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 744 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 795 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 /* transition to PROCESSING_INSTRUCTION */
 /* ------------------------------------ */
 case 272:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 800 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 749 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 800 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_PROCESSING_INSTRUCTION);return token::PI_BEGIN; }
 	YY_BREAK
 /* transition to CDATA_SECTION */
 /* --------------------------- */
 case 273:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 805 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 754 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 805 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { /* PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR); */ return token::CDATA_BEGIN; }
 	YY_BREAK
 /* transition to MODE_START_TAG */
 /* ---------------------------- */
 case 274:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 810 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 759 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 810 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 /* transition to MODE_EXPR_DOC_COMMENT */
 /* ----------------------------------- */
 case 275:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 815 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 764 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 815 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_DOC_COMMENT); }
 	YY_BREAK
 /* transition to MODE_EXPR_COMMENT */
 /* ------------------------------- */
 case 276:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 820 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 769 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 820 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 /* transition to PRAGMA */
 /* -------------------- */
 case 277:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 825 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 774 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 825 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_PRAGMA; return token::PRAGMA_BEGIN;}
 	YY_BREAK
 /* push initial state */
 /* ------------------ */
 case 278:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 830 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 778 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 830 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 /* pop previous state */
 /* ------------------ */
 case 279:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 835 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 835 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::RBRACE; }
-=======
-#line 783 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{
-  if (yy_get_start_stack_ptr() > 0)   // The lexer will catch the unexpected right brace and generate a syntax error
-    POP_STATE();
-  return token::RBRACE;
-}
->>>>>>> MERGE-SOURCE
 	YY_BREAK
 case 280:
 /* rule 280 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 838 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 790 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 838 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -6453,10 +5223,9 @@ YY_RULE_SETUP
     | states
     |
     |______________________________________________________________________*/
-<<<<<<< TREE
 case 281:
 YY_RULE_SETUP
-#line 852 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 852 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   if (yy_comp_constr_qname == "")
     yy_comp_constr_qname = yytext;
@@ -6466,7 +5235,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 858 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 858 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   if (yy_comp_constr_qname == "")
     yy_comp_constr_qname = yytext;
@@ -6476,32 +5245,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 283:
 YY_RULE_SETUP
-#line 864 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-case 269:
-YY_RULE_SETUP
-#line 842 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{
-  if (yy_comp_constr_qname == "")
-    yy_comp_constr_qname = yytext;
-  else
-    COMP_CONSTR_ROLLBACK(true);
-}
-	YY_BREAK
-case 270:
-YY_RULE_SETUP
-#line 848 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{
-  if (yy_comp_constr_qname == "")
-    yy_comp_constr_qname = yytext;
-  else
-    COMP_CONSTR_ROLLBACK(true);
-}
-	YY_BREAK
-case 271:
-YY_RULE_SETUP
-#line 854 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 864 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   if ( yy_comp_constr_qname == "")
     COMP_CONSTR_ROLLBACK(true);
@@ -6522,40 +5266,24 @@ YY_RULE_SETUP
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 881 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 871 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 881 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 case 285:
 /* rule 285 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 882 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 872 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 882 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { /* continue lexing */ }
 	YY_BREAK
 case YY_STATE_EOF(MODE_ELEM_COMP_CONSTR):
 case YY_STATE_EOF(MODE_ATTR_COMP_CONSTR):
 case YY_STATE_EOF(MODE_PI_COMP_CONSTR):
-<<<<<<< TREE
-#line 883 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 873 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 883 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { COMP_CONSTR_ROLLBACK(false); }
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 884 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 874 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 884 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { COMP_CONSTR_ROLLBACK(true); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6569,50 +5297,30 @@ YY_RULE_SETUP
 case 287:
 /* rule 287 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 896 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 886 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 896 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
 	YY_BREAK
 case 288:
 /* rule 288 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 897 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 887 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 897 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
 	YY_BREAK
 case 289:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 898 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 888 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 898 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA,  put_qname(yytext, yyleng-2), yytext); }
 	YY_BREAK
 case 290:
 /* rule 290 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 899 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 889 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 899 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN INITIAL; TRY_SVAL_TOKEN(EQNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
 	YY_BREAK
 case 291:
 /* rule 291 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 900 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 890 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 900 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { /* continue lexing */ }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6625,11 +5333,7 @@ YY_RULE_SETUP
 case 292:
 /* rule 292 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 911 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 901 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 911 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6644,83 +5348,47 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 293:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 925 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 915 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 925 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
 	YY_BREAK
 case 294:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 926 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 916 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 926 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 927 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 917 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 927 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
 	YY_BREAK
 case 296:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 928 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 918 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 928 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALS; }
 	YY_BREAK
 case 297:
 /* rule 297 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 929 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 919 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 929 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::BLANK; }
 	YY_BREAK
 case 298:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 930 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 920 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 930 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::EMPTY_TAG_END; }
 	YY_BREAK
 case 299:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 931 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 921 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 931 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 	YY_BREAK
 case 300:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 932 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 922 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 932 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 case YY_STATE_EOF(MODE_START_TAG):
-<<<<<<< TREE
-#line 933 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 923 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 933 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->unterminatedElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6738,110 +5406,62 @@ case YY_STATE_EOF(MODE_START_TAG):
    |______________________________________________________________________*/
 case 301:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 950 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 940 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 950 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_END_TAG; return token::START_TAG_END; }
 	YY_BREAK
 case 302:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 951 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 941 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 951 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 952 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 942 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 952 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 953 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 943 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 953 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 954 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 944 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 954 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 	YY_BREAK
 case 306:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 955 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 945 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 955 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 case 307:
 /* rule 307 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 956 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 946 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 956 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(ELEMENT_CONTENT, put(yytext, yyleng, 1), yytext); }
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 957 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 947 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 957 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(ELEMENT_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 958 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 948 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 958 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 310:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 959 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 949 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 959 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 960 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 950 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 960 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 case YY_STATE_EOF(MODE_ELEMENT_CONTENT):
-<<<<<<< TREE
-#line 961 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 951 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 961 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6853,29 +5473,17 @@ case YY_STATE_EOF(MODE_ELEMENT_CONTENT):
    |______________________________________________________________________*/
 case 312:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 972 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 962 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 972 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::TAG_END; }
 	YY_BREAK
 case 313:
 /* rule 313 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 973 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 963 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 973 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
 	YY_BREAK
 case YY_STATE_EOF(MODE_END_TAG):
-<<<<<<< TREE
-#line 974 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 964 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 974 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6887,21 +5495,13 @@ case YY_STATE_EOF(MODE_END_TAG):
    |______________________________________________________________________*/
 case 314:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 985 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 975 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 985 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::XML_COMMENT_END; }
 	YY_BREAK
 case 315:
 /* rule 315 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 986 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 976 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 986 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng, 1), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6914,47 +5514,27 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 316:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 998 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 988 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 998 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); }
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 999 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 989 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 999 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 case 318:
 /* rule 318 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1000 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 990 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1000 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { /* do nothing */ }
 	YY_BREAK
 case 319:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1001 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 991 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1001 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { /* do nothing */ }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_COMMENT):
-<<<<<<< TREE
-#line 1002 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 992 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1002 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -6965,47 +5545,25 @@ case YY_STATE_EOF(MODE_EXPR_COMMENT):
    | the ":)" token marks the end. This allows no special interpretation
    | of other characters in this state.
    |______________________________________________________________________*/
-<<<<<<< TREE
 case 320:
 /* rule 320 can match eol */
 YY_RULE_SETUP
-#line 1014 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 1014 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { getDriver()->theDocComment << yytext; }
 	YY_BREAK
 case 321:
 /* rule 321 can match eol */
 YY_RULE_SETUP
-#line 1015 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
+#line 1015 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { getDriver()->theDocComment << yytext; }
 	YY_BREAK
 case 322:
 YY_RULE_SETUP
-#line 1016 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-case 308:
-/* rule 308 can match eol */
-YY_RULE_SETUP
-#line 1004 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ getDriver()->theDocComment << yytext; }
-	YY_BREAK
-case 309:
-/* rule 309 can match eol */
-YY_RULE_SETUP
-#line 1005 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
-{ getDriver()->theDocComment << yytext; }
-	YY_BREAK
-case 310:
-YY_RULE_SETUP
-#line 1006 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1016 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
-<<<<<<< TREE
-#line 1017 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1007 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1017 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -7018,29 +5576,17 @@ case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
 case 323:
 /* rule 323 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1028 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1018 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1028 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 	YY_BREAK
 case 324:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1029 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1019 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1029 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::PI_END; }
 	YY_BREAK
 case 325:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1030 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1020 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1030 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -7053,11 +5599,7 @@ YY_RULE_SETUP
 case 326:
 /* rule 326 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1041 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1031 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1041 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
   POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2), yytext);
@@ -7073,11 +5615,7 @@ YY_RULE_SETUP
 case 327:
 /* rule 327 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1055 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1045 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1055 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -7095,75 +5633,43 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 328:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1072 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1062 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1072 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_START_TAG; return token::QUOTE; }
 	YY_BREAK
 case 329:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1073 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1063 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1073 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1074 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1064 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1074 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ESCAPE_QUOTE; }
 	YY_BREAK
 case 331:
 /* rule 331 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1075 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1065 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1075 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
 	YY_BREAK
 case 332:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1076 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1066 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1076 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 333:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1077 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1067 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1077 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 334:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1078 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1068 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1078 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 335:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1079 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1069 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1079 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -7176,75 +5682,43 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 336:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1091 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1081 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1091 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_START_TAG; return token::APOS; }
 	YY_BREAK
 case 337:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1092 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1082 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1092 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 	YY_BREAK
 case 338:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1093 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1083 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1093 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::ESCAPE_APOS; }
 	YY_BREAK
 case 339:
 /* rule 339 can match eol */
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1094 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1084 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1094 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(APOS_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
 	YY_BREAK
 case 340:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1095 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1085 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1095 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN(APOS_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 341:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1096 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1086 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1096 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 342:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1097 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1087 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1097 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 343:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1098 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1088 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1098 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -7253,11 +5727,7 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 344:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1107 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1097 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1107 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 {
     yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc);
     return token::UNRECOGNIZED;
@@ -7266,14 +5736,10 @@ YY_RULE_SETUP
 /* END OF FLEX RULES */
 case 345:
 YY_RULE_SETUP
-<<<<<<< TREE
-#line 1116 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1106 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1116 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
-#line 5758 "xquery_scanner.yy.cpp"
+#line 5743 "xquery_scanner.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(INITIAL_ACCUMULATOR):
 case YY_STATE_EOF(MODE_APOS_ATTRIBUTE_CONTENT):
@@ -7571,7 +6037,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -7585,7 +6051,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -7616,7 +6082,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), num_to_read );
+			(yy_n_chars), (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -7743,7 +6209,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register yy_size_t number_to_move = (yy_n_chars) + 2;
+		register int number_to_move = (yy_n_chars) + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -7794,7 +6260,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+			int offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -7818,7 +6284,7 @@ int yyFlexLexer::yy_get_next_buffer()
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(  ) )
-						return 0;
+						return EOF;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -8126,7 +6592,7 @@ void yyFlexLexer::yypop_buffer_state (void)
 void yyFlexLexer::yyensure_buffer_stack(void)
 /* %endif */
 {
-	yy_size_t num_to_alloc;
+	int num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -8332,11 +6798,7 @@ void Zorbafree (void * ptr )
 
 /* %ok-for-header */
 
-<<<<<<< TREE
-#line 1116 "/home/mbrantner/zorba/jsandbox/src/compiler/parser/xquery_scanner.l"
-=======
-#line 1106 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_scanner.l"
->>>>>>> MERGE-SOURCE
+#line 1116 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_scanner.l"
 
 
 
