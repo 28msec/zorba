@@ -98,7 +98,7 @@ public:
    * return a stream over some other URL than the one passed to it. In
    * that case, the URLResolver may pass the true URL here.
    * @param aIsStreamSeekable determines whether the stream passed as first
-   * argument is seekable.
+   * argument is arbitrarily seekable without throwing errors.
    */
   StreamResource(std::istream* aStream,
                  StreamReleaser aStreamReleaser,
