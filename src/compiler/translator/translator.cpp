@@ -1223,7 +1223,7 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
   method raises error.
 
   If var is not found, the method raises the given error, unless the given error
-  is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
+  is zerr::ZXQP0000_NO_ERROR, in which case it returns NULL.
 ********************************************************************************/
 var_expr* lookup_var(
     const QName* qname,
@@ -6425,17 +6425,20 @@ void* begin_visit(const GroupByClause& v)
     
     const QName* varname = spec->get_var_name();
 
-    const var_expr* ve;
+    const var_expr* ve = NULL;
     if(spec->get_var_expr() == NULL)
     {
       ve = lookup_var(varname, loc, err::XPST0008);    
     }
-/*    else
+    else
     {
-      ve = create_var(loc,varname, var_expr::groupby_var);
-    } */
+      //variables can be explicitly shadowed, if we don't check for that
+      //we might have them become non-group variables incorrectly.
+      ve = lookup_var(varname, loc, zerr::ZXQP0000_NO_ERROR);
+    }
 
-    group_vars.insert(ve);
+    if(ve != NULL)
+      group_vars.insert(ve);
   }
 
   // The non-grouping vars are the vars in the difference of the 2 sets above.
