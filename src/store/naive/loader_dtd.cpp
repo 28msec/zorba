@@ -308,6 +308,12 @@ store::Item_t FragmentXmlLoader::loadXml(
         );
       throw 0;
     }
+    
+    // this happens when the input is an empty string
+    if (theFragmentStream->first_start_doc
+        &&
+        theFragmentStream->stream_is_consumed())
+      FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
 
     FragmentXmlLoader::endDocument(theFragmentStream->ctxt->userData); // this would not be called otherwise
   }

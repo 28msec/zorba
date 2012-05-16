@@ -330,27 +330,22 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     state->baseUri = state->theProperties.getBaseUri();    
     state->theProperties.setParseExternalParsedEntity(true);
     state->theFragmentStream.only_one_doc_node = 1; // create only one document node holding all fragment nodes
-  
-    //while ( ! state->theFragmentStream.stream_is_consumed() )
-    //{
-      try {
-        state->theProperties.setStoreDocument(false);
-        result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
-      } catch (ZorbaException const& e) {
-        if( ! state->theProperties.getNoError())
-          throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("fn:parse-xml-fragment()", e.what() ), ERROR_LOC(loc));
-        else
-          result = NULL;
-      }
+       
+    try {
+      state->theProperties.setStoreDocument(false);
+      result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
+    } catch (ZorbaException const& e) {
+      if( ! state->theProperties.getNoError())
+        throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("fn:parse-xml-fragment()", e.what() ), ERROR_LOC(loc));
+      else
+        result = NULL;
+    }
 
-      if (result != NULL)
-        //continue;
-        
+    if (result != NULL)
       STACK_PUSH(true, state);
-    //} // while
   } // if 
 
-  STACK_END(state)
+  STACK_END(state);
 }
 
 void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
