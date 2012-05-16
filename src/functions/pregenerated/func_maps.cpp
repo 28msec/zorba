@@ -114,19 +114,6 @@ PlanIter_t zorba_store_data_structure_unordered_map_available_maps::codegen(
 void populate_context_maps(static_context* sctx)
 {
   {
-    std::vector<xqtref_t> lParamTypes;
-    lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
-    lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
-
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_create,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","create"), 
-        lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_CREATE_N);
-
-  }
-
-
-  {
     
 
     DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_delete,
