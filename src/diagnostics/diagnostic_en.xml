@@ -2778,10 +2778,6 @@
       <value>error $2: $3</value>
     </entry>
 
-    <entry key="Eval11">
-      <value>"eval" only available in XQuery 1.1 or later</value>
-    </entry>
-
     <entry key="ExpectedNumericOrDurationType">
       <value>expected numeric or duration type</value>
     </entry>
