@@ -58,6 +58,7 @@ namespace transcode {
  *      os.ios::rdbuf( tbuf.orig_streambuf() );
  *      throw;
  *    }
+ *    os.ios::rdbuf( tbuf.orig_streambuf() );
  *  }
  * \endcode
  * Alternatively, you may wish to use either \c attach(), \c auto_attach, or
@@ -254,7 +255,14 @@ public:
    * @throws std::invalid_argument if \a charset is not supported.
    */
   stream( char const *charset ) :
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }
@@ -272,7 +280,14 @@ public:
   template<typename StreamArgType>
   stream( char const *charset, StreamArgType stream_arg ) :
     StreamType( stream_arg ),
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }
@@ -292,7 +307,14 @@ public:
   stream( char const *charset, StreamArgType stream_arg,
           std::ios_base::openmode mode ) :
     StreamType( stream_arg, mode ),
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }

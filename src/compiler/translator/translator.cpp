@@ -694,6 +694,10 @@ TranslatorImpl(
   xquery_fns_def_dot.set(FunctionConsts::FN_DATA_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_DOCUMENT_URI_0);
   xquery_fns_def_dot.set(FunctionConsts::FN_NODE_NAME_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_NILLED_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_HAS_CHILDREN_0);
+  xquery_fns_def_dot.set(FunctionConsts::FN_PATH_0);
+
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
@@ -2191,7 +2195,7 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (v.get_encoding().length() != 0 &&
+  if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
@@ -2840,6 +2844,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // importing module that X has been imported.
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
+    // just a test, this will throw, if the access is denied
+    std::vector<zstring> candidateURIs;
+    theRootSctx->get_candidate_uris(targetNS,
+                                    internal::EntityData::MODULE,
+                                    candidateURIs);
     theRootSctx->add_imported_builtin_module(targetNS);
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they
@@ -3275,6 +3284,11 @@ void* begin_visit(const VFO_DeclList& v)
 
       if (f.getp() != 0)
       {
+        if (f->isUdf())
+        {
+          RAISE_ERROR(err::XQST0034, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
+
         // We make sure that the types of the parameters and the return type
         // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
@@ -3295,41 +3309,6 @@ void* begin_visit(const VFO_DeclList& v)
                                     '}',
                                     qnameItem->getLocalName())));
         }
-
-#ifndef ZORBA_NO_FULL_TEXT
-        if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
-            (qnameItem->getLocalName() == "tokenizer-properties" ||
-             qnameItem->getLocalName() == "tokenize"))
-        {
-          FunctionConsts::FunctionKind kind;
-
-          if (qnameItem->getLocalName() == "tokenizer-properties")
-          {
-            assert(numParams <= 1);
-
-            if (numParams == 1)
-              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1;
-            else
-              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_0;
-
-            f = new full_text_tokenizer_properties(f->getSignature(), kind);
-          }
-          else 
-          {
-            assert(numParams == 1 || numParams == 2);
-
-            if (numParams == 2)
-              kind = FunctionConsts::FULL_TEXT_TOKENIZE_2;
-            else
-              kind = FunctionConsts::FULL_TEXT_TOKENIZE_1;
-
-            f = new full_text_tokenize(f->getSignature(), kind);
-          }
-
-          f->setStaticContext(theRootSctx);
-          bind_fn(f, numParams, loc);
-        }
-#endif /* ZORBA_NO_FULL_TEXT */
 
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset
@@ -11783,7 +11762,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);  
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()

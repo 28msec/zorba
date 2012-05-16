@@ -651,6 +651,8 @@ public:
 
   zstring get_base_uri() const;
 
+  void clear_base_uri();
+
   void set_base_uri(const zstring& uri, bool from_prolog = true);
 
   void compute_base_uri();
@@ -702,6 +704,15 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const;
+
+  /**
+   * Given a URI, populate a vector with a list of candidate URIs.  If
+   * no candidate URIs are available, the vector will be populated
+   * with (only) the input URI.
+   */
+  void get_candidate_uris
   (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 

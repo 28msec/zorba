@@ -438,9 +438,19 @@ declare variable $ft:lang-tr as xs:language := xs:language("tr");
 (:===========================================================================:)
 
 (:~
+ : Gets the current compare options.
+ :
+ : @return said compare options.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-2.xq
+ :)
+declare function ft:current-compare-options()
+  as element(ft-schema:compare-options) external;
+
+(:~
  : Gets the current
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>:
- : either the langauge specified by the
+ : either the language specified by the
  : <code><a href="http://www.w3.org/TR/xpath-full-text-10/#doc-xquery10-FTOptionDecl">declare ft-option using</a>
  : <a href="http://www.w3.org/TR/xpath-full-text-10/#ftlanguageoption">language</a></code>
  : statement (if any)
@@ -815,7 +825,7 @@ declare function ft:tokenize-string( $string as xs:string )
  : Gets properties of the tokenizer for the given
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>.
  :
- : @param $lang The langauage of the tokenizer to get the properties of.
+ : @param $lang The language of the tokenizer to get the properties of.
  : @return said properties.
  : @error err:FTST0009 if <code>$lang</code> is not supported.
  : tokenization specifically.

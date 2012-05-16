@@ -157,6 +157,14 @@ bool BasicItemFactory::createStreamableString(
   return true;
 }
 
+bool BasicItemFactory::createSharedStreamableString(
+    store::Item_t &result,
+    store::Item_t &streamable_dependent)
+{
+  result = new StreamableStringItem( streamable_dependent );
+  return true;
+}
+
 
 bool BasicItemFactory::createNormalizedString(store::Item_t& result, zstring& value)
 {

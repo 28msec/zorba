@@ -194,6 +194,9 @@ namespace zorba{
     class FnPutIterator;
 
 #ifndef ZORBA_NO_FULL_TEXT
+    class CurrentCompareOptionsIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     class CurrentLangIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
@@ -436,6 +439,8 @@ namespace zorba{
 
     class LeastCommonAncestor;
 
+    class FnPathIterator;
+
     class AbsIterator;
 
     class CeilingIterator;
@@ -450,7 +455,7 @@ namespace zorba{
 
     class FormatIntegerIterator;
 
-    class FnParseXmlFragmentIterator;
+    class FnZorbaParseXmlFragmentIterator;
 
     class FnParseXmlIterator;
 
@@ -902,6 +907,10 @@ public:
     virtual void endVisit   ( const FnPutIterator& ) = 0;
 
 #ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const CurrentCompareOptionsIterator& ) = 0;
+    virtual void endVisit   ( const CurrentCompareOptionsIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     virtual void beginVisit ( const CurrentLangIterator& ) = 0;
     virtual void endVisit   ( const CurrentLangIterator& ) = 0;
 #endif
@@ -1259,6 +1268,9 @@ public:
     virtual void beginVisit ( const LeastCommonAncestor& ) = 0;
     virtual void endVisit   ( const LeastCommonAncestor& ) = 0;
 
+    virtual void beginVisit ( const FnPathIterator& ) = 0;
+    virtual void endVisit   ( const FnPathIterator& ) = 0;
+
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;
 
@@ -1280,8 +1292,8 @@ public:
     virtual void beginVisit ( const FormatIntegerIterator& ) = 0;
     virtual void endVisit   ( const FormatIntegerIterator& ) = 0;
 
-    virtual void beginVisit ( const FnParseXmlFragmentIterator& ) = 0;
-    virtual void endVisit   ( const FnParseXmlFragmentIterator& ) = 0;
+    virtual void beginVisit ( const FnZorbaParseXmlFragmentIterator& ) = 0;
+    virtual void endVisit   ( const FnZorbaParseXmlFragmentIterator& ) = 0;
 
     virtual void beginVisit ( const FnParseXmlIterator& ) = 0;
     virtual void endVisit   ( const FnParseXmlIterator& ) = 0;

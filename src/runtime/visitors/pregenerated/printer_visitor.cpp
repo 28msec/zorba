@@ -1247,6 +1247,21 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
 // </FnPutIterator>
 
 #ifndef ZORBA_NO_FULL_TEXT
+// <CurrentCompareOptionsIterator>
+void PrinterVisitor::beginVisit ( const CurrentCompareOptionsIterator& a) {
+  thePrinter.startBeginVisit("CurrentCompareOptionsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentCompareOptionsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentCompareOptionsIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
 void PrinterVisitor::beginVisit ( const CurrentLangIterator& a) {
   thePrinter.startBeginVisit("CurrentLangIterator", ++theId);
@@ -2870,6 +2885,20 @@ void PrinterVisitor::endVisit ( const LeastCommonAncestor& ) {
 // </LeastCommonAncestor>
 
 
+// <FnPathIterator>
+void PrinterVisitor::beginVisit ( const FnPathIterator& a) {
+  thePrinter.startBeginVisit("FnPathIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnPathIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnPathIterator>
+
+
 // <AbsIterator>
 void PrinterVisitor::beginVisit ( const AbsIterator& a) {
   thePrinter.startBeginVisit("AbsIterator", ++theId);
@@ -2968,18 +2997,18 @@ void PrinterVisitor::endVisit ( const FormatIntegerIterator& ) {
 // </FormatIntegerIterator>
 
 
-// <FnParseXmlFragmentIterator>
-void PrinterVisitor::beginVisit ( const FnParseXmlFragmentIterator& a) {
-  thePrinter.startBeginVisit("FnParseXmlFragmentIterator", ++theId);
+// <FnZorbaParseXmlFragmentIterator>
+void PrinterVisitor::beginVisit ( const FnZorbaParseXmlFragmentIterator& a) {
+  thePrinter.startBeginVisit("FnZorbaParseXmlFragmentIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const FnParseXmlFragmentIterator& ) {
+void PrinterVisitor::endVisit ( const FnZorbaParseXmlFragmentIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </FnParseXmlFragmentIterator>
+// </FnZorbaParseXmlFragmentIterator>
 
 
 // <FnParseXmlIterator>

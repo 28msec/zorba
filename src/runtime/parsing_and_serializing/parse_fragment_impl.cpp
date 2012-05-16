@@ -170,11 +170,7 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
   }
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-
-void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
+void FnZorbaParseXmlFragmentIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theFragmentStream.reset();
@@ -184,20 +180,15 @@ void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
   docUri = "";
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-
-bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
   zstring docString;
   store::Item_t tempItem;
   bool validated = true;
 
-  FnParseXmlFragmentIteratorState* state;
-  DEFAULT_STACK_INIT(FnParseXmlFragmentIteratorState, state, planState);
+  FnZorbaParseXmlFragmentIteratorState* state;
+  DEFAULT_STACK_INIT(FnZorbaParseXmlFragmentIteratorState, state, planState);
 
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -311,5 +302,66 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
 }
 
 
+/*******************************************************************************
+  14.9.2 fn:parse-xml-fragment
+********************************************************************************/
+/*
+bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  zstring docString;
+
+  FnParseXmlFragmentIteratorState* state;
+  DEFAULT_STACK_INIT(FnParseXmlFragmentIteratorState, state, planState);
+
+  if (consumeNext(result, theChildren[0].getp(), planState))
+  {
+    if (result->isStreamable())
+    {
+      state->theFragmentStream.theStream = &result->getStream();
+    }
+    else
+    {
+      result->getStringValue2(docString);
+      state->theFragmentStream.theIss = new std::istringstream(docString.c_str());
+      state->theFragmentStream.theStream = state->theFragmentStream.theIss;
+    }
+
+    state->theProperties.setBaseUri(theSctx->get_base_uri());
+    state->baseUri = state->theProperties.getBaseUri();
+    
+    state->theProperties.setParseExternalParsedEntity(true);
+  
+    while ( ! state->theFragmentStream.stream_is_consumed() )
+    {
+      try {
+        state->theProperties.setStoreDocument(false);
+        result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
+      } catch (ZorbaException const& e) {
+        if( ! state->theProperties.getNoError())
+          throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("fn:parse-xml-fragment()", e.what() ), ERROR_LOC(loc));
+        else
+          result = NULL;
+      }
+
+      if (result == NULL)
+        continue;
+        
+      STACK_PUSH(true, state);
+    } // while
+  } // if 
+
+  STACK_END(state)
+}
+
+void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theFragmentStream.reset();
+  theProperties.reset();
+  theProperties.setStoreDocument(false);
+  baseUri = "";
+  docUri = "";
+}
+*/
 
 } /* namespace zorba */
