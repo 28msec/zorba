@@ -31,6 +31,7 @@ Optimizations:
     and is not used anywhere else in the query
 
 Bug Fixes/Other Changes:
+  * Fixed bugs #905028 (Allow to set base URI to undefined)
   * Fixed bugs #931501 and #866987 (improved error messages for fn:format-number(). Additionally, the function now throws the FODF1310 error instead of XTDE1310, as the 3.0 spec requires)
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
   * Fixed memory leak in case of index truncation

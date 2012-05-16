@@ -347,6 +347,7 @@ extern entry const dict_en[] = {
   { "ZJPE0007", "unterminated JSON string" },
   { "ZJPE0008", "\"$1\": illegal QName" },
   { "ZJPE0009", "illegal empty string" },
+  { "ZJPE0010", "JsonML (array form) must start with '['" },
   { "ZJSE0001", "JSON serialization requires document or element node" },
   { "ZJSE0002", "\"$1\" element missing required \"$2\" attribute" },
   { "ZJSE0003", "\"$1\": illegal value for attribute \"$2\"" },
