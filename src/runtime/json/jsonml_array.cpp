@@ -87,6 +87,10 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case '{':
+        if ( state_stack.empty() )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJPE0010_JSONML_ARRAY_REQUIRES_BRACKET
+          );
         PUSH_STATE( in_object );
         expect_what = expect::attribute_name;
         break;
