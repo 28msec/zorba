@@ -225,7 +225,7 @@ declare option ver:module-version "2.0";
  :)
 declare function parse-xml:parse(
   $xml-string as xs:string?,
-  $options as element()?) as node()* external;
+  $options as element(parse-xml-options:options)?) as node()* external;
   
 
 (:~
