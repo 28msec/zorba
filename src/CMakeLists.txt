@@ -35,6 +35,7 @@ ENDIF(NOT ZORBA_WITH_DEBUGGER)
 
 # mappings.xml is only a helper xml file => don't generate any code for it
 LIST(REMOVE_ITEM SPEC_FILES "mappings.xml")
+LIST(REMOVE_ITEM SPEC_FILES "mappings-no-jsoniq.xml")
 
 # sort the list such that all generated files are equal on all systems
 LIST(SORT SPEC_FILES)

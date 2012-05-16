@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:mappings xmlns:zorba="http://www.zorba-xquery.com">
+
+  <zorba:namespaces>
+
+    <zorba:namespace uri="http://www.w3.org/2005/xpath-functions"
+                     define="W3C_FN_NS"
+                     prefix="fn"/>
+
+    <zorba:namespace uri="http://www.w3.org/2005/xpath-functions/math"
+                     define="XQUERY_MATH_FN_NS"
+                     prefix="math"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/math"
+                     define="ZORBA_MATH_FN_NS"
+                     prefix="fn-zorba-math"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/base64"
+                     define="ZORBA_BASE64_FN_NS"
+                     prefix="fn-zorba-base64"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-reference"
+                     define="ZORBA_NODEREF_FN_NS"
+                     prefix="fn-zorba-ref"/>
+    
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-position"
+                     define="ZORBA_NODEPOS_FN_NS"
+                     prefix="fn-zorba-pos"/> 
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema"
+                     define="ZORBA_SCHEMA_FN_NS"
+                     prefix="fn-zorba-schema"/>
+
+    <zorba:namespace uri="http://www.jsoniq.org/functions"
+                     define="JSONIQ_FN_NS"
+                     prefix="fn-jsoniq"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl"
+      prefix="static-collections-ddl"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/collections/dml"
+      prefix="static-collections-dml"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/indexes/ddl"
+      prefix="zorba-store-indexes-static-ddl"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/indexes/dml"
+      prefix="zorba-store-indexes-static-dml"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl"
+      prefix="zorba-store-integrity_constraints-static-ddl"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml"
+      prefix="zorba-store-integrity_constraints-static-dml"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl"
+      prefix="dynamic-collections-ddl"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
+      prefix="dynamic-collections-dml"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/dynamic/documents"
+      prefix="zorba-store-documents"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/data-structures/unordered-map"
+      prefix="zorba-store-data-structure-unordered-map"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/full-text"
+      define="ZORBA_FULL_TEXT_FN_NS"
+      prefix="full-text"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
+                     define="ZORBA_XQDOC_FN_NS" 
+                     prefix="fn-zorba-xqdoc"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/random" 
+                     define="ZORBA_RANDOM_FN_NS" 
+                     prefix="fn-zorba-random"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/sctx"
+                     define="ZORBA_INTROSPECT_SCTX_FN_NS" 
+                     prefix="fn-zorba-introspect-sctx"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/reflection"
+                     define="ZORBA_REFLECTION_FN_NS" 
+                     prefix="fn-zorba-reflection"/>
+
+     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions"
+                      define="ZORBA_UTIL_FN_NS"
+                      prefix="fn-zorba-util"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/string"
+                     define="ZORBA_STRING_FN_NS" 
+                     prefix="fn-zorba-string"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/uri"
+                     define="ZORBA_URI_FN_NS" 
+                     prefix="fn-zorba-uri"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/json"
+                     define="ZORBA_JSON_FN_NS" 
+                     prefix="fn-zorba-json"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/fetch"
+                     define="ZORBA_FETCH_FN_NS" 
+                     prefix="fn-zorba-fetch"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
+                     define="ZORBA_NODE_FN_NS" 
+                     prefix="fn-zorba-node"/>
+                     
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xml"
+                     define="ZORBA_XML_FN_NS" 
+                     prefix="fn-zorba-xml"/>                     
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
+                     define="XQUERY_OP_NS"
+                     prefix="op"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/internal/zorba-ops"
+                     define="ZORBA_OP_NS"
+                     prefix="op-zorba"/>
+
+    <zorba:namespace uri="http://www.w3.org/2001/XMLSchema"
+                     define="XML_SCHEMA_NS"
+                     prefix="xs"/>
+
+  </zorba:namespaces>
+
+  <zorba:types>
+    <zorba:type zorbaType="NONE_TYPE">none</zorba:type>
+
+    <!-- see http://www.w3.org/TR/xquery-operators/#datatypes -->
+    <zorba:type zorbaType="ITEM">item()</zorba:type>
+    <zorba:type zorbaType="DOCUMENT_UNTYPED">document-untyped</zorba:type>
+    <zorba:type zorbaType="DOCUMENT">document-node()</zorba:type>
+    <zorba:type zorbaType="ANY_NODE">node()</zorba:type>
+    <zorba:type zorbaType="ELEMENT">element()</zorba:type>
+
+    <zorba:type zorbaType="ANY_ATOMIC">xs:anyAtomicType</zorba:type>
+    <zorba:type zorbaType="UNTYPED_ATOMIC">xs:untypedAtomic</zorba:type>
+
+    <zorba:type zorbaType="STRING">xs:string</zorba:type>
+    <zorba:type zorbaType="NORMALIZED_STRING">xs:normalizedString</zorba:type>
+    <zorba:type zorbaType="TOKEN">xs:token</zorba:type>
+    <zorba:type zorbaType="LANGUAGE">xs:language</zorba:type>
+    <zorba:type zorbaType="NMTOKEN">xs:NMTOKEN</zorba:type>
+    <zorba:type zorbaType="NAME">xs:Name</zorba:type>
+    <zorba:type zorbaType="NCNAME">xs:NCName</zorba:type>
+
+    <zorba:type zorbaType="ID">xs:ID</zorba:type>
+    <zorba:type zorbaType="IDREF">xs:IDREF</zorba:type>
+
+    <zorba:type zorbaType="ENTITY">xs:ENTITY</zorba:type>
+
+    <zorba:type zorbaType="DATETIME">xs:dateTime</zorba:type>
+    <zorba:type zorbaType="DATE">xs:date</zorba:type>
+    <zorba:type zorbaType="TIME">xs:time</zorba:type>
+    <zorba:type zorbaType="DURATION">xs:duration</zorba:type>
+    <zorba:type zorbaType="DT_DURATION">xs:dayTimeDuration</zorba:type>
+    <zorba:type zorbaType="YM_DURATION">xs:yearMonthDuration</zorba:type>
+
+    <zorba:type zorbaType="FLOAT">xs:float</zorba:type>
+    <zorba:type zorbaType="DOUBLE">xs:double</zorba:type>
+    <zorba:type zorbaType="DECIMAL">xs:decimal</zorba:type>
+    <zorba:type zorbaType="INTEGER">xs:integer</zorba:type>
+    <zorba:type zorbaType="NON_POSITIVE_INTEGER">xs:nonPositiveInteger</zorba:type>
+    <zorba:type zorbaType="NEGATIVE_INTEGER">xs:negativeInteger</zorba:type>
+    <zorba:type zorbaType="LONG">xs:long</zorba:type>
+    <zorba:type zorbaType="INT">xs:int</zorba:type>
+    <zorba:type zorbaType="SHORT">xs:short</zorba:type>
+    <zorba:type zorbaType="BYTE">xs:byte</zorba:type>
+    <zorba:type zorbaType="NON_NEGATIVE_INTEGER">xs:nonNegativeInteger</zorba:type>
+    <zorba:type zorbaType="UNSIGNED_LONG">xs:unsignedLong</zorba:type>
+    <zorba:type zorbaType="UNSIGNED_INT">xs:unsignedInt</zorba:type>
+    <zorba:type zorbaType="UNSIGNED_SHORT">xs:unsignedShort</zorba:type>
+    <zorba:type zorbaType="UNSIGNED_BYTE">xs:unsignedByte</zorba:type>
+    <zorba:type zorbaType="POSITIVE_INTEGER">xs:positiveInteger</zorba:type>
+
+    <zorba:type zorbaType="GYEAR_MONTH">xs:gYearMonth</zorba:type>
+    <zorba:type zorbaType="GYEAR">xs:gYear</zorba:type>
+    <zorba:type zorbaType="GMONTH_DAY">xs:gMonthDay</zorba:type>
+    <zorba:type zorbaType="GDAY">xs:gDay</zorba:type>
+    <zorba:type zorbaType="GMONTH">xs:gMonth</zorba:type>
+
+    <zorba:type zorbaType="BOOLEAN">xs:boolean</zorba:type>
+    <zorba:type zorbaType="BASE64BINARY">xs:base64Binary</zorba:type>
+    <zorba:type zorbaType="HEXBINARY">xs:hexBinary</zorba:type>
+
+    <zorba:type zorbaType="ANY_URI">xs:anyURI</zorba:type>
+    <zorba:type zorbaType="QNAME">xs:QName</zorba:type>
+    <zorba:type zorbaType="NOTATION">xs:NOTATION</zorba:type>  
+    <zorba:type zorbaType="ANY_FUNCTION">function()</zorba:type>
+    <zorba:type zorbaType="ANY_NODE">structured-item()</zorba:type>
+    <zorba:type zorbaType="JSON_ITEM">json-item()</zorba:type>
+    <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
+    <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>
+    <zorba:type zorbaType="JDM_NULL">jdm:null</zorba:type>
+  </zorba:types>
+
+  <!-- XQuery Occurrence Indicators -->
+  <!--
+  <zorba:occurrences>
+    <zorba:occurrence zorbaType="TYPE_ONE">none</zorba:occurrence>
+    <zorba:occurrence zorbaType="TYPE_QUESTION">?</zorba:occurrence>
+    <zorba:occurrence zorbaType="TYPE_STAR">*</zorba:occurrence>
+    <zorba:occurrence zorbaType="TYPE_PLUS">+</zorba:occurrence>
+  </zorba:occurrences>
+  -->
+
+</zorba:mappings>
