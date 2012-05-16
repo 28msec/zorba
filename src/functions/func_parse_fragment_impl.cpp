@@ -42,7 +42,7 @@ void populate_context_parse_fragment_impl(static_context* sctx)
         store::StoreConsts::elementNode,
         createQName("http://www.zorba-xquery.com/modules/xml-options","","options"),
         NULL,
-        TypeConstants::QUANT_ONE,
+        TypeConstants::QUANT_QUESTION,
         false,
         false
       );
