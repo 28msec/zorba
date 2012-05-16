@@ -38,14 +38,14 @@ public:
   typedef /* implementation-defined */ ptr;
   typedef /* implementation-defined */ size_type;
 
-  struct Numbers {
+  struct State {
     typedef Tokenizer::size_type value_type;
 
     value_type token;   // Token number.
     value_type sent;    // Sentence number.
     value_type para;    // Paragraph number.
 
-    Numbers();
+    State();
   };
 
   class Callback {
@@ -72,8 +72,8 @@ public:
   virtual void properties( Properties *result ) const = 0;
 
   virtual void destroy() const = 0;
-  Numbers& numbers();
-  Numbers const& numbers() const;
+  State& state();
+  State const& state() const;
 
   void tokenize_node( Item const &node, locale::iso639_1::type lang, Callback &callback );
 
@@ -81,7 +81,7 @@ public:
                                 bool wildcards, Callback &callback, Item const *item = 0 ) = 0;
 
 protected:
-  Tokenizer( Numbers& );
+  Tokenizer( State& );
   virtual ~Tokenizer();
 
   bool find_lang_attribute( Item const&, locale::iso639_1::type *lang );
@@ -95,7 +95,7 @@ the \c destroy() function,
 and why the destructor is \c protected,
 see the \ref memory_management document.
 
-The \c Numbers \c struct is created by Zorba
+The \c State \c struct is created by Zorba
 and passed to your constructor.
 It simply keeps track of the current
 token, sentence, and paragraph numbers.
@@ -202,7 +202,7 @@ void MyTokenizer::item( Item const &item, bool entering ) {
     Item qname;
     item.getNodeName( qname );
     if ( /* qname matches an XHTML block-level element's name */ )
-      ++numbers().para;
+      ++state().para;
 }
 \endcode
 
@@ -262,7 +262,7 @@ provides a \c Tokenizer for that language:
 class TokenizerProvider {
 public:
   virtual ~TokenizerProvider();
-  virtual bool getTokenizer( locale::iso639_1::type lang, Tokenizer::Numbers *numbers = 0, Tokenizer::ptr* = 0 ) const = 0;
+  virtual bool getTokenizer( locale::iso639_1::type lang, Tokenizer::State *state = 0, Tokenizer::ptr* = 0 ) const = 0;
 };
 \endcode
 
@@ -278,9 +278,9 @@ Specifically, you need to implement the \c getTokenizer() function where:
     </td>
   </tr>
   <tr>
-    <td>\c num</td>
+    <td>\c state</td>
     <td>
-      The \c Numbers to use.
+      The \c State to use.
       If \c null,
       \a t is not set.
     </td>
@@ -299,13 +299,13 @@ A simple \c TokenizerProvider for our tokenizer can be implemented as:
 \code
 class MyTokenizerProvider : public TokenizerProvider {
 public:
-  getTokenizer( locale::iso639_1::type lang, Tokenizer::Numbers* = 0, Tokenizer::ptr* = 0 ) const;
+  getTokenizer( locale::iso639_1::type lang, Tokenizer::State* = 0, Tokenizer::ptr* = 0 ) const;
 };
 
-bool MyTokenizerProvider::getTokenizer( locale::iso639_1::type lang, Tokenizer::Numbers *num, Tokenizer::ptr *t ) const {
+bool MyTokenizerProvider::getTokenizer( locale::iso639_1::type lang, Tokenizer::State *state, Tokenizer::ptr *t ) const {
   switch ( lang ) {
     case iso639_1::en:
-      if ( num && t )
+      if ( state && t )
         t->reset( new MyTokenizer );
       return true;
     default:
