@@ -31,6 +31,7 @@ Optimizations:
     and is not used anywhere else in the query
 
 Bug Fixes/Other Changes:
+  * Fixed bugs #905028 (Allow to set base URI to undefined)
   * Fixed bugs #931501 and #866987 (improved error messages for fn:format-number(). Additionally, the function now throws the FODF1310 error instead of XTDE1310, as the 3.0 spec requires)
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
   * Fixed memory leak in case of index truncation
@@ -52,6 +53,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #906494 (default compile with D_FILE_OFFSET_BITS=64)
   * Fixed bug #988412 (date:current-dateTime daylight saving)
   * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
+  * Fixed bug #986377 (do not apply any updates on collection if it is to be truncated)
   * Fixed bug #921458 (file:read-text-lines() blocking)
   * Fixed bug #981405 (do not hoist expr containing try-catch variables out of the associated try-catch expression)
   * Fixed bug #996084 (crash in Streamable*Item with file module)

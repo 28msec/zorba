@@ -661,6 +661,8 @@ public:
 
   zstring get_base_uri() const;
 
+  void clear_base_uri();
+
   void set_base_uri(const zstring& uri, bool from_prolog = true);
 
   void compute_base_uri();

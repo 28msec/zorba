@@ -241,23 +241,38 @@ MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 ####
 IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
+  #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-001 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-002 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-003 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-004 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-005 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-006 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-007 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-008 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-009 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-010 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-011 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-012 997045)
+
+  IF (NOT ZORBA_WITH_BIG_INTEGER)
+    # These test will never pass without big integers beause the integers used
+    # in the queries exceed a 63-bit signed integer.
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
+  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
+
 
   IF (ZORBA_TEST_XQUERYX)
 
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
-  
+    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemContent/K2-DirectConElemContent-27 909303)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemWhitespace/K2-DirectConElemWhitespace-25 909303)
 
-    IF(NOT ZORBA_WITH_BIG_INTEGER)
-      # These tests fail due to integer overflow.
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
-    ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
     #w3c bug
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes011 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes012 3355019)
@@ -269,16 +284,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   #this is marked as expected failure because the RQ uses XQTS_1_0_3. In that version the expected result is err:FODC0004 instead of err:FODC0002.
   #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
   #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
-
-  IF (NOT ZORBA_WITH_BIG_INTEGER)
-    # These test will never pass without big integers beause the integers used
-    # in the queries exceed a 63-bit signed integer.
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
-  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
 
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 

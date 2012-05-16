@@ -2086,10 +2086,6 @@
       <value>all nodes must be in same collection</value>
     </diagnostic>
 
-    <diagnostic code="ZDDY0019" name="UNDO_NOT_POSSIBLE">
-      <value>"$1": collection $2 cannot be undone</value>
-    </diagnostic>
-
     <diagnostic code="ZDDY0020" name="INDEX_DOMAIN_NODE_NOT_IN_COLLECTION">
       <value>"$1": index domain expression yields nodes that are not in collection</value>
     </diagnostic>
@@ -2690,7 +2686,7 @@
     <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
       <comment>
         This warning is raised if the user explicitly enables caching
-        of function results (using the %ann:cache annotation) but the function
+        of function results (using the %an:cache annotation) but the function
         is updating or its parameter and return types are not subtypes of
         xs:anyAtomicType.
       </comment>
@@ -2712,7 +2708,7 @@
     <diagnostic code="ZWST0006" name="CACHING_MIGHT_NOT_BE_INTENDED">
       <comment>
         This warning is raised if the user explicitly enables caching
-        of function results (using the %ann:cache annotation) and the function
+        of function results (using the %an:cache annotation) and the function
         is annotated as sequential or nondeterministic.
       </comment>
       <value>"$1": function caching might not give the intended result because the function is declared as $2</value>
