@@ -30,7 +30,7 @@
     <zorba:description author="Matthias Brantner">
     </zorba:description>
 
-    <zorba:function generateDECL="false">
+    <zorba:function>
 
       <zorba:signature
         variadic="true"
