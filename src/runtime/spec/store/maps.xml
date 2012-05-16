@@ -30,7 +30,16 @@
     <zorba:description author="Matthias Brantner">
     </zorba:description>
 
-    <zorba:function> 
+    <zorba:function generateDECL="false">
+
+      <zorba:signature
+        variadic="true"
+        localname="create"
+        prefix="zorba-store-data-structure-unordered-map">
+        <zorba:param>xs:QName</zorba:param> <!-- name of the hashmap -->
+        <zorba:param>xs:QName</zorba:param> <!-- list of key types -->
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
 
       <zorba:signature
         variadic="true"

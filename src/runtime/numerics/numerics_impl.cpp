@@ -396,7 +396,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
-//XQuery 1.1 functions
+//XQuery 3.0 functions
 /*******************************************************************************
 
 ********************************************************************************/
