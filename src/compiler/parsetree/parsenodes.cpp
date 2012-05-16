@@ -1774,16 +1774,27 @@ void GroupSpecList::push_back(rchandle<GroupSpec> spec)
   vector<rchandle<GroupSpec> >::const_iterator ite = theSpecs.begin();
   vector<rchandle<GroupSpec> >::const_iterator end = theSpecs.end();
 
-  for (; ite != end; ++ite)
+  //If no expression is given, then it'll just be the variable.
+  //If this is the case, and the variable is already defined as a
+  //grouping variable, it makes no sense to add it, so this is a
+  //quick optimization.
+  if(spec->get_var_expr() != NULL)
   {
-    const GroupSpec* currSpec = (*ite).getp();
+    for (; ite != end; ++ite)
+    {
+      const GroupSpec* currSpec = (*ite).getp();
 
-    if (*currSpec->get_var_name() == *spec->get_var_name())
-      break;
+      if (*currSpec->get_var_name() == *spec->get_var_name())
+        break;
+    }
+
+    if (ite == end)
+      theSpecs.push_back(spec);
   }
-
-  if (ite == end)
+  else
+  {
     theSpecs.push_back(spec);
+  }
 }
 
 
