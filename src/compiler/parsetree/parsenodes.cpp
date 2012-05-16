@@ -1778,13 +1778,14 @@ void GroupSpecList::push_back(rchandle<GroupSpec> spec)
   //If this is the case, and the variable is already defined as a
   //grouping variable, it makes no sense to add it, so this is a
   //quick optimization.
-  if(spec->get_var_expr() != NULL)
+  if(spec->get_var_expr() == NULL)
   {
     for (; ite != end; ++ite)
     {
       const GroupSpec* currSpec = (*ite).getp();
 
-      if (*currSpec->get_var_name() == *spec->get_var_name())
+      if (*currSpec->get_var_name() == *spec->get_var_name() &&
+          currSpec->get_var_expr() == NULL)
         break;
     }
 
