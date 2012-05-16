@@ -70,7 +70,7 @@ declare %an:sequential function pxqdoc:delete-XML-dir(
   else ();
 };
 
-declare %private %an:nondeterministic function pxqdoc:load-manifest(
+declare %an:nondeterministic function pxqdoc:load-manifest(
   $zorbaManifestPath as xs:string)
 {
   try 

@@ -220,7 +220,7 @@ declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:str
  : @return the string resulting from replacing the directory-separators (i.e. / ) with '_'.
  :
  :)
-declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
+declare function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
   let $lmodule := if(fn:ends-with($moduleURI,"/")) then fn:concat($moduleURI,"index") else $moduleURI
   return
     replace(
