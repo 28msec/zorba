@@ -48,9 +48,10 @@ public:
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * A %Numbers contains the current token, sentence, and paragraph numbers.
+   * A %State contains inter-Tokenizer state, currently the current token,
+   * sentence, and paragraph numbers.
    */
-  struct Numbers {
+  struct State {
     typedef Tokenizer::size_type value_type;
 
     value_type token; ///< Token number.
@@ -60,7 +61,7 @@ public:
     /**
      * Default constructor.
      */
-    Numbers();
+    State();
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -162,18 +163,18 @@ public:
   virtual void destroy() const = 0;
 
   /**
-   * Gets this %Tokenizer's associated Numbers.
+   * Gets this %Tokenizer's associated State.
    *
-   * @return Returns said Numbers.
+   * @return Returns said State.
    */
-  Numbers& numbers();
+  State& state();
 
   /**
-   * Gets this %Tokenizer's associated Numbers.
+   * Gets this %Tokenizer's associated State.
    *
-   * @return Returns said Numbers.
+   * @return Returns said State.
    */
-  Numbers const& numbers() const;
+  State const& state() const;
 
   /**
    * Tokenizes the given node.
@@ -207,9 +208,9 @@ protected:
   /**
    * Constructs a %Tokenizer.
    *
-   * @param numbers the Numbers to use.
+   * @param state the State to use.
    */
-  Tokenizer( Numbers &numbers );
+  Tokenizer( State &state );
 
   /**
    * Destroys a %Tokenizer.
@@ -255,18 +256,18 @@ protected:
                                    Callback &callback, bool tokenize_acp );
 
 private:
-  Numbers *numbers_;
+  State *state_;
 };
 
-inline Tokenizer::Tokenizer( Numbers &numbers ) : numbers_( &numbers ) {
+inline Tokenizer::Tokenizer( State &state ) : state_( &state ) {
 }
 
-inline Tokenizer::Numbers& Tokenizer::numbers() {
-  return *numbers_;
+inline Tokenizer::State& Tokenizer::state() {
+  return *state_;
 }
 
-inline Tokenizer::Numbers const& Tokenizer::numbers() const {
-  return *numbers_;
+inline Tokenizer::State const& Tokenizer::state() const {
+  return *state_;
 }
 
 inline void Tokenizer::tokenize_node( Item const &item,
@@ -288,13 +289,13 @@ public:
    * Creates a new %Tokenizer.
    *
    * @param lang The language of the text that the tokenizer will tokenize.
-   * @param numbers The Numbers to use.  If \c null, \a t is not set.
+   * @param state The State to use.  If \c null, \a t is not set.
    * @param t If not \c null, set to point to a Tokenizer for \a lang.
    * @return Returns \c true only if this provider can provide a tokenizer for
    * \a lang.
    */
   virtual bool getTokenizer( locale::iso639_1::type lang,
-                             Tokenizer::Numbers *numbers = 0,
+                             Tokenizer::State *state = 0,
                              Tokenizer::ptr *t = 0 ) const = 0;
 };
 
