@@ -36,7 +36,7 @@ declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "3.0";
+declare option ver:module-version "2.1";
 
 (:~
  : <p>Tries to fetch the resource referred to by the given URI.</p>
