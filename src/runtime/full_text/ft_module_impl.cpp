@@ -552,7 +552,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   zstring base_uri;
   store::Item_t item;
   iso639_1::type lang;
-  Tokenizer::Numbers no;
+  Tokenizer::State t_state;
   store::NsBindings const ns_bindings;
   TokenizerProvider const *tokenizer_provider;
   store::Item_t type_name;
@@ -574,7 +574,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
     ZORBA_ASSERT( tokenizer_provider );
     state->doc_tokens_ =
-      state->doc_item_->getTokens( *tokenizer_provider, no, lang );
+      state->doc_item_->getTokens( *tokenizer_provider, t_state, lang );
 
     while ( state->doc_tokens_->hasNext() ) {
       FTToken const *token;
@@ -667,7 +667,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   store::Item_t element, item, junk, name;
   zstring base_uri;
   iso639_1::type lang;
-  Tokenizer::Numbers no;
+  Tokenizer::State t_state;
   store::NsBindings const ns_bindings;
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
@@ -689,7 +689,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
   ZORBA_ASSERT( tokenizer_provider );
-  if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
+  if ( !tokenizer_provider->getTokenizer( lang, &t_state, &tokenizer ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
@@ -826,9 +826,9 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     TokenizerProvider const *const tokenizer_provider =
       GENV_STORE.getTokenizerProvider();
     ZORBA_ASSERT( tokenizer_provider );
-    Tokenizer::Numbers no;
+    Tokenizer::State t_state;
     Tokenizer::ptr tokenizer;
-    if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
+    if ( !tokenizer_provider->getTokenizer( lang, &t_state, &tokenizer ) )
       throw XQUERY_EXCEPTION(
         err::FTST0009 /* lang not supported */,
         ERROR_PARAMS(
