@@ -91,7 +91,7 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The means by which serialization is invoked, if the Serialization Feature is supported.</td>
-    <td>The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/html/documentation/2.2.0/cxx/classzorba_1_1XQuery). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/html/documentation/latest/cxx/classzorba_1_1Serializer).</td>
+    <td>The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/html/documentation/latest/cxx/classzorba_1_1XQuery). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/html/documentation/latest/cxx/classzorba_1_1Serializer).</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
