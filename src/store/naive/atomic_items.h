@@ -875,6 +875,8 @@ protected:
 
   StreamReleaser theStreamReleaser;
 
+  store::Item_t theStreamableDependent;
+
 public:
   bool equals(
         store::Item const*,
@@ -922,15 +924,10 @@ protected:
   StreamableStringItem(
       std::istream& aStream,
       StreamReleaser streamReleaser,
-      bool seekable = false)
-    :
-    theIstream(aStream),
-    theIsMaterialized(false),
-    theIsConsumed(false),
-    theIsSeekable(seekable),
-    theStreamReleaser(streamReleaser)
-  {
-  }
+      bool seekable = false);
+
+  StreamableStringItem(
+      store::Item_t& aStreamableDependent);
 
   void materialize() const;
 };

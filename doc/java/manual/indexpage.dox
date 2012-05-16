@@ -1,18 +1,10 @@
 /*! \mainpage Java API Documentation
 
-  Zorba ships with a Java language binding that provides some basic features in order to prepare and execute queries
-  with Zorba.
+  Zorba provides two Java language bindings: (1) a language binding generated using SWIG that is similar to the bindings for Ruby or Python and (2) a binding that implements the <a href="http://jcp.org/en/jsr/detail?id=225">XQuery API for Java (XQJ)</a>.
 
-  For the moment, we provide a <a class="en" href="examples.html">set of examples</a> that show how this language binding can be used.
-  
-  \section note Note for garbage collected languages
-  Zorba requires that objects must be deleted in a certain order, which Garbage Collectors are not aware of. For that reason, 
-  the Iterators created with XQuery.iterator() must be explicitly deleted with iterator.delete() before the XQuery 
-  object is deleted.
-  
+  Although, the XQJ binding is currently implemented entirely on top of the SWIG binding, we encourage people to only use the XQJ binding. The SWIG generated binding might be deprecated in the future.
 
   \example Test_Zorba.java
-   This is a simple example that demonstrate how to use the Zorba XQuery Engine to
-   create, compile, and execute queries.
+   This is a simple example that demonstrate how to use the SWIG generated binding to create, compile, and execute queries.
  */
 

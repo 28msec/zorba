@@ -1247,6 +1247,21 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
 // </FnPutIterator>
 
 #ifndef ZORBA_NO_FULL_TEXT
+// <CurrentCompareOptionsIterator>
+void PrinterVisitor::beginVisit ( const CurrentCompareOptionsIterator& a) {
+  thePrinter.startBeginVisit("CurrentCompareOptionsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentCompareOptionsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentCompareOptionsIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
 void PrinterVisitor::beginVisit ( const CurrentLangIterator& a) {
   thePrinter.startBeginVisit("CurrentLangIterator", ++theId);

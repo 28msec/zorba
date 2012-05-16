@@ -224,7 +224,7 @@ public:
 
   bool propagatesInputNodes(expr* fo, csize input) const
   {
-    return ANNOTATION_TRUE_FIXED;
+    return ANNOTATION_TRUE_FIXED!=0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize input) const
@@ -276,7 +276,7 @@ public:
 
   bool propagatesInputNodes(expr* fo, csize input) const
   {
-    return ANNOTATION_TRUE_FIXED;
+    return ANNOTATION_TRUE_FIXED!=0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize input) const

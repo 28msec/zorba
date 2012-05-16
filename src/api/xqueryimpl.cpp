@@ -434,7 +434,11 @@ void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHin
 
     std::istringstream lQueryStream(aQuery.c_str());
 
-    doCompile(lQueryStream, aHints);
+    // 0 is reserved as an invalid var id, and 1 is taken by the context item
+    // in the main module.
+    ulong nextVarId = 2;
+
+    doCompile(lQueryStream, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -454,7 +458,11 @@ void XQueryImpl::compile(
     checkNotClosed();
     checkNotCompiled();
 
-    doCompile(aQuery, aHints);
+    // 0 is reserved as an invalid var id, and 1 is taken by the context item
+    // in the main module.
+    ulong nextVarId = 2;
+
+    doCompile(aQuery, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -484,9 +492,12 @@ void XQueryImpl::compile(
     theCompilerCB->theSctxMap =
     static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
+    ulong nextVarId = 
+    static_cast<StaticContextImpl*>(aStaticContext.get())->getMaxVarId();
+
     std::istringstream lQueryStream(aQuery.c_str());
 
-    doCompile(lQueryStream, aHints);
+    doCompile(lQueryStream, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -514,7 +525,10 @@ void XQueryImpl::compile(
     theCompilerCB->theSctxMap =
     static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
-    doCompile(aQuery, aHints);
+    ulong nextVarId = 
+    static_cast<StaticContextImpl*>(aStaticContext.get())->getMaxVarId();
+
+    doCompile(aQuery, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -526,7 +540,8 @@ void XQueryImpl::compile(
 void XQueryImpl::doCompile(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints,
-    bool fork_sctx)
+    bool fork_sctx,
+    ulong& nextDynamicVarId)
 {
   if ( ! theStaticContext )
   {
@@ -543,7 +558,9 @@ void XQueryImpl::doCompile(
     // otherwise, unless this is a load-prolog query, create a child and we have
     // ownership over that one
     if (fork_sctx)
+    {
       theStaticContext = theStaticContext->create_child_context();
+    }
   }
 
   zstring url;
@@ -580,10 +597,6 @@ void XQueryImpl::doCompile(
   }
 #endif
 
-  // 0 is reserved as an invalid var id, and 1 is taken by the context item
-  // in the main module.
-  ulong nextDynamicVarId = 2;
-
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
 
   thePlanProxy = new PlanProxy(planRoot);
@@ -615,7 +628,13 @@ void XQueryImpl::loadProlog(
 
     theCompilerCB->setLoadPrologQuery();
 
-    doCompile(lQueryStream, aHints, false);
+    StaticContextImpl* sctx = static_cast<StaticContextImpl*>(aStaticContext.get());
+
+    ulong nextVarId = sctx->getMaxVarId();
+
+    doCompile(lQueryStream, aHints, false, nextVarId);
+
+    sctx->setMaxVarId(nextVarId);
   }
   QUERY_CATCH
 }
