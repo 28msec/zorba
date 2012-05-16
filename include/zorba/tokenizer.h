@@ -125,7 +125,7 @@ public:
 
     /**
      * If \c true, XML processing instructions separate tokens.  For example,
-     * <code>net<?PI pi?>work</code> would be 2 tokens instead of 1.
+     * <code>net&lt;?PI pi?&gt;work</code> would be 2 tokens instead of 1.
      */
     bool processing_instructions_separate_tokens;
 
