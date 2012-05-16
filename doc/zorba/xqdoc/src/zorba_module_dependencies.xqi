@@ -20,7 +20,7 @@
 
 module namespace z = "http://www.zorba-xquery.com/module-dependencies";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zm = "http://www.zorba-xquery.com/manifest";
 
 import module namespace file = "http://expath.org/ns/file";
@@ -87,7 +87,7 @@ declare %private function z:get-is-core(
   xs:boolean(data($z:ZorbaManifest/module[@uri= z:fix-uri($moduleUri)]/@isCore))
 };
 
-declare %ann:sequential function z:create-collection-categories (
+declare %an:sequential function z:create-collection-categories (
 $collectionName as xs:QName,
 $xqdocXmlPath as xs:string)
 {
@@ -100,7 +100,7 @@ $xqdocXmlPath as xs:string)
   return dml:apply-insert-nodes($collectionName, $xqdoc);
 };
 
-declare %ann:sequential function z:create-collections($xqdocXMLPath as xs:string) 
+declare %an:sequential function z:create-collections($xqdocXMLPath as xs:string) 
 { 
   variable $xqdocBuildPath as xs:string := 
   fn:substring-before($xqdocXMLPath, fn:concat(file:directory-separator(),"xml"));
@@ -130,7 +130,7 @@ declare %ann:sequential function z:create-collections($xqdocXMLPath as xs:string
   z:fill_edgesCollector();
 };
 
-declare %ann:sequential function z:delete-collections()
+declare %an:sequential function z:delete-collections()
 { 
   dml:delete-nodes(dml:collection(xs:QName("z:collection")));                           
   ddl:delete(xs:QName("z:collection"));
@@ -139,7 +139,7 @@ declare %ann:sequential function z:delete-collections()
 (:~
  : Fill the $z:nodesCollector with all the available modules.
  :)
-declare %ann:sequential function z:fill-nodesCollector() as xs:string*
+declare %an:sequential function z:fill-nodesCollector() as xs:string*
 {
   for $category in $z:level1Weight
   return
@@ -169,7 +169,7 @@ declare %ann:sequential function z:fill-nodesCollector() as xs:string*
     else () 
 };
 
-declare %private %ann:sequential function z:collect-node (
+declare %private %an:sequential function z:collect-node (
   $moduleURI as xs:string, 
   $name as xs:string,
   $lModuleProject as xs:string,
@@ -185,7 +185,7 @@ declare %private %ann:sequential function z:collect-node (
 (:~
  : Fill $z:edgesCollector with all the edges (the links between the nodes) for both modules and eternal library dependencies.
  :)
-declare %ann:sequential function z:fill_edgesCollector()
+declare %an:sequential function z:fill_edgesCollector()
 {  
   for $docNode in dml:collection(xs:QName("z:collection"))
   let $xqdoc := $docNode/xqdoc:xqdoc
@@ -222,7 +222,7 @@ declare %ann:sequential function z:fill_edgesCollector()
       ())
 };
 
-declare %private %ann:sequential function z:collect-edge (
+declare %private %an:sequential function z:collect-edge (
   $catUri as xs:string?,
   $nameFrom as xs:string?,
   $uriFrom as xs:string?,  

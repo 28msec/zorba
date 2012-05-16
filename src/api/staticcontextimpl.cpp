@@ -1592,5 +1592,22 @@ StaticContextImpl::fetch(
   return 0;
 }
 
+void
+StaticContextImpl::clearBaseURI()
+{
+  try
+  {
+    theCtx->clear_base_uri();
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+}
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */
