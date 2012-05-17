@@ -167,7 +167,7 @@
   </zorba:state>
 </zorba:iterator>
 
-<zorba:iterator name="TokenizeIterator"
+<zorba:iterator name="TokenizeNodeIterator"
                 generateResetImpl="true"
                 generateSerialize="false"
                 generateConstructor="false"

@@ -227,7 +227,7 @@ namespace zorba{
     class ThesaurusLookupIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
-    class TokenizeIterator;
+    class TokenizeNodeIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
     class TokenizerPropertiesIterator;
@@ -951,8 +951,8 @@ public:
     virtual void endVisit   ( const ThesaurusLookupIterator& ) = 0;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
-    virtual void beginVisit ( const TokenizeIterator& ) = 0;
-    virtual void endVisit   ( const TokenizeIterator& ) = 0;
+    virtual void beginVisit ( const TokenizeNodeIterator& ) = 0;
+    virtual void endVisit   ( const TokenizeNodeIterator& ) = 0;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
     virtual void beginVisit ( const TokenizerPropertiesIterator& ) = 0;

@@ -423,6 +423,11 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef __GNUC__
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
+#endif /* __GNUC__ */
+
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
   zstring error_msg;
@@ -517,16 +522,21 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
   ZORBA_ASSERT( state->tresult_.get() );
 }
 
+#ifdef __GNUC__
+# pragma GCC diagnostic pop
+#endif /* __GNUC__ */
+
 ///////////////////////////////////////////////////////////////////////////////
 
-TokenizeIterator::TokenizeIterator( static_context *sctx, QueryLoc const &loc,
-                                    std::vector<PlanIter_t>& children ) :
-  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>(sctx, loc, children)
+TokenizeNodeIterator::TokenizeNodeIterator( static_context *sctx,
+                                            QueryLoc const &loc,
+                                            std::vector<PlanIter_t>& children ):
+  NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>(sctx, loc, children)
 {
   initMembers();
 }
 
-void TokenizeIterator::initMembers() {
+void TokenizeNodeIterator::initMembers() {
   GENV_ITEMFACTORY->createQName(
     token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token" );
 
@@ -546,8 +556,8 @@ void TokenizeIterator::initMembers() {
     ref_qname_, "", "", "node-ref" );
 }
 
-bool TokenizeIterator::nextImpl( store::Item_t &result,
-                                 PlanState &plan_state ) const {
+bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
+                                     PlanState &plan_state ) const {
   store::Item_t node_name, attr_node;
   zstring base_uri;
   store::Item_t item;
@@ -558,8 +568,8 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   store::Item_t type_name;
   zstring value_string;
 
-  TokenizeIteratorState *state;
-  DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
+  TokenizeNodeIteratorState *state;
+  DEFAULT_STACK_INIT( TokenizeNodeIteratorState, state, plan_state );
 
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
@@ -642,19 +652,19 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   STACK_END( state );
 }
 
-void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
-  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>::
+void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>::
     resetImpl( plan_state );
-  TokenizeIteratorState *const state =
-    StateTraitsImpl<TokenizeIteratorState>::getState(
+  TokenizeNodeIteratorState *const state =
+    StateTraitsImpl<TokenizeNodeIteratorState>::getState(
       plan_state, this->theStateOffset
     );
   state->doc_tokens_->reset();
 }
 
-void TokenizeIterator::serialize( serialization::Archiver &ar ) {
+void TokenizeNodeIterator::serialize( serialization::Archiver &ar ) {
   serialize_baseclass(
-    ar, (NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>*)this
+    ar, (NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>*)this
   );
   if ( !ar.is_serializing_out() )
     initMembers();
