@@ -81,7 +81,6 @@
   <xs:simpleType name="xquery-version-enum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="3.0"/>
-      <xs:enumeration value="1.1"/>
       <xs:enumeration value="1.0"/>
     </xs:restriction>
   </xs:simpleType>

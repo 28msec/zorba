@@ -1799,7 +1799,7 @@ public:
 /*******************************************************************************
   [39] ExprSingle ::=
 
-  ** XQuery 1.1 exprs
+  ** XQuery 3.0 exprs
                       FLWORExpr |
                       QuantifiedExpr |
                       TypeswitchExpr |
@@ -3875,7 +3875,7 @@ public:
 
 /*******************************************************************************
   [108] Literal ::= NumericLiteral | StringLiteral
-  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 1.1)
+  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 3.0)
 
 ********************************************************************************/
 // Used by Annotations classes

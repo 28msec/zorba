@@ -85,7 +85,8 @@ declare option ver:module-version "2.0";
  : entities</a>). The functions takes two arguments: the first one is the 
  : string to be parsed and the second argument is an &lt;options/&gt; element that
  : passes a list of options to the parsing function. They are described below.
- : The options element must conform to the xml-options.xsd schema. Some of these
+ : The options element must conform to the xml-options:options element type 
+ : from the xml-options.xsd schema. Some of these
  : will be passed to the underlying library (LibXml2) and further documentation 
  : for them can be found at <a href="http://xmlsoft.org/html/libxml-parser.html">
  : LibXml2 parser</a>.
@@ -224,7 +225,7 @@ declare option ver:module-version "2.0";
  :)
 declare function parse-xml:parse(
   $xml-string as xs:string?,
-  $options as element()?) as node()* external;
+  $options as element(parse-xml-options:options)?) as node()* external;
   
 
 (:~

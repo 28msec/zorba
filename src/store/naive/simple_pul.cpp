@@ -2288,6 +2288,14 @@ void CollectionPul::applyUpdates()
   if (!theDeleteCollectionList.empty())
     return;
 
+  // if the collection is truncated, no other primitive needs to be applied
+  if (!theTruncateCollectionList.empty())
+  {
+    applyList(theTruncateCollectionList);
+    theIsApplied = true;
+    return;
+  }
+
   try
   {
     // Compute the before-delta for each incrementally maintained index.
@@ -2379,7 +2387,6 @@ void CollectionPul::applyUpdates()
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
-    applyList(theTruncateCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexAfterDeltas();

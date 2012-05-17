@@ -2056,10 +2056,6 @@
       <value>all nodes must be in same collection</value>
     </diagnostic>
 
-    <diagnostic code="ZDDY0019" name="UNDO_NOT_POSSIBLE">
-      <value>"$1": collection $2 cannot be undone</value>
-    </diagnostic>
-
     <diagnostic code="ZDDY0020" name="INDEX_DOMAIN_NODE_NOT_IN_COLLECTION">
       <value>"$1": index domain expression yields nodes that are not in collection</value>
     </diagnostic>
@@ -2780,10 +2776,6 @@
 
     <entry key="ErrorCodeMessage_12">
       <value>error $2: $3</value>
-    </entry>
-
-    <entry key="Eval11">
-      <value>"eval" only available in XQuery 1.1 or later</value>
     </entry>
 
     <entry key="ExpectedNumericOrDurationType">

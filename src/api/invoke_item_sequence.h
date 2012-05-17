@@ -34,7 +34,10 @@ namespace zorba {
       /**
        * Construct a sequence using an Iterator and its XQuery
        */
-      InvokeItemSequence(XQueryImpl* aQuery, Iterator_t aIter);
+      InvokeItemSequence(
+          XQueryImpl* aQuery,
+          Iterator_t aIter,
+          StaticContext* aSctx);
 
       /** \brief Destructor
        */
@@ -48,6 +51,8 @@ namespace zorba {
     protected:
       Iterator_t theIterator;
       XQueryImpl* theXQuery; // have ownership and destroy in destructor
+      // used to make sure the ctx lives longer then this sequence
+      StaticContext_t theSctx;
 
   }; /* class InvokeItemSequence */
 

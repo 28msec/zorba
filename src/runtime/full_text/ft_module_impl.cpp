@@ -423,6 +423,11 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef __GNUC__
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
+#endif /* __GNUC__ */
+
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
   zstring error_msg;
@@ -516,6 +521,10 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
   );
   ZORBA_ASSERT( state->tresult_.get() );
 }
+
+#ifdef __GNUC__
+# pragma GCC diagnostic pop
+#endif /* __GNUC__ */
 
 ///////////////////////////////////////////////////////////////////////////////
 

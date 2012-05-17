@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_FUNCTIONS_REFLECTION
-#define ZORBA_FUNCTIONS_REFLECTION
+#ifndef ZORBA_FUNCTIONS_PARSE_FRAGMENT_IMPL_H
+#define ZORBA_FUNCTIONS_PARSE_FRAGMENT_IMPL_H
+
 
 #include "common/shared_types.h"
+#include "functions/function.h"
+#include "functions/function_impl.h"
+#include "functions/function_consts.h"
 
 
-namespace zorba 
-{
+namespace zorba {
 
-void populate_context_reflection(static_context* sctx);
 
-}
+void populate_context_parse_fragment_impl(static_context* sctx);
 
-#endif
 
-/*
- * Local variables:
- * mode: c++
- * End:
- */
+} //namespace zorba
+
+
+#endif 
 /* vim:set et sw=2 ts=2: */
+
