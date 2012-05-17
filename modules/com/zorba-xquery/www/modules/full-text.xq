@@ -792,8 +792,9 @@ declare function ft:tokenize( $node as node() )
   as element(ft-schema:token)* external;
 
 (:~
- : Tokenizes the set of nodes comprising \a $includes and (all of its
- : descendants) but excluding \a $excludes (and all of its descendants).
+ : Tokenizes the set of nodes comprising <code>$includes</code> and (all of its
+ : descendants) but excluding <code>$excludes</code> (and all of its
+ : descendants), if any.
  :
  : @param $includes The set of nodes (and its descendants) to include.
  : The default
@@ -808,8 +809,9 @@ declare function ft:tokenize-nodes( $includes as node()+,
   as element(ft-schema:token)* external;
 
 (:~
- : Tokenizes the set of nodes comprising \a $includes and (all of its
- : descendants) but excluding \a $excludes (and all of its descendants).
+ : Tokenizes the set of nodes comprising <code>$includes</code> and (all of its
+ : descendants) but excluding <code>$excludes</code> (and all of its
+ : descendants), if any.
  :
  : @param $includes The set of nodes (and its descendants) to include.
  : @param $excludes The set of nodes (and its descendants) to exclude.
