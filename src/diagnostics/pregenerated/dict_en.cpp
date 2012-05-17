@@ -503,7 +503,6 @@ extern entry const dict_en[] = {
   { "~EmptySeqNotAsFunctionResult_23", "empty sequence not allowed as result of function $2() that returns \"$3\"" },
   { "~EmptySequence", "empty sequence" },
   { "~ErrorCodeMessage_12", "error $2: $3" },
-  { "~Eval11", "\"eval\" only available in XQuery 1.1 or later" },
   { "~ExpectedNumericOrDurationType", "expected numeric or duration type" },
   { "~ExpectedNumericType", "expected numeric type" },
   { "~ExpectedType_5", "expected type \"$5\"" },
