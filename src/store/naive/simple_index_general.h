@@ -176,7 +176,12 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& value);
 
-  virtual bool remove(const store::Item_t& key, store::Item_t& item, bool all) = 0;
+  virtual bool remove(const store::Item_t& key, const store::Item_t& item, bool all) = 0;
+
+  virtual bool remove(
+        const store::IndexKey* key,
+        const store::Item_t& item,
+        bool all = false) = 0;
 };
 
 
@@ -237,7 +242,16 @@ public:
 
   Index::KeyIterator_t keys() const;
 
-  bool remove(const store::Item_t& key, store::Item_t& item, bool);
+  bool remove(const store::Item_t& key, const store::Item_t& item, bool);
+
+  bool remove(
+        const store::IndexKey* key,
+        const store::Item_t& item,
+        bool all = false)
+  {
+    assert(key->size() == 1);
+    return remove(((*key)[0]), item, all);
+  }
 
   void clear();
 };
@@ -292,7 +306,16 @@ public:
 
   Index::KeyIterator_t keys() const;
 
-  bool remove(const store::Item_t& key, store::Item_t& item, bool all);
+  bool remove(const store::Item_t& key, const store::Item_t& item, bool all);
+
+  bool remove(
+        const store::IndexKey* key,
+        const store::Item_t& item,
+        bool all = false)
+  {
+    assert(key->size() == 1);
+    return remove(((*key)[0]), item, all);
+  }
 
   void clear();
 };

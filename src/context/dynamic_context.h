@@ -104,6 +104,7 @@ protected:
   typedef HashMapZString<dctx_value_t> ValueMap;
 
   typedef ItemPointerHashMap<store::Index_t> IndexMap;
+  typedef ItemPointerHashMap<store::Index_t> HashMap;
 
   typedef std::map<const zstring,const zstring> EnvVarMap;
 
@@ -120,6 +121,8 @@ protected:
   ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
+
+  HashMap                    * theAvailableMaps;
 
     //MODIFY
   EnvVarMap                  * theEnvironmentVariables;
@@ -201,6 +204,14 @@ public:
   void bindIndex(store::Item* qname, store::Index_t& index);
 
   void unbindIndex(store::Item* qname);
+
+  store::Index* getMap(store::Item* qname) const;
+
+  void bindMap(store::Item* qname, store::Index_t& index);
+
+  void unbindMap(store::Item* qname);
+
+  void getMapNames(std::vector<store::Item_t>& names) const;
 
   /**
    * Lists all active integrity constraints.

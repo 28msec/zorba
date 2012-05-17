@@ -25,6 +25,7 @@ New Features:
   * Added support for NO_ICU (to not use ICU for unicode processing)
   * Added XQJ support.
   * Added CollectionManager and DocumentManager support for XQJ.
+  * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
 
 Optimizations:
   * optimized insertion into a collection (don't copy it if the node was created by an element constructor

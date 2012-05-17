@@ -1,7 +1,6 @@
 xquery version "3.0";
-
 (:
- : Copyright 2006-2009 The FLWOR Foundation.
+ : Copyright 2006-2012 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -17,17 +16,20 @@ xquery version "3.0";
 :)
 
 (:~
- : This module defines a set of functions for working with
+ : <p>This module defines a set of functions for working with
  : maps. A map is identified by a QName and can
- : be created using the map:create function and deleted
- : using the map:delete function, respectively. However, its
- : actual lifetime depends on the particular store implementation.
+ : be created using the map:create or map:create-transient functions
+ : and deleted using the map:delete function, respectively.</p>
  :
- : The key of a particular entry in the map can consist
- : out of a set of atomic values (called attributes).
- : The actual type of each attribute can be determined when the
- : map is created. The value can be an arbitrary sequence
- : of items.
+ : <p>The lifetime of a transient map is a map is limited by the execution
+ : of the current XQuery program. A non-transient (or persistent) map
+ : lives until it is explicitly deleted. Accordingly, it's also available
+ : to other XQuery programs.</p>
+ :
+ : <p>The key of a particular entry in the map can consist of a set of
+ : atomic values (called attributes). The actual type of each attribute
+ : is determined when the map is created. The value can be an
+ : arbitrary sequence of items.</p>
  :
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
@@ -37,8 +39,6 @@ xquery version "3.0";
  : @project store/data structures
  :)
 module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
-
-import schema namespace map-types = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
@@ -70,12 +70,25 @@ declare %an:variadic %an:sequential function map:create(
   $key-type as xs:QName) as empty-sequence() external;
 
 (:~
+ : Create a transient map with a given name and a set of types for
+ : each key attribute. Note that the function is variadic
+ : and might take an arbitrary amount of types for the key
+ : attributes.
  :
+ : @param $name the name of the map
+ : @param $key-type an arbitrary number of types, one
+ :        for each key attribute.
+ :
+ : @return the function is sequential and immediately creates
+ :         the corresponding map but returns the empty-sequence.
+ :
+ : @error err:XPTY0004 if any of the attribute types is not a subtype of
+ :        xs:anyAtomicType.
+ : @error zerr:ZSTR0001 if a map with the given name already exists.
  :)
-declare %an:variadic %an:sequential function map:create(
+declare %an:variadic %an:sequential function map:create-transient(
   $name as xs:QName,
-  $key-type as xs:QName,
-  $options as element(map-types:options)) as empty-sequence() external;
+  $key-type as xs:QName) as empty-sequence() external;
 
 (:~
  : Destroys the map with the given name.
@@ -209,8 +222,7 @@ declare function map:keys(
  :
  : @error zerr:ZDDY0023 if a map with the given name does not exist.
  :)
-declare function map:size(
-  $name as xs:QName) as xs:integer external;
+declare function map:size($name as xs:QName) as xs:integer external;
 
 (:~
  : The function returns a sequence of QNames of the maps that are
@@ -220,3 +232,15 @@ declare function map:size(
  :
  :)
 declare function map:available-maps() as xs:QName* external;
+
+(:~
+ : The function returns true if the map identified by the given QName
+ : is transient, false otherwise.
+
+ : @param $name the name of the map
+ :
+ : @return true if the map is transient, false otherwise.
+ :
+ : @error zerr:ZDDY0023 if a map with the given name does not exist.
+ :)
+declare function map:is-transient($name as xs:QName) as xs:boolean external;

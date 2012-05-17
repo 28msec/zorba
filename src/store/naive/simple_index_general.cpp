@@ -747,7 +747,7 @@ bool GeneralHashIndex::insertInMap(
 *******************************************************************************/
 bool GeneralHashIndex::remove(
     const store::Item_t& key,
-    store::Item_t& item,
+    const store::Item_t& item,
     bool all)
 {
   assert(false);
@@ -922,7 +922,7 @@ bool GeneralTreeIndex::insertInMap(
 *******************************************************************************/
 bool GeneralTreeIndex::remove(
     const store::Item_t& key,
-    store::Item_t& item,
+    const store::Item_t& item,
     bool all)
 {
   return true;

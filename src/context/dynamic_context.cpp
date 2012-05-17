@@ -130,6 +130,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   theParent(NULL),
   keymap(NULL),
   theAvailableIndices(NULL),
+  theAvailableMaps(NULL),
   theEnvironmentVariables(NULL),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
@@ -175,6 +176,9 @@ dynamic_context::~dynamic_context()
 
   if (theAvailableIndices)
     delete theAvailableIndices;
+
+  if (theAvailableMaps)
+    delete theAvailableMaps;
 }
 
 
@@ -722,6 +726,71 @@ void dynamic_context::unbindIndex(store::Item* qname)
 {
   if (theAvailableIndices != NULL)
     theAvailableIndices->erase(qname);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Index* dynamic_context::getMap(store::Item* qname) const
+{
+  if (theAvailableMaps == NULL)
+    return NULL;
+
+  store::Index_t map;
+
+  if (theAvailableMaps->get(qname, map))
+  {
+    return map.getp();
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::bindMap(
+    store::Item* qname,
+    store::Index_t& map)
+{
+  if (theAvailableMaps == NULL)
+    theAvailableMaps = new HashMap(0, NULL, 8, false);
+
+  if (!theAvailableMaps->insert(qname, map))
+  {
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::unbindMap(store::Item* qname)
+{
+  if (theAvailableMaps != NULL)
+    theAvailableMaps->erase(qname);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::getMapNames(std::vector<store::Item_t>& names) const
+{
+  if (theAvailableMaps == NULL)
+    return;
+
+  for (HashMap::iterator lIter = theAvailableMaps->begin();
+       lIter != theAvailableMaps->end();
+       ++lIter)
+  {
+    names.push_back(lIter.getKey());
+  }
 }
 
 

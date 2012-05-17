@@ -56,6 +56,28 @@ MapCreateIterator::~MapCreateIterator() {}
 // </MapCreateIterator>
 
 
+// <MapCreateTransientIterator>
+MapCreateTransientIterator::class_factory<MapCreateTransientIterator>
+MapCreateTransientIterator::g_class_factory;
+
+
+void MapCreateTransientIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+MapCreateTransientIterator::~MapCreateTransientIterator() {}
+
+// </MapCreateTransientIterator>
+
+
 // <MapDestroyIterator>
 MapDestroyIterator::class_factory<MapDestroyIterator>
 MapDestroyIterator::g_class_factory;
@@ -234,6 +256,28 @@ AvailableMapsIterator::~AvailableMapsIterator() {}
 AvailableMapsIteratorState::AvailableMapsIteratorState() {}
 
 // </AvailableMapsIterator>
+
+
+// <MapIsTransientIterator>
+MapIsTransientIterator::class_factory<MapIsTransientIterator>
+MapIsTransientIterator::g_class_factory;
+
+
+void MapIsTransientIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+MapIsTransientIterator::~MapIsTransientIterator() {}
+
+// </MapIsTransientIterator>
 
 
 
