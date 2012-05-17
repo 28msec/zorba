@@ -423,6 +423,11 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef __GNUC__
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
+#endif /* __GNUC__ */
+
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
   zstring error_msg;
@@ -487,14 +492,11 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
       ERROR_LOC( loc )
     );
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
   state->tresult_ = std::move(
     state->thesaurus_->lookup(
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-#pragma GCC diagnostic pop
   ZORBA_ASSERT( state->tresult_.get() );
 
   while ( state->tresult_->next( &synonym ) ) {
@@ -512,16 +514,17 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
     StateTraitsImpl<ThesaurusLookupIteratorState>::getState(
       plan_state, this->theStateOffset
     );
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
   state->tresult_ = std::move(
     state->thesaurus_->lookup(
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-#pragma GCC diagnostic pop
   ZORBA_ASSERT( state->tresult_.get() );
 }
+
+#ifdef __GNUC__
+# pragma GCC diagnostic pop
+#endif /* __GNUC__ */
 
 ///////////////////////////////////////////////////////////////////////////////
 
