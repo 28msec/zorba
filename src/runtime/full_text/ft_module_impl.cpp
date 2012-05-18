@@ -427,11 +427,7 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 # define GCC_GREATER_EQUAL_460 1
 #endif
 
-#if defined( __APPLE__ ) && defined( __GNUC__ ) && defined( __llvm__ )
-# define APPLE_GCC_LLVM_HYBRID 1
-#endif
-
-#if defined( GCC_GREATER_EQUAL_460 ) || defined( APPLE_GCC_LLVM_HYBRID )
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
 # define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
 #endif
 
