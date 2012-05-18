@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "zorbatypes/URI.h"
@@ -44,11 +45,6 @@
 #include "types/casting.h"
 
 namespace zorba {
-
-#define RAISE_ERROR(errcode, loc, params)                     \
-  throw XQUERY_EXCEPTION(errcode,                             \
-                         params,                              \
-                         ERROR_LOC(loc));
 
 /*******************************************************************************
 ********************************************************************************/
@@ -156,8 +152,9 @@ getMap(
   {
     RAISE_ERROR(
       zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( aName->getStringValue() ),
-      aLoc);
+      aLoc,
+      ERROR_PARAMS( aName->getStringValue() )
+    );
   }
 
   return false;
@@ -188,8 +185,8 @@ MapCreateIterator::nextImpl(
   {
     RAISE_ERROR(
       zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      loc
+      loc,
+      ERROR_PARAMS( lQName->getStringValue() )
     );
   }
 
@@ -241,8 +238,8 @@ MapCreateTransientIterator::nextImpl(
   {
     RAISE_ERROR(
       zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      loc
+      loc,
+      ERROR_PARAMS( lQName->getStringValue() )
     );
   }
 
@@ -335,12 +332,12 @@ MapGetIterator::nextImpl(
   {
     RAISE_ERROR(
       zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+      loc,
       ERROR_PARAMS(
         lQName->getStringValue(),
         "map",
         theChildren.size() - 1,
-        lSpec.getNumColumns() ),
-      loc
+        lSpec.getNumColumns() )
     );
   }
 
@@ -404,12 +401,12 @@ MapInsertIterator::nextImpl(
   {
     RAISE_ERROR(
       zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+      loc,
       ERROR_PARAMS(
         lQName->getStringValue(),
         "map",
         theChildren.size() - 2,
-        lSpec.getNumColumns() ),
-      loc
+        lSpec.getNumColumns() )
     );
   }
 
@@ -502,13 +499,13 @@ MapRemoveIterator::nextImpl(
   {
     RAISE_ERROR(
       zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+      loc,
       ERROR_PARAMS(
         lQName->getStringValue(),
         "map",
         theChildren.size() - 1,
         lSpec.getNumColumns()
-      ),
-      loc
+      )
     );
   }
 
