@@ -152,7 +152,7 @@ you need to implement the \c %tokenize_string() function where:
   </tr>
 </table>
 
-A complete implementation of \c %tokenize() is non-trivial
+A complete implementation of \c %tokenize_string() is non-trivial
 and therefore an example is beyond the scope of this API documentation.
 However,
 the things a tokenizer should take into consideration include:

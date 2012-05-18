@@ -30,11 +30,11 @@ namespace zorba
 ///////////////////////////////////////////////////////////////////////////////
 
 //full-text:tokenize
-class full_text_tokenize : public function
+class full_text_tokenize_node : public function
 {
 public:
-  full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
+  full_text_tokenize_node(const signature& sig,
+                          FunctionConsts::FunctionKind kind) : 
     function(sig, kind)
   {
 
