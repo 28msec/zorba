@@ -199,25 +199,11 @@ declare %private %an:sequential function xqdoc2html:gather-and-copy(
 
 };
 
-(:~
- : Returns the URI of the module given the passed <pre>$folderPath</pre> using
- : the Zorba URI resolving mechanism.
- :
- : @param $folderPath the folder path.
- : @return the URI of the module.
- :)
- (:
-declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:string) as xs:string {
-  let $tok := tokenize($folderPath, fn:concat("\",file:directory-separator()))
-  return
-    fn:concat('http://', $tok[3],'.', $tok[2],'.', $tok[1], substring-after($folderPath, $tok[3]))
-};
-:)
-
-(:~ Returns the string resulting from replacing the directory-separators (i.e. / ) with '_'
+(:~ 
+ : Returns the string resulting from replacing the directory-separators (i.e. // ) with '_'
  :
  : @param $moduleURI the path to the module URI.
- : @return the string resulting from replacing the directory-separators (i.e. / ) with '_'.
+ : @return the string resulting from replacing the directory-separators (i.e. // ) with '_'.
  :
  :)
 declare function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {

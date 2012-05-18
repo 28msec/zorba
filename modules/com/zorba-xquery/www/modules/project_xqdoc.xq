@@ -70,8 +70,14 @@ declare %an:sequential function pxqdoc:delete-XML-dir(
   else ();
 };
 
+(:~
+ : This function loads the ZorbaManifest.xml
+ :
+ : @param $zorbaManifestPath location of ZorbaManifest.xml.
+ : @return the manifest.
+ :)
 declare %an:nondeterministic function pxqdoc:load-manifest(
-  $zorbaManifestPath as xs:string)
+  $zorbaManifestPath as xs:string) as document-node()?
 {
   try 
   {
