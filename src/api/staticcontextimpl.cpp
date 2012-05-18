@@ -1482,9 +1482,10 @@ StaticContextImpl::invoke(
 
     // the XQueryImpl object needs to live as long as its iterator
     // because the iterator returned as a result of the query
-    // contains a reference to the query in order to do cleanup work
+    // contains a reference to the query in order to do cleanup work.
+    // The same is true for this sctx
     Iterator_t lIter = impl->iterator();
-    return new InvokeItemSequence(impl.release(), lIter);
+    return new InvokeItemSequence(impl.release(), lIter, const_cast<StaticContextImpl*>(this));
   } 
   catch (ZorbaException const& e)
   {
@@ -1646,6 +1647,23 @@ StaticContextImpl::fetchBinary(
   }
   ZORBA_CATCH
   return 0;
+}
+
+void
+StaticContextImpl::clearBaseURI()
+{
+  try
+  {
+    theCtx->clear_base_uri();
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
 }
 
 } /* namespace zorba */

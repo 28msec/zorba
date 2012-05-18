@@ -351,8 +351,8 @@ namespace zorba {
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
-    void beginVisit( const TokenizeIterator& );
-    void endVisit  ( const TokenizeIterator& );
+    void beginVisit( const TokenizeNodeIterator& );
+    void endVisit  ( const TokenizeNodeIterator& );
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT

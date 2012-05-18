@@ -722,6 +722,7 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    *
    * @return the fetched resource
    */
+
   virtual Item
   fetch(const String& aURI, const String& aEntityKind) const = 0;
 
@@ -778,6 +779,12 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    */
   virtual Item
   fetchBinary(const String& aURI, const String& aEntityKind) const = 0;
+
+  /** \brief Clears the base URI and sets it to undefined state.
+   *         (see http://www.w3.org/TR/xquery/#static_context)
+   */
+  virtual void
+  clearBaseURI() = 0;
 
 };
 
