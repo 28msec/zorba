@@ -142,10 +142,6 @@ MACRO (DECLARE_ZORBA_MODULE)
 
   MANGLE_URI (${MODULE_URI} ".xq" module_path module_filename)
 
-  # Compute a CMake-symbol-safe version of the target URI, for storing
-  # things in CMake properties.
-  STRING (REGEX REPLACE "[/ ]" "_" uri_sym "${module_path}/${module_filename}")
-
   # Determine which module this is, numerically. This number will be
   # used to generate unique names, for instance for the target name
   # for the external library (if any) and for the compilation test. I
@@ -189,6 +185,7 @@ MACRO (DECLARE_ZORBA_MODULE)
   # declared. If a *lower* version has already been declared, the
   # output file rules will be messed up, so die. If the *same* version
   # has already been declare, XQdoc will be messed up, so die.
+  STRING (REGEX REPLACE "[/:#% ]" "_" uri_sym "${MODULE_URI}")
   GET_PROPERTY (target_versions GLOBAL PROPERTY "${uri_sym}-versions")
   FOREACH (known_ver ${target_versions})
     IF (known_ver LESS version_int)
@@ -375,6 +372,16 @@ MACRO (DECLARE_ZORBA_MODULE)
   ENDIF (NOT MODULE_TEST_ONLY)
 
 ENDMACRO (DECLARE_ZORBA_MODULE)
+
+# Macro to see whether a given module has been declared, by URI.
+# For now this only returns a true or false value; version introspection
+# is not supported.
+MACRO (IS_ZORBA_MODULE_DECLARED IS_SET_VAR MODULE_URI)
+  # Just check for the existence of the "URI-versions" global property,
+  # as set by DECLARE_ZORBA_MODULE()
+  STRING (REGEX REPLACE "[/:#% ]" "_" uri_sym "${MODULE_URI}")
+  GET_PROPERTY (${IS_SET_VAR} GLOBAL PROPERTY "${uri_sym}-versions" SET)
+ENDMACRO (IS_ZORBA_MODULE_DECLARED)
 
 # Macro which declares a schema. This sets up the installation of the
 # schema into the URI_PATH folder so it will be found at runtime.
@@ -943,7 +950,7 @@ MACRO (ADD_XQDOC_TARGETS)
       COMMENT "Building XQDoc XHTML documentation ..."
   )
   MESSAGE(STATUS "  added target xqdoc")
-  ADD_DEPENDENCIES(xqdoc xqdoc-xml)
+  ADD_DEPENDENCIES(xqdoc xqdoc-xml modules_svg)
   SET_TARGET_PROPERTIES (xqdoc PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD 1
     FOLDER "Docs"
