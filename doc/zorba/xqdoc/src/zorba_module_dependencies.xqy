@@ -172,6 +172,22 @@ declare %private %an:sequential function z:collect-node (
   as last into $z:nodesCollector;
 };
 
+declare %private function z:get_subgraphs() as xs:string*
+{
+    let $subgraphs as xs:string* := distinct-values(
+                        for $module in $z:nodesCollector//module
+                        return fn:string(data($module/@moduleProject))
+                      )
+    (: Order the subgraphs based on the Level1Weight :)
+    return for $str in $z:level1Weight
+           return
+             for $tmp in $subgraphs
+             where starts-with($tmp, $str)
+             order by $tmp
+             return $tmp
+};
+
+
 (:~
  : Fill $z:edgesCollector with all the edges (the links between the nodes) for both modules and eternal library dependencies.
  :)
@@ -281,7 +297,7 @@ declare function z:nodes_modules(
     let $tok := tokenize($lModuleUri,"/")
     let $lLabel := if(ends-with($lModuleUri,'/')) then $tok[last()-1] else $tok[last()]
     let $lName := concat(data($module/@index),z:get_shape_properties($lModuleUri, $lLabel))
-    where starts-with(data($module/@moduleProject), $category)
+    where fn:string(data($module/@moduleProject)) = $category
     order by $lModuleUri
     return
       $lName,";
@@ -373,16 +389,50 @@ declare function z:create_subgraph_libraries() as xs:string
  : Generate the cluster for a specific category.
  :)
 declare function z:create_subgraph(
-  $category as xs:string) as xs:string
+  $category   as xs:string,
+  $subGraphs  as xs:string*) as xs:string
 {
-concat('
+  concat('
     subgraph cluster',
-        index-of($z:level1Weight, $category),
-        ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [style="filled", color=white];
+      index-of($z:level1Weight, $category),
+      ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [style="filled", color=white];
+    ',
+    z:create_subgraph-rec($category,
+                          for $tmp in $subGraphs
+                          where (starts-with($tmp, $category) and (contains($tmp,"/")))
+                          return $tmp),'
     ',
 z:nodes_modules($category),'
 ',
-'    label="',$category,'";','}')
+'    label="',$category,'"; tooltip="',$category,'"}')
+};
+
+declare %private function z:create_subgraph-rec(
+  $category   as xs:string,
+  $subGraphs  as xs:string*
+  ) as xs:string
+{
+let $lSubGraphs := distinct-values( for $tmp in $subGraphs
+                                    return tokenize(substring-after($tmp, concat($category,"/")),"/")[1]
+                                    )
+return
+string-join(
+for $sg in $lSubGraphs
+let $newSg := concat($category,"/",$sg)
+return
+concat('
+    subgraph cluster',
+        translate($newSg," -./",""),'{ style=filled;
+    ',
+        z:create_subgraph-rec($newSg,
+                          for $tmp in $subGraphs
+                          where starts-with($tmp, $newSg)
+                          return $tmp),'
+    ',
+z:nodes_modules($newSg),'
+',
+'    label="',$sg,'"; tooltip="',$newSg,'"}'),'
+')
 };
 
 (:~
@@ -390,11 +440,17 @@ z:nodes_modules($category),'
  :)
 declare function z:create_graph() as xs:string
 {
+let $subgraphs := z:get_subgraphs()
+return
     concat('digraph G { penwidth=1; pencolor=black; label="Zorba modules dependency graph"; tooltip="Zorba modules dependency graph"
 ' ,
             string-join(
               for $cat1 in  $z:level1Weight
-              return z:create_subgraph($cat1)
+              return z:create_subgraph( $cat1, 
+                                        for $val in $subgraphs
+                                        where starts-with($val, $cat1)
+                                        return $val
+                                       )
               ,('
   ')), z:create_subgraph_libraries()
     ,"
@@ -403,9 +459,4 @@ declare function z:create_graph() as xs:string
   z:edges_modules(),"
   }"
   )
-};
-
-declare function z:catgories() as xs:string*
-{
-  ("1", "2")
 };
