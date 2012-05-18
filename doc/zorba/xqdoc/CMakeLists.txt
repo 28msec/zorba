@@ -62,7 +62,7 @@ IF (_graphviz_avail)
     -f
     -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/generate-module-dependencies-svg.xq\""
     -e "\"ZorbaBuildFolder:=${CMAKE_CURRENT_BINARY_DIR}/../../../\""
-    -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/modules.svg\""
+    -o "\"${CMAKE_CURRENT_SOURCE_DIR}/images/modules_new.svg\""
     COMMENT "Building module dependencies SVG..."
     )
 ELSE (_graphviz_avail)

@@ -419,6 +419,13 @@ declare %an:sequential function xqdoc2html:main(
 
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));
   ddl:delete(xs:QName("xqdoc2html:collection"));
+  
+  (:delete modules_new.svg if it exists:)
+  file:delete(fn:concat($xhtmlRequisitesPath,
+                        file:directory-separator(),
+                        "images",
+                        file:directory-separator(),
+                        "modules_new.svg"));
 };
 
 declare %private function xqdoc2html:get-project-root(
