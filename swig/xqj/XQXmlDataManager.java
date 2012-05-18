@@ -23,6 +23,12 @@ import org.zorbaxquery.api.XmlDataManager;
 import org.zorbaxquery.api.Zorba;
 
 
+  /**
+   * Using the XQXmlDataManager one can manage documents and collections.
+   * 
+   * The XQXmlDataManager is a singleton instance. The XQConnection object is reponsible for maintaining its lifetime. The instance can be accessed by calling getXmlDataManager() on the XQConnection object. It may not be accessed anymore after XQConnection is closed.
+   * 
+   */
 public class XQXmlDataManager {
     
     private boolean closed = false;
@@ -36,6 +42,12 @@ public class XQXmlDataManager {
         dm = zorba.getXmlDataManager();
     }
     
+  /** \brief   Close the XmlDataManager and release all the resources associated with this item.
+   * 
+   *   Close the XmlDataManager and release all the resources associated with this item. No method other than the isClosed or close method may be called once the XmlDataManager is closed. Calling close on an XmlDataManager object that is already closed has no effect.
+   * 
+   * @throw XQException - if there is an error during closing the item
+   */
     public void close() throws XQException {
         if (lDocumentManager!=null) {
             lDocumentManager.close();
@@ -55,10 +67,16 @@ public class XQXmlDataManager {
         closed = true;
     }
 
+  /** \brief  Checks if the XQXmlDataManager is closed.
+   * 
+   *  Checks if the XQXmlDataManager is closed.
+   * 
+   * @return boolean true if the XQXmlDataManager is in a closed state, false otherwise
+   */
     public boolean isClosed() {
         return closed;
     }
-    
+
     public XQDocumentManager getDocumentManager()  throws XQException {
         isClosedXQException();
         if (lDocumentManager==null) {
@@ -66,7 +84,14 @@ public class XQXmlDataManager {
         }
         return lDocumentManager;
     }
-    
+
+  /** \brief Returns a CollectionManager responsible for all collections.
+   * The collection manager provides a set of functions for managing collections identified by a QName and their contents.
+   * 
+   * Please note that the resulting manager is only responsible for dynamic collections identified by a QName, i.e. those that are not declared in the prolog of a module or identified by a URI.
+   * 
+   * @return The collection manager responsible for managing collections.
+   */
     public XQCollectionManager getCollectionManager()  throws XQException {
         isClosedXQException();
         if (lCollectionManager==null) {
@@ -74,7 +99,14 @@ public class XQXmlDataManager {
         }
         return lCollectionManager;
     }
-    
+
+  /** \brief Returns a CollectionManager responsible for collections identified by a URI.
+   * The collection manager provides a set of functions for managing collections identified by a URI and their contents.
+   * 
+   * Please note that the resulting manager is only responsible for dynamic collections identified by a URI, i.e. those that are not declared in the prolog of a module or identified by a QName.
+   * 
+   * @return The collection manager responsible for managing collections.
+   */
     public XQCollectionManager getW3CCollectionManager()  throws XQException {
         isClosedXQException();
         if (lW3CollectionManager==null) {
@@ -82,7 +114,10 @@ public class XQXmlDataManager {
         }
         return lW3CollectionManager;
     }
-    
+
+  /** \brief Parse an XML document and return an XQSequence.
+   * 
+   */
     public XQSequence parseXML(String xmlText) throws XQException {
         isClosedXQException();
         ItemSequence zSequence = new ItemSequence(dm.parseXMLtoItem(xmlText));
@@ -90,7 +125,7 @@ public class XQXmlDataManager {
         sequences.add(result);
         return result;
     }
-    
+
     private void isClosedXQException() throws XQException {
         if (closed) {
             throw new XQException("XmlDataManager is closed");
