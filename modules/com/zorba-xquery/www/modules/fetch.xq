@@ -85,25 +85,6 @@ as xs:string
 };
 
 (:~
- : <p>Tries to fetch the resource referred to by the given URI and
- : returning it as base64Binary.</p>
- :
- : <p>It queries all URI mappers and resolvers with kind
- : <tt>EntityData::SOME_CONTENT</tt>.</p>
-
- : @param $uri the resource to fetch.
- : @return the resource referred to by the given URI as streamble base64Binary.
- :
- : @error zerr:ZXQP0025 if the URI could not be resolved
- :   or did not resolve to a <tt>StreamResource</tt>.
- :)
-declare %an:streamable function fetch:content-binary($uri as xs:string)
-as xs:base64Binary
-{
-  fetch:content-binary($uri, "SOME_CONTENT")
-};
-
-(:~
  : <p>Tries to fetch the resource referred to by the given URI.</p>
  :
  : <p>It queries all URI mappers and resolvers with kind the specified
@@ -127,6 +108,24 @@ declare %an:streamable function fetch:content(
   $encoding as xs:string)
 as xs:string external;
 
+(:~
+ : <p>Tries to fetch the resource referred to by the given URI and
+ : returning it as base64Binary.</p>
+ :
+ : <p>It queries all URI mappers and resolvers with kind
+ : <tt>EntityData::SOME_CONTENT</tt>.</p>
+
+ : @param $uri the resource to fetch.
+ : @return the resource referred to by the given URI as streamble base64Binary.
+ :
+ : @error zerr:ZXQP0025 if the URI could not be resolved
+ :   or did not resolve to a <tt>StreamResource</tt>.
+ :)
+declare %an:streamable function fetch:content-binary($uri as xs:string)
+as xs:base64Binary
+{
+  fetch:content-binary($uri, "SOME_CONTENT")
+};
 
 (:~
  : <p>Tries to fetch the resource referred to by the given URI and

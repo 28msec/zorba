@@ -32,7 +32,7 @@ namespace zorba {
 
 /*******************************************************************************
 ********************************************************************************/
-std::auto_ptr<internal::Resource>
+std::auto_ptr<internal::StreamResource>
 getFetchResource(
     const store::Item_t& aUri,
     const store::Item_t& aKind,
@@ -71,10 +71,30 @@ getFetchResource(
     // ask the uri mappers and resolvers to give
     // me a resource of specified kind
     zstring lErrorMessage;
-    return aSctx->resolve_uri(
+    
+    std::auto_ptr<internal::Resource> lRes = aSctx->resolve_uri(
       aUri->getStringValue(),
       lKind,
       lErrorMessage);
+
+    std::auto_ptr<internal::StreamResource> lStreamRes(
+      dynamic_cast<internal::StreamResource*>(lRes.get()));
+
+    if ( !lStreamRes.get() )
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+        ERROR_PARAMS(
+          aUri->getStringValue(),
+          ZED(ZXQP0025_RESOURCE_NOT_FOUND)
+        ),
+        ERROR_LOC( aLoc )
+      );
+    }
+
+    lRes.release();
+
+    return lStreamRes;
 
   } catch (ZorbaException const& e) {
     throw XQUERY_EXCEPTION(
@@ -101,9 +121,8 @@ FetchContentIterator::nextImpl(
   store::Item_t lUri;
   store::Item_t lEntityKind;
   store::Item_t lEncoding;
-  zstring lEncodingStr("UTF-8");
-  std::auto_ptr<internal::Resource> lRes;
-  internal::StreamResource* lStreamRes;
+  zstring lEncodingStr;
+  std::auto_ptr<internal::StreamResource> lRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -116,18 +135,6 @@ FetchContentIterator::nextImpl(
 
   lRes = getFetchResource(lUri, lEntityKind, theSctx, loc);
 
-  lStreamRes = dynamic_cast<internal::StreamResource*>(lRes.get());
-  if ( !lStreamRes ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
-      ERROR_PARAMS(
-        lUri->getStringValue(),
-        ZED(ZXQP0025_RESOURCE_NOT_FOUND`)
-      ),
-      ERROR_LOC( loc )
-    );
-  }
-
   if (transcode::is_necessary(lEncodingStr.c_str()))
   {
     if (!transcode::is_supported(lEncodingStr.c_str()))
@@ -138,7 +145,7 @@ FetchContentIterator::nextImpl(
           ERROR_LOC( loc )
         );
     }
-    transcode::attach(*lStreamRes->getStream(), lEncodingStr.c_str());
+    transcode::attach(*lRes->getStream(), lEncodingStr.c_str());
   }
 
   // return the resource in a streamable string. This transfers memory
@@ -146,11 +153,11 @@ FetchContentIterator::nextImpl(
   // object, so we then remove the StreamReleaser from the StreamResource.
   GENV_ITEMFACTORY->createStreamableString(
         result,
-        *lStreamRes->getStream(),
-        lStreamRes->getStreamReleaser(),
-        lStreamRes->isStreamSeekable()
+        *lRes->getStream(),
+        lRes->getStreamReleaser(),
+        lRes->isStreamSeekable()
   );
-  lStreamRes->setStreamReleaser(nullptr);
+  lRes->setStreamReleaser(nullptr);
 
   STACK_PUSH(result != NULL, state);
 
@@ -173,8 +180,7 @@ FetchContentBinaryIterator::nextImpl(
 {
   store::Item_t lUri;
   store::Item_t lEntityKind;
-  std::auto_ptr<internal::Resource> lRes;
-  internal::StreamResource* lStreamRes;
+  std::auto_ptr<internal::StreamResource> lRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -184,29 +190,17 @@ FetchContentBinaryIterator::nextImpl(
 
   lRes = getFetchResource(lUri, lEntityKind, theSctx, loc);
 
-  lStreamRes = dynamic_cast<internal::StreamResource*>(lRes.get());
-  if ( !lStreamRes ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
-      ERROR_PARAMS(
-        lUri->getStringValue(),
-        ZED(ZXQP0025_RESOURCE_NOT_FOUND)
-      ),
-      ERROR_LOC( loc )
-    );
-  }
-
   // return the resource in a streamable base64. This transfers memory
   // ownership of the istream (via its StreamReleaser) to the StreamableBase64BinaryItem
   // object, so we then remove the StreamReleaser from the StreamResource.
   GENV_ITEMFACTORY->createStreamableBase64Binary(
         result,
-        *lStreamRes->getStream(),
-        lStreamRes->getStreamReleaser(),
-        lStreamRes->isStreamSeekable(),
+        *lRes->getStream(),
+        lRes->getStreamReleaser(),
+        lRes->isStreamSeekable(),
         false
   );
-  lStreamRes->setStreamReleaser(nullptr);
+  lRes->setStreamReleaser(nullptr);
 
   STACK_PUSH(result != NULL, state);
 
