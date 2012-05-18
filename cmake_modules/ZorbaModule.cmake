@@ -691,7 +691,7 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
   # Generate project's projectConfig.cmake file.
   # QQQ need to create an installable version of this too, once we know
   # how installing a module package should work.
-  GET_PROPERTY (ZORBA_PROJECT_LIBRARIES
+  GET_PROPERTY (ZORBA_MODULE_LIBRARIES
     GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
   CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
     "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
