@@ -95,8 +95,6 @@ DECLARE_ZORBA_MODULE(FILE xqdoc2xhtml/index.xq VERSION 2.0
 
 DECLARE_ZORBA_MODULE(FILE store/data-structures/unordered-map.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map")
-DECLARE_ZORBA_SCHEMA(FILE store/data-structures/unordered-map.xsd
-  URI "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map")
 DECLARE_ZORBA_MODULE(FILE store/documents/dynamic.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/dynamic/documents")
 DECLARE_ZORBA_MODULE(FILE store/dynamic/collections/ddl.xq VERSION 2.0
