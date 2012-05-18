@@ -520,13 +520,14 @@ ADD_SUBDIRECTORY(cmake_modules)
 # ZorbaConfig knows about testdriver. We need to include "config"
 # before "modules" so external modules will be able to find
 # ZorbaConfig.cmake. We need to include "modules" before "include" so
-# config.h can know eg. whether we found CURL.
+# config.h can know eg. whether we found CURL. We need to include "modules"
+# before "doc" so xqdoc can know what non-core modules are available.
 
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
-ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(schemas)
 ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(include)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)
