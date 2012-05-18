@@ -423,7 +423,19 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUC__
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
+# define GCC_GREATER_EQUAL_460 1
+#endif
+
+#if defined( __APPLE__ ) && defined( __GNUC__ ) && defined( __llvm__ )
+# define APPLE_GCC_LLVM_HYBRID 1
+#endif
+
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( APPLE_GCC_LLVM_HYBRID )
+# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
+#endif
+
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
 #endif /* __GNUC__ */
@@ -522,7 +534,7 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
   ZORBA_ASSERT( state->tresult_.get() );
 }
 
-#ifdef __GNUC__
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
 #endif /* __GNUC__ */
 
