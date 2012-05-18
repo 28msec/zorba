@@ -1427,6 +1427,21 @@ void PrinterVisitor::endVisit ( const TokenizeIterator& ) {
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+// <TokenizeNodesIterator>
+void PrinterVisitor::beginVisit ( const TokenizeNodesIterator& a) {
+  thePrinter.startBeginVisit("TokenizeNodesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TokenizeNodesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TokenizeNodesIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizerPropertiesIterator>
 void PrinterVisitor::beginVisit ( const TokenizerPropertiesIterator& a) {
   thePrinter.startBeginVisit("TokenizerPropertiesIterator", ++theId);

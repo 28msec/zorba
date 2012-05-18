@@ -671,6 +671,83 @@ void TokenizeIterator::serialize( serialization::Archiver &ar ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+TokenizeNodesIterator::
+TokenizeNodesIterator( static_context *sctx, QueryLoc const &loc,
+                       std::vector<PlanIter_t>& children ) :
+  NaryBaseIterator<TokenizeNodesIterator,TokenizeNodesIteratorState>(
+    sctx, loc, children
+  )
+{
+  initMembers();
+}
+
+void TokenizeNodesIterator::initMembers() {
+  // TODO
+}
+
+bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
+                                      PlanState &plan_state ) const {
+
+  zstring base_uri;
+  store::Item_t item;
+  iso639_1::type lang;
+  Tokenizer::State t_state;
+  store::NsBindings const ns_bindings;
+  TokenizerProvider const *tokenizer_provider;
+  store::Item_t type_name;
+  zstring value_string;
+
+  TokenizeIteratorState *state;
+  DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
+
+  while ( consumeNext( item, theChildren[0], plan_state ) ) {
+    // TODO
+  }
+
+  while ( consumeNext( item, theChildren[1], plan_state ) ) {
+    // TODO
+  }
+
+  if ( theChildren.size() > 2 ) {
+    consumeNext( item, theChildren[2], plan_state );
+    lang = get_lang_from( item, loc );
+  } {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
+  }
+
+  tokenizer_provider = GENV_STORE.getTokenizerProvider();
+  ZORBA_ASSERT( tokenizer_provider );
+
+  while ( true ) {
+
+    STACK_PUSH( true, state );
+  } // while
+
+  STACK_END( state );
+}
+
+void TokenizeNodesIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<TokenizeNodesIterator,TokenizeNodesIteratorState>::
+    resetImpl( plan_state );
+  TokenizeNodesIteratorState *const state =
+    StateTraitsImpl<TokenizeNodesIteratorState>::getState(
+      plan_state, this->theStateOffset
+    );
+  state->doc_tokens_->reset();
+}
+
+void TokenizeNodesIterator::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass(
+    ar, (NaryBaseIterator<TokenizeNodesIterator,TokenizeNodesIteratorState>*)this
+  );
+  if ( !ar.is_serializing_out() )
+    initMembers();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
   store::Item_t element, item, junk, name;

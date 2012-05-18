@@ -353,6 +353,11 @@ namespace zorba {
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
+    void beginVisit( const TokenizeNodesIterator& );
+    void endVisit  ( const TokenizeNodesIterator& );
+#endif
+
+#ifndef ZORBA_NO_FULL_TEXT
     void beginVisit( const TokenizerPropertiesIterator& );
     void endVisit  ( const TokenizerPropertiesIterator& );
 #endif

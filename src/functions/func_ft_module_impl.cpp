@@ -36,6 +36,17 @@ PlanIter_t full_text_tokenize::codegen(
 }
 
 
+PlanIter_t full_text_tokenize_nodes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new TokenizeNodesIterator(sctx, loc, argv);
+}
+
+
 PlanIter_t full_text_tokenizer_properties::codegen(
   CompilerCB*,
   static_context* sctx,

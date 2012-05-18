@@ -326,6 +326,37 @@ void TokenizeIteratorState::reset(PlanState& planState) {
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+// <TokenizeNodesIterator>
+TokenizeNodesIterator::class_factory<TokenizeNodesIterator>
+TokenizeNodesIterator::g_class_factory;
+
+
+void TokenizeNodesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+TokenizeNodesIterator::~TokenizeNodesIterator() {}
+
+TokenizeNodesIteratorState::TokenizeNodesIteratorState() {}
+
+TokenizeNodesIteratorState::~TokenizeNodesIteratorState() {}
+
+
+void TokenizeNodesIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </TokenizeNodesIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizerPropertiesIterator>
 TokenizerPropertiesIterator::class_factory<TokenizerPropertiesIterator>
 TokenizerPropertiesIterator::g_class_factory;

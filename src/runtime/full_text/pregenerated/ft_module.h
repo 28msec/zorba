@@ -509,6 +509,60 @@ public:
  * 
  * Author: 
  */
+class TokenizeNodesIteratorState : public PlanIteratorState
+{
+public:
+  store::Item_t doc_item_; //
+  FTTokenIterator_t doc_tokens_; //
+
+  TokenizeNodesIteratorState();
+
+  ~TokenizeNodesIteratorState();
+
+  void reset(PlanState&);
+};
+
+class TokenizeNodesIterator : public NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>
+{ 
+protected:
+  store::Item_t token_qname_; //
+  store::Item_t lang_qname_; //
+  store::Item_t para_qname_; //
+  store::Item_t sent_qname_; //
+  store::Item_t value_qname_; //
+  store::Item_t ref_qname_; //
+public:
+  SERIALIZABLE_CLASS(TokenizeNodesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeNodesIterator,
+    NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  TokenizeNodesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    ;
+
+  virtual ~TokenizeNodesIterator();
+
+public:
+  void initMembers();
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
+};
+
+#endif
+
+#ifndef ZORBA_NO_FULL_TEXT
+/**
+ * 
+ * Author: 
+ */
 class TokenizerPropertiesIterator : public NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>
 { 
 public:

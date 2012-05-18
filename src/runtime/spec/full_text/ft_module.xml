@@ -189,6 +189,28 @@
 
 </zorba:iterator>
 
+<zorba:iterator name="TokenizeNodesIterator"
+                generateResetImpl="true"
+                generateSerialize="false"
+                generateConstructor="false"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+
+  <zorba:state generateInit="use-default">
+    <zorba:member type="store::Item_t" name="doc_item_"/>
+    <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
+  </zorba:state>
+
+  <zorba:member type="store::Item_t" name="token_qname_"/>
+  <zorba:member type="store::Item_t" name="lang_qname_"/>
+  <zorba:member type="store::Item_t" name="para_qname_"/>
+  <zorba:member type="store::Item_t" name="sent_qname_"/>
+  <zorba:member type="store::Item_t" name="value_qname_"/>
+  <zorba:member type="store::Item_t" name="ref_qname_"/>
+
+  <zorba:method name="initMembers" return="void"/>
+
+</zorba:iterator>
+
 <zorba:iterator name="TokenizerPropertiesIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
 </zorba:iterator>
