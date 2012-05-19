@@ -434,7 +434,7 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
-#endif /* __GNUC__ */
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
@@ -532,7 +532,7 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
-#endif /* __GNUC__ */
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 ///////////////////////////////////////////////////////////////////////////////
 
