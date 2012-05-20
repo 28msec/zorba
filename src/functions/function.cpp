@@ -48,17 +48,6 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
 {
   setFlag(FunctionConsts::isBuiltin);
   setFlag(FunctionConsts::isDeterministic);
-
-  zorba::serialization::Archiver& ar =
-  *::zorba::serialization::ClassSerializer::getInstance()->
-  getArchiverForHardcodedObjects();
-
-  if (ar.is_loading_hardcoded_objects())
-  {
-    // register this hardcoded object to help plan serialization
-    function* this_ptr = this;
-    ar & this_ptr;
-  }
 }
 
 
@@ -73,6 +62,8 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   ar & theAnnotationList;
   ar & theModuleSctx;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
+
+  ZORBA_ASSERT(!isBuiltin());
 }
 
 

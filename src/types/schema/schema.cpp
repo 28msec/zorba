@@ -353,7 +353,8 @@ Schema::Schema(TypeManager* tm)
 #ifndef ZORBA_NO_XMLSCHEMA
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
   // QQQ should be zstring
-  theUdTypesCache = new serializable_HashMapZString<xqtref_t>(64, false);
+  theUdTypesCache = 
+  new HashMap<zstring, xqtref_t, serializable_HashMapZStringCmp>(64, false);
 #endif
 }
 

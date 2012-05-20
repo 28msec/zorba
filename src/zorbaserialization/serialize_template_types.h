@@ -27,6 +27,7 @@
 
 #include "util/string_util.h"
 #include "util/stl_util.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 #include "zorbatypes/zstring.h"
@@ -37,6 +38,12 @@
 
 namespace zorba
 {
+
+template<class V> class serializable_ItemPointerHashMap;
+
+
+class ser_ItemPointerHashMapCmp;
+
 namespace serialization
 {
 /////////////////////////////templates
@@ -603,7 +610,6 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
         ar & (*it).second;
       }
 
-
       ar.add_end_compound_field();
     }
   }
@@ -706,6 +712,173 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
 
       obj.insert(p);
     }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+template<typename T, typename V, class Tcomp>
+void operator&(Archiver& ar, HashMap<T, V, Tcomp>& obj)
+{
+  ar & obj.theHashTabSize;
+  ar & obj.theCompareFunction;
+
+  bool sync = false;
+  csize size;
+
+  if (ar.is_serializing_out())
+  {
+    sync = obj.get_sync();
+    size = obj.size();
+
+    ar & sync;
+    ar & size;
+
+    typename HashMap<T, V, Tcomp>::iterator it = obj.begin();
+    typename HashMap<T, V, Tcomp>::iterator end = obj.end();
+
+    for (; it != end; ++it)
+    {
+      T key = it.getKey();
+      ar & key;
+      ar & it.getValue();
+    }
+  }
+  else
+  {
+    ar & sync;
+    ar & size;
+
+    obj.theNumEntries = 0;
+    obj.theInitialSize = obj.theHashTabSize;
+    obj.theHashTab = computeTabSize(obj.theHashTabSize);
+    obj.theLoadFactor = HashMap<T, V, Tcomp>::DEFAULT_LOAD_FACTOR;
+    obj.numCollisions = 0;
+    
+    obj.formatCollisionArea();
+
+    SYNC_CODE(obj.theMutexp = (sync ? &obj.theMutex : NULL);)
+
+    for (csize i = 0; i < size; ++i)
+    {
+      T t;
+      V v;
+      ar & t;
+      ar & v;
+      bool insert_ret = obj.insert(t, v);
+      assert(insert_ret);
+      (void)insert_ret;
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+template<typename T, typename V, class Tcomp>
+void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
+{
+  assert(!ar.is_serialize_base_class());
+
+  bool sync = false;
+  csize size;
+  csize capacity;
+  Tcomp comp;
+
+  if (ar.is_serializing_out())
+  {
+    if (obj == NULL)
+    {
+      ar.add_compound_field("NULL", 
+                            !FIELD_IS_CLASS,
+                            NULL, 
+                            NULL,
+                            ARCHIVE_FIELD_NULL);
+      return;
+    }
+
+    bool is_ref = ar.add_compound_field("HashMap<T1, T2>",
+                                        !FIELD_IS_CLASS,
+                                        NULL,
+                                        obj,
+                                        ARCHIVE_FIELD_PTR);
+
+    assert(!is_ref);
+
+    sync = obj->get_sync();
+    capacity = obj->capacity();
+    comp = obj->get_compare_function();
+    size = obj->size();
+
+    ar.set_is_temp_field(true);
+
+    ar & capacity;
+    ar & sync;
+    ar & comp;
+    ar & size;
+
+    ar.set_is_temp_field(false);
+
+    typename HashMap<T, V, Tcomp>::iterator it = obj->begin();
+    typename HashMap<T, V, Tcomp>::iterator end = obj->end();
+
+    for (; it != end; ++it)
+    {
+      T key = it.getKey();
+      ar & key;
+      ar & it.getValue();
+    }
+
+    ar.add_end_compound_field();
+  }
+  else
+  {
+    char* type;
+    char* value;
+    int   id;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    int   referencing;
+
+    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
+                                      &field_treat, &referencing);
+
+    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
+
+    if (field_treat == ARCHIVE_FIELD_NULL)
+    {
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+
+    assert(field_treat == ARCHIVE_FIELD_PTR);
+
+    ar.set_is_temp_field(true);
+
+    ar & capacity;
+    ar & sync;
+    ar & comp;
+    ar & size;
+
+    ar.set_is_temp_field(false);
+
+    obj = new HashMap<T, V, Tcomp>(comp, capacity, sync);
+
+    for (csize i = 0; i < size; ++i)
+    {
+      T key;
+      V value;
+      ar & key;
+      ar & value;
+      bool insert_ret = obj->insert(key, value);
+      assert(insert_ret);
+      (void)insert_ret;
+    }
+
+    ar.read_end_current_level();
   }
 }
 

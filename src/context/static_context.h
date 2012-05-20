@@ -41,6 +41,7 @@
 #include "context/features.h"
 
 #include "zorbautils/hashmap_zstring.h"
+#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 #include "util/stl_util.h"
@@ -382,25 +383,25 @@ public:
 
 class static_context : public SimpleRCObject
 {
-  typedef serializable_ItemPointerHashMap<StaticallyKnownCollection_t> CollectionMap;
+  ITEM_PTR_HASH_MAP(StaticallyKnownCollection_t, CollectionMap);
 
-  typedef serializable_ItemPointerHashMap<IndexDecl_t> IndexMap;
+  ITEM_PTR_HASH_MAP(IndexDecl_t, IndexMap);
 
-  typedef serializable_ItemPointerHashMap<ValueIC_t> ICMap;
+  ITEM_PTR_HASH_MAP(ValueIC_t, ICMap);
 
-  typedef serializable_ItemPointerHashMap<var_expr_t> VariableMap;
+  ITEM_PTR_HASH_MAP(var_expr_t, VariableMap);
 
-  typedef serializable_ItemPointerHashMap<FunctionInfo> FunctionMap;
+  ITEM_PTR_HASH_MAP(FunctionInfo, FunctionMap);
 
-  typedef serializable_ItemPointerHashMap<std::vector<FunctionInfo>* > FunctionArityMap;
+  ITEM_PTR_HASH_MAP(std::vector<FunctionInfo>*, FunctionArityMap);
 
-  typedef serializable_ItemPointerHashMap<PrologOption> OptionMap;
+  ITEM_PTR_HASH_MAP(PrologOption, OptionMap);
 
-  typedef serializable_HashMapZString<zstring> NamespaceBindings;
+  ZSTRING_HASH_MAP(zstring, NamespaceBindings);
 
-  typedef serializable_HashMapZString<xqtref_t> DocumentMap;
+  ZSTRING_HASH_MAP(xqtref_t, DocumentMap);
 
-  typedef serializable_HashMapZString<xqtref_t> W3CCollectionMap;
+  ZSTRING_HASH_MAP(xqtref_t, W3CCollectionMap);
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
@@ -422,7 +423,7 @@ public:
     virtual ~ctx_module_t() {}
   };
 
-  typedef serializable_HashMapZString<ctx_module_t> ExternalModuleMap;
+  ZSTRING_HASH_MAP(ctx_module_t, ExternalModuleMap);
 
 public:
   static const zstring DOT_VAR_NAME;

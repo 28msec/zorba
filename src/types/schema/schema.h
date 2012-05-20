@@ -61,6 +61,8 @@ namespace internal
 *******************************************************************************/
 class Schema : public ::zorba::serialization::SerializeBaseClass
 {
+  ZSTRING_HASH_MAP(xqtref_t, UdTypesCache);
+
 public:
   static const char* XSD_NAMESPACE;
 
@@ -72,7 +74,7 @@ private:
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool     * theGrammarPool;
   // QQQ use zstring?
-  serializable_HashMapZString<xqtref_t>    * theUdTypesCache;
+  UdTypesCache                             * theUdTypesCache;
 #endif // ZORBA_NO_XMLSCHEMA
 
 public:

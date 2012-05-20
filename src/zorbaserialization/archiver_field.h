@@ -161,6 +161,8 @@ public:
   ArchiveFieldKind             theKind;
 
   TypeCode                     theType;
+  char                       * theTypeName;
+  csize                        theTypeNamePosInPool;
 
   SimpleValue                  theValue;
   csize                        theValuePosInPool;
@@ -194,7 +196,7 @@ public:
 
 public:
   archive_field(
-      TypeCode type,
+      const char* type,
       bool is_simple,
       bool is_class, 
       const void* value,

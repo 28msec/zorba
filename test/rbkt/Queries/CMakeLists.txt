@@ -242,8 +242,8 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-008 997045)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-009 997045)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-010 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-011 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-012 997045)
+#  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-011 997045)
+#  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-012 997045)
 
   IF (NOT ZORBA_WITH_BIG_INTEGER)
     # These test will never pass without big integers beause the integers used

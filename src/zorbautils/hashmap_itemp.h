@@ -13,29 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if !defined ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP && !defined ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION || !defined ZORBA_SERIALIZABLE_ZORBAUTILS_ITEM_POINTER_HASHMAP && defined ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-#define ZORBA_SERIALIZABLE_ZORBAUTILS_ITEM_POINTER_HASHMAP
-#else
+#ifndef ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP
 #define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP
-#endif
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
 
 #include "zorbatypes/collation_manager.h"
 
-#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_basic_types.h"
-#endif
 
 #include "store/api/item.h"
 
 namespace zorba 
 { 
-
-#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 
 /***************************************************************************//**
   Class to privide the equality and hash functions for the ItemPointerHashMap
@@ -88,41 +80,9 @@ public:
 };
 
 
-/*******************************************************************************
-  A hash-based map container mapping item pointers to values of type V. 
-  Equality is based on the Item::equals() method.
-*******************************************************************************/
-template <class V>
-class serializable_ItemPointerHashMap : public serializable_HashMap<store::Item*,
-                                                                    V,
-                                                                    ser_ItemPointerHashMapCmp>
-{
-public:
+#define ITEM_PTR_HASH_MAP(ValueType, MapType) \
+typedef HashMap<store::Item*, ValueType, ser_ItemPointerHashMapCmp> MapType;
 
-  SERIALIZABLE_TEMPLATE_CLASS(serializable_ItemPointerHashMap)
-
-  serializable_ItemPointerHashMap(::zorba::serialization::Archiver& ar)
-    :
-    serializable_HashMap<store::Item*, V, ser_ItemPointerHashMapCmp>(ar)
-  {
-  }
-
-public:
-  serializable_ItemPointerHashMap(
-        long timezone,
-        XQPCollator* collation,
-        ulong size,
-        bool sync) 
-    :
-    serializable_HashMap<store::Item*, V, ser_ItemPointerHashMapCmp>(
-           ser_ItemPointerHashMapCmp(timezone, collation),
-           size,
-           sync)
-  {
-  }
-};
-
-#else
 
 /***************************************************************************//**
   Class to privide the equality and hash functions for the ItemPointerHashMap
@@ -185,8 +145,6 @@ public:
   }
 };
 
-
-#endif
 
 
 } // namespace zorba

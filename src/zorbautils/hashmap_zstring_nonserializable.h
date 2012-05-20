@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_HASHMAP_ZSTRING_NONSERIALIZABLE
-#define ZORBA_HASHMAP_ZSTRING_NONSERIALIZABLE
+#ifndef ZORBA_UTILS_HASHMAP_ZSTRING_NONSERIALIZABLE
+#define ZORBA_UTILS_HASHMAP_ZSTRING_NONSERIALIZABLE
 
-#undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap.h"
 
 #include "zorbatypes/zstring.h"

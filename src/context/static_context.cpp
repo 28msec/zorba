@@ -2091,7 +2091,7 @@ void static_context::bind_var(
 {
   if (theVariablesMap == NULL)
   {
-    theVariablesMap = new VariableMap(0, NULL, 8, false);
+    theVariablesMap = new VariableMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
   }
 
   store::Item* qname = varExpr->get_name();
@@ -2286,7 +2286,7 @@ void static_context::bind_fn(
   if (theFunctionMap == NULL)
   {
     ulong size = (is_global_root_sctx() ? 500 : 32);
-    theFunctionMap = new FunctionMap(0, NULL, size, false);
+    theFunctionMap = new FunctionMap(ser_ItemPointerHashMapCmp(0, NULL), size, false);
   }
 
   FunctionInfo fi(f);
@@ -2310,7 +2310,8 @@ void static_context::bind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = new FunctionArityMap(0, NULL, 16, false);
+      theFunctionArityMap = 
+      new FunctionArityMap(ser_ItemPointerHashMapCmp(0, NULL), 16, false);
     }
 
     std::vector<FunctionInfo>* fv = 0;
@@ -2357,7 +2358,7 @@ void static_context::unbind_fn(
 
   if (theFunctionMap == NULL)
   {
-    theFunctionMap = new FunctionMap(0, NULL, 32, false);
+    theFunctionMap = new FunctionMap(ser_ItemPointerHashMapCmp(0, NULL), 32, false);
   }
 
   FunctionInfo fi(f, true);
@@ -2374,7 +2375,8 @@ void static_context::unbind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = new FunctionArityMap(0, NULL, 16, false);
+      theFunctionArityMap = 
+      new FunctionArityMap(ser_ItemPointerHashMapCmp(0, NULL), 16, false);
     }
 
     std::vector<FunctionInfo>* fv = NULL;
@@ -2899,7 +2901,7 @@ void static_context::bind_collection(
   }
 
   if (theCollectionMap == 0)
-    theCollectionMap = new CollectionMap(0, NULL, 8, false);
+    theCollectionMap = new CollectionMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
 
   store::Item* qname = const_cast<store::Item*>(aCollection->getName());
   theCollectionMap->insert(qname, aCollection);
@@ -2957,7 +2959,7 @@ void static_context::bind_index(IndexDecl_t& index, const QueryLoc& loc)
   }
 
   if (theIndexMap == NULL)
-    theIndexMap = new IndexMap(0, NULL, 8, false);
+    theIndexMap = new IndexMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
 
   theIndexMap->insert(qname, index);
 }
@@ -3013,7 +3015,7 @@ void static_context::bind_ic(
   }
 
   if (theICMap == NULL)
-    theICMap = new ICMap(0, NULL, 8, false);
+    theICMap = new ICMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
 
   theICMap->insert(qname, vic);
 }
@@ -3228,7 +3230,7 @@ void static_context::bind_option(
 {
   if (theOptionMap == NULL)
   {
-    theOptionMap = new OptionMap(0, NULL, 8, false);
+    theOptionMap = new OptionMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
   }
 
   PrologOption option(qname, value);
@@ -3959,8 +3961,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   {
     if (theVariablesMap == NULL)
     {
-      theVariablesMap = new VariableMap(0,
-                                        NULL,
+      theVariablesMap = new VariableMap(ser_ItemPointerHashMapCmp(0, NULL),
                                         (ulong)module->theVariablesMap->capacity(),
                                         false);
     }
@@ -3978,7 +3979,8 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       {
         if (theImportedPrivateVariablesMap == NULL)
         {
-          theImportedPrivateVariablesMap = new VariableMap(0, NULL, 8, false);
+          theImportedPrivateVariablesMap = 
+          new VariableMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
         }
 
         if (!theImportedPrivateVariablesMap->insert(ve->get_name(), ve))
@@ -3993,8 +3995,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   {
     if (theFunctionMap == NULL)
     {
-      theFunctionMap = new FunctionMap(0,
-                                       NULL,
+      theFunctionMap = new FunctionMap(ser_ItemPointerHashMapCmp(0, NULL),
                                        (ulong)module->theFunctionMap->capacity(),
                                        false);
     }
@@ -4013,10 +4014,10 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   {
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = new FunctionArityMap(0,
-                                                 NULL,
-                                                 (ulong)module->theFunctionArityMap->capacity(),
-                                                 false);
+      theFunctionArityMap = 
+      new FunctionArityMap(ser_ItemPointerHashMapCmp(0, NULL),
+                           (ulong)module->theFunctionArityMap->capacity(),
+                           false);
     }
 
     FunctionArityMap::iterator ite = module->theFunctionArityMap->begin();
@@ -4036,7 +4037,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   if (module->theCollectionMap)
   {
     if (theCollectionMap == 0)
-      theCollectionMap = new CollectionMap(0, 0, 8, false);
+      theCollectionMap = new CollectionMap(ser_ItemPointerHashMapCmp(0, 0), 8, false);
 
     CollectionMap::iterator coll_iter = module->theCollectionMap->begin();
     CollectionMap::iterator coll_end = module->theCollectionMap->end();
@@ -4061,7 +4062,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   if (module->theIndexMap)
   {
     if (theIndexMap == NULL)
-      theIndexMap = new IndexMap(0, NULL, 8, false);
+      theIndexMap = new IndexMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
 
     IndexMap::iterator idx_iter = module->theIndexMap->begin();
     IndexMap::iterator idx_end = module->theIndexMap->end();
@@ -4091,7 +4092,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   {
     if (theICMap == NULL)
     {
-      theICMap = new ICMap(0, NULL, 8, false);
+      theICMap = new ICMap(ser_ItemPointerHashMapCmp(0, NULL), 8, false);
     }
 
     ICMap::iterator ic_iter = module->theICMap->begin();

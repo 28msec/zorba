@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_HASHMAP_ZSTRING
-#define ZORBA_HASHMAP_ZSTRING
+#ifndef ZORBA_UTILS_HASHMAP_ZSTRING
+#define ZORBA_UTILS_HASHMAP_ZSTRING
 
-#define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap.h"
-#undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-
 #include "zorbatypes/zstring.h"
 
 #include "util/utf8_util.h"
@@ -63,39 +60,8 @@ public:
 };
 
 
-/*******************************************************************************
-  A hash-based map container mapping zstrings to values of type V. Equality is
-  based on the zstring == operator.
-*******************************************************************************/
-template<class V>
-class serializable_HashMapZString : public serializable_HashMap<zstring,
-                                                                V,
-                                                                serializable_HashMapZStringCmp>
-{
-public:
-  SERIALIZABLE_TEMPLATE_CLASS(serializable_HashMapZString)
-
-  serializable_HashMapZString(::zorba::serialization::Archiver& ar)
-    :
-    serializable_HashMap<zstring, V, serializable_HashMapZStringCmp>(ar)
-  {
-  }
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (serializable_HashMap<zstring, V, serializable_HashMapZStringCmp>*)this);
-  }
-
-public:
-  serializable_HashMapZString(ulong size, bool sync)
-    :
-    serializable_HashMap<zstring, V, serializable_HashMapZStringCmp>(size, sync)
-  {
-  }
-
-  virtual ~serializable_HashMapZString() {  }
-};
+#define ZSTRING_HASH_MAP(ValueType, MapType) \
+typedef HashMap<zstring, ValueType, serializable_HashMapZStringCmp> MapType;
 
 
 }

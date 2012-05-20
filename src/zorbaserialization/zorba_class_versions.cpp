@@ -15,23 +15,13 @@
  */
 #include "stdafx.h"
 
-#include "store/api/iterator.h"
-
-#include "compiler/xqddf/collection_decl.h"
-#include "compiler/xqddf/value_index.h"
-#include "compiler/xqddf/value_ic.h"
-#include "compiler/expression/var_expr.h"
 
 #include "context/static_context.h"
 
 #include "types/typeimpl.h"
 
-#include "functions/function.h"
-
-#define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap.h"
 #include "zorbautils/hashmap_itemp.h"
-#undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 
 #include "zorbaserialization/class_serializer.h"
 
@@ -48,58 +38,12 @@ namespace zorba
 // HashMap serialization
 //
 
-// ItemPointerHashMapCmp
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, StaticallyKnownCollection_t, ser_ItemPointerHashMapCmp>, 1)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, IndexDecl_t, ser_ItemPointerHashMapCmp>, 2)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, ValueIC_t, ser_ItemPointerHashMapCmp>, 3)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, FunctionInfo, ser_ItemPointerHashMapCmp>, 4)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, std::vector<FunctionInfo>*, ser_ItemPointerHashMapCmp>, 5)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, var_expr_t, ser_ItemPointerHashMapCmp>, 7)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, PrologOption, ser_ItemPointerHashMapCmp>, 8)
-
 SERIALIZABLE_CLASS_VERSIONS(ser_ItemPointerHashMapCmp)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<StaticallyKnownCollection_t>, 1)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<IndexDecl_t>, 2)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<ValueIC_t>, 3)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<FunctionInfo>, 4)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<std::vector<FunctionInfo>* >, 5)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<var_expr_t>, 7)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<PrologOption>, 8)
-
 
 
 // HashMapZString
 SERIALIZABLE_CLASS_VERSIONS(serializable_HashMapZStringCmp)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, static_context::ctx_module_t, serializable_HashMapZStringCmp>, 11)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<static_context::ctx_module_t>, 1)
-
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, zstring, serializable_HashMapZStringCmp>,12)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<zstring>, 2)
-
-
-// Definitions for the serializable_HashMapZString<xqtref_t> type
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<xqtref_t>, 3)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, xqtref_t, serializable_HashMapZStringCmp>,13)
 
 }
 /* vim:set et sw=2 ts=2: */
