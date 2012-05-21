@@ -1869,7 +1869,7 @@ DEFAULT_END_VISIT (ReverseAxis);
 
       os << "{";
       n.getExprSingle()->accept(*this);
-      os << '}';
+      os << "}";
       return 0;
     }
     DEFAULT_END_VISIT (CatchExpr);
@@ -1893,13 +1893,13 @@ DEFAULT_END_VISIT (ReverseAxis);
     
     void* begin_visit(const TypeList& n)
     {
-      for (int i=0; i<(int)n.size(); ++i)
+      for (size_t i = 0; i < n.size(); ++i)
       {
-        if(i > 0)
+        if (i > 0)
         {
           os << ", ";
         }
-        const SequenceType* e_p = &*(n[i]);
+        const SequenceType* e_p = n[i];
         e_p->accept(*this);
       }
       return 0;
