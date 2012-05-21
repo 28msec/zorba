@@ -4,6 +4,7 @@ Zorba - The XQuery Processor
 version 2.x
 
   * Fixed bug #867170 (Variables declared in Prolog are Overwritten inside the query)
+  * Fixed bug #1001463 (type not available during computation of function caching)
 
 
 version 2.5
