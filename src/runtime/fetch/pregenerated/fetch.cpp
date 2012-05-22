@@ -58,8 +58,11 @@ FetchContentIterator::~FetchContentIterator() {}
 
 
 // <FetchContentBinaryIterator>
-FetchContentBinaryIterator::class_factory<FetchContentBinaryIterator>
-FetchContentBinaryIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FetchContentBinaryIterator)void FetchContentBinaryIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>*)this);
+}
 
 
 void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const {

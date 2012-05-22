@@ -77,11 +77,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FetchContentBinaryIterator,
     NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FetchContentBinaryIterator(
     static_context* sctx,
