@@ -37,39 +37,6 @@ namespace zorba
 namespace serialization
 {
 
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, long& obj)
-{
-  if (sizeof(long) == sizeof(int32_t))
-  {
-    ar & reinterpret_cast<int32_t&>(obj);
-  }
-  else
-  {
-    ar & reinterpret_cast<int64_t&>(obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, ulong& obj)
-{
-  if (sizeof(ulong) == sizeof(uint32_t))
-  {
-    ar & reinterpret_cast<uint32_t&>(obj);
-  }
-  else
-  {
-    ar & reinterpret_cast<uint64_t&>(obj);
-  }
-}
-#endif
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -116,6 +83,56 @@ void operator&(Archiver& ar, uint64_t& obj)
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
     obj = value.uint64v;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_long(Archiver& ar, long& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.int64v = obj;
+    ar.add_simple_temp_field(TYPE_INT64, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_INT64);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = static_cast<long>(value.int64v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_ulong(Archiver& ar, ulong& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_UINT64);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = static_cast<ulong>(value.uint64v);
   }
 }
 
@@ -173,17 +190,24 @@ void operator&(Archiver& ar, uint32_t& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, const uint32_t& obj)
+void serialize_enum(Archiver& ar, uint32_t& obj)
 {
   if (ar.is_serializing_out())
   {
     SimpleValue v;
     v.uint32v = obj;
-    ar.add_simple_temp_field(TYPE_UINT32, v, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_ENUM, v, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    ZORBA_ASSERT(false);
+    SimpleValue value;
+    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+
+    bool retval = ar.read_next_simple_temp_field(value, TYPE_ENUM);
+
+    ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
+
+    obj = value.uint32v;
   }
 }
 

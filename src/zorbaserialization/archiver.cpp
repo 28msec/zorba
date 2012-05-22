@@ -81,6 +81,11 @@ archive_field::archive_field(
     theValue.uint32v = value.uint32v;
     break;
   }
+  case TYPE_ENUM:
+  {
+    theValue.uint32v = value.uint32v;
+    break;
+  }
   case TYPE_INT16:
   {
     theValue.int16v = value.int16v;
@@ -206,6 +211,7 @@ archive_field::~archive_field()
   case TYPE_UINT64:
   case TYPE_INT32:
   case TYPE_UINT32:
+  case TYPE_ENUM:
   case TYPE_INT16:
   case TYPE_UINT16:
   case TYPE_CHAR:

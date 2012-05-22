@@ -614,7 +614,7 @@ void WindowIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theEndClause;
   ar & theLazyEval;
 
-  SERIALIZE_ULONG(theMaxNeededHistory);
+  serialize_ulong(ar, theMaxNeededHistory);
 }
 
 

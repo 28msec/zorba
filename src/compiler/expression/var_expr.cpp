@@ -142,7 +142,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
 
   SERIALIZE_ENUM(var_kind, theVarKind);
 
-  SERIALIZE_ULONG(theUniqueId);
+  serialize_ulong(ar, theUniqueId);
 
   ar & theName;
   ar & theDeclaredType;

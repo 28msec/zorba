@@ -373,6 +373,8 @@ enum TypeCode
   TYPE_DOUBLE,
   TYPE_BOOL,
 
+  TYPE_ENUM,
+
   TYPE_STD_STRING,
 
   TYPE_ZSTRING,

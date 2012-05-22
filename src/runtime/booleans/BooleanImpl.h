@@ -154,7 +154,7 @@ private:
   CompareConsts::CompareType  theCompType;
   bool                        theIsGeneralComparison;
   TypeManager               * theTypeManager;
-  int32_t                     theTimezone;
+  long                        theTimezone;
   XQPCollator               * theCollation;
 
 public:
@@ -177,7 +177,7 @@ public:
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
     ar & theIsGeneralComparison;
     SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
-    ar & theTimezone;
+    serialize_long(ar, theTimezone);
     ar & theCollation;
   }
 
@@ -289,7 +289,7 @@ class TypedValueCompareIterator : public NaryBaseIterator<TypedValueCompareItera
                                                           PlanIteratorState>
 {
   CompareConsts::CompareType  theCompType;
-  int32_t                     theTimezone;
+  long                        theTimezone;
   XQPCollator               * theCollation;
 
 public:
@@ -305,7 +305,7 @@ public:
     (NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>*)this);
 
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
-    ar & theTimezone;
+    serialize_long(ar, theTimezone);
     ar & theCollation;
   }
 
@@ -342,7 +342,7 @@ public BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>
 private:
   CompareConsts::CompareType  theCompType;
   TypeManager               * theTypeManager;
-  int32_t                     theTimezone;
+  long                        theTimezone;
   XQPCollator               * theCollation;
 
 public:
@@ -364,7 +364,7 @@ public:
 
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
     SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
-    ar & theTimezone;
+    serialize_long(ar, theTimezone);
     ar & theCollation;
   }
 

@@ -37,58 +37,19 @@ namespace serialization
 class Archiver;
 
 
-#define SERIALIZE_LONG(obj)                     \
-{                                               \
-  if (sizeof(long) == sizeof(int32_t))          \
-  {                                             \
-    int32_t v = obj;                            \
-    ar & v;                                     \
-                                                \
-    if (!ar.is_serializing_out())               \
-      obj = v;                                  \
-  }                                             \
-  else                                          \
-  {                                             \
-    int64_t v = obj;                            \
-    ar & v;                                     \
-                                                \
-    if (!ar.is_serializing_out())               \
-      obj = v;                                  \
-  }                                             \
-}
+void operator&(Archiver& ar, int64_t& obj);
 
+void operator&(Archiver& ar, uint64_t& obj);
 
-#define SERIALIZE_ULONG(obj)                    \
-{                                               \
-  if (sizeof(ulong) == sizeof(uint32_t))        \
-  {                                             \
-    uint32_t v = obj;                           \
-    ar & v;                                     \
-                                                \
-    if (!ar.is_serializing_out())               \
-      obj = v;                                  \
-  }                                             \
-  else                                          \
-  {                                             \
-    uint64_t v = obj;                           \
-    ar & v;                                     \
-                                                \
-    if (!ar.is_serializing_out())               \
-      obj = v;                                  \
-  }                                             \
-}
+void serialize_long(Archiver& ar, long& obj);
 
-  //void operator&(Archiver& ar, long& obj);
-
-  //void operator&(Archiver& ar, ulong& obj);
+void serialize_ulong(Archiver& ar, ulong& obj);
 
 void operator&(Archiver& ar, int32_t& obj);
 
 void operator&(Archiver& ar, uint32_t& obj);
 
-void operator&(Archiver& ar, int64_t& obj);
-
-void operator&(Archiver& ar, uint64_t& obj);
+void serialize_enum(Archiver& ar, uint32_t& obj);
 
 void operator&(Archiver& ar, int16_t& obj);
 
@@ -121,7 +82,7 @@ void operator&(Archiver& ar, MAPM& obj);
 #define SERIALIZE_ENUM(enum_type, obj)              \
 {                                                   \
   uint32_t int_enum = static_cast<uint32_t>(obj);   \
-  ar & int_enum;                                    \
+  serialize_enum(ar, int_enum);                     \
                                                     \
   if (!ar.is_serializing_out())                     \
     obj = (enum_type)int_enum;                      \

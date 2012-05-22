@@ -235,6 +235,7 @@ void BinArchiver::collect_strings(archive_field* parent_field)
         case TYPE_UINT64:
         case TYPE_INT32:
         case TYPE_UINT32:
+        case TYPE_ENUM:
         case TYPE_INT16:
         case TYPE_UINT16:
         case TYPE_CHAR:
@@ -404,6 +405,11 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
       case TYPE_UINT32:
       {
         write_uint32(field->theValue.uint32v);
+        break;
+      }
+      case TYPE_ENUM:
+      {
+        write_enum(field->theValue.uint32v);
         break;
       }
       case TYPE_INT16:
@@ -1153,6 +1159,11 @@ bool BinArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
   case TYPE_UINT32:
   {
     value.uint32v = read_uint32();
+    break;
+  }
+  case TYPE_ENUM:
+  {
+    value.uint32v = read_enum();
     break;
   }
   case TYPE_INT16:

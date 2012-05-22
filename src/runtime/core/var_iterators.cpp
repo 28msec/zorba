@@ -82,18 +82,7 @@ void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
 
-  if (ar.is_serializing_out())
-  {
-    uint32_t id = theVarId;
-    ar & id;
-  }
-  else
-  {
-    uint32_t id = 0;
-    ar & id;
-    theVarId = id;
-  }
-
+  serialize_ulong(ar, theVarId);
   ar & theVarName;
   ar & theIsExternal;
   ar & theSingleItem;
@@ -159,17 +148,7 @@ void CtxVarAssignIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
 
-  if (ar.is_serializing_out())
-  {
-    uint32_t id = theVarId;
-    ar & id;
-  }
-  else
-  {
-    uint32_t id = 0;
-    ar & id;
-    theVarId = id;
-  }
+  serialize_ulong(ar, theVarId);
 
   ar & theVarName;
   ar & theIsLocal;
@@ -232,17 +211,7 @@ void CtxVarIsSetIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>*)this);
 
-  if (ar.is_serializing_out())
-  {
-    uint32_t id = theVarId;
-    ar & id;
-  }
-  else
-  {
-    uint32_t id = 0;
-    ar & id;
-    theVarId = id;
-  }
+  serialize_ulong(ar, theVarId);
 
   ar & theVarName;
 }
@@ -317,7 +286,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
 
-  SERIALIZE_ULONG(theVarId);
+  serialize_ulong(ar, theVarId);
 
   ar & theVarName;
   ar & theIsLocal;
