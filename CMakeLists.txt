@@ -65,6 +65,7 @@ ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 # Enable RPaths in installed binaries
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # turn on the folder grouping used by IDEs (VS or XCode)
 SET(ZORBA_USE_TARGET_FOLDERS ON CACHE BOOL "Activate use of target grouping into folders")
