@@ -41,8 +41,7 @@ static void parse_content_type( std::string const &s, std::string *mime_type,
   std::string::size_type pos = s.find( ';' );
   *mime_type = s.substr( 0, pos );
 
-  // The HTTP/1.1 spec says that the default charset is ISO-8859-1.
-  *charset = "ISO-8859-1";
+  charset->clear();
 
   if ( pos != std::string::npos ) {
     //
@@ -109,7 +108,8 @@ namespace http_client {
 
       std::auto_ptr<std::istream> lStream;
       try {
-        if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+        if ( !theCurrentCharset.empty() &&
+             transcode::is_necessary( theCurrentCharset.c_str() ) ) {
           lStream.reset(
             new transcode::stream<std::istream>(
               theCurrentCharset.c_str(), theStreamBuffer
