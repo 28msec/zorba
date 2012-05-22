@@ -267,15 +267,12 @@ declare %an:sequential function xqdoc2html:copy-xhtml-requisites(
                                    file:directory-separator(), "main.html")
   return
     {
-      (: first - create the xhtml folder if it does not exist already :)
-      file:create-directory($xhtmlPath);
-
-      (: second - clear the XHTML folder :)
       if(file:exists($xhtmlPath)) then
         file:delete($xhtmlPath);
       else ();
 
-      (: third - re-copy these files :)
+      file:create-directory($xhtmlPath);
+
       xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath ,("gif", "png", "svg"));
       xqdoc2html:copy-files($xhtmlRequisitesPath, $libPath    ,"js");
       xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath    ,"css");
