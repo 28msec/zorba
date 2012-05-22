@@ -19,9 +19,11 @@
 
 #include <zorba/item.h>
 #include <zorba/xquery_exception.h>
+
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/m_apm.h"
 #include "zorbatypes/floatimpl.h"
+
 #include "zorbautils/checked_vector.h"
 
 #include "zorbaserialization/class_serializer.h"
@@ -35,6 +37,9 @@
 
 namespace zorba
 {
+  class QueryLoc;
+  class HashMapItemPointerCmp;
+  class HashMapZStringCmp;
   class XQType;
   class function;
   class Diagnostic;
@@ -57,8 +62,13 @@ template<typename IntType>
 void operator&(Archiver& ar, IntegerImpl<IntType>& obj);
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
+void operator&(Archiver& ar, HashMapZStringCmp& obj);
+void operator&(Archiver& ar, HashMapItemPointerCmp& obj);
+
 void operator&(Archiver& ar, store::Item*& obj);
 void operator&(Archiver& ar, zorba::Item& obj);
+
+void operator&(Archiver& ar, QueryLoc& obj);
 
 void operator&(Archiver& ar, const Diagnostic*& obj);
 void operator&(Archiver& ar, ZorbaException*& obj);
@@ -78,7 +88,6 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj);
     if (!ar.is_serializing_out())                                       \
     {                                                                   \
       type_mgr = (type_mgr_type*)&GENV_TYPESYSTEM;                      \
-      /*RCHelper::addReference(type_mgr);*/                             \
     }                                                                   \
   }                                                                     \
   else                                                                  \
@@ -91,9 +100,9 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj);
   ar.set_is_temp_field(true);                                           \
   ar & is_root_type_mgr;                                            \
   ar.set_is_temp_field(false);                                      \
-  if(is_root_type_mgr)                                              \
+  if (is_root_type_mgr)                                             \
   {                                                                 \
-    if(!ar.is_serializing_out())                                    \
+    if (!ar.is_serializing_out())                                   \
      type_mgr = (type_mgr_type*)&GENV_TYPESYSTEM;                   \
   }                                                                 \
   else                                                              \
@@ -108,9 +117,8 @@ void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
   if (ar.is_serializing_out())
   {
     bool is_ref;
-    is_ref = ar.add_compound_field("VariableQName<StringType>",
+    is_ref = ar.add_compound_field(TYPE_LAST,
                                    !FIELD_IS_CLASS,
-                                   NULL,
                                    &obj,
                                    ARCHIVE_FIELD_NORMAL);
     if (!is_ref)
@@ -127,14 +135,14 @@ void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, false, false, false,
+    retval = ar.read_next_field(type, &value, &id, false, false, false,
                                 &field_treat, &referencing);
 
     ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);

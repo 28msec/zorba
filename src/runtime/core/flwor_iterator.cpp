@@ -549,6 +549,14 @@ GroupByClause::GroupByClause(
 }
 
 
+void GroupByClause::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theLocation;
+  ar & theGroupingSpecs;
+  ar & theNonGroupingSpecs;
+}
+
+
 /***************************************************************************//**
 
 ********************************************************************************/

@@ -34,8 +34,11 @@
 namespace zorba {
 
 // <FnConcatIterator>
-FnConcatIterator::class_factory<FnConcatIterator>
-FnConcatIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnConcatIterator)void FnConcatIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>*)this);
+}
 
 
 void FnConcatIterator::accept(PlanIterVisitor& v) const {
@@ -60,8 +63,11 @@ FnConcatIteratorState::~FnConcatIteratorState() {}
 
 
 // <FnIndexOfIterator>
-FnIndexOfIterator::class_factory<FnIndexOfIterator>
-FnIndexOfIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnIndexOfIterator)void FnIndexOfIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>*)this);
+}
 
 
 void FnIndexOfIterator::accept(PlanIterVisitor& v) const {
@@ -100,8 +106,11 @@ void FnIndexOfIteratorState::reset(PlanState& planState) {
 
 
 // <FnEmptyIterator>
-FnEmptyIterator::class_factory<FnEmptyIterator>
-FnEmptyIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnEmptyIterator)void FnEmptyIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnEmptyIterator, PlanIteratorState>*)this);
+}
 
 
 void FnEmptyIterator::accept(PlanIterVisitor& v) const {
@@ -122,8 +131,11 @@ FnEmptyIterator::~FnEmptyIterator() {}
 
 
 // <FnExistsIterator>
-FnExistsIterator::class_factory<FnExistsIterator>
-FnExistsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnExistsIterator)void FnExistsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnExistsIterator, PlanIteratorState>*)this);
+}
 
 
 void FnExistsIterator::accept(PlanIterVisitor& v) const {
@@ -144,8 +156,11 @@ FnExistsIterator::~FnExistsIterator() {}
 
 
 // <FnDistinctValuesIterator>
-FnDistinctValuesIterator::class_factory<FnDistinctValuesIterator>
-FnDistinctValuesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnDistinctValuesIterator)void FnDistinctValuesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState>*)this);
+}
 
 
 void FnDistinctValuesIterator::accept(PlanIterVisitor& v) const {
@@ -175,8 +190,11 @@ void FnDistinctValuesIteratorState::init(PlanState& planState) {
 
 
 // <FnInsertBeforeIterator>
-FnInsertBeforeIterator::class_factory<FnInsertBeforeIterator>
-FnInsertBeforeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnInsertBeforeIterator)void FnInsertBeforeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnInsertBeforeIterator, FnInsertBeforeIteratorState>*)this);
+}
 
 
 void FnInsertBeforeIterator::accept(PlanIterVisitor& v) const {
@@ -215,8 +233,11 @@ void FnInsertBeforeIteratorState::reset(PlanState& planState) {
 
 
 // <FnRemoveIterator>
-FnRemoveIterator::class_factory<FnRemoveIterator>
-FnRemoveIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnRemoveIterator)void FnRemoveIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>*)this);
+}
 
 
 void FnRemoveIterator::accept(PlanIterVisitor& v) const {
@@ -255,8 +276,11 @@ void FnRemoveIteratorState::reset(PlanState& planState) {
 
 
 // <FnReverseIterator>
-FnReverseIterator::class_factory<FnReverseIterator>
-FnReverseIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnReverseIterator)void FnReverseIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnReverseIterator, FnReverseIteratorState>*)this);
+}
 
 
 void FnReverseIterator::accept(PlanIterVisitor& v) const {
@@ -281,8 +305,11 @@ FnReverseIteratorState::~FnReverseIteratorState() {}
 
 
 // <FnSubsequenceIterator>
-FnSubsequenceIterator::class_factory<FnSubsequenceIterator>
-FnSubsequenceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnSubsequenceIterator)void FnSubsequenceIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnSubsequenceIterator, FnSubsequenceIteratorState>*)this);
+}
 
 
 void FnSubsequenceIterator::accept(PlanIterVisitor& v) const {
@@ -319,8 +346,11 @@ void FnSubsequenceIteratorState::reset(PlanState& planState) {
 
 
 // <SubsequenceIntIterator>
-SubsequenceIntIterator::class_factory<SubsequenceIntIterator>
-SubsequenceIntIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SubsequenceIntIterator)void SubsequenceIntIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>*)this);
+}
 
 
 void SubsequenceIntIterator::accept(PlanIterVisitor& v) const {
@@ -357,8 +387,11 @@ void SubsequenceIntIteratorState::reset(PlanState& planState) {
 
 
 // <SequencePointAccessIterator>
-SequencePointAccessIterator::class_factory<SequencePointAccessIterator>
-SequencePointAccessIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SequencePointAccessIterator)void SequencePointAccessIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>*)this);
+}
 
 
 void SequencePointAccessIterator::accept(PlanIterVisitor& v) const {
@@ -393,8 +426,13 @@ void SequencePointAccessIteratorState::reset(PlanState& planState) {
 
 
 // <FnZeroOrOneIterator>
-FnZeroOrOneIterator::class_factory<FnZeroOrOneIterator>
-FnZeroOrOneIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnZeroOrOneIterator)void FnZeroOrOneIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState>*)this);
+
+    ar & theDoDistinct;
+}
 
 
 void FnZeroOrOneIterator::accept(PlanIterVisitor& v) const {
@@ -415,8 +453,11 @@ FnZeroOrOneIterator::~FnZeroOrOneIterator() {}
 
 
 // <FnOneOrMoreIterator>
-FnOneOrMoreIterator::class_factory<FnOneOrMoreIterator>
-FnOneOrMoreIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnOneOrMoreIterator)void FnOneOrMoreIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnOneOrMoreIterator, PlanIteratorState>*)this);
+}
 
 
 void FnOneOrMoreIterator::accept(PlanIterVisitor& v) const {
@@ -437,8 +478,14 @@ FnOneOrMoreIterator::~FnOneOrMoreIterator() {}
 
 
 // <FnExactlyOneIterator>
-FnExactlyOneIterator::class_factory<FnExactlyOneIterator>
-FnExactlyOneIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnExactlyOneIterator)void FnExactlyOneIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>*)this);
+
+    ar & theRaiseError;
+    ar & theDoDistinct;
+}
 
 
 void FnExactlyOneIterator::accept(PlanIterVisitor& v) const {
@@ -459,8 +506,11 @@ FnExactlyOneIterator::~FnExactlyOneIterator() {}
 
 
 // <FnDeepEqualIterator>
-FnDeepEqualIterator::class_factory<FnDeepEqualIterator>
-FnDeepEqualIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnDeepEqualIterator)void FnDeepEqualIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>*)this);
+}
 
 
 void FnDeepEqualIterator::accept(PlanIterVisitor& v) const {
@@ -481,8 +531,13 @@ FnDeepEqualIterator::~FnDeepEqualIterator() {}
 
 
 // <HashSemiJoinIterator>
-HashSemiJoinIterator::class_factory<HashSemiJoinIterator>
-HashSemiJoinIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(HashSemiJoinIterator)void HashSemiJoinIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState>*)this);
+
+    ar & theAntijoin;
+}
 
 
 void HashSemiJoinIterator::accept(PlanIterVisitor& v) const {
@@ -503,8 +558,11 @@ HashSemiJoinIterator::~HashSemiJoinIterator() {}
 
 
 // <SortSemiJoinIterator>
-SortSemiJoinIterator::class_factory<SortSemiJoinIterator>
-SortSemiJoinIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SortSemiJoinIterator)void SortSemiJoinIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState>*)this);
+}
 
 
 void SortSemiJoinIterator::accept(PlanIterVisitor& v) const {
@@ -525,8 +583,11 @@ SortSemiJoinIterator::~SortSemiJoinIterator() {}
 
 
 // <FnCountIterator>
-FnCountIterator::class_factory<FnCountIterator>
-FnCountIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnCountIterator)void FnCountIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnCountIterator, PlanIteratorState>*)this);
+}
 
 
 void FnCountIterator::accept(PlanIterVisitor& v) const {
@@ -547,8 +608,11 @@ FnCountIterator::~FnCountIterator() {}
 
 
 // <FnAvgIterator>
-FnAvgIterator::class_factory<FnAvgIterator>
-FnAvgIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnAvgIterator)void FnAvgIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnAvgIterator, PlanIteratorState>*)this);
+}
 
 
 void FnAvgIterator::accept(PlanIterVisitor& v) const {
@@ -569,8 +633,11 @@ FnAvgIterator::~FnAvgIterator() {}
 
 
 // <FnSumIterator>
-FnSumIterator::class_factory<FnSumIterator>
-FnSumIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnSumIterator)void FnSumIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnSumIterator, PlanIteratorState>*)this);
+}
 
 
 void FnSumIterator::accept(PlanIterVisitor& v) const {
@@ -591,8 +658,11 @@ FnSumIterator::~FnSumIterator() {}
 
 
 // <FnSumDoubleIterator>
-FnSumDoubleIterator::class_factory<FnSumDoubleIterator>
-FnSumDoubleIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnSumDoubleIterator)void FnSumDoubleIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnSumDoubleIterator, PlanIteratorState>*)this);
+}
 
 
 void FnSumDoubleIterator::accept(PlanIterVisitor& v) const {
@@ -613,8 +683,11 @@ FnSumDoubleIterator::~FnSumDoubleIterator() {}
 
 
 // <FnSumFloatIterator>
-FnSumFloatIterator::class_factory<FnSumFloatIterator>
-FnSumFloatIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnSumFloatIterator)void FnSumFloatIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnSumFloatIterator, PlanIteratorState>*)this);
+}
 
 
 void FnSumFloatIterator::accept(PlanIterVisitor& v) const {
@@ -635,8 +708,11 @@ FnSumFloatIterator::~FnSumFloatIterator() {}
 
 
 // <FnSumDecimalIterator>
-FnSumDecimalIterator::class_factory<FnSumDecimalIterator>
-FnSumDecimalIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnSumDecimalIterator)void FnSumDecimalIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnSumDecimalIterator, PlanIteratorState>*)this);
+}
 
 
 void FnSumDecimalIterator::accept(PlanIterVisitor& v) const {
@@ -657,8 +733,11 @@ FnSumDecimalIterator::~FnSumDecimalIterator() {}
 
 
 // <FnSumIntegerIterator>
-FnSumIntegerIterator::class_factory<FnSumIntegerIterator>
-FnSumIntegerIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnSumIntegerIterator)void FnSumIntegerIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnSumIntegerIterator, PlanIteratorState>*)this);
+}
 
 
 void FnSumIntegerIterator::accept(PlanIterVisitor& v) const {
@@ -679,8 +758,11 @@ FnSumIntegerIterator::~FnSumIntegerIterator() {}
 
 
 // <OpToIterator>
-OpToIterator::class_factory<OpToIterator>
-OpToIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(OpToIterator)void OpToIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<OpToIterator, OpToIteratorState>*)this);
+}
 
 
 void OpToIterator::accept(PlanIterVisitor& v) const {
@@ -719,8 +801,11 @@ void OpToIteratorState::reset(PlanState& planState) {
 
 
 // <FnIdIterator>
-FnIdIterator::class_factory<FnIdIterator>
-FnIdIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnIdIterator)void FnIdIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnIdIterator, FnIdIteratorState>*)this);
+}
 
 
 void FnIdIterator::accept(PlanIterVisitor& v) const {
@@ -745,8 +830,11 @@ FnIdIteratorState::~FnIdIteratorState() {}
 
 
 // <FnElementWithIdIterator>
-FnElementWithIdIterator::class_factory<FnElementWithIdIterator>
-FnElementWithIdIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnElementWithIdIterator)void FnElementWithIdIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>*)this);
+}
 
 
 void FnElementWithIdIterator::accept(PlanIterVisitor& v) const {
@@ -771,8 +859,11 @@ FnElementWithIdIteratorState::~FnElementWithIdIteratorState() {}
 
 
 // <FnIdRefIterator>
-FnIdRefIterator::class_factory<FnIdRefIterator>
-FnIdRefIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnIdRefIterator)void FnIdRefIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>*)this);
+}
 
 
 void FnIdRefIterator::accept(PlanIterVisitor& v) const {
@@ -797,8 +888,11 @@ FnIdRefIteratorState::~FnIdRefIteratorState() {}
 
 
 // <FnDocIterator>
-FnDocIterator::class_factory<FnDocIterator>
-FnDocIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnDocIterator)void FnDocIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnDocIterator, PlanIteratorState>*)this);
+}
 
 
 void FnDocIterator::accept(PlanIterVisitor& v) const {
@@ -819,8 +913,11 @@ FnDocIterator::~FnDocIterator() {}
 
 
 // <FnDocAvailableIterator>
-FnDocAvailableIterator::class_factory<FnDocAvailableIterator>
-FnDocAvailableIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnDocAvailableIterator)void FnDocAvailableIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>*)this);
+}
 
 
 void FnDocAvailableIterator::accept(PlanIterVisitor& v) const {
@@ -841,8 +938,11 @@ FnDocAvailableIterator::~FnDocAvailableIterator() {}
 
 
 // <FnAvailableEnvironmentVariablesIterator>
-FnAvailableEnvironmentVariablesIterator::class_factory<FnAvailableEnvironmentVariablesIterator>
-FnAvailableEnvironmentVariablesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnAvailableEnvironmentVariablesIterator)void FnAvailableEnvironmentVariablesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>*)this);
+}
 
 
 void FnAvailableEnvironmentVariablesIterator::accept(PlanIterVisitor& v) const {
@@ -867,8 +967,11 @@ FnAvailableEnvironmentVariablesIteratorState::~FnAvailableEnvironmentVariablesIt
 
 
 // <FnEnvironmentVariableIterator>
-FnEnvironmentVariableIterator::class_factory<FnEnvironmentVariableIterator>
-FnEnvironmentVariableIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnEnvironmentVariableIterator)void FnEnvironmentVariableIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>*)this);
+}
 
 
 void FnEnvironmentVariableIterator::accept(PlanIterVisitor& v) const {
@@ -889,8 +992,11 @@ FnEnvironmentVariableIterator::~FnEnvironmentVariableIterator() {}
 
 
 // <FnUnparsedTextIterator>
-FnUnparsedTextIterator::class_factory<FnUnparsedTextIterator>
-FnUnparsedTextIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnUnparsedTextIterator)void FnUnparsedTextIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>*)this);
+}
 
 
 void FnUnparsedTextIterator::accept(PlanIterVisitor& v) const {
@@ -911,8 +1017,11 @@ FnUnparsedTextIterator::~FnUnparsedTextIterator() {}
 
 
 // <FnUnparsedTextAvailableIterator>
-FnUnparsedTextAvailableIterator::class_factory<FnUnparsedTextAvailableIterator>
-FnUnparsedTextAvailableIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnUnparsedTextAvailableIterator)void FnUnparsedTextAvailableIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>*)this);
+}
 
 
 void FnUnparsedTextAvailableIterator::accept(PlanIterVisitor& v) const {
@@ -933,8 +1042,11 @@ FnUnparsedTextAvailableIterator::~FnUnparsedTextAvailableIterator() {}
 
 
 // <FnUnparsedTextLinesIterator>
-FnUnparsedTextLinesIterator::class_factory<FnUnparsedTextLinesIterator>
-FnUnparsedTextLinesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnUnparsedTextLinesIterator)void FnUnparsedTextLinesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>*)this);
+}
 
 
 void FnUnparsedTextLinesIterator::accept(PlanIterVisitor& v) const {

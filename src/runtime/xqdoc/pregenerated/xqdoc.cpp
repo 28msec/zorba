@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <XQDocIterator>
-XQDocIterator::class_factory<XQDocIterator>
-XQDocIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)void XQDocIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<XQDocIterator, PlanIteratorState>*)this);
+}
 
 
 void XQDocIterator::accept(PlanIterVisitor& v) const {
@@ -55,8 +58,11 @@ XQDocIterator::~XQDocIterator() {}
 
 
 // <XQDocContentIterator>
-XQDocContentIterator::class_factory<XQDocContentIterator>
-XQDocContentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(XQDocContentIterator)void XQDocContentIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<XQDocContentIterator, PlanIteratorState>*)this);
+}
 
 
 void XQDocContentIterator::accept(PlanIterVisitor& v) const {

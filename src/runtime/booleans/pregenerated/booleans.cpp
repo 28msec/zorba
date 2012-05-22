@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <IsSameNodeIterator>
-IsSameNodeIterator::class_factory<IsSameNodeIterator>
-IsSameNodeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsSameNodeIterator)void IsSameNodeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>*)this);
+}
 
 
 void IsSameNodeIterator::accept(PlanIterVisitor& v) const {
@@ -55,8 +58,11 @@ IsSameNodeIterator::~IsSameNodeIterator() {}
 
 
 // <NodeBeforeIterator>
-NodeBeforeIterator::class_factory<NodeBeforeIterator>
-NodeBeforeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodeBeforeIterator)void NodeBeforeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>*)this);
+}
 
 
 void NodeBeforeIterator::accept(PlanIterVisitor& v) const {
@@ -77,8 +83,11 @@ NodeBeforeIterator::~NodeBeforeIterator() {}
 
 
 // <NodeAfterIterator>
-NodeAfterIterator::class_factory<NodeAfterIterator>
-NodeAfterIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodeAfterIterator)void NodeAfterIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<NodeAfterIterator, PlanIteratorState>*)this);
+}
 
 
 void NodeAfterIterator::accept(PlanIterVisitor& v) const {

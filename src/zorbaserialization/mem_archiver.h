@@ -38,7 +38,7 @@ public:
   MemArchiver(bool is_serializing_out, bool internal_archive=false)
     : 
     Archiver(is_serializing_out, internal_archive),
-    temp_field("", false, false, NULL, NULL,
+    temp_field(TYPE_LAST, false, false, NULL, NULL,
                ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0)
   {
     current_field = NULL;
@@ -48,7 +48,7 @@ public:
   bool read_next_simple_temp_field(SimpleValue& value, TypeCode type);
 
   bool read_next_field_impl( 
-      char** type, 
+      TypeCode& type, 
       char** value,
       int* id,
       bool is_simple,

@@ -36,6 +36,17 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
   
+
+SERIALIZE_INTERNAL_METHOD(ftnode)
+
+SERIALIZE_INTERNAL_METHOD(ftmatch_option)
+
+SERIALIZE_INTERNAL_METHOD(ftprimary)
+
+SERIALIZE_INTERNAL_METHOD(ftpos_filter)
+
+SERIALIZE_INTERNAL_METHOD(ftnode_list)
+
 SERIALIZABLE_CLASS_VERSIONS(ftand)
 
 SERIALIZABLE_CLASS_VERSIONS(ftcontent_filter)
@@ -702,6 +713,15 @@ ostream& ftprimary_with_options::put( ostream &o ) const {
   PUT_NODE( o, match_options_ );
   PUT_NODE( o, weight_ );
   OUTDENT_END_PUT( o );
+}
+
+ftprimary_with_options::ftprimary_with_options(serialization::Archiver& ar)
+  :
+  ftnode(ar),
+  primary_(NULL),
+  match_options_(NULL),
+  weight_(NULL)
+{
 }
 
 void ftprimary_with_options::serialize( serialization::Archiver &ar ) {

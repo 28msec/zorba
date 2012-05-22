@@ -706,7 +706,7 @@ void dynamic_context::bindIndex(
     store::Index_t& index)
 {
   if (theAvailableIndices == NULL)
-    theAvailableIndices = new IndexMap(0, NULL, 8, false);
+    theAvailableIndices = new IndexMap(HashMapItemPointerCmp(0, NULL), 8, false);
 
   if (!theAvailableIndices->insert(qname, index))
   {

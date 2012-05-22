@@ -262,18 +262,13 @@ private:
 public:
   SERIALIZABLE_CLASS(GroupByClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(GroupByClause)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theLocation;
-    ar & theGroupingSpecs;
-    ar & theNonGroupingSpecs;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   GroupByClause(
-        const QueryLoc& loc,
-        std::vector<GroupingSpec> aGroupingSpecs, 
-        std::vector<NonGroupingSpec> aNonGroupingSpecs);
+      const QueryLoc& loc,
+      std::vector<GroupingSpec> aGroupingSpecs, 
+      std::vector<NonGroupingSpec> aNonGroupingSpecs);
 
   ~GroupByClause() {}
 

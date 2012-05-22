@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <FnZorbaParseXmlFragmentIterator>
-FnZorbaParseXmlFragmentIterator::class_factory<FnZorbaParseXmlFragmentIterator>
-FnZorbaParseXmlFragmentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnZorbaParseXmlFragmentIterator)void FnZorbaParseXmlFragmentIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
+}
 
 
 void FnZorbaParseXmlFragmentIterator::accept(PlanIterVisitor& v) const {

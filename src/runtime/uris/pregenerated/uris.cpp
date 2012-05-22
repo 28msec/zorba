@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <DecodeURIIterator>
-DecodeURIIterator::class_factory<DecodeURIIterator>
-DecodeURIIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DecodeURIIterator)void DecodeURIIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DecodeURIIterator, PlanIteratorState>*)this);
+}
 
 
 void DecodeURIIterator::accept(PlanIterVisitor& v) const {

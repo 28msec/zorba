@@ -41,7 +41,7 @@ class dynamic_function_invocation_expr : public expr
 
 protected:
   expr_t                 theExpr;
-  checked_vector<expr_t> theArgs;
+  std::vector<expr_t>    theArgs;
 
 public:
   dynamic_function_invocation_expr(

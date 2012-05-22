@@ -391,21 +391,21 @@ void operator&(Archiver& ar, char*& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar.add_simple_field("char*",
+    ar.add_simple_field(TYPE_LAST,
                         obj,
                         obj,
                         obj ? ARCHIVE_FIELD_PTR : ARCHIVE_FIELD_NULL);
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, true,  false, true,
+    retval = ar.read_next_field(type, &value, &id, true,  false, true,
                                 &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, (ArchiveFieldKind)-1, id);
@@ -442,18 +442,18 @@ void operator&(Archiver& ar, std::string& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar.add_simple_field("string", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field(TYPE_STD_STRING, obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, true, false, true,
+    retval = ar.read_next_field(type, &value, &id, true, false, true,
                                 &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -471,7 +471,7 @@ void operator&(Archiver& ar, const std::string& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar.add_simple_field("string", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field(TYPE_STD_STRING, obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -487,20 +487,20 @@ void operator&(Archiver& ar, std::string*& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar.add_simple_field("std::string*", obj ? obj->c_str() : NULL, 
+    ar.add_simple_field(TYPE_STD_STRING, obj ? obj->c_str() : NULL, 
                         obj, 
                         obj ? ARCHIVE_FIELD_PTR : ARCHIVE_FIELD_NULL);
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, true, false, true,
+    retval = ar.read_next_field(type, &value, &id, true, false, true,
                                 &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, (ArchiveFieldKind)-1, id);
@@ -540,19 +540,19 @@ void serialize_array(Archiver& ar, unsigned char* obj, int len)
     char* base64string;
     base64string = (char*)malloc(8*len/6 + 8 + 1);
     Base64Impl::Encode(obj, len, base64string);
-    ar.add_simple_field("char[]", base64string, obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field(TYPE_LAST, base64string, obj, ARCHIVE_FIELD_NORMAL);
     free(base64string);
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
 
-    retval = ar.read_next_field(&type, &value, &id, true, false, true,
+    retval = ar.read_next_field(type, &value, &id, true, false, true,
                                 &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
@@ -573,24 +573,24 @@ void operator&(Archiver& ar, XQPCollator*& obj)
   {
     if (obj == NULL)
     {
-      ar.add_simple_field("XQPCollator*", 
+      ar.add_simple_field(TYPE_NULL, 
                           NULL, 
                           NULL,
                           ARCHIVE_FIELD_NULL);
       return;
     }
 
-    ar.add_simple_field("XQPCollator*", obj->getURI().c_str(), obj, ARCHIVE_FIELD_PTR);
+    ar.add_simple_field(TYPE_LAST, obj->getURI().c_str(), obj, ARCHIVE_FIELD_PTR);
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
 
-    bool retval = ar.read_next_field(&type, &value, &id, true, false, true,
+    bool retval = ar.read_next_field(type, &value, &id, true, false, true,
                                      &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_PTR, id);
@@ -645,18 +645,18 @@ void operator&(Archiver& ar, MAPM& obj)
         tail[1] = 0;
     }
 
-    ar.add_simple_field("MAPM", lBuffer, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field(TYPE_LAST, lBuffer, &obj, ARCHIVE_FIELD_NORMAL);
     free(lBuffer);
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id, true, false, true,
+    bool  retval = ar.read_next_field(type, &value, &id, true, false, true,
                                       &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);

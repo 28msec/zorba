@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <JSONParseInternal>
-JSONParseInternal::class_factory<JSONParseInternal>
-JSONParseInternal::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONParseInternal)void JSONParseInternal::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<JSONParseInternal, PlanIteratorState>*)this);
+}
 
 
 void JSONParseInternal::accept(PlanIterVisitor& v) const {
@@ -55,8 +58,11 @@ JSONParseInternal::~JSONParseInternal() {}
 
 
 // <JSONSerializeInternal>
-JSONSerializeInternal::class_factory<JSONSerializeInternal>
-JSONSerializeInternal::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONSerializeInternal)void JSONSerializeInternal::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<JSONSerializeInternal, PlanIteratorState>*)this);
+}
 
 
 void JSONSerializeInternal::accept(PlanIterVisitor& v) const {

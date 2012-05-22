@@ -21,8 +21,8 @@
 #include <stdio.h>
 #include <zorba/config.h>
 
-#include "zorbaserialization/archiver.h"
 #include "zorbaserialization/class_serializer.h"
+
 #include "zorbatypes/zstring.h"
 
 namespace zorba {

@@ -37,7 +37,7 @@
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
+  SERIALIZABLE_CLASS_VERSIONS_2(TryCatchIterator::CatchClause, TYPE_CatchClause)
 
 SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
 

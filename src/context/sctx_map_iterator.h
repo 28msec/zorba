@@ -31,7 +31,7 @@ template < typename T >
 class SctxMapIterator : public store::Iterator
 {
 
-  typedef HashMap<store::Item*, rchandle<T>, ser_ItemPointerHashMapCmp> ItemsMap;
+  typedef HashMap<store::Item*, rchandle<T>, HashMapItemPointerCmp> ItemsMap;
 
 private:
   const static_context       * theSctx;

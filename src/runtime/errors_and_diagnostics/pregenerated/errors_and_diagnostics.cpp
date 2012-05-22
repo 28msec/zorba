@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <ErrorIterator>
-ErrorIterator::class_factory<ErrorIterator>
-ErrorIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ErrorIterator)void ErrorIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
+}
 
 
 void ErrorIterator::accept(PlanIterVisitor& v) const {
@@ -55,8 +58,11 @@ ErrorIterator::~ErrorIterator() {}
 
 
 // <TraceIterator>
-TraceIterator::class_factory<TraceIterator>
-TraceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(TraceIterator)void TraceIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
+}
 
 
 void TraceIterator::accept(PlanIterVisitor& v) const {

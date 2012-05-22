@@ -19,10 +19,7 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
 
-#include "zorbatypes/collation_manager.h"
-
-#include "zorbaserialization/class_serializer.h"
-#include "zorbaserialization/serialize_basic_types.h"
+//#include "zorbatypes/collation_manager.h"
 
 #include "store/api/item.h"
 
@@ -33,31 +30,18 @@ namespace zorba
   Class to privide the equality and hash functions for the ItemPointerHashMap
   class defined below.
 *******************************************************************************/
-class ser_ItemPointerHashMapCmp : public ::zorba::serialization::SerializeBaseClass
+class HashMapItemPointerCmp 
 {
-protected:
+public:
   long          theTimeZone;
   XQPCollator * theCollator;
 
 public:
-  SERIALIZABLE_CLASS(ser_ItemPointerHashMapCmp);
-  SERIALIZABLE_CLASS_CONSTRUCTOR(ser_ItemPointerHashMapCmp);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theTimeZone;
-    ar & theCollator;
-  }
-
-public:
-  ser_ItemPointerHashMapCmp()
-    :
-    theTimeZone(0),
-    theCollator(NULL)
+  HashMapItemPointerCmp() : theTimeZone(0), theCollator(NULL)
   {
   }
 
-  ser_ItemPointerHashMapCmp(long tmz, XQPCollator* collator) 
+  HashMapItemPointerCmp(long tmz, XQPCollator* collator) 
     :
     theTimeZone(tmz),
     theCollator(collator)
@@ -81,70 +65,7 @@ public:
 
 
 #define ITEM_PTR_HASH_MAP(ValueType, MapType) \
-typedef HashMap<store::Item*, ValueType, ser_ItemPointerHashMapCmp> MapType;
-
-
-/***************************************************************************//**
-  Class to privide the equality and hash functions for the ItemPointerHashMap
-  class defined below.
-*******************************************************************************/
-class ItemPointerHashMapCmp
-{
-protected:
-  long          theTimeZone;
-  XQPCollator * theCollator;
-
-public:
-  ItemPointerHashMapCmp()
-    :
-    theTimeZone(0),
-    theCollator(NULL)
-  {
-  }
-
-  ItemPointerHashMapCmp(long tmz, XQPCollator* collator) 
-    :
-    theTimeZone(tmz),
-    theCollator(collator)
-  {
-  }
-
-  bool equal(const store::Item* t1, const store::Item* t2) const
-  {
-    return t1->equals(t2, theTimeZone, theCollator);
-  }
-
-  uint32_t hash(const store::Item* t) const
-  {
-    return t->hash(theTimeZone, theCollator);
-  }
-
-  long get_timezone() const { return theTimeZone; }
-  
-  const XQPCollator* get_collator() const { return theCollator; }
-};
-
-
-template <class V>
-class ItemPointerHashMap : public HashMap<store::Item*,
-                                          V,
-                                          ItemPointerHashMapCmp>
-{
-public:
-  ItemPointerHashMap(
-        long timezone,
-        XQPCollator* collation,
-        ulong size,
-        bool sync) 
-    :
-    HashMap<store::Item*, V, ItemPointerHashMapCmp>(
-            ItemPointerHashMapCmp(timezone, collation),
-            size,
-            sync)
-  {
-  }
-};
-
+typedef HashMap<store::Item*, ValueType, HashMapItemPointerCmp> MapType;
 
 
 } // namespace zorba

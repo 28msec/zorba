@@ -107,9 +107,9 @@ Store::Store()
   theTreeIdGenerator(NULL),
   theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
-  theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
-  theICs(0, NULL, DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
-  theHashMaps(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
+  theIndices(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
+  theICs(HashMapItemPointerCmp(0, NULL), DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
+  theHashMaps(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
   theTraceLevel(0)
 #ifndef ZORBA_NO_FULL_TEXT
   , theStemmerProvider( nullptr )

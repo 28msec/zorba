@@ -125,16 +125,9 @@ class HashMap
 {
 public:
 
-  template<class T1, class T2, class T3> friend
-  void operator&(serialiazation::Archiver& ar, HashMap<T1, T2, T3>& obj);
-
-
   class iterator
   {
     friend class HashMap;
-
-    template<class T1, class T2, class T3> friend
-    void operator&(serialiazation::Archiver& ar, HashMap<T1, T2, T3>*& obj);
 
   protected:
     checked_vector<HashEntry<T, V> >*  theHashTab;

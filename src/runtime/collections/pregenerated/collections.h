@@ -62,11 +62,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnCollectionIterator,
     NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnCollectionIterator(
     static_context* sctx,
@@ -114,13 +110,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCollectionIterator,
     NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaCollectionIterator(
     static_context* sctx,
@@ -160,13 +150,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaIndexOfIterator,
     NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaIndexOfIterator(
     static_context* sctx,
@@ -204,13 +188,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCreateCollectionIterator,
     NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaCreateCollectionIterator(
     static_context* sctx,
@@ -248,13 +226,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteCollectionIterator,
     NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaDeleteCollectionIterator(
     static_context* sctx,
@@ -290,11 +262,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesIterator,
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaInsertNodesIterator(
     static_context* sctx,
@@ -329,11 +297,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesFirstIterator,
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaInsertNodesFirstIterator(
     static_context* sctx,
@@ -368,11 +332,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesLastIterator,
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaInsertNodesLastIterator(
     static_context* sctx,
@@ -407,11 +367,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesBeforeIterator,
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaInsertNodesBeforeIterator(
     static_context* sctx,
@@ -448,13 +404,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesAfterIterator,
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaInsertNodesAfterIterator(
     static_context* sctx,
@@ -504,11 +454,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesIterator,
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaApplyInsertNodesIterator(
     static_context* sctx,
@@ -555,11 +501,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesFirstIterator,
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaApplyInsertNodesFirstIterator(
     static_context* sctx,
@@ -606,11 +548,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesLastIterator,
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaApplyInsertNodesLastIterator(
     static_context* sctx,
@@ -657,11 +595,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesBeforeIterator,
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaApplyInsertNodesBeforeIterator(
     static_context* sctx,
@@ -708,11 +642,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesAfterIterator,
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaApplyInsertNodesAfterIterator(
     static_context* sctx,
@@ -747,13 +677,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesIterator,
     NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaDeleteNodesIterator(
     static_context* sctx,
@@ -791,13 +715,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesFirstIterator,
     NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaDeleteNodesFirstIterator(
     static_context* sctx,
@@ -835,13 +753,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesLastIterator,
     NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaDeleteNodesLastIterator(
     static_context* sctx,
@@ -879,13 +791,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaTruncateCollectionIterator,
     NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaTruncateCollectionIterator(
     static_context* sctx,
@@ -921,11 +827,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCollectionNameIterator,
     NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaCollectionNameIterator(
     static_context* sctx,
@@ -959,13 +861,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableCollectionIterator,
     NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsAvailableCollectionIterator(
     static_context* sctx,
@@ -1016,13 +912,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableCollectionsIterator,
     NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
-
-    ar & theDynamicCollection;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   AvailableCollectionsIterator(
     static_context* sctx,
@@ -1056,11 +946,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableIndexIterator,
     NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsAvailableIndexIterator(
     static_context* sctx,
@@ -1105,11 +991,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableIndexesIterator,
     NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   AvailableIndexesIterator(
     static_context* sctx,
@@ -1141,11 +1023,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsActivatedICIterator,
     NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsActivatedICIterator(
     static_context* sctx,
@@ -1190,11 +1068,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ActivatedICsIterator,
     NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ActivatedICsIterator(
     static_context* sctx,
@@ -1226,11 +1100,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredCollectionIterator,
     NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsDeclaredCollectionIterator(
     static_context* sctx,
@@ -1275,11 +1145,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeclaredCollectionsIterator,
     NaryBaseIterator<DeclaredCollectionsIterator, DeclaredCollectionsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DeclaredCollectionsIterator, DeclaredCollectionsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DeclaredCollectionsIterator(
     static_context* sctx,
@@ -1311,11 +1177,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredIndexIterator,
     NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsDeclaredIndexIterator(
     static_context* sctx,
@@ -1360,11 +1222,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeclaredIndexesIterator,
     NaryBaseIterator<DeclaredIndexesIterator, DeclaredIndexesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DeclaredIndexesIterator, DeclaredIndexesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DeclaredIndexesIterator(
     static_context* sctx,
@@ -1396,11 +1254,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredICIterator,
     NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsDeclaredICIterator(
     static_context* sctx,
@@ -1445,11 +1299,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeclaredICsIterator,
     NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DeclaredICsIterator(
     static_context* sctx,
@@ -1496,11 +1346,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnURICollectionIterator,
     NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnURICollectionIterator(
     static_context* sctx,

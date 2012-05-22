@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <SeededRandomIterator>
-SeededRandomIterator::class_factory<SeededRandomIterator>
-SeededRandomIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SeededRandomIterator)void SeededRandomIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>*)this);
+}
 
 
 void SeededRandomIterator::accept(PlanIterVisitor& v) const {
@@ -67,8 +70,11 @@ void SeededRandomIteratorState::reset(PlanState& planState) {
 
 
 // <RandomIterator>
-RandomIterator::class_factory<RandomIterator>
-RandomIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RandomIterator)void RandomIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<RandomIterator, RandomIteratorState>*)this);
+}
 
 
 void RandomIterator::accept(PlanIterVisitor& v) const {
@@ -101,8 +107,11 @@ void RandomIteratorState::reset(PlanState& planState) {
 
 
 // <UuidIterator>
-UuidIterator::class_factory<UuidIterator>
-UuidIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(UuidIterator)void UuidIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<UuidIterator, PlanIteratorState>*)this);
+}
 
 
 void UuidIterator::accept(PlanIterVisitor& v) const {

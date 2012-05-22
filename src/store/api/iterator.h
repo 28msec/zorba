@@ -35,13 +35,6 @@ namespace store
 class Iterator : virtual public SimpleRCObject
 {
  public:
-  SERIALIZABLE_ABSTRACT_CLASS(Iterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(Iterator, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-  }
-
- public:
   Iterator() {}
 
   virtual ~Iterator() {}

@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <FetchContentIterator>
-FetchContentIterator::class_factory<FetchContentIterator>
-FetchContentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FetchContentIterator)void FetchContentIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FetchContentIterator, PlanIteratorState>*)this);
+}
 
 
 void FetchContentIterator::accept(PlanIterVisitor& v) const {
@@ -55,8 +58,11 @@ FetchContentIterator::~FetchContentIterator() {}
 
 
 // <FetchContentTypeIterator>
-FetchContentTypeIterator::class_factory<FetchContentTypeIterator>
-FetchContentTypeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FetchContentTypeIterator)void FetchContentTypeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>*)this);
+}
 
 
 void FetchContentTypeIterator::accept(PlanIterVisitor& v) const {

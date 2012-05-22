@@ -16,10 +16,6 @@
 #include "stdafx.h"
 
 
-#include "context/static_context.h"
-
-#include "types/typeimpl.h"
-
 #include "zorbautils/hashmap.h"
 #include "zorbautils/hashmap_itemp.h"
 
@@ -39,7 +35,6 @@ namespace zorba
 //
 
 SERIALIZABLE_CLASS_VERSIONS(ser_ItemPointerHashMapCmp)
-
 
 // HashMapZString
 SERIALIZABLE_CLASS_VERSIONS(serializable_HashMapZStringCmp)

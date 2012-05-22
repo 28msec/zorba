@@ -103,7 +103,7 @@ namespace zorba
   notifyAllWarnings();
 
 
-SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
+SERIALIZABLE_CLASS_VERSIONS_2(XQueryImpl::PlanProxy, TYPE_PLAN_PROXY)
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
@@ -179,7 +179,6 @@ XQueryImpl::~XQueryImpl()
   close();
 }
 
-
 /*******************************************************************************
   Always called while holding theMutex
 ********************************************************************************/
@@ -187,6 +186,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 {
   // static stuff
   ar & theFileName;
+
   if (!ar.is_serializing_out())
   {
     delete theCompilerCB;
@@ -200,6 +200,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
   ar & theCompilerCB;
   ar & thePlanProxy;
   ar & theStaticContext;
+
   if (!ar.is_serializing_out())
   {
     theDynamicContextWrapper = NULL;

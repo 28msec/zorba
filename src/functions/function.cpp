@@ -30,7 +30,7 @@
 #include "diagnostics/assert.h"
 
 #include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba {
 
@@ -50,6 +50,8 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   setFlag(FunctionConsts::isDeterministic);
 }
 
+
+SERIALIZE_INTERNAL_METHOD(function)
 
 /*******************************************************************************
 

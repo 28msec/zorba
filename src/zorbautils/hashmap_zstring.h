@@ -30,7 +30,7 @@ namespace zorba
   Class to privide the equality and hash functions for the HashMapZString
   class defined below.
 *******************************************************************************/
-class serializable_HashMapZStringCmp : public ::zorba::serialization::SerializeBaseClass
+class HashMapZStringCmp
 {
 public:
   static uint32_t hash(const zstring& str)
@@ -42,26 +42,11 @@ public:
   {
     return s1 == s2;
   }
-
-public:
-  SERIALIZABLE_CLASS(serializable_HashMapZStringCmp);
-
-  serializable_HashMapZStringCmp(::zorba::serialization::Archiver& ar)
-  {
-  }
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-  }
-
-  serializable_HashMapZStringCmp()
-  {
-  }
 };
 
 
 #define ZSTRING_HASH_MAP(ValueType, MapType) \
-typedef HashMap<zstring, ValueType, serializable_HashMapZStringCmp> MapType;
+typedef HashMap<zstring, ValueType, HashMapZStringCmp> MapType;
 
 
 }

@@ -34,8 +34,11 @@
 namespace zorba {
 
 // <PutDocumentIterator>
-PutDocumentIterator::class_factory<PutDocumentIterator>
-PutDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PutDocumentIterator)void PutDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<PutDocumentIterator, PlanIteratorState>*)this);
+}
 
 
 void PutDocumentIterator::accept(PlanIterVisitor& v) const {
@@ -56,8 +59,11 @@ PutDocumentIterator::~PutDocumentIterator() {}
 
 
 // <RemoveDocumentIterator>
-RemoveDocumentIterator::class_factory<RemoveDocumentIterator>
-RemoveDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RemoveDocumentIterator)void RemoveDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<RemoveDocumentIterator, PlanIteratorState>*)this);
+}
 
 
 void RemoveDocumentIterator::accept(PlanIterVisitor& v) const {
@@ -78,8 +84,11 @@ RemoveDocumentIterator::~RemoveDocumentIterator() {}
 
 
 // <RetrieveDocumentIterator>
-RetrieveDocumentIterator::class_factory<RetrieveDocumentIterator>
-RetrieveDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RetrieveDocumentIterator)void RetrieveDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<RetrieveDocumentIterator, PlanIteratorState>*)this);
+}
 
 
 void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const {
@@ -100,8 +109,11 @@ RetrieveDocumentIterator::~RetrieveDocumentIterator() {}
 
 
 // <AvailableDocumentsIterator>
-AvailableDocumentsIterator::class_factory<AvailableDocumentsIterator>
-AvailableDocumentsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(AvailableDocumentsIterator)void AvailableDocumentsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>*)this);
+}
 
 
 void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const {
@@ -124,8 +136,11 @@ AvailableDocumentsIteratorState::AvailableDocumentsIteratorState() {}
 
 
 // <IsAvailableDocumentIterator>
-IsAvailableDocumentIterator::class_factory<IsAvailableDocumentIterator>
-IsAvailableDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableDocumentIterator)void IsAvailableDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>*)this);
+}
 
 
 void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const {

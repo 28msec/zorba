@@ -24,6 +24,7 @@
 #include "util/string_util.h"
 
 #include "zorbaserialization/serialize_basic_types.h"
+#include "zorbaserialization/archiver.h"
 
 #include "decimal.h"
 #include "integer.h"

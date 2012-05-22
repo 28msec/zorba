@@ -23,67 +23,69 @@
 
 namespace zorba {
   
-  namespace simplestore {
+namespace simplestore {
 
-    class CollectionIterator;
+class CollectionIterator;
     
-    /*******************************************************************************
-      Collections container to ease the implementation of stores which contain 
-      a different kind of memory management.
-    ********************************************************************************/
-    class CollectionSet
-    {
-    public:
-      virtual ~CollectionSet() {}
+/*******************************************************************************
+  Collections container to ease the implementation of stores which contain 
+  a different kind of memory management.
+********************************************************************************/
+class CollectionSet
+{
+public:
+  virtual ~CollectionSet() {}
       
-      virtual void
-      clear() = 0;
+  virtual void
+  clear() = 0;
     
-      virtual bool
-      insert(
-          const zorba::store::Item* aName,
-          zorba::store::Collection_t& aCollection) = 0;
+  virtual bool
+  insert(
+      const zorba::store::Item* aName,
+      zorba::store::Collection_t& aCollection) = 0;
     
-      virtual bool
-      get(
-          const zorba::store::Item* aName,
-          zorba::store::Collection_t& aCollection,
-          bool aDynamicCollection = false) = 0;
+  virtual bool
+  get(
+      const zorba::store::Item* aName,
+      zorba::store::Collection_t& aCollection,
+      bool aDynamicCollection = false) = 0;
     
-      virtual bool
-      remove(const zorba::store::Item* aName, bool aDynamicCollection = false) = 0;
+  virtual bool
+  remove(const zorba::store::Item* aName, bool aDynamicCollection = false) = 0;
+  
+  virtual zorba::store::Iterator_t
+  names(bool aDynamicCollection = false) = 0;
     
-      virtual zorba::store::Iterator_t
-      names(bool aDynamicCollection = false) = 0;
+  virtual CollectionSetIterator_t
+  collections(bool aDynamicCollection = false) = 0;
+  
+}; /* class CollectionSet */
     
-      virtual CollectionSetIterator_t
-      collections(bool aDynamicCollection = false) = 0;
-    
-    }; /* class CollectionSet */
-    
-    /*******************************************************************************
-      Collection set iterator
-      Returned by the CollectionSet::collections function
-    ********************************************************************************/
-    class CollectionSetIterator : public SimpleRCObject
-    {
-    public:
-      virtual ~CollectionSetIterator() {}
-    
-      virtual void
-      open() = 0;
-    
-      virtual bool
-      next(zorba::store::Collection_t&) = 0;
-    
-      virtual void
-      reset() = 0;
-    
-      virtual void
-      close() throw() = 0;
-    };
 
-  } /* namespace simplestore */
+/*******************************************************************************
+  Collection set iterator
+  Returned by the CollectionSet::collections function
+********************************************************************************/
+class CollectionSetIterator : public SimpleRCObject
+{
+public:
+  virtual ~CollectionSetIterator() {}
+  
+  virtual void
+  open() = 0;
+    
+  virtual bool
+  next(zorba::store::Collection_t&) = 0;
+    
+  virtual void
+  reset() = 0;
+    
+  virtual void
+  close() throw() = 0;
+};
+  
+
+} /* namespace simplestore */
 } /* namespace zorba */
 
 #endif

@@ -34,8 +34,11 @@
 namespace zorba {
 
 // <ActivateICIterator>
-ActivateICIterator::class_factory<ActivateICIterator>
-ActivateICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ActivateICIterator)void ActivateICIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<ActivateICIterator, PlanIteratorState>*)this);
+}
 
 
 void ActivateICIterator::accept(PlanIterVisitor& v) const {
@@ -52,8 +55,11 @@ ActivateICIterator::~ActivateICIterator() {}
 
 
 // <DeactivateICIterator>
-DeactivateICIterator::class_factory<DeactivateICIterator>
-DeactivateICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeactivateICIterator)void DeactivateICIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>*)this);
+}
 
 
 void DeactivateICIterator::accept(PlanIterVisitor& v) const {
@@ -70,8 +76,11 @@ DeactivateICIterator::~DeactivateICIterator() {}
 
 
 // <CheckICIterator>
-CheckICIterator::class_factory<CheckICIterator>
-CheckICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(CheckICIterator)void CheckICIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<CheckICIterator, PlanIteratorState>*)this);
+}
 
 
 void CheckICIterator::accept(PlanIterVisitor& v) const {

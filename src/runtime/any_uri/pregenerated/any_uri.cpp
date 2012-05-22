@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <ResolveUriIterator>
-ResolveUriIterator::class_factory<ResolveUriIterator>
-ResolveUriIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ResolveUriIterator)void ResolveUriIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ResolveUriIterator, PlanIteratorState>*)this);
+}
 
 
 void ResolveUriIterator::accept(PlanIterVisitor& v) const {

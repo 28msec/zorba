@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <AbsIterator>
-AbsIterator::class_factory<AbsIterator>
-AbsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(AbsIterator)void AbsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<AbsIterator, PlanIteratorState>*)this);
+}
 
 
 void AbsIterator::accept(PlanIterVisitor& v) const {
@@ -55,8 +58,11 @@ AbsIterator::~AbsIterator() {}
 
 
 // <CeilingIterator>
-CeilingIterator::class_factory<CeilingIterator>
-CeilingIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(CeilingIterator)void CeilingIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<CeilingIterator, PlanIteratorState>*)this);
+}
 
 
 void CeilingIterator::accept(PlanIterVisitor& v) const {
@@ -77,8 +83,11 @@ CeilingIterator::~CeilingIterator() {}
 
 
 // <FloorIterator>
-FloorIterator::class_factory<FloorIterator>
-FloorIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FloorIterator)void FloorIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FloorIterator, PlanIteratorState>*)this);
+}
 
 
 void FloorIterator::accept(PlanIterVisitor& v) const {
@@ -99,8 +108,11 @@ FloorIterator::~FloorIterator() {}
 
 
 // <RoundIterator>
-RoundIterator::class_factory<RoundIterator>
-RoundIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RoundIterator)void RoundIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<RoundIterator, PlanIteratorState>*)this);
+}
 
 
 void RoundIterator::accept(PlanIterVisitor& v) const {
@@ -121,8 +133,11 @@ RoundIterator::~RoundIterator() {}
 
 
 // <RoundHalfToEvenIterator>
-RoundHalfToEvenIterator::class_factory<RoundHalfToEvenIterator>
-RoundHalfToEvenIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RoundHalfToEvenIterator)void RoundHalfToEvenIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<RoundHalfToEvenIterator, PlanIteratorState>*)this);
+}
 
 
 void RoundHalfToEvenIterator::accept(PlanIterVisitor& v) const {
@@ -143,8 +158,11 @@ RoundHalfToEvenIterator::~RoundHalfToEvenIterator() {}
 
 
 // <FormatNumberIterator>
-FormatNumberIterator::class_factory<FormatNumberIterator>
-FormatNumberIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FormatNumberIterator)void FormatNumberIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FormatNumberIterator, PlanIteratorState>*)this);
+}
 
 
 void FormatNumberIterator::accept(PlanIterVisitor& v) const {
@@ -165,8 +183,11 @@ FormatNumberIterator::~FormatNumberIterator() {}
 
 
 // <FormatIntegerIterator>
-FormatIntegerIterator::class_factory<FormatIntegerIterator>
-FormatIntegerIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FormatIntegerIterator)void FormatIntegerIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FormatIntegerIterator, PlanIteratorState>*)this);
+}
 
 
 void FormatIntegerIterator::accept(PlanIterVisitor& v) const {

@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseXmlIterator,
     NaryBaseIterator<FnParseXmlIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnParseXmlIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnParseXmlIterator(
     static_context* sctx,
@@ -79,11 +75,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSerializeIterator,
     NaryBaseIterator<FnSerializeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSerializeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSerializeIterator(
     static_context* sctx,

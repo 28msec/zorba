@@ -33,8 +33,11 @@
 namespace zorba {
 
 // <Base64DecodeIterator>
-Base64DecodeIterator::class_factory<Base64DecodeIterator>
-Base64DecodeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(Base64DecodeIterator)void Base64DecodeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>*)this);
+}
 
 
 void Base64DecodeIterator::accept(PlanIterVisitor& v) const {
@@ -55,8 +58,11 @@ Base64DecodeIterator::~Base64DecodeIterator() {}
 
 
 // <Base64EncodeIterator>
-Base64EncodeIterator::class_factory<Base64EncodeIterator>
-Base64EncodeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(Base64EncodeIterator)void Base64EncodeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>*)this);
+}
 
 
 void Base64EncodeIterator::accept(PlanIterVisitor& v) const {

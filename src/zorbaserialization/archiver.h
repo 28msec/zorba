@@ -222,15 +222,14 @@ public:
       ArchiveFieldKind field_treat);
 
   bool add_simple_field( 
-      const char* type, 
+      TypeCode type, 
       const char* value,
       const void* ptr,
       ArchiveFieldKind field_treat);
 
   bool add_compound_field( 
-      const char* type,
+      TypeCode type,
       bool is_class,
-      const void* info,
       const void* ptr,
       ArchiveFieldKind field_treat);
 
@@ -244,7 +243,7 @@ public:
   // Methods used during de-serialization only
   //
   bool read_next_field( 
-      char** type, 
+      TypeCode& type, 
       char** value,
       int* id,
       bool is_simple,
@@ -258,7 +257,7 @@ public:
   void read_end_current_level();
 
   virtual bool read_next_field_impl(
-      char** type, 
+      TypeCode& type, 
       char** value,
       int* id, 
       bool is_simple,
@@ -277,16 +276,16 @@ public:
 
   void check_nonclass_field(
       bool retval, 
-      enum ArchiveFieldKind field_treat,
-      enum ArchiveFieldKind required_field_treat,
+      ArchiveFieldKind field_treat,
+      ArchiveFieldKind required_field_treat,
       int id);
 
   void check_class_field(
       bool retval, 
-      const char* type,
-      const char* required_type, 
-      enum ArchiveFieldKind field_treat,
-      enum ArchiveFieldKind required_field_treat,
+      TypeCode type,
+      TypeCode required_type, 
+      ArchiveFieldKind field_treat,
+      ArchiveFieldKind required_field_treat,
       int id);
 
   void register_reference(

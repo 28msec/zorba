@@ -35,8 +35,11 @@ namespace zorba {
 
 #ifndef ZORBA_NO_FULL_TEXT
 // <CurrentCompareOptionsIterator>
-CurrentCompareOptionsIterator::class_factory<CurrentCompareOptionsIterator>
-CurrentCompareOptionsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(CurrentCompareOptionsIterator)void CurrentCompareOptionsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<CurrentCompareOptionsIterator, PlanIteratorState>*)this);
+}
 
 
 void CurrentCompareOptionsIterator::accept(PlanIterVisitor& v) const {
@@ -58,8 +61,11 @@ CurrentCompareOptionsIterator::~CurrentCompareOptionsIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
-CurrentLangIterator::class_factory<CurrentLangIterator>
-CurrentLangIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(CurrentLangIterator)void CurrentLangIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<CurrentLangIterator, PlanIteratorState>*)this);
+}
 
 
 void CurrentLangIterator::accept(PlanIterVisitor& v) const {
@@ -81,8 +87,11 @@ CurrentLangIterator::~CurrentLangIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <HostLangIterator>
-HostLangIterator::class_factory<HostLangIterator>
-HostLangIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(HostLangIterator)void HostLangIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<HostLangIterator, PlanIteratorState>*)this);
+}
 
 
 void HostLangIterator::accept(PlanIterVisitor& v) const {
@@ -104,8 +113,11 @@ HostLangIterator::~HostLangIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsStemLangSupportedIterator>
-IsStemLangSupportedIterator::class_factory<IsStemLangSupportedIterator>
-IsStemLangSupportedIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsStemLangSupportedIterator)void IsStemLangSupportedIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsStemLangSupportedIterator, PlanIteratorState>*)this);
+}
 
 
 void IsStemLangSupportedIterator::accept(PlanIterVisitor& v) const {
@@ -127,8 +139,11 @@ IsStemLangSupportedIterator::~IsStemLangSupportedIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordIterator>
-IsStopWordIterator::class_factory<IsStopWordIterator>
-IsStopWordIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsStopWordIterator)void IsStopWordIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsStopWordIterator, PlanIteratorState>*)this);
+}
 
 
 void IsStopWordIterator::accept(PlanIterVisitor& v) const {
@@ -150,8 +165,11 @@ IsStopWordIterator::~IsStopWordIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordLangSupportedIterator>
-IsStopWordLangSupportedIterator::class_factory<IsStopWordLangSupportedIterator>
-IsStopWordLangSupportedIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsStopWordLangSupportedIterator)void IsStopWordLangSupportedIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>*)this);
+}
 
 
 void IsStopWordLangSupportedIterator::accept(PlanIterVisitor& v) const {
@@ -173,8 +191,11 @@ IsStopWordLangSupportedIterator::~IsStopWordLangSupportedIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsThesaurusLangSupportedIterator>
-IsThesaurusLangSupportedIterator::class_factory<IsThesaurusLangSupportedIterator>
-IsThesaurusLangSupportedIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsThesaurusLangSupportedIterator)void IsThesaurusLangSupportedIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsThesaurusLangSupportedIterator, PlanIteratorState>*)this);
+}
 
 
 void IsThesaurusLangSupportedIterator::accept(PlanIterVisitor& v) const {
@@ -196,8 +217,11 @@ IsThesaurusLangSupportedIterator::~IsThesaurusLangSupportedIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsTokenizerLangSupportedIterator>
-IsTokenizerLangSupportedIterator::class_factory<IsTokenizerLangSupportedIterator>
-IsTokenizerLangSupportedIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsTokenizerLangSupportedIterator)void IsTokenizerLangSupportedIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsTokenizerLangSupportedIterator, PlanIteratorState>*)this);
+}
 
 
 void IsTokenizerLangSupportedIterator::accept(PlanIterVisitor& v) const {
@@ -219,8 +243,11 @@ IsTokenizerLangSupportedIterator::~IsTokenizerLangSupportedIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <StemIterator>
-StemIterator::class_factory<StemIterator>
-StemIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(StemIterator)void StemIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StemIterator, PlanIteratorState>*)this);
+}
 
 
 void StemIterator::accept(PlanIterVisitor& v) const {
@@ -242,8 +269,11 @@ StemIterator::~StemIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <StripDiacriticsIterator>
-StripDiacriticsIterator::class_factory<StripDiacriticsIterator>
-StripDiacriticsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(StripDiacriticsIterator)void StripDiacriticsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StripDiacriticsIterator, PlanIteratorState>*)this);
+}
 
 
 void StripDiacriticsIterator::accept(PlanIterVisitor& v) const {
@@ -265,8 +295,11 @@ StripDiacriticsIterator::~StripDiacriticsIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <ThesaurusLookupIterator>
-ThesaurusLookupIterator::class_factory<ThesaurusLookupIterator>
-ThesaurusLookupIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ThesaurusLookupIterator)void ThesaurusLookupIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ThesaurusLookupIterator, ThesaurusLookupIteratorState>*)this);
+}
 
 
 void ThesaurusLookupIterator::accept(PlanIterVisitor& v) const {
@@ -296,10 +329,7 @@ void ThesaurusLookupIteratorState::reset(PlanState& planState) {
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeIterator>
-TokenizeIterator::class_factory<TokenizeIterator>
-TokenizeIterator::g_class_factory;
-
-
+SERIALIZABLE_CLASS_VERSIONS(TokenizeIterator)
 void TokenizeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
@@ -327,8 +357,11 @@ void TokenizeIteratorState::reset(PlanState& planState) {
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <TokenizerPropertiesIterator>
-TokenizerPropertiesIterator::class_factory<TokenizerPropertiesIterator>
-TokenizerPropertiesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(TokenizerPropertiesIterator)void TokenizerPropertiesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>*)this);
+}
 
 
 void TokenizerPropertiesIterator::accept(PlanIterVisitor& v) const {
@@ -350,8 +383,11 @@ TokenizerPropertiesIterator::~TokenizerPropertiesIterator() {}
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeStringIterator>
-TokenizeStringIterator::class_factory<TokenizeStringIterator>
-TokenizeStringIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(TokenizeStringIterator)void TokenizeStringIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TokenizeStringIterator, TokenizeStringIteratorState>*)this);
+}
 
 
 void TokenizeStringIterator::accept(PlanIterVisitor& v) const {

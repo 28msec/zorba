@@ -34,8 +34,11 @@
 namespace zorba {
 
 // <FnCollectionIterator>
-FnCollectionIterator::class_factory<FnCollectionIterator>
-FnCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)void FnCollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>*)this);
+}
 
 
 void FnCollectionIterator::accept(PlanIterVisitor& v) const {
@@ -58,8 +61,13 @@ FnCollectionIteratorState::FnCollectionIteratorState() {}
 
 
 // <ZorbaCollectionIterator>
-ZorbaCollectionIterator::class_factory<ZorbaCollectionIterator>
-ZorbaCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionIterator)void ZorbaCollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaCollectionIterator::accept(PlanIterVisitor& v) const {
@@ -82,8 +90,13 @@ ZorbaCollectionIteratorState::ZorbaCollectionIteratorState() {}
 
 
 // <ZorbaIndexOfIterator>
-ZorbaIndexOfIterator::class_factory<ZorbaIndexOfIterator>
-ZorbaIndexOfIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaIndexOfIterator)void ZorbaIndexOfIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaIndexOfIterator::accept(PlanIterVisitor& v) const {
@@ -104,8 +117,13 @@ ZorbaIndexOfIterator::~ZorbaIndexOfIterator() {}
 
 
 // <ZorbaCreateCollectionIterator>
-ZorbaCreateCollectionIterator::class_factory<ZorbaCreateCollectionIterator>
-ZorbaCreateCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCreateCollectionIterator)void ZorbaCreateCollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const {
@@ -126,8 +144,13 @@ ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
 
 
 // <ZorbaDeleteCollectionIterator>
-ZorbaDeleteCollectionIterator::class_factory<ZorbaDeleteCollectionIterator>
-ZorbaDeleteCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteCollectionIterator)void ZorbaDeleteCollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const {
@@ -148,8 +171,11 @@ ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
 
 
 // <ZorbaInsertNodesIterator>
-ZorbaInsertNodesIterator::class_factory<ZorbaInsertNodesIterator>
-ZorbaInsertNodesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesIterator)void ZorbaInsertNodesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaInsertNodesIterator::accept(PlanIterVisitor& v) const {
@@ -170,8 +196,11 @@ ZorbaInsertNodesIterator::~ZorbaInsertNodesIterator() {}
 
 
 // <ZorbaInsertNodesFirstIterator>
-ZorbaInsertNodesFirstIterator::class_factory<ZorbaInsertNodesFirstIterator>
-ZorbaInsertNodesFirstIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesFirstIterator)void ZorbaInsertNodesFirstIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaInsertNodesFirstIterator::accept(PlanIterVisitor& v) const {
@@ -192,8 +221,11 @@ ZorbaInsertNodesFirstIterator::~ZorbaInsertNodesFirstIterator() {}
 
 
 // <ZorbaInsertNodesLastIterator>
-ZorbaInsertNodesLastIterator::class_factory<ZorbaInsertNodesLastIterator>
-ZorbaInsertNodesLastIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesLastIterator)void ZorbaInsertNodesLastIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaInsertNodesLastIterator::accept(PlanIterVisitor& v) const {
@@ -214,8 +246,11 @@ ZorbaInsertNodesLastIterator::~ZorbaInsertNodesLastIterator() {}
 
 
 // <ZorbaInsertNodesBeforeIterator>
-ZorbaInsertNodesBeforeIterator::class_factory<ZorbaInsertNodesBeforeIterator>
-ZorbaInsertNodesBeforeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesBeforeIterator)void ZorbaInsertNodesBeforeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaInsertNodesBeforeIterator::accept(PlanIterVisitor& v) const {
@@ -236,8 +271,13 @@ ZorbaInsertNodesBeforeIterator::~ZorbaInsertNodesBeforeIterator() {}
 
 
 // <ZorbaInsertNodesAfterIterator>
-ZorbaInsertNodesAfterIterator::class_factory<ZorbaInsertNodesAfterIterator>
-ZorbaInsertNodesAfterIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesAfterIterator)void ZorbaInsertNodesAfterIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaInsertNodesAfterIterator::accept(PlanIterVisitor& v) const {
@@ -258,8 +298,11 @@ ZorbaInsertNodesAfterIterator::~ZorbaInsertNodesAfterIterator() {}
 
 
 // <ZorbaApplyInsertNodesIterator>
-ZorbaApplyInsertNodesIterator::class_factory<ZorbaApplyInsertNodesIterator>
-ZorbaApplyInsertNodesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesIterator)void ZorbaApplyInsertNodesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>*)this);
+}
 
 
 void ZorbaApplyInsertNodesIterator::accept(PlanIterVisitor& v) const {
@@ -282,8 +325,11 @@ ZorbaApplyInsertNodesIteratorState::ZorbaApplyInsertNodesIteratorState() {}
 
 
 // <ZorbaApplyInsertNodesFirstIterator>
-ZorbaApplyInsertNodesFirstIterator::class_factory<ZorbaApplyInsertNodesFirstIterator>
-ZorbaApplyInsertNodesFirstIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesFirstIterator)void ZorbaApplyInsertNodesFirstIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>*)this);
+}
 
 
 void ZorbaApplyInsertNodesFirstIterator::accept(PlanIterVisitor& v) const {
@@ -306,8 +352,11 @@ ZorbaApplyInsertNodesFirstIteratorState::ZorbaApplyInsertNodesFirstIteratorState
 
 
 // <ZorbaApplyInsertNodesLastIterator>
-ZorbaApplyInsertNodesLastIterator::class_factory<ZorbaApplyInsertNodesLastIterator>
-ZorbaApplyInsertNodesLastIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesLastIterator)void ZorbaApplyInsertNodesLastIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>*)this);
+}
 
 
 void ZorbaApplyInsertNodesLastIterator::accept(PlanIterVisitor& v) const {
@@ -330,8 +379,11 @@ ZorbaApplyInsertNodesLastIteratorState::ZorbaApplyInsertNodesLastIteratorState()
 
 
 // <ZorbaApplyInsertNodesBeforeIterator>
-ZorbaApplyInsertNodesBeforeIterator::class_factory<ZorbaApplyInsertNodesBeforeIterator>
-ZorbaApplyInsertNodesBeforeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesBeforeIterator)void ZorbaApplyInsertNodesBeforeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>*)this);
+}
 
 
 void ZorbaApplyInsertNodesBeforeIterator::accept(PlanIterVisitor& v) const {
@@ -354,8 +406,11 @@ ZorbaApplyInsertNodesBeforeIteratorState::ZorbaApplyInsertNodesBeforeIteratorSta
 
 
 // <ZorbaApplyInsertNodesAfterIterator>
-ZorbaApplyInsertNodesAfterIterator::class_factory<ZorbaApplyInsertNodesAfterIterator>
-ZorbaApplyInsertNodesAfterIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesAfterIterator)void ZorbaApplyInsertNodesAfterIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>*)this);
+}
 
 
 void ZorbaApplyInsertNodesAfterIterator::accept(PlanIterVisitor& v) const {
@@ -378,8 +433,13 @@ ZorbaApplyInsertNodesAfterIteratorState::ZorbaApplyInsertNodesAfterIteratorState
 
 
 // <ZorbaDeleteNodesIterator>
-ZorbaDeleteNodesIterator::class_factory<ZorbaDeleteNodesIterator>
-ZorbaDeleteNodesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteNodesIterator)void ZorbaDeleteNodesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaDeleteNodesIterator::accept(PlanIterVisitor& v) const {
@@ -400,8 +460,13 @@ ZorbaDeleteNodesIterator::~ZorbaDeleteNodesIterator() {}
 
 
 // <ZorbaDeleteNodesFirstIterator>
-ZorbaDeleteNodesFirstIterator::class_factory<ZorbaDeleteNodesFirstIterator>
-ZorbaDeleteNodesFirstIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteNodesFirstIterator)void ZorbaDeleteNodesFirstIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaDeleteNodesFirstIterator::accept(PlanIterVisitor& v) const {
@@ -422,8 +487,13 @@ ZorbaDeleteNodesFirstIterator::~ZorbaDeleteNodesFirstIterator() {}
 
 
 // <ZorbaDeleteNodesLastIterator>
-ZorbaDeleteNodesLastIterator::class_factory<ZorbaDeleteNodesLastIterator>
-ZorbaDeleteNodesLastIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteNodesLastIterator)void ZorbaDeleteNodesLastIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaDeleteNodesLastIterator::accept(PlanIterVisitor& v) const {
@@ -444,8 +514,13 @@ ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 
 
 // <ZorbaTruncateCollectionIterator>
-ZorbaTruncateCollectionIterator::class_factory<ZorbaTruncateCollectionIterator>
-ZorbaTruncateCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaTruncateCollectionIterator)void ZorbaTruncateCollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void ZorbaTruncateCollectionIterator::accept(PlanIterVisitor& v) const {
@@ -466,8 +541,11 @@ ZorbaTruncateCollectionIterator::~ZorbaTruncateCollectionIterator() {}
 
 
 // <ZorbaCollectionNameIterator>
-ZorbaCollectionNameIterator::class_factory<ZorbaCollectionNameIterator>
-ZorbaCollectionNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionNameIterator)void ZorbaCollectionNameIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const {
@@ -488,8 +566,13 @@ ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
 
 
 // <IsAvailableCollectionIterator>
-IsAvailableCollectionIterator::class_factory<IsAvailableCollectionIterator>
-IsAvailableCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableCollectionIterator)void IsAvailableCollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const {
@@ -510,8 +593,13 @@ IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
 
 
 // <AvailableCollectionsIterator>
-AvailableCollectionsIterator::class_factory<AvailableCollectionsIterator>
-AvailableCollectionsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(AvailableCollectionsIterator)void AvailableCollectionsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
+
+    ar & theDynamicCollection;
+}
 
 
 void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const {
@@ -534,8 +622,11 @@ AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
 
 
 // <IsAvailableIndexIterator>
-IsAvailableIndexIterator::class_factory<IsAvailableIndexIterator>
-IsAvailableIndexIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableIndexIterator)void IsAvailableIndexIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>*)this);
+}
 
 
 void IsAvailableIndexIterator::accept(PlanIterVisitor& v) const {
@@ -556,8 +647,11 @@ IsAvailableIndexIterator::~IsAvailableIndexIterator() {}
 
 
 // <AvailableIndexesIterator>
-AvailableIndexesIterator::class_factory<AvailableIndexesIterator>
-AvailableIndexesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(AvailableIndexesIterator)void AvailableIndexesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>*)this);
+}
 
 
 void AvailableIndexesIterator::accept(PlanIterVisitor& v) const {
@@ -580,8 +674,11 @@ AvailableIndexesIteratorState::AvailableIndexesIteratorState() {}
 
 
 // <IsActivatedICIterator>
-IsActivatedICIterator::class_factory<IsActivatedICIterator>
-IsActivatedICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsActivatedICIterator)void IsActivatedICIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>*)this);
+}
 
 
 void IsActivatedICIterator::accept(PlanIterVisitor& v) const {
@@ -602,8 +699,11 @@ IsActivatedICIterator::~IsActivatedICIterator() {}
 
 
 // <ActivatedICsIterator>
-ActivatedICsIterator::class_factory<ActivatedICsIterator>
-ActivatedICsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ActivatedICsIterator)void ActivatedICsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>*)this);
+}
 
 
 void ActivatedICsIterator::accept(PlanIterVisitor& v) const {
@@ -626,8 +726,11 @@ ActivatedICsIteratorState::ActivatedICsIteratorState() {}
 
 
 // <IsDeclaredCollectionIterator>
-IsDeclaredCollectionIterator::class_factory<IsDeclaredCollectionIterator>
-IsDeclaredCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDeclaredCollectionIterator)void IsDeclaredCollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>*)this);
+}
 
 
 void IsDeclaredCollectionIterator::accept(PlanIterVisitor& v) const {
@@ -648,8 +751,11 @@ IsDeclaredCollectionIterator::~IsDeclaredCollectionIterator() {}
 
 
 // <DeclaredCollectionsIterator>
-DeclaredCollectionsIterator::class_factory<DeclaredCollectionsIterator>
-DeclaredCollectionsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeclaredCollectionsIterator)void DeclaredCollectionsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DeclaredCollectionsIterator, DeclaredCollectionsIteratorState>*)this);
+}
 
 
 void DeclaredCollectionsIterator::accept(PlanIterVisitor& v) const {
@@ -672,8 +778,11 @@ DeclaredCollectionsIteratorState::DeclaredCollectionsIteratorState() {}
 
 
 // <IsDeclaredIndexIterator>
-IsDeclaredIndexIterator::class_factory<IsDeclaredIndexIterator>
-IsDeclaredIndexIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDeclaredIndexIterator)void IsDeclaredIndexIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>*)this);
+}
 
 
 void IsDeclaredIndexIterator::accept(PlanIterVisitor& v) const {
@@ -694,8 +803,11 @@ IsDeclaredIndexIterator::~IsDeclaredIndexIterator() {}
 
 
 // <DeclaredIndexesIterator>
-DeclaredIndexesIterator::class_factory<DeclaredIndexesIterator>
-DeclaredIndexesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeclaredIndexesIterator)void DeclaredIndexesIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DeclaredIndexesIterator, DeclaredIndexesIteratorState>*)this);
+}
 
 
 void DeclaredIndexesIterator::accept(PlanIterVisitor& v) const {
@@ -723,8 +835,11 @@ void DeclaredIndexesIteratorState::init(PlanState& planState) {
 
 
 // <IsDeclaredICIterator>
-IsDeclaredICIterator::class_factory<IsDeclaredICIterator>
-IsDeclaredICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDeclaredICIterator)void IsDeclaredICIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>*)this);
+}
 
 
 void IsDeclaredICIterator::accept(PlanIterVisitor& v) const {
@@ -745,8 +860,11 @@ IsDeclaredICIterator::~IsDeclaredICIterator() {}
 
 
 // <DeclaredICsIterator>
-DeclaredICsIterator::class_factory<DeclaredICsIterator>
-DeclaredICsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeclaredICsIterator)void DeclaredICsIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>*)this);
+}
 
 
 void DeclaredICsIterator::accept(PlanIterVisitor& v) const {
@@ -774,8 +892,11 @@ void DeclaredICsIteratorState::init(PlanState& planState) {
 
 
 // <FnURICollectionIterator>
-FnURICollectionIterator::class_factory<FnURICollectionIterator>
-FnURICollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnURICollectionIterator)void FnURICollectionIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>*)this);
+}
 
 
 void FnURICollectionIterator::accept(PlanIterVisitor& v) const {

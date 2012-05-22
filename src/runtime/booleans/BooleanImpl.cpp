@@ -51,11 +51,25 @@ SERIALIZABLE_CLASS_VERSIONS(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DECIMAL>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_INTEGER>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_DOUBLE>,
+                               1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_FLOAT>,
+                               2)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_DECIMAL>,
+                               3)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_INTEGER>,
+                               4)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_STRING>,
+                               5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 

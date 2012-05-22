@@ -76,13 +76,10 @@ void operator&(Archiver& ar, T& obj)
 {
   if (ar.is_serializing_out())
   {
-    bool is_ref;
-    
-    is_ref = ar.add_compound_field(obj.get_class_name_str(),
-                                   FIELD_IS_CLASS,
-                                   NULL,
-                                   (SerializeBaseClass*)&obj, 
-                                   ARCHIVE_FIELD_NORMAL);
+    bool is_ref = ar.add_compound_field(obj.get_serializer_type_code(),
+                                        true,
+                                        (SerializeBaseClass*)&obj, 
+                                        ARCHIVE_FIELD_NORMAL);
     if (!is_ref)
     {
       obj.serialize_internal(ar);
@@ -92,16 +89,16 @@ void operator&(Archiver& ar, T& obj)
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
+    int referencing;
 
-    bool retval = ar.read_next_field(&type, &value, &id, false, true, false,
+    bool retval = ar.read_next_field(type, &value, &id, false, true, false,
                                      &field_treat, &referencing);
 
-    ar.check_class_field(retval, type, obj.get_class_name_str(),
+    ar.check_class_field(retval, type, obj.get_serializer_type_code(),
                          field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);
@@ -123,19 +120,14 @@ void operator&(Archiver& ar, T*& obj)
   {
     if (obj == NULL)
     {
-      ar.add_compound_field("NULL", 
-                            FIELD_IS_CLASS,
-                            NULL, 
-                            NULL,
-                            ARCHIVE_FIELD_NULL);
+      ar.add_compound_field(TYPE_NULL, true, NULL, ARCHIVE_FIELD_NULL);
       return;
     }
 
     bool is_ref = ar.add_compound_field((ar.is_serialize_base_class() ?
-                                         obj->T::get_class_name_str() :
-                                         obj->get_class_name_str()), 
-                                        FIELD_IS_CLASS,
-                                        NULL,
+                                         TYPE_LAST :
+                                         obj->get_serializer_type_code()), 
+                                        true,
                                         (SerializeBaseClass*)obj, 
                                         (ar.is_serialize_base_class() ?
                                          ARCHIVE_FIELD_BASECLASS :
@@ -156,16 +148,17 @@ void operator&(Archiver& ar, T*& obj)
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id, false, true, false,
+    bool  retval = ar.read_next_field(type, &value, &id, false, true, false,
                                       &field_treat, &referencing);
 
-    ar.check_class_field(retval, "", "", field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_class_field(retval, TYPE_NULL, TYPE_NULL,
+                         field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -194,13 +187,15 @@ void operator&(Archiver& ar, T*& obj)
 
     if (field_treat == ARCHIVE_FIELD_PTR)
     {
+      assert(type > 0 && type < TYPE_LAST);
+
       ClassDeserializer* cls_factory;
       cls_factory = ClassSerializer::getInstance()->get_class_factory(type);
 
       if (cls_factory == NULL)
       {
          throw ZORBA_EXCEPTION(zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD, 
-         ERROR_PARAMS(type));
+         ERROR_PARAMS(BUILD_STRING((ulong)type)));
       }
 
       new_obj = cls_factory->create_new(ar);
@@ -213,7 +208,7 @@ void operator&(Archiver& ar, T*& obj)
         obj = NULL;
 
         throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD,
-        ERROR_PARAMS(id, type, typeid(T).name()));
+        ERROR_PARAMS(id, BUILD_STRING((ulong)type), typeid(T).name()));
       }
 
       ar.register_reference(id, field_treat, new_obj);
@@ -252,7 +247,8 @@ void operator&(Archiver& ar, T*& obj)
 
       if (!obj)
       {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
+        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD,
+        ERROR_PARAMS(id));
       }
     }
     else
@@ -426,50 +422,41 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
 {
   assert(!ar.is_serialize_base_class());
 
+  csize size = 0;
+
   if (ar.is_serializing_out())
   {
     if (obj == NULL)
     {
-      ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS,
-                            NULL, 
-                            NULL,
-                            ARCHIVE_FIELD_NULL);
+      ar.add_compound_field(TYPE_NULL, false, NULL, ARCHIVE_FIELD_NULL);
       return;
     }
 
-    char  strtemp[20];
-#ifndef WIN32
-    sprintf(strtemp, "%d", (int)obj->size());
-#else
-    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj->size());
-#endif
-    bool is_ref = ar.add_compound_field("std::vector<T>*",
-                                        !FIELD_IS_CLASS,
-                                        strtemp,
-                                        obj,
-                                        ARCHIVE_FIELD_PTR);
-    if (!is_ref)
-    {
-      typename std::vector<T>::iterator it = obj->begin();
-      typename std::vector<T>::iterator end = obj->end();
-      for(; it != end; ++it)
-      {
-        ar & (*it);
-      }
+    bool is_ref = ar.add_compound_field(TYPE_LAST, false, obj, ARCHIVE_FIELD_PTR);
+    assert(!is_ref);
+    (void)is_ref;
 
-      ar.add_end_compound_field();
+    size = obj->size();
+    ar & size;
+
+    typename std::vector<T>::iterator it = obj->begin();
+    typename std::vector<T>::iterator end = obj->end();
+    for(; it != end; ++it)
+    {
+      ar & (*it);
     }
+
+    ar.add_end_compound_field();
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
+    int referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id, false, false, true,
+    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
                                       &field_treat, &referencing);
 
     ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
@@ -481,43 +468,22 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
       return;
     }
 
-    void* new_obj;
+    ZORBA_ASSERT(field_treat == ARCHIVE_FIELD_PTR);
 
-    if (field_treat == ARCHIVE_FIELD_PTR)
+    obj = new std::vector<T>;
+
+    ar & size;
+
+    obj->resize(size);
+
+    typename std::vector<T>::iterator it = obj->begin();
+    typename std::vector<T>::iterator end = obj->end();
+    for(; it != end; ++it)
     {
-      obj = new std::vector<T>;
-      ar.register_reference(id, field_treat, obj);
-
-      int size;
-      sscanf(value, "%d", &size);
-      obj->resize(size);
-
-      typename std::vector<T>::iterator it = obj->begin();
-      typename std::vector<T>::iterator end = obj->end();
-      for(; it != end; ++it)
-      {
-        ar & (*it);
-      }
-
-      ar.read_end_current_level();
+      ar & (*it);
     }
-    else if (field_treat == ARCHIVE_FIELD_BASECLASS)
-    {
-      assert(false);
-    }
-    else if ((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
-    {
-      obj = (std::vector<T>*)new_obj;
 
-      if (!obj)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-      }
-    }
-    else
-    {
-      ZORBA_ASSERT(false);
-    }
+    ar.read_end_current_level();
   }
 }
 
@@ -574,54 +540,44 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 {
   assert(!ar.is_serialize_base_class());
 
+  csize size = 0;
+
   if (ar.is_serializing_out())
   {
     if (obj == NULL)
     {
-      ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS,
-                            NULL, 
-                            NULL,
-                            ARCHIVE_FIELD_NULL);
+      ar.add_compound_field(TYPE_NULL, false, NULL, ARCHIVE_FIELD_NULL);
       return;
     }
 
-    bool is_ref = ar.add_compound_field("std::map<T1, T2>",
-                                        !FIELD_IS_CLASS,
-                                        NULL,
-                                        obj,
-                                        ARCHIVE_FIELD_PTR);
+    bool is_ref = ar.add_compound_field(TYPE_LAST, false, obj, ARCHIVE_FIELD_PTR);
 
-    if (!is_ref)
+    assert(!is_ref);
+    (void)is_ref;
+
+    size = obj->size();
+    ar & size;
+
+    typename std::map<T1, T2>::iterator it = obj->begin();
+    typename std::map<T1, T2>::iterator end = obj->end();
+
+    for (; it != end; ++it)
     {
-      ar.set_is_temp_field(true);
-
-      csize s = obj->size();
-      ar & s;
-
-      ar.set_is_temp_field(false);
-
-      typename std::map<T1, T2>::iterator it = obj->begin();
-      typename std::map<T1, T2>::iterator end = obj->end();
-
-      for (; it != end; ++it)
-      {
-        ar & (*it).first;
-        ar & (*it).second;
-      }
-
-      ar.add_end_compound_field();
+      ar & (*it).first;
+      ar & (*it).second;
     }
+
+    ar.add_end_compound_field();
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
     int   id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int   referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
+    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
                                       &field_treat, &referencing);
 
     ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
@@ -633,47 +589,23 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
       return;
     }
 
-    void* new_obj;
+    ZORBA_ASSERT(field_treat == ARCHIVE_FIELD_PTR);
 
-    if (field_treat == ARCHIVE_FIELD_PTR)
+    obj = new std::map<T1, T2>;
+
+    ar & size;
+
+    std::pair<T1, T2> p;
+
+    for (csize i = 0; i < size; ++i)
     {
-      obj = new std::map<T1, T2>;
+      ar & p.first;
+      ar & p.second;
 
-      ar.register_reference(id, field_treat, obj);
-
-      ar.set_is_temp_field(true);
-      csize s;
-      ar & s;
-      ar.set_is_temp_field(false);
-
-      std::pair<T1, T2> p;
-
-      for (csize i = 0; i < s; ++i)
-      {
-        ar & p.first;
-        ar & p.second;
-
-        obj->insert(p);
-      }
-
-      ar.read_end_current_level();
+      obj->insert(p);
     }
-    else if (field_treat == ARCHIVE_FIELD_BASECLASS)
-    {
-      assert(false);
-    }
-    else if ((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
-    {
-      obj = (std::map<T1, T2>*)new_obj;
-      if (!obj)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-      }
-    }
-    else
-    {
-      ZORBA_ASSERT(false);
-    }
+
+    ar.read_end_current_level();
   }
 }
 
@@ -792,21 +724,14 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
   {
     if (obj == NULL)
     {
-      ar.add_compound_field("NULL", 
-                            !FIELD_IS_CLASS,
-                            NULL, 
-                            NULL,
-                            ARCHIVE_FIELD_NULL);
+      ar.add_compound_field(TYPE_NULL, false, NULL, ARCHIVE_FIELD_NULL);
       return;
     }
 
-    bool is_ref = ar.add_compound_field("HashMap<T1, T2>",
-                                        !FIELD_IS_CLASS,
-                                        NULL,
-                                        obj,
-                                        ARCHIVE_FIELD_PTR);
+    bool is_ref = ar.add_compound_field(TYPE_LAST, false, obj, ARCHIVE_FIELD_PTR);
 
     assert(!is_ref);
+    (void)is_ref;
 
     sync = obj->get_sync();
     capacity = obj->capacity();
@@ -836,13 +761,13 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
   }
   else
   {
-    char* type;
+    TypeCode type;
     char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
+    int referencing;
 
-    bool  retval = ar.read_next_field(&type, &value, &id, false, false, false,
+    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
                                       &field_treat, &referencing);
 
     ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);

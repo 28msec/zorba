@@ -161,8 +161,6 @@ public:
   ArchiveFieldKind             theKind;
 
   TypeCode                     theType;
-  char                       * theTypeName;
-  csize                        theTypeNamePosInPool;
 
   SimpleValue                  theValue;
   csize                        theValuePosInPool;
@@ -196,12 +194,12 @@ public:
 
 public:
   archive_field(
-      const char* type,
+      TypeCode type,
       bool is_simple,
       bool is_class, 
       const void* value,
       const void* ptr,
-      enum ArchiveFieldKind kind,
+      ArchiveFieldKind kind,
       archive_field* refered,
       int only_for_eval,
       ENUM_ALLOW_DELAY allow_delay,

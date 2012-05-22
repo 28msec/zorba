@@ -42,6 +42,8 @@
 namespace zorba
 {
 
+SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
+
 SERIALIZABLE_CLASS_VERSIONS(IndexDecl)
 
 

@@ -109,7 +109,7 @@ bool MemArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
 
 
 bool MemArchiver::read_next_field_impl( 
-    char** type, 
+    TypeCode& type, 
     char** value,
     int* id, 
     bool is_simple,
@@ -121,7 +121,7 @@ bool MemArchiver::read_next_field_impl(
   if (current_field == NULL || is_after_last)
     return false;
 
-  *type = current_field->theTypeName;
+  type = current_field->theType;
   *value = (char*)current_field->theValue.cstrv;
   *id = current_field->theId;
   *field_treat = current_field->theKind;

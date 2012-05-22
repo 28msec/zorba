@@ -37,8 +37,8 @@ namespace zorba
 {
 
 
-DynamicFnCallIterator::class_factory<DynamicFnCallIterator>
-DynamicFnCallIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
+
 
 
 /*******************************************************************************

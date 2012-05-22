@@ -34,8 +34,11 @@
 namespace zorba {
 
 // <ReadLineIterator>
-ReadLineIterator::class_factory<ReadLineIterator>
-ReadLineIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ReadLineIterator)void ReadLineIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
+}
 
 
 void ReadLineIterator::accept(PlanIterVisitor& v) const {
@@ -56,8 +59,13 @@ ReadLineIterator::~ReadLineIterator() {}
 
 
 // <PrintIterator>
-PrintIterator::class_factory<PrintIterator>
-PrintIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PrintIterator)void PrintIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);
+
+    ar & thePrintToConsole;
+}
 
 
 void PrintIterator::accept(PlanIterVisitor& v) const {
@@ -78,8 +86,16 @@ PrintIterator::~PrintIterator() {}
 
 
 // <FunctionTraceIterator>
-FunctionTraceIterator::class_factory<FunctionTraceIterator>
-FunctionTraceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionTraceIterator)void FunctionTraceIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>*)this);
+
+    ar & theFunctionName;
+    ar & theFunctionLocation;
+    ar & theFunctionCallLocation;
+    ar & theFunctionArity;
+}
 
 
 void FunctionTraceIterator::accept(PlanIterVisitor& v) const {

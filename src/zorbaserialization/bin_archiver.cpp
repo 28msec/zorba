@@ -109,84 +109,22 @@ void output_statistics_archive_field(
 #endif
 
 
+
 /*******************************************************************************
-  Open archiver for input
+
 ********************************************************************************/
-BinArchiver::BinArchiver(std::istream* is) 
-  :
-  Archiver(false),
-  theStringPool(false, false)
+BinArchiver::~BinArchiver()
 {
-  this->is = is;
-  this->os = NULL;
-  this->last_id = 0;
-  theCurrentByte = 0;
-  theBitfill = 8;
-
-  //read the plan serializer info
-  char	preface_string[200];
-  unsigned int	preface_len = 0;
-
-  while (preface_len < sizeof(preface_string))
-  {
-	  is->read(preface_string + preface_len, 1);
-	  if (is->gcount() < 1)
-	  {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
-	  }
-
-    if (preface_string[preface_len] == 0)
-      break;
-
-    preface_len++;
-  }
-
-  if (strcmp(preface_string, ZORBA_BIN_SERIALIZED_PLAN_STRING))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
-  }
-
-  theBuffer = (unsigned char*)malloc(BUFFER_SEGMENT_SIZE);
-  size_read = 0;
-
-  while (1)
-  {
-    is->read((char*)theBuffer + size_read, BUFFER_SEGMENT_SIZE);
-    size_read += (size_t)is->gcount();
-
-    if (is->gcount() == BUFFER_SEGMENT_SIZE)
-    {
-      theBuffer = (unsigned char*)realloc(theBuffer, size_read + BUFFER_SEGMENT_SIZE);
-    }
-    else
-    {
-      break;
-    }
-  }
-
-  theCurrentBytePtr = theBuffer;
-
-  read_string(theArchiveName);
-  read_string(theArchiveInfo);
-  theArchiveVersion = read_uint32();
-  theFieldCounter = read_uint32();
-  unsigned int is_release = read_uint32();
-#ifndef NDEBUG
-  if(is_release)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0016_CANNOT_LOAD_FROM_RELEASE_TO_DEBUG);
-  }
-#else
-  if(!is_release)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0017_CANNOT_LOAD_FROM_DEBUG_TO_RELEASE);
-  }
-#endif
-
-  read_string_pool();
-
-  root_tag_is_read();
+  if (theBuffer)
+    free(theBuffer);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  writing archive                                                           //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -205,23 +143,6 @@ BinArchiver::BinArchiver(std::ostream* os)
   
   theBuffer = NULL;
 }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-BinArchiver::~BinArchiver()
-{
-  if (theBuffer)
-    free(theBuffer);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//  writing archive                                                           //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -306,11 +227,6 @@ void BinArchiver::collect_strings(archive_field* parent_field)
   {
     if (field->theKind != ARCHIVE_FIELD_NULL)
     {
-      if (field->theIsClass && field->theKind == ARCHIVE_FIELD_PTR)
-      {
-        field->theTypeNamePosInPool = add_to_string_pool(field->theTypeName);
-      }
-
       if (field->theKind != ARCHIVE_FIELD_REFERENCING)
       {
         switch (field->theType)
@@ -541,10 +457,9 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
       {
         if (field->theIsClass && field->theKind == ARCHIVE_FIELD_PTR)
         {
-          if (!field->theTypeName)
-            write_int_exp2(0);
-          else
-            write_int_exp2(theStrings.at(field->theTypeNamePosInPool-1).theDiskPos);
+          assert(field->theType != TYPE_LAST);
+
+          write_enum(field->theType);
         }
 
         if (field->theId)
@@ -726,6 +641,39 @@ void BinArchiver::write_int_exp2(unsigned int intval)
 /*******************************************************************************
 
 ********************************************************************************/
+void BinArchiver::write_enum(unsigned int intval)
+{
+  if (intval < (1 << 5))
+  {
+    write_bit(0);
+    write_bits(intval, 5);
+  }
+  else if (intval < (1 << 8))
+  {
+    write_bit(1);
+    write_bit(0);
+    write_bits(intval, 8);
+  }
+  else if (intval < (1 << 13))
+  {
+    write_bit(1);
+    write_bit(1);
+    write_bit(0);
+    write_bits(intval, 13);
+  }
+  else
+  {
+    write_bit(1);
+    write_bit(1);
+    write_bit(1);
+    write_bits(intval, 32);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void BinArchiver::write_bits(unsigned int value, unsigned int bits)
 {
   while (bits)
@@ -762,6 +710,86 @@ void BinArchiver::write_bit(unsigned char bit)
 //  reading archive                                                           //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  Open archiver for input
+********************************************************************************/
+BinArchiver::BinArchiver(std::istream* is) 
+  :
+  Archiver(false),
+  theStringPool(false, false)
+{
+  this->is = is;
+  this->os = NULL;
+  this->last_id = 0;
+  theCurrentByte = 0;
+  theBitfill = 8;
+
+  //read the plan serializer info
+  char	preface_string[200];
+  unsigned int	preface_len = 0;
+
+  while (preface_len < sizeof(preface_string))
+  {
+	  is->read(preface_string + preface_len, 1);
+	  if (is->gcount() < 1)
+	  {
+      throw ZORBA_EXCEPTION(zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+	  }
+
+    if (preface_string[preface_len] == 0)
+      break;
+
+    preface_len++;
+  }
+
+  if (strcmp(preface_string, ZORBA_BIN_SERIALIZED_PLAN_STRING))
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+  }
+
+  theBuffer = (unsigned char*)malloc(BUFFER_SEGMENT_SIZE);
+  size_read = 0;
+
+  while (1)
+  {
+    is->read((char*)theBuffer + size_read, BUFFER_SEGMENT_SIZE);
+    size_read += (size_t)is->gcount();
+
+    if (is->gcount() == BUFFER_SEGMENT_SIZE)
+    {
+      theBuffer = (unsigned char*)realloc(theBuffer, size_read + BUFFER_SEGMENT_SIZE);
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  theCurrentBytePtr = theBuffer;
+
+  read_string(theArchiveName);
+  read_string(theArchiveInfo);
+  theArchiveVersion = read_uint32();
+  theFieldCounter = read_uint32();
+  unsigned int is_release = read_uint32();
+#ifndef NDEBUG
+  if(is_release)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0016_CANNOT_LOAD_FROM_RELEASE_TO_DEBUG);
+  }
+#else
+  if(!is_release)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0017_CANNOT_LOAD_FROM_DEBUG_TO_RELEASE);
+  }
+#endif
+
+  read_string_pool();
+
+  root_tag_is_read();
+}
 
 
 /*******************************************************************************
@@ -1072,6 +1100,32 @@ unsigned int BinArchiver::read_int_exp2()
 /*******************************************************************************
 
 ********************************************************************************/
+unsigned int BinArchiver::read_enum()
+{
+  unsigned char bit;
+
+  bit = read_bit();
+
+  if (!bit)
+    return read_bits(5);
+
+  bit = read_bit();
+
+  if (!bit)
+    return read_bits(8);
+
+  bit = read_bit();
+
+  if(!bit)
+    return read_bits(13);
+  else
+    return read_bits(32);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool BinArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
 {
   if (!is)
@@ -1142,7 +1196,7 @@ bool BinArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
 
 ********************************************************************************/
 bool BinArchiver::read_next_field_impl(
-    char** type, 
+    TypeCode& type, 
     char** value,
     int* id,
     bool is_simple,
@@ -1156,7 +1210,7 @@ bool BinArchiver::read_next_field_impl(
     throw ZORBA_EXCEPTION(zerr::ZCSE0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
   }
 
-  *type = NULL;
+  type = TYPE_LAST;
   *value = NULL;
   *id = -1;
   *referencing = -1; 
@@ -1176,10 +1230,10 @@ bool BinArchiver::read_next_field_impl(
   {
     if (is_class && (*field_treat == ARCHIVE_FIELD_PTR))
     {
-      unsigned int field_type_pos = read_int_exp2();
+      unsigned int tmp = read_enum();
+      assert(tmp <= TYPE_LAST);
 
-      if (field_type_pos)
-        *type = (char*)theStrings.at(field_type_pos-1).str;
+      type = static_cast<TypeCode>(tmp);
     }
 
     *id = read_int_exp() + this->last_id;

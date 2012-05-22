@@ -22,7 +22,7 @@
 
 #include "common/common.h"
 #include "util/stl_util.h"
-#include "zorbaserialization/archiver.h"
+
 #include "zorbaserialization/class_serializer.h"
 
 #include "m_apm.h"

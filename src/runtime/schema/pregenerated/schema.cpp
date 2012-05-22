@@ -37,10 +37,7 @@ namespace zorba {
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>
-ValidateIterator::class_factory<ValidateIterator>
-ValidateIterator::g_class_factory;
-
-
+SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
 void ValidateIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
@@ -55,8 +52,11 @@ ValidateIterator::~ValidateIterator() {}
 
 #endif
 // <ZorbaValidateInPlaceIterator>
-ZorbaValidateInPlaceIterator::class_factory<ZorbaValidateInPlaceIterator>
-ZorbaValidateInPlaceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaValidateInPlaceIterator)void ZorbaValidateInPlaceIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaValidateInPlaceIterator::accept(PlanIterVisitor& v) const {
@@ -73,8 +73,11 @@ ZorbaValidateInPlaceIterator::~ZorbaValidateInPlaceIterator() {}
 
 
 // <ZorbaSchemaTypeIterator>
-ZorbaSchemaTypeIterator::class_factory<ZorbaSchemaTypeIterator>
-ZorbaSchemaTypeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaSchemaTypeIterator)void ZorbaSchemaTypeIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaSchemaTypeIterator::accept(PlanIterVisitor& v) const {
@@ -95,8 +98,11 @@ ZorbaSchemaTypeIterator::~ZorbaSchemaTypeIterator() {}
 
 
 // <ZorbaIsValidatedIterator>
-ZorbaIsValidatedIterator::class_factory<ZorbaIsValidatedIterator>
-ZorbaIsValidatedIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaIsValidatedIterator)void ZorbaIsValidatedIterator::serialize( ::zorba::serialization::Archiver& ar)
+{
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>*)this);
+}
 
 
 void ZorbaIsValidatedIterator::accept(PlanIterVisitor& v) const {

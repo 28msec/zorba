@@ -354,7 +354,7 @@ Schema::Schema(TypeManager* tm)
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
   // QQQ should be zstring
   theUdTypesCache = 
-  new HashMap<zstring, xqtref_t, serializable_HashMapZStringCmp>(64, false);
+  new HashMap<zstring, xqtref_t, HashMapZStringCmp>(64, false);
 #endif
 }
 

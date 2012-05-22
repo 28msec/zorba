@@ -100,7 +100,7 @@ public:
   bool read_next_simple_temp_field(SimpleValue& value, TypeCode type);
 
   bool read_next_field_impl( 
-      char** type, 
+      TypeCode& type, 
       char** value,
       int* id,
       bool is_simple,
@@ -137,6 +137,8 @@ protected:
 
   void write_int_exp2(unsigned int intval);
 
+  void write_enum(unsigned int intval);
+
   void write_bits(unsigned int value, unsigned int bits);
 
   void write_bit(unsigned char bit);
@@ -159,6 +161,8 @@ protected:
   unsigned int read_int_exp();
 
   unsigned int read_int_exp2();
+
+  unsigned int read_enum();
 
   unsigned char read_bit();
 

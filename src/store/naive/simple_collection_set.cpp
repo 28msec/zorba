@@ -93,7 +93,7 @@ const ulong SimpleCollectionSet::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 SimpleCollectionSet::SimpleCollectionSet()
   :
-  theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true)
+  theCollections(HashMapItemPointerCmp(0, NULL), DEFAULT_COLLECTION_MAP_SIZE, true)
 {
 }
 
@@ -109,8 +109,9 @@ void SimpleCollectionSet::clear()
 }
 
 
-bool SimpleCollectionSet::insert(const zorba::store::Item* aName,
-                                 zorba::store::Collection_t& aCollection)
+bool SimpleCollectionSet::insert(
+    const zorba::store::Item* aName,
+    zorba::store::Collection_t& aCollection)
 {
   store::Item* qname = const_cast<store::Item*>(aName);
 
@@ -134,7 +135,9 @@ bool SimpleCollectionSet::get(
 }
 
 
-bool SimpleCollectionSet::remove(const zorba::store::Item* aName, bool aDynamicCollection) 
+bool SimpleCollectionSet::remove(
+    const zorba::store::Item* aName,
+    bool aDynamicCollection) 
 {
   zorba::store::Collection_t lColl;
   if (!get(aName, lColl, aDynamicCollection))

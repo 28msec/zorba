@@ -29,6 +29,7 @@
 #include "util/ascii_util.h"
 
 #include "zorbaserialization/serialize_basic_types.h"
+#include "zorbaserialization/archiver.h"
 
 
 namespace zorba

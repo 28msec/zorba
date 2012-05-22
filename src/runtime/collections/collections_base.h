@@ -163,8 +163,9 @@ public:
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
       bool aDynamicCollection)
-    : NaryBaseIterator<Iter, State>(sctx, loc, children),
-      theDynamicCollection(aDynamicCollection)
+    :
+    NaryBaseIterator<Iter, State>(sctx, loc, children),
+    theDynamicCollection(aDynamicCollection)
   {
   }
 
