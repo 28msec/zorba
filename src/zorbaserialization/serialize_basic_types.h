@@ -51,6 +51,8 @@ void operator&(Archiver& ar, int64_t& obj);
 
 void operator&(Archiver& ar, uint64_t& obj);
 
+void operator&(Archiver& ar, const uint64_t& obj);
+
 void operator&(Archiver& ar, int16_t& obj);
 
 void operator&(Archiver& ar, uint16_t& obj);

@@ -123,6 +123,24 @@ void operator&(Archiver& ar, uint64_t& obj)
 /*******************************************************************************
 
 ********************************************************************************/
+void operator&(Archiver& ar, const uint64_t& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    SimpleValue v;
+    v.uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, v, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void operator&(Archiver& ar, int32_t& obj)
 {
   if (ar.is_serializing_out())
