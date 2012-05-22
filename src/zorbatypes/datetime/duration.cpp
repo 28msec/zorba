@@ -544,13 +544,45 @@ void Duration::serialize(::zorba::serialization::Archiver& ar)
 {
   SERIALIZE_ENUM(FACET_TYPE, facet);
   ar & is_negative;
-  ar & data[0];
-  ar & data[1];
-  ar & data[2];
-  ar & data[3];
-  ar & data[4];
-  ar & data[5];
-  ar & data[6];
+
+  int32_t data0, data1, data2, data3, data4, data5, data6;
+
+  if (ar.is_serializing_out())
+  {
+    data0 = data[0];
+    data1 = data[1];
+    data2 = data[2];
+    data3 = data[3];
+    data4 = data[4];
+    data5 = data[5];
+    data6 = data[6];
+
+    ar & data0;
+    ar & data1;
+    ar & data2;
+    ar & data3;
+    ar & data4;
+    ar & data5;
+    ar & data6;
+  }
+  else
+  {
+    ar & data0;
+    ar & data1;
+    ar & data2;
+    ar & data3;
+    ar & data4;
+    ar & data5;
+    ar & data6;
+
+    data[0] = data0;
+    data[1] = data1;
+    data[2] = data2;
+    data[3] = data3;
+    data[4] = data4;
+    data[5] = data5;
+    data[6] = data6;
+  }
 }
 
 

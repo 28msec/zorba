@@ -38,7 +38,10 @@ namespace zorba {
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>
 SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
-void ValidateIterator::accept(PlanIterVisitor& v) const {
+
+
+void ValidateIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -52,14 +55,17 @@ ValidateIterator::~ValidateIterator() {}
 
 #endif
 // <ZorbaValidateInPlaceIterator>
-SERIALIZABLE_CLASS_VERSIONS(ZorbaValidateInPlaceIterator)void ZorbaValidateInPlaceIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ZorbaValidateInPlaceIterator)
+
+void ZorbaValidateInPlaceIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>*)this);
 }
 
 
-void ZorbaValidateInPlaceIterator::accept(PlanIterVisitor& v) const {
+void ZorbaValidateInPlaceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -73,14 +79,17 @@ ZorbaValidateInPlaceIterator::~ZorbaValidateInPlaceIterator() {}
 
 
 // <ZorbaSchemaTypeIterator>
-SERIALIZABLE_CLASS_VERSIONS(ZorbaSchemaTypeIterator)void ZorbaSchemaTypeIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ZorbaSchemaTypeIterator)
+
+void ZorbaSchemaTypeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>*)this);
 }
 
 
-void ZorbaSchemaTypeIterator::accept(PlanIterVisitor& v) const {
+void ZorbaSchemaTypeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -98,14 +107,17 @@ ZorbaSchemaTypeIterator::~ZorbaSchemaTypeIterator() {}
 
 
 // <ZorbaIsValidatedIterator>
-SERIALIZABLE_CLASS_VERSIONS(ZorbaIsValidatedIterator)void ZorbaIsValidatedIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ZorbaIsValidatedIterator)
+
+void ZorbaIsValidatedIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>*)this);
 }
 
 
-void ZorbaIsValidatedIterator::accept(PlanIterVisitor& v) const {
+void ZorbaIsValidatedIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

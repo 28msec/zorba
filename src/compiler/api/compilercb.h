@@ -180,9 +180,9 @@ public:
 
   bool                      theHaveTimeout;
 
-  unsigned long             theTimeout;
+  uint32_t                  theTimeout;
 
-  ulong                     theTempIndexCounter;
+  uint32_t                  theTempIndexCounter;
 
   config                    theConfig;
 

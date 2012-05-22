@@ -35,7 +35,7 @@ protected:
   archive_field    temp_field;
 
 public:
-  MemArchiver(bool is_serializing_out, bool internal_archive=false)
+  MemArchiver(bool is_serializing_out, bool internal_archive = false)
     : 
     Archiver(is_serializing_out, internal_archive),
     temp_field(TYPE_LAST, false, false, NULL, NULL,

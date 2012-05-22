@@ -66,10 +66,10 @@ public:
 
 public:
   FnBooleanIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t& aIter,
-        bool aNegate = false );
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& aIter,
+      bool aNegate = false );
 
   void accept(PlanIterVisitor& v) const;
 
@@ -86,10 +86,10 @@ public:
    * @return effective boolean value
    */
   static bool effectiveBooleanValue(
-        const QueryLoc& loc,
-        PlanState& planState,
-        const PlanIterator* ,
-        bool negate = false);
+      const QueryLoc& loc,
+      PlanState& planState,
+      const PlanIterator* ,
+      bool negate = false);
 };
 
 
@@ -154,7 +154,7 @@ private:
   CompareConsts::CompareType  theCompType;
   bool                        theIsGeneralComparison;
   TypeManager               * theTypeManager;
-  long                        theTimezone;
+  int32_t                     theTimezone;
   XQPCollator               * theCollation;
 
 public:
@@ -289,7 +289,7 @@ class TypedValueCompareIterator : public NaryBaseIterator<TypedValueCompareItera
                                                           PlanIteratorState>
 {
   CompareConsts::CompareType  theCompType;
-  long                        theTimezone;
+  int32_t                     theTimezone;
   XQPCollator               * theCollation;
 
 public:
@@ -318,7 +318,7 @@ public:
     :
     NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>(sctx, loc, children),
     theCompType(aCompType),
-    theTimezone (0),
+    theTimezone(0),
     theCollation(NULL)
   {}
 
@@ -336,12 +336,13 @@ public:
 
   http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
 ********************************************************************************/
-class AtomicValuesEquivalenceIterator : public BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>
+class AtomicValuesEquivalenceIterator : 
+public BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>
 {
 private:
   CompareConsts::CompareType  theCompType;
   TypeManager               * theTypeManager;
-  long                        theTimezone;
+  int32_t                     theTimezone;
   XQPCollator               * theCollation;
 
 public:
@@ -358,19 +359,21 @@ public:
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
 
-	SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
+    SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
     SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
     ar & theTimezone;
     ar & theCollation;
   }
 
 public:
-  AtomicValuesEquivalenceIterator(static_context* sctx,
-                    const QueryLoc& loc,
-                    PlanIter_t theChild0,
-                    PlanIter_t theChild1);
+  AtomicValuesEquivalenceIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t theChild0,
+      PlanIter_t theChild1);
 
   void accept(PlanIterVisitor& v) const;
 

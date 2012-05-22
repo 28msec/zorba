@@ -106,7 +106,18 @@ void operator&(Archiver& ar, HashMapZStringCmp& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, HashMapItemPointerCmp& obj)
 {
-  ar & obj.theTimeZone;
+  if (ar.is_serializing_out())
+  {
+    int32_t tz = obj.theTimeZone;
+    ar & tz;
+  }
+  else
+  {
+    int32_t tz = 0;
+    ar & tz;
+    obj.theTimeZone = tz;
+  }
+
   ar & obj.theCollator;
 }
 
@@ -689,7 +700,7 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
 void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
 {
   store::Item_t typeName;
-  store::SchemaTypeCode typeCode;
+  store::SchemaTypeCode typeCode = store::XS_LAST;
   store::Item* baseItem = NULL;
   
   SERIALIZE_ENUM(store::SchemaTypeCode, typeCode);

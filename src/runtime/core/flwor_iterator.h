@@ -432,7 +432,7 @@ class FLWORIterator : public Batcher<FLWORIterator>
 {
 private:
   std::vector<ForLetClause> theForLetClauses;
-  ulong                     theNumBindings;
+  csize                     theNumBindings;
   PlanIter_t                theWhereClause;
   GroupByClause           * theGroupByClause;
   OrderByClause           * theOrderByClause;

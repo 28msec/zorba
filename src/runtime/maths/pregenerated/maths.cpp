@@ -33,14 +33,17 @@
 namespace zorba {
 
 // <SqrtIterator>
-SERIALIZABLE_CLASS_VERSIONS(SqrtIterator)void SqrtIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(SqrtIterator)
+
+void SqrtIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<SqrtIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SqrtIterator, PlanIteratorState>*)this);
 }
 
 
-void SqrtIterator::accept(PlanIterVisitor& v) const {
+void SqrtIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -54,14 +57,17 @@ SqrtIterator::~SqrtIterator() {}
 
 
 // <ExpIterator>
-SERIALIZABLE_CLASS_VERSIONS(ExpIterator)void ExpIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ExpIterator)
+
+void ExpIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ExpIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ExpIterator, PlanIteratorState>*)this);
 }
 
 
-void ExpIterator::accept(PlanIterVisitor& v) const {
+void ExpIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -75,14 +81,17 @@ ExpIterator::~ExpIterator() {}
 
 
 // <Exp10Iterator>
-SERIALIZABLE_CLASS_VERSIONS(Exp10Iterator)void Exp10Iterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(Exp10Iterator)
+
+void Exp10Iterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<Exp10Iterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<Exp10Iterator, PlanIteratorState>*)this);
 }
 
 
-void Exp10Iterator::accept(PlanIterVisitor& v) const {
+void Exp10Iterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -96,14 +105,17 @@ Exp10Iterator::~Exp10Iterator() {}
 
 
 // <LogIterator>
-SERIALIZABLE_CLASS_VERSIONS(LogIterator)void LogIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(LogIterator)
+
+void LogIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<LogIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<LogIterator, PlanIteratorState>*)this);
 }
 
 
-void LogIterator::accept(PlanIterVisitor& v) const {
+void LogIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -117,14 +129,17 @@ LogIterator::~LogIterator() {}
 
 
 // <Log10Iterator>
-SERIALIZABLE_CLASS_VERSIONS(Log10Iterator)void Log10Iterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(Log10Iterator)
+
+void Log10Iterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<Log10Iterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<Log10Iterator, PlanIteratorState>*)this);
 }
 
 
-void Log10Iterator::accept(PlanIterVisitor& v) const {
+void Log10Iterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -138,14 +153,17 @@ Log10Iterator::~Log10Iterator() {}
 
 
 // <SinIterator>
-SERIALIZABLE_CLASS_VERSIONS(SinIterator)void SinIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(SinIterator)
+
+void SinIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<SinIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SinIterator, PlanIteratorState>*)this);
 }
 
 
-void SinIterator::accept(PlanIterVisitor& v) const {
+void SinIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -159,14 +177,17 @@ SinIterator::~SinIterator() {}
 
 
 // <CosIterator>
-SERIALIZABLE_CLASS_VERSIONS(CosIterator)void CosIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(CosIterator)
+
+void CosIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<CosIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<CosIterator, PlanIteratorState>*)this);
 }
 
 
-void CosIterator::accept(PlanIterVisitor& v) const {
+void CosIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -180,14 +201,17 @@ CosIterator::~CosIterator() {}
 
 
 // <TanIterator>
-SERIALIZABLE_CLASS_VERSIONS(TanIterator)void TanIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(TanIterator)
+
+void TanIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<TanIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<TanIterator, PlanIteratorState>*)this);
 }
 
 
-void TanIterator::accept(PlanIterVisitor& v) const {
+void TanIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -201,14 +225,17 @@ TanIterator::~TanIterator() {}
 
 
 // <ArcSinIterator>
-SERIALIZABLE_CLASS_VERSIONS(ArcSinIterator)void ArcSinIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ArcSinIterator)
+
+void ArcSinIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ArcSinIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ArcSinIterator, PlanIteratorState>*)this);
 }
 
 
-void ArcSinIterator::accept(PlanIterVisitor& v) const {
+void ArcSinIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -222,14 +249,17 @@ ArcSinIterator::~ArcSinIterator() {}
 
 
 // <ArcCosIterator>
-SERIALIZABLE_CLASS_VERSIONS(ArcCosIterator)void ArcCosIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ArcCosIterator)
+
+void ArcCosIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ArcCosIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ArcCosIterator, PlanIteratorState>*)this);
 }
 
 
-void ArcCosIterator::accept(PlanIterVisitor& v) const {
+void ArcCosIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -243,14 +273,17 @@ ArcCosIterator::~ArcCosIterator() {}
 
 
 // <ArcTanIterator>
-SERIALIZABLE_CLASS_VERSIONS(ArcTanIterator)void ArcTanIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ArcTanIterator)
+
+void ArcTanIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ArcTanIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ArcTanIterator, PlanIteratorState>*)this);
 }
 
 
-void ArcTanIterator::accept(PlanIterVisitor& v) const {
+void ArcTanIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -264,14 +297,17 @@ ArcTanIterator::~ArcTanIterator() {}
 
 
 // <Atan2Iterator>
-SERIALIZABLE_CLASS_VERSIONS(Atan2Iterator)void Atan2Iterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(Atan2Iterator)
+
+void Atan2Iterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<Atan2Iterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<Atan2Iterator, PlanIteratorState>*)this);
 }
 
 
-void Atan2Iterator::accept(PlanIterVisitor& v) const {
+void Atan2Iterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -286,14 +322,17 @@ Atan2Iterator::~Atan2Iterator() {}
 
 
 // <CoshIterator>
-SERIALIZABLE_CLASS_VERSIONS(CoshIterator)void CoshIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(CoshIterator)
+
+void CoshIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<CoshIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<CoshIterator, PlanIteratorState>*)this);
 }
 
 
-void CoshIterator::accept(PlanIterVisitor& v) const {
+void CoshIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -307,14 +346,17 @@ CoshIterator::~CoshIterator() {}
 
 
 // <AcoshIterator>
-SERIALIZABLE_CLASS_VERSIONS(AcoshIterator)void AcoshIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(AcoshIterator)
+
+void AcoshIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<AcoshIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<AcoshIterator, PlanIteratorState>*)this);
 }
 
 
-void AcoshIterator::accept(PlanIterVisitor& v) const {
+void AcoshIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -328,14 +370,17 @@ AcoshIterator::~AcoshIterator() {}
 
 
 // <FmodIterator>
-SERIALIZABLE_CLASS_VERSIONS(FmodIterator)void FmodIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FmodIterator)
+
+void FmodIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<FmodIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<FmodIterator, PlanIteratorState>*)this);
 }
 
 
-void FmodIterator::accept(PlanIterVisitor& v) const {
+void FmodIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -350,14 +395,17 @@ FmodIterator::~FmodIterator() {}
 
 
 // <LdexpIterator>
-SERIALIZABLE_CLASS_VERSIONS(LdexpIterator)void LdexpIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(LdexpIterator)
+
+void LdexpIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<LdexpIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<LdexpIterator, PlanIteratorState>*)this);
 }
 
 
-void LdexpIterator::accept(PlanIterVisitor& v) const {
+void LdexpIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -372,14 +420,17 @@ LdexpIterator::~LdexpIterator() {}
 
 
 // <PowIterator>
-SERIALIZABLE_CLASS_VERSIONS(PowIterator)void PowIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(PowIterator)
+
+void PowIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<PowIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<PowIterator, PlanIteratorState>*)this);
 }
 
 
-void PowIterator::accept(PlanIterVisitor& v) const {
+void PowIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -394,14 +445,17 @@ PowIterator::~PowIterator() {}
 
 
 // <SinhIterator>
-SERIALIZABLE_CLASS_VERSIONS(SinhIterator)void SinhIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(SinhIterator)
+
+void SinhIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<SinhIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SinhIterator, PlanIteratorState>*)this);
 }
 
 
-void SinhIterator::accept(PlanIterVisitor& v) const {
+void SinhIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -415,14 +469,17 @@ SinhIterator::~SinhIterator() {}
 
 
 // <AsinhIterator>
-SERIALIZABLE_CLASS_VERSIONS(AsinhIterator)void AsinhIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(AsinhIterator)
+
+void AsinhIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<AsinhIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<AsinhIterator, PlanIteratorState>*)this);
 }
 
 
-void AsinhIterator::accept(PlanIterVisitor& v) const {
+void AsinhIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -436,14 +493,17 @@ AsinhIterator::~AsinhIterator() {}
 
 
 // <TanhIterator>
-SERIALIZABLE_CLASS_VERSIONS(TanhIterator)void TanhIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(TanhIterator)
+
+void TanhIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<TanhIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<TanhIterator, PlanIteratorState>*)this);
 }
 
 
-void TanhIterator::accept(PlanIterVisitor& v) const {
+void TanhIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -457,14 +517,17 @@ TanhIterator::~TanhIterator() {}
 
 
 // <AtanhIterator>
-SERIALIZABLE_CLASS_VERSIONS(AtanhIterator)void AtanhIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(AtanhIterator)
+
+void AtanhIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<AtanhIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<AtanhIterator, PlanIteratorState>*)this);
 }
 
 
-void AtanhIterator::accept(PlanIterVisitor& v) const {
+void AtanhIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -478,14 +541,17 @@ AtanhIterator::~AtanhIterator() {}
 
 
 // <PiNumberIterator>
-SERIALIZABLE_CLASS_VERSIONS(PiNumberIterator)void PiNumberIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(PiNumberIterator)
+
+void PiNumberIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NoaryBaseIterator<PiNumberIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NoaryBaseIterator<PiNumberIterator, PlanIteratorState>*)this);
 }
 
 
-void PiNumberIterator::accept(PlanIterVisitor& v) const {
+void PiNumberIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   
@@ -499,14 +565,17 @@ PiNumberIterator::~PiNumberIterator() {}
 
 
 // <IsInfIterator>
-SERIALIZABLE_CLASS_VERSIONS(IsInfIterator)void IsInfIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(IsInfIterator)
+
+void IsInfIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<IsInfIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<IsInfIterator, PlanIteratorState>*)this);
 }
 
 
-void IsInfIterator::accept(PlanIterVisitor& v) const {
+void IsInfIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -520,14 +589,17 @@ IsInfIterator::~IsInfIterator() {}
 
 
 // <IsNaNIterator>
-SERIALIZABLE_CLASS_VERSIONS(IsNaNIterator)void IsNaNIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(IsNaNIterator)
+
+void IsNaNIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<IsNaNIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<IsNaNIterator, PlanIteratorState>*)this);
 }
 
 
-void IsNaNIterator::accept(PlanIterVisitor& v) const {
+void IsNaNIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -541,14 +613,17 @@ IsNaNIterator::~IsNaNIterator() {}
 
 
 // <ModfIterator>
-SERIALIZABLE_CLASS_VERSIONS(ModfIterator)void ModfIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ModfIterator)
+
+void ModfIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ModfIterator, ModfIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ModfIterator, ModfIteratorState>*)this);
 }
 
 
-void ModfIterator::accept(PlanIterVisitor& v) const {
+void ModfIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -576,14 +651,17 @@ void ModfIteratorState::reset(PlanState& planState) {
 
 
 // <FrexpIterator>
-SERIALIZABLE_CLASS_VERSIONS(FrexpIterator)void FrexpIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FrexpIterator)
+
+void FrexpIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<FrexpIterator, FrexpIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<FrexpIterator, FrexpIteratorState>*)this);
 }
 
 
-void FrexpIterator::accept(PlanIterVisitor& v) const {
+void FrexpIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);

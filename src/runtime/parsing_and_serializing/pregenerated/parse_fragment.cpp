@@ -33,14 +33,17 @@
 namespace zorba {
 
 // <FnZorbaParseXmlFragmentIterator>
-SERIALIZABLE_CLASS_VERSIONS(FnZorbaParseXmlFragmentIterator)void FnZorbaParseXmlFragmentIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FnZorbaParseXmlFragmentIterator)
+
+void FnZorbaParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
 }
 
 
-void FnZorbaParseXmlFragmentIterator::accept(PlanIterVisitor& v) const {
+void FnZorbaParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

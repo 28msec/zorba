@@ -141,7 +141,9 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theFlags1;
 
   SERIALIZE_ENUM(var_kind, theVarKind);
-  ar & theUniqueId;
+
+  SERIALIZE_ULONG(theUniqueId);
+
   ar & theName;
   ar & theDeclaredType;
   //ar & theFlworClause;

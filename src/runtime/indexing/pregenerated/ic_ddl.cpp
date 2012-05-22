@@ -34,14 +34,17 @@
 namespace zorba {
 
 // <ActivateICIterator>
-SERIALIZABLE_CLASS_VERSIONS(ActivateICIterator)void ActivateICIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ActivateICIterator)
+
+void ActivateICIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ActivateICIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ActivateICIterator, PlanIteratorState>*)this);
 }
 
 
-void ActivateICIterator::accept(PlanIterVisitor& v) const {
+void ActivateICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -55,14 +58,17 @@ ActivateICIterator::~ActivateICIterator() {}
 
 
 // <DeactivateICIterator>
-SERIALIZABLE_CLASS_VERSIONS(DeactivateICIterator)void DeactivateICIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(DeactivateICIterator)
+
+void DeactivateICIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>*)this);
 }
 
 
-void DeactivateICIterator::accept(PlanIterVisitor& v) const {
+void DeactivateICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -76,14 +82,17 @@ DeactivateICIterator::~DeactivateICIterator() {}
 
 
 // <CheckICIterator>
-SERIALIZABLE_CLASS_VERSIONS(CheckICIterator)void CheckICIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(CheckICIterator)
+
+void CheckICIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<CheckICIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<CheckICIterator, PlanIteratorState>*)this);
 }
 
 
-void CheckICIterator::accept(PlanIterVisitor& v) const {
+void CheckICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);

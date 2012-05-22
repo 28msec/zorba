@@ -37,7 +37,7 @@ namespace zorba
 namespace serialization
 {
 
-
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -68,7 +68,7 @@ void operator&(Archiver& ar, ulong& obj)
     ar & reinterpret_cast<uint64_t&>(obj);
   }
 }
-
+#endif
 
 /*******************************************************************************
 
@@ -116,24 +116,6 @@ void operator&(Archiver& ar, uint64_t& obj)
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
 
     obj = value.uint64v;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, const uint64_t& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    SimpleValue v;
-    v.uint64v = obj;
-    ar.add_simple_temp_field(TYPE_UINT64, v, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
   }
 }
 

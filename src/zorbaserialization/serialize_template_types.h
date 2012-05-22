@@ -318,7 +318,8 @@ void operator&(Archiver& ar, checked_vector<T>& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar & obj.size();
+    csize size = obj.size();
+    ar & size;
 
     typename checked_vector<T>::iterator it = obj.begin();
     typename checked_vector<T>::iterator end = obj.end();
@@ -353,7 +354,8 @@ void operator&(Archiver& ar, std::vector<T>& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar & obj.size();
+    csize size = obj.size();
+    ar & size;
 
     typename std::vector<T>::iterator it = obj.begin();
     typename std::vector<T>::iterator end = obj.end();
@@ -387,7 +389,8 @@ void operator&(Archiver& ar, std::vector<T*>& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar & obj.size();
+    csize size = obj.size();
+    ar & size;
 
     typename std::vector<T*>::iterator it = obj.begin();
     typename std::vector<T*>::iterator end = obj.end();
@@ -496,7 +499,8 @@ void operator&(Archiver& ar, std::list<T>& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar & obj.size();
+    csize size = obj.size();
+    ar & size;
 
     typename std::list<T>::iterator it = obj.begin();
     typename std::list<T>::iterator end = obj.end();
@@ -563,7 +567,8 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 
     for (; it != end; ++it)
     {
-      ar & (*it).first;
+      T1 key = (*it).first;
+      ar & key;
       ar & (*it).second;
     }
 
@@ -626,7 +631,8 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
 
     for (; it != end; ++it)
     {
-      ar & (*it).first;
+      T1 key = (*it).first;
+      ar & key;
       ar & (*it).second;
     }
   }

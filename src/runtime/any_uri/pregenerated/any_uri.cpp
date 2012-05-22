@@ -33,14 +33,17 @@
 namespace zorba {
 
 // <ResolveUriIterator>
-SERIALIZABLE_CLASS_VERSIONS(ResolveUriIterator)void ResolveUriIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ResolveUriIterator)
+
+void ResolveUriIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ResolveUriIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ResolveUriIterator, PlanIteratorState>*)this);
 }
 
 
-void ResolveUriIterator::accept(PlanIterVisitor& v) const {
+void ResolveUriIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

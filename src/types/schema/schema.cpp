@@ -2049,7 +2049,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
 
    ar & is_grammar_NULL;
 
-   unsigned long size_of_size_t = sizeof(size_t);
+   csize size_of_size_t = sizeof(size_t);
 
    union
    {
@@ -2067,13 +2067,13 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
      if (!is_grammar_NULL)
      {
        BinMemOutputStream binmemoutputstream;
-       unsigned int  size = 0;
+       csize size = 0;
        unsigned char* binchars = NULL;
 
        try
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
-         size = (unsigned int)binmemoutputstream.getSize();
+         size = binmemoutputstream.getSize();
          binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
        }
        catch (...)
@@ -2082,13 +2082,13 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
 
        ar & size;
 
-       if(size)
+       if (size)
          serialize_array(ar, binchars, size);
      }
    }
    else
    {
-     unsigned long size_of_size_t2;
+     csize size_of_size_t2;
      unsigned char le_be_value_first_char;
      ar & size_of_size_t2;
      ar & le_be_value_first_char;
@@ -2100,7 +2100,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
 
      if (!is_grammar_NULL)
      {
-       unsigned int size;
+       csize size;
        unsigned char* binchars;
 
        ar & size;

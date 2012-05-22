@@ -33,14 +33,17 @@
 namespace zorba {
 
 // <FetchContentIterator>
-SERIALIZABLE_CLASS_VERSIONS(FetchContentIterator)void FetchContentIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FetchContentIterator)
+
+void FetchContentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FetchContentIterator, PlanIteratorState>*)this);
 }
 
 
-void FetchContentIterator::accept(PlanIterVisitor& v) const {
+void FetchContentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -58,14 +61,17 @@ FetchContentIterator::~FetchContentIterator() {}
 
 
 // <FetchContentBinaryIterator>
-SERIALIZABLE_CLASS_VERSIONS(FetchContentBinaryIterator)void FetchContentBinaryIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FetchContentBinaryIterator)
+
+void FetchContentBinaryIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>*)this);
 }
 
 
-void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const {
+void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -83,14 +89,17 @@ FetchContentBinaryIterator::~FetchContentBinaryIterator() {}
 
 
 // <FetchContentTypeIterator>
-SERIALIZABLE_CLASS_VERSIONS(FetchContentTypeIterator)void FetchContentTypeIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FetchContentTypeIterator)
+
+void FetchContentTypeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>*)this);
 }
 
 
-void FetchContentTypeIterator::accept(PlanIterVisitor& v) const {
+void FetchContentTypeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

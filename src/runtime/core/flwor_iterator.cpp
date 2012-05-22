@@ -867,7 +867,7 @@ FLWORIterator::FLWORIterator(
   :
   Batcher<FLWORIterator>(sctx, loc),
   theForLetClauses(aForLetClauses),
-  theNumBindings((ulong)aForLetClauses.size()),
+  theNumBindings(aForLetClauses.size()),
   theWhereClause(aWhereClause),
   theGroupByClause(aGroupByClauses),
   theOrderByClause(orderByClause),
@@ -920,7 +920,7 @@ void FLWORIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
   ar & theForLetClauses;
-  ar & theNumBindings;
+  theNumBindings = theForLetClauses.size();
   ar & theWhereClause; //can be null
   ar & theGroupByClause;
   ar & theOrderByClause;  //can be null

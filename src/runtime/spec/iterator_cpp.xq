@@ -151,7 +151,9 @@ declare function local:generate-init($iter, $baseClassName as xs:string) as xs:s
 declare function local:generate-accept($iter) as xs:string
 {
   string-join(( $gen:newline,
-    'void ',$iter/@name,'::accept(PlanIterVisitor&amp; v) const {',
+    'void ',$iter/@name,'::accept(PlanIterVisitor&amp; v) const',
+    $gen:newline,
+    '{',
     $gen:newline,
     $gen:indent,'v.beginVisit(*this);',
     $gen:newline,$gen:newline,
@@ -203,13 +205,13 @@ declare function local:generate-serialize($iter) as xs:string
                        then "State"
                        else $state, '>')
   return
-  concat('void ', $iter/@name, '::serialize( ::zorba::serialization::Archiver&amp; ar)',
+  concat('void ', $iter/@name, '::serialize(::zorba::serialization::Archiver&amp; ar)',
          $gen:newline,
          '{',
          $gen:newline,
-         gen:indent(2), 'serialize_baseclass(ar,',
+         gen:indent(), 'serialize_baseclass(ar,',
          $gen:newline,
-         gen:indent(2),'(', $base, '*)this);',
+         gen:indent(),'(', $base, '*)this);',
          $gen:newline,
          local:add-arch($iter),
          '}')
@@ -267,7 +269,7 @@ declare function local:get-include($XMLdoc, $name) as xs:string*
 
 declare function local:serializable-class-versions($name as xs:string) as xs:string
 {
-  concat("SERIALIZABLE_CLASS_VERSIONS(", $name, ")")
+  concat("SERIALIZABLE_CLASS_VERSIONS(", $name, ")", $gen:newline, $gen:newline)
 };
 
 

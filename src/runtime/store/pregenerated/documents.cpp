@@ -34,14 +34,17 @@
 namespace zorba {
 
 // <PutDocumentIterator>
-SERIALIZABLE_CLASS_VERSIONS(PutDocumentIterator)void PutDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(PutDocumentIterator)
+
+void PutDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<PutDocumentIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<PutDocumentIterator, PlanIteratorState>*)this);
 }
 
 
-void PutDocumentIterator::accept(PlanIterVisitor& v) const {
+void PutDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -59,14 +62,17 @@ PutDocumentIterator::~PutDocumentIterator() {}
 
 
 // <RemoveDocumentIterator>
-SERIALIZABLE_CLASS_VERSIONS(RemoveDocumentIterator)void RemoveDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(RemoveDocumentIterator)
+
+void RemoveDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<RemoveDocumentIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<RemoveDocumentIterator, PlanIteratorState>*)this);
 }
 
 
-void RemoveDocumentIterator::accept(PlanIterVisitor& v) const {
+void RemoveDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -84,14 +90,17 @@ RemoveDocumentIterator::~RemoveDocumentIterator() {}
 
 
 // <RetrieveDocumentIterator>
-SERIALIZABLE_CLASS_VERSIONS(RetrieveDocumentIterator)void RetrieveDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(RetrieveDocumentIterator)
+
+void RetrieveDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<RetrieveDocumentIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<RetrieveDocumentIterator, PlanIteratorState>*)this);
 }
 
 
-void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const {
+void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -109,14 +118,17 @@ RetrieveDocumentIterator::~RetrieveDocumentIterator() {}
 
 
 // <AvailableDocumentsIterator>
-SERIALIZABLE_CLASS_VERSIONS(AvailableDocumentsIterator)void AvailableDocumentsIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(AvailableDocumentsIterator)
+
+void AvailableDocumentsIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>*)this);
 }
 
 
-void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const {
+void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -136,14 +148,17 @@ AvailableDocumentsIteratorState::AvailableDocumentsIteratorState() {}
 
 
 // <IsAvailableDocumentIterator>
-SERIALIZABLE_CLASS_VERSIONS(IsAvailableDocumentIterator)void IsAvailableDocumentIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableDocumentIterator)
+
+void IsAvailableDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>*)this);
 }
 
 
-void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const {
+void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

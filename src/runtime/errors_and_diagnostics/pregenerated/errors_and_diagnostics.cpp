@@ -33,14 +33,17 @@
 namespace zorba {
 
 // <ErrorIterator>
-SERIALIZABLE_CLASS_VERSIONS(ErrorIterator)void ErrorIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ErrorIterator)
+
+void ErrorIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
 }
 
 
-void ErrorIterator::accept(PlanIterVisitor& v) const {
+void ErrorIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -58,14 +61,17 @@ ErrorIterator::~ErrorIterator() {}
 
 
 // <TraceIterator>
-SERIALIZABLE_CLASS_VERSIONS(TraceIterator)void TraceIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(TraceIterator)
+
+void TraceIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
 }
 
 
-void TraceIterator::accept(PlanIterVisitor& v) const {
+void TraceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

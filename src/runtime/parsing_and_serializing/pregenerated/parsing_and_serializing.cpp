@@ -33,14 +33,17 @@
 namespace zorba {
 
 // <FnParseXmlIterator>
-SERIALIZABLE_CLASS_VERSIONS(FnParseXmlIterator)void FnParseXmlIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FnParseXmlIterator)
+
+void FnParseXmlIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnParseXmlIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnParseXmlIterator, PlanIteratorState>*)this);
 }
 
 
-void FnParseXmlIterator::accept(PlanIterVisitor& v) const {
+void FnParseXmlIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -58,14 +61,17 @@ FnParseXmlIterator::~FnParseXmlIterator() {}
 
 
 // <FnSerializeIterator>
-SERIALIZABLE_CLASS_VERSIONS(FnSerializeIterator)void FnSerializeIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FnSerializeIterator)
+
+void FnSerializeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSerializeIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnSerializeIterator, PlanIteratorState>*)this);
 }
 
 
-void FnSerializeIterator::accept(PlanIterVisitor& v) const {
+void FnSerializeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

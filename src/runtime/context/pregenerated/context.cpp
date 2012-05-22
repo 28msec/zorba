@@ -33,14 +33,17 @@
 namespace zorba {
 
 // <CurrentDateTimeIterator>
-SERIALIZABLE_CLASS_VERSIONS(CurrentDateTimeIterator)void CurrentDateTimeIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(CurrentDateTimeIterator)
+
+void CurrentDateTimeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<CurrentDateTimeIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<CurrentDateTimeIterator, PlanIteratorState>*)this);
 }
 
 
-void CurrentDateTimeIterator::accept(PlanIterVisitor& v) const {
+void CurrentDateTimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -58,14 +61,17 @@ CurrentDateTimeIterator::~CurrentDateTimeIterator() {}
 
 
 // <CurrentDateIterator>
-SERIALIZABLE_CLASS_VERSIONS(CurrentDateIterator)void CurrentDateIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(CurrentDateIterator)
+
+void CurrentDateIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<CurrentDateIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<CurrentDateIterator, PlanIteratorState>*)this);
 }
 
 
-void CurrentDateIterator::accept(PlanIterVisitor& v) const {
+void CurrentDateIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -83,14 +89,17 @@ CurrentDateIterator::~CurrentDateIterator() {}
 
 
 // <CurrentTimeIterator>
-SERIALIZABLE_CLASS_VERSIONS(CurrentTimeIterator)void CurrentTimeIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(CurrentTimeIterator)
+
+void CurrentTimeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<CurrentTimeIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<CurrentTimeIterator, PlanIteratorState>*)this);
 }
 
 
-void CurrentTimeIterator::accept(PlanIterVisitor& v) const {
+void CurrentTimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -108,14 +117,17 @@ CurrentTimeIterator::~CurrentTimeIterator() {}
 
 
 // <ImplicitTimezoneIterator>
-SERIALIZABLE_CLASS_VERSIONS(ImplicitTimezoneIterator)void ImplicitTimezoneIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ImplicitTimezoneIterator)
+
+void ImplicitTimezoneIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ImplicitTimezoneIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ImplicitTimezoneIterator, PlanIteratorState>*)this);
 }
 
 
-void ImplicitTimezoneIterator::accept(PlanIterVisitor& v) const {
+void ImplicitTimezoneIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -133,14 +145,17 @@ ImplicitTimezoneIterator::~ImplicitTimezoneIterator() {}
 
 
 // <DefaultCollationIterator>
-SERIALIZABLE_CLASS_VERSIONS(DefaultCollationIterator)void DefaultCollationIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(DefaultCollationIterator)
+
+void DefaultCollationIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DefaultCollationIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DefaultCollationIterator, PlanIteratorState>*)this);
 }
 
 
-void DefaultCollationIterator::accept(PlanIterVisitor& v) const {
+void DefaultCollationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

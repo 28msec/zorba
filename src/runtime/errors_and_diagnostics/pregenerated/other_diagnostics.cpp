@@ -34,14 +34,17 @@
 namespace zorba {
 
 // <ReadLineIterator>
-SERIALIZABLE_CLASS_VERSIONS(ReadLineIterator)void ReadLineIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(ReadLineIterator)
+
+void ReadLineIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
 }
 
 
-void ReadLineIterator::accept(PlanIterVisitor& v) const {
+void ReadLineIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -59,16 +62,19 @@ ReadLineIterator::~ReadLineIterator() {}
 
 
 // <PrintIterator>
-SERIALIZABLE_CLASS_VERSIONS(PrintIterator)void PrintIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(PrintIterator)
+
+void PrintIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);
 
     ar & thePrintToConsole;
 }
 
 
-void PrintIterator::accept(PlanIterVisitor& v) const {
+void PrintIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -86,10 +92,12 @@ PrintIterator::~PrintIterator() {}
 
 
 // <FunctionTraceIterator>
-SERIALIZABLE_CLASS_VERSIONS(FunctionTraceIterator)void FunctionTraceIterator::serialize( ::zorba::serialization::Archiver& ar)
+SERIALIZABLE_CLASS_VERSIONS(FunctionTraceIterator)
+
+void FunctionTraceIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>*)this);
 
     ar & theFunctionName;
     ar & theFunctionLocation;
@@ -98,7 +106,8 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionTraceIterator)void FunctionTraceIterator::se
 }
 
 
-void FunctionTraceIterator::accept(PlanIterVisitor& v) const {
+void FunctionTraceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
