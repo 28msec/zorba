@@ -117,6 +117,27 @@ bool sctx_test_3(Zorba* zorba)
 }
 
 
+bool
+sctx_test_4(Zorba* const zorba)
+{
+  StaticContext_t lSctx = zorba->createStaticContext();
+
+  Zorba_CompilerHints_t lHints;
+
+  try
+  {
+    Item lFetched = lSctx->fetchBinary("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+
+    size_t s;
+    return !lFetched.isNull() && lFetched.getBase64BinaryValue(s);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+  }
+  return false;
+}
+
 
 int static_context( int argc, char *argv[] ) 
 {
@@ -131,6 +152,9 @@ int static_context( int argc, char *argv[] )
 
   if (!sctx_test_3(zorba))
     return 3;
+
+  if (!sctx_test_4(zorba))
+    return 4;
 
   zorba->shutdown();
   StoreManager::shutdownStore( zstore );

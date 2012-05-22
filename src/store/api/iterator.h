@@ -180,6 +180,8 @@ public:
   virtual void reset() = 0;
   
   virtual void close() = 0;
+
+  virtual void count(Item_t& result) = 0;
 };
 
 

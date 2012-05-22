@@ -57,6 +57,28 @@ FetchContentIterator::~FetchContentIterator() {}
 // </FetchContentIterator>
 
 
+// <FetchContentBinaryIterator>
+FetchContentBinaryIterator::class_factory<FetchContentBinaryIterator>
+FetchContentBinaryIterator::g_class_factory;
+
+
+void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FetchContentBinaryIterator::~FetchContentBinaryIterator() {}
+
+// </FetchContentBinaryIterator>
+
+
 // <FetchContentTypeIterator>
 SERIALIZABLE_CLASS_VERSIONS(FetchContentTypeIterator)void FetchContentTypeIterator::serialize( ::zorba::serialization::Archiver& ar)
 {

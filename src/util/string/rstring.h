@@ -2051,13 +2051,12 @@ private: //////////////////////////////////////////////////////////////////////
 
   string_data data_;
 
-#if defined _MSC_VER || defined CLANG
 //
-// Microsoft's Visual Studio C++ compiler doesn't consider the operator+()
-// functions as friends even though they're declared as such.
+// I currently don't understand why the compiler complains about append_safe()
+// being private within operator+() functions even though they are declared as
+// friends.  For now, just make them "public."
 //
 public:
-#endif
   // RSTRING_APPEND_SAFE_CP_ST_CP_ST_X
   /**
    * Appends one or two C strings with known-valid length parameters.
@@ -2073,9 +2072,7 @@ public:
    */
   void append_safe( const_pointer s1, size_type n1,
                     const_pointer s2 = nullptr, size_type n2 = 0 );
-#if defined _MSC_VER || defined CLANG
 private:
-#endif
 
   /**
    * A version of assign() optimized slightly for when \a n == 1.

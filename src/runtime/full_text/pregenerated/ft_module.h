@@ -411,20 +411,20 @@ public:
  * 
  * Author: 
  */
-class TokenizeIteratorState : public PlanIteratorState
+class TokenizeNodeIteratorState : public PlanIteratorState
 {
 public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
 
-  TokenizeIteratorState();
+  TokenizeNodeIteratorState();
 
-  ~TokenizeIteratorState();
+  ~TokenizeNodeIteratorState();
 
   void reset(PlanState&);
 };
 
-class TokenizeIterator : public NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>
+class TokenizeNodeIterator : public NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>
 { 
 protected:
   store::Item_t token_qname_; //
@@ -434,20 +434,20 @@ protected:
   store::Item_t value_qname_; //
   store::Item_t ref_qname_; //
 public:
-  SERIALIZABLE_CLASS(TokenizeIterator);
+  SERIALIZABLE_CLASS(TokenizeNodeIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeIterator,
-    NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeNodeIterator,
+    NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  TokenizeIterator(
+  TokenizeNodeIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     ;
 
-  virtual ~TokenizeIterator();
+  virtual ~TokenizeNodeIterator();
 
 public:
   void initMembers();

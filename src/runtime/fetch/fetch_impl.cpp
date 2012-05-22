@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <zorba/transcode_stream.h>
+
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -30,33 +32,17 @@ namespace zorba {
 
 /*******************************************************************************
 ********************************************************************************/
-void
-FetchContentIterator::destroyStream(std::istream& aStream)
+std::auto_ptr<internal::StreamResource>
+getFetchResource(
+    const store::Item_t& aUri,
+    const store::Item_t& aKind,
+    const static_context* aSctx,
+    const QueryLoc& aLoc)
 {
-  delete &aStream;
-}
-
-bool
-FetchContentIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t lUri;
-  store::Item_t lEntityKind;
   internal::EntityData::Kind lKind;
-  zstring lKindStr;
-  zstring lErrorMessage;
-  std::auto_ptr<internal::Resource> lRes;
-  internal::StreamResource* lStreamRes;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lUri, theChildren[0].getp(), aPlanState);
-  consumeNext(lEntityKind, theChildren[1].getp(), aPlanState);
+  zstring lKindStr = aKind->getStringValue();
 
   // Figure out the EntityKind (any better way to do this?)
-  lKindStr = lEntityKind->getStringValue();
   if ( ! lKindStr.compare("SOME_CONTENT")) {
     lKind = internal::EntityData::SOME_CONTENT;
   }
@@ -78,32 +64,88 @@ FetchContentIterator::nextImpl(
     throw XQUERY_EXCEPTION(
           zerr::ZXQP0026_INVALID_ENUM_VALUE,
           ERROR_PARAMS(lKindStr, "entityKind"),
-          ERROR_LOC(loc));
+          ERROR_LOC(aLoc));
   }
 
   try {
     // ask the uri mappers and resolvers to give
     // me a resource of specified kind
-    lRes = theSctx->resolve_uri(
-      lUri->getStringValue(),
+    zstring lErrorMessage;
+    
+    std::auto_ptr<internal::Resource> lRes = aSctx->resolve_uri(
+      aUri->getStringValue(),
       lKind,
       lErrorMessage);
 
+    std::auto_ptr<internal::StreamResource> lStreamRes(
+      dynamic_cast<internal::StreamResource*>(lRes.get()));
+
+    if ( !lStreamRes.get() )
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+        ERROR_PARAMS(
+          aUri->getStringValue(),
+          ZED(ZXQP0025_RESOURCE_NOT_FOUND)
+        ),
+        ERROR_LOC( aLoc )
+      );
+    }
+
+    lRes.release();
+
+    return lStreamRes;
+
   } catch (ZorbaException const& e) {
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_ITEM_CREATION_FAILED,
-      ERROR_PARAMS( e.what() ),
-      ERROR_LOC( loc )
+      zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+      ERROR_PARAMS( aUri->getStringValue(), e.what() ),
+      ERROR_LOC( aLoc )
     );
   }
+}
 
-  lStreamRes = dynamic_cast<internal::StreamResource*>(lRes.get());
-  if ( !lStreamRes ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_ITEM_CREATION_FAILED,
-      ERROR_PARAMS( "Resource not available." ),
-      ERROR_LOC( loc )
-    );
+/*******************************************************************************
+********************************************************************************/
+void
+FetchContentIterator::destroyStream(std::istream& aStream)
+{
+  delete &aStream;
+}
+
+bool
+FetchContentIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& aPlanState) const
+{
+  store::Item_t lUri;
+  store::Item_t lEntityKind;
+  store::Item_t lEncoding;
+  zstring lEncodingStr;
+  std::auto_ptr<internal::StreamResource> lRes;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lUri, theChildren[0].getp(), aPlanState);
+  consumeNext(lEntityKind, theChildren[1].getp(), aPlanState);
+  consumeNext(lEncoding, theChildren[2].getp(), aPlanState);
+
+  lEncodingStr = lEncoding->getStringValue();
+
+  lRes = getFetchResource(lUri, lEntityKind, theSctx, loc);
+
+  if (transcode::is_necessary(lEncodingStr.c_str()))
+  {
+    if (!transcode::is_supported(lEncodingStr.c_str()))
+    {
+      throw XQUERY_EXCEPTION(
+          zerr::ZXQP0006_UNKNOWN_ENCODING,
+          ERROR_PARAMS( lEncodingStr.c_str() ),
+          ERROR_LOC( loc )
+        );
+    }
+    transcode::attach(*lRes->getStream(), lEncodingStr.c_str());
   }
 
   // return the resource in a streamable string. This transfers memory
@@ -111,10 +153,54 @@ FetchContentIterator::nextImpl(
   // object, so we then remove the StreamReleaser from the StreamResource.
   GENV_ITEMFACTORY->createStreamableString(
         result,
-        *lStreamRes->getStream(),
-        lStreamRes->getStreamReleaser()
+        *lRes->getStream(),
+        lRes->getStreamReleaser(),
+        lRes->isStreamSeekable()
   );
-  lStreamRes->setStreamReleaser(nullptr);
+  lRes->setStreamReleaser(nullptr);
+
+  STACK_PUSH(result != NULL, state);
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+void
+FetchContentBinaryIterator::destroyStream(std::istream& aStream)
+{
+  delete &aStream;
+}
+
+bool
+FetchContentBinaryIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& aPlanState) const
+{
+  store::Item_t lUri;
+  store::Item_t lEntityKind;
+  std::auto_ptr<internal::StreamResource> lRes;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lUri, theChildren[0].getp(), aPlanState);
+  consumeNext(lEntityKind, theChildren[1].getp(), aPlanState);
+
+  lRes = getFetchResource(lUri, lEntityKind, theSctx, loc);
+
+  // return the resource in a streamable base64. This transfers memory
+  // ownership of the istream (via its StreamReleaser) to the StreamableBase64BinaryItem
+  // object, so we then remove the StreamReleaser from the StreamResource.
+  GENV_ITEMFACTORY->createStreamableBase64Binary(
+        result,
+        *lRes->getStream(),
+        lRes->getStreamReleaser(),
+        lRes->isStreamSeekable(),
+        false
+  );
+  lRes->setStreamReleaser(nullptr);
 
   STACK_PUSH(result != NULL, state);
 

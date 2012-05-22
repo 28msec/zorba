@@ -304,6 +304,18 @@ public:
   virtual Item
   fetch(const String& aURI, const String& aEntityKind) const;
 
+  virtual Item
+  fetch(
+      const String& aURI,
+      const String& aEntityKind,
+      const String& aEncoding) const;
+
+  virtual Item
+  fetchBinary(const String& aURI) const;
+
+  virtual Item
+  fetchBinary(const String& aURI, const String& aEntityKind) const;
+
 protected:
   String
   createInvokeQuery(const Function_t&, size_t aArity) const;

@@ -18,6 +18,9 @@
 #include <algorithm>
 
 #include "simple_index_value.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
@@ -533,6 +536,24 @@ bool ProbeValueHashIndexIterator::next(store::Item_t& result)
 }
 
 
+/******************************************************************************
+ The implementation here doesn't really give anything in terms of
+ performance but other implementations might be able to provide more
+ efficient ones.
+********************************************************************************/
+void ProbeValueHashIndexIterator::count(store::Item_t& result)
+{
+  xs_integer lRes = xs_integer(0);
+
+  open();
+  store::Item_t lTmp;
+  while (next(lTmp)) ++lRes;
+  close();
+
+  GET_FACTORY().createInteger(result, lRes);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Value Tree Index                                                           //
@@ -998,6 +1019,24 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
   }
 
   return false;
+}
+
+
+/******************************************************************************
+ The implementation here doesn't really give anything in terms of
+ performance but other implementations might be able to provide more
+ efficient ones.
+********************************************************************************/
+void ProbeValueTreeIndexIterator::count(store::Item_t& result)
+{
+  xs_integer lRes = xs_integer(0);
+
+  open();
+  store::Item_t lTmp;
+  while (next(lTmp)) ++lRes;
+  close();
+
+  GET_FACTORY().createInteger(result, lRes);
 }
 
 
