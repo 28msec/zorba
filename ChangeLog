@@ -33,6 +33,7 @@ Optimizations:
 Bug Fixes/Other Changes:
   * Fixed bug #867170 (Variables declared in Prolog are Overwritten inside the query)
   * Fixed bug #1001463 (type not available during computation of function caching)
+  * Fixed bug #1002867 (resulting base64 in http-client is wrong)
   * Fixed bugs #905028 (Allow to set base URI to undefined)
   * Fixed bugs #931501 and #866987 (improved error messages for fn:format-number()
   * fn:format-number raises FODF1310 instead of XTDE1310
