@@ -313,6 +313,7 @@ public:
   PlanIterator(zorba::serialization::Archiver& ar)
     :
     SimpleRCObject(ar),
+    theStateOffset(0),
     theSctx(NULL)
   {
   }
@@ -334,7 +335,8 @@ public:
     theStateOffset(0),
     loc(it.loc),
     theSctx(it.theSctx)
-  {}
+  {
+  }
 
   virtual ~PlanIterator() {}
 
