@@ -66,19 +66,18 @@ void operator&(Archiver& ar, HashMapZStringCmp& obj);
 void operator&(Archiver& ar, HashMapItemPointerCmp& obj);
 
 void operator&(Archiver& ar, store::Item*& obj);
-void operator&(Archiver& ar, zorba::Item& obj);
 
 void operator&(Archiver& ar, QueryLoc& obj);
 
 void operator&(Archiver& ar, const Diagnostic*& obj);
-void operator&(Archiver& ar, ZorbaException*& obj);
-void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj);
-void operator&(Archiver& ar, zorba::XQueryStackTrace& obj);
-void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj);
 
 
 #define SERIALIZE_TYPEMANAGER(type_mgr_type, type_mgr)                  \
-  bool is_root_type_mgr = ar.is_serializing_out() && (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM)) ; \
+  bool is_root_type_mgr =                                               \
+    ar.is_serializing_out() &&                                          \
+    (!GENV.isRootStaticContextInitialized() ||                          \
+     ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM)) ;      \
+                                                                        \
   ar.set_is_temp_field(true);                                           \
   ar & is_root_type_mgr;                                                \
   ar.set_is_temp_field(false);                                          \
@@ -95,22 +94,29 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj);
     ar & type_mgr;                                                      \
   }
 
-#define SERIALIZE_TYPEMANAGER_RCHANDLE(type_mgr_type, type_mgr)                             \
-  bool is_root_type_mgr = (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr.getp() == (TypeManager*)&GENV_TYPESYSTEM));            \
+
+#define SERIALIZE_TYPEMANAGER_RCHANDLE(type_mgr_type, type_mgr)         \
+  bool is_root_type_mgr =                                               \
+  (!GENV.isRootStaticContextInitialized() ||                            \
+   ((TypeManager*)type_mgr.getp() == (TypeManager*)&GENV_TYPESYSTEM));  \
+                                                                        \
   ar.set_is_temp_field(true);                                           \
-  ar & is_root_type_mgr;                                            \
-  ar.set_is_temp_field(false);                                      \
-  if (is_root_type_mgr)                                             \
-  {                                                                 \
-    if (!ar.is_serializing_out())                                   \
-     type_mgr = (type_mgr_type*)&GENV_TYPESYSTEM;                   \
-  }                                                                 \
-  else                                                              \
-  {                                                                 \
-    ar & type_mgr;                                                  \
+  ar & is_root_type_mgr;                                                \
+  ar.set_is_temp_field(false);                                          \
+  if (is_root_type_mgr)                                                 \
+  {                                                                     \
+    if (!ar.is_serializing_out())                                       \
+      type_mgr = (type_mgr_type*)&GENV_TYPESYSTEM;                      \
+  }                                                                     \
+  else                                                                  \
+  {                                                                     \
+    ar & type_mgr;                                                      \
   }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 template<typename StringType>
 void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
 {

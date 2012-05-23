@@ -411,57 +411,6 @@ void operator&(Archiver& ar, bool& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, char*& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    ar.add_simple_field(TYPE_LAST,
-                        obj,
-                        obj,
-                        obj ? ARCHIVE_FIELD_PTR : ARCHIVE_FIELD_NULL);
-  }
-  else
-  {
-    TypeCode type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(type, &value, &id, true,  false, true,
-                                &field_treat, &referencing);
-
-    ar.check_simple_field(retval, field_treat, (ArchiveFieldKind)-1, id);
-
-    if (field_treat == ARCHIVE_FIELD_NULL)
-    {
-      obj = NULL;
-      return;
-    }
-
-    if (field_treat != ARCHIVE_FIELD_PTR &&
-        field_treat != ARCHIVE_FIELD_REFERENCING)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-    }
-
-    if (field_treat == ARCHIVE_FIELD_PTR)
-    {
-      obj = strdup(value);
-      ar.register_reference(id, field_treat, obj);
-    }
-    else if ((obj = (char*)ar.get_reference_value(referencing)) == NULL)
-    {
-      ZORBA_ASSERT(false);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void operator&(Archiver& ar, std::string& obj)
 {
   if (ar.is_serializing_out())
@@ -472,34 +421,17 @@ void operator&(Archiver& ar, std::string& obj)
   {
     TypeCode type;
     char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    int referencing;
 
-    retval = ar.read_next_field(type, &value, &id, true, false, true,
-                                &field_treat, &referencing);
+    bool retval = ar.read_next_field(type, &value, &id, true, false, true,
+                                     &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
     obj = value;
 
     ar.register_reference(id, field_treat, &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, const std::string& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    ar.add_simple_field(TYPE_STD_STRING, obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
   }
 }
 
@@ -519,13 +451,12 @@ void operator&(Archiver& ar, std::string*& obj)
   {
     TypeCode type;
     char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
-    bool  retval;
+    int referencing;
 
-    retval = ar.read_next_field(type, &value, &id, true, false, true,
-                                &field_treat, &referencing);
+    bool retval = ar.read_next_field(type, &value, &id, true, false, true,
+                                     &field_treat, &referencing);
 
     ar.check_simple_field(retval, field_treat, (ArchiveFieldKind)-1, id);
 
@@ -610,9 +541,9 @@ void operator&(Archiver& ar, XQPCollator*& obj)
   {
     TypeCode type;
     char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
+    int referencing;
 
     bool retval = ar.read_next_field(type, &value, &id, true, false, true,
                                      &field_treat, &referencing);
@@ -644,7 +575,8 @@ void operator&(Archiver& ar, MAPM& obj)
   {
     int nr_digits = obj.significant_digits();
     char* lBuffer = (char*)malloc(nr_digits + 20);
-    obj.toString(lBuffer, nr_digits);//ZORBA_FLOAT_POINT_PRECISION);
+
+    obj.toString(lBuffer, nr_digits);
 
     if (strchr(lBuffer, '.'))
     {
@@ -676,9 +608,9 @@ void operator&(Archiver& ar, MAPM& obj)
   {
     TypeCode type;
     char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
+    int referencing;
 
     bool  retval = ar.read_next_field(type, &value, &id, true, false, true,
                                       &field_treat, &referencing);

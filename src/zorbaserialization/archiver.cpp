@@ -496,9 +496,17 @@ bool Archiver::add_simple_field(
     theNonClassFieldsMap->insert(ptr, new_field);
   }
 
-  new_field->theId = ++theFieldCounter;
-  new_field->theOrder = new_field->theId;
-  
+  if (fieldKind == ARCHIVE_FIELD_REFERENCING)
+  {
+    new_field->theId = 0;
+    new_field->theOrder = theFieldCounter + 1;
+  }
+  else
+  {
+    new_field->theId = ++theFieldCounter;
+    new_field->theOrder = new_field->theId;
+  }
+
   new_field->theParent = theCurrentCompoundField;
 
   if (theCurrentCompoundField->theLastChild)
@@ -586,8 +594,17 @@ bool Archiver::add_compound_field(
   }
 
   new_field->theParent = theCurrentCompoundField;
-  new_field->theId = ++theFieldCounter;
-  new_field->theOrder = new_field->theId;
+
+  if (fieldKind == ARCHIVE_FIELD_REFERENCING)
+  {
+    new_field->theId = 0;
+    new_field->theOrder = theFieldCounter + 1;
+  }
+  else
+  {
+    new_field->theId = ++theFieldCounter;
+    new_field->theOrder = new_field->theId;
+  }
 
   if (theCurrentCompoundField->theLastChild)
     theCurrentCompoundField->theLastChild->theNextSibling = new_field;
@@ -612,7 +629,7 @@ bool Archiver::add_compound_field(
 void Archiver::add_end_compound_field()
 {
   theCurrentCompoundField = theCurrentCompoundField->theParent;
-  theCurrentLevel--;
+  --theCurrentLevel;
 }
 
 

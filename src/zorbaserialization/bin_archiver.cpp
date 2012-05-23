@@ -383,7 +383,7 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
 
   while (field)
   {
-    if (field->theId == 0)
+    if (field->theId == 0 && field->theKind != ARCHIVE_FIELD_REFERENCING)
     {
       switch (field->theType)
       {
@@ -468,13 +468,13 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
           write_enum(field->theType);
         }
 
-        if (field->theId)
-          write_int_exp(field->theId - this->last_id);
-
-        last_id = field->theId;
-
         if (field->theKind != ARCHIVE_FIELD_REFERENCING)
         {
+          assert(field->theId);
+          write_int_exp(field->theId - this->last_id);
+
+          last_id = field->theId;
+
           if (field->theValuePosInPool)
             write_int_exp2(theStrings.at(field->theValuePosInPool-1).theDiskPos);
         }
@@ -1247,11 +1247,11 @@ bool BinArchiver::read_next_field_impl(
       type = static_cast<TypeCode>(tmp);
     }
 
-    *id = read_int_exp() + this->last_id;
-    this->last_id = *id;
-
     if (*field_treat != ARCHIVE_FIELD_REFERENCING)
     {
+      *id = read_int_exp() + this->last_id;
+      this->last_id = *id;
+
       if (have_value)
       {
         unsigned int value_pos = read_int_exp2();

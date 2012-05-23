@@ -186,6 +186,8 @@ void serialize_my_children2(Archiver& ar, store::Iterator_t iter);
 ********************************************************************************/
 void operator&(Archiver& ar, zorba::Item& obj)
 {
+  assert(false);
+
   if (ar.is_serializing_out())
   {
     bool is_ref;
@@ -1174,7 +1176,7 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
     else
     {
       store::Item* new_obj = NULL;
-      if ((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_REFERENCING
+      if ((new_obj = (store::Item*)ar.get_reference_value(referencing)))
       {
         obj = dynamic_cast<store::Item*>(new_obj);
         if (!obj)
@@ -1274,12 +1276,10 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
     UserError* user_err = dynamic_cast<UserError*>(diagnostic);
     XQueryErrorCode* xquery_err = dynamic_cast<XQueryErrorCode*>(diagnostic);
     ZorbaErrorCode* zorba_err = dynamic_cast<ZorbaErrorCode*>(diagnostic);
-    char err_type[20];
 
-    sprintf(err_type, "u%dx%dz%d", 
-            user_err != NULL ? 1 : 0,
-            xquery_err != NULL ? 1 : 0,
-            zorba_err != NULL ? 1 : 0);
+    bool isUserErr = (user_err != NULL);
+    bool isXQueryErr = (xquery_err != NULL);
+    bool isZorbaErr = (zorba_err != NULL);
 
     is_ref = ar.add_compound_field(TYPE_LAST, 
                                    !FIELD_IS_CLASS,
@@ -1287,10 +1287,9 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
                                    ARCHIVE_FIELD_PTR);
     if (!is_ref)
     {
-      ar.set_is_temp_field(true);
-      char* tmp = err_type;
-      ar & tmp;
-      ar.set_is_temp_field(false);
+      ar & isUserErr;
+      ar & isXQueryErr;
+      ar & isZorbaErr;
 
       if (user_err)
       {
@@ -1298,11 +1297,9 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
       }
       else
       {
-        ar.set_is_temp_field(true);
         const diagnostic::QName& errqn = obj->qname();
-        char* strtemp = (char*)errqn.localname();
-        ar & strtemp;
-        ar.set_is_temp_field(false);
+        std::string localname = errqn.localname();
+        ar & localname;
       }
 
       ar.add_end_compound_field();
@@ -1331,14 +1328,11 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
 
     if (field_treat == ARCHIVE_FIELD_PTR)
     {
-      ar.set_is_temp_field(true);
-      ar & value;
-      ar.set_is_temp_field(false);
+      bool is_user, is_xquery, is_zorba;
 
-      int is_user, is_xquery, is_zorba;
-      sscanf(value, "u%dx%dz%d", &is_user, &is_xquery, &is_zorba);
-
-      delete value;
+      ar & is_user;
+      ar & is_xquery;
+      ar & is_zorba;
 
       if (is_user)
       {
@@ -1348,12 +1342,11 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
       }
       else if (is_xquery || is_zorba)
       {
-        ar.set_is_temp_field(true);
-        char*   local;
-        ar & local;
-        ar.set_is_temp_field(false);
-        obj = internal::SystemDiagnosticBase::find(local);
-        free(local);
+        std::string localname;
+        ar & localname;
+
+        obj = internal::SystemDiagnosticBase::find(localname.c_str());
+
         ZORBA_ASSERT(obj);
       }
       else
@@ -1378,7 +1371,7 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
 
 
 /*******************************************************************************
-
+  This is called during the (de)serialization of an error item.
 ********************************************************************************/
 void operator&(Archiver& ar, ZorbaException*& obj)
 {
@@ -1397,10 +1390,9 @@ void operator&(Archiver& ar, ZorbaException*& obj)
 
     UserException* user_ex = dynamic_cast<UserException*>(obj);
     XQueryException* xquery_ex = dynamic_cast<XQueryException*>(obj);
-    char ex_type[20];
-    sprintf(ex_type, "u%dx%d", 
-            user_ex != NULL ? 1 : 0,
-            xquery_ex != NULL ? 1 : 0);
+
+    bool isUserExc = (user_ex != NULL);
+    bool isXQueryExc = (xquery_ex != NULL);
 
     bool is_ref = ar.add_compound_field(TYPE_LAST, 
                                         !FIELD_IS_CLASS,
@@ -1408,10 +1400,8 @@ void operator&(Archiver& ar, ZorbaException*& obj)
                                         ARCHIVE_FIELD_PTR);
     if (!is_ref)
     {
-      ar.set_is_temp_field(true);
-      char* tmp = ex_type;
-      ar & tmp;
-      ar.set_is_temp_field(false);
+      ar & isUserExc;
+      ar & isXQueryExc;
 
       ar & obj->diagnostic_;
       ar & obj->raise_file_;
@@ -1455,14 +1445,10 @@ void operator&(Archiver& ar, ZorbaException*& obj)
 
     if (field_treat == ARCHIVE_FIELD_PTR)
     {
-      ar.set_is_temp_field(true);
-      ar & value;
-      ar.set_is_temp_field(false);
+      bool is_user, is_xquery;
 
-      int is_user, is_xquery;
-      sscanf(value, "u%dx%d", &is_user, &is_xquery);
-
-      delete value;
+      ar & is_user;
+      ar & is_xquery;
 
       UserException* user_ex = NULL;
       XQueryException* xquery_ex = NULL;
@@ -1499,7 +1485,7 @@ void operator&(Archiver& ar, ZorbaException*& obj)
       ar.register_reference(id, field_treat, obj);
       ar.read_end_current_level();
     }
-    else if((obj = (ZorbaException*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    else if ((obj = (ZorbaException*)ar.get_reference_value(referencing)))
     {
     }
     else

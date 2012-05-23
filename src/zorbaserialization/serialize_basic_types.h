@@ -67,11 +67,9 @@ void operator&(Archiver& ar, bool& obj);
 
 void operator&(Archiver& ar, std::string& obj);
 
-void operator&(Archiver& ar, const std::string& obj);
-
 void operator&(Archiver& ar, std::string*& obj);
 
-void operator&(Archiver& ar, char*& obj);
+  //void operator&(Archiver& ar, char*& obj);
 
 void serialize_array(Archiver& ar, unsigned char* obj, int len);
 

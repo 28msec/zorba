@@ -18,6 +18,7 @@ SET(EXPRESSION_SRCS
     expr_type.cpp
     expr.cpp
     expr_put.cpp
+    expr_utils.cpp
     var_expr.cpp
     path_expr.cpp
     flwor_expr.cpp
