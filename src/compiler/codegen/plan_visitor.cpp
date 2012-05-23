@@ -2194,8 +2194,10 @@ void end_visit(if_expr& v)
   PlanIter_t iterElse = pop_itstack();
   PlanIter_t iterThen = pop_itstack();
   PlanIter_t iterCond = pop_itstack();
-  PlanIter_t iterIfThenElse = new IfThenElseIterator(
-    sctx, qloc, iterCond, iterThen, iterElse, v.is_updating());
+
+  PlanIter_t iterIfThenElse = 
+  new IfThenElseIterator(sctx, qloc, iterCond, iterThen, iterElse);
+
   push_itstack(&*iterIfThenElse);
 }
 
