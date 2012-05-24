@@ -122,6 +122,13 @@ prime_rehash_policy::prime_rehash_policy( float max_load_factor ) :
 }
 
 prime_rehash_policy::size_type
+prime_rehash_policy::adjust_buckets( size_type n_bkt ) const {
+  prime_type const *const p = lower_bound( primes, primes_end, n_bkt );
+  next_resize_ = static_cast<size_type>( ceil( *p * max_load_factor_ ) );
+  return *p;
+}
+
+prime_rehash_policy::size_type
 prime_rehash_policy::need_rehash( size_type n_bkt, size_type n_elt,
                                   size_type n_ins ) const {
   if ( n_elt + n_ins > next_resize_ ) {
@@ -136,13 +143,6 @@ prime_rehash_policy::need_rehash( size_type n_bkt, size_type n_elt,
     }
   }
   return 0;
-}
-
-prime_rehash_policy::size_type
-prime_rehash_policy::next_bucket( size_type n_bkt ) const {
-  prime_type const *const p = lower_bound( primes, primes_end, n_bkt );
-  next_resize_ = static_cast<size_type>( ceil( *p * max_load_factor_ ) );
-  return *p;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -48,6 +48,14 @@ public:
   prime_rehash_policy( float max_load_factor = 1.0F );
 
   /**
+   * Gets an adjusted bucket count for the given proposed number of buckets.
+   *
+   * @param n_bkt The proposed number of buckets.
+   * @return Returns a bucket count adjusted so as to be more optimal.
+   */
+  size_type adjust_buckets( size_type n_bkt ) const;
+
+  /**
    * Calculates the number of buckets needed for the given number of elements
    * under the maximum load factor.
    *
@@ -75,14 +83,6 @@ public:
   size_type need_rehash( size_type n_bkt, size_type n_elt,
                          size_type n_ins ) const;
 
-  /**
-   * Gets the TODO
-   *
-   * @param n_bkt The current number of buckets.
-   * @return Returns TODO
-   */
-  size_type next_bucket( size_type n_bkt ) const;
-
 private:
   float growth_factor_;
   float max_load_factor_;
@@ -93,7 +93,7 @@ private:
 
 inline prime_rehash_policy::size_type
 prime_rehash_policy::buckets_for_elements( size_type n_elt ) const {
-  return next_bucket( n_elt / max_load_factor_ );
+  return adjust_buckets( n_elt / max_load_factor_ );
 }
 
 inline float prime_rehash_policy::max_load_factor() const {

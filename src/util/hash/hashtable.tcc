@@ -341,7 +341,7 @@ void ZORBA_HASHTABLE_CLASS::max_load_factor( float load_factor ) {
 ZORBA_HASHTABLE_TEMPLATE
 void ZORBA_HASHTABLE_CLASS::rehash( size_type new_n_bkt ) {
   new_n_bkt = std::max(
-    rehash_policy_.next_bucket( new_n_bkt ),
+    rehash_policy_.adjust_buckets( new_n_bkt ),
     rehash_policy_.buckets_for_elements( n_elt_ + 1 )
   );
   node **const new_buckets = alloc_buckets( new_n_bkt );
