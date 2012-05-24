@@ -34,19 +34,18 @@ namespace zorba {
     int test_thesaurus( int, char*[] );
     int test_tokenizer( int, char*[] );
 #endif /* ZORBA_NO_FULL_TEXT */
-    /**
-     * ADD NEW UNIT TESTS HERE
-     */
 #ifndef ZORBA_NO_ICU
     int test_icu_streambuf( int, char*[] );
 #endif /* ZORBA_NO_ICU */
     int json_parser( int, char*[] );
+#ifndef ZORBA_CXX_UNORDERED_MAP
+    int test_unordered_map( int, char*[] );
+#endif /* ZORBA_CXX_UNORDERED_MAP */
 
     void initializeTestList();
   };
-    
 
-} /* namespace zorba */
+} // namespace zorba
 
 #endif /* ZORBA_UNIT_TEST_LIST_H */
 /* vim:set et sw=2 ts=2: */

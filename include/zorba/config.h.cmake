@@ -111,6 +111,7 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_CXX_NULLPTR
 #cmakedefine ZORBA_CXX_STATIC_ASSERT
 #cmakedefine ZORBA_CXX_UNIQUE_PTR
+#cmakedefine ZORBA_CXX_UNORDERED_MAP
 
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 

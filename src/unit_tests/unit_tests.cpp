@@ -50,6 +50,9 @@ namespace zorba {
       libunittests["thesaurus"] = test_thesaurus;
       libunittests["tokenizer"] = test_tokenizer;
 #endif /* ZORBA_NO_FULL_TEXT */
+#ifndef ZORBA_CXX_UNORDERED_MAP
+      libunittests["unordered_map"] = test_unordered_map;
+#endif /* ZORBA_CXX_UNORDERED_MAP */
 
 #ifdef ZORBA_WITH_DEBUGGER
 //      libunittests["debugger_protocol"] = runDebuggerProtocolTest;
