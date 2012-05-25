@@ -381,8 +381,8 @@ void ZORBA_HASHTABLE_CLASS::swap( hashtable &that ) {
 ////////// iterator functions /////////////////////////////////////////////////
 
 ZORBA_HASHTABLE_TEMPLATE
-ZORBA_HASHTABLE_CLASS::iterator::iterator( node **bkt, node *n ) :
-  cur_bkt_( bkt ), cur_node_( n )
+ZORBA_HASHTABLE_CLASS::iterator::iterator( node **bkt, node *p ) :
+  cur_bkt_( bkt ), cur_node_( p )
 {
   while ( !cur_node_ )
     cur_node_ = *++cur_bkt_;
@@ -406,8 +406,8 @@ ZORBA_HASHTABLE_CLASS::iterator::operator++(int) {
 ////////// const_iterator functions ///////////////////////////////////////////
 
 ZORBA_HASHTABLE_TEMPLATE
-ZORBA_HASHTABLE_CLASS::const_iterator::const_iterator( node **bkt, node *n ) :
-  cur_bkt_( bkt ), cur_node_( n )
+ZORBA_HASHTABLE_CLASS::const_iterator::const_iterator( node **bkt, node *p ) :
+  cur_bkt_( bkt ), cur_node_( p )
 {
   while ( !cur_node_ )
     cur_node_ = *++cur_bkt_;
