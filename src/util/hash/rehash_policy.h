@@ -45,7 +45,7 @@ public:
    *
    * @param max_load_factor The maximum load factor.
    */
-  prime_rehash_policy( float max_load_factor = 1.0F );
+  prime_rehash_policy( float max_load_factor = 0.8F );
 
   /**
    * Gets an adjusted bucket count for the given proposed number of buckets.
