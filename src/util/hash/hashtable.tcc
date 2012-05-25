@@ -196,8 +196,8 @@ ZORBA_HASHTABLE_CLASS::erase( const_iterator i, const_iterator j ) {
 ZORBA_HASHTABLE_TEMPLATE
 typename ZORBA_HASHTABLE_CLASS::size_type
 ZORBA_HASHTABLE_CLASS::erase( key_type const &key ) {
-  size_type const b = bucket( key );
-  for ( node *p = buckets_[ b ], **pp = &buckets_[ b ]; p;
+  size_type const bkt = bucket( key );
+  for ( node *p = buckets_[ bkt ], **pp = &buckets_[ bkt ]; p;
         pp = &p->next_, p = p->next_ ) {
     if ( equal_( p->first, key ) ) {
       *pp = p->next_;
