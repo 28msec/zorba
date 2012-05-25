@@ -182,7 +182,7 @@ public:
     node **cur_bkt_;
     node *cur_node_;
 
-    iterator( node **bkt, node *n );
+    iterator( node **bkt, node *p );
     void inc_bucket();
 
     friend class hashtable;
@@ -213,7 +213,7 @@ public:
     node **cur_bkt_;
     node *cur_node_;
 
-    const_iterator( node **bkt, node *n );
+    const_iterator( node **bkt, node *p );
     const_iterator( iterator const& );
     void inc_bucket();
 
@@ -676,20 +676,20 @@ ZORBA_HASHTABLE_CLASS::cbegin() const {
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::local_iterator
-ZORBA_HASHTABLE_CLASS::begin( size_type b ) {
-  return local_iterator( buckets_[ b ] );
+ZORBA_HASHTABLE_CLASS::begin( size_type bkt ) {
+  return local_iterator( buckets_[ bkt ] );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_local_iterator
-ZORBA_HASHTABLE_CLASS::begin( size_type b ) const {
-  return const_local_iterator( buckets_[ b ] );
+ZORBA_HASHTABLE_CLASS::begin( size_type bkt ) const {
+  return const_local_iterator( buckets_[ bkt ] );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_local_iterator
-ZORBA_HASHTABLE_CLASS::cbegin( size_type b ) const {
-  return begin( b );
+ZORBA_HASHTABLE_CLASS::cbegin( size_type bkt ) const {
+  return begin( bkt );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
@@ -706,8 +706,8 @@ ZORBA_HASHTABLE_CLASS::bucket_count() const {
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::size_type
-ZORBA_HASHTABLE_CLASS::bucket_size( size_type n ) const {
-  return std::distance( begin( n ), end( n ) );
+ZORBA_HASHTABLE_CLASS::bucket_size( size_type bkt ) const {
+  return std::distance( begin( bkt ), end( bkt ) );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
@@ -741,20 +741,20 @@ ZORBA_HASHTABLE_CLASS::cend() const {
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::local_iterator
-ZORBA_HASHTABLE_CLASS::end( size_type b ) {
+ZORBA_HASHTABLE_CLASS::end( size_type bkt ) {
   return local_iterator( nullptr );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_local_iterator
-ZORBA_HASHTABLE_CLASS::end( size_type b ) const {
+ZORBA_HASHTABLE_CLASS::end( size_type bkt ) const {
   return const_local_iterator( nullptr );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_local_iterator
-ZORBA_HASHTABLE_CLASS::cend( size_type b ) const {
-  return end( b );
+ZORBA_HASHTABLE_CLASS::cend( size_type bkt ) const {
+  return end( bkt );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
