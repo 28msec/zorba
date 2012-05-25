@@ -361,24 +361,6 @@ enum TypeCode
 
   TYPE_XQueryImpl,
 
-  TYPE_INT64,
-  TYPE_UINT64,
-  TYPE_INT32,
-  TYPE_UINT32,
-  TYPE_INT16,
-  TYPE_UINT16,
-  TYPE_CHAR,
-  TYPE_UCHAR,
-  TYPE_FLOAT,
-  TYPE_DOUBLE,
-  TYPE_BOOL,
-
-  TYPE_ENUM,
-
-  TYPE_STD_STRING,
-
-  TYPE_ZSTRING,
-
   TYPE_Decimal,
   TYPE_Duration,
   TYPE_TimeZone,
@@ -392,6 +374,26 @@ enum TypeCode
 
   TYPE_RCObject,
 
+  TYPE_INT64,
+  TYPE_UINT64,
+  TYPE_INT32,
+  TYPE_UINT32,
+  TYPE_ENUM,
+  TYPE_INT16,
+  TYPE_UINT16,
+  TYPE_CHAR,
+  TYPE_UCHAR,
+
+  TYPE_FLOAT,
+  TYPE_DOUBLE,
+
+  TYPE_BOOL,
+
+  TYPE_STD_STRING,
+  TYPE_ZSTRING,
+
+  TYPE_COLLATOR,
+
   TYPE_UNKNOWN,
   TYPE_LAST
 };
@@ -402,7 +404,6 @@ enum TypeCode
 ********************************************************************************/
 typedef union
 {
-  const char    * cstrv;
   int64_t         int64v;
   uint64_t        uint64v;
   int32_t         int32v;

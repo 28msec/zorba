@@ -17,6 +17,10 @@
 
 #include "zorbaserialization/mem_archiver.h"
 
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+
+
 namespace zorba
 {
 
@@ -33,60 +37,81 @@ void MemArchiver::reset_serialize_in()
 }
 
 
-bool MemArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
+void MemArchiver::read_next_simple_temp_field_impl(TypeCode type, void* obj)
 {
   if (current_field == NULL || is_after_last)
-    return false;
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(0));
+  }
+
+  assert(type == current_field->theType);
 
   switch (type)
   {
   case TYPE_INT64:
   {
-    value.int64v = current_field->theValue.int64v;
+    *static_cast<int64_t*>(obj) = current_field->theValue.int64v;
     break;
   }
   case TYPE_UINT64:
   {
-    value.uint64v = current_field->theValue.uint64v;
+    *static_cast<uint64_t*>(obj) = current_field->theValue.uint64v;
     break;
   }
   case TYPE_INT32:
   {
-    value.int32v = current_field->theValue.int32v;
+    *static_cast<int32_t*>(obj) = current_field->theValue.int32v;
     break;
   }
   case TYPE_UINT32:
   {
-    value.uint32v = current_field->theValue.uint32v;
+    *static_cast<uint32_t*>(obj) = current_field->theValue.uint32v;
+    break;
+  }
+  case TYPE_ENUM:
+  {
+    *static_cast<uint32_t*>(obj) = current_field->theValue.uint32v;
     break;
   }
   case TYPE_INT16:
   {
-    value.int16v = current_field->theValue.int16v;
+    *static_cast<int16_t*>(obj) = current_field->theValue.int16v;
     break;
   }
   case TYPE_UINT16:
   {
-    value.uint16v = current_field->theValue.uint16v;
+    *static_cast<uint16_t*>(obj) = current_field->theValue.uint16v;
     break;
   }
   case TYPE_CHAR:
   {
-    value.charv = current_field->theValue.charv;
+    *static_cast<char*>(obj) = current_field->theValue.charv;
     break;
   }
   case TYPE_UCHAR:
   {
-    value.ucharv = current_field->theValue.ucharv;
+    *static_cast<unsigned char*>(obj) = current_field->theValue.ucharv;
     break;
   }
   case TYPE_BOOL:
   {
-    value.boolv = current_field->theValue.boolv;
+    *static_cast<bool*>(obj) = current_field->theValue.boolv;
+    break;
+  }
+  case TYPE_ZSTRING:
+  {
+    *static_cast<zstring*>(obj) = current_field->theStringValue;
+    break;
+  }
+  case TYPE_STD_STRING:
+  {
+    *static_cast<std::string*>(obj) = current_field->theStringValue.str();
     break;
   }
   default:
-    value.cstrv = current_field->theValue.cstrv;
+  {
+    ZORBA_ASSERT(false);
+  }
   }
 
   is_after_last = false;
@@ -103,29 +128,69 @@ bool MemArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
   {
     is_after_last = true;
   }
-
-  return true;
 }
 
 
-bool MemArchiver::read_next_field_impl( 
-    TypeCode& type, 
-    char** value,
-    int* id, 
-    bool is_simple,
-    bool is_class,
-    bool have_value,
-    enum ArchiveFieldKind* field_treat,
-    int* referencing)
+void MemArchiver::read_next_simple_ptr_field_impl(TypeCode type, void** obj)
 {
   if (current_field == NULL || is_after_last)
-    return false;
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(0));
+  }
+
+  assert(type == current_field->theType);
+
+  switch (type)
+  {
+  case TYPE_STD_STRING:
+  {
+    *reinterpret_cast<std::string**>(obj) = 
+    new std::string(current_field->theStringValue.str());
+    break;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+
+  is_after_last = false;
+
+  if (current_field->theFirstChild)
+  {
+    current_field = current_field->theFirstChild;
+  }
+  else if (current_field->theNextSibling)
+  {
+    current_field = current_field->theNextSibling;
+  }
+  else
+  {
+    is_after_last = true;
+  }
+}
+
+
+void MemArchiver::read_next_compound_field_impl( 
+    bool is_class,
+    ArchiveFieldKind& field_treat,
+    TypeCode& type, 
+    int& id, 
+    int& referencing)
+{
+  if (current_field == NULL || is_after_last)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(0));
+  }
 
   type = current_field->theType;
-  *value = (char*)current_field->theValue.cstrv;
-  *id = current_field->theId;
-  *field_treat = current_field->theKind;
-  *referencing = current_field->referencing;
+
+  id = current_field->theId;
+
+  field_treat = current_field->theKind;
+
+  referencing = (current_field->theReferredField ? 
+                 current_field->theReferredField->theId : 0);
 
   is_after_last = false;
 
@@ -134,8 +199,8 @@ bool MemArchiver::read_next_field_impl(
     current_field = current_field->theFirstChild;
   }
   else if (!current_field->theIsSimple &&
-           (*field_treat == ARCHIVE_FIELD_BASECLASS || 
-            *field_treat == ARCHIVE_FIELD_PTR))
+           (field_treat == ARCHIVE_FIELD_BASECLASS || 
+            field_treat == ARCHIVE_FIELD_PTR))
   {
     //class without childs
     temp_field.theParent = current_field;
@@ -149,7 +214,6 @@ bool MemArchiver::read_next_field_impl(
   {
     is_after_last = true;
   }
-  return true;
 }
 
 
@@ -158,7 +222,7 @@ void MemArchiver::read_end_current_level_impl()
   is_after_last = false;
   current_field = current_field->theParent;
 
-  if(current_field->theNextSibling)
+  if (current_field->theNextSibling)
     current_field = current_field->theNextSibling;
   else
     is_after_last = true;

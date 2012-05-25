@@ -28,8 +28,9 @@
 #include "compiler/rewriter/tools/dataflow_annotations.h"
 
 #include "functions/udf.h"
-#include "annotations/annotations.h"
 #include "functions/function_impl.h"
+
+#include "annotations/annotations.h"
 
 #include "diagnostics/xquery_warning.h"
 #include "diagnostics/assert.h"
@@ -38,6 +39,8 @@
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
+
+#include "util/hashmap32.h"
 
 #include "store/api/index.h" // needed for destruction of the cache
 

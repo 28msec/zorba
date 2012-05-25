@@ -30,31 +30,20 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+
 #include "zorbatypes/zstring.h"
 
-#include "archiver.h"
-#include "class_serializer.h"
-#include "serialize_basic_types.h"
+#include "zorbautils/checked_vector.h"
+
+#include "zorbaserialization/archiver.h"
+//#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/serialize_basic_types.h"
 
 namespace zorba
 {
 
-template<class V> class serializable_ItemPointerHashMap;
-
-
-class ser_ItemPointerHashMapCmp;
-
 namespace serialization
 {
-/////////////////////////////templates
-
-#define ZORBA_SER_ERROR_DESC_OSS(QNAME,MSG)                     \
-  do {                                                          \
-    std::ostringstream oss;                                     \
-    oss << MSG;                                                 \
-    throw XQUERY_EXCEPTION( QNAME, ERROR_PARAMS( oss.str() ) ); \
-  } while (0)
-
 
 /*******************************************************************************
 
@@ -90,18 +79,16 @@ void operator&(Archiver& ar, T& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
+    ArchiveFieldKind field_kind = ARCHIVE_FIELD_NORMAL;
     int referencing;
 
-    bool retval = ar.read_next_field(type, &value, &id, false, true, false,
-                                     &field_treat, &referencing);
+    ar.read_next_compound_field(true, field_kind, type, id, referencing);
 
-    ar.check_class_field(retval, type, obj.get_serializer_type_code(),
-                         field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_class_field(type, obj.get_serializer_type_code(),
+                         field_kind, ARCHIVE_FIELD_NORMAL, id);
 
-    ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);
+    ar.register_reference(id, field_kind, (SerializeBaseClass*)&obj);
 
     obj.serialize_internal(ar);
 
@@ -149,18 +136,16 @@ void operator&(Archiver& ar, T*& obj)
   else
   {
     TypeCode type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
+    int id;
+    ArchiveFieldKind field_kind = ARCHIVE_FIELD_PTR;
+    int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, true, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(true, field_kind, type, id, referencing);
 
-    ar.check_class_field(retval, TYPE_NULL, TYPE_NULL,
-                         field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_class_field(TYPE_NULL, TYPE_NULL,
+                         field_kind, (ArchiveFieldKind)-1, id);
 
-    if (field_treat == ARCHIVE_FIELD_NULL)
+    if (field_kind == ARCHIVE_FIELD_NULL)
     {
       assert(!ar.is_serialize_base_class());
       obj = NULL;
@@ -170,14 +155,14 @@ void operator&(Archiver& ar, T*& obj)
 
     if (ar.is_serialize_base_class())
     {
-      if (field_treat != ARCHIVE_FIELD_BASECLASS)
+      if (field_kind != ARCHIVE_FIELD_BASECLASS)
       {
         throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
       }
     }
     else
     {
-      if (field_treat != ARCHIVE_FIELD_PTR && field_treat != ARCHIVE_FIELD_REFERENCING)
+      if (field_kind != ARCHIVE_FIELD_PTR && field_kind != ARCHIVE_FIELD_REFERENCING)
       {
         throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
       }
@@ -185,7 +170,7 @@ void operator&(Archiver& ar, T*& obj)
 
     SerializeBaseClass* new_obj = NULL;
 
-    if (field_treat == ARCHIVE_FIELD_PTR)
+    if (field_kind == ARCHIVE_FIELD_PTR)
     {
       assert(type > 0 && type < TYPE_LAST);
 
@@ -194,8 +179,8 @@ void operator&(Archiver& ar, T*& obj)
 
       if (cls_factory == NULL)
       {
-         throw ZORBA_EXCEPTION(zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD, 
-         ERROR_PARAMS(BUILD_STRING((ulong)type)));
+        throw ZORBA_EXCEPTION(zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD, 
+        ERROR_PARAMS(BUILD_STRING((ulong)type)));
       }
 
       new_obj = cls_factory->create_new(ar);
@@ -211,7 +196,7 @@ void operator&(Archiver& ar, T*& obj)
         ERROR_PARAMS(id, BUILD_STRING((ulong)type), typeid(T).name()));
       }
 
-      ar.register_reference(id, field_treat, new_obj);
+      ar.register_reference(id, field_kind, new_obj);
 
       try
       {
@@ -226,7 +211,7 @@ void operator&(Archiver& ar, T*& obj)
 
       ar.read_end_current_level();
     }
-    else if (field_treat == ARCHIVE_FIELD_BASECLASS)
+    else if (field_kind == ARCHIVE_FIELD_BASECLASS)
     {
       obj->T::serialize_internal(ar);
 
@@ -454,24 +439,22 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    ArchiveFieldKind field_kind = ARCHIVE_FIELD_PTR;
     int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_kind, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(field_kind, (ArchiveFieldKind)-1, id);
 
-    if (field_treat == ARCHIVE_FIELD_NULL)
+    if (field_kind == ARCHIVE_FIELD_NULL)
     {
       obj = NULL;
       ar.read_end_current_level();
       return;
     }
 
-    ZORBA_ASSERT(field_treat == ARCHIVE_FIELD_PTR);
+    ZORBA_ASSERT(field_kind == ARCHIVE_FIELD_PTR);
 
     obj = new std::vector<T>;
 
@@ -577,24 +560,22 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
   else
   {
     TypeCode type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
+    int id;
+    ArchiveFieldKind field_kind = ARCHIVE_FIELD_PTR;
+    int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_kind, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(field_kind, (ArchiveFieldKind)-1, id);
 
-    if (field_treat == ARCHIVE_FIELD_NULL)
+    if (field_kind == ARCHIVE_FIELD_NULL)
     {
       obj = NULL;
       ar.read_end_current_level();
       return;
     }
 
-    ZORBA_ASSERT(field_treat == ARCHIVE_FIELD_PTR);
+    ZORBA_ASSERT(field_kind == ARCHIVE_FIELD_PTR);
 
     obj = new std::map<T1, T2>;
 
@@ -768,24 +749,22 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
+    ArchiveFieldKind field_kind = ARCHIVE_FIELD_PTR;
     int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_kind, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(field_kind, (ArchiveFieldKind)-1, id);
 
-    if (field_treat == ARCHIVE_FIELD_NULL)
+    if (field_kind == ARCHIVE_FIELD_NULL)
     {
       obj = NULL;
       ar.read_end_current_level();
       return;
     }
 
-    assert(field_treat == ARCHIVE_FIELD_PTR);
+    assert(field_kind == ARCHIVE_FIELD_PTR);
 
     ar.set_is_temp_field(true);
 
@@ -810,74 +789,6 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
     }
 
     ar.read_end_current_level();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-template<class RepType>
-void operator&(Archiver& ar, zorba::rstring<RepType>& obj)
-{
-  bool is_normal_str = true;
-
-  if (ar.is_serializing_out())
-  {
-    if (obj.size() != strlen(obj.c_str()))
-      is_normal_str = false;
-  }
-
-  ar & is_normal_str;
-
-  if (is_normal_str)
-  {
-    if (ar.is_serializing_out())
-    {
-      SimpleValue v;
-      v.cstrv = obj.c_str();
-      ar.add_simple_temp_field(TYPE_ZSTRING, v, &obj, ARCHIVE_FIELD_NORMAL);
-    }
-    else
-    {
-      SimpleValue value;
-      ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-
-      bool retval = ar.read_next_simple_temp_field(value, TYPE_ZSTRING);
-
-      ar.check_simple_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, 0);
-
-      obj = value.cstrv;
-    }
-  }
-  else
-  {
-    //for strings which contain '\0' inside
-    if (ar.is_serializing_out())
-    {
-      const char* cstr = obj.c_str();
-      zorba::zstring::size_type s = obj.size();
-
-      ar.set_is_temp_field(true);
-      ar & s;
-      serialize_array(ar, (unsigned char*)cstr, s);
-      ar.set_is_temp_field(false);
-    }
-    else
-    {
-      std::unique_ptr<unsigned char[]> cstr;
-      zorba::zstring::size_type s;
-
-      ar.set_is_temp_field(true);
-
-      ar & s;
-      cstr.reset(new unsigned char[s]);
-      serialize_array(ar, (unsigned char*)cstr.get(), s);
-
-      obj.assign((const char*)cstr.get(), s);
-
-      ar.set_is_temp_field(false);
-    }
   }
 }
 

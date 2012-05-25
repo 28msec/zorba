@@ -25,10 +25,12 @@
 
 #include "zorbautils/hashmap.h"
 
-#include "archiver.h"
-#include "archiver_field.h"
-#include "class_serializer.h"
-#include "mem_archiver.h"
+#include "zorbatypes/collation_manager.h"
+
+#include "zorbaserialization/archiver.h"
+#include "zorbaserialization/archiver_field.h"
+#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/mem_archiver.h"
 
 
 namespace zorba
@@ -39,104 +41,106 @@ namespace serialization
 
 
 /*******************************************************************************
-
+  Constructor for simple non-pointer fields
 ********************************************************************************/
 archive_field::archive_field(
     TypeCode type,
-    SimpleValue value,
     const void* ptr,
     ArchiveFieldKind kind,
     int only_for_eval,
     ENUM_ALLOW_DELAY allow_delay,
     unsigned int level)
+  :
+  theId(0),
+  theIsSimple(true),
+  theIsClass(false),
+  theKind(kind),
+  theType(type),
+  theValuePosInPool(0),
+  theObjPtr(ptr),
+  theReferredField(NULL),
+  theLevel(level),
+  theNextSibling(NULL),
+  theFirstChild(NULL),
+  theLastChild(NULL),
+  theParent(NULL),
+  theOnlyForEval(only_for_eval),
+  theAllowDelay2(allow_delay)
 {
-  theKind = kind;
-
-  theIsSimple = true;
-  theIsClass = false;
-
-  assert(type != TYPE_UNKNOWN);
-
-  theType = type;
+  assert(theKind == ARCHIVE_FIELD_NORMAL);
 
   switch (type)
   {
   case TYPE_INT64:
   {
-    theValue.int64v = value.int64v;
+    theValue.int64v = *static_cast<const int64_t*>(ptr);
     break;
   }
   case TYPE_UINT64:
   {
-    theValue.uint64v = value.uint64v;
+    theValue.uint64v = *static_cast<const uint64_t*>(ptr);
     break;
   }
   case TYPE_INT32:
   {
-    theValue.int32v = value.int32v;
+    theValue.int32v = *static_cast<const int32_t*>(ptr);
     break;
   }
   case TYPE_UINT32:
   {
-    theValue.uint32v = value.uint32v;
+    theValue.uint32v = *static_cast<const uint32_t*>(ptr);
     break;
   }
   case TYPE_ENUM:
   {
-    theValue.uint32v = value.uint32v;
+    theValue.uint32v = *static_cast<const uint32_t*>(ptr);
     break;
   }
   case TYPE_INT16:
   {
-    theValue.int16v = value.int16v;
+    theValue.int16v = *static_cast<const int16_t*>(ptr);
     break;
   }
   case TYPE_UINT16:
   {
-    theValue.uint16v = value.uint16v;
+    theValue.uint16v = *static_cast<const uint16_t*>(ptr);
     break;
   }
   case TYPE_CHAR:
   {
-    theValue.charv = value.charv;
+    theValue.charv = *static_cast<const char*>(ptr);
     break;
   }
   case TYPE_UCHAR:
   {
-    theValue.ucharv = value.ucharv;
+    theValue.ucharv = *static_cast<const unsigned char*>(ptr);
     break;
   }
   case TYPE_BOOL:
   {
-    theValue.boolv = value.boolv;
+    theValue.boolv = *static_cast<const bool*>(ptr);
+    break;
+  }
+  case TYPE_ZSTRING:
+  {
+    theStringValue = *static_cast<const zstring*>(ptr);
+    break;
+  }
+  case TYPE_STD_STRING:
+  {
+    theStringValue = *static_cast<const std::string*>(ptr);
+    break;
+  }
+  case TYPE_COLLATOR:
+  {
+    theStringValue = (static_cast<const XQPCollator*>(ptr))->getURI();
     break;
   }
   default:
   {
-    if (value.cstrv)
-      theValue.cstrv = strdup((char*)value.cstrv);
-    else
-      theValue.cstrv = NULL; 
+    ZORBA_ASSERT(false);
   }
   }
-
-  theValuePosInPool = 0;
-
-  assoc_ptr = ptr;
-
-  theReferredField = NULL;
-  this->referencing = 0;
-
-  theLevel = level;
-
-  theNextSibling = NULL;
-  theFirstChild = NULL;
-  theLastChild = NULL;
-  theParent = NULL;
-
-  theOnlyForEval = only_for_eval;
-
-  theAllowDelay2 = allow_delay;
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   theBytesSaved = 0;
@@ -146,52 +150,36 @@ archive_field::archive_field(
 
 
 /*******************************************************************************
-
+  Constructor for simple or compound fields
 ********************************************************************************/
 archive_field::archive_field(
     TypeCode type,
     bool is_simple,
     bool is_class,
-    const void* value,
     const void* ptr,
-    ArchiveFieldKind  kind,
+    ArchiveFieldKind kind,
     archive_field* refered,
     int only_for_eval,
     ENUM_ALLOW_DELAY allow_delay,
     unsigned int level)
+  :
+  theId(0),
+  theIsSimple(is_simple),
+  theIsClass(is_class),
+  theKind(kind),
+  theType(type),
+  theValuePosInPool(0),
+  theObjPtr(ptr),
+  theReferredField(refered),
+  theLevel(level),
+  theNextSibling(NULL),
+  theFirstChild(NULL),
+  theLastChild(NULL),
+  theParent(NULL),
+  theOnlyForEval(only_for_eval),
+  theAllowDelay2(allow_delay)
 {
-  theKind = kind;
-
-  theIsSimple = is_simple;
-  theIsClass = is_class;
-
   assert(type != TYPE_UNKNOWN);
-
-  theType = type;
-
-  if (value)
-    theValue.cstrv = strdup((char*)value);
-  else
-    theValue.cstrv = NULL;
-
-  theValuePosInPool = 0;
-
-  assoc_ptr = ptr;
-
-  theReferredField = refered;
-
-  this->referencing = refered ? refered->theId : 0;
-
-  theLevel = level;
-
-  theNextSibling = NULL;
-  theFirstChild = NULL;
-  theLastChild = NULL;
-  theParent = NULL;
-
-  theOnlyForEval = only_for_eval;
-
-  theAllowDelay2 = allow_delay;
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   theBytesSaved = 0;
@@ -205,28 +193,6 @@ archive_field::archive_field(
 ********************************************************************************/
 archive_field::~archive_field()
 {
-  switch (theType)
-  {
-  case TYPE_INT64:
-  case TYPE_UINT64:
-  case TYPE_INT32:
-  case TYPE_UINT32:
-  case TYPE_ENUM:
-  case TYPE_INT16:
-  case TYPE_UINT16:
-  case TYPE_CHAR:
-  case TYPE_UCHAR:
-  case TYPE_BOOL:
-  {
-    break;
-  }
-  default:
-  {
-    if (theValue.cstrv)
-      free((void*)theValue.cstrv);
-  }
-  }
-
   archive_field* temp1 = theFirstChild;
   archive_field* temp2;
 
@@ -270,8 +236,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
     theRootField = new archive_field(TYPE_LAST,
                                      false, // is_simple
                                      false, // is_class
-                                     NULL,  // value
-                                     NULL,  // assoc_ptr
+                                     NULL,  // ptr
                                      ARCHIVE_FIELD_NORMAL,
                                      NULL,  // referred
                                      false, // only for eval
@@ -361,39 +326,23 @@ bool Archiver::get_is_temp_field_one_level()
 /*******************************************************************************
 
 ********************************************************************************/
-void Archiver::add_simple_temp_field(
-    TypeCode type,
-    SimpleValue value,
-    const void* ptr,
-    ArchiveFieldKind fieldKind)
+void Archiver::add_simple_temp_field(TypeCode type, const void* ptr)
 {
   archive_field* new_field;
 
-  assert(fieldKind != ARCHIVE_FIELD_BASECLASS);
-  assert(fieldKind != ARCHIVE_FIELD_REFERENCING);
-
   ++theCurrentLevel;
 
-  if (!ptr)
-  {
-    fieldKind = ARCHIVE_FIELD_NULL;
-  }
-  else
-  {
-    assert(fieldKind == ARCHIVE_FIELD_NORMAL || fieldKind == ARCHIVE_FIELD_PTR);
-  }
+  assert(ptr);
 
   new_field = new archive_field(type,
-                                value,
                                 ptr,
-                                fieldKind,
+                                ARCHIVE_FIELD_NORMAL,
                                 get_serialize_only_for_eval(),
                                 theAllowDelay2,
                                 theCurrentLevel);
 
   theAllowDelay2 = ALLOW_DELAY;
 
-  new_field->theId = 0;
   new_field->theOrder = theFieldCounter + 1;
   
   new_field->theParent = theCurrentCompoundField;
@@ -414,89 +363,70 @@ void Archiver::add_simple_temp_field(
   Create a "simple" field (ARCHIVE_FIELD_PTR, or ARCHIVE_FIELD_NUL, or
   ARCHIVE_FIELD_NORMAL).
 
-  @param type : The type of the object to serialize.
-  @param value : The value of the object to serialize, if it is not a pointer).
-  @param ptr : Pointer to the object being serialized (may be NULL)
-  @param fieldKind : The kind of the field (if ptr is NULL, then the fieldKind is
-         set unconditionally to ARCHIVE_FIELD_NUL).
-
   Return true if field is not referencing
 ********************************************************************************/
-bool Archiver::add_simple_field(
-    TypeCode type,
-    const char* value,
-    const void* ptr,
-    enum ArchiveFieldKind fieldKind)
+bool Archiver::add_simple_ptr_field(TypeCode type, const void* ptr)
 {
   archive_field* new_field;
   archive_field* ref_field = NULL;
 
-  assert(fieldKind != ARCHIVE_FIELD_BASECLASS);
-  assert(fieldKind != ARCHIVE_FIELD_REFERENCING);
-
   ++theCurrentLevel;
 
-  if (!ptr)
+  if (ptr && !get_is_temp_field())
   {
-    fieldKind = ARCHIVE_FIELD_NULL;
-  }
-  else
-  {
-    assert(fieldKind == ARCHIVE_FIELD_NORMAL || fieldKind == ARCHIVE_FIELD_PTR);
-
-    if (!get_is_temp_field() &&
-        (!get_is_temp_field_one_level() || fieldKind == ARCHIVE_FIELD_PTR))
-    {
-      ref_field = lookup_non_class_field(ptr);
-    }
+    ref_field = lookup_non_class_field(ptr);
   }
 
   if (ref_field)
   {
-    // special case: we have registered already a pointer to the obj (before
-    // the obj itself) and now we try to register the obj itself. In theory,
-    // this scenario is possible, but in practice it never happens.
-    ZORBA_ASSERT(fieldKind != ARCHIVE_FIELD_NORMAL);
-
     ZORBA_ASSERT(ref_field->theKind == ARCHIVE_FIELD_PTR ||
                  ref_field->theKind == ARCHIVE_FIELD_NORMAL);
 
-    if (get_is_temp_field_one_level() &&
-        fieldKind == ARCHIVE_FIELD_PTR &&
-        theAllowDelay2 == ALLOW_DELAY)
+    if (get_is_temp_field_one_level() && theAllowDelay2 == ALLOW_DELAY)
     {
       theAllowDelay2 = DONT_ALLOW_DELAY;
     }
 
-    fieldKind = ARCHIVE_FIELD_REFERENCING;
-    value = NULL;
-    ptr = NULL;
+    new_field = new archive_field(type,
+                                  true,       // is_simple
+                                  false,      // is_class
+                                  NULL,       // ptr
+                                  ARCHIVE_FIELD_REFERENCING,
+                                  ref_field,
+                                  get_serialize_only_for_eval(),
+                                  theAllowDelay2,
+                                  theCurrentLevel);
   }
-
-  new_field = new archive_field(type,
-                                true,       // is_simple
-                                false,      // is_class
-                                value,
-                                ptr,
-                                fieldKind,
-                                ref_field,
-                                get_serialize_only_for_eval(),
-                                theAllowDelay2,
-                                theCurrentLevel);
+  else if (ptr)
+  {
+    new_field = new archive_field(type,
+                                  ptr,
+                                  ARCHIVE_FIELD_PTR,
+                                  get_serialize_only_for_eval(),
+                                  theAllowDelay2,
+                                  theCurrentLevel);
+  }
+  else
+  {
+    new_field = new archive_field(type,
+                                  true,       // is_simple
+                                  false,      // is_class
+                                  NULL,       // ptr
+                                  ARCHIVE_FIELD_NULL,
+                                  NULL,
+                                  get_serialize_only_for_eval(),
+                                  theAllowDelay2,
+                                  theCurrentLevel);
+  }
 
   theAllowDelay2 = ALLOW_DELAY;
 
-  if (!ref_field &&
-      ptr &&
-      !get_is_temp_field() &&
-      (!get_is_temp_field_one_level() || fieldKind == ARCHIVE_FIELD_PTR))
+  if (!ref_field && ptr && !get_is_temp_field())
   {
-    assert(fieldKind == ARCHIVE_FIELD_NORMAL || fieldKind == ARCHIVE_FIELD_PTR);
-
     theNonClassFieldsMap->insert(ptr, new_field);
   }
 
-  if (fieldKind == ARCHIVE_FIELD_REFERENCING)
+  if (ptr == NULL || ref_field != NULL)
   {
     new_field->theId = 0;
     new_field->theOrder = theFieldCounter + 1;
@@ -529,7 +459,7 @@ bool Archiver::add_compound_field(
     TypeCode type,
     bool is_class,
     const void* ptr,
-    enum ArchiveFieldKind fieldKind)
+    ArchiveFieldKind field_kind)
 {
   archive_field* new_field;
   archive_field* ref_field = NULL;
@@ -538,12 +468,12 @@ bool Archiver::add_compound_field(
 
   if (!ptr)
   {
-    fieldKind = ARCHIVE_FIELD_NULL;
+    field_kind = ARCHIVE_FIELD_NULL;
     --theCurrentLevel;
   }
-  else if (fieldKind != ARCHIVE_FIELD_BASECLASS &&
+  else if (field_kind != ARCHIVE_FIELD_BASECLASS &&
            !get_is_temp_field() &&
-           (!get_is_temp_field_one_level() || fieldKind == ARCHIVE_FIELD_PTR))
+           (!get_is_temp_field_one_level() || field_kind == ARCHIVE_FIELD_PTR))
   {
     if (is_class)
       ref_field = lookup_class_field(ptr);
@@ -553,27 +483,26 @@ bool Archiver::add_compound_field(
 
   if (ref_field)
   {
-    ZORBA_ASSERT(fieldKind != ARCHIVE_FIELD_NORMAL);
+    ZORBA_ASSERT(field_kind != ARCHIVE_FIELD_NORMAL);
     ZORBA_ASSERT(ref_field->theKind == ARCHIVE_FIELD_PTR ||
                  ref_field->theKind == ARCHIVE_FIELD_NORMAL);
 
     if (get_is_temp_field_one_level() && 
-        fieldKind == ARCHIVE_FIELD_PTR &&
+        field_kind == ARCHIVE_FIELD_PTR &&
         theAllowDelay2 == ALLOW_DELAY)
     {
       theAllowDelay2 = DONT_ALLOW_DELAY;
     }
 
-    fieldKind = ARCHIVE_FIELD_REFERENCING;
+    field_kind = ARCHIVE_FIELD_REFERENCING;
     ptr = NULL;
   }
 
   new_field = new archive_field(type,
                                 false,     // is_simple
                                 is_class,
-                                NULL,
                                 ptr,
-                                fieldKind,
+                                field_kind,
                                 ref_field,
                                 get_serialize_only_for_eval(), 
                                 theAllowDelay2,
@@ -582,10 +511,10 @@ bool Archiver::add_compound_field(
   theAllowDelay2 = ALLOW_DELAY;
 
   if (!ref_field &&
-      fieldKind != ARCHIVE_FIELD_BASECLASS &&
+      field_kind != ARCHIVE_FIELD_BASECLASS &&
       ptr &&
       !get_is_temp_field() &&
-      (!get_is_temp_field_one_level() || fieldKind == ARCHIVE_FIELD_PTR))
+      (!get_is_temp_field_one_level() || field_kind == ARCHIVE_FIELD_PTR))
   {
     if (is_class)
       theClassFieldsMap->insert(ptr, new_field);
@@ -595,7 +524,9 @@ bool Archiver::add_compound_field(
 
   new_field->theParent = theCurrentCompoundField;
 
-  if (fieldKind == ARCHIVE_FIELD_REFERENCING)
+  if (field_kind == ARCHIVE_FIELD_REFERENCING ||
+      field_kind == ARCHIVE_FIELD_NULL ||
+      field_kind == ARCHIVE_FIELD_BASECLASS)
   {
     new_field->theId = 0;
     new_field->theOrder = theFieldCounter + 1;
@@ -987,7 +918,6 @@ archive_field* Archiver::replace_with_null(archive_field* current_field)
     archive_field* null_field = new archive_field(TYPE_NULL,
                                                   current_field->theIsSimple,
                                                   current_field->theIsClass,
-                                                  "",
                                                   NULL,
                                                   ARCHIVE_FIELD_NULL,
                                                   NULL,
@@ -1148,24 +1078,35 @@ void Archiver::root_tag_is_read()
 /*******************************************************************************
 
 ********************************************************************************/
-bool Archiver::read_next_field(
-    TypeCode& type,
-    char** value,
-    int* id,
-    bool is_simple,
+void Archiver::read_next_compound_field(
     bool is_class,
-    bool have_value,
-    ArchiveFieldKind* fieldKind,
-    int* referencing)
+    ArchiveFieldKind& field_kind,
+    TypeCode& type, 
+    int& id,
+    int& referencing)
 {
-  bool retval = read_next_field_impl(type, value, id,
-                                     is_simple, is_class, have_value,
-                                     fieldKind, referencing);
+  read_next_compound_field_impl(is_class, field_kind, type, id, referencing);
 
-  if (retval && !is_simple && (*fieldKind != ARCHIVE_FIELD_REFERENCING))
+  if (field_kind != ARCHIVE_FIELD_REFERENCING)
     ++theCurrentLevel;
+}
 
-  return retval;
+
+/*******************************************************************************
+
+********************************************************************************/
+void Archiver::read_next_simple_ptr_field(TypeCode type, void** obj)
+{
+  read_next_simple_ptr_field_impl(type, obj);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void Archiver::read_next_simple_temp_field(TypeCode type, void* obj)
+{
+  read_next_simple_temp_field_impl(type, obj);
 }
 
 
@@ -1174,7 +1115,7 @@ bool Archiver::read_next_field(
 ********************************************************************************/
 void Archiver::read_end_current_level()
 {
-  theCurrentLevel--;
+  --theCurrentLevel;
   read_end_current_level_impl();
 }
 
@@ -1182,42 +1123,11 @@ void Archiver::read_end_current_level()
 /*******************************************************************************
 
 ********************************************************************************/
-void Archiver::check_simple_field(
-    bool retval,
-    ArchiveFieldKind field_treat,
-    ArchiveFieldKind required_field_treat,
-    int id)
-{
-  if (!retval)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-
-  if (field_treat == ARCHIVE_FIELD_NULL)
-    return;
-
-  if ((required_field_treat != (enum ArchiveFieldKind)-1) &&
-      field_treat != required_field_treat)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void Archiver::check_nonclass_field(
-    bool retval,
     ArchiveFieldKind field_treat,
     ArchiveFieldKind required_field_treat,
     int id)
 {
-  if (!retval)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-
   if (field_treat == ARCHIVE_FIELD_NULL)
     return;
 
@@ -1233,18 +1143,12 @@ void Archiver::check_nonclass_field(
 
 ********************************************************************************/
 void Archiver::check_class_field(
-    bool retval,
     TypeCode type,
     TypeCode required_type,
     ArchiveFieldKind field_treat,
     ArchiveFieldKind required_field_treat,
     int id)
 {
-  if (!retval)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS(id));
-  }
-
   if (field_treat == ARCHIVE_FIELD_NULL)
     return;
 
@@ -1266,15 +1170,12 @@ void Archiver::check_class_field(
 /*******************************************************************************
 
 ********************************************************************************/
-void Archiver::register_reference(
-    int id,
-    ArchiveFieldKind field_treat,
-    const void* ptr)
+void Archiver::register_reference(int id, ArchiveFieldKind field_kind, const void* ptr)
 {
   if (get_is_temp_field())
     return;
 
-  if (get_is_temp_field_one_level() && field_treat != ARCHIVE_FIELD_PTR)
+  if (get_is_temp_field_one_level() && field_kind != ARCHIVE_FIELD_PTR)
     return;
 
   all_reference_list[id] = (void*)ptr;
@@ -1328,7 +1229,7 @@ void Archiver::register_pointers_internal(archive_field* fields)
 
   while (child)
   {
-    register_reference(child->theId, child->theKind, child->assoc_ptr);
+    register_reference(child->theId, child->theKind, child->theObjPtr);
     if (!child->theIsSimple)
     {
       register_pointers_internal(child);
@@ -1339,17 +1240,16 @@ void Archiver::register_pointers_internal(archive_field* fields)
 
 
 /*******************************************************************************
-
+  Decrement RC on Items
 ********************************************************************************/
 void Archiver::finalize_input_serialization()
 {
-  //decrement RC on Items
   std::vector<store::Item*>::iterator item_it;
-  int j = 0;
 
-  for (item_it = registered_items.begin(); item_it != registered_items.end(); item_it++)
+  for (item_it = registered_items.begin();
+       item_it != registered_items.end();
+       ++item_it)
   {
-    j++;
     if ((*item_it)->isNode())
     {
       assert(*(*item_it)->getSharedRefCounter() > 1);

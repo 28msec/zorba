@@ -19,6 +19,10 @@
 #include "zorbaserialization/archiver_field.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+
+#include "zorbatypes/collation_manager.h"
+
 #include <fstream>
 
 namespace zorba
@@ -137,7 +141,7 @@ BinArchiver::BinArchiver(std::ostream* os)
 {
   this->is = NULL;
   this->os = os;
-  this->last_id = 0;
+  theLastId = 0;
   theCurrentByte = 0;
   theBitfill = 0;
   
@@ -225,39 +229,41 @@ void BinArchiver::collect_strings(archive_field* parent_field)
 
   while (field)
   {
-    if (field->theKind != ARCHIVE_FIELD_NULL)
+    if (field->theIsSimple &&
+        (field->theKind == ARCHIVE_FIELD_NORMAL ||
+         field->theKind == ARCHIVE_FIELD_PTR))
     {
-      if (field->theKind != ARCHIVE_FIELD_REFERENCING)
+      switch (field->theType)
       {
-        switch (field->theType)
-        {
-        case TYPE_INT64:
-        case TYPE_UINT64:
-        case TYPE_INT32:
-        case TYPE_UINT32:
-        case TYPE_ENUM:
-        case TYPE_INT16:
-        case TYPE_UINT16:
-        case TYPE_CHAR:
-        case TYPE_UCHAR:
-        case TYPE_BOOL:
-        {
-          break;
-        }
-        default:
-        {
-          field->theValuePosInPool = add_to_string_pool(field->theValue.cstrv);
-        }
-        }
+      case TYPE_INT64:
+      case TYPE_UINT64:
+      case TYPE_INT32:
+      case TYPE_UINT32:
+      case TYPE_ENUM:
+      case TYPE_INT16:
+      case TYPE_UINT16:
+      case TYPE_CHAR:
+      case TYPE_UCHAR:
+      case TYPE_BOOL:
+      {
+        break;
+      }
+      case TYPE_ZSTRING:
+      case TYPE_STD_STRING:
+      {
+        field->theValuePosInPool = add_to_string_pool(field->theStringValue);
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
 
-    if (!field->theIsSimple)
+    if (!field->theIsSimple && field->theKind != ARCHIVE_FIELD_REFERENCING)
     {
-      if (field->theKind != ARCHIVE_FIELD_REFERENCING)
-      {
-        collect_strings(field);
-      }
+      collect_strings(field);
     }
 
     field = field->theNextSibling;
@@ -268,17 +274,14 @@ void BinArchiver::collect_strings(archive_field* parent_field)
 /*******************************************************************************
 
 ********************************************************************************/
-int BinArchiver::add_to_string_pool(const char* str)
+int BinArchiver::add_to_string_pool(const zstring& str)
 {
-  if (!str)
-    return 0;
-
   csize strPos = 0;
 
-  if (theStringPool.get(str, strPos))
+  if (theStringPool.get(str.c_str(), strPos))
   {
     StringInfo& str_struct = theStrings.at(strPos-1);
-    str_struct.count++;
+    ++str_struct.count;
     return strPos;
   }
 
@@ -293,7 +296,7 @@ int BinArchiver::add_to_string_pool(const char* str)
 
   theOrderedStrings.push_back(strPos-1);
 
-  theStringPool.insert(str, strPos);
+  theStringPool.insert(str.c_str(), strPos);
 
   return strPos;
 }
@@ -353,7 +356,7 @@ void BinArchiver::serialize_out_string_pool()
   {
     const StringInfo& strInfo = theStrings.at(*ite);
 
-    write_string(strInfo.str, strlen(strInfo.str) + 1);
+    write_string(strInfo.str.c_str(), strInfo.str.size() + 1);
   }
 }
 
@@ -380,109 +383,172 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
   unsigned int objects_saved1 = objects_saved;
 #endif
   archive_field* field = parent_field->theFirstChild;
+  unsigned char small_treat;
 
   while (field)
   {
-    if (field->theId == 0 && field->theKind != ARCHIVE_FIELD_REFERENCING)
+    if (field->theIsSimple)
     {
-      switch (field->theType)
+      switch(field->theKind)
       {
-      case TYPE_INT64:
+      case ARCHIVE_FIELD_NORMAL:
+      case ARCHIVE_FIELD_PTR:
       {
-        write_int64(field->theValue.int64v);
+        if (field->theId != 0)
+        {
+          small_treat = 0;
+          write_bits(small_treat, 2);
+          
+          write_int_exp(field->theId - theLastId);
+          theLastId = field->theId;
+        }
+
+        switch (field->theType)
+        {
+        case TYPE_INT64:
+        {
+          write_int64(field->theValue.int64v);
+          break;
+        }
+        case TYPE_UINT64:
+        {
+          write_uint64(field->theValue.uint64v);
+          break;
+        }
+        case TYPE_INT32:
+        {
+          write_uint32(field->theValue.int32v);
+          break;
+        }
+        case TYPE_UINT32:
+        {
+          write_uint32(field->theValue.uint32v);
+          break;
+        }
+        case TYPE_ENUM:
+        {
+          write_enum(field->theValue.uint32v);
+          break;
+        }
+        case TYPE_INT16:
+        {
+          write_uint32(field->theValue.int16v);
+          break;
+        }
+        case TYPE_UINT16:
+        {
+          write_uint32(field->theValue.uint16v);
+          break;
+        }
+        case TYPE_CHAR:
+        {
+          write_bits(field->theValue.charv, 8);
+          break;
+        }
+        case TYPE_UCHAR:
+        {
+          write_bits(field->theValue.ucharv, 8);
+          break;
+        }
+        case TYPE_BOOL:
+        {
+          write_bit(field->theValue.boolv ? 1 : 0);
+          break;
+        }
+        case TYPE_ZSTRING:
+        case TYPE_STD_STRING:
+        case TYPE_COLLATOR:
+        {
+          assert(field->theValuePosInPool);
+          write_int_exp2(theStrings.at(field->theValuePosInPool-1).theDiskPos);
+          break;
+        }
+        default:
+        {
+          ZORBA_ASSERT(false);
+        }
+        }
+
         break;
       }
-      case TYPE_UINT64:
+      case ARCHIVE_FIELD_NULL:
       {
-        write_uint64(field->theValue.uint64v);
+        small_treat = 1;
+        write_bits(small_treat, 2);
         break;
       }
-      case TYPE_INT32:
+      case ARCHIVE_FIELD_REFERENCING:
       {
-        write_uint32(field->theValue.int32v);
-        break;
-      }
-      case TYPE_UINT32:
-      {
-        write_uint32(field->theValue.uint32v);
-        break;
-      }
-      case TYPE_ENUM:
-      {
-        write_enum(field->theValue.uint32v);
-        break;
-      }
-      case TYPE_INT16:
-      {
-        write_uint32(field->theValue.int16v);
-        break;
-      }
-      case TYPE_UINT16:
-      {
-        write_uint32(field->theValue.uint16v);
-        break;
-      }
-      case TYPE_CHAR:
-      {
-        write_bits(field->theValue.charv, 8);
-        break;
-      }
-      case TYPE_UCHAR:
-      {
-        write_bits(field->theValue.ucharv, 8);
-        break;
-      }
-      case TYPE_BOOL:
-      {
-        write_bit(field->theValue.boolv ? 1 : 0);
+        small_treat = 2;
+        write_bits(small_treat, 2);
+        assert(field->theReferredField);
+        write_uint32(field->theReferredField->theId);
         break;
       }
       default:
       {
-        if (field->theValuePosInPool)
-        {
-          write_int_exp2(theStrings.at(field->theValuePosInPool-1).theDiskPos);
-        }
+        ZORBA_ASSERT(false);
       }
       }
     }
     else
     {
-      unsigned char small_treat = 0;
+      assert(field->theValuePosInPool == 0);
+
       switch (field->theKind)
       {
-      case ARCHIVE_FIELD_NULL:          small_treat = 1; break;
-      case ARCHIVE_FIELD_REFERENCING:   small_treat = 2; break;
-      case ARCHIVE_FIELD_BASECLASS:     small_treat = 3; break;//??
-      default: break;
-      }
-
-      write_bits(small_treat, 2);
-
-      if (field->theKind != ARCHIVE_FIELD_NULL)
+      case ARCHIVE_FIELD_NULL:
       {
-        if (field->theIsClass && field->theKind == ARCHIVE_FIELD_PTR)
+        small_treat = 1;
+        write_bits(small_treat, 2);
+        assert(field->theId == 0);
+        break;
+      }
+      case ARCHIVE_FIELD_REFERENCING:
+      {
+        small_treat = 2;
+        write_bits(small_treat, 2);
+        assert(field->theReferredField);
+        write_uint32(field->theReferredField->theId);
+        assert(field->theId == 0);
+        break;
+      }
+      case ARCHIVE_FIELD_BASECLASS:
+      {
+        small_treat = 3;
+        write_bits(small_treat, 2);
+        assert(field->theId == 0);
+        break;
+      }
+      case ARCHIVE_FIELD_NORMAL:
+      {
+        small_treat = 0;
+        write_bits(small_treat, 2);
+        assert(field->theId);
+        write_int_exp(field->theId - theLastId);
+        theLastId = field->theId;
+        break;
+      }
+      case ARCHIVE_FIELD_PTR:
+      {
+        small_treat = 0;
+        write_bits(small_treat, 2);
+        assert(field->theId);
+        write_int_exp(field->theId - theLastId);
+        theLastId = field->theId;
+
+        if (field->theIsClass)
         {
           assert(field->theType != TYPE_LAST);
-
           write_enum(field->theType);
         }
 
-        if (field->theKind != ARCHIVE_FIELD_REFERENCING)
-        {
-          assert(field->theId);
-          write_int_exp(field->theId - this->last_id);
-
-          last_id = field->theId;
-
-          if (field->theValuePosInPool)
-            write_int_exp2(theStrings.at(field->theValuePosInPool-1).theDiskPos);
-        }
-        else
-        {
-          //write_int_exp2(field->referencing);
-          write_uint32(field->referencing);
-        }
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
 
@@ -728,13 +794,13 @@ BinArchiver::BinArchiver(std::istream* is)
 {
   this->is = is;
   this->os = NULL;
-  this->last_id = 0;
+  theLastId = 0;
   theCurrentByte = 0;
   theBitfill = 8;
 
   //read the plan serializer info
-  char	preface_string[200];
-  unsigned int	preface_len = 0;
+  char preface_string[200];
+  unsigned int preface_len = 0;
 
   while (preface_len < sizeof(preface_string))
   {
@@ -827,32 +893,16 @@ void BinArchiver::read_string_pool()
 
 
 /*******************************************************************************
-
+  Read a null-terminated string from disk into the string pool (the string is 
+  coopied)
 ********************************************************************************/
-void BinArchiver::read_string(const char*& str)
+void BinArchiver::read_string(zstring& str)
 {
   str = (char*)theCurrentBytePtr;
 
-  while(*theCurrentBytePtr)
-  {
-    ++theCurrentBytePtr;
-  }
+  theCurrentBytePtr += str.size();
 
   ++theCurrentBytePtr;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void BinArchiver::read_string(std::string& str)
-{
-  str = (char*)theCurrentBytePtr;
-
-  while (*theCurrentBytePtr)
-    ++theCurrentBytePtr;
-
-  theCurrentBytePtr++;
 }
 
 
@@ -1132,7 +1182,7 @@ unsigned int BinArchiver::read_enum()
 /*******************************************************************************
 
 ********************************************************************************/
-bool BinArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
+void BinArchiver::read_next_simple_temp_field_impl(TypeCode type, void* obj)
 {
   if (!is)
   {
@@ -1143,78 +1193,166 @@ bool BinArchiver::read_next_simple_temp_field(SimpleValue& value, TypeCode type)
   {
   case TYPE_INT64:
   {
-    value.int64v = read_int64();
+    *static_cast<int64_t*>(obj) = read_int64();
     break;
   }
   case TYPE_UINT64:
   {
-    value.uint64v = read_uint64();
+    *static_cast<uint64_t*>(obj) = read_uint64();
     break;
   }
   case TYPE_INT32:
   {
-    value.int32v = read_uint32();
+    *static_cast<int32_t*>(obj) = read_uint32();
     break;
   }
   case TYPE_UINT32:
   {
-    value.uint32v = read_uint32();
+    *static_cast<uint32_t*>(obj) = read_uint32();
     break;
   }
   case TYPE_ENUM:
   {
-    value.uint32v = read_enum();
+    *static_cast<uint32_t*>(obj) = read_enum();
     break;
   }
   case TYPE_INT16:
   {
-    value.int16v = read_uint32();
+    *static_cast<int16_t*>(obj) = read_uint32();
     break;
   }
   case TYPE_UINT16:
   {
-    value.uint16v = read_uint32();
+    *static_cast<uint16_t*>(obj) = read_uint32();
     break;
   }
   case TYPE_CHAR:
   {
-    value.charv = read_bits(8);
+    *static_cast<char*>(obj) = read_bits(8);
     break;
   }
   case TYPE_UCHAR:
   {
-    value.ucharv = read_bits(8);
+    *static_cast<unsigned char*>(obj) = read_bits(8);
     break;
   }
   case TYPE_BOOL:
   {
-    value.boolv = (char*)read_bit();
+    *static_cast<bool*>(obj) = read_bit();
+    break;
+  }
+  case TYPE_ZSTRING:
+  {
+    unsigned int value_pos = read_int_exp2();
+    assert(value_pos);
+    *static_cast<zstring*>(obj) = theStrings.at(value_pos-1).str;
+    break;
+  }
+  case TYPE_STD_STRING:
+  {
+    unsigned int value_pos = read_int_exp2();
+    assert(value_pos);
+    *reinterpret_cast<std::string*>(obj) = theStrings.at(value_pos-1).str.c_str();
     break;
   }
   default:
   {
-    unsigned int value_pos = read_int_exp2();
-    assert(value_pos);
-    value.cstrv = (char*)theStrings.at(value_pos-1).str;
+    ZORBA_ASSERT(false);
   }
   }
-
-  return true;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool BinArchiver::read_next_field_impl(
-    TypeCode& type, 
-    char** value,
-    int* id,
-    bool is_simple,
+void BinArchiver::read_next_simple_ptr_field_impl(TypeCode type, void** obj)
+{
+  if (!is)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZCSE0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
+  }
+
+  unsigned char small_treat = read_bits(2);
+
+  switch (small_treat)
+  {
+  case 0: // ARCHIVE_FIELD_PTR
+  {
+    int id = read_int_exp() + theLastId;
+    theLastId = id;
+
+    switch (type)
+    {
+    case TYPE_STD_STRING:
+    {
+      unsigned int value_pos = read_int_exp2();
+      assert(value_pos);
+      *reinterpret_cast<std::string**>(obj) = 
+      new std::string(theStrings.at(value_pos-1).str.c_str());
+
+      break;
+    }
+    case TYPE_COLLATOR:
+    {
+      unsigned int value_pos = read_int_exp2();
+      assert(value_pos);
+      zstring uri = theStrings.at(value_pos-1).str;
+
+      if (!uri.empty())
+      {
+        *reinterpret_cast<XQPCollator**>(obj) = 
+        CollationFactory::createCollator(uri.c_str());
+      }
+      else
+      {
+        *reinterpret_cast<XQPCollator**>(obj) =
+        CollationFactory::createCollator();
+      }
+
+      break;
+    }
+    default:
+    {
+      throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
+    }
+    }
+
+    register_reference(id, ARCHIVE_FIELD_PTR, *obj);
+
+    break;
+  }
+  case 1: // ARCHIVE_FIELD_NULL
+  {
+    obj = NULL;
+    break;
+  }
+  case 2: // ARCHIVE_FIELD_REFERENCING
+  {
+    int referencing = read_uint32();
+
+    *obj = get_reference_value(referencing);
+
+    ZORBA_ASSERT(obj);
+    break;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void BinArchiver::read_next_compound_field_impl(
     bool is_class,
-    bool have_value,
-    ArchiveFieldKind* field_treat,
-    int* referencing)
+    ArchiveFieldKind& field_treat,
+    TypeCode& type, 
+    int& id,
+    int& referencing)
 {
   if (!is)
   {
@@ -1222,24 +1360,21 @@ bool BinArchiver::read_next_field_impl(
   }
 
   type = TYPE_LAST;
-  *value = NULL;
-  *id = -1;
-  *referencing = -1; 
+  id = -1;
+  referencing = -1; 
 
   unsigned char small_treat = read_bits(2);
 
   switch (small_treat)
   {
-  case 1: *field_treat = ARCHIVE_FIELD_NULL; break;
-  case 2: *field_treat = ARCHIVE_FIELD_REFERENCING; break;
-  case 3: *field_treat = ARCHIVE_FIELD_BASECLASS; break;//??
-  }
-
-  assert(*field_treat <= ARCHIVE_FIELD_REFERENCING);
-
-  if (*field_treat != ARCHIVE_FIELD_NULL)
+  case 0:
   {
-    if (is_class && (*field_treat == ARCHIVE_FIELD_PTR))
+    assert(field_treat == ARCHIVE_FIELD_NORMAL || field_treat == ARCHIVE_FIELD_PTR);
+
+    id = read_int_exp() + theLastId;
+    theLastId = id;
+
+    if (is_class && (field_treat == ARCHIVE_FIELD_PTR))
     {
       unsigned int tmp = read_enum();
       assert(tmp <= TYPE_LAST);
@@ -1247,26 +1382,29 @@ bool BinArchiver::read_next_field_impl(
       type = static_cast<TypeCode>(tmp);
     }
 
-    if (*field_treat != ARCHIVE_FIELD_REFERENCING)
-    {
-      *id = read_int_exp() + this->last_id;
-      this->last_id = *id;
-
-      if (have_value)
-      {
-        unsigned int value_pos = read_int_exp2();
-        assert(value_pos);
-        *value = (char*)theStrings.at(value_pos-1).str;
-      }
-    }
-    else
-    {
-      //*referencing = read_int_exp2();
-      *referencing = read_uint32();
-    }
+    break;
   }
-
-  return true;
+  case 1: 
+  {
+    field_treat = ARCHIVE_FIELD_NULL;
+    break;
+  }
+  case 2: 
+  {
+    field_treat = ARCHIVE_FIELD_REFERENCING;
+    referencing = read_uint32();
+    break;
+  }
+  case 3: 
+  {
+    field_treat = ARCHIVE_FIELD_BASECLASS;
+    break;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
 }
 
 
@@ -1282,7 +1420,7 @@ void BinArchiver::read_end_current_level_impl()
   if (tempbyte != 0xFF)
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, 
-    ERROR_PARAMS(last_id));
+    ERROR_PARAMS(theLastId));
   }
 #endif
 }

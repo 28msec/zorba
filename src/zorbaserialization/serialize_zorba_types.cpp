@@ -208,15 +208,13 @@ void operator&(Archiver& ar, zorba::Item& obj)
   else
   {
     TypeCode type;
-    char* value;
-    int   id;
+    int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                &field_treat, &referencing);
+    int referencing;
 
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
+
+    ar.check_nonclass_field(field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.m_item;
     ar.read_end_current_level();
@@ -315,13 +313,10 @@ void operator&(Archiver& ar, store::Item*& obj)
   else
   {
     TypeCode type;
-    char* value;
-    bool  retval;
 
-    retval = ar.read_next_field(type, &value, &id,
-                                false, false, false, &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -1006,19 +1001,14 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       return;
     }
 
-    is_ref = ar.add_compound_field(TYPE_LAST,
-                                   !FIELD_IS_CLASS,
-                                   obj, 
-                                   ARCHIVE_FIELD_PTR);
+    is_ref = 
+    ar.add_compound_field(TYPE_LAST, !FIELD_IS_CLASS, obj, ARCHIVE_FIELD_PTR);
   }
   else
   {
     TypeCode type;
-    char* value;
 
-    bool  retval = ar.read_next_field(type, &value, &id,
-                                      false, false, false, &field_treat,
-                                      &referencing);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -1028,7 +1018,7 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       return;
     }
 
-    ar.check_nonclass_field(retval, field_treat, (enum  ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(field_treat, (enum  ArchiveFieldKind)-1, id);
 
     if ((field_treat != ARCHIVE_FIELD_PTR) && (field_treat != ARCHIVE_FIELD_REFERENCING))
     {
@@ -1281,10 +1271,9 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
     bool isXQueryErr = (xquery_err != NULL);
     bool isZorbaErr = (zorba_err != NULL);
 
-    is_ref = ar.add_compound_field(TYPE_LAST, 
-                                   !FIELD_IS_CLASS,
-                                   obj, 
-                                   ARCHIVE_FIELD_PTR);
+    is_ref = 
+    ar.add_compound_field(TYPE_LAST, !FIELD_IS_CLASS, obj, ARCHIVE_FIELD_PTR);
+
     if (!is_ref)
     {
       ar & isUserErr;
@@ -1308,15 +1297,13 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -1425,15 +1412,13 @@ void operator&(Archiver& ar, ZorbaException*& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
     int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, (ArchiveFieldKind)-1, id);
+    ar.check_nonclass_field(field_treat, (ArchiveFieldKind)-1, id);
 
     if (field_treat == ARCHIVE_FIELD_NULL)
     {
@@ -1504,11 +1489,9 @@ void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj)
 {
   if (ar.is_serializing_out())
   {
-    bool is_ref;
-    is_ref = ar.add_compound_field(TYPE_LAST,
-                                   !FIELD_IS_CLASS,
-                                   &obj,
-                                   ARCHIVE_FIELD_NORMAL);
+    bool is_ref =
+    ar.add_compound_field(TYPE_LAST, !FIELD_IS_CLASS, &obj, ARCHIVE_FIELD_NORMAL);
+
     if (!is_ref)
     {
       ar & obj.file_;
@@ -1526,15 +1509,13 @@ void operator&(Archiver& ar, zorba::internal::diagnostic::location& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.file_;
     ar & obj.line_;
@@ -1553,11 +1534,9 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace& obj)
 {
   if (ar.is_serializing_out())
   {
-    bool is_ref;
-    is_ref = ar.add_compound_field(TYPE_LAST,
-                                   !FIELD_IS_CLASS,
-                                   &obj,
-                                   ARCHIVE_FIELD_NORMAL);
+    bool is_ref =
+    ar.add_compound_field(TYPE_LAST, !FIELD_IS_CLASS, &obj, ARCHIVE_FIELD_NORMAL);
+
     if (!is_ref)
     {
       ar & obj.trace_;
@@ -1571,15 +1550,13 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int referencing;
 
-    bool  retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                      &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.trace_;
     ar.read_end_current_level();
@@ -1618,15 +1595,13 @@ void operator&(Archiver& ar, zorba::XQueryStackTrace::Entry& obj)
   else
   {
     TypeCode type;
-    char* value;
     int id;
     ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
     int referencing;
 
-    bool retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                     &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_treat, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.getFnNameRef();
     ar & obj.getFnArityRef();

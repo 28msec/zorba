@@ -57,7 +57,10 @@ class SerializeBaseClass;
 /*******************************************************************************
   theId :
   -------
-  The unique id of the field. Not initialized by constructor.
+  Fields that may be referenced by other fields are assigned a unique id so that
+  the referring field can use this id as a "pointer" to the referred field. For
+  field that cannot be referenced by other fields, theId is 0. Note: only fields
+  of kind ARCHIVE_FIELD_NORMAL and ARCHIVE_FIELD_PTR may have ids.
 
   theIsSimple:
   ------------
@@ -72,17 +75,12 @@ class SerializeBaseClass;
 
   theKind:
   --------
-  The kind of the field. See ArchiveFieldKind enum above.
+  The kind of the field. See ArchiveFieldKind enum in archiver_consts.h.
 
-  theTypeName:
-  ------------
+  theType:
+  --------
+  An enum value signifying the data type of the obj.
 
-  theTypeNamePosInPool:
-  ---------------------
-  The position of theTypeName string within the string pool. The string pool
-  is created after the fields tree has been fully built and just before we
-  start actually writting stuff out to "disk". theTypeName string is copied
-  into the string pool only if theKind is PTR and theIsClass is true.
 
   theValue:
   ---------
@@ -101,9 +99,6 @@ class SerializeBaseClass;
 
   theReferredField:
   -----------------
-
-  referencing:
-  ------------
 
   theOrder:
   ---------
@@ -144,11 +139,11 @@ class SerializeBaseClass;
 
   The following data members are serialized:
 
-  1. theTypeName  : only if theKind is PTR and theIsClass is true.
+  1. theType      : only if theKind is PTR and theIsClass is true.
   2. theValue     : except if theKind is REFERENCING or NULL
   3. theReferedId : only if theKind is REFERENCING
   4. theKind
-  5. theId
+  5. theId        : 
 ********************************************************************************/
 class archive_field
 {
@@ -163,16 +158,12 @@ public:
   TypeCode                     theType;
 
   SimpleValue                  theValue;
+  zstring                      theStringValue;
   csize                        theValuePosInPool;
 
-  union
-  {
-    const SerializeBaseClass * assoc_class_ptr;
-    const void               * assoc_ptr;
-  };
+  const void                 * theObjPtr;
 
   archive_field              * theReferredField;
-  unsigned int                 referencing;
 
   unsigned int                 theOrder;
 
@@ -197,7 +188,6 @@ public:
       TypeCode type,
       bool is_simple,
       bool is_class, 
-      const void* value,
       const void* ptr,
       ArchiveFieldKind kind,
       archive_field* refered,
@@ -207,7 +197,6 @@ public:
 
   archive_field(
       TypeCode type,
-      SimpleValue value,
       const void* ptr,
       ArchiveFieldKind kind,
       int only_for_eval,

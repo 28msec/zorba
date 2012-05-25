@@ -60,7 +60,7 @@ class BinArchiver : public Archiver
 protected:
   typedef struct
   {
-    const char*  str;
+    zstring      str;
     csize        count;
     csize        theDiskPos;//1 based
   } StringInfo;
@@ -75,7 +75,7 @@ protected:
   std::vector<StringInfo>    theStrings;
   std::vector<csize>         theOrderedStrings;
 
-  unsigned int               last_id;
+  unsigned int               theLastId;
   unsigned char              theCurrentByte;
   unsigned char              theBitfill;
 
@@ -97,17 +97,16 @@ public:
 
   virtual ~BinArchiver();
 
-  bool read_next_simple_temp_field(SimpleValue& value, TypeCode type);
-
-  bool read_next_field_impl( 
-      TypeCode& type, 
-      char** value,
-      int* id,
-      bool is_simple,
+  void read_next_compound_field_impl(
       bool is_class,
-      bool have_value,
-      enum ArchiveFieldKind* field_treat,
-      int* referencing);
+      ArchiveFieldKind& field_kind,
+      TypeCode& type,
+      int& id, 
+      int& referencing);
+
+  void read_next_simple_temp_field_impl(TypeCode type, void* obj);
+
+  void read_next_simple_ptr_field_impl(TypeCode type, void** obj);
 
   void read_end_current_level_impl();
 
@@ -119,7 +118,7 @@ protected:
 
   void collect_strings(archive_field* parent_field);
 
-  int add_to_string_pool(const char* str);
+  int add_to_string_pool(const zstring& str);
 
   void write_string(const char* str, csize len);
 
@@ -146,9 +145,7 @@ protected:
   //reading
   void read_string_pool();
 
-  void read_string(const char*& str);
-
-  void read_string(std::string& str);
+  void read_string(zstring& str);
 
   int64_t read_int64();
 

@@ -17,12 +17,15 @@
 #ifndef ZORBA_BINARY_SERIALIZATION_ARCHIVER
 #define ZORBA_BINARY_SERIALIZATION_ARCHIVER
 
-#include "util/hashmap32.h"
 #include <stack>
 
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/plan_settings.h"
 #include "zorbaserialization/archiver_consts.h"
+
+#include "zorbatypes/zstring.h"
+
+#include "zorbautils/hashfun.h"
 
 namespace zorba
 {
@@ -140,9 +143,9 @@ class Archiver
   typedef HashMap<const void*, archive_field*, FieldCompare> FieldMap;
 
 protected:
-  std::string                   theArchiveName;
+  zstring                       theArchiveName;
 
-  std::string                   theArchiveInfo;
+  zstring                       theArchiveInfo;
 
   unsigned long                 theArchiveVersion;
 
@@ -215,23 +218,15 @@ public:
   // Methods used during serialization only
   //
 
-  void add_simple_temp_field( 
-      TypeCode type, 
-      SimpleValue value,
-      const void* ptr,
-      ArchiveFieldKind field_treat);
+  void add_simple_temp_field(TypeCode type, const void* ptr);
 
-  bool add_simple_field( 
-      TypeCode type, 
-      const char* value,
-      const void* ptr,
-      ArchiveFieldKind field_treat);
+  bool add_simple_ptr_field(TypeCode type, const void* ptr);
 
   bool add_compound_field( 
       TypeCode type,
       bool is_class,
       const void* ptr,
-      ArchiveFieldKind field_treat);
+      ArchiveFieldKind kind);
 
   void add_end_compound_field();
 
@@ -242,56 +237,32 @@ public:
   //
   // Methods used during de-serialization only
   //
-  bool read_next_field( 
-      TypeCode& type, 
-      char** value,
-      int* id,
-      bool is_simple,
+  void read_next_compound_field( 
       bool is_class,
-      bool have_value,
-      ArchiveFieldKind* field_treat,
-      int* referencing);
+      ArchiveFieldKind& field_kind,
+      TypeCode& type, 
+      int& id,
+      int& referencing);
 
-  virtual bool read_next_simple_temp_field(SimpleValue& value, TypeCode type) = 0;
+  void read_next_simple_temp_field(TypeCode type, void* obj);
+
+  void read_next_simple_ptr_field(TypeCode type, void** obj);
 
   void read_end_current_level();
 
-  virtual bool read_next_field_impl(
-      TypeCode& type, 
-      char** value,
-      int* id, 
-      bool is_simple,
-      bool is_class,
-      bool have_value,
-      ArchiveFieldKind* field_treat,
-      int* referencing) = 0;
-
-  virtual void read_end_current_level_impl() = 0;
-
-  void check_simple_field(
-      bool retval, 
-      enum ArchiveFieldKind field_treat,
-      enum ArchiveFieldKind required_field_treat,
-      int id);
-
   void check_nonclass_field(
-      bool retval, 
-      ArchiveFieldKind field_treat,
-      ArchiveFieldKind required_field_treat,
+      ArchiveFieldKind field_kind,
+      ArchiveFieldKind required_field_kind,
       int id);
 
   void check_class_field(
-      bool retval, 
       TypeCode type,
       TypeCode required_type, 
-      ArchiveFieldKind field_treat,
-      ArchiveFieldKind required_field_treat,
+      ArchiveFieldKind field_kind,
+      ArchiveFieldKind required_field_kind,
       int id);
 
-  void register_reference(
-      int id, 
-      enum ArchiveFieldKind field_treat,
-      const void* ptr);
+  void register_reference(int id, ArchiveFieldKind field_kind, const void* ptr);
 
   void* get_reference_value(int refid);
 
@@ -381,19 +352,20 @@ protected:
   // Methods used during de-serialization only
   //
 
-  virtual void read_archive_description(
-      std::string* archive_name,
-      std::string* archive_info,
-      int* archive_version, 
-      int* nr_ids)
-  {
-    *archive_name = theArchiveName;
-    *archive_info = theArchiveInfo;
-    *archive_version = theArchiveVersion;
-    *nr_ids = this->theFieldCounter;
-  }
-
   void root_tag_is_read();
+
+  virtual void read_next_compound_field_impl(
+      bool is_class,
+      ArchiveFieldKind& field_kind,
+      TypeCode& type,
+      int& id, 
+      int& referencing) = 0;
+
+  virtual void read_next_simple_temp_field_impl(TypeCode type, void* obj) = 0;
+
+  virtual void read_next_simple_ptr_field_impl(TypeCode type, void** obj) = 0;
+
+  virtual void read_end_current_level_impl() = 0;
 
 public:
   void register_item(store::Item* i);

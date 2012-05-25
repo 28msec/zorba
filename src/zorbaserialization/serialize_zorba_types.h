@@ -142,16 +142,13 @@ void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
   else
   {
     TypeCode type;
-    char* value;
-    int   id;
-    ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    int id;
+    ArchiveFieldKind field_kind = ARCHIVE_FIELD_NORMAL;
+    int referencing;
 
-    retval = ar.read_next_field(type, &value, &id, false, false, false,
-                                &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_kind, type, id, referencing);
 
-    ar.check_nonclass_field(retval, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(field_kind, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.ns_;
     ar & obj.prefix_;

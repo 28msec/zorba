@@ -19,6 +19,8 @@
 
 #include <string>
 
+#include "zorbatypes/zstring.h"
+
 #include "zorbamisc/config/platform.h"
 
 
@@ -65,11 +67,11 @@ void operator&(Archiver& ar, double& obj);
 
 void operator&(Archiver& ar, bool& obj);
 
+void operator&(Archiver& ar, zorba::zstring& obj);
+
 void operator&(Archiver& ar, std::string& obj);
 
 void operator&(Archiver& ar, std::string*& obj);
-
-  //void operator&(Archiver& ar, char*& obj);
 
 void serialize_array(Archiver& ar, unsigned char* obj, int len);
 

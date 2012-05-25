@@ -38,24 +38,23 @@ public:
   MemArchiver(bool is_serializing_out, bool internal_archive = false)
     : 
     Archiver(is_serializing_out, internal_archive),
-    temp_field(TYPE_LAST, false, false, NULL, NULL,
+    temp_field(TYPE_LAST, false, false, NULL,
                ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0)
   {
     current_field = NULL;
     is_after_last = false;
   }
 
-  bool read_next_simple_temp_field(SimpleValue& value, TypeCode type);
-
-  bool read_next_field_impl( 
-      TypeCode& type, 
-      char** value,
-      int* id,
-      bool is_simple,
+  void read_next_compound_field_impl(
       bool is_class,
-      bool have_value,
-      enum ArchiveFieldKind* field_treat,
-      int* referencing);
+      ArchiveFieldKind& field_kind,
+      TypeCode& type,
+      int& id, 
+      int& referencing);
+
+  void read_next_simple_temp_field_impl(TypeCode type, void* obj);
+
+  void read_next_simple_ptr_field_impl(TypeCode type, void** obj);
 
   void read_end_current_level_impl();
 
