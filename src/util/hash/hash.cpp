@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
+// standard
+#include <limits>
+
 // local
 #include "hash.h"
+
+using namespace std;
 
 namespace zorba {
 namespace ztd {
@@ -24,19 +29,30 @@ namespace ztd {
 
 size_t hash_bytes( void const *p, size_t len, size_t seed ) {
   //
-  // "The 'hashpjw' hashing algorithm," by P. J. Weinberger, "Compilers:
-  // Principles, Techniques, and Tools," Alfred Aho, Ravi Sethi, and Jeffrey D.
-  // Ullman, Addison-Wesley, Reading, MA, 1986, pp. 435-436.
+  // An adaptation of Peter J. Weinberger's (PJW) generic hashing algorithm
+  // based on Allen Holub's version.  This version works for any hash code
+  // size (in this case, size_t) and not only 'unsigned' as in PJW's version.
   //
+  // The original PJW algorithm can be found in:
+  //
+  //    Fig. 7.35: Hash function hashpjw, written in C
+  //    "Compilers: Principles, Techniques, and Tools," Section 7.6: "Symbol
+  //    Tables," Alfred Aho, Ravi Sethi, and Jeffrey D. Ullman, Addison-Wesley,
+  //    Reading, MA, 1986, pp. 435-436.
+  //
+  static size_t const BitsInSizeT   = sizeof( size_t ) *
+                                      numeric_limits<unsigned char>::digits;
+  static size_t const ThreeFourths  = BitsInSizeT * 3 / 4;
+  static size_t const OneEighth     = BitsInSizeT / 8;
+  static size_t const HighBits      = ~( (size_t)(~0ul) >> OneEighth );
+
   unsigned char const *c = reinterpret_cast<unsigned char const*>( p );
   unsigned char const *const end = c + len;
   size_t result = seed;
   while ( c < end ) {
-    result = (result << 4) + *c++;
-    if ( size_t temp = result & 0xF0000000 ) {
-      result ^= temp >> 24;
-      result ^= temp;
-    }
+    result = (result << OneEighth) + *c++;
+    if ( size_t temp = result & HighBits )
+      result = (result ^ (temp >> ThreeFourths)) & ~HighBits;
   }
   return result;
 }
