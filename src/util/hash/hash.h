@@ -108,9 +108,11 @@ hash<double>::result_type hash<double>::operator()( double v ) const {
 }
 
 /** Specialization for \c string. */
-template<>
-struct hash<string> : unary_function<string const&,size_t> {
-  typedef string const& argument_type;
+template<typename CharT,class Traits,class Alloc>
+struct hash< basic_string<CharT,Traits,Alloc> > :
+  unary_function<basic_string<CharT,Traits,Alloc> const&,size_t>
+{
+  typedef basic_string<CharT,Traits,Alloc> const& argument_type;
   typedef size_t result_type;
 
   result_type operator()( argument_type s ) const {
