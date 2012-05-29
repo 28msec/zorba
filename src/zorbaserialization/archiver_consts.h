@@ -361,13 +361,6 @@ enum TypeCode
 
   TYPE_XQueryImpl,
 
-  TYPE_Decimal,
-  TYPE_Duration,
-  TYPE_TimeZone,
-  TYPE_DateTime,
-  TYPE_Base64,
-  TYPE_Base16,
-
   TYPE_Breakable,
   TYPE_DebuggerSingletonIterator,
   TYPE_DebuggerCommons,

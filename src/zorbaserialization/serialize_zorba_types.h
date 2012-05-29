@@ -37,6 +37,12 @@
 
 namespace zorba
 {
+  class Decimal;
+  class Duration;
+  class Timezone;
+  class DateTime;
+  class Base16;
+  class Base64;
   class QueryLoc;
   class HashMapItemPointerCmp;
   class HashMapZStringCmp;
@@ -53,6 +59,10 @@ namespace zorba
 namespace serialization
 {
 
+void operator&(Archiver& ar, HashMapZStringCmp& obj);
+
+void operator&(Archiver& ar, HashMapItemPointerCmp& obj);
+
 void operator&(Archiver& ar, const XQType*& obj);
 
 #ifdef ZORBA_WITH_BIG_INTEGER
@@ -60,10 +70,19 @@ void operator&(Archiver& ar, IntegerImpl& obj);
 #else
 template<typename IntType>
 void operator&(Archiver& ar, IntegerImpl<IntType>& obj);
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#endif
 
-void operator&(Archiver& ar, HashMapZStringCmp& obj);
-void operator&(Archiver& ar, HashMapItemPointerCmp& obj);
+void operator&(Archiver& ar, Decimal& obj);
+
+void operator&(Archiver& ar, DateTime& obj);
+
+void operator&(Archiver& ar, Duration& obj);
+
+void operator&(Archiver& ar, Timezone& obj);
+
+void operator&(Archiver& ar, Base64& obj);
+
+void operator&(Archiver& ar, Base16& obj);
 
 void operator&(Archiver& ar, store::Item*& obj);
 
@@ -78,9 +97,7 @@ void operator&(Archiver& ar, const Diagnostic*& obj);
     (!GENV.isRootStaticContextInitialized() ||                          \
      ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM)) ;      \
                                                                         \
-  ar.set_is_temp_field(true);                                           \
   ar & is_root_type_mgr;                                                \
-  ar.set_is_temp_field(false);                                          \
                                                                         \
   if (is_root_type_mgr)                                                 \
   {                                                                     \
@@ -100,9 +117,8 @@ void operator&(Archiver& ar, const Diagnostic*& obj);
   (!GENV.isRootStaticContextInitialized() ||                            \
    ((TypeManager*)type_mgr.getp() == (TypeManager*)&GENV_TYPESYSTEM));  \
                                                                         \
-  ar.set_is_temp_field(true);                                           \
   ar & is_root_type_mgr;                                                \
-  ar.set_is_temp_field(false);                                          \
+                                                                        \
   if (is_root_type_mgr)                                                 \
   {                                                                     \
     if (!ar.is_serializing_out())                                       \

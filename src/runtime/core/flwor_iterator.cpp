@@ -144,7 +144,19 @@ ForLetClause::ForLetClause(
 void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
 {
   //ar & theVarName;
-  SERIALIZE_ENUM(ForLetType, theType)
+  bool isFor;
+  
+  if (ar.is_serializing_out())
+  {
+    isFor = (theType == FOR);
+    ar & isFor;
+  }
+  else
+  {
+    ar & isFor;
+    theType = (isFor ? FOR : LET);
+  }
+
   ar & theVarRefs;
   ar & thePosVarRefs;
   ar & theInput;

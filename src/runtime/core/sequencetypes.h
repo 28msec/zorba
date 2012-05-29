@@ -42,18 +42,10 @@ private:
 
 public:
   SERIALIZABLE_CLASS(InstanceOfIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   InstanceOfIterator,
   UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>*)this);
-
-    ar & theSequenceType;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   InstanceOfIterator(
@@ -85,24 +77,17 @@ private:
 
 public:
   SERIALIZABLE_CLASS(CastIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   CastIterator,
   UnaryBaseIterator<CastIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
-    ar & theCastType;
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   CastIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t& aChild,
-        const xqtref_t& aCastType);
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& aChild,
+      const xqtref_t& aCastType);
   
   ~CastIterator();
 
@@ -128,19 +113,10 @@ private:
 
 public:
   SERIALIZABLE_CLASS(CastableIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   CastableIterator,
   UnaryBaseIterator<CastableIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
-
-    ar & theCastType;
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   CastableIterator(
@@ -175,28 +151,18 @@ private:
 
 public:
   SERIALIZABLE_CLASS(PromoteIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   PromoteIterator,
   UnaryBaseIterator<PromoteIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<PromoteIterator, PlanIteratorState>*)this);
-
-    ar & thePromoteType;
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-    ar & theFnQName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   PromoteIterator(
-        static_context* sctx,
-        const QueryLoc&,
-        PlanIter_t&,
-        const xqtref_t& aPromoteType,
-        store::Item_t fnQName = NULL);
+      static_context* sctx,
+      const QueryLoc&,
+      PlanIter_t&,
+      const xqtref_t& aPromoteType,
+      store::Item_t fnQName = NULL);
 
   ~PromoteIterator();
 
@@ -230,11 +196,9 @@ private:
 
 public:
   SERIALIZABLE_CLASS(TreatIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   TreatIterator,
   UnaryBaseIterator<TreatIterator, PlanIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

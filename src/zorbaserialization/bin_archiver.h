@@ -21,7 +21,7 @@
 
 #include "zorbaserialization/archiver.h"
 
-#include "zorbautils/hashmap_str_obj.h"
+#include "zorbautils/hashmap_zstring.h"
 
 #include "store/api/shared_types.h"
 
@@ -61,19 +61,23 @@ protected:
   typedef struct
   {
     zstring      str;
+    bool         binary;
     csize        count;
     csize        theDiskPos;//1 based
   } StringInfo;
+
+  ZSTRING_HASH_MAP(csize, StringPoolMap);
 
 protected:
   std::istream             * is;
 
   std::ostream             * os;
 
-  HashCharPtrObj<csize>      theStringPool;
+  StringPoolMap              theStringPool;
 
   std::vector<StringInfo>    theStrings;
   std::vector<csize>         theOrderedStrings;
+  csize                      theFirstBinaryString;
 
   unsigned int               theLastId;
   unsigned char              theCurrentByte;
@@ -120,7 +124,7 @@ protected:
 
   int add_to_string_pool(const zstring& str);
 
-  void write_string(const char* str, csize len);
+  void write_string(const StringInfo& info);
 
   void serialize_compound_fields(archive_field* parent_field);
 
@@ -146,6 +150,8 @@ protected:
   void read_string_pool();
 
   void read_string(zstring& str);
+
+  void read_binary_string(zstring& str);
 
   int64_t read_int64();
 

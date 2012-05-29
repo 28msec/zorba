@@ -23,9 +23,6 @@
 #include "util/ascii_util.h"
 #include "util/string_util.h"
 
-#include "zorbaserialization/serialize_basic_types.h"
-#include "zorbaserialization/archiver.h"
-
 #include "decimal.h"
 #include "integer.h"
 #include "numconversions.h"
@@ -41,8 +38,6 @@
 #define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
 
 namespace zorba {
-
-SERIALIZABLE_CLASS_VERSIONS(Decimal)
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -181,9 +176,6 @@ void Decimal::reduce( char *s ) {
   }
 }
 
-void Decimal::serialize( serialization::Archiver &ar ) {
-  ar & value_;
-}
 
 ////////// constructors ///////////////////////////////////////////////////////
 

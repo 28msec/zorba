@@ -28,14 +28,9 @@
 
 #include "util/ascii_util.h"
 
-#include "zorbaserialization/serialize_basic_types.h"
-#include "zorbaserialization/archiver.h"
-
 
 namespace zorba
 {
-
-SERIALIZABLE_CLASS_VERSIONS(Duration)
 
 
 const int Duration::FRAC_SECONDS_UPPER_LIMIT = 1000000;
@@ -537,21 +532,6 @@ Duration::Duration(
   data[FRACSECONDS_DATA] = abs<long>(frac_seconds);
 
   normalize();
-}
-
-
-void Duration::serialize(::zorba::serialization::Archiver& ar)
-{
-  SERIALIZE_ENUM(FACET_TYPE, facet);
-  ar & is_negative;
-
-  serialize_long(ar, data[0]);
-  serialize_long(ar, data[1]);
-  serialize_long(ar, data[2]);
-  serialize_long(ar, data[3]);
-  serialize_long(ar, data[4]);
-  serialize_long(ar, data[5]);
-  serialize_long(ar, data[6]);
 }
 
 

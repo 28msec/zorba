@@ -137,7 +137,8 @@ BinArchiver::~BinArchiver()
 BinArchiver::BinArchiver(std::ostream* os)
   :
   Archiver(true),
-  theStringPool(false, false)
+  theStringPool(1024, false, false),
+  theFirstBinaryString(0)
 {
   this->is = NULL;
   this->os = os;
@@ -250,6 +251,7 @@ void BinArchiver::collect_strings(archive_field* parent_field)
       }
       case TYPE_ZSTRING:
       case TYPE_STD_STRING:
+      case TYPE_COLLATOR:
       {
         field->theValuePosInPool = add_to_string_pool(field->theStringValue);
         break;
@@ -278,25 +280,26 @@ int BinArchiver::add_to_string_pool(const zstring& str)
 {
   csize strPos = 0;
 
-  if (theStringPool.get(str.c_str(), strPos))
+  if (theStringPool.get(str, strPos))
   {
-    StringInfo& str_struct = theStrings.at(strPos-1);
-    ++str_struct.count;
+    StringInfo& info = theStrings.at(strPos-1);
+    ++info.count;
     return strPos;
   }
 
-  StringInfo  str_struct;
-  str_struct.str = str;
-  str_struct.count = 1;
-  str_struct.theDiskPos = theStrings.size()+1;
+  StringInfo info;
+  info.str = str;
+  info.binary = (str.size() != strlen(str.c_str()));
+  info.count = 1;
+  info.theDiskPos = theStrings.size()+1;
 
-  theStrings.push_back(str_struct);
+  theStrings.push_back(info);
 
   strPos = theStrings.size();
 
   theOrderedStrings.push_back(strPos-1);
 
-  theStringPool.insert(str.c_str(), strPos);
+  theStringPool.insert(str, strPos);
 
   return strPos;
 }
@@ -316,8 +319,12 @@ void BinArchiver::serialize_out_string_pool()
   {
     for (j = i+1; j < theOrderedStrings.size(); ++j)
     {
-      if (theStrings.at(theOrderedStrings[i]).count <
-          theStrings.at(theOrderedStrings[j]).count)
+      if ((theStrings.at(theOrderedStrings[i]).binary &&
+           !theStrings.at(theOrderedStrings[j]).binary) ||
+          (theStrings.at(theOrderedStrings[i]).binary ==
+           theStrings.at(theOrderedStrings[j]).binary &&
+           theStrings.at(theOrderedStrings[i]).count <
+           theStrings.at(theOrderedStrings[j]).count))
       {
         unsigned int temp;
         temp = theOrderedStrings[i];
@@ -331,13 +338,23 @@ void BinArchiver::serialize_out_string_pool()
 
   for (i = 0; i < theOrderedStrings.size(); ++i)
   {
+    if (theFirstBinaryString == 0 && theStrings.at(theOrderedStrings[i]).binary)
+    {
+      ZORBA_ASSERT(i > 0);
+      theFirstBinaryString = i;
+    }
+
     theStrings.at(theOrderedStrings[i]).theDiskPos = i+1;
 
     //std::cout << i << ": " << theStrings.at(theOrderedStrings[i]).str << std::endl;
   }
 #endif
 
+  if (theFirstBinaryString == 0)
+    theFirstBinaryString = theStrings.size() + 1;
+
   write_uint32((uint32_t)theStrings.size());
+  write_uint32((uint32_t)theFirstBinaryString);
 
   if (theBitfill)
   {
@@ -354,9 +371,7 @@ void BinArchiver::serialize_out_string_pool()
   std::vector<csize>::const_iterator end = theOrderedStrings.end();
   for (; ite != end; ++ite)
   {
-    const StringInfo& strInfo = theStrings.at(*ite);
-
-    write_string(strInfo.str.c_str(), strInfo.str.size() + 1);
+    write_string(theStrings.at(*ite));
   }
 }
 
@@ -364,9 +379,31 @@ void BinArchiver::serialize_out_string_pool()
 /*******************************************************************************
 
 ********************************************************************************/
-void BinArchiver::write_string(const char* str, csize len)
+void BinArchiver::write_string(const StringInfo& info)
 {
-  os->write(str, (std::streamsize)len);
+  if (info.binary)
+  {
+    assert(theBitfill == 0);
+
+    write_uint64(info.str.size());
+
+    if (theBitfill)
+    {
+      theCurrentByte <<= (8-theBitfill);
+      os->write((char*)&theCurrentByte, 1);
+      theBitfill = 0;
+      theCurrentByte = 0;
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+      bytes_saved++;
+#endif
+    }
+
+    os->write(info.str.c_str(), (std::streamsize)info.str.size());
+  }
+  else
+  {
+    os->write(info.str.c_str(), (std::streamsize)info.str.size() + 1);
+  }
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   strings_saved += len;
 #endif
@@ -417,7 +454,7 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
         }
         case TYPE_INT32:
         {
-          write_uint32(field->theValue.int32v);
+          write_int32(field->theValue.int32v);
           break;
         }
         case TYPE_UINT32:
@@ -432,7 +469,7 @@ void BinArchiver::serialize_compound_fields(archive_field* parent_field)
         }
         case TYPE_INT16:
         {
-          write_uint32(field->theValue.int16v);
+          write_int32(field->theValue.int16v);
           break;
         }
         case TYPE_UINT16:
@@ -645,6 +682,23 @@ void BinArchiver::write_uint32(uint32_t intval)
 }
 
 
+void BinArchiver::write_int32(int32_t intval)
+{
+  if (intval < 0)
+  {
+    write_bit(1);
+    uint32_t absval = -intval;
+
+    write_uint32(absval);
+  }
+  else
+  {
+    write_bit(0);
+    write_uint32((uint32_t)intval);
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -844,8 +898,11 @@ BinArchiver::BinArchiver(std::istream* is)
   read_string(theArchiveName);
   read_string(theArchiveInfo);
   theArchiveVersion = read_uint32();
+
   theFieldCounter = read_uint32();
+
   unsigned int is_release = read_uint32();
+
 #ifndef NDEBUG
   if(is_release)
   {
@@ -872,6 +929,7 @@ void BinArchiver::read_string_pool()
   theStrings.clear();
 
   csize count = read_uint32();
+  csize theFirstBinaryString = read_uint32();
 
   if (theBitfill != 8)
   {
@@ -883,7 +941,10 @@ void BinArchiver::read_string_pool()
 
   for (csize i = 0; i < count; ++i)
   {
-    read_string(str_pos.str);
+    if (i < theFirstBinaryString)
+      read_string(str_pos.str);
+    else
+      read_binary_string(str_pos.str);
 
     theStrings.push_back(str_pos);
   }
@@ -903,6 +964,25 @@ void BinArchiver::read_string(zstring& str)
   theCurrentBytePtr += str.size();
 
   ++theCurrentBytePtr;
+}
+
+
+/*******************************************************************************
+  Read a binary string from disk into the string pool (the string is coopied)
+********************************************************************************/
+void BinArchiver::read_binary_string(zstring& str)
+{
+  csize size = read_uint64();
+
+  if (theBitfill != 8)
+  {
+    ++theCurrentBytePtr;
+    theBitfill = 8;
+  }
+
+  str.assign((char*)theCurrentBytePtr, size);
+
+  theCurrentBytePtr += size;
 }
 
 
@@ -961,6 +1041,22 @@ uint32_t BinArchiver::read_uint32()
   while(!(tmp & 0x80));
 
   return outval;
+}
+
+
+int32_t BinArchiver::read_int32()
+{
+  unsigned char sign = read_bit();
+
+  if (sign == 0)
+  {
+    return static_cast<int32_t>(read_uint32());
+  }
+  else
+  {
+    uint32_t absval = read_uint32();
+    return -static_cast<int32_t>(absval);
+  }
 }
 
 
@@ -1203,7 +1299,7 @@ void BinArchiver::read_next_simple_temp_field_impl(TypeCode type, void* obj)
   }
   case TYPE_INT32:
   {
-    *static_cast<int32_t*>(obj) = read_uint32();
+    *static_cast<int32_t*>(obj) = read_int32();
     break;
   }
   case TYPE_UINT32:
@@ -1218,7 +1314,7 @@ void BinArchiver::read_next_simple_temp_field_impl(TypeCode type, void* obj)
   }
   case TYPE_INT16:
   {
-    *static_cast<int16_t*>(obj) = read_uint32();
+    *static_cast<int16_t*>(obj) = read_int32();
     break;
   }
   case TYPE_UINT16:

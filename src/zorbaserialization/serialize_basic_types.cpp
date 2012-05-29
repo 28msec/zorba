@@ -22,9 +22,6 @@
 #include "zorbaserialization/archiver.h"
 #include "zorbaserialization/base64impl.h"
 
-#include "zorbatypes/floatimpl.h"
-#include "zorbatypes/integer.h"
-
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/assert.h"
@@ -304,55 +301,13 @@ void operator&(Archiver& ar, bool& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, zstring& obj)
 {
-  bool is_normal_str = true;
-
   if (ar.is_serializing_out())
   {
-    if (obj.size() != strlen(obj.c_str()))
-      is_normal_str = false;
-  }
-
-  ar & is_normal_str;
-
-  if (is_normal_str)
-  {
-    if (ar.is_serializing_out())
-    {
-      ar.add_simple_temp_field(TYPE_ZSTRING, &obj);
-    }
-    else
-    {
-      ar.read_next_simple_temp_field(TYPE_ZSTRING, &obj);
-    }
+    ar.add_simple_temp_field(TYPE_ZSTRING, &obj);
   }
   else
   {
-    //for strings which contain '\0' inside
-    if (ar.is_serializing_out())
-    {
-      const char* cstr = obj.c_str();
-      csize s = obj.size();
-
-      ar.set_is_temp_field(true);
-      ar & s;
-      serialize_array(ar, (unsigned char*)cstr, s);
-      ar.set_is_temp_field(false);
-    }
-    else
-    {
-      std::unique_ptr<unsigned char[]> cstr;
-      csize s;
-
-      ar.set_is_temp_field(true);
-
-      ar & s;
-      cstr.reset(new unsigned char[s]);
-      serialize_array(ar, (unsigned char*)cstr.get(), s);
-
-      obj.assign((const char*)cstr.get(), s);
-
-      ar.set_is_temp_field(false);
-    }
+    ar.read_next_simple_temp_field(TYPE_ZSTRING, &obj);
   }
 }
 
@@ -385,31 +340,6 @@ void operator&(Archiver& ar, std::string*& obj)
   else
   {
     ar.read_next_simple_ptr_field(TYPE_STD_STRING, (void**)&obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void serialize_array(Archiver& ar, unsigned char* obj, int len)
-{
-  zstring base64string;
-
-  if (ar.is_serializing_out())
-  {
-    base64string.resize(8*len/6 + 8 + 1);
-    Base64Impl::Encode(obj, len, base64string.data());
-    base64string.resize(strlen(base64string.c_str()));
-    ar.add_simple_temp_field(TYPE_ZSTRING, &base64string);
-  }
-  else
-  {
-    ar.read_next_simple_temp_field(TYPE_ZSTRING, &base64string);
-
-    Base64Impl::Decode((const unsigned char*)base64string.c_str(),
-                       base64string.size(),
-                       obj);
   }
 }
 

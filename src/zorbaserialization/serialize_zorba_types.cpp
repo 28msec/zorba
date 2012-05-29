@@ -39,6 +39,9 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/integer.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/binary.h"
+#include "zorbatypes/decimal.h"
 
 #include "functions/function.h"
 #include "runtime/function_item/function_item.h"
@@ -91,6 +94,80 @@ void operator&(serialization::Archiver& ar, IntegerImpl<IntType>& obj)
 template void operator&(serialization::Archiver&, IntegerImpl<long long>&);
 template void operator&(serialization::Archiver&, IntegerImpl<unsigned long long>&);
 #endif
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, Decimal& obj)
+{
+  ar & obj.value_;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, DateTime& obj)
+{
+  SERIALIZE_ENUM(DateTime::FACET_TYPE, obj.facet);
+
+  serialize_long(ar, obj.data[0]);
+  serialize_long(ar, obj.data[1]);
+  serialize_long(ar, obj.data[2]);
+  serialize_long(ar, obj.data[3]);
+  serialize_long(ar, obj.data[4]);
+  serialize_long(ar, obj.data[5]);
+  serialize_long(ar, obj.data[6]);
+
+  ar & obj.the_time_zone;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, Duration& obj)
+{
+  SERIALIZE_ENUM(Duration::FACET_TYPE, obj.facet);
+  ar & obj.is_negative;
+
+  serialize_long(ar, obj.data[0]);
+  serialize_long(ar, obj.data[1]);
+  serialize_long(ar, obj.data[2]);
+  serialize_long(ar, obj.data[3]);
+  serialize_long(ar, obj.data[4]);
+  serialize_long(ar, obj.data[5]);
+  serialize_long(ar, obj.data[6]);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, TimeZone& obj)
+{
+  ar & static_cast<Duration&>(obj);
+  ar & obj.timezone_not_set;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, Base64& obj)
+{
+  ar & obj.theData;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, Base16& obj)
+{
+  ar & obj.theData;
+}
 
 
 /*******************************************************************************

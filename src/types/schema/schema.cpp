@@ -2067,31 +2067,29 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
      if (!is_grammar_NULL)
      {
        BinMemOutputStream binmemoutputstream;
-       csize size = 0;
-       unsigned char* binchars = NULL;
+       zstring binstr;
 
        try
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
-         size = binmemoutputstream.getSize();
-         binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
+         binstr.assign((char*)binmemoutputstream.getRawBuffer(),
+                       binmemoutputstream.getSize());
        }
        catch (...)
        {
        }
 
-       ar & size;
-
-       if (size)
-         serialize_array(ar, binchars, size);
+       ar & binstr;
      }
    }
    else
    {
      csize size_of_size_t2;
      unsigned char le_be_value_first_char;
+
      ar & size_of_size_t2;
      ar & le_be_value_first_char;
+
      if (size_of_size_t2 != size_of_size_t ||
          le_be_value_first_char != le_be_value.cvalue[0])
      {
@@ -2100,18 +2098,14 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
 
      if (!is_grammar_NULL)
      {
-       csize size;
-       unsigned char* binchars;
+       zstring binstr;
 
-       ar & size;
-       if(size)
+       ar & binstr;
+
+       if (!binstr.empty())
        {
-         binchars = (unsigned char*)malloc(size+8);
-         serialize_array(ar, binchars, size);
-         BinMemInputStream   binmeminputstream((XMLByte*)binchars, size);
+         BinMemInputStream binmeminputstream((XMLByte*)binstr.c_str(), binstr.size());
          theGrammarPool->deserializeGrammars(&binmeminputstream);
-
-         free(binchars);
        }
      }
      else

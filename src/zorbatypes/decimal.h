@@ -23,8 +23,6 @@
 #include "common/common.h"
 #include "util/stl_util.h"
 
-#include "zorbaserialization/class_serializer.h"
-
 #include "m_apm.h"
 #include "schema_types_base.h"
 #include "zorbatypes_decl.h"
@@ -40,9 +38,22 @@
 
 namespace zorba {
 
+class Decimal;
+
+namespace serialization 
+{
+  class Archiver;
+  void operator&(Archiver& ar, Decimal& obj);
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
-class ZORBA_DLL_PUBLIC  Decimal  : public serialization::SerializeBaseClass {
+class Decimal
+{
+
+  friend void serialization::operator&(serialization::Archiver& ar, Decimal& obj);
+
 public:
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -215,10 +226,6 @@ public:
 
   /////////////////////////////////////////////////////////////////////////////
 
-  SERIALIZABLE_CLASS(Decimal)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(Decimal)
-  void serialize( serialization::Archiver& );
-
 private:
   typedef MAPM value_type;
   typedef long int_cast_type;
@@ -272,8 +279,7 @@ inline Decimal::Decimal( char const *s ) {
   parse( s, &value_ );
 }
 
-inline Decimal::Decimal( Decimal const &d ) :
-  serialization::SerializeBaseClass(), value_( d.value_ )
+inline Decimal::Decimal( Decimal const &d ) : value_( d.value_ )
 {
 }
 
