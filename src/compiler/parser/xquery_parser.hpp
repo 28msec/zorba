@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/Users/wcandillon/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,7 +84,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -114,7 +114,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 118 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/Users/wcandillon/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -150,7 +150,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 154 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -468,18 +468,15 @@ namespace zorba {
      KEYS = 563,
      BYTE_ORDER_MARK_UTF8 = 564,
      RANGE_REDUCE = 565,
-     ADDITIVE_REDUCE = 566,
-     MULTIPLICATIVE_REDUCE = 567,
+     SEQUENCE_TYPE_REDUCE = 566,
+     ADDITIVE_REDUCE = 567,
      UNION_REDUCE = 568,
      INTERSECT_EXCEPT_REDUCE = 569,
      QVARINDECLLIST_REDUCE = 570,
      COMMA_DOLLAR = 571,
      UNARY_PREC = 572,
-     SEQUENCE_TYPE_REDUCE = 573,
-     OCCURS_STAR = 574,
-     OCCURS_PLUS = 575,
-     OCCURS_HOOK = 576,
-     STEP_REDUCE = 577
+     STEP_REDUCE = 573,
+     MULTIPLICATIVE_REDUCE = 574
    };
 
     };
@@ -659,7 +656,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 663 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 660 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

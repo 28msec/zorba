@@ -28,8 +28,8 @@
 %define "parser_class_name" "xquery_parser"
 %error-verbose
 
-// Expect shift/reduce conflicts
-%expect 63
+// Expect 4 shift/reduce conflicts
+%expect 4
 
 
 %code requires {
@@ -283,7 +283,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WHEN                             "'when'"
 %token WORD                             "'word'"
 
-    /* Decimal format tokens */
+/* Decimal format tokens */
+/* --------------------- */
 %token DECIMAL_FORMAT                   "'decimal-format'"
 %token DECIMAL_SEPARATOR                "'decimal-separator'"
 %token GROUPING_SEPARATOR               "'grouping-separator'"
@@ -509,7 +510,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WORDS                            "'words'"
 
 /* Data Definition Facility */
-
+/* ------------------------ */
 %token COLLECTION                       "'collection'"
 %token CONSTOPT                         "'const'"
 %token APPEND_ONLY                      "'append-only'"
@@ -545,14 +546,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* --------------------------------- */
 %type <expr> LeadingSlash
 
-/* placeholder node for reducing UNRECOGNIZED and generating an error */
-/* ---------------------------- */
-// %type <node> UnrecognizedToken
-
-
 /* left-hand sides: syntax only */
 /* ---------------------------- */
-
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
 %type <node> Annotation
@@ -902,7 +897,7 @@ template<typename T> inline void release_hack( T *ref ) {
  *
  *  Precedence
  *_____________________________________________________________________*/
-
+    
 /*_____________________________________________________________________
  *
  * resolve shift-reduce conflict for
@@ -916,16 +911,9 @@ template<typename T> inline void release_hack( T *ref ) {
  * resolve shift-reduce conflict for
  * [50] AdditiveExpr ::= MultiplicativeExpr ( ("+" | "-") MultiplicativeExpr )*
  *_____________________________________________________________________*/
+%nonassoc SEQUENCE_TYPE_REDUCE
 %nonassoc ADDITIVE_REDUCE
-%left PLUS MINUS
-
-/*_____________________________________________________________________
- *
- * resolve shift-reduce conflict for
- * [51] MultiplicativeExpr ::= UnionExpr ( ("*" | "div" | "idiv" | "mod") UnionExpr )*
- *_____________________________________________________________________*/
-%nonassoc MULTIPLICATIVE_REDUCE
-%left STAR DIV IDIV MOD
+%left PLUS MINUS HOOK
 
 /*_____________________________________________________________________
  *
@@ -949,17 +937,9 @@ template<typename T> inline void release_hack( T *ref ) {
  * [42a] QVarInDeclList ::= QVarInDecl ( "," "$" QVarInDeclList )*
  *_____________________________________________________________________*/
 %nonassoc QVARINDECLLIST_REDUCE
-// FIXME COMMA_DOLLAR is not defined anymore
+// TODO: COMMA_DOLLAR is not defined anymore
 %left COMMA_DOLLAR
 %nonassoc UNARY_PREC
-
-/*_____________________________________________________________________
- *
- * resolve shift-reduce conflict for
- * [119] SequenceType ::= ItemType | ItemType OccurrenceIndicator
- *_____________________________________________________________________*/
-%nonassoc SEQUENCE_TYPE_REDUCE
-%nonassoc OCCURS_HOOK OCCURS_PLUS OCCURS_STAR
 
 /*_____________________________________________________________________
  *
@@ -968,6 +948,34 @@ template<typename T> inline void release_hack( T *ref ) {
  *_____________________________________________________________________*/
 %nonassoc STEP_REDUCE
 %left SLASH SLASH_SLASH
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [51] MultiplicativeExpr ::= UnionExpr ( ("*" | "div" | "idiv" | "mod") UnionExpr )*
+ *_____________________________________________________________________*/
+%nonassoc MULTIPLICATIVE_REDUCE
+%left STAR DIV IDIV MOD
+
+
+/*_____________________________________________________________________
+ *
+ * resolve various other shift/reduce conflicts
+ *
+ *_____________________________________________________________________*/
+%right LBRACK
+%right LPAR
+%right CATCH
+
+%nonassoc RBRACE
+
+
+%right AT FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%right DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%right MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
+%right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
+
+%left COMMA
 
 
 /*
@@ -2064,12 +2072,11 @@ StatementsAndOptionalExprTop :
     {
       $$ = $1;
     }
-  |
-    Statements
+  | Statements
     {
       $$ = $1;
     }
-  |
+  | /* empty */
     {
       $$ =  NULL;
     }
@@ -2081,12 +2088,11 @@ StatementsAndOptionalExpr :
     {
       $$ = $1;
     }
-  |
-    Statements
+  | Statements
     {
       $$ = $1;
     }
-  |
+  | /* empty */
     {
       $$ =  new BlockBody(LOC(@$));
     }
@@ -2378,7 +2384,7 @@ IfStatement :
 
 
 TryStatement :
-    TRY BlockStatement CatchListStatement
+    TRY BlockStatement CatchListStatement %prec CATCH
     {
       $$ = new TryExpr(LOC(@$), $2, $3);
     }
@@ -2595,10 +2601,19 @@ FLWORClauseList :
 
 
 ForClause :
-    FOR DOLLAR VarInDeclList
+    FOR DOLLAR VarInDeclList 
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
+  //  ============================ Improved error messages ============================ 
+  | 
+    FOR error VarInDeclList
+    {
+      $$ = $3; // to prevent the Bison warning
+      error(@2, "syntax error, unexpected QName \"" 
+          + static_cast<VarInDeclList*>($3)->operator[](0)->get_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      YYERROR;
+    } 
 ;
 
 
@@ -2616,6 +2631,15 @@ VarInDeclList :
         vdl->push_back( dynamic_cast<VarInDecl*>($4) );
       $$ = $1;
     }
+  //  ============================ Improved error messages ============================ 
+  | 
+    VarInDeclList COMMA VarInDecl
+    {
+      $$ = $1; // to prevent the Bison warning      
+      error(@3, "syntax error, unexpected QName \"" 
+          + static_cast<VarInDecl*>($3)->get_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      YYERROR;
+    }    
 ;
 
 
@@ -3506,7 +3530,6 @@ AdditiveExpr :
         }
     ;
 
-
 // [51]
 MultiplicativeExpr :
         UnionExpr %prec MULTIPLICATIVE_REDUCE
@@ -3538,7 +3561,6 @@ MultiplicativeExpr :
             );
         }
     ;
-
 
 // [52]
 UnionExpr :
@@ -3829,7 +3851,7 @@ Pragma :
 
 // [67]
 PathExpr :
-    LeadingSlash
+    LeadingSlash %prec STEP_REDUCE
     {
       $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
     }
@@ -4105,7 +4127,7 @@ FilterExpr :
      {
        $$ = $1;
      }
-  |  FilterExpr PredicateList
+  |  FilterExpr PredicateList %prec LBRACK
      {
        $$ = new FilterExpr(LOC(@$), $1, dynamic_cast<PredicateList*>($2));
      }
@@ -4292,7 +4314,7 @@ UnorderedExpr :
 |       empty-sequence
 |       if
 |       item
-|   node
+|       node
 |       processing-instruction
 |       schema-attribute
 |       schema-element
@@ -4405,6 +4427,13 @@ DirElemConstructor :
         }
     |   LT_OR_START_TAG QNAME OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($6)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($6)->get_qname().str() + "> does not match start tag <" 
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+          
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -4413,8 +4442,15 @@ DirElemConstructor :
                 NULL
             );
         }
-    | LT_OR_START_TAG QNAME OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
+    |   LT_OR_START_TAG QNAME OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <" 
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+            
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -4425,6 +4461,13 @@ DirElemConstructor :
         }
     |   LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <" 
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+            
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -4435,6 +4478,13 @@ DirElemConstructor :
         }
     |   LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($8)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($8)->get_qname().str() + "> does not match start tag <" 
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+            
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -4834,7 +4884,7 @@ TypeDeclaration :
 
 // [117]
 SequenceType :
-        ItemType // ItemType %prec SEQUENCE_TYPE_REDUCE
+        ItemType %prec SEQUENCE_TYPE_REDUCE
         {
             $$ = new SequenceType( LOC(@$), $1, NULL );
         }
@@ -5537,11 +5587,11 @@ FTSelection :
     ;
 
 opt_FTPosFilter_list :
-        /* empty */
+        /* empty */      %prec AT
         {
             $$ = NULL;
         }
-    |   FTPosFilter_list
+    |   FTPosFilter_list %prec AT
         {
             $$ = $1;
         }
@@ -6038,7 +6088,7 @@ FTThesaurusID :
 opt_relationship :
         /* empty */
         {
-            $$ = NULL;
+            $$ = 0;
         }
     |   RELATIONSHIP STRING_LITERAL
         {
@@ -6047,7 +6097,7 @@ opt_relationship :
     ;
 
 opt_levels :
-        /* empty */
+        /* empty */ %prec AT
         {
             $$ = NULL;
         }
