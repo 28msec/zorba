@@ -30,24 +30,68 @@
   </xs:element>
 
   <xs:attributeGroup name="compare-attributes">
-    <xs:attribute name="case" type="sensitivity" default="insensitive"/>
-    <xs:attribute name="diacritics" type="sensitivity" default="insensitive"/>
-    <xs:attribute name="stem" type="yes-no-both" default="no"/>
+    <xs:attribute name="case" type="case-type" default="case insensitive"/>
+    <xs:attribute name="diacritics" type="diacritics-type" default="diacritics insensitive"/>
+    <xs:attribute name="stemming" type="stemming-type" default="no stemming"/>
   </xs:attributeGroup>
 
-  <xs:simpleType name="sensitivity">
+  <xs:simpleType name="case-type">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="insensitive"/>
-      <xs:enumeration value="sensitive"/>
-      <xs:enumeration value="both"/>
+
+      <!--
+       ! Tokens are matched regardless of the case of characters.
+      -->
+      <xs:enumeration value="case insensitive"/>
+
+      <!--
+       ! Tokens are matched only if the case of their characters is the same.
+      -->
+      <xs:enumeration value="case sensitive"/>
+
+      <!--
+       ! Tokens are matched only if they match without regard to character
+       ! case, but contain only lowercase characters.
+      -->
+      <xs:enumeration value="lower"/>
+
+      <!--
+       ! Tokens are matched only if they match without regard to character
+       ! case, but contain only uppercase characters.
+      -->
+      <xs:enumeration value="upper"/>
+
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="yes-no-both">
+  <xs:simpleType name="diacritics-type">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="yes"/>
-      <xs:enumeration value="no"/>
-      <xs:enumeration value="both"/>
+
+      <!--
+       ! Matches tokens with and without diacritics.
+      -->
+      <xs:enumeration value="diacritics insensitive"/>
+
+      <!--
+       ! Matches tokens only if they contain the same diacritics.
+       -->
+      <xs:enumeration value="diacritics sensitive"/>
+
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="stemming-type">
+    <xs:restriction base="xs:string">
+
+      <!--
+       ! Tokens are not stemmed.
+       -->
+      <xs:enumeration value="no stemming"/>
+
+      <!--
+       ! Matches may contain tokens that have the same stem.
+       -->
+      <xs:enumeration value="stemming"/>
+
     </xs:restriction>
   </xs:simpleType>
 

@@ -157,6 +157,14 @@ bool BasicItemFactory::createStreamableString(
   return true;
 }
 
+bool BasicItemFactory::createSharedStreamableString(
+    store::Item_t &result,
+    store::Item_t &streamable_dependent)
+{
+  result = new StreamableStringItem( streamable_dependent );
+  return true;
+}
+
 
 bool BasicItemFactory::createNormalizedString(store::Item_t& result, zstring& value)
 {
@@ -1003,7 +1011,7 @@ bool BasicItemFactory::createBase64Binary(
     xs_base64Binary value)
 {
   const std::vector<char>& data = value.getData();
-  result = new Base64BinaryItem(&data[0], data.size(), true);
+  result = new Base64BinaryItem(data.size()!=0?&data[0]:0, data.size(), true);
   return true;
 }
 

@@ -438,6 +438,16 @@ declare variable $ft:lang-tr as xs:language := xs:language("tr");
 (:===========================================================================:)
 
 (:~
+ : Gets the current compare options.
+ :
+ : @return said compare options.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-2.xq
+ :)
+declare function ft:current-compare-options()
+  as element(ft-schema:compare-options) external;
+
+(:~
  : Gets the current
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>:
  : either the language specified by the
@@ -752,7 +762,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
   as xs:string+ external;
 
 (:~
- : Tokenizes the given document.
+ : Tokenizes the given node and all of its descendants.
  :
  : @param $node The node to tokenize.
  : @param $lang The default
@@ -760,13 +770,13 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : of <code>$node</code>.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>$lang</code> is not supported in general.
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-1.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-1.xq
  :)
-declare function ft:tokenize( $node as node(), $lang as xs:language )
+declare function ft:tokenize-node( $node as node(), $lang as xs:language )
   as element(ft-schema:token)* external;
 
 (:~
- : Tokenizes the given document.
+ : Tokenizes the given node and all of its descendants.
  :
  : @param $node The node to tokenize.
  : The document's default
@@ -775,11 +785,11 @@ declare function ft:tokenize( $node as node(), $lang as xs:language )
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
  : general.
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-2.xq
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-3.xq
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-4.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-2.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-3.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-4.xq
  :)
-declare function ft:tokenize( $node as node() )
+declare function ft:tokenize-node( $node as node() )
   as element(ft-schema:token)* external;
 
 (:~

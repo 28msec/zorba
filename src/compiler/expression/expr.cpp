@@ -1239,8 +1239,8 @@ expr_t extension_expr::clone(substitution_t& subst) const
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	XQuery 1.1 expressions                                             //
-//  [http://www.w3.org/TR/xquery-1.1/]                                 //
+//	XQuery 3.0 expressions                                             //
+//  [http://www.w3.org/TR/xquery-3/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 

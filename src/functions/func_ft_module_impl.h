@@ -27,35 +27,31 @@ namespace zorba
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+///////////////////////////////////////////////////////////////////////////////
+
 //full-text:tokenize
-class full_text_tokenize : public function
+class full_text_tokenize_node : public function
 {
 public:
-  SERIALIZABLE_CLASS(full_text_tokenize);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(full_text_tokenize, function)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
+  full_text_tokenize_node(const signature& sig,
+                          FunctionConsts::FunctionKind kind) : 
     function(sig, kind)
   {
 
   }
 
+  // Mark the function as accessing the dyn ctx so that it won't be
+  // const-folded. We must prevent const-folding because the function
+  // uses the store to get access to the tokenizer provider.
+  bool accessesDynCtx() const { return true; }
+
   CODEGEN_DECL();
 };
-
 
 
 //full-text:tokenizer-properties
 class full_text_tokenizer_properties : public function
 {
-public:
-  SERIALIZABLE_CLASS(full_text_tokenizer_properties);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(full_text_tokenizer_properties, function)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 public:
   full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
@@ -66,16 +62,31 @@ public:
 
   // Mark the function as accessing the dyn ctx so that it won't be
   // const-folded. We must prevent const-folding because the function
-  // returns a node that is validated with a schema that may not be
-  // imported in the module where the function is invoked from.
+  // uses the store to get access to the tokenizer provider.
   bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
 
-#endif // ZORBA_NO_FULL_TEXT
 
-}
+//full-text:current-compare-options
+class full_text_current_compare_options : public function
+{
+public:
+  full_text_current_compare_options(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
 
-#endif
+  }
+
+  CODEGEN_DECL();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif /* ZORBA_NO_FULL_TEXT */
+
+} // namespace zorba
+#endif /* ZORBA_FULL_TEXT_FN_NS */
 /* vim:set et sw=2 ts=2: */

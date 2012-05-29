@@ -1199,7 +1199,7 @@
        using the specified encoding, the resulting characters are not 
        permitted XML characters or requested encoding not supported
       </comment>
-      <value>"$1": Cannot decode resource retrieved</value>
+      <value>"$1": can not decode resource retrieved</value>
     </diagnostic>  
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
@@ -1720,8 +1720,12 @@
       <value>XML does not match schema${: "1"}${ 2}</value>
     </diagnostic>
 
-    <diagnostic code="ZXQP0025" name="ITEM_CREATION_FAILED">
-      <value>item creation failed</value>
+    <diagnostic code="ZXQP0025" name="COULD_NOT_FETCH_RESOURCE">
+      <value>"$1": could not fetch resource${; reason: 2}</value>
+
+      <entry key="RESOURCE_NOT_FOUND">
+        <value>resource not found</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ZXQP0026" name="INVALID_ENUM_VALUE">
@@ -2077,10 +2081,6 @@
 
     <diagnostic code="ZDDY0018" name="NODES_NOT_IN_SAME_COLLECTION">
       <value>all nodes must be in same collection</value>
-    </diagnostic>
-
-    <diagnostic code="ZDDY0019" name="UNDO_NOT_POSSIBLE">
-      <value>"$1": collection $2 cannot be undone</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0020" name="INDEX_DOMAIN_NODE_NOT_IN_COLLECTION">
@@ -2462,6 +2462,9 @@
     <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
       <value>illegal empty string</value>
     </diagnostic>
+    <diagnostic code="ZJPE0010" name="JSONML_ARRAY_REQUIRES_BRACKET">
+      <value>JsonML (array form) must start with '['</value>
+    </diagnostic>
 
    <!--////////// JSON Serialization Errors ////////////////////////////////-->
 
@@ -2517,7 +2520,7 @@
     <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
       <comment>
         This warning is raised if the user explicitly enables caching
-        of function results (using the %ann:cache annotation) but the function
+        of function results (using the %an:cache annotation) but the function
         is updating or its parameter and return types are not subtypes of
         xs:anyAtomicType.
       </comment>
@@ -2539,7 +2542,7 @@
     <diagnostic code="ZWST0006" name="CACHING_MIGHT_NOT_BE_INTENDED">
       <comment>
         This warning is raised if the user explicitly enables caching
-        of function results (using the %ann:cache annotation) and the function
+        of function results (using the %an:cache annotation) and the function
         is annotated as sequential or nondeterministic.
       </comment>
       <value>"$1": function caching might not give the intended result because the function is declared as $2</value>
@@ -2793,10 +2796,6 @@
 
     <entry key="ErrorCodeMessage_12">
       <value>error $2: $3</value>
-    </entry>
-
-    <entry key="Eval11">
-      <value>"eval" only available in XQuery 1.1 or later</value>
     </entry>
 
     <entry key="ExpectedNumericOrDurationType">

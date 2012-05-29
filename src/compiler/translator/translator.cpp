@@ -2200,7 +2200,7 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (v.get_encoding().length() != 0 &&
+  if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
@@ -3314,41 +3314,6 @@ void* begin_visit(const VFO_DeclList& v)
                                     '}',
                                     qnameItem->getLocalName())));
         }
-
-#ifndef ZORBA_NO_FULL_TEXT
-        if (qnameItem->getNamespace() == static_context::ZORBA_FULL_TEXT_FN_NS &&
-            (qnameItem->getLocalName() == "tokenizer-properties" ||
-             qnameItem->getLocalName() == "tokenize"))
-        {
-          FunctionConsts::FunctionKind kind;
-
-          if (qnameItem->getLocalName() == "tokenizer-properties")
-          {
-            assert(numParams <= 1);
-
-            if (numParams == 1)
-              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1;
-            else
-              kind = FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_0;
-
-            f = new full_text_tokenizer_properties(f->getSignature(), kind);
-          }
-          else 
-          {
-            assert(numParams == 1 || numParams == 2);
-
-            if (numParams == 2)
-              kind = FunctionConsts::FULL_TEXT_TOKENIZE_2;
-            else
-              kind = FunctionConsts::FULL_TEXT_TOKENIZE_1;
-
-            f = new full_text_tokenize(f->getSignature(), kind);
-          }
-
-          f->setStaticContext(theRootSctx);
-          bind_fn(f, numParams, loc);
-        }
-#endif /* ZORBA_NO_FULL_TEXT */
 
         f->setAnnotations(theAnnotations);
         theAnnotations = NULL; // important to reset

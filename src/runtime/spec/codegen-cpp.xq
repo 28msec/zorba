@@ -120,12 +120,11 @@ declare function local:process($doc,
 declare function local:propagate($function) as xs:string?
 {
   let $xq30 := count($function//zorba:signature[@version eq "3.0"])
-  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
   let $sigs := count($function//zorba:signature)
-  let $xq10 := ($sigs - $xq30) - $xq11  
+  let $xq10 := ($sigs - $xq30)
   return
     concat(
-    if(($xq30 > 0 ) or ($xq11 > 0)) then 
+    if ($xq30 > 0 ) then 
       local:propagateInputToOutput($function,"_3_0") else (),
     if($xq10 >0) then 
       local:propagateInputToOutput($function,"") else ()
@@ -178,12 +177,11 @@ declare function local:propagateInputToOutput($function, $suffix as xs:string) a
 declare function local:create-functions($iter, $function) as xs:string?
 {
   let $xq30 := count($function//zorba:signature[@version eq "3.0"])
-  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
   let $sigs := count($function//zorba:signature)
-  let $xq10 := ($sigs - $xq30) - $xq11  
+  let $xq10 := ($sigs - $xq30)
   return
     concat(
-    if(($xq30 > 0 ) or ($xq11 > 0)) then local:create-function($iter, $function,"_3_0") else (),
+    if ($xq30 > 0 ) then local:create-function($iter, $function,"_3_0") else (),
     if($xq10 >0) then local:create-function($iter, $function,"") else ()
     )    
 };
@@ -256,8 +254,7 @@ declare function local:createSuffix($signature) as xs:string?
 {
   if ($signature/@version eq "1.0") then ""
   else 
-    if (($signature/@version eq "3.0") or
-        ($signature/@version eq "1.1"))
+    if ($signature/@version eq "3.0")
     then "_3_0"
     else ""
 };
