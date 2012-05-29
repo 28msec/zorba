@@ -1,5 +1,9 @@
 Zorba - The XQuery Processor
 
+version 2.x
+
+  * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
+
 version 2.5
 
 New Features:
