@@ -6,14 +6,6 @@ argument. See \ref configure_parameters for more information.
 
 \section configure_enable Enabling/Disabling Zorba Features
 
-\subsection ZORBA_WITH_JSON Integral JSON Support
-
-Zorba 2.5 introduces support for JSON data as a first-class citizen in
-the XQuery world. See http://www.jsoniq.org/ for more information
-about this exciting development.
-
-To enable this support, configure with <tt>-D ZORBA_WITH_JSON=ON</tt>.
-
 \subsection ZORBA_WITH_BIG_INTEGER Big Integer Support
 
 The Zorba XQuery processor by default has arbitrary precision for the

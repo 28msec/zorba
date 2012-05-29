@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 #include "functions/func_ft_module_impl.h"
 
 #include "runtime/full_text/ft_module.h"
@@ -24,32 +25,14 @@ namespace zorba
 
 #ifndef ZORBA_NO_FULL_TEXT
 
-SERIALIZABLE_CLASS_VERSIONS(full_text_tokenize)
-
-
-void full_text_tokenize::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (function*)this);
-}
-
-
-PlanIter_t full_text_tokenize::codegen(
+PlanIter_t full_text_tokenize_node::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new TokenizeIterator(theModuleSctx, loc, argv);
-}
-
-
-SERIALIZABLE_CLASS_VERSIONS(full_text_tokenizer_properties)
-
-
-void full_text_tokenizer_properties::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (function*)this);
+  return new TokenizeNodeIterator(sctx, loc, argv);
 }
 
 
@@ -60,7 +43,18 @@ PlanIter_t full_text_tokenizer_properties::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new TokenizerPropertiesIterator(theModuleSctx, loc, argv);
+  return new TokenizerPropertiesIterator(sctx, loc, argv);
+}
+
+
+PlanIter_t full_text_current_compare_options::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new CurrentCompareOptionsIterator(sctx, loc, argv);
 }
 
 #endif // ZORBA_NO_FULL_TEXT
@@ -72,6 +66,21 @@ void populate_context_ft_module_impl(static_context* sctx)
 {
 #ifndef ZORBA_NO_FULL_TEXT
 
+  xqtref_t current_compare_options_return_type =
+  GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
+                                   createQName(FT_MODULE_NS, "", "compare-options"),
+                                   NULL,
+                                   TypeConstants::QUANT_ONE,
+                                   false,
+                                   false);
+  {
+    DECL_WITH_KIND(sctx,
+                   full_text_current_compare_options,
+                   (createQName(FT_MODULE_NS, "", "current-compare-options"),
+                    current_compare_options_return_type),
+                   FunctionConsts::FULL_TEXT_CURRENT_COMPARE_OPTIONS_0);
+  }
+
   xqtref_t tokenize_return_type =
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
                                    createQName(FT_MODULE_NS, "", "token"),
@@ -81,20 +90,20 @@ void populate_context_ft_module_impl(static_context* sctx)
                                    false);
   {
     DECL_WITH_KIND(sctx,
-                   full_text_tokenize,
-                   (createQName(FT_MODULE_NS, "", "tokenize"),
+                   full_text_tokenize_node,
+                   (createQName(FT_MODULE_NS, "", "tokenize-node"),
                     GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
                     tokenize_return_type),
-                   FunctionConsts::FULL_TEXT_TOKENIZE_1);
+                   FunctionConsts::FULL_TEXT_TOKENIZE_NODE_1);
   }
   {
     DECL_WITH_KIND(sctx,
-                   full_text_tokenize,
-                   (createQName( FT_MODULE_NS, "", "tokenize"),
+                   full_text_tokenize_node,
+                   (createQName( FT_MODULE_NS, "", "tokenize-node"),
                     GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
                     GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE,
                     tokenize_return_type),
-                   FunctionConsts::FULL_TEXT_TOKENIZE_2);
+                   FunctionConsts::FULL_TEXT_TOKENIZE_NODE_2);
   }
 
   xqtref_t tokenizer_properties_return_type =

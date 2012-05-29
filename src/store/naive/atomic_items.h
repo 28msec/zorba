@@ -852,7 +852,7 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
-      Tokenizer::Numbers&,
+      Tokenizer::State&,
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -874,6 +874,8 @@ protected:
   bool theIsSeekable;
 
   StreamReleaser theStreamReleaser;
+
+  store::Item_t theStreamableDependent;
 
 public:
   bool equals(
@@ -922,15 +924,10 @@ protected:
   StreamableStringItem(
       std::istream& aStream,
       StreamReleaser streamReleaser,
-      bool seekable = false)
-    :
-    theIstream(aStream),
-    theIsMaterialized(false),
-    theIsConsumed(false),
-    theIsSeekable(seekable),
-    theStreamReleaser(streamReleaser)
-  {
-  }
+      bool seekable = false);
+
+  StreamableStringItem(
+      store::Item_t& aStreamableDependent);
 
   void materialize() const;
 };

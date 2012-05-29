@@ -1,9 +1,10 @@
 import module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
+import schema namespace fts = "http://www.zorba-xquery.com/modules/full-text";
 
 let $doc := <msg xml:lang="es">hola, mundo</msg>
-let $tokens := ft:tokenize( $doc )
-let $t1 := $tokens[1]
-let $t2 := $tokens[2]
+let $tokens := ft:tokenize-node( $doc )
+let $t1 := validate { $tokens[1] }
+let $t2 := validate { $tokens[2] }
 
 return  $t1/@value = "hola"
     and $t1/@lang = "es"

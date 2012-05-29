@@ -9632,7 +9632,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 6005 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
     {
-            (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::with );
+            (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::stemming );
         }
     break;
 
@@ -9641,7 +9641,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 6009 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
     {
-            (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::without );
+            (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::no_stemming );
         }
     break;
 
