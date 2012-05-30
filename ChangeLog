@@ -1,5 +1,11 @@
 Zorba - The XQuery Processor
 
+version 2.x
+
+Bug Fixes/Other Changes:
+  * Fixed bug #867357 (Improved parser error messages)
+
+
 version 2.5
 
 New Features:
