@@ -6092,6 +6092,31 @@ void* begin_visit(const VarGetsDecl& v)
   return no_state;
 }
 
+void create_letVar(const QueryLoc loc, const QName *varName, expr_t domainExpr, xqtref_t type)
+{
+  if (domainExpr->is_updating())
+      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
+
+    // it's important to insert the debugger before the scope is pushed.
+    // Otherwise, the variable in question would already be in scope for
+    // the debugger but no value would be bound
+    QueryLoc lExpandedLocation = expandQueryLoc(varName->get_location(),
+                                                domainExpr->get_loc());
+
+    wrap_in_debugger_expr(domainExpr, lExpandedLocation);
+
+    push_scope();
+
+    var_expr_t varExpr = bind_var(loc, varName, var_expr::let_var, type);
+
+    let_clause* clause = new let_clause(theRootSctx,
+                                        loc,
+                                        varExpr,
+                                        domainExpr);
+
+    theFlworClausesStack.push_back(clause);
+}
+
 void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
@@ -6102,27 +6127,7 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
   {
     expr_t domainExpr = pop_nodestack();
 
-    if (domainExpr->is_updating())
-      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
-
-    // it's important to insert the debugger before the scope is pushed.
-    // Otherwise, the variable in question would already be in scope for
-    // the debugger but no value would be bound
-    QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
-                                                domainExpr->get_loc());
-
-    wrap_in_debugger_expr(domainExpr, lExpandedLocation);
-
-    push_scope();
-
-    var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::let_var, type);
-
-    let_clause* clause = new let_clause(theRootSctx,
-                                        loc,
-                                        varExpr,
-                                        domainExpr);
-
-    theFlworClausesStack.push_back(clause);
+    create_letVar(loc, v.get_name(), domainExpr, type);
   }
   else
   {
@@ -6575,17 +6580,22 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  //wrap data
-  expr_t e = (v.get_var_expr() != NULL) ?
-    wrap_in_atomization(pop_nodestack()) : lookup_var(v.get_var_name(), loc, err::XPST0008);
-
-  //wrap type
   xqtref_t type = NULL;
-  if(v.get_var_type() != NULL)
+  if(v.get_var_expr() != NULL)
   {
-    type = pop_tstack();
-    e = wrap_in_type_promotion(e, type);
+    expr_t gvar_expr = wrap_in_atomization(pop_nodestack());
+
+    if(v.get_var_type() != NULL)
+    {
+      type = pop_tstack();
+      gvar_expr = wrap_in_type_promotion(gvar_expr, type);
+    }
+    
+    create_letVar(loc, v.get_var_name(), gvar_expr, type);
   }
+
+  //wrap data
+  expr_t e = lookup_var(v.get_var_name(), loc, err::XPST0008);
 
   // Create a new var_expr gX, corresponding to the input-stream var X that
   // is referenced by this group spec. gX represents X in the output stream.
