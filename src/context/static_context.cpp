@@ -512,6 +512,10 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_FETCH_FN_NS ||
+#ifndef ZORBA_NO_FULL_TEXT
+            ns == ZORBA_FULL_TEXT_FN_NS ||
+#endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_XML_FN_NS);
   }
 
@@ -1262,8 +1266,7 @@ zstring static_context::get_base_uri() const
 
     sctx = sctx->theParent;
   }
-
-  ZORBA_ASSERT(false);
+  return "";  //undefined
 }
 
 
@@ -1294,7 +1297,6 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
 
   compute_base_uri();
 }
-
 
 /***************************************************************************//**
   Base Uri Computation
@@ -1416,8 +1418,8 @@ void static_context::compute_base_uri()
     return;
   }
 
-  theBaseUriInfo->theBaseUri = get_implementation_baseuri();
-  theBaseUriInfo->theHaveBaseUri = true;
+  theBaseUriInfo->theBaseUri = "";
+  theBaseUriInfo->theHaveBaseUri = false;
   return;
 }
 
@@ -4143,6 +4145,17 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       }
     }
   }
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::clear_base_uri()
+{
+  if (theBaseUriInfo)
+    delete theBaseUriInfo;
+
+    theBaseUriInfo = new BaseUriInfo;
 }
 
 } // namespace zorba

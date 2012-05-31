@@ -163,8 +163,12 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
   char_type const *from = &utf8_byte;
   char ebuf[ Small_External_Buf_Size ], *to = ebuf;
 
+#ifdef NDEBUG
+  to_external( &from, from + 1, &to, to + sizeof ebuf );
+#else
   bool const ok = to_external( &from, from + 1, &to, to + sizeof ebuf );
   assert( ok );
+#endif /* NDEBUG */
   if ( streamsize const n = to - ebuf ) {
     original()->sputn( ebuf, n );
     p_.reset();
