@@ -590,8 +590,10 @@ static bool is_already_hoisted(const expr* e)
 {
   if (e->get_expr_kind() == fo_expr_kind)
   {
-    return static_cast<const fo_expr *>(e)->get_func()->getKind() ==
-           FunctionConsts::OP_UNHOIST_1;
+    function* f = static_cast<const fo_expr *>(e)->get_func();
+
+    return (f->getKind() == FunctionConsts::OP_UNHOIST_1 ||
+            f->getKind() == FunctionConsts::OP_HOIST_1);
   }
   return false;
 }

@@ -1,0 +1,490 @@
+module namespace testlib = "http://www.test.ch";
+
+import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+declare variable $testlib:user := xs:QName("testlib:user");
+
+
+declare collection testlib:user;
+declare collection testlib:groupmember;
+
+
+declare function testlib:users() 
+{
+  db:collection($testlib:user)[not(@deleted eq true())]
+};
+
+
+declare function testlib:searchUser($query)
+{
+  let $searchbase := testlib:users()
+
+  let $filtered1 :=
+      let $country := ()
+      for $user in $searchbase
+      where ((if ($country) then () else ()))
+      return $user
+
+  let $filtered := 
+      if ($query) 
+      then $filtered1
+      else 
+        let $loginBefore := $query eq "before"
+        for $user in $filtered1
+        return $user  
+
+  return
+  ()
+};
+
+
+(:
+
+Optimizing UDF testlib:searchUser
+After MergeFLWOR :
+flwor_expr (0x830a830) 
+[
+  LET (0x83032d8) query (0x8306358)
+  [
+    var kind=ARG (0x830a898) name=query
+  ]
+  LET (0x82f9db0) filtered (0x82f98c0)
+  [
+    if_expr (0x82f9cf0) 
+    [
+      boolean/1 (0x82f9d50) [ var_ref (0x83048e8) [ query (0x8306358) ] ]
+      THEN
+        wrapper_expr (0x8304940) [
+---------------------------------------------------------------
+          flwor_expr (0x82f9670) 
+          [
+            LET (0x8304c78) country (0x8304868)
+            [
+              concatenate/0 (0x83046e8) [ ]
+            ]
+            LET (0x8306628) $$opt1 (0x82fd0d8)
+            [
+              hoist (0x82fd158) [ 
+                boolean/1 (0x8305118) [
+                  if_expr (0x8305058) [
+                    boolean/1 (0x83050b8) [ var_ref (0x8304f40) [ country (0x8304868) ]]
+                    THEN concatenate/0 (0x8304f98) []
+                    ELSE concatenate/0 (0x8304ff8) [ ]
+                  ]
+                ]
+              ]
+            ]
+            FOR (0x8304ef8) user (0x8304e20)
+            [
+              wrapper_expr (0x8304cc0) [
+                function_trace_expr (0x82fc000) [
+                  flwor_expr (0x82fc598) 
+                  [
+                    FOR (0x8306690) $$dot (0x82f5510)
+                    [
+                      collection/1 (0x830a188) [
+                        promote_expr xs:QName (0x83035b0) [
+                          data/1 (0x83067d8) [
+                            var_ref (0x82f97c8) [ testlib:user (0x830a420) ]
+                          ]
+                        ]
+                      ]
+                    ]
+                    WHERE
+                      not/1 (0x82f5068) [
+                        value-equal/2 (0x82fc810) [
+                          promote_expr xs:anyAtomicType? (0x82fc208) [
+                            data/1 (0x83037b0) [
+                              relpath_expr (0x8303810) [
+                                var_ref (0x82f45c0) [ $$dot (0x82f5510) ] /@deleted
+                              ]
+                            ]
+                          ]
+                          const_expr (0x82fc278) [ xs:boolean [ xs:boolean(true) ] ]
+                        ]
+                      ]
+                    RETURN var_ref (0x8303240) [ $$dot (0x82f5510) ]
+                  ]
+                ]
+              ]
+            ]
+            WHERE unhoist (0x82fca58) [ varref () [ $$opt1 (0x82fd0d8) ] ]
+            RETURN var_ref (0x82f9618) [ user (0x8304e20) ]
+          ]
+-----------------------------------------------------------------------
+        ]
+      ELSE
+        flwor_expr (0x82fa288) 
+        [
+          LET (0x82f9c50) loginBefore (0x82f9840)
+          [
+            value-equal/2 (0x8304a98) [
+              promote_expr xs:anyAtomicType? (0x8304b68) [
+                data/1 (0x8304af8) [
+                  var_ref (0x8304998) [ query (0x8306358) ]
+                ]
+              ]
+              const_expr (0x8304a08) [ xs:string [ xs:string(before) ] ]
+            ]
+          ]
+          FOR (0x8304810) user (0x82f9e20)
+          [
+            wrapper_expr (0x82f9c98) [
+------------------------------------------------------------------------------
+              flwor_expr (0x82f9670) 
+              [
+                LET (0x8304c78) country (0x8304868)
+                [
+                  concatenate/0 (0x83046e8) [ ]
+                ]
+                LET (0x8306628) $$opt_temp_0 (0x82fd0d8)
+                [
+                  hoist/1 (0x82fd158) [
+                    boolean/1 (0x8305118) [
+                      if_expr (0x8305058) [
+                        boolean/1 (0x83050b8) [ varref(0x8304f40) [ country (0x8304868) ]]
+                        THEN concatenate/0 (0x8304f98) [ ]
+                        ELSE concatenate/0 (0x8304ff8) [ ]
+                      ]
+                    ]
+                  ]
+                ]
+                FOR (0x8304ef8) user (0x8304e20)
+                [
+                  wrapper_expr (0x8304cc0) [
+                    function_trace_expr (0x82fc000) [
+                      flwor_expr (0x82fc598) [
+                        FOR (0x8306690) $$dot (0x82f5510)
+                        [
+                          collection/1 (0x830a188) [
+                            promote_expr xs:QName (0x83035b0) [
+                              data/1 (0x83067d8) [
+                                var_ref (0x82f97c8) [ testlibuser (0x830a420) ]
+                              ]
+                            ]
+                          ]
+                        ]
+                        WHERE
+                          not/1 (0x82f5068) [
+                            value-equal/2 (0x82fc810) [
+                              promote_expr xs:anyAtomicType? (0x82fc208) [
+                                data/1 (0x83037b0) [
+                                  relpath_expr (0x8303810) [
+                                    var_ref (0x82f45c0) [ $$dot (0x82f5510) ]
+                                      REL STEP attribute::match_expr [name_test(deleted)]
+                                  ]
+                                ]
+                              ]
+                              const_expr (0x82fc278) [ xs:boolean [ xs:boolean(true) ] ]
+                            ]
+                          ]
+                        RETURN var_ref (0x8303240) [ $$dot (0x82f5510) ]
+                      ]
+                    ]
+                  ]
+                ]
+                WHERE
+                  unhoist/1 (0x82fca58) [ varref(0x82fca00) [ $$opt_temp_0 (0x82fd0d8) ]]
+                RETURN
+                  var_ref (0x82f9618) [ user (0x8304e20) ]
+              ]
+            ]
+          ]
+          RETURN
+            var_ref (0x82fa230) [ user (0x82f9e20) ]
+        ]
+    ]
+  ]
+  RETURN
+    concatenate/0 (0x82f9998) [ ]
+]
+
+
+
+
+
+After hoisting : 
+flwor_expr (0x830a830) 
+[
+  LET (0x83032d8) query (0x8306358)
+  [
+    var kind=ARG (0x830a898) name=query
+  ]
+  LET (0x82f9db0) filtered (0x82f98c0)
+  [
+    if_expr (0x82f9cf0) 
+    [
+      boolean/1 (0x82f9d50) [ var_ref (0x83048e8) [ query (0x8306358) ] ]
+      THEN
+        wrapper_expr (0x8304940) [
+----------------------------------------------------------------------
+          flwor_expr (0x82f9670) 
+          [
+            FOR (0x8304c78) $$opt_temp_0 (0x8304868)
+            [
+              hoist/1 (0x82fd158) [
+                boolean/1 (0x8305118) [
+                  if_expr (0x8305058) [
+                    boolean/1 (0x83050b8) [ var_ref (0x8304f40) [ concatenate/0 (0x83046e8) [ ] ] ]
+                    THEN  concatenate/0 (0x8304f98) [ ]
+                    ELSE  concatenate/0 (0x8304ff8) [ ]
+                  ]
+                ]
+              ]
+            ]
+            FOR (0x8304ef8) user (0x8304e20)
+            [
+              wrapper_expr (0x8304cc0) [
+                function_trace_expr (0x82fc000) [
+                  flwor_expr (0x82fc598) 
+                  [
+                    FOR (0x8306690) $$dot (0x82f5510)
+                    [
+                      collection/1 (0x830a188) [
+                        promote_expr xs:QName (0x83035b0) [
+                          data/1 (0x83067d8) [
+                            var_ref (0x82f97c8) [ testlibuser (0x830a420) ]
+                          ]
+                        ]
+                      ]
+                    ]
+                    WHERE
+                      not/1 (0x82f5068) [
+                        value-equal/2 (0x82fc810) [
+                          promote_expr xs:anyAtomicType? (0x82fc208) [
+                            data/1 (0x83037b0) [
+                              relpath_expr (0x8303810) [
+                                var_ref (0x82f45c0) [ $$dot (0x82f5510) ] / @deleted
+                              ]
+                            ]
+                          ]
+                          const_expr (0x82fc278) [ xs:boolean [ xs:boolean(true) ] ]
+                        ]
+                      ]
+                    RETURN var_ref (0x8303240) [ $$dot (0x82f5510) ]
+                  ]
+                ]
+              ]
+            ]
+            WHERE unhoist/1 (0x82fca58) [ varref(0x82fca00) [ $$opt_temp_0 (0x8304868) ] ]
+            RETURN var_ref (0x82f9618) [ user (0x8304e20) ]
+          ]
+----------------------------------------------------------------------------
+        ]
+      ELSE
+        flwor_expr (0x82fa288) 
+        [
+          LET (0x82f9c50) loginBefore (0x82f9840)
+          [
+            value-equal/2 (0x8304a98) [
+              promote_expr xs:anyAtomicType? (0x8304b68) [
+                data/1 (0x8304af8) [
+                  var_ref (0x8304998) [ query (0x8306358) ]
+                ]
+              ]
+              const_expr (0x8304a08) [ xs:string [ xs:string(before) ] ]
+            ]
+          ]
+          FOR (0x8304810) user (0x82f9e20)
+          [
+            wrapper_expr (0x82f9c98) [
+---------------------------------------------------------------------------------
+              flwor_expr (0x82f9670) 
+              [
+                LET (0x8304c78) country (0x8304868)
+                [
+                  concatenate/0 (0x83046e8) [ ]
+                ]
+                LET (0x8306628) $$opt_temp_0 (0x82fd0d8)
+                [
+                  hoist/1 (0x82fd158) [
+                    boolean/1 (0x8305118) [
+                      if_expr (0x8305058) [
+                        boolean/1 (0x83050b8) [ varref(0x8304f40) [ country (0x8304868) ]]
+                        THEN concatenate/0 (0x8304f98) [ ]
+                        ELSE concatenate/0 (0x8304ff8) [ ]
+                      ]
+                    ]
+                  ]
+                ]
+                FOR (0x8304ef8) user (0x8304e20)
+                [
+                  wrapper_expr (0x8304cc0) [
+                    function_trace_expr (0x82fc000) [
+                      flwor_expr (0x82fc598) [
+                        FOR (0x8306690) $$dot (0x82f5510)
+                        [
+                          collection/1 (0x830a188) [
+                            promote_expr xs:QName (0x83035b0) [
+                              data/1 (0x83067d8) [
+                                var_ref (0x82f97c8) [ testlib:user (0x830a420) ]
+                              ]
+                            ]
+                          ]
+                        ]
+                        WHERE
+                          not/1 (0x82f5068) [
+                            value-equal/2 (0x82fc810) [
+                              promote_expr xs:anyAtomicType? (0x82fc208) [
+                                data/1 (0x83037b0) [
+                                  relpath_expr (0x8303810) [
+                                    var_ref (0x82f45c0) [ $$dot (0x82f5510) ]
+                                      REL STEP attribute::match_expr [name_test(deleted)]
+                                  ]
+                                ]
+                              ]
+                              const_expr (0x82fc278) [ xs:boolean [ xs:boolean(true) ] ]
+                            ]
+                          ]
+                        RETURN var_ref (0x8303240) [ $$dot (0x82f5510) ]
+                      ]
+                    ]
+                  ]
+                ]
+                WHERE
+                  unhoist/1 (0x82fca58) [ varref(0x82fca00) [ $$opt_temp_0 (0x82fd0d8) ]]
+                RETURN
+                  var_ref (0x82f9618) [ user (0x8304e20) ]
+              ]
+-------------------------------------------------------------------------
+            ]
+          ]
+          RETURN var_ref (0x82fa230) [ user (0x82f9e20) ]
+        ]
+    ]
+  ]
+  RETURN
+    concatenate/0 (0x82f9998) [ ]
+]
+
+
+
+
+After EliminateUnusedLetVars :
+flwor_expr (0x830a830) 
+[
+  LET (0x83032d8) query (0x8306358)
+  [
+    var kind=ARG (0x830a898) name=query
+  ]
+  LET (0x82f9db0) filtered (0x82f98c0)
+  [
+    if_expr (0x82f9cf0) 
+    [
+      boolean/1 (0x82f9d50) [ var_ref (0x83048e8) [ query (0x8306358) ] ]
+      THEN
+        wrapper_expr (0x8304940) [
+-----------------------------------------------------------------------------
+          flwor_expr (0x82f9670) 
+          [
+            FOR (0x8304ef8) user (0x8304e20)
+            [
+              wrapper_expr (0x8304cc0) [
+                function_trace_expr (0x82fc000) [
+                  flwor_expr (0x82fc598) [
+                    FOR (0x8306690) $$dot (0x82f5510)
+                    [
+                      collection/1 (0x830a188) [
+                        promote_expr xs:QName (0x83035b0) [
+                          data/1 (0x83067d8) [
+                            var_ref (0x82f97c8) [ testlib[=http://www.test.ch]:user (0x830a420) ]
+                          ]
+                        ]
+                      ]
+                    ]
+                    WHERE
+                      not/1 (0x82f5068) [
+                        value-equal/2 (0x82fc810) [
+                          promote_expr xs:anyAtomicType? (0x82fc208) [
+                            data/1 (0x83037b0) [
+                              relpath_expr (0x8303810) [
+                                var_ref (0x82f45c0) [ $$dot (0x82f5510) ]
+                                  REL STEP attribute::match_expr [name_test(deleted)]
+                              ]
+                            ]
+                          ]
+                          const_expr (0x82fc278) [ xs:boolean [ xs:boolean(true) ] ]
+                        ]
+                      ]
+                    RETURN
+                      var_ref (0x8303240) [ $$dot (0x82f5510) ]
+                  ]
+                ]
+              ]
+            ]
+            RETURN var_ref (0x82f9618) [ user (0x8304e20) ]
+          ]
+        ]
+      ELSE
+        flwor_expr (0x82fa288) [
+          LET (0x82f9c50) loginBefore (0x82f9840)
+           [
+            value-equal/2 (0x8304a98) [
+              promote_expr xs:anyAtomicType? (0x8304b68) [
+                data/1 (0x8304af8) [
+                  var_ref (0x8304998) [ query (0x8306358) ]
+                ]
+              ]
+              const_expr (0x8304a08) [ xs:string [ xs:string(before) ] ]
+            ]
+          ]
+          FOR (0x8304810) user (0x82f9e20)
+          [
+            wrapper_expr (0x82f9c98) [
+              if_expr (0x82fc400) [
+                unhoist/1 (0x82fca58) [
+                  var_ref (0x82fca00) [ $$opt_temp_0 (0x8304868) ]
+                ]
+                THEN
+                  flwor_expr (0x82f9670) [
+                    FOR (0x8304ef8) user (0x8304e20)
+                    [
+                      wrapper_expr (0x8304cc0) [
+                        function_trace_expr (0x82fc000) [
+                          flwor_expr (0x82fc598) [
+                            FOR (0x8306690) $$dot (0x82f5510)
+                            [
+                              collection/1 (0x830a188) [
+                                promote_expr xs:QName (0x83035b0) [
+                                  data/1 (0x83067d8) [
+                                    var_ref (0x82f97c8) [ testlib[=http://www.test.ch]:user (0x830a420) ]
+                                  ]
+                                ]
+                              ]
+                            ]
+                            WHERE
+                              not/1 (0x82f5068) [
+                                value-equal/2 (0x82fc810) [
+                                  promote_expr xs:anyAtomicType? (0x82fc208) [
+                                    data/1 (0x83037b0) [
+                                      relpath_expr (0x8303810) [
+                                        var_ref (0x82f45c0) [ $$dot (0x82f5510) ]
+                                          REL STEP attribute::match_expr [name_test(deleted)]
+                                      ]
+                                    ]
+                                  ]
+                                  const_expr (0x82fc278) [ xs:boolean [ xs:boolean(true) ] ]
+                                ]
+                              ]
+                            RETURN
+                              var_ref (0x8303240) [ $$dot (0x82f5510) ]
+                          ]
+                        ]
+                      ]
+                    ]
+                    RETURN
+                      var_ref (0x82f9618) [ user (0x8304e20) ]
+                  ]
+                ELSE
+                  concatenate/0 (0x82fd0d8) [ ]
+              ]
+            ]
+          ]
+          RETURN var_ref (0x82fa230) [ user (0x82f9e20) ]
+        ]
+    ]
+  ]
+  RETURN concatenate/0 (0x82f9998) [ ]
+]
+
+:)

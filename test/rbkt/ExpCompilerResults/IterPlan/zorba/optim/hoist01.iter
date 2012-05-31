@@ -1,0 +1,85 @@
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(true)"/>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<HoistIterator>
+  <FnBooleanIterator>
+    <IfThenElseIterator>
+      <FnBooleanIterator>
+        <FnConcatIterator/>
+      </FnBooleanIterator>
+      <FnConcatIterator/>
+      <FnConcatIterator/>
+    </IfThenElseIterator>
+  </FnBooleanIterator>
+</HoistIterator>
+
+Iterator tree for const-folded expr:
+<UnhoistIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</UnhoistIterator>
+
+Iterator tree for const-folded expr:
+<FnConcatIterator/>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="testlib:user">
+    <SingletonIterator value="xs:QName(http://www.test.ch,testlib,user)"/>
+  </CtxVarDeclareIterator>
+  <UDFunctionCallIterator>
+    <SingletonIterator value="xs:integer(0)"/>
+  </UDFunctionCallIterator>
+</SequentialIterator>
+
+Iterator tree for testlib:searchUser:
+<flwor::FLWORIterator>
+  <LetVariable name="filtered" materialize="true">
+    <IfThenElseIterator>
+      <FnBooleanIterator>
+        <LetVarIterator varname="query"/>
+      </FnBooleanIterator>
+      <FunctionTraceIterator>
+        <flwor::FLWORIterator>
+          <ForVariable name="$$dot">
+            <ZorbaCollectionIterator>
+              <PromoteIterator type="xs:QName">
+                <FnDataIterator>
+                  <CtxVarIterator varid="2" varname="testlib:user" varkind="global"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </ZorbaCollectionIterator>
+          </ForVariable>
+          <WhereClause>
+            <FnBooleanIterator>
+              <CompareIterator>
+                <PromoteIterator type="xs:anyAtomicType">
+                  <FnDataIterator>
+                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,deleted)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$dot"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                </PromoteIterator>
+                <SingletonIterator value="xs:boolean(true)"/>
+              </CompareIterator>
+            </FnBooleanIterator>
+          </WhereClause>
+          <ReturnClause>
+            <ForVarIterator varname="$$dot"/>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </FunctionTraceIterator>
+      <FnConcatIterator/>
+    </IfThenElseIterator>
+  </LetVariable>
+  <ReturnClause>
+    <FnConcatIterator/>
+  </ReturnClause>
+</flwor::FLWORIterator>
