@@ -492,7 +492,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
 
   // parameter and return types are subtype of xs:anyAtomicType?
   const xqtref_t& lRes = theSignature.returnType();
-  TypeManager* tm = lRes->get_manager();
+  TypeManager* tm = theBodyExpr->get_sctx()->get_typemanager();
 
   if (!TypeOps::is_subtype(tm,
                            *lRes,

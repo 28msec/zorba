@@ -1219,6 +1219,20 @@ void PrinterVisitor::endVisit ( const FetchContentIterator& ) {
 // </FetchContentIterator>
 
 
+// <FetchContentBinaryIterator>
+void PrinterVisitor::beginVisit ( const FetchContentBinaryIterator& a) {
+  thePrinter.startBeginVisit("FetchContentBinaryIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FetchContentBinaryIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FetchContentBinaryIterator>
+
+
 // <FetchContentTypeIterator>
 void PrinterVisitor::beginVisit ( const FetchContentTypeIterator& a) {
   thePrinter.startBeginVisit("FetchContentTypeIterator", ++theId);

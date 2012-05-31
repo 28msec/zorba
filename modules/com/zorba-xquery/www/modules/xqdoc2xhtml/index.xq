@@ -199,28 +199,14 @@ declare %private %an:sequential function xqdoc2html:gather-and-copy(
 
 };
 
-(:~
- : Returns the URI of the module given the passed <pre>$folderPath</pre> using
- : the Zorba URI resolving mechanism.
- :
- : @param $folderPath the folder path.
- : @return the URI of the module.
- :)
- (:
-declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:string) as xs:string {
-  let $tok := tokenize($folderPath, fn:concat("\",file:directory-separator()))
-  return
-    fn:concat('http://', $tok[3],'.', $tok[2],'.', $tok[1], substring-after($folderPath, $tok[3]))
-};
-:)
-
-(:~ Returns the string resulting from replacing the directory-separators (i.e. / ) with '_'
+(:~ 
+ : Returns the string resulting from replacing the directory-separators (i.e. // ) with '_'
  :
  : @param $moduleURI the path to the module URI.
- : @return the string resulting from replacing the directory-separators (i.e. / ) with '_'.
+ : @return the string resulting from replacing the directory-separators (i.e. // ) with '_'.
  :
  :)
-declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
+declare function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
   let $lmodule := if(fn:ends-with($moduleURI,"/")) then fn:concat($moduleURI,"index") else $moduleURI
   return
     replace(
@@ -419,6 +405,17 @@ declare %an:sequential function xqdoc2html:main(
 
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));
   ddl:delete(xs:QName("xqdoc2html:collection"));
+  
+  (:delete modules_new.svg if it exists:)
+  variable $SVGGraph := fn:concat($xhtmlRequisitesPath,
+                        file:directory-separator(),
+                        "images",
+                        file:directory-separator(),
+                        "modules_new.svg");
+
+  if(file:exists($SVGGraph)) then
+        file:delete($SVGGraph);
+  else ();
 };
 
 declare %private function xqdoc2html:get-project-root(

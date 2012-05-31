@@ -187,6 +187,8 @@ public:
   void reset();
 
   void close();
+
+  void count(store::Item_t& result);
 };
 
 
@@ -289,6 +291,8 @@ public:
   void reset();
 
   void close();
+
+  void count(store::Item_t& result);
 };
 
 

@@ -638,11 +638,13 @@ int getNodePosition(store::Item_t aNode)
   lIterator->open();
   while(lIterator->next(lItem))
   {
-    if(lItem->getNodeKind() == aNode->getNodeKind())
+    if (lItem->getNodeKind() == aNode->getNodeKind())
+    {
       if(lItem->equals(aNode))
         break;
       else
         count++;
+    }
   }
   lIterator->close();
   return count;
@@ -663,7 +665,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(inNode, theChildren[0], planState));
+  if (consumeNext(inNode, theChildren[0], planState))
   {
     do
     { 

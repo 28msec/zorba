@@ -49,6 +49,8 @@ namespace zorba
         return new EntityDataWrapper(EntityData::COLLECTION);
       case internal::EntityData::DOCUMENT:
         return new EntityDataWrapper(EntityData::DOCUMENT);
+      case internal::EntityData::SOME_CONTENT:
+        return new EntityDataWrapper(EntityData::SOME_CONTENT);
       default:
         return NULL;
       }
@@ -146,7 +148,9 @@ namespace zorba
         // StreamResource, by passing the StreamReleaser to it and setting the
         // user's StreamResource's StreamReleaser to nullptr.
         lRetval = new internal::StreamResource(lUserStream->getStream(),
-                                           lUserStream->getStreamReleaser());
+                                           lUserStream->getStreamReleaser(),
+                                           "",
+                                           lUserStream->isStreamSeekable());
         lUserStream->setStreamReleaser(nullptr);
       }
 #ifndef ZORBA_NO_FULL_TEXT

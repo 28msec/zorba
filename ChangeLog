@@ -4,6 +4,7 @@ Zorba - The XQuery Processor
 version 2.x
 
   * Fixed bug #867170 (Variables declared in Prolog are Overwritten inside the query)
+  * Fixed bug #1001463 (type not available during computation of function caching)
 
 
 version 2.5
@@ -25,6 +26,10 @@ New Features:
   * Added support for NO_ICU (to not use ICU for unicode processing)
   * Added XQJ support.
   * Added CollectionManager and DocumentManager support for XQJ.
+  * New API EntityKind SOME_CONTENT
+  * API StreamResource is able to specify whether a stream is seekable
+  * New functions in the fetch module and the StaticContext to fetch
+    resources as binary
 
 Optimizations:
   * optimized insertion into a collection (don't copy it if the node was created by an element constructor
