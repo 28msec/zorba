@@ -18,6 +18,7 @@
 #define ZORBA_HASHTABLE_H
 
 // standard
+#include <algorithm>
 #include <iterator>
 #include <sys/types.h>
 #include <utility>                      /* for pair */
@@ -634,6 +635,8 @@ private:
 
   std::pair<iterator,bool> insert( size_type bkt, value_type const &value );
 
+  void rehash_impl( size_type new_n_bkt );
+
   node **buckets_;
   KeyEqual equal_;
   hasher hasher_;
@@ -807,6 +810,16 @@ ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::size_type
 ZORBA_HASHTABLE_CLASS::max_size() const {
   return node_alloc_.max_size();
+}
+
+ZORBA_HASHTABLE_TEMPLATE inline
+void ZORBA_HASHTABLE_CLASS::rehash( size_type new_n_bkt ) {
+  rehash_impl(
+    std::max(
+      rehash_policy_.adjust_buckets( new_n_bkt ),
+      rehash_policy_.buckets_for_elements( n_elt_ + 1 )
+    )
+  );
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline

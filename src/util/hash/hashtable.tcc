@@ -17,7 +17,6 @@
 #ifndef ZORBA_HASHTABLE_TCC
 #define ZORBA_HASHTABLE_TCC
 
-#include <algorithm>
 #include <stdexcept>
 
 #ifndef ZORBA_HASHTABLE_H
@@ -298,12 +297,12 @@ ZORBA_HASHTABLE_CLASS::insert( size_type bkt, value_type const &value ) {
   node *const p = alloc_node( value );
 
   size_type const new_n_bkt = rehash_policy_.need_rehash( n_bkt_, n_elt_, 1 );
-  if ( new_n_bkt )
-    bkt = bucket( value.first, new_n_bkt );
 
   try {
-    if ( new_n_bkt )
-      rehash( new_n_bkt );
+    if ( new_n_bkt ) {
+      rehash_impl( new_n_bkt );
+      bkt = bucket( value.first );
+    }
     node *&head = buckets_[ bkt ];
     p->next_ = head;
     head = p;
@@ -323,7 +322,7 @@ void ZORBA_HASHTABLE_CLASS::insert( InputIterator first, InputIterator last ) {
   size_type const new_n_bkt =
     rehash_policy_.need_rehash( n_bkt_, n_elt_, n_ins );
   if ( new_n_bkt )
-    rehash( new_n_bkt );
+    rehash_impl( new_n_bkt );
   for ( ; first != last; ++first )
     insert( *first );
 }
@@ -335,15 +334,11 @@ void ZORBA_HASHTABLE_CLASS::max_load_factor( float load_factor ) {
   rehash_policy_ = rehash_policy_type( load_factor );
   size_type const n_bkt = rehash_policy_.buckets_for_elements( n_elt_ );
   if ( n_bkt > n_bkt_ )
-    rehash( n_bkt );
+    rehash_impl( n_bkt );
 }
 
 ZORBA_HASHTABLE_TEMPLATE
-void ZORBA_HASHTABLE_CLASS::rehash( size_type new_n_bkt ) {
-  new_n_bkt = std::max(
-    rehash_policy_.adjust_buckets( new_n_bkt ),
-    rehash_policy_.buckets_for_elements( n_elt_ + 1 )
-  );
+void ZORBA_HASHTABLE_CLASS::rehash_impl( size_type new_n_bkt ) {
   node **const new_buckets = alloc_buckets( new_n_bkt );
   try {
     for ( size_type bkt = 0; bkt < n_bkt_; ++bkt ) {
