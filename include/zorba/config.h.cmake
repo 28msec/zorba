@@ -68,6 +68,15 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_SIZEOF_DOUBLE        @ZORBA_SIZEOF_DOUBLE@
+#cmakedefine ZORBA_SIZEOF_FLOAT         @ZORBA_SIZEOF_FLOAT@
+#cmakedefine ZORBA_SIZEOF_INT           @ZORBA_SIZEOF_INT@
+#cmakedefine ZORBA_SIZEOF_LONG          @ZORBA_SIZEOF_LONG@
+#cmakedefine ZORBA_SIZEOF_LONG_LONG     @ZORBA_SIZEOF_LONG_LONG@
+#cmakedefine ZORBA_SIZEOF_POINTER       @ZORBA_SIZEOF_POINTER@
+#cmakedefine ZORBA_SIZEOF_SHORT         @ZORBA_SIZEOF_SHORT@
+#cmakedefine ZORBA_SIZEOF_SIZE_T        @ZORBA_SIZEOF_SIZE_T@
+#cmakedefine ZORBA_SIZEOF_WCHAR_T       @ZORBA_SIZEOF_WCHAR_T@
 
 // Platform libraries
 #cmakedefine ZORBA_HAVE_CURL
@@ -95,8 +104,6 @@
 #ifndef ZORBA_HAVE_INT64_T
 typedef __int64 int64_t;
 #endif /* ZORBA_HAVE_INT64_T */
-
-#cmakedefine ZORBA_SIZEOF_WCHAR_T @ZORBA_SIZEOF_WCHAR_T@
 
 // Compiler
 #cmakedefine CLANG
