@@ -1,5 +1,10 @@
 Zorba - The XQuery Processor
 
+version 2.x
+  * Fixed bug #1002993 (bug during revalidation after update; improper condition for
+          calling TypeOps::get_atomic_type_code() from
+          SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
+	
 version 2.5
 
 New Features:
