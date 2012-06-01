@@ -18,7 +18,7 @@
 
 #include <vector>
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/pul.h"
 #include "store/api/index.h"
@@ -43,7 +43,7 @@ class UpdatePrimitive;
 class IndexKey;
 class PULImpl;
 class QNameItem;
-class SimpleCollection;
+class Collection;
 class InternalNode;
 class TextNode;
 
@@ -153,7 +153,7 @@ class CollectionPul
 
 protected:
   // Bookeeping
-  SimpleCollection                 * theCollection;
+  Collection                       * theCollection;
 
   PULImpl                          * thePul;
 
@@ -183,6 +183,7 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
+  std::vector<UpdatePrimitive*>      theTruncateCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
   // Validate in place primitives
@@ -194,6 +195,7 @@ protected:
   std::vector<XmlNode*>              theDeletedDocs;
 
   std::vector<IndexImpl*>            theIncrementalIndices;
+  std::vector<IndexImpl*>            theTruncatedIndices;
 
   std::vector<IndexEntryCreator_t>   theIndexEntryCreators;
 
@@ -202,24 +204,29 @@ protected:
   std::vector<store::IndexDelta>     theInsertedDocsIndexDeltas;
   std::vector<store::IndexDelta>     theDeletedDocsIndexDeltas;
 
+  std::vector<csize>                 theNumBeforeIndexDeltasApplied;
+  std::vector<csize>                 theNumAfterIndexDeltasApplied;
+  std::vector<csize>                 theNumInsertedDocsIndexDeltasApplied;
+  std::vector<csize>                 theNumDeletedDocsIndexDeltasApplied;
+
 public:
-  CollectionPul(PULImpl* pul, SimpleCollection* collection);
+  CollectionPul(PULImpl* pul, Collection* collection);
 
   ~CollectionPul();
 
   void switchPul(PULImpl* pul);
 
-  void applyUpdates();
-
-  void finalizeUpdates();
-
-  void undoUpdates();
-
   void computeIndexBeforeDeltas();
 
   void computeIndexAfterDeltas();
 
-  void refreshIndices();
+  void refreshIndexes();
+
+  void applyUpdates();
+
+  void undoUpdates();
+
+  void finalizeUpdates();
 
   void setAdjustTreePositions() { theAdjustTreePositions = true; }
 
@@ -229,6 +236,12 @@ protected:
   void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);
 
   void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
+
+  void cleanIndexDeltas();
+
+  void truncateIndexes();
+
+  void undoRefreshIndexes();
 };
 
 
@@ -271,11 +284,14 @@ public:
     UP_LIST_CREATE_INDEX
   };
 
-  typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
+  typedef std::vector<CollectionPul*> CollectionPuls;
+
+  typedef std::map<const QNameItem*, csize> CollectionPulMap;
 
 protected:
   // XQUF and collection primitives, grouped by the collection that is being updated.
-  CollectionPulMap                   theCollectionPuls;
+  CollectionPuls                     theCollectionPuls;
+  CollectionPulMap                   theCollectionPulsMap;
   CollectionPul                    * theNoCollectionPul;
   CollectionPul                    * theLastPul;
   const QNameItem                  * theLastCollection;
@@ -465,6 +481,11 @@ public:
         bool isLast,
         bool dyn_collection = false);
 
+  void addTruncateCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
+        bool dyn_collection = false);
+
   // Index primitives
   void addCreateIndex(
         const QueryLoc* aQueryLoc,
@@ -539,12 +560,18 @@ public:
   // utils
   void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
 
-  void getIndicesToRefresh(std::vector<store::Index*>& indices);
+  void getIndicesToRefresh(
+      std::vector<store::Index*>& indices,
+      std::vector<store::Index*>& truncate_indices);
 
   void addIndexEntryCreator(
         const store::Item* collectionName,
         store::Index* idx,
         store::IndexEntryCreator* creator);
+
+  void addIndexTruncator(
+      const store::Item* collectionName,
+      store::Index* idx);
 
   void setValidator(store::SchemaValidator* validator);
   store::SchemaValidator* getValidator() const { return theValidator; }

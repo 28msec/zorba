@@ -76,6 +76,8 @@ class SimpleLazyTempSeq : public store::TempSeq
 
   bool containsItem(xs_integer position);
 
+  xs_integer getSize() const;
+
   store::Iterator_t getIterator() const;
 
   store::Iterator_t getIterator(

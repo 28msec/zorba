@@ -22,15 +22,20 @@
 #include <functional>                   /* for binary_function */
 #include <utility>                      /* for pair */
 
-#include <unicode/normlzr.h>
-#include <unicode/ustring.h>
+#ifndef ZORBA_NO_ICU
+# include <unicode/normlzr.h>
+# include <unicode/uchar.h>
+# include <unicode/ustring.h>
+#endif /* ZORBA_NO_ICU */
 
 #include "cxx_util.h"
 #include "unicode_util.h"
 #include "utf8_util.h"
 
 using namespace std;
+#ifndef ZORBA_NO_ICU
 U_NAMESPACE_USE
+#endif /* ZORBA_NO_ICU */
 
 namespace zorba {
 namespace unicode {
@@ -2208,6 +2213,8 @@ code_point to_upper( code_point c ) {
   return to_case<upper>( c );
 }
 
+#ifndef ZORBA_NO_ICU
+
 bool normalize( string const &in, normalization::type n, string *out ) {
   UErrorCode status = U_ZERO_ERROR;
   UNormalizationMode icu_mode;
@@ -2222,6 +2229,19 @@ bool normalize( string const &in, normalization::type n, string *out ) {
   return U_SUCCESS( status ) == TRUE;
 }
 
+bool strip_diacritics( string const &in, string *out ) {
+  string in_normalized;
+  if ( !normalize( in, normalization::NFKD, &in_normalized ) )
+    return false;
+  out->truncate( 0 );
+  for ( size_type len = in_normalized.length(), i = 0; i < len; ++i ) {
+    UChar32 const uc32 = in_normalized.char32At( i );
+    if ( u_charType( uc32 ) != U_NON_SPACING_MARK )
+      out->append( uc32 );
+  }
+  return true;
+}
+
 bool to_char( char const *in, char_type *out ) {
   UErrorCode status = U_ZERO_ERROR;
   u_strFromUTF8WithSub(
@@ -2230,8 +2250,11 @@ bool to_char( char const *in, char_type *out ) {
   return U_SUCCESS( status ) == TRUE;
 }
 
+#endif /* ZORBA_NO_ICU */
+
 bool to_string( char const *in, size_type in_len, char_type **out,
                 size_type *out_len ) {
+#ifndef ZORBA_NO_ICU
   size_type utf16_len;
   UErrorCode status = U_ZERO_ERROR;
   u_strFromUTF8WithSub(                 // pre-flight to get utf16_len
@@ -2250,8 +2273,15 @@ bool to_string( char const *in, size_type in_len, char_type **out,
   }
   *out = utf16_buf;
   *out_len = utf16_len;
+#else
+  *out = new char_type[ in_len + 1 ];
+  *out_len = in_len;
+  ::strncpy( *out, in, *out_len );
+#endif /* ZORBA_NO_ICU */
   return true;
 }
+
+#ifndef ZORBA_NO_ICU
 
 bool to_string( char const *in, size_type in_len, string *out ) {
   char_type *const buf = out->getBuffer( in_len + 1 );
@@ -2270,6 +2300,8 @@ bool to_string( wchar_t const *in, size_type in_len, string *out ) {
   out->releaseBuffer( buf_len );
   return U_SUCCESS( status ) == TRUE;
 }
+
+#endif /* ZORBA_NO_ICU */
 
 ///////////////////////////////////////////////////////////////////////////////
 

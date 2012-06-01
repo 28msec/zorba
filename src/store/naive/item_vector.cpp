@@ -18,11 +18,13 @@
 #include <sstream>
 
 #include "store/api/item.h"
-#include "store/naive/item_vector.h"
+#include "item_vector.h"
 
 namespace zorba { namespace simplestore {
 
-ItemVector::ItemVector(std::vector<store::Item_t>& items)
+ItemVector::ItemVector(std::vector<store::Item_t>& items) 
+  :
+  store::Item(LIST)
 {
   size_t numItems = items.size();
 

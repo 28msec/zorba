@@ -74,7 +74,14 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
   flwor_expr* flworExpr = NULL;
 
-  if (node->get_expr_kind() == flwor_expr_kind)
+  if (node->get_expr_kind() == gflwor_expr_kind)
+    return node;
+
+  if (node->get_expr_kind() == trycatch_expr_kind)
+  {
+    rCtx.theFlworStack.push_back(node);
+  }
+  else if (node->get_expr_kind() == flwor_expr_kind)
   {
     flworExpr = static_cast<flwor_expr *>(node);
 
@@ -168,7 +175,12 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
     iter.next();
   }
 
-  if (node->get_expr_kind() == flwor_expr_kind)
+  if (node->get_expr_kind() == trycatch_expr_kind)
+  {
+    rCtx.theFlworStack.pop_back();
+    return node;
+  }
+  else if (node->get_expr_kind() == flwor_expr_kind)
   {
     expr_t e = rCtx.theFlworStack.back();
 
@@ -242,7 +254,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   // Determine the outer and inner side of the join
   ulong outerVarId;
-  ulong innerVarId;
 
   if (var1id < var2id)
   {
@@ -252,7 +263,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     predInfo.theInnerOp = op2;
     predInfo.theInnerVar = var2;
     outerVarId = var1id;
-    innerVarId = var2id;
   }
   else
   {
@@ -262,7 +272,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     predInfo.theInnerOp = op1;
     predInfo.theInnerVar = var1;
     outerVarId = var2id;
-    innerVarId = var1id;
   }
 
   TypeManager* tm = sctx->get_typemanager();
@@ -798,6 +807,9 @@ static bool findFlworForVar(
  
   for (long i = numFlwors - 1; i >= 0; --i)
   {
+    if (rCtx.theFlworStack[i]->get_expr_kind() == trycatch_expr_kind)
+      return false;
+
     flworExpr = dynamic_cast<flwor_expr*>(rCtx.theFlworStack[i].getp());
 
     assert(flworExpr != NULL);

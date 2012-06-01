@@ -22,17 +22,18 @@
 
 //#include "zorbatypes/datetime.h"
 
-#include "store/naive/store_defs.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/simple_item_factory.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/node_items.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_temp_seq.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/qname_pool.h"
-#include "store/naive/string_pool.h"
-#include "store/naive/node_factory.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
+#include "atomic_items.h"
+#include "node_items.h"
+#include "node_iterators.h"
+#include "simple_temp_seq.h"
+#include "simple_pul.h"
+#include "qname_pool.h"
+#include "string_pool.h"
+#include "node_factory.h"
+#include "tree_id.h"
 
 #include "util/ascii_util.h"
 
@@ -120,7 +121,7 @@ bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& va
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     ulong collectionId,
-    ulong treeId,
+    const TreeId& treeId,
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
 {
@@ -153,6 +154,14 @@ bool BasicItemFactory::createStreamableString(
     bool seekable) 
 {
   result = new StreamableStringItem( stream, streamReleaser, seekable );
+  return true;
+}
+
+bool BasicItemFactory::createSharedStreamableString(
+    store::Item_t &result,
+    store::Item_t &streamable_dependent)
+{
+  result = new StreamableStringItem( streamable_dependent );
   return true;
 }
 
@@ -318,7 +327,7 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& va
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItem( value );
+  result = new IntegerItemImpl( value );
   return true;
 }
 
@@ -327,7 +336,7 @@ bool BasicItemFactory::createNonPositiveInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value <= Integer::zero());
+  ZORBA_ASSERT(value.sign() <= 0);
   result = new NonPositiveIntegerItem( value );
   return true;
 }
@@ -337,7 +346,7 @@ bool BasicItemFactory::createNegativeInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value < xs_integer::zero());
+  ZORBA_ASSERT(value.sign() < 0);
   result = new NegativeIntegerItem(value);
   return true;
 }
@@ -345,7 +354,7 @@ bool BasicItemFactory::createNegativeInteger(
 
 bool BasicItemFactory::createNonNegativeInteger(
     store::Item_t& result,
-    const xs_uinteger& value )
+    const xs_nonNegativeInteger& value )
 {
   result = new NonNegativeIntegerItem( value );
   return true;
@@ -355,9 +364,9 @@ bool BasicItemFactory::createNonNegativeInteger(
 
 bool BasicItemFactory::createPositiveInteger(
     store::Item_t& result,
-    const xs_uinteger& value)
+    const xs_positiveInteger& value)
 {
-  ZORBA_ASSERT(value > Integer::zero());
+  ZORBA_ASSERT(value.sign() > 0);
   result = new PositiveIntegerItem( value );
   return true;
 }
@@ -997,9 +1006,36 @@ bool BasicItemFactory::createDayTimeDuration(
 }
 
 
-bool BasicItemFactory::createBase64Binary(store::Item_t& result, xs_base64Binary value)
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    xs_base64Binary value)
 {
-  result = new Base64BinaryItem(value);
+  const std::vector<char>& data = value.getData();
+  result = new Base64BinaryItem(data.size()!=0?&data[0]:0, data.size(), true);
+  return true;
+}
+
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    const char* value,
+    size_t size,
+    bool encoded)
+{
+  result = new Base64BinaryItem(value, size, encoded);
+  return true;
+}
+
+
+bool BasicItemFactory::createStreamableBase64Binary(
+    store::Item_t& result,
+    std::istream& aStream,
+    StreamReleaser aReleaser,
+    bool seekable,
+    bool encoded)
+{
+  result = new StreamableBase64BinaryItem(
+      aStream, aReleaser, seekable, encoded
+    );
   return true;
 }
 
@@ -1136,10 +1172,8 @@ bool BasicItemFactory::createElementNode(
   ElementNode* n = NULL;
 
   if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED( NotAllowedForTypeName)));
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||

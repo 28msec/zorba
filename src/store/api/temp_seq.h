@@ -80,7 +80,6 @@ public:
    */
   virtual void getItem(xs_integer position, Item_t& result) = 0;
 		
-		
   /**
    * Returns true if the item at the passed position is available.
    * 
@@ -90,6 +89,11 @@ public:
    * @return 
    */
   virtual bool containsItem(xs_integer position) = 0;
+
+  /**
+   *
+   */
+  virtual xs_integer getSize() const = 0;
 
   /**
    * Reads the whole Sequence from beginning to end; it is allowed to have several 

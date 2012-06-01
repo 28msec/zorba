@@ -44,19 +44,12 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OrIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OrIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AndIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
-
-SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
@@ -65,7 +58,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCom
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 
 
 /*******************************************************************************
@@ -89,7 +81,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
     const PlanIterator* iter,
     bool negate)
 {
-  store::Item_t item, temp;
+  store::Item_t item;
   bool result;
   bool is_sequence;
 
@@ -107,38 +99,41 @@ bool FnBooleanIterator::effectiveBooleanValue(
   }
   else
   {
-    xqtref_t type = tm->create_value_type(item);
-    is_sequence = consumeNext(temp, iter, planState);
+    store::SchemaTypeCode type = item->getTypeCode();
+
+    store::Item_t item2;
+    is_sequence = consumeNext(item2, iter, planState);
+
     if (!is_sequence 
         &&
-        (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
-         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
-         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
-         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-         || TypeOps::is_numeric(tm, *type)))
+        (type == store::XS_BOOLEAN ||
+         TypeOps::is_subtype(type, store::XS_STRING) ||
+         TypeOps::is_subtype(type, store::XS_ANY_URI) ||
+         type == store::XS_UNTYPED_ATOMIC ||
+         TypeOps::is_numeric(type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
       // => effective boolean value is defined in the items
-      temp = item->getEBV();
-      result = negate ? (negate ^ temp->getBooleanValue()) : temp->getBooleanValue();
+      bool temp = item->getEBV();
+      result = negate ? (negate ^ temp) : temp;
     }
     else
     {
       if (is_sequence)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-            ZED( BadArgTypeForFn_2o34o ), "", "fn:boolean",
-            ZED( EBVNotDefSeq_5 ), *type
-          ),
-          ERROR_LOC( loc )
-        );
+      {
+        xqtref_t type = tm->create_value_type(item);
+
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     "", "fn:boolean",
+                     ZED(EBVNotDefSeq_5),
+                     *type));
+      }
       else
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), "", "fn:boolean" ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), "", "fn:boolean" ));
+      }
     }
   }
 
@@ -842,7 +837,7 @@ bool CompareIterator::equal(
   {
     // There are 2 cases when two types are comparable without one being a
     // subtype of the other: (a) they belong to different branches under of
-    // the type-inheritance subtree rooted at xs:Integer, (b) they belong to
+    // the type-inheritance subtree rooted at xs:integer, (b) they belong to
     // different branches under of the type-inheritance subtree rooted at
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
@@ -932,7 +927,7 @@ long CompareIterator::compare(
     {
       // There is 1 case when two types are order-comparable without one being a
       // subtype of the other: they belong to different branches under of the
-      // type-inheritance subtree rooted at xs:Integer.
+      // type-inheritance subtree rooted at xs:integer.
       if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
           TypeOps::is_subtype(type1, store::XS_INTEGER))
       {

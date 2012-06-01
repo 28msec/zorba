@@ -30,106 +30,66 @@
 #include "ftnode_visitor.h"
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
   
 SERIALIZABLE_CLASS_VERSIONS(ftand)
-END_SERIALIZABLE_CLASS_VERSIONS(ftand)
 
 SERIALIZABLE_CLASS_VERSIONS(ftcontent_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftcontent_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftcase_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftcase_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftdiacritics_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftdiacritics_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftdistance_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftdistance_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftextension_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftextension_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftextension_selection)
-END_SERIALIZABLE_CLASS_VERSIONS(ftextension_selection)
 
 SERIALIZABLE_CLASS_VERSIONS(ftlanguage_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftlanguage_option)
-
-SERIALIZABLE_CLASS_VERSIONS(ftmatch_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftmatch_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftmatch_options)
-END_SERIALIZABLE_CLASS_VERSIONS(ftmatch_options)
 
 SERIALIZABLE_CLASS_VERSIONS(ftmild_not)
-END_SERIALIZABLE_CLASS_VERSIONS(ftmild_not)
-
-SERIALIZABLE_CLASS_VERSIONS(ftnode)
-END_SERIALIZABLE_CLASS_VERSIONS(ftnode)
-
-SERIALIZABLE_CLASS_VERSIONS(ftnode_list)
-END_SERIALIZABLE_CLASS_VERSIONS(ftnode_list)
 
 SERIALIZABLE_CLASS_VERSIONS(ftor)
-END_SERIALIZABLE_CLASS_VERSIONS(ftor)
 
 SERIALIZABLE_CLASS_VERSIONS(ftorder_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftorder_filter)
-
-SERIALIZABLE_CLASS_VERSIONS(ftpos_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftpos_filter)
-
-SERIALIZABLE_CLASS_VERSIONS(ftprimary)
-END_SERIALIZABLE_CLASS_VERSIONS(ftprimary)
 
 SERIALIZABLE_CLASS_VERSIONS(ftprimary_with_options)
-END_SERIALIZABLE_CLASS_VERSIONS(ftprimary_with_options)
 
 SERIALIZABLE_CLASS_VERSIONS(ftrange)
-END_SERIALIZABLE_CLASS_VERSIONS(ftrange)
 
 SERIALIZABLE_CLASS_VERSIONS(ftscope_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftscope_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftselection)
-END_SERIALIZABLE_CLASS_VERSIONS(ftselection)
 
 SERIALIZABLE_CLASS_VERSIONS(ftstem_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftstem_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftstop_words)
-END_SERIALIZABLE_CLASS_VERSIONS(ftstop_words)
 
 SERIALIZABLE_CLASS_VERSIONS(ftstop_word_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftstop_word_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_id)
-END_SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_id)
 
 SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftunary_not)
-END_SERIALIZABLE_CLASS_VERSIONS(ftunary_not)
 
 SERIALIZABLE_CLASS_VERSIONS(ftweight)
-END_SERIALIZABLE_CLASS_VERSIONS(ftweight)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwindow_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwindow_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwords)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwords)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
+
 
 ////////// Visit macros ///////////////////////////////////////////////////////
 
@@ -199,6 +159,37 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+template<typename PointerType>
+inline PointerType clone_ptr( PointerType p, expr::substitution_t &s ) {
+  return static_cast<PointerType>( p->clone( s ).release() );
+}
+
+template<class RCHandleValueType>
+inline RCHandleValueType* clone_ptr( rchandle<RCHandleValueType> const &p,
+                                     expr::substitution_t &s ) {
+  return static_cast<RCHandleValueType*>( p->clone( s ).release() );
+}
+
+template<typename PointerType>
+inline PointerType clone_ptr_if( PointerType p, expr::substitution_t &s ) {
+  return p ? clone_ptr( p, s ) : nullptr;
+}
+
+template<class RCHandleValueType>
+inline RCHandleValueType* clone_ptr_if( rchandle<RCHandleValueType> const &p,
+                                        expr::substitution_t &s ) {
+  return p.isNull() ? nullptr : clone_ptr( p, s );
+}
+
+template<class ContainerType>
+void clone_list( ContainerType const &from, ContainerType *to,
+                 expr::substitution_t &s ) {
+  FOR_EACH( typename ContainerType, i, from )
+    to->push_back( clone_ptr( *i, s ) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void ftnode::serialize( serialization::Archiver &ar ) {
   ar & loc_;
 }
@@ -212,6 +203,12 @@ ft_visit_result::type ftand::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftnode_list_t, get_node_list(), v );
   END_VISIT( v );
+}
+
+ftnode_t ftand::clone( expr::substitution_t &s ) const {
+  ftnode_list_t copy;
+  clone_list( get_node_list(), &copy, s );
+  return new ftand( get_loc(), copy );
 }
 
 ostream& ftand::put( ostream &o ) const {
@@ -238,6 +235,10 @@ ft_visit_result::type ftcase_option::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftcase_option::clone( expr::substitution_t& ) const {
+  return new ftcase_option( get_loc(), mode_ );
+}
+
 ostream& ftcase_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftcase_option );
   PUT_ATTR( o, mode ) << endl;
@@ -260,6 +261,10 @@ ftcontent_filter::ftcontent_filter(
 ft_visit_result::type ftcontent_filter::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
+}
+
+ftnode_t ftcontent_filter::clone( expr::substitution_t &s ) const {
+  return new ftcontent_filter( get_loc(), mode_ );
 }
 
 void ftcontent_filter::serialize( serialization::Archiver &ar ) {
@@ -285,6 +290,10 @@ ftdiacritics_option::ftdiacritics_option(
 ft_visit_result::type ftdiacritics_option::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
+}
+
+ftnode_t ftdiacritics_option::clone( expr::substitution_t& ) const {
+  return new ftdiacritics_option( get_loc(), mode_ );
 }
 
 ostream& ftdiacritics_option::put( ostream &o ) const {
@@ -318,6 +327,10 @@ ft_visit_result::type ftdistance_filter::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( range_, v );
   END_VISIT( v );
+}
+
+ftnode_t ftdistance_filter::clone( expr::substitution_t &s ) const {
+  return new ftdistance_filter( get_loc(), clone_ptr_if( range_, s ), unit_ );
 }
 
 ostream& ftdistance_filter::put( ostream &o ) const {
@@ -355,6 +368,12 @@ ft_visit_result::type ftextension_selection::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftextension_selection::clone( expr::substitution_t &s ) const {
+  return new ftextension_selection(
+    get_loc(), pragmas_, clone_ptr_if( ftselection_, s )
+  );
+}
+
 ostream& ftextension_selection::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftextension_selection );
   PUT_NODE( o, ftselection_ );
@@ -363,7 +382,7 @@ ostream& ftextension_selection::put( ostream &o ) const {
 
 void ftextension_selection::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftprimary*)this );
-  ar & pragmas_;
+  //ar & pragmas_;
   ar & ftselection_;
 }
 
@@ -383,6 +402,10 @@ ft_visit_result::type ftextension_option::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftextension_option::clone( expr::substitution_t& ) const {
+  return new ftextension_option( get_loc(), qname_, val_ );
+}
+
 ostream& ftextension_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftextension_option )
   //<< " qname=" << qname_
@@ -392,7 +415,7 @@ ostream& ftextension_option::put( ostream &o ) const {
 
 void ftextension_option::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option*)this );
-  ar & qname_;
+  //ar & qname_;
   ar & val_;
 }
 
@@ -416,6 +439,15 @@ ftlanguage_option::ftlanguage_option(
     );
 }
 
+ftlanguage_option::ftlanguage_option(
+  QueryLoc const &loc,
+  iso639_1::type lang
+) :
+  ftmatch_option( loc ),
+  lang_( lang )
+{
+}
+
 void ftlanguage_option::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option*)this );
   SERIALIZE_ENUM(locale::iso639_1::type,lang_);
@@ -425,6 +457,10 @@ void ftlanguage_option::serialize( serialization::Archiver &ar ) {
 ft_visit_result::type ftlanguage_option::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
+}
+
+ftnode_t ftlanguage_option::clone( expr::substitution_t& ) const {
+  return new ftlanguage_option( get_loc(), lang_ );
 }
 
 ostream& ftlanguage_option::put( ostream &o ) const {
@@ -456,6 +492,33 @@ ft_visit_result::type ftmatch_options::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftmatch_options::clone( expr::substitution_t &s ) const {
+  unique_ptr<ftmatch_options> p( new ftmatch_options( get_loc() ) );
+  if ( case_option_ )
+    p->set_case_option( clone_ptr( case_option_, s ) );
+  if ( diacritics_option_ )
+    p->set_diacritics_option(
+      clone_ptr( diacritics_option_, s )
+    );
+
+  FOR_EACH( ftextension_option_list_t, i, extension_options_ )
+    p->add_extension_option( clone_ptr( *i, s ) );
+  if ( current_extension_options_ != &extension_options_ )
+    p->set_extension_options( current_extension_options_ );
+
+  if ( language_option_ )
+    p->set_language_option( clone_ptr( language_option_, s ) );
+  if ( stem_option_ )
+    p->set_stem_option( clone_ptr( stem_option_, s ) );
+  if ( stop_word_option_ )
+    p->set_stop_word_option( clone_ptr( stop_word_option_, s ) );
+  if ( thesaurus_option_ )
+    p->set_thesaurus_option( clone_ptr( thesaurus_option_, s ) );
+  if ( wild_card_option_ )
+    p->set_wild_card_option( clone_ptr( wild_card_option_, s ) );
+  return p.release();
+}
+
 ostream& ftmatch_options::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftmatch_options );
   PUT_NODE( o, case_option_ );
@@ -474,7 +537,7 @@ void ftmatch_options::serialize( serialization::Archiver &ar ) {
   ar & case_option_;
   ar & diacritics_option_;
   ar & extension_options_;
-  if(!ar.is_serializing_out())
+  if ( !ar.is_serializing_out() )
     current_extension_options_ = &extension_options_;
   ar & language_option_;
   ar & stem_option_;
@@ -508,6 +571,12 @@ ft_visit_result::type ftmild_not::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftnode_list_t, get_node_list(), v );
   END_VISIT( v );
+}
+
+ftnode_t ftmild_not::clone( expr::substitution_t &s ) const {
+  ftnode_list_t copy;
+  clone_list( get_node_list(), &copy, s );
+  return new ftmild_not( get_loc(), copy );
 }
 
 ostream& ftmild_not::put( ostream &o ) const {
@@ -546,6 +615,12 @@ ft_visit_result::type ftor::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftor::clone( expr::substitution_t &s ) const {
+  ftnode_list_t copy;
+  clone_list( get_node_list(), &copy, s );
+  return new ftor( get_loc(), copy );
+}
+
 ostream& ftor::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftor );
   PUT_SEQ( o, ftnode_list_t, get_node_list() );
@@ -566,10 +641,15 @@ ft_visit_result::type ftorder_filter::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftorder_filter::clone( expr::substitution_t &s ) const {
+  return new ftorder_filter( get_loc() );
+}
+
 ostream& ftorder_filter::put( ostream &o ) const {
   BEGIN_PUT( o, ftorder_filter ) << endl;
   END_PUT( o );
 }
+
 void ftorder_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftpos_filter*)this );
 }
@@ -583,9 +663,7 @@ void ftpos_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
 }
 
-ftprimary_with_options::ftprimary_with_options(
-  QueryLoc const &loc
-) :
+ftprimary_with_options::ftprimary_with_options( QueryLoc const &loc ) :
   ftnode( loc ),
   primary_( nullptr ),
   match_options_( new ftmatch_options( loc ) ),
@@ -605,6 +683,17 @@ ft_visit_result::type ftprimary_with_options::accept( ftnode_visitor &v ) {
   ACCEPT( match_options_, v );
   ACCEPT( weight_, v );
   END_VISIT( v );
+}
+
+ftnode_t ftprimary_with_options::clone( expr::substitution_t &s ) const {
+  unique_ptr<ftprimary_with_options> p(
+    new ftprimary_with_options( get_loc() )
+  );
+  p->set_match_options( clone_ptr( match_options_, s ) );
+  p->set_primary( clone_ptr( primary_, s ) );
+  if ( weight_ )
+    p->set_weight( clone_ptr( weight_, s ) );
+  return p.release();
 }
 
 ostream& ftprimary_with_options::put( ostream &o ) const {
@@ -643,6 +732,15 @@ ft_visit_result::type ftrange::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftrange::clone( expr::substitution_t &s ) const {
+  return new ftrange(
+    get_loc(), mode_,
+    clone_ptr( expr1_, s ),
+    clone_ptr_if( expr2_, s )
+  );
+  // TODO: do PlanIter_t's have to be cloned?
+}
+
 ostream& ftrange::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftrange );
   PUT_EXPR( o, expr1_ );
@@ -671,6 +769,10 @@ ftscope_filter::ftscope_filter(
 ft_visit_result::type ftscope_filter::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
+}
+
+ftnode_t ftscope_filter::clone( expr::substitution_t &s ) const {
+  return new ftscope_filter( get_loc(), scope_, unit_ );
 }
 
 ostream& ftscope_filter::put( ostream &o ) const {
@@ -726,6 +828,10 @@ ft_visit_result::type ftselection::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftselection::clone( expr::substitution_t &s ) const {
+  return new ftselection( get_loc(), ftor_->clone( s ).release(), list_ );
+}
+
 ostream& ftselection::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftselection );
   PUT_NODE( o, ftor_ );
@@ -751,6 +857,10 @@ ftstem_option::ftstem_option(
 ft_visit_result::type ftstem_option::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
+}
+
+ftnode_t ftstem_option::clone( expr::substitution_t& ) const {
+  return new ftstem_option( get_loc(), mode_ );
 }
 
 ostream& ftstem_option::put( ostream &o ) const {
@@ -781,6 +891,10 @@ ftstop_words::ftstop_words(
 ft_visit_result::type ftstop_words::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
+}
+
+ftnode_t ftstop_words::clone( expr::substitution_t& ) const {
+  return new ftstop_words( get_loc(), uri_, list_, mode_ );
 }
 
 ostream& ftstop_words::put( ostream &o ) const {
@@ -831,6 +945,12 @@ ft_visit_result::type ftstop_word_option::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftstop_word_option::clone( expr::substitution_t &s ) const {
+  list_t copy;
+  clone_list( stop_words_, &copy, s );
+  return new ftstop_word_option( get_loc(), copy, mode_ );
+}
+
 ostream& ftstop_word_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftstop_word_option );
   PUT_ATTR( o, mode );
@@ -871,6 +991,12 @@ ft_visit_result::type ftthesaurus_id::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( levels_, v );
   END_VISIT( v );
+}
+
+ftnode_t ftthesaurus_id::clone( expr::substitution_t &s ) const {
+  return new ftthesaurus_id(
+    get_loc(), uri_, relationship_, clone_ptr_if( levels_, s )
+  );
 }
 
 ostream& ftthesaurus_id::put( ostream &o ) const {
@@ -914,6 +1040,14 @@ ft_visit_result::type ftthesaurus_option::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftthesaurus_option::clone( expr::substitution_t &s ) const {
+  thesaurus_id_list_t copy;
+  clone_list( thesaurus_id_list_, &copy, s );
+  return new ftthesaurus_option(
+    get_loc(), clone_ptr_if( default_tid_, s ), copy, no_thesaurus_
+  );
+}
+
 ostream& ftthesaurus_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftthesaurus_option );
   PUT_BOOL( o, no_thesaurus );
@@ -945,6 +1079,10 @@ ft_visit_result::type ftunary_not::accept( ftnode_visitor &v ) {
   END_VISIT( v );
 }
 
+ftnode_t ftunary_not::clone( expr::substitution_t &s ) const {
+  return new ftunary_not( get_loc(), subnode_->clone( s ).release() );
+}
+
 ostream& ftunary_not::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftunary_not );
   PUT_NODE( o, subnode_ );
@@ -965,6 +1103,10 @@ ft_visit_result::type ftweight::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   EV_ACCEPT( weight_expr_, v );
   END_VISIT( v );
+}
+
+ftnode_t ftweight::clone( expr::substitution_t &s ) const {
+  return new ftweight( get_loc(), weight_expr_->clone( s ).release() );
 }
 
 ostream& ftweight::put( ostream &o ) const {
@@ -991,6 +1133,10 @@ ftwild_card_option::ftwild_card_option(
 ft_visit_result::type ftwild_card_option::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
+}
+
+ftnode_t ftwild_card_option::clone( expr::substitution_t &s ) const {
+  return new ftwild_card_option( get_loc(), mode_ );
 }
 
 ostream& ftwild_card_option::put( ostream &o ) const {
@@ -1020,6 +1166,12 @@ ft_visit_result::type ftwindow_filter::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   EV_ACCEPT( window_expr_, v );
   END_VISIT( v );
+}
+
+ftnode_t ftwindow_filter::clone( expr::substitution_t &s ) const {
+  return new ftwindow_filter(
+    get_loc(), window_expr_->clone( s ).release(), unit_
+  );
 }
 
 ostream& ftwindow_filter::put( ostream &o ) const {
@@ -1052,6 +1204,10 @@ ft_visit_result::type ftwords::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   EV_ACCEPT( value_expr_, v );
   END_VISIT( v );
+}
+
+ftnode_t ftwords::clone( expr::substitution_t &s ) const {
+  return new ftwords( get_loc(), value_expr_->clone( s ).release(), mode_ );
 }
 
 ostream& ftwords::put( ostream &o ) const {
@@ -1091,6 +1247,12 @@ ft_visit_result::type ftwords_times::accept( ftnode_visitor &v ) {
   ACCEPT( ftwords_, v );
   ACCEPT( fttimes_, v );
   END_VISIT( v );
+}
+
+ftnode_t ftwords_times::clone( expr::substitution_t &s ) const {
+  return new ftwords_times(
+    get_loc(), clone_ptr( ftwords_, s ), clone_ptr_if( fttimes_, s )
+  );
 }
 
 ostream& ftwords_times::put( ostream &o ) const {

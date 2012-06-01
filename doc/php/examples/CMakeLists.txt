@@ -18,7 +18,11 @@ IF(PHP5_FOUND)
 
   SET(phpPath ${CMAKE_BINARY_DIR}/swig/php)
   MESSAGE(STATUS "PHP Path:" ${phpPath})
-  SET(phpExtensionPath ${CMAKE_BINARY_DIR}/swig/php)
+  IF (MSVC_IDE)
+    SET(phpExtensionPath ${CMAKE_BINARY_DIR}/swig/php/@CMAKE_BUILD_TYPE@)
+  ELSE (MSVC_IDE)
+    SET(phpExtensionPath ${CMAKE_BINARY_DIR}/swig/php)
+  ENDIF (MSVC_IDE)
   MESSAGE(STATUS "PHP Extension Path: " ${phpExtensionPath})
   SET(phpIncludePath ${CMAKE_BINARY_DIR}/swig/php)
   MESSAGE(STATUS "PHP Include Path: " ${phpExtensionPath})
@@ -31,8 +35,6 @@ IF(PHP5_FOUND)
   ADD_TEST("php1" ${PHP5_EXECUTABLE} -c ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
   MESSAGE(STATUS "Installing: " ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
   ADD_TEST("php2" ${PHP5_EXECUTABLE} -c ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/test.php)
-
-  EXPECTED_FAILURE(php2 918592)
 
   MESSAGE(STATUS "Installing: " ${CMAKE_CURRENT_BINARY_DIR}/test.php)
   

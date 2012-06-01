@@ -62,13 +62,16 @@
     
     <zorba:function>
 
+      <zorba:signature localname="nilled" prefix="fn" version="3.0">
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
       <zorba:signature localname="nilled" prefix="fn">
         <zorba:param>node()?</zorba:param>
         <zorba:output>xs:boolean?</zorba:output>
       </zorba:signature>
-
+      
       <zorba:methods>
-        <zorba:mustCopyInputNodes value="false"/>
+        <zorba:mustCopyInputNodes value="true"/>
       </zorba:methods>
 
     </zorba:function>

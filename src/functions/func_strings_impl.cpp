@@ -61,6 +61,44 @@ function* fn_substring::specialize(
   return NULL;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void populate_context_strings_impl(static_context* sctx)
+{
+  xqtref_t lAnalyzeStringResultType =
+    GENV_TYPESYSTEM.create_node_type(
+        store::StoreConsts::elementNode,
+        createQName("http://www.w3.org/2005/xpath-functions","","analyze-string-result"),
+        NULL,
+        TypeConstants::QUANT_ONE,
+        false,
+        false
+      );
+
+  {
+    DECL_WITH_KIND(sctx, fn_analyze_string_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        lAnalyzeStringResultType),
+        FunctionConsts::FN_ANALYZE_STRING_2);
+
+  }
+
+
+  {
+    DECL_WITH_KIND(sctx, fn_analyze_string_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        lAnalyzeStringResultType),
+        FunctionConsts::FN_ANALYZE_STRING_3);
+  }
+}
+
 }
 
 /* vim:set et sw=2 ts=2: */

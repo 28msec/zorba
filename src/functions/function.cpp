@@ -29,11 +29,10 @@
 
 #include "diagnostics/assert.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 namespace zorba {
-
-SERIALIZABLE_CLASS_VERSIONS(function)
-END_SERIALIZABLE_CLASS_VERSIONS(function)
 
 
 /*******************************************************************************
@@ -44,6 +43,7 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   theSignature(sig),
   theKind(kind),
   theFlags(0),
+  theModuleSctx(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_1_0)
 {
   setFlag(FunctionConsts::isBuiltin);
@@ -53,7 +53,7 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   *::zorba::serialization::ClassSerializer::getInstance()->
   getArchiverForHardcodedObjects();
 
-  if(ar.is_loading_hardcoded_objects())
+  if (ar.is_loading_hardcoded_objects())
   {
     // register this hardcoded object to help plan serialization
     function* this_ptr = this;
@@ -71,6 +71,7 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;
   ar & theAnnotationList;
+  ar & theModuleSctx;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
 }
 
@@ -92,6 +93,7 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
   ulong n = theSignature.paramCount();
   return n == VARIADIC_SIG_SIZE || argv.size() == n;
 }
+
 
 /*******************************************************************************
 

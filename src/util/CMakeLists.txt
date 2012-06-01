@@ -17,9 +17,10 @@ SET(UTIL_SRCS
   dynamic_bitset.cpp
   error_util.cpp
   file.cpp
-  dir.cpp
   fs_util.cpp
   indent.cpp
+  json_parser.cpp
+  mem_streambuf.cpp
   regex.cpp
   string_util.cpp
   unicode_util.cpp
@@ -38,9 +39,14 @@ IF(ZORBA_WITH_FILE_ACCESS)
   LIST(APPEND UTIL_SRCS mmap_file.cpp)
 ENDIF(ZORBA_WITH_FILE_ACCESS)
 
-IF(ZORBA_NO_UNICODE)
-  LIST(APPEND UTIL_SRCS regex_ascii.cpp)
-ENDIF(ZORBA_NO_UNICODE)
+IF(ZORBA_NO_ICU)
+  LIST(APPEND UTIL_SRCS
+    regex_xquery.cpp
+    passthru_streambuf.cpp)
+ELSE(ZORBA_NO_ICU)
+  LIST(APPEND UTIL_SRCS
+    icu_streambuf.cpp)
+ENDIF(ZORBA_NO_ICU)
 
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS win32)

@@ -223,6 +223,7 @@ class SequenceType;
 class SignList;
 class SingleType;
 class StringLiteral;
+class StringConcatExpr;
 class SwitchCaseClause;
 class SwitchCaseClauseList;
 class SwitchCaseOperandList;
@@ -1798,7 +1799,7 @@ public:
 /*******************************************************************************
   [39] ExprSingle ::=
 
-  ** XQuery 1.1 exprs
+  ** XQuery 3.0 exprs
                       FLWORExpr |
                       QuantifiedExpr |
                       TypeswitchExpr |
@@ -3097,6 +3098,26 @@ private:
   FTIgnoreOption const *const ftignore_;
 };
 
+/******************************************************************************
+ * StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+ *****************************************************************************/
+class StringConcatExpr: public exprnode
+{
+  protected:
+    rchandle<exprnode> left;
+    rchandle<exprnode> right;
+  
+  public:
+    StringConcatExpr(
+      const QueryLoc& aLoc,
+      rchandle<exprnode> aLeft,
+      rchandle<exprnode> aRight): exprnode(aLoc), left(aLeft), right(aRight) {}
+
+    rchandle<exprnode> get_left_expr() const { return left; }
+    rchandle<exprnode> get_right_expr() const { return right; }
+
+    virtual void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [72] RangeExpr ::= AdditiveExpr ( "to" AdditiveExpr )?
@@ -3854,7 +3875,7 @@ public:
 
 /*******************************************************************************
   [108] Literal ::= NumericLiteral | StringLiteral
-  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 1.1)
+  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 3.0)
 
 ********************************************************************************/
 // Used by Annotations classes

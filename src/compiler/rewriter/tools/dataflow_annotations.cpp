@@ -813,7 +813,12 @@ void SourceFinder::findNodeSources(
     UDFCallChain* udfCaller,
     std::vector<expr*>& sources)
 {
-  findNodeSourcesRec(node, sources, NULL);
+  theStartingUdf = NULL;
+
+  if (udfCaller->theFo)
+    theStartingUdf = static_cast<user_function*>(udfCaller->theFo->get_func());
+
+  findNodeSourcesRec(node, sources, theStartingUdf);
 
   for (csize i = 0; i < sources.size(); ++i)
   {
@@ -829,12 +834,15 @@ void SourceFinder::findNodeSources(
       sources.erase(sources.begin() + i);
       --i;
 
-      // If this method is called to find the sources of an expr within the
+      // Note: If this method is called to find the sources of an expr within the
       // body of a function_item, then udfCaller->theFo will be NULL. 
-      if (udfCaller->theFo)
+      while(udfCaller->theFo && varExpr->get_udf() != udfCaller->theFo->get_func())
       {
-        ZORBA_ASSERT(varExpr->get_udf() == udfCaller->theFo->get_func());
+        udfCaller = udfCaller->thePrev;
+      }
 
+      if (udfCaller->theFo)
+      {  
         fo_expr* foExpr = udfCaller->theFo;
         expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
         std::vector<expr*> argSources;
@@ -847,11 +855,19 @@ void SourceFinder::findNodeSources(
     {
       ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
                    source->get_expr_kind() == elem_expr_kind);
+
+      user_function* udf = theSourceUdfMap.find(source)->second;
+
+      if (udf)
+        udf->invalidatePlan();
     }
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void SourceFinder::findNodeSourcesRec(
     expr* node,
     std::vector<expr*>& sources,
@@ -936,7 +952,8 @@ void SourceFinder::findNodeSourcesRec(
         sources.push_back(node);
 
       std::vector<expr*>* varSources = new std::vector<expr*>;
-      theVarSourcesMap.insert(VarSourcesPair(e, varSources));
+      if (theVarSourcesMap.insert(VarSourcesPair(e, varSources)).second == false)
+        delete varSources;
 
       return;
     }
@@ -1014,7 +1031,11 @@ void SourceFinder::findNodeSourcesRec(
   case elem_expr_kind:
   {
     if (std::find(sources.begin(), sources.end(), node) == sources.end())
+    {
       sources.push_back(node);
+
+      theSourceUdfMap.insert(SourceUdfMapPair(node, currentUdf));
+    }
 
     std::vector<expr*> enclosedExprs;
     node->get_fo_exprs_of_kind(FunctionConsts::OP_ENCLOSED_1, false, enclosedExprs);
@@ -1082,62 +1103,70 @@ void SourceFinder::findNodeSourcesRec(
  
       bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
 
-      UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
-
-      std::vector<expr*>* udfSources;
-
-      if (ite == theUdfSourcesMap.end() ||
-          (recursive &&
-           std::find(theUdfCallPath.begin(), theUdfCallPath.end(), e) ==
-           theUdfCallPath.end()))
+      if (recursive)
       {
-        if (recursive)
-          theUdfCallPath.push_back(e);
+        currentUdf->addRecursiveCall(node);
+      }
+      else
+      {
+        UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
 
-        // must do this before calling findNodeSourcesRec in order to break
-        // recursion cycle
+        std::vector<expr*>* udfSources;
+
         if (ite == theUdfSourcesMap.end())
         {
-          udfSources = new std::vector<expr*>;
-          theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
+          // must do this before calling findNodeSourcesRec in order to break
+          // recursion cycle
+          if (ite == theUdfSourcesMap.end())
+          {
+            udfSources = new std::vector<expr*>;
+            theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
+          }
+          else
+          {
+            udfSources = (*ite).second;
+          }
+
+          findNodeSourcesRec(udf->getBody(), *udfSources, udf);
+
+          if (udf->isRecursive())
+          {
+            std::vector<expr*>::const_iterator ite = udf->getRecursiveCalls().begin();
+            std::vector<expr*>::const_iterator end = udf->getRecursiveCalls().end();
+            for (; ite != end; ++ite)
+            {
+              findNodeSourcesRec((*ite), *udfSources, NULL);
+            }
+          }
         }
         else
         {
           udfSources = (*ite).second;
         }
 
-        findNodeSourcesRec(udf->getBody(), *udfSources, udf);
+        csize numUdfSources = udfSources->size();
 
-        if (recursive)
-          theUdfCallPath.pop_back();
-      }
-      else
-      {
-        udfSources = (*ite).second;
-      }
-
-      csize numUdfSources = udfSources->size();
-
-      for (csize i = 0; i < numUdfSources; ++i)
-      {
-        expr* source = (*udfSources)[i];
-
-        if (source->get_expr_kind() == var_expr_kind)
+        for (csize i = 0; i < numUdfSources; ++i)
         {
-          var_expr* argVar = static_cast<var_expr*>(source);
+          expr* source = (*udfSources)[i];
 
-          ZORBA_ASSERT(argVar->get_kind() == var_expr::arg_var);
-
-          expr* argExpr = e->get_arg(argVar->get_param_pos());
-
-          findNodeSourcesRec(argExpr, sources, currentUdf);
+          if (source->get_expr_kind() == var_expr_kind)
+          {
+            var_expr* argVar = static_cast<var_expr*>(source);
+            
+            ZORBA_ASSERT(argVar->get_kind() == var_expr::arg_var);
+            
+            expr* argExpr = e->get_arg(argVar->get_param_pos());
+            
+            findNodeSourcesRec(argExpr, sources, currentUdf);
+          }
+          else
+          {
+            if (std::find(sources.begin(), sources.end(), source) == sources.end())
+              sources.push_back(source);
+          }
         }
-        else
-        {
-          if (std::find(sources.begin(), sources.end(), source) == sources.end())
-            sources.push_back(source);
-        }
-      }
+      } // not recursive call
     } // f->isUdf()
     else
     {

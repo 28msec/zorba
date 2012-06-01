@@ -15,9 +15,9 @@
  */
 #include "stdafx.h"
 
-#include "store/naive/store_manager_impl.h"
+#include "store_manager_impl.h"
 
-#include "store/naive/simple_store.h"
+#include "simple_store.h"
 
 namespace zorba 
 { 
@@ -34,14 +34,14 @@ void* StoreManager::getStore()
 
 void StoreManager::shutdownStore(void* store)
 {
-  static_cast<simplestore::SimpleStore*>(store)->shutdown();
+  static_cast<simplestore::Store*>(store)->shutdown();
 }
 
 
 namespace simplestore
 {
 
-SimpleStore* StoreManagerImpl::theStore = NULL;
+Store* StoreManagerImpl::theStore = NULL;
 
 }
 

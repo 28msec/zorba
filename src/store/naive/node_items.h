@@ -23,16 +23,18 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 
-#include "store/naive/store_defs.h"
-#include "store/naive/shared_types.h"
-#include "store/naive/text_node_content.h"
-#include "store/naive/item_vector.h"
-#include "store/naive/ordpath.h"
-#include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
+#include "store_defs.h"
+#include "shared_types.h"
+#include "text_node_content.h"
+#include "item_vector.h"
+#include "ordpath.h"
+#include "nsbindings.h" // TODO remove by introducing explicit destructors
+#include "tree_id.h"
+#include "simple_store.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
-#include "store/naive/hashmap_nodep.h"
+#include "hashmap_nodep.h"
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -89,7 +91,7 @@ class UpdRenamePi;
 class UpdReplaceCommentValue;
 class NodeTypeInfo;
 
-class SimpleCollection;
+class Collection;
 
 typedef std::vector<NodeTypeInfo> TypeUndoList;
 
@@ -105,28 +107,6 @@ class XmlNodeTokenizerCallback;
               << store::StoreConsts::toString(getNodeKind()))
 
 
-#ifndef NDEBUG
-
-#define NODE_TRACE(level, msg)                \
-{                                             \
-  if (level <= GET_STORE().getTraceLevel())   \
-    std::cout << msg << std::endl;            \
-}
-
-#define NODE_TRACE1(msg) NODE_TRACE(1, msg);
-#define NODE_TRACE2(msg) NODE_TRACE(2, msg);
-#define NODE_TRACE3(msg) NODE_TRACE(3, msg);
-
-#else
-
-#define NODE_TRACE(msg)
-#define NODE_TRACE1(msg)
-#define NODE_TRACE2(msg)
-#define NODE_TRACE3(msg)
-
-#endif
-
-
 /*******************************************************************************
 
   theRefCount    : It is the sum of theRefCounts of all the nodes belonging to
@@ -138,7 +118,7 @@ class XmlNodeTokenizerCallback;
 
   theId          : An internally generated id for the tree. The id uniquely
                    identifies the tree within its containing collection (see
-                   SimpleCollection::createTreeId() method). Trees that do not
+                   Collection::createTreeId() method). Trees that do not
                    belong to any collection, are considered to belong to a
                    "virtual" collection (with collection id equal to 0), and
                    their id is created by the SimpleStore::createId() method.
@@ -177,10 +157,10 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  ulong                     theId;
-  ulong                     thePos;
+  TreeId                    theId;
+  xs_integer                thePos;
 
-  SimpleCollection        * theCollection;
+  Collection              * theCollection;
 
   XmlNode                 * theRootNode;
 
@@ -200,7 +180,7 @@ protected:
 #endif
 
 protected:
-  XmlTree(XmlNode* root, ulong id);
+  XmlTree(XmlNode* root, const TreeId& id);
 
 public:
   XmlTree();
@@ -215,19 +195,26 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  void setId(ulong id) { theId = id; }
+  void setId(const TreeId& id) { theId = id; }
 
-  ulong getId() const { return theId; }
+  const TreeId& getId() const { return theId; }
 
   ulong getCollectionId() const;
 
-  const SimpleCollection* getCollection() const { return theCollection; }
+  const Collection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* coll, ulong pos);
+private:
+friend class zorba::simplestore::Collection;
+  // Allows a collection to claim ownership of a node it already owns, but
+  // which does not have the backpointer yet.
+  void claimedByCollection(Collection* coll);
+  
+public:
+  void setCollection(Collection* coll, xs_integer pos);
 
-  void setPosition(ulong pos) { thePos = pos; }
+  void setPosition(xs_integer pos) { thePos = pos; }
 
-  ulong getPosition() const { return thePos; }
+  xs_integer getPosition() const { return thePos; }
 
   XmlNode* getRoot() const { return theRootNode; }
 
@@ -469,7 +456,7 @@ public:
     getBaseURIInternal(uri, local);
   }
 
-  store::Item_t getEBV() const;
+  bool getEBV() const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
@@ -512,11 +499,11 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  ulong getTreeId() const { return getTree()->getId(); }
+  const TreeId& getTreeId() const { return getTree()->getId(); }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll, ulong pos)
+  void setCollection(Collection* coll, xs_integer pos)
   {
     assert(!isConnectorNode());
     getTree()->setCollection(coll, pos);
@@ -563,12 +550,12 @@ public:
 
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
-  bool isConnectorNode() const { return theFlags & IsConnectorNode; }
+  bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
-      Tokenizer::Numbers&,
+      Tokenizer::State&,
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -663,6 +650,15 @@ public:
         bool append,
         csize pos,
         store::StoreConsts::NodeKind nodeKind);
+
+  // Looks for a descendant node with the ordpath aOrdPath and puts it into the
+  // aResult variable. aAttribute specifies whether to look for an attribute or
+  // not.
+  bool
+  getDescendantNodeByOrdPath(
+      const OrdPath& aOrdPath,
+      store::Item_t& aResult,
+      bool aAttribute = false) const;
 
   virtual bool
   isAncestor(const store::Item_t&) const;
@@ -866,10 +862,6 @@ protected:
   const OrdPath* getFirstChildOrdPathAfter(csize pos) const;
 
   const OrdPath* getFirstChildOrdPathBefore(csize pos) const;
-
-#ifndef ZORBA_NO_FULL_TEXT
-  void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
 };
 
 
@@ -1129,10 +1121,6 @@ protected:
         zstring& absUri,
         zstring& relUri);
 
-#ifndef ZORBA_NO_FULL_TEXT
-  void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
-
 private:
   //disable default copy constructor
   ElementNode(const ElementNode& src);
@@ -1245,8 +1233,9 @@ public:
   isPrecedingSibling(const store::Item_t&) const { return false; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::State&,
+                               locale::iso639_1::type,
+                               bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
@@ -1261,10 +1250,8 @@ protected:
   {
     return *reinterpret_cast<ItemVector*>(theTypedValue.getp());
   }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  void tokenize( XmlNodeTokenizerCallback& );
-#endif
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1421,10 +1408,8 @@ protected:
   void setValue(store::Item_t& val) { theContent.setValue(val); }
 
   void setValue(store::Item* val) { theContent.setValue(val); }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1490,6 +1475,8 @@ public:
   void replaceName(UpdRenamePi& upd);
 
   void restoreName(UpdRenamePi& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1545,6 +1532,8 @@ public:
   void replaceValue(UpdReplaceCommentValue& upd);
 
   void restoreValue(UpdReplaceCommentValue& upd);
+  
+  store::Iterator_t getChildren() const;
 };
 
 
@@ -1582,8 +1571,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;
@@ -1618,8 +1607,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      ulong tree1 = this->getTreeId();
-      ulong tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTreeId();
+      const TreeId& tree2 = other->getTreeId();
 
       if (tree1 < tree2)
         return -1;
@@ -1629,8 +1618,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      ulong pos1 = this->getTree()->getPosition();
-      ulong pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;
@@ -1654,57 +1643,26 @@ class XmlNodeTokenizerCallback : public Tokenizer::Callback
 {
 public:
   typedef FTTokenStore::container_type container_type;
-  typedef FTTokenStore::size_type begin_type;
 
-  XmlNodeTokenizerCallback( TokenizerProvider const &provider,
-                            Tokenizer::Numbers &numbers,
-                            locale::iso639_1::type lang,
-                            FTTokenStore &token_store );
-
-  XmlNodeTokenizerCallback( TokenizerProvider const &provider,
-                            Tokenizer::Numbers &numbers,
-                            locale::iso639_1::type lang,
-                            container_type &tokens );
-
-  begin_type beginTokenization() const;
-
-  void endTokenization( XmlNode const*, begin_type );
-
-  void push_element( ElementNode *element ) { element_stack_.push( element ); }
-
-  void pop_element() { element_stack_.pop(); }
-
-  void push_lang( locale::iso639_1::type lang );
-
-  void pop_lang();
-
-  void tokenize( char const *utf8_s, size_t len );
-
-  Tokenizer& tokenizer() const { return *tokenizer_stack_.top(); }
+  XmlNodeTokenizerCallback( FTTokenStore &token_store );
+  XmlNodeTokenizerCallback( container_type &tokens );
 
   // inherited
-  void operator()( char const *utf8_s, size_type utf8_len,
-                   size_type pos, size_type sent, size_type para, void* );
+  void item( Item const&, bool );
+  void token( char const *utf8_s, size_type utf8_len, locale::iso639_1::type,
+              size_type pos, size_type sent, size_type para, Item const* );
 private:
-  typedef std::stack<ElementNode*> element_stack_t;
-  typedef std::stack<locale::iso639_1::type> lang_stack_t;
-  typedef std::stack<Tokenizer*> tokenizer_stack_t;
+  typedef std::stack<store::Item const*> item_stack_t;
+  typedef std::stack<FTTokenStore::size_type> range_begin_stack_t;
 
-  ElementNode* get_element() const {
-    return element_stack_.top();
-  }
+  store::Item const* get_item() const { return item_stack_.top(); }
+  void push_item( store::Item const *item ) { item_stack_.push( item ); }
+  void pop_item() { item_stack_.pop(); }
 
-  locale::iso639_1::type get_lang() const {
-    return lang_stack_.top();
-  }
-
-  TokenizerProvider const &provider_;
-  Tokenizer::Numbers &numbers_;
   FTTokenStore *token_store_;
   container_type &tokens_;
-  element_stack_t element_stack_;
-  lang_stack_t lang_stack_;
-  tokenizer_stack_t tokenizer_stack_;
+  item_stack_t item_stack_;
+  range_begin_stack_t range_stack_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 

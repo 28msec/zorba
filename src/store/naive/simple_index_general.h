@@ -18,8 +18,8 @@
 
 #include <map>
 
-#include "store/naive/simple_index.h"
-#include "store/naive/store_defs.h"
+#include "simple_index.h"
+#include "store_defs.h"
 
 namespace zorba 
 { 
@@ -238,6 +238,8 @@ public:
   Index::KeyIterator_t keys() const;
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool);
+
+  void clear();
 };
 
 
@@ -291,6 +293,8 @@ public:
   Index::KeyIterator_t keys() const;
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool all);
+
+  void clear();
 };
 
 
@@ -433,6 +437,8 @@ public:
   void close();
 
   bool next(store::Item_t& result);
+
+  void count(store::Item_t& result);
 };
 
 

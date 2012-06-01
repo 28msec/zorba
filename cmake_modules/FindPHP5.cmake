@@ -102,6 +102,9 @@ MESSAGE(STATUS "Darwin Environment Configuration...")
     __object_init
     __zend_hash_add_or_update
     _php_strtolower
+    _executor_globals
+    _call_user_function
+    _php_sprintf
     )
     SET(CMAKE_SHARED_MODULE_CREATE_C_FLAGS
       "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS},-U,${symbol}")

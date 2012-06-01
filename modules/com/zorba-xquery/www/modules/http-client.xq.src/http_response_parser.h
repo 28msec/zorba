@@ -31,6 +31,7 @@ class Item;
 namespace curl {
   class streambuf;
 }
+
 namespace http_client {
   class RequestHandler;
 
@@ -40,7 +41,9 @@ namespace http_client {
     CURL* theCurl;
     ErrorThrower& theErrorThrower;
     std::string theCurrentContentType;
-    std::vector<std::pair<std::string, std::string> > theHeaders;
+    std::string theCurrentCharset;
+    typedef std::vector<std::pair<std::string, std::string> > headers_type;
+    headers_type theHeaders;
     int theStatus;
     std::string theMessage;
     zorba::curl::streambuf* theStreamBuffer;
@@ -74,15 +77,16 @@ namespace http_client {
     virtual void afterRead();
   private:
     void registerHandler();
-    void parseStatusAndMessage(std::string aHeader);
+    void parseStatusAndMessage(std::string const &aHeader);
     Item createXmlItem(std::istream& aStream);
     Item createHtmlItem(std::istream& aStream);
     Item createTextItem(std::istream* aStream);
     Item createBase64Item(std::istream& aStream);
-  public: //Handler
-    static size_t headerfunction( void *ptr, size_t size, size_t nmemb,
-      void *stream);
+
+    static size_t curl_headerfunction( void*, size_t, size_t, void* );
   };
-}} // namespace zorba, http_client
+
+} // namespace http_client
+} // namespace zorba
 
 #endif //HTTP_RESPONSE_PARSER_H

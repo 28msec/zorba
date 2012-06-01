@@ -35,6 +35,8 @@
 
 #include "types/node_test.h"
 
+#include "zorbaserialization/class_serializer.h"
+
 #include "store/api/item.h"
 
 namespace zorba 
@@ -385,11 +387,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(promote_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (cast_base_expr*)this);
-    ar & theFnQName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   promote_expr(
@@ -909,8 +907,8 @@ public:
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	XQuery 1.1 expressions                                             //
-//  [http://www.w3.org/TR/xquery-1.1/]                                 //
+//	XQuery 3.0 expressions                                             //
+//  [http://www.w3.org/TR/xquery-3/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
@@ -1012,7 +1010,7 @@ public:
   
   csize clause_count() const { return theCatchClauses.size(); }
   
-  catch_clause_t const& operator[](csize i) const { return theCatchClauses[i]; }
+  const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 
@@ -1178,8 +1176,10 @@ class eval_expr : public namespace_context_base_expr
 
 protected:
   expr_t                      theExpr;
+
   std::vector<var_expr_t>     theVars;
   std::vector<expr_t>         theArgs;
+
   expr_script_kind_t          theInnerScriptingKind;
   bool                        theDoNodeCopy;
 

@@ -31,45 +31,18 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_xml_parse_xml_fragment::codegen(
+PlanIter_t fn_zorba_xml_parse::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
-  return new FnParseXmlFragmentIterator(sctx, loc, argv);
+  return new FnZorbaParseXmlFragmentIterator(sctx, loc, argv);
 }
 
 void populate_context_parse_fragment(static_context* sctx)
-{
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_xml_parse_xml_fragment,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","parse-xml-fragment"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_XML_PARSE_XML_FRAGMENT_2);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_xml_parse_xml_fragment,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","parse-xml-fragment"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_XML_PARSE_XML_FRAGMENT_3);
-
-  }
-
-}
+{}
 
 
 }

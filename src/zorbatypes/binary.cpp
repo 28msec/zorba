@@ -21,10 +21,13 @@
 #include <string>
 
 #include "zorbatypes/binary.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
-#include "zorbaserialization/template_serializer.h"
+
+#include "zorbaserialization/serialize_template_types.h"
 
 using namespace std;
 
@@ -32,10 +35,8 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(Base64)
-END_SERIALIZABLE_CLASS_VERSIONS(Base64)
 
 SERIALIZABLE_CLASS_VERSIONS(Base16)
-END_SERIALIZABLE_CLASS_VERSIONS(Base16)
 
 
 static const string base64_chars = 
@@ -303,6 +304,16 @@ Base64::Base64(const Base16& aBase16)
   vector<char> lOrig;
   Base16::decode(aBase16.getData(), lOrig);
   Base64::encode(lOrig, theData);
+}
+
+
+Base64::Base64(const unsigned char *bin_data, size_t len)
+{
+  std::vector<char> tmp;
+  tmp.reserve(len);
+  tmp.insert(tmp.begin(), (const char*)bin_data, ((const char*)bin_data) + len);
+  theData.reserve(len);
+  encode(tmp, theData);
 }
 
 

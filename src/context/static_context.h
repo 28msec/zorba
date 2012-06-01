@@ -26,6 +26,8 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/function.h>
+#include <zorba/error.h>
+#include <zorba/diagnostic_list.h>
 
 #ifdef WIN32
 #include "store/api/item.h"
@@ -273,7 +275,7 @@ public:
   theExternalModulesMap :
   -----------------------
 
-  theTypeMnager :
+  theTypeManager :
   ---------------
   If non NULL, then "this" is the root sctx of a module, and theTypeManager stores
   the schemas that are imported by the associated module (in-scope element
@@ -296,7 +298,7 @@ public:
 
   theVariablesMap :
   -----------------
-  
+
   theImportedPrivateVariablesMap :
   --------------------------------
 
@@ -446,6 +448,7 @@ public:
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
   static const char* ZORBA_BASE64_FN_NS;
+  static const char* ZORBA_JSON_FN_NS;
   static const char* ZORBA_NODEREF_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
@@ -464,9 +467,14 @@ public:
   static const char* ZORBA_INTROSP_SCTX_FN_NS;
   static const char* ZORBA_REFLECTION_FN_NS;
   static const char* ZORBA_STRING_FN_NS;
+  static const char* ZORBA_URI_FN_NS;
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
   static const char* ZORBA_XML_FN_NS;
+#ifndef ZORBA_NO_FULL_TEXT
+  static const char* ZORBA_FULL_TEXT_FN_NS;
+#endif /* ZORBA_NO_FULL_TEXT */
+  static const char* ZORBA_XML_FN_OPTIONS_NS;
 
   // Namespaces of virtual modules declaring zorba builtin functions
   static const char* ZORBA_UTIL_FN_NS;
@@ -520,7 +528,7 @@ protected:
   xqtref_t                                theContextItemType;
 
   VariableMap                           * theVariablesMap;
-  
+
   VariableMap                           * theImportedPrivateVariablesMap;
 
   FunctionMap                           * theFunctionMap;
@@ -599,6 +607,8 @@ public:
 
   void serialize(serialization::Archiver& ar);
 
+  void prepare_for_serialize(CompilerCB *compiler_cb);
+
 public:
   static_context(::zorba::serialization::Archiver& ar);
 
@@ -640,6 +650,8 @@ public:
   void set_entity_retrieval_uri(const zstring& uri);
 
   zstring get_base_uri() const;
+
+  void clear_base_uri();
 
   void set_base_uri(const zstring& uri, bool from_prolog = true);
 
@@ -692,6 +704,15 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const;
+
+  /**
+   * Given a URI, populate a vector with a list of candidate URIs.  If
+   * no candidate URIs are available, the vector will be populated
+   * with (only) the input URI.
+   */
+  void get_candidate_uris
   (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
@@ -794,7 +815,7 @@ public:
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;
 
-  void set_context_item_type(const xqtref_t& t);
+  void set_context_item_type(const xqtref_t& t, const QueryLoc& loc);
 
   const XQType* get_context_item_type() const;
 

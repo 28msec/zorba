@@ -29,7 +29,7 @@ xquery version "3.0";
 
 module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
@@ -43,7 +43,7 @@ declare option ver:module-version "2.0";
  : variable, taken from a file, etc. The first parameter must always be a 
  : QName identifying a known function.
  :
- : The function is declared with the %ann:variadic annotation. Hence, it allows
+ : The function is declared with the %an:variadic annotation. Hence, it allows
  : for an arbitrary number of parameters. All of these parameters (except the
  : first one) will be passed to the function that is called.
  :
@@ -61,7 +61,7 @@ declare option ver:module-version "2.0";
  : @example test/rbkt/Queries/zorba/reflection/reflection-invoke-01.xq
  : @example test/rbkt/Queries/zorba/reflection/reflection-invoke-92.xq
  :)
-declare %ann:variadic function reflection:invoke(
+declare %an:variadic function reflection:invoke(
   $name as xs:QName
 ) as item()* external;
 
@@ -77,7 +77,7 @@ declare %ann:variadic function reflection:invoke(
  :
  : @see reflection:invoke()
  :)
-declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-n(
+declare %an:nondeterministic %an:variadic updating function reflection:invoke-n(
   $name as xs:QName
 ) as item()* external;
 
@@ -93,7 +93,7 @@ declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-
  :
  : @see reflection:invoke-n()
  :)
-declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-u(
+declare %an:nondeterministic %an:variadic updating function reflection:invoke-u(
   $name as xs:QName
 ) external;
 
@@ -109,7 +109,7 @@ declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-
  :
  : @see reflection:invoke()
  :)
-declare %ann:variadic %ann:sequential function reflection:invoke-s(
+declare %an:variadic %an:sequential function reflection:invoke-s(
   $name as xs:QName
 ) as item()* external;
 
@@ -178,7 +178,7 @@ declare function reflection:eval(
  :
  : @return the result of evaluating the query
  :)
-declare %ann:nondeterministic function reflection:eval-n(
+declare %an:nondeterministic function reflection:eval-n(
     $query as xs:string
 ) as item()* external;
 
@@ -197,7 +197,7 @@ declare %ann:nondeterministic function reflection:eval-n(
  :
  : @see reflection:eval()
  :)
-declare %ann:nondeterministic updating function reflection:eval-u(
+declare %an:nondeterministic updating function reflection:eval-u(
     $query as xs:string
 ) external;
 
@@ -217,6 +217,6 @@ declare %ann:nondeterministic updating function reflection:eval-u(
  :
  : @see reflection:eval()
  :)
-declare %ann:sequential function reflection:eval-s(
+declare %an:sequential function reflection:eval-s(
     $query as xs:string
 ) as item()* external;

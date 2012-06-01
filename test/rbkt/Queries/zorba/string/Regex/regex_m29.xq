@@ -1,0 +1,1 @@
+fn:matches("cat", "cat(aract|erpillar|)")

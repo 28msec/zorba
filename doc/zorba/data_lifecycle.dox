@@ -7,13 +7,13 @@ Below is a short overview of the Zorba data lifecycle: how to load data in the Z
 
 \image html data_lifecycle.png
 
-The store contains several types of data containers: documents, collections, and other structures (for the moment only unordered maps are supported, but more such structures -- like stacks or queues -- will be supported in future versions).
+The store contains several types of data containers: documents, collections, and other structures.
 Each such container is identified by a name, which can be a URI or a QName.
 The association between the name and the content of the containers is maintained by the store during the lifetime of the container.
 
 There are two kinds of containers: static and dynamic.
 Collections can be either static or dynamic.
-Documents and maps can only be dynamic. 
+Documents, maps, stacks, and queues can only be dynamic. 
 
 \image html store_concepts.png
 
@@ -109,7 +109,17 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Unordered Maps</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/static/data-structures/unordered-map</a></td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/unordered-map</a></td>
+  </tr>
+  <tr>
+    <td>Stacks</td>
+    <td>DDL / DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_stack.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/stack</a></td>
+  </tr>
+  <tr>
+    <td>Queues</td>
+    <td>DDL / DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_queue.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/queue</a></td>
   </tr>
 </table>
 
@@ -123,7 +133,7 @@ Please refer to the section below on various Zorba stores.
 Also please note that a data container that is available in the store will be available to all XQuery programs that are being executed synchronously.
 Again, please read more about the Zorba Data Stores below about data consistency details.
 
-\section dl_examples Examples
+\section dlexamples Examples
 In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers.
 It is important to note that most of the examples uses the <a href="../../zorba/html/scripting_tutorial.html">XQuery Scripting Extension</a> for apply pending updates  in order to make them visible to subsequent expressions in the same program.
 
@@ -284,7 +294,7 @@ We strongly encourage users to use the XQuery modules for data manipulation inst
 The reason is simple: the XQuery processor can understand the data flow and data lifecycle in the first case, while it cannot in the second.
 
 
-\section dl_zorba_store  Zorba Stores
+\section dlzorbastore  Zorba Stores
 
 Zorba defines a Store API that allows developers to seamlessly process XML data stored in different places.
 Essentially, the Store API is a C++ interface for

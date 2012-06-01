@@ -23,12 +23,13 @@
 #include <api/unmarshaller.h>
 #include "http_util.h"
 #include "error_util.h"
+#include "zorbamisc/ns_consts.h"
 
 
 namespace zorba {
   
   HttpStream::HttpStream(const zstring& aUri)
-  : theDidInit(false), theUri(aUri)
+    : theUri(aUri)
   {
   }
   
@@ -42,16 +43,19 @@ namespace zorba {
   
   void HttpStream::init()
   {
+    bool succeed = false;
+
+#ifdef ZORBA_HAVE_CURL
     Zorba* lInstance = Zorba::getInstance(0);
     theStaticContext = lInstance->createStaticContext();
     ItemFactory* lFactory = lInstance->getItemFactory();
     Item lNodeName = lFactory->createQName("http://expath.org/ns/http-client", "http", "request");
     Item lEmptyItem;
     NsBindings nsPairs;
-    nsPairs.push_back(std::make_pair(String("xs"), String("http://www.w3.org/2001/XMLSchema")));
+    nsPairs.push_back(std::make_pair(String(XML_SCHEMA_PREFIX), String(XML_SCHEMA_NS)));
     Item lRequestElement = lFactory->createElementNode(lEmptyItem, lNodeName,
-                                                       lFactory->createQName("http://www.w3.org/2001/XMLSchema",
-                                                                             "xs", "untyped"),
+                                                       lFactory->createQName(XML_SCHEMA_NS,
+                                                                             XML_SCHEMA_PREFIX, "untyped"),
                                                        true, false, nsPairs);
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "method"), Item(), lFactory->createString("GET"));
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "href"), Item(), lFactory->createString(theUri.c_str()));
@@ -75,7 +79,7 @@ namespace zorba {
     Iterator_t lIter = lItem.getAttributes();
     lIter->open();
     Item lAttr;
-    bool succeed = true;
+    succeed = true;
     while (lIter->next(lAttr)) {
       Item lName;
       lAttr.getNodeName(lName);
@@ -89,6 +93,8 @@ namespace zorba {
       }
     }
     lIter->close();
+#endif /* ZORBA_HAVE_CURL */
+
     if (!succeed)
       throw os_error::exception("", theUri.c_str(), "Could not create stream resource");
     theIterator->next(theStreamableString);

@@ -434,6 +434,25 @@ public:
 };
 
 
+//zorba-store-collections-static-dml:truncate
+class zorba_store_collections_static_dml_truncate : public function
+{
+public:
+  zorba_store_collections_static_dml_truncate(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //zorba-store-collections-static-dml:collection-name
 class zorba_store_collections_static_dml_collection_name : public function
 {
@@ -639,6 +658,21 @@ public:
     function(sig, kind)
   {
 
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:uri-collection
+class fn_uri_collection_3_0 : public function
+{
+public:
+  fn_uri_collection_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();

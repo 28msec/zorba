@@ -17,15 +17,13 @@
 #ifndef ZORBA_REGEX_H
 #define ZORBA_REGEX_H
 
-#ifndef ZORBA_NO_UNICODE
-#include <unicode/regex.h>
-#endif
-
 #include "cxx_util.h"
 #include "unicode_util.h"
 #include "zorbatypes/zstring.h"
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
+
+#include <unicode/regex.h>
 
 namespace zorba {
 
@@ -48,7 +46,7 @@ namespace unicode {
 /**
  * The %regex class wraps the underlying Unicode regular expression library.
  */
-class ZORBA_DLL_PUBLIC regex {
+class regex {
 public:
   /**
    * Constructs a %regex.
@@ -496,15 +494,17 @@ private:
 } // namespace unicode
 } // namespace zorba
 
-#else ///ZORBA_NO_UNICODE (ascii part:)
+///////////////////////////////////////////////////////////////////////////////
 
-#include "util/regex_ascii.h"
+#else /* ZORBA_NO_ICU */
+
+#include "util/regex_xquery.h"
 #include <string>
 
 namespace zorba{
 /**
  * Converts an XQuery regular expression to the form used by the regular
- * expression library Zorba is using (here regex_ascii).
+ * expression library Zorba is using (here regex_xquery).
  *
  * @param xq_re The XQuery regular expression.
  * @param lib_re A pointer to the resuling library regular expression.
@@ -520,12 +520,12 @@ namespace unicode{
 /**
  * The %regex class wraps the underlying Unicode regular expression library.
  */
-class ZORBA_DLL_PUBLIC regex {
+class regex {
 public:
   /**
    * Constructs a %regex.
    */
-  regex() : regex_matcher( NULL ) { }
+  regex() : regex_matcher( nullptr ) { }
 
   /**
    * Destroys a %regex.
@@ -835,31 +835,21 @@ public:
 
   /**
    * Get the start position of the matched group.
-   * If groupId is zero, then the start position of the whole match is returned.
-   * If groupId is non-zero, then the start position of that group is returned.
-   * If that group has not been matched, -1 is returned.
+   * If groupId is zero, then the start and end position of the whole match is returned.
+   * If groupId is non-zero, then the start and end position of that group is returned.
+   * If that group has not been matched, false is returned.
    *
    * @param groupId the id of the group, either zero for the entire regex,
    *  or [1 .. group_count] for that specific group
-   * @return the start position, zero based, or -1 if that group didn't match
+   * @param start to return start position in bytes
+   * @param end to return end position in bytes
+   * @return true if that group exists and has been matched
    */
-  int get_match_start( int groupId = 0 );
+  bool get_match_start_end_bytes( int groupId, int *start, int *end );
 
-  /**
-   * Get the end position of the matched group.
-   * If groupId is zero, then the end position of the whole match is returned.
-   * If groupId is non-zero, then the end position of that group is returned.
-   * If that group has not been matched, -1 is returned.
-   *
-   * @param groupId the id of the group, either zero for the entire regex,
-   *  or [1 .. group_count] for that specific group
-   * @return the end position, zero based, or -1 if that group didn't match
-   */
-  int get_match_end( int groupId = 0 );
 
 private:
-  regex_ascii::CRegexAscii_parser regex_parser;
-  regex_ascii::CRegexAscii_regex  *regex_matcher;
+  regex_xquery::CRegexXQuery_regex  *regex_matcher;
   uint32_t    parsed_flags;
 
   zstring s_in_;
@@ -873,15 +863,13 @@ private:
   regex( regex const& );
   regex& operator=( regex const& );
 };
-} // namespace unicode
-} // namespace zorba
-
-#endif /* ZORBA_NO_UNICODE */
-
 
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace unicode
+} // namespace zorba
 
+#endif /* ZORBA_NO_ICU */
 #endif /* ZORBA_REGEX_H */
 /*
  * Local variables:

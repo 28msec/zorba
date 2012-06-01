@@ -15,6 +15,13 @@ xquery version "3.0";
  : See the License for the specific language governing permissions and
  : limitations under the License.
 :)
+
+(:~
+ : Zorba debugger module.
+ :
+ : @author Gabriel Petrovay
+ : @project debugger
+ :)
 module namespace dmh = "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler";
 
 import module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
@@ -22,8 +29,10 @@ import module namespace base64 = "http://www.zorba-xquery.com/modules/converters
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
-
-declare variable $dmh:endl as xs:string := "
+(:~
+ : Endline.
+ :)
+declare %private variable $dmh:endl as xs:string := "
 ";
 
 (:~
@@ -236,7 +245,7 @@ declare %private function dmh:process-response($resp as element(response))
     return dmh:report-error(fn:concat("Command not implemented: ", $resp/@command))
 };
 
-declare function dmh:process-init($init as element(init))
+declare %private function dmh:process-init($init as element(init))
 {
   fn:string-join(
     ("Established connection with", $init/@language, "client", $init/@appid),
@@ -244,7 +253,12 @@ declare function dmh:process-init($init as element(init))
   )
 };
 
-declare function dmh:process($message as element())
+(:~
+ : Process one message received from the Zorba debugger server.
+ : @param $message the message.
+ : @return ().
+ :)
+declare function dmh:process($message as element()) as xs:anyAtomicType*
 {
   let $nodeName := fn:local-name($message)
   let $id := fn:data($message/@transaction_id)

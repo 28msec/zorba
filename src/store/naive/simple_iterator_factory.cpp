@@ -16,12 +16,12 @@
 
 #include "stdafx.h"
 
-#include "store/naive/simple_iterator_factory.h"
-#include "store/naive/node_iterators.h"
-#include "store/naive/simple_temp_seq.h"
-#include "store/naive/simple_index.h"
-#include "store/naive/simple_index_value.h"
-#include "store/naive/simple_index_general.h"
+#include "simple_iterator_factory.h"
+#include "node_iterators.h"
+#include "simple_temp_seq.h"
+#include "simple_index.h"
+#include "simple_index_value.h"
+#include "simple_index_general.h"
 
 
 namespace zorba { namespace simplestore {

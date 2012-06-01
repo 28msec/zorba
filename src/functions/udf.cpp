@@ -33,6 +33,9 @@
 
 #include "types/typeops.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #include "store/api/index.h" // needed for destruction of the cache
 
 
@@ -40,7 +43,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(user_function)
-END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
 
 /*******************************************************************************
@@ -50,7 +52,8 @@ user_function::user_function(
     const QueryLoc& loc,
     const signature& sig,
     expr_t expr_body,
-    short scriptingKind)
+    short scriptingKind,
+    CompilerCB* compilerCB)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
@@ -68,6 +71,8 @@ user_function::user_function(
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(true);
   setPrivate(false);
+  theLocalUdfs = compilerCB->get_local_udfs();
+  theLocalUdfs->push_back(this);
 }
 
 
@@ -88,6 +93,27 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 user_function::~user_function()
 {
+  if (theLocalUdfs != NULL)
+    theLocalUdfs->remove(this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void user_function::prepare_for_serialize(CompilerCB* compilerCB)
+{
+  uint32_t planStateSize;
+  getPlan(compilerCB, planStateSize);
+
+  std::vector<user_function*>::iterator udf_it;
+  for(udf_it = theMutuallyRecursiveUDFs.begin();
+      udf_it != theMutuallyRecursiveUDFs.end();
+      ++udf_it)
+  {
+    if ((*udf_it)->thePlan == NULL)
+      (*udf_it)->prepare_for_serialize(compilerCB);
+  }
 }
 
 
@@ -96,43 +122,19 @@ user_function::~user_function()
 ********************************************************************************/
 void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
-  //bool  save_plan = true;
-  if(ar.is_serializing_out())
+  if (ar.is_serializing_out())
   {
     try
     {
-#if 0
-      // We shouldn't try to optimize the body during the process of serializing
-      // the query plan, because udfs are serialized in some "random" order, and
-      // as a result, they will be optimized in this random order, instead of a
-      // bottom up order. This can have undesired effect, like const-folding
-      // exprs that contain calls to functions that are non-deterministic, or
-      // access the dynamic context.
-      //
-      // As a result, we don't call getPlan() unless the optimizer is off or
-      // the udf has been optimized already. If getPlan is not called, only
-      // the body expr of the udf will be serialized. 
-      //
-      // Note: The compiler attempts to collect and optimize all udfs that
-      // may actually be invoked during the execution of a query. However,
-      // some such udfs may go undetected; for example, udfs that appear
-      // inside eval statements. Only such undetected udfs are affected by
-      // this if condition.
-      if (ar.compiler_cb->theConfig.opt_level == CompilerCB::config::O0 ||
-          theIsOptimized)
-      {
-        getPlan(ar.compiler_cb);
-      }
-#else
-      uint32_t planStateSize;
-      getPlan(ar.compiler_cb, planStateSize);
-#endif
+      //uint32_t planStateSize;
+      //getPlan(ar.compiler_cb, planStateSize);
+      assert(thePlan != NULL);
+      ZORBA_ASSERT(thePlan != NULL);
     }
     catch(...)
     {
       // cannot compile user defined function, maybe it is not even used,
       // so don't fire an error yet
-      //save_plan = false;
     }
   }
   else
@@ -150,15 +152,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsLeaf;
   ar & theMutuallyRecursiveUDFs;
   ar & theIsOptimized;
-  //ar.set_is_temp_field(true);
-  //ar & save_plan;
-  //ar.set_is_temp_field(false);
-  //if(save_plan)
   ar & thePlan;
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
 
-  //+ar & theCache;
   ar & theCacheResults;
   ar & theCacheComputed;
 }
@@ -253,6 +250,19 @@ void user_function::addMutuallyRecursiveUDFs(
 /*******************************************************************************
 
 ********************************************************************************/
+void user_function::addRecursiveCall(expr* call)
+{
+  if (std::find(theRecursiveCalls.begin(), theRecursiveCalls.end(), call) ==
+      theRecursiveCalls.end())
+  {
+    theRecursiveCalls.push_back(call);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool user_function::isRecursive() const
 {
   assert(isOptimized());
@@ -322,27 +332,19 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue user_function::mustCopyNodes(expr* fo, csize input) const
+const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
 {
-  BoolAnnotationValue callerMustCopy = fo->getMustCopyNodes();
-  BoolAnnotationValue argMustCopy = theArgVars[input]->getMustCopyNodes();
-
-  if (argMustCopy == ANNOTATION_TRUE)
-  {
-    // The decision depends on the caller
-    return callerMustCopy;
-  }
-
-  return argMustCopy;
+  return theArgVarsRefs;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
+void user_function::invalidatePlan() 
 {
-  return theArgVarsRefs;
+  thePlan = NULL;
+  theArgVarsRefs.clear();
 }
 
 
@@ -490,7 +492,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
 
   // parameter and return types are subtype of xs:anyAtomicType?
   const xqtref_t& lRes = theSignature.returnType();
-  TypeManager* tm = lRes->get_manager();
+  TypeManager* tm = theBodyExpr->get_sctx()->get_typemanager();
 
   if (!TypeOps::is_subtype(tm,
                            *lRes,
@@ -579,7 +581,7 @@ PlanIter_t user_function::codegen(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
+      expr& ann) const
 {
   return new UDFunctionCallIterator(sctx, loc, argv, this);
 }

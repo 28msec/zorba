@@ -25,7 +25,7 @@
 #include <vector>
 #include "common/common.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
@@ -92,6 +92,8 @@ namespace zorba{
 
     class ZorbaDeleteNodesLastIterator;
 
+    class ZorbaTruncateCollectionIterator;
+
     class ZorbaCollectionNameIterator;
 
     class IsAvailableCollectionIterator;
@@ -117,6 +119,8 @@ namespace zorba{
     class IsDeclaredICIterator;
 
     class DeclaredICsIterator;
+
+    class FnURICollectionIterator;
 
     class CurrentDateTimeIterator;
 
@@ -185,10 +189,54 @@ namespace zorba{
 
     class FetchContentIterator;
 
+    class FetchContentBinaryIterator;
+
     class FetchContentTypeIterator;
 
     class FnPutIterator;
 
+#ifndef ZORBA_NO_FULL_TEXT
+    class CurrentCompareOptionsIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class CurrentLangIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class HostLangIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class IsStemLangSupportedIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class IsStopWordIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class IsStopWordLangSupportedIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class IsThesaurusLangSupportedIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class IsTokenizerLangSupportedIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class StemIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class StripDiacriticsIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class ThesaurusLookupIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class TokenizeNodeIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class TokenizerPropertiesIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    class TokenizeStringIterator;
+#endif
     class FunctionNameIterator;
 
     class FunctionArityIterator;
@@ -250,6 +298,10 @@ namespace zorba{
     class OptionIterator;
 
     class FunctionAnnotationsIterator;
+
+    class JSONParseInternal;
+
+    class JSONSerializeInternal;
 
     class SqrtIterator;
 
@@ -389,6 +441,8 @@ namespace zorba{
 
     class LeastCommonAncestor;
 
+    class FnPathIterator;
+
     class AbsIterator;
 
     class CeilingIterator;
@@ -403,7 +457,7 @@ namespace zorba{
 
     class FormatIntegerIterator;
 
-    class FnParseXmlFragmentIterator;
+    class FnZorbaParseXmlFragmentIterator;
 
     class FnParseXmlIterator;
 
@@ -500,6 +554,16 @@ namespace zorba{
 
     class FnDocAvailableIterator;
 
+    class FnAvailableEnvironmentVariablesIterator;
+
+    class FnEnvironmentVariableIterator;
+
+    class FnUnparsedTextIterator;
+
+    class FnUnparsedTextAvailableIterator;
+
+    class FnUnparsedTextLinesIterator;
+
     class PutDocumentIterator;
 
     class RemoveDocumentIterator;
@@ -583,6 +647,8 @@ namespace zorba{
     class StringIsStreamableIterator;
 
     class StringSplitIterator;
+
+    class DecodeURIIterator;
 
     class XQDocIterator;
 
@@ -691,6 +757,9 @@ public:
     virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
 
+    virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
+
     virtual void beginVisit ( const ZorbaCollectionNameIterator& ) = 0;
     virtual void endVisit   ( const ZorbaCollectionNameIterator& ) = 0;
 
@@ -729,6 +798,9 @@ public:
 
     virtual void beginVisit ( const DeclaredICsIterator& ) = 0;
     virtual void endVisit   ( const DeclaredICsIterator& ) = 0;
+
+    virtual void beginVisit ( const FnURICollectionIterator& ) = 0;
+    virtual void endVisit   ( const FnURICollectionIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
     virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;
@@ -830,12 +902,71 @@ public:
     virtual void beginVisit ( const FetchContentIterator& ) = 0;
     virtual void endVisit   ( const FetchContentIterator& ) = 0;
 
+    virtual void beginVisit ( const FetchContentBinaryIterator& ) = 0;
+    virtual void endVisit   ( const FetchContentBinaryIterator& ) = 0;
+
     virtual void beginVisit ( const FetchContentTypeIterator& ) = 0;
     virtual void endVisit   ( const FetchContentTypeIterator& ) = 0;
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
 
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const CurrentCompareOptionsIterator& ) = 0;
+    virtual void endVisit   ( const CurrentCompareOptionsIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const CurrentLangIterator& ) = 0;
+    virtual void endVisit   ( const CurrentLangIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const HostLangIterator& ) = 0;
+    virtual void endVisit   ( const HostLangIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const IsStemLangSupportedIterator& ) = 0;
+    virtual void endVisit   ( const IsStemLangSupportedIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const IsStopWordIterator& ) = 0;
+    virtual void endVisit   ( const IsStopWordIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const IsStopWordLangSupportedIterator& ) = 0;
+    virtual void endVisit   ( const IsStopWordLangSupportedIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const IsThesaurusLangSupportedIterator& ) = 0;
+    virtual void endVisit   ( const IsThesaurusLangSupportedIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const IsTokenizerLangSupportedIterator& ) = 0;
+    virtual void endVisit   ( const IsTokenizerLangSupportedIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const StemIterator& ) = 0;
+    virtual void endVisit   ( const StemIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const StripDiacriticsIterator& ) = 0;
+    virtual void endVisit   ( const StripDiacriticsIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const ThesaurusLookupIterator& ) = 0;
+    virtual void endVisit   ( const ThesaurusLookupIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const TokenizeNodeIterator& ) = 0;
+    virtual void endVisit   ( const TokenizeNodeIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const TokenizerPropertiesIterator& ) = 0;
+    virtual void endVisit   ( const TokenizerPropertiesIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const TokenizeStringIterator& ) = 0;
+    virtual void endVisit   ( const TokenizeStringIterator& ) = 0;
+#endif
     virtual void beginVisit ( const FunctionNameIterator& ) = 0;
     virtual void endVisit   ( const FunctionNameIterator& ) = 0;
 
@@ -928,6 +1059,12 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONParseInternal& ) = 0;
+    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+
+    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
+    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
@@ -1136,6 +1273,9 @@ public:
     virtual void beginVisit ( const LeastCommonAncestor& ) = 0;
     virtual void endVisit   ( const LeastCommonAncestor& ) = 0;
 
+    virtual void beginVisit ( const FnPathIterator& ) = 0;
+    virtual void endVisit   ( const FnPathIterator& ) = 0;
+
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;
 
@@ -1157,8 +1297,8 @@ public:
     virtual void beginVisit ( const FormatIntegerIterator& ) = 0;
     virtual void endVisit   ( const FormatIntegerIterator& ) = 0;
 
-    virtual void beginVisit ( const FnParseXmlFragmentIterator& ) = 0;
-    virtual void endVisit   ( const FnParseXmlFragmentIterator& ) = 0;
+    virtual void beginVisit ( const FnZorbaParseXmlFragmentIterator& ) = 0;
+    virtual void endVisit   ( const FnZorbaParseXmlFragmentIterator& ) = 0;
 
     virtual void beginVisit ( const FnParseXmlIterator& ) = 0;
     virtual void endVisit   ( const FnParseXmlIterator& ) = 0;
@@ -1302,6 +1442,21 @@ public:
     virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnDocAvailableIterator& ) = 0;
 
+    virtual void beginVisit ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
+    virtual void endVisit   ( const FnAvailableEnvironmentVariablesIterator& ) = 0;
+
+    virtual void beginVisit ( const FnEnvironmentVariableIterator& ) = 0;
+    virtual void endVisit   ( const FnEnvironmentVariableIterator& ) = 0;
+
+    virtual void beginVisit ( const FnUnparsedTextIterator& ) = 0;
+    virtual void endVisit   ( const FnUnparsedTextIterator& ) = 0;
+
+    virtual void beginVisit ( const FnUnparsedTextAvailableIterator& ) = 0;
+    virtual void endVisit   ( const FnUnparsedTextAvailableIterator& ) = 0;
+
+    virtual void beginVisit ( const FnUnparsedTextLinesIterator& ) = 0;
+    virtual void endVisit   ( const FnUnparsedTextLinesIterator& ) = 0;
+
     virtual void beginVisit ( const PutDocumentIterator& ) = 0;
     virtual void endVisit   ( const PutDocumentIterator& ) = 0;
 
@@ -1427,6 +1582,9 @@ public:
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;
+
+    virtual void beginVisit ( const DecodeURIIterator& ) = 0;
+    virtual void endVisit   ( const DecodeURIIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;

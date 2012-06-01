@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <ErrorIterator>
-const char* ErrorIterator::class_name_str = "ErrorIterator";
 ErrorIterator::class_factory<ErrorIterator>
 ErrorIterator::g_class_factory;
 
-const serialization::ClassVersion 
-ErrorIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ErrorIterator::class_versions_count =
-sizeof(ErrorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void ErrorIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -61,15 +55,9 @@ ErrorIterator::~ErrorIterator() {}
 
 
 // <TraceIterator>
-const char* TraceIterator::class_name_str = "TraceIterator";
 TraceIterator::class_factory<TraceIterator>
 TraceIterator::g_class_factory;
 
-const serialization::ClassVersion 
-TraceIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int TraceIterator::class_versions_count =
-sizeof(TraceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void TraceIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

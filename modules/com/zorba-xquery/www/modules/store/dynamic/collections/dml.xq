@@ -35,7 +35,7 @@ xquery version "3.0";
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
@@ -134,7 +134,7 @@ declare updating function dml:insert-nodes-after(
  : @see dml:insert-nodes-first
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-first(
+declare %an:sequential function dml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()* external;
 
@@ -154,7 +154,7 @@ declare %ann:sequential function dml:apply-insert-nodes-first(
  : @see dml:insert-nodes-last
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-last(
+declare %an:sequential function dml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()* external;
 
@@ -176,7 +176,7 @@ declare %ann:sequential function dml:apply-insert-nodes-last(
  : @see dml:insert-nodes-before
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-before(
+declare %an:sequential function dml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()* external;
@@ -199,7 +199,7 @@ declare %ann:sequential function dml:apply-insert-nodes-before(
  : @see dml:insert-nodes-after
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-after(
+declare %an:sequential function dml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()* external;
@@ -260,7 +260,7 @@ declare updating function dml:delete-nodes-first(
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the last node from the collection.
  :
- : @error zerr:ZDDY0009 If available collections does not provide a mapping
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
  :        for the expanded QName $name.
  : @error zerr:ZDDY0011 if the collection doesn't contain any node.
  :
@@ -278,7 +278,7 @@ declare updating function dml:delete-node-last($name as xs:QName) external;
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the last n nodes.
  :
- : @error zerr:ZDDY0009 If available collections does not provide a mapping
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
  :        for the expanded QName $name.
  : @error zerr:ZDDY0011 if the collection doesn't contain the given number of nodes.
  :
@@ -286,6 +286,19 @@ declare updating function dml:delete-node-last($name as xs:QName) external;
 declare updating function dml:delete-nodes-last(
   $name as xs:QName,
   $number as xs:integer) external;
+
+(:~
+ : The truncate function is an updating function that deletes the
+ : entire contents of collection.
+ :
+ : @param $name The name of the collection whose content to delete
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the nodes.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :)
+declare updating function dml:truncate($name as xs:QName) external;
 
 (:~
  : The index-of function return the index of the given node in the collection.
@@ -307,7 +320,7 @@ declare function dml:index-of($node as node()) as xs:integer external;
  :
  : @return The sequence contained in the given collection.
  :
- : @error zerr:ZDDY0009 If available collections does not provide a mapping
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
  :        for the expanded QName $name.
  :
  :)

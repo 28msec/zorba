@@ -15,6 +15,9 @@
  */
 #include "stdafx.h"
 
+#include <sstream>
+#include <zorba/transcode_stream.h>
+
 #include "system/globalenv.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -22,37 +25,126 @@
 
 #include "runtime/base64/base64.h"
 
-
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 
 namespace zorba {
 
-bool Base64DecodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool Base64DecodeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t lItem;
-  Base64 lDecodedData;
   zstring lResultString;
+  zstring lEncoding("UTF-8");
+  const char* lContent;
+  size_t lSize;
+  result = NULL;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(lItem, theChildren[0].getp(), planState))
+  consumeNext(lItem, theChildren[0].getp(), planState);
+
+  if (theChildren.size() == 2)
   {
-    lDecodedData = lItem->getBase64BinaryValue();
-    lResultString = lDecodedData.decode().str();
-    GENV_ITEMFACTORY->createString(result, lResultString);
-    STACK_PUSH (true, state);
+    store::Item_t lEncodingItem;
+    consumeNext(lEncodingItem, theChildren[1].getp(), planState);
+    lEncoding = lEncodingItem->getStringValue();
+
+    if (!transcode::is_supported(lEncoding.c_str()))
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZXQP0006_UNKNOWN_ENCODING,
+        ERROR_PARAMS( lEncoding ),
+        ERROR_LOC( loc )
+      );
+    }
   }
+
+  if (lItem->isStreamable())
+  {
+    if (lItem->isEncoded())
+    {
+      lResultString = Base64::decode(lItem->getStream());
+    }
+    else
+    {
+      if (transcode::is_necessary(lEncoding.c_str()))
+      {
+        transcode::attach(lItem->getStream(), lEncoding.c_str());
+        GENV_ITEMFACTORY->createStreamableString(
+            result,
+            lItem->getStream(),
+            lItem->getStreamReleaser(),
+            lItem->isSeekable());
+      }
+      else
+      {
+        GENV_ITEMFACTORY->createSharedStreamableString(
+            result,
+            lItem);
+      }
+    }
+  }
+  else
+  {
+    lContent = lItem->getBase64BinaryValue(lSize);
+
+    if (lItem->isEncoded())
+    {
+      std::vector<char> encoded(lContent, lContent+lSize);
+      std::vector<char> decoded;
+      Base64::decode(encoded, decoded);
+      lResultString.insert(0, &decoded[0], decoded.size());
+    }
+    else
+    {
+      lResultString.insert(0, lContent, lSize);
+    }
+
+    if (transcode::is_necessary(lEncoding.c_str()))
+    {
+      try
+      {
+        zstring lTranscodedString;
+        transcode::stream<std::istringstream> lTranscoder(
+            lEncoding.c_str(),
+            lResultString.c_str()
+          );
+        char buf[1024];
+        while (lTranscoder.good())
+        {
+          lTranscoder.read(buf, 1024);
+          lTranscodedString.append(buf, lTranscoder.gcount());
+        }
+        GENV_ITEMFACTORY->createString(result, lTranscodedString);
+      }
+      catch (ZorbaException& e)
+      {
+        throw XQUERY_EXCEPTION(
+          zerr::ZOSE0006_TRANSCODING_ERROR,
+          ERROR_PARAMS( e.what() ),
+          ERROR_LOC( loc )
+        );
+      }
+    }
+    else
+    {
+      GENV_ITEMFACTORY->createString(result, lResultString);
+    }
+  }
+  STACK_PUSH (true, state);
 
   STACK_END (state);
 }
 
 
-bool Base64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool Base64EncodeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t lItem;
-  Base64        lBase64;
   zstring       lTmpString;
 
   PlanIteratorState* state;
@@ -61,17 +153,12 @@ bool Base64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (consumeNext(lItem, theChildren[0].getp(), planState)) 
   {
     lItem->getStringValue2(lTmpString);
-    Base64::encode(lTmpString, lBase64);
-    if (GENV_ITEMFACTORY->createBase64Binary(result, lBase64)) 
-    {
-      STACK_PUSH (true, state);
-    }
-    else
-    {
-      throw XQUERY_EXCEPTION(
-        zerr::ZXQP0025_ITEM_CREATION_FAILED, ERROR_LOC( loc )
-      );
-    } 
+    // create a base64Binary item
+    // the content is the non-encoded string
+    GENV_ITEMFACTORY->createBase64Binary(
+          result, lTmpString.c_str(), lTmpString.size(), false
+        );
+    STACK_PUSH (true, state);
   }
   STACK_END (state);
 }

@@ -26,7 +26,9 @@
 
 using namespace std;
 using namespace zorba;
+#ifndef ZORBA_NO_FULL_TEXT
 using namespace zorba::locale;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 bool
 sctx_test_1(Zorba* const zorba)
@@ -60,12 +62,99 @@ sctx_test_1(Zorba* const zorba)
   return lFooFound && lBindings.size() == 6;
 }
 
-int static_context( int argc, char *argv[] ) {
-  void *const zstore = StoreManager::getStore();
-  Zorba *const zorba = Zorba::getInstance( zstore );
+bool
+sctx_test_2(Zorba* const zorba)
+{
+  StaticContext_t lSctx = zorba->createStaticContext();
+
+  Zorba_CompilerHints_t lHints;
+
+  try
+  {
+    Item lFetched = lSctx->fetch("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+
+    return !lFetched.isNull();
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+  }
+  return false;
+}
+
+
+bool sctx_test_3(Zorba* zorba)
+{
+  StaticContext_t sctx = zorba->createStaticContext();
+
+  try
+  {
+    Zorba_CompilerHints_t hints;
+    std::stringstream prolog;
+    prolog << "declare variable $prologVariable := <hello>World!</hello>;";
+    sctx->loadProlog(prolog.str(), hints);
+
+    // compile the main query using the populated static context
+    XQuery_t query = zorba->compileQuery("declare variable $queryVar := <queryVar>foo</queryVar>; $prologVariable ", sctx);
+
+    // execute the query and make sure that the result is correct
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    std::stringstream result;
+    query->execute(result, &lSerOptions);
+    std::cout << "Print prolog variable: " << result.str() << std::endl;
+
+    if (result.str() != "<hello>World!</hello>")
+      return false;
+  }
+  catch (XQueryException &e)
+  {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+
+bool
+sctx_test_4(Zorba* const zorba)
+{
+  StaticContext_t lSctx = zorba->createStaticContext();
+
+  Zorba_CompilerHints_t lHints;
+
+  try
+  {
+    Item lFetched = lSctx->fetchBinary("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+
+    size_t s;
+    return !lFetched.isNull() && lFetched.getBase64BinaryValue(s);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+  }
+  return false;
+}
+
+
+int static_context( int argc, char *argv[] ) 
+{
+  void* const zstore = StoreManager::getStore();
+  Zorba* const zorba = Zorba::getInstance( zstore );
 
   if (!sctx_test_1(zorba))
     return 1;
+
+  if (!sctx_test_2(zorba))
+    return 2;
+
+  if (!sctx_test_3(zorba))
+    return 3;
+
+  if (!sctx_test_4(zorba))
+    return 4;
 
   zorba->shutdown();
   StoreManager::shutdownStore( zstore );

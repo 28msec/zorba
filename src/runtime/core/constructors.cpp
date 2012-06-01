@@ -49,28 +49,20 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AttributeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AttributeIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(NameCastIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(NameCastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CommentIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CommentIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PiIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PiIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TextIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TextIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
 
 /*******************************************************************************
 
@@ -147,8 +139,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
       if (child->getNodeKind() == store::StoreConsts::attributeNode)
       {
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(NoAttrNodesInDocument)));
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoAttrNodesInDocument)));
       }
 
       if (child->getParent() != result.getp())
@@ -544,22 +535,22 @@ AttributeIterator::AttributeIterator(
   BinaryBaseIterator<AttributeIterator, PlanIteratorState>(sctx, loc, qnameIte, valueIte),
   theQName(qname),
   theIsId(false),
-  theIsRoot(isRoot)
+  theIsRoot(isRoot),
+  theRaiseXQDY0074(false),
+  theRaiseXQDY0044(false)
 {
-  if (theQName != NULL)
+  if (theQName)
   {
     if (theQName->getLocalName().empty())
     {
-      RAISE_ERROR(err::XQDY0074, loc,
-      ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+      theRaiseXQDY0074 = true;
     }
 
     if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (theQName->getNamespace().empty() &&
          ZSTREQ(theQName->getLocalName(), "xmlns")))
     {
-      RAISE_ERROR(err::XQDY0044, loc,
-      ERROR_PARAMS(theQName->getStringValue()));
+      theRaiseXQDY0044 = true;
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
@@ -568,8 +559,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xml") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
     {
-      RAISE_ERROR(err::XQDY0044, loc,
-      ERROR_PARAMS(theQName->getStringValue()));
+      theRaiseXQDY0044 = true;
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
@@ -578,11 +568,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xmlns") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0044,
-        ERROR_PARAMS( theQName->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      theRaiseXQDY0044 = true;
     }
 
     if (ZSTREQ(theQName->getPrefix(), "xml") &&
@@ -600,6 +586,8 @@ void AttributeIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
   ar & theIsId;
   ar & theIsRoot;
+  ar & theRaiseXQDY0074;
+  ar & theRaiseXQDY0044;
 }
 
 
@@ -616,6 +604,24 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (theQName != NULL)
+  {
+    // need to raise those errors here and not in the constructor
+    // because they are dynamic errors and might be caught by try-catch
+    // (bug 955135)
+    if (theRaiseXQDY0074)
+    {
+      RAISE_ERROR(err::XQDY0074, loc,
+      ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+    }
+
+    if (theRaiseXQDY0044)
+    {
+      RAISE_ERROR(err::XQDY0044, loc,
+      ERROR_PARAMS(theQName->getStringValue()));
+    }
+  }
 
   if (theChild0 != NULL)
   {
@@ -846,8 +852,10 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   try
   {
     if (!consumeNext(lItem, theChild0, planState))
-      // TODO: needs type in error message
-      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(loc));
+    {
+      // translator places a cast to xs:NCName op
+      ZORBA_ASSERT(false);
+    }
   }
   catch (ZorbaException const& e)
   {
@@ -858,10 +866,11 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   if (consumeNext(temp, theChild0, planState))
-    // TODO: needs type in error message
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(loc));
+  {
+    // translator places a cast to xs:NCName op
+    ZORBA_ASSERT(false);  
+  }
 
-  // TODO: check if lItem is string, raise XPTY0004 if not
   lItem->getStringValue2(target);
 
   if (target.empty())
@@ -1320,19 +1329,13 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( EmptySeqNoCastToQName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(EmptySeqNoCastToQName)));
   }
   valid = true;
 
   if (consumeNext(temp, theChild, planState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004, ERROR_PARAMS( ZED( SeqNoCastToQName ) ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(SeqNoCastToQName)));
   }
 
   try
@@ -1355,19 +1358,13 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         // this needs to be checked and thrown here as the optimizer
         // might try to fold a const expression and would return a different error code
         if (theIsAttrName)
-          throw XQUERY_EXCEPTION(
-            err::XQDY0044, ERROR_PARAMS(name), ERROR_LOC(loc)
-          );
+          RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(name));
         else
-          throw XQUERY_EXCEPTION(
-            err::XQDY0096, ERROR_PARAMS(name), ERROR_LOC(loc)
-          );
+          RAISE_ERROR(err::XQDY0096, loc, ERROR_PARAMS(name));
       }
       else
         // the returned error codes are wrong for name casting => they must be changed
-        throw XQUERY_EXCEPTION(
-          err::XQDY0074, ERROR_PARAMS( "item" ), ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("item"));
     }
     else
     {

@@ -36,8 +36,9 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialization_engine.h"
-
+#include "zorbaserialization/serialize_basic_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 namespace zorba
 {
@@ -150,8 +151,6 @@ expr::~expr()
 ********************************************************************************/
 void expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  //serialize_baseclass(ar, (SimpleRCObject*)this);
-  serialize_baseclass(ar, (AnnotationHolder*)this);
   ar & theSctx;
   ar & theLoc;
   ar & theType;
@@ -296,9 +295,18 @@ std::string expr::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
+void expr::setFreeVars(FreeVars& s)
+{
+  theFreeVars.swap(s);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void expr::clear_annotations()
 {
-  m_annotations.clear();
+  theFreeVars.clear();
 
   if (getProducesSortedNodes() != ANNOTATION_TRUE_FIXED)
     setProducesSortedNodes(ANNOTATION_UNKNOWN);
@@ -871,7 +879,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const flwor_clause* clause = (*flworExpr)[i];
+      const flwor_clause* clause = flworExpr->get_clause(i);
 
       switch (clause->get_kind())
       {

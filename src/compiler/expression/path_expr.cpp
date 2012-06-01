@@ -20,27 +20,22 @@
 
 #include "system/globalenv.h"
 
-//#include "types/root_typemanager.h"
-
 #include "context/static_context.h"
 
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialization_engine.h"
-
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(relpath_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(relpath_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(axis_step_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(axis_step_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(match_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(match_expr)
 
 
 DEF_EXPR_ACCEPT (relpath_expr)

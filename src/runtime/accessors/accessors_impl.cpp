@@ -17,6 +17,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -77,15 +78,23 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(inNode, theChildren[0].getp(), planState))
   {
-    if (inNode->isNode()) {
+    if (inNode->isNode())
+    {
       result = inNode->getNilled();
       STACK_PUSH(result != NULL, state);
-    } else
+    }
+    else
+    {
 			throw XQUERY_EXCEPTION(
 				err::XPTY0004,
 				ERROR_PARAMS( ZED( FnNilledArgNotNode ) ),
 				ERROR_LOC( loc )
 			);
+    }
+  }
+  else
+  {
+    STACK_PUSH(false, state);
   }
 
   STACK_END (state);
@@ -143,27 +152,17 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!consumeNext(result, theChildren[0], planState))
       break;
 
-    if (result->isFunction())
+    if (result->isNode())
     {
-			throw XQUERY_EXCEPTION(
-          err::FOTY0013,
-          ERROR_PARAMS( result->getFunctionName()->getStringValue() ),
-          ERROR_LOC( loc )
-        );
-    }
-    if (result->isAtomic())
-    {
-      STACK_PUSH(true, state);
-    }
-    else
-    {
-      assert(result->isNode());
-
       itemNode.transfer(result);
-      try {
+
+      try 
+      {
         itemNode->getTypedValue(result, state->theTypedValueIter);
-      } catch (XQueryException& e) {
-				set_source( e, loc );
+      }
+      catch (XQueryException& e)
+      {
+				set_source(e, loc);
 				throw;
       }
 
@@ -172,7 +171,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         if (result == NULL)
           continue;
 
-        STACK_PUSH(true, state );
+        STACK_PUSH(true, state);
       }
       else
       {
@@ -184,14 +183,23 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
             break;
 
           assert(!result->isNode());
-          STACK_PUSH(true, state );
+          STACK_PUSH(true, state);
         }
       }
+    }
+    else if (result->isAtomic())
+    {
+      STACK_PUSH(true, state);
+    }
+    else //(result->isFunction())
+    {
+			RAISE_ERROR(err::FOTY0013, loc,
+      ERROR_PARAMS(result->getFunctionName()->getStringValue()));
     }
   }
 
   state->theTypedValueIter = 0; // TODO remove???
-  STACK_END (state);
+  STACK_END(state);
 }
 
 /*******************************************************************************

@@ -865,6 +865,50 @@ public:
 
 /**
  * 
+ *      zorba:truncate
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaTruncateCollectionIterator : public NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>
+{ 
+protected:
+  bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
+public:
+  SERIALIZABLE_CLASS(ZorbaTruncateCollectionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaTruncateCollectionIterator,
+    NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theDynamicCollection;
+  }
+
+  ZorbaTruncateCollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool aDynamicCollection)
+    : 
+    NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>(sctx, loc, children),
+    theDynamicCollection(aDynamicCollection)
+  {}
+
+  virtual ~ZorbaTruncateCollectionIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const static_context* sctx, const store::Item_t& name, const QueryLoc& loc, bool dyn_coll, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      zorba:collection-name
  *    
  * Author: Zorba Team
@@ -1416,6 +1460,57 @@ public:
   {}
 
   virtual ~DeclaredICsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Returns a sequence of xs:anyURI values representing the document URIs of the 
+ *    documents in a collection.
+ *  
+ * Author: Zorba Team
+ */
+class FnURICollectionIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theIterator; //the current iterator
+  bool theIteratorOpened; //flag indicating whether theIterator was opened
+
+  FnURICollectionIteratorState();
+
+  ~FnURICollectionIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnURICollectionIterator : public NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnURICollectionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnURICollectionIterator,
+    NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>*)this);
+  }
+
+  FnURICollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnURICollectionIterator();
 
   void accept(PlanIterVisitor& v) const;
 

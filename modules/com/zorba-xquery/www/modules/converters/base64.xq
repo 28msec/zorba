@@ -25,17 +25,40 @@ xquery version "1.0";
  :)
 module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
-
 
 (:~
  : Decode a xs:base64Binary.
  :
+ : The function assumes that the content after decoding is valid
+ : UTF-8.
+ :
  : @param $base64 The xs:base64Binary item to decode
- : @return the decoded xs:base64Binary item as string
+ : @return the base64 decoded value as string
  :)
-declare function base64:decode($base64 as xs:base64Binary) as xs:string external;
+declare function base64:decode($base64 as xs:base64Binary)
+as xs:string external;
+
+(:~
+ : Decode a xs:base64Binary.
+ :
+ : The function assumes that the content after decoding has
+ : the given encoding.
+ :
+ : @param $base64 The xs:base64Binary item to decode
+ : @param $encoding The encoding of the string after base64 decoding it.
+ :
+ : @return the base64 decoded value as string
+ :
+ : @error zerr:ZXQP0006 if the given encoding is invalid or not supported.
+ :)
+declare function base64:decode(
+  $base64 as xs:base64Binary,
+  $encoding as xs:string)
+as xs:string external;
 
 (:~
  : Encode a xs:string as xs:base64Binary.

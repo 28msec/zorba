@@ -25,7 +25,7 @@
 #include "compiler/parser/query_loc.h"
 #include "runtime/core/item_iterator.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 #include "zorbatypes/zstring.h"
 
 #include "debugger_common.h"
@@ -45,19 +45,16 @@ namespace zorba {
   class PlanState;
   class DebugIteratorState;
 
-struct QueryLocComparator : public serialization::SerializeBaseClass {
+
+struct QueryLocComparator 
+{
   public:
     QueryLocComparator() {}
 
     bool
     operator()(const QueryLoc& a, const QueryLoc& b) const;
-
-  public:
-
-    SERIALIZABLE_CLASS(QueryLocComparator)
-    SERIALIZABLE_CLASS_CONSTRUCTOR(QueryLocComparator)
-    void serialize(serialization::Archiver& ar);
 };
+
 
 class Breakable : public serialization::SerializeBaseClass {
   private:

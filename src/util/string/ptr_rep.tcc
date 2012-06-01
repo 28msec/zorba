@@ -169,6 +169,7 @@ reserve( size_type cap, allocator_type const &a ) {
     pointer const p = clone_data_only( alloc, cap );
     dispose_data_only( alloc );
     p_ = p;
+    dispose_data_using_delete_ = false;
     this->cap_ = cap;
   }
   return this;

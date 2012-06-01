@@ -55,21 +55,21 @@ public:
   /**
    * @brief Return the URL used to load this Resource.
    */
-  zstring getUrl() { return theUrl; }
+  zstring const& getUrl() const { return theUrl; }
 
   virtual ~Resource() = 0;
 
-  protected:
+protected:
 
   Resource();
 
-  private:
+private:
 
   /**
    * Used by static_context to populate the URL.
    */
+  void setUrl(zstring const &aUrl) { theUrl = aUrl; }
   friend class zorba::static_context;
-  void setUrl(zstring aUrl) { theUrl = aUrl; }
 
   zstring theUrl;
 };
@@ -97,10 +97,13 @@ public:
    * are certain unusual circumstances where a URLResolver may wish to
    * return a stream over some other URL than the one passed to it. In
    * that case, the URLResolver may pass the true URL here.
+   * @param aIsStreamSeekable determines whether the stream passed as first
+   * argument is arbitrarily seekable without throwing errors.
    */
   StreamResource(std::istream* aStream,
                  StreamReleaser aStreamReleaser,
-                 zstring aStreamUrl = "");
+                 zstring aStreamUrl = "",
+                 bool aIsStreamSeekable = false);
   
   virtual ~StreamResource();
 
@@ -127,11 +130,18 @@ public:
    */
   zstring getStreamUrl();
 
+  /**
+   * @brief Returns true if the stream returned by getStream is seekable,
+   * false otherwise.
+   */
+  bool isStreamSeekable() const { return theIsStreamSeekable; }
+
 private:
 
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
   zstring theStreamUrl;
+  bool theIsStreamSeekable;
 };
 
 /**
@@ -192,25 +202,6 @@ public:
 private:
   Kind const theKind;
 };
-
-#ifndef ZORBA_NO_FULL_TEXT
-/**
- * @brief The class containing additional data for URIMappers and URLResolvers
- * when mapping/resolving a Thesaurus URI.
- */
-class ThesaurusEntityData : public EntityData
-{
-public:
-  ThesaurusEntityData(locale::iso639_1::type aLang);
-  /**
-   * @brief Return the language for which a thesaurus is being requested.
-   */
-  virtual locale::iso639_1::type getLanguage() const;
-
-private:
-  locale::iso639_1::type const theLang;
-};
-#endif /* ZORBA_NO_FULL_TEXT */
 
 /**
  * @brief Interface for URL resolving.

@@ -53,7 +53,7 @@ char const *const scheme_string[] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ZORBA_DLL_PUBLIC extern signed char const hex2dec[] = {          
+extern signed char const hex2dec[] = {          
   /*       0  1  2  3   4  5  6  7   8  9  A  B   C  D  E  F */
   /* 0 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
   /* 1 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
@@ -79,7 +79,7 @@ ZORBA_DLL_PUBLIC extern signed char const hex2dec[] = {
 /**
  * Characters that need not be percent-encoded (%xx) in URIs.  See RFC 3986.
  */
-ZORBA_DLL_PUBLIC extern char const uri_safe[256] = {
+extern char const uri_safe[256] = {
   /*      0 1 2 3  4 5 6 7  8 9 A B  C D E F   */
   /* 0 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
   /* 1 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,

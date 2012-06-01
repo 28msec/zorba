@@ -1621,6 +1621,16 @@ DEFAULT_END_VISIT (ReverseAxis);
     }
     DEFAULT_END_VISIT (StringLiteral);
 
+
+    void* begin_visit(const StringConcatExpr& n)
+    {
+      n.get_left_expr()->accept(*this);
+      os << " || ";
+      n.get_right_expr()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT(StringConcatExpr);   
+
     void* begin_visit(const TreatExpr& n)
     {
       n.get_castable_expr()->accept(*this);
@@ -1859,11 +1869,42 @@ DEFAULT_END_VISIT (ReverseAxis);
 
       os << "{";
       n.getExprSingle()->accept(*this);
-      os << '}';
+      os << "}";
       return 0;
     }
     DEFAULT_END_VISIT (CatchExpr);
 
+    void* begin_visit(const AnyFunctionTest& n)
+    {
+      os << "function (*)";
+      return 0;
+    }
+    DEFAULT_END_VISIT (AnyFunctionTest);
+    
+    void* begin_visit(const TypedFunctionTest& n)
+    {
+      os << "function (";
+      n.getArgumentTypes()->accept(*this); 
+      os << ") as ";
+      n.getReturnType()->accept(*this); 
+      return 0; 
+    }
+    DEFAULT_END_VISIT (TypedFunctionTest);
+    
+    void* begin_visit(const TypeList& n)
+    {
+      for (size_t i = 0; i < n.size(); ++i)
+      {
+        if (i > 0)
+        {
+          os << ", ";
+        }
+        const SequenceType* e_p = n[i];
+        e_p->accept(*this);
+      }
+      return 0;
+    }
+    DEFAULT_END_VISIT (TypeList);
 
   /* full-text-related */
   DEFAULT_VISIT (FTAnd);
@@ -1911,9 +1952,6 @@ DEFAULT_END_VISIT (ReverseAxis);
 
     DEFAULT_VISIT (LiteralFunctionItem);
     DEFAULT_VISIT (InlineFunction);
-    DEFAULT_VISIT (AnyFunctionTest);
-    DEFAULT_VISIT (TypeList);
-    DEFAULT_VISIT (TypedFunctionTest);
     DEFAULT_VISIT (DynamicFunctionInvocation);
 
   DEFAULT_VISIT (ParseErrorNode);
