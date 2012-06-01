@@ -261,6 +261,23 @@ store::Iterator_t SimpleLazyTempSeq::getIterator(
 
 
 /*******************************************************************************
+********************************************************************************/
+zstring SimpleLazyTempSeq::show() const
+{
+  zstring result = "{";
+  
+  for (unsigned int i=0; i < theItems.size(); i++)
+  {
+    if (i != 0)
+      result += " , ";
+    result += theItems[i]->show();
+  }
+  
+  return result + "}";
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
@@ -320,6 +337,7 @@ void SimpleLazyTempSeqIter::close()
 {
 }
 
-  } // namespace store
+
+} // namespace simplestore
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

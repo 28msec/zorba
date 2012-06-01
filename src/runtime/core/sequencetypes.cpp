@@ -194,7 +194,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       zstring strval;
       lItem->getStringValue2(strval);
-      
+
       namespace_context tmp_ctx(theSctx);
       valid = GenericCast::castToAtomic(result, strval, theCastType, tm, &tmp_ctx, loc);
     }
@@ -309,7 +309,7 @@ PromoteIterator::PromoteIterator(
   theFnQName(fnQName)
 {
   thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *aPromoteType);
-  theQuantifier = TypeOps::quantifier(*aPromoteType); 
+  theQuantifier = TypeOps::quantifier(*aPromoteType);
 }
 
 
@@ -333,7 +333,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring const type = thePromoteType->toSchemaString() + 
+      zstring const type = thePromoteType->toSchemaString() +
                            (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
 
       if (theFnQName.getp())
@@ -482,23 +482,23 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS || 
+    if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring type = theTreatType->toSchemaString() + 
+      zstring type = theTreatType->toSchemaString() +
                      (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
 
       if (theFnQName.getp() != NULL)
       {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
                                 "An empty sequence is not allowed as the result "
-                                << "of the function " 
-                                << theFnQName->getStringValue() 
+                                << "of the function "
+                                << theFnQName->getStringValue()
                                 << "() which returns " << type << ".");
       }
       else
       {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
                                 "Cannot treat empty sequence as " << type << ".");
       }
     }
@@ -508,20 +508,20 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (consumeNext(temp, theChild.getp(), planState))
     {
-      zstring type = theTreatType->toSchemaString() + 
+      zstring type = theTreatType->toSchemaString() +
                      (theQuantifier == TypeConstants::QUANT_PLUS? "?" : "");
 
       if (theFnQName.getp() != NULL)
       {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
                                 "A sequence with more than one item cannot be "
-                                << "the result of the function " 
-                                << theFnQName->getStringValue() 
+                                << "the result of the function "
+                                << theFnQName->getStringValue()
                                 << "() which returns " << type << ".");
       }
       else
       {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
                                 "Cannot treat sequence with more than one item as "
                                 << type << ".");
       }
@@ -534,15 +534,15 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       if (theFnQName.getp() != NULL)
       {
         ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                "Cannot treat " << valueType->toSchemaString() 
+                                "Cannot treat " << valueType->toSchemaString()
                                 << " as " << theTreatType->toSchemaString()
                                 << " when returning the result of the function "
                                 << theFnQName->getStringValue() << "().");
       }
       else
       {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
-                                "Cannot treat " << valueType->toSchemaString() 
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
+                                "Cannot treat " << valueType->toSchemaString()
                                 << " as " << theTreatType->toSchemaString()
                                 << ".");
       }
@@ -563,7 +563,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         if (theFnQName.getp() != NULL)
         {
           ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                  "Cannot treat " + valueType->toSchemaString() 
+                                  "Cannot treat " + valueType->toSchemaString()
                                   << " as " << theTreatType->toSchemaString()
                                   << " when returning the result of the function "
                                   << theFnQName->getStringValue() << "().");
@@ -571,7 +571,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         else
         {
           ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                  "Cannot treat " << valueType->toSchemaString() 
+                                  "Cannot treat " << valueType->toSchemaString()
                                   << " as " << theTreatType->toSchemaString());
         }
       }

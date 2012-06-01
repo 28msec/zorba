@@ -711,7 +711,7 @@ TranslatorImpl(
 }
 
 
-~TranslatorImpl() 
+~TranslatorImpl()
 {
 #ifndef ZORBA_NO_FULL_TEXT
   while (!theFTNodeStack.empty())
@@ -1297,6 +1297,141 @@ fo_expr* create_empty_seq(const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
+void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<xqtref_t>& paramTypes, xqtref_t returnType, const QueryLoc& loc, CompilerCB* theCCB)
+{
+  std::vector<var_expr_t> argVars;
+
+  if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
+  {
+    body = wrap_in_atomization(body);
+    body = wrap_in_type_promotion(body, returnType);
+  }
+  else
+  {
+    body = wrap_in_type_match(body, returnType, loc);
+  }
+
+  if (flwor != NULL)
+  {
+    flwor->set_return_expr(body);
+
+    body = flwor;
+
+    // Parameters and inscope vars have been wrapped into a flwor expression (see
+    // begin_visit). We need to add these to the udf obj so that they will bound
+    // at runtime. We must do this here (before we optimize the inline function
+    // body, because optimization may remove clauses from the flwor expr
+    for (ulong i = 0; i < flwor->num_clauses(); ++i)
+    {
+      const flwor_clause* lClause = (*flwor)[i];
+      const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
+      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
+      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
+      argVars.push_back(argVar);
+    }
+  }
+
+  if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
+  {
+    RewriterContext rCtx(theCCB,
+                         body,
+                         NULL,
+                         "Inline function",
+                         (theSctx->ordering_mode() == StaticContextConsts::ordered));
+    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+    body = rCtx.getRoot();
+  }
+
+  // Create the udf obj.
+  user_function_t udf(new user_function(loc,
+                                        signature(0, paramTypes, returnType),
+                                        body.getp(),
+                                        body->get_scripting_detail()));
+  udf->setArgVars(argVars);
+  udf->setOptimized(true);
+
+  // std::cerr << "-------------- NodeStack top -------------------\n";
+  // if (theNodeStack.top().getp() != NULL)
+  //  std::cerr << theNodeStack.top().getp()->toString() << std::endl;
+  // else
+  //  std::cerr << "--> is NULL, but it shouldn't be" << std::endl;
+
+  // Get the function_item_expr and set its function to the udf created above.
+  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
+                               theNodeStack.top().getp());
+  assert(fiExpr != NULL);
+
+  fiExpr->set_function(udf);
+}
+
+
+expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB)
+{
+//   std::cerr << "--> targetType: " << targetType->toString() << std::endl;
+//   std::cerr << "----------- Argument to coercion ---------------\n";
+//   std::cerr << theExpr->toString() << std::endl;
+//   std::cerr << "------------------------------------------------\n";
+
+  // Create the dynamic call body
+  const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
+
+  // Get the in-scope vars of the scope before opening the new scope for the
+  // function devl
+  // std::vector<var_expr_t> scopedVars;
+  // theSctx->getVariables(scopedVars);
+  // push_scope();
+
+  function_item_expr* fiExpr = new function_item_expr(theRootSctx, loc);
+
+  push_nodestack(fiExpr);
+
+  // std::cerr << "-------------- NodeStack top -------------------\n";
+  // std::cerr << theNodeStack.top().getp()->toString() << std::endl;
+
+  flwor_expr_t flwor = new flwor_expr(theRootSctx, loc, false);
+
+  // Handle parameters. For each parameter, a let binding is added to the flwor.
+  std::vector<expr_t> arguments;
+  for(unsigned i = 0; i<func_type->get_number_params(); i++)
+  {
+    xqtref_t param_type = func_type->operator[](i);
+
+    var_expr_t arg_var = create_temp_var(loc, var_expr::arg_var);
+    var_expr_t subst_var = bind_var(loc, arg_var->get_name(), var_expr::let_var);
+
+    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+
+    arg_var->set_param_pos(flwor->num_clauses());
+    arg_var->set_type(param_type);
+
+    flwor->add_clause(lc);
+    // fiExpr->add_variable(arg_var);
+
+    arguments.push_back(new wrapper_expr(theRootSctx, loc, subst_var));
+  }
+
+  expr_t body = new dynamic_function_invocation_expr(
+                theRootSctx,
+                loc,
+                theExpr,
+                arguments);
+
+  create_inline_function(body, flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
+
+  theExpr = pop_nodestack();
+
+  // std::cerr << "-------------- stack top was: -------------------\n";
+  // std::cerr << theExpr->toString() << std::endl;
+
+  // pop_scope();
+
+  return theExpr;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void normalize_fo(fo_expr* foExpr)
 {
   const QueryLoc& loc = foExpr->get_loc();
@@ -1393,6 +1528,13 @@ void normalize_fo(fo_expr* foExpr)
       }
       else
       {
+        if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
+        {
+          // function coercion
+          // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
+          argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
+        }
+
         argExpr = wrap_in_type_match(argExpr, paramType, loc);
       }
     }
@@ -1774,7 +1916,7 @@ void collect_flwor_vars (
 
     if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& varDecls = 
+      const VarInDeclList& varDecls =
       *(static_cast<const ForClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
@@ -1789,7 +1931,7 @@ void collect_flwor_vars (
     }
     else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = 
+      const VarGetsDeclList& lV =
       *(static_cast<const LetClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
@@ -2271,7 +2413,7 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
 
   // If an appliaction set a type for the context item via the c++ api, then
   // create a full declaration for it in order to enforce that type.
-  if (!theHaveContextItemDecl && 
+  if (!theHaveContextItemDecl &&
       theSctx->get_context_item_type() != theRTM.ITEM_TYPE_ONE.getp())
   {
     var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
@@ -3602,7 +3744,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   {
     //lc->setLazyEval(!f->isSequential());
 
-    const user_function* udf = 
+    const user_function* udf =
     static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
 
     arg_var->set_param_pos(flwor->num_clauses());
@@ -3772,7 +3914,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       bind_var(ve, export_sctx);
 
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
     {
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
@@ -10543,6 +10685,8 @@ void* begin_visit(const InlineFunction& v)
     fiExpr->add_variable(varExpr);
 
     // ???? What about inscope vars that are hidden by param vars ???
+
+    // TODO: local vars can be used in the body of the function
   }
 
   if (flwor->num_clauses() > 0)
@@ -10571,49 +10715,8 @@ void end_visit(const InlineFunction& v, void* aState)
   expr_t body = pop_nodestack();
   ZORBA_ASSERT(body != 0);
 
-  if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
-  {
-    body = wrap_in_atomization(body);
-    body = wrap_in_type_promotion(body, returnType);
-  }
-  else
-  {
-    body = wrap_in_type_match(body, returnType, loc);
-  }
-
   // Make the body be the return expr of the flwor that binds the function params.
   flwor_expr_t flwor = pop_nodestack().cast<flwor_expr>();
-
-  if (flwor != NULL)
-  {
-    flwor->set_return_expr(body);
-
-    body = flwor;
-
-    // Parameters and inscope vars have been wrapped into a flwor expression (see
-    // begin_visit). We need to add these to the udf obj so that they will bound
-    // at runtime. We must do this here (before we optimize the inline function
-    // body, because optimization may remove clauses from the flwor expr
-    for (ulong i = 0; i < flwor->num_clauses(); ++i)
-    {
-      const flwor_clause* lClause = (*flwor)[i];
-      const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
-      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
-      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
-      argVars.push_back(argVar);
-    }
-  }
-
-  if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
-  {
-    RewriterContext rCtx(theCCB,
-                         body,
-                         NULL,
-                         "Inline function",
-                         (theSctx->ordering_mode() == StaticContextConsts::ordered));
-    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-    body = rCtx.getRoot();
-  }
 
   // Translate the type declarations for the function params
   std::vector<xqtref_t> paramTypes;
@@ -10625,7 +10728,7 @@ void end_visit(const InlineFunction& v, void* aState)
     {
       const Param* param = lIt->getp();
       const SequenceType* paramType = param->get_typedecl().getp();
-      if(paramType == 0)
+      if(paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
       }
@@ -10637,20 +10740,7 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
-  // Create the udf obj.
-  user_function_t udf(new user_function(loc,
-                                        signature(0, paramTypes, returnType),
-                                        body.getp(),
-                                        body->get_scripting_detail()));
-  udf->setArgVars(argVars);
-  udf->setOptimized(true);
-
-  // Get the function_item_expr and set its function to the udf created above.
-  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
-                               theNodeStack.top().getp());
-  assert(fiExpr != NULL);
-
-  fiExpr->set_function(udf);
+  create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB);
 
   // pop the scope.
   pop_scope();

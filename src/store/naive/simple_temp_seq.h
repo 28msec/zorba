@@ -83,6 +83,8 @@ public:
       xs_integer startPos,
       xs_integer endPos,
       bool streaming = false) const;
+  
+  virtual zstring show() const;
 };
 
 

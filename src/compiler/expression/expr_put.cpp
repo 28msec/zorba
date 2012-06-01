@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,7 @@
 
 using namespace std;
 
-namespace zorba 
+namespace zorba
 {
 
 #define BEGIN_PUT_NO_LOCATION(LABEL) \
@@ -77,7 +77,7 @@ namespace zorba
   if ( !(EXPR) ) ; else { os << indent << (LABEL) << "\n" << inc_indent; (EXPR)->put(os); os << dec_indent; }
 
 
-static inline zstring qname_to_string(store::Item_t qname) 
+static inline zstring qname_to_string(store::Item_t qname)
 {
   zstring result;
   zstring pfx = qname->getPrefix();
@@ -89,7 +89,7 @@ static inline zstring qname_to_string(store::Item_t qname)
 }
 
 
-static inline ostream& put_qname(store::Item_t qname, ostream& os) 
+static inline ostream& put_qname(store::Item_t qname, ostream& os)
 {
   zstring pfx = qname->getPrefix();
   zstring ns = qname->getNamespace();
@@ -100,13 +100,13 @@ static inline ostream& put_qname(store::Item_t qname, ostream& os)
 }
 
 
-static inline string expr_addr(const void* e) 
+static inline string expr_addr(const void* e)
 {
   if (Properties::instance()->noTreeIds ())
   {
     return "";
   }
-  else 
+  else
   {
     ostringstream os;
     os << " (" << e << ")";
@@ -115,7 +115,7 @@ static inline string expr_addr(const void* e)
 }
 
 
-static inline string expr_loc(const expr* e) 
+static inline string expr_loc(const expr* e)
 {
   if (e == NULL)
     return "";
@@ -126,7 +126,7 @@ static inline string expr_loc(const expr* e)
     os << " (loc: " << e->get_loc().getLineBegin() << ", " << e->get_loc().getColumnBegin() << ")";
     return os.str ();
   }
-  else 
+  else
   {
     return "";
   }
@@ -187,7 +187,7 @@ ostream& var_expr::put(ostream& os) const
   }
 
 #if VERBOSE
-  if (theDeclaredType != NULL) 
+  if (theDeclaredType != NULL)
   {
     os << " type=" << theDeclaredType->toString();
   }
@@ -281,13 +281,13 @@ ostream& flwor_wincond::put(ostream& os) const
 }
 
 
-ostream& group_clause::put(ostream& os) const 
+ostream& group_clause::put(ostream& os) const
 {
   BEGIN_PUT(group_clause);
 
   os << indent << "GROUP BY EXPRS";
 
-  for (unsigned i = 0; i < theGroupVars.size(); i++) 
+  for (unsigned i = 0; i < theGroupVars.size(); i++)
   {
     PUT_SUB("", theGroupVars[i].first);
     os << inc_indent << indent << "-->" << dec_indent;
@@ -296,18 +296,18 @@ ostream& group_clause::put(ostream& os) const
 
   os << indent << "NON GROUP BY VARS ";
 
-  for (unsigned i = 0; i < theNonGroupVars.size(); i++) 
+  for (unsigned i = 0; i < theNonGroupVars.size(); i++)
   {
     PUT_SUB("", theNonGroupVars[i].first);
     os << inc_indent << indent << "-->" << dec_indent;
     theNonGroupVars[i].second->put(os) << endl;
   }
-  
+
   END_PUT();
 }
 
 
-ostream& orderby_clause::put(ostream& os) const 
+ostream& orderby_clause::put(ostream& os) const
 {
   BEGIN_PUT(orderby_clause);
 
@@ -315,7 +315,7 @@ ostream& orderby_clause::put(ostream& os) const
 
   unsigned numColumns = num_columns();
 
-  for (unsigned i = 0; i < numColumns; i++) 
+  for (unsigned i = 0; i < numColumns; i++)
   {
     theOrderingExprs[i]->put(os);
   }
@@ -323,11 +323,11 @@ ostream& orderby_clause::put(ostream& os) const
   os << endl;
 
   os << indent << "VAR REBINDS ";
-  for (unsigned i = 0; i < theRebindList.size (); i++) 
+  for (unsigned i = 0; i < theRebindList.size (); i++)
   {
     os << "$";
     put_qname(theRebindList[i].first->get_varname(), os);
-    os << " (" << theRebindList[i].first.getp() << " -> " 
+    os << " (" << theRebindList[i].first.getp() << " -> "
        << theRebindList[i].second.getp() << ") ";
   }
   os << endl;
@@ -336,7 +336,7 @@ ostream& orderby_clause::put(ostream& os) const
 }
 
 
-ostream& materialize_clause::put(ostream& os) const 
+ostream& materialize_clause::put(ostream& os) const
 {
   BEGIN_PUT(materialize_clause);
 
@@ -348,7 +348,7 @@ ostream& flwor_expr::put(ostream& os) const
 {
   BEGIN_PUT(flwor_expr);
 
-  for (unsigned i = 0; i < num_clauses(); i++) 
+  for (unsigned i = 0; i < num_clauses(); i++)
   {
     const flwor_clause& c = *((*this)[i]);
 
@@ -356,40 +356,40 @@ ostream& flwor_expr::put(ostream& os) const
     {
       PUT_SUB( "WHERE", static_cast<const where_clause *>(&c)->get_expr() );
     }
-    else if (c.get_kind() == flwor_clause::count_clause) 
+    else if (c.get_kind() == flwor_clause::count_clause)
     {
-      os << indent << "COUNT $"; 
+      os << indent << "COUNT $";
       put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
       os << endl;
     }
-    else if (c.get_kind() == flwor_clause::for_clause) 
+    else if (c.get_kind() == flwor_clause::for_clause)
     {
       static_cast<const for_clause *>(&c)->put(os);
     }
-    else if (c.get_kind() == flwor_clause::let_clause) 
+    else if (c.get_kind() == flwor_clause::let_clause)
     {
       static_cast<const let_clause *>(&c)->put(os);
     }
-    else if (c.get_kind() == flwor_clause::window_clause) 
+    else if (c.get_kind() == flwor_clause::window_clause)
     {
       static_cast<const window_clause *>(&c)->put(os);
     }
-    else if (c.get_kind() == flwor_clause::group_clause) 
+    else if (c.get_kind() == flwor_clause::group_clause)
     {
       static_cast<const group_clause *>(&c)->put(os);
     }
-    else if (c.get_kind() == flwor_clause::order_clause) 
+    else if (c.get_kind() == flwor_clause::order_clause)
     {
       static_cast<const orderby_clause *>(&c)->put(os);
     }
   }
 
   os << indent << "RETURN\n" << inc_indent;
-  if (theReturnExpr == NULL) 
+  if (theReturnExpr == NULL)
   {
     os << indent << "NULL";
   }
-  else 
+  else
   {
     theReturnExpr->put(os);
   }
@@ -432,7 +432,7 @@ ostream& eval_expr::put(ostream& os) const
     os << indent << "using $" << theVars[i]->get_name()->getStringValue() << " := [";
     os << endl << inc_indent;
     theArgs[i]->put(os);
-    os << dec_indent << indent << "]" << endl; 
+    os << dec_indent << indent << "]" << endl;
   }
   theExpr->put (os);
   END_PUT();
@@ -526,7 +526,8 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   else
   {
     os << " inline udf (" << theFunction.getp() << ") [\n";
-    reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
+    if (theFunction.getp() != NULL)
+        reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
     END_PUT();
   }
 }
@@ -585,7 +586,7 @@ ostream& validate_expr::put(ostream& os) const
 {
   BEGIN_PUT( validate_expr );
 
-  switch (theMode) 
+  switch (theMode)
   {
   case ParseConstants::val_strict: os << "strict\n"; break;
   case ParseConstants::val_lax: os << "lax\n"; break;
@@ -612,7 +613,7 @@ ostream& extension_expr::put( ostream& os) const
 ostream& relpath_expr::put( ostream& os) const
 {
   BEGIN_PUT( relpath_expr );
-  
+
   for (std::vector<expr_t>::const_iterator it = begin(); it != end(); ++it)
   {
     expr_t expr = *it;
@@ -654,7 +655,7 @@ ostream& axis_step_expr::put(ostream& os) const
 
   os << "::";
 
-  if (theNodeTest != NULL) 
+  if (theNodeTest != NULL)
   {
     theNodeTest->put(os);
   }
@@ -748,7 +749,7 @@ ostream& order_expr::put(ostream& os) const
   os << indent << "order_expr" << expr_addr (this) << "\n" << inc_indent
      << indent << "[ ";
 
-  switch (theType) 
+  switch (theType)
   {
   case ordered: os << "ordered\n"; break;
   case unordered: os << "unordered\n"; break;

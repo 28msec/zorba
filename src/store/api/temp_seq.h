@@ -112,6 +112,10 @@ public:
       xs_integer startPos,
       xs_integer endPos,
       bool streaming = false) const = 0;
+  
+  /** Method to print the contents of the sequence
+   */
+  virtual zstring show() const = 0;
 };
 
 } // namespace store

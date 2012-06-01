@@ -185,6 +185,23 @@ bool SimpleTempSeq::containsItem(xs_integer position)
 
 
 /*******************************************************************************
+********************************************************************************/
+zstring SimpleTempSeq::show() const
+{
+  zstring result = "{";
+  
+  for (unsigned int i=0; i < theItems.size(); i++)
+  {
+    if (i != 0)
+      result += " , ";
+    result += theItems[i]->show();
+  }
+  
+  return result + "}";
+}
+
+
+/*******************************************************************************
   Reads the whole Sequence from beginning to end; it is allowed to have several 
   concurrent iterators on the same TempSeq.
 

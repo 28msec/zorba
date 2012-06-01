@@ -427,6 +427,12 @@ protected:
     assert(theLocal.empty() && theNormQName == NULL && isNormalized());
 
     theLocal = local;
+#ifndef NDEBUG
+    debug_holder = theLocal.c_str();
+    if (!thePrefix.empty())
+      debug_holder = thePrefix + ":" + debug_holder;
+    debug_str = debug_holder.c_str();
+#endif
   }
 
   void unsetLocalName()
@@ -498,7 +504,7 @@ protected:
   AnyUriItem() {}
 
 public:
-  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  virtual AnyUriTypeCode getAnyUriTypeCode() const
   {
     return NON_SPECIALIZED_ANY_URI;
   }
@@ -622,7 +628,7 @@ protected:
   OrdPath                      theOrdPath;
 
 protected:
-  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  virtual AnyUriTypeCode getAnyUriTypeCode() const
   {
     return STRUCTURAL_INFORMATION_ANY_URI;
   }
@@ -759,7 +765,7 @@ public:
   virtual zstring show() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( 
+  FTTokenIterator_t getTokens(
       TokenizerProvider const&,
       Tokenizer::Numbers&,
       locale::iso639_1::type,
@@ -771,7 +777,7 @@ public:
 /*******************************************************************************
   class StreamableStringItem
 ********************************************************************************/
-class StreamableStringItem : public StringItem 
+class StreamableStringItem : public StringItem
 {
   friend class BasicItemFactory;
 
@@ -790,7 +796,7 @@ public:
         long timezone = 0,
         const XQPCollator* collator = 0 ) const;
 
-  long compare( 
+  long compare(
         Item const* other,
         long timezone = 0,
         const XQPCollator* collator = 0) const;
@@ -821,7 +827,7 @@ public:
 
   virtual ~StreamableStringItem()
   {
-    if (theStreamReleaser) 
+    if (theStreamReleaser)
     {
       theStreamReleaser(&theIstream);
     }
@@ -2317,7 +2323,7 @@ protected:
   ZorbaException * theError;
 
 protected:
-  ErrorItem(ZorbaException* error) : theError(error) 
+  ErrorItem(ZorbaException* error) : theError(error)
   {
     theUnion.itemKind = ERROR_;
   }
@@ -2346,7 +2352,7 @@ class AtomicItemTokenizerCallback : public Tokenizer::Callback
 public:
   typedef FTTokenStore::container_type container_type;
 
-  AtomicItemTokenizerCallback( 
+  AtomicItemTokenizerCallback(
       Tokenizer &tokenizer,
       locale::iso639_1::type lang,
       container_type &tokens );
@@ -2359,7 +2365,7 @@ public:
       size_type para_no,
       void* = 0 );
 
-  void tokenize( char const *utf8_s, size_t len, bool wildcards = false ) 
+  void tokenize( char const *utf8_s, size_t len, bool wildcards = false )
   {
     tokenizer_.tokenize( utf8_s, len, lang_, wildcards, *this );
   }

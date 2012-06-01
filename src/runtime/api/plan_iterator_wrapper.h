@@ -33,7 +33,8 @@ class PlanState;
 ********************************************************************************/
 class PlanIteratorWrapper : public store::Iterator
 {
-private:
+// private: TODO: debugging purposes
+public:
   const PlanIterator * theIterator;
   PlanState          * theStateBlock;
 

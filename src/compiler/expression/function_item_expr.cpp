@@ -152,7 +152,7 @@ void function_item_expr::set_function(user_function_t& udf)
 {
   theFunction = udf;
   theArity = udf->getArity();
-  compute_scripting_kind();
+  // compute_scripting_kind();
 }
 
 

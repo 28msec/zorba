@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@
 #include "diagnostics/assert.h"
 
 #include "runtime/core/item_iterator.h"
+#include "runtime/function_item/function_item.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planiter_visitor.h"
 
@@ -40,7 +41,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
 /*******************************************************************************
 
 ********************************************************************************/
-bool EmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool EmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   return false;
 }
@@ -55,6 +56,9 @@ NOARY_ACCEPT(EmptyIterator);
 bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
+
+  // std::cerr << "--> SingletonIterator::nextImp() " << this << " value: " << theValue->show() << std::endl;
+
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
   result = theValue;
@@ -63,7 +67,19 @@ bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 }
 
 
-NOARY_ACCEPT(SingletonIterator);
+void SingletonIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+  
+  if (theValue->isFunction())
+  {
+    const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theValue.getp())->getVariables();
+    for (unsigned int i=0; i<variableValues.size(); i++)
+      variableValues[0]->accept(v);    
+  }
+  
+  v.endVisit(*this);
+}
 
 
 /*******************************************************************************
@@ -87,7 +103,7 @@ IfThenElseIterator::IfThenElseIterator(
 { }
 
 
-void IfThenElseIterator::accept(PlanIterVisitor& v) const 
+void IfThenElseIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
   theCondIter->accept(v);
@@ -102,7 +118,7 @@ bool IfThenElseIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   IfThenElseIteratorState* state;
   DEFAULT_STACK_INIT(IfThenElseIteratorState, state, planState);
 
-  if (theIsBooleanIter) 
+  if (theIsBooleanIter)
   {
     store::Item_t condResult;
     consumeNext ( condResult, theCondIter.getp(), planState );
@@ -119,7 +135,7 @@ bool IfThenElseIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   {
     STACK_PUSH(consumeNext(result,
                            (state->theThenUsed ? theThenIter.getp() : theElseIter.getp()),
-                           planState), 
+                           planState),
                state);
   }
 
@@ -127,7 +143,7 @@ bool IfThenElseIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 }
 
 
-void IfThenElseIterator::openImpl(PlanState& planState, uint32_t& offset) 
+void IfThenElseIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<IfThenElseIteratorState>::
   createState(planState, theStateOffset, offset);
@@ -141,7 +157,7 @@ void IfThenElseIterator::openImpl(PlanState& planState, uint32_t& offset)
 void IfThenElseIterator::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<IfThenElseIteratorState>::reset(planState, theStateOffset);
-  
+
   theCondIter->reset(planState);
   theThenIter->reset(planState);
   theElseIter->reset(planState);
@@ -158,9 +174,9 @@ void IfThenElseIterator::closeImpl(PlanState& planState) const
 }
 
 
-uint32_t IfThenElseIterator::getStateSizeOfSubtree() const 
+uint32_t IfThenElseIterator::getStateSizeOfSubtree() const
 {
-  return getStateSize() 
+  return getStateSize()
       + theCondIter->getStateSizeOfSubtree()
       + theThenIter->getStateSizeOfSubtree()
       + theElseIter->getStateSizeOfSubtree();

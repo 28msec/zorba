@@ -728,6 +728,8 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 
   state->theTempSeq = value;
 
+  std::cerr << "--> LetVarIterator::bind() " << this << " name: " << theVarName->show() << " tempSequence: " << value->show() << std::endl;
+
   if (theTargetPosIter == NULL)
   {
     if (theTargetPos > Integer(0))
@@ -736,7 +738,10 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
     }
     else
     {
-      state->theSourceIter = state->theTempSeq->getIterator();
+      store::Iterator_t iter = state->theTempSeq->getIterator();
+      std::cerr << "    theSourceIter: " << iter.getp() << std::endl;
+      
+      state->theSourceIter = iter;
       state->theSourceIter->open();
     }
   }
@@ -834,6 +839,8 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lenItem;
   xs_integer startPos;
   xs_integer len;
+
+  // std::cerr << "--> LetVarIterator::nextImp() " << this << " on var: " << this->theVarName->show() << std::endl;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);

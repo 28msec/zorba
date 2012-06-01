@@ -361,7 +361,7 @@ bool NodeXQType::is_equal(const TypeManager* tm, const NodeXQType& other) const
 
 
 bool NodeXQType::is_subtype(
-    const TypeManager* tm, 
+    const TypeManager* tm,
     const NodeXQType& supertype,
     const QueryLoc& loc) const
 {
@@ -443,7 +443,7 @@ bool NodeXQType::is_subtype(
 
 
 bool NodeXQType::is_supertype(
-    const TypeManager* tm, 
+    const TypeManager* tm,
     const store::Item* subitem,
     const QueryLoc& loc) const
 {
@@ -488,7 +488,7 @@ bool NodeXQType::is_supertype(
     }
   }
 
-  if (m_node_kind != store::StoreConsts::elementNode && 
+  if (m_node_kind != store::StoreConsts::elementNode &&
       m_node_kind != store::StoreConsts::attributeNode)
     return true;
 
