@@ -1774,28 +1774,31 @@ void GroupSpecList::push_back(rchandle<GroupSpec> spec)
   vector<rchandle<GroupSpec> >::const_iterator ite = theSpecs.begin();
   vector<rchandle<GroupSpec> >::const_iterator end = theSpecs.end();
 
-  //If no expression is given, then it'll just be the variable.
-  //If this is the case, and the variable is already defined as a
-  //grouping variable, it makes no sense to add it, so this is a
-  //quick optimization.
-  if(spec->get_var_expr() == NULL)
+  vector<rchandle<GroupSpec> > new_specs = vector<rchandle<GroupSpec> >();
+
+
+  //If multiple group vars are declared with the same Qname the only valid value is
+  //the last redefinition for that specific Qname.
+  for (; ite != end; ++ite)
   {
-    for (; ite != end; ++ite)
+    const GroupSpec* currSpec = (*ite).getp();
+
+    if (! (*currSpec->get_var_name() == *spec->get_var_name()) )
     {
-      const GroupSpec* currSpec = (*ite).getp();
-
-      if (*currSpec->get_var_name() == *spec->get_var_name() &&
-          currSpec->get_var_expr() == NULL)
-        break;
+      if(spec->get_var_expr() != NULL)
+        new_specs.push_back(*ite);
     }
+    else if(spec->get_var_expr() == NULL)
+    {
+      break;
+    }
+  }
 
-    if (ite == end)
-      theSpecs.push_back(spec);
-  }
-  else
-  {
+  if(spec->get_var_expr() != NULL)
+    theSpecs = new_specs;
+
+  if(ite == end)
     theSpecs.push_back(spec);
-  }
 }
 
 
