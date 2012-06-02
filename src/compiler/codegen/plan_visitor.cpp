@@ -26,7 +26,6 @@
 
 #include "util/tracer.h"
 #include "util/stl_util.h"
-#include "util/hashmap32.h"
 
 #include "system/globalenv.h"
 #include "system/properties.h"
