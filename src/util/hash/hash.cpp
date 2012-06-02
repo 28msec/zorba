@@ -27,7 +27,19 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-size_t hash_bytes( void const *p, size_t len, size_t seed ) {
+size_t hash_bytes( void const *p, size_t len, size_t result ) {
+  unsigned char const *c = reinterpret_cast<unsigned char const*>( p );
+  unsigned char const *const end = c + len;
+#ifdef ZORBA_HASH_FN_FNV_1a
+  //
+  // FNV-1a (Fowler/Noll/Vo) hashing algorithm.
+  //
+  while ( c < end ) {
+    result *= Hash_Prime;
+    result ^= *c++;
+  }
+#endif /* ZORBA_HASH_FN_FNV_1a */
+#ifdef ZORBA_HASH_FN_PJW
   //
   // An adaptation of Peter J. Weinberger's (PJW) generic hashing algorithm
   // based on Allen Holub's version.  This version works for any hash code
@@ -46,14 +58,12 @@ size_t hash_bytes( void const *p, size_t len, size_t seed ) {
   static size_t const OneEighth     = BitsInSizeT / 8;
   static size_t const HighBits      = ~( (size_t)(~0ul) >> OneEighth );
 
-  unsigned char const *c = reinterpret_cast<unsigned char const*>( p );
-  unsigned char const *const end = c + len;
-  size_t result = seed;
   while ( c < end ) {
     result = (result << OneEighth) + *c++;
     if ( size_t temp = result & HighBits )
       result = (result ^ (temp >> ThreeFourths)) & ~HighBits;
   }
+#endif /* ZORBA_HASH_FN_PJW */
   return result;
 }
 

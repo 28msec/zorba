@@ -17,10 +17,17 @@
 #ifndef ZORBA_HASH_H
 #define ZORBA_HASH_H
 
+// zorba
+#include <zorba/config.h>
+
 // standard
 #include <functional>
 #include <string>
 #include <sys/types.h>
+
+// Exactly ONE of these should be defined.
+#define ZORBA_HASH_FN_FNV_1a  1 /* Fowler/Noll/Vo (FNV-1a) algorithm */
+//#define ZORBA_HASH_FN_PJW     1 /* Peter J. Weinberger's (PJW) algorithm */
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -30,16 +37,29 @@ template<class RepType> class rstring;
 
 namespace ztd {
 
+#ifdef ZORBA_HASH_FN_FNV_1a
+#if ZORBA_SIZEOF_SIZE_T == 4
+size_t const Hash_Init    = 2166136261ul;
+size_t const Hash_Prime   = 16777619ul;
+#elif ZORBA_SIZEOF_SIZE_T == 8
+size_t const Hash_Init    = 14695981039346656037ul;
+size_t const Hash_Prime   = 1099511628211ul;
+#endif /* ZORBA_SIZEOF_SIZE_T */
+#endif /* ZORBA_HASH_FN_FNV_1a */
+
+#ifdef ZORBA_HASH_FN_PJW
+size_t const Hash_Init    = 3339675911ul;
+#endif /* ZORBA_HASH_FN_PJW */
+
 /**
  * Generic hash function that hashes a byte sequence.
  *
  * @param p A pointer to the first byte in the sequence to hash.
  * @param len The number of bytes in the sequence.
- * @param seed The seed value.
+ * @param init The initialization value.
  * @return Returns the hash code for the given byte sequence.
  */
-size_t hash_bytes( void const *p, size_t len,
-                   size_t seed = static_cast<size_t>( 0xC70F6907ul ) );
+size_t hash_bytes( void const *p, size_t len, size_t init = Hash_Init );
 
 /**
  * Generic hash function that hashes the memory occupied by a value of some
