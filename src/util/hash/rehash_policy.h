@@ -87,6 +87,8 @@ private:
   float growth_factor_;
   float max_load_factor_;
   mutable size_type next_resize_;
+
+  void update_next_resize( size_type ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

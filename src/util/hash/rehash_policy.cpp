@@ -96,6 +96,10 @@ static prime_type const *const primes_end =
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline void prime_rehash_policy::update_next_resize( size_type n_bkt ) const {
+  next_resize_ = static_cast<size_type>( ceil( n_bkt * max_load_factor_ ) );
+}
+
 prime_rehash_policy::prime_rehash_policy( float max_load_factor ) :
   growth_factor_( 2.0F ),
   max_load_factor_( max_load_factor ),
@@ -106,7 +110,7 @@ prime_rehash_policy::prime_rehash_policy( float max_load_factor ) :
 prime_rehash_policy::size_type
 prime_rehash_policy::adjust_buckets( size_type n_bkt ) const {
   prime_type const *const p = lower_bound( primes, primes_end, n_bkt );
-  next_resize_ = static_cast<size_type>( ceil( *p * max_load_factor_ ) );
+  update_next_resize( *p );
   return *p;
 }
 
@@ -114,7 +118,7 @@ prime_rehash_policy::size_type
 prime_rehash_policy::buckets_for_elements( size_type n_elt ) const {
   float const min_bkts = n_elt / max_load_factor_;
   prime_type const *const p = lower_bound( primes, primes_end, min_bkts );
-  next_resize_ = static_cast<size_type>( ceil( *p * max_load_factor_ ) );
+  update_next_resize( *p );
   return *p;
 }
 
@@ -126,10 +130,10 @@ prime_rehash_policy::need_rehash( size_type n_bkt, size_type n_elt,
     if ( min_bkts > n_bkt ) {
       min_bkts = max( min_bkts, growth_factor_ * n_bkt );
       prime_type const *const p = lower_bound( primes, primes_end, min_bkts );
-      next_resize_ = static_cast<size_type>( ceil( *p * max_load_factor_ ) );
+      update_next_resize( *p );
       return *p;
     } else {
-      next_resize_ = static_cast<size_type>( ceil( n_bkt * max_load_factor_ ) );
+      update_next_resize( n_bkt );
     }
   }
   return 0;
