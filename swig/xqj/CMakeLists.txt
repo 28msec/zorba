@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FIND_PACKAGE (Java COMPONENTS Development)
-INCLUDE (UseJava)
-
-IF (Java_Development_FOUND)
   INCLUDE (CMakeJavaInformation )
   MESSAGE(STATUS "SWIG Java: Generating XQJ API")
 
@@ -39,7 +35,7 @@ IF (Java_Development_FOUND)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/XQDocumentManager.java" "${CMAKE_CURRENT_BINARY_DIR}/XQDocumentManager.java")
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/XQXmlDataManager.java" "${CMAKE_CURRENT_BINARY_DIR}/XQXmlDataManager.java")
 
-  MESSAGE(STATUS "SWIG Java: Generating XQJ TCK Tests")
+  #SWIG Java: Generating XQJ TCK Tests
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/tck/junit-4.9.jar" "${CMAKE_CURRENT_BINARY_DIR}/tck/junit-4.9.jar" COPYONLY)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/tck/xqjapi.jar" "${CMAKE_CURRENT_BINARY_DIR}/tck/xqjapi.jar" COPYONLY)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/tck/xqjtck.jar" "${CMAKE_CURRENT_BINARY_DIR}/tck/xqjtck.jar" COPYONLY)
@@ -50,6 +46,12 @@ IF (Java_Development_FOUND)
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/managers/module2.xq" "${CMAKE_CURRENT_BINARY_DIR}/managers/module2.xq")
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/managers/module3.xq" "${CMAKE_CURRENT_BINARY_DIR}/managers/module3.xq")
 
+FIND_PACKAGE (Java COMPONENTS Development)
+
+IF (Java_Development_FOUND)
+
+  # TESTING...
+  
   SET (XQJ_LOAD_PATH "${CMAKE_BINARY_DIR}/swig/xqj")
   SET (JAVA_LOAD_PATH "${CMAKE_BINARY_DIR}/swig/java")
 
@@ -79,20 +81,40 @@ IF (Java_Development_FOUND)
     SET_TESTS_PROPERTIES("swig_xqj" PROPERTIES FAIL_REGULAR_EXPRESSION "Failures;Errors")
   ENDIF(WIN32)
 
+  # JAR GENERATION
   FILE(GLOB XQJ_SWIG_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.java")
   
   COMPARE_VERSION_STRINGS (${CMAKE_VERSION} "2.8.6" RESULT)
   IF (${RESULT} GREATER -1)
+    INCLUDE (UseJava)
+    
     SET(CMAKE_JAVA_INCLUDE_PATH  ${CMAKE_JAVA_INCLUDE_PATH} ${ZORBA_JAVA_JAR} "${CMAKE_CURRENT_BINARY_DIR}/tck/xqjapi.jar") # JAVA_SWIG_FILES is predefined in Java binding
     ADD_JAR(zorba_xqj ${XQJ_SWIG_FILES})
     ADD_DEPENDENCIES(zorba_xqj lib_zorba_java_api)
     SET_TARGET_PROPERTIES (zorba_xqj PROPERTIES FOLDER "APIs" OUTPUT_NAME "zorba_xqj" PROJECT_LABEL "XQJ")
-  ELSEIF (${RESULT} GREATER -1)
-    MESSAGE(WARNING "This version of CMake doesn't support JAR generation, you have to create it manually before creating an installer.")
+  ELSE (${RESULT} GREATER -1)
+    IF (WIN32)
+      STRING(REGEX REPLACE "/" "\\\\" ZORBA_JAVA_JAR ${ZORBA_JAVA_JAR}) 
+      STRING(REGEX REPLACE "/" "\\\\" ZORBA_XQJ_JAR ${CMAKE_CURRENT_BINARY_DIR}) 
+      SET(XQJ_CLASSPATH "${ZORBA_JAVA_JAR}\;${ZORBA_XQJ_JAR}\\tck\\xqjapi.jar")
+    ELSE (WIN32)
+      SET(XQJ_CLASSPATH "${ZORBA_JAVA_JAR}\,${CMAKE_CURRENT_BINARY_DIR}/tck/xqjapi.jar")
+    ENDIF (WIN32)
+    MESSAGE(STATUS "XQJ CLASSPATH " ${XQJ_CLASSPATH})
+    ADD_LIBRARY(XQJ dummy.c)
+    SET_TARGET_PROPERTIES (XQJ PROPERTIES FOLDER "APIs" OUTPUT_NAME "zorba_xqj" PROJECT_LABEL "XQJ")
+    ADD_DEPENDENCIES(XQJ lib_zorba_java_api)
+    ADD_CUSTOM_COMMAND(TARGET XQJ
+                     POST_BUILD
+                     COMMAND cmake -E echo "Compiling XQJ files..."
+                     COMMAND ${Java_JAVAC_EXECUTABLE} -cp ${XQJ_CLASSPATH} *.java -d ${CMAKE_CURRENT_BINARY_DIR}
+                     COMMAND cmake -E echo "Creating jar file..."
+                     COMMAND ${Java_JAR_EXECUTABLE} cvf zorba_xqj.jar org
+    )
   ENDIF (${RESULT} GREATER -1)
 
   # Install section
-  FILE(GLOB XQJ_JAR_FILE "${CMAKE_CURRENT_BINARY_DIR}/zorba_xqj.java")
+  FILE(GLOB XQJ_JAR_FILE "${CMAKE_CURRENT_BINARY_DIR}/zorba_xqj.jar")
   IF(NOT WIN32)
     IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
       SET (JAVA_SITEARCH_DIR "/usr/share/java")
