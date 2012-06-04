@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FIND_PACKAGE ( Java )
-INCLUDE ( ${CMAKE_SOURCE_DIR}/cmake_modules/FindJNI.cmake )
+FIND_PACKAGE (Java COMPONENTS Development)
+INCLUDE (UseJava)
 
-STRING ( COMPARE NOTEQUAL ${JAVA_INCLUDE_PATH} "JAVA_INCLUDE_PATH-NOTFOUND" JNI_FOUND )
-
-IF (JAVA_INCLUDE_PATH)
+IF (Java_Development_FOUND)
   INCLUDE (CMakeJavaInformation )
   MESSAGE(STATUS "SWIG Java: Generating XQJ API")
 
@@ -81,19 +79,26 @@ IF (JAVA_INCLUDE_PATH)
     SET_TESTS_PROPERTIES("swig_xqj" PROPERTIES FAIL_REGULAR_EXPRESSION "Failures;Errors")
   ENDIF(WIN32)
 
-  # Install section
   FILE(GLOB XQJ_SWIG_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.java")
+  
+  SET(CMAKE_JAVA_INCLUDE_PATH  ${CMAKE_JAVA_INCLUDE_PATH} ${ZORBA_JAVA_JAR} "${CMAKE_CURRENT_BINARY_DIR}/tck/xqjapi.jar") # JAVA_SWIG_FILES is predefined in Java binding
+  ADD_JAR(zorba_xqj ${XQJ_SWIG_FILES})
+  ADD_DEPENDENCIES(zorba_xqj lib_zorba_java_api)
+  SET_TARGET_PROPERTIES (zorba_xqj PROPERTIES FOLDER "APIs" OUTPUT_NAME "zorba_xqj")
+
+  # Install section
+  FILE(GLOB XQJ_JAR_FILE "${CMAKE_CURRENT_BINARY_DIR}/zorba_xqj.java")
   IF(NOT WIN32)
     IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
       SET (JAVA_SITEARCH_DIR "/usr/share/java")
     ELSE (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
       SET (JAVA_SITEARCH_DIR ${CMAKE_INSTALL_PREFIX}/share/java)
     ENDIF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
-    INSTALL(FILES ${XQJ_SWIG_FILES} DESTINATION ${JAVA_SITEARCH_DIR})
+    INSTALL(FILES ${XQJ_JAR_FILE} DESTINATION ${JAVA_SITEARCH_DIR})
   ELSE(NOT WIN32)
-    INSTALL(FILES ${XQJ_SWIG_FILES} DESTINATION share/xqj COMPONENT "XQJ Binding")
+    INSTALL(FILES ${XQJ_JAR_FILE} DESTINATION share/xqj COMPONENT "XQJ Binding")
   ENDIF(NOT WIN32)
-
-ELSE (JAVA_INCLUDE_PATH)
+  
+ELSEIF (Java_Development_FOUND)
   MESSAGE ( STATUS "SWIG Java: Not generating XQJ API because JNI headers not found.")
-ENDIF (JAVA_INCLUDE_PATH)
+ENDIF (Java_Development_FOUND)

@@ -24,7 +24,7 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
     SWIG_ADD_MODULE(zorba_api_ruby ruby zorba_api.i)
     SWIG_LINK_LIBRARIES(zorba_api_ruby zorba_simplestore ${RUBY_LIBRARY})
     SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES OUTPUT_NAME "zorba_api")
-    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES PROJECT_LABEL "Api_Ruby" )
+    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES PROJECT_LABEL "Ruby" FOLDER "APIs")
     SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES SUFFIX ".so" )
   ELSE (WIN32)
     SWIG_ADD_MODULE(zorba_api ruby zorba_api.i)
@@ -83,7 +83,7 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
         DESTINATION share/ruby
         COMPONENT ruby_swig )
       ELSE (MSVC_IDE)
-        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
         DESTINATION share/ruby
         COMPONENT ruby_swig )
       ENDIF (MSVC_IDE)
