@@ -1,5 +1,9 @@
 Zorba - The XQuery Processor
 
+version 2.7
+
+  * Fixed bug #991088$ (raise XUST0001 in trycatch with mixed updating and simple clauses)
+
 version 2.5
 
 New Features:
