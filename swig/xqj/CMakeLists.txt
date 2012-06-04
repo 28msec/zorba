@@ -81,10 +81,15 @@ IF (Java_Development_FOUND)
 
   FILE(GLOB XQJ_SWIG_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.java")
   
-  SET(CMAKE_JAVA_INCLUDE_PATH  ${CMAKE_JAVA_INCLUDE_PATH} ${ZORBA_JAVA_JAR} "${CMAKE_CURRENT_BINARY_DIR}/tck/xqjapi.jar") # JAVA_SWIG_FILES is predefined in Java binding
-  ADD_JAR(zorba_xqj ${XQJ_SWIG_FILES})
-  ADD_DEPENDENCIES(zorba_xqj lib_zorba_java_api)
-  SET_TARGET_PROPERTIES (zorba_xqj PROPERTIES FOLDER "APIs" OUTPUT_NAME "zorba_xqj" PROJECT_LABEL "XQJ")
+  COMPARE_VERSION_STRINGS (${CMAKE_VERSION} "2.8.6" RESULT)
+  IF (${RESULT} GREATER -1)
+    SET(CMAKE_JAVA_INCLUDE_PATH  ${CMAKE_JAVA_INCLUDE_PATH} ${ZORBA_JAVA_JAR} "${CMAKE_CURRENT_BINARY_DIR}/tck/xqjapi.jar") # JAVA_SWIG_FILES is predefined in Java binding
+    ADD_JAR(zorba_xqj ${XQJ_SWIG_FILES})
+    ADD_DEPENDENCIES(zorba_xqj lib_zorba_java_api)
+    SET_TARGET_PROPERTIES (zorba_xqj PROPERTIES FOLDER "APIs" OUTPUT_NAME "zorba_xqj" PROJECT_LABEL "XQJ")
+  ELSEIF (${RESULT} GREATER -1)
+    MESSAGE(WARNING "This version of CMake doesn't support JAR generation, you have to create it manually before creating an installer.")
+  ENDIF (${RESULT} GREATER -1)
 
   # Install section
   FILE(GLOB XQJ_JAR_FILE "${CMAKE_CURRENT_BINARY_DIR}/zorba_xqj.java")
