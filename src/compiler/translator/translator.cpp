@@ -6507,7 +6507,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     else
       collations.push_back ("");
 
-    if(input_expr->get_expr_kind() == var_expr_kind)
+    if (input_expr->get_expr_kind() == var_expr_kind)
       input_expr = new wrapper_expr(theRootSctx,
                                      loc,
                                      input_expr.getp());
@@ -6516,7 +6516,8 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
                                                             output_var));
   }
 
-  for(std::vector<var_expr_t>::reverse_iterator iter = output_vars_helper.rbegin();
+  for (std::vector<var_expr_t>::reverse_iterator 
+    iter = output_vars_helper.rbegin();
     iter != output_vars_helper.rend();
     iter++)
   {
@@ -6539,8 +6540,9 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
                                      loc,
                                      static_cast<expr*>(input_var.getp()));
 
-    nongrouping_rebind.push_back(std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
-                                                                       output_var));
+    nongrouping_rebind.push_back(
+        std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
+                                              output_var));
   }
 
   group_clause* clause = new group_clause(theRootSctx,
@@ -6581,11 +6583,11 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   xqtref_t type = NULL;
-  if(v.get_var_expr() != NULL)
+  if (v.get_var_expr() != NULL)
   {
     expr_t gvar_expr = wrap_in_atomization(pop_nodestack());
 
-    if(v.get_var_type() != NULL)
+    if (v.get_var_type() != NULL)
     {
       type = pop_tstack();
       gvar_expr = wrap_in_type_promotion(gvar_expr, type);

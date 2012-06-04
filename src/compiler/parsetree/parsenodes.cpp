@@ -1783,21 +1783,21 @@ void GroupSpecList::push_back(rchandle<GroupSpec> spec)
   {
     const GroupSpec* currSpec = (*ite).getp();
 
-    if (! (*currSpec->get_var_name() == *spec->get_var_name()) )
+    if ( !(*currSpec->get_var_name() == *spec->get_var_name()) )
     {
       if(spec->get_var_expr() != NULL)
         new_specs.push_back(*ite);
     }
-    else if(spec->get_var_expr() == NULL)
+    else if (spec->get_var_expr() == NULL)
     {
       break;
     }
   }
 
-  if(spec->get_var_expr() != NULL)
+  if (spec->get_var_expr() != NULL)
     theSpecs = new_specs;
 
-  if(ite == end)
+  if (ite == end)
     theSpecs.push_back(spec);
 }
 
