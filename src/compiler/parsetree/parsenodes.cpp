@@ -1774,28 +1774,18 @@ void GroupSpecList::push_back(rchandle<GroupSpec> spec)
   vector<rchandle<GroupSpec> >::const_iterator ite = theSpecs.begin();
   vector<rchandle<GroupSpec> >::const_iterator end = theSpecs.end();
 
-  vector<rchandle<GroupSpec> > new_specs = vector<rchandle<GroupSpec> >();
-
-
   //If multiple group vars are declared with the same Qname the only valid value is
   //the last redefinition for that specific Qname.
   for (; ite != end; ++ite)
   {
     const GroupSpec* currSpec = (*ite).getp();
 
-    if ( !(*currSpec->get_var_name() == *spec->get_var_name()) )
-    {
-      if(spec->get_var_expr() != NULL)
-        new_specs.push_back(*ite);
-    }
-    else if (spec->get_var_expr() == NULL)
+    if (spec->get_var_expr() == NULL &&
+      *currSpec->get_var_name() == *spec->get_var_name())
     {
       break;
     }
   }
-
-  if (spec->get_var_expr() != NULL)
-    theSpecs = new_specs;
 
   if (ite == end)
     theSpecs.push_back(spec);

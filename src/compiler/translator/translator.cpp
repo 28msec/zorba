@@ -6498,7 +6498,10 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     const GroupSpec& groupSpec = *groupSpecs[i];
 
     output_var = pop_nodestack_var();
-    input_expr = pop_nodestack();
+    // since group specs can add let vars, and change the value of the
+    // input_expr after the expr has been read, we delegate the actual looking
+    // up of the variable until now, to get the most recent and correct value.
+    input_expr = lookup_var(groupSpec.get_var_name(), loc, err::XPST0008);
 
     output_vars_helper.push_back(output_var);
 
@@ -6595,15 +6598,6 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
     
     create_letVar(loc, v.get_var_name(), gvar_expr, type);
   }
-
-  //wrap data
-  expr_t e = lookup_var(v.get_var_name(), loc, err::XPST0008);
-
-  // Create a new var_expr gX, corresponding to the input-stream var X that
-  // is referenced by this group spec. gX represents X in the output stream.
-  // Push the var_exprs for both X and gX into the nodestack.
-
-  push_nodestack(e.getp());
 
   var_expr_t ve =
     create_var(loc, v.get_var_name(), var_expr::groupby_var, type);
