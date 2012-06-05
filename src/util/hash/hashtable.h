@@ -25,6 +25,7 @@
 
 // local
 #include "util/cxx_util.h"
+#include "util/stl_util.h"
 
 namespace zorba {
 namespace ztd {
@@ -32,77 +33,73 @@ namespace ztd {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A hash-table implementation.
+ * The base class for a hash-table implementation.
  *
  * @tparam KeyType They map's key type.
- * @tparam MappedType The type the keys are mapped to.
- * @tparam Hash The unary_function to use for generating hash codes.
+ * @tparam ValueType The type the keys are mapped to.
+ * @tparam KeyExtract The unary_function to use to extract a key from a value.
+ * @tparam KeyHash The unary_function to use for generating hash codes.
  * @tparam KeyEqual The binary_function to use to test for key equality.
  * @tparam Allocator The allocator to use.
  * @tparam RehashPolicy The rehash policy class to use.
  */
 template<
   typename KeyType,
-  typename MappedType,
-  class Hash,
+  typename ValueType,
+  class KeyExtract,
+  class KeyHash,
   class KeyEqual,
   class Allocator,
   class RehashPolicy
 >
-class hashtable {
-  struct node;
+class hashtable_base {
 protected:
+  struct node;
   typedef RehashPolicy rehash_policy_type;
 public:
   typedef KeyType key_type;
-  typedef MappedType mapped_type;
-  typedef std::pair<key_type const,mapped_type> value_type;
-  typedef Hash hasher;
+  typedef ValueType value_type;
+  typedef KeyHash hasher;
   typedef KeyEqual key_equal;
   typedef Allocator allocator_type;
+  typedef std::size_t size_type;
+  typedef std::ptrdiff_t difference_type;
 
   typedef typename allocator_type::pointer pointer;
   typedef typename allocator_type::const_pointer const_pointer;
   typedef typename allocator_type::reference reference;
   typedef typename allocator_type::const_reference const_reference;
 
-  typedef std::size_t size_type;
-  typedef std::ptrdiff_t difference_type;
-
   /**
-   * Constructs a %hashtable.
+   * Constructs a %hashtable_base.
    *
    * @param bucket_count The initial number of buckets to use.
    * @param hash The hash-code unary functor to use.
    * @param equal The key-equality functor to use.
    * @param alloc The allocator to use.
    */
-  hashtable(
-    size_type bucket_count,
-    hasher const &hash,
-    key_equal const &equal,
-    allocator_type const &alloc
-  );
+  hashtable_base( size_type bucket_count, hasher const &hash,
+                  key_equal const &equal, allocator_type const &alloc );
 
   /**
    * Copy constructor.
    *
-   * @param that The %hashtable to copy from.
+   * @param that The %hashtable_base to copy from.
    */
-  hashtable( hashtable const &that );
+  hashtable_base( hashtable_base const &that );
 
   /**
    * Destructor.
    */
-  ~hashtable();
+  ~hashtable_base();
 
   /**
    * Assignment operator.
    *
-   * @param that The %hashtable to assign from.
+   * @param that The %hashtable_base to assign from.
    * @return Returns \c *this.
    */
-  hashtable& operator=( hashtable const &that );
+  hashtable_base& operator=( hashtable_base const &that );
 
   ////////// local_iterator ///////////////////////////////////////////////////
 
@@ -128,7 +125,7 @@ public:
     node *cur_node_;
 
     local_iterator( node *p ) : cur_node_( p ) { }
-    friend class hashtable;
+    friend class hashtable_base;
   };
 
   ////////// const_local_iterator /////////////////////////////////////////////
@@ -157,7 +154,7 @@ public:
     node const *cur_node_;
 
     const_local_iterator( node const *p ) : cur_node_( p ) { }
-    friend class hashtable;
+    friend class hashtable_base;
   };
 
   ////////// iterator /////////////////////////////////////////////////////////
@@ -186,7 +183,7 @@ public:
     iterator( node **bkt, node *p );
     void inc_bucket();
 
-    friend class hashtable;
+    friend class hashtable_base;
     friend class const_iterator;
   };
 
@@ -196,6 +193,7 @@ public:
     public std::iterator<std::forward_iterator_tag,value_type const> {
   public:
     const_iterator() : cur_bkt_( nullptr ), cur_node_( nullptr ) { }
+    const_iterator( iterator const& );
 
     const_reference operator*() const;
     const_pointer operator->() const;
@@ -215,10 +213,9 @@ public:
     node *cur_node_;
 
     const_iterator( node **bkt, node *p );
-    const_iterator( iterator const& );
     void inc_bucket();
 
-    friend class hashtable;
+    friend class hashtable_base;
   };
 
   ////////// iteration ////////////////////////////////////////////////////////
@@ -328,7 +325,7 @@ public:
   ////////// modifiers ////////////////////////////////////////////////////////
 
   /**
-   * Clears this %hashtable, i.e., erases all elements.
+   * Clears this %hashtable_base, i.e., erases all elements.
    */
   void clear();
 
@@ -369,7 +366,7 @@ public:
    * Attempts to insert a new value.
    *
    * @param value The value to insert.
-   * @return If a value with the given key is already in the %hashtable,
+   * @return If a value with the given key is already in the %hashtable_base,
    * returns [i,false] where \a i is positioned at the existing element;
    * otherwise returns [i,true] where \a i is positioned at the new element.
    */
@@ -381,7 +378,7 @@ public:
    * @param hint An iterator providing a hint as to where to attempt to insert
    * the new value.
    * @param value The value to insert.
-   * @return If a value with the given key is already in the %hashtable,
+   * @return If a value with the given key is already in the %hashtable_base,
    * returns [i,false] where \a i is positioned at the existing element;
    * otherwise returns [i,true] where \a i is positioned at the new element.
    */
@@ -398,48 +395,20 @@ public:
   void insert( InputIterator first, InputIterator last );
 
   /**
-   * Rehashes the %hashtable.
+   * Rehashes the %hashtable_base.
    *
    * @param bucket_count The new number of buckets.
    */
   void rehash( size_type bucket_count );
 
   /**
-   * Swaps this %hashtable with another.
+   * Swaps this %hashtable_base with another.
    *
-   * @param that The %hashtable to swap with.
+   * @param that The %hashtable_base to swap with.
    */
-  void swap( hashtable &that );
+  void swap( hashtable_base &that );
 
   ////////// look-up //////////////////////////////////////////////////////////
-
-  /**
-   * Attempts to find the given \a key.
-   *
-   * @param key The key to find.
-   * @return Returns a reference to the value associated with \a key.
-   * @throws std::out_of_range if \a key is not found.
-   */
-  mapped_type& at( key_type const &key );
-
-  /**
-   * Attempts to find the given \a key.
-   *
-   * @param key The key to find.
-   * @return Returns a reference to the value associated with \a key.
-   * @throws std::out_of_range if \a key is not found.
-   */
-  mapped_type const& at( key_type const &key ) const;
-
-  /**
-   * Attempts to find the given \a key.
-   *
-   * @param key The key to find.
-   * @return If found, returns a reference to the value associated with \a key;
-   * if not, creates a new key/value pair and returns a reference to the newly
-   * created value.
-   */
-  mapped_type& operator[]( key_type const &key );
 
   /**
    * Counts the number of elements having the given key.
@@ -490,7 +459,7 @@ public:
 
   /**
    * Gets the index of the bucket for the \a key.  Note that \a key isn't
-   * necessarily in the %hashtable.
+   * necessarily in the %hashtable_base.
    *
    * @param key The key.
    * @return Returns an index in the range [0,max_bucket_count).
@@ -522,7 +491,7 @@ public:
   ////////// miscellaneous ////////////////////////////////////////////////////
 
   /**
-   * Gets whether this %hashtable is empty.
+   * Gets whether this %hashtable_base is empty.
    *
    * @return Returns \c true only if it's empty.
    */
@@ -588,14 +557,28 @@ public:
 
   /////////////////////////////////////////////////////////////////////////////
 
-private:
-  struct node : value_type {
+protected:
+  struct node {
+    value_type value_;
     node *next_;
 
-    node() : next_( nullptr ) { }
-    node( value_type const &v ) : value_type( v ), next_( nullptr ) { }
+    node() : value_( value_type() ), next_( nullptr ) { }
+    node( value_type const &v ) : value_( v ), next_( nullptr ) { }
   };
 
+  node* find_node( key_type const &key ) const {
+    return find_node( bucket( key ), key );
+  }
+
+  node* find_node( node*, key_type const& ) const;
+
+  node* find_node( size_type bkt, key_type const &key ) const {
+    return find_node( buckets_[ bkt ], key );
+  }
+
+  std::pair<iterator,bool> insert( size_type bkt, value_type const &value );
+
+private:
   typedef typename allocator_type::template rebind<node*>::other
     bucket_alloc_type;
 
@@ -623,23 +606,12 @@ private:
     return code % n_bkt;
   }
 
-  node* find_node( node*, key_type const& ) const;
-
-  node* find_node( size_type bkt, key_type const &key ) const {
-    return find_node( buckets_[ bkt ], key );
-  }
-
-  node* find_node( key_type const &key ) const {
-    return find_node( bucket( key ), key );
-  }
-
-  std::pair<iterator,bool> insert( size_type bkt, value_type const &value );
-
   void rehash_impl( size_type new_n_bkt );
 
   node **buckets_;
-  KeyEqual equal_;
   hasher hasher_;
+  KeyEqual equal_;
+  KeyExtract key_of;
   size_type n_bkt_;
   size_type n_elt_;
   node_alloc_type node_alloc_;
@@ -647,14 +619,14 @@ private:
 };
 
 #define ZORBA_HASHTABLE_TEMPLATE \
-  template<typename K,typename M,class H,class E,class A,class RP>
+  template<typename K,typename V,class X,class H,class E,class A,class RP>
 
-#define ZORBA_HASHTABLE_CLASS hashtable<K,M,H,E,A,RP>
+#define ZORBA_HASHTABLE_CLASS hashtable_base<K,V,X,H,E,A,RP>
 
-////////// hashtable inline functions /////////////////////////////////////////
+////////// hashtable_base inline functions ////////////////////////////////////
 
 ZORBA_HASHTABLE_TEMPLATE inline
-ZORBA_HASHTABLE_CLASS::~hashtable() {
+ZORBA_HASHTABLE_CLASS::~hashtable_base() {
   clear();
   dealloc_buckets( buckets_, n_bkt_ );
 }
@@ -833,13 +805,13 @@ ZORBA_HASHTABLE_CLASS::size() const {
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::reference
 ZORBA_HASHTABLE_CLASS::local_iterator::operator*() const {
-  return *cur_node_;
+  return cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::pointer
 ZORBA_HASHTABLE_CLASS::local_iterator::operator->() const {
-  return cur_node_;
+  return &cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
@@ -862,13 +834,13 @@ ZORBA_HASHTABLE_CLASS::local_iterator::operator++(int) {
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_reference
 ZORBA_HASHTABLE_CLASS::const_local_iterator::operator*() const {
-  return *cur_node_;
+  return cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_pointer
 ZORBA_HASHTABLE_CLASS::const_local_iterator::operator->() const {
-  return cur_node_;
+  return &cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
@@ -891,13 +863,13 @@ ZORBA_HASHTABLE_CLASS::const_local_iterator::operator++(int) {
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::reference
 ZORBA_HASHTABLE_CLASS::iterator::operator*() const {
-  return *cur_node_;
+  return cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::pointer
 ZORBA_HASHTABLE_CLASS::iterator::operator->() const {
-  return cur_node_;
+  return &cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
@@ -919,13 +891,13 @@ ZORBA_HASHTABLE_CLASS::const_iterator::const_iterator( iterator const &i ) :
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_reference
 ZORBA_HASHTABLE_CLASS::const_iterator::operator*() const {
-  return *cur_node_;
+  return cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
 typename ZORBA_HASHTABLE_CLASS::const_pointer
 ZORBA_HASHTABLE_CLASS::const_iterator::operator->() const {
-  return cur_node_;
+  return &cur_node_->value_;
 }
 
 ZORBA_HASHTABLE_TEMPLATE inline
@@ -938,13 +910,158 @@ ZORBA_HASHTABLE_CLASS::const_iterator::operator++() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A hash-table implementation for when KeyType is the same as ValueType.  This
+ * is used as the base class for unordered_set.
+ *
+ * @tparam KeyType They map's key type.
+ * @tparam ValueType The type the keys are mapped to.
+ * @tparam KeyExtract The unary_function to use to extract a key from a value.
+ * @tparam KeyHash The unary_function to use for generating hash codes.
+ * @tparam KeyEqual The binary_function to use to test for key equality.
+ * @tparam Allocator The allocator to use.
+ * @tparam RehashPolicy The rehash policy class to use.
+ */
+template<
+  typename KeyType,
+  typename ValueType,
+  class KeyExtract,
+  class KeyHash,
+  class KeyEqual,
+  class Allocator,
+  class RehashPolicy
+>
+class hashtable :
+  public hashtable_base<KeyType,ValueType,KeyExtract,KeyHash,KeyEqual,Allocator,
+                        RehashPolicy>
+{
+  typedef hashtable_base<KeyType,ValueType,KeyExtract,KeyHash,KeyEqual,
+                         Allocator,RehashPolicy> base_type;
+public:
+  typedef typename base_type::key_type key_type;
+  typedef typename base_type::value_type value_type;
+  typedef typename base_type::hasher hasher;
+  typedef typename base_type::key_equal key_equal;
+  typedef typename base_type::allocator_type allocator_type;
+  typedef typename base_type::size_type size_type;
+  typedef typename base_type::difference_type difference_type;
+
+  typedef typename base_type::pointer pointer;
+  typedef typename base_type::const_pointer const_pointer;
+  typedef typename base_type::reference reference;
+  typedef typename base_type::const_reference const_reference;
+
+  /**
+   * Constructs a %hashtable.
+   *
+   * @param bucket_count The initial number of buckets to use.
+   * @param hash The hash-code unary functor to use.
+   * @param equal The key-equality functor to use.
+   * @param alloc The allocator to use.
+   */
+  hashtable( size_type bucket_count, hasher const &hash, key_equal const &equal,
+             allocator_type const &alloc ) :
+    base_type( bucket_count, hash, equal, alloc )
+  {
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Specialization of %hashtable for use when the "value" is actually a
+ * <code>pair&lt;KeyType const,Value&gt;</code>.  This is used as the base
+ * class for unordered_map.  This specialization also adds \c mapped_type,
+ * \c at(), and \c operator[]() members.
+ *
+ * @tparam KeyType They map's key type.
+ * @tparam PairType The <code>pair&lt;KeyType const,Value&gt;</code>.
+ * @tparam KeyExtract The unary_function to use to extract a key from a pair.
+ * @tparam KeyHash The unary_function to use for generating hash codes.
+ * @tparam KeyEqual The binary_function to use to test for key equality.
+ * @tparam Allocator The allocator to use.
+ * @tparam RehashPolicy The rehash policy class to use.
+ */
+template<
+  typename KeyType,
+  class PairType,
+  class KeyHash,
+  class KeyEqual,
+  class Allocator,
+  class RehashPolicy
+>
+class hashtable<KeyType,PairType,select1st<PairType>,KeyHash,KeyEqual,
+                Allocator,RehashPolicy> :
+  public hashtable_base<KeyType,PairType,select1st<PairType>,KeyHash,KeyEqual,
+                        Allocator,RehashPolicy>
+{
+  typedef hashtable_base<KeyType,PairType,select1st<PairType>,KeyHash,KeyEqual,
+                         Allocator,RehashPolicy> base_type;
+  typedef typename base_type::node node;
+public:
+  typedef typename base_type::key_type key_type;
+  typedef typename base_type::value_type value_type;
+  typedef typename PairType::second_type mapped_type;
+  typedef typename base_type::hasher hasher;
+  typedef typename base_type::key_equal key_equal;
+  typedef typename base_type::allocator_type allocator_type;
+  typedef typename base_type::size_type size_type;
+  typedef typename base_type::difference_type difference_type;
+
+  typedef typename base_type::pointer pointer;
+  typedef typename base_type::const_pointer const_pointer;
+  typedef typename base_type::reference reference;
+  typedef typename base_type::const_reference const_reference;
+
+  /**
+   * Constructs a %hashtable.
+   *
+   * @param bucket_count The initial number of buckets to use.
+   * @param hash The hash-code unary functor to use.
+   * @param equal The key-equality functor to use.
+   * @param alloc The allocator to use.
+   */
+  hashtable( size_type bucket_count, hasher const &hash, key_equal const &equal,
+             allocator_type const &alloc ) :
+    base_type( bucket_count, hash, equal, alloc )
+  {
+  }
+
+  /**
+   * Attempts to find the given \a key.
+   *
+   * @param key The key to find.
+   * @return Returns a reference to the value associated with \a key.
+   * @throws std::out_of_range if \a key is not found.
+   */
+  mapped_type& at( key_type const &key );
+
+  /**
+   * Attempts to find the given \a key.
+   *
+   * @param key The key to find.
+   * @return Returns a reference to the value associated with \a key.
+   * @throws std::out_of_range if \a key is not found.
+   */
+  mapped_type const& at( key_type const &key ) const;
+
+  /**
+   * Attempts to find the given \a key.
+   *
+   * @param key The key to find.
+   * @return If found, returns a reference to the value associated with \a key;
+   * if not, creates a new key/value pair and returns a reference to the newly
+   * created value.
+   */
+  mapped_type& operator[]( key_type const &key );
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace ztd
 } // namespace zorba
 
 #include "hashtable.tcc"
-
-#undef ZORBA_HASHTABLE_CLASS
-#undef ZORBA_HASHTABLE_TEMPLATE
 
 #endif  /* ZORBA_HASHTABLE_H */
 /* vim:set et ts=2 sw=2: */

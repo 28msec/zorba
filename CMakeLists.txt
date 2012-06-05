@@ -143,7 +143,8 @@ CHECK_CXX_SOURCE_COMPILES("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STAT
 
 CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_CXX_UNIQUE_PTR)
 
-CHECK_CXX_SOURCE_COMPILES ("#include <unordered_map>\nint main() { std::unordered_map<int,int> m; }" ZORBA_CXX_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES ("#include <unordered_map>\nint main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES ("#include <unordered_set>\nint main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 # Various cmake macros

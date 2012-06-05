@@ -38,9 +38,12 @@ namespace zorba {
     int test_icu_streambuf( int, char*[] );
 #endif /* ZORBA_NO_ICU */
     int json_parser( int, char*[] );
-#ifndef ZORBA_CXX_UNORDERED_MAP
+#ifndef ZORBA_HAVE_UNORDERED_MAP
     int test_unordered_map( int, char*[] );
-#endif /* ZORBA_CXX_UNORDERED_MAP */
+#endif /* ZORBA_HAVE_UNORDERED_MAP */
+#ifndef ZORBA_HAVE_UNORDERED_MAP
+    int test_unordered_set( int, char*[] );
+#endif /* ZORBA_HAVE_UNORDERED_MAP */
 
     void initializeTestList();
   };

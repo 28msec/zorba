@@ -26,7 +26,7 @@
 namespace zorba {
 namespace ztd {
 
-////////// hashtable functions ////////////////////////////////////////////////
+////////// hashtable_base functions ///////////////////////////////////////////
 
 ZORBA_HASHTABLE_TEMPLATE
 typename ZORBA_HASHTABLE_CLASS::node**
@@ -83,7 +83,7 @@ void ZORBA_HASHTABLE_CLASS::dealloc_nodes( node **buckets, size_type n_bkt ) {
 }
 
 ZORBA_HASHTABLE_TEMPLATE
-ZORBA_HASHTABLE_CLASS::hashtable( size_type bucket_count,
+ZORBA_HASHTABLE_CLASS::hashtable_base( size_type bucket_count,
                                   hasher const &hash,
                                   key_equal const &equal,
                                   allocator_type const &alloc ) :
@@ -97,7 +97,7 @@ ZORBA_HASHTABLE_CLASS::hashtable( size_type bucket_count,
 }
 
 ZORBA_HASHTABLE_TEMPLATE
-ZORBA_HASHTABLE_CLASS::hashtable( hashtable const &that ) :
+ZORBA_HASHTABLE_CLASS::hashtable_base( hashtable_base const &that ) :
   equal_( that.equal_ ),
   hasher_( that.hasher_ ),
   n_bkt_( that.n_bkt_ ),
@@ -109,7 +109,7 @@ ZORBA_HASHTABLE_CLASS::hashtable( hashtable const &that ) :
     for ( size_type bkt = 0; bkt < n_bkt_; ++bkt ) {
       node **tail = buckets_ + bkt;
       for ( node *p = that.buckets_[ bkt ]; p; p = p->next_ ) {
-        *tail = alloc_node( *p );
+        *tail = alloc_node( p->value_ );
         tail = &(*tail)->next_;
       }
     }
@@ -123,35 +123,10 @@ ZORBA_HASHTABLE_CLASS::hashtable( hashtable const &that ) :
 
 ZORBA_HASHTABLE_TEMPLATE
 ZORBA_HASHTABLE_CLASS&
-ZORBA_HASHTABLE_CLASS::operator=( hashtable const &that ) {
-  hashtable temp( that );
+ZORBA_HASHTABLE_CLASS::operator=( hashtable_base const &that ) {
+  hashtable_base temp( that );
   this->swap( temp );
   return *this;
-}
-
-ZORBA_HASHTABLE_TEMPLATE
-typename ZORBA_HASHTABLE_CLASS::mapped_type&
-ZORBA_HASHTABLE_CLASS::at( key_type const &key ) {
-  if ( node *const p = find_node( key ) )
-    return p->second;
-  throw std::out_of_range( "at()" );
-}
-
-ZORBA_HASHTABLE_TEMPLATE
-typename ZORBA_HASHTABLE_CLASS::mapped_type const&
-ZORBA_HASHTABLE_CLASS::at( key_type const &key ) const {
-  if ( node const *const p = find_node( key ) )
-    return p->second;
-  throw std::out_of_range( "at()" );
-}
-
-ZORBA_HASHTABLE_TEMPLATE
-typename ZORBA_HASHTABLE_CLASS::mapped_type&
-ZORBA_HASHTABLE_CLASS::operator[]( key_type const &key ) {
-  size_type const bkt = bucket( key );
-  if ( node *const p = find_node( bkt, key ) )
-    return p->second;
-  return insert( bkt, std::make_pair( key, mapped_type() ) ).first->second;
 }
 
 ZORBA_HASHTABLE_TEMPLATE
@@ -198,7 +173,7 @@ ZORBA_HASHTABLE_CLASS::erase( key_type const &key ) {
   size_type const bkt = bucket( key );
   for ( node *p = buckets_[ bkt ], **pp = &buckets_[ bkt ]; p;
         pp = &p->next_, p = p->next_ ) {
-    if ( equal_( p->first, key ) ) {
+    if ( equal_( key_of( p->value_ ), key ) ) {
       *pp = p->next_;
       dealloc_node( p );
       --n_elt_;
@@ -227,15 +202,6 @@ ZORBA_HASHTABLE_CLASS::find( key_type const &key ) const {
 }
 
 ZORBA_HASHTABLE_TEMPLATE
-typename ZORBA_HASHTABLE_CLASS::node*
-ZORBA_HASHTABLE_CLASS::find_node( node *p, key_type const &key ) const {
-  for ( ; p; p = p->next_ )
-    if ( equal_( p->first, key ) )
-      return p;
-  return nullptr;
-}
-
-ZORBA_HASHTABLE_TEMPLATE
 std::pair<typename ZORBA_HASHTABLE_CLASS::iterator,
           typename ZORBA_HASHTABLE_CLASS::iterator>
 ZORBA_HASHTABLE_CLASS::equal_range( key_type const &key ) {
@@ -244,7 +210,7 @@ ZORBA_HASHTABLE_CLASS::equal_range( key_type const &key ) {
   if ( node *p = find_node( *head, key ) ) {
     node *q = p->next_;
     for ( ; q; q = q->next_ )
-      if ( !equal_( q->first, key ) )
+      if ( !equal_( key_of( q->value_ ), key ) )
         break;
     iterator first( head, p );
     iterator last( head, q );
@@ -264,7 +230,7 @@ ZORBA_HASHTABLE_CLASS::equal_range( key_type const &key ) const {
   if ( node *p = find_node( *head, key ) ) {
     node *q = p->next_;
     for ( ; q; q = q->next_ )
-      if ( !equal_( q->first, key ) )
+      if ( !equal_( key_of( q->value_ ), key ) )
         break;
     const_iterator first( head, p );
     const_iterator last( head, q );
@@ -276,9 +242,18 @@ ZORBA_HASHTABLE_CLASS::equal_range( key_type const &key ) const {
 }
 
 ZORBA_HASHTABLE_TEMPLATE
+typename ZORBA_HASHTABLE_CLASS::node*
+ZORBA_HASHTABLE_CLASS::find_node( node *p, key_type const &key ) const {
+  for ( ; p; p = p->next_ )
+    if ( equal_( key_of( p->value_ ), key ) )
+      return p;
+  return nullptr;
+}
+
+ZORBA_HASHTABLE_TEMPLATE
 std::pair<typename ZORBA_HASHTABLE_CLASS::iterator,bool>
 ZORBA_HASHTABLE_CLASS::insert( value_type const &value ) {
-  key_type const &key = value.first;
+  key_type const &key = key_of( value );
   size_type const bkt = bucket( key );
   node *&head = buckets_[ bkt ];
 
@@ -301,7 +276,7 @@ ZORBA_HASHTABLE_CLASS::insert( size_type bkt, value_type const &value ) {
   try {
     if ( new_n_bkt ) {
       rehash_impl( new_n_bkt );
-      bkt = bucket( value.first );
+      bkt = bucket( key_of( value ) );
     }
     node *&head = buckets_[ bkt ];
     p->next_ = head;
@@ -344,7 +319,7 @@ void ZORBA_HASHTABLE_CLASS::rehash_impl( size_type new_n_bkt ) {
     for ( size_type bkt = 0; bkt < n_bkt_; ++bkt ) {
       node *&head = buckets_[ bkt ];
       while ( node *p = head ) {
-        size_type const new_bkt = bucket( p->first, new_n_bkt );
+        size_type const new_bkt = bucket( key_of( p->value_ ), new_n_bkt );
         head = p->next_;
         p->next_ = new_buckets[ new_bkt ];
         new_buckets[ new_bkt ] = p;
@@ -363,7 +338,7 @@ void ZORBA_HASHTABLE_CLASS::rehash_impl( size_type new_n_bkt ) {
 }
 
 ZORBA_HASHTABLE_TEMPLATE
-void ZORBA_HASHTABLE_CLASS::swap( hashtable &that ) {
+void ZORBA_HASHTABLE_CLASS::swap( hashtable_base &that ) {
   std::swap( buckets_, that.buckets_ );
   std::swap( equal_, that.equal_ );
   std::swap( hasher_, that.hasher_ );
@@ -393,7 +368,7 @@ void ZORBA_HASHTABLE_CLASS::iterator::inc_bucket() {
 ZORBA_HASHTABLE_TEMPLATE
 typename ZORBA_HASHTABLE_CLASS::iterator
 ZORBA_HASHTABLE_CLASS::iterator::operator++(int) {
-  iterator const temp( cur_node_ );
+  iterator const temp( cur_bkt_, cur_node_ );
   operator++();
   return temp;
 }
@@ -418,10 +393,50 @@ void ZORBA_HASHTABLE_CLASS::const_iterator::inc_bucket() {
 ZORBA_HASHTABLE_TEMPLATE
 typename ZORBA_HASHTABLE_CLASS::const_iterator
 ZORBA_HASHTABLE_CLASS::const_iterator::operator++(int) {
-  const_iterator const temp( cur_node_ );
+  const_iterator const temp( cur_bkt_, cur_node_ );
   operator++();
   return temp;
 }
+
+#undef ZORBA_HASHTABLE_CLASS
+#undef ZORBA_HASHTABLE_TEMPLATE
+
+////////// hashtable specialization members ///////////////////////////////////
+
+#define ZORBA_HASHTABLE_TEMPLATE \
+  template<typename K,class P,class H,class E,class A,class RP>
+
+#define ZORBA_HASHTABLE_CLASS hashtable<K,P,select1st<P>,H,E,A,RP>
+
+ZORBA_HASHTABLE_TEMPLATE
+typename ZORBA_HASHTABLE_CLASS::mapped_type&
+ZORBA_HASHTABLE_CLASS::at( key_type const &key ) {
+  if ( node *const p = this->find_node( key ) )
+    return p->value_.second;
+  throw std::out_of_range( "at()" );
+}
+
+ZORBA_HASHTABLE_TEMPLATE
+typename ZORBA_HASHTABLE_CLASS::mapped_type const&
+ZORBA_HASHTABLE_CLASS::at( key_type const &key ) const {
+  if ( node const *const p = this->find_node( key ) )
+    return p->value_.second;
+  throw std::out_of_range( "at()" );
+}
+
+ZORBA_HASHTABLE_TEMPLATE
+typename ZORBA_HASHTABLE_CLASS::mapped_type&
+ZORBA_HASHTABLE_CLASS::operator[]( key_type const &key ) {
+  size_type const bkt = this->bucket( key );
+  if ( node *const p = this->find_node( bkt, key ) )
+    return p->value_.second;
+  return this->insert(
+    bkt, std::make_pair( key, mapped_type() )
+  ).first->second;
+}
+
+#undef ZORBA_HASHTABLE_CLASS
+#undef ZORBA_HASHTABLE_TEMPLATE
 
 ///////////////////////////////////////////////////////////////////////////////
 
