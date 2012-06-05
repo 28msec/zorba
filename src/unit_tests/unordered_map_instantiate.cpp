@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <iostream>
+#include <string>
 
 #include "util/unordered_map.h"
 
@@ -25,23 +25,58 @@ static void instantiate() {
 
   typedef unordered_map<string,int> map_type;
 
+  map_type::iterator i, j;
+  map_type::const_iterator ci, cj;
+
+  (void)*i;
+  (void)i->first;
+  (void)i->second;
+  (void)++i;
+  (void)i++;
+  (void)(i == j);
+  (void)(i != j);
+
+  (void)*ci;
+  (void)ci->first;
+  (void)ci->second;
+  (void)++ci;
+  (void)ci++;
+  (void)(ci == cj);
+  (void)(ci != cj);
+
+  map_type::local_iterator li, lj;
+  map_type::const_local_iterator cli, clj;
+
+  (void)*li;
+  (void)li->first;
+  (void)li->second;
+  (void)++li;
+  (void)li++;
+  (void)(li == lj);
+  (void)(li != lj);
+
+  (void)*cli;
+  (void)cli->first;
+  (void)cli->second;
+  (void)++cli;
+  (void)cli++;
+  (void)(cli == clj);
+  (void)(cli != clj);
+
   map_type m;
   map_type m2( m );
   m = m2;
   map_type const cm;
 
-  map_type::iterator i;
-  map_type::const_iterator ci;
+  i = m.begin();
+  ci = m.cbegin();
+  j = m.end();
+  cj = m.cend();
 
-  m.begin();
-  m.cbegin();
-  m.end();
-  m.cend();
-
-  m.begin( 0 );
-  m.cbegin( 0 );
-  m.end( 0 );
-  m.cend( 0 );
+  li = m.begin( 0 );
+  cli = m.cbegin( 0 );
+  lj = m.end( 0 );
+  clj = m.cend( 0 );
 
   m.clear();
   m.erase( i );
