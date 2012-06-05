@@ -66,9 +66,9 @@ ELSE (NOT PHP5_FOUND)
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
   SET_TARGET_PROPERTIES( ${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PROJECT_LABEL "PHP" FOLDER "APIs")
-  IF (LINUX OR CYGWIN)
+  IF (LINUX OR CYGWIN OR APPLE)
     SET_TARGET_PROPERTIES (${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PREFIX "")
-  ENDIF (LINUX OR CYGWIN)
+  ENDIF (LINUX OR CYGWIN OR APPLE)
 
   IF (NOT WIN32 OR CYGWIN)
     STRING (REPLACE ${CMAKE_INSTALL_PREFIX} "" PHP5_INSTALL_PATH ${PHP5_EXTENSION_DIR})

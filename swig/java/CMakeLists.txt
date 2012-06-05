@@ -44,9 +44,9 @@ IF (JAVA_INCLUDE_PATH)
 
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
-  IF ( LINUX OR CYGWIN )
+  IF ( LINUX OR CYGWIN OR APPLE )
     SET_TARGET_PROPERTIES( lib_zorba_java_api PROPERTIES PREFIX "" )
-  ENDIF ( LINUX OR CYGWIN )
+  ENDIF ( LINUX OR CYGWIN OR APPLE )
 
 
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticContext.h"  "${CMAKE_CURRENT_BINARY_DIR}/StaticContext.h" COPYONLY)
