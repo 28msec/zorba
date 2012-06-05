@@ -2,7 +2,7 @@
 (: Test: mainModule16.xq                                 :)
 (: Written By: Sorin Nasoi                               :)
 (: Date: 2008/05/26                                      :)
-(: Purpose: Error XPST0081                               :)
+(: Purpose: Error XQST0036                               :)
 (:*******************************************************:)
 
 import module namespace math = "http://example.org/math-functions" at
