@@ -1,5 +1,8 @@
 Zorba - The XQuery Processor
 
+version 2.7
+  * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428)
+
 version 2.5
 
 New Features:
