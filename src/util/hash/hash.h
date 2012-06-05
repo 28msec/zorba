@@ -81,6 +81,8 @@ size_t hash_bytes( T const &v ) {
 
 namespace std {
 
+#ifndef ZORBA_HAVE_UNORDERED_MAP
+
 /**
  * The generic %hash unary_function class.
  *
@@ -139,6 +141,8 @@ struct hash< basic_string<CharT,Traits,Alloc> > :
     return zorba::ztd::hash_bytes( s.data(), s.size() );
   }
 };
+
+#endif /* ZORBA_HAVE_UNORDERED_MAP */
 
 /** Specialization for \c rstring. */
 template<class RepType>
