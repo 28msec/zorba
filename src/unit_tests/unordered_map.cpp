@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <string>
 
 #include "util/unordered_map.h"
 
@@ -23,6 +24,7 @@ using namespace std;
 
 typedef unordered_map<string,int> map_type;
 typedef pair<map_type::iterator,bool> insert_return_type;
+typedef pair<map_type::iterator,map_type::iterator> equal_range_return_type;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -107,54 +109,63 @@ static void test_erase() {
   ASSERT_TRUE( !m.empty() );
   ASSERT_TRUE( m.size() == 1 );
 
-  i = m.find( "b" );
-  ASSERT_TRUE( m.erase( i ) == m.end() );
-  ASSERT_TRUE( m.empty() );
-  ASSERT_TRUE( m.size() == 0 );
-
-  m[ "a" ] = 1;
-  m[ "b" ] = 2;
-
-  i = m.find( "a" );
-  ASSERT_TRUE( m.erase( i )->first == "b" );
+  if ( ASSERT_TRUE( (i = m.find( "b" )) != m.end() ) ) {
+    m.erase( i );
+    ASSERT_TRUE( m.empty() );
+    ASSERT_TRUE( m.size() == 0 );
+  }
 }
 
 static void test_insert() {
   map_type m;
+  equal_range_return_type err;
+  map_type::const_iterator i;
   insert_return_type ir;
 
   ir = m.insert( make_pair( "a", 1 ) );
-  ASSERT_TRUE( ir.second == true );
-  ASSERT_TRUE( ir.first->first == "a" );
-  ASSERT_TRUE( ir.first->second == 1 );
+  if ( ASSERT_TRUE( ir.second == true ) )
+    if ( ASSERT_TRUE( ir.first != m.end() ) ) {
+      ASSERT_TRUE( ir.first->first == "a" );
+      ASSERT_TRUE( ir.first->second == 1 );
+    }
   ASSERT_TRUE( !m.empty() );
   ASSERT_TRUE( m.size() == 1 );
   ASSERT_TRUE_AND_NO_EXCEPTION( m.at( "a" ) == 1 );
   ASSERT_TRUE( m[ "a" ] == 1 );
   ASSERT_TRUE( m.count( "a" ) == 1 );
-  ASSERT_TRUE( m.find( "a" )->first == "a" );
-  ASSERT_TRUE( m.find( "a" )->second == 1 );
-  ASSERT_TRUE( m.equal_range( "a" ).first->second == 1 );
+  if ( ASSERT_TRUE( (i = m.find( "a" )) != m.end() ) ) {
+    ASSERT_TRUE( i->first == "a" );
+    ASSERT_TRUE( i->second == 1 );
+  }
+
+  err = m.equal_range( "a" );
+  if ( ASSERT_TRUE( err.first != m.end() ) )
+    ASSERT_TRUE( err.first->second == 1 );
 
   ir = m.insert( make_pair( "b", 2 ) );
-  ASSERT_TRUE( ir.second == true );
-  ASSERT_TRUE( ir.first->first == "b" );
-  ASSERT_TRUE( ir.first->second == 2 );
+  if ( ASSERT_TRUE( ir.second == true ) ) {
+    ASSERT_TRUE( ir.first->first == "b" );
+    ASSERT_TRUE( ir.first->second == 2 );
+  }
   ASSERT_TRUE( !m.empty() );
   ASSERT_TRUE( m.size() == 2 );
   ASSERT_TRUE_AND_NO_EXCEPTION( m.at( "b" ) == 2 );
   ASSERT_TRUE( m[ "b" ] == 2 );
   ASSERT_TRUE( m.count( "b" ) == 1 );
-  ASSERT_TRUE( m.find( "b" )->first == "b" );
-  ASSERT_TRUE( m.find( "b" )->second == 2 );
+  if ( ASSERT_TRUE( (i = m.find( "b" )) != m.end() ) ) {
+    ASSERT_TRUE( i->first == "b" );
+    ASSERT_TRUE( i->second == 2 );
+  }
   ASSERT_TRUE( m.equal_range( "b" ).first->second == 2 );
 
   // Ensure "a" is still there.
   ASSERT_TRUE_AND_NO_EXCEPTION( m.at( "a" ) == 1 );
   ASSERT_TRUE( m[ "a" ] == 1 );
   ASSERT_TRUE( m.count( "a" ) == 1 );
-  ASSERT_TRUE( m.find( "a" )->first == "a" );
-  ASSERT_TRUE( m.find( "a" )->second == 1 );
+  if ( ASSERT_TRUE( (i = m.find( "a" )) != m.end() ) ) {
+    ASSERT_TRUE( i->first == "a" );
+    ASSERT_TRUE( i->second == 1 );
+  }
   ASSERT_TRUE( m.equal_range( "a" ).first->second == 1 );
 }
 
