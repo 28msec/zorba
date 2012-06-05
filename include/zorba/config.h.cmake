@@ -113,15 +113,15 @@ typedef __int64 int64_t;
 #cmakedefine MSVC71
 #cmakedefine MSVC80
 
-// C++ language features
+// C++11 language features
 #cmakedefine ZORBA_CXX_NULLPTR
 #cmakedefine ZORBA_CXX_STATIC_ASSERT
 
 // C++11 types
-#cmakedefine ZORBA_CXX_ENABLE_IF
+#cmakedefine ZORBA_HAVE_ENABLE_IF
 #cmakedefine ZORBA_HAVE_UNORDERED_MAP
 #cmakedefine ZORBA_HAVE_UNORDERED_SET
-#cmakedefine ZORBA_CXX_UNIQUE_PTR
+#cmakedefine ZORBA_HAVE_UNIQUE_PTR
 
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 
