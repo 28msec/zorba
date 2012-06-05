@@ -6498,26 +6498,42 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     const GroupSpec& groupSpec = *groupSpecs[i];
 
     output_var = pop_nodestack_var();
-    // since group specs can add let vars, and change the value of the
-    // input_expr after the expr has been read, we delegate the actual looking
-    // up of the variable until now, to get the most recent and correct value.
-    input_expr = lookup_var(groupSpec.get_var_name(), loc, err::XPST0008);
 
-    output_vars_helper.push_back(output_var);
+    //since the expressions are moved into let clauses before the group clause
+    //repeated variable names may be ignored.
+    bool add_to_clause = true;
 
-    if (groupSpec.group_coll_spec() != NULL)
-      collations.push_back(groupSpec.group_coll_spec()->get_uri().str());
-    else
-      collations.push_back ("");
+    for (int j = i - 1; j >= 0; j--)
+    {
+      const GroupSpec& previousSpec = *groupSpecs[j];
 
-    if (input_expr->get_expr_kind() == var_expr_kind)
-      input_expr = new wrapper_expr(theRootSctx,
-                                     loc,
-                                     input_expr.getp());
+      if (groupSpec.get_var_name() == previousSpec.get_var_name())
+        add_to_clause = false;
+    }
 
-    grouping_rebind.push_back(std::pair<expr_t, var_expr_t>(input_expr,
-                                                            output_var));
-  }
+    if (add_to_clause)
+    {
+      // since group specs can add let vars, and change the value of the
+      // input_expr after the expr has been read, we delegate the actual looking
+      // up of the variable until now, to get the most recent and correct value.
+      input_expr = lookup_var(groupSpec.get_var_name(), loc, err::XPST0008);
+
+      output_vars_helper.push_back(output_var);
+
+      if (groupSpec.group_coll_spec() != NULL)
+        collations.push_back(groupSpec.group_coll_spec()->get_uri().str());
+      else
+        collations.push_back ("");
+
+      if (input_expr->get_expr_kind() == var_expr_kind)
+        input_expr = new wrapper_expr(theRootSctx,
+                                       loc,
+                                       input_expr.getp());
+
+      grouping_rebind.push_back(std::pair<expr_t, var_expr_t>(input_expr,
+                                                              output_var));
+    }
+   }
 
   for (std::vector<var_expr_t>::reverse_iterator 
     iter = output_vars_helper.rbegin();
