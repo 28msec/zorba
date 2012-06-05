@@ -555,7 +555,7 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
-      Tokenizer::Numbers&,
+      Tokenizer::State&,
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -1233,7 +1233,7 @@ public:
   isPrecedingSibling(const store::Item_t&) const { return false; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::State&,
                                locale::iso639_1::type,
                                bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
