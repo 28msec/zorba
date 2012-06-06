@@ -41,9 +41,9 @@ IF (JAVA_INCLUDE_PATH)
 
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
-  IF (NOT WIN32)
+  IF (LINUX OR CYGWIN OR APPLE)
     SET_TARGET_PROPERTIES( lib_zorba_java_api PROPERTIES PREFIX "" )
-  ENDIF (NOT WIN32)
+  IF (LINUX OR CYGWIN OR APPLE)
 
   FILE(GLOB ZORBA_API_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../" "${CMAKE_CURRENT_SOURCE_DIR}/../*.h")
   FOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})

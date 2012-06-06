@@ -44,9 +44,9 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
 
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
-  IF ( LINUX OR CYGWIN )
+  IF ( LINUX OR CYGWIN OR APPLE )
     SET_TARGET_PROPERTIES( ${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PREFIX "" )
-  ENDIF ( LINUX OR CYGWIN )
+  ENDIF ( LINUX OR CYGWIN OR APPLE )
 
   EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
     OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
