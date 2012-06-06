@@ -39,11 +39,19 @@ IF (Java_Development_FOUND)
   # TESTING...
   SET (XQJ_LOAD_PATH "${CMAKE_BINARY_DIR}/swig/xqj")
   SET (JAVA_LOAD_PATH "${CMAKE_BINARY_DIR}/swig/java")
-
+  SET (JAVA_DLL_PATH "${CMAKE_BINARY_DIR}/swig/java")
+  SET (ZORBA_SIMPLE_STORE "${CMAKE_BINARY_DIR}/src")
+  
   IF(WIN32)
+    IF (MSVC_IDE)
+      SET (JAVA_DLL_PATH "${CMAKE_BINARY_DIR}/swig/java/${CMAKE_BUILD_TYPE}")
+      SET (ZORBA_SIMPLE_STORE "${CMAKE_BINARY_DIR}/src/${CMAKE_BUILD_TYPE}")
+    ENDIF (MSVC_IDE)
     #Convert to backslashes for windows
+    STRING(REGEX REPLACE "/" "\\\\" JAVA_DLL_PATH ${JAVA_DLL_PATH}) 
     STRING(REGEX REPLACE "/" "\\\\" XQJ_LOAD_PATH ${XQJ_LOAD_PATH}) 
     STRING(REGEX REPLACE "/" "\\\\" JAVA_LOAD_PATH ${JAVA_LOAD_PATH}) 
+    STRING(REGEX REPLACE "/" "\\\\" ZORBA_SIMPLE_STORE ${ZORBA_SIMPLE_STORE}) 
     #Copying tck batch
     CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/tck/xqj_test.bat.in ${CMAKE_CURRENT_BINARY_DIR}/xqj_test.bat)
     ADD_TEST ("swig_xqj" xqj_test.bat)
