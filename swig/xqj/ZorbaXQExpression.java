@@ -20,6 +20,10 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -29,311 +33,250 @@ import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQItemType;
 import javax.xml.xquery.XQResultSequence;
 import javax.xml.xquery.XQSequence;
-import javax.xml.xquery.XQSequenceType;
 import javax.xml.xquery.XQStaticContext;
-import org.w3c.dom.Node;
-import org.zorbaxquery.api.XQuery;
-import org.zorbaxquery.api.Zorba;
 import javax.xml.xquery.XQConnection;
-import java.util.Collection;
-import java.util.ArrayList;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stax.StAXResult;
-import javax.xml.transform.stax.StAXSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.xquery.XQConstants;
+import org.w3c.dom.Node;
 import org.zorbaxquery.api.DynamicContext;
 import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.Iterator;
-import org.zorbaxquery.api.XmlDataManager;
- /**
-   * This class describes an expression that can be prepared for multiple subsequent executions. A prepared expression can be created from the connection.
-   * 
-   * The preparation of the expression does the static analysis of the expression using the static context information.
-   * 
-   * The dynamic context information, such as values for bind variables, can then be set using the setter methods. When setting values for bind variables, these variables should be present as external variables in the prolog of the prepared expression.
-   * 
-   * The static type information of the query can also be retrieved if the XQuery implementation provides it using the getStaticResultType method.
-   * 
-   * When the expression is executed using the executeQuery method, if the execution is successful, then an XQResultSequence object is returned. The XQResultSequence object is tied to the XQPreparedExpression from which it was prepared and is closed implicitly if that expression is either closed or if re-executed.
-   * 
-   * The XQPreparedExpression object is dependent on the XQConnection object from which it was created and is only valid for the duration of that object. Thus, if the XQConnection object is closed then this XQPreparedExpression object will be implicitly closed and it can no longer be used.
-   * 
-   * An XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call close method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions. Not closing this object implicitly or explicitly might result in serious memory leaks.
-   * 
-   * When the XQPreparedExpression is closed any XQResultSequence object obtained from it is also implicitly closed.
-   * 
-   * Example -
-   * \code{.java}
-   *   XQConnection conn = XQDataSource.getconnection();
-   *   XQPreparedExpression expr = conn.prepareExpression
-   *           ("for $i in (1) return 'abc' "); 
-   *  
-   *   // get the sequence type out.. This would be something like xs:string *
-   *   XQSequenceType type = expr.getStaticResultType();
-   * 
-   *   XQSequence result1 = expr.executeQuery();
-   *  
-   *   // process the result..
-   *   result1.next();
-   *   System.out.println(" First result1 "+ result1.getAtomicValue());
-   * 
-   *   XQResultSequence result2 = expr.executeQuery();
-   * 
-   *   // result1 is implicitly closed 
-   *   // recommended to close the result sequences explicitly.
-   * 
-   *   // process the result..
-   *   while (result2.next()) 
-   *      System.out.println(" result is "+ result2.getAtomicValue());
-   *  
-   *   result2.close(); 
-   *   expr.close(); // closing expression implicitly closes all result sequence or
-   *                 // items obtained from this expression.
-   *   conn.close(); // closing connections will close expressions and results.
-   *  \endcode
-   */
-public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpression {
+import org.zorbaxquery.api.XQuery;
 
-    private XQuery query;
+/**
+  * This interface describes the execute immediate functionality for expressions. This object can be created from the ZorbaXQConnection and the execution can be done using the executeQuery() or executeCommand() method, passing in the XQuery expression.
+  * 
+  * All external variables defined in the prolog of the expression to be executed must be set in the dynamic context of this expression using the bind methods. Also, variables bound in this expression but not defined as external in the prolog of the expression to be executed, are simply ignored. For example, if variables $var1 and $var2 are bound, but the query only defines $var1 as external, no error will be reported for the binding of $var2. It will simply be ignored. When the expression is executed using the executeQuery method, if the execution is successful, then an ZorbaXQResultSequence object is returned. The ZorbaXQResultSequence object is tied to the ZorbaXQExpression from which it was prepared and is closed implicitly if that ZorbaXQExpression is either closed or re-executed.
+  * 
+  * The ZorbaXQExpression object is dependent on the ZorbaXQConnection object from which it was created and is only valid for the duration of that object. Thus, if the ZorbaXQConnection object is closed then this ZorbaXQExpression object will be implicitly closed and it can no longer be used.
+  * 
+  * An XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call close method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions. Not closing this object implicitly or explicitly might result in serious memory leaks.
+  * 
+  * When the ZorbaXQExpression is closed any ZorbaXQResultSequence object obtained from it is also implicitly closed.
+  * 
+  * Example -
+  * \code{.java}
+  *   ZorbaXQConnection conn = XQDatasource.getConnection();
+  *   ZorbaXQExpression expr = conn.createExpression();
+  * 
+  *   expr.bindInt(new QName("x"), 21, null);
+  *  
+  *   XQSequence result = expr.executeQuery(
+  *      "declare variable $x as xs:integer external;
+  *      for $i in $x return $i");
+  *    
+  *   while (result.next())
+  *   {
+  *      // process results ...
+  *   }
+  *  
+  *   // Execute some other expression on the same object
+  *   XQSequence result = expr.executeQuery("for $i in doc('foo.xml') return $i");
+  *   ... 
+  * 
+  *   result.close(); // close the result
+  *   expr.close(); 
+  *   conn.close(); 
+  *  \endcode
+  */
+public class ZorbaXQExpression implements javax.xml.xquery.XQExpression {
+
+    //private XQuery query;
     private XQConnection connection;
-    private boolean closed;
+    private boolean closed = false;
+    private boolean cancel = false;
     private Collection<XQResultSequence> resultSequences = new ArrayList<XQResultSequence>();
-    private DynamicContext dynamicContext;
-    private XmlDataManager xmlDataManager;
     private XQStaticContext staticContext;
-    private Collection<String> itemsBounded = new ArrayList<String>();
-
-    
-    public XQPreparedExpression (XQConnection conn, String string) throws XQException {
+    private Map<String, Item> itemsToBind = new HashMap<String, Item>();
+    private TimeZone implicitTimeZone;
+            
+    public ZorbaXQExpression (XQConnection conn) throws XQException {
         if (conn.isClosed()) {
             throw new XQException ("Connection is closed");
         }
-        closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.XQConnection)connection).getZorbaInstance(); 
-        try {
-            query =  zorba.compileQuery(string);
-            dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.XQConnection)connection).getZorbaInstance().getXmlDataManager();
-        } catch (Exception e) {
-            throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
-        
-        }
     }
-    public XQPreparedExpression (XQConnection conn, String string, XQStaticContext sc) throws XQException {
+
+    public ZorbaXQExpression (XQConnection conn, XQStaticContext sc) throws XQException {
         if (conn.isClosed()) {
             throw new XQException ("Connection is closed");
         }
-        closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.XQConnection)connection).getZorbaInstance(); 
-        try {
-            query =  zorba.compileQuery(string, ((org.zorbaxquery.api.xqj.XQStaticContext)sc).getZorbaStaticContext());
-            dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.XQConnection)connection).getZorbaInstance().getXmlDataManager();
-        } catch (Exception e) {
-            throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
-        
-        }
+        staticContext = sc;
     }
 
-  /** \brief Attempts to cancel the execution if both the XQuery engine and XQJ driver support aborting the execution of an XQPreparedExpression.
+  /** \brief Attempts to cancel the execution if both the XQuery engine and XQJ driver support aborting the execution of an ZorbaXQExpression.
    * 
-   * This method can be used by one thread to cancel an XQPreparedExpression, that is being executed in another thread. If cancellation is not supported or the attempt to cancel the execution was not successful, the method returns without any error. If the cancellation is successful, an XQException is thrown, to indicate that it has been aborted, by executeQuery, executeCommand or any method accessing the XQResultSequence returned by executeQuery. If applicable, any open XQResultSequence and XQResultItem objects will also be implicitly closed in this case.
+   * This method can be used by one thread to cancel an ZorbaXQExpression, that is being executed in another thread. If cancellation is not supported or the attempt to cancel the execution was not successful, the method returns without any error. If the cancellation is successful, an XQException is thrown, to indicate that it has been aborted, by executeQuery, executeCommand or any method accessing the ZorbaXQResultSequence returned by executeQuery. If applicable, any open ZorbaXQResultSequence and XQResultItem objects will also be implicitly closed in this case.
    * 
-   * @throw XQException - if the prepared expression is in a closed state
+   * @throw XQException - if the expression is in a closed state
    */
     @Override
     public void cancel() throws XQException {
         isClosedXQException();
+        cancel = true;
     }
 
-  /** \brief Checks if the prepared expression in a closed state.
+  /** \brief Checks if the expression is in a closed state.
    * 
-   * @return true if the prepared expression is in a closed state, false otherwise.
+   * @return true if the expression is in a closed state, false otherwise
    */
     @Override
     public boolean isClosed() {
         return closed;
     }
 
-  /** \brief Closes the expression object and release all resources associated with this prepared expression.
+
+  /** \brief Closes the expression object and release associated resources.
    * 
-   * This also closes any result sequences obtained from this expression. Once the expression is closed, all methods on this object other than the close or isClosed will raise exceptions. Calling close on an XQExpression object that is already closed has no effect.
+   * Once the expression is closed, all methods on this object other than the close or isClosed will raise exceptions. This also closes any result sequences obtained from this expression. Calling close on an ZorbaXQExpression object that is already closed has no effect.
    * 
    * @throw XQException - if there are errors when closing the expression
    */
-    @Override
+   @Override
     public void close() throws XQException {
-        closed = true;
-        for (XQResultSequence sequence: resultSequences) {
-            sequence.close();
-        }
-        if (query!=null) {
-            query.delete();
+        closed=true;
+        for (XQResultSequence rs: resultSequences) {
+            rs.close();
         }
     }
 
-  /** \brief Executes the prepared query expression.
+  /** \brief Executes an implementation-defined command.
    * 
    * Calling this method implicitly closes any previous result sequence obtained from this expression.
    * 
-   * @return the xquery sequence object containing the result of the query execution
-   * @throw XQException - if (1) there are errors when executing the prepared expression, (2) the prepared expression is in a closed state, or (3) the query execution is cancelled
+   * @param string - the input command as a string
+   * @throw XQException - if (1) there are errors when executing the command, or (2) the expression is in a closed state
    */
     @Override
-    public XQResultSequence executeQuery() throws XQException {
+    public void executeCommand(String string) throws XQException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+  /** \brief Executes an implementation-defined command.
+   * 
+   * Calling this method implicitly closes any previous result sequence obtained from this expression.
+   * 
+   * @param reader - the input command as a reader
+   * @throw XQException - if (1) there are errors when executing the command, or (2) the expression is in a closed state
+   */
+    @Override
+    public void executeCommand(Reader reader) throws XQException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+  /** \brief Executes a query expression.
+   * 
+   * This implicitly closes any previous result sequences obtained from this expression.
+   * 
+   * @param value - the input query expression string. Cannot be null
+   * @return an ZorbaXQResultSequence object containing the result of the query execution
+   * @throw XQException - if (1) there are errors when executing the query, (2) the expression is in a closed state, (3) the execution is cancelled, (4) the query parameter is null
+   */
+    @Override
+    public XQResultSequence executeQuery(String value) throws XQException {
         isClosedXQException();
+        isNullXQException(value);
+        org.zorbaxquery.api.xqj.ZorbaXQConnection lConnection = (org.zorbaxquery.api.xqj.ZorbaXQConnection)connection;
+        XQuery query =  lConnection.getZorbaInstance().createQuery();
         XQResultSequence result = null;
         try {
-            result = new org.zorbaxquery.api.xqj.XQResultSequence(connection, query, true);
+            int scrollable = XQConstants.SCROLLTYPE_FORWARD_ONLY;
+            if (staticContext!=null) {
+              query.compile(value, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)staticContext).getZorbaStaticContext());
+              scrollable = staticContext.getScrollability();
+            } else {
+              query.compile(value);
+            }
+            DynamicContext dynamicContext = query.getDynamicContext();
+            if (implicitTimeZone!=null) {
+                dynamicContext.setImplicitTimezone((implicitTimeZone.getRawOffset()/60000));
+                implicitTimeZone=null;
+            }
+            for (String key: itemsToBind.keySet()){
+                dynamicContext.setVariable(key, itemsToBind.get(key) );
+                //itemsToBind.remove(key);
+            }
+            if (scrollable == XQConstants.SCROLLTYPE_FORWARD_ONLY) {
+                result = new org.zorbaxquery.api.xqj.ZorbaXQResultSequence(connection, query, false);
+            } else {
+                result = new org.zorbaxquery.api.xqj.ZorbaXQResultSequenceScrollable(connection, query, false);
+            }
+            resultSequences.add(result);
         } catch (Exception e) {
-            throw new XQException("Error executing query: " + e.getLocalizedMessage());
+            throw new XQException ("Error executing query: " + e.getLocalizedMessage());
         }
-        resultSequences.add(result);
         return result;
     }
 
-  /** \brief Retrieves all the external variables defined in the prolog of the prepared expression.
+  /** \brief Executes a query expression.
    * 
-   * @return an array of QName objects for all the external variables defined in the prolog of a prepared expression. Empty array if there are no external variables present.
-   * @throw XQException - if the prepared expression is in a closed state
+   * This implicitly closes any previous result sequences obtained from this expression.
+   * 
+   * @param value - the input query expression reader object. Cannot be null
+   * @return an ZorbaXQResultSequence object containing the result of the query execution
+   * @throw XQException - if (1) there are errors when executing the query, (2) the expression is in a closed state, (3) the execution is cancelled, (4) the query parameter is null
    */
     @Override
-    public QName[] getAllExternalVariables() throws XQException {
+    public XQResultSequence executeQuery(Reader value) throws XQException {
         isClosedXQException();
-        Collection<QName> result = new ArrayList<QName>();
-        Iterator iter = new Iterator();
-        query.getExternalVariables(iter);
-        iter.open();
-        Item item = new Item();
-        while (iter.next(item)) {
-            result.add(new QName(item.getNamespace(), item.getLocalName(), item.getPrefix()));
-        }
-        iter.close();
-        iter.delete();
-        return result.toArray(new QName[0]);
-    }
-
-    private boolean isExternal(String varName) {
-        boolean found=false;
-        Iterator iter = new Iterator();
-        query.getExternalVariables(iter);
-        iter.open();
-        Item item = new Item();
-        while (iter.next(item)) {
-            if (item.getLocalName().equalsIgnoreCase(varName)) {
-                found = true;
-            }
-        }
-        iter.close();
-        iter.delete();
-        return found;
-    }
-
-  /** \brief Retrieves the names of all unbound external variables.
-   * 
-   * Gets the static type information of the result sequence. If an implementation does not do static typing of the query, then this method must return an XQSequenceType object corresponding to the XQuery sequence type item()*.
-   * 
-   * @return XQSequenceType containing the static result information.
-   * @throw XQException - if the prepared expression is in a closed state
-   */
-    @Override
-    public QName[] getAllUnboundExternalVariables() throws XQException {
-        isClosedXQException();
+        isNullXQException(value);
         
-        Collection<QName> result = new ArrayList<QName>();
-        Iterator iter = new Iterator();
-        query.getExternalVariables(iter);
-        Item item = new Item();
-        iter.open();
-        while (iter.next(item)) {
-            boolean found = false;
-            for (String key: itemsBounded){
-                if (item.getLocalName().equalsIgnoreCase(key)) {
-                    found = true;
-                }
+        StringBuffer string = new StringBuffer();
+        CharBuffer buffer = CharBuffer.allocate(1024);
+        Writer writer = new StringWriter();
+        
+        try {
+            while( value.read(buffer) >= 0 ) {
+                buffer.flip();
+                writer.append(buffer);
+                buffer.clear();
             }
-            if (!found) {
-                result.add(new QName(item.getNamespace(), item.getLocalName(), item.getPrefix()));
-            }
+            value.close();
+        } catch (Exception ex) {
+            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
         }
-        iter.close();
-        iter.delete();
-        return result.toArray(new QName[0]);
+        
+        return executeQuery(writer.toString());
     }
 
-  /** \brief Gets the static type information of the result sequence.
+  /** \brief Executes a query expression.
    * 
-   * If an implementation does not do static typing of the query, then this method must return an XQSequenceType object corresponding to the XQuery sequence type item()*.
+   * This implicitly closes any previous result sequences obtained from this expression.
    * 
-   * @return XQSequenceType containing the static result information.
-   * @throw XQException - if the prepared expression is in a closed state
+   * @param value - the input query expression inputstream object. Cannot be null
+   * @return an ZorbaXQResultSequence object containing the result of the query execution
+   * @throw XQException - if (1) there are errors when executing the query, (2) the expression is in a closed state, (3) the execution is cancelled, (4) the query parameter is null
    */
     @Override
-    public XQSequenceType getStaticResultType() throws XQException {
+    public XQResultSequence executeQuery(InputStream value) throws XQException {
         isClosedXQException();
-        XQSequenceType result = new org.zorbaxquery.api.xqj.XQSequenceType(new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ITEM), XQSequenceType.OCC_ZERO_OR_MORE );
-        return result;
-    }
-
-  /** \brief Retrieves the static type of a given external variable.
-   * 
-   * @param varName - the name of the external variable
-   * @return the static type information of the variable as defined in the prolog of the prepared expression
-   * @throw XQException - if (1) the variable does not exist in the static context of the expression, or (2) the sequence is in a closed state, or (3) the name parameter is null
-   */
-    @Override
-    public XQSequenceType getStaticVariableType(QName varName) throws XQException {
-        isClosedXQException();
-        isNullXQException(varName);
-        XQSequenceType result = null;
-        Iterator iter = new Iterator();
-        query.getExternalVariables(iter);
-        iter.open();
-        Item item = new Item();
-        while (iter.next(item)) {
-            if ( item.getLocalName().equalsIgnoreCase(varName.getLocalPart()) &&
-                 item.getNamespace().equalsIgnoreCase(varName.getNamespaceURI()) &&
-                 item.getPrefix().equalsIgnoreCase(varName.getPrefix()) ) {
-                 if (item.getType().getStringValue().equals("xs:QName")) {
-                     result = new org.zorbaxquery.api.xqj.XQSequenceType(new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ITEM), XQItemType.OCC_ZERO_OR_MORE);
-                 } else {
-                     result = new org.zorbaxquery.api.xqj.XQSequenceType(new org.zorbaxquery.api.xqj.XQItemType(item), XQItemType.OCC_ZERO_OR_MORE);
-                 }
-                 
+        isNullXQException(value);
+        StringBuffer  out = new StringBuffer ();
+        try {
+            byte[] b = new byte[4096];
+            for (int n; (n = value.read(b)) != -1;) {
+                out.append(new String(b, 0, n));
             }
+        } catch (Exception ex) {
+            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
         }
-        iter.close();
-        iter.delete();
-        if (result==null) {
-            throw new XQException("Item not found");
-        }
-        return result;
+        return executeQuery(out.toString());
     }
 
-  /** \brief Gets an XQStaticContext representing the values for all expression properties. 
+  /** \brief Gets an ZorbaXQStaticContext representing the values for all expression properties.
    * 
-   * Note that these properties cannot be changed; in order to change, a new XQPreparedExpression needs to be created.
+   * Note that these properties cannot be changed; in order to change, a new ZorbaXQExpression needs to be created.
    * 
-   * @return an XQStaticContext representing the values for all expression properties
+   * @return an ZorbaXQStaticContext representing the values for all expression properties
    * @throw XQException - if the expression is in a closed state
    */
     @Override
     public XQStaticContext getStaticContext() throws XQException {
         isClosedXQException();
         if (staticContext==null) {
-            staticContext = new org.zorbaxquery.api.xqj.XQStaticContext(query);
+            return connection.getStaticContext();
+        } else {
+            return staticContext;
         }
-        return staticContext;
     }
 
   /** \brief Gets the implicit timezone
@@ -344,7 +287,12 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     @Override
     public TimeZone getImplicitTimeZone() throws XQException {
         isClosedXQException();
-        Integer timeZone = (dynamicContext.getImplicitTimezone()/60); // in minutes
+        if (implicitTimeZone!=null) {
+            return implicitTimeZone;
+        }
+        XQuery query =  ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().compileQuery("1");
+        DynamicContext dc = query.getDynamicContext();
+        Integer timeZone = (dc.getImplicitTimezone()/60); // in minutes
         TimeZone result = TimeZone.getTimeZone("GMT"+timeZone.toString());
         return result;
     }
@@ -363,22 +311,12 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         isNullXQException(varName);
         isNullXQException(value);
-        isNullXQException(type);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
-        if (type.getItemKind()!=XQItemType.XQITEMKIND_ATOMIC) {
-            throw new XQException ("Item kind is not atomic.");
-        }
         try {
-            XQItem xqitem = connection.createItemFromAtomicValue(value, type);
-            Item item = ((org.zorbaxquery.api.xqj.XQItem)xqitem).getZorbaItem();
-            dynamicContext.setVariable(varName.getLocalPart(), item);
-            itemsBounded.add(varName.getLocalPart());
+            XQItem item = connection.createItemFromAtomicValue(value, type);
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
-            throw new XQException ("Error binding the atomic value: " + e.getLocalizedMessage());
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
-        
     }
 
   /** \brief Binds a value to the given external variable or the context item.
@@ -395,38 +333,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindString(QName varName, String value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         isNullXQException(value);
-        if (type==null) {
-            type = ((org.zorbaxquery.api.xqj.XQConnection)connection).createAtomicType(XQItemType.XQBASETYPE_STRING);
-        }
         try {
-            Iterator iter = new Iterator();
-            boolean found = false;
-            query.getExternalVariables(iter);
-            Item tmpItem = new Item();
-            iter.open();
-            while (iter.next(tmpItem)) {
-                if (tmpItem.getStringValue().equalsIgnoreCase(varName.getLocalPart())) {
-                    XQItem item = connection.createItemFromString(value, type);
-                    dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-                    itemsBounded.add(varName.getLocalPart());
-                    found=true;
-                }
-            }
-            iter.close();
-            iter.delete();
-            if (!found) {
-                throw new XQException ("The variable: " + varName.getLocalPart() + " doesn't exist.");
-            }
-        } catch (XQException e) {
-            throw e;
+            XQItem item = connection.createItemFromString(value, type);
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
-            throw new XQException ("Error binding string to the defined type: " + e.getLocalizedMessage());
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
-        
     }
 
   /** \brief Binds a value to the given external variable or the context item. 
@@ -447,29 +360,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindDocument(QName varName, String value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         isNullXQException(value);
-        if (!((type==null) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT))) {
-            throw new XQException ("Invalid type.");
-        }
-        if (type==null) {
-            type = connection.createDocumentElementType(connection.createElementType(null, XQItemType.XQBASETYPE_UNTYPED));
-        }
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("Variable not found in context.");
-        }
         try {
-            Iterator iter = xmlDataManager.parseXML(value);
-            Item item = new Item();
-            iter.next(item);
-            dynamicContext.setVariable(varName.getLocalPart(), item);
-            itemsBounded.add(varName.getLocalPart());
+            XQItem item = connection.createItemFromDocument(value, baseURI, type);
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
-            throw new XQException ("Error binding document: " + e.getLocalizedMessage());
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
-        
     }
 
   /** \brief Binds a value to the given external variable or the context item. 
@@ -490,32 +387,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindDocument(QName varName, Reader value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         isNullXQException(value);
-        if (!((type==null) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT))) {
-            throw new XQException ("Invalid type.");
-        }
-        if (type==null) {
-            type = connection.createDocumentElementType(connection.createElementType(null, XQItemType.XQBASETYPE_UNTYPED));
-        }
-        StringBuffer string = new StringBuffer();
-        CharBuffer buffer = CharBuffer.allocate(1024);
-        Writer writer = new StringWriter();
-        
         try {
-            while( value.read(buffer) >= 0 ) {
-                buffer.flip();
-                writer.append(buffer);
-                buffer.clear();
-            }
-            value.close();
-        } catch (Exception ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
+            XQItem item = connection.createItemFromDocument(value, baseURI, type);
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+        } catch (Exception e) {
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
-        
-        bindDocument(varName, writer.toString(), baseURI, type);
     }
 
   /** \brief Binds a value to the given external variable or the context item. 
@@ -536,26 +414,13 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindDocument(QName varName, InputStream value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         isNullXQException(value);
-        if (!((type==null) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT))) {
-            throw new XQException ("Invalid type.");
-        }
-        if (type==null) {
-            type = connection.createDocumentElementType(connection.createElementType(null, XQItemType.XQBASETYPE_UNTYPED));
-        }
-        StringBuffer  out = new StringBuffer ();
         try {
-            byte[] b = new byte[4096];
-            for (int n; (n = value.read(b)) != -1;) {
-                out.append(new String(b, 0, n));
-            }
-        } catch (Exception ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
+            XQItem item = connection.createItemFromDocument(value, baseURI, type);
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+        } catch (Exception e) {
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
-        bindDocument(varName, out.toString(), baseURI, type);
     }
 
   /** \brief Binds a value to the given external variable or the context item. 
@@ -575,50 +440,18 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindDocument(QName varName, XMLStreamReader value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         isNullXQException(value);
-        if (!((type==null) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT))) {
-            throw new XQException ("Invalid type.");
-        }
-        if (type==null) {
-            type = connection.createDocumentElementType(connection.createElementType(null, XQItemType.XQBASETYPE_UNTYPED));
-        }
-        
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer t;
-        StAXSource source;
-        StAXResult result;
-        XMLOutputFactory xof = XMLOutputFactory.newInstance();
-        Writer writer = new StringWriter();
         try {
-            XMLStreamWriter xmlStreamWriter =  xof.createXMLStreamWriter(writer);
-            t = tf.newTransformer();
-            source = new StAXSource(value);
-            result = new StAXResult(xmlStreamWriter);
-            t.transform(source, result);        
-        } catch (Exception ex) {
-            throw new XQException("Error transforming xml expression" + ex.getLocalizedMessage());
+            XQItem item = connection.createItemFromDocument(value, type);
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+        } catch (Exception e) {
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
-        bindDocument(varName, writer.toString(), null, type);
-    }
-
-    private String nodeToString(Node node) {
-     StringWriter sw = new StringWriter();
-     try {
-       Transformer t = TransformerFactory.newInstance().newTransformer();
-       t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-       t.transform(new DOMSource(node), new StreamResult(sw));
-     } catch (TransformerException te) {
-       System.out.println("nodeToString Transformer Exception" + te.getLocalizedMessage());
-     }
-     return sw.toString();
     }
 
   /** \brief Binds a value to the given external variable or the context item. 
    * 
-   * Binds a value to the given external variable or the context item from the given Source. An XQJ implementation must at least support the following implementations:
+   * An XQJ implementation must at least support the following implementations:
    * - javax.xml.transform.dom.DOMSource
    * - javax.xml.transform.sax.SAXSource
    * - javax.xml.transform.stream.StreamSource
@@ -639,23 +472,11 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         isNullXQException(varName);
         isNullXQException(value);
-        if (!((type==null) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) || (type.getItemKind()==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT))) {
-            throw new XQException ("Invalid type.");
-        }
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
-        if (type==null) {
-            type = connection.createDocumentElementType(connection.createElementType(null, XQItemType.XQBASETYPE_UNTYPED));
-        }
-        if (value instanceof StreamSource) {
-            bindDocument(varName, ((StreamSource)value).getReader(), null, type);
-        } else if (value instanceof SAXSource) {
-            bindDocument(varName, ((SAXSource)value).getInputSource().getCharacterStream(), null, type);
-        } else if (value instanceof DOMSource) {
-            bindDocument(varName, nodeToString(((DOMSource)value).getNode()), null, type);
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            XQItem item = connection.createItemFromDocument(value, type);
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+        } catch (Exception e) {
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
     }
 
@@ -669,7 +490,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         isNullXQException(value);
         try {
-            dynamicContext.setImplicitTimezone((value.getRawOffset()/60000));
+            implicitTimeZone = value;
         } catch (Exception e) {
             throw new XQException("Error setting implicit TimeZone: " + e.getLocalizedMessage());
         }
@@ -677,7 +498,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
 
   /** \brief Binds a value to the given external variable.
    * 
-   * The dynamic type of the value is derived from the XQItem. In case of a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
+   * The dynamic type of the value is derived from the ZorbaXQItem. In case of a mismatch between the static and dynamic types, an XQException is raised either by this method, or during query evaluation.
    * 
    * @param varName - the name of the external variable to bind to, cannot be null
    * @param value - the value to be bound, cannot be null
@@ -688,18 +509,14 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         isNullXQException(varName);
         isNullXQException(value);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)value).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)value).getZorbaItem());
         } catch (Exception e) {
-            throw new XQException ("Error binding item: " + varName.getLocalPart() + " with error: " + e.getLocalizedMessage());
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
     }
 
-  /** \brief Binds a value to the given external variable or the context item.
+  /** \brief Binds a value to the given external variable.
    * 
    * The input sequence is consumed from its current position to the end, after which the input sequence's position will be set to point after the last item. The dynamic type of the value is derived from the items in the sequence. In case of a mismatch between the static and dynamic types, an XQException is be raised either by this method, or during query evaluation.
    * 
@@ -712,23 +529,11 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         isNullXQException(varName);
         isNullXQException(value);
-        if (value.isClosed()) {
-            throw new XQException ("Sequence is closed.");
-        }
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
-            if (!value.isOnItem()) {
-                value.next();
-            }
-            Item item = new Item(((org.zorbaxquery.api.xqj.XQItem)value.getItem()).getZorbaItem());
-            //Item item2 = new Item(item);
-            //String val = item.getStringValue();
-            dynamicContext.setVariable(varName.getLocalPart(), item);
-            itemsBounded.add(varName.getLocalPart());
+            Item item = new Item(((org.zorbaxquery.api.xqj.ZorbaXQItem)value.getItem()).getZorbaItem());
+            itemsToBind.put(varName.getLocalPart(), item);
         } catch (Exception e) {
-            throw new XQException ("Error binding item: " + varName.getLocalPart() + " with error: " + e.getLocalizedMessage());
+            throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
     }
 
@@ -746,13 +551,14 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
         isClosedXQException();
         isNullXQException(varName);
         isNullXQException(value);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
-            XQItem item = connection.createItemFromObject(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            XQItem item = null;
+            if (value instanceof XQItem) {
+                item = (XQItem)value;
+            } else {
+                item = connection.createItemFromObject(value, type);
+            } 
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -771,13 +577,9 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindBoolean(QName varName, boolean value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
             XQItem item = connection.createItemFromBoolean(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -796,13 +598,9 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindByte(QName varName, byte value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
             XQItem item = connection.createItemFromByte(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -821,13 +619,9 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindDouble(QName varName, double value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
             XQItem item = connection.createItemFromDouble(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -846,13 +640,9 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindFloat(QName varName, float value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
             XQItem item = connection.createItemFromFloat(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -871,13 +661,9 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindInt(QName varName, int value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
             XQItem item = connection.createItemFromInt(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -896,13 +682,9 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindLong(QName varName, long value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
             XQItem item = connection.createItemFromLong(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -920,15 +702,11 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     @Override
     public void bindNode(QName varName, Node value, XQItemType type) throws XQException {
         isClosedXQException();
-        isNullXQException(value);
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
+        isNullXQException(value);
         try {
             XQItem item = connection.createItemFromNode(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -947,13 +725,9 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
     public void bindShort(QName varName, short value, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(varName);
-        if (!isExternal(varName.getLocalPart())) {
-            throw new XQException ("The bound variable must be declared external in the prepared expression.");
-        }
         try {
             XQItem item = connection.createItemFromShort(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.XQItem)item).getZorbaItem());
-            itemsBounded.add(varName.getLocalPart());
+            itemsToBind.put(varName.getLocalPart(),((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
         }
@@ -961,7 +735,7 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
 
     private void isClosedXQException() throws XQException {
         if (closed) {
-            throw new XQException("This prepared expression is closed");
+            throw new XQException("This expression is closed");
         }
     }
     private void isNullXQException(Object value) throws XQException {
@@ -969,5 +743,6 @@ public class XQPreparedExpression implements javax.xml.xquery.XQPreparedExpressi
             throw new XQException("Parameter shouldn't be null");
         }
     }
+   
     
 }

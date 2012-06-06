@@ -22,7 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 
-import org.zorbaxquery.api.xqj.XQDataSource;
+import org.zorbaxquery.api.xqj.ZorbaXQDataSource;
 import javax.xml.xquery.XQConnection;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQExpression;
@@ -39,10 +39,10 @@ import org.zorbaxquery.api.StaticCollectionManager;
 import org.zorbaxquery.api.XQuery;
 import org.zorbaxquery.api.XmlDataManager;
 import org.zorbaxquery.api.Zorba;
-import org.zorbaxquery.api.xqj.XQCollection;
-import org.zorbaxquery.api.xqj.XQCollectionManager;
-import org.zorbaxquery.api.xqj.XQStaticCollectionManager;
-import org.zorbaxquery.api.xqj.XQXmlDataManager;
+import org.zorbaxquery.api.xqj.ZorbaXQCollection;
+import org.zorbaxquery.api.xqj.ZorbaXQCollectionManager;
+import org.zorbaxquery.api.xqj.ZorbaXQStaticCollectionManager;
+import org.zorbaxquery.api.xqj.ZorbaXQXmlDataManager;
 
 public class Api_test {
 
@@ -53,11 +53,11 @@ public class Api_test {
 
   static boolean example_1() throws XQException
   {
-      XQDataSource xqds = new XQDataSource();
+      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       XQConnection xqc = xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
       org.zorbaxquery.api.xqj.XQResultSequence xqs = (org.zorbaxquery.api.xqj.XQResultSequence) xqe.executeQuery("1,2,3");
-      XQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
+      ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
       xqc.close();
       xqc.close();
       return true;
@@ -76,11 +76,11 @@ public class Api_test {
       } catch (Exception e) {
           throw new XQException("Error reading file for test: " + e.getLocalizedMessage());
       }
-      XQDataSource xqds = new XQDataSource();
+      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       XQConnection xqc = xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
       org.zorbaxquery.api.xqj.XQResultSequence xqs = (org.zorbaxquery.api.xqj.XQResultSequence) xqe.executeQuery(strBuilder.toString());
-      XQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
+      ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
       boolean resultAdding = false;
       boolean resultDeleting = true;
       URI uri;
@@ -115,11 +115,11 @@ public class Api_test {
       } catch (Exception e) {
           throw new XQException("Error reading file for test: " + e.getLocalizedMessage());
       }
-      XQDataSource xqds = new XQDataSource();
+      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
       org.zorbaxquery.api.xqj.XQResultSequence xqs = (org.zorbaxquery.api.xqj.XQResultSequence) xqe.executeQuery(strBuilder.toString());
-      XQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
+      ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
       URI uri;
       QName qname;
       XQItemType type = null;
@@ -132,9 +132,9 @@ public class Api_test {
         }
       XQItem colName = xqc.createItemFromString("coll",  type);
       colManager.createCollection(colName);
-      XQCollection collection = colManager.getCollection(colName);
+      ZorbaXQCollection collection = colManager.getCollection(colName);
       
-      XQXmlDataManager manager = xqc.getXmlDataManager();
+      ZorbaXQXmlDataManager manager = xqc.getXmlDataManager();
       XQSequence data = manager.parseXML("<books><book>Book 1</book><book>Book 2</book></books>");
       collection.insertNodesFirst(data);
       
@@ -182,11 +182,11 @@ public class Api_test {
 
   static boolean example_4() throws XQException
   {
-      XQDataSource xqds = new XQDataSource();
+      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
-      XQXmlDataManager xmlManager = xqc.getXmlDataManager();
-      XQCollectionManager colManager =  xmlManager.getCollectionManager();
+      ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
+      ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
       xqc.close();
       xqc.close();
       return true;
@@ -194,10 +194,10 @@ public class Api_test {
 
   static boolean example_5() throws XQException
   {
-      XQDataSource xqds = new XQDataSource();
+      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
-      XQXmlDataManager xmlManager = xqc.getXmlDataManager();
-      XQCollectionManager colManager =  xmlManager.getCollectionManager();
+      ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
+      ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
       boolean resultAdding = false;
       boolean resultDeleting = true;
       URI uri;
@@ -245,10 +245,10 @@ public class Api_test {
 
   static boolean example_6b() throws XQException
   {
-      XQDataSource xqds = new XQDataSource();
+      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
-      XQXmlDataManager xmlManager = xqc.getXmlDataManager();
-      XQCollectionManager colManager =  xmlManager.getCollectionManager();
+      ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
+      ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
       URI uri;
       QName qname;
       XQItemType type = null;
@@ -261,7 +261,7 @@ public class Api_test {
         }
       XQItem colName = xqc.createItemFromString("col2",  type);
       colManager.createCollection(colName);
-      XQCollection collection = colManager.getCollection(colName);
+      ZorbaXQCollection collection = colManager.getCollection(colName);
       colName.close();
       XQSequence data = xmlManager.parseXML("<books><book>Book 1</book><book>Book 2</book></books>");
       collection.insertNodesLast(data);

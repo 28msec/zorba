@@ -22,9 +22,9 @@ import java.util.Properties;
 import javax.xml.xquery.*;
 
   /**
-   * An XQDataSource is a factory for XQConnection objects. 
+   * An ZorbaXQDataSource is a factory for ZorbaXQConnection objects. 
    */
-public class XQDataSource implements javax.xml.xquery.XQDataSource {
+public class ZorbaXQDataSource implements javax.xml.xquery.XQDataSource {
     
    static {
       System.loadLibrary ( "zorba_api" );
@@ -37,7 +37,7 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
     protected PrintWriter logWriter;
     private Properties properties = new Properties();
     private String[] propertiesAllowed = {ZORBA_PROPERTIES_URI_PATHS, ZORBA_PROPERTIES_LIB_PATHS, ZORBA_PROPERTIES_MODULE_PATHS};
-    public XQDataSource() {
+    public ZorbaXQDataSource() {
     }
 
 
@@ -47,13 +47,13 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
    * @throw XQException - if a datasource access error occurs
    */
     @Override
-    public XQConnection getConnection() throws XQException {
-        XQConnection conn;
+    public ZorbaXQConnection getConnection() throws XQException {
+        ZorbaXQConnection conn;
         try {
             if (!properties.isEmpty()) {
-                conn = new XQConnection(properties);
+                conn = new ZorbaXQConnection(properties);
             } else {
-                conn = new XQConnection();
+                conn = new ZorbaXQConnection();
             }
         } catch ( Exception e ) {
             throw new XQException("Error creating new Zorba Connection Instance");
@@ -67,10 +67,10 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
    * 
    * @param cnctn - an existing JDBC connection
    * @return a connection to the XML datasource
-   * @throw XQException - if (1) a datasource access error occurs, (2) the implementation does not support this method of getting an XQConnection, or (3) if the con parameter is null
+   * @throw XQException - if (1) a datasource access error occurs, (2) the implementation does not support this method of getting an ZorbaXQConnection, or (3) if the con parameter is null
    */
     @Override
-    public XQConnection getConnection(Connection cnctn) throws XQException {
+    public ZorbaXQConnection getConnection(Connection cnctn) throws XQException {
         /* Attempts to create a connection to an XML datasource using an 
          * existing JDBC connection. An XQJ implementation is not required 
          * to support this method. If it is not supported, then an 
@@ -88,13 +88,13 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
    * @throw XQException - if a datasource access error occurs
    */
     @Override
-    public XQConnection getConnection(String username, String passwd) throws XQException {
-        XQConnection conn;
+    public ZorbaXQConnection getConnection(String username, String passwd) throws XQException {
+        ZorbaXQConnection conn;
         try {
           if (!properties.isEmpty()) {
-            conn = new XQConnection(properties);
+            conn = new ZorbaXQConnection(properties);
           } else {
-            conn = new XQConnection();
+            conn = new ZorbaXQConnection();
           }
         } catch ( Exception e ) {
             throw new XQException("Error creating new Zorba Connection Instance");
@@ -104,7 +104,7 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
 
   /** \brief Gets the maximum time in seconds that this datasource can wait while attempting to connect to a database.
    * 
-   * A value of zero means that the timeout is the default system timeout if there is one; otherwise, it means that there is no timeout. When a XQDataSource object is created, the login timeout is initially zero. It is implementation-defined whether the returned login timeout is actually used by the data source implementation.
+   * A value of zero means that the timeout is the default system timeout if there is one; otherwise, it means that there is no timeout. When a ZorbaXQDataSource object is created, the login timeout is initially zero. It is implementation-defined whether the returned login timeout is actually used by the data source implementation.
    * 
    * @return the datasource login time limit
    * @throw XQException - if a datasource access error occurs
@@ -114,9 +114,9 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
         return loginTimeout;
     }
 
-  /** \brief Retrieves the log writer for this XQDataSource object.
+  /** \brief Retrieves the log writer for this ZorbaXQDataSource object.
    * 
-   * The log writer is a character output stream to which all logging and tracing messages for this datasource will be printed. This includes messages printed by the methods of this object, messages printed by methods of other objects manufactured by this object, and so on. When a XQDataSource object is created, the log writer is initially null; in other words, the default is for logging to be disabled.
+   * The log writer is a character output stream to which all logging and tracing messages for this datasource will be printed. This includes messages printed by the methods of this object, messages printed by methods of other objects manufactured by this object, and so on. When a ZorbaXQDataSource object is created, the log writer is initially null; in other words, the default is for logging to be disabled.
    * 
    * @return the log writer for this datasource or null if logging is disabled
    * @throw XQException - if a datasource access error occurs
@@ -126,7 +126,7 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
         return logWriter;
     }
 
-  /** \brief Returns an array containing the property names supported by this XQDataSource.
+  /** \brief Returns an array containing the property names supported by this ZorbaXQDataSource.
    * 
    * Implementations that support user name and password must recognize the user name and password properties listed below. 
    * 
@@ -233,7 +233,7 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
 
   /** \brief Sets the maximum time in seconds that this datasource will wait while attempting to connect to a database.
    * 
-   * A value of zero specifies that the timeout is the default system timeout if there is one; otherwise, it specifies that there is no timeout. When a XQDataSource object is created, the login timeout is initially zero. It is implementation-defined whether the specified login timeout is actually used by the data source implementation. If the connection is created over an existing JDBC connection, then the login timeout value from the underlying JDBC connection may be used.
+   * A value of zero specifies that the timeout is the default system timeout if there is one; otherwise, it specifies that there is no timeout. When a ZorbaXQDataSource object is created, the login timeout is initially zero. It is implementation-defined whether the specified login timeout is actually used by the data source implementation. If the connection is created over an existing JDBC connection, then the login timeout value from the underlying JDBC connection may be used.
    * 
    * @param seconds - the datasource login time limit
    * @throw XQException - if a datasource access error occurs
@@ -243,9 +243,9 @@ public class XQDataSource implements javax.xml.xquery.XQDataSource {
         loginTimeout = seconds;
     }
 
-  /** \brief Sets the log writer for this XQDataSource object to the given java.io.PrintWriter object.
+  /** \brief Sets the log writer for this ZorbaXQDataSource object to the given java.io.PrintWriter object.
    * 
-   * The log writer is a character output stream to which all logging and tracing messages for this datasource will be printed. This includes messages printed by the methods of this object, messages printed by methods of other objects manufactured by this object, and so on. When a XQDataSource object is created the log writer is initially null; in other words, the default is for logging to be disabled.
+   * The log writer is a character output stream to which all logging and tracing messages for this datasource will be printed. This includes messages printed by the methods of this object, messages printed by methods of other objects manufactured by this object, and so on. When a ZorbaXQDataSource object is created the log writer is initially null; in other words, the default is for logging to be disabled.
    * 
    * @param writer - the new log writer; to disable logging, set to null
    * @throw XQException - if a datasource access error occurs

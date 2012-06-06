@@ -23,7 +23,7 @@ import org.zorbaxquery.api.Item;
    * 
    * A forward only result sequence does not support calling the getter methods multiple times on the same item. To work around this case, the getItem method can be used to obtain a result item and then getter methods may be called multiple times on this item.
    * 
-   * The XQResultItem object is dependent on the connection, expression and the sequence from which it was created and is only valid for the duration of those objects. Thus, if any one of those objects is closed, this XQResultItem object will be implicitly closed, and it can no longer be used. Similarly re-executing the expression also implicitly closes the associated result sequences, which in turn implicitly closes this result item.
+   * The ZorbaXQResultItem object is dependent on the connection, expression and the sequence from which it was created and is only valid for the duration of those objects. Thus, if any one of those objects is closed, this ZorbaXQResultItem object will be implicitly closed, and it can no longer be used. Similarly re-executing the expression also implicitly closes the associated result sequences, which in turn implicitly closes this result item.
    * 
    * An XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call close method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions. Not closing this object implicitly or explicitly might result in serious memory leaks.
    * 
@@ -36,7 +36,7 @@ import org.zorbaxquery.api.Item;
    *   // posititioned before the first item
    *   while (result.next())
    *   {
-   *     XQResultItem item = result.getItem();
+   *     ZorbaXQResultItem item = result.getItem();
    *     // perform multiple gets on this item 
    *     // get DOM
    *     org.w3.dom.Node node = item.getNode(); 
@@ -50,12 +50,12 @@ import org.zorbaxquery.api.Item;
    *   result.close(); // explicitly close the result sequence
    * \endcode
    **/
-public class XQResultItem extends XQItem implements javax.xml.xquery.XQResultItem {
+public class ZorbaXQResultItem extends ZorbaXQItem implements javax.xml.xquery.XQResultItem {
 
     private XQConnection connection;
     
     
-    public XQResultItem(Item item, XQConnection conn) {
+    public ZorbaXQResultItem(Item item, XQConnection conn) {
         super(item);
         connection = conn;
     }

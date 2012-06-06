@@ -21,18 +21,18 @@ import javax.xml.xquery.XQException;
 import org.zorbaxquery.api.DocumentManager;
 import javax.xml.xquery.XQItem;
 
-public class XQDocumentManager {
+public class ZorbaXQDocumentManager {
 
     private boolean closed = false;
     DocumentManager dc;
-    private Collection<XQSequence> sequences = new ArrayList<XQSequence>();
+    private Collection<ZorbaXQSequence> sequences = new ArrayList<ZorbaXQSequence>();
     
-    protected XQDocumentManager(DocumentManager aDocumentManager) {
+    protected ZorbaXQDocumentManager(DocumentManager aDocumentManager) {
         dc = aDocumentManager;
     }
 
     public void close() throws XQException {
-        for (XQSequence exp : sequences ){
+        for (ZorbaXQSequence exp : sequences ){
             exp.close();  // Notify the dependents objects to close
         }
         closed = true;
@@ -41,16 +41,16 @@ public class XQDocumentManager {
         return closed;
     }
 
-    public XQSequence availableDocuments() throws XQException {
+    public ZorbaXQSequence availableDocuments() throws XQException {
         isClosedXQException();
-        XQSequence result = new XQSequence(dc.availableDocuments().getIterator());
+        ZorbaXQSequence result = new ZorbaXQSequence(dc.availableDocuments().getIterator());
         sequences.add(result);
         return result;
     }
 
     public void put(String aName, javax.xml.xquery.XQItem aDoc)  throws XQException {
         isClosedXQException();
-        dc.put(aName, ((org.zorbaxquery.api.xqj.XQItem)aDoc).getZorbaItem());
+        dc.put(aName, ((org.zorbaxquery.api.xqj.ZorbaXQItem)aDoc).getZorbaItem());
     }
     public void remove(String aName) throws XQException {
         isClosedXQException();
@@ -58,7 +58,7 @@ public class XQDocumentManager {
     }
     public XQItem document(String aName) throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.XQItem(dc.document(aName));
+        return new org.zorbaxquery.api.xqj.ZorbaXQItem(dc.document(aName));
     }
     public boolean isAvailableDocument(String aName) throws XQException {
         isClosedXQException();

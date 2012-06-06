@@ -72,19 +72,19 @@ import org.zorbaxquery.api.Zorba;
 
   /**
    * 
-   * A connection (session) with a specific XQuery engine. Connections are obtained through an XQDataSource object.
+   * A connection (session) with a specific XQuery engine. Connections are obtained through an ZorbaXQDataSource object.
    * 
-   * XQuery expressions are executed and results are returned within the context of a connection. They are either executed through XQExpression or XQPreparedExpression objects.
+   * XQuery expressions are executed and results are returned within the context of a connection. They are either executed through ZorbaXQExpression or ZorbaXQPreparedExpression objects.
    * 
-   *   XQDataSource ds;// obtain the XQuery datasource
+   *   ZorbaXQDataSource ds;// obtain the XQuery datasource
    *   ... 
-   *   XQConnection conn = ds.getConnection();
+   *   ZorbaXQConnection conn = ds.getConnection();
    * 
-   *   XQPreparedExpression expr = conn.prepareExpression("for $i in ...");
+   *   ZorbaXQPreparedExpression expr = conn.prepareExpression("for $i in ...");
    *   XQResultSequence result = expr.executeQuery();
    *   // - or - 
-   *   XQExpression expr = conn.createExpression();
-   *   XQSequence result = expr.executeQuery("for $i in..");
+   *   ZorbaXQExpression expr = conn.createExpression();
+   *   ZorbaXQSequence result = expr.executeQuery("for $i in..");
    * 
    *   // The sequence can now be iterated 
    *   while (result.next())
@@ -97,10 +97,10 @@ import org.zorbaxquery.api.Zorba;
    *   conn.close();  // close the connection and free all resources..
    * 
    * 
-   * A connection holds also default values for XQExpression and XQPreparedExpression properties. An application can override these defaults by passing an XQStaticContext object to the setStaticContext() method.
+   * A connection holds also default values for ZorbaXQExpression and ZorbaXQPreparedExpression properties. An application can override these defaults by passing an ZorbaXQStaticContext object to the setStaticContext() method.
    * 
    */
-public class XQConnection implements javax.xml.xquery.XQConnection {
+public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     private InMemoryStore store;
     private Zorba zorba;
     private boolean autocommit;
@@ -109,7 +109,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
     private Collection<XQPreparedExpression> cPreparedExpression;
     private Collection<XQMetaData> cMetadata;
     private XQStaticContext lStaticContext;
-    private XQXmlDataManager lXmlDataManager;
+    private ZorbaXQXmlDataManager lXmlDataManager;
     private Properties properties;
     private StringVector uriPaths;
     private StringVector libPaths;
@@ -122,7 +122,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
             throw new XQException("Error returning Zorba Instance");
         }
     }
-    public XQConnection() {
+    public ZorbaXQConnection() {
         cExpression = new ArrayList<XQExpression>();
         cPreparedExpression = new ArrayList<XQPreparedExpression>();
         store = InMemoryStore.getInstance();
@@ -130,7 +130,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         autocommit = true;
         closed = false;
     }
-    public XQConnection(Properties aProperties) {
+    public ZorbaXQConnection(Properties aProperties) {
         cExpression = new ArrayList<XQExpression>();
         cPreparedExpression = new ArrayList<XQPreparedExpression>();
         store = InMemoryStore.getInstance();
@@ -139,21 +139,21 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         closed = false;
         properties = aProperties;
         for (String prop :properties.stringPropertyNames()) {
-            if (prop.equalsIgnoreCase(XQDataSource.ZORBA_PROPERTIES_URI_PATHS)) {
+            if (prop.equalsIgnoreCase(ZorbaXQDataSource.ZORBA_PROPERTIES_URI_PATHS)) {
                 String[] paths = properties.getProperty(prop).split("[;,]");
                 uriPaths = new StringVector();
                 for (String path: paths) {
                     uriPaths.add(path);
                 }
             }
-            if (prop.equalsIgnoreCase(XQDataSource.ZORBA_PROPERTIES_LIB_PATHS)) {
+            if (prop.equalsIgnoreCase(ZorbaXQDataSource.ZORBA_PROPERTIES_LIB_PATHS)) {
                 String[] paths = properties.getProperty(prop).split("[;,]");
                 libPaths = new StringVector();
                 for (String path: paths) {
                     libPaths.add(path);
                 }
             }
-            if (prop.equalsIgnoreCase(XQDataSource.ZORBA_PROPERTIES_MODULE_PATHS)) {
+            if (prop.equalsIgnoreCase(ZorbaXQDataSource.ZORBA_PROPERTIES_MODULE_PATHS)) {
                 String[] paths = properties.getProperty(prop).split("[;,]");
                 modulePaths = new StringVector();
                 for (String path: paths) {
@@ -161,22 +161,22 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                 }
             }
         }
-        lStaticContext = new org.zorbaxquery.api.xqj.XQStaticContext(zorba);
+        lStaticContext = new org.zorbaxquery.api.xqj.ZorbaXQStaticContext(zorba);
         if (uriPaths!=null) {
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).setURIPaths(uriPaths);
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setURIPaths(uriPaths);
         }
         if (libPaths!=null) {
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).setLIBPaths(libPaths);
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setLIBPaths(libPaths);
         }
         if (modulePaths!=null) {
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).setMODPaths(modulePaths);
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setMODPaths(modulePaths);
         }
         
     }
     
   /** \brief Closes the connection.
    * 
-   * Closes the connection. This also closes any XQExpression and XQPreparedExpression obtained from this connection. Once the connection is closed, no method other than close or the isClosed method may be called on the connection object. Calling close on an XQConnection object that is already closed has no effect. Note that an XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call this method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions.
+   * Closes the connection. This also closes any ZorbaXQExpression and ZorbaXQPreparedExpression obtained from this connection. Once the connection is closed, no method other than close or the isClosed method may be called on the connection object. Calling close on an ZorbaXQConnection object that is already closed has no effect. Note that an XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call this method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions.
    * 
    * @throw XQException - if there is an error during closing the connection.
    */
@@ -195,7 +195,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         }
 
         if (lStaticContext != null ) {
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).getZorbaStaticContext().destroy();
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).getZorbaStaticContext().destroy();
         }
         if (lXmlDataManager != null) {
             lXmlDataManager.close();
@@ -205,9 +205,9 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         closed = true;
     }
     
-    public XQXmlDataManager getXmlDataManager() {
+    public ZorbaXQXmlDataManager getXmlDataManager() {
         if (lXmlDataManager==null) {
-            lXmlDataManager = new XQXmlDataManager(zorba);
+            lXmlDataManager = new ZorbaXQXmlDataManager(zorba);
         }
         return lXmlDataManager;
     }
@@ -241,11 +241,11 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         throw new UnsupportedOperationException("Zorba does not support transactions... yet...");
     }
 
-  /** \brief Creates a new XQExpression object that can be used to perform execute immediate operations with XQuery expressions.
+  /** \brief Creates a new ZorbaXQExpression object that can be used to perform execute immediate operations with XQuery expressions.
    * 
-   * The properties of the connection's default XQStaticContext are copied to the returned XQExpression.
+   * The properties of the connection's default ZorbaXQStaticContext are copied to the returned ZorbaXQExpression.
    * 
-   * @return XQExpression that can be used to execute multiple expressions
+   * @return ZorbaXQExpression that can be used to execute multiple expressions
    * @throw XQException - if the connection is in a closed state
    */
     @Override
@@ -253,27 +253,27 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         XQExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.XQExpression(this);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQExpression(this);
         } else {
-            expression = new org.zorbaxquery.api.xqj.XQExpression(this, lStaticContext);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQExpression(this, lStaticContext);
         }
         cExpression.add(expression);
         return expression;
     }
 
-  /** \brief Creates a new XQExpression object that can be used to perform execute immediate operations with XQuery expressions.
+  /** \brief Creates a new ZorbaXQExpression object that can be used to perform execute immediate operations with XQuery expressions.
    * 
-   * The properties of the specified XQStaticContext values are copied to the returned XQExpression.
+   * The properties of the specified ZorbaXQStaticContext values are copied to the returned ZorbaXQExpression.
    * 
-   * @param value - XQStaticContext containing values of expression properties
-   * @return XQExpression that can be used to execute multiple expressions
+   * @param value - ZorbaXQStaticContext containing values of expression properties
+   * @return ZorbaXQExpression that can be used to execute multiple expressions
    * @throw XQException - if (1) the connection is in a closed state, or (2) the specified argument is null
    */
     @Override
     public XQExpression createExpression(XQStaticContext value) throws XQException {
         isClosedXQException();
         isNullXQException(value);
-        XQExpression expression = new org.zorbaxquery.api.xqj.XQExpression(this, value);
+        XQExpression expression = new org.zorbaxquery.api.xqj.ZorbaXQExpression(this, value);
         cExpression.add(expression);
         return expression;
     }
@@ -286,7 +286,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQMetaData getMetaData() throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.XQMetaData(this);
+        return new org.zorbaxquery.api.xqj.ZorbaXQMetaData(this);
     }
 
   /** \brief Checks if the connection is closed.
@@ -300,7 +300,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
 
   /** \brief Prepares an expression for execution.
    * 
-   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * The properties of the connection's default ZorbaXQStaticContext are copied to the returned ZorbaXQPreparedExpression.
    * 
    * @param value - the XQuery expression as a String. Cannot be null
    * @return the prepared XQuery expression
@@ -313,9 +313,9 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         XQPreparedExpression expression;
         try {
             if (lStaticContext == null) {
-                expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, value);
+                expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, value);
             } else {
-                expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, value, lStaticContext);
+                expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, value, lStaticContext);
             }
             cPreparedExpression.add(expression);
         } catch (Exception e) {
@@ -326,10 +326,10 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
 
   /** \brief Prepares an expression for execution.
    * 
-   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * The properties of the connection's default ZorbaXQStaticContext are copied to the returned ZorbaXQPreparedExpression.
    * 
    * @param string - the XQuery expression as a String. Cannot be null
-   * @param xqsc - XQStaticContext containing values of expression properties.
+   * @param xqsc - ZorbaXQStaticContext containing values of expression properties.
    * @return the prepared XQuery expression
    * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
    */
@@ -340,7 +340,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         isNullXQException(xqsc);
         XQPreparedExpression expression = null;
         try {
-            expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, string, xqsc);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, string, xqsc);
             cPreparedExpression.add(expression);
         } catch (Exception e) {
           throw new XQException("Error preparing expression");
@@ -350,7 +350,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
 
   /** \brief Prepares an expression for execution.
    * 
-   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * The properties of the connection's default ZorbaXQStaticContext are copied to the returned ZorbaXQPreparedExpression.
    * 
    * @param reader - the XQuery expression as a Reader. Cannot be null
    * @return the prepared XQuery expression
@@ -378,9 +378,9 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         
         XQPreparedExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, writer.toString());
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, writer.toString());
         } else {
-            expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, writer.toString(), lStaticContext);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, writer.toString(), lStaticContext);
         }
         cPreparedExpression.add(expression);
         return expression;
@@ -388,10 +388,10 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
 
   /** \brief Prepares an expression for execution.
    * 
-   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * The properties of the connection's default ZorbaXQStaticContext are copied to the returned ZorbaXQPreparedExpression.
    * 
    * @param reader - the XQuery expression as a Reader. Cannot be null
-   * @param xqsc - XQStaticContext containing values of expression properties
+   * @param xqsc - ZorbaXQStaticContext containing values of expression properties
    * @return the prepared XQuery expression
    * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
    */
@@ -414,7 +414,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
             throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
         }
         
-        XQPreparedExpression expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, writer.toString(), xqsc);
+        XQPreparedExpression expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, writer.toString(), xqsc);
         
         cPreparedExpression.add(expression);
         return expression;
@@ -422,7 +422,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
 
   /** \brief Prepares an expression for execution.
    * 
-   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * The properties of the connection's default ZorbaXQStaticContext are copied to the returned ZorbaXQPreparedExpression.
    * 
    * @param in - the XQuery expression as an InputStream. Cannot be null
    * @return the prepared XQuery expression
@@ -444,9 +444,9 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         
         XQPreparedExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, out.toString());
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, out.toString());
         } else {
-            expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, out.toString(), lStaticContext);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, out.toString(), lStaticContext);
         }
         try {
             cPreparedExpression.add(expression);
@@ -459,10 +459,10 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
 
   /** \brief Prepares an expression for execution.
    * 
-   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * The properties of the connection's default ZorbaXQStaticContext are copied to the returned ZorbaXQPreparedExpression.
    * 
    * @param in - the XQuery expression as an InputStream. Cannot be null
-   * @param xqsc - XQStaticContext containing values of expression properties
+   * @param xqsc - ZorbaXQStaticContext containing values of expression properties
    * @return the prepared XQuery expression
    * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
    */
@@ -483,7 +483,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         
         XQPreparedExpression expression = null;
         try {
-            expression = new org.zorbaxquery.api.xqj.XQPreparedExpression(this, out.toString(), xqsc);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, out.toString(), xqsc);
             cPreparedExpression.add(expression);
         } catch (Exception ex) {
             throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
@@ -502,34 +502,34 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         throw new UnsupportedOperationException("Zorba does not support transactions... yet...");
     }
 
-  /** \brief Gets an XQStaticContext representing the default values for all expression properties.
+  /** \brief Gets an ZorbaXQStaticContext representing the default values for all expression properties.
    * 
-   * In order to modify the defaults, it is not sufficient to modify the values in the returned XQStaticContext object; in addition setStaticContext should be called to make those new values effective.
+   * In order to modify the defaults, it is not sufficient to modify the values in the returned ZorbaXQStaticContext object; in addition setStaticContext should be called to make those new values effective.
    * 
-   * @return XQStaticContext representing the default values for all expression properties
+   * @return ZorbaXQStaticContext representing the default values for all expression properties
    * @throw XQException - if the connection is in a closed state
    */
     @Override
     public XQStaticContext getStaticContext() throws XQException {
         isClosedXQException();
-        lStaticContext = new org.zorbaxquery.api.xqj.XQStaticContext(zorba);
+        lStaticContext = new org.zorbaxquery.api.xqj.ZorbaXQStaticContext(zorba);
         if (uriPaths!=null) {
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).setURIPaths(uriPaths);
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setURIPaths(uriPaths);
         }
         if (libPaths!=null) {
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).setLIBPaths(libPaths);
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setLIBPaths(libPaths);
         }
         if (modulePaths!=null) {
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).setMODPaths(modulePaths);
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setMODPaths(modulePaths);
         }
         return lStaticContext;
     }
 
   /** \brief Sets the default values for all expression properties.
    * 
-   * The implementation will read out all expression properties from the specified XQStaticContext and update its private copy.
+   * The implementation will read out all expression properties from the specified ZorbaXQStaticContext and update its private copy.
    * 
-   * @param xqsc - XQStaticContext containing values of expression properties
+   * @param xqsc - ZorbaXQStaticContext containing values of expression properties
    * @throw XQException - if the connection is in a closed state
    */
     @Override
@@ -537,7 +537,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         isNullXQException(xqsc);
         if ((lStaticContext!=null) && (lStaticContext!=xqsc)) {  // delete previous static context
-            ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).getZorbaStaticContext().delete();
+            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).getZorbaStaticContext().delete();
         }
         lStaticContext = xqsc;
     }
@@ -548,7 +548,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the lexical string value of the type
    * @param type - the item type
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - if (1) any of the arguments are null, (2) given type is not an atomic type, (3) the conversion of the value to an XDM instance failed, or (4) the underlying object implementing the interface is closed
    */
     @Override
@@ -575,7 +575,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted, cannot be null
    * @param type - the type of the value to be bound to the external variable. The default type, xs:string, is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
    */
     @Override
@@ -583,114 +583,114 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         isNullXQException(value);
         if (type==null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
         }
         ItemFactory itemFactory = zorba.getItemFactory();
         XQItem item = null;
         try {
             switch (type.getBaseType()) {
             case XQItemType.XQBASETYPE_BOOLEAN:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createBoolean(Boolean.parseBoolean(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBoolean(Boolean.parseBoolean(value)), type);
                 break;
             case XQItemType.XQBASETYPE_ANYURI:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createAnyURI(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value), type);
                 break;
             case XQItemType.XQBASETYPE_BASE64BINARY:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createBase64Binary(value, value.length()), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value, value.length()), type);
                 break;
             case XQItemType.XQBASETYPE_BYTE:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createByte(value.charAt(0)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte(value.charAt(0)), type);
                 break;
             case XQItemType.XQBASETYPE_DATE:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDate(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDate(value), type);
                 break;
             case XQItemType.XQBASETYPE_DATETIME:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDateTime(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDateTime(value), type);
                 break;
             case XQItemType.XQBASETYPE_DAYTIMEDURATION:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDuration(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
                 break;
             case XQItemType.XQBASETYPE_DECIMAL:
                 BigDecimal dec = new BigDecimal(value);
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDecimal(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimal(value), type);
                 break;
             case XQItemType.XQBASETYPE_DOUBLE:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDouble(Double.parseDouble(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDouble(Double.parseDouble(value)), type);
                 break;
             case XQItemType.XQBASETYPE_DURATION:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDuration(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
                 break;
             case XQItemType.XQBASETYPE_FLOAT:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createFloat(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createFloat(value), type);
                 break;
             case XQItemType.XQBASETYPE_GDAY:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGDay(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGDay(value), type);
                 break;
             case XQItemType.XQBASETYPE_GMONTH:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGMonth(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonth(value), type);
                 break;
             case XQItemType.XQBASETYPE_GMONTHDAY:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGMonthDay(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonthDay(value), type);
                 break;
             case XQItemType.XQBASETYPE_GYEAR:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGYear(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYear(value), type);
                 break;
             case XQItemType.XQBASETYPE_GYEARMONTH:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGYearMonth(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYearMonth(value), type);
                 break;
             case XQItemType.XQBASETYPE_HEXBINARY:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createHexBinary(value, value.length()), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createHexBinary(value, value.length()), type);
                 break;
             case XQItemType.XQBASETYPE_INT:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createInt(Integer.parseInt(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInt(Integer.parseInt(value)), type);
                 break;
             case XQItemType.XQBASETYPE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createInteger(Integer.parseInt(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(Integer.parseInt(value)), type);
                 break;
             case XQItemType.XQBASETYPE_LONG:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createLong(Long.parseLong(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createLong(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_NCNAME:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNCName(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNCName(value), type);
                 break;
             case XQItemType.XQBASETYPE_NEGATIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNegativeInteger(Long.parseLong(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNonNegativeInteger(new BigInteger(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNonPositiveInteger(Long.parseLong(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_POSITIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createPositiveInteger(new BigInteger(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_QNAME:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName(type.getSchemaURI().toString(), value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName(type.getSchemaURI().toString(), value), type);
                 break;
             case XQItemType.XQBASETYPE_SHORT:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createShort(Short.parseShort(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort(Short.parseShort(value)), type);
                 break;
             case XQItemType.XQBASETYPE_STRING:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createString(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createString(value), type);
                 break;
             case XQItemType.XQBASETYPE_TIME:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createTime(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createTime(value), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_BYTE:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedByte(Short.parseShort(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte(Short.parseShort(value)), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_INT:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedInt(Long.parseLong(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_LONG:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedLong(new BigInteger(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_SHORT:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedShort(Integer.parseInt(value)), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedShort(Integer.parseInt(value)), type);
                 break;
             case XQItemType.XQBASETYPE_YEARMONTHDURATION:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDuration(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
                 break;
             // TODO: revisit this posibilities
             case XQItemType.XQBASETYPE_ANYATOMICTYPE:
@@ -713,7 +713,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                 throw new UnsupportedOperationException("Not supported yet.");
             default:
                 
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createString(value), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createString(value), type);
                 break;
             }
         } catch (Exception e) {
@@ -732,8 +732,8 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted, cannot be null
    * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
-   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
-   * @return XQItem representing the resulting item
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, ZorbaXQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
    */
     @Override
@@ -759,7 +759,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
             iterator.next(doc);
             iterator.close();
             iterator.delete();
-            item = new org.zorbaxquery.api.xqj.XQItem(doc);
+            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
         } catch (Exception e) {
             throw new XQException("Error creating Item" + e.getLocalizedMessage());
         }
@@ -776,8 +776,8 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted, cannot be null
    * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
-   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
-   * @return XQItem representing the resulting item
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, ZorbaXQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
    */
     @Override
@@ -814,8 +814,8 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted, cannot be null
    * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
-   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
-   * @return XQItem representing the resulting item
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, ZorbaXQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
    */
     @Override
@@ -845,8 +845,8 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
    * 
    * @param value - the value to be converted, cannot be null
-   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
-   * @return XQItem representing the resulting item
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, ZorbaXQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
    */
     @Override
@@ -898,8 +898,8 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
    * 
    * @param value - the value to be converted, cannot be null
-   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
-   * @return XQItem representing the resulting item
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, ZorbaXQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
    */
     @Override
@@ -926,7 +926,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
@@ -942,64 +942,64 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if (type==null) {
             
             if (value instanceof Boolean) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
             } else if (value instanceof Byte) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
             } else if (value instanceof Float) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
             } else if (value instanceof Double) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
             } else if (value instanceof Integer) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
             } else if (value instanceof Long) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
             } else if (value instanceof Short) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
             } else if (value instanceof String) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
             } else if (value instanceof BigDecimal) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DECIMAL);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DECIMAL);
             } else if (value instanceof BigInteger) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INTEGER);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INTEGER);
             } else if (value instanceof Duration) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DURATION);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DURATION);
             } else if (value instanceof XMLGregorianCalendar) {
                 QName schType = ((XMLGregorianCalendar)value).getXMLSchemaType();
                 if (schType.equals(DatatypeConstants.GDAY)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GDAY);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GDAY);
                 } else if (schType.equals(DatatypeConstants.GMONTHDAY)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTHDAY);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTHDAY);
                 } else if (schType.equals(DatatypeConstants.GMONTH)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTH);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTH);
                 } else if (schType.equals(DatatypeConstants.GYEAR)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEAR);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEAR);
                 } else if (schType.equals(DatatypeConstants.GYEARMONTH)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEARMONTH);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEARMONTH);
                 } else if (schType.equals(DatatypeConstants.DATETIME)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATETIME);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATETIME);
                 } else if (schType.equals(DatatypeConstants.DATE)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATE);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATE);
                 } else if (schType.equals(DatatypeConstants.TIME)) {
-                    type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_TIME);
+                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_TIME);
                 }
             } else if (value instanceof QName) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_QNAME);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_QNAME);
             } else if (value instanceof Document) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
             } else if (value instanceof DocumentFragment) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
             } else if (value instanceof Element){
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ELEMENT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT);
             } else if (value instanceof Attr) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATTRIBUTE);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE);
             } else if (value instanceof Comment) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_COMMENT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_COMMENT);
             } else if (value instanceof ProcessingInstruction) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_PI);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_PI);
             } else if (value instanceof Text) {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_TEXT);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_TEXT);
             } else {
-                type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC);
+                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC);
             }
         }
         try {
@@ -1007,44 +1007,44 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                 case XQItemType.XQITEMKIND_ATOMIC:
                     switch (type.getBaseType()) {
                     case XQItemType.XQBASETYPE_BOOLEAN:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createBoolean((Boolean)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBoolean((Boolean)value), type);
                         break;
                     case XQItemType.XQBASETYPE_ANYURI:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createAnyURI(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_BASE64BINARY:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length()), type);
                         break;
                     case XQItemType.XQBASETYPE_BYTE:
                         if (value instanceof Byte) {
                             byte tmpByte = ((Byte)value).byteValue();
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createByte((char)tmpByte), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte((char)tmpByte), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createByte((value.toString()).charAt(0)), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte((value.toString()).charAt(0)), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_DATE:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDate(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDate(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_DATETIME:
                         if (value.toString().contains(":")) {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDateTime(value.toString()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDateTime(value.toString()), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDate(value.toString()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDate(value.toString()), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_DAYTIMEDURATION:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDuration(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_DECIMAL:
                         if (value instanceof BigDecimal) {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDecimal(((BigDecimal)value).toPlainString()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimal(((BigDecimal)value).toPlainString()), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDecimal(value.toString()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimal(value.toString()), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_DOUBLE:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDouble(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDouble(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_DURATION:
                         if (value instanceof Duration) {
@@ -1053,111 +1053,111 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                                               duration.isSet(DatatypeConstants.MINUTES) || duration.isSet(DatatypeConstants.SECONDS);
                             Boolean yearmonth = duration.isSet(DatatypeConstants.YEARS) || duration.isSet(DatatypeConstants.MONTHS);
                             if (daytime && yearmonth){
-                                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDuration(value.toString()), type);
+                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                             } else if (yearmonth) {
-                                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createYearMonthDuration(value.toString()), type);
+                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createYearMonthDuration(value.toString()), type);
                             } else if (daytime) {
-                                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDayTimeDuration(value.toString()), type);
+                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDayTimeDuration(value.toString()), type);
                             }
                         } else {
                             boolean yearMonth = value.toString().contains("Y") || value.toString().contains("M");
                             boolean dayTime = value.toString().contains("D") || value.toString().contains("T");
                             if (yearMonth && dayTime) {
-                                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDuration(value.toString()), type);
+                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                             } else if (yearMonth) {
-                                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createYearMonthDuration(value.toString()), type);
+                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createYearMonthDuration(value.toString()), type);
                             } else if (dayTime) {
-                                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDayTimeDuration(value.toString()), type);
+                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDayTimeDuration(value.toString()), type);
                             }
                         }
                         break;
                     case XQItemType.XQBASETYPE_FLOAT:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createFloat((Float)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createFloat((Float)value), type);
                         break;
                     case XQItemType.XQBASETYPE_GDAY:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGDay(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGDay(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GMONTH:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGMonth(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonth(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GMONTHDAY:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGMonthDay(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonthDay(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GYEAR:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGYear(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYear(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GYEARMONTH:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createGYearMonth(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYearMonth(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_HEXBINARY:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createHexBinary(value.toString(), (value.toString()).length()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createHexBinary(value.toString(), (value.toString()).length()), type);
                         break;
                     case XQItemType.XQBASETYPE_INT:
                     case XQItemType.XQBASETYPE_INTEGER:
                         if (value instanceof BigInteger) {
                             BigInteger val = (BigInteger)value;
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createInteger(val.longValue()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(val.longValue()), type);
                         } else if (value instanceof Integer) {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createInt((Integer)value), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInt((Integer)value), type);
                         } else if (value instanceof String) {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createInteger(value.toString()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(value.toString()), type);
                         } else {
                             throw new XQException ("Error parsing integer: " + value.toString());
                         }
                         break;
                     case XQItemType.XQBASETYPE_LONG:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createLong((Long)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createLong((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_NCNAME:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNCName(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNCName(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_NEGATIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNegativeInteger((Long)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNonNegativeInteger(new BigInteger(value.toString())), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(new BigInteger(value.toString())), type);
                         break;
                     case XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNonPositiveInteger((Long)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_POSITIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createPositiveInteger(new BigInteger(value.toString())), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(new BigInteger(value.toString())), type);
                         break;
                     case XQItemType.XQBASETYPE_QNAME:
                         if (value instanceof QName) {
                             QName qname =  (QName) value;
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName(qname.getNamespaceURI(), qname.getPrefix(), qname.getLocalPart()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName(qname.getNamespaceURI(), qname.getPrefix(), qname.getLocalPart()), type);
                         } else if (value.toString().contains("{")) {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName(value.toString()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName(value.toString()), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName("", value.toString()), type);
+                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName("", value.toString()), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_SHORT:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createShort((Short)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort((Short)value), type);
                         break;
                     case XQItemType.XQBASETYPE_STRING:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createString(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createString(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_TIME:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createTime(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createTime(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_TOKEN:
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_BYTE:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedByte((Short)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte((Short)value), type);
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_INT:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedInt((Long)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_LONG:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedLong(new BigInteger(value.toString())), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(new BigInteger(value.toString())), type);
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_SHORT:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedShort((Integer)value), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedShort((Integer)value), type);
                         break;
                     case XQItemType.XQBASETYPE_YEARMONTHDURATION:
-                        item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDuration(value.toString()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_ANYATOMICTYPE:
                     case XQItemType.XQBASETYPE_ANYSIMPLETYPE:
@@ -1198,7 +1198,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                         //TODO: Rodolfo: use centralized constants instead of strings
                         Item iUntyped = itemFactory.createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
                         Item attributeNode = itemFactory.createAttributeNode(iEmpty, nodeName, iUntyped, nodeValue);
-                        item = new org.zorbaxquery.api.xqj.XQItem(attributeNode, type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(attributeNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_COMMENT:
@@ -1206,11 +1206,11 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                         Comment comment = (Comment) value;
                         Item iEmpty = new Item();
                         Item elementNode = itemFactory.createCommentNode(iEmpty, comment.getTextContent());
-                        item = new org.zorbaxquery.api.xqj.XQItem(elementNode, type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
                     } else {
                         Item iEmpty = new Item();
                         Item elementNode = itemFactory.createCommentNode(iEmpty, value.toString());
-                        item = new org.zorbaxquery.api.xqj.XQItem(elementNode, type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_DOCUMENT:
@@ -1240,7 +1240,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                             tmpItem = itemFactory.createDocumentNode("", "");
                         }
                         
-                        item = new org.zorbaxquery.api.xqj.XQItem(tmpItem, type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(tmpItem, type);
                     }
                       
                     break;
@@ -1253,7 +1253,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                                                                 element.getNodeName()==null?"":element.getNodeName());
                         Item iUntyped = itemFactory.createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
                         Item elementNode = itemFactory.createElementNode(iEmpty, nodeName, iUntyped, false, false);
-                        item = new org.zorbaxquery.api.xqj.XQItem(elementNode, type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_PI:
@@ -1264,7 +1264,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                                 pi.getTarget(), 
                                 pi.getTextContent(), 
                                 pi.getBaseURI()==null?"":pi.getBaseURI());
-                        item = new org.zorbaxquery.api.xqj.XQItem(elementNode, type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_TEXT:
@@ -1272,7 +1272,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                         Text text = (Text) value;
                         Item iEmpty = new Item();
                         Item elementNode = itemFactory.createTextNode(iEmpty, text.getWholeText());
-                        item = new org.zorbaxquery.api.xqj.XQItem(elementNode, type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_DOCUMENT_ELEMENT:
@@ -1295,7 +1295,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromBoolean(boolean bln, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
         }
         if (type.getBaseType() != XQItemType.XQBASETYPE_BOOLEAN) {
             throw new XQException("Type is not boolean, use proper method");
@@ -1304,7 +1304,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         XQItem item = null;
         try {
             ItemFactory itemFactory = zorba.getItemFactory();
-            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createBoolean(bln));
+            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBoolean(bln));
         } catch (Exception e) {
             throw new XQException("Error creating new item");
         }
@@ -1317,46 +1317,46 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
             ItemFactory itemFactory = zorba.getItemFactory();
             switch (type.getBaseType()) {
                 case XQItemType.XQBASETYPE_BYTE:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createByte((char)value.byteValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte((char)value.byteValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createInteger(value.longValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_DECIMAL:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDecimalFromLong(value.longValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimalFromLong(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_INT:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createInt(value.intValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInt(value.intValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_LONG:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createLong(value.longValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createLong(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_NEGATIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNegativeInteger(value.longValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNonNegativeInteger(value.toBigInteger()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(value.toBigInteger()), type);
                     break;
                 case XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createNonPositiveInteger(value.longValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_POSITIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createPositiveInteger(value.toBigInteger()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(value.toBigInteger()), type);
                     break;
                 case XQItemType.XQBASETYPE_SHORT:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createShort(value.shortValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort(value.shortValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_BYTE:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedByte(value.shortValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte(value.shortValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_INT:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedInt(value.longValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_LONG:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createUnsignedLong(value.toBigInteger()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(value.toBigInteger()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_SHORT:
-                    item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createShort(value.shortValue()), type);
+                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort(value.shortValue()), type);
                     break;
                 default:
                     throw new XQException("Type is not xs:decimal or a derivate.");
@@ -1373,14 +1373,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param b - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItem createItemFromByte(byte b, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
         }
         return createDecimal(new BigDecimal(b), type);
     }
@@ -1391,14 +1391,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItem createItemFromDouble(double value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
         }
         if (type.getBaseType() != XQItemType.XQBASETYPE_DOUBLE) {
             throw new XQException("Type is not double, use proper method");
@@ -1406,7 +1406,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         XQItem item = null;
         try {
             ItemFactory itemFactory = zorba.getItemFactory();
-            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createDouble(value), type);
+            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDouble(value), type);
         } catch (Exception e) {
             throw new XQException("Error Creating Item From Double" + e.getLocalizedMessage());
         }
@@ -1419,14 +1419,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItem createItemFromFloat(float value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
         }
         if (type.getBaseType() != XQItemType.XQBASETYPE_FLOAT) {
             throw new XQException("Type is not float, use proper method");
@@ -1434,7 +1434,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         XQItem item = null;
         try {
             ItemFactory itemFactory = zorba.getItemFactory();
-            item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createFloat(value), type);
+            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createFloat(value), type);
         } catch (Exception e) {
             throw new XQException("Error Creating Item From Float" + e.getLocalizedMessage());
         }
@@ -1447,14 +1447,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItem createItemFromInt(int value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
         }
         switch (type.getBaseType()) {
             case XQItemType.XQBASETYPE_BYTE:
@@ -1472,14 +1472,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItem createItemFromLong(long value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
         }
         switch (type.getBaseType()) {
             case XQItemType.XQBASETYPE_BYTE:
@@ -1498,7 +1498,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
@@ -1521,14 +1521,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * 
    * @param value - the value to be converted
    * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
-   * @return XQItem representing the resulting item
+   * @return ZorbaXQItem representing the resulting item
    * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
    */
     @Override
     public XQItem createItemFromShort(short value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
+            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
         }
         if (type.getBaseType()==XQItemType.XQBASETYPE_BYTE) {
             throw new XQException("Can't create a Byte from a Short number");
@@ -1536,12 +1536,12 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return createDecimal(new BigDecimal(value), type);
     }
 
-  /** \brief Creates a copy of the specified XQItem.
+  /** \brief Creates a copy of the specified ZorbaXQItem.
    * 
    * This method can be used, for example, to copy an XQResultItem object so that the new item is not dependant on the connection.
    * 
-   * @param value - the XQItem to copy
-   * @return XQItem independent of any underlying XQConnection is created
+   * @param value - the ZorbaXQItem to copy
+   * @return ZorbaXQItem independent of any underlying ZorbaXQConnection is created
    * @throw XQException - if (1) the specified item is null, (2) the underlying object implementing the interface is closed, (3) the specified item is closed
    */
     @Override
@@ -1551,16 +1551,16 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if (value.isClosed()) {
             throw new XQException("Item is closed.");
         }
-        XQItem result = new org.zorbaxquery.api.xqj.XQItem(value);
+        XQItem result = new org.zorbaxquery.api.xqj.ZorbaXQItem(value);
         return result;
     }
 
-  /** \brief Creates a copy of the specified XQSequence.
+  /** \brief Creates a copy of the specified ZorbaXQSequence.
    * 
-   * Creates a copy of the specified XQSequence. The newly created XQSequence is scrollable and independent of any underlying XQConnection. The new XQSequence will contain all items from the specified XQSequence starting from its current position. The copy process will implicitly perform next operations on the specified sequence to read the items. All items are consumed, the current position of the cursor is set to point after the last item.
+   * Creates a copy of the specified ZorbaXQSequence. The newly created ZorbaXQSequence is scrollable and independent of any underlying ZorbaXQConnection. The new ZorbaXQSequence will contain all items from the specified ZorbaXQSequence starting from its current position. The copy process will implicitly perform next operations on the specified sequence to read the items. All items are consumed, the current position of the cursor is set to point after the last item.
    * 
    * @param value - input sequence
-   * @return XQSequence representing a copy of the input sequence
+   * @return ZorbaXQSequence representing a copy of the input sequence
    * @throw XQException - if (1) there are errors accessing the items in the specified sequence, (2) the specified sequence is closed, (3) in the case of a forward only sequence, a get or write method has already been invoked on the current item, (4) the s parameter is null, or (5) the underlying object implementing the interface is closed
    */
     @Override
@@ -1572,19 +1572,19 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         }
         XQSequence result = null;
         try {
-            result = new org.zorbaxquery.api.xqj.XQSequence(value);
+            result = new org.zorbaxquery.api.xqj.ZorbaXQSequence(value);
         } catch (Exception ex) {
             throw new XQException("Error creating sequence: " + ex.getLocalizedMessage());
         }
         return result;
     }
 
-  /** \brief Creates an XQSequence, containing all the items from the iterator.
+  /** \brief Creates an ZorbaXQSequence, containing all the items from the iterator.
    * 
-   * The newly created XQSequence is scrollable and independent of any underlying XQConnection. If the iterator returns an XQItem, it is added to the sequence. If the iterator returns any other object, an item is added to the sequence following the rules from 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the iterator does not return any items, then an empty sequence is created.
+   * The newly created ZorbaXQSequence is scrollable and independent of any underlying ZorbaXQConnection. If the iterator returns an ZorbaXQItem, it is added to the sequence. If the iterator returns any other object, an item is added to the sequence following the rules from 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the iterator does not return any items, then an empty sequence is created.
    * 
    * @param value - input sequence
-   * @return XQSequence representing a copy of the input sequence
+   * @return ZorbaXQSequence representing a copy of the input sequence
    * @throw XQException - if (1) there are errors accessing the items in the specified sequence, (2) the specified sequence is closed, (3) in the case of a forward only sequence, a get or write method has already been invoked on the current item, (4) the s parameter is null, or (5) the underlying object implementing the interface is closed
    */
     @Override
@@ -1593,25 +1593,25 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         isNullXQException(value);
         XQSequence result = null;
         try {
-            result = new org.zorbaxquery.api.xqj.XQSequence(value);
+            result = new org.zorbaxquery.api.xqj.ZorbaXQSequence(value);
         } catch (Exception ex) {
             throw new XQException("Error creating sequence: " + ex.getLocalizedMessage());
         }
         return result;
     }
 
-  /** \brief Creates a new XQItemType object representing an XQuery atomic type.
+  /** \brief Creates a new ZorbaXQItemType object representing an XQuery atomic type.
    * 
-   * The item kind of the item type will be XQItemType.XQITEMKIND_ATOMIC. 
+   * The item kind of the item type will be ZorbaXQItemType.XQITEMKIND_ATOMIC. 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ...;
+   *   ZorbaXQConnection conn = ...;
    * 
    *   // to create xs:integer item type
-   *   conn.createAtomicType(XQItemType.XQBASETYPE_INTEGER); 
+   *   conn.createAtomicType(ZorbaXQItemType.XQBASETYPE_INTEGER); 
    * \endcode
-   * @param basetype - one of the XQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />XQItemType.XQBASETYPE_UNTYPED<br />XQItemType.XQBASETYPE_ANYTYPE<br />XQItemType.XQBASETYPE_IDREFS<br />XQItemType.XQBASETYPE_NMTOKENS<br />XQItemType.XQBASETYPE_ENTITIES<br />XQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
-   * @return a new XQItemType representing the atomic type
+   * @param basetype - one of the ZorbaXQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />ZorbaXQItemType.XQBASETYPE_UNTYPED<br />ZorbaXQItemType.XQBASETYPE_ANYTYPE<br />ZorbaXQItemType.XQBASETYPE_IDREFS<br />ZorbaXQItemType.XQBASETYPE_NMTOKENS<br />ZorbaXQItemType.XQBASETYPE_ENTITIES<br />ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
+   * @return a new ZorbaXQItemType representing the atomic type
    * @throw XQException - if (1) an invalid basetype value is passed in, or (2) the underlying object implementing the interface is closed
    */
     @Override
@@ -1625,24 +1625,24 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
             (basetype==XQItemType.XQBASETYPE_ANYSIMPLETYPE)) {
             throw new XQException("Invalid base type.");
         }
-        XQItemType type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, basetype);
+        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, basetype);
         return type;
     }
 
-  /** \brief Creates a new XQItemType object representing an XQuery atomic type.
+  /** \brief Creates a new ZorbaXQItemType object representing an XQuery atomic type.
    * 
-   * The item kind of the item type will be XQItemType.XQITEMKIND_ATOMIC. 
+   * The item kind of the item type will be ZorbaXQItemType.XQITEMKIND_ATOMIC. 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ...;
+   *   ZorbaXQConnection conn = ...;
    * 
    *   // to create xs:integer item type
-   *   conn.createAtomicType(XQItemType.XQBASETYPE_INTEGER); 
+   *   conn.createAtomicType(ZorbaXQItemType.XQBASETYPE_INTEGER); 
    * \endcode
-   * @param basetype - one of the XQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />XQItemType.XQBASETYPE_UNTYPED<br />XQItemType.XQBASETYPE_ANYTYPE<br />XQItemType.XQBASETYPE_IDREFS<br />XQItemType.XQBASETYPE_NMTOKENS<br />XQItemType.XQBASETYPE_ENTITIES<br />XQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
+   * @param basetype - one of the ZorbaXQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />ZorbaXQItemType.XQBASETYPE_UNTYPED<br />ZorbaXQItemType.XQBASETYPE_ANYTYPE<br />ZorbaXQItemType.XQBASETYPE_IDREFS<br />ZorbaXQItemType.XQBASETYPE_NMTOKENS<br />ZorbaXQItemType.XQBASETYPE_ENTITIES<br />ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
    * @param qname - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null
    * @param uri - the URI to the schema. Can be null. This can only be specified if the typename is also specified
-   * @return a new XQItemType representing the atomic type
+   * @return a new ZorbaXQItemType representing the atomic type
    * @throw XQException - if (1) an invalid basetype value is passed in, or (2) the underlying object implementing the interface is closed
    */
     @Override
@@ -1658,44 +1658,44 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
             (basetype==XQItemType.XQBASETYPE_ANYSIMPLETYPE)) {
             throw new XQException("Invalid base type.");
         }
-        XQItemType type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATOMIC, qname, basetype, uri);
+        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, qname, basetype, uri);
         return type;
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery attribute(nodename, basetype) type with the given node name and base type.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery attribute(nodename, basetype) type with the given node name and base type.
    * 
    * This method can be used to create item type for attributes with a pre-defined schema type. 
    * 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ..; // An XQuery connection
+   *   ZorbaXQConnection conn = ..; // An XQuery connection
    * 
    *   - attribute() // no node name, pass null for the node name
    * 
-   *     conn.createAttributeType(null, XQItemType.XQBASETYPE_ANYSIMPLETYPE);
+   *     conn.createAttributeType(null, ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE);
    * 
    *   - attribute (*)  // equivalent to attribute()
    * 
-   *     conn.createAttributeType(null, XQItemType.XQBASETYPE_ANYSIMPLETYPE);
+   *     conn.createAttributeType(null, ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE);
    * 
    *   - attribute (person) // attribute of name person and any simple type.
    * 
-   *     conn.createAttributeType(new QName("person"), XQItemType.XQBASETYPE_ANYSIMPLETYPE); 
+   *     conn.createAttributeType(new QName("person"), ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE); 
    * 
    *   - attribute(foo:bar) // node name foo:bar, type is any simple type
    * 
    *     conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
-   *                              XQItemType.XQBASETYPE_ANYSIMPLETYPE);
+   *                              ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE);
    * 
    *   - attribute(foo:bar, xs:integer) // node name foo:bar, type is xs:integer
    * 
    *     conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
-   *                              XQItemType.XQBASETYPE_INTEGER);
+   *                              ZorbaXQItemType.XQBASETYPE_INTEGER);
    * \endcode
    * @param nodename - specifies the name of the node.null indicates a wildcard for the node name
-   * @param basetype - the base type of the attribute. One of the XQItemType.XQBASETYPE_* other than XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
-   * @return a new XQItemType representing the XQuery attribute(nodename, basetype) type
-   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) if the base type is one of: XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
+   * @param basetype - the base type of the attribute. One of the ZorbaXQItemType.XQBASETYPE_* other than ZorbaXQItemType.XQBASETYPE_UNTYPED or ZorbaXQItemType.XQBASETYPE_ANYTYPE
+   * @return a new ZorbaXQItemType representing the XQuery attribute(nodename, basetype) type
+   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) if the base type is one of: ZorbaXQItemType.XQBASETYPE_UNTYPED or ZorbaXQItemType.XQBASETYPE_ANYTYPE
    */
     @Override
     public XQItemType createAttributeType(QName nodename, int basetype) throws XQException {
@@ -1703,20 +1703,20 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if ((basetype==XQItemType.XQBASETYPE_UNTYPED)||(basetype==XQItemType.XQBASETYPE_ANYTYPE)) {
             throw new XQException("Base Type can't be XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE");
         }
-        return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype);
+        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype);
     }
 
-  /** \brief  Creates a new XQItemType object representing the XQuery attribute(nodename, basetype) type with the given node name and base type.
+  /** \brief  Creates a new ZorbaXQItemType object representing the XQuery attribute(nodename, basetype) type with the given node name and base type.
    * 
    * The type name can reference either pre-defined simple types or user-defined simple types. 
    * 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ..; // An XQuery connection
+   *   ZorbaXQConnection conn = ..; // An XQuery connection
    * 
    *   - attribute (name, employeename) // attribute name of type employeename 
    *  
-   *   conn.createAttributeType(new QName("name"), XQItemType.XQBASETYPE_ANYSIMPLETYPE,
+   *   conn.createAttributeType(new QName("name"), ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE,
    *                            new QName("employeename"), null);
    *  
    *   - attribute (foo:bar, po:city) 
@@ -1724,13 +1724,13 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    *   prefix po refers to the namespace "http://www.address.com"
    * 
    *   conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
-   *                            XQItemType.XQBASETYPE_ANYSIMPLETYPE,
+   *                            ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE,
    *                            new QName("http://address.com", "address","po"), null);
    * 
    *   - attribute (zip, zipcode) // attribute zip of type zipchode which derives from
    *                              // xs:string 
    * 
-   *   conn.createAttributeType(new QName("zip"), XQItemType.XQBASETYPE_STRING,
+   *   conn.createAttributeType(new QName("zip"), ZorbaXQItemType.XQBASETYPE_STRING,
    *                            new QName("zipcode"), null);
    * 
    *   - attribute(foo:bar, po:hatsize) 
@@ -1739,16 +1739,16 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    *   with schema URI "http://hatschema.com"
    * 
    *   conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
-   *                   XQItemType.XQBASETYPE_INTEGER,
+   *                   ZorbaXQItemType.XQBASETYPE_INTEGER,
    *                   new QName("http://www.hatsizes.com", "hatsize","po"), 
    *                   new QName("http://hatschema.com"));
    * \endcode
    * @param nodename - specifies the name of the node.null indicates a wildcard for the node name
-   * @param basetype - the base type of the attribute. One of the XQItemTyupe.XQBASETYPE_* constants other than XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
+   * @param basetype - the base type of the attribute. One of the XQItemTyupe.XQBASETYPE_* constants other than ZorbaXQItemType.XQBASETYPE_UNTYPED or ZorbaXQItemType.XQBASETYPE_ANYTYPE
    * @param typename - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null.
    * @param schemaURI - the URI to the schema. Can be null. This can only be specified if the typename is also specified
-   * @return a new XQItemType representing the XQuery attribute(nodename,basetype, typename,schemaURI) type.
-   * @throw XQException - if (1) the underlying object implementing the interface is closed, (2) if the base type is one of: XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE, (3) the schema URI is specified and the typename is not specified, (4) the implementation does not support user-defined XML schema types, or (5) if the typename refers to a predefinied type and does not match basetype
+   * @return a new ZorbaXQItemType representing the XQuery attribute(nodename,basetype, typename,schemaURI) type.
+   * @throw XQException - if (1) the underlying object implementing the interface is closed, (2) if the base type is one of: ZorbaXQItemType.XQBASETYPE_UNTYPED or ZorbaXQItemType.XQBASETYPE_ANYTYPE, (3) the schema URI is specified and the typename is not specified, (4) the implementation does not support user-defined XML schema types, or (5) if the typename refers to a predefinied type and does not match basetype
    */
     @Override
     public XQItemType createAttributeType(QName nodename, int basetype, QName typename, URI schemaURI) throws XQException {
@@ -1759,69 +1759,69 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if ((schemaURI!=null) && (typename==null)) {
             throw new XQException("If Schema URI is specified, Base Type must be also specified");
         }
-        return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype, typename, schemaURI, true);
+        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype, typename, schemaURI, true);
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery schema-attribute(nodename,basetype,schemaURI) type, with the given node name, base type, and schema URI.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery schema-attribute(nodename,basetype,schemaURI) type, with the given node name, base type, and schema URI.
    * 
    * Example -
    * \code{.java}
-   *      XQConnection conn = ..; // An XQuery connection
+   *      ZorbaXQConnection conn = ..; // An XQuery connection
    * 
    *      - schema-attribute (name) // schema-attribute name, found in the schema 
    *                                // available at http://customerschema.com
    * 
    *      conn.createSchemaAttributeType(new QName("name"), 
-   *                   XQItemType.XQBASETYPE_STRING,
+   *                   ZorbaXQItemType.XQBASETYPE_STRING,
    *                   new URI(http://customerschema.com));
    *  \endcode
    * 
    * @param nodename - specifies the name of the node
-   * @param basetype - the base type of the attribute. One of the XQItemTyupe.XQBASETYPE_* constants other than XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
+   * @param basetype - the base type of the attribute. One of the XQItemTyupe.XQBASETYPE_* constants other than ZorbaXQItemType.XQBASETYPE_UNTYPED or ZorbaXQItemType.XQBASETYPE_ANYTYPE
    * @param uri - the URI to the schema. Can be null
-   * @return a new XQItemType representing the XQuery schema-attribute(nodename,basetype, schemaURI) type
-   * @throw XQException - if (1) the node name is null, (2) if the base type is one of: XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE, (3) the underlying object implementing the interface is closed, or (4) the implementation does not support user-defined XML schema types
+   * @return a new ZorbaXQItemType representing the XQuery schema-attribute(nodename,basetype, schemaURI) type
+   * @throw XQException - if (1) the node name is null, (2) if the base type is one of: ZorbaXQItemType.XQBASETYPE_UNTYPED or ZorbaXQItemType.XQBASETYPE_ANYTYPE, (3) the underlying object implementing the interface is closed, or (4) the implementation does not support user-defined XML schema types
    */
     @Override
     public XQItemType createSchemaAttributeType(QName nodename, int basetype, URI uri) throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE, nodename, basetype, uri);
+        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE, nodename, basetype, uri);
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery comment() type.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery comment() type.
    * 
-   * Creates a new XQItemType object representing the XQuery comment() type. The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_COMMENT. 
+   * Creates a new ZorbaXQItemType object representing the XQuery comment() type. The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_COMMENT. 
    * 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ..; // An XQuery connection
-   *   XQItemType cmttype = conn.createCommentType(); 
+   *   ZorbaXQConnection conn = ..; // An XQuery connection
+   *   ZorbaXQItemType cmttype = conn.createCommentType(); 
    * 
-   *   int itemkind = cmttype.getItemKind(); // will be XQItemType.XQITEMKIND_COMMENT
+   *   int itemkind = cmttype.getItemKind(); // will be ZorbaXQItemType.XQITEMKIND_COMMENT
    * 
-   *   XQExpression expr = conn.createExpression();
-   *   XQSequence result = expr.executeQuery("<!-- comments -->");
+   *   ZorbaXQExpression expr = conn.createExpression();
+   *   ZorbaXQSequence result = expr.executeQuery("<!-- comments -->");
    * 
    *   result.next();
    *   boolean pi = result.instanceOf(cmttype);  // will be true
    * \endcode
    * 
-   * @return a new XQItemType representing the XQuery comment() type
+   * @return a new ZorbaXQItemType representing the XQuery comment() type
    * @throw XQException - if the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createCommentType() throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_COMMENT);
+        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_COMMENT);
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery document-node(elementType) type containing a single element.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery document-node(elementType) type containing a single element.
    * 
-   * Creates a new XQItemType object representing the XQuery document-node(elementType) type containing a single element. The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_DOCUMENT_ELEMENT and the base type set to the item type of the input elementType.
+   * Creates a new ZorbaXQItemType object representing the XQuery document-node(elementType) type containing a single element. The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_DOCUMENT_ELEMENT and the base type set to the item type of the input elementType.
    * 
-   * @param elementType - an XQItemType object representing an XQuery element() type, cannot be null
-   * @return a new XQItemType representing the XQuery document-node(elementType) type containing a single element
-   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) the elementType has an item kind different from XQItemType.XQITEMKIND_ELEMENT, (3) the elementType argument is null, or (4) the implementation does not support user-defined XML schema types
+   * @param elementType - an ZorbaXQItemType object representing an XQuery element() type, cannot be null
+   * @return a new ZorbaXQItemType representing the XQuery document-node(elementType) type containing a single element
+   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) the elementType has an item kind different from ZorbaXQItemType.XQITEMKIND_ELEMENT, (3) the elementType argument is null, or (4) the implementation does not support user-defined XML schema types
    */
     @Override
     public XQItemType createDocumentElementType(XQItemType elementType) throws XQException {
@@ -1830,16 +1830,16 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if (elementType.getItemKind()!=XQItemType.XQITEMKIND_ELEMENT) {
             throw new XQException("Item Kind must be XQItemType.XQITEMKIND_ELEMENT");
         }
-        return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
+        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery document-node(elementType) type containing a single schema-element(...).
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery document-node(elementType) type containing a single schema-element(...).
    * 
-   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT and the base type set to the item type of the input elementType.
+   * The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT and the base type set to the item type of the input elementType.
    * 
-   * @param elementType - an XQItemType object representing an XQuery schema-element(...) type, cannot be null
-   * @return a new XQItemType representing the XQuery document-node(elementType) type containing a single schema-element(...) element
-   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) the elementType has an item kind different from XQItemType.XQITEMKIND_SCHEMA_ELEMENT, (3) the elementType argument is null, (4) the implementation does not support user-defined XML schema types
+   * @param elementType - an ZorbaXQItemType object representing an XQuery schema-element(...) type, cannot be null
+   * @return a new ZorbaXQItemType representing the XQuery document-node(elementType) type containing a single schema-element(...) element
+   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) the elementType has an item kind different from ZorbaXQItemType.XQITEMKIND_SCHEMA_ELEMENT, (3) the elementType argument is null, (4) the implementation does not support user-defined XML schema types
    */
     @Override
     public XQItemType createDocumentSchemaElementType(XQItemType elementType) throws XQException {
@@ -1847,80 +1847,80 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if (elementType.getItemKind()!=XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) {
             throw new XQException("Item Kind must be XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT");
         }
-        return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
+        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery document-node() type.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery document-node() type.
    * 
-   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_DOCUMENT.
+   * The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_DOCUMENT.
    * 
-   * @return a new XQItemType representing the XQuery document-node() type
+   * @return a new ZorbaXQItemType representing the XQuery document-node() type
    * @throw XQException - if the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createDocumentType() throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT);
+        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery element(nodename, basetype) type, with the given node name and base type.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery element(nodename, basetype) type, with the given node name and base type.
    * 
    * This method can be used to create item type for elements with a pre-defined schema type. 
    * 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ..; // An XQuery connection
+   *   ZorbaXQConnection conn = ..; // An XQuery connection
    *   - element() // no node name, pass null for the node name
    * 
-   *   conn.createElementType(null, XQItemType.XQBASETYPE_ANYTYPE);
+   *   conn.createElementType(null, ZorbaXQItemType.XQBASETYPE_ANYTYPE);
    * 
    *   - element (*)  // equivalent to element()
    * 
-   *   conn.createElementType(null, XQItemType.XQBASETYPE_ANYTYPE);
+   *   conn.createElementType(null, ZorbaXQItemType.XQBASETYPE_ANYTYPE);
    * 
    *   - element(person) // element of name person and any type.
    * 
-   *   conn.createElementType(new QName("person"), XQItemType.XQBASETYPE_ANYTYPE); 
+   *   conn.createElementType(new QName("person"), ZorbaXQItemType.XQBASETYPE_ANYTYPE); 
    * 
    *   - element(foo:bar) // node name foo:bar, type is anytype
    * 
    *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
-   *                          XQItemType.XQBASETYPE_ANYTYPE);
+   *                          ZorbaXQItemType.XQBASETYPE_ANYTYPE);
    * 
    *   - element(foo:bar, xs:integer) // node name foo:bar, type is xs:integer
    * 
    *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
-   *                          XQItemType.XQBASETYPE_INTEGER);
+   *                          ZorbaXQItemType.XQBASETYPE_INTEGER);
    * \endcode
    * @param nodename - specifies the name of the node. null indicates a wildcard for the node name
-   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
-   * @return a new XQItemType representing the XQuery element(nodename, basetype) type
+   * @param baseType - the base type of the item. One of the ZorbaXQItemType.XQBASETYPE_* constants
+   * @return a new ZorbaXQItemType representing the XQuery element(nodename, basetype) type
    * @throw XQException - if (1) the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createElementType(QName nodename, int baseType) throws XQException {
         isClosedXQException();
-        XQItemType item = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType);
+        XQItemType item = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType);
         return item;
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery element(nodename,basetype,typename,schemaURI, allowNill) type, given the node name, base type, schema type name, schema URI, and nilled check.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery element(nodename,basetype,typename,schemaURI, allowNill) type, given the node name, base type, schema type name, schema URI, and nilled check.
    * 
    * The type name can reference either pre-defined schema types or user-defined types. 
    * 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ..; // An XQuery connection
+   *   ZorbaXQConnection conn = ..; // An XQuery connection
    * 
    *   - element (person, employee) // element person of type employee
    * 
-   *   conn.createElementType(new QName("person"), XQItemType.XQBASETYPE_ANYTYPE,
+   *   conn.createElementType(new QName("person"), ZorbaXQItemType.XQBASETYPE_ANYTYPE,
    *                          new QName("employee"), null ,false);
    *  
    *   - element(person, employee ? ) // element person of type employee, whose nilled 
    *                                  // property may be true or false. 
    *  
-   *   conn.createElementType(new QName("person"), XQItemType.XQBASETYPE_ANYTYPE,
+   *   conn.createElementType(new QName("person"), ZorbaXQItemType.XQBASETYPE_ANYTYPE,
    *                          new QName("employee"), null ,true);
    *  
    *   - element(foo:bar, po:address) 
@@ -1928,18 +1928,18 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    *   prefix po refers to the namespace "http://www.address.com"
    * 
    *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
-   *                XQItemType.XQBASETYPE_ANYTYPE,
+   *                ZorbaXQItemType.XQBASETYPE_ANYTYPE,
    *                new QName("http://address.com", "address","po"), null, false);
    * 
    *   - element (zip, zipcode) // element zip of type zipchode which derives from
    *                            // xs:string 
    * 
-   *   conn.createElementType(new QName("zip"), XQItemType.XQBASETYPE_STRING,
+   *   conn.createElementType(new QName("zip"), ZorbaXQItemType.XQBASETYPE_STRING,
    *                          new QName("zipcode"), null, false);
    * 
    *   - element (*, xs:anyType ?)
    * 
-   *   conn.createElementType(null, XQItemType.XQBASETYPE_ANYTYPE, null, null, true);
+   *   conn.createElementType(null, ZorbaXQItemType.XQBASETYPE_ANYTYPE, null, null, true);
    * 
    *   - element(foo:bar, po:hatsize) 
    *   where the prefix foo refers to the namespace http://www.foo.com and the
@@ -1947,104 +1947,104 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    *   with schema URI "http://hatschema.com"
    * 
    *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
-   *                       XQItemType.XQBASETYPE_INTEGER,
+   *                       ZorbaXQItemType.XQBASETYPE_INTEGER,
    *                       new QName("http://www.hatsizes.com", "hatsize","po"), 
    *                       new QName("http://hatschema.com"), false);
    * 
    * \endcode 
    * 
    * @param nodename - specifies the name of the element. null indicates a wildcard for the node name
-   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @param baseType - the base type of the item. One of the ZorbaXQItemType.XQBASETYPE_* constants
    * @param typename - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null
    * @param schemaURI - the URI to the schema. Can be null. This can only be specified if the typename is also specified
    * @param allowNill - the nilled property of the element
-   * @return a new XQItemType representing the XQuery element(nodename,basetype, typename,schemaURI, allowNill) type
+   * @return a new ZorbaXQItemType representing the XQuery element(nodename,basetype, typename,schemaURI, allowNill) type
    * @throw XQException - if (1) schemaURI is specified but the typename is not specified, (2) the underlying object implementing the interface is closed, (3) the implementation does not support user-defined XML schema types, or (4) if the typename refers to a predefinied type and does not match basetype
    */
     @Override
     public XQItemType createElementType(QName nodename, int baseType, QName typename, URI schemaURI, boolean allowNill) throws XQException {
         isClosedXQException();
-        XQItemType item = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType, typename, schemaURI, allowNill);
+        XQItemType item = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType, typename, schemaURI, allowNill);
         return item;
     }
 
-  /** \brief     Creates a new XQItemType object representing the XQuery schema-element(nodename,basetype,schemaURI) type, given the node name, base type, and the schema URI.
+  /** \brief     Creates a new ZorbaXQItemType object representing the XQuery schema-element(nodename,basetype,schemaURI) type, given the node name, base type, and the schema URI.
    * 
    * Example -
    * \code{.java}
-   *      XQConnection conn = ..; // An XQuery connection
+   *      ZorbaXQConnection conn = ..; // An XQuery connection
    * 
    *      - schema-element (customer) // schema-element person, found in
    *                                  // the schema available at http://customerschema.com
    * 
-   *      conn.createElementType(new QName("customer"), XQItemType.XQBASETYPE_ANYTYPE,
+   *      conn.createElementType(new QName("customer"), ZorbaXQItemType.XQBASETYPE_ANYTYPE,
    *                          new URI("http://customerschema.com"));
    * \endcode
    * @param nodename - specifies the name of the element
-   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @param baseType - the base type of the item. One of the ZorbaXQItemType.XQBASETYPE_* constants
    * @param schemaURI - the URI to the schema. Can be null
-   * @return a new XQItemType representing the XQuery schema-element(nodename,basetype, schemaURI) type
+   * @return a new ZorbaXQItemType representing the XQuery schema-element(nodename,basetype, schemaURI) type
    * @throw XQException - if (1) the node name is null, (2) the underlying object implementing the interface is closed, or (3) the implementation does not support user-defined XML schema types
    */
     @Override
     public XQItemType createSchemaElementType(QName nodename, int baseType, URI schemaURI) throws XQException {
         isClosedXQException();
-        XQItemType item = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_SCHEMA_ELEMENT, nodename, baseType, schemaURI);
+        XQItemType item = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_SCHEMA_ELEMENT, nodename, baseType, schemaURI);
         return item;
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery item type.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery item type.
    * 
-   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_ITEM. 
+   * The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_ITEM. 
    * 
    * Example -
    * \code{.java}
-   *   XQConnection conn = ..; // An XQuery connection
-   *   XQItemType typ = conn.createItemType(); // represents the XQuery item type "item()"
+   *   ZorbaXQConnection conn = ..; // An XQuery connection
+   *   ZorbaXQItemType typ = conn.createItemType(); // represents the XQuery item type "item()"
    * \endcode
-   * @return a new XQItemType representing the XQuery item type
+   * @return a new ZorbaXQItemType representing the XQuery item type
    * @throw XQException - if the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createItemType() throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ITEM);
+        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ITEM);
         return type;
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery node() type. 
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery node() type. 
    * 
-   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_NODE.
+   * The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_NODE.
    * 
-   * @return a new XQItemType representing the XQuery node() type
+   * @return a new ZorbaXQItemType representing the XQuery node() type
    * @throw XQException - if the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createNodeType() throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_NODE);
+        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_NODE);
         return type;
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery processing-instruction(piTarget) type.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery processing-instruction(piTarget) type.
    * 
-   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_PI. A string literal can be passed to match the PITarget of the processing instruction as described in 2.5.4.2 Matching an Item Type and an Item, XQuery 1.0: An XML Query Language. 
+   * The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_PI. A string literal can be passed to match the PITarget of the processing instruction as described in 2.5.4.2 Matching an Item Type and an Item, XQuery 1.0: An XML Query Language. 
    * 
    * Example -
    * \code{.java}
-   *    XQConnection conn = ..; // An XQuery connection
-   *    XQItemType anypi = conn.createProcessingInstructionType(); 
-   *    XQItemType foopi = conn.createProcessingInstructionType("foo-format");
+   *    ZorbaXQConnection conn = ..; // An XQuery connection
+   *    ZorbaXQItemType anypi = conn.createProcessingInstructionType(); 
+   *    ZorbaXQItemType foopi = conn.createProcessingInstructionType("foo-format");
    * 
-   *    XQExpression expr = conn.createExpression();
-   *    XQSequence result = expr.executeQuery("<?format role="output" ?>");
+   *    ZorbaXQExpression expr = conn.createExpression();
+   *    ZorbaXQSequence result = expr.executeQuery("<?format role="output" ?>");
    *  
    *    result.next();
    *    boolean pi = result.instanceOf(anypi);  // will be true
    *    pi = result.instanceOf(foopi);  // will be false
    *  
-   *    XQExpression expr = conn.createExpression();
-   *    XQSequence result = expr.executeQuery("<?foo-format role="output" ?>");
+   *    ZorbaXQExpression expr = conn.createExpression();
+   *    ZorbaXQSequence result = expr.executeQuery("<?foo-format role="output" ?>");
    *    
    *    result.next();
    *    boolean pi = result.instanceOf(anypi);  // will be true
@@ -2052,22 +2052,22 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
    * \endcode
    * 
    * @param piTarget - the string literal to match the processing instruction's PITarget. A null string value will match all processing instruction nodes
-   * @return a new XQItemType representing the XQuery processing-instruction(piTarget) type
+   * @return a new ZorbaXQItemType representing the XQuery processing-instruction(piTarget) type
    * @throw XQException - if the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createProcessingInstructionType(String piTarget) throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_PI, piTarget);
+        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_PI, piTarget);
         return type;
     }
 
   /** \brief Creates a new sequence type from an item type and occurence indicator.
    * 
-   * @param item - the item type. This parameter must be null if the occurance is XQSequenceType.OCC_EMPTY, and cannot be null for any other occurance indicator
-   * @param occurence - The occurence of the item type, must be one of XQSequenceType.OCC_ZERO_OR_ONE, XQSequenceType.OCC_EXACTLY_ONE, XQSequenceType.OCC_ZERO_OR_MORE, XQSequenceType.OCC_ONE_OR_MORE, XQSequenceType.OCC_EMPTY
-   * @return a new XQSequenceType representing the type of a sequence
-   * @throw XQException - if (1) the item is null and the occurance is not XQSequenceType.OCC_EMPTY, (2) the item is not null and the occurance is XQSequenceType.OCC_EMPTY, (3) the occurence is not one of: XQSequenceType.OCC_ZERO_OR_ONE, XQSequenceType.OCC_EXACTLY_ONE, XQSequenceType.OCC_ZERO_OR_MORE, XQSequenceType.OCC_ONE_OR_MORE, XQSequenceType.OCC_EMPTY or (4) the underlying object implementing the interface is closed
+   * @param item - the item type. This parameter must be null if the occurance is ZorbaXQSequenceType.OCC_EMPTY, and cannot be null for any other occurance indicator
+   * @param occurence - The occurence of the item type, must be one of ZorbaXQSequenceType.OCC_ZERO_OR_ONE, ZorbaXQSequenceType.OCC_EXACTLY_ONE, ZorbaXQSequenceType.OCC_ZERO_OR_MORE, ZorbaXQSequenceType.OCC_ONE_OR_MORE, ZorbaXQSequenceType.OCC_EMPTY
+   * @return a new ZorbaXQSequenceType representing the type of a sequence
+   * @throw XQException - if (1) the item is null and the occurance is not ZorbaXQSequenceType.OCC_EMPTY, (2) the item is not null and the occurance is ZorbaXQSequenceType.OCC_EMPTY, (3) the occurence is not one of: ZorbaXQSequenceType.OCC_ZERO_OR_ONE, ZorbaXQSequenceType.OCC_EXACTLY_ONE, ZorbaXQSequenceType.OCC_ZERO_OR_MORE, ZorbaXQSequenceType.OCC_ONE_OR_MORE, ZorbaXQSequenceType.OCC_EMPTY or (4) the underlying object implementing the interface is closed
    */
     @Override
     public XQSequenceType createSequenceType(XQItemType item, int occurence) throws XQException {
@@ -2083,21 +2083,21 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
             throw new XQException("Occurence must be from: OCC_ZERO_OR_ONE, OCC_EXACTLY_ONE, OCC_ZERO_OR_MORE, OCC_ONE_OR_MORE, OCC_EMPTY ");
         }
         
-        XQSequenceType result = new org.zorbaxquery.api.xqj.XQSequenceType(item, occurence);
+        XQSequenceType result = new org.zorbaxquery.api.xqj.ZorbaXQSequenceType(item, occurence);
         return result;
     }
 
-  /** \brief Creates a new XQItemType object representing the XQuery text() type.
+  /** \brief Creates a new ZorbaXQItemType object representing the XQuery text() type.
    * 
-   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_TEXT.
+   * The ZorbaXQItemType object will have the item kind set to ZorbaXQItemType.XQITEMKIND_TEXT.
    * 
-   * @return a new XQItemType representing the XQuery text() type
+   * @return a new ZorbaXQItemType representing the XQuery text() type
    * @throw XQException - if the underlying object implementing the interface is closed
    */
     @Override
     public XQItemType createTextType() throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_TEXT);
+        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_TEXT);
         return type;
     }
     

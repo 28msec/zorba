@@ -27,38 +27,31 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Result;
-import javax.xml.xquery.XQConnection;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQItemType;
-import javax.xml.xquery.XQResultItem;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.zorbaxquery.api.Item;
+import org.zorbaxquery.api.ItemSequence;
 import org.zorbaxquery.api.Iterator;
 
+
  /**
-   * This class represents a sequence of items obtained as a result of evaluation XQuery expressions. The result sequence is tied to the XQconnection object on which the expression was evaluated.
    * 
-   * This sequence can be obtained by performing an executeQuery on the expression object. It represents a cursor-like class.
+   * This interface represents a sequence of items as defined in the XDM. The sequence may be materialized or non-materialized.
    * 
-   * The XQResultSequence object is dependent on the connection and the expression from which it was created and is only valid for the duration of those objects. Thus, if any one of those objects is closed, this XQResultSequence object will be implicitly closed and it can no longer be used. Similarly re-executing the expression also implicitly closes the associated result sequences.
+   * The next method is useful to position the ZorbaXQSequence over the next item in the sequence. If the scrollability is XQConstants.SCROLLTYPE_SCROLLABLE, then the previous method can be called to move backwards. In the case of a forward only sequence, the get methods may be only called once per item. To perform multiple gets on an item, extract the item first from the sequence using the getItem method and then operate on the ZorbaXQItem object.
    * 
-   * An XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call close method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions. Not closing this object implicitly or explicitly might result in serious memory leaks.
-   * 
-   * When the XQResultSequence is closed any XQResultItem objects obtained from it are also implicitly closed.
-   * 
-   * Example -
-   * 
-   * \code{.java} 
+   *  \code{.java}
    *   XQPreparedExpression expr = conn.prepareExpression("for $i ..");
-   *   XQResultSequence result = expr.executeQuery();
+   *   ZorbaXQSequence result = expr.executeQuery();
    *  
    *   // create the ItemTypes for string and integer
    *   XQItemType strType = conn.createAtomicType(XQItemType.XQBASETYPE_STRING);
    *   XQItemType intType = conn.createAtomicType(XQItemType.XQBASETYPE_INT);
    * 
-   *   // posititioned before the first item
+   *   // positioned before the first item
    *   while (result.next())
    *   {
    *     XQItemType type = result.getItemType();
@@ -68,50 +61,104 @@ import org.zorbaxquery.api.Iterator;
    *       String str = result.getAtomicValue();
    *     else if (type.equals(intType))  // if it is an integer..
    *       int intval = result.getInt();
-   *       ...
-   *   }
    *  
-   *   result.close(); // explicitly close the result sequence
-   * \endcode
+   *      ...
+   *   }
+   *  \endcode
+   *  
+   * In a sequence, the cursor may be positioned on an item, after the last item or before the first item. The getPosition method returns the current position number. A value of 0 indicates that it is positioned before the first item, a value of count() + 1 indicates that it is positioned after the last item, and any other value indicates that it is positioned on the item at that position.
+   * For example, a position value of 1 indicates that it is positioned on the item at position 1.
+   * 
+   * The isOnItem method may be used to find out if the cursor is positioned on the item. When the cursor is positioned on an item, the next method call will move the cursor to be on the next item.
+   * 
+   * See also: Section 12 Serialization, XQuery API for Java (XQJ) 1.0, which describes some general information applicable to various XQJ serialization methods.
+   * 
+   * 
    */
-public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequence {
+public class ZorbaXQSequence implements javax.xml.xquery.XQSequence {
 
     private boolean closed = false;
-    private boolean forwardOnly = false;
+    private boolean forwardOnly = true;
     private boolean currentItemGet = false;
-    private Collection<XQResultItem> content = new ArrayList<XQResultItem>();
-    private int position = 0;
-    private int size = 0;
-    private XQConnection connection = null;
-    private boolean preparedExpression;
-    private org.zorbaxquery.api.XQuery lQuery;
-    private XQStaticCollectionManager lStaticCollectionManager;
+    private Collection<XQItem> content = new ArrayList<XQItem>();
+    private int position = 1;
+    int size = 0;
+    private ItemSequence itemSequence = null;
 
-    public XQResultSequenceScrollable(XQConnection conn, org.zorbaxquery.api.XQuery query, boolean prepared) {
-        Iterator iter;
-        iter = query.iterator();
-        iter.open();
-        Item item = new Item();
-        while (iter.next(item)) {
-            XQResultItem rItem = new org.zorbaxquery.api.xqj.XQResultItem(item, conn);
-            content.add(rItem);
+    public ZorbaXQSequence(javax.xml.xquery.XQSequence sequence) throws XQException {
+        try {
+            while (sequence.next()) {
+                XQItem tmpItem = sequence.getItem();
+                Item item = null;
+                if (tmpItem instanceof XQItem) {
+                    item = ((org.zorbaxquery.api.xqj.ZorbaXQItem)tmpItem).getZorbaItem();
+                } else if (tmpItem instanceof ZorbaXQResultItem) {
+                    item = ((org.zorbaxquery.api.xqj.ZorbaXQResultItem)tmpItem).getZorbaItem();
+                }
+                content.add(new org.zorbaxquery.api.xqj.ZorbaXQItem(item));
+            }
+            size = content.size();
+        } catch (Exception e) {
+            throw new XQException("Error iterating from origin object" + e.getLocalizedMessage());
         }
-        iter.close();
-        iter.delete();
-        size = content.size();
-        connection = conn;
-        preparedExpression = prepared;
-        lQuery = query;
+        
     }
 
-  /** \brief Moves the XQSequence's position to the given item number in this object.
+    public ZorbaXQSequence(java.util.Iterator iterator) {
+        while (iterator.hasNext()) {
+            Object o = iterator.next();
+            if (o instanceof XQItem) {
+                content.add((XQItem)o);
+            }
+        }
+        size = content.size();
+    }
+
+    public ZorbaXQSequence(org.zorbaxquery.api.Iterator iterator) {
+        if (iterator.isOpen()) {
+            org.zorbaxquery.api.Item item = new org.zorbaxquery.api.Item();
+            while (iterator.next(item)) {
+                XQItem xItem = new org.zorbaxquery.api.xqj.ZorbaXQItem(item);
+                content.add(xItem);
+            }
+            size = content.size();
+        }
+    }
+
+    public ZorbaXQSequence(org.zorbaxquery.api.Item item) {
+        XQItem xItem = new org.zorbaxquery.api.xqj.ZorbaXQItem(item);
+        content.add(xItem);
+        size = content.size();
+    }
+
+    protected ZorbaXQSequence(ItemSequence seq) {
+        itemSequence = seq;
+        org.zorbaxquery.api.Iterator iterator = seq.getIterator();
+        if (iterator.isOpen()) {
+            org.zorbaxquery.api.Item item = null;
+            while (iterator.next(item)) {
+                XQItem xItem = new org.zorbaxquery.api.xqj.ZorbaXQItem(item);
+                content.add(xItem);
+            }
+            size = content.size();
+        }
+    }
+
+    protected ItemSequence getItemSequence() throws XQException {
+        if (itemSequence==null) {
+            throw new XQException("This Sequence doesn't come from Zorba ItemSequence object");
+        }
+        return itemSequence;
+    }
+
+  /** \brief Moves the ZorbaXQSequence's position to the given item number in this object.
    * 
-   * If the item number is positive, the XQSequence moves to the given item number with respect to the beginning of the XQSequence.
+   * If the item number is positive, the ZorbaXQSequence moves to the given item number with respect to the beginning of the ZorbaXQSequence.
    * The first item is item 1, the second is item 2, and so on.
    * 
-   * If the given item number is negative, the XQSequence positions itself on an absolute item position with respect to the end of the sequence.
+   * If the given item number is negative, the ZorbaXQSequence positions itself on an absolute item position with respect to the end of the sequence.
    * 
-   * For example, calling the method absolute(-1) positions the XQSequence on the last item; calling the method absolute(-2) moves the XQSequence to the next-to-last item, and so on. absolute(0) will position the sequence before the first item.
+   * For example, calling the method absolute(-1) positions the ZorbaXQSequence on the last item; calling the method absolute(-2) moves the ZorbaXQSequence to the next-to-last item, and so on. absolute(0) will position the sequence before the first item.
    * 
    * An attempt to position the sequence beyond the first/last item set leaves the current position to be before the first item or after the last item.
    * 
@@ -151,7 +198,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
     @Override
     public void afterLast() throws XQException {
         isClosedXQException();
-        position = size+1;
+        position = content.size()+1;
     }
 
   /** \brief Moves to the position before the first item.
@@ -166,7 +213,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
 
   /** \brief Closes the sequence and frees all resources associated with this sequence.
    * 
-   * Closing an XQSequence object also implicitly closes all XQItem objects obtained from it. All methods other than the isClosed or close method will raise exceptions when invoked after closing the sequence. Calling close on an XQSequence object that is already closed has no effect.
+   * Closing an ZorbaXQSequence object also implicitly closes all ZorbaXQItem objects obtained from it. All methods other than the isClosed or close method will raise exceptions when invoked after closing the sequence. Calling close on an ZorbaXQSequence object that is already closed has no effect.
    * 
    * @throw XQException - if there are errors during closing of the sequence
    */
@@ -176,8 +223,8 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
         for (XQItem item: content) {
             item.close();
         }
-        if (lStaticCollectionManager!=null) {
-            lStaticCollectionManager.close();
+        if (itemSequence!=null) {
+            itemSequence.delete();
         }
     }
 
@@ -257,13 +304,13 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
         return result;
     }
 
-  /** \brief Get the current item as an immutable XQItem object.
+  /** \brief Get the current item as an immutable ZorbaXQItem object.
    * 
-   * In case of an XQResultSequence, the item is an XQResultItem. In the case of forward only sequences, this method or any other get or write method may only be called once on the curent item.
+   * In case of an XQResultSequence, the item is an ZorbaXQResultItem. In the case of forward only sequences, this method or any other get or write method may only be called once on the curent item.
    * 
-   * The XQItem object is dependent on the sequence from which it was created and is only valid for the duration of XQSequence lifetime. Thus, the XQSequence is closed, this XQItem object will be implicitly closed and it can no longer be used.
+   * The ZorbaXQItem object is dependent on the sequence from which it was created and is only valid for the duration of ZorbaXQSequence lifetime. Thus, the ZorbaXQSequence is closed, this ZorbaXQItem object will be implicitly closed and it can no longer be used.
    * 
-   * @return an XQItem object
+   * @return an ZorbaXQItem object
    * @throw XQException - if (1) there are errors retrieving the item, or (2) in the case of a forward only sequence, a get or write method has already been invoked on the current item.
    */
     @Override
@@ -477,6 +524,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
     @Override
     public void writeSequence(OutputStream out, Properties prprts) throws XQException {
         isClosedXQException();
+        isItemGetXQException();
         isNullXQException(out);
         if (isOnItem()) {
             getItem().writeItem(out, prprts);
@@ -501,6 +549,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
     @Override
     public void writeSequence(Writer writer, Properties prprts) throws XQException {
         isClosedXQException();
+        isItemGetXQException();
         isNullXQException(writer);
         if (isOnItem()) {
             getItem().writeItem(writer, prprts);
@@ -520,6 +569,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
     @Override
     public void writeSequenceToSAX(ContentHandler ch) throws XQException {
         isClosedXQException();
+        isItemGetXQException();
         isNullXQException(ch);
         if (isOnItem()) {
             getItem().writeItemToSAX(ch);
@@ -543,6 +593,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
     @Override
     public void writeSequenceToResult(Result result) throws XQException {
         isClosedXQException();
+        isItemGetXQException();
         isNullXQException(result);
         if (isOnItem()) {
             getItem().writeItemToResult(result);
@@ -719,6 +770,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
    */
     @Override
     public String getItemAsString(Properties prprts) throws XQException {
+        isClosedXQException();
         return getItem().getItemAsString(prprts);
     }
 
@@ -745,7 +797,7 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
    *   XQItemType strType = conn.createAtomicType(XQItemType.XQBASETYPE_STRING);
    *   XQItemType nodeType = conn.createNodeType();
    * 
-   *   XQSequence result = preparedExpr.executeQuery();
+   *   ZorbaXQSequence result = preparedExpr.executeQuery();
    *   while (result.next())
    *   {
    *      // Generic check for node.. 
@@ -833,22 +885,6 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
         getItem().writeItemToResult(result);
     }
 
-  /** \brief Returns a StaticCollectionManager.
-   * 
-   * Returns a CollectionManager responsible for all collections which are statically declared in the static context of this query (main module) or any transitively imported library module.
-   * The collection manager provides a set of functions for managing collections and their contents.
-   *
-   * @return XQStaticCollectionManager The collection manager responsible for managing collections of this Sequence.
-   * @throw XQException - if the object is closed
-   */
-    public XQStaticCollectionManager getStaticCollectionManager() throws XQException {
-        isClosedXQException();
-        if (lStaticCollectionManager==null) {
-            lStaticCollectionManager = new XQStaticCollectionManager(lQuery.getStaticCollectionManager());
-        }
-        return lStaticCollectionManager;
-    }
-
     private void isClosedXQException() throws XQException {
         if (closed) {
             throw new XQException("This sequence is closed");
@@ -863,16 +899,5 @@ public class XQResultSequenceScrollable implements javax.xml.xquery.XQResultSequ
         if (value==null) {
             throw new XQException("Parameter shouldn't be null");
         }
-    }
-
-
-  /** \brief  Gets the XQuery connection associated with this result sequence
-   * 
-   * @return the connection associated with this result sequence
-   * @throw XQException - if the result sequence is in a closed state
-   */
-    @Override
-    public XQConnection getConnection() throws XQException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
