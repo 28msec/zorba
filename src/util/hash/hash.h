@@ -129,6 +129,17 @@ hash<double>::result_type hash<double>::operator()( double v ) const {
   return v != 0.0 ? zorba::ztd::hash_bytes( v ) : 0;
 }
 
+/** Partial specialization for pointer types. */
+template<typename T>
+struct hash<T*> : unary_function<T*,size_t> {
+  typedef T* argument_type;
+  typedef size_t result_type;
+
+  result_type operator()( argument_type a ) const {
+    return reinterpret_cast<size_t>( a );
+  }
+};
+
 /** Specialization for \c string. */
 template<typename CharT,class Traits,class Alloc>
 struct hash< basic_string<CharT,Traits,Alloc> > :
