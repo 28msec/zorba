@@ -34,7 +34,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.ItemSequence;
-import org.zorbaxquery.api.Iterator;
 
 
  /**

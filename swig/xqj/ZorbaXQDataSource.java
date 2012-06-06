@@ -19,7 +19,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Enumeration;
 import java.util.Properties;
-import javax.xml.xquery.*;
+import javax.xml.xquery.XQException;
 
   /**
    * An ZorbaXQDataSource is a factory for ZorbaXQConnection objects. 

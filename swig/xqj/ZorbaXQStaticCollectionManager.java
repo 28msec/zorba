@@ -18,8 +18,8 @@ package org.zorbaxquery.api.xqj;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
-import javax.xml.xquery.XQSequence;
 import javax.xml.xquery.XQItem;
+import javax.xml.xquery.XQSequence;
 import org.zorbaxquery.api.StaticCollectionManager;
 
 

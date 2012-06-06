@@ -15,18 +15,14 @@
  */
 package org.zorbaxquery.api.xqj;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
-import java.util.Iterator;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.Duration;
@@ -35,40 +31,16 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stax.StAXResult;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.xquery.XQException;
-import javax.xml.xquery.XQExpression;
-import javax.xml.xquery.XQItem;
-import javax.xml.xquery.XQItemType;
-import javax.xml.xquery.XQMetaData;
-import javax.xml.xquery.XQPreparedExpression;
-import javax.xml.xquery.XQSequence;
-import javax.xml.xquery.XQSequenceType;
-import javax.xml.xquery.XQStaticContext;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.ProcessingInstruction;
-import org.w3c.dom.Text;
-import org.zorbaxquery.api.InMemoryStore;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.ItemFactory;
-import org.zorbaxquery.api.StringVector;
-import org.zorbaxquery.api.XmlDataManager;
-import org.zorbaxquery.api.Zorba;
+import javax.xml.xquery.*;
+import org.w3c.dom.*;
+import org.zorbaxquery.api.*;
 
   /**
    * 

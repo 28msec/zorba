@@ -21,28 +21,9 @@ import java.io.FileReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
-
-import org.zorbaxquery.api.xqj.ZorbaXQDataSource;
-import javax.xml.xquery.XQConnection;
-import javax.xml.xquery.XQException;
-import javax.xml.xquery.XQExpression;
-import javax.xml.xquery.XQItem;
-import javax.xml.xquery.XQItemType;
-import javax.xml.xquery.XQSequence;
-import org.zorbaxquery.api.Collection;
-import org.zorbaxquery.api.CollectionManager;
-import org.zorbaxquery.api.InMemoryStore;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.ItemFactory;
-import org.zorbaxquery.api.ItemSequence;
-import org.zorbaxquery.api.StaticCollectionManager;
-import org.zorbaxquery.api.XQuery;
-import org.zorbaxquery.api.XmlDataManager;
-import org.zorbaxquery.api.Zorba;
-import org.zorbaxquery.api.xqj.ZorbaXQCollection;
-import org.zorbaxquery.api.xqj.ZorbaXQCollectionManager;
-import org.zorbaxquery.api.xqj.ZorbaXQStaticCollectionManager;
-import org.zorbaxquery.api.xqj.ZorbaXQXmlDataManager;
+import javax.xml.xquery.*;
+import org.zorbaxquery.api.*;
+import org.zorbaxquery.api.xqj.*;
 
 public class Api_test {
 
@@ -56,7 +37,7 @@ public class Api_test {
       ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       XQConnection xqc = xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
-      org.zorbaxquery.api.xqj.XQResultSequence xqs = (org.zorbaxquery.api.xqj.XQResultSequence) xqe.executeQuery("1,2,3");
+      org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery("1,2,3");
       ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
       xqc.close();
       xqc.close();
@@ -79,7 +60,7 @@ public class Api_test {
       ZorbaXQDataSource xqds = new ZorbaXQDataSource();
       XQConnection xqc = xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
-      org.zorbaxquery.api.xqj.XQResultSequence xqs = (org.zorbaxquery.api.xqj.XQResultSequence) xqe.executeQuery(strBuilder.toString());
+      org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery(strBuilder.toString());
       ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
       boolean resultAdding = false;
       boolean resultDeleting = true;
@@ -116,9 +97,9 @@ public class Api_test {
           throw new XQException("Error reading file for test: " + e.getLocalizedMessage());
       }
       ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
+      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
-      org.zorbaxquery.api.xqj.XQResultSequence xqs = (org.zorbaxquery.api.xqj.XQResultSequence) xqe.executeQuery(strBuilder.toString());
+      org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery(strBuilder.toString());
       ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
       URI uri;
       QName qname;
@@ -183,7 +164,7 @@ public class Api_test {
   static boolean example_4() throws XQException
   {
       ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
+      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
       XQExpression xqe = xqc.createExpression();
       ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
       ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
@@ -195,7 +176,7 @@ public class Api_test {
   static boolean example_5() throws XQException
   {
       ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
+      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
       ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
       ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
       boolean resultAdding = false;
@@ -246,7 +227,7 @@ public class Api_test {
   static boolean example_6b() throws XQException
   {
       ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.XQConnection xqc = (org.zorbaxquery.api.xqj.XQConnection) xqds.getConnection();
+      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
       ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
       ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
       URI uri;

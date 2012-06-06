@@ -42,7 +42,7 @@ cd..
 RD /S /Q "%XQJ_LOAD_PATH%\tck\org"
 
 ECHO "xqj_test.bat: Compiling Managers Tests..."
-"@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck\xqjapi.jar;tck\zorba_api.jar;tck\zorba_xqj.jar -d managers "Api_test.java"
+"@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck\xqjapi.jar;tck\zorba_api.jar;tck\zorba_xqj.jar -d managers "managers\Api_test.java"
 
 ECHO "xqj_test.bat: Executing XQJ TCK ..."
 "@Java_JAVA_EXECUTABLE@" -cp tck\xqjapi.jar;tck\xqjtck.jar;tck\junit-4.9.jar;tck\zorba_api.jar;tck\zorba_xqj.jar -Dcom.oracle.xqj.tck.datasource=tck\zorba.properties com.oracle.xqj.tck.AllTests

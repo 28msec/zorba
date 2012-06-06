@@ -15,16 +15,10 @@
  */
 package org.zorbaxquery.api.xqj;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Properties;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
@@ -45,11 +39,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.Iterator;
-import org.zorbaxquery.api.SerializationOptions;
-import org.zorbaxquery.api.StringPair;
-import org.zorbaxquery.api.StringPairVector;
+import org.zorbaxquery.api.*;
 
 /**
   * This class represents an item in the XDM.

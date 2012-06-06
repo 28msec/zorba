@@ -17,9 +17,9 @@ package org.zorbaxquery.api.xqj;
 
 import java.util.ArrayList;
 import javax.xml.xquery.XQException;
-import org.zorbaxquery.api.Collection;
 import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQSequence;
+import org.zorbaxquery.api.Collection;
 import org.zorbaxquery.api.ItemSequence;
 
 /** \brief A Collection is a persistent sequence of node items.

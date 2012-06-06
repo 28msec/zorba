@@ -18,8 +18,8 @@ package org.zorbaxquery.api.xqj;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
-import org.zorbaxquery.api.DocumentManager;
 import javax.xml.xquery.XQItem;
+import org.zorbaxquery.api.DocumentManager;
 
 public class ZorbaXQDocumentManager {
 
