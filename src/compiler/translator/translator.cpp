@@ -6525,10 +6525,11 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       else
         collations.push_back ("");
 
-      if (input_expr->get_expr_kind() == var_expr_kind)
-        input_expr = new wrapper_expr(theRootSctx,
-                                       loc,
-                                       input_expr.getp());
+      input_expr = new wrapper_expr(theRootSctx,
+                                     loc,
+                                     input_expr.getp());
+
+      input_expr = wrap_in_atomization(input_expr);
 
       grouping_rebind.push_back(std::pair<expr_t, var_expr_t>(input_expr,
                                                               output_var));
@@ -6604,7 +6605,7 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
   xqtref_t type = NULL;
   if (v.get_var_expr() != NULL)
   {
-    expr_t gvar_expr = wrap_in_atomization(pop_nodestack());
+    expr_t gvar_expr = pop_nodestack();
 
     if (v.get_var_type() != NULL)
     {
