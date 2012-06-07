@@ -98,6 +98,8 @@ inline bool get_wildcards_from( ftmatch_options const *options ) {
  */
 ft_int to_ft_int( xs_integer const &i );
 
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_UTIL_H */
 /* vim:set et sw=2 ts=2: */
