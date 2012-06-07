@@ -1787,7 +1787,7 @@ void collect_flwor_vars (
       {
         VarInDecl* varDecl = varDecls[j].getp();
 
-        vars.insert(lookup_var(varDecl->get_name(), loc, err::XPST0008));
+        vars.insert(lookup_var(varDecl->get_var_name(), loc, err::XPST0008));
 
         if (varDecl->get_posvar() != NULL)
           vars.insert(lookup_var(varDecl->get_posvar()->get_name(), loc, err::XPST0008));
@@ -1800,13 +1800,13 @@ void collect_flwor_vars (
 
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
+        vars.insert(lookup_var(lV[j]->get_var_name(), loc, err::XPST0008));
       }
     }
     else if (typeid(c) == typeid(WindowClause))
     {
       const WindowClause& wc = *static_cast<const WindowClause *>(&c);
-      vars.insert(lookup_var(wc.get_var()->get_name(), loc, err::XPST0008));
+      vars.insert(lookup_var(wc.get_var()->get_var_name(), loc, err::XPST0008));
       for (int j = 1; j >= 0; j--)
       {
         const FLWORWinCond* cond = &*wc[j];
@@ -1844,8 +1844,8 @@ void collect_flwor_vars (
       //Group-by clauses may define new variables, otherwise it shadows existing vars.
       for(size_t gSpecPos = 0; gSpecPos < groupClause.get_spec_list()->size(); gSpecPos++)
       {
-        GroupSpec *groupSpec = (*(groupClause.get_spec_list()))[gSpecPos];
-        if(groupSpec->get_var_expr() != NULL)
+        GroupSpec* groupSpec = (*(groupClause.get_spec_list()))[gSpecPos];
+        if (groupSpec->get_binding_expr() != NULL)
           vars.insert(lookup_var(groupSpec->get_var_name(), loc, err::XPST0008));
       }
 
@@ -3737,7 +3737,7 @@ void* begin_visit(const VarDecl& v)
   TRACE_VISIT();
 
   store::Item_t qnameItem;
-  expand_no_default_qname(qnameItem, v.get_name(), loc);
+  expand_no_default_qname(qnameItem, v.get_var_name(), loc);
 
   var_expr_t ve;
 
@@ -3773,7 +3773,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (v.is_global())
     theCurrentPrologVFDecl.setNull();
 
-  expr_t initExpr = (v.get_initexpr() == NULL ? expr_t(NULL) : pop_nodestack());
+  expr_t initExpr = (v.get_binding_expr() == NULL ? expr_t(NULL) : pop_nodestack());
 
   var_expr_t ve = dynamic_cast<var_expr*>(pop_nodestack().getp());
 
@@ -3804,7 +3804,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   }
 
   xqtref_t type;
-  if (v.get_typedecl() != NULL)
+  if (v.get_var_type() != NULL)
   {
     type = pop_tstack();
 
@@ -3842,7 +3842,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_DEBUGGER
     if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
     {
-      QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+      QueryLoc lExpandedLocation = expandQueryLoc(v.get_var_name()->get_location(),
                                                   initExpr->get_loc());
 
       wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
@@ -3864,8 +3864,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_DEBUGGER
     if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
     {
-      QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
-                                                  initExpr->get_loc());
+      QueryLoc lExpandedLocation = 
+      expandQueryLoc(v.get_var_name()->get_location(), initExpr->get_loc());
 
       wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
     }
@@ -5845,7 +5845,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   flwor->set_return_expr(retExpr);
 
-  ulong curClausePos = (ulong)theFlworClausesStack.size() - 1;
+  csize curClausePos = theFlworClausesStack.size() - 1;
 
   while (theFlworClausesStack[curClausePos] != NULL)
   {
@@ -5868,17 +5868,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     }
     case flwor_clause::group_clause:
     {
-      group_clause* gc = static_cast<group_clause*>(curClause);
-
-      ulong numGVars = gc->getNumGroupingVars();
-      ulong numNGVars = gc->getNumNonGroupingVars();
-
-      for (ulong i = 0; i < numGVars; ++i)
-        pop_scope();
-
-      for (ulong i = 0; i < numNGVars; ++i)
-        pop_scope();
-
+      pop_scope();
       break;
     }
     case flwor_clause::order_clause:
@@ -5894,7 +5884,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     --curClausePos;
   }
 
-  ulong numClauses = (ulong)theFlworClausesStack.size();
+  csize numClauses = theFlworClausesStack.size();
 
   for (ulong i = curClausePos + 1; i < numClauses; ++i)
     flwor->add_clause(theFlworClausesStack[i]);
@@ -5954,8 +5944,8 @@ void end_visit(const ForClause& v, void* /*visit_state*/)
 
   if (v.has_allowing_empty())
   {
-    ulong curClause = (ulong)theFlworClausesStack.size() - 1;
-    while(theFlworClausesStack[curClause] != NULL)
+    csize curClause = theFlworClausesStack.size() - 1;
+    while (theFlworClausesStack[curClause] != NULL)
       --curClause;
 
     theFlworClausesStack.erase(theFlworClausesStack.begin() + curClause);
@@ -5999,28 +5989,27 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
-                                              domainExpr->get_loc());
+  QueryLoc lExpandedLocation = 
+  expandQueryLoc(v.get_var_name()->get_location(), domainExpr->get_loc());
 
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
   push_scope();
 
-  xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
+  xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
 
-  var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::for_var, type);
+  var_expr_t varExpr = bind_var(loc, v.get_var_name(), var_expr::for_var, type);
   var_expr_t posVarExpr;
 
   const PositionalVar* pv = v.get_posvar();
+
   if (pv != NULL)
   {
     store::Item_t pvarQName;
     expand_no_default_qname(pvarQName, pv->get_name(), loc);
 
     if (pvarQName->equals(varExpr->get_name()))
-      throw XQUERY_EXCEPTION(
-        err::XQST0089, ERROR_PARAMS(pvarQName->getStringValue()), ERROR_LOC(loc)
-      );
+      RAISE_ERROR(err::XQST0089, loc, ERROR_PARAMS(pvarQName->getStringValue()));
 
     posVarExpr = bind_var(pv->get_location(), pvarQName, var_expr::pos_var);
   }
@@ -6092,47 +6081,52 @@ void* begin_visit(const VarGetsDecl& v)
   return no_state;
 }
 
-void create_letVar(const QueryLoc loc, const QName *varName, expr_t domainExpr, xqtref_t type)
+void create_let_clause(
+    const QueryLoc loc,
+    const QName* varName,
+    expr_t domainExpr,
+    xqtref_t type)
 {
   if (domainExpr->is_updating())
-      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
 
-    // it's important to insert the debugger before the scope is pushed.
-    // Otherwise, the variable in question would already be in scope for
-    // the debugger but no value would be bound
-    QueryLoc lExpandedLocation = expandQueryLoc(varName->get_location(),
-                                                domainExpr->get_loc());
+  // it's important to insert the debugger before the scope is pushed.
+  // Otherwise, the variable in question would already be in scope for
+  // the debugger but no value would be bound
+  QueryLoc lExpandedLocation = expandQueryLoc(varName->get_location(),
+                                              domainExpr->get_loc());
 
-    wrap_in_debugger_expr(domainExpr, lExpandedLocation);
+  wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
-    push_scope();
+  push_scope();
 
-    var_expr_t varExpr = bind_var(loc, varName, var_expr::let_var, type);
+  var_expr_t varExpr = bind_var(loc, varName, var_expr::let_var, type);
 
-    let_clause* clause = new let_clause(theRootSctx,
-                                        loc,
-                                        varExpr,
-                                        domainExpr);
+  let_clause* clause = new let_clause(theRootSctx,
+                                      loc,
+                                      varExpr,
+                                      domainExpr);
 
-    theFlworClausesStack.push_back(clause);
+  theFlworClausesStack.push_back(clause);
 }
+
 
 void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
+  xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
 
   if (v.get_kind() == VarGetsDecl::let_var)
   {
     expr_t domainExpr = pop_nodestack();
 
-    create_letVar(loc, v.get_name(), domainExpr, type);
+    create_let_clause(loc, v.get_var_name(), domainExpr, type);
   }
   else
   {
     push_scope();
-    push_nodestack(create_var(loc, v.get_name(), var_expr::let_var, type).getp());
+    push_nodestack(create_var(loc, v.get_var_name(), var_expr::let_var, type).getp());
   }
 }
 
@@ -6355,9 +6349,9 @@ void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
   // Create scope for the window var
   push_scope();
 
-  xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
+  xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
 
-  var_expr_t ve = bind_var(loc, v.get_name(), var_expr::win_var, type);
+  var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::win_var, type);
   push_nodestack(ve.getp());
 }
 
@@ -6424,25 +6418,27 @@ void* begin_visit(const GroupByClause& v)
 
   // Collect the var_exprs for all the grouping vars specified in this GroupByClause.
   GroupSpecList* lList = v.get_spec_list();
-  for (int i = 0; i < (int)lList->size(); ++i)
+
+  for (csize i = 0; i < lList->size(); ++i)
   {
     GroupSpec* spec = (*lList)[i];
     
     const QName* varname = spec->get_var_name();
 
     const var_expr* ve = NULL;
-    if(spec->get_var_expr() == NULL)
+
+    if (spec->get_binding_expr() == NULL)
     {
-      ve = lookup_var(varname, loc, err::XPST0008);    
+      ve = lookup_var(varname, loc, err::XPST0008);
     }
     else
     {
-      //variables can be explicitly shadowed, if we don't check for that
-      //we might have them become non-group variables incorrectly.
+      // variables can be explicitly shadowed, if we don't check for that
+      // we might have them become non-group variables incorrectly.
       ve = lookup_var(varname, loc, zerr::ZXQP0000_NO_ERROR);
     }
 
-    if(ve != NULL)
+    if (ve != NULL)
       group_vars.insert(ve);
   }
 
@@ -6483,86 +6479,66 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   // by the pairs for the non-grouping vars.
 
   const GroupSpecList& groupSpecs = *v.get_spec_list();
-  size_t numGroupSpecs = groupSpecs.size();
+  csize numGroupSpecs = groupSpecs.size();
 
   std::vector<std::string> collations;
   group_clause::rebind_list_t grouping_rebind;
   group_clause::rebind_list_t nongrouping_rebind;
-  expr_t input_expr;
-  var_expr_t input_var;
-  var_expr_t output_var;
 
-  std::vector<var_expr_t> output_vars_helper;
-  for (int i = (int)numGroupSpecs - 1; i >= 0; i--)
+  push_scope();
+
+  for (csize i = 0; i < numGroupSpecs; ++i)
   {
     const GroupSpec& groupSpec = *groupSpecs[i];
 
-    output_var = pop_nodestack_var();
-
-    //since the expressions are moved into let clauses before the group clause
-    //repeated variable names may be ignored.
-    bool add_to_clause = true;
-
-    for (int j = i - 1; j >= 0; j--)
+    csize j;
+    for (j = 0; j < i; ++j)
     {
       const GroupSpec& previousSpec = *groupSpecs[j];
 
-      if (groupSpec.get_var_name() == previousSpec.get_var_name())
-        add_to_clause = false;
+      if (*groupSpec.get_var_name() == *previousSpec.get_var_name())
+        break;
     }
 
-    if (add_to_clause)
+    if (j == i)
     {
       // since group specs can add let vars, and change the value of the
       // input_expr after the expr has been read, we delegate the actual looking
       // up of the variable until now, to get the most recent and correct value.
-      input_expr = lookup_var(groupSpec.get_var_name(), loc, err::XPST0008);
+      expr_t inputExpr = lookup_var(groupSpec.get_var_name(), loc, err::XPST0008);
 
-      output_vars_helper.push_back(output_var);
+      if (inputExpr->get_expr_kind() == var_expr_kind)
+      {
+        inputExpr = new wrapper_expr(theRootSctx, loc, inputExpr);
+      }
 
-      if (groupSpec.group_coll_spec() != NULL)
-        collations.push_back(groupSpec.group_coll_spec()->get_uri().str());
+      inputExpr = wrap_in_atomization(inputExpr);
+
+      var_expr_t gvar = bind_var(loc,
+                                 groupSpec.get_var_name(),
+                                 var_expr::groupby_var,
+                                 inputExpr->get_return_type());
+
+      grouping_rebind.push_back(std::pair<expr_t, var_expr_t>(inputExpr, gvar));
+
+      if (groupSpec.get_collation_spec() != NULL)
+        collations.push_back(groupSpec.get_collation_spec()->get_uri().str());
       else
         collations.push_back ("");
-
-      input_expr = new wrapper_expr(theRootSctx,
-                                     loc,
-                                     input_expr.getp());
-
-      input_expr = wrap_in_atomization(input_expr);
-
-      grouping_rebind.push_back(std::pair<expr_t, var_expr_t>(input_expr,
-                                                              output_var));
     }
-   }
-
-  for (std::vector<var_expr_t>::reverse_iterator 
-    iter = output_vars_helper.rbegin();
-    iter != output_vars_helper.rend();
-    iter++)
-  {
-    push_scope();
-    bind_var(*iter, theSctx);
   }
 
-  reverse(collations.begin(), collations.end());
-  reverse(grouping_rebind.begin(), grouping_rebind.end());
+  var_expr_t ngvar;
 
-  while (NULL != (output_var = pop_nodestack_var()))
+  while (NULL != (ngvar = pop_nodestack_var()))
   {
-    input_var = pop_nodestack_var();
+    var_expr_t inputVar = pop_nodestack_var();
 
-    push_scope();
-    bind_var(output_var, theSctx);
+    bind_var(ngvar, theSctx);
 
-    wrapper_expr_t input_wrapper;
-    input_wrapper = new wrapper_expr(theRootSctx,
-                                     loc,
-                                     static_cast<expr*>(input_var.getp()));
+    expr_t inputExpr = new wrapper_expr(theRootSctx, loc, inputVar.getp());
 
-    nongrouping_rebind.push_back(
-        std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
-                                              output_var));
+    nongrouping_rebind.push_back(std::pair<expr_t, var_expr_t>(inputExpr, ngvar));
   }
 
   group_clause* clause = new group_clause(theRootSctx,
@@ -6603,23 +6579,16 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   xqtref_t type = NULL;
-  if (v.get_var_expr() != NULL)
+
+  if (v.get_binding_expr() != NULL)
   {
-    expr_t gvar_expr = pop_nodestack();
+    expr_t domainExpr = pop_nodestack();
 
     if (v.get_var_type() != NULL)
-    {
       type = pop_tstack();
-      gvar_expr = wrap_in_type_promotion(gvar_expr, type);
-    }
     
-    create_letVar(loc, v.get_var_name(), gvar_expr, type);
+    create_let_clause(loc, v.get_var_name(), domainExpr, type);
   }
-
-  var_expr_t ve =
-    create_var(loc, v.get_var_name(), var_expr::groupby_var, type);
-
-  push_nodestack(ve.getp());
 }
 
 
@@ -6641,7 +6610,7 @@ void end_visit(const GroupCollationSpec& v, void* /*visit_state*/)
 /*******************************************************************************
   OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
 ********************************************************************************/
-void *begin_visit(const OrderByClause& v)
+void* begin_visit(const OrderByClause& v)
 {
   TRACE_VISIT ();
   return no_state;

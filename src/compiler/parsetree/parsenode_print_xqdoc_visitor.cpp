@@ -959,20 +959,20 @@ void end_visit(const VarDecl& n, void*)
       lUriElem, lVariableElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  zstring lUriString(n.get_name()->get_qname());
+  zstring lUriString(n.get_var_name()->get_qname());
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
   store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
 
-  if(n.get_typedecl())
+  if (n.get_var_type())
   {
     std::stringstream os;
-    print_parsetree_xquery(os , &*n.get_typedecl());
+    print_parsetree_xquery(os , &*n.get_var_type());
     print_custom(lCommentElem, "type", os.str());
   }
 
-  if(n.is_extern())
+  if (n.is_extern())
     print_custom(lCommentElem, "isExternal", "true");
 
   // add all invoked function elements as children to the end of the current

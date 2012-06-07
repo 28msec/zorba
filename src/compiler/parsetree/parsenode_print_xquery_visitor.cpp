@@ -669,7 +669,7 @@ DEFAULT_END_VISIT (GroupByClause)
     void* begin_visit(const GroupSpec& n)
     {
       os << "$" << n.get_var_name();
-      n.group_coll_spec()->accept(*this);
+      n.get_collation_spec()->accept(*this);
       return 0;
     }
     DEFAULT_END_VISIT (GroupSpec)
@@ -1035,17 +1035,17 @@ DEFAULT_END_VISIT (ReverseAxis);
 
     void* begin_visit(const VarDecl& n)
     {
-      os << "declare variable $" << n.get_name()->get_qname();
-      if(n.get_typedecl())
+      os << "declare variable $" << n.get_var_name()->get_qname();
+      if(n.get_var_type())
       {
-        n.get_typedecl()->accept(*this);
+        n.get_var_type()->accept(*this);
       }
       if(n.is_extern())
       {
         os << "external";
-      } else if(n.get_initexpr()) {
+      } else if(n.get_binding_expr()) {
         os << ":=";
-        n.get_initexpr()->accept(*this);
+        n.get_binding_expr()->accept(*this);
       }
       return 0;
     }
@@ -1053,16 +1053,16 @@ DEFAULT_END_VISIT (ReverseAxis);
 
     void* begin_visit(const VarGetsDecl& n)
     {
-      os << "$" << n.get_name()->get_qname() << " ";
-      if(n.get_typedecl())
+      os << "$" << n.get_var_name()->get_qname() << " ";
+      if(n.get_var_type())
       {
         os << "as ";
-        n.get_typedecl()->accept(*this);
+        n.get_var_type()->accept(*this);
       }
-      if(n.get_initexpr())
+      if(n.get_binding_expr())
       {
         os << " := ";
-        n.get_initexpr()->accept(*this);
+        n.get_binding_expr()->accept(*this);
       }
       return 0;
     }
@@ -1085,11 +1085,11 @@ DEFAULT_END_VISIT (ReverseAxis);
 
     void* begin_visit(const VarInDecl& n)
     {
-      os << n.get_name()->get_qname() << ' ';
-      if(n.get_typedecl())
+      os << n.get_var_name()->get_qname() << ' ';
+      if(n.get_var_type())
       {
         os << "as ";
-        n.get_typedecl()->accept(*this);
+        n.get_var_type()->accept(*this);
       }
       if(n.get_posvar())
       {
@@ -1100,7 +1100,7 @@ DEFAULT_END_VISIT (ReverseAxis);
         n.get_ftscorevar()->accept(*this);
       }
       os << "in ";
-      n.get_initexpr()->accept(*this);
+      n.get_binding_expr()->accept(*this);
       return 0;
     }
     DEFAULT_END_VISIT (VarInDecl)

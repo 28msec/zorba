@@ -13,7 +13,7 @@ declare variable $products external;
   order by $state, $category
   return
     <group>
-      <state>{$state}</state><category>{$category}</category>
+      {$state, $category}
       <total-revenue>{sum($revenue)}</total-revenue>
     </group>
 }</result>

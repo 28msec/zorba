@@ -2905,19 +2905,18 @@ GroupByClause :
   ;
 
 GroupSpecList :
-        GroupSpec
-        {
-            GroupSpecList *gsl = new GroupSpecList( LOC(@$) );
-            gsl->push_back( dynamic_cast<GroupSpec*>($1) );
-            $$ = gsl;
-        }
-  |     GroupSpecList COMMA GroupSpec
-        {
-            GroupSpecList *gsl = dynamic_cast<GroupSpecList*>($1);
-            if ( gsl )
-                gsl->push_back( dynamic_cast<GroupSpec*>($3) );
-            $$ = gsl;
-        }
+    GroupSpec
+    {
+      GroupSpecList* gsl = new GroupSpecList(LOC(@$));
+      gsl->push_back(static_cast<GroupSpec*>($1));
+      $$ = gsl;
+    }
+  | GroupSpecList COMMA GroupSpec
+    {
+      GroupSpecList* gsl = static_cast<GroupSpecList*>($1);
+      gsl->push_back(static_cast<GroupSpec*>($3));
+      $$ = gsl;
+    }
   ;
 
 
@@ -2934,7 +2933,7 @@ GroupSpec :
     {
       $$ = new GroupSpec(LOC(@$),
                          static_cast<QName*>($2),
-                         dynamic_cast<SequenceType*>($3),
+                         static_cast<SequenceType*>($3),
                          $5,
                          NULL);
     }
@@ -2942,9 +2941,9 @@ GroupSpec :
     {
       $$ = new GroupSpec(LOC(@$),
                          static_cast<QName*>($2),
-                         dynamic_cast<SequenceType*>($3),
+                         static_cast<SequenceType*>($3),
                          $5,
-                         dynamic_cast<GroupCollationSpec*>($6));
+                         static_cast<GroupCollationSpec*>($6));
     }
   | DOLLAR QNAME GETS ExprSingle GroupCollationSpec
     {
@@ -2952,7 +2951,7 @@ GroupSpec :
                          static_cast<QName*>($2),
                          NULL,
                          $4,
-                         dynamic_cast<GroupCollationSpec*>($5));
+                         static_cast<GroupCollationSpec*>($5));
     }
   | DOLLAR QNAME GroupCollationSpec
     {
@@ -2960,18 +2959,19 @@ GroupSpec :
                          static_cast<QName*>($2),
                          NULL,
                          NULL,
-                         dynamic_cast<GroupCollationSpec*>($3));
+                         static_cast<GroupCollationSpec*>($3));
     }
   ;
 
+
 GroupCollationSpec :
-        COLLATION URI_LITERAL
-        {
-            $$ = new GroupCollationSpec( LOC(@$), SYMTAB($2) );
-        }
+    COLLATION URI_LITERAL
+    {
+      $$ = new GroupCollationSpec( LOC(@$), SYMTAB($2) );
+    }
   ;
 
-// [38]
+
 OrderByClause :
         ORDER BY OrderSpecList
         {
