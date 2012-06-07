@@ -68,7 +68,7 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
       COMPONENT ruby_swig )
     ELSE ( LINUX )
       IF (MSVC_IDE)
-        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.so
         DESTINATION share/ruby
         COMPONENT ruby_swig )
       ELSE (MSVC_IDE)
