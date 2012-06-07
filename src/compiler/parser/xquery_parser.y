@@ -5229,8 +5229,8 @@ StringLiteral :
 
 /*_______________________________________________________________________
  *                                                                       *
- *  XQuery 1.1 productions                                               *
- *  [http://www.w3.org/TR/xquery-11/]                                    *
+ *  XQuery 3.0 productions                                               *
+ *  [http://www.w3.org/TR/xquery-3/]                                     *
  *                                                                       *
  *_______________________________________________________________________*/
 
@@ -5983,11 +5983,11 @@ FTExtensionOption :
 FTStemOption :
         STEMMING
         {
-            $$ = new FTStemOption( LOC(@$), ft_stem_mode::with );
+            $$ = new FTStemOption( LOC(@$), ft_stem_mode::stemming );
         }
     |   NO STEMMING
         {
-            $$ = new FTStemOption( LOC(@$), ft_stem_mode::without );
+            $$ = new FTStemOption( LOC(@$), ft_stem_mode::no_stemming );
         }
     ;
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://foo.com/schemas/schema"
+  xmlns = "http://foo.com/schemas/schema"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+
+    <xs:element name="Content" type="Content"/>
+
+    <xs:complexType name="Content">
+      <xs:attribute name="id" type="xs:string"></xs:attribute>
+    </xs:complexType>
+
+</xs:schema>

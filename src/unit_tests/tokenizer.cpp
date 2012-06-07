@@ -60,7 +60,7 @@ template<> struct less<char const*> :
 
 class TestTokenizer : public Tokenizer {
 public:
-  TestTokenizer( Numbers &num ) : Tokenizer( num ) { }
+  TestTokenizer( State &state ) : Tokenizer( state ) { }
   ~TestTokenizer();
 
   // inherited
@@ -125,7 +125,7 @@ void TestTokenizer::item( Item const &item, bool entering ) {
     item.getNodeName( qname );
     if ( ::binary_search( block_elements, end, qname.getLocalName().c_str(),
                           less<char const*>() ) ) {
-      ++numbers().para;
+      ++state().para;
     }
   }
 }
@@ -291,7 +291,7 @@ void TestTokenizer::tokenize_string( char const *s, size_type s_len,
           // no break;
         case '!':
         case '?':
-          ++numbers().sent;
+          ++state().sent;
       }
   } // for
 
@@ -324,19 +324,19 @@ bool TestTokenizer::send_token( token_t const &token, iso639_1::type lang,
                                 Callback &callback, Item const *item ) {
   if ( !token.empty() ) {
 #if PRINT_TOKENS
-    cout <<   "t=" << setw(2) << numbers().token
-         << ", s=" << setw(2) << numbers().sent
-         << ", p=" << setw(2) << numbers().para
+    cout <<   "t=" << setw(2) << state().token
+         << ", s=" << setw(2) << state().sent
+         << ", p=" << setw(2) << state().para
          << ": \"" << token << "\"\n";
 #endif /* PRINT_TOKENS */
 
-    check_token( token.c_str(), numbers().token );
+    check_token( token.c_str(), state().token );
 
     callback.token(
       token.data(), token.size(), lang,
-      numbers().token, numbers().sent, numbers().para, item
+      state().token, state().sent, state().para, item
     );
-    ++numbers().token;
+    ++state().token;
     return true;
   }
   return false;
@@ -347,15 +347,15 @@ bool TestTokenizer::send_token( token_t const &token, iso639_1::type lang,
 class TestTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  bool getTokenizer( iso639_1::type, Tokenizer::Numbers* = 0,
+  bool getTokenizer( iso639_1::type, Tokenizer::State* = 0,
                      Tokenizer::ptr* = 0 ) const;
 };
 
 bool TestTokenizerProvider::getTokenizer( iso639_1::type lang,
-                                          Tokenizer::Numbers *num,
+                                          Tokenizer::State *state,
                                           Tokenizer::ptr *t ) const {
-  if ( num && t )
-    t->reset( new TestTokenizer( *num ) );
+  if ( state && t )
+    t->reset( new TestTokenizer( *state ) );
   return true;
 }
 
