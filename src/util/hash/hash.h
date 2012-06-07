@@ -90,15 +90,13 @@ namespace std {
  */
 template<typename T>
 struct hash : unary_function<T,size_t> {
-  typedef T argument_type;
-  typedef size_t result_type;
-  result_type operator()( argument_type ) const; // not defined
+  size_t operator()( T ) const; // not defined
 };
 
-#define ZORBA_INTEGRAL_HASH(T)                                        \
-  template<> inline                                                   \
-  hash<T>::result_type hash<T>::operator()( argument_type a ) const { \
-    return static_cast<size_t>( a );                                  \
+#define ZORBA_INTEGRAL_HASH(T)              \
+  template<> inline                         \
+  size_t hash<T>::operator()( T a ) const { \
+    return static_cast<size_t>( a );        \
   }
 
 ZORBA_INTEGRAL_HASH( bool )
@@ -119,24 +117,21 @@ ZORBA_INTEGRAL_HASH( unsigned long long )
 
 /** Specialization for \c float. */
 template<> inline
-hash<float>::result_type hash<float>::operator()( float v ) const {
+size_t hash<float>::operator()( float v ) const {
   return v != 0.0F ? zorba::ztd::hash_bytes( v ) : 0;
 }
 
 /** Specialization for \c double. */
 template<> inline
-hash<double>::result_type hash<double>::operator()( double v ) const {
+size_t hash<double>::operator()( double v ) const {
   return v != 0.0 ? zorba::ztd::hash_bytes( v ) : 0;
 }
 
 /** Partial specialization for pointer types. */
 template<typename T>
 struct hash<T*> : unary_function<T*,size_t> {
-  typedef T* argument_type;
-  typedef size_t result_type;
-
-  result_type operator()( argument_type a ) const {
-    return reinterpret_cast<size_t>( a );
+  size_t operator()( T *p ) const {
+    return reinterpret_cast<size_t>( p );
   }
 };
 
@@ -145,10 +140,7 @@ template<typename CharT,class Traits,class Alloc>
 struct hash< basic_string<CharT,Traits,Alloc> > :
   unary_function<basic_string<CharT,Traits,Alloc> const&,size_t>
 {
-  typedef basic_string<CharT,Traits,Alloc> const& argument_type;
-  typedef size_t result_type;
-
-  result_type operator()( argument_type s ) const {
+  size_t operator()( basic_string<CharT,Traits,Alloc> const &s ) const {
     return zorba::ztd::hash_bytes( s.data(), s.size() );
   }
 };
@@ -160,10 +152,7 @@ template<class RepType>
 struct hash< zorba::rstring<RepType> > :
   unary_function<zorba::rstring<RepType> const&,size_t>
 {
-  typedef zorba::rstring<RepType> const& argument_type;
-  typedef size_t result_type;
-
-  result_type operator()( argument_type s ) const {
+  size_t operator()( zorba::rstring<RepType> const &s ) const {
     return zorba::ztd::hash_bytes( s.data(), s.size() );
   }
 };
