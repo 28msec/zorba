@@ -636,7 +636,8 @@ declare function ft:strip-diacritics( $string as xs:string )
  : The phrase's
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
- : @return the related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
  : by the currently running version of Zorba.
@@ -656,7 +657,8 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @param $lang The
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$phrase</code>.
- : @return the related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
@@ -681,7 +683,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : The phrase's
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one the one returned by <code>ft:current-lang()</code>.
- : @return the related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
@@ -707,7 +710,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : of <code>$phrase</code>.
  : @param $relationship The relationship the results are to have to
  : <code>$phrase</code>.
- : @return the related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
  : @error err:FTST0009 if <code>$lang</code> is not supported.
@@ -739,7 +743,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : travers$ed.
  : @param $level-most The maximum number of levels within the thesaurus to be
  : traversed.
- : @return the related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FOCA0003 if either <code>$level-least</code> or
  : <code>$level-most</code> is either negative or too large.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
