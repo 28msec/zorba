@@ -1551,11 +1551,67 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 Item
 StaticContextImpl::fetch(const String& aURI) const
 {
-  return fetch(aURI, "SOME_CONTENT");
+  return fetch(aURI, "SOME_CONTENT", "UTF-8");
 }
 
 Item
 StaticContextImpl::fetch(
+    const String& aURI,
+    const String& aEntityKind) const
+{
+  return fetch(aURI, aEntityKind, "UTF-8");
+}
+
+Item
+StaticContextImpl::fetch(
+    const String& aURI,
+    const String& aEntityKind,
+    const String& aEncoding) const
+{
+  ZORBA_TRY
+  {
+    Zorba* lZorba = Zorba::getInstance(0);
+    ItemFactory* lFactory = lZorba->getItemFactory();
+
+    Item lQName = lFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
+                                          "content");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(lFactory->createString(aURI)));
+    lArgs.push_back(
+        new SingletonItemSequence(lFactory->createString(aEntityKind)));
+    lArgs.push_back(
+        new SingletonItemSequence(lFactory->createString(aEncoding)));
+
+    StaticContext_t lCtx = createChildContext();
+
+    Zorba_CompilerHints_t lHints;
+    std::ostringstream lProlog;
+    lProlog
+      << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';";
+
+    lCtx->loadProlog(lProlog.str(), lHints);
+
+    ItemSequence_t lSeq = lCtx->invoke(lQName, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+    return lRes;
+  }
+  ZORBA_CATCH
+  return 0;
+}
+
+Item
+StaticContextImpl::fetchBinary(const String& aURI) const
+{
+  return fetchBinary(aURI, "SOME_CONTENT");
+}
+
+Item
+StaticContextImpl::fetchBinary(
     const String& aURI,
     const String& aEntityKind) const
 {
@@ -1565,7 +1621,7 @@ StaticContextImpl::fetch(
     ItemFactory* lFactory = lZorba->getItemFactory();
 
     Item lQName = lFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
-                                          "content");
+                                          "content-binary");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
