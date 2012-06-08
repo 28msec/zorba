@@ -565,7 +565,9 @@ expr_t MarkNodeCopyProps::apply(
   {
     if (rCtx.theCCB->theConfig.for_serialization_only)
     {
+      // Serialization may or may not be a "node-id-sesitive" op.
       static_context* sctx = node->get_sctx();
+
       if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
           sctx->inherit_mode() == StaticContextConsts::inherit_ns)
       {
@@ -581,6 +583,8 @@ expr_t MarkNodeCopyProps::apply(
     }
     else
     {
+      // We have to assume that the result of the "node" expr will be used in a
+      // "node-id-sesitive" op, so it must consist of standalone trees.  
       std::vector<expr*> sources;
       UDFCallChain dummyUdfCaller;
       theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
@@ -734,10 +738,21 @@ void MarkNodeCopyProps::applyInternal(
 
   case castable_expr_kind:
   case cast_expr_kind:
-  case instanceof_expr_kind:
-  case name_cast_expr_kind:
   case promote_expr_kind:
+  case instanceof_expr_kind:
   case treat_expr_kind:
+  {
+    if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
+    {
+      cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(node);
+
+      markForSerialization(e->get_input());
+    }
+
+    break;
+  }
+
+  case name_cast_expr_kind:
   case order_expr_kind:
   case wrapper_expr_kind:
   case function_trace_expr_kind:

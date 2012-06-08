@@ -1,5 +1,9 @@
 Zorba - The XQuery Processor
 
+version 2.7
+
+  * Fixed bug #1006960 (taking construction mode into account during no-copy rule)
+	
 version 2.5
 
 New Features:

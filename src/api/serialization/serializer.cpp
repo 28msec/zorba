@@ -721,7 +721,6 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
   }
   else
   {
-    //item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
     item->getNamespaceBindings(nsBindings);
 
     store::Item* nodeName = item->getNodeName();
@@ -814,11 +813,11 @@ bool serializer::emitter::haveBinding(std::pair<zstring, zstring>& nsBinding) co
 ********************************************************************************/
 bool serializer::emitter::havePrefix(const zstring& pre) const
 {
-  for (unsigned long i = 0; i < theBindings.size(); ++i)
+  for (csize i = 0; i < theBindings.size(); ++i)
   {
     const store::NsBindings& nsBindings = theBindings[i];
 
-    for (unsigned long j = 0; j < nsBindings.size(); ++j)
+    for (csize j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first == pre)
         return true;

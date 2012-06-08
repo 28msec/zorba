@@ -1,0 +1,27 @@
+<xs:schema 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://www.zorba-xquery.org/simple"
+  xmlns="http://www.zorba-xquery.org/simple"
+  elementFormDefault="qualified"
+  attributeFormDefault="qualified">
+
+<xs:element name="person" type="PersonType"/>
+
+<xs:complexType name="PersonType">
+  <xs:sequence>
+     <xs:element name="name" type="xs:string"/>
+     <xs:element name="age" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+  </xs:sequence>
+</xs:complexType>
+
+
+<xs:element name="person2" type="PersonType2"/>
+
+<xs:complexType name="PersonType2">
+  <xs:sequence>
+     <xs:element name="name" type="xs:string"/>
+  </xs:sequence>
+  <xs:attribute name="age" type="xs:string"/>
+</xs:complexType>
+
+</xs:schema>
