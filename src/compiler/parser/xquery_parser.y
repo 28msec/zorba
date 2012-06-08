@@ -6413,23 +6413,65 @@ JSONAppendExpr :
     ;
 
 JSONDeleteExpr :
-        _DELETE JSON PrimaryExpr LPAR ExprSingle RPAR
+        _DELETE JSON FilterExpr
         {
-          $$ = new JSONDeleteExpr(LOC(@$), $3, $5);
+          DynamicFunctionInvocation* lDynamicFunctionInvocation = 
+              dynamic_cast<DynamicFunctionInvocation*>($3);
+          if(lDynamicFunctionInvocation == NULL) {
+            error(@3, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr();
+          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList();
+          if(lArgList->size() != 1)
+          {
+            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+          rchandle<exprnode> lKey = (*lArgList)[0];
+          $$ = new JSONDeleteExpr(LOC(@$), lPrimaryExpr, lKey);
         }
     ;
 
 JSONRenameExpr :
-        RENAME JSON PrimaryExpr LPAR ExprSingle RPAR AS ExprSingle
+        RENAME JSON FilterExpr AS ExprSingle
         {
-          $$ = new JSONRenameExpr(LOC(@$), $3, $5, $8);
+          DynamicFunctionInvocation* lDynamicFunctionInvocation = 
+              dynamic_cast<DynamicFunctionInvocation*>($3);
+          if(lDynamicFunctionInvocation == NULL) {
+            error(@3, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr();
+          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList();
+          if(lArgList->size() != 1)
+          {
+            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+          rchandle<exprnode> lKey = (*lArgList)[0];
+          $$ = new JSONRenameExpr(LOC(@$), lPrimaryExpr, lKey, $5);
         }
     ;
 
 JSONReplaceExpr :
-        REPLACE JSON VALUE OF PrimaryExpr LPAR ExprSingle RPAR WITH ExprSingle
+        REPLACE JSON VALUE OF FilterExpr WITH ExprSingle
         {
-          $$ = new JSONReplaceExpr(LOC(@$), $5, $7, $10);
+          DynamicFunctionInvocation* lDynamicFunctionInvocation = 
+              dynamic_cast<DynamicFunctionInvocation*>($5);
+          if(lDynamicFunctionInvocation == NULL) {
+            error(@5, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr();
+          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList();
+          if(lArgList->size() != 1)
+          {
+            error(@5, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+          rchandle<exprnode> lKey = (*lArgList)[0];
+          $$ = new JSONReplaceExpr(LOC(@$), lPrimaryExpr, lKey, $7);
         }
     ;
 
