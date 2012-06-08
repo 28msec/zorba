@@ -1004,7 +1004,7 @@ bool BasicItemFactory::createBase64Binary(
     xs_base64Binary value)
 {
   const std::vector<char>& data = value.getData();
-  result = new Base64BinaryItem(&data[0], data.size(), true);
+  result = new Base64BinaryItem(data.size()!=0?&data[0]:0, data.size(), true);
   return true;
 }
 

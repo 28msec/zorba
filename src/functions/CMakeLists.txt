@@ -87,6 +87,7 @@ LIST(APPEND FUNCTIONS_SRCS
     func_reflection.cpp
     func_apply.cpp
     func_serialize_impl.cpp
+    func_parse_fragment_impl.cpp
 )
 
 IF (ZORBA_WITH_JSON)

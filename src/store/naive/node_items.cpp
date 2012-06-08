@@ -4821,7 +4821,7 @@ void XmlNode::tokenize( XmlNodeTokenizerCallback& )
 
 FTTokenIterator_t
 AttributeNode::getTokens( TokenizerProvider const &provider,
-                          Tokenizer::Numbers &numbers, iso639_1::type lang,
+                          Tokenizer::State &state, iso639_1::type lang,
                           bool ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
@@ -4837,7 +4837,7 @@ AttributeNode::getTokens( TokenizerProvider const &provider,
 
     zorba::Item const api_attr( this );
     Tokenizer::ptr tokenizer;
-    if ( provider.getTokenizer( lang, &numbers, &tokenizer ) ) {
+    if ( provider.getTokenizer( lang, &state, &tokenizer ) ) {
       tokenizer->tokenize_node( api_attr, lang, callback );
       token_store.putAttr( this, att_tokens );
     }
@@ -4906,7 +4906,7 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
 
 FTTokenIterator_t
 XmlNode::getTokens( TokenizerProvider const &provider,
-                    Tokenizer::Numbers &numbers, iso639_1::type lang,
+                    Tokenizer::State &state, iso639_1::type lang,
                     bool ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
@@ -4917,7 +4917,7 @@ XmlNode::getTokens( TokenizerProvider const &provider,
     zorba::Item const api_root( getRoot() );
     XmlNodeTokenizerCallback callback( token_store );
     Tokenizer::ptr tokenizer;
-    if ( provider.getTokenizer( lang, &numbers, &tokenizer ) )
+    if ( provider.getTokenizer( lang, &state, &tokenizer ) )
       tokenizer->tokenize_node( api_root, lang, callback );
   }
 

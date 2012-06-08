@@ -1220,6 +1220,20 @@ void PrinterVisitor::endVisit ( const FetchContentIterator& ) {
 // </FetchContentIterator>
 
 
+// <FetchContentBinaryIterator>
+void PrinterVisitor::beginVisit ( const FetchContentBinaryIterator& a) {
+  thePrinter.startBeginVisit("FetchContentBinaryIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FetchContentBinaryIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FetchContentBinaryIterator>
+
+
 // <FetchContentTypeIterator>
 void PrinterVisitor::beginVisit ( const FetchContentTypeIterator& a) {
   thePrinter.startBeginVisit("FetchContentTypeIterator", ++theId);
@@ -1413,18 +1427,18 @@ void PrinterVisitor::endVisit ( const ThesaurusLookupIterator& ) {
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
-// <TokenizeIterator>
-void PrinterVisitor::beginVisit ( const TokenizeIterator& a) {
-  thePrinter.startBeginVisit("TokenizeIterator", ++theId);
+// <TokenizeNodeIterator>
+void PrinterVisitor::beginVisit ( const TokenizeNodeIterator& a) {
+  thePrinter.startBeginVisit("TokenizeNodeIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const TokenizeIterator& ) {
+void PrinterVisitor::endVisit ( const TokenizeNodeIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </TokenizeIterator>
+// </TokenizeNodeIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT

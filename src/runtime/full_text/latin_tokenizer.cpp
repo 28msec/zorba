@@ -242,12 +242,12 @@ bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
 ///////////////////////////////////////////////////////////////////////////////
 
 bool LatinTokenizerProvider::getTokenizer( iso639_1::type lang,
-                                           Tokenizer::Numbers *num,
+                                           Tokenizer::State *state,
                                            Tokenizer::ptr *t ) const {
   switch ( lang ) {
     case iso639_1::en:
-      if ( num && t )
-        t->reset( new LatinTokenizer( *num ) );
+      if ( state && t )
+        t->reset( new LatinTokenizer( *state ) );
       return true;
     default:
       return false;
