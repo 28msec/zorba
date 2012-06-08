@@ -1225,10 +1225,7 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
   If var is not found, the method raises the given error, unless the given error
   is zerr::ZXQP0000_NO_ERROR, in which case it returns NULL.
 ********************************************************************************/
-var_expr* lookup_var(
-    const QName* qname,
-    const QueryLoc& loc,
-    const Error& err)
+var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
 {
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, qname, loc);
@@ -5833,6 +5830,13 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     }
     case flwor_clause::group_clause:
     {
+      group_clause* gc = static_cast<group_clause*>(curClause);
+
+      csize numGVars = gc->getNumGroupingVars();
+
+      for (csize i = 0; i < numGVars; ++i)
+        pop_scope();
+
       pop_scope();
       break;
     }
@@ -5851,7 +5855,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   csize numClauses = theFlworClausesStack.size();
 
-  for (ulong i = curClausePos + 1; i < numClauses; ++i)
+  for (csize i = curClausePos + 1; i < numClauses; ++i)
     flwor->add_clause(theFlworClausesStack[i]);
 
   theFlworClausesStack.resize(curClausePos);
@@ -6450,7 +6454,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   group_clause::rebind_list_t grouping_rebind;
   group_clause::rebind_list_t nongrouping_rebind;
 
-  push_scope();
+  static_context* sctx = theSctx;
 
   for (csize i = 0; i < numGroupSpecs; ++i)
   {
@@ -6459,18 +6463,32 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     csize j;
     for (j = 0; j < i; ++j)
     {
-      const GroupSpec& previousSpec = *groupSpecs[j];
+      const GroupSpec& prevSpec = *groupSpecs[j];
 
-      if (*groupSpec.get_var_name() == *previousSpec.get_var_name())
+      if (*groupSpec.get_var_name() == *prevSpec.get_var_name())
+      {
+        if (groupSpec.get_collation_spec() == NULL &&
+            prevSpec.get_collation_spec() == NULL)
         break;
+
+        if (groupSpec.get_collation_spec() != NULL &&
+            prevSpec.get_collation_spec() != NULL &&
+            groupSpec.get_collation_spec()->get_uri() == 
+            prevSpec.get_collation_spec()->get_uri())
+          break;
+      }
     }
 
     if (j == i)
     {
-      // since group specs can add let vars, and change the value of the
+      // Since group specs can add let vars, and change the value of the
       // input_expr after the expr has been read, we delegate the actual looking
       // up of the variable until now, to get the most recent and correct value.
-      expr_t inputExpr = lookup_var(groupSpec.get_var_name(), loc, err::XPST0008);
+
+      store::Item_t varName;
+      expand_no_default_qname(varName, groupSpec.get_var_name(), loc);
+
+      expr_t inputExpr = sctx->lookup_var(varName.getp(), loc, err::XPST0008);
 
       if (inputExpr->get_expr_kind() == var_expr_kind)
       {
@@ -6478,6 +6496,8 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       }
 
       inputExpr = wrap_in_atomization(inputExpr);
+
+      push_scope();
 
       var_expr_t gvar = bind_var(loc,
                                  groupSpec.get_var_name(),
@@ -6487,11 +6507,22 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       grouping_rebind.push_back(std::pair<expr_t, var_expr_t>(inputExpr, gvar));
 
       if (groupSpec.get_collation_spec() != NULL)
-        collations.push_back(groupSpec.get_collation_spec()->get_uri().str());
+      {
+        std::string collationUri = groupSpec.get_collation_spec()->get_uri().str();
+
+        if (! theSctx->is_known_collation(collationUri))
+          RAISE_ERROR(err::XQST0076, loc, ERROR_PARAMS(collationUri));
+
+        collations.push_back(collationUri);
+      }
       else
+      {
         collations.push_back ("");
+      }
     }
   }
+
+  push_scope();
 
   var_expr_t ngvar;
 
@@ -6587,7 +6618,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   const OrderSpecList& orderSpecs = *v.get_spec_list();
-  unsigned numOrderSpecs = (unsigned)orderSpecs.size();
+  csize numOrderSpecs = orderSpecs.size();
 
   std::vector<OrderModifier> modifiers(numOrderSpecs);
   std::vector<expr_t> orderExprs(numOrderSpecs);
@@ -6612,9 +6643,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
       collationUri = mod->get_collation_spec()->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
-        throw XQUERY_EXCEPTION(
-          err::XQST0076, ERROR_PARAMS( collationUri ), ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0076, loc, ERROR_PARAMS(collationUri));
     }
 
     expr_t orderExpr = pop_nodestack();

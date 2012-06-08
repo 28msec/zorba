@@ -2231,7 +2231,7 @@ public:
       rchandle<exprnode> expr,
       rchandle<GroupCollationSpec> collation);
 
-  rchandle<GroupCollationSpec> get_collation_spec() const { return theCollationSpec; }
+  const GroupCollationSpec* get_collation_spec() const { return theCollationSpec.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2243,12 +2243,12 @@ public:
 class GroupCollationSpec : public parsenode
 {
 protected:
-  zstring const uri;
+  const zstring theUri;
 
 public:
-  GroupCollationSpec(const QueryLoc&, zstring const& uri);
+  GroupCollationSpec(const QueryLoc&, const zstring& uri);
 
-  zstring const& get_uri() const { return uri; }
+  const zstring& get_uri() const { return theUri; }
 
   void accept(parsenode_visitor&) const;
 };

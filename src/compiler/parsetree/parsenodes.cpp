@@ -1773,29 +1773,7 @@ GroupSpecList::GroupSpecList(const QueryLoc& loc)
 
 void GroupSpecList::push_back(rchandle<GroupSpec> spec)
 {
-  vector<rchandle<GroupSpec> >::const_iterator ite = theSpecs.begin();
-  vector<rchandle<GroupSpec> >::const_iterator end = theSpecs.end();
-
-  // If the new group spec is a "duplicate", don't add it to the list. The new
-  // spec is a "duplicate" if it does not have an associated domain expr and
-  // its var name is the same as the var name of another existing spec.
-  if (spec->get_binding_expr() == NULL)
-  {
-    for (; ite != end; ++ite)
-    {
-      const GroupSpec* currSpec = (*ite).getp();
-
-      if (*currSpec->get_var_name() == *spec->get_var_name())
-        break;
-    }
-
-    if (ite == end)
-      theSpecs.push_back(spec);
-  }
-  else
-  {
-    theSpecs.push_back(spec);
-  }
+  theSpecs.push_back(spec);
 }
 
 
@@ -1837,10 +1815,10 @@ void GroupSpec::accept(parsenode_visitor& v) const
 }
 
 
-GroupCollationSpec::GroupCollationSpec(const QueryLoc& loc, const zstring& _uri)
+GroupCollationSpec::GroupCollationSpec(const QueryLoc& loc, const zstring& uri)
   :
   parsenode(loc),
-  uri(_uri)
+  theUri(uri)
 {
 }
 
