@@ -438,7 +438,7 @@ void Item::appendStringValue(zstring& buf) const
 
 #ifndef ZORBA_NO_FULL_TEXT
 FTTokenIterator_t
-Item::getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+Item::getTokens( TokenizerProvider const&, Tokenizer::State&,
                  locale::iso639_1::type, bool ) const
 {
   throw ZORBA_EXCEPTION(

@@ -107,7 +107,8 @@ FileURLResolver::resolveURL
   zstring lPath = fs::get_normalized_path(aUrl);
   if (fs::get_type(lPath) == fs::file) {
     std::ifstream* lStream = new std::ifstream(lPath.c_str());
-    return new StreamResource(lStream, &fileStreamReleaser);
+    return new StreamResource(
+        lStream, &fileStreamReleaser, "", true /* seekable */);
   }
   return NULL;
 }
