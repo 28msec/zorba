@@ -6393,11 +6393,11 @@ JSONPairList :
     ;
 
 JSONInsertExpr :
-        INSERT JSON JSONPairList INTO ExprSingle
+        INSERT JSON LBRACE JSONPairList RBRACE INTO ExprSingle
         {
           $$ = new JSONObjectInsertExpr(LOC(@$),
-                                        static_cast<JSONPairList*>($3),
-                                        $5);
+                                        static_cast<JSONPairList*>($4),
+                                        $7);
         }
     |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
         {
