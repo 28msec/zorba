@@ -527,6 +527,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
+EXPECTED_FAILURE(test/rbkt/zorba/xmlid/valid-ncname 1010728)
+
 # Failing test due to the new scripting spec. The test should be
 # removed as it does not make sense any longer
 EXPECTED_FAILURE(test/rbkt/zorba/scripting/exit4 666)
