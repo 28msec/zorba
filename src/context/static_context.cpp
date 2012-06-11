@@ -422,6 +422,10 @@ const char*
 static_context::ZORBA_VERSIONING_NS =
 "http://www.zorba-xquery.com/options/versioning";
 
+const char*
+static_context::ZORBA_DEBUGGING_NS =
+"http://www.zorba-xquery.com/options/debugging";
+
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
@@ -603,7 +607,8 @@ static_context::static_context()
   theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
   theAllWarningsErrors(false),
-  theFeatures(0)
+  theFeatures(0),
+  theTraceWithDebugInfo(false)
 {
 }
 
@@ -653,7 +658,8 @@ static_context::static_context(static_context* parent)
   theAllWarningsErrors(false),
   // we copy features from the parent such that it's
   // easy to set and unset them
-  theFeatures(parent->theFeatures)
+  theFeatures(parent->theFeatures),
+  theTraceWithDebugInfo(false)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
@@ -704,7 +710,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
   theAllWarningsErrors(false),
-  theFeatures(0)
+  theFeatures(0),
+  theTraceWithDebugInfo(false)
 {
 }
 
@@ -1034,6 +1041,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theAllWarningsErrors;
 
   ar & theFeatures;
+
+  ar & theTraceWithDebugInfo;
 }
 
 
@@ -3312,6 +3321,19 @@ void static_context::bind_option(
       }
       process_warning_option(lCommaFound ? lVal2 : lVal1, lLocalName, loc);
     }
+    else if (lNamespace == ZORBA_DEBUGGING_NS &&
+             (lLocalName == "trace"))
+    {
+      zstring lVal1 = value;
+      zstring lVal2;
+      bool lCommaFound = false;
+      while (ztd::split(lVal1, ",", &lVal1, &lVal2))
+      {
+        process_debugging_option(lVal1, lLocalName, loc);
+        lCommaFound = true;
+      }
+      process_debugging_option(lCommaFound ? lVal2 : lVal1, lLocalName, loc);
+    }
 
     // process zorba-version option
     else if (qname2->getNamespace() == ZORBA_VERSIONING_NS &&
@@ -3439,6 +3461,27 @@ void static_context::process_warning_option(
     {
       theAllWarningsDisabled = false;
       return;
+    }
+  }
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::process_debugging_option(
+  const zstring& value,
+  const zstring& name,
+  const QueryLoc& loc)
+{
+  store::Item_t lQName = parse_and_expand_qname( value, ZORBA_WARN_NS, loc );
+
+  std::vector<store::Item_t>::iterator lIter;
+
+  if ( name == "trace" )
+  {
+    if ( lQName->getLocalName() == "debug-info" )
+    {
+      theTraceWithDebugInfo = true;
     }
   }
 }

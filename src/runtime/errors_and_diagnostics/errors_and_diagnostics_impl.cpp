@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <iostream>
+#include <zorba/singleton_item_sequence.h>
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/user_exception.h"
@@ -30,6 +31,10 @@
 
 #include "system/globalenv.h"
 #include "zorbatypes/zstring.h"
+
+#include "api/serialization/serializer.h"
+#include "api/serializerimpl.h"
+#include "api/unmarshaller.h"
 
 namespace zorba 
 {
@@ -89,6 +94,8 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   TraceIteratorState *state;
   DEFAULT_STACK_INIT(TraceIteratorState, state, planState);
 
+  std::cout << theSctx->trace_with_debug_info() << std::endl; 
+
   if (!consumeNext(state->theTagItem, theChildren[1], planState)) 
   {
     throw XQUERY_EXCEPTION(err::FORG0006,
@@ -101,11 +108,33 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   while (consumeNext(result, theChildren[0], planState)) 
   {
-    (*state->theOS) << state->theTagItem->getStringValue() 
-      << " [" << state->theIndex << "]: "
-      << result->show()
-      << std::endl;
-    ++state->theIndex;
+    if (theSctx->trace_with_debug_info())
+    {
+      (*state->theOS) << state->theTagItem->getStringValue() 
+        << " [" << state->theIndex << "]: "
+        << result->show()
+        << std::endl;
+      ++state->theIndex;
+    }
+    else 
+    {
+      std::stringstream lResStream;
+      serializer ser(NULL);
+      Zorba_SerializerOptions options;
+      options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+      SerializerImpl::setSerializationParameters(ser, options);
+      const Item lItem(result);
+      SingletonItemSequence lSequence(lItem);
+      Iterator_t seq_iter = lSequence.getIterator();
+      seq_iter->open();
+      ser.serialize(Unmarshaller::getInternalIterator(seq_iter.get()), lResStream);
+      seq_iter->close(); 
+      (*state->theOS) << state->theTagItem->getStringValue() 
+        << " [" << state->theIndex << "]: "
+        << lResStream.str()
+        << std::endl;
+      ++state->theIndex;
+    }
 
     STACK_PUSH(true, state);
   }
