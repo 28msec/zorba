@@ -6415,63 +6415,63 @@ JSONAppendExpr :
 JSONDeleteExpr :
         _DELETE JSON FilterExpr
         {
-          DynamicFunctionInvocation* lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
               dynamic_cast<DynamicFunctionInvocation*>($3);
           if(lDynamicFunctionInvocation == NULL) {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
           }
-          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr();
-          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList();
+          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr().release();
+          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList().release();
           if(lArgList->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
-          rchandle<exprnode> lKey = (*lArgList)[0];
-          $$ = new JSONDeleteExpr(LOC(@$), lPrimaryExpr, lKey);
+          rchandle<exprnode> lKey = (*lArgList)[0].release();
+          $$ = new JSONDeleteExpr(LOC(@$), lPrimaryExpr.release(), lKey.release());
         }
     ;
 
 JSONRenameExpr :
         RENAME JSON FilterExpr AS ExprSingle
         {
-          DynamicFunctionInvocation* lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
               dynamic_cast<DynamicFunctionInvocation*>($3);
           if(lDynamicFunctionInvocation == NULL) {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
           }
-          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr();
-          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList();
+          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr().release();
+          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList().release();
           if(lArgList->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
-          rchandle<exprnode> lKey = (*lArgList)[0];
-          $$ = new JSONRenameExpr(LOC(@$), lPrimaryExpr, lKey, $5);
+          rchandle<exprnode> lKey = (*lArgList)[0].release();
+          $$ = new JSONRenameExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $5);
         }
     ;
 
 JSONReplaceExpr :
         REPLACE JSON VALUE OF FilterExpr WITH ExprSingle
         {
-          DynamicFunctionInvocation* lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
               dynamic_cast<DynamicFunctionInvocation*>($5);
           if(lDynamicFunctionInvocation == NULL) {
-            error(@5, "An object invocation is expected. A filter was found instead.");
+            error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
           }
-          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr();
-          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList();
+          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr().release();
+          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList().release();
           if(lArgList->size() != 1)
           {
-            error(@5, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
-          rchandle<exprnode> lKey = (*lArgList)[0];
-          $$ = new JSONReplaceExpr(LOC(@$), lPrimaryExpr, lKey, $7);
+          rchandle<exprnode> lKey = (*lArgList)[0].release();
+          $$ = new JSONReplaceExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $7);
         }
     ;
 
