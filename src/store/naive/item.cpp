@@ -1398,8 +1398,8 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 }
 
 
-Iterator_t
-Item::getPairs() const
+const store::Item_t
+Item::getArraySize() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1407,8 +1407,8 @@ Item::getPairs() const
   );
 }
 
-Iterator_t
-Item::getMembers() const
+const store::Item_t
+Item::getArrayValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1416,8 +1416,8 @@ Item::getMembers() const
   );
 }
 
-store::Item*
-Item::getPair(const store::Item_t& name) const
+const store::Iterator_t
+Item::getArrayValues() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1425,8 +1425,8 @@ Item::getPair(const store::Item_t& name) const
   );
 }
 
-store::Item*
-Item::getMember(const store::Item_t& index) const
+const store::Iterator_t
+Item::getObjectKeys() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1434,26 +1434,8 @@ Item::getMember(const store::Item_t& index) const
   );
 }
 
-store::Item*
-Item::getName() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getValue() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-xs_integer
-Item::getSize() const
+const store::Item_t
+Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

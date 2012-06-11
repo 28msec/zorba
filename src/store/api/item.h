@@ -825,55 +825,44 @@ public:
   getJSONItemKind() const;
 
   /**
-   * (jdm:pairs accessor)
-   * @return the pairs of a json object or json array
+   * defined on JSONArray
+   * (jdm:size accessor on an array)
+   * @return the number of values in the array.
    */
-  virtual Iterator_t
-  getPairs() const;
-
-  /**
-   * (jdm:members accessor)
-   * @return the values of a json array
-   */
-  virtual Iterator_t
-  getMembers() const;
-
-  /**
-   * defined on JSONObject
-   * (is not an accessor)
-   * @return the pair with given name
-   */
-  virtual store::Item*
-  getPair(const store::Item_t& name) const;
+  virtual const store::Item_t
+  getArraySize() const;
 
   /**
    * defined on JSONArray
-   * (is not an accessor)
-   * @return the value at the given position
+   * (jdm:value accessor on an array)
+   * @return the value of the json array at a given position
    */
-  virtual store::Item*
-  getMember(const store::Item_t& aPosition) const;
+  virtual const store::Item_t
+  getArrayValue(const store::Item_t& position) const;
 
   /**
-   * defined on JSONObjectPair (jdm:name accessor)
-   * @return the name of the json pair
+   * defined on JSONArray
+   * (not an accessor)
+   * @return the values of a given array
    */
-  virtual store::Item*
-  getName() const;
+  virtual const store::Iterator_t
+  getArrayValues() const;
 
   /**
-   * defined on JSONObjectPair JSONArrayPair (jdm:value accessor)
-   * @return the value of the json pair
+   * defined on JSONObject
+   * (jdm:keys accessor on an object)
+   * @return the keys of an object.
    */
-  virtual store::Item*
-  getValue() const;
+  virtual const store::Iterator_t
+  getObjectKeys() const;
 
   /**
-   * defined on JSONObject JSONArray
-   * @return the number of pairs or values in the object or array, resp.
+   * defined on JSONObject
+   * (jdm:value accessor on an object)
+   * @return the value associated with a given key
    */
-  virtual xs_integer
-  getSize() const;
+  virtual const store::Item_t
+  getObjectValue(const store::Item_t& key) const;
 
 #endif // ZORBA_WITH_JSON
 

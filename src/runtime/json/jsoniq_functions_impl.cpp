@@ -113,49 +113,19 @@ JSONObjectNamesIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t input;
-  store::Item_t pair;
+  store::Item_t key;
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
 
   consumeNext(input, theChild.getp(), planState);
 
-  state->thePairs = input->getPairs();
+  state->thePairs = input->getObjectKeys();
   state->thePairs->open();
 
-  while (state->thePairs->next(pair))
+  while (state->thePairs->next(key))
   {
-    result = pair->getName();
-    STACK_PUSH (true, state);
-  }
-  state->thePairs = NULL;
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  json:names($o as object()) as xs:string*
-********************************************************************************/
-bool
-JSONObjectValuesIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t input;
-  store::Item_t pair;
-
-  JSONObjectValuesIteratorState* state;
-  DEFAULT_STACK_INIT(JSONObjectValuesIteratorState, state, planState);
-
-  consumeNext(input, theChild.getp(), planState);
-
-  state->thePairs = input->getPairs();
-  state->thePairs->open();
-
-  while (state->thePairs->next(pair))
-  {
-    result = pair->getValue();
+    result = key;
     STACK_PUSH (true, state);
   }
   state->thePairs = NULL;
@@ -181,15 +151,8 @@ JSONObjectValueIterator::nextImpl(
   consumeNext(lInput, theChild0.getp(), planState);
   consumeNext(lName, theChild1.getp(), planState);
 
-  if (lInput->getPair(lName))
-  {
-    result = lInput->getPair(lName)->getValue();
-  }
-  else
-  {
-    result = NULL;
-  }
-
+  result = lInput->getObjectValue(lName);
+  
   STACK_PUSH(result != 0, state);
 
   STACK_END (state);
@@ -205,8 +168,8 @@ JSONObjectProjectIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t obj;
-  store::Item_t pair;
-  store::Iterator_t pairsIte;
+  store::Item_t key;
+  store::Iterator_t keysIte;
   store::Item_t value;
   store::Item_t name;
   std::vector<store::Item_t> names;
@@ -228,30 +191,30 @@ JSONObjectProjectIterator::nextImpl(
     names[numNames - 1].transfer(name);
   }
 
-  pairsIte = obj->getPairs();
-  pairsIte->open();
+  keysIte = obj->getObjectKeys();
+  keysIte->open();
 
-  while (pairsIte->next(pair))
+  while (keysIte->next(key))
   {
     for (i = 0; i < numNames; ++i)
     {
-      if (names[i]->getStringValue() == pair->getName()->getStringValue())
+      if (names[i]->getStringValue() == key->getStringValue())
         break;
     }
 
     if (i < numNames)
     {
-      value = pair->getValue();
+      value = obj->getObjectValue(key);
 
       if (value->isNode() || value->isJSONItem())
         value = value->copy(NULL, copymode);
 
       newValues.push_back(value);
-      newNames.push_back(pair->getName());
+      newNames.push_back(key);
     }
   }
 
-  pairsIte->close();
+  keysIte->close();
 
   GENV_ITEMFACTORY->createJSONObject(result, newNames, newValues);
 
@@ -277,7 +240,7 @@ JSONArraySizeIterator::nextImpl(
 
   consumeNext(lJSONItem, theChild.getp(), planState);
 
-  lSize = lJSONItem->getSize();
+  lSize = lJSONItem->getArraySize()->getIntegerValue();
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
 
@@ -302,7 +265,7 @@ JSONArrayMemberIterator::nextImpl(
   consumeNext(lInput, theChild0.getp(), planState);
   consumeNext(lPosition, theChild1.getp(), planState);
 
-  result = lInput->getMember(lPosition);
+  result = lInput->getArrayValue(lPosition);
 
   STACK_PUSH(result != 0, state);
 
@@ -325,7 +288,7 @@ JSONArrayMembersIterator::nextImpl(
 
   consumeNext(array, theChild.getp(), planState);
 
-  state->theMembers = array->getMembers();
+  state->theMembers = array->getArrayValues();
   state->theMembers->open();
   while (state->theMembers->next(result))
   {
@@ -367,7 +330,7 @@ JSONArrayFlattenIterator::nextImpl(
 
   assert(item->isJSONArray());
 
-  state->theStack.push(item->getMembers());
+  state->theStack.push(item->getArrayValues());
   state->theStack.top()->open();
 
   while (!state->theStack.empty())
@@ -376,7 +339,7 @@ JSONArrayFlattenIterator::nextImpl(
     {
       if (result->isJSONArray())
       {
-        state->theStack.push(result->getMembers());
+        state->theStack.push(result->getArrayValues());
         state->theStack.top()->open();
         lFoundArray = true;
         break;
@@ -432,7 +395,7 @@ JSONItemAccessorIterator::nextImpl(
                    GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
     }
 
-    result = input->getMember(selector);
+    result = input->getArrayValue(selector);
   }
   else if (input->isJSONObject())
   {
@@ -450,11 +413,7 @@ JSONItemAccessorIterator::nextImpl(
                    GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
     }
 
-    store::Item_t pair = input->getPair(selector);
-    if (pair)
-      result = pair->getValue();
-    else
-      result = NULL;
+    result = input->getObjectValue(selector);
   }
   else
   {

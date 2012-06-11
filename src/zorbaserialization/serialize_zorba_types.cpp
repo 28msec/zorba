@@ -1125,20 +1125,26 @@ void serialize_json_object(Archiver &ar, store::Item *&obj)
   xs_integer lSize = xs_integer(0);
   if (ar.is_serializing_out())
   {
-    lSize = obj->getSize();
+    store::Iterator_t lIter = obj->getObjectKeys();
+    lIter->open();
+    store::Item_t lKey;
+    while (lIter->next(lKey))
+    {
+      ++lSize;
+    }
+    lIter->close();
   }
   ar & lSize;
 
   if (ar.is_serializing_out())
   {
-    store::Iterator_t lIter = obj->getPairs();
+    store::Iterator_t lIter = obj->getObjectKeys();
     lIter->open();
-    store::Item_t lPair;
-    while (lIter->next(lPair))
+    store::Item_t lKey;
+    while (lIter->next(lKey))
     {
-      store::Item* lName = lPair->getName();
-      store::Item* lValue = lPair->getValue();
-      ar & lName;
+      store::Item* lValue = obj->getObjectValue(lKey).getp();
+      ar & lKey;
       ar & lValue;
     }
     lIter->close();
@@ -1174,13 +1180,13 @@ void serialize_json_array(Archiver &ar, store::Item *&obj)
   xs_integer lSize = xs_integer(0);
   if (ar.is_serializing_out())
   {
-    lSize = obj->getSize();
+    lSize = obj->getArraySize()->getIntegerValue();
   }
   ar & lSize;
 
   if (ar.is_serializing_out())
   {
-    store::Iterator_t lIter = obj->getMembers();
+    store::Iterator_t lIter = obj->getArrayValues();
     lIter->open();
     store::Item_t lMember;
     while (lIter->next(lMember))

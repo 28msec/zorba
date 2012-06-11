@@ -981,9 +981,6 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
   else if (item->isJSONArray()) {
     emit_json_array(item, depth);
   }
-  else if (item->isJSONPair()) {
-    emit_json_pair(item, depth);
-  }
   else if (item->isAtomic()) {
     store::SchemaTypeCode type = item->getTypeCode();
     switch (type) {
@@ -1049,8 +1046,8 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
 ********************************************************************************/
 void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 {
-  store::Item_t pair;
-  store::Iterator_t it = obj->getPairs();
+  store::Item_t key;
+  store::Iterator_t it = obj->getObjectKeys();
   it->open();
   bool first = true;
   if (ser->indent) {
@@ -1060,7 +1057,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     tr << "{ ";
   }
   depth++;
-  while (it->next(pair)) {
+  while (it->next(key)) {
     if (first) {
       first = false;
     }
@@ -1073,7 +1070,9 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     if (ser->indent) {
       emit_indentation(depth);
     }
-    emit_json_pair(pair, depth);
+    emit_json_item(key, depth);
+    tr << " : ";
+    emit_json_item(obj->getObjectValue(key).getp(), depth);
   }
   if (ser->indent) {
     tr << ser->END_OF_LINE;
@@ -1091,32 +1090,18 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 {
   store::Item_t member;
-  store::Iterator_t it = array->getMembers();
-  it->open();
-  bool first = true;
+  xs_integer size = array->getArraySize()->getIntegerValue();
   tr << "[ ";
-  while (it->next(member)) {
-    if (first) {
-      first = false;
-    }
-    else {
+  for (xs_integer i = xs_integer(1); i <= size; ++i) {
+    if (i != 0) {
       tr << ", ";
     }
-    emit_json_item(member, depth);
+    store::Item_t position;
+    GENV_ITEMFACTORY->createInteger(position, i);
+    emit_json_item(array->getArrayValue(position).getp(), depth);
   }
   tr << " ]";
 }
-
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::json_emitter::emit_json_pair(store::Item* pair, int depth)
-{
-  emit_json_item(pair->getName(), depth);
-  tr << " : ";
-  emit_json_item(pair->getValue(), depth);
-}
-
 
 /*******************************************************************************
 

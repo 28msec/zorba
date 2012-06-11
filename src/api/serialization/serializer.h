@@ -377,8 +377,6 @@ protected:
 
     void emit_json_array(store::Item* array, int depth);
 
-    void emit_json_pair(store::Item* pair, int depth);
-
     void emit_json_value(store::Item* value, int depth);
 
     void emit_cloudscript_value(zstring type, zstring value, int depth);

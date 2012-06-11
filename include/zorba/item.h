@@ -379,15 +379,36 @@ public:
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const;
 
-  /** \brief Get the members of a JSON Array.
+  /** \brief Get the size of a JSON Array.
    *
    * Note that this function is only available for JSON Arrays.
    *
-   * @return Iterator over the members of this array.
-   * @throw ZorbaException if an error occure (e.g. the Item is not of type JSON Array).
+   * @return Item the size of the array.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
+   */
+  uint32_t
+  getArraySize() const;
+
+  /** \brief Returns the item in the JSON array at the specified index.
+   *
+   * Note that this function is only available for JSON Arrays.
+   *
+   * @param aIndex the index in the array.
+   * @return Item the indexed Item.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
+   */
+  Item
+  getArrayValue(uint32_t aIndex) const;
+
+  /** \brief Get the keys of a JSON Object.
+   *
+   * Note that this function is only available for JSON Objects.
+   *
+   * @return Iterator_t an iterator on the keys of the object.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
    */
   Iterator_t
-  getArrayMembers() const;
+  getObjectKeys() const;
 
   /** \brief Returns the value with the given name from a JSON Object.
    *
@@ -399,17 +420,6 @@ public:
    */
   Item
   getObjectValue(String aName) const;
-
-  /** \brief Returns the item in the JSON array at the specified index.
-   *
-   * Note that this function is only available for JSON Arrays.
-   *
-   * @param aIndex the index in the array.
-   * @return Item the indexed Item.
-   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
-   */
-  Item
-  getArrayMember(uint32_t aIndex) const;
 
 #endif /* ZORBA_WITH_JSON */
 

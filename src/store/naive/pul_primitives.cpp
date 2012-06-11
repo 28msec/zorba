@@ -1913,11 +1913,10 @@ void UpdJSONObjectInsert::apply()
   csize numPairs = theNames.size();
   for (csize i = 0; i < numPairs; ++i, ++theNumApplied)
   {
-    JSONObjectPair_t pair =  new SimpleJSONObjectPair(theNames[i], theValues[i]);
-    if (!obj->add(pair, false))
+    if (!obj->add(theNames[i], theValues[i], false))
     {
       RAISE_ERROR(jerr::JNUP0006, theLoc, 
-      ERROR_PARAMS(pair->getName()->getStringValue()));
+      ERROR_PARAMS(theNames[i]->getStringValue()));
     }
   }
 
@@ -1963,10 +1962,8 @@ void UpdJSONObjectDelete::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair_t pair = obj->remove(theName);
+  theOldValue = obj->remove(theName);
   
-  theOldValue = pair->getValue();
-
   theIsApplied = true;
 }
 
@@ -1980,9 +1977,7 @@ void UpdJSONObjectDelete::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair_t pair = new SimpleJSONObjectPair(theName, theOldValue);
-
-  bool inserted = obj->add(pair, false);
+  bool inserted = obj->add(theName, theOldValue, false);
 
   ZORBA_ASSERT(inserted);
 
@@ -2011,14 +2006,10 @@ void UpdJSONObjectReplaceValue::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
+  theOldValue = obj->setValue(theName, theNewValue);
 
-  if (pair)
+  if (theOldValue != NULL)
   {
-    theOldValue = pair->getValue();
-
-    pair->setValue(theNewValue);
-
     theIsApplied = true;
   }
 }
@@ -2031,11 +2022,9 @@ void UpdJSONObjectReplaceValue::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
+  ZORBA_ASSERT(obj);
 
-  ZORBA_ASSERT(pair);
-
-  pair->setValue(theOldValue);
+  obj->setValue(theName, theOldValue);
 
   theIsApplied = false;
 }
@@ -2062,17 +2051,13 @@ void UpdJSONObjectRename::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  if (obj->getPair(theNewName))
+  if (obj->getObjectValue(theNewName) != NULL)
   {
     RAISE_ERROR(jerr::JNUP0012, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
   }
-
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
-
-  if (pair)
+  
+  if (obj->rename(theName, theNewName))
   {
-    pair->setName(theNewName);
-
     theIsApplied = true;
   }
 }
@@ -2085,11 +2070,9 @@ void UpdJSONObjectRename::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theNewName));
+  ZORBA_ASSERT(obj);
 
-  ZORBA_ASSERT(pair);
-
-  pair->setName(theName);
+  ZORBA_ASSERT(obj->rename(theNewName, theName));
 
   theIsApplied = false;
 }
@@ -2193,12 +2176,13 @@ UpdJSONArrayDelete::UpdJSONArrayDelete(
 void UpdJSONArrayDelete::apply()
 {
   JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
-
-  theOldValue = const_cast<store::Item*>(array->operator[](thePosition));
-
-  array->remove(thePosition);
-
-  theIsApplied = true;
+  
+  theOldValue = array->remove(thePosition);
+  
+  if (theOldValue != NULL)
+  {
+    theIsApplied = true;
+  }
 }
 
 
@@ -2237,11 +2221,11 @@ void UpdJSONArrayReplaceValue::apply()
 {
   JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
 
-  theOldValue = const_cast<store::Item*>(array->operator[](thePosition));
-
-  array->replace(thePosition, theNewValue);
-
-  theIsApplied = true;
+  theOldValue = array->replace(thePosition, theNewValue);
+  
+  if (theOldValue != NULL) {
+    theIsApplied = true;
+  }
 }
 
 

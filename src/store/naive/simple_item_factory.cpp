@@ -2157,7 +2157,8 @@ bool BasicItemFactory::createJSONObject(
   json::JSONObject* obj = static_cast<json::JSONObject*>(result.getp());
 
   store::Item_t objItem;
-  store::Item_t pairItem;
+  store::Item_t keyItem;
+  store::Item_t valueItem;
 
   csize numSources = sources.size();
   for (csize i = 0; i < numSources; ++i)
@@ -2172,21 +2173,24 @@ bool BasicItemFactory::createJSONObject(
       json::SimpleJSONObject* sourceObj = 
       static_cast<json::SimpleJSONObject*>(objItem.getp());
 
-      store::Iterator_t sourcePairs = sourceObj->getPairs();
+      store::Iterator_t sourceKeys = sourceObj->getObjectKeys();
 
-      sourcePairs->open();
-      while(sourcePairs->next(pairItem))
+      sourceKeys->open();
+      while(sourceKeys->next(keyItem))
       {
+        valueItem = objItem->getObjectValue(keyItem);
         if (copymode.theDoCopy)
-          pairItem = pairItem->copy(NULL, copymode);
-      
-        if (!obj->add(pairItem, accumulate))
+        {
+          valueItem = valueItem->copy(NULL, copymode);
+        }
+        
+        if (!obj->add(keyItem, valueItem, accumulate))
         {
           RAISE_ERROR_NO_LOC(jerr::JNDY0003,
-          ERROR_PARAMS(pairItem->getName()->getStringValue()));
+          ERROR_PARAMS(keyItem->getStringValue()));
         }
       }
-      sourcePairs->close();
+      sourceKeys->close();
     }
   }
 
@@ -2244,9 +2248,7 @@ bool BasicItemFactory::createJSONObject(
   csize numPairs = names.size();
   for (csize i = 0; i < numPairs; ++i)
   {
-    store::Item_t pair = new json::SimpleJSONObjectPair(names[i], values[i]);
-
-    if (!obj->add(pair, false))
+    if (!obj->add(names[i], values[i], false))
     {
       RAISE_ERROR_NO_LOC(jerr::JNDY0003, ERROR_PARAMS(names[i]));
     }

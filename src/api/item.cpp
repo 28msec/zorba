@@ -485,41 +485,21 @@ Item::getJSONItemKind() const
   return store::StoreConsts::jsonItem;
 }
 
-Iterator_t
-Item::getArrayMembers() const
+uint32_t
+Item::getArraySize() const
 {
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     // TODO, we should have an error handler here
-    return new StoreIteratorImpl(m_item->getMembers(), nullptr);
+    return m_item->getArraySize()->getIntValue();
 
   ITEM_CATCH
   return NULL;
 }
 
 Item
-Item::getObjectValue(String aName) const
-{
-  zstring& lName = Unmarshaller::getInternalString(aName);
-  store::Item_t lIndex;
-  if (!GENV_ITEMFACTORY->createString(lIndex, lName)) {
-    // QQQ probably should throw exception here
-    return Item();
-  }
-  ITEM_TRY
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ););
-  store::Item_t lPair = m_item->getPair(lIndex);
-  if (lPair.isNull()) {
-    return Item();
-  }
-  return &*lPair->getValue();
-  ITEM_CATCH
-  return Item();
-}
-
-Item
-Item::getArrayMember(uint32_t aIndex) const
+Item::getArrayValue(uint32_t aIndex) const
 {
   store::Item_t lIndex;
   if (!GENV_ITEMFACTORY->createInteger(lIndex, Integer(aIndex))) {
@@ -528,7 +508,39 @@ Item::getArrayMember(uint32_t aIndex) const
   }
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-      return &*m_item->getMember(lIndex);
+      return &*m_item->getArrayValue(lIndex);
+  ITEM_CATCH
+  return Item();
+}
+
+Iterator_t
+Item::getObjectKeys() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    // TODO, we should have an error handler here
+    return new StoreIteratorImpl(m_item->getObjectKeys(), nullptr);
+
+  ITEM_CATCH
+  return NULL;
+}
+
+Item
+Item::getObjectValue(String aName) const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+    zstring& lName = Unmarshaller::getInternalString(aName);
+    store::Item_t lIndex;
+    if (!GENV_ITEMFACTORY->createString(lIndex, lName)) {
+      // QQQ probably should throw exception here
+      return Item();
+    }
+  
+    // TODO, we should have an error handler here
+      return m_item->getObjectValue(lIndex).getp();
+
   ITEM_CATCH
   return Item();
 }
