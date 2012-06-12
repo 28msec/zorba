@@ -42,17 +42,17 @@ Iterator tree for main query:
         <GroupVariable/>
       </Spec>
       <Spec>
-        <ForVarIterator varname="x"/>
+        <ForVarIterator varname="p"/>
         <NonGroupVariable/>
       </Spec>
       <Spec>
-        <ForVarIterator varname="p"/>
+        <ForVarIterator varname="x"/>
         <NonGroupVariable/>
       </Spec>
     </flwor::GroupByIterator>
     <CompareIterator>
       <LetVarIterator varname="p"/>
-      <SingletonIterator value="xs:integer(2)"/>
+      <SingletonIterator value="xs:integer(1)"/>
     </CompareIterator>
   </flwor::WhereIterator>
   <ElementIterator>

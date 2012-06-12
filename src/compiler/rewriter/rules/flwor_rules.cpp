@@ -1154,7 +1154,8 @@ static bool var_in_try_block_or_in_loop(
 
 
 /******************************************************************************
-
+  This is a rule that is being applied by the FoldRules driver (see class
+  FoldRules in default_optimizer.cpp).
 ******************************************************************************/
 RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
@@ -1180,8 +1181,9 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     expr* elseExpr = ifReturnExpr->get_else_expr();
 
     if (!condExpr->is_sequential() &&
+        !thenExpr->is_sequential() &&
         (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
-        !elseExpr->isNonDiscardable() && ! thenExpr->is_sequential() &&
+        !elseExpr->isNonDiscardable() &&
         TypeOps::is_empty(tm, *elseExpr->get_return_type()))
     {
       if (flwor->is_general())
@@ -1251,39 +1253,36 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (! flwor->has_sequential_clauses())
   {
     csize numClauses = flwor->num_clauses();
-    for (csize whereClausePos = 0;
-         whereClausePos < numClauses;
-         ++whereClausePos)
+
+    for (csize clausePos = 0; clausePos < numClauses; ++clausePos)
     {
-      flwor_clause* clause = flwor->get_clause(whereClausePos);
+      flwor_clause* clause = flwor->get_clause(clausePos);
 
       if (clause->get_kind() != flwor_clause::where_clause)
         continue;
 
       expr* whereExpr = clause->get_expr();
 
-      if (is_subseq_pred(rCtx, flwor, whereClausePos,
-            whereExpr, posVar, posExpr) &&
+      if (is_subseq_pred(rCtx, flwor, clausePos, whereExpr, posVar, posExpr) &&
           expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
       {
-        function* seq_point =
-          GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
-        expr* domainExpr = posVar->get_for_clause()->get_expr();
+        for_clause* forClause = posVar->get_for_clause();
+        expr* domainExpr = forClause->get_expr();
 
-        fo_expr_t result = new fo_expr(whereExpr->get_sctx(),
-                                       LOC(whereExpr),
-                                       seq_point,
-                                       domainExpr,
-                                       posExpr);
+        fo_expr_t result = 
+        new fo_expr(whereExpr->get_sctx(),
+                    LOC(whereExpr),
+                    GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                    domainExpr,
+                    posExpr);
 
         expr_tools::fix_annotations(&*result);
 
-        for_clause* clause = posVar->get_for_clause();
-        clause->set_expr(&*result);
-        clause->set_pos_var(NULL);
+        forClause->set_expr(&*result);
+        forClause->set_pos_var(NULL);
 
-        flwor->remove_clause(whereClausePos);
-        --whereClausePos;
+        flwor->remove_clause(clausePos);
+        --clausePos;
         --numClauses;
 
         modified = true;
@@ -1310,10 +1309,9 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
        whose type is xs:Integer? and which does not reference the for var
        associated with posVar nor any other vars that are defined after that
        for var and
-  (c)  the for clause that defines $posVar isn't windowing and
-  (d)  there is no count or groupby clause between the for and the where clause
+  (c)  there is no count or groupby clause between the for and the where clause
        containing the condExpr and
-  (e)  the for clause doesn't allow empty.
+  (d)  the for clause doesn't allow empty.
 
   TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses
         are before the clause that defines the pos var.
@@ -1331,7 +1329,7 @@ static bool is_subseq_pred(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   const QueryLoc& posLoc = posExpr->get_loc();
 
-  const fo_expr* fo;
+  const fo_expr* foCondExpr;
   const function* f;
 
   while (true)
@@ -1339,12 +1337,12 @@ static bool is_subseq_pred(
     if (condExpr->get_expr_kind() != fo_expr_kind)
       return false;
 
-    fo = static_cast<const fo_expr*>(condExpr);
-    f = fo->get_func();
+    foCondExpr = static_cast<const fo_expr*>(condExpr);
+    f = foCondExpr->get_func();
 
     if (f->getKind() == FunctionConsts::FN_BOOLEAN_1)
     {
-      condExpr = fo->get_arg(0);
+      condExpr = foCondExpr->get_arg(0);
       continue;
     }
 
@@ -1355,20 +1353,18 @@ static bool is_subseq_pred(
       f->comparisonKind() != CompareConsts::VALUE_EQUAL)
     return false;
 
-  for (ulong i = 0; i < 2; ++i)
+  for (csize i = 0; i < 2; ++i)
   {
-    posVar = fo->get_arg(i)->get_var();
-    posExpr = fo->get_arg(1 - i);
-    const const_expr* posConstExpr =
-      dynamic_cast<const const_expr*>(posExpr.getp());
+    posVar = foCondExpr->get_arg(i)->get_var();
+    posExpr = foCondExpr->get_arg(1 - i);
 
-    if (posVar != NULL &&
-        posVar->get_kind() == var_expr::pos_var &&
-        flworExpr->defines_variable(posVar) >= 0)
+    if (posVar != NULL && posVar->get_kind() == var_expr::pos_var)
     {
-      if (posConstExpr != NULL)
+      if (posExpr->get_expr_kind() == const_expr_kind)
       {
+        const_expr* posConstExpr = static_cast<const_expr*>(posExpr.getp());
         const store::Item* val = posConstExpr->get_val();
+
         xqtref_t valType = tm->create_named_type(val->getType(),
                                                  TypeConstants::QUANT_ONE,
                                                  posLoc,
@@ -1393,19 +1389,18 @@ static bool is_subseq_pred(
 
           DynamicBitset varset(numFlworVars);
           ExprVarsMap exprVarMap;
-          expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset,
-                                            exprVarMap);
+          expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
 
           for_clause* forClause = posVar->get_for_clause();
 
-          if (forClause->is_allowing_empty()) return false;
+          if (forClause->is_allowing_empty())
+            return false;
 
           // We check that there isn't any clause that breaks the optimization
           const flwor_clause* checkClause;
           csize checkClausePos = whereClausePos;
           do
           {
-
             checkClause = flworExpr->get_clause(checkClausePos);
 
             if (checkClause->get_kind() == flwor_clause::group_clause ||
