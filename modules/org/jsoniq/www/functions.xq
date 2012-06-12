@@ -55,22 +55,13 @@ declare function jn:parse-json($j as xs:string) as json-item()? external;
 
 
 (:~
- : Returns the names used in the Pairs of the object. 
+ : Returns the names used in the object. 
  : The names will be returned in an implementation-defined order
  :
  : @param $o A JSON Object.
  : @return The names of pairs in the object.
  :)
 declare function jn:keys($o as object()) as xs:string* external;
-
-
-(:~
- : Returns the values of the pairs within a given JSON object.
- :
- : @param $o A JSON Object.
- : @return the value of each pair within the given object.
- :)
-declare function jn:values($o as object()) as item()* external;
 
 
 (:~

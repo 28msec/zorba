@@ -1093,7 +1093,7 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
   xs_integer size = array->getArraySize()->getIntegerValue();
   tr << "[ ";
   for (xs_integer i = xs_integer(1); i <= size; ++i) {
-    if (i != 0) {
+    if (i != 1) {
       tr << ", ";
     }
     store::Item_t position;

@@ -121,9 +121,17 @@ store::Item* SimpleJSONObject::copy(
          ++lIter)
     {
       zstring lName = lIter->first;
-      store::Item_t lCopiedValue = lIter->second->copy(NULL, copymode);
-
-      lNewObject->add(lName, lCopiedValue, false);
+      store::Item_t lValue = lIter->second;
+      if (copymode.theDoCopy &&
+          (lValue->isJSONObject() ||
+           lValue->isJSONArray() ||
+           lValue->isNode()))
+      {
+        store::Item_t lCopiedValue = lValue->copy(NULL, copymode);
+        lNewObject->add(lName, lCopiedValue, false);
+      } else {
+        lNewObject->add(lName, lValue, false);
+      }
     }
   }
 
@@ -161,7 +169,7 @@ SimpleJSONObject::add(
 {
   Pairs::iterator lIterator = thePairs.find(aName);
 
-  if (lIterator != thePairs.end())
+  if (lIterator == thePairs.end())
   {  
     store::Item_t lValue = aValue;
     thePairs.insert(make_pair(aName, lValue));
@@ -343,7 +351,8 @@ SimpleJSONObject::KeyIterator::next(store::Item_t& res)
 {
   if (theIter != theObject->thePairs.end())
   {
-    res = theIter->second;
+    zstring lKey = theIter->first;
+    GET_FACTORY().createString(res, lKey);
     ++theIter;
     return true;
   }

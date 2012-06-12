@@ -492,8 +492,17 @@ Item::getArraySize() const
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     // TODO, we should have an error handler here
-    return m_item->getArraySize()->getIntValue();
-
+    xs_integer lSize = m_item->getArraySize()->getIntegerValue();
+    if (lSize.is_xs_int())
+    {
+      std::stringstream ss;
+      ss << lSize.toString();
+      uint32_t lRes;
+      ss >> lRes;
+      return lRes;
+    } else {
+      return 0;
+    }
   ITEM_CATCH
   return NULL;
 }

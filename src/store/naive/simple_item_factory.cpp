@@ -2179,7 +2179,10 @@ bool BasicItemFactory::createJSONObject(
       while(sourceKeys->next(keyItem))
       {
         valueItem = objItem->getObjectValue(keyItem->getStringValue());
-        if (copymode.theDoCopy)
+        if (copymode.theDoCopy &&
+            (valueItem->isJSONArray() ||
+             valueItem->isJSONObject() ||
+             valueItem->isNode()))
         {
           valueItem = valueItem->copy(NULL, copymode);
         }

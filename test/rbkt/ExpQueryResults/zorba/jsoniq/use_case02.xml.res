@@ -1,1 +1,1 @@
-{ "toaster" : 200, "blender" : 250, "shirt" : 10, "socks" : 510, "broiler" : 20 }
+{ "blender" : 250, "broiler" : 20, "shirt" : 10, "socks" : 510, "toaster" : 200 }
