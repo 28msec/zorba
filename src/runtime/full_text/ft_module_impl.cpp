@@ -505,12 +505,11 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-  ZORBA_ASSERT( state->tresult_.get() );
-
-  while ( state->tresult_->next( &synonym ) ) {
-    GENV_ITEMFACTORY->createString( result, synonym );
-    STACK_PUSH( true, state );
-  }
+  if ( state->tresult_ )
+    while ( state->tresult_->next( &synonym ) ) {
+      GENV_ITEMFACTORY->createString( result, synonym );
+      STACK_PUSH( true, state );
+    }
 
   STACK_END( state );
 }
