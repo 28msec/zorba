@@ -23,8 +23,8 @@ import org.zorbaxquery.api.IdentTypes.Kind;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.TypeIdentifier;
 /**
-  * The XQItemType class represents an item type as defined in XQuery 1.0: An XML Query language. 
-  * The XQItemType extends the XQSequenceType but restricts the occurrance indicator to be exactly one. This derivation allows passing an item type wherever a sequence type is expected, but not the other way. The XQItemType interface contains methods to represent information about the following aspects of an item type:
+  * The ZorbaXQItemType class represents an item type as defined in XQuery 1.0: An XML Query language. 
+  * The ZorbaXQItemType extends the XQSequenceType but restricts the occurrance indicator to be exactly one. This derivation allows passing an item type wherever a sequence type is expected, but not the other way. The ZorbaXQItemType interface contains methods to represent information about the following aspects of an item type:
   * 
   * - The kind of the item - one of XQITEMKIND_* constants
   * - The base type of the item - one of the XQBASETYPE_* constants. For atomic types this is the closest matching built-in XML Schema type, for element and attributes the closest matching built-in XML Schema type this node is based on.
@@ -33,9 +33,9 @@ import org.zorbaxquery.api.TypeIdentifier;
   * - XML Schema URI associated with the type, if any
   * - The nillability characteristics, if any
   * 
-  * An instance of the XQItemType is a standalone object that is independant of the XQConnection and any XQuery static or dynamic context.
+  * An instance of the ZorbaXQItemType is a standalone object that is independant of the XQConnection and any XQuery static or dynamic context.
   */
-public class XQItemType implements javax.xml.xquery.XQItemType {
+public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
     public static final int ZORBA_XQITEMKIND_ANY = 0;
     public static final int ZORBA_XQITEMKIND_DOCUMENT = 1;
     public static final int ZORBA_XQITEMKIND_ELEMENT = 2;
@@ -93,7 +93,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         return result;
     }
     
-    public XQItemType(TypeIdentifier typeIdentifier) {
+    public ZorbaXQItemType(TypeIdentifier typeIdentifier) {
         switch (typeIdentifier.getKind()) {
             case Kind.ANY_NODE_TYPE:
                 itemKind = XQITEMKIND_NODE;
@@ -128,111 +128,111 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         }
         
         String type = typeIdentifier.getLocalName();
-        baseType = XQItemType.XQBASETYPE_ANYTYPE;
+        baseType = ZorbaXQItemType.XQBASETYPE_ANYTYPE;
         if (type.indexOf("anyAtomicType")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYATOMICTYPE;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYATOMICTYPE;
         } else if (type.indexOf("anySimpleType")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYTYPE;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYTYPE;
         } else if (type.indexOf("anyType")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYTYPE;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYTYPE;
         } else if (type.indexOf("anyURI")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYURI;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYURI;
         } else if (type.indexOf("base64Binary")>=0){
-            baseType = XQItemType.XQBASETYPE_BASE64BINARY;
+            baseType = ZorbaXQItemType.XQBASETYPE_BASE64BINARY;
         } else if (type.indexOf("boolean")>=0){
-            baseType = XQItemType.XQBASETYPE_BOOLEAN;
+            baseType = ZorbaXQItemType.XQBASETYPE_BOOLEAN;
         } else if (type.indexOf("byte")>=0){
-            baseType = XQItemType.XQBASETYPE_BYTE;
+            baseType = ZorbaXQItemType.XQBASETYPE_BYTE;
         } else if (type.indexOf("dateTime")>=0){
-            baseType = XQItemType.XQBASETYPE_DATETIME;
+            baseType = ZorbaXQItemType.XQBASETYPE_DATETIME;
         } else if (type.indexOf("date")>=0){
-            baseType = XQItemType.XQBASETYPE_DATE;
+            baseType = ZorbaXQItemType.XQBASETYPE_DATE;
         } else if (type.indexOf("dayTimeDuration")>=0){
-            baseType = XQItemType.XQBASETYPE_DAYTIMEDURATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_DAYTIMEDURATION;
         } else if (type.indexOf("decimal")>=0){
-            baseType = XQItemType.XQBASETYPE_DECIMAL;
+            baseType = ZorbaXQItemType.XQBASETYPE_DECIMAL;
         } else if (type.indexOf("double")>=0){
-            baseType = XQItemType.XQBASETYPE_DOUBLE;
+            baseType = ZorbaXQItemType.XQBASETYPE_DOUBLE;
         } else if (type.indexOf("duration")>=0){
-            baseType = XQItemType.XQBASETYPE_DURATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_DURATION;
         } else if (type.indexOf("ENTITIES")>=0){
-            baseType = XQItemType.XQBASETYPE_ENTITIES;
+            baseType = ZorbaXQItemType.XQBASETYPE_ENTITIES;
         } else if (type.indexOf("ENTITY")>=0){
-            baseType = XQItemType.XQBASETYPE_ENTITY;
+            baseType = ZorbaXQItemType.XQBASETYPE_ENTITY;
         } else if (type.indexOf("float")>=0){
-            baseType = XQItemType.XQBASETYPE_FLOAT;
+            baseType = ZorbaXQItemType.XQBASETYPE_FLOAT;
         } else if (type.indexOf("gDay")>=0){
-            baseType = XQItemType.XQBASETYPE_GDAY;
+            baseType = ZorbaXQItemType.XQBASETYPE_GDAY;
         } else if (type.indexOf("gMonthDay")>=0){
-            baseType = XQItemType.XQBASETYPE_GMONTHDAY;
+            baseType = ZorbaXQItemType.XQBASETYPE_GMONTHDAY;
         } else if (type.indexOf("gMonth")>=0){
-            baseType = XQItemType.XQBASETYPE_GMONTH;
+            baseType = ZorbaXQItemType.XQBASETYPE_GMONTH;
         } else if (type.indexOf("gYear")>=0){
-            baseType = XQItemType.XQBASETYPE_GYEAR;
+            baseType = ZorbaXQItemType.XQBASETYPE_GYEAR;
         } else if (type.indexOf("hexBinary")>=0){
-            baseType = XQItemType.XQBASETYPE_HEXBINARY;
+            baseType = ZorbaXQItemType.XQBASETYPE_HEXBINARY;
         } else if (type.indexOf("IDREFS")>=0){
-            baseType = XQItemType.XQBASETYPE_IDREFS;
+            baseType = ZorbaXQItemType.XQBASETYPE_IDREFS;
         } else if (type.indexOf("IDREF")>=0){
-            baseType = XQItemType.XQBASETYPE_IDREF;
+            baseType = ZorbaXQItemType.XQBASETYPE_IDREF;
         } else if (type.indexOf("ID")>=0){
-            baseType = XQItemType.XQBASETYPE_ID;
+            baseType = ZorbaXQItemType.XQBASETYPE_ID;
         } else if (type.indexOf("integer")>=0){
-            baseType = XQItemType.XQBASETYPE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_INTEGER;
         } else if (type.indexOf("int")>=0){
-            baseType = XQItemType.XQBASETYPE_INT;
+            baseType = ZorbaXQItemType.XQBASETYPE_INT;
         } else if (type.indexOf("language")>=0){
-            baseType = XQItemType.XQBASETYPE_LANGUAGE;
+            baseType = ZorbaXQItemType.XQBASETYPE_LANGUAGE;
         } else if (type.indexOf("long")>=0){
-            baseType = XQItemType.XQBASETYPE_LONG;
+            baseType = ZorbaXQItemType.XQBASETYPE_LONG;
         } else if (type.indexOf("QName")>=0){
-            baseType = XQItemType.XQBASETYPE_QNAME;
+            baseType = ZorbaXQItemType.XQBASETYPE_QNAME;
         } else if (type.indexOf("NCName")>=0){
-            baseType = XQItemType.XQBASETYPE_NCNAME;
+            baseType = ZorbaXQItemType.XQBASETYPE_NCNAME;
         } else if (type.indexOf("Name")>=0){
-            baseType = XQItemType.XQBASETYPE_NAME;
+            baseType = ZorbaXQItemType.XQBASETYPE_NAME;
         } else if (type.indexOf("negativeInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_NEGATIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_NEGATIVE_INTEGER;
         } else if (type.indexOf("NMTOKENS")>=0){
-            baseType = XQItemType.XQBASETYPE_NMTOKENS;
+            baseType = ZorbaXQItemType.XQBASETYPE_NMTOKENS;
         } else if (type.indexOf("NMTOKEN")>=0){
-            baseType = XQItemType.XQBASETYPE_NMTOKEN;
+            baseType = ZorbaXQItemType.XQBASETYPE_NMTOKEN;
         } else if (type.indexOf("nonNegativeInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_NONNEGATIVE_INTEGER;
         } else if (type.indexOf("nonPositiveInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_NONPOSITIVE_INTEGER;
         } else if (type.indexOf("normalizedString")>=0){
-            baseType = XQItemType.XQBASETYPE_NORMALIZED_STRING;
+            baseType = ZorbaXQItemType.XQBASETYPE_NORMALIZED_STRING;
         } else if (type.indexOf("NOTATION")>=0){
-            baseType = XQItemType.XQBASETYPE_NOTATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_NOTATION;
         } else if (type.indexOf("positiveInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_POSITIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_POSITIVE_INTEGER;
         } else if (type.indexOf("short")>=0){
-            baseType = XQItemType.XQBASETYPE_SHORT;
+            baseType = ZorbaXQItemType.XQBASETYPE_SHORT;
         } else if (type.indexOf("string")>=0){
-            baseType = XQItemType.XQBASETYPE_STRING;
+            baseType = ZorbaXQItemType.XQBASETYPE_STRING;
         } else if (type.indexOf("time")>=0){
-            baseType = XQItemType.XQBASETYPE_TIME;
+            baseType = ZorbaXQItemType.XQBASETYPE_TIME;
         } else if (type.indexOf("token")>=0){
-            baseType = XQItemType.XQBASETYPE_TOKEN;
+            baseType = ZorbaXQItemType.XQBASETYPE_TOKEN;
         } else if (type.indexOf("unsignedByte")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_BYTE;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_BYTE;
         } else if (type.indexOf("unsignedInt")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_INT;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_INT;
         } else if (type.indexOf("unsignedLong")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_LONG;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_LONG;
         } else if (type.indexOf("unsignedShort")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_SHORT;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_SHORT;
         } else if (type.indexOf("untypedAtomic")>=0){
-            baseType = XQItemType.XQBASETYPE_UNTYPEDATOMIC;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNTYPEDATOMIC;
         } else if (type.indexOf("untyped")>=0){
-            baseType = XQItemType.XQBASETYPE_UNTYPED;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNTYPED;
         } else if (type.indexOf("yearMonthDuration")>=0){
-            baseType = XQItemType.XQBASETYPE_YEARMONTHDURATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_YEARMONTHDURATION;
         }
         generateTypeName();
     }
-    public XQItemType(Item zorbaItem) {
+    public ZorbaXQItemType(Item zorbaItem) {
         
         String type = "";
         if (zorbaItem.isNode()) {
@@ -267,132 +267,132 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
             itemKind = XQITEMKIND_ATOMIC;
             type = zorbaItem.getType().getStringValue();
         }
-        baseType = XQItemType.XQBASETYPE_ANYTYPE;
+        baseType = ZorbaXQItemType.XQBASETYPE_ANYTYPE;
         if (type.indexOf("anyAtomicType")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYATOMICTYPE;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYATOMICTYPE;
         } else if (type.indexOf("anySimpleType")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYTYPE;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYTYPE;
         } else if (type.indexOf("anyType")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYTYPE;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYTYPE;
         } else if (type.indexOf("anyURI")>=0){
-            baseType = XQItemType.XQBASETYPE_ANYURI;
+            baseType = ZorbaXQItemType.XQBASETYPE_ANYURI;
         } else if (type.indexOf("base64Binary")>=0){
-            baseType = XQItemType.XQBASETYPE_BASE64BINARY;
+            baseType = ZorbaXQItemType.XQBASETYPE_BASE64BINARY;
         } else if (type.indexOf("boolean")>=0){
-            baseType = XQItemType.XQBASETYPE_BOOLEAN;
+            baseType = ZorbaXQItemType.XQBASETYPE_BOOLEAN;
         } else if (type.indexOf("byte")>=0){
-            baseType = XQItemType.XQBASETYPE_BYTE;
+            baseType = ZorbaXQItemType.XQBASETYPE_BYTE;
         } else if (type.indexOf("dateTime")>=0){
-            baseType = XQItemType.XQBASETYPE_DATETIME;
+            baseType = ZorbaXQItemType.XQBASETYPE_DATETIME;
         } else if (type.indexOf("date")>=0){
-            baseType = XQItemType.XQBASETYPE_DATE;
+            baseType = ZorbaXQItemType.XQBASETYPE_DATE;
         } else if (type.indexOf("dayTimeDuration")>=0){
-            baseType = XQItemType.XQBASETYPE_DAYTIMEDURATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_DAYTIMEDURATION;
         } else if (type.indexOf("decimal")>=0){
-            baseType = XQItemType.XQBASETYPE_DECIMAL;
+            baseType = ZorbaXQItemType.XQBASETYPE_DECIMAL;
         } else if (type.indexOf("double")>=0){
-            baseType = XQItemType.XQBASETYPE_DOUBLE;
+            baseType = ZorbaXQItemType.XQBASETYPE_DOUBLE;
         } else if (type.indexOf("duration")>=0){
-            baseType = XQItemType.XQBASETYPE_DURATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_DURATION;
         } else if (type.indexOf("ENTITIES")>=0){
-            baseType = XQItemType.XQBASETYPE_ENTITIES;
+            baseType = ZorbaXQItemType.XQBASETYPE_ENTITIES;
         } else if (type.indexOf("ENTITY")>=0){
-            baseType = XQItemType.XQBASETYPE_ENTITY;
+            baseType = ZorbaXQItemType.XQBASETYPE_ENTITY;
         } else if (type.indexOf("float")>=0){
-            baseType = XQItemType.XQBASETYPE_FLOAT;
+            baseType = ZorbaXQItemType.XQBASETYPE_FLOAT;
         } else if (type.indexOf("gDay")>=0){
-            baseType = XQItemType.XQBASETYPE_GDAY;
+            baseType = ZorbaXQItemType.XQBASETYPE_GDAY;
         } else if (type.indexOf("gMonthDay")>=0){
-            baseType = XQItemType.XQBASETYPE_GMONTHDAY;
+            baseType = ZorbaXQItemType.XQBASETYPE_GMONTHDAY;
         } else if (type.indexOf("gMonth")>=0){
-            baseType = XQItemType.XQBASETYPE_GMONTH;
+            baseType = ZorbaXQItemType.XQBASETYPE_GMONTH;
         } else if (type.indexOf("gYear")>=0){
-            baseType = XQItemType.XQBASETYPE_GYEAR;
+            baseType = ZorbaXQItemType.XQBASETYPE_GYEAR;
         } else if (type.indexOf("hexBinary")>=0){
-            baseType = XQItemType.XQBASETYPE_HEXBINARY;
+            baseType = ZorbaXQItemType.XQBASETYPE_HEXBINARY;
         } else if (type.indexOf("IDREFS")>=0){
-            baseType = XQItemType.XQBASETYPE_IDREFS;
+            baseType = ZorbaXQItemType.XQBASETYPE_IDREFS;
         } else if (type.indexOf("IDREF")>=0){
-            baseType = XQItemType.XQBASETYPE_IDREF;
+            baseType = ZorbaXQItemType.XQBASETYPE_IDREF;
         } else if (type.indexOf("ID")>=0){
-            baseType = XQItemType.XQBASETYPE_ID;
+            baseType = ZorbaXQItemType.XQBASETYPE_ID;
         } else if (type.indexOf("integer")>=0){
-            baseType = XQItemType.XQBASETYPE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_INTEGER;
         } else if (type.indexOf("int")>=0){
-            baseType = XQItemType.XQBASETYPE_INT;
+            baseType = ZorbaXQItemType.XQBASETYPE_INT;
         } else if (type.indexOf("language")>=0){
-            baseType = XQItemType.XQBASETYPE_LANGUAGE;
+            baseType = ZorbaXQItemType.XQBASETYPE_LANGUAGE;
         } else if (type.indexOf("long")>=0){
-            baseType = XQItemType.XQBASETYPE_LONG;
+            baseType = ZorbaXQItemType.XQBASETYPE_LONG;
         } else if (type.indexOf("QName")>=0){
-            baseType = XQItemType.XQBASETYPE_QNAME;
+            baseType = ZorbaXQItemType.XQBASETYPE_QNAME;
         } else if (type.indexOf("NCName")>=0){
-            baseType = XQItemType.XQBASETYPE_NCNAME;
+            baseType = ZorbaXQItemType.XQBASETYPE_NCNAME;
         } else if (type.indexOf("Name")>=0){
-            baseType = XQItemType.XQBASETYPE_NAME;
+            baseType = ZorbaXQItemType.XQBASETYPE_NAME;
         } else if (type.indexOf("negativeInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_NEGATIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_NEGATIVE_INTEGER;
         } else if (type.indexOf("NMTOKENS")>=0){
-            baseType = XQItemType.XQBASETYPE_NMTOKENS;
+            baseType = ZorbaXQItemType.XQBASETYPE_NMTOKENS;
         } else if (type.indexOf("NMTOKEN")>=0){
-            baseType = XQItemType.XQBASETYPE_NMTOKEN;
+            baseType = ZorbaXQItemType.XQBASETYPE_NMTOKEN;
         } else if (type.indexOf("nonNegativeInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_NONNEGATIVE_INTEGER;
         } else if (type.indexOf("nonPositiveInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_NONPOSITIVE_INTEGER;
         } else if (type.indexOf("normalizedString")>=0){
-            baseType = XQItemType.XQBASETYPE_NORMALIZED_STRING;
+            baseType = ZorbaXQItemType.XQBASETYPE_NORMALIZED_STRING;
         } else if (type.indexOf("NOTATION")>=0){
-            baseType = XQItemType.XQBASETYPE_NOTATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_NOTATION;
         } else if (type.indexOf("positiveInteger")>=0){
-            baseType = XQItemType.XQBASETYPE_POSITIVE_INTEGER;
+            baseType = ZorbaXQItemType.XQBASETYPE_POSITIVE_INTEGER;
         } else if (type.indexOf("short")>=0){
-            baseType = XQItemType.XQBASETYPE_SHORT;
+            baseType = ZorbaXQItemType.XQBASETYPE_SHORT;
         } else if (type.indexOf("string")>=0){
-            baseType = XQItemType.XQBASETYPE_STRING;
+            baseType = ZorbaXQItemType.XQBASETYPE_STRING;
         } else if (type.indexOf("time")>=0){
-            baseType = XQItemType.XQBASETYPE_TIME;
+            baseType = ZorbaXQItemType.XQBASETYPE_TIME;
         } else if (type.indexOf("token")>=0){
-            baseType = XQItemType.XQBASETYPE_TOKEN;
+            baseType = ZorbaXQItemType.XQBASETYPE_TOKEN;
         } else if (type.indexOf("unsignedByte")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_BYTE;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_BYTE;
         } else if (type.indexOf("unsignedInt")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_INT;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_INT;
         } else if (type.indexOf("unsignedLong")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_LONG;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_LONG;
         } else if (type.indexOf("unsignedShort")>=0){
-            baseType = XQItemType.XQBASETYPE_UNSIGNED_SHORT;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNSIGNED_SHORT;
         } else if (type.indexOf("untypedAtomic")>=0){
-            baseType = XQItemType.XQBASETYPE_UNTYPEDATOMIC;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNTYPEDATOMIC;
         } else if (type.indexOf("untyped")>=0){
-            baseType = XQItemType.XQBASETYPE_UNTYPED;
+            baseType = ZorbaXQItemType.XQBASETYPE_UNTYPED;
         } else if (type.indexOf("yearMonthDuration")>=0){
-            baseType = XQItemType.XQBASETYPE_YEARMONTHDURATION;
+            baseType = ZorbaXQItemType.XQBASETYPE_YEARMONTHDURATION;
         }
         generateTypeName();
     }
     
-    public XQItemType(int itemkind, String piTarget) {
+    public ZorbaXQItemType(int itemkind, String piTarget) {
         this.itemKind = itemkind;
         this.piTarget = piTarget;
         generateTypeName();
     }
-    public XQItemType(int itemkind) {
+    public ZorbaXQItemType(int itemkind) {
         this.itemKind = itemkind;
         generateTypeName();
     }
-    public XQItemType(int itemkind, int basetype) {
+    public ZorbaXQItemType(int itemkind, int basetype) {
         this.itemKind = itemkind;
         this.baseType = basetype;
         generateTypeName();
     }
-    public XQItemType(int itemkind, QName nodename, int basetype) {
+    public ZorbaXQItemType(int itemkind, QName nodename, int basetype) {
         this.itemKind = itemkind;
         this.nodeName = nodename;
         this.baseType = basetype;
         generateTypeName();
     }
-    public XQItemType(int itemkind, QName nodename, int basetype, QName typename, URI schemaURI, boolean allowNill) throws XQException {
+    public ZorbaXQItemType(int itemkind, QName nodename, int basetype, QName typename, URI schemaURI, boolean allowNill) throws XQException {
         this.itemKind = itemkind;
         this.nodeName = nodename;
         this.baseType = basetype;
@@ -400,7 +400,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         this.schemaURI = schemaURI;
         this.allowNill = allowNill;
     }
-    public XQItemType(int itemkind, QName nodename, int basetype, URI schemaURI) throws XQException {
+    public ZorbaXQItemType(int itemkind, QName nodename, int basetype, URI schemaURI) throws XQException {
         this.itemKind = itemkind;
         this.nodeName = nodename;
         this.baseType = basetype;
@@ -415,157 +415,157 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         String prefix = "";
         
         switch (baseType) {
-            case XQItemType.XQBASETYPE_ANYATOMICTYPE:
+            case ZorbaXQItemType.XQBASETYPE_ANYATOMICTYPE:
                 localPart = "anyAtomicType";
                 break;
-            case XQItemType.XQBASETYPE_ANYSIMPLETYPE:
+            case ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE:
                 localPart = "anySimpleType";
                 break;
-            case XQItemType.XQBASETYPE_ANYTYPE:
+            case ZorbaXQItemType.XQBASETYPE_ANYTYPE:
                 localPart = "anyType";
                 break;
-            case XQItemType.XQBASETYPE_ANYURI:
+            case ZorbaXQItemType.XQBASETYPE_ANYURI:
                 localPart = "anyURI";
                 break;
-            case XQItemType.XQBASETYPE_BASE64BINARY:
+            case ZorbaXQItemType.XQBASETYPE_BASE64BINARY:
                 localPart = "base64Binary";
                 break;
-            case XQItemType.XQBASETYPE_BOOLEAN:
+            case ZorbaXQItemType.XQBASETYPE_BOOLEAN:
                 localPart = "boolean";
                 break;
-            case XQItemType.XQBASETYPE_BYTE:
+            case ZorbaXQItemType.XQBASETYPE_BYTE:
                 localPart = "byte";
                 break;
-            case XQItemType.XQBASETYPE_DATE:
+            case ZorbaXQItemType.XQBASETYPE_DATE:
                 localPart = "date";
                 break;
-            case XQItemType.XQBASETYPE_DATETIME:
+            case ZorbaXQItemType.XQBASETYPE_DATETIME:
                 localPart = "dateTime";
                 break;
-            case XQItemType.XQBASETYPE_DAYTIMEDURATION:
+            case ZorbaXQItemType.XQBASETYPE_DAYTIMEDURATION:
                 localPart = "dayTimeDuration";
                 break;
-            case XQItemType.XQBASETYPE_DECIMAL:
+            case ZorbaXQItemType.XQBASETYPE_DECIMAL:
                 localPart = "decimal";
                 break;
-            case XQItemType.XQBASETYPE_DOUBLE:
+            case ZorbaXQItemType.XQBASETYPE_DOUBLE:
                 localPart = "double";
                 break;
-            case XQItemType.XQBASETYPE_DURATION:
+            case ZorbaXQItemType.XQBASETYPE_DURATION:
                 localPart = "duration";
                 break;
-            case XQItemType.XQBASETYPE_ENTITIES:
+            case ZorbaXQItemType.XQBASETYPE_ENTITIES:
                 localPart = "ENTITIES";
                 break;
-            case XQItemType.XQBASETYPE_ENTITY:
+            case ZorbaXQItemType.XQBASETYPE_ENTITY:
                 localPart = "ENTITY";
                 break;
-            case XQItemType.XQBASETYPE_FLOAT:
+            case ZorbaXQItemType.XQBASETYPE_FLOAT:
                 localPart = "float";
                 break;
-            case XQItemType.XQBASETYPE_GDAY:
+            case ZorbaXQItemType.XQBASETYPE_GDAY:
                 localPart = "gDay";
                 break;
-            case XQItemType.XQBASETYPE_GMONTH:
+            case ZorbaXQItemType.XQBASETYPE_GMONTH:
                 localPart = "gMonth";
                 break;
-            case XQItemType.XQBASETYPE_GMONTHDAY:
+            case ZorbaXQItemType.XQBASETYPE_GMONTHDAY:
                 localPart = "gMonthDay";
                 break;
-            case XQItemType.XQBASETYPE_GYEAR:
+            case ZorbaXQItemType.XQBASETYPE_GYEAR:
                 localPart = "gYear";
                 break;
-            case XQItemType.XQBASETYPE_GYEARMONTH:
+            case ZorbaXQItemType.XQBASETYPE_GYEARMONTH:
                 localPart = "gYearMonth";
                 break;
-            case XQItemType.XQBASETYPE_HEXBINARY:
+            case ZorbaXQItemType.XQBASETYPE_HEXBINARY:
                 localPart = "hexBinary";
                 break;
-            case XQItemType.XQBASETYPE_ID:
+            case ZorbaXQItemType.XQBASETYPE_ID:
                 localPart = "ID";
                 break;
-            case XQItemType.XQBASETYPE_IDREF:
+            case ZorbaXQItemType.XQBASETYPE_IDREF:
                 localPart = "IDREF";
                 break;
-            case XQItemType.XQBASETYPE_IDREFS:
+            case ZorbaXQItemType.XQBASETYPE_IDREFS:
                 localPart = "IDREFS";
                 break;
-            case XQItemType.XQBASETYPE_INT:
+            case ZorbaXQItemType.XQBASETYPE_INT:
                 localPart = "int";
                 break;
-            case XQItemType.XQBASETYPE_INTEGER:
+            case ZorbaXQItemType.XQBASETYPE_INTEGER:
                 localPart = "integer";
                 break;
-            case XQItemType.XQBASETYPE_LANGUAGE:
+            case ZorbaXQItemType.XQBASETYPE_LANGUAGE:
                 localPart = "language";
                 break;
-            case XQItemType.XQBASETYPE_LONG:
+            case ZorbaXQItemType.XQBASETYPE_LONG:
                 localPart = "long";
                 break;
-            case XQItemType.XQBASETYPE_NAME:
+            case ZorbaXQItemType.XQBASETYPE_NAME:
                 localPart = "Name";
                 break;
-            case XQItemType.XQBASETYPE_NCNAME:
+            case ZorbaXQItemType.XQBASETYPE_NCNAME:
                 localPart = "NCName";
                 break;
-            case XQItemType.XQBASETYPE_NEGATIVE_INTEGER:
+            case ZorbaXQItemType.XQBASETYPE_NEGATIVE_INTEGER:
                 localPart = "negativeInteger";
                 break;
-            case XQItemType.XQBASETYPE_NMTOKEN:
+            case ZorbaXQItemType.XQBASETYPE_NMTOKEN:
                 localPart = "NMTOKEN";
                 break;
-            case XQItemType.XQBASETYPE_NMTOKENS:
+            case ZorbaXQItemType.XQBASETYPE_NMTOKENS:
                 localPart = "NMTOKENS";
                 break;
-            case XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
+            case ZorbaXQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
                 localPart = "nonNegativeInteger";
                 break;
-            case XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
+            case ZorbaXQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
                 localPart = "nonPositiveInteger";
                 break;
-            case XQItemType.XQBASETYPE_NORMALIZED_STRING:
+            case ZorbaXQItemType.XQBASETYPE_NORMALIZED_STRING:
                 localPart = "normalizedString";
                 break;
-            case XQItemType.XQBASETYPE_NOTATION:
+            case ZorbaXQItemType.XQBASETYPE_NOTATION:
                 localPart = "NOTATION";
                 break;
-            case XQItemType.XQBASETYPE_POSITIVE_INTEGER:
+            case ZorbaXQItemType.XQBASETYPE_POSITIVE_INTEGER:
                 localPart = "positiveInteger";
                 break;
-            case XQItemType.XQBASETYPE_QNAME:
+            case ZorbaXQItemType.XQBASETYPE_QNAME:
                 localPart = "QName";
                 break;
-            case XQItemType.XQBASETYPE_SHORT:
+            case ZorbaXQItemType.XQBASETYPE_SHORT:
                 localPart = "short";
                 break;
-            case XQItemType.XQBASETYPE_STRING:
+            case ZorbaXQItemType.XQBASETYPE_STRING:
                 localPart = "string";
                 break;
-            case XQItemType.XQBASETYPE_TIME:
+            case ZorbaXQItemType.XQBASETYPE_TIME:
                 localPart = "time";
                 break;
-            case XQItemType.XQBASETYPE_TOKEN:
+            case ZorbaXQItemType.XQBASETYPE_TOKEN:
                 localPart = "token";
                 break;
-            case XQItemType.XQBASETYPE_UNSIGNED_BYTE:
+            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_BYTE:
                 localPart = "unsignedByte";
                 break;
-            case XQItemType.XQBASETYPE_UNSIGNED_INT:
+            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_INT:
                 localPart = "unsignedInt";
                 break;
-            case XQItemType.XQBASETYPE_UNSIGNED_LONG:
+            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_LONG:
                 localPart = "unsignedLong";
                 break;
-            case XQItemType.XQBASETYPE_UNSIGNED_SHORT:
+            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_SHORT:
                 localPart = "unsignedShort";
                 break;
-            case XQItemType.XQBASETYPE_UNTYPED:
+            case ZorbaXQItemType.XQBASETYPE_UNTYPED:
                 localPart = "untyped";
                 break;
-            case XQItemType.XQBASETYPE_UNTYPEDATOMIC:
+            case ZorbaXQItemType.XQBASETYPE_UNTYPEDATOMIC:
                 localPart = "untypedAtomic";
                 break;
-            case XQItemType.XQBASETYPE_YEARMONTHDURATION:
+            case ZorbaXQItemType.XQBASETYPE_YEARMONTHDURATION:
                 localPart = "yearMonthDuration";
                 break;
             default:
@@ -586,13 +586,13 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
    */
     @Override
     public int getBaseType() throws XQException {
-        if (!((itemKind==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_SCHEMA_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_ATTRIBUTE) ||
-              (itemKind==XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE) ||
-              (itemKind==XQItemType.XQITEMKIND_ATOMIC))) {
+        if (!((itemKind==ZorbaXQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_SCHEMA_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ATTRIBUTE) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ATOMIC))) {
             throw new XQException("Item kind is not valid for a Base Type.");
         }
         return baseType;
@@ -629,12 +629,12 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
    */
     @Override
     public QName getNodeName() throws XQException {
-        if (!((itemKind==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_SCHEMA_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_ATTRIBUTE) ||
-              (itemKind==XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE))) {
+        if (!((itemKind==ZorbaXQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_SCHEMA_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ATTRIBUTE) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE))) {
             throw new XQException("Item kind is not valid for a Type Name.");
         }
         return nodeName;
@@ -660,13 +660,13 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
    */
     @Override
     public QName getTypeName() throws XQException {
-        if (!((itemKind==XQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_ATOMIC) ||
-              (itemKind==XQItemType.XQITEMKIND_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_SCHEMA_ELEMENT) ||
-              (itemKind==XQItemType.XQITEMKIND_ATTRIBUTE) ||
-              (itemKind==XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE))) {
+        if (!((itemKind==ZorbaXQItemType.XQITEMKIND_DOCUMENT_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ATOMIC) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_SCHEMA_ELEMENT) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_ATTRIBUTE) ||
+              (itemKind==ZorbaXQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE))) {
             throw new XQException("Item kind is not valid for a Type Name.");
         }
         return typeName;
@@ -692,14 +692,14 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the name of the processing instruction type.
    * 
-   * As such the item kind of this XQItemType must be XQITEMKIND_PI.
+   * As such the item kind of this ZorbaXQItemType must be XQITEMKIND_PI.
    * 
    * @return the name of the processing instruction type. null if it is a wildcard.
    * @throw XQException - if the item kind is not XQITEMKIND_PI
    */
     @Override
     public String getPIName() throws XQException {
-        if (itemKind!=XQItemType.XQITEMKIND_PI) {
+        if (itemKind!=ZorbaXQItemType.XQITEMKIND_PI) {
             throw new XQException("Item kind is not a PI.");
         }
         return piTarget;
@@ -707,10 +707,10 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
 
   /** \brief Returns the type of the item in the sequence type.
    * 
-   * @return XQItemType representing the item type in the sequence. null is returned in case of an empty sequence.
+   * @return ZorbaXQItemType representing the item type in the sequence. null is returned in case of an empty sequence.
    */
     @Override
-    public XQItemType getItemType() {
+    public ZorbaXQItemType getItemType() {
         return this;
     }
 
@@ -718,7 +718,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
    * 
    * The result is true only if the argument is an item type object which represents the same XQuery item type. 
    * 
-   * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used. Return true if and only if both objects are XQItemType and:
+   * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used. Return true if and only if both objects are ZorbaXQItemType and:
    * - getItemKind() is equal
    * - if getBaseType() is supported for the item kind, it must be equal
    * - if getNodeName() is supported for the item kind, it must be equal
@@ -728,7 +728,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
    * - isElementNillable() is equal
    * - if getPIName() is supported for the item kind, it must be equal
    * 
-   * @param o - an XQItemType object representing an XQuery item type
+   * @param o - an ZorbaXQItemType object representing an XQuery item type
    * @return true if the input item type object represents the same XQuery item type, false otherwise
    */
     @Override
@@ -738,28 +738,28 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         boolean supportNodeName = false;
         boolean supportTypeName = false;
         boolean supportPIName = false;
-        if (o instanceof XQItemType) {
-            if ( (getItemKind()==((XQItemType)o).getItemKind()) &&
-                 (getSchemaURI()==((XQItemType)o).getSchemaURI()) &&
-                 (isAnonymousType()==((XQItemType)o).isAnonymousType()) &&
-                 (isElementNillable()==((XQItemType)o).isElementNillable()) ) {
+        if (o instanceof ZorbaXQItemType) {
+            if ( (getItemKind()==((ZorbaXQItemType)o).getItemKind()) &&
+                 (getSchemaURI()==((ZorbaXQItemType)o).getSchemaURI()) &&
+                 (isAnonymousType()==((ZorbaXQItemType)o).isAnonymousType()) &&
+                 (isElementNillable()==((ZorbaXQItemType)o).isElementNillable()) ) {
                 try {
-                    supportBaseType = getBaseType() == ((XQItemType)o).getBaseType();
+                    supportBaseType = getBaseType() == ((ZorbaXQItemType)o).getBaseType();
                 } catch (Exception e) {
                     supportBaseType = true;  // Not supported
                 }
                 try {
-                    supportNodeName = getNodeName() == ((XQItemType)o).getNodeName();
+                    supportNodeName = getNodeName() == ((ZorbaXQItemType)o).getNodeName();
                 } catch (Exception e) {
                     supportNodeName = true; // Not supported
                 }
                 try {
-                    supportTypeName = getTypeName().equals(((XQItemType)o).getTypeName());
+                    supportTypeName = getTypeName().equals(((ZorbaXQItemType)o).getTypeName());
                 } catch (Exception e) {
                     supportTypeName = true; // Not supported
                 }
                 try {
-                    supportPIName = getPIName().equals(((XQItemType)o).getPIName());
+                    supportPIName = getPIName().equals(((ZorbaXQItemType)o).getPIName());
                 } catch (Exception e) {
                     supportPIName = true; // Not supported
                 }
@@ -831,7 +831,7 @@ public class XQItemType implements javax.xml.xquery.XQItemType {
         StringBuffer result = new StringBuffer();
 
         try {
-            for (java.lang.reflect.Field field: XQItemType.class.getFields()) {
+            for (java.lang.reflect.Field field: ZorbaXQItemType.class.getFields()) {
                 if (field.getName().startsWith("XQITEMKIND_")) {
                     if (field.getInt(this)==itemKind) {
                         result.append("Item Kind: ").append(field.getName().substring(11));

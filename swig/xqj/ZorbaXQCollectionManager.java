@@ -18,29 +18,29 @@ package org.zorbaxquery.api.xqj;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
-import org.zorbaxquery.api.CollectionManager;
-import javax.xml.xquery.XQSequence;
 import javax.xml.xquery.XQItem;
+import javax.xml.xquery.XQSequence;
+import org.zorbaxquery.api.CollectionManager;
 
 
   /** \brief This class defines a set of functions for managing persistent
    *         collections.
    *
    */
-public class XQCollectionManager {
+public class ZorbaXQCollectionManager {
 
     private boolean closed = false;
     private CollectionManager collectionManager = null;
     private Collection<XQSequence> sequences = new ArrayList<XQSequence>();
-    private Collection<XQCollection> collections = new ArrayList<XQCollection>();
+    private Collection<ZorbaXQCollection> collections = new ArrayList<ZorbaXQCollection>();
 
-    protected XQCollectionManager (CollectionManager cm) {
+    protected ZorbaXQCollectionManager (CollectionManager cm) {
         collectionManager = cm;
     }
 
   /** \brief Closes the collection manager.
    * 
-   * Once the collection manager is closed, no method other than close or the isClosed method may be called on the collection manager object. Calling close on an XQCollectionManager object that is already closed has no effect.
+   * Once the collection manager is closed, no method other than close or the isClosed method may be called on the collection manager object. Calling close on an ZorbaXQCollectionManager object that is already closed has no effect.
    * 
    * @throw XQException - if there is an error during closing the collection.
    */
@@ -48,7 +48,7 @@ public class XQCollectionManager {
         for (XQSequence exp : sequences ){
             exp.close();  // Notify the dependents objects to close
         }
-        for (XQCollection exp : collections ){
+        for (ZorbaXQCollection exp : collections ){
             exp.close();  // Notify the dependents objects to close
         }
         if (collectionManager!=null) {
@@ -78,7 +78,7 @@ public class XQCollectionManager {
      */
     public XQSequence availableCollections() throws XQException {
         isClosedXQException();
-        XQSequence result = new org.zorbaxquery.api.xqj.XQSequence(collectionManager.availableCollections());
+        XQSequence result = new org.zorbaxquery.api.xqj.ZorbaXQSequence(collectionManager.availableCollections());
         sequences.add(result);
         return result;
     }
@@ -93,7 +93,7 @@ public class XQCollectionManager {
      */
     public void createCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        collectionManager.createCollection(((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem());
+        collectionManager.createCollection(((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem());
     }
 
     /**
@@ -105,7 +105,7 @@ public class XQCollectionManager {
      */
     public void deleteCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        collectionManager.deleteCollection(((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem());
+        collectionManager.deleteCollection(((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem());
     }
 
     /**
@@ -117,9 +117,9 @@ public class XQCollectionManager {
      *
      * @throw XQException if the collection does not exist.
      */
-    public XQCollection getCollection(XQItem aName ) throws XQException {
+    public ZorbaXQCollection getCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        XQCollection result = new XQCollection ( collectionManager.getCollection(((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem()) );
+        ZorbaXQCollection result = new ZorbaXQCollection ( collectionManager.getCollection(((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem()) );
         collections.add(result);
         return result;
     }
@@ -138,7 +138,7 @@ public class XQCollectionManager {
      */
     public boolean isAvailableCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        return collectionManager.isAvailableCollection( ((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem() );
+        return collectionManager.isAvailableCollection( ((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem() );
     }
 
     private void isClosedXQException() throws XQException {
