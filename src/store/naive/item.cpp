@@ -1398,7 +1398,7 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 }
 
 
-const store::Item_t
+store::Item_t
 Item::getArraySize() const
 {
   throw ZORBA_EXCEPTION(
@@ -1407,8 +1407,8 @@ Item::getArraySize() const
   );
 }
 
-const store::Item_t
-Item::getArrayValue(const store::Item_t&) const
+store::Item_t
+Item::getArrayValue(const xs_integer&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1416,7 +1416,7 @@ Item::getArrayValue(const store::Item_t&) const
   );
 }
 
-const store::Iterator_t
+store::Iterator_t
 Item::getArrayValues() const
 {
   throw ZORBA_EXCEPTION(
@@ -1425,7 +1425,7 @@ Item::getArrayValues() const
   );
 }
 
-const store::Iterator_t
+store::Iterator_t
 Item::getObjectKeys() const
 {
   throw ZORBA_EXCEPTION(
@@ -1434,8 +1434,8 @@ Item::getObjectKeys() const
   );
 }
 
-const store::Item_t
-Item::getObjectValue(const store::Item_t&) const
+store::Item_t
+Item::getObjectValue(const zstring&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

@@ -1913,7 +1913,7 @@ void UpdJSONObjectInsert::apply()
   csize numPairs = theNames.size();
   for (csize i = 0; i < numPairs; ++i, ++theNumApplied)
   {
-    if (!obj->add(theNames[i], theValues[i], false))
+    if (!obj->add(theNames[i]->getStringValue(), theValues[i], false))
     {
       RAISE_ERROR(jerr::JNUP0006, theLoc, 
       ERROR_PARAMS(theNames[i]->getStringValue()));
@@ -1935,7 +1935,7 @@ void UpdJSONObjectInsert::undo()
 
   for (csize i = theNumApplied; i > 0; --i)
   {
-    obj->remove(theNames[i-1]);
+    obj->remove(theNames[i-1]->getStringValue());
   }
 
   theIsApplied = false;
@@ -1962,7 +1962,7 @@ void UpdJSONObjectDelete::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  theOldValue = obj->remove(theName);
+  theOldValue = obj->remove(theName->getStringValue());
   
   theIsApplied = true;
 }
@@ -1977,7 +1977,10 @@ void UpdJSONObjectDelete::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  bool inserted = obj->add(theName, theOldValue, false);
+  bool inserted = obj->add(
+      theName->getStringValue(),
+      theOldValue,
+      false);
 
   ZORBA_ASSERT(inserted);
 
@@ -2006,7 +2009,7 @@ void UpdJSONObjectReplaceValue::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  theOldValue = obj->setValue(theName, theNewValue);
+  theOldValue = obj->setValue(theName->getStringValue(), theNewValue);
 
   if (theOldValue != NULL)
   {
@@ -2024,7 +2027,7 @@ void UpdJSONObjectReplaceValue::undo()
 
   ZORBA_ASSERT(obj);
 
-  obj->setValue(theName, theOldValue);
+  obj->setValue(theName->getStringValue(), theOldValue);
 
   theIsApplied = false;
 }
@@ -2051,12 +2054,12 @@ void UpdJSONObjectRename::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  if (obj->getObjectValue(theNewName) != NULL)
+  if (obj->getObjectValue(theNewName->getStringValue()) != NULL)
   {
     RAISE_ERROR(jerr::JNUP0012, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
   }
   
-  if (obj->rename(theName, theNewName))
+  if (obj->rename(theName->getStringValue(), theNewName->getStringValue()))
   {
     theIsApplied = true;
   }
@@ -2072,7 +2075,7 @@ void UpdJSONObjectRename::undo()
 
   ZORBA_ASSERT(obj);
 
-  ZORBA_ASSERT(obj->rename(theNewName, theName));
+  ZORBA_ASSERT(obj->rename(theNewName->getStringValue(), theName->getStringValue()));
 
   theIsApplied = false;
 }

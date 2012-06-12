@@ -501,14 +501,10 @@ Item::getArraySize() const
 Item
 Item::getArrayValue(uint32_t aIndex) const
 {
-  store::Item_t lIndex;
-  if (!GENV_ITEMFACTORY->createInteger(lIndex, Integer(aIndex))) {
-    // QQQ probably should throw exception here
-    return Item();
-  }
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-      return &*m_item->getArrayValue(lIndex);
+    xs_integer lIndex(aIndex);
+    return &*m_item->getArrayValue(lIndex);
   ITEM_CATCH
   return Item();
 }
@@ -532,14 +528,9 @@ Item::getObjectValue(String aName) const
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
     zstring& lName = Unmarshaller::getInternalString(aName);
-    store::Item_t lIndex;
-    if (!GENV_ITEMFACTORY->createString(lIndex, lName)) {
-      // QQQ probably should throw exception here
-      return Item();
-    }
   
     // TODO, we should have an error handler here
-      return m_item->getObjectValue(lIndex).getp();
+    return m_item->getObjectValue(lName).getp();
 
   ITEM_CATCH
   return Item();

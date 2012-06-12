@@ -116,12 +116,12 @@ store::Item* SimpleJSONObject::copy(
   {
     lNewObject = new SimpleJSONObject();
 
-    for (Pairs::iterator lIter = thePairs.begin();
+    for (Pairs::const_iterator lIter = thePairs.begin();
          lIter != thePairs.end();
          ++lIter)
     {
-      store::Item_t lName = lIter.getKey();
-      store::Item_t lCopiedValue = lIter.getValue()->copy(NULL, copymode);
+      zstring lName = lIter->first;
+      store::Item_t lCopiedValue = lIter->second->copy(NULL, copymode);
 
       lNewObject->add(lName, lCopiedValue, false);
     }
@@ -155,7 +155,7 @@ SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/
 *******************************************************************************/
 bool
 SimpleJSONObject::add(
-      const store::Item_t& aName,
+      const zstring& aName,
       const store::Item_t& aValue,
       bool accumulate)
 {
@@ -164,12 +164,12 @@ SimpleJSONObject::add(
   if (lIterator != thePairs.end())
   {  
     store::Item_t lValue = aValue;
-    thePairs.insert(aName, lValue);
+    thePairs.insert(make_pair(aName, lValue));
     return true;
   }
   else if (accumulate)
   {
-    store::Item* value = lIterator.getValue().getp();
+    store::Item* value = lIterator->second.getp();
 
     if (value->isJSONArray())
     {
@@ -181,7 +181,7 @@ SimpleJSONObject::add(
       array->push_back(value);
       array->push_back(aValue);
 
-      lIterator.setValue(array);
+      lIterator->second = array;
     }
     return true;
   }
@@ -193,8 +193,8 @@ SimpleJSONObject::add(
 /******************************************************************************
 
 *******************************************************************************/
-const store::Item_t
-SimpleJSONObject::remove(const store::Item_t& aName)
+store::Item_t
+SimpleJSONObject::remove(const zstring& aName)
 {
   Pairs::iterator lIter = thePairs.find(aName);
   if (lIter == thePairs.end())
@@ -202,9 +202,9 @@ SimpleJSONObject::remove(const store::Item_t& aName)
     return 0;
   }
   
-  store::Item_t lRes = lIter.getValue();
+  store::Item_t lRes = lIter->second;
 
-  thePairs.erase(aName.getp());
+  thePairs.erase(aName);
 
   return lRes;
 }
@@ -213,8 +213,8 @@ SimpleJSONObject::remove(const store::Item_t& aName)
 /******************************************************************************
 
 *******************************************************************************/
-const store::Item_t SimpleJSONObject::setValue(
-    const store::Item_t& aName,
+store::Item_t SimpleJSONObject::setValue(
+    const zstring& aName,
     const store::Item_t& aValue)
 {
   Pairs::iterator lIter = thePairs.find(aName);
@@ -222,8 +222,8 @@ const store::Item_t SimpleJSONObject::setValue(
     return NULL;
   }
 
-  store::Item_t lRes = lIter.getValue();
-  lIter.setValue(aValue);
+  store::Item_t lRes = lIter->second;
+  lIter->second = aValue;
   return lRes;
 }
 
@@ -231,8 +231,8 @@ const store::Item_t SimpleJSONObject::setValue(
 
 *******************************************************************************/
 bool SimpleJSONObject::rename(
-    const store::Item_t& aName,
-    const store::Item_t& aNewName)
+    const zstring& aName,
+    const zstring& aNewName)
 {
   Pairs::iterator lIter = thePairs.find(aNewName);
   if (lIter != thePairs.end()) {
@@ -243,11 +243,11 @@ bool SimpleJSONObject::rename(
   if (lIter == thePairs.end()) {
     return false;
   }
-  store::Item_t lValue = lIter.getValue();
+  store::Item_t lValue = lIter->second;
 
-  thePairs.erase(aName.getp());
+  thePairs.erase(aName);
   
-  thePairs.insert(aNewName, lValue);
+  thePairs.insert(make_pair(aNewName, lValue));
 
   return true;
 }
@@ -295,7 +295,22 @@ SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 /******************************************************************************
 
 *******************************************************************************/
-const store::Iterator_t
+store::Item_t
+SimpleJSONObject::getObjectValue(const zstring& aKey) const
+{
+  Pairs::const_iterator lIter = thePairs.find(aKey);
+  if (lIter == thePairs.end())
+  {
+    return NULL;
+  }
+  return lIter->second;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Iterator_t
 SimpleJSONObject::getObjectKeys() const
 {
   return new KeyIterator(const_cast<SimpleJSONObject*>(this));
@@ -328,7 +343,7 @@ SimpleJSONObject::KeyIterator::next(store::Item_t& res)
 {
   if (theIter != theObject->thePairs.end())
   {
-    res = theIter.getValue();
+    res = theIter->second;
     ++theIter;
     return true;
   }
@@ -482,9 +497,7 @@ SimpleJSONArray::add(
 store::Item_t
 SimpleJSONArray::remove(const xs_integer& aPos)
 {
-  store::Item_t lPosition;
-  GET_FACTORY().createInteger(lPosition, aPos);
-  store::Item_t lItem = (getArrayValue(lPosition));
+  store::Item_t lItem = getArrayValue(aPos);
 
   uint64_t lPosStartingZero = cast(aPos) - 1;
   theContent.erase(theContent.begin() + lPosStartingZero);
@@ -499,9 +512,7 @@ SimpleJSONArray::remove(const xs_integer& aPos)
 store::Item_t
 SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
 {
-  store::Item_t lPosition;
-  GET_FACTORY().createInteger(lPosition, aPos);
-  store::Item_t lItem = (getArrayValue(lPosition));
+  store::Item_t lItem = getArrayValue(aPos);
 
   uint64_t pos = cast(aPos) - 1;
   theContent[pos] = value.getp();
@@ -531,10 +542,10 @@ SimpleJSONArray::cast(const xs_integer& i)
 /******************************************************************************
 
 *******************************************************************************/
-const store::Item_t
-SimpleJSONArray::getArrayValue(const store::Item_t& aPosition) const
+store::Item_t
+SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
 {
-  uint64_t lPos = cast(aPosition->getIntegerValue());
+  uint64_t lPos = cast(aPosition);
   if (lPos == 0 || lPos > theContent.size())
   {
     return 0;
@@ -549,10 +560,23 @@ SimpleJSONArray::getArrayValue(const store::Item_t& aPosition) const
 /******************************************************************************
 
 *******************************************************************************/
-const store::Iterator_t
+store::Iterator_t
 SimpleJSONArray::getArrayValues() const
 {
   return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item_t
+SimpleJSONArray::getArraySize() const
+{
+  store::Item_t lRes;
+  xs_integer lSize(theContent.size());
+  GET_FACTORY().createInteger(lRes, lSize);  
+  return lRes;
 }
 
 

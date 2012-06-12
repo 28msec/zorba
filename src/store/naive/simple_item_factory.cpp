@@ -2178,13 +2178,13 @@ bool BasicItemFactory::createJSONObject(
       sourceKeys->open();
       while(sourceKeys->next(keyItem))
       {
-        valueItem = objItem->getObjectValue(keyItem);
+        valueItem = objItem->getObjectValue(keyItem->getStringValue());
         if (copymode.theDoCopy)
         {
           valueItem = valueItem->copy(NULL, copymode);
         }
         
-        if (!obj->add(keyItem, valueItem, accumulate))
+        if (!obj->add(keyItem->getStringValue(), valueItem, accumulate))
         {
           RAISE_ERROR_NO_LOC(jerr::JNDY0003,
           ERROR_PARAMS(keyItem->getStringValue()));
@@ -2248,7 +2248,7 @@ bool BasicItemFactory::createJSONObject(
   csize numPairs = names.size();
   for (csize i = 0; i < numPairs; ++i)
   {
-    if (!obj->add(names[i], values[i], false))
+    if (!obj->add(names[i]->getStringValue(), values[i], false))
     {
       RAISE_ERROR_NO_LOC(jerr::JNDY0003, ERROR_PARAMS(names[i]));
     }

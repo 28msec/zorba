@@ -829,7 +829,7 @@ public:
    * (jdm:size accessor on an array)
    * @return the number of values in the array.
    */
-  virtual const store::Item_t
+  virtual store::Item_t
   getArraySize() const;
 
   /**
@@ -837,15 +837,15 @@ public:
    * (jdm:value accessor on an array)
    * @return the value of the json array at a given position
    */
-  virtual const store::Item_t
-  getArrayValue(const store::Item_t& position) const;
+  virtual store::Item_t
+  getArrayValue(const xs_integer& position) const;
 
   /**
    * defined on JSONArray
    * (not an accessor)
    * @return the values of a given array
    */
-  virtual const store::Iterator_t
+  virtual store::Iterator_t
   getArrayValues() const;
 
   /**
@@ -853,7 +853,7 @@ public:
    * (jdm:keys accessor on an object)
    * @return the keys of an object.
    */
-  virtual const store::Iterator_t
+  virtual store::Iterator_t
   getObjectKeys() const;
 
   /**
@@ -861,8 +861,8 @@ public:
    * (jdm:value accessor on an object)
    * @return the value associated with a given key
    */
-  virtual const store::Item_t
-  getObjectValue(const store::Item_t& key) const;
+  virtual store::Item_t
+  getObjectValue(const zstring& key) const;
 
 #endif // ZORBA_WITH_JSON
 

@@ -1072,7 +1072,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     }
     emit_json_item(key, depth);
     tr << " : ";
-    emit_json_item(obj->getObjectValue(key).getp(), depth);
+    emit_json_item(obj->getObjectValue(key->getStringValue()).getp(), depth);
   }
   if (ser->indent) {
     tr << ser->END_OF_LINE;
@@ -1098,7 +1098,7 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
     }
     store::Item_t position;
     GENV_ITEMFACTORY->createInteger(position, i);
-    emit_json_item(array->getArrayValue(position).getp(), depth);
+    emit_json_item(array->getArrayValue(position->getIntegerValue()).getp(), depth);
   }
   tr << " ]";
 }
