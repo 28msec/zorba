@@ -999,7 +999,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
         // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
         // I tell which I have?
         emit_jsoniq_value(type == store::XS_DOUBLE ? "double" : "float",
-                               "Infinity", depth);
+                               "INF", depth);
         break;
       }
       // else fall through
