@@ -219,7 +219,7 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("version", aSerializerOptions.version.c_str());
 
 #ifdef ZORBA_WITH_JSON
-  switch (aSerializerOptions.cloudscript_extensions)
+  switch (aSerializerOptions.jsoniq_extensions)
   {
     case CLOUDSCRIPT_EXTENSIONS_YES:
       aInternalSerializer.setParameter("jsoniq-extensions", "yes");

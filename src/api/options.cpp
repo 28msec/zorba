@@ -53,7 +53,7 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   encoding(ZORBA_ENCODING_UTF8)
 #ifdef ZORBA_WITH_JSON
   ,
-    cloudscript_extensions(CLOUDSCRIPT_EXTENSIONS_NO),
+    jsoniq_extensions(CLOUDSCRIPT_EXTENSIONS_NO),
     cloudscript_multiple_items(CLOUDSCRIPT_MULTIPLE_ITEMS_NO),
     cloudscript_xdm_method(ZORBA_SERIALIZATION_METHOD_XML)
 #endif /* ZORBA_WITH_JSON */
@@ -150,8 +150,8 @@ void Zorba_SerializerOptions::SetSerializerOption(
 #ifdef ZORBA_WITH_JSON
   else if (strcmp(parameter, "jsoniq-extensions") == 0)
   {
-    if (strcmp(value, "yes") == 0) cloudscript_extensions = CLOUDSCRIPT_EXTENSIONS_YES;
-    else if (strcmp(value, "no") == 0) cloudscript_extensions = CLOUDSCRIPT_EXTENSIONS_NO;
+    if (strcmp(value, "yes") == 0) jsoniq_extensions = CLOUDSCRIPT_EXTENSIONS_YES;
+    else if (strcmp(value, "no") == 0) jsoniq_extensions = CLOUDSCRIPT_EXTENSIONS_NO;
   }
   else if (strcmp(parameter, "cloudscript-multiple-items") == 0)
   {

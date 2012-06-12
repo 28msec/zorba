@@ -157,7 +157,7 @@ typedef enum {
 typedef enum {
   CLOUDSCRIPT_EXTENSIONS_YES,
   CLOUDSCRIPT_EXTENSIONS_NO
-} Zorba_cloudscript_extensions_t;
+} Zorba_jsoniq_extensions_t;
 
 typedef enum {
   CLOUDSCRIPT_MULTIPLE_ITEMS_NO,
@@ -195,7 +195,7 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   zorba::String                 version;
 
 #ifdef ZORBA_WITH_JSON
-  Zorba_cloudscript_extensions_t cloudscript_extensions;
+  Zorba_jsoniq_extensions_t jsoniq_extensions;
   Zorba_cloudscript_multiple_items_t cloudscript_multiple_items;
   Zorba_serialization_method_t   cloudscript_xdm_method;
 #endif /* ZORBA_WITH_JSON */

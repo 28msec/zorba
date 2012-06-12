@@ -1112,7 +1112,7 @@ void serializer::json_emitter::emit_cloudscript_value(
     int depth)
 {
   // First make sure we should be doing these extended values
-  if (ser->cloudscript_extensions == PARAMETER_VALUE_NO) {
+  if (ser->jsoniq_extensions == PARAMETER_VALUE_NO) {
     throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS(value));
   }
 
@@ -1157,7 +1157,7 @@ void serializer::json_emitter::emit_cloudscript_xdm_node(
     int depth)
 {
   // First make sure we should be doing these extended values
-  if (ser->cloudscript_extensions == PARAMETER_VALUE_NO) {
+  if (ser->jsoniq_extensions == PARAMETER_VALUE_NO) {
     // QQQ probably should put "XML node" in diagnostics_en.xml
     throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS("XML node"));
   }
@@ -2375,7 +2375,7 @@ void serializer::reset()
 #ifdef ZORBA_WITH_JSON
   method = PARAMETER_VALUE_JSONIQ;
   cloudscript_multiple_items = PARAMETER_VALUE_NO;
-  cloudscript_extensions = PARAMETER_VALUE_NO;
+  jsoniq_extensions = PARAMETER_VALUE_NO;
   cloudscript_xdm_method = PARAMETER_VALUE_XML;
 #else
   method = PARAMETER_VALUE_XML;
@@ -2545,9 +2545,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
   else if (!strcmp(aName, "jsoniq-extensions"))
   {
     if (!strcmp(aValue, "yes"))
-      cloudscript_extensions = PARAMETER_VALUE_YES;
+      jsoniq_extensions = PARAMETER_VALUE_YES;
     else if (!strcmp(aValue, "no"))
-      cloudscript_extensions = PARAMETER_VALUE_NO;
+      jsoniq_extensions = PARAMETER_VALUE_NO;
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )

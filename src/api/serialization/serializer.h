@@ -117,7 +117,7 @@ protected:
   short int indent;                // "yes" or "no", implemented
 #ifdef ZORBA_WITH_JSON
   short int cloudscript_multiple_items;  // "no", "array", "appended", implemented
-  short int cloudscript_extensions;      // implemented
+  short int jsoniq_extensions;      // implemented
   short int cloudscript_xdm_method;  // A legal value for "method", implemented
 #endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
