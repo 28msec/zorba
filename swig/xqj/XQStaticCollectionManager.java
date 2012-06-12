@@ -23,6 +23,11 @@ import javax.xml.xquery.XQItem;
 import org.zorbaxquery.api.StaticCollectionManager;
 
 
+  /**
+   * Using the XQStaticCollectionManager one can retrieve information about statically declared collections and indexes as well as manage them.
+   * 
+   * The XQStaticCollectionManager can be retrieved from (1) a compiled XQuery or (2) a XQStaticContext object. In both cases, this class provides access to information for the collections and indexes that are declared in (1) all the modules (transitively) imported by the main query or (2) the module that resulted in the compilation of the StaticContext, respectively. Moreover, this class allows to create or delete such collections and indexes.
+   */
 public class XQStaticCollectionManager {
 
     private boolean closed = false;
@@ -48,6 +53,12 @@ public class XQStaticCollectionManager {
         return closed;
     }
 
+  /** \brief This function returns a sequence of names of the collections that are available.
+   * 
+   * If this is an instance of the StaticCollectionManager class (i.e. returned by any of the getStaticCollectionManager methods), the collections returned by this function are also statically declared.
+   * 
+   * @return XQSequence - The list of names of the available collections.
+   */
     public XQSequence availableCollections() throws XQException {
         isClosedXQException();
         XQSequence result = new org.zorbaxquery.api.xqj.XQSequence(collectionManager.availableCollections());
@@ -55,16 +66,32 @@ public class XQStaticCollectionManager {
         return result;
     }
 
+  /** \brief This function creates the collection with the given name.
+   * 
+   * @param aName	The name of the collection to create.
+   * @throw XQException- if a collection with the given name already exists.
+   */
     public void createCollection(XQItem aName ) throws XQException {
         isClosedXQException();
         collectionManager.createCollection(((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem());
     }
 
+  /** \brief This function removes the collection with the given name.
+   * 
+   * @param aName	- The name of the collection to delete.
+   * @throw XQException - if the collection does not exist.
+   */
     public void deleteCollection(XQItem aName ) throws XQException {
         isClosedXQException();
         collectionManager.deleteCollection(((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem());
     }
 
+  /** \brief Returns a instance of the Collection class which can be used to modify and retrieve the contents of the collection identified by the given name.
+   * 
+   * @param aName	- The name of the collection to retrieve.
+   * @return XQCollection - The collection if available.
+   * @throw XQException - if the collection does not exist.
+   */
     public XQCollection getCollection(XQItem aName ) throws XQException {
         isClosedXQException();
         XQCollection result = new XQCollection ( collectionManager.getCollection(((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem()) );
@@ -72,6 +99,14 @@ public class XQStaticCollectionManager {
         return result;
     }
 
+  /** \brief This function returns true if a collection with the given name is available.
+   * 
+   * If this is an instance of the StaticCollectionManager class (i.e. returned by any of the getStaticCollectionManager() methods), the collection also needs to be statically declared.
+   * 
+   * @param aName - The name of the collection that is being checked.
+   * @return true if the collection is available and false otherwise.
+   * @throw XQException - if the Collection Manager is closed
+   */
     public boolean isAvailableCollection(XQItem aName ) throws XQException {
         isClosedXQException();
         return collectionManager.isAvailableCollection( ((org.zorbaxquery.api.xqj.XQItem)aName).getZorbaItem() );

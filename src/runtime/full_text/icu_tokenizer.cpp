@@ -130,8 +130,8 @@ static Locale const& get_icu_locale_for( iso639_1::type lang ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ICU_Tokenizer::ICU_Tokenizer( iso639_1::type lang, Numbers &no ) :
-  Tokenizer( no ),
+ICU_Tokenizer::ICU_Tokenizer( iso639_1::type lang, State &state ) :
+  Tokenizer( state ),
   lang_( lang )
 {
   Locale const &icu_locale = get_icu_locale_for( lang );
@@ -381,9 +381,9 @@ set_token:
         cout << "  setting token" << endl;
 #       endif
         t.set(
-          utf8_buf, utf8_len, numbers().token, numbers().sent, numbers().para
+          utf8_buf, utf8_len, state().token, state().sent, state().para
         );
-        ++numbers().token;
+        ++state().token;
       }
     }
 
@@ -408,7 +408,7 @@ next:
       // The addition of the "if" fixes:
       // https://bugs.launchpad.net/bugs/863320
       if ( sent_end != BreakIterator::DONE )
-        ++numbers().sent;
+        ++state().sent;
     }
   } // while
 
@@ -419,7 +419,7 @@ next:
   t.send( item, callback );
   // Incrementing "sent" here fixes:
   // https://bugs.launchpad.net/bugs/897800
-  ++numbers().sent;
+  ++state().sent;
 #if DEBUG_TOKENIZER
   cout << "--------------------\n";
 #endif /* DEBUG_TOKENIZER */
@@ -428,13 +428,13 @@ next:
 ///////////////////////////////////////////////////////////////////////////////
 
 bool ICU_TokenizerProvider::getTokenizer( iso639_1::type lang,
-                                          Tokenizer::Numbers *num,
+                                          Tokenizer::State *state,
                                           Tokenizer::ptr *t ) const {
   for ( int32_t n = ubrk_countAvailable(), i = 0; i < n; ++i ) {
     if ( char const *const icu_locale = ubrk_getAvailable( i ) )
       if ( lang == find_lang( icu_locale ) ) {
-        if ( num && t )
-          t->reset( new ICU_Tokenizer( lang, *num ) );
+        if ( state && t )
+          t->reset( new ICU_Tokenizer( lang, *state ) );
         return true;
       }
   }

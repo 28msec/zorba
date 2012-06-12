@@ -498,9 +498,9 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
   external functions, contains variable declarations and/or udfs.
 
   Note: The fuul-text module must be included here because it MUST be processed
-  when imported, even in RELEASE mode. The reason is that the tokenize and 
-  tokenizer-properties functions must be registered in the module's sctx (in
-  addition to the root sctx).
+  when imported, even in RELEASE mode. The reason is that the
+  current-compare-options(), tokenize(), and tokenizer-properties() functions
+  must be registered in the module's sctx (in addition to the root sctx).
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
@@ -512,6 +512,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_FETCH_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -1265,8 +1266,7 @@ zstring static_context::get_base_uri() const
 
     sctx = sctx->theParent;
   }
-
-  ZORBA_ASSERT(false);
+  return "";  //undefined
 }
 
 
@@ -1297,7 +1297,6 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
 
   compute_base_uri();
 }
-
 
 /***************************************************************************//**
   Base Uri Computation
@@ -1419,8 +1418,8 @@ void static_context::compute_base_uri()
     return;
   }
 
-  theBaseUriInfo->theBaseUri = get_implementation_baseuri();
-  theBaseUriInfo->theHaveBaseUri = true;
+  theBaseUriInfo->theBaseUri = "";
+  theBaseUriInfo->theHaveBaseUri = false;
   return;
 }
 
@@ -3093,9 +3092,7 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 
   if (collator == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::FOCH0002, ERROR_PARAMS( uri ), ERROR_LOC( loc )
-    );
+    throw XQUERY_EXCEPTION(err::FOCH0002, ERROR_PARAMS(uri), ERROR_LOC(loc));
   }
   else
   {
@@ -4146,6 +4143,17 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       }
     }
   }
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::clear_base_uri()
+{
+  if (theBaseUriInfo)
+    delete theBaseUriInfo;
+
+    theBaseUriInfo = new BaseUriInfo;
 }
 
 } // namespace zorba

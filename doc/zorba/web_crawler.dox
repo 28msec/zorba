@@ -45,13 +45,13 @@ The maps are used to avoid parsing the same page twice.
 declare variable $local:processed-internal-links := xs:QName("processed-internal-links");
 declare variable $local:processed-external-links := xs:QName("processed-external-links");
 
-declare %ann:sequential function local:create-containers()
+declare %an:sequential function local:create-containers()
 {
   map:create($local:processed-internal-links, xs:QName("xs:string"));
   map:create($local:processed-external-links, xs:QName("xs:string"));
 };
 
-declare %ann:sequential function local:delete-containers(){
+declare %an:sequential function local:delete-containers(){
   for $x in map:available-maps()
   return map:delete($x);
 };
@@ -75,7 +75,7 @@ declare variable $local:tidy-options := <options xmlns="http://www.zorba-xquery.
                                          <tidyParam name="new-inline-tags" value="nav header section article footer xqdoc:custom d c options json-param" />
                                         </options>;
 
-declare %ann:sequential function local:get-real-link($href as xs:string, $start-uri as xs:string) as xs:string?
+declare %an:sequential function local:get-real-link($href as xs:string, $start-uri as xs:string) as xs:string?
 {
    variable $absuri;
    try{
@@ -90,7 +90,7 @@ declare %ann:sequential function local:get-real-link($href as xs:string, $start-
    $absuri
 };
 
-declare %ann:sequential function local:get-out-links-parsed($content as node()*, $uri as xs:string) as xs:string*
+declare %an:sequential function local:get-out-links-parsed($content as node()*, $uri as xs:string) as xs:string*
 {  distinct-values( for $y in  ($content//*:a/string(@href),
                               $content//*:link/string(@href),
                               $content//*:script/string(@src),
@@ -101,7 +101,7 @@ return  local:get-real-link($y, $uri))
 };
 
 
-declare %ann:sequential function local:map-insert-result($map-name as xs:QName, $url as xs:string, $http-result as item()*) 
+declare %an:sequential function local:map-insert-result($map-name as xs:QName, $url as xs:string, $http-result as item()*) 
 {
   if(count($http-result) ge 1) 
     then 
@@ -119,7 +119,7 @@ declare %ann:sequential function local:map-insert-result($map-name as xs:QName, 
   else {}
 };
 
-declare  %ann:sequential function local:process-internal-link($x as xs:string, $baseUri as xs:string, $n as xs:integer){
+declare  %an:sequential function local:process-internal-link($x as xs:string, $baseUri as xs:string, $n as xs:integer){
       if(not(empty(map:get($local:processed-internal-links, $x))))
             then exit returning false();
               else {}
@@ -181,7 +181,7 @@ Some html pages have errors, and tidy library is very strict with checking error
 When the parsing fails, we fallback to using regex for extracting the links.
 
 \code
-declare %ann:sequential function local:get-out-links-unparsed($content as xs:string, $uri as xs:string) as xs:string*{
+declare %an:sequential function local:get-out-links-unparsed($content as xs:string, $uri as xs:string) as xs:string*{
 
       distinct-values( 
          let $search := fn:analyze-string($content, "(&lt;|&amp;lt;|<)(((a|link|area).+?href)|((script|img).+?src))=([""'])(.*?)\7")
@@ -196,7 +196,7 @@ For external links, we just check if they exist, so the http command requests on
 Some websites return error for HEAD, in this case we revert to use GET.
 
 \code
-declare  %ann:sequential function local:process-external-link($x as xs:string, $baseUri as xs:string){
+declare  %an:sequential function local:process-external-link($x as xs:string, $baseUri as xs:string){
   if(not(empty(map:get($local:processed-external-links, $x))))
          then   exit returning false();
          else {}
