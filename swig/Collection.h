@@ -19,10 +19,9 @@
 class Collection
 {
 private:
-  zorba::Collection* theCollection;
+  zorba::Collection_t theCollection;
 
 public:
-  Collection() : theCollection(0) {}
   Collection(const Collection& aMgr) : theCollection(aMgr.theCollection) {}
   Collection(zorba::Collection* aMgr) : theCollection(aMgr) {}
 

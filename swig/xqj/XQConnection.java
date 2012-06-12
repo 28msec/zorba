@@ -70,6 +70,36 @@ import org.zorbaxquery.api.StringVector;
 import org.zorbaxquery.api.XmlDataManager;
 import org.zorbaxquery.api.Zorba;
 
+  /**
+   * 
+   * A connection (session) with a specific XQuery engine. Connections are obtained through an XQDataSource object.
+   * 
+   * XQuery expressions are executed and results are returned within the context of a connection. They are either executed through XQExpression or XQPreparedExpression objects.
+   * 
+   *   XQDataSource ds;// obtain the XQuery datasource
+   *   ... 
+   *   XQConnection conn = ds.getConnection();
+   * 
+   *   XQPreparedExpression expr = conn.prepareExpression("for $i in ...");
+   *   XQResultSequence result = expr.executeQuery();
+   *   // - or - 
+   *   XQExpression expr = conn.createExpression();
+   *   XQSequence result = expr.executeQuery("for $i in..");
+   * 
+   *   // The sequence can now be iterated 
+   *   while (result.next())
+   *   { 
+   *      String str  = result.getItemAsString();
+   *      System.out.println(" output "+ str);
+   *   }
+   *   result.close();
+   *   expr.close(); 
+   *   conn.close();  // close the connection and free all resources..
+   * 
+   * 
+   * A connection holds also default values for XQExpression and XQPreparedExpression properties. An application can override these defaults by passing an XQStaticContext object to the setStaticContext() method.
+   * 
+   */
 public class XQConnection implements javax.xml.xquery.XQConnection {
     private InMemoryStore store;
     private Zorba zorba;
@@ -79,12 +109,12 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
     private Collection<XQPreparedExpression> cPreparedExpression;
     private Collection<XQMetaData> cMetadata;
     private XQStaticContext lStaticContext;
+    private XQXmlDataManager lXmlDataManager;
     private Properties properties;
     private StringVector uriPaths;
     private StringVector libPaths;
     private StringVector modulePaths;
     
-    //TODO: Rodolfo ALL CASES should return an exception("Not implemented yet")
     protected Zorba getZorbaInstance() throws XQException {
         if (zorba!=null) {
             return zorba;
@@ -144,7 +174,12 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         
     }
     
-    
+  /** \brief Closes the connection.
+   * 
+   * Closes the connection. This also closes any XQExpression and XQPreparedExpression obtained from this connection. Once the connection is closed, no method other than close or the isClosed method may be called on the connection object. Calling close on an XQConnection object that is already closed has no effect. Note that an XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call this method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions.
+   * 
+   * @throw XQException - if there is an error during closing the connection.
+   */
     @Override
     public void close() throws XQException {
         if (closed) return; // already closed
@@ -162,9 +197,19 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         if (lStaticContext != null ) {
             ((org.zorbaxquery.api.xqj.XQStaticContext)lStaticContext).getZorbaStaticContext().destroy();
         }
+        if (lXmlDataManager != null) {
+            lXmlDataManager.close();
+        }
         zorba.shutdown();
         InMemoryStore.shutdown ( store );
         closed = true;
+    }
+    
+    public XQXmlDataManager getXmlDataManager() {
+        if (lXmlDataManager==null) {
+            lXmlDataManager = new XQXmlDataManager(zorba);
+        }
+        return lXmlDataManager;
     }
 
     @Override
@@ -173,30 +218,36 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         autocommit = bln;
     }
 
+  /** \brief Gets the auto-commit attribute of this connection
+   * 
+   * @return the auto-commit attribute of this connection. true if the connection operates in auto-commit mode; otherwise false
+   * @throw XQException - if the connection is in a closed state
+   */
     @Override
     public boolean getAutoCommit() throws XQException {
         isClosedXQException();
         return autocommit;
     }
 
+  /** \brief Makes all changes made in the current transaction permanent and releases any locks held by the datasource.
+   * 
+   * This method should be used only when auto-commit mode is disabled. Any XQResultSequence, or XQResultItem may be implicitly closed upon commit, if the holdability property of the sequence is set to XQConstants.HOLDTYPE_CLOSE_CURSORS_AT_COMMIT.
+   * 
+   * @throw XQException - if the connection is in a closed state or this connection is operating in auto-commit mode
+   */
     @Override
     public void commit() throws XQException {
         isClosedXQException();
         throw new UnsupportedOperationException("Zorba does not support transactions... yet...");
-        /*
-        if (!autocommit) {
-            try {
-                query.execute();
-            } catch (Exception e) {
-                throw new XQException("Error executing query");
-            }
-        } else {
-            throw new XQException("Autocommit was specified");
-        }
-         
-         */
     }
 
+  /** \brief Creates a new XQExpression object that can be used to perform execute immediate operations with XQuery expressions.
+   * 
+   * The properties of the connection's default XQStaticContext are copied to the returned XQExpression.
+   * 
+   * @return XQExpression that can be used to execute multiple expressions
+   * @throw XQException - if the connection is in a closed state
+   */
     @Override
     public XQExpression createExpression() throws XQException {
         isClosedXQException();
@@ -210,6 +261,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Creates a new XQExpression object that can be used to perform execute immediate operations with XQuery expressions.
+   * 
+   * The properties of the specified XQStaticContext values are copied to the returned XQExpression.
+   * 
+   * @param value - XQStaticContext containing values of expression properties
+   * @return XQExpression that can be used to execute multiple expressions
+   * @throw XQException - if (1) the connection is in a closed state, or (2) the specified argument is null
+   */
     @Override
     public XQExpression createExpression(XQStaticContext value) throws XQException {
         isClosedXQException();
@@ -219,17 +278,34 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Gets the metadata for this connection.
+   * 
+   * @return XQMetadata representing the metadata of this connection
+   * @throw XQException - if the connection is in a closed state
+   */
     @Override
     public XQMetaData getMetaData() throws XQException {
         isClosedXQException();
         return new org.zorbaxquery.api.xqj.XQMetaData(this);
     }
 
+  /** \brief Checks if the connection is closed.
+   * 
+   * @return true if the connection is in a closed state, false otherwise
+   */
     @Override
     public boolean isClosed() {
         return closed;
     }
 
+  /** \brief Prepares an expression for execution.
+   * 
+   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * 
+   * @param value - the XQuery expression as a String. Cannot be null
+   * @return the prepared XQuery expression
+   * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
+   */
     @Override
     public XQPreparedExpression prepareExpression(String value) throws XQException {
         isClosedXQException();
@@ -248,6 +324,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Prepares an expression for execution.
+   * 
+   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * 
+   * @param string - the XQuery expression as a String. Cannot be null
+   * @param xqsc - XQStaticContext containing values of expression properties.
+   * @return the prepared XQuery expression
+   * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
+   */
     @Override
     public XQPreparedExpression prepareExpression(String string, XQStaticContext xqsc) throws XQException {
         isClosedXQException();
@@ -263,6 +348,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Prepares an expression for execution.
+   * 
+   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * 
+   * @param reader - the XQuery expression as a Reader. Cannot be null
+   * @return the prepared XQuery expression
+   * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
+   */
     @Override
     public XQPreparedExpression prepareExpression(Reader reader) throws XQException {
         isClosedXQException();
@@ -293,6 +386,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Prepares an expression for execution.
+   * 
+   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * 
+   * @param reader - the XQuery expression as a Reader. Cannot be null
+   * @param xqsc - XQStaticContext containing values of expression properties
+   * @return the prepared XQuery expression
+   * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
+   */
     @Override
     public XQPreparedExpression prepareExpression(Reader reader, XQStaticContext xqsc) throws XQException {
         isClosedXQException();
@@ -318,6 +420,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Prepares an expression for execution.
+   * 
+   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * 
+   * @param in - the XQuery expression as an InputStream. Cannot be null
+   * @return the prepared XQuery expression
+   * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
+   */
     @Override
     public XQPreparedExpression prepareExpression(InputStream in) throws XQException {
         isClosedXQException();
@@ -347,6 +457,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Prepares an expression for execution.
+   * 
+   * The properties of the connection's default XQStaticContext are copied to the returned XQPreparedExpression.
+   * 
+   * @param in - the XQuery expression as an InputStream. Cannot be null
+   * @param xqsc - XQStaticContext containing values of expression properties
+   * @return the prepared XQuery expression
+   * @throw XQException - if (1) the connection is in a closed state, (2) there are errors preparing the expression, or (3) the xquery parameter is null
+   */
     @Override
     public XQPreparedExpression prepareExpression(InputStream in, XQStaticContext xqsc) throws XQException {
         isClosedXQException();
@@ -372,11 +491,24 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return expression;
     }
 
+  /** \brief Undoes all changes made in the current transaction and releases any locks held by the datasource.
+   * 
+   * This method should be used only when auto-commit mode is disabled.
+   * 
+   * @throw XQException - if the connection is in a closed state or this connection is operating in auto-commit mode
+   */
     @Override
     public void rollback() throws XQException {
         throw new UnsupportedOperationException("Zorba does not support transactions... yet...");
     }
 
+  /** \brief Gets an XQStaticContext representing the default values for all expression properties.
+   * 
+   * In order to modify the defaults, it is not sufficient to modify the values in the returned XQStaticContext object; in addition setStaticContext should be called to make those new values effective.
+   * 
+   * @return XQStaticContext representing the default values for all expression properties
+   * @throw XQException - if the connection is in a closed state
+   */
     @Override
     public XQStaticContext getStaticContext() throws XQException {
         isClosedXQException();
@@ -393,6 +525,13 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return lStaticContext;
     }
 
+  /** \brief Sets the default values for all expression properties.
+   * 
+   * The implementation will read out all expression properties from the specified XQStaticContext and update its private copy.
+   * 
+   * @param xqsc - XQStaticContext containing values of expression properties
+   * @throw XQException - if the connection is in a closed state
+   */
     @Override
     public void setStaticContext(XQStaticContext xqsc) throws XQException {
         isClosedXQException();
@@ -403,6 +542,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         lStaticContext = xqsc;
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the casting from xs:string rules outlined in 17.1.1 Casting from xs:string and xs:untypedAtomic, XQuery 1.0 and XPath 2.0 Functions and Operators. If the cast fails an XQException is thrown.
+   * 
+   * @param value - the lexical string value of the type
+   * @param type - the item type
+   * @return XQItem representing the resulting item
+   * @throw XQException - if (1) any of the arguments are null, (2) given type is not an atomic type, (3) the conversion of the value to an XDM instance failed, or (4) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromAtomicValue(String value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -420,6 +568,16 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type, which must represent an xs:string or a type derived by restriction from xs:string. If the specified type is null, it defaults to xs:string.
+   * Subsequently the value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the conversion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted, cannot be null
+   * @param type - the type of the value to be bound to the external variable. The default type, xs:string, is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromString(String value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -508,7 +666,7 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
                 item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createPositiveInteger(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_QNAME:
-                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName(value), type);
+                item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createQName(type.getSchemaURI().toString(), value), type);
                 break;
             case XQItemType.XQBASETYPE_SHORT:
                 item = new org.zorbaxquery.api.xqj.XQItem(itemFactory.createShort(Short.parseShort(value)), type);
@@ -564,6 +722,20 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates an item from the given value.
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return XQItem representing the resulting item
+   * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromDocument(String value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
@@ -594,6 +766,20 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates an item from the given value.
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return XQItem representing the resulting item
+   * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromDocument(Reader value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
@@ -618,6 +804,20 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates an item from the given value.
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param value - the value to be converted, cannot be null
+   * @param baseURI - an optional base URI, can be null. It can be used, for example, to resolve relative URIs and to include in error messages.
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return XQItem representing the resulting item
+   * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromDocument(InputStream value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
@@ -636,6 +836,19 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates an item from the given value.
+   * 
+   * If the value represents a well-formed XML document, it will be parsed and results in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param value - the value to be converted, cannot be null
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return XQItem representing the resulting item
+   * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromDocument(XMLStreamReader value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -671,6 +884,24 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
      return sw.toString();
     }
     
+  /** \brief Creates an item from the given value.
+   * 
+   * An XQJ implementation must at least support the following implementations:
+   * - javax.xml.transform.dom.DOMSource
+   * - javax.xml.transform.sax.SAXSource
+   * - javax.xml.transform.stream.StreamSource
+   * 
+   * If the value represents a well-formed XML document, it will result in a document node. The kind of the input type must be null, XQITEMKIND_DOCUMENT_ELEMENT, or XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT. 
+   * 
+   * The value is converted into an instance of the specified type according to the rules defined in 14.3 Mapping a Java XML document to an XQuery document node, XQuery API for Java (XQJ) 1.0. 
+   * 
+   * If the value is not well formed, or if a kind of the input type other than the values list above is specified, behavior is implementation defined and may raise an exception.
+   * 
+   * @param value - the value to be converted, cannot be null
+   * @param type - the type of the value for the created document node. If null is specified, it behaves as if XQDataFactory.createDocumentElementType( XQDataFactory.createElementType(null, XQItemType.XQBASETYPE_XS_UNTYPED)) were passed in as the type parameter. That is, the type represents the XQuery sequence type document-node(element(*, xs:untyped))
+   * @return XQItem representing the resulting item
+   * @throw XQException - if (1) the value argument is null, (2) the conversion of the value to an XDM instance failed, or (3) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromDocument(Source value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -689,6 +920,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromObject(Object value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1071,8 +1311,6 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
-    // This method works for Decimal and all subtypes,
-    // verifies that the type is correct and create the Item
     private XQItem createDecimal(BigDecimal value, XQItemType type) throws XQException {
         XQItem item = null;
         try {
@@ -1128,7 +1366,16 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         }
         return item;
     }
-    
+
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param b - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromByte(byte b, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1138,6 +1385,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return createDecimal(new BigDecimal(b), type);
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromDouble(double value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1157,6 +1413,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromFloat(float value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1176,6 +1441,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromInt(int value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1192,6 +1466,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return createDecimal(new BigDecimal(value), type);
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromLong(long value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1209,6 +1492,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return createDecimal(new BigDecimal(value), type);
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromNode(Node value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1223,6 +1515,15 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return result;
     }
 
+  /** \brief Creates an item from a given value.
+   * 
+   * The value is converted into an instance of the specified type according to the rule defined in 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the converstion fails, an XQException will be thrown.
+   * 
+   * @param value - the value to be converted
+   * @param type - the type of the value to be bound to the external variable. The default type of the value is used in case null is specified
+   * @return XQItem representing the resulting item
+   * @throw XQException - (1) the conversion of the value to an XDM instance failed, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItem createItemFromShort(short value, XQItemType type) throws XQException {
         isClosedXQException();
@@ -1235,6 +1536,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return createDecimal(new BigDecimal(value), type);
     }
 
+  /** \brief Creates a copy of the specified XQItem.
+   * 
+   * This method can be used, for example, to copy an XQResultItem object so that the new item is not dependant on the connection.
+   * 
+   * @param value - the XQItem to copy
+   * @return XQItem independent of any underlying XQConnection is created
+   * @throw XQException - if (1) the specified item is null, (2) the underlying object implementing the interface is closed, (3) the specified item is closed
+   */
     @Override
     public XQItem createItem(XQItem value) throws XQException {
         isClosedXQException();
@@ -1246,6 +1555,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return result;
     }
 
+  /** \brief Creates a copy of the specified XQSequence.
+   * 
+   * Creates a copy of the specified XQSequence. The newly created XQSequence is scrollable and independent of any underlying XQConnection. The new XQSequence will contain all items from the specified XQSequence starting from its current position. The copy process will implicitly perform next operations on the specified sequence to read the items. All items are consumed, the current position of the cursor is set to point after the last item.
+   * 
+   * @param value - input sequence
+   * @return XQSequence representing a copy of the input sequence
+   * @throw XQException - if (1) there are errors accessing the items in the specified sequence, (2) the specified sequence is closed, (3) in the case of a forward only sequence, a get or write method has already been invoked on the current item, (4) the s parameter is null, or (5) the underlying object implementing the interface is closed
+   */
     @Override
     public XQSequence createSequence(XQSequence value) throws XQException {
         isClosedXQException();
@@ -1262,6 +1579,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return result;
     }
 
+  /** \brief Creates an XQSequence, containing all the items from the iterator.
+   * 
+   * The newly created XQSequence is scrollable and independent of any underlying XQConnection. If the iterator returns an XQItem, it is added to the sequence. If the iterator returns any other object, an item is added to the sequence following the rules from 14.2 Mapping a Java Data Type to an XQuery Data Type, XQuery API for Java (XQJ) 1.0. If the iterator does not return any items, then an empty sequence is created.
+   * 
+   * @param value - input sequence
+   * @return XQSequence representing a copy of the input sequence
+   * @throw XQException - if (1) there are errors accessing the items in the specified sequence, (2) the specified sequence is closed, (3) in the case of a forward only sequence, a get or write method has already been invoked on the current item, (4) the s parameter is null, or (5) the underlying object implementing the interface is closed
+   */
     @Override
     public XQSequence createSequence(Iterator value) throws XQException {
         isClosedXQException();
@@ -1275,6 +1600,20 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return result;
     }
 
+  /** \brief Creates a new XQItemType object representing an XQuery atomic type.
+   * 
+   * The item kind of the item type will be XQItemType.XQITEMKIND_ATOMIC. 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ...;
+   * 
+   *   // to create xs:integer item type
+   *   conn.createAtomicType(XQItemType.XQBASETYPE_INTEGER); 
+   * \endcode
+   * @param basetype - one of the XQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />XQItemType.XQBASETYPE_UNTYPED<br />XQItemType.XQBASETYPE_ANYTYPE<br />XQItemType.XQBASETYPE_IDREFS<br />XQItemType.XQBASETYPE_NMTOKENS<br />XQItemType.XQBASETYPE_ENTITIES<br />XQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
+   * @return a new XQItemType representing the atomic type
+   * @throw XQException - if (1) an invalid basetype value is passed in, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createAtomicType(int basetype) throws XQException {
         isClosedXQException();
@@ -1290,6 +1629,22 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return type;
     }
 
+  /** \brief Creates a new XQItemType object representing an XQuery atomic type.
+   * 
+   * The item kind of the item type will be XQItemType.XQITEMKIND_ATOMIC. 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ...;
+   * 
+   *   // to create xs:integer item type
+   *   conn.createAtomicType(XQItemType.XQBASETYPE_INTEGER); 
+   * \endcode
+   * @param basetype - one of the XQItemType.XQBASETYPE_* constants. All basetype constants except the following are valid:<br />XQItemType.XQBASETYPE_UNTYPED<br />XQItemType.XQBASETYPE_ANYTYPE<br />XQItemType.XQBASETYPE_IDREFS<br />XQItemType.XQBASETYPE_NMTOKENS<br />XQItemType.XQBASETYPE_ENTITIES<br />XQItemType.XQBASETYPE_ANYSIMPLETYPE<br />
+   * @param qname - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null
+   * @param uri - the URI to the schema. Can be null. This can only be specified if the typename is also specified
+   * @return a new XQItemType representing the atomic type
+   * @throw XQException - if (1) an invalid basetype value is passed in, or (2) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createAtomicType(int basetype, QName qname, URI uri) throws XQException {
         if (closed) {
@@ -1307,6 +1662,41 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return type;
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery attribute(nodename, basetype) type with the given node name and base type.
+   * 
+   * This method can be used to create item type for attributes with a pre-defined schema type. 
+   * 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ..; // An XQuery connection
+   * 
+   *   - attribute() // no node name, pass null for the node name
+   * 
+   *     conn.createAttributeType(null, XQItemType.XQBASETYPE_ANYSIMPLETYPE);
+   * 
+   *   - attribute (*)  // equivalent to attribute()
+   * 
+   *     conn.createAttributeType(null, XQItemType.XQBASETYPE_ANYSIMPLETYPE);
+   * 
+   *   - attribute (person) // attribute of name person and any simple type.
+   * 
+   *     conn.createAttributeType(new QName("person"), XQItemType.XQBASETYPE_ANYSIMPLETYPE); 
+   * 
+   *   - attribute(foo:bar) // node name foo:bar, type is any simple type
+   * 
+   *     conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
+   *                              XQItemType.XQBASETYPE_ANYSIMPLETYPE);
+   * 
+   *   - attribute(foo:bar, xs:integer) // node name foo:bar, type is xs:integer
+   * 
+   *     conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
+   *                              XQItemType.XQBASETYPE_INTEGER);
+   * \endcode
+   * @param nodename - specifies the name of the node.null indicates a wildcard for the node name
+   * @param basetype - the base type of the attribute. One of the XQItemType.XQBASETYPE_* other than XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
+   * @return a new XQItemType representing the XQuery attribute(nodename, basetype) type
+   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) if the base type is one of: XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
+   */
     @Override
     public XQItemType createAttributeType(QName nodename, int basetype) throws XQException {
         isClosedXQException();
@@ -1316,6 +1706,50 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype);
     }
 
+  /** \brief  Creates a new XQItemType object representing the XQuery attribute(nodename, basetype) type with the given node name and base type.
+   * 
+   * The type name can reference either pre-defined simple types or user-defined simple types. 
+   * 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ..; // An XQuery connection
+   * 
+   *   - attribute (name, employeename) // attribute name of type employeename 
+   *  
+   *   conn.createAttributeType(new QName("name"), XQItemType.XQBASETYPE_ANYSIMPLETYPE,
+   *                            new QName("employeename"), null);
+   *  
+   *   - attribute (foo:bar, po:city) 
+   *   where the prefix foo refers to the namespace http://www.foo.com and the
+   *   prefix po refers to the namespace "http://www.address.com"
+   * 
+   *   conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
+   *                            XQItemType.XQBASETYPE_ANYSIMPLETYPE,
+   *                            new QName("http://address.com", "address","po"), null);
+   * 
+   *   - attribute (zip, zipcode) // attribute zip of type zipchode which derives from
+   *                              // xs:string 
+   * 
+   *   conn.createAttributeType(new QName("zip"), XQItemType.XQBASETYPE_STRING,
+   *                            new QName("zipcode"), null);
+   * 
+   *   - attribute(foo:bar, po:hatsize) 
+   *   where the prefix foo refers to the namespace http://www.foo.com and the
+   *   prefix po refers to the namespace "http://www.hatsizes.com" 
+   *   with schema URI "http://hatschema.com"
+   * 
+   *   conn.createAttributeType(new QName("http://www.foo.com", "bar","foo"), 
+   *                   XQItemType.XQBASETYPE_INTEGER,
+   *                   new QName("http://www.hatsizes.com", "hatsize","po"), 
+   *                   new QName("http://hatschema.com"));
+   * \endcode
+   * @param nodename - specifies the name of the node.null indicates a wildcard for the node name
+   * @param basetype - the base type of the attribute. One of the XQItemTyupe.XQBASETYPE_* constants other than XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
+   * @param typename - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null.
+   * @param schemaURI - the URI to the schema. Can be null. This can only be specified if the typename is also specified
+   * @return a new XQItemType representing the XQuery attribute(nodename,basetype, typename,schemaURI) type.
+   * @throw XQException - if (1) the underlying object implementing the interface is closed, (2) if the base type is one of: XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE, (3) the schema URI is specified and the typename is not specified, (4) the implementation does not support user-defined XML schema types, or (5) if the typename refers to a predefinied type and does not match basetype
+   */
     @Override
     public XQItemType createAttributeType(QName nodename, int basetype, QName typename, URI schemaURI) throws XQException {
         isClosedXQException();
@@ -1328,18 +1762,67 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype, typename, schemaURI, true);
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery schema-attribute(nodename,basetype,schemaURI) type, with the given node name, base type, and schema URI.
+   * 
+   * Example -
+   * \code{.java}
+   *      XQConnection conn = ..; // An XQuery connection
+   * 
+   *      - schema-attribute (name) // schema-attribute name, found in the schema 
+   *                                // available at http://customerschema.com
+   * 
+   *      conn.createSchemaAttributeType(new QName("name"), 
+   *                   XQItemType.XQBASETYPE_STRING,
+   *                   new URI(http://customerschema.com));
+   *  \endcode
+   * 
+   * @param nodename - specifies the name of the node
+   * @param basetype - the base type of the attribute. One of the XQItemTyupe.XQBASETYPE_* constants other than XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE
+   * @param uri - the URI to the schema. Can be null
+   * @return a new XQItemType representing the XQuery schema-attribute(nodename,basetype, schemaURI) type
+   * @throw XQException - if (1) the node name is null, (2) if the base type is one of: XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE, (3) the underlying object implementing the interface is closed, or (4) the implementation does not support user-defined XML schema types
+   */
     @Override
     public XQItemType createSchemaAttributeType(QName nodename, int basetype, URI uri) throws XQException {
         isClosedXQException();
         return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE, nodename, basetype, uri);
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery comment() type.
+   * 
+   * Creates a new XQItemType object representing the XQuery comment() type. The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_COMMENT. 
+   * 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ..; // An XQuery connection
+   *   XQItemType cmttype = conn.createCommentType(); 
+   * 
+   *   int itemkind = cmttype.getItemKind(); // will be XQItemType.XQITEMKIND_COMMENT
+   * 
+   *   XQExpression expr = conn.createExpression();
+   *   XQSequence result = expr.executeQuery("<!-- comments -->");
+   * 
+   *   result.next();
+   *   boolean pi = result.instanceOf(cmttype);  // will be true
+   * \endcode
+   * 
+   * @return a new XQItemType representing the XQuery comment() type
+   * @throw XQException - if the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createCommentType() throws XQException {
         isClosedXQException();
         return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_COMMENT);
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery document-node(elementType) type containing a single element.
+   * 
+   * Creates a new XQItemType object representing the XQuery document-node(elementType) type containing a single element. The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_DOCUMENT_ELEMENT and the base type set to the item type of the input elementType.
+   * 
+   * @param elementType - an XQItemType object representing an XQuery element() type, cannot be null
+   * @return a new XQItemType representing the XQuery document-node(elementType) type containing a single element
+   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) the elementType has an item kind different from XQItemType.XQITEMKIND_ELEMENT, (3) the elementType argument is null, or (4) the implementation does not support user-defined XML schema types
+   */
     @Override
     public XQItemType createDocumentElementType(XQItemType elementType) throws XQException {
         isClosedXQException();
@@ -1350,6 +1833,14 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery document-node(elementType) type containing a single schema-element(...).
+   * 
+   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT and the base type set to the item type of the input elementType.
+   * 
+   * @param elementType - an XQItemType object representing an XQuery schema-element(...) type, cannot be null
+   * @return a new XQItemType representing the XQuery document-node(elementType) type containing a single schema-element(...) element
+   * @throw XQException - if (1) the underlying object implementing the interface is closed or (2) the elementType has an item kind different from XQItemType.XQITEMKIND_SCHEMA_ELEMENT, (3) the elementType argument is null, (4) the implementation does not support user-defined XML schema types
+   */
     @Override
     public XQItemType createDocumentSchemaElementType(XQItemType elementType) throws XQException {
         isClosedXQException();
@@ -1359,12 +1850,53 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery document-node() type.
+   * 
+   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_DOCUMENT.
+   * 
+   * @return a new XQItemType representing the XQuery document-node() type
+   * @throw XQException - if the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createDocumentType() throws XQException {
         isClosedXQException();
         return new org.zorbaxquery.api.xqj.XQItemType(XQItemType.XQITEMKIND_DOCUMENT);
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery element(nodename, basetype) type, with the given node name and base type.
+   * 
+   * This method can be used to create item type for elements with a pre-defined schema type. 
+   * 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ..; // An XQuery connection
+   *   - element() // no node name, pass null for the node name
+   * 
+   *   conn.createElementType(null, XQItemType.XQBASETYPE_ANYTYPE);
+   * 
+   *   - element (*)  // equivalent to element()
+   * 
+   *   conn.createElementType(null, XQItemType.XQBASETYPE_ANYTYPE);
+   * 
+   *   - element(person) // element of name person and any type.
+   * 
+   *   conn.createElementType(new QName("person"), XQItemType.XQBASETYPE_ANYTYPE); 
+   * 
+   *   - element(foo:bar) // node name foo:bar, type is anytype
+   * 
+   *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
+   *                          XQItemType.XQBASETYPE_ANYTYPE);
+   * 
+   *   - element(foo:bar, xs:integer) // node name foo:bar, type is xs:integer
+   * 
+   *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
+   *                          XQItemType.XQBASETYPE_INTEGER);
+   * \endcode
+   * @param nodename - specifies the name of the node. null indicates a wildcard for the node name
+   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @return a new XQItemType representing the XQuery element(nodename, basetype) type
+   * @throw XQException - if (1) the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createElementType(QName nodename, int baseType) throws XQException {
         isClosedXQException();
@@ -1372,6 +1904,63 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery element(nodename,basetype,typename,schemaURI, allowNill) type, given the node name, base type, schema type name, schema URI, and nilled check.
+   * 
+   * The type name can reference either pre-defined schema types or user-defined types. 
+   * 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ..; // An XQuery connection
+   * 
+   *   - element (person, employee) // element person of type employee
+   * 
+   *   conn.createElementType(new QName("person"), XQItemType.XQBASETYPE_ANYTYPE,
+   *                          new QName("employee"), null ,false);
+   *  
+   *   - element(person, employee ? ) // element person of type employee, whose nilled 
+   *                                  // property may be true or false. 
+   *  
+   *   conn.createElementType(new QName("person"), XQItemType.XQBASETYPE_ANYTYPE,
+   *                          new QName("employee"), null ,true);
+   *  
+   *   - element(foo:bar, po:address) 
+   *   where the prefix foo refers to the namespace http://www.foo.com and the
+   *   prefix po refers to the namespace "http://www.address.com"
+   * 
+   *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
+   *                XQItemType.XQBASETYPE_ANYTYPE,
+   *                new QName("http://address.com", "address","po"), null, false);
+   * 
+   *   - element (zip, zipcode) // element zip of type zipchode which derives from
+   *                            // xs:string 
+   * 
+   *   conn.createElementType(new QName("zip"), XQItemType.XQBASETYPE_STRING,
+   *                          new QName("zipcode"), null, false);
+   * 
+   *   - element (*, xs:anyType ?)
+   * 
+   *   conn.createElementType(null, XQItemType.XQBASETYPE_ANYTYPE, null, null, true);
+   * 
+   *   - element(foo:bar, po:hatsize) 
+   *   where the prefix foo refers to the namespace http://www.foo.com and the
+   *   prefix po refers to the namespace "http://www.hatsizes.com" 
+   *   with schema URI "http://hatschema.com"
+   * 
+   *   conn.createElementType(new QName("http://www.foo.com", "bar","foo"), 
+   *                       XQItemType.XQBASETYPE_INTEGER,
+   *                       new QName("http://www.hatsizes.com", "hatsize","po"), 
+   *                       new QName("http://hatschema.com"), false);
+   * 
+   * \endcode 
+   * 
+   * @param nodename - specifies the name of the element. null indicates a wildcard for the node name
+   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @param typename - the QName of the type. If the QName refers to a predefinied type, it must match the basetype. Can be null
+   * @param schemaURI - the URI to the schema. Can be null. This can only be specified if the typename is also specified
+   * @param allowNill - the nilled property of the element
+   * @return a new XQItemType representing the XQuery element(nodename,basetype, typename,schemaURI, allowNill) type
+   * @throw XQException - if (1) schemaURI is specified but the typename is not specified, (2) the underlying object implementing the interface is closed, (3) the implementation does not support user-defined XML schema types, or (4) if the typename refers to a predefinied type and does not match basetype
+   */
     @Override
     public XQItemType createElementType(QName nodename, int baseType, QName typename, URI schemaURI, boolean allowNill) throws XQException {
         isClosedXQException();
@@ -1379,6 +1968,24 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief     Creates a new XQItemType object representing the XQuery schema-element(nodename,basetype,schemaURI) type, given the node name, base type, and the schema URI.
+   * 
+   * Example -
+   * \code{.java}
+   *      XQConnection conn = ..; // An XQuery connection
+   * 
+   *      - schema-element (customer) // schema-element person, found in
+   *                                  // the schema available at http://customerschema.com
+   * 
+   *      conn.createElementType(new QName("customer"), XQItemType.XQBASETYPE_ANYTYPE,
+   *                          new URI("http://customerschema.com"));
+   * \endcode
+   * @param nodename - specifies the name of the element
+   * @param baseType - the base type of the item. One of the XQItemType.XQBASETYPE_* constants
+   * @param schemaURI - the URI to the schema. Can be null
+   * @return a new XQItemType representing the XQuery schema-element(nodename,basetype, schemaURI) type
+   * @throw XQException - if (1) the node name is null, (2) the underlying object implementing the interface is closed, or (3) the implementation does not support user-defined XML schema types
+   */
     @Override
     public XQItemType createSchemaElementType(QName nodename, int baseType, URI schemaURI) throws XQException {
         isClosedXQException();
@@ -1386,6 +1993,18 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return item;
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery item type.
+   * 
+   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_ITEM. 
+   * 
+   * Example -
+   * \code{.java}
+   *   XQConnection conn = ..; // An XQuery connection
+   *   XQItemType typ = conn.createItemType(); // represents the XQuery item type "item()"
+   * \endcode
+   * @return a new XQItemType representing the XQuery item type
+   * @throw XQException - if the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createItemType() throws XQException {
         isClosedXQException();
@@ -1393,6 +2012,13 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return type;
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery node() type. 
+   * 
+   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_NODE.
+   * 
+   * @return a new XQItemType representing the XQuery node() type
+   * @throw XQException - if the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createNodeType() throws XQException {
         isClosedXQException();
@@ -1400,6 +2026,35 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return type;
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery processing-instruction(piTarget) type.
+   * 
+   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_PI. A string literal can be passed to match the PITarget of the processing instruction as described in 2.5.4.2 Matching an Item Type and an Item, XQuery 1.0: An XML Query Language. 
+   * 
+   * Example -
+   * \code{.java}
+   *    XQConnection conn = ..; // An XQuery connection
+   *    XQItemType anypi = conn.createProcessingInstructionType(); 
+   *    XQItemType foopi = conn.createProcessingInstructionType("foo-format");
+   * 
+   *    XQExpression expr = conn.createExpression();
+   *    XQSequence result = expr.executeQuery("<?format role="output" ?>");
+   *  
+   *    result.next();
+   *    boolean pi = result.instanceOf(anypi);  // will be true
+   *    pi = result.instanceOf(foopi);  // will be false
+   *  
+   *    XQExpression expr = conn.createExpression();
+   *    XQSequence result = expr.executeQuery("<?foo-format role="output" ?>");
+   *    
+   *    result.next();
+   *    boolean pi = result.instanceOf(anypi);  // will be true
+   *    pi = result.instanceOf(foopi);  // will be true 
+   * \endcode
+   * 
+   * @param piTarget - the string literal to match the processing instruction's PITarget. A null string value will match all processing instruction nodes
+   * @return a new XQItemType representing the XQuery processing-instruction(piTarget) type
+   * @throw XQException - if the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createProcessingInstructionType(String piTarget) throws XQException {
         isClosedXQException();
@@ -1407,6 +2062,13 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return type;
     }
 
+  /** \brief Creates a new sequence type from an item type and occurence indicator.
+   * 
+   * @param item - the item type. This parameter must be null if the occurance is XQSequenceType.OCC_EMPTY, and cannot be null for any other occurance indicator
+   * @param occurence - The occurence of the item type, must be one of XQSequenceType.OCC_ZERO_OR_ONE, XQSequenceType.OCC_EXACTLY_ONE, XQSequenceType.OCC_ZERO_OR_MORE, XQSequenceType.OCC_ONE_OR_MORE, XQSequenceType.OCC_EMPTY
+   * @return a new XQSequenceType representing the type of a sequence
+   * @throw XQException - if (1) the item is null and the occurance is not XQSequenceType.OCC_EMPTY, (2) the item is not null and the occurance is XQSequenceType.OCC_EMPTY, (3) the occurence is not one of: XQSequenceType.OCC_ZERO_OR_ONE, XQSequenceType.OCC_EXACTLY_ONE, XQSequenceType.OCC_ZERO_OR_MORE, XQSequenceType.OCC_ONE_OR_MORE, XQSequenceType.OCC_EMPTY or (4) the underlying object implementing the interface is closed
+   */
     @Override
     public XQSequenceType createSequenceType(XQItemType item, int occurence) throws XQException {
         isClosedXQException();
@@ -1425,6 +2087,13 @@ public class XQConnection implements javax.xml.xquery.XQConnection {
         return result;
     }
 
+  /** \brief Creates a new XQItemType object representing the XQuery text() type.
+   * 
+   * The XQItemType object will have the item kind set to XQItemType.XQITEMKIND_TEXT.
+   * 
+   * @return a new XQItemType representing the XQuery text() type
+   * @throw XQException - if the underlying object implementing the interface is closed
+   */
     @Override
     public XQItemType createTextType() throws XQException {
         isClosedXQException();

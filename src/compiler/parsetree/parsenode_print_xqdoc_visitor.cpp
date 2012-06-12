@@ -38,6 +38,8 @@
 #include "store/api/iterator.h"
 
 #include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
+
 
 using namespace std;
 
@@ -499,10 +501,10 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theVersion("1.0"),
   theFactory(GENV_ITEMFACTORY)
 {
-  theNamespaceMap["fn"] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaceMap[""] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaceMap["xs"] = "http://www.w3.org/2001/XMLSchema";
-  theNamespaceMap["local"] = "http://www.w3.org/2005/xquery-local-functions";
+  theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
+  theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
+  theNamespaceMap[XML_SCHEMA_PREFIX] = XML_SCHEMA_NS;
+  theNamespaceMap["local"] = XQUERY_LOCAL_FN_NS;
 }
 
 

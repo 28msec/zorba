@@ -43,15 +43,18 @@ namespace zorba {
   }
 
   StreamResource* StreamResource::create(std::istream* aStream,
-                                         StreamReleaser aStreamReleaser)
+                                         StreamReleaser aStreamReleaser,
+                                         bool aIsStreamSeekable)
   {
-    return new StreamResourceImpl(aStream, aStreamReleaser);
+    return new StreamResourceImpl(aStream, aStreamReleaser, aIsStreamSeekable);
   }
 
   StreamResourceImpl::StreamResourceImpl(std::istream* aStream,
-                                         StreamReleaser aStreamReleaser)
+                                         StreamReleaser aStreamReleaser,
+                                         bool aIsStreamSeekable)
     : theStream(aStream),
-      theStreamReleaser(aStreamReleaser)
+      theStreamReleaser(aStreamReleaser),
+      theIsStreamSeekable(aIsStreamSeekable)
   {
   }
 

@@ -628,5 +628,124 @@ IsAncestorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+/*******************************************************************************
+********************************************************************************/
+int getNodePosition(store::Item_t aNode)
+{
+  int count = 1;
+  store::Iterator_t lIterator = aNode->getParent()->getChildren();
+  store::Item_t lItem;
+  lIterator->open();
+  while(lIterator->next(lItem))
+  {
+    if (lItem->getNodeKind() == aNode->getNodeKind())
+    {
+      if(lItem->equals(aNode))
+        break;
+      else
+        count++;
+    }
+  }
+  lIterator->close();
+  return count;
+}
+
+bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t inNode;
+  store::Item_t nodeName;
+  store::NsBindings nsBindings;
+  zstring path;
+  zstring temp;
+  zstring zNamespace;
+  zstring zLocalName;
+  zstring zPosition;
+  bool rootIsDocument = false;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(inNode, theChildren[0], planState))
+  {
+    do
+    { 
+      switch (inNode->getNodeKind())
+      {
+        case store::StoreConsts::documentNode:
+          temp = path;
+          path = "/";
+          path += temp;
+          rootIsDocument = true;
+          break;
+        case store::StoreConsts::elementNode:
+          nodeName = inNode->getNodeName();
+          zNamespace = nodeName->getNamespace();
+          zLocalName = nodeName->getLocalName();
+          zPosition = ztd::to_string(getNodePosition(inNode));
+          temp = path;
+          path = "\""+zNamespace+"\":"+zLocalName+"["+zPosition.c_str()+"]";
+          path += temp;
+          break;
+        case store::StoreConsts::attributeNode:
+          nodeName = inNode->getNodeName();
+          zNamespace =nodeName->getNamespace();
+          zLocalName = nodeName->getLocalName();
+          if(zNamespace != "")
+          {
+            temp = path;
+            path = "@\""+zNamespace+"\":"+zLocalName;
+            path += temp;
+          }
+          else
+          {
+            temp = path;
+            path = "@"+zLocalName;
+            path += temp;
+          }
+          break;
+        case store::StoreConsts::textNode:
+          zPosition = ztd::to_string(getNodePosition(inNode));
+          temp = path;
+          path = "text()["+zPosition+"]";
+          path += temp;
+          break;
+        case store::StoreConsts::commentNode:
+          zPosition = ztd::to_string(getNodePosition(inNode));
+          temp = path;
+          path = "comment()["+zPosition+"]";
+          path += temp;
+          break;
+        default:
+          if(inNode->isProcessingInstruction())
+          {
+            nodeName = inNode->getNodeName();
+            zLocalName = nodeName->getLocalName();
+            zPosition = ztd::to_string(getNodePosition(inNode));
+            temp = path;
+            path = "processing-instruction("+zLocalName+")["+zPosition+"]";
+            path += temp;
+          }
+          break;
+      }
+      inNode = inNode->getParent();
+      
+      if(inNode && inNode->getNodeKind() != store::StoreConsts::documentNode)
+      {
+        temp = path;
+        path = "/";
+        path += temp;
+      }
+
+    } while (inNode);
+
+    if(rootIsDocument)
+      STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
+    else
+      throw XQUERY_EXCEPTION(err::FODC0001, ERROR_PARAMS("fn:path"), ERROR_LOC(loc));
+  }
+
+  STACK_END (state);
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

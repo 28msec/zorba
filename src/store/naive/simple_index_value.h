@@ -88,11 +88,13 @@ protected:
 public:
   const XQPCollator* getCollator(ulong i) const;
 
+  virtual bool isTreeIndex() = 0;
+
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 
   virtual bool remove(
         const store::IndexKey* key,
-        store::Item_t& item,
+        const store::Item_t& item,
         bool all = false) = 0;
 };
 
@@ -142,6 +144,8 @@ protected:
   ~ValueHashIndex();
 
 public:
+  bool isTreeIndex() { return false; }
+
   void clear();
 
   ulong size() const;
@@ -150,7 +154,7 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all);
 };
 
 
@@ -183,6 +187,8 @@ public:
   void reset();
 
   void close();
+
+  void count(store::Item_t& result);
 };
 
 
@@ -227,6 +233,8 @@ protected:
   ~ValueTreeIndex();
 
 public:
+  bool isTreeIndex() { return true; }
+
   void clear();
 
   ulong size() const;
@@ -235,7 +243,7 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all = false);
 };
 
 
@@ -283,6 +291,8 @@ public:
   void reset();
 
   void close();
+
+  void count(store::Item_t& result);
 };
 
 

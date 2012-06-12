@@ -33,8 +33,11 @@ class FTTokenSeqIterator : public FTTokenIterator {
 public:
   typedef std::vector<FTToken> FTTokens;
 
+  FTTokenSeqIterator() { }
   FTTokenSeqIterator( FTTokens& );
   ~FTTokenSeqIterator();
+
+  void take( FTTokens& );
 
   // inherited
   index_t begin() const;

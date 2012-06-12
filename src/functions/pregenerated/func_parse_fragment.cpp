@@ -38,24 +38,11 @@ PlanIter_t fn_zorba_xml_parse::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new FnParseXmlFragmentIterator(sctx, loc, argv);
+  return new FnZorbaParseXmlFragmentIterator(sctx, loc, argv);
 }
 
 void populate_context_parse_fragment(static_context* sctx)
-{
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_xml_parse,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","parse"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_XML_PARSE_2);
-
-  }
-
-}
+{}
 
 
 }

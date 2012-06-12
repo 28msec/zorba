@@ -55,6 +55,23 @@ public:
 };
 
 
+//fn-zorba-fetch:content-binary
+class fn_zorba_fetch_content_binary : public function
+{
+public:
+  fn_zorba_fetch_content_binary(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-fetch:content-type
 class fn_zorba_fetch_content_type : public function
 {

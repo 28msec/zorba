@@ -39,6 +39,7 @@ namespace zorba {
     void initializeTestList() {
       libunittests["string"] = test_string;
       libunittests["uri"] = runUriTest;
+      libunittests["fs_iterator"] = test_fs_iterator;
 #ifndef ZORBA_NO_ICU
       libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */

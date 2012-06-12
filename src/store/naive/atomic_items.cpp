@@ -1651,16 +1651,19 @@ zstring StringItem::show() const
 #ifndef ZORBA_NO_FULL_TEXT
 FTTokenIterator_t StringItem::getTokens( 
     TokenizerProvider const &provider,
-    Tokenizer::Numbers &numbers,
+    Tokenizer::State &state,
     iso639_1::type lang,
     bool wildcards ) const
 {
   typedef NaiveFTTokenIterator::container_type tokens_t;
   unique_ptr<tokens_t> tokens( new tokens_t );
+  AtomicItemTokenizerCallback callback( *tokens );
 
-  Tokenizer::ptr t( provider.getTokenizer( lang, numbers ) );
-  AtomicItemTokenizerCallback cb( *t, lang, *tokens );
-  cb.tokenize( theValue.data(), theValue.size(), wildcards );
+  Tokenizer::ptr tokenizer;
+  if ( provider.getTokenizer( lang, &state, &tokenizer ) )
+    tokenizer->tokenize_string(
+      theValue.data(), theValue.size(), lang, wildcards, callback
+    );
 
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
 }
@@ -1670,6 +1673,36 @@ FTTokenIterator_t StringItem::getTokens(
 /*******************************************************************************
   class StreamableStringItem
 ********************************************************************************/
+StreamableStringItem::StreamableStringItem(
+    std::istream& aStream,
+    StreamReleaser streamReleaser,
+    bool seekable) :
+  theIstream(aStream),
+  theIsMaterialized(false),
+  theIsConsumed(false),
+  theIsSeekable(seekable),
+  theStreamReleaser(streamReleaser),
+  theStreamableDependent(nullptr)
+{
+}
+
+StreamableStringItem::StreamableStringItem(
+    store::Item_t& aStreamableDependent) :
+  theIstream(aStreamableDependent->getStream()),
+  theIsMaterialized(false),
+  theIsConsumed(false),
+  theIsSeekable(aStreamableDependent->isSeekable()),
+  theStreamReleaser(nullptr),
+  theStreamableDependent(aStreamableDependent)
+{
+  ZORBA_ASSERT(theStreamableDependent->isStreamable());
+
+  // We copied the dependent item's stream and seekable flag in the initializer
+  // above, but did NOT copy the StreamReleaser. The dependent item maintains
+  // memory ownership of the stream in this way.
+}
+
+
 void StreamableStringItem::appendStringValue(zstring& aBuf) const
 {
   if (!theIsMaterialized) 
@@ -3318,7 +3351,7 @@ const char*
 Base64BinaryItem::getBase64BinaryValue(size_t& size) const
 {
   size = theValue.size();
-  return &theValue[0];
+  return size > 0 ? &theValue[0] : "";
 }
 
 
@@ -3345,6 +3378,10 @@ void Base64BinaryItem::getStringValue2(zstring& val) const
 
 void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
+  if (theValue.empty())
+  {
+    return;
+  }
   if (theIsEncoded)
   {
     buf.insert(buf.size(), &theValue[0], theValue.size());
@@ -3497,14 +3534,22 @@ void StreamableBase64BinaryItem::materialize() const
   if (isSeekable())
   {
     lStream.seekg(0, std::ios::end);
-    size_t len = lStream.tellg();
+    std::streampos len = lStream.tellg();
     lStream.seekg(0, std::ios::beg);
+    if (len < std::streampos(0))
+    {
+      throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
+    }
+    if (len == std::streampos(0))
+    {
+      return;
+    }
     s->theValue.reserve(len);
     char buf[1024];
     while (lStream.good())
     {
       lStream.read(buf, 1024);
-      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+      s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
     }
   }
   else
@@ -3513,8 +3558,11 @@ void StreamableBase64BinaryItem::materialize() const
     while (lStream.good())
     {
       lStream.read(buf, 4048);
-      s->theValue.reserve(s->theValue.size() + lStream.gcount());
-      s->theValue.insert(s->theValue.end(), buf, buf+lStream.gcount());
+      if (lStream.gcount() > 0)
+      {
+        s->theValue.reserve(s->theValue.size() + lStream.gcount());
+        s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
+      }
     }
   }
 }
@@ -3588,25 +3636,22 @@ zstring ErrorItem::show() const
 ********************************************************************************/
 
 AtomicItemTokenizerCallback::AtomicItemTokenizerCallback( 
-  Tokenizer &tokenizer,
-  locale::iso639_1::type lang,
   container_type &tokens
 ) :
-  tokenizer_( tokenizer ),
-  lang_( lang ),
   tokens_( tokens )
 {
 }
 
-void AtomicItemTokenizerCallback::operator()(
+void AtomicItemTokenizerCallback::token(
   char const *utf8_s,
   size_type utf8_len,
+  iso639_1::type lang,
   size_type token_no, 
   size_type sent_no,
   size_type para_no,
-  void*
+  Item const*
 ) {
-  FTToken const t( utf8_s, utf8_len, token_no, lang_ );
+  FTToken const t( utf8_s, utf8_len, token_no, lang );
   tokens_.push_back( t );
 }
 

@@ -471,6 +471,9 @@ public:
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
   static const char* ZORBA_XML_FN_NS;
+#ifndef ZORBA_NO_FULL_TEXT
+  static const char* ZORBA_FULL_TEXT_FN_NS;
+#endif /* ZORBA_NO_FULL_TEXT */
   static const char* ZORBA_XML_FN_OPTIONS_NS;
 
   // Namespaces of virtual modules declaring zorba builtin functions
@@ -648,6 +651,8 @@ public:
 
   zstring get_base_uri() const;
 
+  void clear_base_uri();
+
   void set_base_uri(const zstring& uri, bool from_prolog = true);
 
   void compute_base_uri();
@@ -699,6 +704,15 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const;
+
+  /**
+   * Given a URI, populate a vector with a list of candidate URIs.  If
+   * no candidate URIs are available, the vector will be populated
+   * with (only) the input URI.
+   */
+  void get_candidate_uris
   (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 

@@ -48,20 +48,30 @@ CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-html.xq
 CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-xml.xq
                 ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc-xml.xq COPYONLY)
 
-#   Add the modules_svg command for which a working zorba cmd is required.
-#  ADD_CUSTOM_TARGET(modules_svg
-#    ${ZORBA_EXE}
-#      --omit-xml-declaration
-#      -f
-#      -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/generate-module-dependencies-svg.xq\""
-#      -e "\"xqdocXMLPath:=${CMAKE_CURRENT_BINARY_DIR}/xml\""
-#      -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/modules.svg\""
-#      COMMENT "Building module dependencies SVG..."
-#  )
-#  SET_TARGET_PROPERTIES (modules_svg PROPERTIES
-#    EXCLUDE_FROM_DEFAULT_BUILD 1
-#    FOLDER "Docs"
-#  )
-#  ADD_DEPENDENCIES(modules_svg "xqdoc-zorba")
+# Add the modules_svg command for which a working zorba cmd is required.
+# We need to add this target in all cases because ADD_XQDOC_TARGETS() in
+# ZorbaModule.cmake expects it to exist. However, generating this depends
+# on the non-core Graphviz module. Therefore, we check to see if Graphviz
+# is available, and if not, add a dummy target with the same name.
+IS_ZORBA_MODULE_DECLARED(_graphviz_avail
+  "http://www.zorba-xquery.com/modules/image/graphviz")
+IF (_graphviz_avail)
+  ADD_CUSTOM_TARGET(modules_svg
+    ${ZORBA_EXE}
+    --omit-xml-declaration
+    -f
+    -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/generate-module-dependencies-svg.xq\""
+    -e "\"ZorbaBuildFolder:=${CMAKE_CURRENT_BINARY_DIR}/../../../\""
+    -o "\"${CMAKE_CURRENT_SOURCE_DIR}/images/modules_new.svg\""
+    COMMENT "Building module dependencies SVG..."
+    )
+ELSE (_graphviz_avail)
+  ADD_CUSTOM_TARGET(modules_svg
+    COMMENT "Not building modules dependencies SVG since Graphviz module not available")
+ENDIF (_graphviz_avail)
+  SET_TARGET_PROPERTIES (modules_svg PROPERTIES
+    EXCLUDE_FROM_DEFAULT_BUILD 1
+    FOLDER "Docs"
+    )
 
 ENDIF(NOT ZORBA_WITH_FILE_ACCESS)

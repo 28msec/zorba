@@ -356,7 +356,8 @@ protected:
   void doCompile(
         std::istream&,
         const Zorba_CompilerHints_t& aHints,
-        bool fork_sctx = true);
+        bool fork_sctx,
+        ulong& nextVarId);
 
   PlanWrapper_t generateWrapper();
 

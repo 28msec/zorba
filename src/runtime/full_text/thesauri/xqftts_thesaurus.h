@@ -44,7 +44,8 @@ public:
 
   // inherited
   void destroy() const;
-  iterator::ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
+  iterator::ptr lookup( zstring const&, zstring const&, level_type,
+                        level_type ) const;
 
 private:
   //
@@ -123,13 +124,14 @@ private:
 
   private:
     iterator( thesaurus_t const&, zstring const &phrase,
-              zstring const &relationship, ft_int at_least, ft_int at_most );
+              zstring const &relationship, level_type at_least,
+              level_type at_most );
     ~iterator();
 
     thesaurus_t const &thesaurus_;
 
-    ft_int const at_least_, at_most_;
-    ft_int level_;
+    level_type const at_least_, at_most_;
+    level_type level_;
 
     typedef std::pair<synonym const*,iso2788::rel_dir> candidate_t;
     typedef std::deque<candidate_t> candidate_queue_t;
@@ -151,6 +153,28 @@ private:
   };
 
   friend class iterator;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A %xqftts::provider is a ThesaurusProvider for XQFTTS.
+ */
+class provider : public internal::ThesaurusProvider {
+public:
+  /**
+   * Constructs a %provider.
+   *
+   * @param path The absolute path of the thesaurus XML file.
+   */
+  provider( zstring const &path );
+
+  // inherited
+  bool getThesaurus( locale::iso639_1::type,
+                     internal::Thesaurus::ptr* = nullptr ) const;
+
+private:
+  zstring const path_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

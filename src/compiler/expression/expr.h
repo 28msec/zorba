@@ -907,8 +907,8 @@ public:
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	XQuery 1.1 expressions                                             //
-//  [http://www.w3.org/TR/xquery-1.1/]                                 //
+//	XQuery 3.0 expressions                                             //
+//  [http://www.w3.org/TR/xquery-3/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
@@ -1010,7 +1010,7 @@ public:
   
   csize clause_count() const { return theCatchClauses.size(); }
   
-  catch_clause_t const& operator[](csize i) const { return theCatchClauses[i]; }
+  const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 

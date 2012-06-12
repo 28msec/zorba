@@ -65,6 +65,7 @@ ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 # Enable RPaths in installed binaries
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # turn on the folder grouping used by IDEs (VS or XCode)
 SET(ZORBA_USE_TARGET_FOLDERS ON CACHE BOOL "Activate use of target grouping into folders")
@@ -309,6 +310,13 @@ FIND_PACKAGE (XercesC)
 MESSAGE (STATUS "")
 
 #
+# shlwapi
+#
+IF(WIN32)
+    SET(requiredlibs ${requiredlibs} "shlwapi")
+ENDIF(WIN32)
+
+#
 # SWIG
 #
 IF (NOT ZORBA_SUPPRESS_SWIG)
@@ -431,7 +439,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "2")
+SET(ZORBA_MINOR_NUMBER "5")
 SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
@@ -513,13 +521,14 @@ ADD_SUBDIRECTORY(cmake_modules)
 # ZorbaConfig knows about testdriver. We need to include "config"
 # before "modules" so external modules will be able to find
 # ZorbaConfig.cmake. We need to include "modules" before "include" so
-# config.h can know eg. whether we found CURL.
+# config.h can know eg. whether we found CURL. We need to include "modules"
+# before "doc" so xqdoc can know what non-core modules are available.
 
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
-ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(schemas)
 ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(include)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)
