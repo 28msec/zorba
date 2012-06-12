@@ -106,17 +106,14 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   while (consumeNext(result, theChildren[0], planState)) 
   {
+    (*state->theOS) << state->theTagItem->getStringValue() 
+      << " [" << state->theIndex << "]: ";
     if (theSctx->trace_with_debug_info())
     {
-      (*state->theOS) << state->theTagItem->getStringValue() 
-        << " [" << state->theIndex << "]: "
-        << result->show()
-        << std::endl;
-      ++state->theIndex;
+      (*state->theOS) << result->show();
     }
     else 
     {
-      std::stringstream lResStream;
       serializer ser(NULL);
       Zorba_SerializerOptions options;
       options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
@@ -125,14 +122,14 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       SingletonItemSequence lSequence(lItem);
       Iterator_t seq_iter = lSequence.getIterator();
       seq_iter->open();
-      ser.serialize(Unmarshaller::getInternalIterator(seq_iter.get()), lResStream);
+      ser.serialize(
+          Unmarshaller::getInternalIterator(seq_iter.get()), 
+          (*state->theOS));
       seq_iter->close(); 
-      (*state->theOS) << state->theTagItem->getStringValue() 
-        << " [" << state->theIndex << "]: "
-        << lResStream.str()
-        << std::endl;
-      ++state->theIndex;
     }
+
+    (*state->theOS) << std::endl;
+    ++state->theIndex;
 
     STACK_PUSH(true, state);
   }
