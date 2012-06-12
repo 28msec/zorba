@@ -933,7 +933,7 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  JSON emitter - as defined by CloudScript spec                             //
+//  JSON emitter - as defined by JSONiq spec                             //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1117,12 +1117,12 @@ void serializer::json_emitter::emit_jsoniq_value(
   }
 
   // Create items for constant strings, if not already done
-  if (!theCloudScriptValueName)
+  if (!theJSONiqValueName)
   {
-    zstring jsoniqvaluestring("CloudScript value");
+    zstring jsoniqvaluestring("JSONiq value");
     zstring typestring("type");
     zstring valuestring("value");
-    GENV_ITEMFACTORY->createString(theCloudScriptValueName, jsoniqvaluestring);
+    GENV_ITEMFACTORY->createString(theJSONiqValueName, jsoniqvaluestring);
     GENV_ITEMFACTORY->createString(theTypeName, typestring);
     GENV_ITEMFACTORY->createString(theValueName, valuestring);
   }
@@ -1143,7 +1143,7 @@ void serializer::json_emitter::emit_jsoniq_value(
   // Create the outer JSON object with one pair
   names.resize(1);
   values.resize(1);
-  names[0] = theCloudScriptValueName;
+  names[0] = theJSONiqValueName;
   values[0] = inner;
 
   store::Item_t outer;
@@ -1163,7 +1163,7 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
   }
 
   // OK, we've got a non-atomic non-JDM Item here, so serialize it as XML
-  // and output it as a "CloudScript XDM node".
+  // and output it as a "JSONiq XDM node".
   if (!theXMLEmitter) {
     theXMLStringStream = new std::stringstream();
     theXMLTranscoder = ser->create_transcoder(*theXMLStringStream);
@@ -1174,17 +1174,17 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
   theXMLStringStream->str("");
 
   // Create item for constant string, if not already done
-  if (!theCloudScriptValueName)
+  if (!theJSONiqValueName)
   {
-    zstring xdmnodestring("CloudScript XDM node");
-    GENV_ITEMFACTORY->createString(theCloudScriptXDMNodeName, xdmnodestring);
+    zstring xdmnodestring("JSONiq XDM node");
+    GENV_ITEMFACTORY->createString(theJSONiqXDMNodeName, xdmnodestring);
   }
 
   // Create the JSON object, which contains one pair
   std::vector<store::Item_t> names(1);
   std::vector<store::Item_t> values(1);
 
-  names[0] = theCloudScriptXDMNodeName;
+  names[0] = theJSONiqXDMNodeName;
   GENV_ITEMFACTORY->createString(values[0], xml);
 
   store::Item_t object;

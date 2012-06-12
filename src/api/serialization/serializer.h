@@ -385,10 +385,10 @@ protected:
 
     void emit_json_string(zstring string);
 
-    store::Item_t theCloudScriptValueName;
+    store::Item_t theJSONiqValueName;
     store::Item_t theTypeName;
     store::Item_t theValueName;
-    store::Item_t theCloudScriptXDMNodeName;
+    store::Item_t theJSONiqXDMNodeName;
 
     rchandle<emitter> theXMLEmitter;
     rchandle<transcoder> theXMLTranscoder;
