@@ -148,7 +148,7 @@ void Zorba_SerializerOptions::SetSerializerOption(
     version = value;
   }
 #ifdef ZORBA_WITH_JSON
-  else if (strcmp(parameter, "cloudscript-extensions") == 0)
+  else if (strcmp(parameter, "jsoniq-extensions") == 0)
   {
     if (strcmp(value, "yes") == 0) cloudscript_extensions = CLOUDSCRIPT_EXTENSIONS_YES;
     else if (strcmp(value, "no") == 0) cloudscript_extensions = CLOUDSCRIPT_EXTENSIONS_NO;

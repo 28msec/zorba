@@ -2542,7 +2542,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     cdata_section_elements = aValue;
   }
 #ifdef ZORBA_WITH_JSON
-  else if (!strcmp(aName, "cloudscript-extensions"))
+  else if (!strcmp(aName, "jsoniq-extensions"))
   {
     if (!strcmp(aValue, "yes"))
       cloudscript_extensions = PARAMETER_VALUE_YES;

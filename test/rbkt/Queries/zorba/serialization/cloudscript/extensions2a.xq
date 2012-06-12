@@ -1,3 +1,3 @@
-(: Serializing infinity is OK with cloudscript-extensions :)
+(: Serializing infinity is OK with jsoniq-extensions :)
 
 xs:double("-INF")

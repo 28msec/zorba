@@ -222,10 +222,10 @@ SerializerImpl::setSerializationParameters(
   switch (aSerializerOptions.cloudscript_extensions)
   {
     case CLOUDSCRIPT_EXTENSIONS_YES:
-      aInternalSerializer.setParameter("cloudscript-extensions", "yes");
+      aInternalSerializer.setParameter("jsoniq-extensions", "yes");
       break;
     case CLOUDSCRIPT_EXTENSIONS_NO:
-      aInternalSerializer.setParameter("cloudscript-extensions", "no");
+      aInternalSerializer.setParameter("jsoniq-extensions", "no");
       break;
   }
 
