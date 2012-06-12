@@ -1327,7 +1327,7 @@ static bool is_subseq_pred(
   static_context* sctx = condExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
-  const QueryLoc& posLoc = posExpr->get_loc();
+  const QueryLoc& loc = posExpr->get_loc();
 
   const fo_expr* foCondExpr;
   const function* f;
@@ -1367,10 +1367,10 @@ static bool is_subseq_pred(
 
         xqtref_t valType = tm->create_named_type(val->getType(),
                                                  TypeConstants::QUANT_ONE,
-                                                 posLoc,
+                                                 loc,
                                                  err::XPTY0004);
 
-        if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
+        if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, loc) &&
             val->getIntegerValue() >= 1)
         {
           return true;
@@ -1380,8 +1380,7 @@ static bool is_subseq_pred(
       {
         xqtref_t posExprType = posExpr->get_return_type();
 
-        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION,
-              posLoc))
+        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION, loc))
         {
           VarIdMap varidMap;
           ulong numFlworVars = 0;
