@@ -751,11 +751,11 @@ void orderby_clause::serialize(::zorba::serialization::Archiver& ar)
 
 flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) const
 {
-  ulong numColumns = num_columns();
+  csize numColumns = num_columns();
 
   std::vector<expr_t> cloneExprs(numColumns);
 
-  for (ulong i = 0; i < numColumns; ++i)
+  for (csize i = 0; i < numColumns; ++i)
   {
     cloneExprs[i] = theOrderingExprs[i]->clone(subst);
   }
@@ -960,8 +960,8 @@ void flwor_expr::set_where(expr* e)
 {
   ZORBA_ASSERT(e != NULL);
 
-  unsigned numClauses = num_clauses();
-  unsigned i;
+  csize numClauses = num_clauses();
+  csize i;
 
   for (i = 0; i < numClauses; ++i)
   {
