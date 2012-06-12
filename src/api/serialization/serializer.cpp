@@ -955,7 +955,7 @@ void serializer::json_emitter::emit_item(store::Item *item)
 {
   // This is called by serializer for each top-level item. Therefore it's the
   // right place to check for multiple items in the sequence.
-  if (theMultipleItems && ser->cloudscript_multiple_items == PARAMETER_VALUE_NO)
+  if (theMultipleItems && ser->jsoniq_multiple_items == PARAMETER_VALUE_NO)
   {
     throw XQUERY_EXCEPTION(jerr::JNSE0012);
   }
@@ -991,14 +991,14 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
     case store::XS_DOUBLE:
     case store::XS_FLOAT:
       if (item->isNaN()) {
-        emit_cloudscript_value(type == store::XS_DOUBLE ? "double" : "float",
+        emit_jsoniq_value(type == store::XS_DOUBLE ? "double" : "float",
                                "NaN", depth);
         break;
       }
       else if (item->isPosOrNegInf()) {
         // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
         // I tell which I have?
-        emit_cloudscript_value(type == store::XS_DOUBLE ? "double" : "float",
+        emit_jsoniq_value(type == store::XS_DOUBLE ? "double" : "float",
                                "Infinity", depth);
         break;
       }
@@ -1030,14 +1030,14 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       break;
 
     default: {
-      emit_cloudscript_value(item->getType()->getStringValue(),
+      emit_jsoniq_value(item->getType()->getStringValue(),
                         item->getStringValue(), depth);
       break;
     }
     }
   }
   else {
-    emit_cloudscript_xdm_node(item, depth);
+    emit_jsoniq_xdm_node(item, depth);
   }
 }
 
@@ -1106,7 +1106,7 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_cloudscript_value(
+void serializer::json_emitter::emit_jsoniq_value(
     zstring type,
     zstring value,
     int depth)
@@ -1119,10 +1119,10 @@ void serializer::json_emitter::emit_cloudscript_value(
   // Create items for constant strings, if not already done
   if (!theCloudScriptValueName)
   {
-    zstring cloudscriptvaluestring("CloudScript value");
+    zstring jsoniqvaluestring("CloudScript value");
     zstring typestring("type");
     zstring valuestring("value");
-    GENV_ITEMFACTORY->createString(theCloudScriptValueName, cloudscriptvaluestring);
+    GENV_ITEMFACTORY->createString(theCloudScriptValueName, jsoniqvaluestring);
     GENV_ITEMFACTORY->createString(theTypeName, typestring);
     GENV_ITEMFACTORY->createString(theValueName, valuestring);
   }
@@ -1152,7 +1152,7 @@ void serializer::json_emitter::emit_cloudscript_value(
   emit_json_object(outer, depth);
 }
 
-void serializer::json_emitter::emit_cloudscript_xdm_node(
+void serializer::json_emitter::emit_jsoniq_xdm_node(
     store::Item* item,
     int depth)
 {
@@ -2374,9 +2374,9 @@ void serializer::reset()
   // This default should match the default for ser_method in Zorba_SerializerOptions
 #ifdef ZORBA_WITH_JSON
   method = PARAMETER_VALUE_JSONIQ;
-  cloudscript_multiple_items = PARAMETER_VALUE_NO;
+  jsoniq_multiple_items = PARAMETER_VALUE_NO;
   jsoniq_extensions = PARAMETER_VALUE_NO;
-  cloudscript_xdm_method = PARAMETER_VALUE_XML;
+  jsoniq_xdm_method = PARAMETER_VALUE_XML;
 #else
   method = PARAMETER_VALUE_XML;
 #endif
@@ -2553,22 +2553,22 @@ void serializer::setParameter(const char* aName, const char* aValue)
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
-  else if (!strcmp(aName, "cloudscript-multiple-items"))
+  else if (!strcmp(aName, "jsoniq-multiple-items"))
   {
     if (!strcmp(aValue, "no"))
-      cloudscript_multiple_items = PARAMETER_VALUE_NO;
+      jsoniq_multiple_items = PARAMETER_VALUE_NO;
     else if (!strcmp(aValue, "array"))
-      cloudscript_multiple_items = PARAMETER_VALUE_ARRAY;
+      jsoniq_multiple_items = PARAMETER_VALUE_ARRAY;
     else if (!strcmp(aValue, "appended"))
-      cloudscript_multiple_items = PARAMETER_VALUE_APPENDED;
+      jsoniq_multiple_items = PARAMETER_VALUE_APPENDED;
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
-  else if (!strcmp(aName, "cloudscript-xdm-node-output-method"))
+  else if (!strcmp(aName, "jsoniq-xdm-node-output-method"))
   {
-    cloudscript_xdm_method = convertMethodString(aValue, aName);
+    jsoniq_xdm_method = convertMethodString(aValue, aName);
   }
 #endif /* ZORBA_WITH_JSON */
   else

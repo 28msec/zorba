@@ -116,9 +116,9 @@ protected:
   zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
 #ifdef ZORBA_WITH_JSON
-  short int cloudscript_multiple_items;  // "no", "array", "appended", implemented
+  short int jsoniq_multiple_items;  // "no", "array", "appended", implemented
   short int jsoniq_extensions;      // implemented
-  short int cloudscript_xdm_method;  // A legal value for "method", implemented
+  short int jsoniq_xdm_method;  // A legal value for "method", implemented
 #endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
@@ -379,9 +379,9 @@ protected:
 
     void emit_json_value(store::Item* value, int depth);
 
-    void emit_cloudscript_value(zstring type, zstring value, int depth);
+    void emit_jsoniq_value(zstring type, zstring value, int depth);
 
-    void emit_cloudscript_xdm_node(store::Item *item, int depth);
+    void emit_jsoniq_xdm_node(store::Item *item, int depth);
 
     void emit_json_string(zstring string);
 

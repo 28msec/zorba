@@ -229,22 +229,22 @@ SerializerImpl::setSerializationParameters(
       break;
   }
 
-  switch (aSerializerOptions.cloudscript_multiple_items)
+  switch (aSerializerOptions.jsoniq_multiple_items)
   {
     case CLOUDSCRIPT_MULTIPLE_ITEMS_NO:
-      aInternalSerializer.setParameter("cloudscript-multiple-items", "no");
+      aInternalSerializer.setParameter("jsoniq-multiple-items", "no");
       break;
     case CLOUDSCRIPT_MULTIPLE_ITEMS_ARRAY:
-      aInternalSerializer.setParameter("cloudscript-multiple-items", "array");
+      aInternalSerializer.setParameter("jsoniq-multiple-items", "array");
       break;
     case CLOUDSCRIPT_MULTIPLE_ITEMS_APPENDED:
-      aInternalSerializer.setParameter("cloudscript-multiple-items", "appended");
+      aInternalSerializer.setParameter("jsoniq-multiple-items", "appended");
       break;
   }
 
   convertSerializationMethod(aInternalSerializer,
-                             "cloudscript-xdm-node-output-method",
-                             aSerializerOptions.cloudscript_xdm_method);
+                             "jsoniq-xdm-node-output-method",
+                             aSerializerOptions.jsoniq_xdm_method);
 
 #endif /* ZORBA_WITH_JSON */
 }

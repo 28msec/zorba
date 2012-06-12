@@ -163,7 +163,7 @@ typedef enum {
   CLOUDSCRIPT_MULTIPLE_ITEMS_NO,
   CLOUDSCRIPT_MULTIPLE_ITEMS_ARRAY,
   CLOUDSCRIPT_MULTIPLE_ITEMS_APPENDED
-} Zorba_cloudscript_multiple_items_t;
+} Zorba_jsoniq_multiple_items_t;
 
 /** \brief Options that configure the serialization process of a query result.
 *         See http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/.
@@ -196,8 +196,8 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
 
 #ifdef ZORBA_WITH_JSON
   Zorba_jsoniq_extensions_t jsoniq_extensions;
-  Zorba_cloudscript_multiple_items_t cloudscript_multiple_items;
-  Zorba_serialization_method_t   cloudscript_xdm_method;
+  Zorba_jsoniq_multiple_items_t jsoniq_multiple_items;
+  Zorba_serialization_method_t   jsoniq_xdm_method;
 #endif /* ZORBA_WITH_JSON */
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all
