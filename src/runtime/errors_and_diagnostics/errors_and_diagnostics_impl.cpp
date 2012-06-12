@@ -94,8 +94,6 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   TraceIteratorState *state;
   DEFAULT_STACK_INIT(TraceIteratorState, state, planState);
 
-  std::cout << theSctx->trace_with_debug_info() << std::endl; 
-
   if (!consumeNext(state->theTagItem, theChildren[1], planState)) 
   {
     throw XQUERY_EXCEPTION(err::FORG0006,
