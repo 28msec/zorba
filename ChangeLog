@@ -18,6 +18,7 @@ New Features:
     - fn:has-children#0
     - fn:nilled#0
     - fn:path
+    - fn:parse-xml-fragment#1
   * Added base64:decode#2 function which also does transcoding
   * Extended API for Python, Java, PHP and Ruby.
   * Add jvm classpath to zorbacmd and to Zorba API. Tracked by #931816
