@@ -10,7 +10,8 @@
   the Iterators created with XQuery.iterator() must be explicitly destroyed with iterator.destroy() before the XQuery object
   is destroyed.
 
-  Note: current API documentation is generated from C++ source, although the format looks like C++ this information is accurate for the Ruby binding.
+  \section note Note for non-C++ language bindings
+  Zorba's current API documentation is generated from the C++ source. The Ruby language API is derived directly from this. The information contained in this documentation is accurate for Ruby, although it will look somewhat odd.
 
   \example ruby_test.rb
    This is a simple example that demonstrate how to use the Zorba XQuery Engine to
