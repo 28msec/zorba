@@ -46,18 +46,6 @@ PlanIter_t fn_jsoniq_keys::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
-PlanIter_t fn_jsoniq_values::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONObjectValuesIterator(sctx, loc, argv[0]);
-}
-
-#endif
-#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_value::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -221,22 +209,6 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_KEYS_1);
-
-  }
-
-
-#endif
-
-
-#ifdef ZORBA_WITH_JSON
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_jsoniq_values,
-        (createQName("http://www.jsoniq.org/functions","","values"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-        FunctionConsts::FN_JSONIQ_VALUES_1);
 
   }
 

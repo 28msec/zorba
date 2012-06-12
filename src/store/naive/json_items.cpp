@@ -98,25 +98,8 @@ JSONObject::getType() const
 /******************************************************************************
 
 *******************************************************************************/
-bool
-SimpleJSONObject::JSONObjectPairComparator::operator()(
-    const store::Item* lhs,
-    const store::Item* rhs) const
-{
-  return lhs->getStringValue().compare(rhs->getStringValue()) < 0;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
 SimpleJSONObject::~SimpleJSONObject()
 {
-  thePairMap.clear();
-  for (PairsIter lIter = thePairs.begin(); lIter != thePairs.end(); ++lIter)
-  {
-    (*lIter)->removeReference();
-  }
   thePairs.clear();
 }
 
@@ -133,31 +116,24 @@ store::Item* SimpleJSONObject::copy(
   {
     lNewObject = new SimpleJSONObject();
 
-    for (PairsConstIter lIter = thePairs.begin();
+    for (Pairs::iterator lIter = thePairs.begin();
          lIter != thePairs.end();
          ++lIter)
     {
-      SimpleJSONObjectPair* lNewPair = 
-      static_cast<SimpleJSONObjectPair*>((*lIter)->copy(NULL, copymode));
+      store::Item_t lName = lIter.getKey();
+      store::Item_t lCopiedValue = lIter.getValue()->copy(NULL, copymode);
 
-      lNewObject->add(lNewPair, false);
+      lNewObject->add(lName, lCopiedValue, false);
     }
   }
 
   if (parent)
   {
-    if (parent->isJSONArray())
-    {
-      JSONArray* a = static_cast<JSONArray*>(parent);
-      a->push_back(lNewObject);
-    }
-    else if (parent->isJSONPair())
-    {
-      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
-      p->setValue(lNewObject);
-    }
+    JSONArray* a = dynamic_cast<JSONArray*>(parent);
+    assert(a != NULL);
+    a->push_back(lNewObject);
   }
-
+  
   return lNewObject;
 }
 
@@ -178,78 +154,103 @@ SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/
 
 *******************************************************************************/
 bool
-SimpleJSONObject::add(const JSONObjectPair_t& p, bool accumulate)
+SimpleJSONObject::add(
+      const store::Item_t& aName,
+      const store::Item_t& aValue,
+      bool accumulate)
 {
-  store::Item* lName = p->getName();
+  Pairs::iterator lIterator = thePairs.find(aName);
 
-  std::pair<PairMapIter, bool> res =
-  thePairMap.insert(std::make_pair(lName, thePairs.size()));
-
-  bool inserted = res.second;
-
-  if (inserted)
-  {
-    thePairs.push_back(p.getp());
-    thePairs.back()->addReference(); // manual counting for performance reasons
+  if (lIterator != thePairs.end())
+  {  
+    store::Item_t lValue = aValue;
+    thePairs.insert(aName, lValue);
+    return true;
   }
   else if (accumulate)
   {
-    JSONObjectPair* pair = thePairs[(res.first)->second];
-    store::Item* value = pair->getValue();
+    store::Item* value = lIterator.getValue().getp();
 
     if (value->isJSONArray())
     {
-      static_cast<SimpleJSONArray*>(value)->push_back(p->getValue());
+      static_cast<SimpleJSONArray*>(value)->push_back(aValue);
     }
     else
     {
       SimpleJSONArray_t array = new SimpleJSONArray();
       array->push_back(value);
-      array->push_back(p->getValue());
+      array->push_back(aValue);
 
-      JSONObjectPair_t newPair = new SimpleJSONObjectPair(pair->getName(), array);
-
-      thePairs[(res.first)->second] = newPair.release();
-
-      pair->removeReference();
+      lIterator.setValue(array);
     }
+    return true;
   }
 
-  return (inserted || accumulate);
+  return false;
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-JSONObjectPair_t
+const store::Item_t
 SimpleJSONObject::remove(const store::Item_t& aName)
 {
-  PairMapIter lIter = thePairMap.find(aName.getp());
-  if (lIter == thePairMap.end())
+  Pairs::iterator lIter = thePairs.find(aName);
+  if (lIter == thePairs.end())
   {
     return 0;
   }
-  size_t lPos = lIter->second;
+  
+  store::Item_t lRes = lIter.getValue();
 
-  thePairMap.erase(lIter);
-  JSONObjectPair_t lRes = thePairs[lPos];
-  thePairs.erase(thePairs.begin() + lPos);
-
-  lRes->removeReference();
-
-  // adapt indexes in the map
-  for (lIter = thePairMap.begin(); lIter != thePairMap.end(); ++lIter)
-  {
-    if (lIter->second > lPos)
-    {
-      --(lIter->second);
-    }
-  }
+  thePairs.erase(aName.getp());
 
   return lRes;
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+const store::Item_t SimpleJSONObject::setValue(
+    const store::Item_t& aName,
+    const store::Item_t& aValue)
+{
+  Pairs::iterator lIter = thePairs.find(aName);
+  if (lIter == thePairs.end()) {
+    return NULL;
+  }
+
+  store::Item_t lRes = lIter.getValue();
+  lIter.setValue(aValue);
+  return lRes;
+}
+
+/******************************************************************************
+
+*******************************************************************************/
+bool SimpleJSONObject::rename(
+    const store::Item_t& aName,
+    const store::Item_t& aNewName)
+{
+  Pairs::iterator lIter = thePairs.find(aNewName);
+  if (lIter != thePairs.end()) {
+    return false;
+  }
+  
+  lIter = thePairs.find(aName);
+  if (lIter == thePairs.end()) {
+    return false;
+  }
+  store::Item_t lValue = lIter.getValue();
+
+  thePairs.erase(aName.getp());
+  
+  thePairs.insert(aNewName, lValue);
+
+  return true;
+}
 
 /******************************************************************************
 
@@ -294,37 +295,17 @@ SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-SimpleJSONObject::getPair(const store::Item_t& name) const
+const store::Iterator_t
+SimpleJSONObject::getObjectKeys() const
 {
-  PairMapConstIter lIter = thePairMap.find(name.getp());
-  if (lIter == thePairMap.end())
-  {
-    return 0;
-  }
-  else
-  {
-    size_t lPos = lIter->second;
-    JSONObjectPair_t lPair = thePairs[lPos];
-    return lPair.getp();
-  }
+  return new KeyIterator(const_cast<SimpleJSONObject*>(this));
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-store::Iterator_t
-SimpleJSONObject::getPairs() const
-{
-  return new PairIterator(const_cast<SimpleJSONObject*>(this));
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-SimpleJSONObject::PairIterator::~PairIterator() 
+SimpleJSONObject::KeyIterator::~KeyIterator() 
 {
 }
 
@@ -333,7 +314,7 @@ SimpleJSONObject::PairIterator::~PairIterator()
 
 *******************************************************************************/
 void
-SimpleJSONObject::PairIterator::open()
+SimpleJSONObject::KeyIterator::open()
 {
   theIter = theObject->thePairs.begin();
 }
@@ -343,12 +324,11 @@ SimpleJSONObject::PairIterator::open()
 
 *******************************************************************************/
 bool
-SimpleJSONObject::PairIterator::next(store::Item_t& res)
+SimpleJSONObject::KeyIterator::next(store::Item_t& res)
 {
   if (theIter != theObject->thePairs.end())
   {
-    JSONObjectPair_t lPair = *theIter;
-    res = lPair;
+    res = theIter.getValue();
     ++theIter;
     return true;
   }
@@ -363,7 +343,7 @@ SimpleJSONObject::PairIterator::next(store::Item_t& res)
 
 *******************************************************************************/
 void
-SimpleJSONObject::PairIterator::reset()
+SimpleJSONObject::KeyIterator::reset()
 {
   open();
 }
@@ -373,7 +353,7 @@ SimpleJSONObject::PairIterator::reset()
 
 *******************************************************************************/
 void
-SimpleJSONObject::PairIterator::close()
+SimpleJSONObject::KeyIterator::close()
 {
   theIter = theObject->thePairs.end();
 }
@@ -402,11 +382,6 @@ JSONArray::getType() const
 *******************************************************************************/
 SimpleJSONArray::~SimpleJSONArray()
 {
-  for (MembersIter lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
-  {
-    store::Item* lItem = *lIter;
-    lItem->removeReference();
-  }
 }
 
 
@@ -417,7 +392,6 @@ void
 SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
   theContent.push_back(aValue.getp());
-  theContent.back()->addReference();
 }
 
 
@@ -450,7 +424,6 @@ void
 SimpleJSONArray::insert_before(const xs_integer& pos, const store::Item_t& member)
 {
   theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
-  member->addReference();
 }
 
 
@@ -498,7 +471,6 @@ SimpleJSONArray::add(
   {
     store::Item* lItem = aNewMembers[i].getp();
     theContent.insert(theContent.begin() + aTargetPos + i, lItem);
-    lItem->addReference();
   }
 
 }
@@ -507,25 +479,34 @@ SimpleJSONArray::add(
 /******************************************************************************
 
 *******************************************************************************/
-void
+store::Item_t
 SimpleJSONArray::remove(const xs_integer& aPos)
 {
-  uint64_t lPos = cast(aPos) - 1;
-  store::Item* lItem = const_cast<store::Item*>(operator[](aPos));
-  theContent.erase(theContent.begin() + lPos);
-  lItem->removeReference();
+  store::Item_t lPosition;
+  GET_FACTORY().createInteger(lPosition, aPos);
+  store::Item_t lItem = (getArrayValue(lPosition));
+
+  uint64_t lPosStartingZero = cast(aPos) - 1;
+  theContent.erase(theContent.begin() + lPosStartingZero);
+
+  return lItem;
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
+store::Item_t
 SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
 {
+  store::Item_t lPosition;
+  GET_FACTORY().createInteger(lPosition, aPos);
+  store::Item_t lItem = (getArrayValue(lPosition));
+
   uint64_t pos = cast(aPos) - 1;
   theContent[pos] = value.getp();
-  value->addReference();
+  
+  return lItem;
 }
 
 
@@ -550,10 +531,10 @@ SimpleJSONArray::cast(const xs_integer& i)
 /******************************************************************************
 
 *******************************************************************************/
-const store::Item*
-SimpleJSONArray::operator[](const xs_integer& aPos) const
+const store::Item_t
+SimpleJSONArray::getArrayValue(const store::Item_t& aPosition) const
 {
-  uint64_t lPos = cast(aPos);
+  uint64_t lPos = cast(aPosition->getIntegerValue());
   if (lPos == 0 || lPos > theContent.size())
   {
     return 0;
@@ -568,20 +549,10 @@ SimpleJSONArray::operator[](const xs_integer& aPos) const
 /******************************************************************************
 
 *******************************************************************************/
-store::Iterator_t
-SimpleJSONArray::getMembers() const
+const store::Iterator_t
+SimpleJSONArray::getArrayValues() const
 {
   return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Item*
-SimpleJSONArray::getMember(const store::Item_t& aPosition) const
-{
-  return const_cast<store::Item*>(operator[](aPosition->getIntegerValue()));
 }
 
 
@@ -598,7 +569,7 @@ store::Item* SimpleJSONArray::copy(
     lNewArray = new SimpleJSONArray();
     lNewArray->theContent.reserve(theContent.size());
 
-    for (MembersConstIter lIter = theContent.begin();
+    for (Members::const_iterator lIter = theContent.begin();
          lIter != theContent.end();
          ++lIter)
     {
@@ -615,16 +586,9 @@ store::Item* SimpleJSONArray::copy(
 
   if (parent)
   {
-    if (parent->isJSONArray())
-    {
-      JSONArray* a = static_cast<JSONArray*>(parent);
-      a->push_back(lNewArray);
-    }
-    else if (parent->isJSONPair())
-    {
-      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
-      p->setValue(lNewArray);
-    }
+    assert(parent->isJSONArray());
+    JSONArray* a = static_cast<JSONArray*>(parent);
+    a->push_back(lNewArray);
   }
 
   return lNewArray;
@@ -682,57 +646,11 @@ SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
   theCollection = collection;
 }
 
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Pair                                                                       //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONObjectPair::getType() const
+SimpleJSONArray::ValuesIterator::~ValuesIterator() 
 {
-  return NULL;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Item* SimpleJSONObjectPair::copy(
-    store::Item* parent,
-    const store::CopyMode& copymode) const
-{
-  SimpleJSONObjectPair* lNewPair = const_cast<SimpleJSONObjectPair*>(this);
-  if (copymode.theDoCopy)
-  {
-    store::Item_t lNewValue;
-    if (theValue->isJSONObject() ||
-        theValue->isJSONArray() ||
-        theValue->isNode())
-    {
-      lNewValue = theValue->copy(NULL, copymode);
-    }
-    else
-    {
-      lNewValue = theValue;
-    }
-    lNewPair = new SimpleJSONObjectPair(theName, lNewValue);
-  }
-
-  if (parent)
-  {
-    assert(parent->isJSONObject());
-
-    JSONObject* p = static_cast<JSONObject*>(parent);
-    
-    p->add(lNewPair, false);
-  }
-  return lNewPair;
 }
 
 
@@ -740,14 +658,51 @@ store::Item* SimpleJSONObjectPair::copy(
 
 *******************************************************************************/
 void
-SimpleJSONObjectPair::getTypedValue(
-    store::Item_t& val,
-    store::Iterator_t& iter) const
+SimpleJSONArray::ValuesIterator::open()
 {
-  iter = NULL;
-  val = NULL;
-  theValue->getTypedValue(val, iter);
+  theIter = theArray->theContent.begin();
 }
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool
+SimpleJSONArray::ValuesIterator::next(store::Item_t& res)
+{
+  if (theIter != theArray->theContent.end())
+  {
+    res = *theIter;
+    ++theIter;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::ValuesIterator::reset()
+{
+  open();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void
+SimpleJSONArray::ValuesIterator::close()
+{
+  theIter = theArray->theContent.end();
+}
+
+
 
 
 } // namespace json

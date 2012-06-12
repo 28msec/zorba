@@ -70,34 +70,6 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONObjectValuesIterator" arity="unary"
-  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
-
-  <zorba:function isDeterministic="true">
-
-    <zorba:signature localname="values" prefix="fn-jsoniq">
-      <zorba:param>object()</zorba:param>
-      <zorba:output>item()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:methods>
-      <zorba:propagatesInputNodes producer="0"/>
-      <zorba:mustCopyInputNodes value="false"/>
-    </zorba:methods>
-
-  </zorba:function>
-
-  <zorba:state>
-    <zorba:member type="store::Iterator_t" name="thePairs" brief=""/>
-  </zorba:state>
-
-</zorba:iterator>
-
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
 <zorba:iterator name="JSONObjectValueIterator" arity="binary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 

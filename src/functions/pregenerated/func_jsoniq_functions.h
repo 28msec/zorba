@@ -78,26 +78,6 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
-//fn-jsoniq:values
-class fn_jsoniq_values : public function
-{
-public:
-  fn_jsoniq_values(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
 //fn-jsoniq:value
 class fn_jsoniq_value : public function
 {

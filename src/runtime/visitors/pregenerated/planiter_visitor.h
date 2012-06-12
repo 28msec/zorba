@@ -310,9 +310,6 @@ namespace zorba{
     class JSONObjectNamesIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONObjectValuesIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
     class JSONObjectValueIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -1118,10 +1115,6 @@ public:
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONObjectNamesIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectNamesIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONObjectValuesIterator& ) = 0;
-    virtual void endVisit   ( const JSONObjectValuesIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONObjectValueIterator& ) = 0;

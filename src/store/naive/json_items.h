@@ -26,6 +26,8 @@
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
 
+#include <zorbautils/hashmap_itemh.h>
+
 
 namespace zorba
 {
@@ -103,6 +105,10 @@ public:
   {
     return this == other;
   }
+  
+  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+
+
 };
 
 
@@ -127,9 +133,9 @@ public:
       const store::Item_t& aValue,
       bool accumulate) = 0;
 
-  virtual store::Item_t remove(const store::Item_t& aName) = 0;
+  virtual const store::Item_t remove(const store::Item_t& aName) = 0;
 
-  virtual store::Item_t setValue(
+  virtual const store::Item_t setValue(
     const store::Item_t& aName,
     const store::Item_t& aValue) = 0;
     
@@ -165,17 +171,9 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  struct JSONObjectKeyComparator
-  {
-    bool operator() (const store::Item* lhs, const store::Item* rhs) const;
-  };
+  typedef ItemHandleHashMap<store::Item_t> Pairs;
 
-  typedef std::map<
-      const store::Item_t,
-      const store::Item_t,
-      JSONObjectKeyComparator>  Pairs;
-
-  Pairs   thePairs;
+  Pairs thePairs;
 
   SimpleCollection* theCollection;
 
@@ -183,7 +181,7 @@ protected:
   {
     protected:
       SimpleJSONObject_t    theObject;
-      Pairs::const_iterator theIter;
+      Pairs::iterator theIter;
 
     public:
       KeyIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
@@ -200,7 +198,9 @@ protected:
   };
 
 public:
-  SimpleJSONObject() : theCollection(0) {}
+  SimpleJSONObject()
+    : thePairs(0, NULL, 64, 0),
+      theCollection(0) {}
 
   virtual ~SimpleJSONObject();
 
@@ -209,9 +209,9 @@ public:
       const store::Item_t& aValue,
       bool accumulate);
 
-  store::Item_t remove(const store::Item_t& aName);
+  const store::Item_t remove(const store::Item_t& aName);
 
-  store::Item_t setValue(
+  const store::Item_t setValue(
     const store::Item_t& aName,
     const store::Item_t& aValue);
     
@@ -224,7 +224,9 @@ public:
   const store::Item_t getObjectValue(
       const store::Item_t& aKey) const;
 
-  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+  store::Item* copy(
+      store::Item* parent,
+      const store::CopyMode& copymode) const;
 
   zstring getStringValue() const;
 
@@ -308,6 +310,27 @@ protected:
 
   SimpleCollection * theCollection;
 
+  class ValuesIterator : public store::Iterator
+  {
+    protected:
+      SimpleJSONArray_t theArray;
+      Members::iterator theIter;
+
+    public:
+      ValuesIterator(const SimpleJSONArray_t& anArray)
+        : theArray(anArray) {}
+
+      virtual ~ValuesIterator();
+
+      virtual void open();
+
+      virtual bool next(store::Item_t&);
+
+      virtual void reset();
+
+      virtual void close();
+  };
+
 public:
   SimpleJSONArray()
     :
@@ -341,13 +364,15 @@ public:
   virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
 
-  const const store::Item_t getArraySize() const;
+  const store::Item_t getArraySize() const;
 
-  const const store::Item_t getArrayValue(const store::Item_t& position) const;
+  const store::Item_t getArrayValue(const store::Item_t& position) const;
   
-  const const store::Iterator_t getArrayValues() const;
+  const store::Iterator_t getArrayValues() const;
 
-  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+  store::Item* copy(
+      store::Item* parent,
+      const store::CopyMode& copymode) const;
 
   zstring getStringValue() const;
 

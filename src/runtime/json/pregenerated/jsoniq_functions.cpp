@@ -87,37 +87,6 @@ void JSONObjectNamesIteratorState::reset(PlanState& planState) {
 
 #endif
 #ifdef ZORBA_WITH_JSON
-// <JSONObjectValuesIterator>
-JSONObjectValuesIterator::class_factory<JSONObjectValuesIterator>
-JSONObjectValuesIterator::g_class_factory;
-
-
-void JSONObjectValuesIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  theChild->accept(v);
-
-  v.endVisit(*this);
-}
-
-JSONObjectValuesIterator::~JSONObjectValuesIterator() {}
-
-JSONObjectValuesIteratorState::JSONObjectValuesIteratorState() {}
-
-JSONObjectValuesIteratorState::~JSONObjectValuesIteratorState() {}
-
-
-void JSONObjectValuesIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void JSONObjectValuesIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
-// </JSONObjectValuesIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONObjectValueIterator>
 JSONObjectValueIterator::class_factory<JSONObjectValueIterator>
 JSONObjectValueIterator::g_class_factory;

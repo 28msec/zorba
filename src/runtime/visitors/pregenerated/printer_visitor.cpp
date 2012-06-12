@@ -1964,21 +1964,6 @@ void PrinterVisitor::endVisit ( const JSONObjectNamesIterator& ) {
 
 #endif
 #ifdef ZORBA_WITH_JSON
-// <JSONObjectValuesIterator>
-void PrinterVisitor::beginVisit ( const JSONObjectValuesIterator& a) {
-  thePrinter.startBeginVisit("JSONObjectValuesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONObjectValuesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONObjectValuesIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONObjectValueIterator>
 void PrinterVisitor::beginVisit ( const JSONObjectValueIterator& a) {
   thePrinter.startBeginVisit("JSONObjectValueIterator", ++theId);
