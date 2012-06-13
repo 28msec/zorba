@@ -104,6 +104,7 @@ public:
     return this == other;
   }
   
+  const store::Item* getRoot();
 };
 
 
@@ -168,10 +169,6 @@ class SimpleJSONObject : public JSONObject
 protected:
   typedef std::map<zstring, store::Item_t> Pairs;
 
-  Pairs thePairs;
-
-  SimpleCollection* theCollection;
-
   class KeyIterator : public store::Iterator
   {
     protected:
@@ -194,24 +191,10 @@ protected:
 
 public:
   SimpleJSONObject()
-    : theCollection(0) {}
+    : theCollection(0),
+      theRoot(this) {}
 
   virtual ~SimpleJSONObject();
-
-  bool add(
-      const zstring& aName,
-      const store::Item_t& aValue,
-      bool accumulate);
-
-  store::Item_t remove(const zstring& aName);
-
-  store::Item_t setValue(
-    const zstring& aName,
-    const store::Item_t& aValue);
-    
-  bool rename(
-    const zstring& aName,
-    const zstring& aNewName);
 
   store::Iterator_t getObjectKeys() const;
 
@@ -232,7 +215,39 @@ public:
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
 
+  bool add(
+      const zstring& aName,
+      const store::Item_t& aValue,
+      bool accumulate);
+
+  store::Item_t remove(const zstring& aName);
+
+  store::Item_t setValue(
+    const zstring& aName,
+    const store::Item_t& aValue);
+    
+  bool rename(
+    const zstring& aName,
+    const zstring& aNewName);
+
   void setCollection(SimpleCollection* collection, xs_integer pos);
+  
+protected:
+  friend void setJSONRoot(const store::Item_t& aJSONItem, const store::Item* aRoot);
+  void setRoot(const store::Item* aRoot);
+  
+protected:
+
+  Pairs thePairs;
+  SimpleCollection* theCollection;
+  const store::Item* theRoot;
+  
+/* Invariant handling */
+protected:
+  friend class SimpleJSONArray;
+  void assertInvariant() const;
+  bool isThisRootOfAllDescendants(const store::Item* aRoot) const;
+  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
 };
 
 
@@ -300,10 +315,6 @@ class SimpleJSONArray : public JSONArray
 protected:
   typedef std::vector<store::Item_t> Members;
 
-  Members            theContent;
-
-  SimpleCollection * theCollection;
-
   class ValuesIterator : public store::Iterator
   {
     protected:
@@ -328,11 +339,33 @@ protected:
 public:
   SimpleJSONArray()
     :
-    theCollection(0)
+    theCollection(0),
+    theRoot(this)
   {
   }
 
   virtual ~SimpleJSONArray();
+
+  store::Item_t getArraySize() const;
+
+  store::Item_t getArrayValue(const xs_integer& position) const;
+  
+  store::Iterator_t getArrayValues() const;
+
+  store::Item* copy(
+      store::Item* parent,
+      const store::CopyMode& copymode) const;
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  void
+  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  virtual SimpleCollection* getCollection() const { return theCollection; }
 
   virtual void
   push_back(const store::Item_t& aValue);
@@ -358,37 +391,33 @@ public:
   virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
 
-  store::Item_t getArraySize() const;
-
-  store::Item_t getArrayValue(const xs_integer& position) const;
-  
-  store::Iterator_t getArrayValues() const;
-
-  store::Item* copy(
-      store::Item* parent,
-      const store::CopyMode& copymode) const;
-
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring& val) const;
-
-  void appendStringValue(zstring& buf) const;
-
-  void
-  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-
-  virtual SimpleCollection* getCollection() const { return theCollection; }
-
   void setCollection(SimpleCollection* collection, xs_integer pos);
 
+protected:
+  friend void setJSONRoot(const store::Item_t& aJSONItem, const store::Item* aRoot);
+  void setRoot(const store::Item* aRoot);
+  
 protected:
   void
   add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
 
   static uint64_t
   cast(const xs_integer& i);
+  
+protected:
+  Members            theContent;
+  SimpleCollection * theCollection;
+  const store::Item* theRoot;
+
+/* Invariant handling */
+protected:
+  friend class SimpleJSONObject;
+  void assertInvariant() const;
+  bool isThisRootOfAllDescendants(const store::Item* aRoot) const;
+  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
 };
 
+void setJSONRoot(const store::Item_t& aJSONItem, const store::Item* aRoot);
 
 } // namespace json
 } // namespace simplestore
@@ -401,3 +430,4 @@ protected:
  * End:
  */
 /* vim:set et sw=2 ts=2: */
+
