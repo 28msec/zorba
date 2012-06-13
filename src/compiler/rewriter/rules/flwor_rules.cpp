@@ -1269,7 +1269,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         for_clause* forClause = posVar->get_for_clause();
         expr* domainExpr = forClause->get_expr();
 
-        fo_expr_t result = 
+        fo_expr_t result =
         new fo_expr(whereExpr->get_sctx(),
                     LOC(whereExpr),
                     GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
@@ -1360,6 +1360,26 @@ static bool is_subseq_pred(
 
     if (posVar != NULL && posVar->get_kind() == var_expr::pos_var)
     {
+      for_clause* forClause = posVar->get_for_clause();
+
+      if (forClause->is_allowing_empty())
+        return false;
+
+      // We check that there isn't any clause that breaks the optimization
+      const flwor_clause* checkClause;
+      csize checkClausePos = whereClausePos;
+      do
+      {
+        checkClause = flworExpr->get_clause(checkClausePos);
+
+        if (checkClause->get_kind() == flwor_clause::group_clause ||
+            checkClause->get_kind() == flwor_clause::count_clause)
+          return false;
+
+        --checkClausePos;
+      }
+      while (checkClause != forClause);
+
       if (posExpr->get_expr_kind() == const_expr_kind)
       {
         const_expr* posConstExpr = static_cast<const_expr*>(posExpr.getp());
@@ -1389,26 +1409,6 @@ static bool is_subseq_pred(
           DynamicBitset varset(numFlworVars);
           ExprVarsMap exprVarMap;
           expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
-
-          for_clause* forClause = posVar->get_for_clause();
-
-          if (forClause->is_allowing_empty())
-            return false;
-
-          // We check that there isn't any clause that breaks the optimization
-          const flwor_clause* checkClause;
-          csize checkClausePos = whereClausePos;
-          do
-          {
-            checkClause = flworExpr->get_clause(checkClausePos);
-
-            if (checkClause->get_kind() == flwor_clause::group_clause ||
-                checkClause->get_kind() == flwor_clause::count_clause)
-              return false;
-
-            --checkClausePos;
-          }
-          while (checkClause != forClause);
 
           var_expr* forVar = forClause->get_var();
 
