@@ -27,31 +27,37 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Result;
+import javax.xml.xquery.XQConnection;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQItemType;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.ItemSequence;
 import org.zorbaxquery.api.Iterator;
 
-
  /**
+   * This class represents a sequence of items obtained as a result of evaluation XQuery expressions. The result sequence is tied to the XQconnection object on which the expression was evaluated.
    * 
-   * This interface represents a sequence of items as defined in the XDM. The sequence may be materialized or non-materialized.
+   * This sequence can be obtained by performing an executeQuery on the expression object. It represents a cursor-like class.
    * 
-   * The next method is useful to position the XQSequence over the next item in the sequence. If the scrollability is XQConstants.SCROLLTYPE_SCROLLABLE, then the previous method can be called to move backwards. In the case of a forward only sequence, the get methods may be only called once per item. To perform multiple gets on an item, extract the item first from the sequence using the getItem method and then operate on the XQItem object.
+   * The ZorbaXQResultSequence object is dependent on the connection and the expression from which it was created and is only valid for the duration of those objects. Thus, if any one of those objects is closed, this ZorbaXQResultSequence object will be implicitly closed and it can no longer be used. Similarly re-executing the expression also implicitly closes the associated result sequences.
    * 
-   *  \code{.java}
+   * An XQJ driver is not required to provide finalizer methods for the connection and other objects. Hence it is strongly recommended that users call close method explicitly to free any resources. It is also recommended that they do so under a final block to ensure that the object is closed even when there are exceptions. Not closing this object implicitly or explicitly might result in serious memory leaks.
+   * 
+   * When the ZorbaXQResultSequence is closed any ZorbaXQResultItem objects obtained from it are also implicitly closed.
+   * 
+   * Example -
+   * 
+   * \code{.java} 
    *   XQPreparedExpression expr = conn.prepareExpression("for $i ..");
-   *   XQSequence result = expr.executeQuery();
+   *   ZorbaXQResultSequence result = expr.executeQuery();
    *  
    *   // create the ItemTypes for string and integer
    *   XQItemType strType = conn.createAtomicType(XQItemType.XQBASETYPE_STRING);
    *   XQItemType intType = conn.createAtomicType(XQItemType.XQBASETYPE_INT);
    * 
-   *   // positioned before the first item
+   *   // posititioned before the first item
    *   while (result.next())
    *   {
    *     XQItemType type = result.getItemType();
@@ -61,94 +67,45 @@ import org.zorbaxquery.api.Iterator;
    *       String str = result.getAtomicValue();
    *     else if (type.equals(intType))  // if it is an integer..
    *       int intval = result.getInt();
-   *  
-   *      ...
+   *       ...
    *   }
-   *  \endcode
    *  
-   * In a sequence, the cursor may be positioned on an item, after the last item or before the first item. The getPosition method returns the current position number. A value of 0 indicates that it is positioned before the first item, a value of count() + 1 indicates that it is positioned after the last item, and any other value indicates that it is positioned on the item at that position.
-   * For example, a position value of 1 indicates that it is positioned on the item at position 1.
-   * 
-   * The isOnItem method may be used to find out if the cursor is positioned on the item. When the cursor is positioned on an item, the next method call will move the cursor to be on the next item.
-   * 
-   * See also: Section 12 Serialization, XQuery API for Java (XQJ) 1.0, which describes some general information applicable to various XQJ serialization methods.
-   * 
-   * 
+   *   result.close(); // explicitly close the result sequence
+   * \endcode
    */
-public class XQSequence implements javax.xml.xquery.XQSequence {
-
+public class ZorbaXQResultSequence implements javax.xml.xquery.XQResultSequence {
+    
     private boolean closed = false;
-    private boolean forwardOnly = true;
-    private boolean currentItemGet = false;
-    private Collection<XQItem> content = new ArrayList<XQItem>();
-    private int position = 1;
-    int size = 0;
-    private ItemSequence itemSequence = null;
+    private boolean delivered = false;
+    //private boolean isonitem = false;
+    private boolean consumedItem = false;
+    private boolean iterDeleted = false;
 
-    public XQSequence(javax.xml.xquery.XQSequence sequence) throws XQException {
-        try {
-            while (sequence.next()) {
-                XQItem tmpItem = sequence.getItem();
-                Item item = null;
-                if (tmpItem instanceof XQItem) {
-                    item = ((org.zorbaxquery.api.xqj.XQItem)tmpItem).getZorbaItem();
-                } else if (tmpItem instanceof XQResultItem) {
-                    item = ((org.zorbaxquery.api.xqj.XQResultItem)tmpItem).getZorbaItem();
-                }
-                content.add(new org.zorbaxquery.api.xqj.XQItem(item));
-            }
-            size = content.size();
-        } catch (Exception e) {
-            throw new XQException("Error iterating from origin object" + e.getLocalizedMessage());
-        }
-        
+    private XQConnection connection = null;
+    private Iterator iter = null;
+    private ZorbaXQResultItem current = null;
+    private Collection<ZorbaXQResultItem> items = new ArrayList<ZorbaXQResultItem>();
+    private org.zorbaxquery.api.XQuery lQuery=null;
+    private boolean preparedExpression;
+    private ZorbaXQStaticCollectionManager lStaticCollectionManager;
+
+    public ZorbaXQResultSequence(XQConnection conn, org.zorbaxquery.api.XQuery query, boolean prepared) {
+        lQuery = query;
+        iter = query.iterator();
+        iter.open();
+        connection = conn;
+        preparedExpression = prepared;
     }
 
-    public XQSequence(java.util.Iterator iterator) {
-        while (iterator.hasNext()) {
-            Object o = iterator.next();
-            if (o instanceof XQItem) {
-                content.add((XQItem)o);
-            }
-        }
-        size = content.size();
-    }
-
-    public XQSequence(org.zorbaxquery.api.Iterator iterator) {
-        if (iterator.isOpen()) {
-            org.zorbaxquery.api.Item item = new org.zorbaxquery.api.Item();
-            while (iterator.next(item)) {
-                XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
-                content.add(xItem);
-            }
-            size = content.size();
-        }
-    }
-
-    public XQSequence(org.zorbaxquery.api.Item item) {
-        XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
-        content.add(xItem);
-        size = content.size();
-    }
-
-    protected XQSequence(ItemSequence seq) {
-        itemSequence = seq;
-        org.zorbaxquery.api.Iterator iterator = seq.getIterator();
-        if (iterator.isOpen()) {
-            org.zorbaxquery.api.Item item = null;
-            while (iterator.next(item)) {
-                XQItem xItem = new org.zorbaxquery.api.xqj.XQItem(item);
-                content.add(xItem);
-            }
-            size = content.size();
-        }
-    }
-
-    protected ItemSequence getItemSequence() throws XQException {
-        if (itemSequence==null) {
-            throw new XQException("This Sequence doesn't come from Zorba ItemSequence object");
-        }
-        return itemSequence;
+  /** \brief   Gets the XQuery connection associated with this result sequence
+   * 
+   * @return the connection associated with this result sequence
+   * @throw XQException - if the result sequence is in a closed state
+   */
+    @Override
+    public XQConnection getConnection() throws XQException {
+        isClosedXQException();
+        return connection;
     }
 
   /** \brief Moves the XQSequence's position to the given item number in this object.
@@ -171,24 +128,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean absolute(int i) throws XQException {
         isClosedXQException();
-        boolean result  = false;
-        position = 0;
-        if (size>0) {
-            if (i>0) {
-                if (i>size) {
-                    position = size+1;
-                } else {
-                    position = i;
-                    result = true;
-                }
-            } else if(i<0) {
-                if (i>(-size)) {
-                    position = size+i+1;
-                    result = true;
-                }
-            }
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Move to the position after the last item.
@@ -198,7 +138,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public void afterLast() throws XQException {
         isClosedXQException();
-        position = content.size()+1;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Moves to the position before the first item.
@@ -208,7 +148,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public void beforeFirst() throws XQException {
         isClosedXQException();
-        position = 0;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Closes the sequence and frees all resources associated with this sequence.
@@ -219,12 +159,24 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
    */
     @Override
     public void close() throws XQException {
-        closed = true;
-        for (XQItem item: content) {
-            item.close();
-        }
-        if (itemSequence!=null) {
-            itemSequence.delete();
+        if (!closed) {
+            closed = true;
+            for (ZorbaXQResultItem xitem: items){
+                xitem.close();
+            }
+            items.removeAll(items);
+            if (!iterDeleted) {
+                if (iter.isOpen()) {
+                    iter.close();
+                    iter.delete();
+                }
+                if (!preparedExpression) {
+                    lQuery.delete();
+                }
+            }
+            if (lStaticCollectionManager != null) {
+                lStaticCollectionManager.close();
+            }
         }
     }
 
@@ -245,7 +197,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public int count() throws XQException {
         isClosedXQException();
-        return size;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Gets the current cursor position.
@@ -259,7 +211,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public int getPosition() throws XQException {
         isClosedXQException();
-        return position;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Check if the sequence is positioned on an item or not.
@@ -272,7 +224,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean isOnItem() throws XQException {
         isClosedXQException();
-        return (position>0) && (position<(content.size()+1));
+        return (current!=null);
     }
 
   /** \brief Checks if the sequence is scrollable.
@@ -283,7 +235,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean isScrollable() throws XQException {
         isClosedXQException();
-        return !forwardOnly;
+        return false;
     }
 
   /** \brief Moves to the first item in the sequence.
@@ -296,17 +248,12 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean first() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if (content.size()>0) {
-            position = 1;
-            result = true;
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Get the current item as an immutable XQItem object.
    * 
-   * In case of an XQResultSequence, the item is an XQResultItem. In the case of forward only sequences, this method or any other get or write method may only be called once on the curent item.
+   * In case of an ZorbaXQResultSequence, the item is an ZorbaXQResultItem. In the case of forward only sequences, this method or any other get or write method may only be called once on the curent item.
    * 
    * The XQItem object is dependent on the sequence from which it was created and is only valid for the duration of XQSequence lifetime. Thus, the XQSequence is closed, this XQItem object will be implicitly closed and it can no longer be used.
    * 
@@ -316,8 +263,12 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public XQItem getItem() throws XQException {
         isClosedXQException();
-        isItemGetXQException();
-        return (XQItem)content.toArray()[position-1];
+        isItemDeliveredXQException();
+        isOnItemXQException();
+
+        delivered = true;
+        consumedItem = true;
+        return current;
     }
 
   /** \brief Read the entire sequence starting from the current position as an XMLStreamReader object.
@@ -330,18 +281,16 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public XMLStreamReader getSequenceAsStream() throws XQException {
         isClosedXQException();
-        isItemGetXQException();
-        StringBuffer sb = new StringBuffer();
-        for (XQItem item: content) {
-            sb.append(item.getItemAsString(null));
-        }
+        isConsumedXQException();
+        Properties properties = null;
+        String str = getSequenceAsString(properties);
         XMLInputFactory fac = XMLInputFactory.newInstance();
-        Reader read = new StringReader(sb.toString());
+        Reader read = new StringReader(str);
         XMLStreamReader result = null;
         try {
             result = fac.createXMLStreamReader(read);
         } catch (XMLStreamException ex) {
-            throw new XQException("Problem reading the stream: " + sb + " - with error: " + ex.getLocalizedMessage());
+            throw new XQException("Problem reading the stream: " + str + " - with error: " + ex.getLocalizedMessage());
         }
         return result;
     }
@@ -357,12 +306,32 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public String getSequenceAsString(Properties prprts) throws XQException {
         isClosedXQException();
-        isItemGetXQException();
-        StringBuffer sb = new StringBuffer();
-        for (XQItem item: content) {
-            sb.append(item.getItemAsString(null));
+        isConsumedXQException();
+        String result = null;
+        try {
+        /*
+        if (item.isNode() && item.getNodeKind()==3) { //attribute node
+            resultString = resultString.concat(item.getStringValue()).concat(" ");
+        } else {
+            resultString = resultString.concat(item.serialize().replace("&gt;", ">").replace("&lt;", "<")).concat(" ");
         }
-        return sb.toString();
+         * 
+         */
+            if (iter.isOpen()) {
+                iter.close();
+                iter.delete();
+            }
+            iterDeleted = true;
+            consumedItem = true;
+            result = lQuery.execute().replace("&gt;", ">").replace("&lt;", "<");
+        } catch (Exception e) {
+            throw new XQException("Error getting stream: " + e.getLocalizedMessage());
+        } finally {
+            if (!preparedExpression) {
+                lQuery.delete();
+            }
+        }
+        return result;
     }
 
   /** \brief Checks if the current position is after the last item in the sequence.
@@ -375,11 +344,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean isAfterLast() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if (size>0) {
-            result = position==size+1;
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Checks if the current position before the first item in the sequence.
@@ -392,11 +357,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean isBeforeFirst() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if (content.size()>0) {
-            result = position==0;
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Checks if the current position at the first item in the sequence.
@@ -409,11 +370,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean isFirst() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if (content.size()>0) {
-            result = position==1;
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Checks if the current position at the last item in the sequence.
@@ -426,11 +383,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean isLast() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if (size>0) {
-            result = position==size;
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Moves to the last item in the sequence.
@@ -443,12 +396,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean last() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if (size>0) {
-            position = size;
-            result = true;
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Moves to the next item in the sequence.
@@ -461,12 +409,15 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean next() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if ((position<=size) && (size>0)) {
-            result = (position<size);
-            position++;
+        Item lItem = new Item();
+        current = null;
+        if (iter.next(lItem)) {
+            current = new ZorbaXQResultItem(lItem, connection);
+            items.add(current);
+            delivered = false;
+            lItem.delete();
         }
-        return result;
+        return (current != null);
     }
 
   /** \brief Moves to the previous item in the sequence.
@@ -479,12 +430,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean previous() throws XQException {
         isClosedXQException();
-        boolean result = false;
-        if ((position>0) && (size>0)) {
-            result = (position>1);
-            position--;
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Moves the cursor a relative number of items.
@@ -499,18 +445,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean relative(int i) throws XQException {
         isClosedXQException();
-        boolean result  = false;
-        if ((i!=0) && (size>0)) {
-            position = position + i;
-            if (position<0) {
-                position = 0;
-            } else if (position>size) {
-                position=size+1;
-            } else {
-                result = true;
-            }
-        }
-        return result;
+        throw new XQException("This sequence is forward-only");
     }
 
   /** \brief Serializes the sequence starting from the current position to an OutputStream.
@@ -524,7 +459,6 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public void writeSequence(OutputStream out, Properties prprts) throws XQException {
         isClosedXQException();
-        isItemGetXQException();
         isNullXQException(out);
         if (isOnItem()) {
             getItem().writeItem(out, prprts);
@@ -549,7 +483,6 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public void writeSequence(Writer writer, Properties prprts) throws XQException {
         isClosedXQException();
-        isItemGetXQException();
         isNullXQException(writer);
         if (isOnItem()) {
             getItem().writeItem(writer, prprts);
@@ -569,7 +502,6 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public void writeSequenceToSAX(ContentHandler ch) throws XQException {
         isClosedXQException();
-        isItemGetXQException();
         isNullXQException(ch);
         if (isOnItem()) {
             getItem().writeItemToSAX(ch);
@@ -593,7 +525,6 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public void writeSequenceToResult(Result result) throws XQException {
         isClosedXQException();
-        isItemGetXQException();
         isNullXQException(result);
         if (isOnItem()) {
             getItem().writeItemToResult(result);
@@ -613,6 +544,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean getBoolean() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getBoolean();
     }
 
@@ -626,6 +558,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public byte getByte() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getByte();
     }
 
@@ -639,6 +572,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public double getDouble() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getDouble();
     }
 
@@ -652,6 +586,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public float getFloat() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getFloat();
     }
 
@@ -665,6 +600,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public int getInt() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getInt();
     }
 
@@ -678,7 +614,8 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public XQItemType getItemType() throws XQException {
         isClosedXQException();
-        return getItem().getItemType();
+        isOnItemXQException();
+        return current.getItemType();
     }
 
   /** \brief Gets the current item as a Java String.
@@ -691,6 +628,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public String getAtomicValue() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getAtomicValue();
     }
 
@@ -704,6 +642,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public long getLong() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getLong();
     }
 
@@ -717,6 +656,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public Node getNode() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getNode();
     }
 
@@ -731,7 +671,8 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public URI getNodeUri() throws XQException {
         isClosedXQException();
-        return getItem().getNodeUri();
+        isOnItemXQException();
+        return current.getNodeUri();
     }
 
   /** \brief Gets the current item as an Object.
@@ -744,6 +685,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public Object getObject() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getObject();
     }
 
@@ -757,6 +699,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public XMLStreamReader getItemAsStream() throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         return getItem().getItemAsStream();
     }
 
@@ -818,8 +761,9 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     @Override
     public boolean instanceOf(XQItemType xqit) throws XQException {
         isClosedXQException();
+        isOnItemXQException();
         isNullXQException(xqit);
-        return getItem().instanceOf(xqit);
+        return current.instanceOf(xqit);
     }
 
   /** \brief Serializes the current item to a Writer.
@@ -834,6 +778,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     public void writeItem(OutputStream out, Properties prprts) throws XQException {
         isClosedXQException();
         isNullXQException(out);
+        isNullXQException(prprts);
         getItem().writeItem(out, prprts);
     }
 
@@ -850,6 +795,7 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
     public void writeItem(Writer writer, Properties prprts) throws XQException {
         isClosedXQException();
         isNullXQException(writer);
+        isNullXQException(prprts);
         getItem().writeItem(writer, prprts);
     }
 
@@ -885,16 +831,43 @@ public class XQSequence implements javax.xml.xquery.XQSequence {
         getItem().writeItemToResult(result);
     }
 
+  /** \brief Returns a StaticCollectionManager.
+   * 
+   * Returns a CollectionManager responsible for all collections which are statically declared in the static context of this query (main module) or any transitively imported library module.
+   * The collection manager provides a set of functions for managing collections and their contents.
+   *
+   * @return ZorbaXQStaticCollectionManager The collection manager responsible for managing collections of this Sequence.
+   * @throw XQException - if the object is closed
+   */
+    public ZorbaXQStaticCollectionManager getStaticCollectionManager() throws XQException {
+        isClosedXQException();
+        if (lStaticCollectionManager==null) {
+            lStaticCollectionManager = new ZorbaXQStaticCollectionManager(lQuery.getStaticCollectionManager());
+        }
+        return lStaticCollectionManager;
+    }
+
     private void isClosedXQException() throws XQException {
         if (closed) {
             throw new XQException("This sequence is closed");
         }
     }
-    private void isItemGetXQException() throws XQException {
-        if (forwardOnly && currentItemGet) {
-            throw new XQException("Item already consumed on a forward-only sequence");
+    private void isConsumedXQException() throws XQException {
+        if (consumedItem) {
+            throw new XQException("Items already consumed");
         }
     }
+    private void isItemDeliveredXQException() throws XQException {
+        if (delivered) {
+            throw new XQException("Item already consumed");
+        }
+    }
+    private void isOnItemXQException() throws XQException {
+        if (current==null) {
+            throw new XQException("There are no more items to consume");
+        }
+    }
+
     private void isNullXQException(Object value) throws XQException {
         if (value==null) {
             throw new XQException("Parameter shouldn't be null");

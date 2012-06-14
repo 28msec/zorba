@@ -731,7 +731,7 @@ void VarDecl::accept(parsenode_visitor& v) const
   BEGIN_VISITOR();
   ACCEPT(theAnnotations);
   ACCEPT(theType);
-  ACCEPT(theInitExpr);
+  ACCEPT(theExpr);
   END_VISITOR();
 }
 
@@ -1470,7 +1470,7 @@ void WindowClause::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
-  ACCEPT(var->get_initexpr());
+  ACCEPT(var->get_binding_expr());
 
   v.intermediate_visit(*this, visitor_state);
 
@@ -1622,7 +1622,7 @@ void VarInDecl::accept( parsenode_visitor &v ) const
   ACCEPT(theType);
   ACCEPT(posvar_h);
   ACCEPT(ftscorevar_h);
-  ACCEPT(get_initexpr());
+  ACCEPT(get_binding_expr());
   END_VISITOR();
 }
 
@@ -1697,7 +1697,7 @@ void VarGetsDecl::accept( parsenode_visitor &v ) const
   BEGIN_VISITOR();
   ACCEPT(theType);
   ACCEPT(ftscorevar_h);
-  ACCEPT(get_initexpr());
+  ACCEPT(get_binding_expr());
   END_VISITOR();
 }
 
@@ -1738,25 +1738,27 @@ void WhereClause::accept( parsenode_visitor &v ) const
 }
 
 
-void CountClause::accept( parsenode_visitor &v ) const
+void CountClause::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
 }
 
+
 GroupByClause::GroupByClause(
-  const QueryLoc& loc_,
-  rchandle<GroupSpecList> _spec_list_h)
-:
-  FLWORClause(loc_),
+    const QueryLoc& loc,
+    rchandle<GroupSpecList> _spec_list_h)
+  :
+  FLWORClause(loc),
   spec_list_h(_spec_list_h)
 {
 }
 
-void GroupByClause::accept( parsenode_visitor &v ) const
+
+void GroupByClause::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (spec_list_h);
+  ACCEPT(spec_list_h);
   END_VISITOR();
 }
 
@@ -1770,19 +1772,7 @@ GroupSpecList::GroupSpecList(const QueryLoc& loc)
 
 void GroupSpecList::push_back(rchandle<GroupSpec> spec)
 {
-  std::vector<rchandle<GroupSpec> >::const_iterator ite = theSpecs.begin();
-  std::vector<rchandle<GroupSpec> >::const_iterator end = theSpecs.end();
-
-  for (; ite != end; ++ite)
-  {
-    const GroupSpec* currSpec = (*ite).getp();
-
-    if (*currSpec->get_var_name() == *spec->get_var_name())
-      break;
-  }
-
-  if (ite == end)
-    theSpecs.push_back(spec);
+  theSpecs.push_back(spec);
 }
 
 
@@ -1802,13 +1792,14 @@ void GroupSpecList::accept(parsenode_visitor& v) const
 
 
 GroupSpec::GroupSpec(
-  const QueryLoc& loc_,
-  rchandle<QName> _var_name_h,
-  rchandle<GroupCollationSpec> _group_coll_spec_h)
+    const QueryLoc& loc,
+    rchandle<QName> name,
+    rchandle<SequenceType> type,
+    rchandle<exprnode> expr,
+    rchandle<GroupCollationSpec> collation)
   :
-  parsenode(loc_),
-  var_name_h(_var_name_h),
-  group_coll_spec_h(_group_coll_spec_h)
+  VarDeclWithInit(loc, name, type, expr),
+  theCollationSpec(collation)
 {
 }
 
@@ -1816,21 +1807,22 @@ GroupSpec::GroupSpec(
 void GroupSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (group_coll_spec_h);
+  ACCEPT(theType);
+  ACCEPT(theCollationSpec);
+  ACCEPT(theExpr);
   END_VISITOR();
 }
 
-GroupCollationSpec::GroupCollationSpec(
-  const QueryLoc& loc_,
-  const zstring& _uri)
+
+GroupCollationSpec::GroupCollationSpec(const QueryLoc& loc, const zstring& uri)
   :
-  parsenode(loc_),
-  uri(_uri)
+  parsenode(loc),
+  theUri(uri)
 {
 }
 
 
-void GroupCollationSpec::accept( parsenode_visitor &v ) const
+void GroupCollationSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();

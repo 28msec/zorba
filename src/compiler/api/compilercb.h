@@ -149,7 +149,7 @@ public:
   static_context          * theRootSctx;
 
 #ifdef ZORBA_WITH_DEBUGGER
-  DebuggerCommons*          theDebuggerCommons;
+  DebuggerCommons         * theDebuggerCommons;
 #endif
 
   bool                      theIsEval;

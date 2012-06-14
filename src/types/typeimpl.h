@@ -355,9 +355,9 @@ public:
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 
-  virtual std::string toString() const;
+  std::string toString() const;
 
-  virtual std::string toSchemaString() const;
+  std::string toSchemaString() const;
 
 protected:
   XQType(
@@ -518,6 +518,8 @@ public:
 ********************************************************************************/
 class NodeXQType : public XQType
 {
+  friend class XQType;
+
 private:
   store::StoreConsts::NodeKind  m_node_kind;
   store::Item_t                 m_node_name;
@@ -571,7 +573,10 @@ public:
       const store::Item* subitem,
       const QueryLoc& loc) const;
 
-  std::ostream& serialize_ostream(std::ostream& os) const;
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
+
+protected:
+  std::string toSchemaStringInternal() const;
 };
 
 
@@ -754,6 +759,27 @@ public:
 };
 
 
+/***************************************************************************//**
+  xs:untyped
+********************************************************************************/
+class UntypedXQType : public XQType
+{
+public:
+  UntypedXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  store::Item_t get_qname() const;
+
+ public:
+  SERIALIZABLE_CLASS(UntypedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
+};
+
+
 /******************************************************************************
   xs:anyType
 *******************************************************************************/
@@ -796,28 +822,6 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnySimpleXQType, XQType)
   void serialize(::zorba::serialization::Archiver& ar);
 };
-
-
-/***************************************************************************//**
-  xs:untyped
-********************************************************************************/
-class UntypedXQType : public XQType
-{
-public:
-  UntypedXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
-
-  store::Item_t get_qname() const;
-
- public:
-  SERIALIZABLE_CLASS(UntypedXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar);
-};
-
 
 
 }

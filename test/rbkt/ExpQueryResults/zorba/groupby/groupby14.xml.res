@@ -1,1 +1,1 @@
-<result><group><state>CA</state><category>clothes</category><total-qty>510</total-qty></group><group><state>CA</state><category>kitchen</category><total-qty>170</total-qty></group><group><state>MA</state><category>clothes</category><total-qty>10</total-qty></group><group><state>MA</state><category>kitchen</category><total-qty>300</total-qty></group></result>
+<result><group>CA clothes<total-qty>510</total-qty></group><group>CA kitchen<total-qty>170</total-qty></group><group>MA clothes<total-qty>10</total-qty></group><group>MA kitchen<total-qty>300</total-qty></group></result>

@@ -271,21 +271,27 @@ std::string XQType::toSchemaString() const
   switch (type_kind())
   {
   case EMPTY_KIND:
+  {
     result = "empty-sequence()";
     break;
-
+  }
   case ATOMIC_TYPE_KIND:
+  {
     result = toString();
     break;
-
+  }
   case ITEM_KIND:
+  {
     result = "item()";
     break;
-
-#ifdef ZORBA_WITH_JSON
+  }
   case STRUCTURED_ITEM_KIND:
+  {
     result = "structured-item()";
     break;
+  }
+
+#ifdef ZORBA_WITH_JSON
 
   case JSON_TYPE_KIND:
   {
@@ -310,29 +316,35 @@ std::string XQType::toSchemaString() const
 #endif
 
   case NODE_TYPE_KIND:
-    result = toString();
+  {
+    result = static_cast<const NodeXQType*>(this)->toSchemaStringInternal();
     break;
-
+  }
   case FUNCTION_TYPE_KIND:
+  {
     result = toString();
     break;
-
+  }
   case ANY_TYPE_KIND:
+  {
     result = "xs:anyType";
     break;
-
+  }
   case ANY_SIMPLE_TYPE_KIND:
+  {
     result = "xs:anySimpleType";
     break;
-
+  }
   case ANY_FUNCTION_TYPE_KIND:
+  {
     result = "function(*)";
     break;
-
+  }
   case UNTYPED_KIND:
+  {
     result = toString();
     break;
-
+  }
   default:
     return toString();
     break;
@@ -426,7 +438,7 @@ void AtomicXQType::serialize(::zorba::serialization::Archiver& ar)
 std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
 {
   return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
-            << TypeOps::decode_quantifier (get_quantifier());
+            << TypeOps::decode_quantifier(get_quantifier());
 }
 
 
@@ -513,7 +525,6 @@ std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 //  NodeXQType                                                                 //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
-
 
 /*******************************************************************************
 
@@ -821,6 +832,58 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
   }
 
   return os << "]";
+}
+
+
+std::string NodeXQType::toSchemaStringInternal() const
+{
+  std::ostringstream os;
+
+  if (m_node_kind == store::StoreConsts::documentNode)
+  {
+    os << "document-node(";
+    
+    if (theContentType != NULL &&
+        theContentType->type_kind() == XQType::NODE_TYPE_KIND)
+    {
+      os << ", " << theContentType->toSchemaString();
+    }
+  }
+  else if (m_schema_test)
+  {
+    assert(theContentType != NULL);
+
+    os << "schema-" << store::StoreConsts::toSchemaString(get_node_kind()) << "("
+       << m_node_name->getStringValue();
+  }
+  else
+  {
+    os << store::StoreConsts::toSchemaString(get_node_kind()) << "(";
+    
+    if (m_node_name != NULL)
+    {
+      os << m_node_name->getStringValue();
+
+      if (theContentType != NULL)
+      {
+        os << ", " << theContentType->toSchemaString();
+
+        if (m_nillable)
+          os << "?";
+      }
+    }
+    else if (theContentType != NULL)
+    {
+      os << "*, " << theContentType->toSchemaString();
+
+      if (m_nillable)
+        os << "?";
+    }
+  }
+  
+  os << ")";
+  
+  return os.str();
 }
 
 
