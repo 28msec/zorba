@@ -22,7 +22,8 @@
 #include "common/common.h"
 #include "util/ascii_util.h"
 #include "util/string_util.h"
-#include "zorbaserialization/zorba_class_serializer.h"
+
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #include "decimal.h"
 #include "integer.h"
@@ -30,10 +31,10 @@
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(T)  IntegerImpl
+# define INTEGER_IMPL(I)  IntegerImpl
 #else
-# define TEMPLATE_DECL(T) template<typename T>
-# define INTEGER_IMPL(T)  IntegerImpl<T>
+# define TEMPLATE_DECL(T) template<typename T> /* spacer */
+# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
 #define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
@@ -41,7 +42,7 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(Decimal)
-END_SERIALIZABLE_CLASS_VERSIONS(Decimal)
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -228,8 +229,8 @@ Decimal::Decimal( Float const &f ) {
   value_ = f.getNumber();
 }
 
-TEMPLATE_DECL(T)
-Decimal::Decimal( INTEGER_IMPL(T) const &i ) : value_( i.itod() ) {
+TEMPLATE_DECL(I)
+Decimal::Decimal( INTEGER_IMPL(I) const &i ) : value_( i.itod() ) {
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
 template Decimal::Decimal( INTEGER_IMPL_LL const& );
@@ -250,8 +251,8 @@ Decimal& Decimal::operator=( unsigned long long n ) {
   return *this;
 }
 
-TEMPLATE_DECL(T)
-Decimal& Decimal::operator=( INTEGER_IMPL(T) const &i ) {
+TEMPLATE_DECL(I)
+Decimal& Decimal::operator=( INTEGER_IMPL(I) const &i ) {
   value_ = i.itod();
   return *this;
 }
@@ -285,8 +286,8 @@ Decimal& Decimal::operator=( Float const &f ) {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 #define ZORBA_DECIMAL_OP(OP)                                          \
-  TEMPLATE_DECL(T)                                                    \
-  Decimal operator OP( Decimal const &d, INTEGER_IMPL(T) const &i ) { \
+  TEMPLATE_DECL(I)                                                    \
+  Decimal operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) { \
     return d.value_ OP i.itod();                                      \
   }                                                                   \
   ZORBA_INSTANTIATE(OP)
@@ -310,8 +311,8 @@ ZORBA_DECIMAL_OP(%);
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 #define ZORBA_DECIMAL_OP(OP)                                        \
-  TEMPLATE_DECL(T)                                                  \
-  bool operator OP( Decimal const &d, INTEGER_IMPL(T) const &i ) {  \
+  TEMPLATE_DECL(I)                                                  \
+  bool operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) {  \
     return d.value_ OP i.itod();                                    \
   }                                                                 \
   ZORBA_INSTANTIATE(OP)
@@ -331,17 +332,17 @@ Decimal Decimal::round() const {
   return round( INTEGER_IMPL_LL::zero() );
 }
 
-TEMPLATE_DECL(T)
-Decimal Decimal::round( INTEGER_IMPL(T) const &precision ) const {
-  return round( value_, precision.itod() );
+TEMPLATE_DECL(I)
+Decimal Decimal::round( INTEGER_IMPL(I) const &precision ) const {
+  return round2( value_, precision.itod() );
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
 template Decimal Decimal::round( INTEGER_IMPL_LL const& ) const;
 template Decimal Decimal::round( INTEGER_IMPL_ULL const& ) const;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-Decimal::value_type Decimal::round( value_type const &v,
-                                    value_type const &precision ) {
+Decimal::value_type Decimal::round2( value_type const &v,
+                                     value_type const &precision ) {
   value_type const exp( value_type(10).pow( precision ) );
   value_type result( v * exp );
   result += MAPM::get0_5();
@@ -350,24 +351,24 @@ Decimal::value_type Decimal::round( value_type const &v,
   return result;
 }
 
-TEMPLATE_DECL(T)
-Decimal Decimal::roundHalfToEven( INTEGER_IMPL(T) const &precision ) const {
-  return roundHalfToEven( value_, precision.itod() );
+TEMPLATE_DECL(I)
+Decimal Decimal::roundHalfToEven( INTEGER_IMPL(I) const &precision ) const {
+  return roundHalfToEven2( value_, precision.itod() );
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
 template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_LL const& ) const;
 template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_ULL const& ) const;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-Decimal::value_type Decimal::roundHalfToEven( value_type const &v,
-                                              value_type const &precision ) {
+Decimal::value_type Decimal::roundHalfToEven2( value_type const &v,
+                                               value_type const &precision ) {
   value_type const exp( value_type(10).pow( precision ) );
   value_type result( v * exp );
   bool const aHalfVal = (result - MAPM::get0_5()) == result.floor();
   result += MAPM::get0_5();
   result = result.floor();
   if ( aHalfVal && result.is_odd() )
-    result -= 1;
+    --result;
   result /= exp;
   return result;
 }

@@ -22,7 +22,7 @@ die() {
   echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>]'
   echo '           [--thesaurusurl <thesaurusurl>]'
   echo '           <zorba_repository>'
-  echo '<zorba_repository> is the top-level SVN working copy.'
+  echo '<zorba_repository> is the top-level BZR working copy.'
   echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp).'
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
@@ -71,8 +71,8 @@ BUILD=$(cd "$BUILD" && pwd)
 echo Build dir is at $BUILD
 
 # Compile thesaurus to binary format
-mkdir -p $BUILD/test/rbkt/thesauri
-THESAURUS_DEST="$BUILD/test/rbkt/thesauri/wordnet-en.zth"
+mkdir -p $BUILD/LIB_PATH/edu/princeton/wordnet
+THESAURUS_DEST="$BUILD/LIB_PATH/edu/princeton/wordnet/wordnet-en.zth"
 echo "Compiling thesaurus to $THESAURUS_DEST..."
 untar_dir=`mktemp -d "$WORK/thesaurus.XXXXXX"`
 cd "$untar_dir"
@@ -83,5 +83,5 @@ echo "Cleaning up work directory... $untar_dir"
 rm -rf "$untar_dir"
 
 echo Done.
-echo Now re-run CMake in the build directory to pick up thesaurus tests.
+
 # vim:set et sw=2 ts=2:

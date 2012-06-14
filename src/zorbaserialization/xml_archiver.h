@@ -21,55 +21,63 @@
 #include "zorbaserialization/archiver.h"
 
 namespace zorba{
-  namespace serialization{
+namespace serialization{
 
 class XmlArchiver : public Archiver
 {
-  std::istream *is;
-  std::ostream *os;
-  char   indent_spaces[101];
-  int    indent_off;
+  std::istream * is;
+  std::ostream * os;
 
-  int   read_tag_level;
-  char  field_type[1000];
-  bool  has_attributes;
-  bool  is_compound_field_without_children;
-  int   last_id;
+  char           indent_spaces[101];
+  int            indent_off;
+
+  int            read_tag_level;
+  char           field_type[1000];
+  bool           has_attributes;
+  bool           is_compound_field_without_children;
+  int            last_id;
+
 public:
-  XmlArchiver(std::istream *is);
-  XmlArchiver(std::ostream *os);
+  XmlArchiver(std::istream* is);
 
-  virtual bool read_next_field_impl( char **type, 
-                                std::string *value,
-                                int *id, 
-                                int *version, 
-                                bool *is_simple, 
-                                bool *is_class,
-                                enum ArchiveFieldKind *field_treat,
-                                int *referencing);
+  XmlArchiver(std::ostream* os);
 
-  virtual void read_end_current_level_impl();
+  void serialize_out();
 
-
-///////////////////////////////////
-  virtual void serialize_out();
-
+  bool read_next_field_impl( 
+      char** type, 
+      std::string* value,
+      int* id, 
+      bool* is_simple, 
+      bool* is_class,
+      enum ArchiveFieldKind* field_treat,
+      int* referencing);
+  
+  void read_end_current_level_impl();
 
 protected:
   //writing
-  void serialize_compound_fields(archive_field   *parent_field);
-  void encode_string(const char *value);
-  const char *get_field_treat_string(enum ArchiveFieldKind field_treat);
-  void write_string(const char *str);
+  void serialize_compound_fields(archive_field* parent_field);
+
+  void encode_string(const char* value);
+
+  const char* get_field_treat_string(enum ArchiveFieldKind field_treat);
+
+  void write_string(const char* str);
 
   //reading
-  bool match_string(char c, const char *match);
+  bool match_string(char c, const char* match);
+
   bool read_root_tag(char c);
-  bool read_attrib_name(char *attrib_name);
-  void read_attrib_value(char *attrib_value);
-  void read_attrib_value(std::string *attrib_value);
+
+  bool read_attrib_name(char* attrib_name);
+
+  void read_attrib_value(char* attrib_value);
+
+  void read_attrib_value(std::string* attrib_value);
 
   void skip_tag();
+
   void skip_comment_tag();
 };
 

@@ -437,6 +437,8 @@ public:
   void close();
 
   bool next(store::Item_t& result);
+
+  void count(store::Item_t& result);
 };
 
 

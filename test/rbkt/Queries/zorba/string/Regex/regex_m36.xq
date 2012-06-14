@@ -1,0 +1,1 @@
+fn:matches("a", "b$|^a")

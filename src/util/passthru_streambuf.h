@@ -17,22 +17,37 @@
 #ifndef ZORBA_PASSTHRU_STREAMBUF_H
 #define ZORBA_PASSTHRU_STREAMBUF_H
 
-#include <zorba/transcode_streambuf.h>
+#include <zorba/transcode_stream.h>
+
+#include "util/ascii_util.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %passthru_streambuf is-a std::streambuf TODO
+ * A %passthru_streambuf is-a std::streambuf that simply passes through
+ * characters unchanged.
  */
 class passthru_streambuf : public proxy_streambuf {
 public:
+#ifdef WIN32
+  // These typedefs are needed (but shouldn't be) when using MSVC++.
+  typedef std::streambuf::char_type char_type;
+  typedef std::streambuf::int_type int_type;
+  typedef std::streambuf::off_type off_type;
+  typedef std::streambuf::pos_type pos_type;
+  typedef std::streambuf::traits_type traits_type;
+#endif /* WIN32 */
+
   /**
    * Constructs an %passthru_streambuf.
    *
    * @param charset The name of the character encoding to convert from/to.
    * @param orig The original streambuf to read/write from/to.
+   * @throws std::invalid_argument if either \a charset is invalid
+   * or \a orig is \c null.
    */
   passthru_streambuf( char const *charset, std::streambuf *orig );
 
@@ -40,6 +55,17 @@ public:
    * Destructs an %passthru_streambuf.
    */
   ~passthru_streambuf();
+
+  /**
+   * Checks whether it would be necessary to transcode from the given character
+   * encoding to UTF-8.
+   *
+   * @param charset The name of the character encoding to check.
+   * @return \c true only if t would be necessary to transcode from the given
+   * character encoding to UTF-8.
+   * @throws std::invalid_argument if \a charset is invalid.
+   */
+  static bool is_necessary( char const *charset );
 
   /**
    * Checks whether the given character set is supported for transcoding.

@@ -186,6 +186,11 @@
     <zorba:description author="Zorba Team">fn:has-children</zorba:description>
 
     <zorba:function>
+      
+      <zorba:signature localname="has-children" prefix="fn" version="3.0">
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+      
       <zorba:signature localname="has-children" prefix="fn" version="3.0">
         <zorba:param>node()?</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
@@ -510,6 +515,28 @@
     <zorba:methods>
       <zorba:mustCopyInputNodes value="true"/>
     </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+<!--  
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="FnPathIterator">
+
+  <zorba:description author="Zorba Team"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="path" prefix="fn" version="3.0">
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="path" prefix="fn" version="3.0">
+      <zorba:param>node()?</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
 
   </zorba:function>
 

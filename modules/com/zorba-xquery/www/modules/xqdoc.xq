@@ -61,7 +61,7 @@ xquery version "3.0";
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
@@ -80,7 +80,7 @@ declare option ver:module-version "2.0";
  : @error zerr::ZXQD0002 if the xqdoc comments in the
  :  module contain invalid XML
  :)
-declare %ann:nondeterministic function xqd:xqdoc(
+declare %an:nondeterministic function xqd:xqdoc(
   $module-uri as xs:string
 ) as element() external;
 

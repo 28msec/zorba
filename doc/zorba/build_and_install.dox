@@ -1,0 +1,59 @@
+/** \page build_and_install Building and Installing Zorba
+
+\section build_zorba Building Zorba
+
+Once you have successfully configured your Zorba build (as described
+in \ref configure_zorba), you should now be able to build the project.
+
+- For Makefile-based builds, just type \c make (or <tt>make j2</tt> to
+do a parallel build on a multi-core machine) from inside the \c
+{ZORBABUILD} directory.
+
+- For IDE-based builds, open the project created in the previous step
+ and build the \c ALL target.
+
+The build will take some time.  If it finishes successfully, you're
+ready to install and run Zorba.
+
+\section install_zorba Installing Zorba
+
+- For Makefile-based builds, just type <tt>make install</tt>.  There
+is also a <tt>make uninstall</tt> target.
+
+- For IDE-based builds, invoke the \c INSTALL project.
+
+In either case, Zorba will be installed into the location specified by
+the CMake configuration parameter \c CMAKE_INSTALL_PREFIX, as
+described in \ref configure_parameters.
+
+\section install_paths Setting the PATH
+
+In order for users on your system to use Zorba, the \c bin/ subdirectory
+of your installation directory must be on their path.
+
+\section testing_install Testing your Zorba Installation
+
+Once Zorba is installed and on your path, try it out! Type:
+
+\code
+zorba -q "1+1"
+\endcode
+
+You should get the following output:
+
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+2
+\endcode
+
+If so - congratulations! You're done and ready to use Zorba.
+
+\section build_help Help!
+
+If you have any problems building or running Zorba, contact the \c
+zorba-users mailing list. Sign up and see other instructions at
+https://lists.sourceforge.net/lists/listinfo/zorba-users .
+
+
+*/
+

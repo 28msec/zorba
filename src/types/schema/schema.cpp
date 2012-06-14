@@ -54,12 +54,13 @@
 #endif /* ZORBA_NO_XMLSCHEMA */
 
 
-//using namespace std;
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(Schema)
-END_SERIALIZABLE_CLASS_VERSIONS(Schema)
 
 //#define DO_TRACE
 //#define DO_PRINT_SCHEMA_INFO
@@ -90,6 +91,7 @@ static void transcode(const XMLCh* const str, zstring& res)
   XMLString::release(&trStr);
 }
 
+
 /**
  * A Xerces BinInputStream that returns bytes from a std::istream.
  */
@@ -97,7 +99,8 @@ class IstreamBinInputStream : public XERCES_CPP_NAMESPACE::BinInputStream
 {
 public:
   IstreamBinInputStream(std::istream* aStream)
-    : theStream(aStream)
+    : 
+    theStream(aStream)
   {
   }
 
@@ -126,6 +129,7 @@ private:
   std::istream* theStream;
 };
 
+
 /**
  * A Xerces InputSource that returns a IstreamBinInputStream.
  */
@@ -140,7 +144,8 @@ public:
 
   ~IstreamInputSource()
   {
-    if (theStreamReleaser) {
+    if (theStreamReleaser) 
+    {
       theStreamReleaser(theStream);
     }
   }
@@ -154,6 +159,7 @@ private:
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
 };
+
 
 /**
  * A Xerces EntityResolver that looks for a specific URL and returns
@@ -249,15 +255,17 @@ public:
         else
           return NULL;          
       }
-// avoiding the warning that e is not used
-#ifdef DO_TRACE
       catch (ZorbaException const& e) {
         TRACE("!!! ZorbaException: " << e );
-#else
-      catch (ZorbaException const& ) {
-#endif
-        //don't throw let Xerces resolve it
-        return NULL;
+        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED )
+        {
+          throw;
+        }
+        else
+        {
+          //don't throw let Xerces resolve it
+          return NULL;
+        }
       }
     }
   }
@@ -2028,7 +2036,7 @@ bool Schema::isCastableUserUnionTypes(
     return false;
 }
 
-void Schema::serialize(::zorba::serialization::Archiver &ar)
+void Schema::serialize(::zorba::serialization::Archiver& ar)
 {
   SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
 
@@ -2036,24 +2044,32 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
    ar & theUdTypesCache;
 
    bool is_grammar_NULL = (theGrammarPool == NULL);
-   ar.set_is_temp_field_one_level(true, true);
+
+   ar.set_is_temp_field(true);
+
    ar & is_grammar_NULL;
+
    unsigned long size_of_size_t = sizeof(size_t);
+
    union
    {
      unsigned long lvalue;
      unsigned char cvalue[4];
-   }le_be_value;
+   } le_be_value;
+
    le_be_value.lvalue = 0x11223344;
-   if(ar.is_serializing_out())
+
+   if (ar.is_serializing_out())
    {
      ar & size_of_size_t;
      ar & le_be_value.cvalue[0];
-     if(!is_grammar_NULL)
+
+     if (!is_grammar_NULL)
      {
-       BinMemOutputStream    binmemoutputstream;
+       BinMemOutputStream binmemoutputstream;
        unsigned int  size = 0;
-       unsigned char *binchars = NULL;
+       unsigned char* binchars = NULL;
+
        try
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
@@ -2065,6 +2081,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        }
 
        ar & size;
+
        if(size)
          serialize_array(ar, binchars, size);
      }
@@ -2075,14 +2092,16 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
      unsigned char le_be_value_first_char;
      ar & size_of_size_t2;
      ar & le_be_value_first_char;
-     if((size_of_size_t2 != size_of_size_t) || (le_be_value_first_char != le_be_value.cvalue[0]))
+     if (size_of_size_t2 != size_of_size_t ||
+         le_be_value_first_char != le_be_value.cvalue[0])
      {
        throw ZORBA_EXCEPTION(zerr::ZCSE0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
      }
-     if(!is_grammar_NULL)
+
+     if (!is_grammar_NULL)
      {
-       unsigned int  size;
-       unsigned char *binchars;
+       unsigned int size;
+       unsigned char* binchars;
 
        ar & size;
        if(size)
@@ -2100,7 +2119,8 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        theGrammarPool = NULL;
      }
    }
-   ar.set_is_temp_field_one_level(false);
+
+   ar.set_is_temp_field(false);
 #endif
 }
 

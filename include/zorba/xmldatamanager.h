@@ -187,6 +187,8 @@ namespace zorba {
         ParseOptions& aOptions) const = 0;
 
     /** \brief Fetches an resource refered to by the given URI.
+     *
+     * @deprecated this function has been replaced by StaticContext::fetch.
      */
     virtual Item
     fetch(const String& aURI) const = 0;

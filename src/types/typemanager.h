@@ -20,6 +20,7 @@
 #include <ostream>
 #include <zorba/typeident.h>
 #include <zorba/store_consts.h>
+#include <zorba/diagnostic_list.h>
 
 #include "common/shared_types.h"
 
@@ -29,9 +30,9 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 
 
 namespace zorba {
@@ -62,11 +63,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(TypeManager)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(TypeManager, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    ar & m_level;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   TypeManager(int level) : m_level(level) { }

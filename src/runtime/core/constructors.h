@@ -67,6 +67,8 @@ public:
 
   bool copyInputNodes() const { return theCopyInputNodes; }
 
+  bool isConstructor() const { return true; }
+
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
@@ -141,6 +143,8 @@ public:
 
   bool copyInputNodes() const { return theCopyInputNodes; }
 
+  bool isConstructor() const { return true; }
+
   uint32_t getStateSizeOfSubtree() const;
   
   void accept(PlanIterVisitor&) const;
@@ -170,6 +174,8 @@ private:
   store::Item_t theQName;
   bool          theIsId;
   bool          theIsRoot;
+  bool          theRaiseXQDY0074;
+  bool          theRaiseXQDY0044;
 
 public:
   SERIALIZABLE_CLASS(AttributeIterator);
@@ -190,6 +196,8 @@ public:
         bool isRoot);
 
   store::Item* getQName() const { return theQName.getp(); }
+
+  bool isConstructor() const { return true; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -232,6 +240,8 @@ public:
         PlanIter_t& aChild,
         bool isRoot);
 
+  bool isConstructor() const { return true; }
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -273,6 +283,8 @@ public:
         PlanIter_t& aComment,
         bool isRoot);
 
+  bool isConstructor() const { return true; }
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -311,6 +323,8 @@ public:
         PlanIter_t& aTarget,
         PlanIter_t& aContent,
         bool isRoot);
+
+  bool isConstructor() const { return true; }
 
   void accept(PlanIterVisitor& v) const;
 

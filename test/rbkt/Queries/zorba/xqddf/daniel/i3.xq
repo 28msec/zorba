@@ -17,4 +17,4 @@ return
 index_dml:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-index_dml:probe-index-point-value($xqddf-test:index2, 2)[1]
+index_dml:probe-index-point-value($xqddf-test:index2, 2)[@id="item2"]

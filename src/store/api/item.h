@@ -26,7 +26,7 @@
 #include "zorbatypes/rclock.h"
 #include "zorbatypes/schema_types.h"
 
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "store/api/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -838,13 +838,13 @@ public:
    * Gets the tokens for this item.
    *
    * @param provider The TokenizerProvider to use.
-   * @param numbers The Tokenizer::Numbers to use.
+   * @param state The Tokenizer::State to use.
    * @param lang The language to use for tokenization.
    * @param wildcards If \c true, allow XQuery wildcard syntax.
    * @return Returns an iterator over the tokens.
    */
   virtual FTTokenIterator_t
-  getTokens(TokenizerProvider const &provider, Tokenizer::Numbers &numbers,
+  getTokens(TokenizerProvider const &provider, Tokenizer::State &state,
             locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 

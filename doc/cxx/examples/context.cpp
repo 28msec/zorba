@@ -149,7 +149,11 @@ context_example_4(Zorba* aZorba)
     outStream2 << lQuery << std::endl;
     std::cout << outStream2.str() << std::endl;
 
+#ifndef ZORBA_NO_ICU
     if (outStream2.str() != "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\nBook 1.1\n")
+#else
+    if (outStream2.str() != "<?xml version=\"1.0\"?>\nBook 1.1\n")
+#endif /* ZORBA_NO_ICU */
     {
       std::cerr << "Test 4 failed with a wrong result : " << std::endl
                 << outStream2.str() << std::endl;
@@ -372,10 +376,10 @@ public:
       (*lQuery)
         << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
         << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl
-        << "declare namespace ann = 'http://www.zorba-xquery.com/annotations';" << std::endl
+        << "declare namespace an = 'http://www.zorba-xquery.com/annotations';" << std::endl
         << "declare variable $mymodule:var  := 'myvar';" << std::endl
         << "declare collection mymodule:collection;" << std::endl
-        << "declare %ann:automatic %ann:value-equality index mymodule:index" << std::endl
+        << "declare %an:automatic %an:value-equality index mymodule:index" << std::endl
         << "  on nodes dml:collection(xs:QName('mymodule:collection'))" << std::endl
         << "  by ./foo as xs:string;" << std::endl;
       return StreamResource::create(lQuery.release(), &releaseStream);

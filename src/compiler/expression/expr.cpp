@@ -43,100 +43,64 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
 namespace zorba 
 {
 
-SERIALIZABLE_CLASS_VERSIONS(expr)
-END_SERIALIZABLE_CLASS_VERSIONS(expr)
-
 SERIALIZABLE_CLASS_VERSIONS(catch_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(catch_clause)
 
 SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(function_trace_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(function_trace_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(eval_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 
 #ifdef ZORBA_WITH_DEBUGGER
 SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
 #endif
 
 SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(namespace_context_base_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(namespace_context_base_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(cast_base_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(cast_base_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(promote_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(promote_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(castable_base_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(castable_base_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(instanceof_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(instanceof_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(treat_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(treat_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(castable_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(castable_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(cast_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(cast_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(if_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(if_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(validate_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(validate_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(pragma)
-END_SERIALIZABLE_CLASS_VERSIONS(pragma)
 
 SERIALIZABLE_CLASS_VERSIONS(extension_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(extension_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(const_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(const_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(order_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(order_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(elem_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(elem_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(doc_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(doc_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(attr_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(attr_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(text_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(text_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(pi_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(pi_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
 
 
 /*******************************************************************************
@@ -560,6 +524,13 @@ promote_expr::promote_expr(
   cast_base_expr(sctx, loc, promote_expr_kind, input, type),
   theFnQName(fnQName)
 {
+}
+
+
+void promote_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (cast_base_expr*)this);
+  ar & theFnQName;
 }
 
 
@@ -1264,8 +1235,8 @@ expr_t extension_expr::clone(substitution_t& subst) const
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	XQuery 1.1 expressions                                             //
-//  [http://www.w3.org/TR/xquery-1.1/]                                 //
+//	XQuery 3.0 expressions                                             //
+//  [http://www.w3.org/TR/xquery-3/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 

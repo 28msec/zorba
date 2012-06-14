@@ -54,6 +54,8 @@ IF(${cxqNO} STRGREATER "0")
 
   SET(PARAM 0)
 
+  LIST(SORT CHAINED_TESTFILES)
+
   # create a list with the folders containg *.cxq files
   FOREACH(CHAINED_TESTFILE ${CHAINED_TESTFILES})
     GET_FILENAME_COMPONENT(TF_PATH ${CHAINED_TESTFILE} PATH)
@@ -109,10 +111,15 @@ SET(FOUND_XQFTTS 0)
 # depend on module features into the modules themselves.
 
 
-# Check if WordNet thesaurus is installed in the location tests expect
-IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
+# Check if WordNet thesaurus is installed
+SET(WORDNET_THESAURUS_FILE 
+  "${CMAKE_BINARY_DIR}/LIB_PATH/edu/princeton/wordnet/wordnet-en.zth")
+IF(EXISTS "${WORDNET_THESAURUS_FILE}")
   SET(ZORBA_WORDNET_FOUND 1)
-ENDIF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
+  # Kind of a weird place to put this directive, but convenient
+  INSTALL(FILES "${WORDNET_THESAURUS_FILE}"
+    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet")
+ENDIF(EXISTS "${WORDNET_THESAURUS_FILE}")
 
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
@@ -223,23 +230,38 @@ MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 ####
 IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
+  #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-001 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-002 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-003 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-004 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-005 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-006 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-007 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-008 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-009 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-010 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-011 997045)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-012 997045)
+
+  IF (NOT ZORBA_WITH_BIG_INTEGER)
+    # These test will never pass without big integers beause the integers used
+    # in the queries exceed a 63-bit signed integer.
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
+  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
+
 
   IF (ZORBA_TEST_XQUERYX)
 
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
-  
+    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemContent/K2-DirectConElemContent-27 909303)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemWhitespace/K2-DirectConElemWhitespace-25 909303)
 
-    IF(NOT ZORBA_WITH_BIG_INTEGER)
-      # These tests fail due to integer overflow.
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
-    ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
     #w3c bug
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes011 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes012 3355019)
@@ -252,16 +274,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
   #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
 
-  IF (NOT ZORBA_WITH_BIG_INTEGER)
-    # These test will never pass without big integers beause the integers used
-    # in the queries exceed a 63-bit signed integer.
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
-  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
-
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
 
@@ -273,6 +285,7 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-SCORE/score-queries-results-q1 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-SCORE/score-queries-results-q3 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-SCORE/score-queries-results-q3b 866923)
+  EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q1 987632)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q4 866926)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9 866926)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9b 866926)
@@ -341,6 +354,7 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q2b 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q3 866923)
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-unconstrained-q1h 866923)
+  EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q4 909375)
 
   #the bug #11950 is a W3C bug, http://www.w3.org/Bugs/Public/show_bug.cgi?id=11950
   EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQuery/UseCase/UseCase-ACROSS/across-queries-results-q2 11950)
@@ -355,6 +369,7 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-SCORE/score-queries-results-q1 866923)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-SCORE/score-queries-results-q3 866923)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-SCORE/score-queries-results-q3b 866923)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q1 987632)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q4 866926)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9 866926)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9b 866926)
@@ -432,9 +447,9 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-STOP-WORD/stop-word-queries-results-q3 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.7-StopWordOption/ft-5.2.11-examples-q5 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.7-StopWordOption/ft-5.2.11-examples-q4 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q3 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q2 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q1 909375)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q2 909375)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Examples/3.4.3-ThesaurusOption/ft-3.4.3-examples-q3 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/ftmatchoptions-q1 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/ftmatchoptions-q2 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-3.4.7-expressions-q5 909375)
@@ -450,8 +465,8 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-5.2.11-expressions-q6 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTStopWord/ft-5.2.11-expressions-q5 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q3 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q6 909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q5 909375)
+    EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q6 909375)
 
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q3  909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q3b  909375)
@@ -476,11 +491,13 @@ ENDIF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 #  EXPECTED_FAILURE (test/rbkt/zorba/file/dirname_basename ????need bugnum???)
 #ENDIF ()
 
+# test that must fail to pass, to check testdriver BOM bug that gives false positives
+EXPECTED_FAILURE (test/rbkt/zorba/testdriver/bom_bug 3381121)
+
 # Bug 921624. If this test takes more than a couple seconds, it must be
 # hitting w3.org for the DTD, which is bad.
 SET_TESTS_PROPERTIES(test/rbkt/zorba/schemas/local-xhtml
   PROPERTIES TIMEOUT 5)
-
 
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
@@ -520,6 +537,23 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
+IF(NOT ZORBA_NO_ICU)
+  IF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m40 866874)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m41 866874)
+  ELSE ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err10 994610)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err15 866874)
+  ENDIF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
+  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
+ENDIF(NOT ZORBA_NO_ICU)
+
+IF(ZORBA_NO_ICU)
+  SET_TESTS_PROPERTIES(
+                      test/rbkt/zorba/string/CodepointToStringFunc/UnicodeNormalization1
+                      PROPERTIES WILL_FAIL TRUE)
+ENDIF(ZORBA_NO_ICU)
+
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 

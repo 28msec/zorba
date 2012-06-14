@@ -20,7 +20,6 @@
 #include <curl/curl.h>
 
 namespace zorba {
-
 namespace http_client {
 
 class ErrorThrower 
@@ -36,18 +35,19 @@ public:
     theHeaderList(aHeaderList)
   {
   }
-  
-  void raiseException(String aNamespace, String aLocalName, String aDescription) 
+
+  void raiseException( String const &aNamespace, String const &aLocalName,
+                       String const &aDescription )
   {
     if (*theHeaderList) 
-    {
       curl_slist_free_all(*theHeaderList);
-    }
 
-    UserException ex = USER_EXCEPTION(theFactory->createQName(aNamespace, aLocalName), aDescription);
-    throw ex;
+    throw USER_EXCEPTION(
+      theFactory->createQName(aNamespace, aLocalName), aDescription
+    );
   }
 };
   
-}} //namespace zorba, http_client
-    
+} // namespace http_client
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

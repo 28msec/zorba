@@ -37,6 +37,14 @@
     return Iterator(lItem);
   }
 
+  Item XmlDataManager::parseXMLtoItem(const std::string& aDoc)
+  {
+    std::stringstream lDoc;
+    lDoc << aDoc;
+    zorba::Item lItem = theManager->parseXML(lDoc);
+    return Item(lItem);
+  }
+
 
 %}  // end   Implementation
 
