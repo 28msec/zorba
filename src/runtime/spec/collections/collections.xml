@@ -999,12 +999,12 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-in-collection" prefix="static-collections-dml">
+      <zorba:signature localname="delete" prefix="static-collections-dml">
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-in-collection" prefix="dynamic-collections-dml">
+      <zorba:signature localname="delete" prefix="dynamic-collections-dml">
         <zorba:param>structured-item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
