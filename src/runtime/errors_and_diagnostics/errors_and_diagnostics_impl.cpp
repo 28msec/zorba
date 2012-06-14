@@ -108,11 +108,7 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     (*state->theOS) << state->theTagItem->getStringValue() 
       << " [" << state->theIndex << "]: ";
-    if (theSctx->trace_with_debug_info())
-    {
-      (*state->theOS) << result->show();
-    }
-    else 
+
     {
       serializer ser(NULL);
       Zorba_SerializerOptions options;
