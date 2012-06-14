@@ -1964,7 +1964,17 @@ CollectionTypeDecl :
                                                     $1,
                                                     dynamic_cast<OccurrenceIndicator*>($2)));
     }
-;
+  | JSONTest
+    {
+      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$), $1, NULL));
+    }
+  | JSONTest OccurrenceIndicator
+    {
+      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$),
+                                                    $1,
+                                                    dynamic_cast<OccurrenceIndicator*>($2)));
+
+    };
 
 
 IndexDecl :

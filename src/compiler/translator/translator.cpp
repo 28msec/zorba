@@ -4299,7 +4299,7 @@ void* begin_visit(const IndexKeyList& v)
   }
 
   domainExpr = wrap_in_type_match(domainExpr,
-                                  theRTM.ANY_NODE_TYPE_STAR,
+                                  theRTM.STRUCTURED_ITEM_TYPE_STAR,
                                   zerr::ZDTY0010_INDEX_DOMAIN_TYPE_ERROR);
 
   // For general indexes, the domain expression must not return duplicate nodes.

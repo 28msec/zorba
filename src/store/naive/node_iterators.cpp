@@ -259,22 +259,32 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
 {
   if (theCurrentNode < 0)
   {
-    theCurrentNode = 0;
-
-    while (true)
-    {
-      store::Item_t contextNode;
-      if (!theInput->next(contextNode))
-        break;
-
-      ZORBA_ASSERT(contextNode->isNode());
-
-      theNodes.push_back(reinterpret_cast<XmlNode*>(contextNode.release()));
-    }
-
-    ComparisonFunction cmp(theAscending);
-
-    std::sort(theNodes.begin(), theNodes.end(), cmp);
+    store::Item_t lItem;
+    // We are not done yet with gathering all XML nodes.
+    while (theInput->next(lItem))
+     {
+      if (!lItem->isNode())
+      {
+#ifdef ZORBA_WITH_JSON
+        // If no JSON item should be found (like in a path expression), this
+        // is handled by the consumer of this iterator.
+        ZORBA_ASSERT(lItem->isJSONObject() || lItem->isJSONArray());
+        result = lItem;
+        return true;
+#else
+        ZORBA_ASSERT_WITH_MSG(
+            false,
+            "Non-node found in node sorting iterator.")
+#endif
+      }
+      theNodes.push_back(reinterpret_cast<XmlNode*>(lItem.release()));
+     }
+    
+     // We are out of items. We can now begin to output the nodes. In the next
+     // iteration, this part of the code will be skipped.
+     theCurrentNode = 0;
+     ComparisonFunction cmp(theAscending);
+     std::sort(theNodes.begin(), theNodes.end(), cmp);
   }
 
   if (theCurrentNode < (long)theNodes.size())
