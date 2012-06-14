@@ -16,9 +16,13 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
+#include <set>
+#include <vector>
+
 #include "store/api/iterator.h"
 #include "shared_types.h"
 #include "node_items.h"
+#include "json_items.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset_itemh.h"
@@ -459,6 +463,10 @@ protected:
 
   std::vector<XmlNode*>   theNodes;
   long                    theCurrentNode;
+  
+#ifdef ZORBA_WITH_JSON
+  std::set<json::JSONItem*>  theJSONItems;
+#endif
 
 public:
   StoreNodeSortIterator(

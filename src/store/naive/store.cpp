@@ -620,7 +620,11 @@ void Store::populateGeneralIndex(
     {
       bool more = true;
 
+#ifdef ZORBA_WITH_JSON
+      assert(domainNode->isNode() || domainNode->isJSONItem());
+#else
       assert(domainNode->isNode());
+#endif
       assert(keyItem == NULL);
 
       // Compute the keys associated with the current domain node. Note: We
@@ -639,7 +643,11 @@ void Store::populateGeneralIndex(
 
         // If current node has no keys, put it in the "null" entry and continue
         // with the next domain node, if nay.
+#ifdef ZORBA_WITH_JSON
+        if (!more || firstKeyItem->isNode() || firstKeyItem->isJSONItem())
+#else
         if (!more || firstKeyItem->isNode())
+#endif
         {
           index->insert(keyItem, domainNode);
 
@@ -652,7 +660,11 @@ void Store::populateGeneralIndex(
 
         // If current domain node has exactly 1 key, insert it in the index
         // and continue with next domain node, if any.
+#ifdef ZORBA_WITH_JSON
+        if (!more || keyItem->isNode() || keyItem->isJSONItem())
+#else
         if (!more || keyItem->isNode())
+#endif
         {
           index->insert(firstKeyItem, domainNode);
 
@@ -673,7 +685,11 @@ void Store::populateGeneralIndex(
         // Compute next keys or next domain node.
         while ((more = sourceIter->next(keyItem)))
         {
+#ifdef ZORBA_WITH_JSON
+          if (keyItem->isNode() || keyItem->isJSONItem())
+#else
           if (keyItem->isNode())
+#endif
           {
             domainNode.transfer(keyItem);
             break;

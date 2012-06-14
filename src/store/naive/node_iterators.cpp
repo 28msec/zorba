@@ -262,14 +262,27 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
     store::Item_t lItem;
     // We are not done yet with gathering all XML nodes.
     while (theInput->next(lItem))
-     {
+    {
       if (!lItem->isNode())
       {
 #ifdef ZORBA_WITH_JSON
         // If no JSON item should be found (like in a path expression), this
         // is handled by the consumer of this iterator.
         ZORBA_ASSERT(lItem->isJSONObject() || lItem->isJSONArray());
-        result = lItem;
+        json::JSONItem* lJSONItem = dynamic_cast<json::JSONItem*>(lItem.getp());
+        ZORBA_ASSERT(lJSONItem);
+        if (theDistinct)
+        {
+          std::set<json::JSONItem*>::const_iterator lIt = theJSONItems.find(lJSONItem);
+          if (lIt == theJSONItems.end())
+          {
+            lJSONItem = dynamic_cast<json::JSONItem*>(lItem.release());
+            theJSONItems.insert(lJSONItem);
+          } else {
+            continue;
+          }
+        }
+        result = lJSONItem;
         return true;
 #else
         ZORBA_ASSERT_WITH_MSG(
@@ -278,13 +291,13 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
 #endif
       }
       theNodes.push_back(reinterpret_cast<XmlNode*>(lItem.release()));
-     }
+    }
     
-     // We are out of items. We can now begin to output the nodes. In the next
-     // iteration, this part of the code will be skipped.
-     theCurrentNode = 0;
-     ComparisonFunction cmp(theAscending);
-     std::sort(theNodes.begin(), theNodes.end(), cmp);
+    // We are out of items. We can now begin to output the nodes. In the next
+    // iteration, this part of the code will be skipped.
+    theCurrentNode = 0;
+    ComparisonFunction cmp(theAscending);
+    std::sort(theNodes.begin(), theNodes.end(), cmp);
   }
 
   if (theCurrentNode < (long)theNodes.size())
@@ -330,6 +343,16 @@ void StoreNodeSortIterator::reset()
 
   theNodes.clear();
   theCurrentNode = -1;
+#ifdef ZORBA_WITH_JSON
+  for (std::set<json::JSONItem*>::iterator lIt = theJSONItems.begin();
+      lIt != theJSONItems.end();
+      ++lIt)
+  {
+    json::JSONItem* n = *lIt;
+    n->removeReference();
+  }
+  theJSONItems.clear();
+#endif
 }
 
 
@@ -347,6 +370,16 @@ void StoreNodeSortIterator::close()
 
   theNodes.clear();
   theCurrentNode = -1;
+#ifdef ZORBA_WITH_JSON
+  for (std::set<json::JSONItem*>::iterator lIt = theJSONItems.begin();
+      lIt != theJSONItems.end();
+      ++lIt)
+  {
+    json::JSONItem* n = *lIt;
+    n->removeReference();
+  }
+  theJSONItems.clear();
+#endif
   theInput = NULL;
 }
 
