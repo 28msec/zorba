@@ -3285,7 +3285,7 @@ void* begin_visit(const VFO_DeclList& v)
     if (func_decl->is_external())
     {
       // 1. lookup if the function is a built-in function
-      f = theSctx->lookup_fn(qnameItem, numParams);
+      f = theSctx->lookup_fn(qnameItem, numParams, false);
 
       if (f.getp() != 0)
       {
@@ -3414,7 +3414,9 @@ void* begin_visit(const FunctionDecl& v)
 
   // Get function obj out of function qname (will raise error if prefix in qname
   // is not bound to a namespace).
-  function* f = lookup_fn(v.get_name(), v.get_param_count(), loc);
+  store::Item_t qnameItem;
+  expand_function_qname(qnameItem, v.get_name(), v.get_name()->get_location());
+  function* f = theSctx->lookup_fn(qnameItem, v.get_param_count(), false);
 
   assert(f);
 

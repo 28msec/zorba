@@ -41,6 +41,11 @@ public:
   } Quantifier;
 };
 
+/** \brief Type identifiers
+ *
+ * The type identifiers provides a way to identify the type of an Item.
+ *
+ */
 class TypeIdentifier 
 {
   friend class StaticContext;

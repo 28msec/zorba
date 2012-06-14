@@ -481,16 +481,16 @@ MACRO (DECLARE_ZORBA_JAR)
   # Iterate over all supplied jar files
   FOREACH (_jar_file ${JAR_FILE})
 
-    IF (JAR_EXTERNAL)
+    IF (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
       # Put absolute path into classpath file
       FILE (APPEND "${_CP_FILE}" "${_jar_file}\n")
-    ELSE (JAR_EXTERNAL)
+    ELSE (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
       # Copy jar to jars/ directory and add relative path to classpath file
       GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
       ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" 
 	"${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
       FILE (APPEND "${_CP_FILE}" "${_output_filename}\n")
-    ENDIF (JAR_EXTERNAL)
+    ENDIF (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
 
   ENDFOREACH (_jar_file)
 ENDMACRO (DECLARE_ZORBA_JAR)
