@@ -1308,7 +1308,7 @@ void normalize_fo(fo_expr* foExpr)
 
   const signature& sign = foExpr->get_signature();
 
-  ulong n = foExpr->num_args();
+  csize n = foExpr->num_args();
 
   const function* func = foExpr->get_func();
 
@@ -1323,29 +1323,19 @@ void normalize_fo(fo_expr* foExpr)
     if (qname != NULL)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(
-        qname->getStringValue(),
-        "index",
-        n-1,
-        "multiple of 6"
-      )
-      );
+      ERROR_PARAMS(qname->getStringValue(),
+                   "index",
+                   n-1,
+                   "multiple of 6"));
     }
     else
     {
-      RAISE_ERROR(
-          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-          ERROR_PARAMS(
-            "anonymous",
-            "index",
-            n-1,
-            "multiple of 6"
-          )
-      );
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS("anonymous", "index", n-1, "multiple of 6"));
     }
   }
 
-  for (ulong i = 0; i < n; ++i)
+  for (csize i = 0; i < n; ++i)
   {
     expr::expr_t argExpr = foExpr->get_arg(i);
 
@@ -1392,11 +1382,18 @@ void normalize_fo(fo_expr* foExpr)
                               loc))
       {
         argExpr = wrap_in_atomization(argExpr);
-        argExpr = wrap_in_type_promotion(argExpr, paramType);
+        argExpr = wrap_in_type_promotion(argExpr,
+                                         paramType, 
+                                         PromoteIterator::FUNC_PARAM,
+                                         func->getName());
       }
       else
       {
-        argExpr = wrap_in_type_match(argExpr, paramType, loc);
+        argExpr = wrap_in_type_match(argExpr,
+                                     paramType,
+                                     loc,
+                                     TreatIterator::FUNC_PARAM,
+                                     func->getName());
       }
     }
 
@@ -1420,9 +1417,13 @@ expr_t wrap_in_atomization(expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t wrap_in_type_promotion(expr_t e, xqtref_t type, store::Item_t fnQName = NULL)
+expr_t wrap_in_type_promotion(
+    const expr_t& e,
+    const xqtref_t& type,
+    PromoteIterator::ErrorKind errorKind,
+    store::Item* qname = NULL)
 {
-  return new promote_expr(theRootSctx, e->get_loc(), e, type, fnQName);
+  return new promote_expr(theRootSctx, e->get_loc(), e, type, errorKind, qname);
 }
 
 
@@ -1431,18 +1432,18 @@ expr_t wrap_in_type_promotion(expr_t e, xqtref_t type, store::Item_t fnQName = N
 ********************************************************************************/
 expr_t wrap_in_type_match(
     expr_t e,
-    xqtref_t type,
+    const xqtref_t& type,
     const QueryLoc& loc,
-    const Error& errorCode = err::XPTY0004,
-    store::Item_t fnQName = NULL)
+    TreatIterator::ErrorKind errorKind,
+    store::Item_t qname = NULL)
 {
   TypeManager* tm = e->get_type_manager();
 
-  // treat_expr should be avoided for updating expressions too,
-  // but in that case "type" will be item()* anyway
+  // treat_expr should be avoided for updating expressions, but in that case
+  // "type" will be item()* anyway
   return (TypeOps::is_subtype(tm, *theRTM.ITEM_TYPE_STAR, *type, loc) ?
           e :
-          new treat_expr(theRootSctx, e->get_loc(), e, type, errorCode, true, fnQName));
+          new treat_expr(theRootSctx, e->get_loc(), e, type, errorKind, true, qname));
 }
 
 
@@ -1927,7 +1928,11 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
   {
     expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
 
-    stmts.push_back(new treat_expr(theRootSctx, loc, getExpr, varType, err::XPTY0004));
+    stmts.push_back(new treat_expr(theRootSctx,
+                                   loc,
+                                   getExpr,
+                                   varType, 
+                                   TreatIterator::TYPE_MATCH));
   }
 }
 
@@ -3551,12 +3556,21 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
       body = wrap_in_atomization(body);
-      body = wrap_in_type_promotion(body, returnType, udf->getName());
+
+      body = wrap_in_type_promotion(body,
+                                    returnType,
+                                    PromoteIterator::FUNC_RETURN,
+                                    udf->getName());
+
       body->set_loc(v.get_return_type()->get_location());
     }
     else
     {
-      body = wrap_in_type_match(body, returnType, loc, err::XPTY0004, udf->getName());
+      body = wrap_in_type_match(body,
+                                returnType,
+                                loc, 
+                                TreatIterator::FUNC_RETURN,
+                                udf->getName());
     }
 
     udf->setBody(body);
@@ -4316,7 +4330,8 @@ void* begin_visit(const IndexKeyList& v)
   domainExpr = wrap_in_type_match(domainExpr,
                                   theRTM.ANY_NODE_TYPE_STAR,
                                   loc,
-                                  zerr::ZDTY0010_INDEX_DOMAIN_TYPE_ERROR);
+                                  TreatIterator::INDEX_DOMAIN,
+                                  index->getName());
 
   // For general indexes, the domain expression must not return duplicate nodes.
   // To see why, consider the following examples:
@@ -4475,7 +4490,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       keyExpr = wrap_in_type_match(keyExpr,
                                    type,
                                    loc,
-                                   zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR);
+                                   TreatIterator::INDEX_KEY,
+                                   index->getName());
 
       keyTypes[i] = ptype->getBaseBuiltinType();
     }
@@ -5524,7 +5540,11 @@ void end_visit(const AssignExpr& v, void* visit_state)
   expr_t valueExpr = pop_nodestack();
 
   if (varType != NULL)
-    valueExpr = new treat_expr(theRootSctx, loc, valueExpr, varType, err::XPTY0004);
+    valueExpr = new treat_expr(theRootSctx,
+                               loc,
+                               valueExpr,
+                               varType,
+                               TreatIterator::TYPE_MATCH);
 
   push_nodestack(new var_set_expr(theRootSctx, loc, ve, valueExpr));
 
@@ -7119,7 +7139,7 @@ void* begin_visit(const TypeswitchExpr& v)
                                         loc,
                                         sv.getp(),
                                         type,
-                                        err::XPDY0050);
+                                        TreatIterator::TREAT_EXPR);
 
       // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
       clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
@@ -7975,7 +7995,7 @@ void end_visit(const TreatExpr& v, void* /*visit_state*/)
                                 loc,
                                 pop_nodestack(),
                                 pop_tstack(),
-                                err::XPDY0050));
+                                TreatIterator::TREAT_EXPR));
 }
 
 
@@ -8060,7 +8080,11 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       // when casting to type T, where T is QName or subtype of, and the input
       // is not a const expr, then the input MUST be of type T or subtype of.
       if (isCast)
-        return new treat_expr(theRootSctx, loc, node, qnameType, err::XPTY0004);
+        return new treat_expr(theRootSctx,
+                              loc,
+                              node,
+                              qnameType,
+                              TreatIterator::TYPE_MATCH);
       else
         return new instanceof_expr(theRootSctx, loc, node, qnameType);
     }
@@ -8409,7 +8433,7 @@ void* begin_visit(const PathExpr& v)
                                        loc,
                                        DOT_REF,
                                        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-                                       err::XPTY0020);
+                                       TreatIterator::PATH_DOT);
 
     ctx_path_expr->add_back(sourceExpr);
 
@@ -8442,7 +8466,7 @@ void* begin_visit(const PathExpr& v)
                                      loc,
                                      fnroot.getp(),
                                      GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE,
-                                     err::XPDY0050);
+                                     TreatIterator::TREAT_EXPR);
       push_nodestack(result.getp());
     }
   }
@@ -8533,7 +8557,7 @@ void* begin_visit(const RelativePathExpr& v)
                                          loc,
                                          DOT_REF,
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-                                         err::XPTY0020);
+                                         TreatIterator::PATH_DOT);
       pathExpr->add_back(sourceExpr);
 
       if (axisStep->get_predicate_list() == NULL)
@@ -8606,21 +8630,21 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 #ifdef NODE_SORT_OPT
     if (pathExpr->size() == 0)
     {
-      Error const *errCode = &err::XPTY0019;
+      TreatIterator::ErrorKind errKind = TreatIterator::PATH_STEP;
 
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
         wrapper_expr* tmp = static_cast<wrapper_expr*>(stepExpr.getp());
         var_expr* dotVar = lookup_var(DOT_VARNAME, loc, zerr::ZXQP0000_NO_ERROR);
         if (tmp->get_expr() == dotVar)
-          errCode = &err::XPTY0020;
+          errKind = TreatIterator::PATH_DOT;
       }
 
       expr_t sourceExpr = new treat_expr(theRootSctx,
                                          stepExpr->get_loc(),
                                          stepExpr,
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-                                         *errCode);
+                                         errKind);
 
       if (TypeOps::type_max_cnt(pathExpr->get_type_manager(),
                                 *sourceExpr->get_return_type()) > 1)
@@ -9954,7 +9978,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                                           loc,
                                                           data_expr,
                                                           theRTM.ANY_ATOMIC_TYPE_QUESTION,
-                                                          err::XPTY0004),
+                                                          TreatIterator::TYPE_MATCH),
                                            tv,
                                            ret));
         return;
@@ -10179,7 +10203,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       const xqtref_t& resultType = f->getSignature().returnType();
 
-      resultExpr = wrap_in_type_match(foExpr.getp(), resultType, loc);
+      resultExpr = wrap_in_type_match(foExpr.getp(),
+                                      resultType,
+                                      loc,
+                                      TreatIterator::FUNC_RETURN,
+                                      f->getName());
     }
 
     // Some further normalization is required for certain builtin functions
@@ -10330,9 +10358,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         // wrap function's QName
         expr_t qnameExpr = wrap_in_atomization(arguments[0]);
-        qnameExpr        = wrap_in_type_promotion(arguments[0], theRTM.QNAME_TYPE_ONE);
+        qnameExpr        = wrap_in_type_promotion(arguments[0],
+                                                  theRTM.QNAME_TYPE_ONE,
+                                                  PromoteIterator::TYPE_PROMOTION);
 
-        for (unsigned int i = 0; i<numArgs ; i++)
+        for (csize i = 0; i < numArgs ; ++i)
         {
           let_clause_t lc;
           store::Item_t qnameItem;
@@ -10709,11 +10739,11 @@ void end_visit(const InlineFunction& v, void* aState)
   if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
   {
     body = wrap_in_atomization(body);
-    body = wrap_in_type_promotion(body, returnType);
+    body = wrap_in_type_promotion(body, returnType, PromoteIterator::TYPE_PROMOTION);
   }
   else
   {
-    body = wrap_in_type_match(body, returnType, loc);
+    body = wrap_in_type_match(body, returnType, loc, TreatIterator::TYPE_MATCH);
   }
 
   // Make the body be the return expr of the flwor that binds the function params.
@@ -11784,7 +11814,7 @@ void* begin_visit(const SequenceType& v)
 
 void end_visit (const SequenceType& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -12007,11 +12037,8 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPST0008,
-        ERROR_PARAMS( typeNameItem->getStringValue(), ZED( ElementName ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0008, loc,
+      ERROR_PARAMS(typeNameItem->getStringValue(), ZED(ElementName)));
     }
   }
 
@@ -12290,10 +12317,8 @@ void end_visit(const PITest& v, void* /*visit_state*/)
 
     if (!GenericCast::instance()->castableToNCName(lNormalizedTarget))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( BadType_23o ), lNormalizedTarget,
+      throw XQUERY_EXCEPTION(err::XPTY0004,
+        ERROR_PARAMS(ZED(BadType_23o), lNormalizedTarget,
           ZED( NoCastTo_45o ), "NCName"
         ),
         ERROR_LOC( loc )
@@ -12804,7 +12829,9 @@ void end_visit (const FTIgnoreOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   expr_t e( pop_nodestack() );
-  push_nodestack( wrap_in_type_promotion( e, theRTM.ANY_NODE_TYPE_STAR ) );
+  push_nodestack( wrap_in_type_promotion(e,
+                                         theRTM.ANY_NODE_TYPE_STAR,
+                                         PromoteIterator::TYPE_PROMOTION));
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -12980,11 +13007,15 @@ void end_visit (const FTRange& v, void* /*visit_state*/) {
 
   if ( e1 ) {
     e1 = wrap_in_atomization( e1 );
-    e1 = wrap_in_type_promotion( e1, theRTM.INTEGER_TYPE_ONE );
+    e1 = wrap_in_type_promotion(e1,
+                                theRTM.INTEGER_TYPE_ONE,
+                                PromoteIterator::TYPE_PROMOTION);
   }
   if ( e2 ) {
     e2 = wrap_in_atomization( e2 );
-    e2 = wrap_in_type_promotion( e2, theRTM.INTEGER_TYPE_ONE );
+    e2 = wrap_in_type_promotion(e2,
+                                theRTM.INTEGER_TYPE_ONE,
+                                PromoteIterator::TYPE_PROMOTION);
   }
 
   ftrange *const r = new ftrange( loc, v.get_mode(), e1, e2 );
@@ -13234,7 +13265,9 @@ void end_visit (const FTWeight& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   expr_t e( pop_nodestack() );
   e = wrap_in_atomization( e );
-  e = wrap_in_type_promotion( e, theRTM.DOUBLE_TYPE_ONE );
+  e = wrap_in_type_promotion(e,
+                             theRTM.DOUBLE_TYPE_ONE,
+                             PromoteIterator::TYPE_PROMOTION);
   push_ftstack( new ftweight( loc, e ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -13269,7 +13302,9 @@ void end_visit (const FTWindow& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   expr_t e( pop_nodestack() );
   e = wrap_in_atomization( e );
-  e = wrap_in_type_promotion( e, theRTM.INTEGER_TYPE_ONE );
+  e = wrap_in_type_promotion(e,
+                             theRTM.INTEGER_TYPE_ONE,
+                             PromoteIterator::TYPE_PROMOTION);
   push_ftstack( new ftwindow_filter( loc, e, v.get_unit()->get_unit() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -13285,7 +13320,9 @@ void end_visit (const FTWords& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   expr_t e( pop_nodestack() );
   e = wrap_in_atomization( e );
-  e = wrap_in_type_promotion( e, theRTM.STRING_TYPE_STAR );
+  e = wrap_in_type_promotion(e,
+                             theRTM.STRING_TYPE_STAR,
+                             PromoteIterator::TYPE_PROMOTION);
   push_ftstack( new ftwords( loc, e, v.get_any_all_option()->get_option() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }

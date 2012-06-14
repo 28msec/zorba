@@ -110,7 +110,8 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   static std::string toString(NodeKind k)
   {
-    switch(k) {
+    switch(k) 
+    {
       case anyNode:
         return "anyNode";
 
@@ -131,6 +132,36 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
       case commentNode:
         return "commentNode";
+
+      default:
+        return "<unknown NodeKind>";
+    }
+  }
+
+  static std::string toSchemaString(NodeKind k)
+  {
+    switch(k) 
+    {
+      case anyNode:
+        return "node";
+
+      case documentNode:
+        return "document-node";
+
+      case elementNode:
+        return "element";
+
+      case attributeNode:
+        return "attribute";
+
+      case textNode:
+        return "text";
+
+      case piNode:
+        return "processing-instruction";
+
+      case commentNode:
+        return "comment";
 
       default:
         return "<unknown NodeKind>";
