@@ -22,30 +22,30 @@ import javax.xml.xquery.XQException;
 import org.zorbaxquery.api.Zorba;
 
   /** 
-   * XQMetaData class provides information about the data source, in various aspects, such as the product name and version identification, supported features, specific behaviors, user information, product limits and so forth. 
+   * ZorbaXQMetaData class provides information about the data source, in various aspects, such as the product name and version identification, supported features, specific behaviors, user information, product limits and so forth. 
    * 
    * An object from this class is obtained from the connection object by calling the getMetaData() method, for example: 
    * \code{.java}
-   *   XQMetaData metaData = connection.getMetaData();
+   *   ZorbaXQMetaData metaData = connection.getMetaData();
    *   String productVersion = metaData.getProductVersion();
    *     ...
    * \endcode
    *  
    * Since the metadata object depends on the connection, all its methods would raise an exception if the connection it is created from is no longer valid.
    */
-public class XQMetaData implements javax.xml.xquery.XQMetaData {
+public class ZorbaXQMetaData implements javax.xml.xquery.XQMetaData {
     
     private int XQJ_MAJOR = 1;
     private int XQJ_MINOR = 1;
     
     private XQConnection connection;
     private Zorba zorba;
-    public XQMetaData(XQConnection conn) throws XQException {
+    public ZorbaXQMetaData(XQConnection conn) throws XQException {
         if (conn.isClosed()) {
             throw new XQException("This connection is closed");
         }
         connection = conn;
-        zorba = ((org.zorbaxquery.api.xqj.XQConnection)connection).getZorbaInstance();
+        zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance();
     }
 
   /** \brief Gets the major version of this product.
