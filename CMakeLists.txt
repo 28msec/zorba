@@ -148,12 +148,13 @@ IF (WIN32)
 ENDIF (WIN32)
 
 ################################################################################
-# This section is used for batch script generation. Each executable
-# on Windows needs a bat script in order to set the PATH to the required DLLs.
+# This section is used for batch script and Visual Studio Project file generation. 
+# Each executable on Windows needs a bat script and in the Visual Studio build a \
+# pre-generated Visual Studio Project file in order to set the PATH to the required DLLs.
 # For this we use CACHE variables to gather all the information generated
 # throughout the cmake execution (required DLLs, list of scripts to generate).
 # The generation occurs only at the end of CMake execution (through the macro
-# ZORBA_GENERATE_EXE_SCRIPTS_WIN32) when ALL the requirements have been found.
+# ZORBA_GENERATE_EXE_HELPERS_WIN32) when ALL the requirements have been found.
 # E.g. zorba.exe needs in PATH all the DLLs of all external modules, etc.
 IF (WIN32)
   # Clear all the variables because they are used only for this build.
@@ -166,10 +167,19 @@ IF (WIN32)
   SET (ZORBA_EXE_SCRIPT_LIST ""
     CACHE STRING "List of Windows batch scripts to be generated, one for each executable" FORCE
   )
+  IF (MSVC_IDE)
+    SET (ZORBA_VC_PROJECT_FILE_LIST ""
+      CACHE STRING "List of Visual Studio project files to be generated, one for each executable" FORCE
+    )
+  ENDIF(MSVC_IDE)
+
   # Moreover, mark it as advanced since the CMake GUI user should not see this.
   MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLLS)
   MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLL_PATHS)
   MARK_AS_ADVANCED (FORCE ZORBA_EXE_SCRIPT_LIST)
+  IF (MSVC_IDE)
+    MARK_AS_ADVANCED (FORCE ZORBA_VC_PROJECT_FILE_LIST)
+  ENDIF(MSVC_IDE)
 ENDIF (WIN32)
 ################################################################################
 
@@ -415,10 +425,11 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
   
-  # Clear this variable because this is used only for this build.
+  # Clear those variables because this is used only for this build.
   # A cache variable is needed since this must be modified by subdirectories
-  # and be visible at this level when ZORBA_GENERATE_EXE_SCRIPTS_WIN32 is called
+  # and be visible at this level when ZORBA_GENERATE_EXE_HELPERS_WIN32 is called
   SET(ZORBA_EXE_SCRIPT_LIST "" CACHE STRING "List of bat scripts" FORCE)
+  SET(ZORBA_VC_PROJECT_FILE_LIST "" CACHE STRING "List of VC project files" FORCE)
 ENDIF(WIN32)
 
 ################################################################################
@@ -568,7 +579,7 @@ IF (APPLE AND UNIVERSAL)
 ENDIF (APPLE AND UNIVERSAL)
 
 IF (WIN32)
-  ZORBA_GENERATE_EXE_SCRIPTS_WIN32 ()
+  ZORBA_GENERATE_EXE_HELPERS_WIN32 ()
 ENDIF (WIN32)
 
 # This must be done last! Create the one top-level target which
