@@ -783,6 +783,7 @@ extern entry const dict_en[] = {
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },
   { "~XUST0001_IF", "conditional expression with updating and non-updating branch" },
+  { "~XUST0001_TRYCATCH", "try-catch expression with updating and non-updating clauses" },
   { "~XUST0001_UDF_2", "\"$2\": function declared simple but body is updating" },
   { "~XUST0002_Transform", "transform expression witn non-updating or vacuous modify clause" },
   { "~XUST0002_UDF_2", "\"$2\": function declared updating but body is not updating or vacuous" },

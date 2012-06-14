@@ -23,6 +23,7 @@
 #include <map>
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
@@ -190,15 +191,11 @@ void if_expr::compute_scripting_kind()
   {
     if (theThenExpr->is_updating() && !theElseExpr->is_updating_or_vacuous())
     {
-      throw XQUERY_EXCEPTION(err::XUST0001, 
-                             ERROR_PARAMS(ZED(XUST0001_IF)),
-                             ERROR_LOC(get_loc()));
+      RAISE_ERROR(err::XUST0001, get_loc(), ERROR_PARAMS(ZED(XUST0001_IF)));
     }
     else if (theElseExpr->is_updating() && !theThenExpr->is_updating_or_vacuous())
     {
-      throw XQUERY_EXCEPTION(err::XUST0001, 
-                             ERROR_PARAMS(ZED(XUST0001_IF)),
-                             ERROR_LOC(get_loc()));
+      RAISE_ERROR(err::XUST0001, get_loc(), ERROR_PARAMS(ZED(XUST0001_IF)));
     }
     else
     {
@@ -1298,22 +1295,47 @@ void trycatch_expr::add_clause(catch_clause_t cc)
 
 void trycatch_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  bool vacuous = true;
+
+  theScriptingKind = VACUOUS_EXPR;
 
   theScriptingKind |= theTryExpr->get_scripting_detail();
 
-  ulong numCatchClauses = (ulong)theCatchClauses.size();
+  if (theScriptingKind != VACUOUS_EXPR)
+    vacuous = false;
 
-  for (ulong i = 0; i < numCatchClauses; ++i) 
+  csize numCatchClauses = theCatchClauses.size();
+
+  for (csize i = 0; i < numCatchClauses; ++i) 
   {
     const expr* catchExpr = theCatchExprs[i].getp();
-
     short catchKind = catchExpr->get_scripting_detail();
+
+    if (catchKind == VACUOUS_EXPR)
+      continue;
+
+    vacuous = false;
+
+    if (!theSctx->is_feature_set(feature::scripting))
+    {
+      if (is_updating() && !(catchKind & UPDATING_EXPR) && catchKind != VACUOUS_EXPR)
+      {
+        RAISE_ERROR(err::XUST0001, catchExpr->get_loc(),
+        ERROR_PARAMS(ZED(XUST0001_TRYCATCH)));
+      }
+        
+      if (!is_updating() && !is_vacuous() && (catchKind & UPDATING_EXPR))
+      {
+        RAISE_ERROR(err::XUST0001, catchExpr->get_loc(),
+        ERROR_PARAMS(ZED(XUST0001_TRYCATCH)));
+      }
+    }
 
     theScriptingKind |= catchKind;
   }
 
-  theScriptingKind &= ~VACUOUS_EXPR;
+  if (!vacuous)
+    theScriptingKind &= ~VACUOUS_EXPR;
 
   if (theScriptingKind & UPDATING_EXPR)
     theScriptingKind &= ~SIMPLE_EXPR;

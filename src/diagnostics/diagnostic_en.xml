@@ -1228,6 +1228,10 @@
         <value>comma expression with updating and non-updating branches</value>
       </entry>
 
+      <entry key="TRYCATCH">
+        <value>try-catch expression with updating and non-updating clauses</value>
+      </entry>
+
       <entry key="Generic">
         <value>updating expression illegal here</value>
       </entry>
