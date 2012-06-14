@@ -4,7 +4,8 @@ version 2.x
   * Fixed bug #1002993 (bug during revalidation after update; improper condition for
           calling TypeOps::get_atomic_type_code() from
           SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
-	
+  * Fixed bug #1006166 (disabling 2 functions with the same qname)
+
 version 2.5
 
 New Features:
