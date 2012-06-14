@@ -491,7 +491,6 @@ public:
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
   static const char* ZORBA_VERSIONING_NS;
-  static const char* ZORBA_DEBUGGING_NS;
 
 protected:
   static_context                        * theParent;
@@ -587,8 +586,6 @@ protected:
   std::vector<store::Item_t>                 theDisabledWarnings;
 
   uint32_t                                   theFeatures;
-
-  bool                                       theTraceWithDebugInfo;
 
 public:
   static bool is_builtin_module(const zstring& ns);
@@ -941,11 +938,6 @@ protected:
     const zstring& name,
     const QueryLoc& loc);
 
-  void process_debugging_option(
-    const zstring& value,
-    const zstring& name,
-    const QueryLoc& loc);
-
   store::Item_t
   parse_and_expand_qname(
       const zstring& value,
@@ -1079,10 +1071,6 @@ public:
   void unset_feature( feature::kind k )
   {
     theFeatures &= ~k;
-  }
-
-  bool trace_with_debug_info() {
-    return theTraceWithDebugInfo;
   }
 
 };
