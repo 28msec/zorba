@@ -4,7 +4,10 @@ version 2.x
 
   * Fixed bug #1003023$ (optimizer problems due to common subexpression after
     var folding into if-then-else)
-	
+  * Fixed bug #1006166 (disabling 2 functions with the same qname)
+  * Implemented latest W3C soec for group by clause
+
+
 version 2.5
 
 New Features:

@@ -18,15 +18,15 @@ package org.zorbaxquery.api.xqj;
 import javax.xml.xquery.XQItemType;
 
   /** 
-   * The XQSequenceType interface represents a sequence type as XQuery 1.0: An XML Query language. The XQSequenceType is the base interface for the XQItemType interface and contains an occurence indicator.
+   * The ZorbaXQSequenceType interface represents a sequence type as XQuery 1.0: An XML Query language. The ZorbaXQSequenceType is the base interface for the XQItemType interface and contains an occurence indicator.
    * 
    */
-public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
+public class ZorbaXQSequenceType implements javax.xml.xquery.XQSequenceType {
 
     XQItemType type;
     int occurence;
 
-    public XQSequenceType(XQItemType type, int occurence) {
+    public ZorbaXQSequenceType(XQItemType type, int occurence) {
         this.type = type;
         this.occurence = occurence;
     }
@@ -70,7 +70,7 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
 
             result.append(type.toString());
             
-            for (java.lang.reflect.Field field: XQSequenceType.class.getFields()) {
+            for (java.lang.reflect.Field field: ZorbaXQSequenceType.class.getFields()) {
                 if (field.getName().startsWith("OCC_")) {
                     if (field.getInt(this)==occurence) {
                         result.append("Ocurrence: ").append(field.getName().substring(4));
@@ -98,10 +98,10 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
     @Override
     public boolean equals(Object o) {
         boolean result = false;
-        if (o instanceof XQSequenceType) {
-            result = (occurence != XQSequenceType.OCC_EMPTY) && 
-                     (type.equals(((XQSequenceType)o).getItemType())) && 
-                     (occurence == ((XQSequenceType)o).getItemOccurrence());
+        if (o instanceof ZorbaXQSequenceType) {
+            result = (occurence != ZorbaXQSequenceType.OCC_EMPTY) && 
+                     (type.equals(((ZorbaXQSequenceType)o).getItemType())) && 
+                     (occurence == ((ZorbaXQSequenceType)o).getItemOccurrence());
         }
         return result;
     }
@@ -111,7 +111,7 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
    * In order to comply with the general contract of equals and hashCode across different implementations the following algorithm must be used:
    * \code{.java}
    *   int hashCode;
-   *   if (getItemOccurrence() == XQSequenceType.OCC_EMPTY)
+   *   if (getItemOccurrence() == ZorbaXQSequenceType.OCC_EMPTY)
    *   {
    *     hashCode = 1; 
    *   }
@@ -126,7 +126,7 @@ public class XQSequenceType implements javax.xml.xquery.XQSequenceType {
     @Override
     public int hashCode() {
         int hashCode;
-        if (occurence == XQSequenceType.OCC_EMPTY) {
+        if (occurence == ZorbaXQSequenceType.OCC_EMPTY) {
             hashCode = 1; 
         } else {
             hashCode = occurence * 31 + type.hashCode();
