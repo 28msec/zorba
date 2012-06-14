@@ -1,9 +1,11 @@
 Zorba - The XQuery Processor
 
+
 version 2.x
 
   * Fixed bug #1006166 (disabling 2 functions with the same qname)
-	
+  * Implemented latest W3C soec for group by clause
+
 version 2.5
 
 New Features:
