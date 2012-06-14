@@ -212,13 +212,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                           std::inserter(diff, diff.begin()));
     if (diff.empty())
     {
-      expr::FreeVars::iterator ite = whereVars.begin();
-      expr::FreeVars::iterator end = whereVars.end();
-      for (; ite != end; ++ite)
-      {
-        std::cout << "where var " << *ite << std::endl;
-      }
-
       expr_t oldWhere = whereExpr;
       flwor.remove_where_clause();
 
@@ -242,7 +235,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   //     their domain expr.
   // (c) Change a LET var into a FOR var, if its domain expr consists of
   //     exactly one item.
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     bool substitute = false;
 
