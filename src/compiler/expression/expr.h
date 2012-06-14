@@ -1007,6 +1007,8 @@ public:
 
   expr* get_try_expr() const { return theTryExpr.getp(); }
 
+  void set_try_expr(expr* e) { theTryExpr = e; }
+
   expr* get_catch_expr(csize i) const { return theCatchExprs[i].getp(); }
 
   void add_catch_expr(expr_t e);
