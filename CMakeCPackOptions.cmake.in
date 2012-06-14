@@ -28,7 +28,7 @@ if(CPACK_GENERATOR MATCHES "NSIS")
   SET(CPACK_NSIS_CONTACT "info@flworfound.org")
   
   SET(CPACK_NSIS_CREATE_ICONS_EXTRA "
-    CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Zorba Command Line Client.lnk' 'cmd.exe' '/K set path=%path%;%cd%\\bin&echo Start using Zorba: zorba -q 1+1  or  zorba -f -q example.xq'
+    CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Zorba Command Line Client.lnk' 'cmd.exe' '/K set path=%path%;%JAVA_HOME%;%JAVA_HOME%\\client;%cd%\\bin;&echo Start using Zorba: zorba -q 1+1  or  zorba -f -q example.xq'
     CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Zorba Documentation.lnk' '$INSTDIR\\\\share\\\\doc\\\\zorba-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}\\\\zorba\\\\html\\\\index.html'
     CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Modules Documentation.lnk' '$INSTDIR\\\\share\\\\doc\\\\zorba-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}\\\\zorba\\\\xqdoc\\\\xhtml\\\\index.html'
     ")
