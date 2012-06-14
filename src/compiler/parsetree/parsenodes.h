@@ -888,6 +888,10 @@ public:
 
 
 /*******************************************************************************
+  VarDeclWithInit is used as a base class for parse nodes that represent various
+  kinds of variable declarations: global vars, local vars, let vars, for vars,
+  window vars, and grouping vars.
+
   Global declarations:
   --------------------
 
@@ -915,27 +919,27 @@ class VarDeclWithInit : public XQDocumentable
 protected:
   rchandle<QName>        theName;
   rchandle<SequenceType> theType;
-  rchandle<exprnode>     theInitExpr;
+  rchandle<exprnode>     theExpr;
 
 public:
   VarDeclWithInit(
       const QueryLoc& loc,
       rchandle<QName> name,
       rchandle<SequenceType> type,
-      rchandle<exprnode> initexpr)
+      rchandle<exprnode> expr)
     :
     XQDocumentable(loc),
     theName(name),
     theType(type),
-    theInitExpr(initexpr)
+    theExpr(expr)
   {
   }
 
-  const QName* get_name() const { return theName; }
+  const QName* get_var_name() const { return theName; }
 
-  rchandle<SequenceType> get_typedecl() const { return theType; }
+  rchandle<SequenceType> get_var_type() const { return theType; }
 
-  rchandle<exprnode> get_initexpr() const { return theInitExpr; }
+  rchandle<exprnode> get_binding_expr() const { return theExpr; }
 };
 
 
@@ -966,7 +970,10 @@ public:
 
   void set_global(bool global) { theIsGlobal = global; }
 
-  void set_annotations(rchandle<AnnotationListParsenode> annotations) { theAnnotations = annotations; }
+  void set_annotations(rchandle<AnnotationListParsenode> annotations)
+  {
+    theAnnotations = annotations;
+  }
 
   AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
@@ -1616,7 +1623,7 @@ public:
 
   parsenode* operator[](ulong k) { return theStatements[k].getp(); }
 
-  ulong size() const { return (ulong)theStatements.size(); }
+  csize size() const { return theStatements.size(); }
 
   bool isTopLevel() const { return theIsTopLevel; }
 
@@ -1642,9 +1649,9 @@ public:
 
   void add(parsenode* decl);
 
-  ulong size() const { return (ulong)theDecls.size(); }
+  csize size() const { return theDecls.size(); }
 
-  parsenode* getDecl(ulong i) const { return theDecls[i].getp(); }
+  parsenode* getDecl(csize i) const { return theDecls[i].getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1913,7 +1920,7 @@ public:
 
   rchandle<FLWORClause> operator[](int i) const { return theClauses[i]; }
 
-  size_t size() const { return theClauses.size(); }
+  csize size() const { return theClauses.size(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1990,7 +1997,7 @@ public:
 
   rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
 
-  size_t size () const { return vardecl_hv.size ();}
+  csize size() const { return vardecl_hv.size ();}
 
   void accept(parsenode_visitor&) const;
 };
@@ -2105,12 +2112,12 @@ protected:
 
 public:
   VarGetsDecl(
-    const QueryLoc& loc,
-    rchandle<QName> varname,
-    rchandle<SequenceType> typedecl_h,
-    rchandle<FTScoreVar> ftscorevar_h,
-    rchandle<exprnode> valexpr_h,
-    enum var_kind kind_ = let_var)
+      const QueryLoc& loc,
+      rchandle<QName> varname,
+      rchandle<SequenceType> typedecl_h,
+      rchandle<FTScoreVar> ftscorevar_h,
+      rchandle<exprnode> valexpr_h,
+      enum var_kind kind_ = let_var)
     :
     VarDeclWithInit(loc, varname, typedecl_h, valexpr_h),
     ftscorevar_h(ftscorevar_h),
@@ -2120,8 +2127,8 @@ public:
 
   rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
 
-
   enum var_kind get_kind () const { return kind; }
+
   void set_kind (enum var_kind kind_) { kind = kind_; }
 
   void accept(parsenode_visitor&) const;
@@ -2200,30 +2207,31 @@ public:
 
   GroupSpec* operator[](int i) const { return theSpecs[i].getp(); }
 
-  size_t size() const { return theSpecs.size(); }
+  csize size() const { return theSpecs.size(); }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-  GroupSpec ::= "$" VarName ("collation" URILiteral)?
+  GroupSpec ::= "$" VarName 
+                (TypeDeclaration? ":=" ExprSingle)?
+                ("collation" URILiteral)?
 ********************************************************************************/
-class GroupSpec : public parsenode
+class GroupSpec : public VarDeclWithInit
 {
 protected:
-  rchandle<QName>              var_name_h;
-  rchandle<GroupCollationSpec> group_coll_spec_h;
+  rchandle<GroupCollationSpec> theCollationSpec;
 
 public:
   GroupSpec(
-    const QueryLoc&,
-    rchandle<QName>,
-    rchandle<GroupCollationSpec>);
+      const QueryLoc& loc,
+      rchandle<QName> name,
+      rchandle<SequenceType> type,
+      rchandle<exprnode> expr,
+      rchandle<GroupCollationSpec> collation);
 
-  const QName* get_var_name() const { return var_name_h.getp(); }
-
-  rchandle<GroupCollationSpec> group_coll_spec() const { return group_coll_spec_h; }
+  const GroupCollationSpec* get_collation_spec() const { return theCollationSpec.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2235,12 +2243,12 @@ public:
 class GroupCollationSpec : public parsenode
 {
 protected:
-  zstring const uri;
+  const zstring theUri;
 
 public:
-  GroupCollationSpec(const QueryLoc&, zstring const& uri);
+  GroupCollationSpec(const QueryLoc&, const zstring& uri);
 
-  zstring const& get_uri() const { return uri; }
+  const zstring& get_uri() const { return theUri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3106,7 +3114,7 @@ class StringConcatExpr: public exprnode
   protected:
     rchandle<exprnode> left;
     rchandle<exprnode> right;
-  
+
   public:
     StringConcatExpr(
       const QueryLoc& aLoc,

@@ -235,7 +235,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   //     their domain expr.
   // (c) Change a LET var into a FOR var, if its domain expr consists of
   //     exactly one item.
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     bool substitute = false;
 
@@ -368,7 +368,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         let_clause_t save = lc;
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
-        var_expr_t fvar = new var_expr(sctx, loc, var_expr::for_var, var->get_name()); 
+        var_expr_t fvar = new var_expr(sctx, loc, var_expr::for_var, var->get_name());
+        fvar->getFreeVars().insert(fvar);
         for_clause_t fc = new for_clause(sctx, loc, fvar, domainExpr);
         flwor.add_clause(i, fc);
 

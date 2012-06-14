@@ -3111,9 +3111,7 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 
   if (collator == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::FOCH0002, ERROR_PARAMS( uri ), ERROR_LOC( loc )
-    );
+    throw XQUERY_EXCEPTION(err::FOCH0002, ERROR_PARAMS(uri), ERROR_LOC(loc));
   }
   else
   {
