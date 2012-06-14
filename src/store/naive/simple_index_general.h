@@ -81,7 +81,7 @@ protected:
   std::vector<NodeInfo> theNodes;
 
 public:
-  GeneralIndexValue(ulong size = 0) : theNodes(size) {}
+  GeneralIndexValue(csize size = 0) : theNodes(size) {}
 
   void clear() { theNodes.clear(); }
 
@@ -166,17 +166,20 @@ protected:
       store::SchemaTypeCode targetMap);
 
 public:
-  const XQPCollator* getCollator(ulong i) const;
+  const XQPCollator* getCollator(csize i) const;
 
   void setMultiKey() { theMultiKeyFlag = true; }
 
-  ulong size() const;
+  csize size() const;
 
   bool insert(store::Item_t& key, store::Item_t& node);
 
-  bool insert(store::IndexKey*& key, store::Item_t& value);
+  bool insert(store::IndexKey*& key, store::Item_t& node);
 
-  virtual bool remove(const store::Item_t& key, store::Item_t& item, bool all) = 0;
+  virtual bool remove(
+      const store::Item_t& key,
+      const store::Item_t& node,
+      bool all) = 0;
 };
 
 
@@ -237,7 +240,7 @@ public:
 
   Index::KeyIterator_t keys() const;
 
-  bool remove(const store::Item_t& key, store::Item_t& item, bool);
+  bool remove(const store::Item_t& key, const store::Item_t& node, bool);
 
   void clear();
 };
@@ -292,7 +295,7 @@ public:
 
   Index::KeyIterator_t keys() const;
 
-  bool remove(const store::Item_t& key, store::Item_t& item, bool all);
+  bool remove(const store::Item_t& key, const store::Item_t& item, bool all);
 
   void clear();
 };

@@ -296,11 +296,8 @@ void IndexDecl::analyze()
 
   if (theIsGeneral && numKeys > 1)
   {
-		throw XQUERY_EXCEPTION(
-			zerr::ZDST0035_INDEX_GENERAL_MULTIKEY,
-			ERROR_PARAMS( theName->getStringValue() ),
-			ERROR_LOC( theKeyExprs[1]->get_loc() )
-		);
+    RAISE_ERROR(zerr::ZDST0035_INDEX_GENERAL_MULTIKEY, theKeyExprs[1]->get_loc(),
+    ERROR_PARAMS(theName->getStringValue()));
   }
 
   // Check constraints on the key exprs
@@ -462,7 +459,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   static_context* sctx = domainExpr->get_sctx();
   const QueryLoc& dotloc = dot->get_loc();
 
-  ulong numKeys = (ulong)theKeyExprs.size();
+  csize numKeys = theKeyExprs.size();
   std::vector<expr_t> clonedExprs(numKeys + 1);
 
   //
@@ -491,7 +488,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  for (ulong i = 0; i < numKeys; ++i)
+  for (csize i = 0; i < numKeys; ++i)
   {
     subst.clear();
     subst[dot] = newdot;
@@ -578,7 +575,7 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   const QueryLoc& dotloc = dot->get_loc();
 
-  ulong numKeys = (ulong)theKeyExprs.size();
+  csize numKeys = theKeyExprs.size();
   std::vector<expr_t> clonedExprs(numKeys + 1);
 
   //
@@ -627,7 +624,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  for (ulong i = 0; i < numKeys; ++i)
+  for (csize i = 0; i < numKeys; ++i)
   {
     subst.clear();
     subst[dot] = newdot;
@@ -679,7 +676,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Create theDocIndexer obj
   //
-  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVar);
+  theDocIndexer = new DocIndexer(isGeneral(), numKeys, theDocIndexerPlan, docVar);
 
   return theDocIndexer.getp();
 }

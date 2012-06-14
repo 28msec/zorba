@@ -216,7 +216,7 @@ GeneralIndex::~GeneralIndex()
 /******************************************************************************
 
 *******************************************************************************/
-const XQPCollator* GeneralIndex::getCollator(ulong i) const
+const XQPCollator* GeneralIndex::getCollator(csize i) const
 {
   ZORBA_ASSERT(i == 0);
   return theCompFunction.getCollator();
@@ -226,7 +226,7 @@ const XQPCollator* GeneralIndex::getCollator(ulong i) const
 /******************************************************************************
 
 *******************************************************************************/
-ulong GeneralIndex::size() const
+csize GeneralIndex::size() const
 {
   assert(false);
   return 0;
@@ -670,7 +670,7 @@ GeneralHashIndex::GeneralHashIndex(
 *******************************************************************************/
 GeneralHashIndex::~GeneralHashIndex()
 {
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     if (theMaps[i] == NULL)
       continue;
@@ -747,7 +747,7 @@ bool GeneralHashIndex::insertInMap(
 *******************************************************************************/
 bool GeneralHashIndex::remove(
     const store::Item_t& key,
-    store::Item_t& item,
+    const store::Item_t& node,
     bool all)
 {
   assert(false);
@@ -760,7 +760,7 @@ bool GeneralHashIndex::remove(
 *******************************************************************************/
 void GeneralHashIndex::clear()
 {
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     if (theMaps[i] == NULL)
       continue;
@@ -853,7 +853,7 @@ GeneralTreeIndex::GeneralTreeIndex(
 *******************************************************************************/
 GeneralTreeIndex::~GeneralTreeIndex()
 {
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     if (theMaps[i] == NULL)
       continue;
@@ -922,7 +922,7 @@ bool GeneralTreeIndex::insertInMap(
 *******************************************************************************/
 bool GeneralTreeIndex::remove(
     const store::Item_t& key,
-    store::Item_t& item,
+    const store::Item_t& item,
     bool all)
 {
   return true;
@@ -934,7 +934,7 @@ bool GeneralTreeIndex::remove(
 *******************************************************************************/
 void GeneralTreeIndex::clear()
 {
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     if (theMaps[i] == NULL)
       continue;
@@ -1871,7 +1871,7 @@ void ProbeGeneralIndexIterator::initBox()
   {
     theIsFullProbe = true;
 
-    for (ulong i = 0; i < store::XS_LAST; ++i)
+    for (csize i = 0; i < store::XS_LAST; ++i)
     {
       if (idx->theMaps[i] == NULL)
         continue;

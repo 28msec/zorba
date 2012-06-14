@@ -59,13 +59,13 @@ public:
 
   const store::IndexSpecification& getSpecification() const { return theSpec; }
 
-  ulong getNumColumns() const { return theSpec.getNumColumns(); }
+  csize getNumColumns() const { return theSpec.getNumColumns(); }
 
   long getTimezone() const { return theSpec.theTimezone; }
 
   const std::vector<std::string>& getCollations() const { return theSpec.theCollations; }
 
-  virtual ulong size() const = 0;
+  virtual csize size() const = 0;
 
   virtual KeyIterator_t keys() const = 0;
 
@@ -298,7 +298,7 @@ public:
   {
   }
 
-  ulong numRanges() const { return theLowerBounds.size(); }
+  csize numRanges() const { return theLowerBounds.size(); }
 
   void clear();
 
@@ -317,6 +317,30 @@ public:
 
 
 std::ostream& operator<<(std::ostream& os, const IndexBoxValueCondition& cond);
+
+
+/**************************************************************************//**
+  A index delta is a set of [domain-node, associated-key(s)] pairs.
+*******************************************************************************/
+class IndexDeltaImpl : public store::IndexDelta 
+{
+public:
+  typedef std::vector<store::IndexDelta::ValuePair>::iterator
+  ValueIterator;
+
+  typedef std::vector<store::IndexDelta::ValuePair>::reverse_iterator
+  ReverseValueIterator;
+
+  typedef std::vector<store::IndexDelta::GeneralPair>::iterator
+  GeneralIterator;
+
+public:
+  IndexDeltaImpl() { }
+
+  ValueDelta& getValueDelta() { return theValueDelta; }
+
+  GeneralDelta& getGeneralDelta() { return theGeneralDelta; }
+};
 
 
 }

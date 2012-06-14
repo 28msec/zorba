@@ -34,8 +34,13 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-DocIndexer::DocIndexer(ulong numColumns, PlanIterator* plan, var_expr* var)
+DocIndexer::DocIndexer(
+    bool general,
+    csize numColumns,
+    PlanIterator* plan,
+    var_expr* var)
   :
+  theIsGeneral(general),
   theNumColumns(numColumns),
   theIndexerPlan(plan),
   theNodeVar(var)
@@ -84,30 +89,57 @@ void DocIndexer::createIndexEntries(
                         QueryLoc::null,
                         tmp);
 
-  csize numEntries = delta.size();
   store::Item_t domainNode;
   store::IndexKey* key = NULL;
 
   try
   {
-    while (thePlanWrapper->next(domainNode))
+    if (theIsGeneral)
     {
-      key = new store::IndexKey(theNumColumns);
-
-      //std::cout << domainNode.getp() << "  " << key << std::endl;
-
-      for (csize i = 0; i < theNumColumns; ++i)
+      if (thePlanWrapper->next(domainNode))
       {
-        if (!thePlanWrapper->next((*key)[i]))
-          throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
-          ERROR_PARAMS(ZED(IncompleteKeyInIndexRefresh)));
+        store::Item_t keyItem;
+        bool more = true;
+
+        while (more)
+        {
+          assert(domainNode->isNode());
+
+          delta.addGeneralNode(domainNode);
+
+          while ((more = thePlanWrapper->next(keyItem)))
+          {
+            if (keyItem->isNode())
+            {
+              domainNode.transfer(keyItem);
+              break;
+            }
+            
+            delta.addGeneralKey(keyItem);
+          }
+        }
       }
+    }
+    else
+    {
+      while (thePlanWrapper->next(domainNode))
+      {
+        key = new store::IndexKey(theNumColumns);
+
+        //std::cout << domainNode.getp() << "  " << key << std::endl;
+
+        for (csize i = 0; i < theNumColumns; ++i)
+        {
+          if (!thePlanWrapper->next((*key)[i]))
+          {
+            throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+            ERROR_PARAMS(ZED(IncompleteKeyInIndexRefresh)));
+          }
+        }
       
-      delta.resize(numEntries + 1);
-      delta[numEntries].first.transfer(domainNode); 
-      delta[numEntries].second = key;
-      key = NULL;
-      ++numEntries;
+        delta.addValuePair(domainNode, key);
+        key = NULL;
+      }
     }
   }
   catch(...)
@@ -115,10 +147,7 @@ void DocIndexer::createIndexEntries(
     if (key != NULL)
       delete key;
 
-    for (ulong i = 0; i < delta.size(); ++i)
-    {
-      delete delta[i].second;
-    }
+    delta.clear();
 
     theDctx->unset_variable(theNodeVar->get_unique_id(),
                             theNodeVar->get_name(),
