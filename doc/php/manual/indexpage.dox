@@ -6,6 +6,9 @@
   The <a href="http://www.zorba-xquery.com/html/entry/2011/12/27/PHP_Meets_XQuery">following tutorial</a> provides an overview on how to leverage Zorba into PHP applications. 
   We also provide the following <a class="en" href="examples.html">set of examples</a> that show how the Zorba PHP API can be used.
 
+  \section note Note for non-C++ language bindings
+  Zorba's current API documentation is generated from the C++ source. The PHP language API is derived directly from this. The information contained in this documentation is accurate for PHP, although it will look somewhat odd.
+
   \example test.php
    This is a simple example that demonstrate how to use the Zorba XQuery Engine to
    create, compile, and execute queries.
