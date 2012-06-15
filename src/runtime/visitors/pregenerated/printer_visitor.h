@@ -286,11 +286,19 @@ namespace zorba {
     void beginVisit( const FetchContentIterator& );
     void endVisit  ( const FetchContentIterator& );
 
+    void beginVisit( const FetchContentBinaryIterator& );
+    void endVisit  ( const FetchContentBinaryIterator& );
+
     void beginVisit( const FetchContentTypeIterator& );
     void endVisit  ( const FetchContentTypeIterator& );
 
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
+
+#ifndef ZORBA_NO_FULL_TEXT
+    void beginVisit( const CurrentCompareOptionsIterator& );
+    void endVisit  ( const CurrentCompareOptionsIterator& );
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
     void beginVisit( const CurrentLangIterator& );
@@ -343,8 +351,8 @@ namespace zorba {
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
-    void beginVisit( const TokenizeIterator& );
-    void endVisit  ( const TokenizeIterator& );
+    void beginVisit( const TokenizeNodeIterator& );
+    void endVisit  ( const TokenizeNodeIterator& );
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT

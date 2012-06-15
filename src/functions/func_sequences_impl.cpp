@@ -26,6 +26,7 @@
 
 #include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
+#include "runtime/indexing/index_ddl.h"
 
 #include "system/globalenv.h"
 
@@ -565,6 +566,38 @@ PlanIter_t fn_count::codegen(
                                        loc,
                                        collection.getChildren(),
                                        CountCollectionIterator::W3C);
+  }
+  else if (typeid(ProbeIndexPointValueIterator) == counted_type)
+  {
+    ProbeIndexPointValueIterator& lIter
+      = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
+
+    return new ProbeIndexPointValueIterator(
+        sctx, loc, lIter.getChildren(), true);
+  }
+  else if (typeid(ProbeIndexRangeValueIterator) == counted_type)
+  {
+    ProbeIndexRangeValueIterator& lIter
+      = static_cast<ProbeIndexRangeValueIterator&>(*argv[0]);
+
+    return new ProbeIndexRangeValueIterator(
+        sctx, loc, lIter.getChildren(), true);
+  }
+  else if (typeid(ProbeIndexPointGeneralIterator) == counted_type)
+  {
+    ProbeIndexPointGeneralIterator& lIter
+      = static_cast<ProbeIndexPointGeneralIterator&>(*argv[0]);
+
+    return new ProbeIndexPointGeneralIterator(
+        sctx, loc, lIter.getChildren(), true);
+  }
+  else if (typeid(ProbeIndexRangeGeneralIterator) == counted_type)
+  {
+    ProbeIndexRangeGeneralIterator& lIter
+      = static_cast<ProbeIndexRangeGeneralIterator&>(*argv[0]);
+
+    return new ProbeIndexRangeGeneralIterator(
+        sctx, loc, lIter.getChildren(), true);
   }
   else
   {

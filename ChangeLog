@@ -3,13 +3,27 @@ Zorba - The XQuery Processor
 
 version 2.x
 
-  * Fixed bug #867170 (Variables declared in Prolog are Overwritten inside the query)
+New Features:
+  * Implemented latest W3C soec for group by clause
+
+Optimizations:
+  * Small optimization of comparison operations.
+  * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428,
+    which is only a performance bug)
+
+Bug Fixes/Other Changes:
+  * Fixed bug #991088$ (raise XUST0001 in trycatch with mixed updating and simple clauses)
+  * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
+  * Fixed bug #1003023$ (optimizer problems due to common subexpression after
+    var folding into if-then-else)
+  * Fixed bug #1006166 (disabling 2 functions with the same qname)
+  * Fixed bug 960083$ (improper error handling of NaN comparisons)
 
 
 version 2.5
 
 New Features:
-  * XQuery 3.0 functions
+  * New XQuery 3.0 functions
     - fn:available-environment-variables
     - fn:environment-variables
     - fn:uri-collection
@@ -19,25 +33,36 @@ New Features:
     - fn:nilled#0
     - fn:path
   * Added base64:decode#2 function which also does transcoding
-  * Extended API for Python, Java, PHP and Ruby.
-  * Add jvm classpath to zorbacmd and to Zorba API. Tracked by #931816
-  * Added full-text module.
+  * Extended API for Python, Java, PHP and Ruby
+  * Added JVM classpath to zorbacmd and to Zorba API
+  * Added full-text module
   * Added support for NO_ICU (to not use ICU for unicode processing)
-  * Added XQJ support.
-  * Added CollectionManager and DocumentManager support for XQJ.
+  * Added XQJ support
+  * Added CollectionManager and DocumentManager support for XQJ
+  * Added new API EntityKind SOME_CONTENT
+  * Added new API StreamResource which is able to specify whether a
+    stream is seekable or not.
+  * Added new functions in the fetch module and the StaticContext to fetch
+    resources as binary
+  * Added non-core schema-tools module for getting sample XMLSchema from
+    XML instances and sample XML instances from XMLSchema.
 
 Optimizations:
-  * optimized insertion into a collection (don't copy it if the node was created by an element constructor
-    and is not used anywhere else in the query
+  * optimized insertion into a collection (don't copy it if the node was
+    created by an element constructor and is not used anywhere else in the query)
+  * Fixed performance problem with the findNodeSources function of the no-copy rule
 
 Bug Fixes/Other Changes:
-  * Fixed bugs #931501 and #866987 (improved error messages for fn:format-number(). Additionally, the function now throws the FODF1310 error instead of XTDE1310, as the 3.0 spec requires)
+  * Fixed bug #867170 (Variables declared in Prolog are Overwritten inside the query)
+  * Fixed bug #1001463 (type not available during computation of function caching)
+  * Fixed bug #1002867 (resulting base64 in http-client is wrong)
+  * Fixed bugs #905028 (Allow to set base URI to undefined)
+  * Fixed bugs #931501 and #866987 (improved error messages for fn:format-number()
+  * fn:format-number raises FODF1310 instead of XTDE1310
   * Fixed bug 955170 (Catch clause with URILiteral-based wilcard NameTest)
-  * Fixed memory leak in case of index truncation
   * Fixed bug #862971 (no error upon duplicate function declarations)
-  * Fixed bug in mergeUpdates() method
   * Fixed bug 955135 (err:XQDY0044 not caught by try-catch expressions)
-  * Fixed bug #986075 (encountering flwor expr with no clauses; due to common subexression being formed when inlining var in if-then-else expression) 
+  * Fixed bug #986075 (encountering flwor expr with no clauses)
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
   * Fixed bug #891650 (context size var not always declared within path expr)
   * Fixed bug #948879 (--uri-path doesn't work with fetch:content())
@@ -46,21 +71,22 @@ Bug Fixes/Other Changes:
   * Fixed bug #866547 (protect index-join rule from general flwor)
   * Fixed bug #867253 (cdml:delete-nodes should only remove root nodes)
   * Fixed bug #967428 (do not hoist index creation outside a try-catch)
-  * Fixed performance problem with the findNodeSources function of the no-copy rule
   * Fixed bug #872234 (prevent a rewritting to take place in case of sequential expr)
   * Fixed bug #966706 (key uniqueness of index not enforced during incremental refresh)
   * Fixed bug #906494 (default compile with D_FILE_OFFSET_BITS=64)
   * Fixed bug #988412 (date:current-dateTime daylight saving)
   * Fixed bug #912586, #912593 and #912722 (assertion failures with lax validation)
+  * Fixed bug #986377 (do not apply any updates on collection if it is to be truncated)
   * Fixed bug #921458 (file:read-text-lines() blocking)
   * Fixed bug #981405 (do not hoist expr containing try-catch variables out of the associated try-catch expression)
   * Fixed bug #996084 (crash in Streamable*Item with file module)
   * Fixed bug #947627 (throw XQST0099 if more than one declarations of context item type in same module)
   * Fixed bug #980526 (no-copy rule bug due to global var being set in "distant" udf)
-  * Fixed bug #949910 (has-children may be invoked on all nodes). Internally, zorba::store::Item::getChildren() now returns NULL on node classes without offspring (instead of raising an error).
+  * Fixed bug #949910 (has-children may be invoked on all nodes)
   * Fixed Bug #933490 (Error ItemFactoryImpl::createBase64Binary with istream)
   * Fixed bug #867112 (Diagnostic Handler was not working on external APIs)
   * Fixed bug #857842 (Assertion failed with simple content element with comments)
+  * Fixed bug #928626 (no setting classpath in xsl-fo module)
 
 version 2.2
 

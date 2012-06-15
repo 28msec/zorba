@@ -41,6 +41,16 @@ PlanIter_t fn_zorba_fetch_content::codegen(
   return new FetchContentIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_fetch_content_binary::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FetchContentBinaryIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_fetch_content_type::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -60,8 +70,22 @@ void populate_context_fetch(static_context* sctx)
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_FETCH_CONTENT_2);
+        FunctionConsts::FN_ZORBA_FETCH_CONTENT_3);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_fetch_content_binary,
+        (createQName("http://www.zorba-xquery.com/modules/fetch","","content-binary"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_FETCH_CONTENT_BINARY_2);
 
   }
 

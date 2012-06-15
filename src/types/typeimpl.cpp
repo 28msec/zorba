@@ -222,32 +222,50 @@ std::string XQType::toSchemaString() const
   switch (type_kind())
   {
   case EMPTY_KIND:
+  {
     result = "empty-sequence()";
     break;
+  }
   case ATOMIC_TYPE_KIND:
+  {
     result = toString();
     break;
+  }
   case ITEM_KIND:
+  {
     result = "item()";
     break;
+  }
   case NODE_TYPE_KIND:
-    result = toString();
+  {
+    result = static_cast<const NodeXQType*>(this)->toSchemaStringInternal();
     break;
+  }
   case FUNCTION_TYPE_KIND:
+  {
     result = toString();
     break;
+  }
   case ANY_TYPE_KIND:
+  {
     result = "xs:anyType";
     break;
+  }
   case ANY_SIMPLE_TYPE_KIND:
+  {
     result = "xs:anySimpleType";
     break;
+  }
   case ANY_FUNCTION_TYPE_KIND:
+  {
     result = "function(*)";
     break;
+  }
   case UNTYPED_KIND:
+  {
     result = toString();
     break;
+  }
   default:
     return toString();
     break;
@@ -256,22 +274,6 @@ std::string XQType::toSchemaString() const
   result += TypeOps::decode_quantifier(get_quantifier());
   return result;
 }
-
-/*******************************************************************************
-
-********************************************************************************/
-std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
-{
-  return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
-            << TypeOps::decode_quantifier (get_quantifier());
-}
-
-
-store::Item_t AtomicXQType::get_qname() const
-{
-  return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[m_type_code];
-}
-
 
 /*******************************************************************************
 
@@ -361,6 +363,19 @@ void AtomicXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
   SERIALIZE_ENUM(store::SchemaTypeCode, m_type_code);
+}
+
+
+std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
+{
+  return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
+            << TypeOps::decode_quantifier(get_quantifier());
+}
+
+
+store::Item_t AtomicXQType::get_qname() const
+{
+  return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[m_type_code];
 }
 
 
@@ -632,6 +647,58 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
   }
 
   return os << "]";
+}
+
+
+std::string NodeXQType::toSchemaStringInternal() const
+{
+  std::ostringstream os;
+
+  if (m_node_kind == store::StoreConsts::documentNode)
+  {
+    os << "document-node(";
+    
+    if (m_content_type != NULL &&
+        m_content_type->type_kind() == XQType::NODE_TYPE_KIND)
+    {
+      os << ", " << m_content_type->toSchemaString();
+    }
+  }
+  else if (m_schema_test)
+  {
+    assert(m_content_type != NULL);
+
+    os << "schema-" << store::StoreConsts::toSchemaString(get_node_kind()) << "("
+       << m_node_name->getStringValue();
+  }
+  else
+  {
+    os << store::StoreConsts::toSchemaString(get_node_kind()) << "(";
+    
+    if (m_node_name != NULL)
+    {
+      os << m_node_name->getStringValue();
+
+      if (m_content_type != NULL)
+      {
+        os << ", " << m_content_type->toSchemaString();
+
+        if (m_nillable)
+          os << "?";
+      }
+    }
+    else if (m_content_type != NULL)
+    {
+      os << "*, " << m_content_type->toSchemaString();
+
+      if (m_nillable)
+        os << "?";
+    }
+  }
+  
+  os << ")";
+  
+  return os.str();
 }
 
 

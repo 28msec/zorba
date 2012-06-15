@@ -23,6 +23,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/zorba.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/diagnostic_list.h>
 
 using namespace std;
 using namespace zorba;
@@ -117,11 +118,192 @@ bool sctx_test_3(Zorba* zorba)
 }
 
 
+bool
+sctx_test_4(Zorba* const zorba)
+{
+  StaticContext_t lSctx = zorba->createStaticContext();
+
+  Zorba_CompilerHints_t lHints;
+
+  try
+  {
+    Item lFetched = lSctx->fetchBinary("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+
+    size_t s;
+    return !lFetched.isNull() && lFetched.getBase64BinaryValue(s);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+  }
+  return false;
+}
+
+
+bool
+sctx_test_5(Zorba* zorba)
+{
+  std::stringstream queryString1;
+  std::stringstream queryString2;
+
+  queryString1
+    << "import module namespace ddl = "
+    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
+    << std::endl
+    << "ddl:create(xs:QName(\"ddl:coll1\"));"
+    << std::endl;
+
+  queryString2
+    << "import module namespace ddl = "
+    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
+    << std::endl
+    << "ddl:create(xs:QName(\"ddl:coll1\"), <a/>);"
+    << std::endl;
+
+  ItemFactory* factory = zorba->getItemFactory();
+
+  Item fname = factory->
+  createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl", 
+              "create");
+
+  try
+  {
+    StaticContext_t sctx = zorba->createStaticContext();
+    sctx->disableFunction(fname, 1);
+    sctx->disableFunction(fname, 2);
+
+    XQuery_t query = zorba->compileQuery(queryString1, sctx);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    if (e.diagnostic() != err::XPST0017)
+      return false;
+  }
+  catch (...)
+  {
+    return false;
+  }
+
+  try
+  {
+    StaticContext_t sctx = zorba->createStaticContext();
+    sctx->disableFunction(fname, 1);
+    sctx->disableFunction(fname, 2);
+
+    queryString2.seekg(0, std::ios::beg);
+
+    XQuery_t query = zorba->compileQuery(queryString2, sctx);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    if (e.diagnostic() != err::XPST0017)
+      return false;
+  }
+  catch (...)
+  {
+    return false;
+  }
+
+  try
+  {
+    StaticContext_t sctx = zorba->createStaticContext();
+    sctx->disableFunction(fname, 1);
+
+    queryString1.clear();
+    queryString1.seekg(0, std::ios::beg);
+
+    XQuery_t query = zorba->compileQuery(queryString1, sctx);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    if (e.diagnostic() != err::XPST0017)
+      return false;
+  }
+  catch (...)
+  {
+    return false;
+  }
+
+  try
+  {
+    StaticContext_t sctx = zorba->createStaticContext();
+    sctx->disableFunction(fname, 1);
+
+    queryString2.clear();
+    queryString2.seekg(0, std::ios::beg);
+
+    XQuery_t query = zorba->compileQuery(queryString2, sctx);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    return false;
+  }
+  catch (...)
+  {
+    return false;
+  }
+
+
+  try
+  {
+    StaticContext_t sctx = zorba->createStaticContext();
+    sctx->disableFunction(fname, 2);
+
+    queryString1.clear();
+    queryString1.seekg(0, std::ios::beg);
+
+    XQuery_t query = zorba->compileQuery(queryString1, sctx);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    return false;
+  }
+  catch (...)
+  {
+    return false;
+  }
+
+  try
+  {
+    StaticContext_t sctx = zorba->createStaticContext();
+    sctx->disableFunction(fname, 2);
+
+    queryString2.clear();
+    queryString2.seekg(0, std::ios::beg);
+
+    XQuery_t query = zorba->compileQuery(queryString2, sctx);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    if (e.diagnostic() != err::XPST0017)
+      return false;
+  }
+  catch (...)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+
 
 int static_context( int argc, char *argv[] ) 
 {
-  void* const zstore = StoreManager::getStore();
-  Zorba* const zorba = Zorba::getInstance( zstore );
+  void* zstore = StoreManager::getStore();
+  Zorba* zorba = Zorba::getInstance(zstore);
 
   if (!sctx_test_1(zorba))
     return 1;
@@ -131,6 +313,12 @@ int static_context( int argc, char *argv[] )
 
   if (!sctx_test_3(zorba))
     return 3;
+
+  if (!sctx_test_4(zorba))
+    return 4;
+
+  if (!sctx_test_5(zorba))
+    return 5;
 
   zorba->shutdown();
   StoreManager::shutdownStore( zstore );

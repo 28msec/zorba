@@ -286,11 +286,13 @@ protected:
  * Specialization for std::set.
  */
 template<typename T,typename Alloc>
-struct size_traits<std::set<T,Alloc>,false> :
+class size_traits<std::set<T,Alloc>,false> :
   sequence_size_traits< std::set<T,Alloc> >
 {
+  typedef sequence_size_traits< std::set<T,Alloc> > base_type;
+public:
   static size_t alloc_sizeof( std::set<T,Alloc> const &s ) {
-    return sequence_sizeof( s );
+    return base_type::sequence_sizeof( s );
   }
 };
 
@@ -298,11 +300,13 @@ struct size_traits<std::set<T,Alloc>,false> :
  * Specialization for std::stack.
  */
 template<typename T,typename Alloc>
-struct size_traits<std::stack<T,Alloc>,false> :
+class size_traits<std::stack<T,Alloc>,false> :
   sequence_size_traits< std::stack<T,Alloc> >
 {
+  typedef sequence_size_traits< std::stack<T,Alloc> > base_type;
+public:
   static size_t alloc_sizeof( std::stack<T,Alloc> const &s ) {
-    return sequence_sizeof( s );
+    return base_type::sequence_sizeof( s );
   }
 };
 
@@ -310,11 +314,13 @@ struct size_traits<std::stack<T,Alloc>,false> :
  * Specialization for std::vector.
  */
 template<typename T,typename Alloc>
-struct size_traits<std::vector<T,Alloc>,false> :
+class size_traits<std::vector<T,Alloc>,false> :
   sequence_size_traits< std::vector<T,Alloc> >
 {
+  typedef sequence_size_traits< std::vector<T,Alloc> > base_type;
+public:
   static size_t alloc_sizeof( std::vector<T,Alloc> const &v ) {
-    return sequence_sizeof( v );
+    return base_type::sequence_sizeof( v );
   }
 };
 

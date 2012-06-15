@@ -34,6 +34,29 @@
 namespace zorba {
 
 #ifndef ZORBA_NO_FULL_TEXT
+// <CurrentCompareOptionsIterator>
+CurrentCompareOptionsIterator::class_factory<CurrentCompareOptionsIterator>
+CurrentCompareOptionsIterator::g_class_factory;
+
+
+void CurrentCompareOptionsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+CurrentCompareOptionsIterator::~CurrentCompareOptionsIterator() {}
+
+// </CurrentCompareOptionsIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
 CurrentLangIterator::class_factory<CurrentLangIterator>
 CurrentLangIterator::g_class_factory;
@@ -272,12 +295,12 @@ void ThesaurusLookupIteratorState::reset(PlanState& planState) {
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
-// <TokenizeIterator>
-TokenizeIterator::class_factory<TokenizeIterator>
-TokenizeIterator::g_class_factory;
+// <TokenizeNodeIterator>
+TokenizeNodeIterator::class_factory<TokenizeNodeIterator>
+TokenizeNodeIterator::g_class_factory;
 
 
-void TokenizeIterator::accept(PlanIterVisitor& v) const {
+void TokenizeNodeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -289,17 +312,17 @@ void TokenizeIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-TokenizeIterator::~TokenizeIterator() {}
+TokenizeNodeIterator::~TokenizeNodeIterator() {}
 
-TokenizeIteratorState::TokenizeIteratorState() {}
+TokenizeNodeIteratorState::TokenizeNodeIteratorState() {}
 
-TokenizeIteratorState::~TokenizeIteratorState() {}
+TokenizeNodeIteratorState::~TokenizeNodeIteratorState() {}
 
 
-void TokenizeIteratorState::reset(PlanState& planState) {
+void TokenizeNodeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
-// </TokenizeIterator>
+// </TokenizeNodeIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT

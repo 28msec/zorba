@@ -14,6 +14,10 @@
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
+<zorba:iterator name="CurrentCompareOptionsIterator"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+</zorba:iterator>
+
 <zorba:iterator name="CurrentLangIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
@@ -123,25 +127,25 @@
   <zorba:function>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:param>xs:string</zorba:param>    <!-- relationship -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
@@ -150,7 +154,7 @@
       <zorba:param>xs:string</zorba:param>    <!-- relationship -->
       <zorba:param>xs:integer</zorba:param>   <!-- level-least -->
       <zorba:param>xs:integer</zorba:param>   <!-- level-most -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
   </zorba:function>
   <zorba:state generateInit="use-default">
@@ -163,7 +167,7 @@
   </zorba:state>
 </zorba:iterator>
 
-<zorba:iterator name="TokenizeIterator"
+<zorba:iterator name="TokenizeNodeIterator"
                 generateResetImpl="true"
                 generateSerialize="false"
                 generateConstructor="false"
