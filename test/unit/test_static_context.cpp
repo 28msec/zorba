@@ -16,6 +16,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <map>
 
@@ -295,12 +296,41 @@ sctx_test_5(Zorba* zorba)
     return false;
   }
 
+
+  try
+  {
+    StaticContext_t sctx = zorba->createStaticContext();
+    sctx->disableFunction(fname, 2);
+
+    queryString1.clear();
+    queryString1.seekg(0, std::ios::beg);
+
+    XQuery_t query = zorba->compileQuery(queryString1, sctx);
+
+    std::ofstream planFile("out.plan");
+    assert(planFile.good());
+
+    query->saveExecutionPlan(planFile);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    return false;
+  }
+  catch (...)
+  {
+    std::cerr << "unknown exception" << std::endl;
+
+    return false;
+  }
+
   return true;
 }
 
 
 
-int static_context( int argc, char *argv[] ) 
+int test_static_context( int argc, char *argv[] ) 
 {
   void* zstore = StoreManager::getStore();
   Zorba* zorba = Zorba::getInstance(zstore);
