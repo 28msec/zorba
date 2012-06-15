@@ -65,6 +65,41 @@ zorba::diagnostic::kind XQueryErrQName::kind() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_JSON
+
+char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
+char const JSONiqErrQName::PREFIX[] = "jerr";
+
+zorba::diagnostic::category JSONiqErrQName::category() const {
+  using namespace zorba::diagnostic;
+
+  char const *const name = localname();
+
+  if ( ascii::begins_with( name, "JU", 2 ) )
+    return JSONIQ_UPDATE;
+
+  return JSONIQ_CORE;
+}
+
+zorba::diagnostic::kind JSONiqErrQName::kind() const {
+  using namespace zorba::diagnostic;
+
+  char const *const name = localname();
+
+  if ( ::strncmp( name + 2, "DY", 2 ) == 0 )
+    return XQUERY_DYNAMIC;
+  if ( ::strncmp( name + 2, "ST", 2 ) == 0 )
+    return XQUERY_STATIC;
+  if ( ::strncmp( name + 2, "TY", 2 ) == 0 )
+    return XQUERY_TYPE;
+
+  return UNKNOWN_KIND;
+}
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+
 char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
 char const ZorbaErrQName::PREFIX[] = "zerr";
 

@@ -256,11 +256,11 @@ public:
 
 public:
   cast_base_expr(
-        static_context* sctx, 
-        const QueryLoc& loc,
-        expr_kind_t kind,
-        const expr_t& input,
-        const xqtref_t& type);
+      static_context* sctx, 
+      const QueryLoc& loc,
+      expr_kind_t kind,
+      const expr_t& input,
+      const xqtref_t& type);
 };
 
 
@@ -376,6 +376,12 @@ public:
      - F(I) = error
 
   4. Put F(I) in the output sequence.
+
+  theFnQName:
+  -----------
+  Stores the QName of the function, if the promote expr is used to cast the
+  function's body to its result type
+  
 ********************************************************************************/
 class promote_expr : public cast_base_expr
 {
@@ -1006,6 +1012,8 @@ public:
   trycatch_expr(static_context* sctx, const QueryLoc&, expr_t tryExpr);
 
   expr* get_try_expr() const { return theTryExpr.getp(); }
+
+  void set_try_expr(expr* e) { theTryExpr = e; }
 
   expr* get_catch_expr(csize i) const { return theCatchExprs[i].getp(); }
 

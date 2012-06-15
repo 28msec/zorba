@@ -448,7 +448,9 @@ public:
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
   static const char* ZORBA_BASE64_FN_NS;
+
   static const char* ZORBA_JSON_FN_NS;
+
   static const char* ZORBA_NODEREF_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
@@ -461,13 +463,21 @@ public:
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+
+#ifdef ZORBA_WITH_JSON
+  static const char* JSONIQ_NS;
+  static const char* JSONIQ_FN_NS;
+#endif
+
   static const char* ZORBA_SCHEMA_FN_NS;
   static const char* ZORBA_XQDOC_FN_NS;
   static const char* ZORBA_RANDOM_FN_NS;
   static const char* ZORBA_INTROSP_SCTX_FN_NS;
   static const char* ZORBA_REFLECTION_FN_NS;
   static const char* ZORBA_STRING_FN_NS;
+
   static const char* ZORBA_URI_FN_NS;
+
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
   static const char* ZORBA_XML_FN_NS;

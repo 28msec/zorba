@@ -81,7 +81,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  quant = TypeOps::quantifier(*theSequenceType);
+  quant = theSequenceType->get_quantifier();
 
   if (consumeNext(item, theChild.getp(), planState))
   {
@@ -158,7 +158,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -174,10 +174,11 @@ CastIterator::CastIterator(
     const QueryLoc& loc,
     PlanIter_t& aChild,
     const xqtref_t& aCastType)
-  : UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
+  : 
+  UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
@@ -236,7 +237,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     STACK_PUSH(valid, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -252,11 +253,11 @@ CastableIterator::CastableIterator(
   const QueryLoc& aLoc,
   PlanIter_t& aChild,
   const xqtref_t& aCastType)
-:
+  :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, aLoc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
@@ -335,7 +336,7 @@ PromoteIterator::PromoteIterator(
   theQName(qname)
 {
   thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *promoteType);
-  theQuantifier = TypeOps::quantifier(*promoteType); 
+  theQuantifier = promoteType->get_quantifier(); 
 }
 
 
@@ -489,7 +490,7 @@ TreatIterator::TreatIterator(
   theQName(qname)
 {
   theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *treatType);
-  theQuantifier = TypeOps::quantifier(*treatType);
+  theQuantifier = treatType->get_quantifier();
 }
 
 

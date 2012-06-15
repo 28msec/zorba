@@ -179,7 +179,7 @@ static inline bool isElementOrDocumentNode(const store::Item* node)
   assert(node->isNode());
   store::StoreConsts::NodeKind kind = node->getNodeKind();
   return (kind == store::StoreConsts::elementNode ||
-	  kind == store::StoreConsts::documentNode);
+          kind == store::StoreConsts::documentNode);
 }
 
 
@@ -201,7 +201,7 @@ bool AxisIteratorHelper::setTargetPos(xs_long pos)
 
 bool AxisIteratorHelper::nameOrKindTest(
     const store::Item* node,
-    PlanState& planState) const
+    const QueryLoc& loc) const
 {
   switch (theTestKind)
   {
@@ -288,13 +288,16 @@ doctest1:
 
     if (theType != NULL)
     {
-      xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
-        create_named_type(node->getType());
+      xqtref_t atype = theTypeManager->create_named_type(node->getType(),
+                                                         TypeConstants::QUANT_ONE,
+                                                         loc);
 
       if ((!TypeOps::is_subtype(theTypeManager, *atype, *theType)) ||
           (theNilledAllowed == false &&
            node->getNilled()->getBooleanValue() == true))
+      {
         return false;
+      }
     }
 
     return true;
@@ -311,8 +314,9 @@ doctest2:
     if (!theQName->equals(node->getNodeName()))
       return false;
 
-    xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
-                     create_named_type(node->getType());
+    xqtref_t atype = theTypeManager->create_named_type(node->getType(),
+                                                       TypeConstants::QUANT_ONE,
+                                                       loc);
 
     if ((!TypeOps::is_subtype(theTypeManager, *atype, *theType)) ||
         (theNilledAllowed == false &&
@@ -331,8 +335,9 @@ doctest2:
 
     if (theType != NULL)
     {
-      xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
-                       create_named_type(node->getType());
+      xqtref_t atype = theTypeManager->create_named_type(node->getType(),
+                                                         TypeConstants::QUANT_ONE,
+                                                         loc);
 
       if (! TypeOps::is_subtype(theTypeManager, *atype, *theType))
         return false;
@@ -348,8 +353,9 @@ doctest2:
     if (!theQName->equals(node->getNodeName()))
       return false;
 
-    xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
-                     create_named_type(node->getType());
+    xqtref_t atype = theTypeManager->create_named_type(node->getType(),
+                                                       TypeConstants::QUANT_ONE,
+                                                       loc);
 
     if (! TypeOps::is_subtype(theTypeManager, *atype, *theType))
       return false;
@@ -418,7 +424,7 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
     state->theCurrentPos = 0;
 
-    if (nameOrKindTest(result, planState))
+    if (nameOrKindTest(result, loc))
     {
       if (theTargetPos >= 1)
         return false;
@@ -485,7 +491,7 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     while ((attr = state->theAttributes->next()) != NULL)
     {
-      if (nameOrKindTest(attr, planState))
+      if (nameOrKindTest(attr, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -540,7 +546,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     result = state->theContextNode->getParent();
 
-    if (result != NULL && nameOrKindTest(result, planState))
+    if (result != NULL && nameOrKindTest(result, loc))
     {
       if (theTargetPos < 1)
         STACK_PUSH(true, state);
@@ -585,7 +591,7 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     ancestor = state->theContextNode->getParent();
     while (ancestor != NULL)
     {
-      if (nameOrKindTest(ancestor, planState))
+      if (nameOrKindTest(ancestor, loc))
         state->theAncestors.push_back(ancestor);
       ancestor = ancestor->getParent();
     }
@@ -644,7 +650,7 @@ bool AncestorReverseAxisIterator::nextImpl(
 
     while (ancestor != NULL)
     {
-      if (nameOrKindTest(ancestor, planState))
+      if (nameOrKindTest(ancestor, loc))
       {
         state->theCurrentAnc = ancestor;
 
@@ -712,7 +718,7 @@ bool AncestorSelfAxisIterator::nextImpl(
 
     while (ancestor != NULL)
     {
-      if (nameOrKindTest(ancestor, planState))
+      if (nameOrKindTest(ancestor, loc))
       {
         state->theAncestors.push_back(ancestor);
       }
@@ -764,7 +770,7 @@ bool AncestorSelfReverseAxisIterator::nextImpl(
 
     while (state->theCurrentAnc != NULL)
     {
-      if (nameOrKindTest(state->theCurrentAnc, planState))
+      if (nameOrKindTest(state->theCurrentAnc, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -846,7 +852,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     while ((sibling = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(sibling, planState))
+      if (nameOrKindTest(sibling, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -911,7 +917,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     while ((sibling = state->theChildren->next()) != NULL &&
            sibling != state->theContextNode.getp())
     {
-      if (nameOrKindTest(sibling, planState))
+      if (nameOrKindTest(sibling, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -994,7 +1000,7 @@ bool LSiblingReverseAxisIterator::nextImpl(
 
     while ((sibling = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(sibling, planState))
+      if (nameOrKindTest(sibling, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -1068,7 +1074,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     while ((child = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(child, planState))
+      if (nameOrKindTest(child, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -1174,7 +1180,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     while (desc != NULL)
     {
-      if (nameOrKindTest(desc, planState))
+      if (nameOrKindTest(desc, loc))
       {
         if (desc->getNodeKind() == store::StoreConsts::elementNode &&
             (desc->isRecursive() ||
@@ -1259,7 +1265,7 @@ bool DescendantSelfAxisIterator::nextImpl(
     {
       descKind = desc->getNodeKind();
 
-      if (nameOrKindTest(desc, planState))
+      if (nameOrKindTest(desc, loc))
       {
         if ((descKind == store::StoreConsts::elementNode ||
              (descKind == store::StoreConsts::documentNode &&
@@ -1388,7 +1394,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
         // Special case: C is not element node, so there is no tree to travesre.
         if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          if (nameOrKindTest(child, planState))
+          if (nameOrKindTest(child, loc))
           {
             if (theTargetPos >= 0)
             {
@@ -1417,7 +1423,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
         while (desc != NULL)
         {
-          if (nameOrKindTest(desc, planState))
+          if (nameOrKindTest(desc, loc))
           {
             if (desc->getNodeKind() == store::StoreConsts::elementNode &&
                 (desc->isRecursive() ||
@@ -1566,7 +1572,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
     if (!state->theContextNode->isNode())
     {
       assert(false);
-      throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(loc));
     }
 
     getNextContextNode = false;
@@ -1589,7 +1595,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
       {
         if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          if (nameOrKindTest(child, planState))
+          if (nameOrKindTest(child, loc))
           {
             result = child;
             STACK_PUSH(true, state);
@@ -1601,7 +1607,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
           continue;
         }
 
-        if (nameOrKindTest(child, planState))
+        if (nameOrKindTest(child, loc))
         {
           if (child->isRecursive() ||
               theTestKind == match_anykind_test ||
@@ -1635,7 +1641,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
           {
             if (desc->getNodeKind() == store::StoreConsts::elementNode)
             {
-              if (nameOrKindTest(desc, planState))
+              if (nameOrKindTest(desc, loc))
               {
                 if (desc->isRecursive() ||
                     theTestKind == match_anykind_test ||
@@ -1660,7 +1666,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
             }
             else
             {
-              if (nameOrKindTest(desc, planState))
+              if (nameOrKindTest(desc, loc))
               {
                 result = desc;
                 STACK_PUSH(true, state);
@@ -1674,7 +1680,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
           // We have traversed all the subtrees of the node D that is at the
           // top of theCurrentPath. Return D to the caller, if it satifies the
           // node test, and then pop D from theCurrentPath.
-          if (nameOrKindTest(state->topNode(), planState))
+          if (nameOrKindTest(state->topNode(), loc))
           {
             result = state->topNode();
             STACK_PUSH(true, state);
@@ -1775,7 +1781,7 @@ bool FollowingAxisIterator::nextImpl(
         // Special case: C is not element node, so there is no tree to travesre.
         if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          if (nameOrKindTest(child, planState))
+          if (nameOrKindTest(child, loc))
           {
             if (theTargetPos >= 0)
             {
@@ -1804,7 +1810,7 @@ bool FollowingAxisIterator::nextImpl(
 
         while (desc != NULL)
         {
-          if (nameOrKindTest(desc, planState))
+          if (nameOrKindTest(desc, loc))
           {
             if (desc->getNodeKind() == store::StoreConsts::elementNode &&
                 (desc->isRecursive() ||

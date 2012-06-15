@@ -61,7 +61,11 @@ sctx_test_1(Zorba* const zorba)
     }
   }
 
+#ifdef ZORBA_WITH_JSON
+  return lFooFound && lBindings.size() == 7; // JSONiq has an additional NS.
+#else
   return lFooFound && lBindings.size() == 6;
+#endif
 }
 
 bool

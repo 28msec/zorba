@@ -42,8 +42,6 @@
 #include "util/tracer.h"
 
 
-using namespace std;
-
 namespace zorba
 {
 
@@ -51,7 +49,7 @@ int dummy;
 void *parsenode_visitor::no_state = (void *) &dummy;
 
 int printdepth = 0;
-ostringstream __oss;
+std::ostringstream __oss;
 
 #undef  INDENT
 #define INDENT      std::string(++printdepth, ' ')
@@ -68,12 +66,13 @@ ostringstream __oss;
     ACCEPT( *i );
 
 #define DECLARE_VISITOR_FUNCTOR( name, type, body)                      \
-  class name : public unary_function<rchandle<parsenode>, void> {       \
+  class name : public std::unary_function<rchandle<parsenode>, void>    \
+  {                                                                     \
     parsenode_visitor &v;                                               \
   public:                                                               \
-  name (parsenode_visitor &v_) : v (v_) {}                              \
-  void operator () (type e) body                                        \
-    }
+    name (parsenode_visitor &v_) : v (v_) {}                            \
+    void operator () (type e) body                                      \
+  }
 
 
 DECLARE_VISITOR_FUNCTOR(visitor_functor, rchandle<parsenode>, { ACCEPT(e); });
@@ -277,14 +276,14 @@ void SIND_DeclList::accept(parsenode_visitor &v) const
 {
   BEGIN_VISITOR();
 
-  for (vector<rchandle<parsenode> >::const_iterator it = theDecls.begin();
+  for (std::vector<rchandle<parsenode> >::const_iterator it = theDecls.begin();
        it != theDecls.end();
        ++it)
   {
     ACCEPT_CHK((*it));
   }
 
-  for (vector<rchandle<parsenode> >::const_iterator it = theModuleImports.begin();
+  for (std::vector<rchandle<parsenode> >::const_iterator it = theModuleImports.begin();
        it != theModuleImports.end();
        ++it)
   {
@@ -545,7 +544,7 @@ void URILiteralList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 #if 0
-  vector<string>::const_reverse_iterator it = uri_v.rbegin();
+  std::vector<string>::const_reverse_iterator it = uri_v.rbegin();
   for (; it!=uri_v.rend(); ++it) {
     // ..do something useful
   }
@@ -641,7 +640,7 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
-  for (vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
+  for (std::vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
        it != vfo_hv.end();
        ++it)
   {
@@ -795,7 +794,7 @@ void ParamList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
-  for (vector<rchandle<Param> >::const_iterator it = param_hv.begin();
+  for (std::vector<rchandle<Param> >::const_iterator it = param_hv.begin();
        it != param_hv.end();
        ++it)
   {
@@ -1063,7 +1062,7 @@ void IndexKeyList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
-  for (vector<rchandle<IndexKeySpec> >::const_iterator i = theKeySpecs.begin();
+  for (std::vector<rchandle<IndexKeySpec> >::const_iterator i = theKeySpecs.begin();
        i != theKeySpecs.end();
        ++i)
   {
@@ -1311,7 +1310,7 @@ void Expr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
-  vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
+  std::vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
   for (; it != expr_hv.rend(); ++it)
   {
     const exprnode* e_p = &**it;
@@ -1534,7 +1533,7 @@ FLWORClauseList::FLWORClauseList(const QueryLoc& loc)
 void FLWORClauseList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<FLWORClause> >::const_iterator it = theClauses.begin();
+  std::vector<rchandle<FLWORClause> >::const_iterator it = theClauses.begin();
   for (; it != theClauses.end(); ++it)
   {
     const parsenode *e_p = &**it;
@@ -1589,7 +1588,7 @@ VarInDeclList::VarInDeclList(
 void VarInDeclList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
+  std::vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -1680,7 +1679,7 @@ VarGetsDeclList::VarGetsDeclList(
 void VarGetsDeclList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
+  std::vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it)
   {
     const parsenode *e_p = &**it;
@@ -1781,7 +1780,7 @@ void GroupSpecList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
-  vector<rchandle<GroupSpec> >::const_iterator it = theSpecs.begin();
+  std::vector<rchandle<GroupSpec> >::const_iterator it = theSpecs.begin();
   for (; it != theSpecs.end(); ++it)
   {
     const GroupSpec* e_p = &**it;
@@ -1864,8 +1863,9 @@ OrderSpecList::OrderSpecList(
 void OrderSpecList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
-  for (; it!=spec_hv.end(); ++it) {
+  std::vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
+  for (; it!=spec_hv.end(); ++it) 
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -2101,8 +2101,9 @@ SwitchCaseClauseList::SwitchCaseClauseList(
 void SwitchCaseClauseList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
-  for (; it!=clause_hv.rend(); ++it) {
+  std::vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
+  for (; it!=clause_hv.rend(); ++it) 
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -2142,7 +2143,7 @@ SwitchCaseOperandList::SwitchCaseOperandList(
 void SwitchCaseOperandList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<exprnode> >::const_reverse_iterator it = operand_hv.rbegin();
+  std::vector<rchandle<exprnode> >::const_reverse_iterator it = operand_hv.rbegin();
   for (; it!=operand_hv.rend(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -2207,7 +2208,7 @@ CaseClauseList::CaseClauseList(
 void CaseClauseList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
+  std::vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
   for (; it!=clause_hv.rend(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -2884,7 +2885,9 @@ PathExpr::PathExpr(
 
 void PathExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR();
+  void* visitor_state = v.begin_visit(*this);
+  if (visitor_state != parsenode_visitor::no_state)
+    return;
   ACCEPT (relpath_expr_h);
   END_VISITOR();
 }
@@ -2904,11 +2907,13 @@ RelativePathExpr::RelativePathExpr(
   const QueryLoc& loc_,
   enum ParseConstants::steptype_t _step_type,
   rchandle<exprnode> step,
-  rchandle<exprnode> rpe)
+  rchandle<exprnode> rpe,
+  bool implicit)
   :
   exprnode(loc_),
   step_type(_step_type),
-  step_expr_h(step)
+  step_expr_h(step),
+  is_implicit_b(implicit)
 {
   RelativePathExpr* rpep = dynamic_cast<RelativePathExpr*>(rpe.getp());
   if (rpep != NULL)
@@ -3281,7 +3286,7 @@ void PredicateList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
-  for (vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
+  for (std::vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
        it!=pred_hv.end(); ++it)
   {
     const exprnode* e_p = &**it;
@@ -3480,7 +3485,7 @@ ArgList::ArgList(
 void ArgList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
+  std::vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
   for (; it!=arg_hv.end(); ++it) {
     const exprnode* e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -3565,7 +3570,10 @@ DirElemContentList::DirElemContentList(
 void DirElemContentList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<DirElemContent> >::const_reverse_iterator it = dir_content_hv.rbegin();
+
+  std::vector<rchandle<DirElemContent> >::const_reverse_iterator it = 
+  dir_content_hv.rbegin();
+
   const DirElemContent* lPrev = 0;
   // To find out if a DirElemContent is boundary whitespace, the current item cannot be accepted till
   // the next item (relative to the current item) is passed to check_boundary_whitespace.
@@ -3599,7 +3607,7 @@ DirAttributeList::DirAttributeList(
 void DirAttributeList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<DirAttr> >::const_iterator it = theAttributes.begin();
+  std::vector<rchandle<DirAttr> >::const_iterator it = theAttributes.begin();
   for (; it != theAttributes.end(); ++it)
   {
     const parsenode *e_p = &**it;
@@ -3676,9 +3684,12 @@ QuoteAttrContentList::QuoteAttrContentList(
 void QuoteAttrContentList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
-    quot_atval_content_hv.rbegin();
-  for (; it!=quot_atval_content_hv.rend(); ++it) {
+
+  std::vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
+  quot_atval_content_hv.rbegin();
+
+  for (; it!=quot_atval_content_hv.rend(); ++it) 
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -3700,9 +3711,12 @@ AposAttrContentList::AposAttrContentList(
 void AposAttrContentList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
-    apos_atval_content_hv.rbegin();
-  for (; it!=apos_atval_content_hv.rend(); ++it) {
+
+  std::vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
+  apos_atval_content_hv.rbegin();
+
+  for (; it!=apos_atval_content_hv.rend(); ++it) 
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -4183,6 +4197,13 @@ ItemType::ItemType(
 //-ItemType::
 
 void ItemType::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+void StructuredItemType::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -4736,7 +4757,9 @@ CopyVarList::CopyVarList(const QueryLoc& loc)
 void CopyVarList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<VarBinding> >::const_iterator it;
+
+  std::vector<rchandle<VarBinding> >::const_iterator it;
+
   for (it = var_bindings.begin(); it != var_bindings.end(); ++it)
   {
     const parsenode *e_p = &**it;
@@ -4781,8 +4804,9 @@ void TryExpr::accept( parsenode_visitor &v ) const
 void CatchListExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<CatchExpr> >::const_reverse_iterator it = theCatchExprs.rbegin();
-  for (; it!=theCatchExprs.rend(); ++it) {
+  std::vector<rchandle<CatchExpr> >::const_reverse_iterator it = theCatchExprs.rbegin();
+  for (; it!=theCatchExprs.rend(); ++it) 
+  {
     ACCEPT_CHK(*it);
   }
   END_VISITOR();
@@ -4794,7 +4818,10 @@ void CatchExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
-  for(NameTestList::const_iterator i = theNameTests.begin(); i != theNameTests.end(); ++i) {
+  for(NameTestList::const_iterator i = theNameTests.begin();
+      i != theNameTests.end();
+      ++i) 
+  {
     ACCEPT(*i);
   }
 
@@ -5613,8 +5640,9 @@ void AnyFunctionTest::accept(parsenode_visitor& v) const
 void TypeList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  vector<rchandle<SequenceType> >::const_iterator it = theTypes.begin();
-  for (; it!=theTypes.end(); ++it) {
+  std::vector<rchandle<SequenceType> >::const_iterator it = theTypes.begin();
+  for (; it!=theTypes.end(); ++it) 
+  {
     const parsenode* e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -5635,6 +5663,348 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
   END_VISITOR();
 }
 
+////////// JSON ///////////////////////////////////////////////////////////////
+
+JSONArrayConstructor::JSONArrayConstructor(
+    const QueryLoc& loc,
+    const exprnode* expr)
+  :
+  exprnode(loc),
+  expr_(expr)
+{
+}
+
+
+JSONArrayConstructor::~JSONArrayConstructor()
+{
+  delete expr_;
+}
+
+
+void JSONArrayConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(expr_);
+  END_VISITOR();
+}
+
+
+JSONObjectConstructor::JSONObjectConstructor(
+    const QueryLoc& loc,
+    const exprnode* expr,
+    bool accumulate)
+  :
+  exprnode(loc),
+  expr_(expr),
+  theAccumulate(accumulate)
+{
+}
+
+
+JSONObjectConstructor::~JSONObjectConstructor()
+{
+  delete expr_;
+}
+
+
+void JSONObjectConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(expr_);
+  END_VISITOR();
+}
+
+
+JSONDirectObjectConstructor::JSONDirectObjectConstructor(
+    const QueryLoc& loc,
+    const JSONPairList* pairs)
+  :
+  exprnode(loc),
+  thePairs(pairs)
+{
+}
+
+
+JSONDirectObjectConstructor::~JSONDirectObjectConstructor()
+{
+  delete thePairs;
+}
+
+
+csize JSONDirectObjectConstructor::numPairs() const 
+{
+  return thePairs->size();
+}
+
+
+void JSONDirectObjectConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(thePairs);
+  END_VISITOR();
+}
+
+
+void JSONPairList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+
+  std::vector<rchandle<JSONPairConstructor> >::const_iterator it = thePairs.begin();
+
+  for (; it != thePairs.end(); ++it)
+  {
+    const parsenode* e_p = &**it;
+    ACCEPT_CHK(e_p);
+  }
+
+  END_VISITOR();
+}
+
+
+JSONPairConstructor::JSONPairConstructor(
+    const QueryLoc& loc,
+    const exprnode* expr1,
+    const exprnode* expr2)
+  :
+  parsenode(loc),
+  expr1_(expr1),
+  expr2_(expr2)
+{
+}
+
+
+JSONPairConstructor::~JSONPairConstructor()
+{
+  delete expr1_;
+  delete expr2_;
+}
+
+
+void JSONPairConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( expr2_ );
+  ACCEPT( expr1_ );
+  END_VISITOR();
+}
+
+
+JSON_Test::JSON_Test(
+    const QueryLoc& loc,
+    store::StoreConsts::JSONItemKind k)
+  :
+  parsenode(loc),
+  jt_(k)
+{
+}
+
+
+void JSON_Test::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONObjectInsertExpr::JSONObjectInsertExpr(
+    const QueryLoc& loc,
+    const JSONPairList* pairs,
+    const exprnode* targetExpr)
+  :
+  exprnode(loc),
+  thePairs(pairs),
+  theTargetExpr(targetExpr)
+{
+}
+
+
+JSONObjectInsertExpr::~JSONObjectInsertExpr()
+{
+  delete thePairs;
+  delete theTargetExpr;
+}
+
+
+void JSONObjectInsertExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(thePairs);
+  ACCEPT(theTargetExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONArrayInsertExpr::JSONArrayInsertExpr(
+    const QueryLoc& loc,
+    exprnode* valueExpr,
+    exprnode* targetExpr,
+    exprnode* posExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  thePositionExpr(posExpr),
+  theValueExpr(valueExpr)
+{
+}
+
+
+JSONArrayInsertExpr::~JSONArrayInsertExpr()
+{
+  delete theValueExpr;
+  delete theTargetExpr;
+  delete thePositionExpr;
+}
+
+
+void JSONArrayInsertExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theValueExpr);
+  ACCEPT(theTargetExpr);
+  ACCEPT(thePositionExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONArrayAppendExpr::JSONArrayAppendExpr(
+    const QueryLoc& loc,
+    exprnode* valueExpr,
+    exprnode* targetExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theValueExpr(valueExpr)
+{
+}
+
+
+JSONArrayAppendExpr::~JSONArrayAppendExpr()
+{
+  delete theValueExpr;
+  delete theTargetExpr;
+}
+
+
+void JSONArrayAppendExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theValueExpr);
+  ACCEPT(theTargetExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONDeleteExpr::JSONDeleteExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* selectorExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theSelectorExpr(selectorExpr)
+{
+}
+
+
+JSONDeleteExpr::~JSONDeleteExpr()
+{
+  delete theTargetExpr;
+  delete theSelectorExpr;
+}
+
+
+void JSONDeleteExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theTargetExpr);
+  ACCEPT(theSelectorExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONReplaceExpr::JSONReplaceExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* selectorExpr,
+    exprnode* valueExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theSelectorExpr(selectorExpr),
+  theValueExpr(valueExpr)
+{
+}
+
+
+JSONReplaceExpr::~JSONReplaceExpr()
+{
+  delete theTargetExpr;
+  delete theSelectorExpr;
+  delete theValueExpr;
+}
+
+
+void JSONReplaceExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theTargetExpr);
+  ACCEPT(theSelectorExpr);
+  ACCEPT(theValueExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONRenameExpr::JSONRenameExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* nameExpr,
+    exprnode* newNameExpr)
+  :
+  exprnode(loc),
+  theTargetExpr(targetExpr),
+  theNameExpr(nameExpr),
+  theNewNameExpr(newNameExpr)
+{
+}
+
+
+JSONRenameExpr::~JSONRenameExpr()
+{
+  delete theTargetExpr;
+  delete theNameExpr;
+  delete theNewNameExpr;
+}
+
+
+void JSONRenameExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theTargetExpr);
+  ACCEPT(theNameExpr);
+  ACCEPT(theNewNameExpr);
+  END_VISITOR();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
