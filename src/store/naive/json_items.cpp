@@ -94,7 +94,7 @@ JSONObject::getType() const
   return GET_STORE().JDM_OBJECT_QNAME;
 }
 
-void setJSONRoot(const store::Item_t& aJSONItem, const store::Item* aRoot)
+void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot)
 {
     SimpleJSONObject* lObject =
         dynamic_cast<SimpleJSONObject*>(aJSONItem.getp());
@@ -126,7 +126,11 @@ SimpleJSONObject::~SimpleJSONObject()
        lIter != thePairs.end();
        ++lIter)
   {
-    setJSONRoot(lIter->second, lIter->second.getp());
+    if (lIter->second->isJSONItem()) {
+      JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lIter->second.getp());
+      ZORBA_ASSERT(lJSONItem != NULL);
+      setJSONRoot(lIter->second, lJSONItem);
+    }
   }
   thePairs.clear();
 #ifndef NDEBUG
@@ -271,7 +275,11 @@ SimpleJSONObject::remove(const zstring& aName)
   }
   
   store::Item_t lRes = lIter->second;
-  setJSONRoot(lRes, lRes.getp());
+  if (lRes->isJSONItem()) {
+    JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lRes.getp());
+    ZORBA_ASSERT(lJSONItem != NULL);
+    setJSONRoot(lRes, lJSONItem);
+  }
   thePairs.erase(aName);
 
 #ifndef NDEBUG
@@ -300,7 +308,11 @@ store::Item_t SimpleJSONObject::setValue(
   }
 
   store::Item_t lRes = lIter->second;
-  setJSONRoot(lRes, lRes.getp());
+  if (lRes->isJSONItem()) {
+    JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lRes.getp());
+    ZORBA_ASSERT(lJSONItem != NULL);
+    setJSONRoot(lRes, lJSONItem);
+  }
   setJSONRoot(aValue, theRoot);
   lIter->second = aValue;
 #ifndef NDEBUG
@@ -335,7 +347,11 @@ bool SimpleJSONObject::rename(
     return false;
   }
   store::Item_t lValue = lIter->second;
-  setJSONRoot(lValue, lValue.getp());
+  if (lValue->isJSONItem()) {
+    JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lValue.getp());
+    ZORBA_ASSERT(lJSONItem != NULL);
+    setJSONRoot(lValue, lJSONItem);
+  }
   thePairs.erase(aName);
   
   thePairs.insert(make_pair(aNewName, lValue));
@@ -349,7 +365,7 @@ bool SimpleJSONObject::rename(
 /******************************************************************************
 
 *******************************************************************************/
-void SimpleJSONObject::setRoot(const store::Item* aRoot)
+void SimpleJSONObject::setRoot(const JSONItem* aRoot)
 {
   theRoot = aRoot;
   for (Pairs::const_iterator lIter = thePairs.begin();
@@ -461,13 +477,14 @@ SimpleJSONObject::getObjectKeys() const
 void SimpleJSONObject::assertInvariant() const
 {
   ZORBA_ASSERT(theRoot != NULL);
-  ZORBA_ASSERT(isThisRootOfAllDescendants(theRoot));
   const SimpleJSONObject* lObject = dynamic_cast<const SimpleJSONObject*>(theRoot);
   const SimpleJSONArray* lArray = dynamic_cast<const SimpleJSONArray*>(theRoot);
   ZORBA_ASSERT(lObject != NULL || lArray != NULL);
   if (lObject != NULL) {
+    ZORBA_ASSERT(lObject->isThisRootOfAllDescendants(theRoot));
     ZORBA_ASSERT(lObject->isThisJSONItemInDescendance(this));
   } else {
+    ZORBA_ASSERT(lArray->isThisRootOfAllDescendants(theRoot));
     ZORBA_ASSERT(lArray->isThisJSONItemInDescendance(this));
   }
 }
@@ -621,7 +638,11 @@ SimpleJSONArray::~SimpleJSONArray()
        lIter != theContent.end();
        ++lIter)
   {
-    setJSONRoot(*lIter, lIter->getp());
+    if ((*lIter)->isJSONItem()) {
+      JSONItem* lJSONItem = dynamic_cast<JSONItem*>((*lIter).getp());
+      ZORBA_ASSERT(lJSONItem != NULL);
+      setJSONRoot(*lIter, lJSONItem);
+    }
   }
 }
 
@@ -772,7 +793,11 @@ SimpleJSONArray::remove(const xs_integer& aPos)
   assertInvariant();
 #endif
   store::Item_t lItem = getArrayValue(aPos);
-  setJSONRoot(lItem, lItem.getp());
+  if (lItem->isJSONItem()) {
+    JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lItem.getp());
+    ZORBA_ASSERT(lJSONItem != NULL);
+    setJSONRoot(lItem, lJSONItem);
+  }
   uint64_t lPosStartingZero = cast(aPos) - 1;
   theContent.erase(theContent.begin() + lPosStartingZero);
 
@@ -793,7 +818,11 @@ SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
   assertInvariant();
 #endif
   store::Item_t lItem = getArrayValue(aPos);
-  setJSONRoot(lItem, lItem.getp());
+  if (lItem->isJSONItem()) {
+    JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lItem.getp());
+    ZORBA_ASSERT(lJSONItem != NULL);
+    setJSONRoot(lItem, lJSONItem);
+  }
   uint64_t pos = cast(aPos) - 1;
   setJSONRoot(value, theRoot);
   theContent[pos] = value;
@@ -808,7 +837,7 @@ SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
 /******************************************************************************
 
 *******************************************************************************/
-void SimpleJSONArray::setRoot(const store::Item* aRoot)
+void SimpleJSONArray::setRoot(const JSONItem* aRoot)
 {
   theRoot = aRoot;
   for (Members::const_iterator lIter = theContent.begin();
@@ -1016,13 +1045,14 @@ SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 void SimpleJSONArray::assertInvariant() const
 {
   ZORBA_ASSERT(theRoot != NULL);
-  ZORBA_ASSERT(isThisRootOfAllDescendants(theRoot));
   const SimpleJSONObject* lObject = dynamic_cast<const SimpleJSONObject*>(theRoot);
   const SimpleJSONArray* lArray = dynamic_cast<const SimpleJSONArray*>(theRoot);
   ZORBA_ASSERT(lObject != NULL || lArray != NULL);
   if (lObject != NULL) {
+    ZORBA_ASSERT(lObject->isThisRootOfAllDescendants(theRoot));
     ZORBA_ASSERT(lObject->isThisJSONItemInDescendance(this));
   } else {
+    ZORBA_ASSERT(lArray->isThisRootOfAllDescendants(theRoot));
     ZORBA_ASSERT(lArray->isThisJSONItemInDescendance(this));
   }
 }

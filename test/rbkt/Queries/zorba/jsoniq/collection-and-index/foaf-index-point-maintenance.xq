@@ -1,6 +1,6 @@
 
 import module namespace foaf = "http://www.w3.org/TestModules/foaf" at
-                                   "foaf_module-no-index.xqlib";
+                                   "foaf_module-with-index-no-general.xqlib";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
@@ -22,6 +22,14 @@ dml:insert($foaf:network,
     }
 );
 
-replace json value of dml:collection($foaf:network)[.("name") eq "Mister Spock"]("name") with "Mister Spock";
+(replace json value of dml:collection($foaf:network)[.("name") eq "Beverly Crusher"]("name") with "Beverly Picard",
 
-dml:collection($foaf:network)
+for $person in dml:collection($foaf:network)
+let $friends := $person("friends")
+for $i in 1 to jn:size($friends)
+where $friends($i) eq "Beverly Crusher"
+return
+replace json value of $friends($i) with "Beverly Picard")
+;
+
+foaf:probe-point-id($foaf:person, "Beverly Picard")

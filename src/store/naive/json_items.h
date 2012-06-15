@@ -104,7 +104,7 @@ public:
     return this == other;
   }
   
-  const store::Item* getRoot();
+  virtual const JSONItem* getRoot() = 0;
 };
 
 
@@ -233,14 +233,15 @@ public:
   void setCollection(SimpleCollection* collection, xs_integer pos);
   
 protected:
-  friend void setJSONRoot(const store::Item_t& aJSONItem, const store::Item* aRoot);
-  void setRoot(const store::Item* aRoot);
+  friend void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot);
+  void setRoot(const JSONItem* aRoot);
+  const JSONItem* getRoot() { return theRoot; }
   
 protected:
 
   Pairs thePairs;
   SimpleCollection* theCollection;
-  const store::Item* theRoot;
+  const JSONItem* theRoot;
   
 /* Invariant handling */
 protected:
@@ -394,8 +395,9 @@ public:
   void setCollection(SimpleCollection* collection, xs_integer pos);
 
 protected:
-  friend void setJSONRoot(const store::Item_t& aJSONItem, const store::Item* aRoot);
-  void setRoot(const store::Item* aRoot);
+  friend void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot);
+  void setRoot(const JSONItem* aRoot);
+  const JSONItem* getRoot() { return theRoot; }
   
 protected:
   void
@@ -407,7 +409,7 @@ protected:
 protected:
   Members            theContent;
   SimpleCollection * theCollection;
-  const store::Item* theRoot;
+  const JSONItem* theRoot;
 
 /* Invariant handling */
 protected:
@@ -417,7 +419,7 @@ protected:
   bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
 };
 
-void setJSONRoot(const store::Item_t& aJSONItem, const store::Item* aRoot);
+void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot);
 
 } // namespace json
 } // namespace simplestore

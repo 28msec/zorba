@@ -193,9 +193,9 @@ protected:
   std::vector<UpdatePrimitive*>      theRevalidateList;
 
   // Index Maintenance
-  std::set<XmlNode*>                 theModifiedDocs;
-  std::vector<XmlNode*>              theInsertedDocs;
-  std::vector<XmlNode*>              theDeletedDocs;
+  std::set<store::Item*>             theModifiedDocs;
+  std::vector<store::Item*>          theInsertedDocs;
+  std::vector<store::Item*>          theDeletedDocs;
 
   std::vector<IndexImpl*>            theIncrementalIndices;
   std::vector<IndexImpl*>            theTruncatedIndices;

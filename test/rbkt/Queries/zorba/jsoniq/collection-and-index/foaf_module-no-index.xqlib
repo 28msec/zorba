@@ -23,17 +23,31 @@ declare %ann:sequential function foaf:create-db()
 
   dml:insert($foaf:network, (
     {
-      "name" : "Sarah",
-      "age" : 13,
-      "gender" : "female",
-      "friends" : [ "Jim", "Mary", "Jennifer"]
+      "name" : "James T. Kirk",
+      "age" : 30,
+      "gender" : "male",
+      "friends" : [ "Mister Spock", "Scotty", "Jean-Luc Picard"]
     },
     
     {
-      "name" : "Jim",
-      "age" : 13,
+      "name" : "Jean-Luc Picard",
+      "age" : 40,
       "gender" : "male",
-      "friends" : [ "Sarah" ]
+      "friends" : [ "James T. Kirk", "Lieutenant Commander Data", "Beverly Crusher" ]
+    },
+    
+    {
+      "name" : "Beverly Crusher",
+      "age" : 38,
+      "gender" : "female",
+      "friends" : [ "Jean-Luc Picard", "Ensign Crusher" ]
+    },
+    
+    {
+      "name" : "Lieutenant Commander Data",
+      "age" : 100,
+      "gender" : "positronic matrix",
+      "friends" : [ "Geordi La Forge" ]
     }
   ));
 

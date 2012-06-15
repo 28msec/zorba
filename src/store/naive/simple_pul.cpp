@@ -2234,8 +2234,22 @@ void PULImpl::getIndicesToRefresh(
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
     for (; ite != end; ++ite)
     {
-      XmlNode* node = static_cast<XmlNode*>((*ite).first);
+      store::Item* lItem = (*ite).first;
+#ifdef ZORBA_WITH_JSON
+      ZORBA_ASSERT(lItem->isNode() || lItem->isJSONItem());
+      if(lItem->isJSONItem())
+      {
+        json::JSONItem* lJSONItem = dynamic_cast<json::JSONItem*>(lItem);
+        ZORBA_ASSERT(lJSONItem != NULL);
+        pul->theModifiedDocs.insert(const_cast<json::JSONItem*>(lJSONItem->getRoot()));
+        continue;
+      }
+#endif
+      ZORBA_ASSERT(lItem->isNode());
+      XmlNode* node = dynamic_cast<XmlNode*>((*ite).first);
+      ZORBA_ASSERT(node != NULL);
       pul->theModifiedDocs.insert(node->getRoot());
+      continue;
     }
 
     csize numCollUpdates = pul->theInsertIntoCollectionList.size();
@@ -2248,7 +2262,7 @@ void PULImpl::getIndicesToRefresh(
       csize numDocs = upd->numNodes();
 
       for (csize j = 0; j < numDocs; ++j)
-        pul->theInsertedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
+        pul->theInsertedDocs.push_back(upd->getNode(j));
     }
 
     numCollUpdates = pul->theDeleteFromCollectionList.size();
@@ -2261,7 +2275,7 @@ void PULImpl::getIndicesToRefresh(
       csize numDocs = upd->numNodes();
 
       for (csize j = 0; j < numDocs; ++j)
-        pul->theDeletedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
+        pul->theDeletedDocs.push_back(upd->getNode(j));
     }
   }
 
@@ -2616,8 +2630,8 @@ void CollectionPul::computeIndexBeforeDeltas()
   if (numIncrementalIndices == 0)
     return;
 
-  std::vector<XmlNode*>::const_iterator docIte = theDeletedDocs.begin();
-  std::vector<XmlNode*>::const_iterator docEnd = theDeletedDocs.end();
+  std::vector<store::Item*>::const_iterator docIte = theDeletedDocs.begin();
+  std::vector<store::Item*>::const_iterator docEnd = theDeletedDocs.end();
 
   for (; docIte != docEnd; ++docIte)
   {
@@ -2650,8 +2664,8 @@ void CollectionPul::computeIndexAfterDeltas()
 
   computeIndexDeltas(theAfterIndexDeltas);
 
-  std::vector<XmlNode*>::const_iterator docIte = theInsertedDocs.begin();
-  std::vector<XmlNode*>::const_iterator docEnd = theInsertedDocs.end();
+  std::vector<store::Item*>::const_iterator docIte = theInsertedDocs.begin();
+  std::vector<store::Item*>::const_iterator docEnd = theInsertedDocs.end();
 
   for (; docIte != docEnd; ++docIte)
   {
@@ -2675,8 +2689,8 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 {
   csize numIncrementalIndices = theIncrementalIndices.size();
 
-  std::set<XmlNode*>::const_iterator docIte = theModifiedDocs.begin();
-  std::set<XmlNode*>::const_iterator docEnd = theModifiedDocs.end();
+  std::set<store::Item*>::const_iterator docIte = theModifiedDocs.begin();
+  std::set<store::Item*>::const_iterator docEnd = theModifiedDocs.end();
 
   for (; docIte != docEnd; ++docIte)
   {
