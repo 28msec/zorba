@@ -160,7 +160,7 @@ for_clause::for_clause(
     xqtref_t declaredType = varExpr->get_type();
     if (declaredType != NULL)
     {
-      if (TypeOps::is_empty(tm, *declaredType))
+      if (declaredType->is_empty())
       {
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(BadType_23o), "empty-sequence"));

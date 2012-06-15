@@ -41,25 +41,6 @@ declare option ver:module-version "2.0";
 
 
 (:~
- : The function returns true if a collection with the given QName is available.
- :
- : @param $name The QName of the collection that is being checked.
- :
- : @return true if the collection is available and false otherwise.
- :
- :)
-declare function ddl:is-available-collection($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames of the collections that are
- : available. The sequence will be empty if there are no collections.
- :
- : @return A sequence of QNames, one for each available collection, or an emtpy sequence.
- :
- :)
-declare function ddl:available-collections() as xs:QName* external;
-
-(:~
  : The create function is an updating function which creates
  : the collection with the given expanded QName.
  :
@@ -75,17 +56,19 @@ declare function ddl:available-collections() as xs:QName* external;
  :)
 declare updating function ddl:create($name as xs:QName) external;
 
+
 (:~
  : The create function is an updating function which creates
  : the collection with the given expanded QName. Moreover, it adds copies
  : of the sequence $content to the new collection.
  :
  : @param $name The QName of the collection to create.
- : @param $content The sequences of nodes that should be added to the new collection.
+ : @param $content The sequences of items (nodes and/or json items) that should
+ :        be added to the new collection.
  :
  : @return The result of the function is an empty XDM instance and a 
  :         pending update list which, once applied, creates a collection
- :         with the given name and inserts the given nodes into it.
+ :         with the given name and inserts the given items into it.
  :
  : @error zerr:ZDDY0002 if a collection with the given expanded QName already
  :        exists.
@@ -94,9 +77,7 @@ declare updating function ddl:create($name as xs:QName) external;
  : @see ddl:insert-nodes-last
  :
  :)
-declare updating function ddl:create(
-  $name as xs:QName,
-  $content as node()*) external;
+declare updating function ddl:create($name as xs:QName, $content as item()*) external;
 
 
 (:~
@@ -110,8 +91,29 @@ declare updating function ddl:create(
  :         name.
  :
  : @error zerr:ZDDY0003 if the collection with the given name does not exist.
- : @error zerr:ZDDY0015 if any of the in-scope variables references a node that
+ : @error zerr:ZDDY0015 if any of the in-scope variables references an item that
  :        belongs to the collection with QName $name.
  :
  :)
 declare updating function ddl:delete($coll as xs:QName) external;
+
+
+(:~
+ : The function returns true if a collection with the given QName is available.
+ :
+ : @param $name The QName of the collection that is being checked.
+ :
+ : @return true if the collection is available and false otherwise.
+ :
+ :)
+declare function ddl:is-available-collection($name as xs:QName) as xs:boolean external;
+
+
+(:~
+ : The function returns a sequence of QNames of the collections that are
+ : available. The sequence will be empty if there are no collections.
+ :
+ : @return A sequence of QNames, one for each available collection, or an emtpy sequence.
+ :
+ :)
+declare function ddl:available-collections() as xs:QName* external;

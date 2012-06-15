@@ -553,15 +553,13 @@ static void remove_wincond_vars(
 
 RULE_REWRITE_PRE(FoldConst)
 {
-  TypeManager* tm = node->get_type_manager();
-
   xqtref_t rtype = node->get_return_type();
 
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
       node->getFreeVars().empty() &&
       ! node->isUnfoldable() &&
-      TypeOps::type_max_cnt(tm, *rtype) <= 1)
+      rtype->max_card() <= 1)
   {
     vector<store::Item_t> result;
     expr_t folded = execute(rCtx.getCompilerCB(), node, result);
@@ -746,8 +744,8 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     if (!arg->isNonDiscardable())
     {
       xqtref_t argType = arg->get_return_type();
-      TypeConstants::quantifier_t argQuant = TypeOps::quantifier(*argType);
-      int type_cnt = TypeOps::type_cnt(tm, *argType);
+      TypeConstants::quantifier_t argQuant = argType->get_quantifier();
+      int type_cnt = argType->card();
 
       if (fkind == FunctionConsts::FN_COUNT_1 && type_cnt != -1)
       {
@@ -978,13 +976,11 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 ********************************************************************************/
 static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
 {
-  TypeManager* tm = flworExpr->get_type_manager();
-
   expr* returnExpr = flworExpr->get_return_expr();
 
   if (returnExpr->get_expr_kind() == const_expr_kind ||
       (!returnExpr->isNonDiscardable() &&
-       TypeOps::type_cnt(tm, *(returnExpr->get_return_type())) == 1))
+       returnExpr->get_return_type()->card() == 1))
   {
     if (flworExpr->num_clauses() == 1)
     {

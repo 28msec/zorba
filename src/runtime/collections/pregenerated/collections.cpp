@@ -33,6 +33,96 @@
 
 namespace zorba {
 
+// <ZorbaCreateCollectionIterator>
+ZorbaCreateCollectionIterator::class_factory<ZorbaCreateCollectionIterator>
+ZorbaCreateCollectionIterator::g_class_factory;
+
+
+void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
+
+// </ZorbaCreateCollectionIterator>
+
+
+// <ZorbaDeleteCollectionIterator>
+ZorbaDeleteCollectionIterator::class_factory<ZorbaDeleteCollectionIterator>
+ZorbaDeleteCollectionIterator::g_class_factory;
+
+
+void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
+
+// </ZorbaDeleteCollectionIterator>
+
+
+// <IsAvailableCollectionIterator>
+IsAvailableCollectionIterator::class_factory<IsAvailableCollectionIterator>
+IsAvailableCollectionIterator::g_class_factory;
+
+
+void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
+
+// </IsAvailableCollectionIterator>
+
+
+// <AvailableCollectionsIterator>
+AvailableCollectionsIterator::class_factory<AvailableCollectionsIterator>
+AvailableCollectionsIterator::g_class_factory;
+
+
+void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
+
+AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
+
+// </AvailableCollectionsIterator>
+
+
 // <FnCollectionIterator>
 FnCollectionIterator::class_factory<FnCollectionIterator>
 FnCollectionIterator::g_class_factory;
@@ -81,6 +171,28 @@ ZorbaCollectionIteratorState::ZorbaCollectionIteratorState() {}
 // </ZorbaCollectionIterator>
 
 
+// <ZorbaCollectionNameIterator>
+ZorbaCollectionNameIterator::class_factory<ZorbaCollectionNameIterator>
+ZorbaCollectionNameIterator::g_class_factory;
+
+
+void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
+
+// </ZorbaCollectionNameIterator>
+
+
 // <ZorbaIndexOfIterator>
 ZorbaIndexOfIterator::class_factory<ZorbaIndexOfIterator>
 ZorbaIndexOfIterator::g_class_factory;
@@ -101,50 +213,6 @@ void ZorbaIndexOfIterator::accept(PlanIterVisitor& v) const {
 ZorbaIndexOfIterator::~ZorbaIndexOfIterator() {}
 
 // </ZorbaIndexOfIterator>
-
-
-// <ZorbaCreateCollectionIterator>
-ZorbaCreateCollectionIterator::class_factory<ZorbaCreateCollectionIterator>
-ZorbaCreateCollectionIterator::g_class_factory;
-
-
-void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
-
-// </ZorbaCreateCollectionIterator>
-
-
-// <ZorbaDeleteCollectionIterator>
-ZorbaDeleteCollectionIterator::class_factory<ZorbaDeleteCollectionIterator>
-ZorbaDeleteCollectionIterator::g_class_factory;
-
-
-void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
-
-// </ZorbaDeleteCollectionIterator>
 
 
 // <ZorbaInsertNodesIterator>
@@ -463,74 +531,6 @@ void ZorbaTruncateCollectionIterator::accept(PlanIterVisitor& v) const {
 ZorbaTruncateCollectionIterator::~ZorbaTruncateCollectionIterator() {}
 
 // </ZorbaTruncateCollectionIterator>
-
-
-// <ZorbaCollectionNameIterator>
-ZorbaCollectionNameIterator::class_factory<ZorbaCollectionNameIterator>
-ZorbaCollectionNameIterator::g_class_factory;
-
-
-void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
-
-// </ZorbaCollectionNameIterator>
-
-
-// <IsAvailableCollectionIterator>
-IsAvailableCollectionIterator::class_factory<IsAvailableCollectionIterator>
-IsAvailableCollectionIterator::g_class_factory;
-
-
-void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
-
-// </IsAvailableCollectionIterator>
-
-
-// <AvailableCollectionsIterator>
-AvailableCollectionsIterator::class_factory<AvailableCollectionsIterator>
-AvailableCollectionsIterator::g_class_factory;
-
-
-void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
-
-AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
-
-// </AvailableCollectionsIterator>
 
 
 // <IsAvailableIndexIterator>

@@ -87,6 +87,7 @@ const ulong Store::DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE = 32;
 const char* Store::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* Store::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 const char* Store::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
+const char* Store::JDM_URI = "http://www.jsoniq.org/";
 
 const ulong Store::XML_URI_LEN = sizeof(Store::XML_URI);
 
@@ -187,6 +188,12 @@ void Store::initTypeNames()
   BasicItemFactory* f = static_cast<BasicItemFactory*>(theItemFactory);
 
   theSchemaTypeNames.resize(store::XS_LAST);
+
+#ifdef ZORBA_WITH_JSON
+  f->createQName(JDM_NULL_QNAME, JDM_URI, "jdm", "null");
+  f->createQName(JDM_OBJECT_QNAME, JDM_URI, "jdm", "object");
+  f->createQName(JDM_ARRAY_QNAME, JDM_URI, "jdm", "array");
+#endif
 
   f->createQName(XS_UNTYPED_QNAME, ns, "xs", "untyped");
 
@@ -329,6 +336,12 @@ void Store::shutdown(bool soft)
       XS_ANY_QNAME = NULL;
       XS_ANY_SIMPLE_QNAME = NULL;
 
+#ifdef ZORBA_WITH_JSON
+      JDM_OBJECT_QNAME = NULL;
+      JDM_ARRAY_QNAME = NULL;
+      JDM_NULL_QNAME = NULL;
+#endif
+
       delete theQNamePool;
       theQNamePool = NULL;
     }
@@ -424,16 +437,16 @@ void Store::addCollection(store::Collection_t& collection)
   that QName, this method is a NOOP.
 ********************************************************************************/
 void Store::deleteCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
+    const store::Item* name,
+    bool isDynamic)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return;
 
-  if (!theCollections->remove(aName, aDynamicCollection))
+  if (!theCollections->remove(name, isDynamic))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
-    ERROR_PARAMS(aName->getStringValue()));
+    ERROR_PARAMS(name->getStringValue()));
   }
 }
 
@@ -443,14 +456,14 @@ void Store::deleteCollection(
   or NULL if there is no collection with that QName.
 ********************************************************************************/
 store::Collection_t Store::getCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
+    const store::Item* name,
+    bool isDynamic)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  if (theCollections->get(name, collection, isDynamic)) 
   {
     return collection;
   }
@@ -464,9 +477,9 @@ store::Collection_t Store::getCollection(
 /*******************************************************************************
   Returns an iterator that lists the QName's of all the available collections.
 ********************************************************************************/
-store::Iterator_t Store::listCollectionNames(bool aDynamicCollections)
+store::Iterator_t Store::listCollectionNames(bool dynamic)
 {
-  return theCollections->names(aDynamicCollections);
+  return theCollections->names(dynamic);
 }
 
 
@@ -772,7 +785,7 @@ store::Index* Store::getIndex(const store::Item* qname)
 ********************************************************************************/
 store::Iterator_t Store::listIndexNames()
 {
-  return new NameIterator<IndexSet>(theIndices);
+  return new NameIterator<IndexSet>(theIndices, false);
 }
 
 
@@ -799,7 +812,7 @@ store::IC_t Store::activateIC(
 
   theICs.insert(qname, ic);
 
-  isApplied=true;
+  isApplied = true;
   return ic;
 }
 
@@ -837,8 +850,7 @@ store::IC_t Store::activateForeignKeyIC(
 
 ********************************************************************************/
 store::IC_t
-Store::deactivateIC(const store::Item_t& icQName,
-    bool& isApplied)
+Store::deactivateIC(const store::Item_t& icQName, bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -860,7 +872,7 @@ Store::deactivateIC(const store::Item_t& icQName,
 ********************************************************************************/
 store::Iterator_t Store::listActiveICNames()
 {
-  return new NameIterator<ICSet>(theICs);
+  return new NameIterator<ICSet>(theICs, false);
 }
 
 
@@ -973,7 +985,7 @@ Store::addHashMap(const store::Index_t& aIndex)
 ********************************************************************************/
 store::Iterator_t Store::listMapNames()
 {
-  return new NameIterator<IndexSet>(theHashMaps);
+  return new NameIterator<IndexSet>(theHashMaps, false);
 }
 
 

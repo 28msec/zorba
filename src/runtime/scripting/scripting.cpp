@@ -22,8 +22,11 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/flowctl_exception.h"
+#include "store/api/item_factory.h"
+#include "store/api/copymode.h"
 
 #include "system/globalenv.h"
+#include "diagnostics/util_macros.h"
 
 
 namespace zorba 

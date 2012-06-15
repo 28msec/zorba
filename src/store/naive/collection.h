@@ -37,7 +37,8 @@ public:
   /***************************** Constructors *********************************/
 
   Collection(const store::Item_t& aName)
-    : theName(aName)
+    : 
+    theName(aName)
   {
   }
 
