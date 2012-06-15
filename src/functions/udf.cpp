@@ -106,25 +106,6 @@ user_function::~user_function()
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::prepare_for_serialize(CompilerCB* compilerCB)
-{
-  uint32_t planStateSize;
-  getPlan(compilerCB, planStateSize);
-
-  std::vector<user_function*>::iterator udf_it;
-  for(udf_it = theMutuallyRecursiveUDFs.begin();
-      udf_it != theMutuallyRecursiveUDFs.end();
-      ++udf_it)
-  {
-    if ((*udf_it)->thePlan == NULL)
-      (*udf_it)->prepare_for_serialize(compilerCB);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
   if (ar.is_serializing_out())

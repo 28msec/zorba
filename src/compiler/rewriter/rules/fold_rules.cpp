@@ -407,7 +407,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
   if (node->get_expr_kind() == var_expr_kind)
   {
-    var_expr_t v = dynamic_cast<var_expr *>(node);
+    var_expr_t v = static_cast<var_expr *>(node);
     freevars.insert(v);
   }
   else

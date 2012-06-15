@@ -7,10 +7,10 @@ for sliding window $w in $seq/stream/event
     $e/direction eq "out"
 let $person := $s/person
 let $workingTime := xs:dateTime($e/@time) - xs:dateTime($s/@time)
-group by $person
+group by $person2 := $person
 return
   <working-time>
-    {$person}
+    {$person[1]}
     <time>{ sum($workingTime) }</time>
   </working-time>
 }</result>

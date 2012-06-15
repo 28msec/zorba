@@ -550,6 +550,7 @@ void Store::populateValueIndex(
         ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
+      // If the index took ownership of the last allocated key, allocate a new one.
       if (key2 == key)
         key = new store::IndexKey(numColumns);
 

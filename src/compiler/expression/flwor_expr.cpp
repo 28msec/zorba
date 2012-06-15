@@ -114,8 +114,10 @@ for_clause::for_clause(
     if (declaredType != NULL)
     {
       if (TypeOps::is_empty(tm, *declaredType))
+      {
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(BadType_23o), "empty-sequence"));
+      }
 
       xqtref_t domainType = domainExpr->get_return_type();
 
@@ -135,7 +137,11 @@ for_clause::for_clause(
                          *declaredType));
           }
 
-          domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
+          domainExpr = new treat_expr(sctx,
+                                      loc,
+                                      domainExpr,
+                                      declaredType,
+                                      TreatIterator::TYPE_MATCH);
 
           set_expr(domainExpr);
         }
@@ -253,7 +259,11 @@ let_clause::let_clause(
           ERROR_PARAMS(ZED(BadType_23o), *domainType, ZED(NoTreatAs_4), *declaredType));
         }
 
-        domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
+        domainExpr = new treat_expr(sctx,
+                                    loc,
+                                    domainExpr,
+                                    declaredType,
+                                    TreatIterator::TYPE_MATCH);
 
         set_expr(domainExpr);
       }
@@ -343,7 +353,11 @@ window_clause::window_clause(
       if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
           !TypeOps::is_subtype(tm, *domainType, *varType, loc))
       {
-        domainExpr = new treat_expr(sctx, loc, domainExpr, varType, err::XPTY0004);
+        domainExpr = new treat_expr(sctx,
+                                    loc,
+                                    domainExpr,
+                                    varType,
+                                    TreatIterator::TYPE_MATCH);
 
         set_expr(domainExpr);
       }

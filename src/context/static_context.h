@@ -827,9 +827,15 @@ public:
 
   void unbind_fn(const store::Item* qname, ulong arity);
 
-  function* lookup_fn(const store::Item* qname, ulong arity);
+  function* lookup_fn(
+      const store::Item* qname,
+      ulong arity,
+      bool skipDisabled = true);
 
-  function* lookup_local_fn(const store::Item* qname, ulong arity);
+  function* lookup_local_fn(
+      const store::Item* qname,
+      ulong arity,
+      bool skipDisabled = true);
 
   void get_functions(std::vector<function*>& functions) const;
 

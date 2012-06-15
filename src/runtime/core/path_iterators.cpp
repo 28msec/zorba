@@ -435,6 +435,7 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
     if (!result->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -497,6 +498,7 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
       if (!state->theContextNode->isNode())
       {
+        assert(false);
         throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
       }
     }
@@ -558,6 +560,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -602,6 +605,7 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -662,6 +666,7 @@ bool AncestorReverseAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -731,6 +736,7 @@ bool AncestorSelfAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -791,6 +797,7 @@ bool AncestorSelfReverseAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -873,6 +880,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
+        assert(false);
         throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
       }
     }
@@ -945,6 +953,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
+        assert(false);
         throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
       }
     }
@@ -1037,6 +1046,7 @@ bool LSiblingReverseAxisIterator::nextImpl(
 
       if (!state->theContextNode->isNode())
       {
+        assert(false);
         throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
       }
     }
@@ -1125,6 +1135,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       
       if (!state->theContextNode->isNode())
       {
+        assert(false);
         throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
       }
     }
@@ -1237,6 +1248,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       if (!state->theContextNode->isNode())
       {
+        assert(false);
         throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
       }
     }
@@ -1329,6 +1341,7 @@ bool DescendantSelfAxisIterator::nextImpl(
 
       if (!state->theContextNode->isNode())
       {
+        assert(false);
         throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
       }
     }
@@ -1441,6 +1454,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -1662,6 +1676,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
@@ -1840,6 +1855,7 @@ bool FollowingAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
+      assert(false);
       throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 

@@ -713,9 +713,9 @@ bool ProbeIndexPointValueIterator::nextImpl(
     
     STACK_END(state);
   }
-  catch (XQueryException& e)
+  catch (ZorbaException& e)
   {
-    set_source( e,  loc, false );
+    set_source(e,  loc, false);
     throw;
   }
 }
@@ -822,12 +822,10 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
           numChildren != 2)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(
-          qnameItem->getStringValue(),
-          "index",
-          numChildren-1,
-          state->theIndexDecl->getNumKeyExprs())
-        );
+        ERROR_PARAMS(qnameItem->getStringValue(),
+                     "index",
+                     numChildren-1,
+                     state->theIndexDecl->getNumKeyExprs()));
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -877,9 +875,9 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
 
     STACK_END(state);
   }
-  catch (XQueryException& e)
+  catch (ZorbaException& e)
   {
-    set_source( e, loc, false );
+    set_source(e, loc, false);
     throw;
   }
 }
@@ -995,168 +993,176 @@ bool ProbeIndexRangeValueIterator::nextImpl(
   bool status;
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
- 
-  ProbeIndexRangeValueIteratorState* state;
-  DEFAULT_STACK_INIT(ProbeIndexRangeValueIteratorState, state, planState);
 
-  status = consumeNext(qname, theChildren[0], planState);
-  ZORBA_ASSERT(status);
-
-  if (state->theQname == NULL || !state->theQname->equals(qname)) 
+  try
   {
-    state->theQname = qname;
+    ProbeIndexRangeValueIteratorState* state;
+    DEFAULT_STACK_INIT(ProbeIndexRangeValueIteratorState, state, planState);
 
-    if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
+    status = consumeNext(qname, theChildren[0], planState);
+    ZORBA_ASSERT(status);
+
+    if (state->theQname == NULL || !state->theQname->equals(qname)) 
     {
-      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
+      state->theQname = qname;
 
-    if (indexDecl->getMethod() != IndexDecl::TREE)
-    {
-      RAISE_ERROR(zerr::ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
-
-    if (numChildren < 7 || (numChildren-1) % 6 != 0)
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue(),
-                   "index",
-                   numChildren-1,
-                   "multiple of 6"));
-    }
-
-    if (indexDecl->getNumKeyExprs() * 6 < numChildren-1)
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue(),
-                   "index",
-                   numChildren-1,
-                   indexDecl->getNumKeyExprs() * 6));
-    }
-
-    state->theIndex = (indexDecl->isTemp() ?
-                       planState.theLocalDynCtx->getIndex(qname) :
-                       GENV_STORE.getIndex(state->theQname));
-
-    if (state->theIndex == NULL)
-    {
-      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
-
-    state->theIterator = GENV_STORE.getIteratorFactory()->
-                         createIndexProbeIterator(state->theIndex);
-  }
-
-  cond = state->theIndex->createCondition(store::IndexCondition::BOX_VALUE);
-
-  ulong keyNo;
-  ulong i;
-  for (i = 1, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
-  {
-    store::Item_t tempLeft;
-    store::Item_t tempRight;
-    store::Item_t tempHaveLeft;
-    store::Item_t tempHaveRight;
-    store::Item_t tempInclLeft;
-    store::Item_t tempInclRight;
-
-    if (!consumeNext(tempLeft, theChildren[i], planState))
-      tempLeft = NULL;
- 
-    if (!consumeNext(tempRight, theChildren[i + 1], planState))
-      tempRight = NULL;
-
-    if (!consumeNext(tempHaveLeft, theChildren[i + 2], planState))
-      ZORBA_ASSERT(false);
-
-    if (!consumeNext(tempHaveRight, theChildren[i + 3], planState))
-     ZORBA_ASSERT(false);
-
-    if (!consumeNext(tempInclLeft, theChildren[i + 4], planState))
-     ZORBA_ASSERT(false);
- 
-    if (!consumeNext(tempInclRight, theChildren[i + 5], planState))
-     ZORBA_ASSERT(false);
-
-    bool haveLeft = tempHaveLeft->getBooleanValue();
-    bool haveRight = tempHaveRight->getBooleanValue();
-    bool inclLeft = tempInclLeft->getBooleanValue();
-    bool inclRight = tempInclRight->getBooleanValue();
-
-    if (tempLeft != NULL && theCheckKeyType)
-    {
-      checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempLeft);
-    }
-
-    if (tempRight != NULL && theCheckKeyType)
-    {
-      checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempRight);
-    }
-
-    if (indexDecl->isGeneral() &&
-        (indexDecl->getKeyTypes())[keyNo] == NULL)
-    {
-      xqtref_t leftType;
-      xqtref_t rightType;
-
-      if (tempLeft != NULL)
+      if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
       {
-        leftType = tm->create_value_type(tempLeft);
+        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+        ERROR_PARAMS(qname->getStringValue()));
+      }
+
+      if (indexDecl->getMethod() != IndexDecl::TREE)
+      {
+        RAISE_ERROR(zerr::ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
+        ERROR_PARAMS(qname->getStringValue()));
+      }
+
+      if (numChildren < 7 || (numChildren-1) % 6 != 0)
+      {
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS(qname->getStringValue(),
+                     "index",
+                     numChildren-1,
+                     "multiple of 6"));
+      }
+
+      if (indexDecl->getNumKeyExprs() * 6 < numChildren-1)
+      {
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS(qname->getStringValue(),
+                     "index",
+                     numChildren-1,
+                     indexDecl->getNumKeyExprs() * 6));
+      }
+
+      state->theIndex = (indexDecl->isTemp() ?
+                         planState.theLocalDynCtx->getIndex(qname) :
+                         GENV_STORE.getIndex(state->theQname));
+      
+      if (state->theIndex == NULL)
+      {
+        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+        ERROR_PARAMS(qname->getStringValue()));
+      }
+
+      state->theIterator = GENV_STORE.getIteratorFactory()->
+                           createIndexProbeIterator(state->theIndex);
+    }
+
+    cond = state->theIndex->createCondition(store::IndexCondition::BOX_VALUE);
+
+    ulong keyNo;
+    ulong i;
+    for (i = 1, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
+    {
+      store::Item_t tempLeft;
+      store::Item_t tempRight;
+      store::Item_t tempHaveLeft;
+      store::Item_t tempHaveRight;
+      store::Item_t tempInclLeft;
+      store::Item_t tempInclRight;
+
+      if (!consumeNext(tempLeft, theChildren[i], planState))
+        tempLeft = NULL;
+ 
+      if (!consumeNext(tempRight, theChildren[i + 1], planState))
+        tempRight = NULL;
+
+      if (!consumeNext(tempHaveLeft, theChildren[i + 2], planState))
+        ZORBA_ASSERT(false);
+
+      if (!consumeNext(tempHaveRight, theChildren[i + 3], planState))
+        ZORBA_ASSERT(false);
+
+      if (!consumeNext(tempInclLeft, theChildren[i + 4], planState))
+        ZORBA_ASSERT(false);
+ 
+      if (!consumeNext(tempInclRight, theChildren[i + 5], planState))
+        ZORBA_ASSERT(false);
+
+      bool haveLeft = tempHaveLeft->getBooleanValue();
+      bool haveRight = tempHaveRight->getBooleanValue();
+      bool inclLeft = tempInclLeft->getBooleanValue();
+      bool inclRight = tempInclRight->getBooleanValue();
+      
+      if (tempLeft != NULL && theCheckKeyType)
+      {
+        checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempLeft);
+      }
+
+      if (tempRight != NULL && theCheckKeyType)
+      {
+        checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempRight);
+      }
+
+      if (indexDecl->isGeneral() &&
+          (indexDecl->getKeyTypes())[keyNo] == NULL)
+      {
+        xqtref_t leftType;
+        xqtref_t rightType;
+
+        if (tempLeft != NULL)
+        {
+          leftType = tm->create_value_type(tempLeft);
+          
+          if (TypeOps::is_equal(tm, *leftType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+          {
+            zstring str = tempLeft->getStringValue();
+            GENV_ITEMFACTORY->createString(tempLeft, str);
+            leftType = rtm.STRING_TYPE_ONE;
+          }
+        }
         
-        if (TypeOps::is_equal(tm, *leftType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        if (tempRight != NULL)
         {
-          zstring str = tempLeft->getStringValue();
-          GENV_ITEMFACTORY->createString(tempLeft, str);
-          leftType = rtm.STRING_TYPE_ONE;
+          rightType = tm->create_value_type(tempRight);
+          
+          if (TypeOps::is_equal(tm, *rightType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+          {
+            zstring str = tempRight->getStringValue();
+            GENV_ITEMFACTORY->createString(tempRight, str);
+            rightType = rtm.STRING_TYPE_ONE;
+          }
         }
-      }
-
-      if (tempRight != NULL)
-      {
-        rightType = tm->create_value_type(tempRight);
         
-        if (TypeOps::is_equal(tm, *rightType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        if (leftType != NULL && rightType != NULL)
         {
-          zstring str = tempRight->getStringValue();
-          GENV_ITEMFACTORY->createString(tempRight, str);
-          rightType = rtm.STRING_TYPE_ONE;
+          if (!TypeOps::is_subtype(tm, *leftType, *rightType) &&
+              !TypeOps::is_subtype(tm, *rightType, *leftType))
+          {
+            RAISE_ERROR(zerr::ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES, loc,
+            ERROR_PARAMS(qname->getStringValue()));
+          }
         }
       }
-
-      if (leftType != NULL && rightType != NULL)
-      {
-        if (!TypeOps::is_subtype(tm, *leftType, *rightType) &&
-            !TypeOps::is_subtype(tm, *rightType, *leftType))
-        {
-          RAISE_ERROR(zerr::ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES, loc,
-          ERROR_PARAMS(qname->getStringValue()));
-        }
-      }
+      
+      cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
     }
 
-    cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
-  }
-
-  state->theIterator->init(cond);
-  if (!theCountOnly)
-  {
-    state->theIterator->open();
-
-    while(state->theIterator->next(result)) 
+    state->theIterator->init(cond);
+    if (!theCountOnly)
     {
+      state->theIterator->open();
+      
+      while(state->theIterator->next(result)) 
+      {
+        STACK_PUSH(true, state);
+      }
+    }
+    else
+    {
+      state->theIterator->count(result);
       STACK_PUSH(true, state);
     }
+    
+    STACK_END(state);
   }
-  else
+  catch (ZorbaException& e)
   {
-    state->theIterator->count(result);
-    STACK_PUSH(true, state);
+    set_source(e, loc, false);
+    throw;
   }
-
-  STACK_END(state);
 }
 
 
@@ -1267,160 +1273,226 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
 
   TypeManager* tm = theSctx->get_typemanager();
 
-  ProbeIndexRangeGeneralIteratorState* state;
-  DEFAULT_STACK_INIT(ProbeIndexRangeGeneralIteratorState, state, planState);
-
-  status = consumeNext(qname, theChildren[0], planState);
-  ZORBA_ASSERT(status);
-
-  if (state->theQname == NULL || !state->theQname->equals(qname)) 
+  try
   {
-    state->theQname = qname;
+    ProbeIndexRangeGeneralIteratorState* state;
+    DEFAULT_STACK_INIT(ProbeIndexRangeGeneralIteratorState, state, planState);
 
-    if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
+    status = consumeNext(qname, theChildren[0], planState);
+    ZORBA_ASSERT(status);
+
+    if (state->theQname == NULL || !state->theQname->equals(qname)) 
     {
-      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
+      state->theQname = qname;
 
-    if (indexDecl->getMethod() != IndexDecl::TREE)
-    {
-      RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
-
-    if (!indexDecl->isGeneral())
-    {
-      RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
-
-    state->theIndex = (indexDecl->isTemp() ?
-                       planState.theLocalDynCtx->getIndex(qname) :
-                       GENV_STORE.getIndex(state->theQname));
-
-    if (state->theIndex == NULL)
-    {
-      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
-
-    state->theIterator = GENV_STORE.getIteratorFactory()->
-                         createIndexProbeIterator(state->theIndex);
-
-    state->theTimezone = state->theIndex->getSpecification().getTimezone();
-    state->theCollator = state->theIndex->getCollator(0);
-
-    xqtref_t keyType = indexDecl->getKeyTypes()[0];
-
-    assert(keyType == NULL ||
-           keyType->get_quantifier() == TypeConstants::QUANT_ONE);
-
-    if (keyType != NULL && 
-        !TypeOps::is_subtype(tm, *keyType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&
-        !TypeOps::is_equal(tm, *keyType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
-    {
-      state->theKeyType = keyType;
-    }
-  }
-
-  {
-    store::Item_t itemHaveLower;
-    store::Item_t itemHaveUpper;
-    store::Item_t itemInclLower;
-    store::Item_t itemInclUpper;
-
-    // Get the values of $haveLowerBound, $haveUpperBound, $lowerBoundIncluded,
-    // and $upperBoundIncluded params
-    if (!consumeNext(itemHaveLower, theChildren[3], planState))
-      ZORBA_ASSERT(false);
-
-    if (!consumeNext(itemHaveUpper, theChildren[4], planState))
-     ZORBA_ASSERT(false);
-
-    if (!consumeNext(itemInclLower, theChildren[5], planState))
-     ZORBA_ASSERT(false);
- 
-    if (!consumeNext(itemInclUpper, theChildren[6], planState))
-     ZORBA_ASSERT(false);
-
-    haveLower = itemHaveLower->getBooleanValue();
-    haveUpper = itemHaveUpper->getBooleanValue();
-    inclLower = itemInclLower->getBooleanValue();
-    inclUpper = itemInclUpper->getBooleanValue();
-  }
-
-  cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
-
-  if (haveLower && haveUpper)
-  {
-    //
-    // Build hashmap from the nodes satisfying the lower bound condition
-    //
-
-    if (!getSearchItems(planState, state, true, false, inclLower, false))
-      goto done;
-
-    assert(state->theSearchItems.size() >= 1);
-    assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
-
-    state->theNodeHashSet = new ItemHandleHashSet(1024, false);
-
-    state->theSearchItemsIte = state->theSearchItems.begin();
-    state->theSearchItemsEnd = state->theSearchItems.end();
-
-    for (;
-         state->theSearchItemsIte != state->theSearchItemsEnd;
-         ++state->theSearchItemsIte)
-    {
-      cond->clear();
-      cond->pushBound(*state->theSearchItemsIte, true, inclLower);
-      
-      state->theIterator->init(cond);
-      state->theIterator->open();
-
-      while(state->theIterator->next(result)) 
+      if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
       {
-        state->theNodeHashSet->insert(result.getp());
+        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+        ERROR_PARAMS(qname->getStringValue()));
+      }
+
+      if (indexDecl->getMethod() != IndexDecl::TREE)
+      {
+        RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
+        ERROR_PARAMS(qname->getStringValue()));
+      }
+
+      if (!indexDecl->isGeneral())
+      {
+        RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
+        ERROR_PARAMS(qname->getStringValue()));
+      }
+
+      state->theIndex = (indexDecl->isTemp() ?
+                         planState.theLocalDynCtx->getIndex(qname) :
+                         GENV_STORE.getIndex(state->theQname));
+      
+      if (state->theIndex == NULL)
+      {
+        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+        ERROR_PARAMS(qname->getStringValue()));
+      }
+
+      state->theIterator = GENV_STORE.getIteratorFactory()->
+                           createIndexProbeIterator(state->theIndex);
+
+      state->theTimezone = state->theIndex->getSpecification().getTimezone();
+      state->theCollator = state->theIndex->getCollator(0);
+
+      xqtref_t keyType = indexDecl->getKeyTypes()[0];
+
+      assert(keyType == NULL ||
+             keyType->get_quantifier() == TypeConstants::QUANT_ONE);
+
+      if (keyType != NULL && 
+          !TypeOps::is_subtype(tm, *keyType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&
+          !TypeOps::is_equal(tm, *keyType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
+      {
+        state->theKeyType = keyType;
+      }
+    }
+    
+    {
+      store::Item_t itemHaveLower;
+      store::Item_t itemHaveUpper;
+      store::Item_t itemInclLower;
+      store::Item_t itemInclUpper;
+      
+      // Get the values of $haveLowerBound, $haveUpperBound, $lowerBoundIncluded,
+      // and $upperBoundIncluded params
+      if (!consumeNext(itemHaveLower, theChildren[3], planState))
+        ZORBA_ASSERT(false);
+      
+      if (!consumeNext(itemHaveUpper, theChildren[4], planState))
+        ZORBA_ASSERT(false);
+      
+      if (!consumeNext(itemInclLower, theChildren[5], planState))
+        ZORBA_ASSERT(false);
+      
+      if (!consumeNext(itemInclUpper, theChildren[6], planState))
+        ZORBA_ASSERT(false);
+      
+      haveLower = itemHaveLower->getBooleanValue();
+      haveUpper = itemHaveUpper->getBooleanValue();
+      inclLower = itemInclLower->getBooleanValue();
+      inclUpper = itemInclUpper->getBooleanValue();
+    }
+    
+    cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+
+    if (haveLower && haveUpper)
+    {
+      //
+      // Build hashmap from the nodes satisfying the lower bound condition
+      //
+      
+      if (!getSearchItems(planState, state, true, false, inclLower, false))
+        goto done;
+      
+      assert(state->theSearchItems.size() >= 1);
+      assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
+      
+      state->theNodeHashSet = new ItemHandleHashSet(1024, false);
+      
+      state->theSearchItemsIte = state->theSearchItems.begin();
+      state->theSearchItemsEnd = state->theSearchItems.end();
+      
+      for (;
+           state->theSearchItemsIte != state->theSearchItemsEnd;
+           ++state->theSearchItemsIte)
+      {
+        cond->clear();
+        cond->pushBound(*state->theSearchItemsIte, true, inclLower);
+        
+        state->theIterator->init(cond);
+        state->theIterator->open();
+        
+        while(state->theIterator->next(result)) 
+        {
+          state->theNodeHashSet->insert(result.getp());
+        }
+        
+        state->theIterator->close();
       }
       
-      state->theIterator->close();
-    }
-
-    state->theSearchItems.clear();
-    cond->clear();
-
-    //
-    // Compute the nodes satisfying the upper bound condition and probe the
-    // node hashmap.
-    //
-
-    if (!getSearchItems(planState, state, false, true, false, inclUpper))
-      goto done;
-
-    assert(state->theSearchItems.size() >= 1);
-    assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
-
-    state->theSearchItemsIte = state->theSearchItems.begin();
-    state->theSearchItemsEnd = state->theSearchItems.end();
-
-    for (;
-         state->theSearchItemsIte != state->theSearchItemsEnd;
-         ++state->theSearchItemsIte)
-    {
+      state->theSearchItems.clear();
       cond->clear();
-      cond->pushBound(*state->theSearchItemsIte, false, inclUpper);
+
+      //
+      // Compute the nodes satisfying the upper bound condition and probe the
+      // node hashmap.
+      //
+      
+      if (!getSearchItems(planState, state, false, true, false, inclUpper))
+        goto done;
+
+      assert(state->theSearchItems.size() >= 1);
+      assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
+
+      state->theSearchItemsIte = state->theSearchItems.begin();
+      state->theSearchItemsEnd = state->theSearchItems.end();
+
+      for (;
+           state->theSearchItemsIte != state->theSearchItemsEnd;
+           ++state->theSearchItemsIte)
+      {
+        cond->clear();
+        cond->pushBound(*state->theSearchItemsIte, false, inclUpper);
+
+        state->theIterator->init(cond);
+
+        if (!theCountOnly)
+        {
+          state->theIterator->open();
+
+          while(state->theIterator->next(result)) 
+          {
+            if (state->theNodeHashSet->exists(result))
+              STACK_PUSH(true, state);
+          }
+          
+          state->theIterator->close();
+        }
+        else
+        {
+          state->theIterator->count(result);
+          STACK_PUSH(true, state);
+        }
+      }
+    }
+    
+    else if (haveLower || haveUpper)
+    {
+      if (!getSearchItems(planState, state, haveLower, haveUpper, inclLower, inclUpper))
+        goto done;
+      
+      assert(state->theSearchItems.size() >= 1);
+      assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
+      
+      inclBound = (haveLower ? inclLower : inclUpper);
+      
+      state->theSearchItemsIte = state->theSearchItems.begin();
+      state->theSearchItemsEnd = state->theSearchItems.end();
+      
+      for (;
+           state->theSearchItemsIte != state->theSearchItemsEnd;
+           ++state->theSearchItemsIte)
+      {
+        cond->clear();
+        cond->pushBound(*state->theSearchItemsIte, haveLower, inclBound);
+        
+        state->theIterator->init(cond);
+        if (!theCountOnly)
+        {
+          state->theIterator->open();
+          
+          while(state->theIterator->next(result)) 
+          {
+            STACK_PUSH(true, state);
+          }
+          
+          state->theIterator->close();
+        }
+        else
+        {
+          state->theIterator->count(result);
+          STACK_PUSH(true, state);
+        }
+      }
+    }
+    
+    else
+    {
+      getSearchItems(planState, state, false, false, false, false);
 
       state->theIterator->init(cond);
-
       if (!theCountOnly)
       {
         state->theIterator->open();
-
+        
         while(state->theIterator->next(result)) 
         {
-          if (state->theNodeHashSet->exists(result))
-            STACK_PUSH(true, state);
+          STACK_PUSH(true, state);
         }
         
         state->theIterator->close();
@@ -1431,73 +1503,15 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
         STACK_PUSH(true, state);
       }
     }
-  }
 
-  else if (haveLower || haveUpper)
+  done:
+    STACK_END(state);
+  }
+  catch (ZorbaException& e)
   {
-    if (!getSearchItems(planState, state, haveLower, haveUpper, inclLower, inclUpper))
-      goto done;
-
-    assert(state->theSearchItems.size() >= 1);
-    assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
-
-    inclBound = (haveLower ? inclLower : inclUpper);
-
-    state->theSearchItemsIte = state->theSearchItems.begin();
-    state->theSearchItemsEnd = state->theSearchItems.end();
-
-    for (;
-         state->theSearchItemsIte != state->theSearchItemsEnd;
-         ++state->theSearchItemsIte)
-    {
-      cond->clear();
-      cond->pushBound(*state->theSearchItemsIte, haveLower, inclBound);
-      
-      state->theIterator->init(cond);
-      if (!theCountOnly)
-      {
-        state->theIterator->open();
-
-        while(state->theIterator->next(result)) 
-        {
-          STACK_PUSH(true, state);
-        }
-
-        state->theIterator->close();
-      }
-      else
-      {
-        state->theIterator->count(result);
-        STACK_PUSH(true, state);
-      }
-    }
+    set_source(e, loc, false);
+    throw;
   }
-
-  else
-  {
-    getSearchItems(planState, state, false, false, false, false);
-
-    state->theIterator->init(cond);
-    if (!theCountOnly)
-    {
-      state->theIterator->open();
-
-      while(state->theIterator->next(result)) 
-      {
-        STACK_PUSH(true, state);
-      }
-
-      state->theIterator->close();
-    }
-    else
-    {
-      state->theIterator->count(result);
-      STACK_PUSH(true, state);
-    }
-  }
-
- done:
-  STACK_END(state);
 }
 
 

@@ -144,7 +144,6 @@ public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
-  void prepare_for_serialize(CompilerCB* compilerCB);
 
 public:
   user_function(
