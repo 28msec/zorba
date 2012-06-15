@@ -2426,8 +2426,8 @@ void static_context::unbind_fn(
 
     if (theFunctionArityMap->get(qname2, fv))
     {
-      ulong numFunctions = (ulong)fv->size();
-      for (ulong i = 0; i < numFunctions; ++i)
+      csize numFunctions = fv->size();
+      for (csize i = 0; i < numFunctions; ++i)
       {
         if ((*fv)[i].theFunction.getp() == f)
         {
@@ -2439,6 +2439,7 @@ void static_context::unbind_fn(
 
     fv = new std::vector<FunctionInfo>(1);
     fi.theIsDisabled = true;
+    fi.theFunction = f;
     (*fv)[0] = fi;
     theFunctionArityMap->insert(qname2, fv);
   }
@@ -2458,7 +2459,8 @@ void static_context::unbind_fn(
 ********************************************************************************/
 function* static_context::lookup_fn(
     const store::Item* qname,
-    ulong arity)
+    ulong arity,
+    bool skipDisabled)
 {
   FunctionInfo fi;
   store::Item* qname2 = const_cast<store::Item*>(qname);
@@ -2473,7 +2475,10 @@ function* static_context::lookup_fn(
 
       if (f->getArity() == arity || f->isVariadic())
       {
-        return (fi.theIsDisabled ? NULL : f);
+        if (fi.theIsDisabled && skipDisabled)
+          return NULL;
+        
+        return f;
       }
 
       std::vector<FunctionInfo>* fv = NULL;
@@ -2481,11 +2486,16 @@ function* static_context::lookup_fn(
       if (sctx->theFunctionArityMap != NULL &&
           sctx->theFunctionArityMap->get(qname2, fv))
       {
-        ulong numFunctions = (ulong)fv->size();
-        for (ulong i = 0; i < numFunctions; ++i)
+        csize numFunctions = fv->size();
+        for (csize i = 0; i < numFunctions; ++i)
         {
           if ((*fv)[i].theFunction->getArity() == arity)
-            return ((*fv)[i].theIsDisabled ? NULL : (*fv)[i].theFunction.getp());
+          {
+            if ((*fv)[i].theIsDisabled && skipDisabled)
+              return NULL;
+
+            return (*fv)[i].theFunction.getp();
+          }
         }
       }
     }
@@ -2504,7 +2514,8 @@ function* static_context::lookup_fn(
 ********************************************************************************/
 function* static_context::lookup_local_fn(
     const store::Item* qname,
-    ulong arity)
+    ulong arity,
+    bool skipDisabled)
 {
   FunctionInfo fi;
   store::Item* qname2 = const_cast<store::Item*>(qname);
@@ -2515,18 +2526,26 @@ function* static_context::lookup_local_fn(
 
     if (f->getArity() == arity || f->isVariadic())
     {
-      return (fi.theIsDisabled ? NULL : f);
+      if (fi.theIsDisabled && skipDisabled)
+        return NULL;
+        
+      return f;
     }
 
     std::vector<FunctionInfo>* fv = NULL;
 
     if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
     {
-      ulong numFunctions = (ulong)fv->size();
-      for (ulong i = 0; i < numFunctions; ++i)
+      csize numFunctions = fv->size();
+      for (csize i = 0; i < numFunctions; ++i)
       {
         if ((*fv)[i].theFunction->getArity() == arity)
-          return ((*fv)[i].theIsDisabled ? NULL : (*fv)[i].theFunction.getp());
+        {
+          if ((*fv)[i].theIsDisabled && skipDisabled)
+            return NULL;
+
+          return (*fv)[i].theFunction.getp();
+        }
       }
     }
   }
@@ -3110,9 +3129,7 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 
   if (collator == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::FOCH0002, ERROR_PARAMS( uri ), ERROR_LOC( loc )
-    );
+    throw XQUERY_EXCEPTION(err::FOCH0002, ERROR_PARAMS(uri), ERROR_LOC(loc));
   }
   else
   {

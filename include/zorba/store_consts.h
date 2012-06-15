@@ -22,7 +22,7 @@
 namespace zorba { namespace store {
 
 /*******************************************************************************
-  !!! ATTENTION: The order of thr enum values within SchemaTypeCode is important.
+  !!! ATTENTION: The order of the enum values within SchemaTypeCode is important.
   !!! DO NOT change this order!!!!
 ********************************************************************************/
 enum SchemaTypeCode
@@ -88,6 +88,7 @@ enum SchemaTypeCode
   XS_LAST
 };
 
+
 class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
@@ -114,29 +115,59 @@ class ZORBA_DLL_PUBLIC StoreConsts
   {
     switch(k) 
     {
-      case anyNode:
-        return "anyNode";
+    case anyNode:
+      return "anyNode";
 
-      case documentNode:
-        return "documentNode";
+    case documentNode:
+      return "documentNode";
 
-      case elementNode:
-        return "elementNode";
+    case elementNode:
+      return "elementNode";
 
-      case attributeNode:
-        return "attributeNode";
+    case attributeNode:
+      return "attributeNode";
 
-      case textNode:
-        return "textNode";
+    case textNode:
+      return "textNode";
 
-      case piNode:
-        return "piNode";
+    case piNode:
+      return "piNode";
 
-      case commentNode:
-        return "commentNode";
+    case commentNode:
+      return "commentNode";
 
-      default:
-        return "<unknown NodeKind>";
+    default:
+      return "<unknown NodeKind>";
+    }
+  }
+
+  static std::string toSchemaString(NodeKind k)
+  {
+    switch(k) 
+    {
+    case anyNode:
+      return "node";
+
+    case documentNode:
+      return "document-node";
+
+    case elementNode:
+      return "element";
+
+    case attributeNode:
+      return "attribute";
+
+    case textNode:
+      return "text";
+
+    case piNode:
+      return "processing-instruction";
+
+    case commentNode:
+      return "comment";
+
+    default:
+      return "<unknown NodeKind>";
     }
   }
 
@@ -171,7 +202,6 @@ class ZORBA_DLL_PUBLIC StoreConsts
         return "<unknown JSONItemKind>";
     }
   }
- 
 };
 
 } // namespace store

@@ -22,12 +22,7 @@ import java.util.Map;
 import javax.xml.xquery.XQConstants;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQItemType;
-import org.zorbaxquery.api.StaticContext;
-import org.zorbaxquery.api.StringPair;
-import org.zorbaxquery.api.StringPairVector;
-import org.zorbaxquery.api.StringVector;
-import org.zorbaxquery.api.XQuery;
-import org.zorbaxquery.api.Zorba;
+import org.zorbaxquery.api.*;
 import org.zorbaxquery.api.ZorbaConstants.BoundarySpaceMode;
 import org.zorbaxquery.api.ZorbaConstants.ConstructionMode;
 import org.zorbaxquery.api.ZorbaConstants.InheritMode;
@@ -37,9 +32,9 @@ import org.zorbaxquery.api.ZorbaConstants.PreserveMode;
 
   /** \brief 
    * 
-   * An XQStaticContext represents default values for various XQuery Static Context Components. Further it includes the static XQJ properties for an XQExpression or XQPreparedExpression object.
+   * An ZorbaXQStaticContext represents default values for various XQuery Static Context Components. Further it includes the static XQJ properties for an XQExpression or XQPreparedExpression object.
    * 
-   * The following XQuery Static Context Components are supported through the XQStaticContext interface:
+   * The following XQuery Static Context Components are supported through the ZorbaXQStaticContext interface:
    * 
    * - Statically known namespaces
    * - Default element/type namespace
@@ -54,7 +49,7 @@ import org.zorbaxquery.api.ZorbaConstants.PreserveMode;
    * - Base URI
    * 
    * As described in the XQuery specification, each of these default values can be overridden or augmented in the query prolog.
-   * In addition XQStaticContext includes the static XQJ properties for an XQExpression or XQPreparedExpression object:
+   * In addition ZorbaXQStaticContext includes the static XQJ properties for an XQExpression or XQPreparedExpression object:
    * 
    * - Binding mode
    * - Holdability of the result sequences
@@ -62,12 +57,12 @@ import org.zorbaxquery.api.ZorbaConstants.PreserveMode;
    * - Query language
    * - Query timeout
    *
-   * Note that XQStaticContext is a value object, changing attributes in such object doesn't affect any existing XQExpression or XQPreparedExpression object.
-   * In order to take effect, the application needs to explicitly change the XQConnection default values, or specify an XQStaticContext object when creating an XQExpression or XQPreparedExpression.
+   * Note that ZorbaXQStaticContext is a value object, changing attributes in such object doesn't affect any existing XQExpression or XQPreparedExpression object.
+   * In order to take effect, the application needs to explicitly change the XQConnection default values, or specify an ZorbaXQStaticContext object when creating an XQExpression or XQPreparedExpression.
    * \code{.java}
    *   XQConnection conn = XQDatasource.getConnection();
    *   // get the default values from the implementation
-   *   XQStaticContext cntxt = conn.getStaticContext();
+   *   ZorbaXQStaticContext cntxt = conn.getStaticContext();
    *   // change the base uri
    *   cntxt.setBaseURI("http://www.foo.com/xml/");
    *   // change the implementation defaults
@@ -82,7 +77,7 @@ import org.zorbaxquery.api.ZorbaConstants.PreserveMode;
    *   ... 
    * \endcode
    */
-public class XQStaticContext implements javax.xml.xquery.XQStaticContext {
+public class ZorbaXQStaticContext implements javax.xml.xquery.XQStaticContext {
 
     
     private StaticContext staticContext;
@@ -97,7 +92,7 @@ public class XQStaticContext implements javax.xml.xquery.XQStaticContext {
 
     private Zorba zorba;
     private XQuery query;
-    private XQStaticCollectionManager lStaticCollectionManager;
+    private ZorbaXQStaticCollectionManager lStaticCollectionManager;
     
     String baseURI = null;  //Patch for Zorba, bug filed on https://bugs.launchpad.net/zorba/+bug/905028
     XQItemType contextItemStaticType = null; //Patch for Zorba, TypeIdentifier is not complete
@@ -105,14 +100,14 @@ public class XQStaticContext implements javax.xml.xquery.XQStaticContext {
       return staticContext;
     }
             
-    public XQStaticContext(Zorba aZorba) {
+    public ZorbaXQStaticContext(Zorba aZorba) {
         zorba = aZorba;
         staticContext = zorba.createStaticContext();
         if (uriPaths!=null) {
             staticContext.setURIPath(uriPaths);
         }
     }
-    public XQStaticContext(XQuery aQuery) {
+    public ZorbaXQStaticContext(XQuery aQuery) {
         query = aQuery;
         staticContext = query.getStaticContext();
         if (uriPaths!=null) {
@@ -276,13 +271,13 @@ public class XQStaticContext implements javax.xml.xquery.XQStaticContext {
   /** \brief Sets the static type of the context item, specify null to make it unspecified.
    * 
    * @param xqit - the static type of the context item; null if unspecified.
-   * @throw XQException - if the contextItemType is not a valid XQItemType
+   * @throw XQException - if the contextItemType is not a valid ZorbaXQItemType
    */
     @Override
     public void setContextItemStaticType(XQItemType xqit) throws XQException {
         contextItemStaticType = xqit;
         if (xqit instanceof XQItemType) {
-            org.zorbaxquery.api.xqj.XQItemType wrapper = (org.zorbaxquery.api.xqj.XQItemType) xqit;
+            org.zorbaxquery.api.xqj.ZorbaXQItemType wrapper = (org.zorbaxquery.api.xqj.ZorbaXQItemType) xqit;
             staticContext.setContextItemStaticType(wrapper.getTypeIdentifier());
         }
     }
@@ -641,12 +636,12 @@ public class XQStaticContext implements javax.xml.xquery.XQStaticContext {
    * Returns a CollectionManager responsible for all collections which are statically declared in the static context of this query (main module) or any transitively imported library module.
    * The collection manager provides a set of functions for managing collections and their contents.
    *
-   * @return XQStaticCollectionManager The collection manager responsible for managing collections of this Sequence.
+   * @return ZorbaXQStaticCollectionManager The collection manager responsible for managing collections of this Sequence.
    * @throw XQException - if the object is closed
    */
-    public XQStaticCollectionManager getStaticCollectionManager() throws XQException {
+    public ZorbaXQStaticCollectionManager getStaticCollectionManager() throws XQException {
         if (lStaticCollectionManager==null) {
-            lStaticCollectionManager = new XQStaticCollectionManager(staticContext.getStaticCollectionManager());
+            lStaticCollectionManager = new ZorbaXQStaticCollectionManager(staticContext.getStaticCollectionManager());
         }
         return lStaticCollectionManager;
     }

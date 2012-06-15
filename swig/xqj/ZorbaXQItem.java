@@ -15,16 +15,10 @@
  */
 package org.zorbaxquery.api.xqj;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Properties;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
@@ -45,11 +39,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.Iterator;
-import org.zorbaxquery.api.SerializationOptions;
-import org.zorbaxquery.api.StringPair;
-import org.zorbaxquery.api.StringPairVector;
+import org.zorbaxquery.api.*;
 
 /**
   * This class represents an item in the XDM.
@@ -62,8 +52,8 @@ import org.zorbaxquery.api.StringPairVector;
   *   XQSequence result = expr.executeQuery();
   * 
   *   // create the ItemTypes for string and integer
-  *   XQItemType strType = conn.createAtomicType(XQItemType.XQBASETYPE_STRING);
-  *   XQItemType intType = conn.createAtomicType(XQItemType.XQBASETYPE_INTEGER);
+  *   ZorbaXQItemType strType = conn.createAtomicType(ZorbaXQItemType.XQBASETYPE_STRING);
+  *   ZorbaXQItemType intType = conn.createAtomicType(ZorbaXQItemType.XQBASETYPE_INTEGER);
   *  
   *   // posititioned before the first item
   *   while (result.next())
@@ -78,7 +68,7 @@ import org.zorbaxquery.api.StringPairVector;
   *       ...
   *  
   *     // Alternatively, you can get the exact type out.
-  *     XQItemType type = result.getItemType();
+  *     ZorbaXQItemType type = result.getItemType();
   *  
   *     // Now perform the comparison..
   *     if (type.equals(intType))
@@ -92,7 +82,7 @@ import org.zorbaxquery.api.StringPairVector;
   *   
   
   */
-class XQItem implements javax.xml.xquery.XQItem {
+class ZorbaXQItem implements javax.xml.xquery.XQItem {
 
     private Item item;
     private boolean closed=false;
@@ -102,28 +92,28 @@ class XQItem implements javax.xml.xquery.XQItem {
         return item;
     }
     
-    public XQItem(XQItemType itemType) {
+    public ZorbaXQItem(XQItemType itemType) {
         this.itemType = itemType;
     }
 
-    public XQItem(Item item) {
+    public ZorbaXQItem(Item item) {
         this.item = new Item(item);
-        this.itemType = new org.zorbaxquery.api.xqj.XQItemType(this.item);
+        this.itemType = new org.zorbaxquery.api.xqj.ZorbaXQItemType(this.item);
     }
 
-    public XQItem(Item item, XQItemType itemType) {
+    public ZorbaXQItem(Item item, XQItemType itemType) {
         this.item = new Item(item);
         this.itemType = itemType;
     }
 
-    public XQItem(javax.xml.xquery.XQItem item) throws XQException {
-        this.item = new Item(((XQItem)item).getZorbaItem());
+    public ZorbaXQItem(javax.xml.xquery.XQItem item) throws XQException {
+        this.item = new Item(((ZorbaXQItem)item).getZorbaItem());
         this.itemType = item.getItemType();
     }
 
   /** \brief   Close the item and release all the resources associated with this item.
    * 
-   * No method other than the isClosed or close method may be called once the item is closed. Calling close on an XQItem object that is already closed has no effect.
+   * No method other than the isClosed or close method may be called once the item is closed. Calling close on an ZorbaXQItem object that is already closed has no effect.
    * 
    * @throw XQException - if there is an error during closing the item
    */
@@ -447,11 +437,11 @@ class XQItem implements javax.xml.xquery.XQItem {
                 DatatypeFactory factory = DatatypeFactory.newInstance();
                 switch (itemType.getBaseType()) {
                     /*
-                    case XQItemType.XQBASETYPE_ANYATOMICTYPE:
+                    case ZorbaXQItemType.XQBASETYPE_ANYATOMICTYPE:
                         break;
-                    case XQItemType.XQBASETYPE_ANYSIMPLETYPE:
+                    case ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE:
                         break;
-                    case XQItemType.XQBASETYPE_ANYTYPE:
+                    case ZorbaXQItemType.XQBASETYPE_ANYTYPE:
                         break;
                      *
                      */
@@ -661,8 +651,8 @@ class XQItem implements javax.xml.xquery.XQItem {
    * Example -
    * \code{.java}
    *   ...
-   *   XQItemType strType = conn.createAtomicType(XQItemType.XQBASETYPE_STRING);
-   *   XQItemType nodeType = conn.createNodeType();
+   *   ZorbaXQItemType strType = conn.createAtomicType(ZorbaXQItemType.XQBASETYPE_STRING);
+   *   ZorbaXQItemType nodeType = conn.createNodeType();
    * 
    *   XQSequence result = preparedExpr.executeQuery();
    *   while (result.next())
@@ -675,8 +665,8 @@ class XQItem implements javax.xml.xquery.XQItem {
    *    }
    *  
    * 
-   * If either the type of the XQItemAccessor or the input XQItemType is not a built-in type, then this method is allowed to raise exception if it can NOT determine the instanceOf relationship due to the lack of the access of the XML schema that defines the user defined schema types if the XQMetaData.isUserDefinedXMLSchemaTypeSupported() method returns false. 
-   * Otherwise, this method must determine if the type of the XQItemAccessor is an instance of the input XQItemType. Note even if isUserDefinedXMLSchemaTypeSupported() returns false, an XQJ implementation may still be able to determine the instanceOf relationship for certain cases involving user defined schema type. For example, if the type of an XQItemAccessor is of mySchema:hatSize sequence type and the input parameter XQItemType is of item() sequence type, the return value for instanceOf relationship should always be true even though the XQJ implementation does not know the precise type information of mySchema:hatSize type defined in XML schema 'mySchema'.
+   * If either the type of the XQItemAccessor or the input ZorbaXQItemType is not a built-in type, then this method is allowed to raise exception if it can NOT determine the instanceOf relationship due to the lack of the access of the XML schema that defines the user defined schema types if the XQMetaData.isUserDefinedXMLSchemaTypeSupported() method returns false. 
+   * Otherwise, this method must determine if the type of the XQItemAccessor is an instance of the input ZorbaXQItemType. Note even if isUserDefinedXMLSchemaTypeSupported() returns false, an XQJ implementation may still be able to determine the instanceOf relationship for certain cases involving user defined schema type. For example, if the type of an XQItemAccessor is of mySchema:hatSize sequence type and the input parameter ZorbaXQItemType is of item() sequence type, the return value for instanceOf relationship should always be true even though the XQJ implementation does not know the precise type information of mySchema:hatSize type defined in XML schema 'mySchema'.
    * \endcode
    * @param xqit - item type to match
    * @return true if this item matches the input item type as defined in 2.5.4.2 Matching an Item Type and an Item, XQuery 1.0: An XML Query Language, and false if it does not

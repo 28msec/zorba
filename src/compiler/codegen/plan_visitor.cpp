@@ -1966,9 +1966,14 @@ bool begin_visit(promote_expr& v)
 void end_visit(promote_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t lChild = pop_itstack();
+  PlanIter_t child = pop_itstack();
   // TODO: Currently we use cast. Promotion may be more efficient.
-  push_itstack(new PromoteIterator(sctx, qloc, lChild, v.get_target_type(), v.get_fn_qname()));
+  push_itstack(new PromoteIterator(sctx,
+                                   qloc,
+                                   child,
+                                   v.get_target_type(),
+                                   v.get_err(),
+                                   v.get_qname()));
 }
 
 
@@ -2358,6 +2363,7 @@ bool begin_visit(instanceof_expr& v)
   return true;
 }
 
+
 void end_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_OUT("");
@@ -2372,19 +2378,26 @@ bool begin_visit(treat_expr& v)
   return true;
 }
 
+
 void end_visit(treat_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t arg;
   arg = pop_itstack();
-  push_itstack(new TreatIterator(sctx, qloc, arg, v.get_target_type(), v.get_check_prime(), v.get_err(), v.get_fn_qname()));
+  push_itstack(new TreatIterator(sctx, qloc, arg, 
+                                 v.get_target_type(),
+                                 v.get_check_prime(),
+                                 v.get_err(),
+                                 v.get_qname()));
 }
+
 
 bool begin_visit(castable_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
+
 
 void end_visit(castable_expr& v)
 {
@@ -2393,11 +2406,13 @@ void end_visit(castable_expr& v)
   push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
+
 bool begin_visit(cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
+
 
 void end_visit(cast_expr& v)
 {

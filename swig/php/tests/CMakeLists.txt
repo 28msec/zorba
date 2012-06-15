@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-MESSAGE(STATUS "Adding tests for PHP Binding")
 
 SET(phpPath ${CMAKE_BINARY_DIR}/swig/php)
 IF (MSVC_IDE)
@@ -20,9 +19,6 @@ ELSE (MSVC_IDE)
   SET(phpExtensionPath ${CMAKE_BINARY_DIR}/swig/php)
 ENDIF (MSVC_IDE)
 SET(phpIncludePath ${CMAKE_BINARY_DIR}/swig/php)
-MESSAGE(STATUS "PHP Path:" ${phpPath})
-MESSAGE(STATUS "PHP Extension Path: " ${phpExtensionPath})
-MESSAGE(STATUS "PHP Include Path: " ${phpExtensionPath})
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/php.ini.in ${CMAKE_CURRENT_BINARY_DIR}/php.ini)
 

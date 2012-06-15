@@ -96,6 +96,7 @@ void root_static_context::init()
 
   add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
   add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
+  add_collation("http://www.zorba-xquery.com/collations/SECONDARY/en/EN", QueryLoc::null);
   set_default_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
 
   set_construction_mode(StaticContextConsts::cons_preserve);
