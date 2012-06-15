@@ -146,13 +146,18 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
       aXQuery.read(strtemp, sizeof(strtemp)-1);
       strtemp[aXQuery.gcount()] = 0;
       xquery_str += strtemp;
-    }while(aXQuery.gcount() == (sizeof(strtemp)-1));
+    }
+    while(aXQuery.gcount() == (sizeof(strtemp)-1));
   }
 
   XQueryXConvertor* xqxconvertor = GENV.getXQueryXConvertor();
 
-  if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))//identify XQueryX by content: root tag = "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
+  if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))
   {
+    // identify XQueryX by content: 
+    // root tag = 
+    // "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
+
     is_xqueryx = true;
     //translate from xqueryx to xquery using XSLT
     //read all input stream into std::string
@@ -186,7 +191,7 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   {
     ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
     throw XQUERY_EXCEPTION_VAR(
-      pen->err, ERROR_PARAMS( pen->msg ), ERROR_LOC( pen->get_location() )
+      pen->err, ERROR_PARAMS(pen->msg), ERROR_LOC(pen->get_location())
 		);
   }
 
@@ -217,7 +222,9 @@ PlanIter_t XQueryCompiler::compile(
 
   if (theCompilerCB->theConfig.lib_module &&
       dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
+  {
     lAST = createMainModule(lAST, aXQuery, aFileName);
+  }
 
   expr_t rootExpr;
 

@@ -16,70 +16,27 @@
 
 %{  // start Implementation
 
-#include <zorba/store_consts.h>
+  #include <zorba/store_consts.h>
  
-class Store 
-{
-public:
-  Store() {}
-
-  Store(const Store&) {}
-
-  virtual ~Store() {}
-
-  virtual void* getStore() const { return 0; }
-
-}; // class Store
-
-
-class InMemoryStore : public Store 
-{
-private:
-  void* theStore;
-
-public:
-  InMemoryStore() : theStore(0) {}
-
-  InMemoryStore(const InMemoryStore& aStore) : Store(aStore), theStore(aStore.theStore) {}
-
-  InMemoryStore(void* aStore) : theStore(aStore) {}
-
-  virtual ~InMemoryStore() {}
-
-  static InMemoryStore getInstance() 
+  InMemoryStore InMemoryStore::getInstance() 
   { return InMemoryStore(zorba::StoreManager::getStore()); }
 
-  InMemoryStore& operator=(const InMemoryStore& aStore) 
+  InMemoryStore& InMemoryStore::operator=(const InMemoryStore& aStore)
   {
     theStore = aStore.theStore; 
     return *this;
   }
 
-  static void shutdown(InMemoryStore& aStore)
+  void InMemoryStore::shutdown(InMemoryStore& aStore)
   { 
     zorba::StoreManager::shutdownStore(aStore.theStore); 
   }
 
-  virtual void* getStore() const
+  void* InMemoryStore::getStore() const
   {
      return theStore; 
   }
-}; // class InMemoryStore
-
-
-
 
 %}  // end   Implementation
 
-    // Interface
-
-class Store {};
-
-class InMemoryStore : public Store 
-{
-public:
-  static InMemoryStore getInstance();
-  static void shutdown(InMemoryStore&);
-}; // class InMemoryStore
-
-
+%include "Store.h"
