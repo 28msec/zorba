@@ -132,7 +132,9 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       Zorba_SerializerOptions options;
       options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
       SerializerImpl::setSerializationParameters(ser, options);
-      store::TempSeq_t lSequence = GENV_STORE.createTempSeq(result);
+      // tmp item needed because createTempSeq takes over the ownership
+      store::Item_t lTmp = result;
+      store::TempSeq_t lSequence = GENV_STORE.createTempSeq(lTmp);
       store::Iterator_t seq_iter = lSequence->getIterator();
       seq_iter->open();
       ser.serialize(
