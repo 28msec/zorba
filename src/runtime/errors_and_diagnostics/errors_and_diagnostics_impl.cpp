@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include <iostream>
-#include <zorba/singleton_item_sequence.h>
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/user_exception.h"
@@ -28,13 +27,14 @@
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/temp_seq.h"
 
 #include "system/globalenv.h"
 #include "zorbatypes/zstring.h"
 
 #include "api/serialization/serializer.h"
 #include "api/serializerimpl.h"
-#include "api/unmarshaller.h"
 
 namespace zorba 
 {
@@ -132,12 +132,11 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       Zorba_SerializerOptions options;
       options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
       SerializerImpl::setSerializationParameters(ser, options);
-      const Item lItem(result);
-      SingletonItemSequence lSequence(lItem);
-      Iterator_t seq_iter = lSequence.getIterator();
+      store::TempSeq_t lSequence = GENV_STORE.createTempSeq(result);
+      store::Iterator_t seq_iter = lSequence->getIterator();
       seq_iter->open();
       ser.serialize(
-          Unmarshaller::getInternalIterator(seq_iter.get()), 
+          seq_iter,
           (*state->theOS));
       seq_iter->close(); 
     }
