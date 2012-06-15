@@ -25,7 +25,7 @@ namespace internal {
 ///////////////////////////////////////////////////////////////////////////////
 
 // "delete" is done here inside Zorba rather than in the header to guarantee
-// that they're cross-DLL-boundary safe on Windows.
+// that it's cross-DLL-boundary safe on Windows.
 
 void dealloc_streambuf( streambuf *buf ) {
   delete buf;
