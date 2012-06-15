@@ -102,7 +102,7 @@ streambuf::int_type streambuf::overflow( int_type c ) {
   bool const is_eof = traits_type::eq_int_type( c, traits_type::eof() );
   if ( !is_eof )
     pbuf_[ plen_++ ] = traits_type::to_char_type( c );
-  if ( plen_ == 3 || is_eof ) {
+  if ( plen_ == sizeof pbuf_ || (is_eof && plen_) ) {
     writep();
     resetp();
   }
@@ -132,7 +132,7 @@ streambuf::int_type streambuf::underflow() {
     } else {
       chunk[ chunk_len++ ] = traits_type::to_char_type( c );
     }
-    if ( chunk_len == sizeof chunk || is_eof ) {
+    if ( chunk_len == sizeof chunk || (is_eof && chunk_len) ) {
       streamsize const n = base64::decode( chunk, chunk_len, eback() );
       setg( gbuf_, gbuf_, gbuf_ + n );
     }
