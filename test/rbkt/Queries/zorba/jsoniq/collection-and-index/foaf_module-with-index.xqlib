@@ -38,7 +38,7 @@ by xs:integer(.("age")) as xs:integer;
   The person index maps each person name with its information.
 :)
 
-declare %ann:general-equality %ann:automatic index foaf:friends
+declare %ann:manual %ann:general-equality index foaf:friends
 on nodes dml:collection(xs:QName("foaf:network"))
 by jn:members(.("friends")) as xs:string*;
 
@@ -47,7 +47,7 @@ by jn:members(.("friends")) as xs:string*;
   The person index maps each person with the person of which she is the best friend.
 :)
 
-declare %ann:general-range index foaf:age-range
+declare %ann:manual %ann:general-range index foaf:age-range
 on nodes dml:collection(xs:QName("foaf:network"))
 by xs:integer(.("age")) as xs:integer;
 

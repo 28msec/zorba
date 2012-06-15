@@ -1,6 +1,6 @@
 
 import module namespace foaf = "http://www.w3.org/TestModules/foaf" at
-                                   "foaf_module-with-index-no-general.xqlib";
+                                   "foaf_module-with-index.xqlib";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
