@@ -37,6 +37,8 @@ namespace zorba {
      * ADD NEW UNIT TESTS HERE
      */
     void initializeTestList() {
+      libunittests["base64"] = test_base64;
+      libunittests["base64_streambuf"] = test_base64_streambuf;
       libunittests["string"] = test_string;
       libunittests["uri"] = runUriTest;
       libunittests["fs_iterator"] = test_fs_iterator;

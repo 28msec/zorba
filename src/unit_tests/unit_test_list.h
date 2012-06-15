@@ -26,6 +26,8 @@ namespace zorba {
   namespace UnitTests {
     int runUriTest(int argc, char* argv[]);
     int runDebuggerProtocolTest(int argc, char* argv[]);
+    int test_base64( int, char*[] );
+    int test_base64_streambuf( int, char*[] );
     int test_string( int, char*[] );
     int test_unique_ptr( int, char*[] );
     int test_fs_iterator( int, char*[] );
