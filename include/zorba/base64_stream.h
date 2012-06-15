@@ -231,8 +231,8 @@ private:
 
 /**
  * A %base64::stream is used to wrap a C++ standard I/O stream with a
- * base64::streambuf so that transcoding and the management of the streambuf
- * happens automatically.
+ * base64::streambuf so that encoding/decoding and the management of the
+ * streambuf happens automatically.
  *
  * A %base64::stream is useful for streams created by you.
  *
