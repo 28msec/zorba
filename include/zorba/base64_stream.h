@@ -58,6 +58,10 @@ namespace base64 {
  * Alternatively, you may wish to use either \c attach(), \c auto_attach, or
  * \c base64::stream instead.
  *
+ * \b Note: due to the nature of Base64-encoding, when writing, you \e must
+ * ensure that the streambuf is flushed (by calling either \c pubsync() on the
+ * streambuf or \c flush() on the owning stream) when done.
+ *
  * While %base64::streambuf does support seeking, the positions are relative
  * to the original byte stream.
  */
