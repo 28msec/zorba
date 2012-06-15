@@ -2967,13 +2967,24 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring lErrorMessage;
-      std::auto_ptr<internal::Resource> lResource =
-      theSctx->resolve_uri(compModVer.versioned_uri(),
-                           internal::EntityData::MODULE,
-                           lErrorMessage);
+      std::auto_ptr<internal::Resource> lResource;
+      internal::StreamResource* lStreamResource = NULL;
 
-      internal::StreamResource* lStreamResource =
-      dynamic_cast<internal::StreamResource*> (lResource.get());
+      try
+      {
+        lResource =
+        theSctx->resolve_uri(compModVer.versioned_uri(),
+                             internal::EntityData::MODULE,
+                             lErrorMessage);
+
+        lStreamResource =
+        dynamic_cast<internal::StreamResource*> (lResource.get());
+      }
+      catch (ZorbaException& e)
+      {
+        set_source(e, loc);
+        throw;
+      }
 
       if (lStreamResource != NULL)
       {
