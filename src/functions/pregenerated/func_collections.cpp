@@ -910,10 +910,10 @@ void populate_context_collections(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, static_collections_dml_delete_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-in-collection"), 
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_IN_COLLECTION_1);
+        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_1);
 
   }
 
@@ -922,10 +922,10 @@ void populate_context_collections(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, static_collections_dml_delete_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-in-collection"), 
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_IN_COLLECTION_1);
+        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_1);
 
   }
 
