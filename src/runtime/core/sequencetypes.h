@@ -236,6 +236,7 @@ public:
     INDEX_KEY,
     PATH_STEP,
     PATH_DOT,
+    JSON_VALUE
   } ErrorKind;
 
 private:

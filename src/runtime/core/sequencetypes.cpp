@@ -669,6 +669,9 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
     break;
   }
+  case JSON_VALUE:
+    RAISE_ERROR(jerr::JNTY0002, loc,
+    ERROR_PARAMS("The value of a JSON object pair must be a single item."));
   default:
   {
     ZORBA_ASSERT(false);

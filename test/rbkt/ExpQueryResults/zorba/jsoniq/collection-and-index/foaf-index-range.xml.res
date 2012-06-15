@@ -1,0 +1,1 @@
+{ "age" : 38, "friends" : [ "Jean-Luc Picard", "Ensign Crusher" ], "gender" : "female", "name" : "Beverly Crusher" }{ "age" : 30, "friends" : [ "Mister Spock", "Scotty", "Jean-Luc Picard" ], "gender" : "male", "name" : "James T. Kirk" }

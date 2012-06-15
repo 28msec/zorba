@@ -11023,7 +11023,7 @@ void end_visit(const JSONObjectConstructor& v, void* /*visit_state*/)
                                  contentExpr->get_loc(),
                                  contentExpr,
                                  GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
-                                 err::XPTY0004,
+                                 TreatIterator::TYPE_MATCH,
                                  true,
                                  NULL);
   }
@@ -11121,13 +11121,14 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
                               nameExpr->get_loc(),
                               nameExpr,
                               GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                              PromoteIterator::TYPE_PROMOTION,
                               NULL);
 
   valueExpr = new treat_expr(theRootSctx,
                              valueExpr->get_loc(),
                              valueExpr,
                              GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-                             jerr::JNTY0002,
+                             TreatIterator::JSON_VALUE,
                              false,
                              NULL);
 
@@ -12841,7 +12842,12 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 
   expr_t targetExpr = pop_nodestack();
 
-  targetExpr = wrap_in_type_match(targetExpr, rtm.JSON_OBJECT_TYPE_ONE);
+  targetExpr = wrap_in_type_match(
+      targetExpr,
+      rtm.JSON_OBJECT_TYPE_ONE,
+      loc,
+      TreatIterator::TYPE_MATCH,
+      NULL);
 
   args.push_back(targetExpr);
 
@@ -12889,9 +12895,17 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   expr_t sourceExpr = pop_nodestack();
 
   posExpr = wrap_in_atomization(posExpr);
-  posExpr = wrap_in_type_promotion(posExpr, rtm.INTEGER_TYPE_ONE);
+  posExpr = wrap_in_type_promotion(
+      posExpr,
+      rtm.INTEGER_TYPE_ONE,
+      PromoteIterator::TYPE_PROMOTION);
 
-  targetExpr = wrap_in_type_match(targetExpr, rtm.JSON_ARRAY_TYPE_ONE);
+  targetExpr = wrap_in_type_match(
+      targetExpr,
+      rtm.JSON_ARRAY_TYPE_ONE,
+      loc,
+      TreatIterator::TYPE_MATCH,
+      NULL);
 
   std::vector<expr_t> args(3);
   args[0] = targetExpr;
