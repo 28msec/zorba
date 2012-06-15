@@ -319,9 +319,9 @@ public:
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 
-  virtual std::string toString() const;
+  std::string toString() const;
 
-  virtual std::string toSchemaString() const;
+  std::string toSchemaString() const;
 
 protected:
   XQType(
@@ -485,6 +485,8 @@ public:
 ********************************************************************************/
 class NodeXQType : public XQType
 {
+  friend class XQType;
+
 private:
   store::StoreConsts::NodeKind  m_node_kind;
   store::Item_t                 m_node_name;
@@ -539,6 +541,9 @@ public:
       const QueryLoc& loc) const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
+
+protected:
+  std::string toSchemaStringInternal() const;
 };
 
 

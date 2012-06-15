@@ -24,21 +24,21 @@ import org.zorbaxquery.api.Zorba;
 
 
   /**
-   * Using the XQXmlDataManager one can manage documents and collections.
+   * Using the ZorbaXQXmlDataManager one can manage documents and collections.
    * 
-   * The XQXmlDataManager is a singleton instance. The XQConnection object is reponsible for maintaining its lifetime. The instance can be accessed by calling getXmlDataManager() on the XQConnection object. It may not be accessed anymore after XQConnection is closed.
+   * The ZorbaXQXmlDataManager is a singleton instance. The XQConnection object is reponsible for maintaining its lifetime. The instance can be accessed by calling getXmlDataManager() on the XQConnection object. It may not be accessed anymore after XQConnection is closed.
    * 
    */
-public class XQXmlDataManager {
+public class ZorbaXQXmlDataManager {
     
     private boolean closed = false;
     private XmlDataManager dm;
-    private XQDocumentManager lDocumentManager;
-    private XQCollectionManager lCollectionManager;
-    private XQCollectionManager lW3CollectionManager;
-    private Collection<XQSequence> sequences = new ArrayList<XQSequence>();
+    private ZorbaXQDocumentManager lDocumentManager;
+    private ZorbaXQCollectionManager lCollectionManager;
+    private ZorbaXQCollectionManager lW3CollectionManager;
+    private Collection<ZorbaXQSequence> sequences = new ArrayList<ZorbaXQSequence>();
 
-    protected XQXmlDataManager(Zorba zorba) {
+    protected ZorbaXQXmlDataManager(Zorba zorba) {
         dm = zorba.getXmlDataManager();
     }
     
@@ -58,7 +58,7 @@ public class XQXmlDataManager {
         if (lW3CollectionManager!=null) {
             lW3CollectionManager.close();
         }
-        for (XQSequence exp : sequences ){
+        for (ZorbaXQSequence exp : sequences ){
             exp.close();  // Notify the dependents objects to close
         }
         if (dm!=null) {
@@ -67,20 +67,20 @@ public class XQXmlDataManager {
         closed = true;
     }
 
-  /** \brief  Checks if the XQXmlDataManager is closed.
+  /** \brief  Checks if the ZorbaXQXmlDataManager is closed.
    * 
-   *  Checks if the XQXmlDataManager is closed.
+   *  Checks if the ZorbaXQXmlDataManager is closed.
    * 
-   * @return boolean true if the XQXmlDataManager is in a closed state, false otherwise
+   * @return boolean true if the ZorbaXQXmlDataManager is in a closed state, false otherwise
    */
     public boolean isClosed() {
         return closed;
     }
 
-    public XQDocumentManager getDocumentManager()  throws XQException {
+    public ZorbaXQDocumentManager getDocumentManager()  throws XQException {
         isClosedXQException();
         if (lDocumentManager==null) {
-            lDocumentManager = new XQDocumentManager(dm.getDocumentManager());
+            lDocumentManager = new ZorbaXQDocumentManager(dm.getDocumentManager());
         }
         return lDocumentManager;
     }
@@ -92,10 +92,10 @@ public class XQXmlDataManager {
    * 
    * @return The collection manager responsible for managing collections.
    */
-    public XQCollectionManager getCollectionManager()  throws XQException {
+    public ZorbaXQCollectionManager getCollectionManager()  throws XQException {
         isClosedXQException();
         if (lCollectionManager==null) {
-            lCollectionManager = new XQCollectionManager(dm.getCollectionManager());
+            lCollectionManager = new ZorbaXQCollectionManager(dm.getCollectionManager());
         }
         return lCollectionManager;
     }
@@ -107,21 +107,21 @@ public class XQXmlDataManager {
    * 
    * @return The collection manager responsible for managing collections.
    */
-    public XQCollectionManager getW3CCollectionManager()  throws XQException {
+    public ZorbaXQCollectionManager getW3CCollectionManager()  throws XQException {
         isClosedXQException();
         if (lW3CollectionManager==null) {
-            lW3CollectionManager = new XQCollectionManager(dm.getW3CCollectionManager());
+            lW3CollectionManager = new ZorbaXQCollectionManager(dm.getW3CCollectionManager());
         }
         return lW3CollectionManager;
     }
 
-  /** \brief Parse an XML document and return an XQSequence.
+  /** \brief Parse an XML document and return an ZorbaXQSequence.
    * 
    */
-    public XQSequence parseXML(String xmlText) throws XQException {
+    public ZorbaXQSequence parseXML(String xmlText) throws XQException {
         isClosedXQException();
         ItemSequence zSequence = new ItemSequence(dm.parseXMLtoItem(xmlText));
-        XQSequence result = new XQSequence(zSequence);
+        ZorbaXQSequence result = new ZorbaXQSequence(zSequence);
         sequences.add(result);
         return result;
     }

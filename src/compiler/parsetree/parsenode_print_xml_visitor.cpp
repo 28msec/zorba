@@ -370,7 +370,7 @@ void *begin_visit(const VarDecl &n)
     INDENT;
 
     os << "<VarDecl pos='" << n.get_location() << "' var='"
-       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -384,7 +384,7 @@ void *begin_visit(const VarGetsDecl &n)
     INDENT;
 
     os << "<VarGetsDecl pos='" << n.get_location() << "' var='"
-       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -397,7 +397,7 @@ void *begin_visit(const VarInDecl &n)
     INDENT;
 
     os << "<VarInDecl pos='" << n.get_location() << "' var='"
-       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
