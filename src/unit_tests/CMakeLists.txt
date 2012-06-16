@@ -38,8 +38,7 @@ ENDIF (NOT ZORBA_NO_ICU)
 IF (NOT ZORBA_CXX_UNORDERED_MAP)
   LIST (APPEND UNIT_TEST_SRCS
     unordered_map.cpp
-    unordered_map_instantiate.cpp
-    unordered_set.cpp)
+    unordered_map_instantiate.cpp)
 ENDIF (NOT ZORBA_CXX_UNORDERED_MAP)
 
 IF (NOT ZORBA_CXX_UNORDERED_SET)
