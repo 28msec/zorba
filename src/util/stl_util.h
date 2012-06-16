@@ -98,10 +98,7 @@ protected:
  */
 template<typename T>
 struct identity : std::unary_function<T,T> {
-  typedef T argument_type;
-  typedef T result_type;
-
-  result_type const& operator()( argument_type const &a ) const {
+  T const& operator()( T const &a ) const {
     return a;
   }
 };
@@ -112,10 +109,7 @@ struct identity : std::unary_function<T,T> {
  */
 template<typename PairType>
 struct select1st : std::unary_function<PairType,typename PairType::first_type> {
-  typedef PairType argument_type;
-  typedef typename PairType::first_type result_type;
-
-  result_type const& operator()( argument_type const &a ) const {
+  typename PairType::first_type const& operator()( PairType const &a ) const {
     return a.first;
   }
 };

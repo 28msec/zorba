@@ -41,9 +41,9 @@ namespace zorba {
 #ifndef ZORBA_HAVE_UNORDERED_MAP
     int test_unordered_map( int, char*[] );
 #endif /* ZORBA_HAVE_UNORDERED_MAP */
-#ifndef ZORBA_HAVE_UNORDERED_MAP
+#ifndef ZORBA_HAVE_UNORDERED_SET
     int test_unordered_set( int, char*[] );
-#endif /* ZORBA_HAVE_UNORDERED_MAP */
+#endif /* ZORBA_HAVE_UNORDERED_SET */
 
     void initializeTestList();
   };

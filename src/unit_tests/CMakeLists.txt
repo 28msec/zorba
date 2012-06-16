@@ -35,11 +35,16 @@ IF (NOT ZORBA_NO_ICU)
     test_icu_streambuf.cpp)
 ENDIF (NOT ZORBA_NO_ICU)
 
-IF (NOT ZORBA_CXX_UNORDERE_MAP)
+IF (NOT ZORBA_CXX_UNORDERED_MAP)
   LIST (APPEND UNIT_TEST_SRCS
     unordered_map.cpp
     unordered_map_instantiate.cpp
     unordered_set.cpp)
-ENDIF (NOT ZORBA_CXX_UNORDERE_MAP)
+ENDIF (NOT ZORBA_CXX_UNORDERED_MAP)
+
+IF (NOT ZORBA_CXX_UNORDERED_SET)
+  LIST (APPEND UNIT_TEST_SRCS
+    unordered_set.cpp)
+ENDIF (NOT ZORBA_CXX_UNORDERED_SET)
 
 # vim:set et sw=2 ts=2:
