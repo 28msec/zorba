@@ -76,6 +76,7 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
   let $class :=
     switch ( data( $namespace/@prefix ) )
     case "err" return "XQueryErrorCode"
+    case "jerr" return "JSONiqErrorCode"
     case "zerr" return "ZorbaErrorCode"
     case "zwarn" return "ZorbaWarningCode"
     default return error()

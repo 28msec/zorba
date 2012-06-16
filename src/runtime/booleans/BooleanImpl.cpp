@@ -97,6 +97,15 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // node => true
     result = negate ^ true;
   }
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONItem())
+  {
+    xqtref_t type = tm->create_value_type(item);
+
+    RAISE_ERROR(err::FORG0006, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:boolean" ));
+  }
+#endif
   else
   {
     store::SchemaTypeCode type = item->getTypeCode();
@@ -110,6 +119,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
          TypeOps::is_subtype(type, store::XS_STRING) ||
          TypeOps::is_subtype(type, store::XS_ANY_URI) ||
          type == store::XS_UNTYPED_ATOMIC ||
+         type == store::JDM_NULL ||
          TypeOps::is_numeric(type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic

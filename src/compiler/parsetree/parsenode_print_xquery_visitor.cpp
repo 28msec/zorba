@@ -531,15 +531,26 @@ void* begin_visit(const GeneralComp& n)
   return no_state;
 }
 
-
 DEFAULT_END_VISIT (GeneralComp)
 
-    void* begin_visit(const ItemType& n)
-    {
-      os << "item()";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (ItemType)
+
+void* begin_visit(const ItemType& n)
+{
+  os << "item()";
+  return no_state;
+}
+
+DEFAULT_END_VISIT (ItemType)
+
+
+void* begin_visit(const StructuredItemType& n)
+{
+  os << "structured-item()";
+  return no_state;
+}
+
+DEFAULT_END_VISIT(StructuredItemType)
+
 
     void* begin_visit(const LetClause& n)
     {
@@ -1945,14 +1956,44 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (FTWordsTimes);
   DEFAULT_VISIT (FTWordsValue);
 
+  /* JSON-related */
+  DEFAULT_VISIT (JSONArrayConstructor);
+
+  DEFAULT_VISIT (JSONObjectConstructor);
+
+  DEFAULT_VISIT (JSONDirectObjectConstructor);
+
+  DEFAULT_VISIT (JSONPairList);
+
+  DEFAULT_VISIT (JSONPairConstructor);
+
+  DEFAULT_VISIT (JSONObjectInsertExpr);
+
+  DEFAULT_VISIT (JSONArrayInsertExpr);
+
+  DEFAULT_VISIT (JSONArrayAppendExpr);
+
+  DEFAULT_VISIT (JSONDeleteExpr);
+
+  DEFAULT_VISIT (JSONReplaceExpr);
+
+  DEFAULT_VISIT (JSONRenameExpr);
+
+  void* begin_visit(const JSON_Test& n)
+  {
+    os << store::StoreConsts::toString(n.get_kind()) << "()";
+    return no_state;
+  }
+  DEFAULT_END_VISIT (JSON_Test);
+
   DEFAULT_VISIT (AssignExpr);
   DEFAULT_VISIT (ExitExpr);
   DEFAULT_VISIT (WhileExpr);
   DEFAULT_VISIT (FlowCtlStatement);
 
-    DEFAULT_VISIT (LiteralFunctionItem);
-    DEFAULT_VISIT (InlineFunction);
-    DEFAULT_VISIT (DynamicFunctionInvocation);
+  DEFAULT_VISIT (LiteralFunctionItem);
+  DEFAULT_VISIT (InlineFunction);
+  DEFAULT_VISIT (DynamicFunctionInvocation);
 
   DEFAULT_VISIT (ParseErrorNode);
 };

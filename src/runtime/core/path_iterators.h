@@ -110,7 +110,7 @@ public:
 
   bool nilledAllowed() const { return theNilledAllowed; }
 
-  bool nameOrKindTest(const store::Item* node, PlanState& planState) const;
+  bool nameOrKindTest(const store::Item* node, const QueryLoc& loc) const;
 };
 
 
@@ -122,7 +122,7 @@ class AxisState : public PlanIteratorState
 public:
   store::Item_t  theContextNode;   
 
-  xs_long           theCurrentPos;
+  xs_long        theCurrentPos;
 
 public:
   void init(PlanState& planState) 

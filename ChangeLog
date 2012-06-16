@@ -167,6 +167,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #951772 (Comment node crashes serialization)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
 
+	
 version 2.1
 
 New Features:

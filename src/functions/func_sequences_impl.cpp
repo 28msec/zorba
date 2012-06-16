@@ -61,7 +61,8 @@ xqtref_t op_concatenate::getReturnType(const fo_expr* caller) const
     {
       t = TypeOps::union_type(*t, *caller->get_arg(i)->get_return_type(), tm);
 
-      TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
+      TypeConstants::quantifier_t pq = t->get_quantifier();
+
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
     }

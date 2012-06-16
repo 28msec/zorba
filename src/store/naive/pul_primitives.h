@@ -896,17 +896,17 @@ class UpdCollection : public UpdatePrimitive
 protected:
   store::Item_t               theName;
   std::vector<store::Item_t>  theNodes;
-  bool                        theDynamicCollection;
+  bool                        theIsDynamic;
 
   UpdCollection(
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,
-        bool dyn_collection = false)
+        bool isDynamic)
     :
     UpdatePrimitive(pul, aLoc),
     theName(name),
-    theDynamicCollection(dyn_collection)
+    theIsDynamic(isDynamic)
   {
   }
 
@@ -915,7 +915,7 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   UpdCollection(
         CollectionPul* pul,
@@ -923,16 +923,16 @@ protected:
         store::Item_t& target,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic);
 
 public:
   const store::Item* getName() const { return theName.getp(); }
 
-  ulong numNodes() const { return (ulong)theNodes.size(); }
+  csize numNodes() const { return theNodes.size(); }
 
   store::Item* getNode(ulong i) const { return theNodes[i].getp(); }
 
-  bool dynamicCollection() const { return theDynamicCollection; }
+  bool dynamicCollection() const { return theIsDynamic; }
 };
 
 
@@ -954,9 +954,9 @@ protected:
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
-        bool dyn_collection)
+        bool isDynamic)
     :
-    UpdCollection(pul, aLoc, name, dyn_collection),
+    UpdCollection(pul, aLoc, name, isDynamic),
     theAnnotations(annotations),
     theNodeType(nodeType)
   {
@@ -987,9 +987,9 @@ protected:
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,
-        bool dyn_collection)
+        bool isDynamic)
     :
-    UpdCollection(pul, aLoc, name, dyn_collection)
+    UpdCollection(pul, aLoc, name, isDynamic)
   {
   }
 
@@ -1019,9 +1019,9 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name, 
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic)
       :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic),
     theNumApplied(0)
   {
   }
@@ -1049,12 +1049,12 @@ protected:
 
   UpdInsertFirstIntoCollection(
       CollectionPul* pul,
-        const QueryLoc* aLoc,
+      const QueryLoc* aLoc,
       store::Item_t& name,
       std::vector<store::Item_t>& nodes,
-      bool dyn_collection)
+      bool isDynamic)
     :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic),
     theNumApplied(0)
   {
   }
@@ -1085,9 +1085,9 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic)
     :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic),
     theNumApplied(0)
   {
   }
@@ -1120,9 +1120,9 @@ protected:
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic)
     :
-    UpdCollection(pul, aLoc, target, name, nodes, dyn_collection)
+    UpdCollection(pul, aLoc, target, name, nodes, isDynamic)
   {
   }
 
@@ -1154,9 +1154,9 @@ protected:
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection)
+        bool isDynamic)
     :
-    UpdCollection(pul, aLoc, target, name, nodes, dyn_collection)
+    UpdCollection(pul, aLoc, target, name, nodes, isDynamic)
   {
   }
 
@@ -1179,10 +1179,10 @@ class UpdDeleteNodesFromCollection: public  UpdCollection
   friend class PULPrimitiveFactory;
 
 protected:
-  bool               theIsLast;
+  bool                    theIsLast;
 
-  ulong              theNumApplied;
-  std::vector<bool>  theFound;
+  ulong                   theNumApplied;
+  std::vector<bool>       theFound;
   std::vector<xs_integer> thePositions;
 
   UpdDeleteNodesFromCollection(
@@ -1191,9 +1191,9 @@ protected:
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool dyn_collection)
+        bool isDynamic)
     :
-    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, isDynamic),
     theIsLast(isLast),
     theNumApplied(0)
   {
@@ -1222,9 +1222,9 @@ protected:
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,
-        bool dyn_collection)
+        bool isDynamic)
     :
-    UpdCollection(pul, aLoc, name, dyn_collection)
+    UpdCollection(pul, aLoc, name, isDynamic)
   {
   }
 
@@ -1580,17 +1580,16 @@ class UpdInsertIntoHashMap : public UpdHashMap
   friend class PULPrimitiveFactory;
 
 protected:
+  const std::vector<store::Item_t> theKey;
+  const store::Iterator_t          theValue;
 
+protected:
   UpdInsertIntoHashMap(
         PULImpl* pul,
         const QueryLoc*,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey,
         const store::Iterator_t& aValue);
-
-  const std::vector<store::Item_t> theKey;
-  const store::Iterator_t          theValue;
-
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1602,6 +1601,7 @@ public:
   void undo();
 };
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1610,14 +1610,14 @@ class UpdRemoveFromHashMap : public UpdHashMap
   friend class PULPrimitiveFactory;
 
 protected:
+  const std::vector<store::Item_t> theKey;
 
+protected:
   UpdRemoveFromHashMap(
         PULImpl* pul,
         const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey);
-
-  const std::vector<store::Item_t> theKey;
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1628,6 +1628,265 @@ public:
   void apply();
   void undo();
 };
+
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONObjectInsert: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  std::vector<store::Item_t>  theNames;
+  std::vector<store::Item_t>  theValues;
+
+  csize                       theNumApplied;
+
+protected:
+  UpdJSONObjectInsert(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      std::vector<store::Item_t>& names,
+      std::vector<store::Item_t>& values);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_OBJECT_INSERT;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONObjectDelete: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theName;
+
+  store::Item_t  theOldValue;
+
+protected:
+  UpdJSONObjectDelete(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      store::Item_t& name);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_OBJECT_DELETE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONObjectReplaceValue: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theName;
+  store::Item_t  theNewValue;
+
+  store::Item_t  theOldValue;
+
+protected:
+  UpdJSONObjectReplaceValue(
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newValue);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_OBJECT_REPLACE_VALUE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONObjectRename: public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theName;
+  store::Item_t  theNewName;
+
+protected:
+  UpdJSONObjectRename(
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newName);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_OBJECT_RENAME;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONArrayUpdate : public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+public:
+  struct Comparator
+  {
+    bool operator() (const UpdatePrimitive* lhs, const UpdatePrimitive* rhs);
+  };
+
+protected:
+  xs_integer  thePosition;
+
+protected:
+  UpdJSONArrayUpdate(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      xs_integer& pos);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONArrayInsert : public UpdJSONArrayUpdate
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  std::vector<store::Item_t>  theMembers;
+
+  long                        theNumApplied;
+
+protected:
+  UpdJSONArrayInsert(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      xs_integer& pos,
+      std::vector<store::Item_t>& members);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_ARRAY_INSERT;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONArrayDelete : public UpdJSONArrayUpdate
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theOldValue;
+
+protected:
+  UpdJSONArrayDelete(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      xs_integer& pos);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_ARRAY_DELETE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONArrayReplaceValue: public UpdJSONArrayUpdate
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t  theNewValue;
+
+  store::Item_t  theOldValue;
+
+protected:
+  UpdJSONArrayReplaceValue(
+      CollectionPul* pul,
+      const QueryLoc*,
+      store::Item_t& target,
+      xs_integer& pos,
+      store::Item_t& newValue);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+#endif // ZORBA_WITH_JSON
 
 } /* namespace simplestore */
 } /* namespace zorba */

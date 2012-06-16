@@ -432,7 +432,8 @@ bool DynamicContextImpl::setCurrentDateTime(const Item& aDateTimeItem)
     TypeManager* tm = theStaticContext->get_typemanager();
 
     xqtref_t lItemType = tm->create_named_type(lItem->getType(),
-                                               TypeConstants::QUANT_ONE);
+                                               TypeConstants::QUANT_ONE,
+                                               QueryLoc::null);
 
     if (!TypeOps::is_subtype(tm,
                              *lItemType,
