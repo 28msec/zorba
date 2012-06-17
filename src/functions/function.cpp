@@ -69,6 +69,9 @@ SERIALIZE_INTERNAL_METHOD(function)
 ********************************************************************************/
 void function::serialize(::zorba::serialization::Archiver& ar)
 {
+  if (ar.is_loading_hardcoded_objects())
+    return;
+
   ar & theSignature;
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;

@@ -76,6 +76,7 @@
 
 #include "functions/func_function_item_iter.h"
 
+#include "zorbaserialization/archiver.h"
 
 
 namespace zorba
@@ -95,6 +96,10 @@ void library_init()
 
 void BuiltinFunctionLibrary::create(static_context* sctx)
 {
+  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+
+  ar.set_loading_hardcoded_objects(true);
+
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
 
   populate_context_accessors(sctx);
@@ -150,6 +155,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_ft_module(sctx);
   populate_context_ft_module_impl(sctx);
 #endif /* ZORBA_NO_FULL_TEXT */
+
+  ar.set_loading_hardcoded_objects(false);
 }
 
 
