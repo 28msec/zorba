@@ -78,17 +78,18 @@ size_type decode( char const *from, size_type from_len, char *to );
 void decode( std::istream &from, std::ostream &to );
 
 /**
- * Decodes a Base64-encoded istream.  Embedded newlines and carriage-returns
- * are skipped.
+ * Decodes a Base64-encoded istream and appends the decoded bytes to a string.
+ * Embedded newlines and carriage-returns are skipped.
  *
+ * @tparam StringType The string type.
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
  * @throws invalid_argument if more than two trailing \c = characters are
  * encountered or necessary, \c = is encountered anywhere in the stream except
  * at the end, or an invalid byte in encountered.
  */
-template<typename CharType,class TraitsType,class StringType> inline
-void decode( std::basic_istream<CharType,TraitsType> &from, StringType *to ) {
+template<class StringType> inline
+void decode( std::istream &from, StringType *to ) {
   char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
   while ( !from.eof() ) {
     from.read( from_buf, sizeof from_buf );
@@ -121,13 +122,14 @@ size_type encode( char const *from, size_type from_len, char *to );
 void encode( std::istream &from, std::ostream &to );
 
 /**
- * Encodes a stream to Base64.
+ * Encodes a stream to Base64 and appends the encoded bytes to a string.
  *
+ * @tparam StringType The string type.
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the encoded bytes to.
  */
-template<typename CharType,class TraitsType,class StringType> inline
-void encode( std::basic_istream<CharType,TraitsType> &from, StringType *to ) {
+template<class StringType> inline
+void encode( std::istream &from, StringType *to ) {
   char from_buf[ 1024 * 3 ], to_buf[ 1024 * 4 ];
   while ( !from.eof() ) {
     from.read( from_buf, sizeof from_buf );
