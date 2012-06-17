@@ -924,7 +924,7 @@ archive_field* Archiver::replace_with_null(archive_field* current_field)
                                                   false,
                                                   ALLOW_DELAY,
                                                   current_field->theLevel);
-    null_field->theId = ++theFieldCounter;
+    null_field->theId = 0;
     replace_field(null_field, current_field);
     current_field->theParent = NULL;
     current_field->theNextSibling = NULL;
