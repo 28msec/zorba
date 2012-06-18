@@ -156,6 +156,27 @@ long GeneralIndexCompareFunction::compare(
 /******************************************************************************
 
 *******************************************************************************/
+bool GeneralIndexValue::removeNode(const store::Item_t& node)
+{
+  GeneralIndexValue::iterator ite = theNodes.begin();
+  GeneralIndexValue::iterator end = theNodes.end();
+
+  for (; ite != end; ++ite)
+  {
+    if ((*ite).theNode == node)
+    {
+      theNodes.erase(ite);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 void GeneralIndexValue::addNode(store::Item_t& node, bool untyped)
 {
   csize numNodes = theNodes.size();
@@ -635,6 +656,70 @@ bool GeneralIndex::insertInMap(
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralIndex::remove(const store::Item_t& key, const store::Item_t& node, bool all)
+{
+  /*
+  bool lossy = false;
+  bool found = false;
+  store::Item_t castItem;
+  store::Item_t node2;
+
+  bool sorted = isSorted();
+  */
+  AtomicItem* keyItem = static_cast<AtomicItem*>(key.getp());
+
+  if (keyItem == NULL)
+  {
+    std::vector<store::Item_t>::iterator ite =
+    std::find(theEmptyKeyNodes.begin(), theEmptyKeyNodes.end(), node);
+
+    ZORBA_ASSERT(ite != theEmptyKeyNodes.end());
+
+    theEmptyKeyNodes.erase(ite);
+    return true;
+  }
+
+  if (keyItem->getBaseItem() != NULL)
+  {
+    keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+  }
+
+  //store::SchemaTypeCode keyType = keyItem->getTypeCode();
+
+  if (isTyped())
+  {
+    return removeFromMap(key, node, theKeyTypeCode, false);
+  }
+
+  return true;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralIndex::removeFromMap(
+    const store::Item_t& key,
+    const store::Item_t& node,
+    store::SchemaTypeCode targetMap,
+    bool all)
+{
+  if (isSorted())
+  {
+    GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(this);
+    return idx->removeFromMap(key, node, idx->theMaps[targetMap], all);
+  }
+  else
+  {
+    GeneralHashIndex* idx = static_cast<GeneralHashIndex*>(this);
+    return idx->removeFromMap(key, node, idx->theMaps[targetMap], all);
+  }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Hash Map General Index                                                     //
@@ -745,12 +830,41 @@ bool GeneralHashIndex::insertInMap(
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralHashIndex::remove(
+bool GeneralHashIndex::removeFromMap(
     const store::Item_t& key,
     const store::Item_t& node,
+    IndexMap* targetMap,
     bool all)
 {
-  assert(false);
+  assert(targetMap);
+  assert(key != NULL);
+
+  IndexMap::iterator pos = targetMap->find(key);
+
+  if (pos != targetMap->end())
+  {
+    GeneralIndexValue* valueSet = (*pos).second;
+
+    if (all)
+    {
+      const_cast<store::Item*>((*pos).first)->removeReference();
+      delete valueSet;
+      targetMap->erase(pos);
+      return true;
+    }
+
+    bool found = valueSet->removeNode(node);
+
+    if (valueSet->empty())
+    {
+      const_cast<store::Item*>((*pos).first)->removeReference();
+      delete valueSet;
+      targetMap->erase(pos);
+    }
+
+    return found;
+  }
+
   return false;
 }
 
@@ -920,12 +1034,42 @@ bool GeneralTreeIndex::insertInMap(
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralTreeIndex::remove(
+bool GeneralTreeIndex::removeFromMap(
     const store::Item_t& key,
-    const store::Item_t& item,
+    const store::Item_t& node,
+    IndexMap* targetMap,
     bool all)
 {
-  return true;
+  assert(targetMap);
+  assert(key != NULL);
+
+  IndexMap::iterator pos = targetMap->find(key);
+
+  if (pos != targetMap->end())
+  {
+    GeneralIndexValue* valueSet = (*pos).second;
+
+    if (all)
+    {
+      const_cast<store::Item*>((*pos).first)->removeReference();
+      delete valueSet;
+      targetMap->erase(pos);
+      return true;
+    }
+
+    bool found = valueSet->removeNode(node);
+
+    if (valueSet->empty())
+    {
+      const_cast<store::Item*>((*pos).first)->removeReference();
+      delete valueSet;
+      targetMap->erase(pos);
+    }
+
+    return found;
+  }
+
+  return false;
 }
 
 

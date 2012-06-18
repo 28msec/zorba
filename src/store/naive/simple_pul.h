@@ -243,6 +243,10 @@ protected:
 
   void refreshGeneralIndex(csize idx);
 
+  void undoValueIndexRefresh(csize idx);
+
+  void undoGeneralIndexRefresh(csize idx);
+
   void truncateIndexes();
 
   void undoRefreshIndexes();

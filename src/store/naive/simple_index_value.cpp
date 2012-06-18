@@ -427,9 +427,8 @@ bool ValueHashIndex::remove(
     const store::IndexKey* keyp = (*pos).first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                 valueSet->end(),
-                                                 value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (all)
     {
@@ -733,9 +732,8 @@ bool ValueTreeIndex::remove(
     const store::IndexKey* keyp = pos->first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                   valueSet->end(),
-                                                   value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (valIte != valueSet->end())
     {

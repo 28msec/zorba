@@ -2080,8 +2080,7 @@ void CollectionPul::refreshValueIndex(csize idx)
 {
   ValueIndex* index = static_cast<ValueIndex*>(theIncrementalIndices[idx]);
 
-  STORE_TRACE2("Index size before do = " 
-               << (!index->isTreeIndex() ? index->size() : 0));
+  STORE_TRACE2("Index size before do = " << index->size());
 
   store::IndexDelta::ValueDelta& 
   beforeDelta = theBeforeIndexDeltas[idx].getValueDelta();
@@ -2107,7 +2106,7 @@ void CollectionPul::refreshValueIndex(csize idx)
   end = beforeDelta.end();
   for (; ite != end; ++ite, ++numBeforeApplied)
   {
-    index->remove((*ite).second, (*ite).first);
+    index->remove((*ite).second, (*ite).first, false);
   }
 
   ite = afterDelta.begin();
@@ -2132,7 +2131,7 @@ void CollectionPul::refreshValueIndex(csize idx)
   end = deletedDelta.end();
   for (; ite != end; ++ite, ++numDeletedApplied)
   {
-    index->remove((*ite).second, (*ite).first);
+    index->remove((*ite).second, (*ite).first, false);
   }
   
   STORE_TRACE2("inserted-delta size = " << insertedDelta.size());
@@ -2151,8 +2150,7 @@ void CollectionPul::refreshValueIndex(csize idx)
     }
   }
   
-  STORE_TRACE2("Index size after do = " 
-               << (!index->isTreeIndex() ? index->size() : 0));
+  STORE_TRACE2("Index size after do = " << index->size());
 }
 
 
@@ -2185,30 +2183,36 @@ void CollectionPul::refreshGeneralIndex(csize idx)
   std::vector<store::Item_t>::iterator keyIte;
   std::vector<store::Item_t>::iterator keyEnd;
 
-#if 0
   ite = beforeDelta.begin();
   end = beforeDelta.end();
+
   for (; ite != end; ++ite, ++numBeforeApplied)
   {
-    index->remove((*ite).second, (*ite).first);
+    keyIte = (*ite).second.begin();
+    keyEnd = (*ite).second.end();
+
+    for (; keyIte != keyEnd; ++keyIte)
+    {
+      index->remove((*keyIte), (*ite).first, false);
+    }
   }
 
   ite = afterDelta.begin();
   end = afterDelta.end();
+
   for (; ite != end; ++ite, ++numAfterApplied)
   {
-    node = (*ite).first;
-    key = (*ite).second;
-    
-    // If the index had its own key obj already, delete the key obj that was
-    // allocated during the delta creation.
-    if (index->insert((*ite).second, node))
+    keyIte = (*ite).second.begin();
+    keyEnd = (*ite).second.end();
+
+    for (; keyIte != keyEnd; ++keyIte)
     {
-      assert(key != (*ite).second);
-      delete key;
+      node = (*ite).first;
+      key = (*keyIte);
+
+      index->insert(key, node);
     }
   }
-#endif
 
   STORE_TRACE2("deleted-delta size = " << deletedDelta.size());
   
@@ -2262,74 +2266,10 @@ void CollectionPul::undoRefreshIndexes()
 
   for (csize idx = 0; idx < numIncrementalIndices; ++idx)
   {
-    ValueIndex* index = static_cast<ValueIndex*>(theIncrementalIndices[idx]);
-
-    STORE_TRACE2("Index size before undo = " 
-                 << (!index->isTreeIndex() ? index->size() : 0));
-    
-    store::IndexDelta::ValueDelta& 
-    beforeDelta = theBeforeIndexDeltas[idx].getValueDelta();
-    store::IndexDelta::ValueDelta&
-    afterDelta = theAfterIndexDeltas[idx].getValueDelta();
-    store::IndexDelta::ValueDelta&
-    insertedDelta = theInsertedDocsIndexDeltas[idx].getValueDelta();
-    store::IndexDelta::ValueDelta&
-    deletedDelta = theDeletedDocsIndexDeltas[idx].getValueDelta();
-
-    csize numBeforeApplied = theNumBeforeIndexDeltasApplied[idx];
-    csize numAfterApplied = theNumAfterIndexDeltasApplied[idx];
-    csize numDeletedApplied = theNumDeletedDocsIndexDeltasApplied[idx];
-    csize numInsertedApplied = theNumInsertedDocsIndexDeltasApplied[idx];
-
-    IndexDeltaImpl::ReverseValueIterator ite;
-    IndexDeltaImpl::ReverseValueIterator end;
-
-    ite = insertedDelta.rbegin() + (insertedDelta.size() - numInsertedApplied);
-    end = insertedDelta.rend();
-    for (; ite != end; ++ite)
-    {
-      index->remove((*ite).second, (*ite).first);
-    }
-
-    ite = deletedDelta.rbegin() + (deletedDelta.size() - numDeletedApplied);
-    end = deletedDelta.rend();
-    for (; ite != end; ++ite)
-    {
-      store::IndexKey* key = (*ite).second;
-
-      // If the index takes ownership of the key obj, set the key ptr to null
-      // so that the key obj will not be deleted during cleanIndexDeltas().
-      if (!index->insert(key, (*ite).first))
-      {
-        assert(key == (*ite).second);
-        (*ite).second = NULL;
-      }
-    }
-
-    ite = afterDelta.rbegin() + (afterDelta.size() - numAfterApplied);
-    end = afterDelta.rend();
-    for (; ite != end; ++ite)
-    {
-      index->remove((*ite).second, (*ite).first);
-    }
-
-    ite = beforeDelta.rbegin() + (beforeDelta.size() - numBeforeApplied);
-    end = beforeDelta.rend();
-    for (; ite != end; ++ite)
-    {
-      store::IndexKey* key = (*ite).second;
-
-      // If the index takes ownership of the key obj, set the key ptr to null
-      // so that the key obj will not be deleted during cleanIndexDeltas().
-      if (!index->insert(key, (*ite).first))
-      {
-        assert(key == (*ite).second);
-        (*ite).second = NULL;
-      }
-    }
-
-    STORE_TRACE2("Index size after undo = " 
-                 << (!index->isTreeIndex() ? index->size() : 0));
+    if (theIncrementalIndices[idx]->isGeneral())
+      undoGeneralIndexRefresh(idx);
+    else
+      undoValueIndexRefresh(idx);
   }
 
   STORE_TRACE1("Reverted indexes for collection " 
@@ -2337,6 +2277,117 @@ void CollectionPul::undoRefreshIndexes()
                    theCollection->getName()->getStringValue().c_str() :
                    "NULL")
                << std::endl);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void CollectionPul::undoValueIndexRefresh(csize idx)
+{
+  ValueIndex* index = static_cast<ValueIndex*>(theIncrementalIndices[idx]);
+
+  STORE_TRACE2("Index size before undo = " << index->size());
+    
+  store::IndexDelta::ValueDelta& 
+  beforeDelta = theBeforeIndexDeltas[idx].getValueDelta();
+  store::IndexDelta::ValueDelta&
+  afterDelta = theAfterIndexDeltas[idx].getValueDelta();
+  store::IndexDelta::ValueDelta&
+  insertedDelta = theInsertedDocsIndexDeltas[idx].getValueDelta();
+  store::IndexDelta::ValueDelta&
+  deletedDelta = theDeletedDocsIndexDeltas[idx].getValueDelta();
+
+  csize numBeforeApplied = theNumBeforeIndexDeltasApplied[idx];
+  csize numAfterApplied = theNumAfterIndexDeltasApplied[idx];
+  csize numDeletedApplied = theNumDeletedDocsIndexDeltasApplied[idx];
+  csize numInsertedApplied = theNumInsertedDocsIndexDeltasApplied[idx];
+
+  IndexDeltaImpl::ReverseValueIterator ite;
+  IndexDeltaImpl::ReverseValueIterator end;
+
+  ite = insertedDelta.rbegin() + (insertedDelta.size() - numInsertedApplied);
+  end = insertedDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    index->remove((*ite).second, (*ite).first, false);
+  }
+  
+  ite = deletedDelta.rbegin() + (deletedDelta.size() - numDeletedApplied);
+  end = deletedDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    store::IndexKey* key = (*ite).second;
+
+    // If the index takes ownership of the key obj, set the key ptr to null
+    // so that the key obj will not be deleted during cleanIndexDeltas().
+    if (!index->insert(key, (*ite).first))
+    {
+      assert(key == (*ite).second);
+      (*ite).second = NULL;
+    }
+  }
+
+  ite = afterDelta.rbegin() + (afterDelta.size() - numAfterApplied);
+  end = afterDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    index->remove((*ite).second, (*ite).first, false);
+  }
+
+  ite = beforeDelta.rbegin() + (beforeDelta.size() - numBeforeApplied);
+  end = beforeDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    store::IndexKey* key = (*ite).second;
+    
+    // If the index takes ownership of the key obj, set the key ptr to null
+    // so that the key obj will not be deleted during cleanIndexDeltas().
+    if (!index->insert(key, (*ite).first))
+    {
+      assert(key == (*ite).second);
+      (*ite).second = NULL;
+    }
+  }
+  
+  STORE_TRACE2("Index size after undo = " << index->size());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void CollectionPul::undoGeneralIndexRefresh(csize idx)
+{
+#if 0
+  GeneralIndex* index = static_cast<GeneralIndex*>(theIncrementalIndices[idx]);
+
+  store::IndexDelta::GeneralDelta& 
+  beforeDelta = theBeforeIndexDeltas[idx].getGeneralDelta();
+  store::IndexDelta::GeneralDelta&
+  afterDelta = theAfterIndexDeltas[idx].getGeneralDelta();
+  store::IndexDelta::GeneralDelta&
+  insertedDelta = theInsertedDocsIndexDeltas[idx].getGeneralDelta();
+  store::IndexDelta::GeneralDelta&
+  deletedDelta = theDeletedDocsIndexDeltas[idx].getGeneralDelta();
+
+  csize numBeforeApplied = theNumBeforeIndexDeltasApplied[idx];
+  csize numAfterApplied = theNumAfterIndexDeltasApplied[idx];
+  csize numDeletedApplied = theNumDeletedDocsIndexDeltasApplied[idx];
+  csize numInsertedApplied = theNumInsertedDocsIndexDeltasApplied[idx];
+
+  IndexDeltaImpl::ReverseGeneralIterator ite;
+  IndexDeltaImpl::ReverseGeneralIterator end;
+  std::vector<store::Item_t>::reverse_iterator keyIte;
+  std::vector<store::Item_t>::reverse_iterator keyEnd;
+
+  ite = insertedDelta.rbegin() + (insertedDelta.size() - numInsertedApplied);
+  end = insertedDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    index->remove((*ite).second, (*ite).first, false);
+  }
+#endif
 }
 
 

@@ -77,19 +77,25 @@ public:
 
   typedef std::vector<NodeInfo>::const_iterator const_iterator;
 
+  typedef std::vector<NodeInfo>::iterator iterator;
+
 protected:
   std::vector<NodeInfo> theNodes;
 
 public:
   GeneralIndexValue(csize size = 0) : theNodes(size) {}
 
+  bool empty() const { return theNodes.empty(); }
+
   void clear() { theNodes.clear(); }
 
-  const_iterator begin() { return theNodes.begin(); }
+  const_iterator begin() const { return theNodes.begin(); }
 
-  const_iterator end()   { return theNodes.end(); }
+  const_iterator end() const { return theNodes.end(); }
 
   void addNode(store::Item_t& node, bool untyped);
+
+  bool removeNode(const store::Item_t& node);
 };
 
 
@@ -161,6 +167,12 @@ protected:
       store::SchemaTypeCode targetMap,
       bool untyped);
 
+  bool removeFromMap(
+      const store::Item_t& key,
+      const store::Item_t& node,
+      store::SchemaTypeCode targetMap,
+      bool all);
+
   bool probeMap(
       const store::Item* key,
       store::SchemaTypeCode targetMap);
@@ -176,10 +188,7 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& node);
 
-  virtual bool remove(
-      const store::Item_t& key,
-      const store::Item_t& node,
-      bool all) = 0;
+  bool remove(const store::Item_t& key, const store::Item_t& node, bool all);
 };
 
 
@@ -231,6 +240,12 @@ protected:
       IndexMap*& targetMap,
       bool untyped);
 
+  bool removeFromMap(
+      const store::Item_t& key,
+      const store::Item_t& node,
+      IndexMap* targetMap,
+      bool all);
+
 public:
   GeneralHashIndex(
       const store::Item_t& name,
@@ -239,8 +254,6 @@ public:
   ~GeneralHashIndex();
 
   Index::KeyIterator_t keys() const;
-
-  bool remove(const store::Item_t& key, const store::Item_t& node, bool);
 
   void clear();
 };
@@ -286,6 +299,12 @@ protected:
       IndexMap*& targetMap,
       bool untyped);
 
+  bool removeFromMap(
+      const store::Item_t& key,
+      const store::Item_t& item,
+      IndexMap* targetMap,
+      bool all);
+
 public:
   GeneralTreeIndex(
       const store::Item_t& qname,
@@ -294,8 +313,6 @@ public:
   ~GeneralTreeIndex();
 
   Index::KeyIterator_t keys() const;
-
-  bool remove(const store::Item_t& key, const store::Item_t& item, bool all);
 
   void clear();
 };
