@@ -460,6 +460,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
     break;
   }
+#ifdef ZORBA_WITH_JSON
   case JSONIQ_PAIR_NAME:
   {
     RAISE_ERROR(jerr::JNTY0001, loc,
@@ -472,6 +473,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(JNTY0007_Array), valueType));
     break;
   }
+#endif
   default:
   {
     ZORBA_ASSERT(false);
@@ -681,8 +683,13 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
     break;
   }
+#ifdef ZORBA_WITH_JSON
   case JSON_VALUE:
+  {
     RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
+    break;
+  }
+#endif
   default:
   {
     ZORBA_ASSERT(false);

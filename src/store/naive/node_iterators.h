@@ -22,7 +22,9 @@
 #include "store/api/iterator.h"
 #include "shared_types.h"
 #include "node_items.h"
+#ifdef ZORBA_WITH_JSON
 #include "json_items.h"
+#endif
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset_itemh.h"

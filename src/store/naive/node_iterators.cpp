@@ -287,7 +287,7 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
 #else
         ZORBA_ASSERT_WITH_MSG(
             false,
-            "Non-node found in node sorting iterator.")
+            "Non-node found in node sorting iterator.");
 #endif
       }
       theNodes.push_back(reinterpret_cast<XmlNode*>(lItem.release()));
