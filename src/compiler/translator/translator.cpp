@@ -4343,11 +4343,19 @@ void* begin_visit(const IndexKeyList& v)
     ERROR_PARAMS(index->getName()->getStringValue()));
   }
 
+#ifdef ZORBA_WITH_JSON
   domainExpr = wrap_in_type_match(domainExpr,
                                   theRTM.STRUCTURED_ITEM_TYPE_STAR,
                                   loc,
                                   TreatIterator::INDEX_DOMAIN,
                                   index->getName());
+#else
+  domainExpr = wrap_in_type_match(domainExpr,
+                                  theRTM.ANY_NODE_TYPE_STAR,
+                                  loc,
+                                  TreatIterator::INDEX_DOMAIN,
+                                  index->getName());
+#endif
 
   // For general indexes, the domain expression must not return duplicate nodes.
   // To see why, consider the following examples:
