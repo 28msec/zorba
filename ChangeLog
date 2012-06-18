@@ -5,6 +5,7 @@ version 2.x
 
 New Features:
   * Implemented latest W3C soec for group by clause
+  * Item::isSeekable API extension for streamable content (xs:string and xs:base64Binary).
 
 Optimizations:
   * Small optimization of comparison operations.

@@ -360,6 +360,14 @@ public:
   isStreamable() const;
 
   /**
+   * Checks whether the item's streamable content is seekable.
+   *
+   * @return true only if it is.
+   */
+  bool
+  isSeekable() const;
+
+  /**
    * Gets an istream for the item's content.
    *
    * @return the stream.
