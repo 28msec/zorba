@@ -1189,7 +1189,8 @@ void PULImpl::addJSONObjectDelete(
 
   if (obj->getObjectValue(name->getStringValue()) == NULL)
   {
-    RAISE_ERROR(jerr::JNUP0007, loc, ERROR_PARAMS(name->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1248,7 +1249,8 @@ void PULImpl::addJSONObjectReplaceValue(
 
   if (obj->getObjectValue(name->getStringValue()) == NULL)
   {
-    RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(name->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1268,7 +1270,7 @@ void PULImpl::addJSONObjectReplaceValue(
       UpdJSONObjectReplaceValue* upd = static_cast<UpdJSONObjectReplaceValue*>(*ite);
 
       if (name->equals(upd->theName))
-        RAISE_ERROR(jerr::JNUP0008, loc, ERROR_PARAMS(name->getStringValue()));
+        RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(name->getStringValue()));
     }
 
     UpdatePrimitive* upd = GET_PUL_FACTORY().
@@ -1307,12 +1309,13 @@ void PULImpl::addJSONObjectRename(
 
   if (obj->getObjectValue(name->getStringValue()) == NULL)
   {
-    RAISE_ERROR(jerr::JNUP0011, loc, ERROR_PARAMS(name->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
   }
 
   if (obj->getObjectValue(newName->getStringValue()) != NULL)
   {
-    RAISE_ERROR(jerr::JNUP0012, loc, ERROR_PARAMS(newName->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(newName->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1374,7 +1377,8 @@ void PULImpl::addJSONArrayInsert(
   if (pos <= xs_integer::zero() ||
       arr->getArraySize()->getIntegerValue() + 1 < pos)
   {
-    RAISE_ERROR(jerr::JNUP0018, loc, ERROR_PARAMS(pos));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1448,7 +1452,8 @@ void PULImpl::addJSONArrayDelete(
   if (pos <= xs_integer::zero() ||
       arr->getArraySize()->getIntegerValue() < pos)
   {
-    RAISE_ERROR(jerr::JNUP0020, loc, ERROR_PARAMS(pos.toString()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1512,7 +1517,8 @@ void PULImpl::addJSONArrayReplaceValue(
   if (pos <= xs_integer::zero() ||
       arr->getArraySize()->getIntegerValue() < pos)
   {
-    RAISE_ERROR(jerr::JNUP0021, loc, ERROR_PARAMS(pos.toString()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1532,7 +1538,7 @@ void PULImpl::addJSONArrayReplaceValue(
 
         if (upd->thePosition == pos)
         {
-          RAISE_ERROR(jerr::JNUP0022, loc, ERROR_PARAMS(pos.toString()));
+          RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(pos.toString()));
         }
       }
       else if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_DELETE)
@@ -1981,7 +1987,7 @@ void PULImpl::mergeTargetedUpdateLists(
 
           if (myUpd->theName->equals(otherUpd2->theName))
           {
-            RAISE_ERROR(jerr::JNUP0008, otherUpd->theLoc, 
+            RAISE_ERROR(jerr::JNUP0009, otherUpd->theLoc, 
             ERROR_PARAMS(myUpd->theName->getStringValue()));
           }
         }
@@ -2055,7 +2061,7 @@ void PULImpl::mergeTargetedUpdateLists(
           {
             if (myUpd->thePosition == otherUpd2->thePosition)
             {
-              RAISE_ERROR(jerr::JNUP0022, otherUpd->theLoc, 
+              RAISE_ERROR(jerr::JNUP0009, otherUpd->theLoc, 
               ERROR_PARAMS(myUpd->thePosition.toString()));
             }
           }

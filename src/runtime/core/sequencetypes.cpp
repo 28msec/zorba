@@ -460,6 +460,18 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
     break;
   }
+  case JSONIQ_PAIR_NAME:
+  {
+    RAISE_ERROR(jerr::JNTY0001, loc,
+    ERROR_PARAMS(valueType));
+    break;
+  }
+  case JSONIQ_ARRAY_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNTY0007, loc,
+    ERROR_PARAMS(ZED(JNTY0007_Array), valueType));
+    break;
+  }
   default:
   {
     ZORBA_ASSERT(false);
@@ -670,8 +682,7 @@ void TreatIterator::raiseError(const zstring& valueType) const
     break;
   }
   case JSON_VALUE:
-    RAISE_ERROR(jerr::JNTY0002, loc,
-    ERROR_PARAMS("The value of a JSON object pair must be a single item."));
+    RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
   default:
   {
     ZORBA_ASSERT(false);

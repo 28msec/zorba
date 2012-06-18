@@ -38,6 +38,59 @@ module namespace jerr = 'http://www.jsoniq.org/errors';
 declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
 
 (:~
+ :It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.
+:)
+declare variable $jerr:JNTY0001 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0001");
+
+(:~
+ :It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.
+:)
+declare variable $jerr:JNTY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0002");
+
+(:~
+ :It is a dynamic error if two pairs in an object constructor or in a simple object union have the same name.
+:)
+declare variable $jerr:JNDY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0003");
+
+(:~
+ :It is a type error to call fn:data on a sequence containing an array or an object.
+:)
+declare variable $jerr:JNTY0004 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0004");
+
+(:~
+ :It is a dynamic error if a pending update list contains two inserting update primitives on the same object and pair name.
+:)
+declare variable $jerr:JNUP0005 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0005");
+
+(:~
+ :It is a dynamic error if upd:applyUpdates causes an object to contain two pairs with the same name.
+:)
+declare variable $jerr:JNUP0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0006");
+
+(:~
+ :It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.
+:)
+declare variable $jerr:JNTY0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0007");
+
+
+declare variable $jerr:JNTY0008 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0008");
+
+(:~
+ :It is a dynamic error if a pending update list contains two replacing update primitives on the same object or array, and with the same selector.
+:)
+declare variable $jerr:JNUP0009 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0009");
+
+(:~
+ :It is a dynamic error if a pending update list contains two renaming update primitives on the same object and with the same selector.
+:)
+declare variable $jerr:JNUP0010 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0010");
+
+(:~
+ :It is a type error if the content sequence in a node constructor or in an XQUF insert or replace update expression contains an object or an array.
+:)
+declare variable $jerr:JNTY0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0011");
+
+(:~
  :It is a dynamic error to serialize a sequence of less
  : or more than one item with the JSON output method if the
  : jsoniq-serialization-multiple-items is set to no.
@@ -59,11 +112,8 @@ declare variable $jerr:JNSE0013 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0013
 :)
 declare variable $jerr:JNSE0014 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0014");
 
-(:~
- :Expression computing the value of a pair does not return exactly
- : one item.
-:)
-declare variable $jerr:JNTY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0002");
+
+declare variable $jerr:JNUP0016 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0016");
 
 (:~
  :objects or arrays don't have a string value
@@ -71,86 +121,6 @@ declare variable $jerr:JNTY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0002
 declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003");
 
 (:~
- :objects or arrays don't have a typed value
-:)
-declare variable $jerr:JNTY0004 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0004");
-
-(:~
- :wrong type for object/array selector in update expr
-:)
-declare variable $jerr:JNTY0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0007");
-
-(:~
- :error raised by node constructor or updating expression indicating that a JSON item cannot appear in the corresponding content sequence
-:)
-declare variable $jerr:JNTY0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0011");
-
-(:~
- :error raised by object constructor
-:)
-declare variable $jerr:JNDY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0003");
-
-(:~
  :parser errors raised by the JSONIQLoader
 :)
 declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
-
-(:~
- :duplicate pair to insert
-:)
-declare variable $jerr:JNUP0005 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0005");
-
-(:~
- :pair to insert already in object
-:)
-declare variable $jerr:JNUP0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0006");
-
-(:~
- :pair to delete not in object
-:)
-declare variable $jerr:JNUP0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0007");
-
-(:~
- :duplicate pair to replace
-:)
-declare variable $jerr:JNUP0008 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0008");
-
-(:~
- :pair to replace not in object
-:)
-declare variable $jerr:JNUP0009 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0009");
-
-(:~
- :duplicate pair to rename
-:)
-declare variable $jerr:JNUP0010 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0010");
-
-(:~
- :pair to rename not in object
-:)
-declare variable $jerr:JNUP0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0011");
-
-(:~
- :pair to rename already in object
-:)
-declare variable $jerr:JNUP0012 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0012");
-
-(:~
- :position to insert not in array
-:)
-declare variable $jerr:JNUP0018 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0018");
-
-(:~
- :position to delete not in array
-:)
-declare variable $jerr:JNUP0020 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0020");
-
-(:~
- :position to replace not in array
-:)
-declare variable $jerr:JNUP0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0021");
-
-(:~
- :duplicate position to replace
-:)
-declare variable $jerr:JNUP0022 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0022");

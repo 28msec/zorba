@@ -172,7 +172,9 @@ public:
   {
     FUNC_RETURN,
     FUNC_PARAM,
-    TYPE_PROMOTION
+    TYPE_PROMOTION,
+    JSONIQ_PAIR_NAME,
+    JSONIQ_ARRAY_SELECTOR
   } ErrorKind;
 
 private:

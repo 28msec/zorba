@@ -11132,7 +11132,7 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
                               nameExpr->get_loc(),
                               nameExpr,
                               GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                              PromoteIterator::TYPE_PROMOTION,
+                              PromoteIterator::JSONIQ_PAIR_NAME,
                               NULL);
 
   valueExpr = new treat_expr(theRootSctx,
@@ -12909,7 +12909,7 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   posExpr = wrap_in_type_promotion(
       posExpr,
       rtm.INTEGER_TYPE_ONE,
-      PromoteIterator::TYPE_PROMOTION);
+      PromoteIterator::JSONIQ_ARRAY_SELECTOR);
 
   targetExpr = wrap_in_type_match(
       targetExpr,

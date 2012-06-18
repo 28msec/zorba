@@ -2253,7 +2253,7 @@ bool BasicItemFactory::createJSONObject(
   {
     if (!obj->add(names[i]->getStringValue(), values[i], false))
     {
-      RAISE_ERROR_NO_LOC(jerr::JNDY0003, ERROR_PARAMS(names[i]));
+      RAISE_ERROR_NO_LOC(jerr::JNDY0003, ERROR_PARAMS(names[i]->getStringValue()));
     }
   }
 

@@ -2056,7 +2056,7 @@ void UpdJSONObjectRename::apply()
 
   if (obj->getObjectValue(theNewName->getStringValue()) != NULL)
   {
-    RAISE_ERROR(jerr::JNUP0012, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0006, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
   }
   
   if (obj->rename(theName->getStringValue(), theNewName->getStringValue()))
