@@ -101,9 +101,11 @@ void library_init()
 
 void BuiltinFunctionLibrary::create(static_context* sctx)
 {
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
 
   ar.set_loading_hardcoded_objects(true);
+#endif
 
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
 
@@ -166,7 +168,9 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_jsoniq_functions_impl(sctx);
 #endif
 
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   ar.set_loading_hardcoded_objects(false);
+#endif
 }
 
 

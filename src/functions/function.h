@@ -60,7 +60,11 @@ protected:
 
 
 public:
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   SERIALIZABLE_ABSTRACT_CLASS(function);
+#else
+  SERIALIZABLE_CLASS(function);
+#endif
   SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature);
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -214,18 +218,18 @@ public:
   virtual bool specializable() const { return false; }
 
   virtual function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const
+      static_context* sctx,
+      const std::vector<xqtref_t>& argTypes) const
   {
     return NULL;
   }
 
   virtual PlanIter_t codegen(
-        CompilerCB* cb,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        expr& ann) const = 0;
+      CompilerCB* cb,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      expr& ann) const;
 };
 
 

@@ -229,6 +229,7 @@ enum TypeCode
   TYPE_GroupByIterator,
 
   TYPE_user_function,
+  TYPE_function,
   TYPE_external_function,
   TYPE_signature,
   TYPE_AnnotationInternal,

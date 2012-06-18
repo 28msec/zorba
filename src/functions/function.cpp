@@ -35,6 +35,13 @@
 namespace zorba {
 
 
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
+SERIALIZE_INTERNAL_METHOD(function)
+#else
+SERIALIZABLE_CLASS_VERSIONS(function);
+#endif
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -49,6 +56,7 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   setFlag(FunctionConsts::isBuiltin);
   setFlag(FunctionConsts::isDeterministic);
 
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   zorba::serialization::Archiver& ar =
   *::zorba::serialization::ClassSerializer::getInstance()->
   getArchiverForHardcodedObjects();
@@ -59,18 +67,19 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
     function* this_ptr = this;
     ar & this_ptr;
   }
+#endif
 }
 
-
-SERIALIZE_INTERNAL_METHOD(function)
 
 /*******************************************************************************
 
 ********************************************************************************/
 void function::serialize(::zorba::serialization::Archiver& ar)
 {
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   if (ar.is_loading_hardcoded_objects())
     return;
+#endif
 
   ar & theSignature;
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
@@ -79,7 +88,13 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   ar & theModuleSctx;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
 
+  // If we don't pre-serialize builtin function, it is possible that a builtin
+  // functions needs to be serialized. This happens for builtin functions that
+  // are disabled, and as a result, have been registered in a non-root static
+  // context.
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   ZORBA_ASSERT(!isBuiltin());
+#endif
 }
 
 
@@ -311,6 +326,21 @@ BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return ANNOTATION_FALSE;
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t function::codegen(
+    CompilerCB* cb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  ZORBA_ASSERT(false);
+}
+
 
 }
 /* vim:set et sw=2 ts=2: */
