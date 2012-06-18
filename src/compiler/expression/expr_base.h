@@ -193,6 +193,8 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
+  virtual void free() {}
+
 public:
   expr(static_context*, const QueryLoc&, expr_kind_t);
 
