@@ -51,28 +51,25 @@ public:
   clear();
     
   virtual bool
-  insert(
-      const zorba::store::Item* aName,
-      zorba::store::Collection_t& aCollection);
+  insert(const store::Item* aName, store::Collection_t& aCollection);
     
   virtual bool
   get(
       const zorba::store::Item* aName,
-      zorba::store::Collection_t& aCollection,
-      bool aDynamicCollection = false);
+      store::Collection_t& aCollection,
+      bool isDynamic);
   
   virtual bool
-  remove(const zorba::store::Item* aName, bool aDynamicCollection = false);
+  remove(const store::Item* name, bool isDynamic);
     
   virtual zorba::store::Iterator_t
-  names(bool aDynamicCollection = false);
+  names(bool isDynamic);
     
   // needs to be virtual to allow implementation of additional stores
   virtual CollectionSetIterator_t
-  collections(bool aDynamicCollection = false);
-  
-}; /* class CollectionSet */
-    
+  collections(bool isDynamic);  
+};
+
 
 /*******************************************************************************
   Collection iterator
@@ -90,7 +87,7 @@ public:
   SimpleCollectionSetIterator(
       SimpleCollectionSet::Set* aCollections,
       bool aDynamicCollections);
-    
+
   virtual ~SimpleCollectionSetIterator();
     
   virtual void

@@ -20,6 +20,7 @@
 #include <zorba/internal/qname.h>
 #include <zorba/item.h>
 #include <zorba/user_exception.h>
+#include <zorba/store_consts.h>
 
 #include "zorbaserialization/serialize_zorba_types.h"
 #include "zorbaserialization/serialize_template_types.h"
@@ -216,11 +217,16 @@ void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t>& item
   iter->close();
 }
 
+
 void serialize_atomic_item(Archiver& ar, store::Item*& obj);
 void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id);
 void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree);
 void serialize_my_children(Archiver& ar, store::Iterator_t iter);
 void serialize_my_children2(Archiver& ar, store::Iterator_t iter);
+
+#ifdef ZORBA_WITH_JSON
+void serialize_json_tree(Archiver &ar, store::Item *&obj);
+#endif
 
 
 #define SERIALIZE_FIELD(type, var, get_func)\
@@ -324,16 +330,30 @@ void operator&(Archiver& ar, store::Item*& obj)
 
     kind = obj->getKind();
 
-    if (kind == store::Item::NODE || kind == store::Item::FUNCTION)
+    if (kind == store::Item::NODE ||
+        kind == store::Item::FUNCTION
+#ifdef ZORBA_WITH_JSON
+        || kind == store::Item::JSONIQ
+#endif
+        )
+    {
       ar.set_is_temp_field(true);
+    }
 
     is_ref = ar.add_compound_field(TYPE_LAST,
                                    !FIELD_IS_CLASS,
                                    obj,
                                    ARCHIVE_FIELD_PTR);
 
-    if (kind == store::Item::NODE || kind == store::Item::FUNCTION)
+    if (kind == store::Item::NODE ||
+        kind == store::Item::FUNCTION
+#ifdef ZORBA_WITH_JSON
+        || kind == store::Item::JSONIQ
+#endif
+        )
+    {
       ar.set_is_temp_field(false);
+    }
 
     if (!is_ref)
     {
@@ -358,6 +378,20 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
+#ifdef ZORBA_WITH_JSON
+      case store::Item::JSON_ITEM:
+      {
+        ar.set_is_temp_field(true);
+        ar.set_is_temp_field_one_level(true);
+
+        serialize_json_tree(ar, obj);
+
+        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(false);
+
+        break;
+      }
+#endif
       case store::Item::FUNCTION:
       {
         FunctionItem* fitem = static_cast<FunctionItem*>(obj);
@@ -432,6 +466,20 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
+#ifdef ZORBA_WITH_JSON
+      case store::Item::JSON_ITEM:
+      {
+        ar.set_is_temp_field(true);
+        ar.set_is_temp_field_one_level(true);
+
+        serialize_json_tree(ar, obj);
+
+        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(false);
+
+        break;
+      }
+#endif
       case store::Item::FUNCTION:
       {
         FunctionItem* fitem = NULL;
@@ -721,7 +769,14 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
     
     break;
   }
-  
+ 
+ #ifdef ZORBA_WITH_JSON
+  case store::JDM_NULL:
+  {
+    break;
+  }
+#endif
+
   default:
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
@@ -1021,6 +1076,20 @@ void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
     DESERIALIZE_ATOMIC_ITEM(xs_hexBinary, createHexBinary);
   }
 
+ #ifdef ZORBA_WITH_JSON
+  case store::JDM_NULL:
+  {
+    store::Item_t lRes;
+    GENV_ITEMFACTORY->createJSONNull(lRes);
+    obj = lRes.getp();
+    obj->addReference();
+
+    ar.register_reference(id, ARCHIVE_FIELD_PTR, obj);
+
+    break;
+  }
+#endif
+
   default:
   {
     throw ZORBA_EXCEPTION(zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
@@ -1311,6 +1380,126 @@ void serialize_my_children2(Archiver& ar, store::Iterator_t iter)
 }
 
 
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_json_object(Archiver &ar, store::Item *&obj)
+{
+  xs_integer lSize = xs_integer(0);
+  if (ar.is_serializing_out())
+  {
+    lSize = obj->getSize();
+  }
+  ar & lSize;
+
+  if (ar.is_serializing_out())
+  {
+    store::Iterator_t lIter = obj->getPairs();
+    lIter->open();
+    store::Item_t lPair;
+    while (lIter->next(lPair))
+    {
+      store::Item* lName = lPair->getName();
+      store::Item* lValue = lPair->getValue();
+      ar & lName;
+      ar & lValue;
+    }
+    lIter->close();
+  }
+  else
+  {
+    csize num = to_xs_unsignedInt(lSize);
+    std::vector<store::Item_t> lNames, lValues;
+    lNames.reserve(num);
+    lValues.reserve(num);
+
+    store::Item* lName, *lValue;
+    for (csize i = 0; i < num; ++i)
+    {
+      ar & lName;
+      ar & lValue;
+      lNames.push_back(lName);
+      lValues.push_back(lValue);
+    }
+    store::Item_t lRes;
+    GENV_ITEMFACTORY->createJSONObject(lRes, lNames, lValues); 
+    obj = lRes.getp();
+    obj->addReference();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_json_array(Archiver &ar, store::Item *&obj)
+{
+  xs_integer lSize = xs_integer(0);
+  if (ar.is_serializing_out())
+  {
+    lSize = obj->getSize();
+  }
+  ar & lSize;
+
+  if (ar.is_serializing_out())
+  {
+    store::Iterator_t lIter = obj->getMembers();
+    lIter->open();
+    store::Item_t lMember;
+    while (lIter->next(lMember))
+    {
+      store::Item* lTmp = lMember.getp();
+      ar & lTmp;
+    }
+    lIter->close();
+  }
+  else
+  {
+    csize num = to_xs_unsignedInt(lSize);
+    std::vector<store::Item_t> lValues;
+    lValues.reserve(num);
+
+    store::Item* lValue;
+    for (csize i = 0; i < num; ++i)
+    {
+      ar & lValue;
+      lValues.push_back(lValue);
+    }
+    store::Item_t lRes;
+    GENV_ITEMFACTORY->createJSONArray(lRes, lValues); 
+    obj = lRes.getp();
+    obj->addReference();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_json_tree(Archiver &ar, store::Item *&obj)
+{
+  store::StoreConsts::JSONItemKind lKind = store::StoreConsts::jsonItem;
+  if (ar.is_serializing_out())
+  {
+    lKind = obj->getJSONItemKind();
+  }
+  SERIALIZE_ENUM(store::StoreConsts::JSONItemKind, lKind);
+
+  switch (lKind)
+  {
+  case store::StoreConsts::jsonObject:
+    serialize_json_object(ar, obj);
+    break;
+  case store::StoreConsts::jsonArray:
+    serialize_json_array(ar, obj);
+    break;
+  default: assert(false);
+  }
+}
+#endif // ZORBA_WITH_JSON
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1343,6 +1532,10 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
     UserError* user_err = dynamic_cast<UserError*>(diagnostic);
     XQueryErrorCode* xquery_err = dynamic_cast<XQueryErrorCode*>(diagnostic);
     ZorbaErrorCode* zorba_err = dynamic_cast<ZorbaErrorCode*>(diagnostic);
+#ifdef ZORBA_WITH_JSON
+    JSONiqErrorCode* jsoniq_err = dynamic_cast<JSONiqErrorCode*>(diagnostic);
+    bool isJsoniqErr = (jsoniq_err != NULL);
+#endif
 
     bool isUserErr = (user_err != NULL);
     bool isXQueryErr = (xquery_err != NULL);
@@ -1356,6 +1549,9 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
       ar & isUserErr;
       ar & isXQueryErr;
       ar & isZorbaErr;
+#ifdef ZORBA_WITH_JSON
+      ar & isJsoniqErr;
+#endif
 
       if (user_err)
       {
@@ -1393,10 +1589,14 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
     if (field_treat == ARCHIVE_FIELD_PTR)
     {
       bool is_user, is_xquery, is_zorba;
+      bool is_jsoniq = false;
 
       ar & is_user;
       ar & is_xquery;
       ar & is_zorba;
+#ifdef ZORBA_WITH_JSON
+      ar & is_jsoniq;
+#endif
 
       if (is_user)
       {
@@ -1404,7 +1604,7 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
         ar & user_error->qname_;
         obj = user_error;
       }
-      else if (is_xquery || is_zorba)
+      else if (is_xquery || is_zorba || is_jsoniq)
       {
         std::string localname;
         ar & localname;
@@ -1422,7 +1622,7 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
 
       ar.read_end_current_level();
     }
-    else if((obj = (Diagnostic*)ar.get_reference_value(referencing)))
+    else if ((obj = (Diagnostic*)ar.get_reference_value(referencing)))
     {
     }
     else

@@ -33,6 +33,128 @@
 
 namespace zorba {
 
+// <ZorbaCreateCollectionIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCreateCollectionIterator)
+
+void ZorbaCreateCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
+
+// </ZorbaCreateCollectionIterator>
+
+
+// <ZorbaDeleteCollectionIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteCollectionIterator)
+
+void ZorbaDeleteCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
+
+// </ZorbaDeleteCollectionIterator>
+
+
+// <IsAvailableCollectionIterator>
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableCollectionIterator)
+
+void IsAvailableCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
+
+// </IsAvailableCollectionIterator>
+
+
+// <AvailableCollectionsIterator>
+SERIALIZABLE_CLASS_VERSIONS(AvailableCollectionsIterator)
+
+void AvailableCollectionsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
+
+AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
+
+// </AvailableCollectionsIterator>
+
+
 // <FnCollectionIterator>
 SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
 
@@ -71,7 +193,7 @@ void ZorbaCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
 
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
 }
 
 
@@ -95,6 +217,34 @@ ZorbaCollectionIteratorState::ZorbaCollectionIteratorState() {}
 // </ZorbaCollectionIterator>
 
 
+// <ZorbaCollectionNameIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionNameIterator)
+
+void ZorbaCollectionNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
+}
+
+
+void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
+
+// </ZorbaCollectionNameIterator>
+
+
 // <ZorbaIndexOfIterator>
 SERIALIZABLE_CLASS_VERSIONS(ZorbaIndexOfIterator)
 
@@ -103,7 +253,7 @@ void ZorbaIndexOfIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>*)this);
 
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
 }
 
 
@@ -123,66 +273,6 @@ void ZorbaIndexOfIterator::accept(PlanIterVisitor& v) const
 ZorbaIndexOfIterator::~ZorbaIndexOfIterator() {}
 
 // </ZorbaIndexOfIterator>
-
-
-// <ZorbaCreateCollectionIterator>
-SERIALIZABLE_CLASS_VERSIONS(ZorbaCreateCollectionIterator)
-
-void ZorbaCreateCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-}
-
-
-void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
-
-// </ZorbaCreateCollectionIterator>
-
-
-// <ZorbaDeleteCollectionIterator>
-SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteCollectionIterator)
-
-void ZorbaDeleteCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-}
-
-
-void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
-
-// </ZorbaDeleteCollectionIterator>
 
 
 // <ZorbaInsertNodesIterator>
@@ -305,7 +395,7 @@ void ZorbaInsertNodesAfterIterator::serialize(::zorba::serialization::Archiver& 
   serialize_baseclass(ar,
   (ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
 
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
 }
 
 
@@ -485,7 +575,7 @@ void ZorbaDeleteNodesIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
 
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
 }
 
 
@@ -515,7 +605,7 @@ void ZorbaDeleteNodesFirstIterator::serialize(::zorba::serialization::Archiver& 
   serialize_baseclass(ar,
   (NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>*)this);
 
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
 }
 
 
@@ -545,7 +635,7 @@ void ZorbaDeleteNodesLastIterator::serialize(::zorba::serialization::Archiver& a
   serialize_baseclass(ar,
   (NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>*)this);
 
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
 }
 
 
@@ -575,7 +665,7 @@ void ZorbaTruncateCollectionIterator::serialize(::zorba::serialization::Archiver
   serialize_baseclass(ar,
   (NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>*)this);
 
-    ar & theDynamicCollection;
+    ar & theIsDynamic;
 }
 
 
@@ -595,96 +685,6 @@ void ZorbaTruncateCollectionIterator::accept(PlanIterVisitor& v) const
 ZorbaTruncateCollectionIterator::~ZorbaTruncateCollectionIterator() {}
 
 // </ZorbaTruncateCollectionIterator>
-
-
-// <ZorbaCollectionNameIterator>
-SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionNameIterator)
-
-void ZorbaCollectionNameIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
-}
-
-
-void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
-
-// </ZorbaCollectionNameIterator>
-
-
-// <IsAvailableCollectionIterator>
-SERIALIZABLE_CLASS_VERSIONS(IsAvailableCollectionIterator)
-
-void IsAvailableCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
-
-    ar & theDynamicCollection;
-}
-
-
-void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
-
-// </IsAvailableCollectionIterator>
-
-
-// <AvailableCollectionsIterator>
-SERIALIZABLE_CLASS_VERSIONS(AvailableCollectionsIterator)
-
-void AvailableCollectionsIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
-
-    ar & theDynamicCollection;
-}
-
-
-void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
-
-AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
-
-// </AvailableCollectionsIterator>
 
 
 // <IsAvailableIndexIterator>

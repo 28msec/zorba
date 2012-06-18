@@ -50,6 +50,14 @@ public:
   EXPR_VISITOR_METHODS (const_expr);
   EXPR_VISITOR_METHODS (doc_expr);
   EXPR_VISITOR_METHODS (elem_expr);
+  EXPR_VISITOR_METHODS (pi_expr);
+  EXPR_VISITOR_METHODS (text_expr);
+#ifdef ZORBA_WITH_JSON
+  EXPR_VISITOR_METHODS (json_pair_expr);
+  EXPR_VISITOR_METHODS (json_object_expr);
+  EXPR_VISITOR_METHODS (json_array_expr);
+#endif
+
   EXPR_VISITOR_METHODS (expr);
   EXPR_VISITOR_METHODS (extension_expr);
   EXPR_VISITOR_METHODS (flwor_expr);
@@ -63,10 +71,9 @@ public:
   EXPR_VISITOR_METHODS (name_cast_expr);
   EXPR_VISITOR_METHODS (order_expr);
   EXPR_VISITOR_METHODS (order_modifier);
-  EXPR_VISITOR_METHODS (pi_expr);
+
   EXPR_VISITOR_METHODS (promote_expr);
   EXPR_VISITOR_METHODS (relpath_expr);
-  EXPR_VISITOR_METHODS (text_expr);
   EXPR_VISITOR_METHODS (treat_expr);
   EXPR_VISITOR_METHODS (validate_expr);
   EXPR_VISITOR_METHODS (var_expr);

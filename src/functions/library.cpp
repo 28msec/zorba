@@ -78,6 +78,11 @@
 
 #include "zorbaserialization/archiver.h"
 
+#ifdef ZORBA_WITH_JSON
+#include "functions/func_jsoniq_functions.h"
+#include "functions/func_jsoniq_functions_impl.h"
+#endif
+
 
 namespace zorba
 {
@@ -155,6 +160,11 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_ft_module(sctx);
   populate_context_ft_module_impl(sctx);
 #endif /* ZORBA_NO_FULL_TEXT */
+
+#ifdef ZORBA_WITH_JSON
+  populate_context_jsoniq_functions(sctx);
+  populate_context_jsoniq_functions_impl(sctx);
+#endif
 
   ar.set_loading_hardcoded_objects(false);
 }

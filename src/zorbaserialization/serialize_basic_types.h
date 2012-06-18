@@ -85,6 +85,34 @@ void operator&(Archiver& ar, MAPM& obj);
     obj = (enum_type)int_enum;                      \
 }
 
+#define SERIALIZE_BOOL_VEC(vec)                   \
+  {                                               \
+    ar.set_is_temp_field_one_level(true);         \
+    csize lSize = 0;                              \
+    if (ar.is_serializing_out())                  \
+    {                                             \
+      lSize = vec.size();                         \
+      ar & lSize;                                 \
+      for (csize i = 0; i < lSize; ++i)           \
+      {                                           \
+        bool b = vec[i];                          \
+        ar & b;                                   \
+      }                                           \
+    }                                             \
+    else                                          \
+    {                                             \
+      ar & lSize;                                 \
+      vec.reserve(lSize);                         \
+      for (csize i = 0; i < lSize; ++i)           \
+      {                                           \
+        bool b;                                   \
+        ar & b;                                   \
+        vec.push_back(b);                         \
+      }                                           \
+    }                                             \
+    ar.set_is_temp_field_one_level(false);        \
+  }
+
 
 } // namespace serialization
 } // namespace zorba

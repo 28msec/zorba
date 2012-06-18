@@ -149,7 +149,11 @@ enum TypeCode
   TYPE_EitherNodesOrAtomicsIterator,
 
   TYPE_AtomicXQType,
+  TYPE_StructuredItemXQType,
   TYPE_NodeXQType,
+#ifdef ZORBA_WITH_JSON
+  TYPE_JSONXQType,
+#endif
   TYPE_FunctionXQType,
   TYPE_ItemXQType,
   TYPE_AnyXQType,

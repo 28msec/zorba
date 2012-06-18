@@ -271,7 +271,6 @@ const char*
 static_context::ZORBA_BASE64_FN_NS =
 "http://www.zorba-xquery.com/modules/converters/base64";
 
-
 const char*
 static_context::ZORBA_JSON_FN_NS =
 "http://www.zorba-xquery.com/modules/converters/json";
@@ -323,6 +322,18 @@ static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS =
 const char*
 static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+
+#ifdef ZORBA_WITH_JSON
+
+const char*
+static_context::JSONIQ_NS =
+"http://www.jsoniq.org/";
+
+const char*
+static_context::JSONIQ_FN_NS =
+"http://www.jsoniq.org/functions";
+
+#endif
 
 const char*
 static_context::ZORBA_SCHEMA_FN_NS =
@@ -429,6 +440,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
             ns == ZORBA_NODEPOS_FN_NS ||
+
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
@@ -446,7 +458,9 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
+
             ns == ZORBA_URI_FN_NS ||
+
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
@@ -477,7 +491,11 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
   }
-  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
+  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS
+//#ifdef ZORBA_WITH_JSON
+//      || ns == JSONIQ_FN_NS
+//#endif
+      )
   {
     return true;
   }
@@ -504,6 +522,9 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
+#ifdef ZORBA_WITH_JSON
+            ns == JSONIQ_FN_NS ||
+#endif
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
@@ -1954,11 +1975,8 @@ void static_context::bind_ns(
 
   if (!theNamespaceBindings->insert(prefix, temp))
   {
-    throw XQUERY_EXCEPTION_VAR(
-      err,
-      ERROR_PARAMS(
-				prefix, temp
-  		),
+    throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(prefix, temp),
       ERROR_LOC(loc));
   }
 }

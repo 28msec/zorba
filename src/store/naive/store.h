@@ -136,6 +136,7 @@ public:
   static const char* XS_URI;
   static const char* XML_URI;
   static const char* ZXSE_URI;
+  static const char* JDM_URI;
 
   static const ulong XML_URI_LEN;
 
@@ -152,9 +153,16 @@ public:
 
   std::vector<store::Item_t>    theSchemaTypeNames;
   std::map<store::Item*, store::SchemaTypeCode> theSchemaTypeCodes;
+
   store::Item_t                 XS_UNTYPED_QNAME;
   store::Item_t                 XS_ANY_QNAME;
   store::Item_t                 XS_ANY_SIMPLE_QNAME;
+
+#ifdef ZORBA_WITH_JSON
+  store::Item_t                 JDM_OBJECT_QNAME;
+  store::Item_t                 JDM_ARRAY_QNAME;
+  store::Item_t                 JDM_NULL_QNAME;
+#endif
 
 protected:
   ulong                         theNumUsers;
@@ -181,8 +189,8 @@ protected:
   long                          theTraceLevel;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  internal::StemmerProvider const * theStemmerProvider;
-  TokenizerProvider const     * theTokenizerProvider;
+  const internal::StemmerProvider * theStemmerProvider;
+  const TokenizerProvider         * theTokenizerProvider;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 /*----------------------- Initialization, shutdown ---------------------------*/
@@ -268,19 +276,15 @@ public:
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
-      bool aDynamicCollection = false) = 0;
+      bool isDynamic) = 0;
 
   virtual void addCollection(store::Collection_t& collection);
 
-  virtual void deleteCollection(
-      const store::Item* aName,
-      bool aDynamicCollection = false);
+  virtual void deleteCollection(const store::Item* name, bool isDynamic);
 
-  virtual store::Collection_t getCollection(
-      const store::Item* aName,
-      bool aDynamicCollection = false);
+  virtual store::Collection_t getCollection(const store::Item* name, bool isDynamic);
 
-  virtual store::Iterator_t listCollectionNames(bool aDynamicCollections = false);
+  virtual store::Iterator_t listCollectionNames(bool dynamic);
 
 /*-------------------------------- Indices -----------------------------------*/
 public:

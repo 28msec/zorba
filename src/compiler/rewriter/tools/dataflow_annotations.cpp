@@ -217,7 +217,7 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
 
 #ifdef ZORBA_WITH_JSON
-  case json_pair_expr_kind:
+  case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
   {
@@ -626,8 +626,6 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
   if (!generic_compute(e)) 
   {
-    TypeManager* tm = e->get_type_manager();
-
     csize num_steps = e->size();
     bool only_child_axes = true;
     ulong num_desc_axes = 0;
@@ -673,7 +671,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
     {
       xqtref_t crt = (*e)[0]->get_return_type();
 
-      if (TypeOps::type_max_cnt(tm, *crt) <= 1) 
+      if (crt->max_card() <= 1) 
       {
         bool sorted = false;
         bool distinct = false;
@@ -952,6 +950,7 @@ void SourceFinder::findNodeSourcesRec(
         sources.push_back(node);
 
       std::vector<expr*>* varSources = new std::vector<expr*>;
+
       if (theVarSourcesMap.insert(VarSourcesPair(e, varSources)).second == false)
         delete varSources;
 
@@ -1060,6 +1059,17 @@ void SourceFinder::findNodeSourcesRec(
   {
     return;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_direct_object_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    // TODO? We need to drill inside a json pair or array constructor only 
+    // if we are coming from an unbox or flatten call ????
+    break;
+  }
+#endif
 
   case relpath_expr_kind:
   {

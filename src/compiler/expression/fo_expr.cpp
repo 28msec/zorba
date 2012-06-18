@@ -248,8 +248,7 @@ void fo_expr::compute_scripting_kind()
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
-  if (get_func()->getKind() == 
-      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1)
+  if (get_func()->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
   {
     expr::subst_iter_t i = subst.find(this);
 

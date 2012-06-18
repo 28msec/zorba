@@ -108,6 +108,12 @@ enum expr_kind_t
   wrapper_expr_kind,
   function_trace_expr_kind,
 
+#ifdef ZORBA_WITH_JSON
+  json_direct_object_expr_kind,
+  json_object_expr_kind,
+  json_array_expr_kind,
+#endif
+
   unknown_expr_kind
 };
 

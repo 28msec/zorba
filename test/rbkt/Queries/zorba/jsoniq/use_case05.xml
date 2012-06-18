@@ -1,0 +1,44 @@
+<mediawiki>
+  <siteinfo>
+    <sitename>Wikipedia</sitename>
+
+    <page>
+      <title>Kawasaki's theorem</title>
+      <id>14511776</id>
+      <revision>
+        <id>435519187</id>
+        <timestamp>2011-06-21T20:08:56Z</timestamp>
+        <contributor>
+          <username>Some jerk on the Internet</username>
+          <id>6636894</id>
+        </contributor>
+      </revision>
+    </page>
+
+    <page>
+      <title>Origami techniques</title>
+      <id>193590</id>
+      <revision>
+        <id>447687387</id>
+        <timestamp>2011-08-31T17:21:49Z</timestamp>
+        <contributor>
+          <username>Dmcq</username>
+          <id>3784322</id>
+        </contributor>
+      </revision>
+    </page>
+
+    <page>
+      <title>Mathematics of paper folding</title>
+      <id>232840</id>
+      <revision>
+        <id>440970828</id>
+        <timestamp>2011-07-23T09:10:42Z</timestamp>
+        <contributor>
+          <username>Tabletop</username>
+          <id>173687</id>
+        </contributor>
+      </revision>
+    </page>
+  </siteinfo>
+</mediawiki>

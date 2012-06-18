@@ -235,7 +235,7 @@ FunctionConsts::AnnotationValue function::producesDistinctNodes() const
 
   TypeManager* tm = rt->get_manager();
 
-  if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
+  if (rt->max_card() <= 1 ||
       TypeOps::is_subtype(tm,
                           *rt,
                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
@@ -258,7 +258,7 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
 
   TypeManager* tm = rt->get_manager();
 
-  if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
+  if (rt->max_card() <= 1 ||
       TypeOps::is_subtype(tm,
                           *rt,
                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
@@ -289,9 +289,7 @@ BoolAnnotationValue function::ignoresSortedNodes(expr* fo, csize input) const
 
   xqtref_t rt = theSignature[input];
 
-  TypeManager* tm = rt->get_manager();
-
-  if (TypeOps::type_max_cnt(tm, *rt) <= 1)
+  if (rt->max_card() <= 1)
   {
     return ANNOTATION_TRUE;
   }
