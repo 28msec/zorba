@@ -21,6 +21,7 @@ SET(UNIT_TEST_SRCS
   test_uri.cpp
   json_parser.cpp
   test_fs_iterator.cpp
+  memory_manager.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
