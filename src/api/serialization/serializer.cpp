@@ -110,14 +110,18 @@ static void tokenize(
 /*******************************************************************************
 
 ********************************************************************************/
-serializer::emitter::emitter(serializer* the_serializer, transcoder& the_transcoder)
+serializer::emitter::emitter(
+    serializer* the_serializer, 
+    transcoder& the_transcoder,
+    bool aEmitAttributes)
   :
   ser(the_serializer),
   tr(the_transcoder),
   previous_item(INVALID_ITEM),
   theChildIters(8),
   theFirstFreeChildIter(0),
-  isFirstElementNode(true)
+  isFirstElementNode(true),
+  theEmitAttributes(aEmitAttributes)
 {
   for (ulong i = 0; i < 8; i++)
     theChildIters[i] = GENV_ITERATOR_FACTORY->createChildrenIterator();
@@ -428,7 +432,8 @@ void serializer::emitter::emit_item(store::Item* item)
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  else if (!theEmitAttributes 
+        && item->getNodeKind() == store::StoreConsts::attributeNode)
   {
     throw XQUERY_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
@@ -842,9 +847,10 @@ bool serializer::emitter::havePrefix(const zstring& pre) const
 ********************************************************************************/
 serializer::xml_emitter::xml_emitter(
   serializer* the_serializer,
-  transcoder& the_transcoder)
+  transcoder& the_transcoder,
+  bool aEmitAttributes)
   :
-  emitter(the_serializer, the_transcoder)
+  emitter(the_serializer, the_transcoder, aEmitAttributes)
 {
 }
 
@@ -2221,7 +2227,7 @@ serializer::validate_parameters(void)
 /*******************************************************************************
 
 ********************************************************************************/
-bool serializer::setup(std::ostream& os)
+bool serializer::setup(std::ostream& os, bool aEmitAttributes)
 {
   if (encoding == PARAMETER_VALUE_UTF_8)
   {
@@ -2237,7 +2243,7 @@ bool serializer::setup(std::ostream& os)
   }
 
   if (method == PARAMETER_VALUE_XML)
-    e = new xml_emitter(this, *tr);
+    e = new xml_emitter(this, *tr, aEmitAttributes);
   else if (method == PARAMETER_VALUE_HTML)
     e = new html_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_XHTML)
@@ -2270,9 +2276,10 @@ bool serializer::setup(std::ostream& os)
 ********************************************************************************/
 void serializer::serialize(
     store::Iterator_t    aObject,
-    std::ostream& aOStream)
+    std::ostream& aOStream,
+    bool aEmitAttributes)
 {
-  serialize(aObject, aOStream, 0);
+  serialize(aObject, aOStream, 0, aEmitAttributes);
 }
 
 
@@ -2283,13 +2290,14 @@ void
 serializer::serialize(
   store::Iterator_t     aObject,
   std::ostream&         aOStream,
-  SAX2_ContentHandler*  aHandler)
+  SAX2_ContentHandler*  aHandler,
+  bool                  aEmitAttributes)
 {
   std::stringstream temp_sstream; // used to temporarily hold expanded strings for the SAX serializer
 
   validate_parameters();
 
-  if (!setup(aOStream))
+  if (!setup(aOStream, aEmitAttributes))
   {
     return;
   }

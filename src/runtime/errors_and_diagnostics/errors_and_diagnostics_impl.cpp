@@ -109,24 +109,6 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     (*state->theOS) << state->theTagItem->getStringValue() 
       << " [" << state->theIndex << "]: ";
 
-    if (result->getNodeKind() == store::StoreConsts::attributeNode)
-    {
-      store::Item* qnameItem = result->getNodeName();
-      const zstring& prefix = qnameItem->getPrefix();
-      const zstring& local = qnameItem->getLocalName();
-
-      if (prefix.empty())
-        (*state->theOS) << " " << local << "=\"";
-      else
-        (*state->theOS) << " " << prefix << ":" << local << "=\"";
-
-      zstring value;
-      result->getStringValue2(value);
-      (*state->theOS) << value;
-
-      (*state->theOS) << "\"";
-    }
-    else
     {
       serializer ser(NULL);
       Zorba_SerializerOptions options;
@@ -139,7 +121,8 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       seq_iter->open();
       ser.serialize(
           seq_iter,
-          (*state->theOS));
+          (*state->theOS),
+          true);
       seq_iter->close(); 
     }
 

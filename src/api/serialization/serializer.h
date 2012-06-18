@@ -129,8 +129,12 @@ public:
    * @param object The serializable object that provides a sequence
    *        to be serialized.
    * @param stream The stream to serialize to.
+   * @param aEmitAttributeValue If true, attributes are emitted.
    */
-  void serialize(store::Iterator_t object, std::ostream& stream);
+  void serialize(
+      store::Iterator_t object, 
+      std::ostream& stream, 
+      bool aEmitAttributes = false);
 
   void serialize(
         store::Iterator_t object,
@@ -146,11 +150,13 @@ public:
    *        to be serialized.
    * @param stream The stream to serialize to.
    * @param handler The SAX handler.
+   * @param aEmitAttributes If true, attributes are emitted.
    */
   void serialize(
         store::Iterator_t     object,
         std::ostream&         stream,
-        SAX2_ContentHandler*  handler);
+        SAX2_ContentHandler*  handler,
+        bool aEmitAttributes = false);
 
   /**
    * Set the serializer's parameters. The list of handled parameters
@@ -173,7 +179,7 @@ protected:
 
   void validate_parameters();
 
-  bool setup(std::ostream& os);
+  bool setup(std::ostream& os, bool aEmitAttributes = false);
 
 
   ///////////////////////////////////////////////////////////
@@ -192,8 +198,12 @@ protected:
      *
      * @param the_serializer The parent serializer object.
      * @param output_stream Target output stream.
+     * @param aEmitAttributes If true, attributes are emitted.
      */
-    emitter(serializer* the_serializer, transcoder& the_transcoder);
+    emitter(
+        serializer* the_serializer, 
+        transcoder& the_transcoder,
+        bool aEmitAttributes = false);
 
     /**
      * Outputs the start of the serialized document, which, depending on
@@ -307,6 +317,7 @@ protected:
     store::AttributesIterator           * theAttrIter;
 
     bool                                  isFirstElementNode;
+    bool                                  theEmitAttributes;
   };
 
 
@@ -319,11 +330,18 @@ protected:
   class xml_emitter : public emitter
   {
   public:
-    xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    xml_emitter(
+        serializer* the_serializer, 
+        transcoder& the_transcoder, 
+        bool aEmitAttributes = false
+    );
 
     virtual void emit_declaration();
 
     virtual void emit_doctype(const zstring& elementName);
+
+  protected:
+    bool theEmitAttributes;
   };
 
 
