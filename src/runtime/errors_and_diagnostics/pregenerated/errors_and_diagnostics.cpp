@@ -83,6 +83,7 @@ void TraceIteratorState::init(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
+  theSerializer = std::auto_ptr<serializer>(0);
 }
 
 void TraceIteratorState::reset(PlanState& planState) {
@@ -90,6 +91,7 @@ void TraceIteratorState::reset(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
+  theSerializer = std::auto_ptr<serializer>(0);
 }
 // </TraceIterator>
 

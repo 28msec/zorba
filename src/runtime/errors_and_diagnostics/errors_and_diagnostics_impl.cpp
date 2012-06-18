@@ -102,6 +102,14 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     );
   }
 
+  if (state->theSerializer.get() == 0) {
+    state->theSerializer.reset(new serializer(0));
+    Zorba_SerializerOptions options;
+    options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    SerializerImpl::setSerializationParameters(
+                        *(state->theSerializer), 
+                        options);
+  }
   state->theOS = theSctx->get_trace_stream();
 
   while (consumeNext(result, theChildren[0], planState)) 
@@ -110,16 +118,11 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       << " [" << state->theIndex << "]: ";
 
     {
-      serializer ser(NULL);
-      Zorba_SerializerOptions options;
-      options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-      SerializerImpl::setSerializationParameters(ser, options);
-      // tmp item needed because createTempSeq takes over the ownership
       store::Item_t lTmp = result;
       store::TempSeq_t lSequence = GENV_STORE.createTempSeq(lTmp);
       store::Iterator_t seq_iter = lSequence->getIterator();
       seq_iter->open();
-      ser.serialize(
+      state->theSerializer->serialize(
           seq_iter,
           (*state->theOS),
           true);
