@@ -182,6 +182,46 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_JSON
+
+/**
+ * An %JSONiqErrQName is-a FixedQName for standard JSONiq errors.
+ */
+class ZORBA_DLL_PUBLIC JSONiqErrQName :
+  public FixedQName<JSONiqErrQName,char const*>
+{
+  typedef FixedQName<JSONiqErrQName,char const*> base_type;
+public:
+  static char const NAMESPACE[];
+  static char const PREFIX[];
+
+  /**
+   * Constructs an %JSONiqErrQName.
+   *
+   * @param localname The local-name of the error.
+   */
+  JSONiqErrQName( char const *localname ) : base_type( localname ) { }
+
+  /**
+   * Gets the category of error this QName represents.
+   *
+   * @return Returns UNKNOWN_CATEGORY as there currently
+   *         are no categories for JSONiq errors
+   */
+  zorba::diagnostic::category category() const;
+
+  /**
+   * Gets the kind of error this QName represents.
+   *
+   * @return Returns said kind.
+   */
+  zorba::diagnostic::kind kind() const;
+};
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+
 /**
  * An %ZorbaWarningQName is-a FixedQName for Zorba warnings.
  */

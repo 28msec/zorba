@@ -454,7 +454,7 @@ void cast_expr::serialize(::zorba::serialization::Archiver& ar)
 
 bool cast_expr::is_optional() const 
 {
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
@@ -590,7 +590,7 @@ void castable_expr::serialize(::zorba::serialization::Archiver& ar)
 
 bool castable_expr::is_optional() const 
 {
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
@@ -1505,10 +1505,9 @@ function_trace_expr::function_trace_expr(
     const QueryLoc& loc,
     expr_t aChild)
   :
-  expr(sctx, loc, aChild->get_expr_kind()),
+  expr(sctx, loc, function_trace_expr_kind),
   theExpr(aChild)
 {
-  theKind = function_trace_expr_kind;
   bool modified;
   compute_return_type(false, &modified);
   compute_scripting_kind();
@@ -1517,10 +1516,9 @@ function_trace_expr::function_trace_expr(
 
 function_trace_expr::function_trace_expr(expr_t aExpr)
   :
-  expr(aExpr->get_sctx(), aExpr->get_loc(), aExpr->get_expr_kind()),
+  expr(aExpr->get_sctx(), aExpr->get_loc(), function_trace_expr_kind),
   theExpr(aExpr)
 {
-  theKind = function_trace_expr_kind;
   bool modified;
   compute_return_type(false, &modified);
   compute_scripting_kind();

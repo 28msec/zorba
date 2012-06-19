@@ -157,56 +157,56 @@ public:
         Item_t& name,
         const std::vector<Annotation_t>& annotations,
         const Item_t& nodeType, // can be null if not a schema type
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addDeleteCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addInsertIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addInsertFirstIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addInsertLastIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addInsertBeforeIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         Item_t& target,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addInsertAfterIntoCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         Item_t& target,
         std::vector<Item_t>& nodes,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addDeleteFromCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   virtual void addTruncateCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
-        bool dyn_collection = false) = 0;
+        bool isDynamic) = 0;
 
   // functions to add primitives for indexes
 
@@ -276,6 +276,52 @@ public:
         const QueryLoc* aQueryLoc,
         const Item_t& aQName,
         const std::vector<Item_t>& aKey) = 0;
+
+#ifdef ZORBA_WITH_JSON
+  // functions to add primitives for jsoniq items
+
+  virtual void addJSONObjectInsert(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& names,
+        std::vector<store::Item_t>& values) = 0;
+
+  virtual void addJSONObjectDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name) = 0;
+
+  virtual void addJSONObjectReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newValue) = 0;
+
+  virtual void addJSONObjectRename(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newName) = 0;
+
+  virtual void addJSONArrayInsert(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        store::Item_t& pos,
+        std::vector<Item_t>& members) = 0;
+
+  virtual void addJSONArrayDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& pos) = 0;
+
+  virtual void addJSONArrayReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& pos,
+      store::Item_t& newValue) = 0;
+#endif
+
+  //
 
   virtual void mergeUpdates(Item* other) = 0;
 

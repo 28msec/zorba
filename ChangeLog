@@ -14,6 +14,7 @@ Optimizations:
 Bug Fixes/Other Changes:
   * Fixed bug #991088$ (raise XUST0001 in trycatch with mixed updating and simple clauses)
   * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
+  * Fixed bug #1008082 (bug in transform expr when a copy var is not used anywhere)
   * Fixed bug #1003023$ (optimizer problems due to common subexpression after
     var folding into if-then-else)
   * Fixed bug #1006166 (disabling 2 functions with the same qname)
@@ -167,6 +168,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #951772 (Comment node crashes serialization)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
 
+	
 version 2.1
 
 New Features:

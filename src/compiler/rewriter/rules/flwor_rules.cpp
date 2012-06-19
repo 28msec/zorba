@@ -160,7 +160,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   const QueryLoc& loc = LOC(node);
   static_context* sctx = node->get_sctx();
-  TypeManager* tm = sctx->get_typemanager();
 
   if (node->get_expr_kind() != flwor_expr_kind)
     return NULL;
@@ -254,7 +253,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       xqtref_t domainType = domainExpr->get_return_type();
       var_expr* var = fc->get_var();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
-      ulong domainCount = TypeOps::type_max_cnt(tm, *domainType);
+      ulong domainCount = domainType->max_card();
       const var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL && 
@@ -600,7 +599,7 @@ static bool safe_to_fold_single_use(
       // If X is referenced inside a for loop with more than 1 iterations,
       // then we don't replace the var with its domain expr because the domain
       // expr will be computed once per iteration instead of just once.
-      if (TypeOps::type_max_cnt(tm, *fc.get_expr()->get_return_type()) >= 2)
+      if (fc.get_expr()->get_return_type()->max_card() >= 2)
         return false;
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
@@ -715,8 +714,6 @@ static bool var_in_try_block_or_in_loop(
   if (found)
     return false;
 
-  TypeManager* tm = v->get_type_manager();
-
   expr_kind_t kind = e->get_expr_kind();
 
   if (kind == trycatch_expr_kind)
@@ -788,7 +785,7 @@ static bool var_in_try_block_or_in_loop(
         }
 
         if (c.get_kind() == flwor_clause::for_clause &&
-            TypeOps::type_max_cnt(tm, *flc.get_expr()->get_return_type()) >= 2)
+            flc.get_expr()->get_return_type()->max_card() >= 2)
         {
           // we assume here that the var will be referenced somewhere in the
           // remainder of the flwor expr, but this is not necessarily true 
@@ -895,8 +892,6 @@ static bool var_in_try_block_or_in_loop(
 ********************************************************************************/
 RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
-  TypeManager* tm = node->get_type_manager();
-
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
   if (flwor == NULL || flwor->is_general())
@@ -927,7 +922,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       !thenExpr->is_sequential() &&
       (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
       !elseExpr->isNonDiscardable() &&
-      TypeOps::is_empty(tm, *elseExpr->get_return_type()))
+      elseExpr->get_return_type()->is_empty())
   {
     flwor->set_where(condExpr);
     flwor->set_return_expr(thenExpr);

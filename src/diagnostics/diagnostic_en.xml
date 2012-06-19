@@ -27,12 +27,21 @@
     </diagnostic>
 
     <diagnostic code="XPST0003">
+
       <comment>
        It is a static error if an expression is not a valid instance of the
        grammar.
       </comment>
 
       <value>invalid expression${: 1}</value>
+
+      <entry key="StartEndTagMismatch_23">
+        <value>start tag "$2" does not match end tag "$3"</value>
+      </entry>
+
+      <entry key="ModuleDeclNotInMain">
+        <value>module declaration must not be in main module</value>
+      </entry>
 
       <entry key="XQueryVersionAtLeast30_2">
         <value>"$2": XQuery version must be at least 3.0</value>
@@ -69,6 +78,7 @@
       <entry key="PiTarget">
         <value>"XML" not allowed as target of a direct processing-instruction constructor</value>
       </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">
@@ -1352,7 +1362,7 @@
        In a transform expression, it is a type error if a source expression in
        the \c copy clause does not return a single node.
       </comment>
-      <value>source expression of "copy" clause must return a single node</value>
+      <value>source expression of "copy" clause must return a single node or json-item</value>
     </diagnostic>
 
     <diagnostic code="XUDY0014">
@@ -1930,6 +1940,14 @@
       <value>iterator is closed</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0043" name="CANNOT_SERIALIZE_JSON_ITEM">
+      <value>cannot serialize JSON item using current output method</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0045" name="CANNOT_SERIALIZE_MIXED_XDM_JDM">
+      <value>cannot serialize sequence containing both JSON and XML items</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0070" name="INVALID_SERIALIZATION_METHOD_FOR_SAX">
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
@@ -2266,7 +2284,7 @@
     </diagnostic>
 
     <diagnostic code="ZDTY0001" name="COLLECTION_INVALID_NODE_TYPE">
-      <value>"$1": invalid node type in collection "$2"</value>
+      <value>"$1": invalid item type in collection "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZDTY0010" name="INDEX_DOMAIN_TYPE_ERROR">
@@ -2356,6 +2374,10 @@
       <value>non-node item used with collection "$1"</value>
     </diagnostic>
 
+    <diagnostic code="ZSTR0013" name="COLLECTION_ITEM_MUST_BE_STRUCTURED">
+      <value>an item that is not a node, object, or array is used with collection "$1"</value>
+    </diagnostic>
+
     <diagnostic code="ZSTR0015" name="IC_ALREADY_EXISTS">
       <value>"$1": integrity constraint already exists</value>
     </diagnostic>
@@ -2442,27 +2464,35 @@
     <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
       <value>'$1': illegal JSON character</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
       <value>"$1": illegal Unicode code-point</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
       <value>'\\$1': illegal JSON character escape</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
       <value>illegal JSON literal</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
       <value>illegal JSON number</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
       <value>"$1": unexpected JSON token</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
       <value>unterminated JSON string</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0008" name="ILLEGAL_QNAME">
       <value>"$1": illegal QName</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
       <value>illegal empty string</value>
     </diagnostic>
@@ -2475,26 +2505,178 @@
     <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
       <value>JSON serialization requires document or element node</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
       <value>"$1" element missing required "$2" attribute</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0003" name="BAD_ATTRIBUTE_VALUE">
       <value>"$1": illegal value for attribute "$2"</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
       <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
       <value>"$1": illegal child element of "$2" type; must be "$3"</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
       <value>JSON type "$1" can not have a child element node</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
       <value>JSON type "$1" can not have a child text node</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0008" name="BAD_VALUE">
       <value>"$1": illegal value for JSON type "$2"</value>
+    </diagnostic>
+
+  </namespace>
+
+  <namespace prefix="jerr">
+
+    <!--////////// CloudScript ///////////////////////////////////////////-->
+
+    <diagnostic code="JNSE0012" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a sequence of less
+      or more than one item with the JSON output method if the
+      cloudscript-serialization-multiple-items is set to no.
+      </comment>
+
+      <value>Cannot serialize multiple top-level items as JSON</value>
+    </diagnostic>
+
+    <diagnostic code="JNSE0013" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize an atomic value not
+      supported by JSON or a node with the JSON output method and with
+      the cloudscript-serialization-extensions serialization parameter
+      set to false.</comment>
+
+      <value>Cannot serialize value as JSON: $1</value>
+    </diagnostic>
+
+    <diagnostic code="JNSE0014" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a function with the
+      JSON output method.</comment>
+      <value>Cannot serialize a function item as JSON</value>
+    </diagnostic>
+
+    <!--////////// JSONIQ ///////////////////////////////////////////-->
+
+    <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
+      <comment>Expression computing the value of a pair does not return exactly
+      one item.</comment>
+
+      <value>$1</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
+      <comment>objects or arrays don't have a string value</comment>
+
+      <value>$1 items do not have string value</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
+      <comment>objects or arrays don't have a typed value</comment>
+
+      <value>$1 items do not have typed value</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0007" if="defined(ZORBA_WITH_JSON)">
+      <comment>wrong type for object/array selector in update expr</comment>
+
+      <value>$1</value>
+
+     <entry key="Object">
+        <value>"$2": can not be promoted to type xs:string</value>
+      </entry>
+
+     <entry key="Array">
+        <value>"$2": can not be promoted to type xs:integer</value>
+      </entry>
+
+    </diagnostic>
+
+    <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by node constructor or updating expression indicating that a JSON item cannot appear in the corresponding content sequence</comment>
+      <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
+    </diagnostic>
+
+    <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by object constructor</comment>
+      <value>"$1": pair with the same name already exists in object</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser errors raised by the JSONIQLoader</comment>
+      <value>$1</value>
+    </diagnostic>
+
+    <!-- jsoniq object updates -->
+
+    <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to insert</comment>
+      <value>"$1": duplicate pair to insert</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to insert already in object</comment>
+      <value>"$1": pair to insert already exists in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to delete not in object</comment>
+      <value>"$1": pair to delete does not exist in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to replace</comment>
+      <value>"$1": duplicate pair to replace</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to replace not in object</comment>
+      <value>"$1": pair to replace does not exist in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to rename</comment>
+      <value>"$1": duplicate pair to rename</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0011" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to rename not in object</comment>
+      <value>"$1": pair to rename does not exist in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0012" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to rename already in object</comment>
+      <value>"$1": pair to rename already exists in object</value>
+    </diagnostic>
+
+    <!-- jsoniq array updates -->
+
+    <diagnostic code="JNUP0018" if="defined(ZORBA_WITH_JSON)">
+      <comment>position to insert not in array</comment>
+      <value>"$1": position to insert at is out of array bounds</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>position to delete not in array</comment>
+      <value>"$1": position to delete does not exist in array</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>position to replace not in array</comment>
+      <value>"$1": position to replace does not exist in array</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0022" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate position to replace</comment>
+      <value>"$1": duplicate position to replace</value>
     </diagnostic>
 
   </namespace>
@@ -2855,7 +3037,7 @@
     </entry>
 
     <entry key="GoodValuesAreXMLEtc">
-      <value>valid values are: xml, html, xhtml, text, binary</value>
+      <value>valid values are: xml, html, xhtml, text, binary, json, jsoniq</value>
     </entry>
 
     <entry key="GoodValuesAreYesNo">
@@ -2884,10 +3066,6 @@
 
     <entry key="LibModVersionMismatch_3">
       <value>XQuery library version can not be imported by a $3 version module</value>
-    </entry>
-
-    <entry key="ModuleDeclNotInMain">
-      <value>module declaration must not be in main module</value>
     </entry>
 
     <entry key="ModuleNotFound">
@@ -3192,10 +3370,6 @@
 
     <entry key="StackOverflow">
       <value>stack overflow</value>
-    </entry>
-
-    <entry key="StartEndTagMismatch_23">
-      <value>start tag "$2" does not match end tag "$3"</value>
     </entry>
 
     <entry key="StingLiteral">
@@ -3675,7 +3849,36 @@
       <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
     </entry>
     
-   </subvalues>
+
+    <entry key="JSON_ILLEGAL_CHARACTER">
+      <value>'$2': illegal JSON character${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_CODEPOINT">
+      <value>"$2": illegal Unicode code-point${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_ESCAPE">
+      <value>'\\$2': illegal JSON character escape${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_LITERAL">
+      <value>illegal JSON literal${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_NUMBER">
+      <value>illegal JSON number${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_UNEXPECTED_TOKEN">
+      <value>"$2": unexpected JSON token${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_UNTERMINATED_STRING">
+      <value>unterminated JSON string${ at 2}</value>
+    </entry>
+
+  </subvalues>
 
 </diagnostic-list>
 <!-- vim:set et sw=2 ts=2: -->

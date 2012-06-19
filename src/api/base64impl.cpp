@@ -17,10 +17,13 @@
 
 #include <sstream> 
 #include <zorba/base64.h>
+#include <zorba/diagnostic_list.h>
 
 #include <zorba/config.h>
 #include <zorba/zorba_string.h>
 
+#include "diagnostics/dict.h"
+#include "diagnostics/xquery_exception.h"
 #include "util/base64_util.h"
 
 #define CATCH_BASE64_EXCEPTION()                                            \

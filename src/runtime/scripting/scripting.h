@@ -51,6 +51,14 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+protected:
+#ifdef ZORBA_WITH_JSON
+  void constructJSONObject(
+      store::Item_t& result,
+      const PlanIter_t& iter,
+      PlanState& aPlanState) const;
+#endif
 };
 
 

@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "simple_collection_set.h"
+
 #include "store/api/iterator.h"
 #include "name_iterator.h"
 
@@ -55,10 +56,13 @@ SimpleCollectionSetIterator::next(zorba::store::Collection_t& aResult)
   while (theIterator != theCollections->end()) 
   {
     aResult = (*theIterator).second;
-    if (aResult->isDynamic() != theDynamicCollections) {
+    if (aResult->isDynamic() != theDynamicCollections) 
+    {
       ++theIterator;
       continue;
-    } else {
+    }
+    else
+    {
       ++theIterator;
       return true;
     }
@@ -78,7 +82,8 @@ SimpleCollectionSetIterator::reset()
 void
 SimpleCollectionSetIterator::close() throw()
 {
-  if (!theOpened) {
+  if (!theOpened) 
+  {
     return;
   }
   theOpened = false;
@@ -109,23 +114,24 @@ void SimpleCollectionSet::clear()
 }
 
 
-bool SimpleCollectionSet::insert(const zorba::store::Item* aName,
-                                 zorba::store::Collection_t& aCollection)
+bool SimpleCollectionSet::insert(
+    const store::Item* name,
+    store::Collection_t& collection)
 {
-  store::Item* qname = const_cast<store::Item*>(aName);
+  store::Item* qname = const_cast<store::Item*>(name);
 
-  return theCollections.insert(qname, aCollection);
+  return theCollections.insert(qname, collection);
 }
 
 
 bool SimpleCollectionSet::get(
-    const zorba::store::Item* aName,
-    zorba::store::Collection_t& aCollection,
-    bool aDynamicCollection) 
+    const store::Item* name,
+    store::Collection_t& collection,
+    bool isDynamic) 
 {
-  if (theCollections.get(const_cast<zorba::store::Item*>(aName), aCollection)) 
+  if (theCollections.get(const_cast<store::Item*>(name), collection)) 
   {
-    return aCollection->isDynamic() == aDynamicCollection;
+    return (collection->isDynamic() == isDynamic);
   }
   else 
   {
@@ -134,31 +140,33 @@ bool SimpleCollectionSet::get(
 }
 
 
-bool SimpleCollectionSet::remove(const zorba::store::Item* aName, bool aDynamicCollection) 
+bool SimpleCollectionSet::remove(
+    const store::Item* name,
+    bool isDynamic) 
 {
-  zorba::store::Collection_t lColl;
-  if (!get(aName, lColl, aDynamicCollection))
+  store::Collection_t lColl;
+  if (!get(name, lColl, isDynamic))
   {
     return false;
   }
   else
   {
-    return theCollections.erase(const_cast<zorba::store::Item*>(aName));
+    return theCollections.erase(const_cast<store::Item*>(name));
   }
 }
 
 
-zorba::store::Iterator_t SimpleCollectionSet::names(bool aDynamicCollections) 
+store::Iterator_t SimpleCollectionSet::names(bool dynamic)
 {
-  return new NameIterator<Set>(theCollections, aDynamicCollections);
+  return new NameIterator<Set>(theCollections, dynamic);
 }
 
 
-CollectionSetIterator_t SimpleCollectionSet::collections(bool aDynamicCollections) 
+CollectionSetIterator_t SimpleCollectionSet::collections(bool dynamic) 
 {
-  return new SimpleCollectionSetIterator(&theCollections,
-                                         aDynamicCollections);
+  return new SimpleCollectionSetIterator(&theCollections, dynamic);
 }
+
 
 // specialize the next function of the NameIterator for
 // the SimpleCollectionSet in order to be able to handle dynamic collections
@@ -171,7 +179,8 @@ NameIterator<SimpleCollectionSet::Set>::next(zorba::store::Item_t& aResult)
     {
       ++theIterator;
       continue;
-    } else
+    } 
+    else
     {
       aResult = (*theIterator).first;
       ++theIterator;
