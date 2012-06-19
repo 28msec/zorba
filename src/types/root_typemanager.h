@@ -152,7 +152,7 @@ public:
   /**
    * Pre-allocate XQType objects for the following JSONTest sequence types:
    *
-   * N(), N()?, N()+, N()*, where N is one of json-item, object, array, or pair
+   * N(), N()?, N()+, N()*, where N is one of json-item, object, or array
    */
 #define JSON_DECL(basename) \
     xqtref_t basename##_TYPE_ONE;\
