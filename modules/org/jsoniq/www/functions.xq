@@ -76,26 +76,14 @@ declare function jn:value($o as object(), $name as xs:string) as item()? externa
 
 
 (:~
- : Creates an object from the specified pairs of another given object. 
- : Specifically, for each name in $names, if the object $o has a pair with
- : that name, then a copy of that pair is included in the new object.
- :
- : @param $o A JSON Object.
- : @param $names The names of the pairs to copy out of $o and insert into the new object
- : @return The new object.
- :)
-declare function jn:project($o as object(), $names as xs:string*) as object() external;
-
-(:~
  : Returns the size of a JSON Object or JSON Array. The size of an Object
  : is the number of Pairs contained within it; the size of an Array is
  : the number of members contained within it.
  :
- : @param $j A JSON Object or JSON Array.
+ : @param $j A JSON Array.
  : @return The number of items in $j.
- : @error jn:JUDY0060 if $j is a JSON Pair.
  :)
-declare function jn:size($j as json-item()) as xs:integer external;
+declare function jn:size($j as array()) as xs:integer external;
 
 
 (:~
@@ -108,6 +96,17 @@ declare function jn:size($j as json-item()) as xs:integer external;
  :)
 declare function jn:member($o as array(), $p as xs:integer) as item()? external;
 
+
+(:~
+ : Creates an object from the specified pairs of another given object. 
+ : Specifically, for each name in $names, if the object $o has a pair with
+ : that name, then a copy of that pair is included in the new object.
+ :
+ : @param $o A JSON Object.
+ : @param $names The names of the pairs to copy out of $o and insert into the new object
+ : @return The new object.
+ :)
+declare function jn:project($o as object(), $names as xs:string*) as object() external;
 
 (:~
  : Returns the members of an Array.

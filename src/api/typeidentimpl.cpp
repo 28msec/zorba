@@ -241,14 +241,6 @@ TypeIdentifier_t TypeIdentifier::createJSONArrayType(IdentTypes::quantifier_t q)
 }
 
 
-TypeIdentifier_t TypeIdentifier::createJSONPairType(IdentTypes::quantifier_t q)
-{
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::JSON_PAIR_TYPE;
-  ti->m_quantifier = q;
-
-  return ti;
-}
 #endif
 
 

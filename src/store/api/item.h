@@ -163,12 +163,6 @@ public:
 
 #ifdef ZORBA_WITH_JSON
   /**
-   *  @return  "true" if the item is a JSON pair item
-   */
-  virtual bool 
-  isJSONPair() const;
-
-  /**
    *  @return  "true" if the item is a JSON object item
    */
   virtual bool 

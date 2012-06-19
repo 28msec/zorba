@@ -2201,42 +2201,6 @@ bool BasicItemFactory::createJSONObject(
 }
 
 
-#if 0
-bool BasicItemFactory::createJSONObject(
-    store::Item_t& result,
-    const std::vector<store::Iterator_t>& names,
-    const std::vector<store::Iterator_t>& values,
-    const std::vector<store::CopyMode>& copyModes)
-{
-  result = new json::SimpleJSONObject();
-
-  json::JSONObject* obj = static_cast<json::JSONObject*>(result.getp());
-
-  assert(names.size() == values.size());
-
-  csize numPairs = names.size();
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    store::Item_t name;
-    store::Item_t value;
-
-    names[i]->open();
-    values[i]->open();
-
-    
-    names[i]->close();
-    values[i]->close();
-
-    store::Item_t pair = new json::SimpleJSONObjectPair(name, value);
-
-    obj->add(pair);
-  }
-
-  return true;
-}
-#endif
-
-
 bool BasicItemFactory::createJSONObject(
     store::Item_t& result,
     const std::vector<store::Item_t>& names,

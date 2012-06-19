@@ -278,12 +278,6 @@ bool Item::isJSONItem() const
 }
 
 
-bool Item::isJSONPair() const
-{
-  return false;
-}
-
-
 bool Item::isJSONObject() const
 {
   return false;
