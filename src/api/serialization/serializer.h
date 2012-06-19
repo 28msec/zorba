@@ -118,7 +118,8 @@ protected:
 #ifdef ZORBA_WITH_JSON
   short int jsoniq_multiple_items;  // "no", "array", "appended", implemented
   short int jsoniq_extensions;      // implemented
-  short int jsoniq_xdm_method;  // A legal value for "method", implemented
+  short int jsoniq_xdm_method;      // A legal value for "method", implemented
+  short int jsoniq_allow_mixed_xdm_jdm; // "yes" or "no", implemented
 #endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
@@ -423,7 +424,8 @@ protected:
       JESTATE_XDM
     }                           theEmitterState;
 
-    serializer::emitter*        theEmitter;
+    serializer::xml_emitter*        theXMLEmitter;
+    serializer::json_emitter*       theJSONEmitter;
   };
 
 #endif /* ZORBA_WITH_JSON */

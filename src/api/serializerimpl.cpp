@@ -242,6 +242,16 @@ SerializerImpl::setSerializationParameters(
       break;
   }
 
+  switch (aSerializerOptions.jsoniq_allow_mixed_xdm_jdm)
+  {
+    case JSONIQ_ALLOW_MIXED_XDM_JDM_NO:
+      aInternalSerializer.setParameter("jsoniq-allow-mixed-xdm-jdm", "no");
+      break;
+    case JSONIQ_ALLOW_MIXED_XDM_JDM_YES:
+      aInternalSerializer.setParameter("jsoniq-allow-mixed-xdm-jdm", "yes");
+      break;
+  }
+
   convertSerializationMethod(aInternalSerializer,
                              "jsoniq-xdm-node-output-method",
                              aSerializerOptions.jsoniq_xdm_method);

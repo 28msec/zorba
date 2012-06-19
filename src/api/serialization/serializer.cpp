@@ -1237,59 +1237,54 @@ serializer::jsoniq_emitter::jsoniq_emitter(
   :
     emitter(the_serializer, the_transcoder),
     theEmitterState(JESTATE_UNDETERMINED),
-    theEmitter(nullptr)
+    theXMLEmitter(new xml_emitter(the_serializer, the_transcoder)),
+    theJSONEmitter(new json_emitter(the_serializer, the_transcoder))
 {
 }
 
 serializer::jsoniq_emitter::~jsoniq_emitter()
 {
-  delete theEmitter;
+  delete theXMLEmitter;
+  delete theJSONEmitter;
 }
 
 void serializer::jsoniq_emitter::emit_declaration()
 {
-  // Probably I should set a flag here to note whether emit_declaration() has
-  // been called or not. However, I know that all serializer::serialize()
-  // methods DO call emit_declaration() and call it first, so there's no need.
 }
 
 void serializer::jsoniq_emitter::emit_item(store::Item *item)
 {
+  
   bool isJson = item->isJSONItem();
+  
+  if (ser->jsoniq_allow_mixed_xdm_jdm == PARAMETER_VALUE_NO)
+  {
+    if ((isJson && theEmitterState == JESTATE_XDM) ||
+        (!isJson && theEmitterState == JESTATE_JDM))
+    {
+    throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
+    }
+  }
 
-  if (theEmitterState == JESTATE_UNDETERMINED) {
-    // Initialize theEmitter based on item type, passing through our serializer
-    // and transcoder.
-    if (isJson) {
-      theEmitterState = JESTATE_JDM;
-      theEmitter = new json_emitter(ser, tr);
-    }
-    else {
-      theEmitterState = JESTATE_XDM;
-      theEmitter = new xml_emitter(ser, tr);
-    }
-    // Since this was the first item, call emit_declaration().
-    theEmitter->emit_declaration();
+  if (isJson) {
+    theEmitterState = JESTATE_JDM;
+    theJSONEmitter->emit_item(item);
   }
   else {
-    // Error checking
-    if ( (isJson && theEmitterState == JESTATE_XDM) ||
-         (!isJson && theEmitterState == JESTATE_JDM) ) {
-      throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
+    if (theEmitterState == JESTATE_UNDETERMINED &&
+        ser->jsoniq_allow_mixed_xdm_jdm == PARAMETER_VALUE_NO)
+    {
+      theXMLEmitter->emit_declaration();
     }
+    theEmitterState = JESTATE_XDM;
+    theXMLEmitter->emit_item(item);
   }
-
-  // Pass through
-  theEmitter->emit_item(item);
 }
 
 void serializer::jsoniq_emitter::emit_end()
 {
   // Not really clear what to do if we serialized no items and hence have
   // no emitter yet, but doing nothing at all seems reasonable.
-  if (theEmitter) {
-    theEmitter->emit_end();
-  }
 }
 
 
@@ -2377,6 +2372,7 @@ void serializer::reset()
   jsoniq_multiple_items = PARAMETER_VALUE_NO;
   jsoniq_extensions = PARAMETER_VALUE_NO;
   jsoniq_xdm_method = PARAMETER_VALUE_XML;
+  jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_NO;
 #else
   method = PARAMETER_VALUE_XML;
 #endif
@@ -2569,6 +2565,17 @@ void serializer::setParameter(const char* aName, const char* aValue)
   else if (!strcmp(aName, "jsoniq-xdm-node-output-method"))
   {
     jsoniq_xdm_method = convertMethodString(aValue, aName);
+  }
+  else if (!strcmp(aName, "jsoniq-allow-mixed-xdm-jdm"))
+  {
+    if (!strcmp(aValue, "yes"))
+      jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_YES;
+    else if (!strcmp(aValue, "no"))
+      jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_NO;
+    else
+      throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
   }
 #endif /* ZORBA_WITH_JSON */
   else

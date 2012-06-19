@@ -55,7 +55,8 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   ,
     jsoniq_extensions(CLOUDSCRIPT_EXTENSIONS_NO),
     jsoniq_multiple_items(CLOUDSCRIPT_MULTIPLE_ITEMS_NO),
-    jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML)
+    jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML),
+    jsoniq_allow_mixed_xdm_jdm(JSONIQ_ALLOW_MIXED_XDM_JDM_NO)
 #endif /* ZORBA_WITH_JSON */
 {
 }
@@ -165,6 +166,11 @@ void Zorba_SerializerOptions::SetSerializerOption(
   else if (strcmp(parameter, "jsoniq-xdm-node-output-method") == 0)
   {
     jsoniq_xdm_method = convertMethodString(value, parameter);
+  }
+  else if (strcmp(parameter, "jsoniq-allow-mixed-xdm-jdm") == 0)
+  {
+    if (strcmp(value, "yes") == 0) jsoniq_allow_mixed_xdm_jdm = JSONIQ_ALLOW_MIXED_XDM_JDM_YES;
+    else if (strcmp(value, "no") == 0) jsoniq_allow_mixed_xdm_jdm = JSONIQ_ALLOW_MIXED_XDM_JDM_NO;
   }
 #endif /* ZORBA_WITH_JSON */
 }
