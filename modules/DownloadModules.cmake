@@ -24,7 +24,9 @@
 #               modules into (will be created if necessary)
 #      notags = if true: ignore tags, check out HEAD revision of module(s)
 #               (bzr only - svn uses different URLs for tags)
-
+#      overwrite = if true: if module(s) is already in directory, 
+#                  then erases first to create a new copy of module(s)
+#
 # Figure out what directory we're running in - ExternalModules.txt is here too
 get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
 
@@ -32,8 +34,7 @@ get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
 FIND_PROGRAM(svn svn DOC "subversion command line client")
 
 # Find BZR
-FIND_PROGRAM(bzr bzr DOC "bazaar command line client")
-
+FIND_PROGRAM(bzr bzr DOC "bazaar command line client" PATH ${BZR_PATH})
 # Check parameters
 if (NOT outdir)
   message (FATAL_ERROR "Please pass -Doutdir.")
@@ -78,10 +79,22 @@ foreach (modline ${modlines})
     if ("${_getmod}" EQUAL 1)
       message ("Downloading module '${_modname}'...")
       # We try three times, to account for network weirdnesses
-      foreach (i 1 2 3)
-	# First delete the output directory, in case there's a partial
-	# download from a previous attempt
-	file (REMOVE_RECURSE "${outdir}/${_modname}")
+      foreach (attempt 1 2 3)
+
+  #Initial directory status
+  if (${attempt} EQUAL 1)
+    if (NOT EXISTS "${outdir}/${_modname}" OR overwrite)
+      MESSAGE (STATUS "Creating module..." )
+      set(overwrite TRUE)
+    else (NOT EXISTS "${outdir}/${_modname}" OR overwrite)
+      MESSAGE (STATUS "Updating module..." )
+    endif (NOT EXISTS "${outdir}/${_modname}" OR overwrite)
+  endif (${attempt} EQUAL 1)
+  
+  # Deleting the output directory if indicated
+  if (overwrite)
+	  file (REMOVE_RECURSE "${outdir}/${_modname}")
+  endif (overwrite)
 
 	set (_status)
 
@@ -90,8 +103,13 @@ foreach (modline ${modlines})
             message (FATAL_ERROR
               "Subversion client not found - required for ${_modname} module!")
           endif (NOT svn)
-          execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
-            WORKING_DIRECTORY "${outdir}" TIMEOUT 60 RESULT_VARIABLE _status)
+          if (overwrite)
+            execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
+              WORKING_DIRECTORY "${outdir}" TIMEOUT 120 RESULT_VARIABLE _status)
+          else (overwrite)
+            execute_process (COMMAND "${svn}" update "${_modurl}" "${_modname}"
+              WORKING_DIRECTORY "${outdir}" TIMEOUT 120 RESULT_VARIABLE _status)
+          endif (overwrite)
 
 	elseif (${_modvc} STREQUAL "bzr")
           if (NOT bzr)
@@ -103,9 +121,16 @@ foreach (modline ${modlines})
           if (_modtag AND NOT notags)
             set (_modtagargs "-r" "${_modtag}")
           endif (_modtag AND NOT notags)
-          execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
-            ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 60
-	    RESULT_VARIABLE _status)
+          if (overwrite)
+            execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
+              ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 120
+              RESULT_VARIABLE _status)
+          else (overwrite)
+            execute_process (COMMAND "${bzr}" pull
+              ${_modtagargs} WORKING_DIRECTORY "${outdir}/${_modname}" TIMEOUT 120
+              RESULT_VARIABLE _status)
+          endif (overwrite)
+	    
 
 	else (${_modvc} STREQUAL "svn")
           message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
@@ -117,10 +142,10 @@ foreach (modline ${modlines})
 	  # Success
 	  break ()
 	else ("${_status}" EQUAL 0)
-	  message (WARNING "Attempt ${i}: Failed to download '${_modname}' (${_status})")
+	  message (WARNING "Attempt ${attempt}: Failed to download '${_modname}' (${_status})")
 	endif ("${_status}" EQUAL 0)
 
-      endforeach (i)
+      endforeach (attempt)
 
       # Ensure we successfully downloaded something good
       if (NOT EXISTS "${outdir}/${_modname}/CMakeLists.txt")
