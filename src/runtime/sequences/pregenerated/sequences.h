@@ -37,7 +37,7 @@ namespace zorba {
 namespace store{
   class NodeHashSet;
 }
-class ItemValueCollHandleHashSet;
+class AtomicItemHandleHashSet;
 /**
  * 
  *    op:concatenate
@@ -248,7 +248,7 @@ class FnDistinctValuesIteratorState : public PlanIteratorState
 {
 public:
   bool theHasNaN; //indicates whether NaN was found in the sequence
-  std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
+  std::auto_ptr<AtomicItemHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
 
   FnDistinctValuesIteratorState();
 
