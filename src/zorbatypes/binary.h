@@ -85,8 +85,6 @@ public:
 
   Base64() {}
 
-  virtual ~Base64() {}
-
   const std::vector<char>& getData() const { return theData; }
 
   size_t size() const { return theData.size(); }
@@ -100,9 +98,6 @@ public:
   void decode(std::vector<char>&);
 
   uint32_t hash() const;
-
-private:
-  void insertData(const char* aCharStar, size_t len);
 };
 
 

@@ -21,41 +21,61 @@
 #include <zorba/config.h>
 #include <zorba/zorba_string.h>
 
-#include "zorbatypes/binary.h"
+#include "util/base64_util.h"
 
+#define CATCH_BASE64_EXCEPTION()                                            \
+  catch ( base64::exception const &e ) {                                    \
+    throw XQUERY_EXCEPTION(                                                 \
+      err::FORG0001, ERROR_PARAMS( e.invalid_char(), ZED( Base64BadChar ) ) \
+    );                                                                      \
+  }                                                                         \
+  catch ( std::invalid_argument const& ) {                                  \
+    throw XQUERY_EXCEPTION(                                                 \
+      err::FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )             \
+    );                                                                      \
+  }
 
 namespace zorba {
 namespace encoding {
 
 String Base64::encode(const String& aString) 
 {
-  std::stringstream lStream;
-  lStream << aString;
-
-  return encode(lStream);
+  String result;
+  base64::encode( aString.data(), aString.size(), &result );
+  return result;
 }
 
 
 String Base64::encode(std::istream& aStream) 
 {
-  return zorba::Base64::encode(aStream).str();
+  String result;
+  base64::encode( aStream, &result );
+  return result;
 }
 
 
 String Base64::decode(const String& aString)
 {
-  std::stringstream lStream;
-  lStream << aString;
-  return decode(lStream);
+  try {
+    String result;
+    base64::decode( aString.data(), aString.size(), &result );
+    return result;
+  }
+  CATCH_BASE64_EXCEPTION()
 }
 
 
 String Base64::decode(std::istream& aStream)
 {
-  return zorba::Base64::decode(aStream).str();
+  try {
+    String result;
+    base64::decode( aStream, &result );
+    return result;
+  }
+  CATCH_BASE64_EXCEPTION()
 }
 
 
-} /* end namespace encoding */
-} /* end namespace zorba */
+} // namespace encoding
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

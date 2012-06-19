@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "util/base64_util.h"
@@ -62,10 +63,19 @@ static void print_exception( int no, char const *expr, int line,
 static void test_decode( int no, string const &in, string const &expected ) {
   char out[ 1024 ];
   base64::size_type n;
-  ASSERT_NO_EXCEPTION( no, n = base64::decode( in.data(), in.size(), out ) );
+  ASSERT_NO_EXCEPTION(
+    no, n = base64::decode( in.data(), in.size(), out, false )
+  );
   ASSERT_TRUE( no, n == expected.size() );
   out[ n ] = '\0';
   ASSERT_TRUE( no, out == expected );
+}
+
+static void test_decode_exception( int no, string const &in ) {
+  char out[ 1024 ];
+  ASSERT_EXCEPTION(
+    no, base64::decode( in.data(), in.size(), out ), invalid_argument
+  );
 }
 
 static void test_encode( int no, string const &in, string const &expected ) {
@@ -99,6 +109,22 @@ static test const decode_tests[] = {
   { 0, 0 }
 };
 
+static char const *const decode_exception_tests[] = {
+  "=",
+  "_m93",
+  "T_93",
+  "Tm_3",
+  "Tm9_",
+  "=m93",
+  "T=93",
+  "Tm=3",
+  "Tm93=",
+  "ZmX=",
+  "ZX==",
+  "ZX===",
+  0
+};
+
 namespace zorba {
 namespace UnitTests {
 
@@ -110,6 +136,9 @@ int test_base64( int, char*[] ) {
 
   for ( test const *t = decode_tests; t->input; ++t, ++test_no )
     test_decode( test_no, t->input, t->expected );
+
+  for ( char const *const *t = decode_exception_tests; *t; ++t, ++test_no )
+    test_decode_exception( test_no, *t );
 
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;

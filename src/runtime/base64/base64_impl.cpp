@@ -22,6 +22,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/binary.h"
+#include "util/base64_util.h"
 
 #include "runtime/base64/base64.h"
 
@@ -66,7 +67,7 @@ bool Base64DecodeIterator::nextImpl(
   {
     if (lItem->isEncoded())
     {
-      lResultString = Base64::decode(lItem->getStream());
+      base64::decode(lItem->getStream(), &lResultString);
     }
     else
     {

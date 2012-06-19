@@ -15,8 +15,7 @@
  */
 
 #include <algorithm>
-#include <stdexcept>
-#include <string>
+#include <cstring>
 
 #include "base64_util.h"
 #include "string_util.h"
@@ -115,47 +114,75 @@ inline void encode_chunk( char const *from, char *to ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-size_type decode( char const *from, size_type base64_len, char *to ) {
+size_type decode( char const *from, size_type from_len, char *to,
+                  bool multiple_4 ) {
+  if ( multiple_4 && from_len % 4 )
+    throw invalid_argument( BUILD_STRING( from_len, ": not a multiple of 4" ) );
+
   char chunk[4];
   int chunk_len = 0;
   int pads = 0;
   char const *const to_orig = to;
 
-  while ( base64_len-- ) {
-    char const c = *from++;
+  for ( size_type pos = 0; pos < from_len; ++pos, ++from ) {
+    char const c = *from;
     signed char value;
     if ( c == '=' ) {
-      if ( ++pads > 2 )
-        throw invalid_argument( "more than 2 trailing '=' encountered" );
+      switch ( pos % 4 ) {
+        //
+        // Ensure '=' occurs only in the 3rd or 4th bytes of a 4-byte chunk
+        // and that the byte preceding '=' is valid.
+        //
+        case 2:
+          if ( !strchr( "AQgw", from[-1] ) )
+            throw base64::exception(
+              c, pos, BUILD_STRING( '\'', c, "': invalid character before '='" )
+            );
+          break;
+        case 3:
+          if ( !strchr( "=048AEIMQUYcgkosw", from[-1] ) )
+            throw base64::exception(
+              c, pos, BUILD_STRING( '\'', c, "': invalid character before '='" )
+            );
+          break;
+        default:
+          throw base64::exception( c, pos, "'=' encountered unexpectedly" );
+      }
+      ++pads;
       value = '\0';
     } else {
       if ( pads )
-        throw invalid_argument(
-          BUILD_STRING( '\'', c, "': non-'=' character encountered after '='" )
+        throw base64::exception(
+          c, pos, BUILD_STRING( '\'', c, "': invalid character after '='" )
         );
       value = decode_table[ static_cast<unsigned char>( c ) ];
     }
     switch ( value ) {
       case -1:
-        throw invalid_argument(
-          BUILD_STRING( '\'', c, "': invalid Base64 character" )
+        throw base64::exception(
+          c, pos, BUILD_STRING( '\'', c, "': invalid character" )
         );
       case -2: // \n or \r
         continue;
       default:
-        if ( chunk_len == 4 )
-          chunk_len = 0;
-        chunk[ chunk_len ] = value;
-        if ( ++chunk_len == 4 ) {
-          decode_chunk( chunk, to );
-          to += 3;
+        if ( to ) {
+          if ( chunk_len == 4 )
+            chunk_len = 0;
+          chunk[ chunk_len ] = value;
+          if ( ++chunk_len == 4 ) {
+            decode_chunk( chunk, to );
+            to += 3;
+          }
         }
     }
-  } // while
+  } // for
+
+  if ( !to )
+    return 0;
 
   if ( chunk_len > 1 && chunk_len < 4 ) {
     //
-    // base64_len was not a multiple of 4, hence the Base64 encoding is
+    // from_len was not a multiple of 4, hence the Base64 encoding is
     // incomplete: salvage 1 or 2 characters.
     //
     int const salvageable = chunk_len - 1;
@@ -169,17 +196,33 @@ size_type decode( char const *from, size_type base64_len, char *to ) {
   return to - to_orig - pads;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-void decode( istream &from, ostream &to ) {
-  char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
+size_type decode( istream &from, ostream &to ) {
+  size_type total_decoded = 0;
   while ( !from.eof() ) {
+    char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
     from.read( from_buf, sizeof from_buf );
-    if ( streamsize const gcount = from.gcount() )
-      to.write( to_buf, decode( from_buf, gcount, to_buf ) );
-    else
+    if ( streamsize const gcount = from.gcount() ) {
+      size_type const decoded = decode( from_buf, gcount, to_buf );
+      to.write( to_buf, decoded );
+      total_decoded += decoded;
+    } else
       break;
   }
+  return total_decoded;
+}
+
+size_type decode( istream &from, vector<char> *to ) {
+  size_type total_decoded = 0;
+  while ( !from.eof() ) {
+    char from_buf[ 1024 * 4 ];
+    from.read( from_buf, sizeof from_buf );
+    if ( streamsize const gcount = from.gcount() ) {
+      to->reserve( to->size() + decoded_size( gcount ) );
+      total_decoded += decode( from_buf, gcount, &(*to)[ total_decoded ] );
+    } else
+      break;
+  }
+  return total_decoded;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -219,17 +262,33 @@ size_type encode( char const *from, size_type from_len, char *to ) {
   return to - to_orig;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-void encode( istream &from, ostream &to ) {
-  char from_buf[ 1024 * 3 ], to_buf[ 1024 * 4 ];
+size_type encode( istream &from, ostream &to ) {
+  size_type total_encoded = 0;
   while ( !from.eof() ) {
+    char from_buf[ 1024 * 3 ], to_buf[ 1024 * 4 ];
     from.read( from_buf, sizeof from_buf );
-    if ( streamsize const gcount = from.gcount() )
-      to.write( to_buf, encode( from_buf, gcount, to_buf ) );
-    else
+    if ( streamsize const gcount = from.gcount() ) {
+      size_type const encoded = encode( from_buf, gcount, to_buf );
+      to.write( to_buf, encoded );
+      total_encoded += encoded;
+    } else
       break;
   }
+  return total_encoded;
+}
+
+size_type encode( istream &from, vector<char> *to ) {
+  size_type total_encoded = 0;
+  while ( !from.eof() ) {
+    char from_buf[ 1024 * 3 ];
+    from.read( from_buf, sizeof from_buf );
+    if ( streamsize const gcount = from.gcount() ) {
+      to->reserve( to->size() + encoded_size( gcount ) );
+      total_encoded += encode( from_buf, gcount, &(*to)[ total_encoded ] );
+    } else
+      break;
+  }
+  return total_encoded;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
