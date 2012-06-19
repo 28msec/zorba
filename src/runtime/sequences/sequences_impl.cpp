@@ -248,6 +248,7 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.1.6 fn:distinct-values
 ********************************************************************************/
@@ -259,6 +260,7 @@ void FnDistinctValuesIteratorState::reset(PlanState& planState)
     theAlreadySeenMap->clear();
 }
 
+
 bool FnDistinctValuesIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -266,7 +268,7 @@ bool FnDistinctValuesIterator::nextImpl(
   store::Item_t lItem;
   xqtref_t lItemType;
   XQPCollator* lCollator;
-  ValueCompareParam* theValueCompare;
+  ValueCompareParam* valueCompare;
 
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
@@ -275,16 +277,16 @@ bool FnDistinctValuesIterator::nextImpl(
   {
     lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
-    theValueCompare->theCollator = lCollator;
+    valueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
+    valueCompare->theCollator = lCollator;
   }
   else
   {
-    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
+    valueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
   }
 
   // theValueCompare managed by state->theAlreadySeenMap
-  state->theAlreadySeenMap.reset(new ItemValueCollHandleHashSet(theValueCompare));
+  state->theAlreadySeenMap.reset(new ItemValueCollHandleHashSet(valueCompare));
 
   while (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -298,7 +300,6 @@ bool FnDistinctValuesIterator::nextImpl(
     }
     else if ( ! state->theAlreadySeenMap->exists(result) )
     {
-      // check if the item is already in the map
       state->theAlreadySeenMap->insert(result);
       STACK_PUSH(true, state);
     }
@@ -306,6 +307,7 @@ bool FnDistinctValuesIterator::nextImpl(
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.1.7 fn:insert-before
