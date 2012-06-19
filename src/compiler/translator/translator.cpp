@@ -11147,7 +11147,7 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
                              valueExpr->get_loc(),
                              valueExpr,
                              GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-                             TreatIterator::JSON_VALUE,
+                             TreatIterator::JSONIQ_VALUE,
                              false,
                              NULL);
 
@@ -12865,7 +12865,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
       targetExpr,
       rtm.JSON_OBJECT_TYPE_ONE,
       loc,
-      TreatIterator::TYPE_MATCH,
+      TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET,
       NULL);
 
   args.push_back(targetExpr);
@@ -12923,7 +12923,7 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
       targetExpr,
       rtm.JSON_ARRAY_TYPE_ONE,
       loc,
-      TreatIterator::TYPE_MATCH,
+      TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET,
       NULL);
 
   std::vector<expr_t> args(3);
@@ -12984,6 +12984,13 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   expr_t selExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
+  
+  targetExpr = wrap_in_type_match(
+      targetExpr,
+      theRTM.JSON_ITEM_TYPE_ONE,
+      loc,
+      TreatIterator::JSONIQ_UPDATE_TARGET,
+      NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
                                   loc, 
@@ -13020,7 +13027,12 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   expr_t targetExpr = pop_nodestack();
 
   std::vector<expr_t> args(3);
-  args[0] = targetExpr;
+  args[0] = wrap_in_type_match(
+      targetExpr,
+      theRTM.JSON_ITEM_TYPE_ONE,
+      loc,
+      TreatIterator::JSONIQ_UPDATE_TARGET,
+      NULL);
   args[1] = selExpr;
   args[2] = valueExpr;
 
@@ -13058,8 +13070,18 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
   expr_t targetExpr = pop_nodestack();
 
   std::vector<expr_t> args(3);
-  args[0] = targetExpr;
-  args[1] = nameExpr;
+  args[0] = wrap_in_type_match(
+      targetExpr,
+      theRTM.JSON_OBJECT_TYPE_ONE,
+      loc,
+      TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET,
+      NULL);
+
+  args[1] = wrap_in_type_promotion(
+      nameExpr,
+      theRTM.STRING_TYPE_ONE,
+      PromoteIterator::JSONIQ_OBJECT_SELECTOR);
+
   args[2] = newNameExpr;
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,

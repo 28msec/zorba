@@ -473,6 +473,12 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(JNTY0007_Array), valueType));
     break;
   }
+  case JSONIQ_OBJECT_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNTY0007, loc,
+    ERROR_PARAMS(ZED(JNTY0007_Object), valueType));
+    break;
+  }
 #endif
   default:
   {
@@ -684,9 +690,27 @@ void TreatIterator::raiseError(const zstring& valueType) const
     break;
   }
 #ifdef ZORBA_WITH_JSON
-  case JSON_VALUE:
+  case JSONIQ_VALUE:
   {
     RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
+    break;
+  }
+  case JSONIQ_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNTY0008, loc,
+    ERROR_PARAMS(ZED(JNTY0008_ObjectArray), valueType));
+    break;
+  }
+  case JSONIQ_OBJECT_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNTY0008, loc,
+    ERROR_PARAMS(ZED(JNTY0008_Object), valueType));
+    break;
+  }
+  case JSONIQ_ARRAY_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNTY0008, loc,
+    ERROR_PARAMS(ZED(JNTY0008_Array), valueType));
     break;
   }
 #endif
