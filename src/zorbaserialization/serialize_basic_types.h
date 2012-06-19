@@ -44,6 +44,10 @@ void operator&(Archiver& ar, uint64_t& obj);
 
 void serialize_long(Archiver& ar, long& obj);
 
+void serialize_long_long(Archiver& ar, long long& obj);
+
+void serialize_ulong_long(Archiver& ar, unsigned long long& obj);
+
 void serialize_ulong(Archiver& ar, ulong& obj);
 
 void operator&(Archiver& ar, int32_t& obj);

@@ -82,18 +82,24 @@ void operator&(Archiver& ar, const XQType*& obj)
 
 ********************************************************************************/
 #ifdef ZORBA_WITH_BIG_INTEGER
+
 void operator&(serialization::Archiver& ar, IntegerImpl& obj)
-#else
-template<typename IntType>
-void operator&(serialization::Archiver& ar, IntegerImpl<IntType>& obj)
-#endif
 {
   ar & obj.value_;
 }
 
-#ifndef ZORBA_WITH_BIG_INTEGER
-template void operator&(serialization::Archiver&, IntegerImpl<long long>&);
-template void operator&(serialization::Archiver&, IntegerImpl<unsigned long long>&);
+#else
+
+void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj)
+{
+  serialize_long_long(ar, obj.get_value());
+}
+
+void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj)
+{
+  serialize_ulong_long(ar, obj.get_value());
+}
+
 #endif
 
 

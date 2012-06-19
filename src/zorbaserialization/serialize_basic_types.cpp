@@ -33,6 +33,51 @@ namespace zorba
 namespace serialization
 {
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_long_long(Archiver& ar, long long& obj)
+{
+  assert(sizeof(long long) == 8);
+
+  if (ar.is_serializing_out())
+  {
+    int64_t int64v = obj;
+    ar.add_simple_temp_field(TYPE_INT64, &int64v);
+  }
+  else
+  {
+    int64_t int64v;
+    ar.read_next_simple_temp_field(TYPE_INT64, &int64v);
+
+    obj = static_cast<long long>(int64v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_ulong_long(Archiver& ar, unsigned long long& obj)
+{
+  assert(sizeof(unsigned long long) == 8);
+
+  if (ar.is_serializing_out())
+  {
+    uint64_t uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, &uint64v);
+  }
+  else
+  {
+    uint64_t uint64v;
+    ar.read_next_simple_temp_field(TYPE_UINT64, &uint64v);
+
+    obj = static_cast<unsigned long long>(uint64v);
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -77,10 +122,10 @@ void serialize_long(Archiver& ar, long& obj)
   }
   else
   {
-    uint64_t int64v;
+    int64_t int64v;
     ar.read_next_simple_temp_field(TYPE_INT64, &int64v);
 
-    obj = static_cast<ulong>(int64v);
+    obj = static_cast<long>(int64v);
   }
 }
 
