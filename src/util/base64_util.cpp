@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <cstring>
 
+#include "ascii_util.h"
 #include "base64_util.h"
 #include "string_util.h"
 
@@ -112,15 +113,28 @@ inline void encode_chunk( char const *from, char *to ) {
   to[3] = alphabet[   u[2] & 0x3F                      ];
 }
 
+streamsize read_without_whitespace( istream &is, char *buf, streamsize n ) {
+  char const *const buf_orig = buf;
+  char const *const buf_end = buf + n;
+
+  while ( buf < buf_end ) {
+    is.read( buf, n );
+    if ( streamsize read = is.gcount() ) {
+      read = ascii::remove_whitespace( buf, read );
+      buf += read, n -= read;
+    } else
+      break;
+  }
+  return buf - buf_orig;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 size_type decode( char const *from, size_type from_len, char *to,
-                  bool multiple_4 ) {
-  if ( multiple_4 && from_len % 4 )
-    throw invalid_argument( BUILD_STRING( from_len, ": not a multiple of 4" ) );
-
+                  int options ) {
   char chunk[4];
   int chunk_len = 0;
+  bool const ignore_ws = options & dopt_ignore_ws;
   int pads = 0;
   char const *const to_orig = to;
 
@@ -159,31 +173,37 @@ size_type decode( char const *from, size_type from_len, char *to,
     }
     switch ( value ) {
       case -1:
+        if ( ascii::is_space( c ) && ignore_ws )
+          continue;
         throw base64::exception(
           c, pos, BUILD_STRING( '\'', c, "': invalid character" )
         );
       case -2: // \n or \r
         continue;
       default:
+        if ( chunk_len == 4 )
+          chunk_len = 0;
         if ( to ) {
-          if ( chunk_len == 4 )
-            chunk_len = 0;
           chunk[ chunk_len ] = value;
           if ( ++chunk_len == 4 ) {
             decode_chunk( chunk, to );
             to += 3;
           }
-        }
+        } else
+          ++chunk_len;
     }
   } // for
+
+  if ( (chunk_len % 4) && !(options & dopt_any_len) )
+    throw invalid_argument( "Base64 length is not a multiple of 4" );
 
   if ( !to )
     return 0;
 
   if ( chunk_len > 1 && chunk_len < 4 ) {
     //
-    // from_len was not a multiple of 4, hence the Base64 encoding is
-    // incomplete: salvage 1 or 2 characters.
+    // The number of non-whitespace bytes was not a multiple of 4, hence the
+    // Base64 encoding is incomplete: salvage 1 or 2 characters.
     //
     int const salvageable = chunk_len - 1;
     chunk[3] = '\0';
@@ -196,13 +216,31 @@ size_type decode( char const *from, size_type from_len, char *to,
   return to - to_orig - pads;
 }
 
-size_type decode( istream &from, ostream &to ) {
+size_type decode( char const *from, size_type from_len, std::vector<char> *to,
+                  int options ) {
+  size_type total_decoded = 0;
+  if ( from_len ) {
+    std::vector<char>::size_type const orig_size = to->size();
+    to->resize( orig_size + decoded_size( from_len ) );
+    total_decoded = decode( from, from_len, &(*to)[ orig_size ], options );
+    to->resize( orig_size + total_decoded );
+  }
+  return total_decoded;
+}
+
+size_type decode( istream &from, ostream &to, int options ) {
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
-    from.read( from_buf, sizeof from_buf );
-    if ( streamsize const gcount = from.gcount() ) {
-      size_type const decoded = decode( from_buf, gcount, to_buf );
+    streamsize gcount;
+    if ( options & dopt_ignore_ws )
+      gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
+    else {
+      from.read( from_buf, sizeof from_buf );
+      gcount = from.gcount();
+    }
+    if ( gcount ) {
+      size_type const decoded = decode( from_buf, gcount, to_buf, options );
       to.write( to_buf, decoded );
       total_decoded += decoded;
     } else
@@ -211,17 +249,26 @@ size_type decode( istream &from, ostream &to ) {
   return total_decoded;
 }
 
-size_type decode( istream &from, vector<char> *to ) {
+size_type decode( istream &from, vector<char> *to, int options ) {
+  vector<char>::size_type const orig_size = to->size();
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ];
-    from.read( from_buf, sizeof from_buf );
-    if ( streamsize const gcount = from.gcount() ) {
-      to->reserve( to->size() + decoded_size( gcount ) );
-      total_decoded += decode( from_buf, gcount, &(*to)[ total_decoded ] );
+    streamsize gcount;
+    if ( options & dopt_ignore_ws )
+      gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
+    else {
+      from.read( from_buf, sizeof from_buf );
+      gcount = from.gcount();
+    }
+    if ( gcount ) {
+      to->resize( to->size() + decoded_size( gcount ) );
+      total_decoded +=
+        decode( from_buf, gcount, &(*to)[ total_decoded ], options );
     } else
       break;
   }
+  to->resize( orig_size + total_decoded );
   return total_decoded;
 }
 
@@ -260,6 +307,18 @@ size_type encode( char const *from, size_type from_len, char *to ) {
   }
 
   return to - to_orig;
+}
+
+size_type encode( char const *from, size_type from_len,
+                  std::vector<char> *to ) {
+  size_type encoded = 0;
+  if ( from_len ) {
+    std::vector<char>::size_type const orig_size = to->size();
+    to->resize( orig_size + encoded_size( from_len ) );
+    encoded = encode( from, from_len, &(*to)[ orig_size ] );
+    to->resize( orig_size + encoded );
+  }
+  return encoded;
 }
 
 size_type encode( istream &from, ostream &to ) {

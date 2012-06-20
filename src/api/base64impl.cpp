@@ -61,7 +61,9 @@ String Base64::decode(const String& aString)
 {
   try {
     String result;
-    base64::decode( aString.data(), aString.size(), &result );
+    base64::decode(
+      aString.data(), aString.size(), &result, base64::dopt_ignore_ws
+    );
     return result;
   }
   CATCH_BASE64_EXCEPTION()
@@ -72,7 +74,7 @@ String Base64::decode(std::istream& aStream)
 {
   try {
     String result;
-    base64::decode( aStream, &result );
+    base64::decode( aStream, &result, base64::dopt_ignore_ws );
     return result;
   }
   CATCH_BASE64_EXCEPTION()

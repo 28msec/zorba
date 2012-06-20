@@ -29,9 +29,20 @@
 namespace zorba {
 namespace base64 {
 
-///////////////////////////////////////////////////////////////////////////////
+////////// Types //////////////////////////////////////////////////////////////
 
 typedef size_t size_type;
+
+/**
+ * Options to use for decoding.
+ */
+enum decode_options {
+  dopt_none       = 0x00, ///< No options.
+  dopt_any_len    = 0x01, ///< Input length may be non-multiple of 4.
+  dopt_ignore_ws  = 0x02, ///< Ignore all whitespace.
+};
+
+////////// Exception //////////////////////////////////////////////////////////
 
 /**
  * A %base64::exception is-an invalid_argument that contains additional details
@@ -58,6 +69,19 @@ private:
 ////////// Decoding ///////////////////////////////////////////////////////////
 
 /**
+ * \internal
+ * Reads from the given istream until \a n non-whitespace characters are read
+ * or until EOF is encountered.
+ *
+ * @param is The istream to read from.
+ * @param buf A pointer to the start of a buffer to read into.
+ * @param n The number of non-whitespace characters to read.
+ * @return Returns the number of non-whitespace characters read.
+ */
+std::streamsize read_without_whitespace( std::istream &is, char *buf,
+                                         std::streamsize n );
+
+/**
  * Calculates the number of bytes required to decode \a n Base64-encoded bytes.
  *
  * @param n The number of bytes to decode.
@@ -76,18 +100,16 @@ inline size_type decoded_size( size_type n ) {
  * @paran to A pointer to the buffer to receive the decoded bytes.  The buffer
  * must be large enough to contain them.  Note that the buffer is \e not null
  * terminated.
- * @param multiple_4 If \c true, \a from_len must be a multiple of 4 otherwise
- * an exception is thrown; if \a false, missing trailing bytes are assumed to
- * be padding.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a multiple_4 is \a true and \a from_len is not
- * a multiple of 4.
+ * @throws invalid_argument if \a options does not have the \c dtop_any_len bit
+ * set and \a from_len is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  * @see decoded_size()
  */
 size_type decode( char const *from, size_type from_len, char *to,
-                  bool multiple_4 = true );
+                  int options = dopt_none );
 
 /**
  * Decodes a Base64-encoded buffer and appends the decoded bytes onto a
@@ -97,20 +119,15 @@ size_type decode( char const *from, size_type from_len, char *to,
  * @param from_len The number of bytes to encode.
  * @param to A pointer to the vector to append the encoded bytes appended onto.
  * The vector is made large enough to contain the additional bytes.
- * @param multiple_4 If \c true, \a from_len must be a multiple of 4 otherwise
- * an exception is thrown; if \a false, missing trailing bytes are assumed to
- * be padding.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a multiple_4 is \a true and \a from_len is not
- * a multiple of 4.
+ * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
+ * set and \a from_len is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
-inline size_type decode( char const *from, size_type from_len,
-                         std::vector<char> *to, bool multiple_4 = true ) {
-  to->reserve( to->size() + decoded_size( from_len ) );
-  return decode( from, from_len, &(*to)[ to->size() ], multiple_4 );
-}
+size_type decode( char const *from, size_type from_len, std::vector<char> *to,
+                  int options = dopt_none );
 
 /**
  * Decodes a Base64-encoded buffer and appends the decoded bytes onto a string.
@@ -120,28 +137,29 @@ inline size_type decode( char const *from, size_type from_len,
  * @param from A pointer to the Base64 buffer to be decoded.
  * @param from_len The number of bytes to decode.
  * @param to The string to append the decoded bytes to.
- * @param multiple_4 If \c true, \a from_len must be a multiple of 4 otherwise
- * an exception is thrown; if \a false, missing trailing bytes are assumed to
- * be padding.
+ * @param options The options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a multiple_4 is \a true and \a from_len is not
- * a multiple of 4.
+ * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
+ * set and \a from_len is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
 template<class ToStringType>
 size_type decode( char const *from, size_type from_len, ToStringType *to,
-                  bool multiple_4 = true ) {
-  to->reserve( to->size() + decoded_size( from_len ) );
+                  int options = dopt_none ) {
   size_type total_decoded = 0;
-  char const *const from_end = from + from_len;
-  while ( from < from_end ) {
-    size_type const buf_size = std::max( 1024l * 4, from_end - from );
-    char to_buf[ 1024 * 3 ];
-    size_type const decoded = decode( from, buf_size, to_buf, multiple_4 );
-    to->append( to_buf, decoded );
-    from += buf_size;
-    total_decoded += decoded;
+  if ( from_len ) {
+    to->reserve( to->size() + decoded_size( from_len ) );
+    char const *const from_end = from + from_len;
+    while ( from < from_end ) {
+      size_type const buf_size =
+        std::min( size_type( 1024 * 4 ), size_type( from_end - from ) );
+      char to_buf[ 1024 * 3 ];
+      size_type const decoded = decode( from, buf_size, to_buf, options );
+      to->append( to_buf, decoded );
+      from += buf_size;
+      total_decoded += decoded;
+    }
   }
   return total_decoded;
 }
@@ -152,17 +170,17 @@ size_type decode( char const *from, size_type from_len, ToStringType *to,
  *
  * @param from The istream to read from until EOF is reached.
  * @param to The ostream to write the decoded bytes to.
- * @param multiple_4 If \c true, the number of bytes read must be a multiple of
+ * @param options The options to use.
  * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
  * assumed to be padding.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a multiple_4 is \a true and the number of bytes
- * read is not a multiple of 4.
+ * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
+ * set and the number of bytes read is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::ostream &to,
-                  bool multiple_4 = true );
+                  int options = dopt_none );
 
 /**
  * Decodes a Base64-encoded istream and appends the decoded bytes to a string.
@@ -171,24 +189,30 @@ size_type decode( std::istream &from, std::ostream &to,
  * @tparam ToStringType The string type.
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
- * @param multiple_4 If \c true, the number of bytes read must be a multiple of
+ * @param options The options to use.
  * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
  * assumed to be padding.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a multiple_4 is \a true and the number of bytes
- * read is not a multiple of 4.
+ * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
+ * set and the number of bytes read is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
 template<class ToStringType>
 size_type decode( std::istream &from, ToStringType *to,
-                  bool multiple_4 = true ) {
+                  int options = dopt_none ) {
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
-    from.read( from_buf, sizeof from_buf );
-    if ( std::streamsize const gcount = from.gcount() ) {
-      size_type const decoded = decode( from_buf, gcount, to_buf );
+    std::streamsize gcount;
+    if ( options & dopt_ignore_ws )
+      gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
+    else {
+      from.read( from_buf, sizeof from_buf );
+      gcount = from.gcount();
+    }
+    if ( gcount ) {
+      size_type const decoded = decode( from_buf, gcount, to_buf, options );
       to->append( to_buf, decoded );
       total_decoded += decoded;
     } else
@@ -203,36 +227,32 @@ size_type decode( std::istream &from, ToStringType *to,
  *
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
- * @param multiple_4 If \c true, the number of bytes read must be a multiple of
- * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
- * assumed to be padding.
+ * @param options The options to use.
  * @param Returns the number of decoded bytes.
- * @throws invalid_argument if \a multiple_4 is \a true and the number of bytes
- * read is not a multiple of 4.
+ * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
+ * set and the number of bytes read is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::vector<char> *to,
-                  bool multiple_4 = true );
+                  int options = dopt_none );
 
 /**
- * Validates a Base64-encoded buffer.  mbedded newlines and carriage-returns
+ * Validates a Base64-encoded buffer.  Embedded newlines and carriage-returns
  * are skipped.
  *
  * @param buf A pointer to the Base64 buffer to be validated.
  * @param buf_len The number of bytes to validate.
- * @param multiple_4 If \c true, \a buf_len must be a multiple of 4 otherwise
- * an exception is thrown; if \a false, missing trailing bytes are assumed to
- * be padding.
- * @throws invalid_argument if \a multiple_4 is \a true and \a buf_len is not
- * a multiple of 4.
+ * @param options The options to use.
+ * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
+ * set and \a buf_len is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  * @see decoded_size()
  */
 inline void validate( char const *buf, size_type buf_len,
-                      bool multiple_4 = true ) {
-  decode( buf, buf_len, static_cast<char*>( nullptr ), multiple_4 );
+                      int options = dopt_none ) {
+  decode( buf, buf_len, static_cast<char*>( nullptr ), options );
 }
 
 ////////// Encoding ///////////////////////////////////////////////////////////
@@ -269,11 +289,7 @@ size_type encode( char const *from, size_type from_len, char *to );
  * @param to A pointer to the vector to append the encoded bytes appended onto.
  * The vector is made large enough to contain the additional bytes.
  */
-inline size_type encode( char const *from, size_type from_len,
-                         std::vector<char> *to ) {
-  to->reserve( to->size() + encoded_size( from_len ) );
-  return encode( from, from_len, &(*to)[ to->size() ] );
-}
+size_type encode( char const *from, size_type from_len, std::vector<char> *to );
 
 /**
  * Base64-encodes a buffer and appends the encoded bytes onto a string.
@@ -286,16 +302,19 @@ inline size_type encode( char const *from, size_type from_len,
  */
 template<class ToStringType>
 size_type encode( char const *from, size_type from_len, ToStringType *to ) {
-  to->reserve( to->size() + encoded_size( from_len ) );
   size_type total_encoded = 0;
-  char const *const from_end = from + from_len;
-  while ( from < from_end ) {
-    size_type const buf_size = std::max( 1024l * 3, from_end - from );
-    char to_buf[ 1024 * 4 ];
-    size_type const encoded = encode( from, buf_size, to_buf );
-    to->append( to_buf, encoded );
-    from += buf_size;
-    total_encoded += encoded;
+  if ( from_len ) {
+    to->reserve( to->size() + encoded_size( from_len ) );
+    char const *const from_end = from + from_len;
+    while ( from < from_end ) {
+      size_type const buf_size =
+        std::min( size_type( 1024 * 3 ), size_type( from_end - from ) );
+      char to_buf[ 1024 * 4 ];
+      size_type const encoded = encode( from, buf_size, to_buf );
+      to->append( to_buf, encoded );
+      from += buf_size;
+      total_encoded += encoded;
+    }
   }
   return total_encoded;
 }

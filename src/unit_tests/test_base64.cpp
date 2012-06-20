@@ -64,7 +64,7 @@ static void test_decode( int no, string const &in, string const &expected ) {
   char out[ 1024 ];
   base64::size_type n;
   ASSERT_NO_EXCEPTION(
-    no, n = base64::decode( in.data(), in.size(), out, false )
+    no, n = base64::decode( in.data(), in.size(), out, base64::dopt_any_len )
   );
   ASSERT_TRUE( no, n == expected.size() );
   out[ n ] = '\0';
