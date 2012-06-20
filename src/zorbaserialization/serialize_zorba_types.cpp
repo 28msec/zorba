@@ -451,6 +451,10 @@ void operator&(Archiver& ar, store::Item*& obj)
 
     if (!is_ref)
     {
+      // Init kind to avoid warning (in Windows, uninitialized kind actually
+      // causes a crash).
+      kind = store::Item::NODE;
+
       SERIALIZE_ENUM(store::Item::ItemKind, kind);
 
       switch (kind)

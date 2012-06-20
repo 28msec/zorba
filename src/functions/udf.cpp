@@ -62,7 +62,7 @@ user_function::user_function(
     CompilerCB* ccb)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
-  theCCB(ccb),
+//theCCB(ccb),
   theLoc(loc),
   theScriptingKind(scriptingKind),
   theBodyExpr(expr_body),
@@ -114,7 +114,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
     getPlan(ar.get_ccb(), planStateSize);
     ZORBA_ASSERT(thePlan != NULL);
 
-    computeResultCaching();
+    computeResultCaching(ar.get_ccb()->theXQueryDiagnostics);
     
     if (ar.get_ccb()->theHasEval)
     {
@@ -161,7 +161,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   }
 
   serialize_baseclass(ar, (function*)this);
-  ar & theCCB;
+  //ar & theCCB;
   //ar & theLoc;
   ar & theScriptingKind;
   //ar & theBodyExpr;
@@ -552,7 +552,7 @@ bool user_function::cacheResults() const
  only cache recursive (non-sequential, non-updating, deterministic)
  functions with singleton atomic input and output
 ********************************************************************************/
-void user_function::computeResultCaching()
+void user_function::computeResultCaching(XQueryDiagnostics* diag)
 {
   if (theCacheComputed)
   {
@@ -578,8 +578,6 @@ void user_function::computeResultCaching()
       theCacheComputed = true;
     }
   };
-
-  XQueryDiagnostics* diag = theCCB->theXQueryDiagnostics;
 
   // will be destroyed when the function is exited
   // set caching to true if cache() is called

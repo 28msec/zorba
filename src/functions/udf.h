@@ -110,7 +110,7 @@ public:
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 private:
-  CompilerCB                * theCCB;
+  //CompilerCB                * theCCB;
 
   QueryLoc                    theLoc;
 
@@ -232,7 +232,7 @@ public:
 
   bool cacheResults() const;
 
-  void computeResultCaching();
+  void computeResultCaching(XQueryDiagnostics* diag);
 };
 
 
