@@ -297,17 +297,10 @@ template<class ToStringType>
 size_type encode( char const *from, size_type from_len, ToStringType *to ) {
   size_type total_encoded = 0;
   if ( from_len ) {
-    to->reserve( to->size() + encoded_size( from_len ) );
-    char const *const from_end = from + from_len;
-    while ( from < from_end ) {
-      size_type const buf_size =
-        std::min( size_type( 1024 * 3 ), size_type( from_end - from ) );
-      char to_buf[ 1024 * 4 ];
-      size_type const encoded = encode( from, buf_size, to_buf );
-      to->append( to_buf, encoded );
-      from += buf_size;
-      total_encoded += encoded;
-    }
+    typename ToStringType::size_type const orig_size = to->size();
+    to->resize( orig_size + encoded_size( from_len ) );
+    total_encoded = encode( from, from_len, &to->at( orig_size ) );
+    to->resize( orig_size + total_encoded );
   }
   return total_encoded;
 }

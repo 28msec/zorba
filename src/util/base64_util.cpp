@@ -337,16 +337,18 @@ size_type encode( istream &from, ostream &to ) {
 }
 
 size_type encode( istream &from, vector<char> *to ) {
+  vector<char>::size_type const orig_size = to->size();
   size_type total_encoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 3 ];
     from.read( from_buf, sizeof from_buf );
     if ( streamsize const gcount = from.gcount() ) {
-      to->reserve( to->size() + encoded_size( gcount ) );
+      to->resize( to->size() + encoded_size( gcount ) );
       total_encoded += encode( from_buf, gcount, &(*to)[ total_encoded ] );
     } else
       break;
   }
+  to->resize( orig_size + total_encoded );
   return total_encoded;
 }
 

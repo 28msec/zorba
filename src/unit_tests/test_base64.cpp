@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -60,7 +61,7 @@ static void print_exception( int no, char const *expr, int line,
 
 ///////////////////////////////////////////////////////////////////////////////}
 
-static void test_decode_cCP_s_cP_i( int no, string const &in,
+static void test_decode_buf_to_buf( int no, string const &in,
                                     string const &expected ) {
   base64::size_type n;
   char out[ 1024 ];
@@ -72,17 +73,69 @@ static void test_decode_cCP_s_cP_i( int no, string const &in,
   ASSERT_TRUE( no, out == expected );
 }
 
-static void test_decode_cCP_s_T_i( int no, string const &in,
-                                   string const &expected ) {
+static void test_decode_buf_to_string( int no, string const &in,
+                                       string const &expected ) {
   base64::size_type n;
-  string result;
+  string out;
   ASSERT_NO_EXCEPTION(
     no,
-    n = base64::decode( in.data(), in.size(), &result, base64::dopt_any_len )
+    n = base64::decode( in.data(), in.size(), &out, base64::dopt_any_len )
   );
   ASSERT_TRUE( no, n == expected.size() );
-  ASSERT_TRUE( no, result.size() == expected.size() );
-  ASSERT_TRUE( no, result == expected );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, out == expected );
+}
+
+static void test_decode_buf_to_vector( int no, string const &in,
+                                       string const &expected ) {
+  base64::size_type n;
+  vector<char> out;
+  ASSERT_NO_EXCEPTION(
+    no,
+    n = base64::decode( in.data(), in.size(), &out, base64::dopt_any_len )
+  );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, !strncmp( &out[0], expected.data(), expected.size() ) );
+}
+
+static void test_decode_stream_to_stream( int no, string const &in,
+                                          string const &expected ) {
+  base64::size_type n;
+  istringstream sin( in );
+  ostringstream sout;
+  ASSERT_NO_EXCEPTION(
+    no, n = base64::decode( sin, sout, base64::dopt_any_len )
+  );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, sout.str().size() == expected.size() );
+  ASSERT_TRUE( no, sout.str() == expected );
+}
+
+static void test_decode_stream_to_string( int no, string const &in,
+                                          string const &expected ) {
+  base64::size_type n;
+  istringstream sin( in );
+  string out;
+  ASSERT_NO_EXCEPTION(
+    no, n = base64::decode( sin, &out, base64::dopt_any_len )
+  );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, out == expected );
+}
+
+static void test_decode_stream_to_vector( int no, string const &in,
+                                          string const &expected ) {
+  base64::size_type n;
+  istringstream sin( in );
+  vector<char> out;
+  ASSERT_NO_EXCEPTION(
+    no, n = base64::decode( sin, &out, base64::dopt_any_len )
+  );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, !strncmp( &out[0], expected.data(), expected.size() ) );
 }
 
 static void test_decode_exception( int no, string const &in ) {
@@ -92,12 +145,68 @@ static void test_decode_exception( int no, string const &in ) {
   );
 }
 
-static void test_encode( int no, string const &in, string const &expected ) {
+///////////////////////////////////////////////////////////////////////////////
+
+static void test_encode_buf_to_buf( int no, string const &in,
+                                    string const &expected ) {
   char out[ 1024 ];
   base64::size_type const n = base64::encode( in.data(), in.size(), out );
   ASSERT_TRUE( no, n == expected.size() );
   out[ n ] = '\0';
   ASSERT_TRUE( no, out == expected );
+}
+
+static void test_encode_buf_to_string( int no, string const &in,
+                                       string const &expected ) {
+  base64::size_type n;
+  string out;
+  ASSERT_NO_EXCEPTION( no, n = base64::encode( in.data(), in.size(), &out ) );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, out == expected );
+}
+
+static void test_encode_buf_to_vector( int no, string const &in,
+                                       string const &expected ) {
+  base64::size_type n;
+  vector<char> out;
+  ASSERT_NO_EXCEPTION( no, n = base64::encode( in.data(), in.size(), &out ) );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, !strncmp( &out[0], expected.data(), expected.size() ) );
+}
+
+static void test_encode_stream_to_stream( int no, string const &in,
+                                          string const &expected ) {
+  base64::size_type n;
+  istringstream sin( in );
+  ostringstream sout;
+  ASSERT_NO_EXCEPTION( no, n = base64::encode( sin, sout ) );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, sout.str().size() == expected.size() );
+  ASSERT_TRUE( no, sout.str() == expected );
+}
+
+static void test_encode_stream_to_string( int no, string const &in,
+                                          string const &expected ) {
+  base64::size_type n;
+  istringstream sin( in );
+  string out;
+  ASSERT_NO_EXCEPTION( no, n = base64::encode( sin, &out ) );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, out == expected );
+}
+
+static void test_encode_stream_to_vector( int no, string const &in,
+                                          string const &expected ) {
+  base64::size_type n;
+  istringstream sin( in );
+  vector<char> out;
+  ASSERT_NO_EXCEPTION( no, n = base64::encode( sin, &out ) );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, !strncmp( &out[0], expected.data(), expected.size() ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -145,12 +254,22 @@ namespace UnitTests {
 int test_base64( int, char*[] ) {
   int test_no = 0;
 
-  for ( test const *t = encode_tests; t->input; ++t, ++test_no )
-    test_encode( test_no, t->input, t->expected );
+  for ( test const *t = encode_tests; t->input; ++t, ++test_no ) {
+    test_encode_buf_to_buf( test_no, t->input, t->expected );
+    test_encode_buf_to_string( test_no, t->input, t->expected );
+    test_encode_buf_to_vector( test_no, t->input, t->expected );
+    test_encode_stream_to_stream( test_no, t->input, t->expected );
+    test_encode_stream_to_string( test_no, t->input, t->expected );
+    test_encode_stream_to_vector( test_no, t->input, t->expected );
+  }
 
   for ( test const *t = decode_tests; t->input; ++t, ++test_no ) {
-    test_decode_cCP_s_cP_i( test_no, t->input, t->expected );
-    test_decode_cCP_s_T_i( test_no, t->input, t->expected );
+    test_decode_buf_to_buf( test_no, t->input, t->expected );
+    test_decode_buf_to_string( test_no, t->input, t->expected );
+    test_decode_buf_to_vector( test_no, t->input, t->expected );
+    test_decode_stream_to_stream( test_no, t->input, t->expected );
+    test_decode_stream_to_string( test_no, t->input, t->expected );
+    test_decode_stream_to_vector( test_no, t->input, t->expected );
   }
 
   for ( char const *const *t = decode_exception_tests; *t; ++t, ++test_no )
