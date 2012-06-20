@@ -1438,6 +1438,69 @@ void PULImpl::addJSONArrayInsert(
 /*******************************************************************************
 
 ********************************************************************************/
+void PULImpl::addJSONArrayAppend(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& members)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(arr, updates);
+
+  // merge array-append primitives
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_INSERT)
+        continue;
+
+      UpdJSONArrayAppend* upd = static_cast<UpdJSONArrayAppend*>(*ite);
+
+      csize numMembers1 = upd->theMembers.size();
+      csize numMembers2 = members.size();
+      csize numMembers = numMembers1;
+
+      upd->theMembers.resize(numMembers1 + numMembers2);
+
+      for (csize i = 0; i < numMembers2; ++i, ++numMembers)
+      {
+        upd->theMembers[numMembers].transfer(members[i]);
+      }
+
+      return;
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayAppend(pul, loc, target, members);
+
+    pul->theJSONArrayAppendList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayAppend(pul, loc, target, members);
+
+    pul->theJSONArrayAppendList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void PULImpl::addJSONArrayDelete(
    const QueryLoc* loc,
    store::Item_t& target,
@@ -3043,7 +3106,8 @@ void CollectionPul::applyUpdates()
 
     if (!theJSONArrayDeleteList.empty() ||
         !theJSONArrayInsertList.empty() ||
-        !theJSONArrayReplaceValueList.empty())
+        !theJSONArrayReplaceValueList.empty() ||
+        !theJSONArrayAppendList.empty())
     {
       NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
@@ -3222,7 +3286,8 @@ void CollectionPul::undoUpdates()
 
     if (!theJSONArrayDeleteList.empty() ||
         !theJSONArrayInsertList.empty() ||
-        !theJSONArrayReplaceValueList.empty())
+        !theJSONArrayReplaceValueList.empty() ||
+        !theJSONArrayAppendList.empty())
     {
       NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();

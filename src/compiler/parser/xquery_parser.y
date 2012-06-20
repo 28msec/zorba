@@ -6446,9 +6446,9 @@ JSONInsertExpr :
     ;
 
 JSONAppendExpr :
-        APPEND JSON ExprSingle TO ExprSingle
+        APPEND JSON LBRACK Expr RBRACK TO ExprSingle
         {
-          $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
+          $$ = new JSONArrayAppendExpr(LOC(@$), $4, $7);
         }
     ;
 

@@ -146,6 +146,9 @@ extern entry const dict_en[] = {
   { "JNUP0016", "" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNUP0017", "Cannot replace with less or more than an item." },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0040", "$1" },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },
@@ -589,6 +592,7 @@ extern entry const dict_en[] = {
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
   { "~JNTY0007_Array", "\"$2\": can not be promoted to type xs:integer" },
   { "~JNTY0007_Object", "\"$2\": can not be promoted to type xs:string" },
+  { "~JNTY0007_ObjectArray", "\"$2\": can not be promoted to type xs:anyAtomicType" },
   { "~JNTY0008_Array", "\"$2\": target of an appending expression or of a position-inserting expression is not an array" },
   { "~JNTY0008_Object", "\"$2\": target of a renaming expression or of a non-position-inserting expression is not an object." },
   { "~JNTY0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item." },

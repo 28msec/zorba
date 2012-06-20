@@ -594,6 +594,44 @@ public:
 
 #endif
 
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ *      internal function 
+ *    
+ * Author: Zorba Team
+ */
+class JSONArrayAppendIterator : public NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONArrayAppendIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayAppendIterator,
+    NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>*)this);
+  }
+
+  JSONArrayAppendIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONArrayAppendIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
 }
 #endif
 /*

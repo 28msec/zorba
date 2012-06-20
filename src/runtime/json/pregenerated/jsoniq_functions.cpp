@@ -354,6 +354,29 @@ JSONRenameIterator::~JSONRenameIterator() {}
 // </JSONRenameIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONArrayAppendIterator>
+JSONArrayAppendIterator::class_factory<JSONArrayAppendIterator>
+JSONArrayAppendIterator::g_class_factory;
+
+
+void JSONArrayAppendIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONArrayAppendIterator::~JSONArrayAppendIterator() {}
+
+// </JSONArrayAppendIterator>
+
+#endif
 
 }
 

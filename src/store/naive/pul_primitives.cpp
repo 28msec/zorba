@@ -2096,6 +2096,17 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
   assert(theTarget->isJSONArray());
 }
 
+UpdJSONArrayUpdate::UpdJSONArrayUpdate(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target)
+  :
+  UpdatePrimitive(pul, loc, target),
+  thePosition(0)
+{
+  assert(theTarget->isJSONArray());
+}
+
 
 bool UpdJSONArrayUpdate::Comparator::operator() (
     const UpdatePrimitive* lhs,
@@ -2103,6 +2114,9 @@ bool UpdJSONArrayUpdate::Comparator::operator() (
 {
   const UpdJSONArrayUpdate* l = static_cast<const UpdJSONArrayUpdate*>(lhs);
   const UpdJSONArrayUpdate* r = static_cast<const UpdJSONArrayUpdate*>(rhs);
+  
+  if (l->thePosition == 0) // lhs is an appending UP
+    return true;
 
   if (l->thePosition > r->thePosition)
     return true;
@@ -2157,6 +2171,52 @@ void UpdJSONArrayInsert::undo()
 
   for (csize i = 0; i < numNewMembers; ++i) 
     array->remove(thePosition);
+
+  theIsApplied = false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdJSONArrayAppend::UpdJSONArrayAppend(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    std::vector<store::Item_t>& members)
+  :
+  UpdJSONArrayUpdate(pul, loc, target),
+  theNumApplied(0)
+{
+  theMembers.swap(members);
+}
+
+
+void UpdJSONArrayAppend::apply()
+{
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  array->push_back(theMembers);
+
+  theIsApplied = true;
+}
+
+
+void UpdJSONArrayAppend::undo()
+{
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  csize numNewMembers = theMembers.size();
+  xs_integer numTotalMembers = theTarget->getArraySize()->getIntegerValue();
+  xs_integer lPositionToDelete = numTotalMembers - numNewMembers;
+
+  for (csize i = 0; i < numNewMembers; ++i) 
+    array->remove(lPositionToDelete);
 
   theIsApplied = false;
 }

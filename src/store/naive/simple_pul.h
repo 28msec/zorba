@@ -215,6 +215,7 @@ protected:
   std::vector<UpdatePrimitive*>      theJSONObjectRenameList;
 
   std::vector<UpdatePrimitive*>      theJSONArrayInsertList;
+  std::vector<UpdatePrimitive*>      theJSONArrayAppendList;
   std::vector<UpdatePrimitive*>      theJSONArrayDeleteList;
   std::vector<UpdatePrimitive*>      theJSONArrayReplaceValueList;
 #endif
@@ -596,6 +597,11 @@ public:
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
       store::Item_t& pos,
+      std::vector<store::Item_t>& members);
+
+  virtual void addJSONArrayAppend(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
       std::vector<store::Item_t>& members);
 
   virtual void addJSONArrayDelete(

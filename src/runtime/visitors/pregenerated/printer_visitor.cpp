@@ -2143,6 +2143,21 @@ void PrinterVisitor::endVisit ( const JSONRenameIterator& ) {
 // </JSONRenameIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONArrayAppendIterator>
+void PrinterVisitor::beginVisit ( const JSONArrayAppendIterator& a) {
+  thePrinter.startBeginVisit("JSONArrayAppendIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONArrayAppendIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONArrayAppendIterator>
+
+#endif
 
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {

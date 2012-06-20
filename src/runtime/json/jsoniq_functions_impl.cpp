@@ -594,6 +594,54 @@ bool JSONArrayInsertIterator::nextImpl(
 
 
 /*******************************************************************************
+  updating function op-zorba:array-append(
+      $o as array(),
+      $values as item()*) 
+********************************************************************************/
+bool JSONArrayAppendIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+  store::Item_t member;
+  std::vector<store::Item_t> members;
+  store::PUL_t pul;
+  store::CopyMode copymode;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(array, theChildren[0].getp(), planState);
+
+  copymode.set(true, 
+               theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+
+  while (consumeNext(member, theChildren[1].getp(), planState))
+  {
+    if (member->isNode() || member->isJSONItem())
+    {
+      member = member->copy(NULL, copymode);
+    }
+
+    members.resize(members.size() + 1);
+    members.back().transfer(member);
+  }
+
+  pul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+  pul->addJSONArrayAppend(&loc, array, members);
+
+  result.transfer(pul);
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
   updating function op-zorba:json-delete(
       $target as json-item(),
       $selector as xs:anyAtomicType) 

@@ -316,6 +316,28 @@ public:
   CODEGEN_DECL();
 };
 #endif
+#ifdef ZORBA_WITH_JSON
+
+//op-zorba:json-array-append
+class op_zorba_json_array_append : public function
+{
+public:
+  op_zorba_json_array_append(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
+
+  CODEGEN_DECL();
+};
+#endif
 
 
 } //namespace zorba

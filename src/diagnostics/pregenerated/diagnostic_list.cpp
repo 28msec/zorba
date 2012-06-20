@@ -1234,6 +1234,9 @@ JSONiqErrorCode JNSE0014( "JNSE0014" );
 JSONiqErrorCode JNUP0016( "JNUP0016" );
 
 
+JSONiqErrorCode JNUP0017( "JNUP0017" );
+
+
 JSONiqErrorCode JNTY0003( "JNTY0003" );
 
 

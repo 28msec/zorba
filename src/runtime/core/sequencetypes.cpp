@@ -479,6 +479,12 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(JNTY0007_Object), valueType));
     break;
   }
+  case JSONIQ_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNTY0007, loc,
+    ERROR_PARAMS(ZED(JNTY0007_ObjectArray), valueType));
+    break;
+  }
 #endif
   default:
   {
@@ -711,6 +717,11 @@ void TreatIterator::raiseError(const zstring& valueType) const
   {
     RAISE_ERROR(jerr::JNTY0008, loc,
     ERROR_PARAMS(ZED(JNTY0008_Array), valueType));
+    break;
+  }
+  case JSONIQ_REPLACEMENT_VALUE:
+  {
+    RAISE_ERROR_NO_PARAMS(jerr::JNUP0017, loc);
     break;
   }
 #endif

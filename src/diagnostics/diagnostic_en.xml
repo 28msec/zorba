@@ -2581,6 +2581,9 @@
       <entry key="Array">
         <value>"$2": can not be promoted to type xs:integer</value>
       </entry>
+      <entry key="ObjectArray">
+        <value>"$2": can not be promoted to type xs:anyAtomicType</value>
+      </entry>
     </diagnostic>
     
     <diagnostic code="JNTY0008" if="defined(ZORBA_WITH_JSON)">
@@ -2649,6 +2652,11 @@
       <entry key="Array">
         <value>"$2": selector cannot be resolved against supplied array.</value>
       </entry>
+    </diagnostic>
+    
+    <diagnostic code="JNUP0017" if="defined(ZORBA_WITH_JSON)">
+      <comment> It is a dynamic error if the value in a replace expression is not exactly a single item.</comment>
+      <value>Cannot replace with less or more than an item.</value>
     </diagnostic>
     
     <!--////////// JSONIQ ///////////////////////////////////////////-->

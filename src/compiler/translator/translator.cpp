@@ -12961,6 +12961,24 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
+  expr_t targetExpr = pop_nodestack();
+  expr_t contentExpr = pop_nodestack();
+
+  targetExpr = wrap_in_type_match(targetExpr,
+                                  theRTM.JSON_ARRAY_TYPE_ONE,
+                                  loc,
+                                  TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNTY0008
+                                  NULL);
+
+  fo_expr_t updExpr = new fo_expr(theRootSctx,
+                                  loc, 
+                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
+                                  targetExpr,
+                                  contentExpr);
+  normalize_fo(updExpr.getp());
+
+  push_nodestack(updExpr.getp());
+
 #endif
 }
 
@@ -12996,6 +13014,11 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
   expr_t selExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
   
+  selExpr = wrap_in_type_promotion(selExpr,
+                                   theRTM.ANY_ATOMIC_TYPE_ONE,
+                                   PromoteIterator::JSONIQ_SELECTOR, // JNTY0007
+                                   NULL);
+  
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ITEM_TYPE_ONE,
                                   loc,
@@ -13007,8 +13030,6 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_DELETE_2),
                                   targetExpr,
                                   selExpr);
-  normalize_fo(updExpr.getp());
-
   push_nodestack(updExpr.getp());
 #endif
 }
@@ -13043,15 +13064,22 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
                                loc,
                                TreatIterator::JSONIQ_UPDATE_TARGET, // JNTY0008
                                NULL);
-  args[1] = selExpr;
-  args[2] = valueExpr;
 
+  args[1] = wrap_in_type_promotion(selExpr,
+                                   theRTM.ANY_ATOMIC_TYPE_ONE,
+                                   PromoteIterator::JSONIQ_SELECTOR, // JNTY0007
+                                   NULL);
+
+  args[2] = wrap_in_type_match(valueExpr,
+                               theRTM.ITEM_TYPE_ONE,
+                               loc,
+                               TreatIterator::JSONIQ_REPLACEMENT_VALUE, // JNUP0017
+                               NULL);
+                               
   fo_expr_t updExpr = new fo_expr(theRootSctx,
                                   loc, 
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_REPLACE_VALUE_3),
                                   args);
-  normalize_fo(updExpr.getp());
-
   push_nodestack(updExpr.getp());
 #endif
 }
@@ -13091,14 +13119,14 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
                                    theRTM.STRING_TYPE_ONE,
                                    PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNTY0007
 
-  args[2] = newNameExpr;
+  args[2] = wrap_in_type_promotion(newNameExpr,
+                                   theRTM.STRING_TYPE_ONE,
+                                   PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNTY0007
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
                                   loc, 
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_RENAME_3),
                                   args);
-  normalize_fo(updExpr.getp());
-
   push_nodestack(updExpr.getp());
 #endif
 }
