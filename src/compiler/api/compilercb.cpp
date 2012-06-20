@@ -233,6 +233,6 @@ static_context* CompilerCB::getStaticContext(int c)
   return lIter->second.getp();
 }
 
-  
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

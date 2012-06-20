@@ -1651,7 +1651,7 @@ zstring StringItem::show() const
 #ifndef ZORBA_NO_FULL_TEXT
 FTTokenIterator_t StringItem::getTokens( 
     TokenizerProvider const &provider,
-    Tokenizer::Numbers &numbers,
+    Tokenizer::State &state,
     iso639_1::type lang,
     bool wildcards ) const
 {
@@ -1660,7 +1660,7 @@ FTTokenIterator_t StringItem::getTokens(
   AtomicItemTokenizerCallback callback( *tokens );
 
   Tokenizer::ptr tokenizer;
-  if ( provider.getTokenizer( lang, &numbers, &tokenizer ) )
+  if ( provider.getTokenizer( lang, &state, &tokenizer ) )
     tokenizer->tokenize_string(
       theValue.data(), theValue.size(), lang, wildcards, callback
     );

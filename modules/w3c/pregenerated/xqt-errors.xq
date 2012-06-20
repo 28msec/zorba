@@ -48,33 +48,12 @@ declare variable $err:XPST0001 as xs:QName := fn:QName($err:NS, "err:XPST0001");
 
 (:~
  :
- : It is a dynamic error if evaluation of an expression relies on some part
- : of the dynamic context that has not been assigned a value.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPDY0002 as xs:QName := fn:QName($err:NS, "err:XPDY0002");
-
-(:~
- :
  : It is a static error if an expression is not a valid instance of the
  : grammar.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XPST0003 as xs:QName := fn:QName($err:NS, "err:XPST0003");
-
-(:~
- :
- : It is a type error if, during the static analysis phase, an expression
- : is found to have a static type that is not appropriate for the context
- : in which the expression occurs, or during the dynamic evaluation phase,
- : the dynamic type of a value does not match a required type as specified
- : by the matching rules in 2.5.4 SequenceType Matching.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPTY0004 as xs:QName := fn:QName($err:NS, "err:XPTY0004");
 
 (:~
  :
@@ -96,6 +75,122 @@ declare variable $err:XPST0005 as xs:QName := fn:QName($err:NS, "err:XPST0005");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XPST0008 as xs:QName := fn:QName($err:NS, "err:XPST0008");
+
+(:~
+ :
+ : It is a static error if the expanded QName and number of arguments in a
+ : function call do not match the name and arity of a function signature in
+ : the static context.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPST0017 as xs:QName := fn:QName($err:NS, "err:XPST0017");
+
+(:~
+ :
+ : It is a static error if a QName that is used as an AtomicType in a
+ : SequenceType is not defined in the in-scope schema types as an atomic
+ : type.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPST0051 as xs:QName := fn:QName($err:NS, "err:XPST0051");
+
+(:~
+ :
+ : It is a static error if the target type of a \c cast or \c castable
+ : expression is \c xs:NOTATION or \c xs:anyAtomicType.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPST0080 as xs:QName := fn:QName($err:NS, "err:XPST0080");
+
+(:~
+ :
+ : It is a static error if a QName used in a query contains a namespace
+ : prefix that cannot be expanded into a namespace URI by using the
+ : statically known namespaces.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPST0081 as xs:QName := fn:QName($err:NS, "err:XPST0081");
+
+(:~
+ :
+ : It is a static error if the target type of a \c cast expression or
+ : constructor function is \c xs:QName or a type derived from \c xs:QName
+ : or \c xs:NOTATION, and the argument of the cast expression or
+ : constructor function is not a string literal.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPST0083 as xs:QName := fn:QName($err:NS, "err:XPST0083");
+
+(:~
+ :
+ : It is a type error if, during the static analysis phase, an expression
+ : is found to have a static type that is not appropriate for the context
+ : in which the expression occurs, or during the dynamic evaluation phase,
+ : the dynamic type of a value does not match a required type as specified
+ : by the matching rules in 2.5.4 SequenceType Matching.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPTY0004 as xs:QName := fn:QName($err:NS, "err:XPTY0004");
+
+(:~
+ :
+ : It is a type error if the result of the last step in a path expression
+ : contains both nodes and non-nodes.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPTY0018 as xs:QName := fn:QName($err:NS, "err:XPTY0018");
+
+(:~
+ :
+ : It is a type error if the result of a step (other than the last step) in a
+ : path expression contains an atomic value.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPTY0019 as xs:QName := fn:QName($err:NS, "err:XPTY0019");
+
+(:~
+ :
+ : It is a type error if, in an axis step, the context item is not a node.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPTY0020 as xs:QName := fn:QName($err:NS, "err:XPTY0020");
+
+(:~
+ :
+ : It is a type error if the content sequence in an element constructor
+ : contains an attribute node following a node that is not an attribute node.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQTY0024 as xs:QName := fn:QName($err:NS, "err:XQTY0024");
+
+(:~
+ :
+ : It is a type error if the argument of a validate expression does not
+ : evaluate to exactly one document or element node.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQTY0030 as xs:QName := fn:QName($err:NS, "err:XQTY0030");
+
+(:~
+ :
+ : It is a type error if the typed value of a copied element or attribute
+ : node is namespace-sensitive when construction mode is \c preserve and
+ : copy-namespaces mode is \c no-preserve.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQTY0086 as xs:QName := fn:QName($err:NS, "err:XQTY0086");
 
 (:~
  :
@@ -128,96 +223,12 @@ declare variable $err:XQST0013 as xs:QName := fn:QName($err:NS, "err:XQST0013");
 
 (:~
  :
- : It is a static error if the expanded QName and number of arguments in a
- : function call do not match the name and arity of a function signature in
- : the static context.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPST0017 as xs:QName := fn:QName($err:NS, "err:XPST0017");
-
-(:~
- :
- : It is a type error if the result of the last step in a path expression
- : contains both nodes and non-nodes.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPTY0018 as xs:QName := fn:QName($err:NS, "err:XPTY0018");
-
-(:~
- :
- : It is a type error if the result of a step (other than the last step) in a
- : path expression contains an atomic value.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPTY0019 as xs:QName := fn:QName($err:NS, "err:XPTY0019");
-
-(:~
- :
- : It is a type error if, in an axis step, the context item is not a node.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPTY0020 as xs:QName := fn:QName($err:NS, "err:XPTY0020");
-
-(:~
- :
  : It is a static error if the value of a namespace declaration attribute is
  : not a URILiteral.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0022 as xs:QName := fn:QName($err:NS, "err:XQST0022");
-
-(:~
- :
- : It is a type error if the content sequence in an element constructor
- : contains an attribute node following a node that is not an attribute node.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQTY0024 as xs:QName := fn:QName($err:NS, "err:XQTY0024");
-
-(:~
- :
- : It is a dynamic error if any attribute of a constructed element does not
- : have a name that is distinct from the names of all other attributes of
- : the constructed element.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0025 as xs:QName := fn:QName($err:NS, "err:XQDY0025");
-
-(:~
- :
- : It is a dynamic error if the result of the content expression of a
- : computed processing instruction constructor contains the string "?>".
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0026 as xs:QName := fn:QName($err:NS, "err:XQDY0026");
-
-(:~
- :
- : In a validate expression, it is a dynamic error if the root element
- : information item in the PSVI resulting from validation does not have the
- : expected validity property: \c valid if validation mode is \c strict, or
- : either \c valid or \c notKnown if validation mode is \c lax.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0027 as xs:QName := fn:QName($err:NS, "err:XQDY0027");
-
-(:~
- :
- : It is a type error if the argument of a validate expression does not
- : evaluate to exactly one document or element node.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQTY0030 as xs:QName := fn:QName($err:NS, "err:XQTY0030");
 
 (:~
  :
@@ -325,32 +336,6 @@ declare variable $err:XQST0040 as xs:QName := fn:QName($err:NS, "err:XQST0040");
 
 (:~
  :
- : It is a dynamic error if the value of the name expression in a computed
- : processing instruction constructor cannot be cast to the type
- : \c xs:NCName.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0041 as xs:QName := fn:QName($err:NS, "err:XQDY0041");
-
-(:~
- :
- : It is a static error the node-name of a node constructed by a computed
- : attribute constructor has any of the following properties:
- : - Its namespace prefix is \c xmlns.
- : - It has no namespace prefix and its local name is \c xmlns.
- : - Its namespace URI is http://www.w3.org/2000/xmlns/.
- : - Its namespace prefix is \c xml and its namespace URI is not
- : http://www.w3.org/XML/1998/namespace.
- : - Its namespace prefix is other than \c xml and its namespace URI is
- : http://www.w3.org/XML/1998/namespace.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0044 as xs:QName := fn:QName($err:NS, "err:XQDY0044");
-
-(:~
- :
  : It is a static error if the function name in a function declaration is in
  : one of the following namespaces:
  : http://www.w3.org/XML/1998/namespace,
@@ -397,31 +382,6 @@ declare variable $err:XQST0048 as xs:QName := fn:QName($err:NS, "err:XQST0048");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0049 as xs:QName := fn:QName($err:NS, "err:XQST0049");
-
-(:~
- :
- : It is a dynamic error if the dynamic type of the operand of a treat
- : expression does not match the sequence type specified by the treat
- : expression. This error might also be raised by a path expression
- : beginning with "/" or "//" if the context node
- : is not in a tree that is rooted at a document node. This is because a
- : leading "/" or "//" in a path expression is an
- : abbreviation for an initial step that includes the clause \c treat as \c
- : document-node().
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPDY0050 as xs:QName := fn:QName($err:NS, "err:XPDY0050");
-
-(:~
- :
- : It is a static error if a QName that is used as an AtomicType in a
- : SequenceType is not defined in the in-scope schema types as an atomic
- : type.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPST0051 as xs:QName := fn:QName($err:NS, "err:XPST0051");
 
 (:~
  :
@@ -476,26 +436,6 @@ declare variable $err:XQST0059 as xs:QName := fn:QName($err:NS, "err:XQST0059");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0060 as xs:QName := fn:QName($err:NS, "err:XQST0060");
-
-(:~
- :
- : It is a dynamic error if the operand of a validate expression is a
- : document node whose children do not consist of exactly one element node
- : and zero or more comment and processing instruction nodes, in any order.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0061 as xs:QName := fn:QName($err:NS, "err:XQDY0061");
-
-(:~
- :
- : It is a dynamic error if the value of the name expression in a computed
- : processing instruction constructor is equal to "XML" (in any combination
- : of upper and lower case).
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0064 as xs:QName := fn:QName($err:NS, "err:XQDY0064");
 
 (:~
  :
@@ -571,27 +511,6 @@ declare variable $err:XQST0071 as xs:QName := fn:QName($err:NS, "err:XQST0071");
 
 (:~
  :
- : It is a dynamic error if the result of the content expression of a
- : computed comment constructor contains two adjacent hyphens or ends with
- : a hyphen.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0072 as xs:QName := fn:QName($err:NS, "err:XQDY0072");
-
-(:~
- :
- : It is a dynamic error if the value of the name expression in a computed
- : element or attribute constructor cannot be converted to an expanded
- : QName (for example, because it contains a namespace prefix not found in
- : statically known namespaces).
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0074 as xs:QName := fn:QName($err:NS, "err:XQDY0074");
-
-(:~
- :
  : It is a static error if a \c collation subclause in an order by clause
  : of a FLWOR expression does not identify a collation that is present in
  : statically known collations.
@@ -612,46 +531,6 @@ declare variable $err:XQST0079 as xs:QName := fn:QName($err:NS, "err:XQST0079");
 
 (:~
  :
- : It is a static error if the target type of a \c cast or \c castable
- : expression is \c xs:NOTATION or \c xs:anyAtomicType.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPST0080 as xs:QName := fn:QName($err:NS, "err:XPST0080");
-
-(:~
- :
- : It is a static error if a QName used in a query contains a namespace
- : prefix that cannot be expanded into a namespace URI by using the
- : statically known namespaces.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPST0081 as xs:QName := fn:QName($err:NS, "err:XPST0081");
-
-(:~
- :
- : It is a static error if the target type of a \c cast expression or
- : constructor function is \c xs:QName or a type derived from \c xs:QName
- : or \c xs:NOTATION, and the argument of the cast expression or
- : constructor function is not a string literal.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XPST0083 as xs:QName := fn:QName($err:NS, "err:XPST0083");
-
-(:~
- :
- : It is a dynamic error if the element validated by a \c validate statement
- : does not have a top-level element declaration in the in-scope element
- : declarations, if validation mode is \c strict.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0084 as xs:QName := fn:QName($err:NS, "err:XQDY0084");
-
-(:~
- :
  : It is a static error if the namespace URI in a namespace declaration
  : attribute is a zero-length string, and the implementation does not
  : support [XML Names 1.1].
@@ -659,16 +538,6 @@ declare variable $err:XQDY0084 as xs:QName := fn:QName($err:NS, "err:XQDY0084");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0085 as xs:QName := fn:QName($err:NS, "err:XQST0085");
-
-(:~
- :
- : It is a type error if the typed value of a copied element or attribute
- : node is namespace-sensitive when construction mode is \c preserve and
- : copy-namespaces mode is \c no-preserve.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQTY0086 as xs:QName := fn:QName($err:NS, "err:XQTY0086");
 
 (:~
  :
@@ -709,25 +578,6 @@ declare variable $err:XQST0090 as xs:QName := fn:QName($err:NS, "err:XQST0090");
 
 (:~
  :
- : An implementation MAY raise a dynamic error if an \c xml:id error, as
- : defined in [XML ID], is encountered during construction of an attribute
- : named \c xml:id.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0091 as xs:QName := fn:QName($err:NS, "err:XQDY0091");
-
-(:~
- :
- : An implementation MAY raise a dynamic error if a constructed attribute
- : named \c xml:space has a value other than \c preserve or \c default.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0092 as xs:QName := fn:QName($err:NS, "err:XQDY0092");
-
-(:~
- :
  : It is a static error to import a module M1 if there exists a sequence of
  : modules M1 ... Mi ... M1 such that each module directly depends on the
  : next module in the sequence (informally, if M1 depends on itself through
@@ -736,21 +586,6 @@ declare variable $err:XQDY0092 as xs:QName := fn:QName($err:NS, "err:XQDY0092");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0093 as xs:QName := fn:QName($err:NS, "err:XQST0093");
-
-(:~
- :
- : It is a dynamic error the node-name of a node constructed by a computed
- : element constructor has any of the following properties:
- : - Its namespace prefix is \c xmlns.
- : - Its namespace URI is http://www.w3.org/2000/xmlns/.
- : - Its namespace prefix is \c xml and its namespace URI is not
- : http://www.w3.org/XML/1998/namespace.
- : - Its namespace prefix is other than \c xml and its namespace URI is
- : http://www.w3.org/XML/1998/namespace.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:XQDY0096 as xs:QName := fn:QName($err:NS, "err:XQDY0096");
 
 (:~
  :
@@ -791,6 +626,171 @@ declare variable $err:XQST0106 as xs:QName := fn:QName($err:NS, "err:XQST0106");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0111 as xs:QName := fn:QName($err:NS, "err:XQST0111");
+
+(:~
+ :
+ : It is a dynamic error if evaluation of an expression relies on some part
+ : of the dynamic context that has not been assigned a value.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPDY0002 as xs:QName := fn:QName($err:NS, "err:XPDY0002");
+
+(:~
+ :
+ : It is a dynamic error if the dynamic type of the operand of a treat
+ : expression does not match the sequence type specified by the treat
+ : expression. This error might also be raised by a path expression
+ : beginning with "/" or "//" if the context node
+ : is not in a tree that is rooted at a document node. This is because a
+ : leading "/" or "//" in a path expression is an
+ : abbreviation for an initial step that includes the clause \c treat as \c
+ : document-node().
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPDY0050 as xs:QName := fn:QName($err:NS, "err:XPDY0050");
+
+(:~
+ :
+ : It is a dynamic error if any attribute of a constructed element does not
+ : have a name that is distinct from the names of all other attributes of
+ : the constructed element.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0025 as xs:QName := fn:QName($err:NS, "err:XQDY0025");
+
+(:~
+ :
+ : It is a dynamic error if the result of the content expression of a
+ : computed processing instruction constructor contains the string "?>".
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0026 as xs:QName := fn:QName($err:NS, "err:XQDY0026");
+
+(:~
+ :
+ : In a validate expression, it is a dynamic error if the root element
+ : information item in the PSVI resulting from validation does not have the
+ : expected validity property: \c valid if validation mode is \c strict, or
+ : either \c valid or \c notKnown if validation mode is \c lax.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0027 as xs:QName := fn:QName($err:NS, "err:XQDY0027");
+
+(:~
+ :
+ : It is a dynamic error if the value of the name expression in a computed
+ : processing instruction constructor cannot be cast to the type
+ : \c xs:NCName.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0041 as xs:QName := fn:QName($err:NS, "err:XQDY0041");
+
+(:~
+ :
+ : It is a static error the node-name of a node constructed by a computed
+ : attribute constructor has any of the following properties:
+ : - Its namespace prefix is \c xmlns.
+ : - It has no namespace prefix and its local name is \c xmlns.
+ : - Its namespace URI is http://www.w3.org/2000/xmlns/.
+ : - Its namespace prefix is \c xml and its namespace URI is not
+ : http://www.w3.org/XML/1998/namespace.
+ : - Its namespace prefix is other than \c xml and its namespace URI is
+ : http://www.w3.org/XML/1998/namespace.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0044 as xs:QName := fn:QName($err:NS, "err:XQDY0044");
+
+(:~
+ :
+ : It is a dynamic error if the operand of a validate expression is a
+ : document node whose children do not consist of exactly one element node
+ : and zero or more comment and processing instruction nodes, in any order.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0061 as xs:QName := fn:QName($err:NS, "err:XQDY0061");
+
+(:~
+ :
+ : It is a dynamic error if the value of the name expression in a computed
+ : processing instruction constructor is equal to "XML" (in any combination
+ : of upper and lower case).
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0064 as xs:QName := fn:QName($err:NS, "err:XQDY0064");
+
+(:~
+ :
+ : It is a dynamic error if the result of the content expression of a
+ : computed comment constructor contains two adjacent hyphens or ends with
+ : a hyphen.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0072 as xs:QName := fn:QName($err:NS, "err:XQDY0072");
+
+(:~
+ :
+ : It is a dynamic error if the value of the name expression in a computed
+ : element or attribute constructor cannot be converted to an expanded
+ : QName (for example, because it contains a namespace prefix not found in
+ : statically known namespaces).
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0074 as xs:QName := fn:QName($err:NS, "err:XQDY0074");
+
+(:~
+ :
+ : It is a dynamic error if the element validated by a \c validate statement
+ : does not have a top-level element declaration in the in-scope element
+ : declarations, if validation mode is \c strict.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0084 as xs:QName := fn:QName($err:NS, "err:XQDY0084");
+
+(:~
+ :
+ : An implementation MAY raise a dynamic error if an \c xml:id error, as
+ : defined in [XML ID], is encountered during construction of an attribute
+ : named \c xml:id.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0091 as xs:QName := fn:QName($err:NS, "err:XQDY0091");
+
+(:~
+ :
+ : An implementation MAY raise a dynamic error if a constructed attribute
+ : named \c xml:space has a value other than \c preserve or \c default.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0092 as xs:QName := fn:QName($err:NS, "err:XQDY0092");
+
+(:~
+ :
+ : It is a dynamic error the node-name of a node constructed by a computed
+ : element constructor has any of the following properties:
+ : - Its namespace prefix is \c xmlns.
+ : - Its namespace URI is http://www.w3.org/2000/xmlns/.
+ : - Its namespace prefix is \c xml and its namespace URI is not
+ : http://www.w3.org/XML/1998/namespace.
+ : - Its namespace prefix is other than \c xml and its namespace URI is
+ : http://www.w3.org/XML/1998/namespace.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0096 as xs:QName := fn:QName($err:NS, "err:XQDY0096");
 
 (:~
  :

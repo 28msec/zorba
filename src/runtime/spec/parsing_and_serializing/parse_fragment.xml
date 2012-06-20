@@ -26,7 +26,7 @@
       
     <zorba:description author="Zorba Team">fn-zorba-xml:parse</zorba:description>
     
-    <zorba:function>
+    <zorba:function generateDECL="false">
       <zorba:signature localname="parse" prefix="fn-zorba-xml">
         <zorba:param>xs:string?</zorba:param>  <!-- string to parse -->
         <zorba:param>element()?</zorba:param>  <!-- parse() options -->

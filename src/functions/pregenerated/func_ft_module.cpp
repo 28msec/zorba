@@ -167,9 +167,9 @@ void populate_context_ft_module(static_context* sctx)
 {
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_current_lang,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","current-lang"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
@@ -182,9 +182,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_host_lang,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","host-lang"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE),
@@ -197,9 +197,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_is_stem_lang_supported,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stem-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -213,9 +213,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_is_stop_word,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -229,9 +229,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_is_stop_word,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -246,9 +246,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_is_stop_word_lang_supported,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-stop-word-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -262,9 +262,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_is_thesaurus_lang_supported,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -278,9 +278,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_is_thesaurus_lang_supported,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-thesaurus-lang-supported"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -295,9 +295,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_is_tokenizer_lang_supported,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","is-tokenizer-lang-supported"), 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
@@ -311,9 +311,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_stem,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","stem"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -327,9 +327,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_stem,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","stem"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -344,9 +344,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_strip_diacritics,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","strip-diacritics"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -360,13 +360,13 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_PLUS),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_1);
 
   }
@@ -376,14 +376,14 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_PLUS),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_2);
 
   }
@@ -393,15 +393,15 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_PLUS),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_3);
 
   }
@@ -411,16 +411,16 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_PLUS),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_4);
 
   }
@@ -430,9 +430,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_thesaurus_lookup,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","thesaurus-lookup"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -441,7 +441,7 @@ void populate_context_ft_module(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_PLUS),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_6);
 
   }
@@ -451,9 +451,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_tokenize_string,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -467,9 +467,9 @@ void populate_context_ft_module(static_context* sctx)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, full_text_tokenize_string,
         (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenize-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 

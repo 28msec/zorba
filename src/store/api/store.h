@@ -29,6 +29,14 @@
 namespace zorba 
 { 
 
+namespace internal 
+{
+namespace diagnostic 
+{
+  class location;
+}
+}
+
 SYNC_CODE(class Lock;)
 
 class TokenizerProvider;
@@ -50,7 +58,7 @@ public:
   virtual ~Store() { }
 
 
-  /*---------------------------- Zorba Engine Internal ----------------------------*/
+  /*-------------------------- Zorba Engine Internal -------------------------*/
 
   /**
    *  Get the item factory used by this store.
@@ -63,6 +71,8 @@ public:
   virtual IteratorFactory* getIteratorFactory() const = 0;
 
   SYNC_CODE(virtual Lock& getGlobalLock() = 0;)
+
+  /*----------------------------- Temp Sequences -----------------------------*/
 
   /**
    * Creates a new TempSeq. The instance can be used, e.g. for variable bindings.
@@ -91,7 +101,7 @@ public:
    */
   virtual TempSeq_t createTempSeq(bool lazy) = 0;
 
-  /* ----------------------- Node Reference Management -------------------------*/
+  /* ---------------------- Node Reference Management ------------------------*/
 
   /**
    * Computes the reference of the given node.
@@ -252,14 +262,12 @@ public:
    * @return handle object of the collection. Returns NULL if the collection
    *         does not exist
    */
-  virtual Collection_t getCollection(
-      const Item* name,
-      bool aDynamicCollection = false) = 0;
+  virtual Collection_t getCollection(const Item* name, bool isDynamic) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.
    */
-  virtual Iterator_t listCollectionNames(bool aDynamicCollections = false) = 0;
+  virtual Iterator_t listCollectionNames(bool dynamic) = 0;
 
 
   /* ------------------------ Index Management ---------------------------*/
@@ -298,7 +306,7 @@ public:
   virtual Iterator_t listIndexNames() = 0;
 
 
-  /* ------------------ Integrity Constraints Management ------------------- */
+  /* ------------------- Integrity Constraints Management ------------------- */
 
   /**
    * Lists all active integrity constraints.
@@ -310,7 +318,7 @@ public:
    */
   virtual IC* getIC(const Item* icQName)  = 0;
 
-  /* ------------------------ Map Management ---------------------------*/
+  /* --------------------------- Map Management ------------------------------*/
 
   virtual Index_t createMap(
       const Item_t& qname,
@@ -352,6 +360,13 @@ public:
   virtual TokenizerProvider const* getTokenizerProvider() const = 0;
 
 #endif /* ZORBA_NO_FULL_TEXT */
+
+#ifdef ZORBA_WITH_JSON
+  virtual Item_t parseJSON(
+      std::istream& stream,
+      internal::diagnostic::location* relative_error_loc
+    ) = 0;
+#endif
 };
 
 } // namespace store

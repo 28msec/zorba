@@ -97,7 +97,7 @@ SET(UNIT_TESTS_SRCS
   xquery_functions.cpp
   xmldatamanager.cpp
   staticcollectionmanager.cpp
-  static_context.cpp
+  test_static_context.cpp
 )
 
 # multithread_simple.cpp
@@ -137,7 +137,10 @@ ENDFOREACH(test)
 ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 
 # ADD NEW UNIT TESTS HERE
-ZORBA_ADD_TEST("test/libunit/string" LibUnitTest string)
+IF (NOT WIN32)
+  # disabled because of bug lp:867271
+  ZORBA_ADD_TEST("test/libunit/string" LibUnitTest string)
+ENDIF (NOT WIN32)
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
 ZORBA_ADD_TEST("test/libunit/json_parser" LibUnitTest json_parser)

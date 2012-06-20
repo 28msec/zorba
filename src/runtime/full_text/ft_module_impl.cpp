@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "stdafx.h"
 #include <zorba/config.h>
 
@@ -424,6 +423,19 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
+# define GCC_GREATER_EQUAL_460 1
+#endif
+
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
+# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
+#endif
+
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
   zstring error_msg;
@@ -493,12 +505,11 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-  ZORBA_ASSERT( state->tresult_.get() );
-
-  while ( state->tresult_->next( &synonym ) ) {
-    GENV_ITEMFACTORY->createString( result, synonym );
-    STACK_PUSH( true, state );
-  }
+  if ( state->tresult_ )
+    while ( state->tresult_->next( &synonym ) ) {
+      GENV_ITEMFACTORY->createString( result, synonym );
+      STACK_PUSH( true, state );
+    }
 
   STACK_END( state );
 }
@@ -518,16 +529,21 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
   ZORBA_ASSERT( state->tresult_.get() );
 }
 
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+# pragma GCC diagnostic pop
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+
 ///////////////////////////////////////////////////////////////////////////////
 
-TokenizeIterator::TokenizeIterator( static_context *sctx, QueryLoc const &loc,
-                                    std::vector<PlanIter_t>& children ) :
-  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>(sctx, loc, children)
+TokenizeNodeIterator::TokenizeNodeIterator( static_context *sctx,
+                                            QueryLoc const &loc,
+                                            std::vector<PlanIter_t>& children ):
+  NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>(sctx, loc, children)
 {
   initMembers();
 }
 
-void TokenizeIterator::initMembers() {
+void TokenizeNodeIterator::initMembers() {
   GENV_ITEMFACTORY->createQName(
     token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token" );
 
@@ -547,20 +563,20 @@ void TokenizeIterator::initMembers() {
     ref_qname_, "", "", "node-ref" );
 }
 
-bool TokenizeIterator::nextImpl( store::Item_t &result,
-                                 PlanState &plan_state ) const {
+bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
+                                     PlanState &plan_state ) const {
   store::Item_t node_name, attr_node;
   zstring base_uri;
   store::Item_t item;
   iso639_1::type lang;
-  Tokenizer::Numbers no;
+  Tokenizer::State t_state;
   store::NsBindings const ns_bindings;
   TokenizerProvider const *tokenizer_provider;
   store::Item_t type_name;
   zstring value_string;
 
-  TokenizeIteratorState *state;
-  DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
+  TokenizeNodeIteratorState *state;
+  DEFAULT_STACK_INIT( TokenizeNodeIteratorState, state, plan_state );
 
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
@@ -575,7 +591,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
     ZORBA_ASSERT( tokenizer_provider );
     state->doc_tokens_ =
-      state->doc_item_->getTokens( *tokenizer_provider, no, lang );
+      state->doc_item_->getTokens( *tokenizer_provider, t_state, lang );
 
     while ( state->doc_tokens_->hasNext() ) {
       FTToken const *token;
@@ -643,19 +659,19 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   STACK_END( state );
 }
 
-void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
-  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>::
+void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>::
     resetImpl( plan_state );
-  TokenizeIteratorState *const state =
-    StateTraitsImpl<TokenizeIteratorState>::getState(
+  TokenizeNodeIteratorState *const state =
+    StateTraitsImpl<TokenizeNodeIteratorState>::getState(
       plan_state, this->theStateOffset
     );
   state->doc_tokens_->reset();
 }
 
-void TokenizeIterator::serialize( serialization::Archiver &ar ) {
+void TokenizeNodeIterator::serialize( serialization::Archiver &ar ) {
   serialize_baseclass(
-    ar, (NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>*)this
+    ar, (NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>*)this
   );
   if ( !ar.is_serializing_out() )
     initMembers();
@@ -668,7 +684,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   store::Item_t element, item, junk, name;
   zstring base_uri;
   iso639_1::type lang;
-  Tokenizer::Numbers no;
+  Tokenizer::State t_state;
   store::NsBindings const ns_bindings;
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
@@ -690,7 +706,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
 
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
   ZORBA_ASSERT( tokenizer_provider );
-  if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
+  if ( !tokenizer_provider->getTokenizer( lang, &t_state, &tokenizer ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
@@ -827,9 +843,9 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     TokenizerProvider const *const tokenizer_provider =
       GENV_STORE.getTokenizerProvider();
     ZORBA_ASSERT( tokenizer_provider );
-    Tokenizer::Numbers no;
+    Tokenizer::State t_state;
     Tokenizer::ptr tokenizer;
-    if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
+    if ( !tokenizer_provider->getTokenizer( lang, &t_state, &tokenizer ) )
       throw XQUERY_EXCEPTION(
         err::FTST0009 /* lang not supported */,
         ERROR_PARAMS(
