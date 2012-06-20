@@ -135,14 +135,12 @@ void Base64::encode(
 }
 
 
-zstring Base64::decode(istream& aStream)
+void Base64::decode(istream& aStream, zstring *result)
 {
   try {
-    zstring result;
     base64::decode(
-      aStream, &result, base64::dopt_any_len | base64::dopt_ignore_ws
+      aStream, result, base64::dopt_any_len | base64::dopt_ignore_ws
     );
-    return result;
   }
   CATCH_BASE64_EXCEPTION()
 }
@@ -153,6 +151,15 @@ void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
     base64::decode(
       &aSource[0], aSource.size(), &aResult,
       base64::dopt_any_len | base64::dopt_ignore_ws
+    );
+  }
+  CATCH_BASE64_EXCEPTION()
+}
+
+void Base64::decode( char const *from, size_t from_len, zstring *to ) {
+  try {
+    base64::decode(
+      from, from_len, to, base64::dopt_any_len | base64::dopt_ignore_ws
     );
   }
   CATCH_BASE64_EXCEPTION()

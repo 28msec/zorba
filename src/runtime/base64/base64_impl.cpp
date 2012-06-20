@@ -22,7 +22,6 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/binary.h"
-#include "util/base64_util.h"
 
 #include "runtime/base64/base64.h"
 
@@ -67,7 +66,7 @@ bool Base64DecodeIterator::nextImpl(
   {
     if (lItem->isEncoded())
     {
-      base64::decode(lItem->getStream(), &lResultString);
+      Base64::decode(lItem->getStream(), &lResultString);
     }
     else
     {
@@ -94,10 +93,7 @@ bool Base64DecodeIterator::nextImpl(
 
     if (lItem->isEncoded())
     {
-      std::vector<char> encoded(lContent, lContent+lSize);
-      std::vector<char> decoded;
-      Base64::decode(encoded, decoded);
-      lResultString.insert(0, &decoded[0], decoded.size());
+      Base64::decode( lContent, lSize, &lResultString );
     }
     else
     {
@@ -157,8 +153,8 @@ bool Base64EncodeIterator::nextImpl(
     // create a base64Binary item
     // the content is the non-encoded string
     GENV_ITEMFACTORY->createBase64Binary(
-          result, lTmpString.c_str(), lTmpString.size(), false
-        );
+      result, lTmpString.c_str(), lTmpString.size(), false
+    );
     STACK_PUSH (true, state);
   }
   STACK_END (state);

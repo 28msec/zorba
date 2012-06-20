@@ -69,7 +69,9 @@ public:
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 
-  static zstring decode(std::istream& aStream);
+  static void decode(std::istream& aStream, zstring*);
+
+  static void decode(char const*, size_t, zstring*);
 
 public:
   Base64(const Base64& aBase64) 
