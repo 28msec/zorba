@@ -23,6 +23,7 @@
 #include <map>
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
@@ -190,15 +191,11 @@ void if_expr::compute_scripting_kind()
   {
     if (theThenExpr->is_updating() && !theElseExpr->is_updating_or_vacuous())
     {
-      throw XQUERY_EXCEPTION(err::XUST0001, 
-                             ERROR_PARAMS(ZED(XUST0001_IF)),
-                             ERROR_LOC(get_loc()));
+      RAISE_ERROR(err::XUST0001, get_loc(), ERROR_PARAMS(ZED(XUST0001_IF)));
     }
     else if (theElseExpr->is_updating() && !theThenExpr->is_updating_or_vacuous())
     {
-      throw XQUERY_EXCEPTION(err::XUST0001, 
-                             ERROR_PARAMS(ZED(XUST0001_IF)),
-                             ERROR_LOC(get_loc()));
+      RAISE_ERROR(err::XUST0001, get_loc(), ERROR_PARAMS(ZED(XUST0001_IF)));
     }
     else
     {
@@ -364,8 +361,8 @@ cast_or_castable_base_expr::cast_or_castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    expr_t input,
-    xqtref_t type)
+    const expr_t& input,
+    const xqtref_t& type)
   :
   expr(sctx, loc, kind),
   theInputExpr(input),
@@ -416,8 +413,8 @@ cast_base_expr::cast_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    expr_t input,
-    xqtref_t type)
+    const expr_t& input,
+    const xqtref_t& type)
   : 
   cast_or_castable_base_expr(sctx, loc, kind, input, type)
 {
@@ -439,8 +436,8 @@ void cast_base_expr::serialize(::zorba::serialization::Archiver& ar)
 cast_expr::cast_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type)
+    const expr_t& inputExpr,
+    const xqtref_t& type)
   :
   cast_base_expr(sctx, loc, cast_expr_kind, inputExpr, type)
 {
@@ -457,7 +454,7 @@ void cast_expr::serialize(::zorba::serialization::Archiver& ar)
 
 bool cast_expr::is_optional() const 
 {
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
@@ -476,16 +473,16 @@ expr_t cast_expr::clone(substitution_t& subst) const
 treat_expr::treat_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type,
-    Error const &err,
+    const expr_t& inputExpr,
+    const xqtref_t& type,
+    TreatIterator::ErrorKind err,
     bool check_prime,
-    store::Item_t fnQname)
+    store::Item* qname)
   :
   cast_base_expr(sctx, loc, treat_expr_kind, inputExpr, type),
-  theError(&err),
+  theErrorKind(err),
   theCheckPrime(check_prime),
-  theFnQName(fnQname)
+  theQName(qname)
 {
 }
 
@@ -494,8 +491,8 @@ void treat_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (cast_base_expr*)this);
   ar & theCheckPrime;
-  ar & theError;
-  ar & theFnQName;
+  SERIALIZE_ENUM(TreatIterator::ErrorKind, theErrorKind);
+  ar & theQName;
 }
 
 
@@ -507,7 +504,7 @@ expr_t treat_expr::clone(substitution_t& subst) const
                         get_target_type(),
                         get_err(),
                         get_check_prime(),
-                        get_fn_qname());
+                        get_qname());
 }
 
 
@@ -517,12 +514,14 @@ expr_t treat_expr::clone(substitution_t& subst) const
 promote_expr::promote_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t input,
-    xqtref_t type,
-    store::Item_t fnQName)
+    const expr_t& input,
+    const xqtref_t& type,
+    PromoteIterator::ErrorKind err,
+    store::Item* qname)
   :
   cast_base_expr(sctx, loc, promote_expr_kind, input, type),
-  theFnQName(fnQName)
+  theErrorKind(err),
+  theQName(qname)
 {
 }
 
@@ -530,7 +529,8 @@ promote_expr::promote_expr(
 void promote_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (cast_base_expr*)this);
-  ar & theFnQName;
+  SERIALIZE_ENUM(PromoteIterator::ErrorKind, theErrorKind);
+  ar & theQName;
 }
 
 
@@ -540,7 +540,8 @@ expr_t promote_expr::clone(substitution_t& subst) const
                           get_loc(),
                           get_input()->clone(subst),
                           get_target_type(),
-                          theFnQName);
+                          theErrorKind,
+                          theQName.getp());
 }
 
 
@@ -551,8 +552,8 @@ castable_base_expr::castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    expr_t input,
-    xqtref_t type)
+    const expr_t& input,
+    const xqtref_t& type)
   :
   cast_or_castable_base_expr(sctx, loc, kind, input, type)
 {
@@ -573,8 +574,8 @@ void castable_base_expr::serialize(::zorba::serialization::Archiver& ar)
 castable_expr::castable_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type)
+    const expr_t& inputExpr,
+    const xqtref_t& type)
   :
   castable_base_expr (sctx, loc, castable_expr_kind, inputExpr, type)
 {
@@ -589,7 +590,7 @@ void castable_expr::serialize(::zorba::serialization::Archiver& ar)
 
 bool castable_expr::is_optional() const 
 {
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
@@ -608,8 +609,8 @@ expr_t castable_expr::clone(substitution_t& subst) const
 instanceof_expr::instanceof_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
-    xqtref_t type,
+    const expr_t& inputExpr,
+    const xqtref_t& type,
     bool checkPrimeOnly)
   :
   castable_base_expr(sctx, loc, instanceof_expr_kind, inputExpr, type),
@@ -1294,22 +1295,47 @@ void trycatch_expr::add_clause(catch_clause_t cc)
 
 void trycatch_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  bool vacuous = true;
+
+  theScriptingKind = VACUOUS_EXPR;
 
   theScriptingKind |= theTryExpr->get_scripting_detail();
 
-  ulong numCatchClauses = (ulong)theCatchClauses.size();
+  if (theScriptingKind != VACUOUS_EXPR)
+    vacuous = false;
 
-  for (ulong i = 0; i < numCatchClauses; ++i) 
+  csize numCatchClauses = theCatchClauses.size();
+
+  for (csize i = 0; i < numCatchClauses; ++i) 
   {
     const expr* catchExpr = theCatchExprs[i].getp();
-
     short catchKind = catchExpr->get_scripting_detail();
+
+    if (catchKind == VACUOUS_EXPR)
+      continue;
+
+    vacuous = false;
+
+    if (!theSctx->is_feature_set(feature::scripting))
+    {
+      if (is_updating() && !(catchKind & UPDATING_EXPR) && catchKind != VACUOUS_EXPR)
+      {
+        RAISE_ERROR(err::XUST0001, catchExpr->get_loc(),
+        ERROR_PARAMS(ZED(XUST0001_TRYCATCH)));
+      }
+        
+      if (!is_updating() && !is_vacuous() && (catchKind & UPDATING_EXPR))
+      {
+        RAISE_ERROR(err::XUST0001, catchExpr->get_loc(),
+        ERROR_PARAMS(ZED(XUST0001_TRYCATCH)));
+      }
+    }
 
     theScriptingKind |= catchKind;
   }
 
-  theScriptingKind &= ~VACUOUS_EXPR;
+  if (!vacuous)
+    theScriptingKind &= ~VACUOUS_EXPR;
 
   if (theScriptingKind & UPDATING_EXPR)
     theScriptingKind &= ~SIMPLE_EXPR;
@@ -1479,10 +1505,9 @@ function_trace_expr::function_trace_expr(
     const QueryLoc& loc,
     expr_t aChild)
   :
-  expr(sctx, loc, aChild->get_expr_kind()),
+  expr(sctx, loc, function_trace_expr_kind),
   theExpr(aChild)
 {
-  theKind = function_trace_expr_kind;
   bool modified;
   compute_return_type(false, &modified);
   compute_scripting_kind();
@@ -1491,10 +1516,9 @@ function_trace_expr::function_trace_expr(
 
 function_trace_expr::function_trace_expr(expr_t aExpr)
   :
-  expr(aExpr->get_sctx(), aExpr->get_loc(), aExpr->get_expr_kind()),
+  expr(aExpr->get_sctx(), aExpr->get_loc(), function_trace_expr_kind),
   theExpr(aExpr)
 {
-  theKind = function_trace_expr_kind;
   bool modified;
   compute_return_type(false, &modified);
   compute_scripting_kind();

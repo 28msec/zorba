@@ -466,17 +466,28 @@ namespace zorba {
      FOREACH = 561,
      FOREIGN = 562,
      KEYS = 563,
-     BYTE_ORDER_MARK_UTF8 = 564,
-     RANGE_REDUCE = 565,
-     SEQUENCE_TYPE_REDUCE = 566,
-     ADDITIVE_REDUCE = 567,
-     UNION_REDUCE = 568,
-     INTERSECT_EXCEPT_REDUCE = 569,
-     QVARINDECLLIST_REDUCE = 570,
-     COMMA_DOLLAR = 571,
-     UNARY_PREC = 572,
-     STEP_REDUCE = 573,
-     MULTIPLICATIVE_REDUCE = 574
+     L_SIMPLE_OBJ_UNION = 564,
+     R_SIMPLE_OBJ_UNION = 565,
+     L_ACCUMULATOR_OBJ_UNION = 566,
+     R_ACCUMULATOR_OBJ_UNION = 567,
+     JSON = 568,
+     APPEND = 569,
+     POSITION = 570,
+     OBJECT = 571,
+     ARRAY = 572,
+     JSON_ITEM = 573,
+     STRUCTURED_ITEM = 574,
+     BYTE_ORDER_MARK_UTF8 = 575,
+     RANGE_REDUCE = 576,
+     SEQUENCE_TYPE_REDUCE = 577,
+     ADDITIVE_REDUCE = 578,
+     UNION_REDUCE = 579,
+     INTERSECT_EXCEPT_REDUCE = 580,
+     QVARINDECLLIST_REDUCE = 581,
+     COMMA_DOLLAR = 582,
+     UNARY_PREC = 583,
+     STEP_REDUCE = 584,
+     MULTIPLICATIVE_REDUCE = 585
    };
 
     };
@@ -656,7 +667,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 660 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 671 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

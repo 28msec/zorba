@@ -340,6 +340,8 @@ public:
 
   void setLocation(const QueryLoc& loc_) { loc = loc_; }
 
+  const QueryLoc& getLocation() const { return loc; }
+
   uint32_t getStateOffset() const { return theStateOffset; }
 
   static_context* getStaticContext() const { return theSctx; }

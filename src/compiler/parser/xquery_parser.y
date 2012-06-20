@@ -233,6 +233,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <vstrpair> DecimalFormatParamList
 %type <name_test_list> NameTestList
 
+%type <fnsig> FunctionSig
+%type <varnametype> VarNameAndType
+%type <strlist> STRING_LITERAL_list;
+
 
 /* simple tokens */
 /* ------------- */
@@ -537,6 +541,19 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token FOREIGN                          "'foreign'"
 %token KEYS                             "'keys'"
 
+/* JSON */
+/* ---- */
+%token L_SIMPLE_OBJ_UNION               "'{|'"
+%token R_SIMPLE_OBJ_UNION               "'|}'"
+%token L_ACCUMULATOR_OBJ_UNION          "'{['"
+%token R_ACCUMULATOR_OBJ_UNION          "']}'"
+%token JSON                             "'json'"
+%token APPEND                           "'append'"
+%token POSITION                         "'position'"
+%token OBJECT                           "'object'"
+%token ARRAY                            "'array'"
+%token JSON_ITEM                        "'json-item'"
+%token STRUCTURED_ITEM                  "'structured-item'"
 
 /* Byte Order Marks                  */
 /* --------------------------------- */
@@ -849,11 +866,23 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FTWords
 %type <node> FTWordsValue
 
-%type <fnsig> FunctionSig
-%type <varnametype> VarNameAndType
-%type <strlist> STRING_LITERAL_list;
+/* JSON-related */
+/* ------------ */
+%type <expr> JSONArrayConstructor
+%type <expr> JSONSimpleObjectUnion
+%type <expr> JSONAccumulatorObjectUnion
+%type <expr> JSONObjectConstructor
+%type <node> JSONPairList
+%type <expr> JSONDeleteExpr
+%type <expr> JSONInsertExpr
+%type <expr> JSONRenameExpr
+%type <expr> JSONReplaceExpr
+%type <expr> JSONAppendExpr
 
-
+%type <node> JSONTest
+%type <node> JSONItemTest
+%type <node> JSONObjectTest
+%type <node> JSONArrayTest
 
 /*
  *  To enable memory deallocation during error recovery, use %destructor.
@@ -886,6 +915,9 @@ template<typename T> inline void release_hack( T *ref ) {
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
+
+// parsenodes: JSON
+%destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
 // exprnodes
 %destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
@@ -2459,6 +2491,13 @@ ExprSimple :
     |   RenameExpr
     |   ReplaceExpr
     |   TransformExpr
+
+    /* JSON update extension */
+    |   JSONDeleteExpr
+    |   JSONInsertExpr
+    |   JSONRenameExpr
+    |   JSONReplaceExpr
+    |   JSONAppendExpr
 ;
 
 
@@ -2611,7 +2650,7 @@ ForClause :
     {
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected QName \"" 
-          + static_cast<VarInDeclList*>($3)->operator[](0)->get_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+          + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
       YYERROR;
     } 
 ;
@@ -2637,7 +2676,7 @@ VarInDeclList :
     {
       $$ = $1; // to prevent the Bison warning      
       error(@3, "syntax error, unexpected QName \"" 
-          + static_cast<VarInDecl*>($3)->get_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+          + static_cast<VarInDecl*>($3)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
       YYERROR;
     }    
 ;
@@ -2929,43 +2968,73 @@ GroupByClause :
   ;
 
 GroupSpecList :
-        GroupSpec
-        {
-            GroupSpecList *gsl = new GroupSpecList( LOC(@$) );
-            gsl->push_back( dynamic_cast<GroupSpec*>($1) );
-            $$ = gsl;
-        }
-  |     GroupSpecList COMMA GroupSpec
-        {
-            GroupSpecList *gsl = dynamic_cast<GroupSpecList*>($1);
-            if ( gsl )
-                gsl->push_back( dynamic_cast<GroupSpec*>($3) );
-            $$ = gsl;
-        }
+    GroupSpec
+    {
+      GroupSpecList* gsl = new GroupSpecList(LOC(@$));
+      gsl->push_back(static_cast<GroupSpec*>($1));
+      $$ = gsl;
+    }
+  | GroupSpecList COMMA GroupSpec
+    {
+      GroupSpecList* gsl = static_cast<GroupSpecList*>($1);
+      gsl->push_back(static_cast<GroupSpec*>($3));
+      $$ = gsl;
+    }
   ;
 
 
 GroupSpec :
     DOLLAR QNAME
     {
-      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL);
+      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL, NULL, NULL);
+    }
+  | DOLLAR QNAME GETS ExprSingle
+    {
+      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL, $4, NULL);
+    }
+  | DOLLAR QNAME TypeDeclaration GETS ExprSingle
+    {
+      $$ = new GroupSpec(LOC(@$),
+                         static_cast<QName*>($2),
+                         static_cast<SequenceType*>($3),
+                         $5,
+                         NULL);
+    }
+  | DOLLAR QNAME TypeDeclaration GETS ExprSingle GroupCollationSpec
+    {
+      $$ = new GroupSpec(LOC(@$),
+                         static_cast<QName*>($2),
+                         static_cast<SequenceType*>($3),
+                         $5,
+                         static_cast<GroupCollationSpec*>($6));
+    }
+  | DOLLAR QNAME GETS ExprSingle GroupCollationSpec
+    {
+      $$ = new GroupSpec(LOC(@$),
+                         static_cast<QName*>($2),
+                         NULL,
+                         $4,
+                         static_cast<GroupCollationSpec*>($5));
     }
   | DOLLAR QNAME GroupCollationSpec
     {
       $$ = new GroupSpec(LOC(@$),
                          static_cast<QName*>($2),
-                         dynamic_cast<GroupCollationSpec*>($3));
+                         NULL,
+                         NULL,
+                         static_cast<GroupCollationSpec*>($3));
     }
   ;
 
+
 GroupCollationSpec :
-        COLLATION URI_LITERAL
-        {
-            $$ = new GroupCollationSpec( LOC(@$), SYMTAB($2) );
-        }
+    COLLATION URI_LITERAL
+    {
+      $$ = new GroupCollationSpec( LOC(@$), SYMTAB($2) );
+    }
   ;
 
-// [38]
+
 OrderByClause :
         ORDER BY OrderSpecList
         {
@@ -3859,7 +3928,7 @@ PathExpr :
     {
       RelativePathExpr* rpe;
 
-      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, NULL, $2);
+      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, NULL, $2, false);
 
       $$ = new PathExpr(LOC(@$),
                         ParseConstants::path_leading_slash,
@@ -3869,7 +3938,7 @@ PathExpr :
     {
       RelativePathExpr* rpe;
 
-      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, NULL, $2);
+      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, NULL, $2, false);
 
       $$ = new PathExpr(LOC(@$),
                         ParseConstants::path_leading_slashslash,
@@ -3903,17 +3972,17 @@ RelativePathExpr :
       $$ = (as ?
             new RelativePathExpr(LOC(@$),
                                  ParseConstants::st_slash,
-                                 new ContextItemExpr( LOC(@$), true ), $1)
+                                 new ContextItemExpr( LOC(@$), true ), $1, true)
             :
             $1);
     }
   | StepExpr SLASH RelativePathExpr
     {
-      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3);
+      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3, false);
     }
   | StepExpr SLASH_SLASH RelativePathExpr
     {
-      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3);
+      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3, false);
     }
 ;
 
@@ -4203,13 +4272,24 @@ PrimaryExpr :
         {
           $$ = $1;
         }
-        /*
-    |   BlockVarDecl
+    |   BlockExpr
         {
           $$ = $1;
         }
-        */
-    |   BlockExpr
+        /* JSON grammar rules */
+    |   JSONObjectConstructor
+        {
+          $$ = $1;
+        }
+    |   JSONArrayConstructor
+        {
+          $$ = $1;
+        }
+    |   JSONSimpleObjectUnion
+        {
+          $$ = $1;
+        }
+    |   JSONAccumulatorObjectUnion
         {
           $$ = $1;
         }
@@ -4959,13 +5039,21 @@ ItemType :
         }
     |   ITEM LPAR RPAR
         {
-            $$ = new ItemType( LOC(@$),true );
+            $$ = new ItemType( LOC(@$), true );
+        }
+    |   STRUCTURED_ITEM LPAR RPAR
+        {
+            $$ = new StructuredItemType(LOC(@$));
         }
     |   FunctionTest
         {
             $$ = $1;
         }
     |   ParenthesizedItemType
+        {
+            $$ = $1;
+        }
+    |   JSONTest
         {
             $$ = $1;
         }
@@ -6311,6 +6399,151 @@ FTIgnoreOption :
         }
     ;
 
+/*_______________________________________________________________________
+ *                                                                       *
+ *  JSON                                                                 *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+
+JSONArrayConstructor :
+        LBRACK RBRACK
+        {
+          $$ = new JSONArrayConstructor( LOC(@$), NULL );
+        }
+    |   LBRACK Expr RBRACK
+        {
+          $$ = new JSONArrayConstructor( LOC(@$), $2 );
+        }
+    ;
+
+JSONSimpleObjectUnion :
+        L_SIMPLE_OBJ_UNION R_SIMPLE_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSONObjectConstructor(LOC(@$), NULL, false);
+        }
+    |   L_SIMPLE_OBJ_UNION Expr R_SIMPLE_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSONObjectConstructor(LOC(@$), $2, false);
+        }
+    ;
+
+JSONAccumulatorObjectUnion :
+        L_ACCUMULATOR_OBJ_UNION R_ACCUMULATOR_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSONObjectConstructor(LOC(@$), NULL, true);
+        }
+    |   L_ACCUMULATOR_OBJ_UNION Expr R_ACCUMULATOR_OBJ_UNION
+        {
+          // TODO: fill in with the correct constructor
+          $$ = new JSONObjectConstructor(LOC(@$), $2, true);
+        }
+    ;
+
+
+JSONObjectConstructor :
+        LBRACE JSONPairList RBRACE
+        {
+          $$ = new JSONDirectObjectConstructor(LOC(@$),
+                                               dynamic_cast<JSONPairList*>($2));
+        }
+    ;
+
+JSONPairList :
+        ExprSingle COLON ExprSingle
+        {
+          JSONPairList* jpl = new JSONPairList(LOC(@$));
+          jpl->push_back(new JSONPairConstructor(LOC(@$), $1, $3));
+          $$ = jpl;
+        }
+    |   JSONPairList COMMA ExprSingle COLON ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
+          assert(jpl);
+          jpl->push_back(new JSONPairConstructor(LOC(@$), $3, $5));
+          $$ = jpl;
+        }
+    ;
+
+JSONInsertExpr :
+        INSERT JSON JSONPairList INTO ExprSingle
+        {
+          $$ = new JSONObjectInsertExpr(LOC(@$),
+                                        static_cast<JSONPairList*>($3),
+                                        $5);
+        }
+    |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
+        {
+          $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
+        }
+    ;
+
+JSONAppendExpr :
+        APPEND JSON ExprSingle TO ExprSingle
+        {
+          $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
+        }
+    ;
+
+JSONDeleteExpr :
+        _DELETE JSON PrimaryExpr LPAR ExprSingle RPAR
+        {
+          $$ = new JSONDeleteExpr(LOC(@$), $3, $5);
+        }
+    ;
+
+JSONRenameExpr :
+        RENAME JSON PrimaryExpr LPAR ExprSingle RPAR AS ExprSingle
+        {
+          $$ = new JSONRenameExpr(LOC(@$), $3, $5, $8);
+        }
+    ;
+
+JSONReplaceExpr :
+        REPLACE JSON VALUE OF PrimaryExpr LPAR ExprSingle RPAR WITH ExprSingle
+        {
+          $$ = new JSONReplaceExpr(LOC(@$), $5, $7, $10);
+        }
+    ;
+
+JSONTest :
+        JSONItemTest
+        {
+          $$ = $1;
+        }
+    |   JSONObjectTest
+        {
+          $$ = $1;
+        }
+    |   JSONArrayTest
+        {
+          $$ = $1;
+        }
+;
+
+JSONItemTest :
+        JSON_ITEM LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+        }
+;
+
+JSONObjectTest :
+        OBJECT LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+        }
+;
+
+JSONArrayTest :
+        ARRAY LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+        }
+;
 
 /*_______________________________________________________________________
  *                                                                       *
@@ -6554,18 +6787,18 @@ FUNCTION_NAME :
     |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
+    |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
+    |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
+    |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
+    |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
+    |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
+    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
+    |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 
 // [196]
 EQNAME :
-        URI_LITERAL COLON NCNAME
-        {
-          // EQName's namespace URI value is whitespace normalized according to the rules for the xs:anyURI type
-          std::string uri = "\"" + SYMTAB($1) + "\"";
-          std::string eqname = SYMTAB(driver.symtab.put_uri(uri.c_str(), uri.size())) + ":" + SYMTAB($3);
-          $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT(eqname.c_str())), true);
-        }
-    |   EQNAME_SVAL	{ $$ = new QName(LOC(@$), SYMTAB($1), true); }
+    EQNAME_SVAL { $$ = new QName(LOC(@$), SYMTAB($1), true); }
     ;
 
 
