@@ -10642,8 +10642,9 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(sourceExpr, false);
     fo_expr_t accessorExpr;
 
-    const for_clause* fc = reinterpret_cast<const for_clause*>(
-        flworExpr->get_clause(0));
+    const for_clause* fc =
+    reinterpret_cast<const for_clause*>(flworExpr->get_clause(0));
+
     expr* flworVarExpr = fc->get_var();
 
     if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
@@ -11140,14 +11141,14 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
                               nameExpr->get_loc(),
                               nameExpr,
                               GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                              PromoteIterator::JSONIQ_PAIR_NAME,
+                              PromoteIterator::JSONIQ_PAIR_NAME, // JNTY0001
                               NULL);
 
   valueExpr = new treat_expr(theRootSctx,
                              valueExpr->get_loc(),
                              valueExpr,
                              GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-                             TreatIterator::JSONIQ_VALUE,
+                             TreatIterator::JSONIQ_VALUE, // JNTY0002
                              false,
                              NULL);
 
@@ -12836,7 +12837,8 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-
+  JSONObjectInsertExpr ::= 
+  "insert" "json" "{" PairConstructor ("," PairConstructor)* "}"
 ********************************************************************************/
 void* begin_visit(const JSONObjectInsertExpr& v)
 {
@@ -12861,12 +12863,11 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 
   expr_t targetExpr = pop_nodestack();
 
-  targetExpr = wrap_in_type_match(
-      targetExpr,
-      rtm.JSON_OBJECT_TYPE_ONE,
-      loc,
-      TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET,
-      NULL);
+  targetExpr = wrap_in_type_match(targetExpr,
+                                  rtm.JSON_OBJECT_TYPE_ONE,
+                                  loc,
+                                  TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNTY0008
+                                  NULL);
 
   args.push_back(targetExpr);
 
@@ -12890,7 +12891,8 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-
+  JSONArrayInsertExpr ::= 
+  "insert" "json" "[" ExprSingle "]" "into" ExprSingle "at" "position" ExprSingle
 ********************************************************************************/
 void* begin_visit(const JSONArrayInsertExpr& v)
 {
@@ -12914,17 +12916,16 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   expr_t sourceExpr = pop_nodestack();
 
   posExpr = wrap_in_atomization(posExpr);
-  posExpr = wrap_in_type_promotion(
-      posExpr,
-      rtm.INTEGER_TYPE_ONE,
-      PromoteIterator::JSONIQ_ARRAY_SELECTOR);
 
-  targetExpr = wrap_in_type_match(
-      targetExpr,
-      rtm.JSON_ARRAY_TYPE_ONE,
-      loc,
-      TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET,
-      NULL);
+  posExpr = wrap_in_type_promotion(posExpr,
+                                   rtm.INTEGER_TYPE_ONE,
+                                   PromoteIterator::JSONIQ_ARRAY_SELECTOR); // JNTY0007
+
+  targetExpr = wrap_in_type_match(targetExpr,
+                                  rtm.JSON_ARRAY_TYPE_ONE,
+                                  loc,
+                                  TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNTY0008
+                                  NULL);
 
   std::vector<expr_t> args(3);
   args[0] = targetExpr;
@@ -12965,7 +12966,17 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
+  JSONDeleteExpr ::= "delete" "json" FilterExpr
 
+  The parser makes sure that the FileterExpr is actually a dynamic  function
+  invocation, i.e., :
+
+  FilterExpr := PrimaryExpr ("(" ArgList ")")+
+
+  The parser also makes sure that each ArgList contains exactly one arg.
+
+  If there are N ArgLists, the last one is considered to be the selector expr
+  and the PrimaryExpr together with the N-1 ArgLists constitute the target expr.
 ********************************************************************************/
 void* begin_visit(const JSONDeleteExpr& v)
 {
@@ -12985,12 +12996,11 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
   expr_t selExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
   
-  targetExpr = wrap_in_type_match(
-      targetExpr,
-      theRTM.JSON_ITEM_TYPE_ONE,
-      loc,
-      TreatIterator::JSONIQ_UPDATE_TARGET,
-      NULL);
+  targetExpr = wrap_in_type_match(targetExpr,
+                                  theRTM.JSON_ITEM_TYPE_ONE,
+                                  loc,
+                                  TreatIterator::JSONIQ_UPDATE_TARGET, // JNTY0008
+                                  NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
                                   loc, 
@@ -13005,7 +13015,7 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-
+  JSONReplaceExpr ::= "replace" "json" "value" "of" FilterExpr "with" ExprSingle
 ********************************************************************************/
 void* begin_visit(const JSONReplaceExpr& v)
 {
@@ -13027,12 +13037,12 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   expr_t targetExpr = pop_nodestack();
 
   std::vector<expr_t> args(3);
-  args[0] = wrap_in_type_match(
-      targetExpr,
-      theRTM.JSON_ITEM_TYPE_ONE,
-      loc,
-      TreatIterator::JSONIQ_UPDATE_TARGET,
-      NULL);
+
+  args[0] = wrap_in_type_match(targetExpr,
+                               theRTM.JSON_ITEM_TYPE_ONE,
+                               loc,
+                               TreatIterator::JSONIQ_UPDATE_TARGET, // JNTY0008
+                               NULL);
   args[1] = selExpr;
   args[2] = valueExpr;
 
@@ -13048,7 +13058,7 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-
+  JSONRenameExpr ::= "rename" "json" FilterExpr "as" ExprSingle
 ********************************************************************************/
 void* begin_visit(const JSONRenameExpr& v)
 {
@@ -13070,17 +13080,16 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
   expr_t targetExpr = pop_nodestack();
 
   std::vector<expr_t> args(3);
-  args[0] = wrap_in_type_match(
-      targetExpr,
-      theRTM.JSON_OBJECT_TYPE_ONE,
-      loc,
-      TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET,
-      NULL);
 
-  args[1] = wrap_in_type_promotion(
-      nameExpr,
-      theRTM.STRING_TYPE_ONE,
-      PromoteIterator::JSONIQ_OBJECT_SELECTOR);
+  args[0] = wrap_in_type_match(targetExpr,
+                               theRTM.JSON_OBJECT_TYPE_ONE,
+                               loc,
+                               TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNTY0008
+                               NULL);
+
+  args[1] = wrap_in_type_promotion(nameExpr,
+                                   theRTM.STRING_TYPE_ONE,
+                                   PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNTY0007
 
   args[2] = newNameExpr;
 

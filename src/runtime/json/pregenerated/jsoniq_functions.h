@@ -83,7 +83,7 @@ public:
 class JSONObjectNamesIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t thePairs; //
+  store::Iterator_t theNames; //
 
   JSONObjectNamesIteratorState();
 

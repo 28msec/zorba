@@ -6456,18 +6456,26 @@ JSONDeleteExpr :
         _DELETE JSON FilterExpr
         {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
-              dynamic_cast<DynamicFunctionInvocation*>($3);
-          if(lDynamicFunctionInvocation == NULL) {
+          dynamic_cast<DynamicFunctionInvocation*>($3);
+
+          if (lDynamicFunctionInvocation == NULL)
+          {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
           }
-          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr().release();
-          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList().release();
-          if(lArgList->size() != 1)
+
+          rchandle<exprnode> lPrimaryExpr =
+          lDynamicFunctionInvocation->getPrimaryExpr().release();
+
+          rchandle<ArgList> lArgList =
+          lDynamicFunctionInvocation->getArgList().release();
+
+          if (lArgList->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
+
           rchandle<exprnode> lKey = (*lArgList)[0].release();
           $$ = new JSONDeleteExpr(LOC(@$), lPrimaryExpr.release(), lKey.release());
         }
@@ -6477,18 +6485,26 @@ JSONRenameExpr :
         RENAME JSON FilterExpr AS ExprSingle
         {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
-              dynamic_cast<DynamicFunctionInvocation*>($3);
-          if(lDynamicFunctionInvocation == NULL) {
+          dynamic_cast<DynamicFunctionInvocation*>($3);
+
+          if(lDynamicFunctionInvocation == NULL) 
+          {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
           }
-          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr().release();
-          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList().release();
-          if(lArgList->size() != 1)
+
+          rchandle<exprnode> lPrimaryExpr =
+          lDynamicFunctionInvocation->getPrimaryExpr().release();
+
+          rchandle<ArgList> lArgList =
+          lDynamicFunctionInvocation->getArgList().release();
+
+          if (lArgList->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
+
           rchandle<exprnode> lKey = (*lArgList)[0].release();
           $$ = new JSONRenameExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $5);
         }
@@ -6498,18 +6514,26 @@ JSONReplaceExpr :
         REPLACE JSON VALUE OF FilterExpr WITH ExprSingle
         {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
-              dynamic_cast<DynamicFunctionInvocation*>($5);
-          if(lDynamicFunctionInvocation == NULL) {
+          dynamic_cast<DynamicFunctionInvocation*>($5);
+
+          if(lDynamicFunctionInvocation == NULL) 
+          {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
           }
-          rchandle<exprnode> lPrimaryExpr = lDynamicFunctionInvocation->getPrimaryExpr().release();
-          rchandle<ArgList> lArgList = lDynamicFunctionInvocation->getArgList().release();
-          if(lArgList->size() != 1)
+
+          rchandle<exprnode> lPrimaryExpr =
+          lDynamicFunctionInvocation->getPrimaryExpr().release();
+
+          rchandle<ArgList> lArgList =
+          lDynamicFunctionInvocation->getArgList().release();
+
+          if (lArgList->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
+
           rchandle<exprnode> lKey = (*lArgList)[0].release();
           $$ = new JSONReplaceExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $7);
         }

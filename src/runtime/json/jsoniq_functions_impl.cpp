@@ -120,17 +120,17 @@ JSONObjectNamesIterator::nextImpl(
 
   consumeNext(input, theChild.getp(), planState);
 
-  state->thePairs = input->getObjectKeys();
-  state->thePairs->open();
+  state->theNames = input->getObjectKeys();
+  state->theNames->open();
 
-  while (state->thePairs->next(key))
+  while (state->theNames->next(key))
   {
     result = key;
     STACK_PUSH (true, state);
   }
-  state->thePairs = NULL;
+  state->theNames = NULL;
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -155,7 +155,7 @@ JSONObjectValueIterator::nextImpl(
   
   STACK_PUSH(result != 0, state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -221,7 +221,6 @@ JSONObjectProjectIterator::nextImpl(
   STACK_PUSH(true, state);
   STACK_END(state);
 }
-
 
 
 /*******************************************************************************

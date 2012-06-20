@@ -60,7 +60,7 @@
   </zorba:function>
 
   <zorba:state>
-    <zorba:member type="store::Iterator_t" name="thePairs" brief=""/>
+    <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
   </zorba:state>
 
 </zorba:iterator>
