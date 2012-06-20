@@ -115,7 +115,7 @@ size_type decode( char const *from, size_type from_len, char *to,
  * Decodes a Base64-encoded buffer and appends the decoded bytes onto a
  * vector&lt;char&gt;.  Embedded newlines and carriage-returns are skipped.
  *
- * @param from A pointer to the bugger to be encoded.
+ * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
  * @param to A pointer to the vector to append the encoded bytes appended onto.
  * The vector is made large enough to contain the additional bytes.
@@ -263,7 +263,7 @@ inline size_type encoded_size( size_type n ) {
 /**
  * Base64-encodes a buffer.
  *
- * @param from A pointer to the bugger to be encoded.
+ * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
  * @param to A pointer to the buffer to receive the encoded bytes.  The buffer
  * must be large enough to contain them.  Note that the buffer is \e not null
@@ -277,7 +277,7 @@ size_type encode( char const *from, size_type from_len, char *to );
  * Base64-encodes a buffer and appends the encoded bytes onto a
  * vector&lt;char&gt;.
  *
- * @param from A pointer to the bugger to be encoded.
+ * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
  * @param to A pointer to the vector to append the encoded bytes appended onto.
  * The vector is made large enough to contain the additional bytes.
