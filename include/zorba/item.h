@@ -386,7 +386,7 @@ public:
    * @return Item the size of the array.
    * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
    */
-  uint32_t
+  uint64_t
   getArraySize() const;
 
   /** \brief Returns the item in the JSON array at the specified index.

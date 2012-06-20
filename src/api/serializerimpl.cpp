@@ -221,23 +221,23 @@ SerializerImpl::setSerializationParameters(
 #ifdef ZORBA_WITH_JSON
   switch (aSerializerOptions.jsoniq_extensions)
   {
-    case CLOUDSCRIPT_EXTENSIONS_YES:
+    case JSONIQ_EXTENSIONS_YES:
       aInternalSerializer.setParameter("jsoniq-extensions", "yes");
       break;
-    case CLOUDSCRIPT_EXTENSIONS_NO:
+    case JSONIQ_EXTENSIONS_NO:
       aInternalSerializer.setParameter("jsoniq-extensions", "no");
       break;
   }
 
   switch (aSerializerOptions.jsoniq_multiple_items)
   {
-    case CLOUDSCRIPT_MULTIPLE_ITEMS_NO:
+    case JSONIQ_MULTIPLE_ITEMS_NO:
       aInternalSerializer.setParameter("jsoniq-multiple-items", "no");
       break;
-    case CLOUDSCRIPT_MULTIPLE_ITEMS_ARRAY:
+    case JSONIQ_MULTIPLE_ITEMS_ARRAY:
       aInternalSerializer.setParameter("jsoniq-multiple-items", "array");
       break;
-    case CLOUDSCRIPT_MULTIPLE_ITEMS_APPENDED:
+    case JSONIQ_MULTIPLE_ITEMS_APPENDED:
       aInternalSerializer.setParameter("jsoniq-multiple-items", "appended");
       break;
   }

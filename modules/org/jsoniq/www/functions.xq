@@ -29,7 +29,7 @@ xquery version "1.0";
  : This module depends on having the JSONiq feature enabled in Zorba,
  : i.e., Zorba must be compiled with ZORBA_WITH_JSON.
  :
- : @author Markos Zaharioudakis, Matthias Brantner
+ : @author Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny
  :)
 module namespace jn = "http://www.jsoniq.org/functions";
 
@@ -72,12 +72,12 @@ declare function jn:keys($o as object()) as xs:string* external;
  : @param $name The name of the pair whose value is to be retrieved
  : @return the value of specified pair within the given object, or the empty sequence.
  :)
-declare function jn:value($o as object(), $name as xs:string) as item()? external;
+(: obsolete - use $o($name) instead :)
+(: declare function jn:value($o as object(), $name as xs:string) as item()? external; :)
 
 
 (:~
- : Returns the size of a JSON Object or JSON Array. The size of an Object
- : is the number of Pairs contained within it; the size of an Array is
+ : Returns the size of a JSON Array. The size of an Array is
  : the number of members contained within it.
  :
  : @param $j A JSON Array.
@@ -94,7 +94,8 @@ declare function jn:size($j as array()) as xs:integer external;
  : @param $p The position in the array.
  : @return The member at the specified position, or empty sequence.
  :)
-declare function jn:member($o as array(), $p as xs:integer) as item()? external;
+(: obsolete - use $a($p) instead :)
+(: declare function jn:member($a as array(), $p as xs:integer) as item()? external; :)
 
 
 (:~

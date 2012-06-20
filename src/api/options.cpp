@@ -53,8 +53,8 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   encoding(ZORBA_ENCODING_UTF8)
 #ifdef ZORBA_WITH_JSON
   ,
-    jsoniq_extensions(CLOUDSCRIPT_EXTENSIONS_NO),
-    jsoniq_multiple_items(CLOUDSCRIPT_MULTIPLE_ITEMS_NO),
+    jsoniq_extensions(JSONIQ_EXTENSIONS_NO),
+    jsoniq_multiple_items(JSONIQ_MULTIPLE_ITEMS_NO),
     jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML),
     jsoniq_allow_mixed_xdm_jdm(JSONIQ_ALLOW_MIXED_XDM_JDM_NO)
 #endif /* ZORBA_WITH_JSON */
@@ -151,17 +151,17 @@ void Zorba_SerializerOptions::SetSerializerOption(
 #ifdef ZORBA_WITH_JSON
   else if (strcmp(parameter, "jsoniq-extensions") == 0)
   {
-    if (strcmp(value, "yes") == 0) jsoniq_extensions = CLOUDSCRIPT_EXTENSIONS_YES;
-    else if (strcmp(value, "no") == 0) jsoniq_extensions = CLOUDSCRIPT_EXTENSIONS_NO;
+    if (strcmp(value, "yes") == 0) jsoniq_extensions = JSONIQ_EXTENSIONS_YES;
+    else if (strcmp(value, "no") == 0) jsoniq_extensions = JSONIQ_EXTENSIONS_NO;
   }
   else if (strcmp(parameter, "jsoniq-multiple-items") == 0)
   {
     if (strcmp(value, "no") == 0)
-      jsoniq_multiple_items = CLOUDSCRIPT_MULTIPLE_ITEMS_NO;
+      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_NO;
     else if (strcmp(value, "array") == 0)
-      jsoniq_multiple_items = CLOUDSCRIPT_MULTIPLE_ITEMS_ARRAY;
+      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_ARRAY;
     else if (strcmp(value, "appended") == 0)
-      jsoniq_multiple_items = CLOUDSCRIPT_MULTIPLE_ITEMS_APPENDED;
+      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_APPENDED;
   }
   else if (strcmp(parameter, "jsoniq-xdm-node-output-method") == 0)
   {

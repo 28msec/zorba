@@ -37,6 +37,7 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 
+#include <zorbatypes/numconversions.h>
 
 namespace zorba {
 
@@ -485,24 +486,13 @@ Item::getJSONItemKind() const
   return store::StoreConsts::jsonItem;
 }
 
-uint32_t
+uint64_t
 Item::getArraySize() const
 {
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    // TODO, we should have an error handler here
-    xs_integer lSize = m_item->getArraySize()->getIntegerValue();
-    if (lSize.is_xs_int())
-    {
-      std::stringstream ss;
-      ss << lSize.toString();
-      uint32_t lRes;
-      ss >> lRes;
-      return lRes;
-    } else {
-      return 0;
-    }
+    return to_xs_long(m_item->getArraySize()->getIntegerValue());
   ITEM_CATCH
   return NULL;
 }
