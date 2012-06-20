@@ -42,9 +42,6 @@
     );                                                                      \
   }
 
-//#define HERE std::cout << "HERE " << __LINE__ << std::endl;
-#define HERE
-
 using namespace std;
 
 namespace zorba {
@@ -64,7 +61,6 @@ SERIALIZABLE_CLASS_VERSIONS(Base16)
 
 bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
 {
-  HERE
   try 
   {
     base64::validate( aString, aLength, base64::dopt_ignore_ws );
@@ -87,7 +83,6 @@ bool Base64::parseString(
     Base64& aBase64, 
     string& lErrorMessage)
 {
-  HERE
   try 
   {
     base64::validate( aString, aLength, base64::dopt_ignore_ws );
@@ -107,21 +102,18 @@ bool Base64::parseString(
 
 void Base64::encode(const zstring& aString, Base64& aResult)
 {
-  HERE
   base64::encode( aString.data(), aString.size(), &aResult.theData );
 }
 
 
 void Base64::encode(istream& aStream, Base64& aResult)
 {
-  HERE
   base64::encode( aStream, &aResult.theData );
 }
 
 
 zstring Base64::encode(istream& aStream)
 {
-  HERE
   zstring result;
   base64::encode( aStream, &result );
   return result;
@@ -130,7 +122,6 @@ zstring Base64::encode(istream& aStream)
 
 void Base64::encode(const vector<char>& aSource, vector<char>& aResult)
 {
-  HERE
   base64::encode( &aSource[0], aSource.size(), &aResult );
 }
 
@@ -140,14 +131,12 @@ void Base64::encode(
     unsigned int in_len,
     Base64& aResult)
 {
-  HERE
   base64::encode( (char*)aSource, in_len, &aResult.theData );
 }
 
 
 zstring Base64::decode(istream& aStream)
 {
-  HERE
   try {
     zstring result;
     base64::decode(
@@ -160,7 +149,6 @@ zstring Base64::decode(istream& aStream)
 
 void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
 {
-  HERE
   try {
     base64::decode(
       &aSource[0], aSource.size(), &aResult,
@@ -173,7 +161,6 @@ void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
 
 Base64::Base64(const Base16& aBase16)
 {
-  HERE
   vector<char> lOrig;
   Base16::decode(aBase16.getData(), lOrig);
   Base64::encode(lOrig, theData);
@@ -182,7 +169,6 @@ Base64::Base64(const Base16& aBase16)
 
 Base64::Base64(const unsigned char *bin_data, size_t len)
 {
-  HERE
   try {
     base64::encode( (char const*)bin_data, len, &theData );
   }
@@ -198,7 +184,6 @@ void Base64::serialize(::zorba::serialization::Archiver& ar)
 
 bool Base64::equal(const Base64& aBase64) const
 {
-  HERE
   if (size() != aBase64.size())
     return false;
 
@@ -231,7 +216,6 @@ zstring Base64::str() const
 
 zstring Base64::decode() const
 {
-  HERE
   zstring result;
   base64::decode( &theData[0], theData.size(), &result );
   return result;
@@ -240,7 +224,6 @@ zstring Base64::decode() const
 
 void Base64::decode(vector<char>& aResult)
 {
-  HERE
   base64::decode( &theData[0], theData.size(), &aResult );
 }
 
