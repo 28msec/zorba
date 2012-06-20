@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@
 
 #include "store/api/item.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class expr_visitor;
@@ -108,7 +108,7 @@ class exit_catcher_expr;
   contrast, the grammar allows only the last operand to be simple; all the other
   operands must be sequential or vacuous.
 
-  EXCEPTION: At the top level, a Program consists of 0 or more statements 
+  EXCEPTION: At the top level, a Program consists of 0 or more statements
   followed by an expr, which may be updating. In the case of a "normal" program,
   we can wrap this expr with an apply_expr and model the Program as a block
   expr. However, this does not work in the case of eval-updating. The solution
@@ -155,7 +155,7 @@ public:
 private:
   void compute_scripting_kind();
 
-  void compute_scripting_kind2(    
+  void compute_scripting_kind2(
       std::vector<var_expr*>* assignedVars,
       bool allowLastUpdating) ;
 };
@@ -164,7 +164,7 @@ private:
 /*******************************************************************************
   ApplyStatement ::= ExprSimple ";"
 ********************************************************************************/
-class apply_expr : public expr 
+class apply_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -195,7 +195,7 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -208,7 +208,7 @@ public:
 
   Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
 
-  VarDecl ::= "variable" "$" VarName TypeDeclaration? 
+  VarDecl ::= "variable" "$" VarName TypeDeclaration?
               ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
 
   For Local Var:
@@ -217,9 +217,9 @@ public:
   VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
                   (":=" ExprSingle)?
 
-  var_decl_expr is used to declare block-local and prolog variables (including 
+  var_decl_expr is used to declare block-local and prolog variables (including
   the context item, if it is declared in the prolog). During runtime, the
-  associated iterator creates in the local dynamic context a binding between 
+  associated iterator creates in the local dynamic context a binding between
   the variable id and the variable value. If the declaration includes an
   initializing expr, the iterator computes the initExpr and stores the resulting
   value inside this binding.
@@ -227,7 +227,7 @@ public:
   Note: the init expr must be non-updating. For global vars, it must also be
   non-sequential.
 ********************************************************************************/
-class var_decl_expr : public expr 
+class var_decl_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -271,11 +271,11 @@ public:
   The RHS of the assignment must be a non-updating expr.
 
   var_set_expr is used to assign a value to a prolog or block-local var. During
-  runtime, the function computes theExpr and stores the resulting value inside 
+  runtime, the function computes theExpr and stores the resulting value inside
   the appropriate dynamic ctx (global or local), at the location that is identified
   by the variable id.
 ********************************************************************************/
-class var_set_expr : public expr 
+class var_set_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -315,7 +315,7 @@ public:
 /*******************************************************************************
   ExitExpr ::= "exit" "with" ExprSingle
 ********************************************************************************/
-class exit_expr : public expr 
+class exit_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -345,7 +345,7 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -362,7 +362,7 @@ public:
   -------------
   All the exit_exprs that appear in the body of the udf.
 ********************************************************************************/
-class exit_catcher_expr : public expr 
+class exit_catcher_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -388,14 +388,14 @@ public:
 
   expr* get_expr() const { return theExpr.getp(); }
 
-  std::vector<expr*>::const_iterator exitExprsBegin() const 
+  std::vector<expr*>::const_iterator exitExprsBegin() const
   {
-    return theExitExprs.begin(); 
+    return theExitExprs.begin();
   }
 
-  std::vector<expr*>::const_iterator exitExprsEnd() const 
+  std::vector<expr*>::const_iterator exitExprsEnd() const
   {
-    return theExitExprs.end(); 
+    return theExitExprs.end();
   }
 
   void removeExitExpr(const expr* exitExpr);
@@ -406,14 +406,14 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class flowctl_expr : public expr 
+class flowctl_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -440,18 +440,18 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
 /*******************************************************************************
-	WhileExpr ::= "while" "(" Expr ")" Statement
+  WhileExpr ::= "while" "(" Expr ")" Statement
 
   theBody : It is a block_expr, whose 1st child is the following expr:
             if (cond_expr) then () else break
             The subsequent children are what it generated by the Statement.
 ********************************************************************************/
-class while_expr : public expr 
+class while_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -475,7 +475,7 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@
 #include "zorbatypes/zstring.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class match_expr;
@@ -31,7 +31,7 @@ class match_expr;
 
 /*******************************************************************************
 
-  PathExpr ::= 	("/" RelativePathExpr?) |
+  PathExpr ::=  ("/" RelativePathExpr?) |
                 ("//" RelativePathExpr) |
                 RelativePathExpr
 
@@ -49,7 +49,7 @@ class match_expr;
  RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-class relpath_expr : public expr 
+class relpath_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -65,9 +65,9 @@ public:
 public:
   relpath_expr(static_context* sctx, const QueryLoc& loc);
 
-	size_t size() const { return theSteps.size(); }
+  size_t size() const { return theSteps.size(); }
 
-	void add_back(expr_t step);
+  void add_back(expr_t step);
 
   void erase(csize i) { theSteps.erase(theSteps.begin() + i); }
 
@@ -101,7 +101,7 @@ public:
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-class axis_step_expr : public expr 
+class axis_step_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -132,7 +132,7 @@ public:
 
   bool is_reverse_axis() const { return is_reverse_axis(getAxis()); }
 
-  match_expr* getTest() const 
+  match_expr* getTest() const
   {
     return reinterpret_cast<match_expr*>(theNodeTest.getp());
   }
@@ -165,7 +165,7 @@ public:
   and theNilledAllowed data members are not used.
 
 ********************************************************************************/
-class match_expr : public expr 
+class match_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -204,7 +204,7 @@ public:
   const zstring& getWildName() const { return theWildName; }
 
   template<class StringType>
-  void setWildName(const StringType& v) { theWildName = v; } 
+  void setWildName(const StringType& v) { theWildName = v; }
 
   store::Item* getQName() const { return theQName.getp(); }
 

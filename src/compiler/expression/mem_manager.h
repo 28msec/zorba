@@ -78,16 +78,18 @@ private:
   std::list<MemPage> pages;
 };
 
+} // namespace zorba
+
 //This handles the creation of data within the memory pool using the format
 //new (MemPool) constructor
 //for more information see
 //http://www.parashift.com/c++-faq-lite/dtors.html#faq-11.14
-//Moreover the delete operator has not been added since deleting data does
-//nothing we haven't added a delete operator yet.
-inline void* operator new(size_t size, MemoryManager& mem)
+inline void* operator new(size_t size, zorba::MemoryManager& mem)
 {
     return mem.allocate(size);
 }
 
-} // namespace zorba
+inline void operator delete(void* p, zorba::MemoryManager& mem)
+{ /*Memory is freed when MemoryManager is destroyed */ }
+
 #endif /*ZORBA_COMPILER_MEMMANAGER_H*/

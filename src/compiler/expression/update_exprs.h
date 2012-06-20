@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@
 #include "compiler/expression/expr_base.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -49,16 +49,16 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	update_expr_base(
+  update_expr_base(
     static_context* sctx,
-		const QueryLoc&,
+    const QueryLoc&,
     expr_kind_t kind,
-		const expr_t& targetExpr,
+    const expr_t& targetExpr,
     const expr_t& sourceExpr);
 
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
+  expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
-	expr* getSourceExpr() const { return theSourceExpr.getp(); }
+  expr* getSourceExpr() const { return theSourceExpr.getp(); }
 
   void compute_scripting_kind();
 };
@@ -81,20 +81,20 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	insert_expr(
+  insert_expr(
     static_context* sctx,
-		const QueryLoc&,
+    const QueryLoc&,
     store::UpdateConsts::InsertType,
-		const expr_t& aSourceExpr,
-		const expr_t& aTargetExpr);
+    const expr_t& aSourceExpr,
+    const expr_t& aTargetExpr);
 
   store::UpdateConsts::InsertType getType() const { return theType; }
-  
+
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -112,7 +112,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
+  delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -139,22 +139,22 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	replace_expr(
+  replace_expr(
     static_context* sctx,
-		const QueryLoc&,
+    const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
-		const expr_t&,
-		const expr_t&);
+    const expr_t&,
+    const expr_t&);
 
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
-	expr* getReplaceExpr() const { return theSourceExpr.getp(); }
+  expr* getReplaceExpr() const { return theSourceExpr.getp(); }
 
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -172,19 +172,19 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	rename_expr(
+  rename_expr(
       static_context* sctx,
       const QueryLoc&,
       const expr_t&,
       const expr_t&);
 
-	expr* getNameExpr() const { return theSourceExpr.getp(); }
+  expr* getNameExpr() const { return theSourceExpr.getp(); }
 
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -232,9 +232,9 @@ class transform_expr : public expr
   friend class expr;
 
 protected:
-	std::vector<copy_clause_t> theCopyClauses;
-	expr_t                     theModifyExpr;
-	expr_t                     theReturnExpr;
+  std::vector<copy_clause_t> theCopyClauses;
+  expr_t                     theModifyExpr;
+  expr_t                     theReturnExpr;
 
 public:
   SERIALIZABLE_CLASS(transform_expr)
@@ -242,27 +242,27 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	transform_expr(static_context* sctx, const QueryLoc& loc);
+  transform_expr(static_context* sctx, const QueryLoc& loc);
 
-	expr_t getModifyExpr() const { return theModifyExpr; }
+  expr_t getModifyExpr() const { return theModifyExpr; }
 
-	expr_t getReturnExpr() const { return theReturnExpr; }
+  expr_t getReturnExpr() const { return theReturnExpr; }
 
   void setModifyExpr(expr* e);
 
   void setReturnExpr(expr* e);
 
-	void add_back(copy_clause_t c);
+  void add_back(copy_clause_t c);
 
-	copy_clause_t const& operator[](int i) const { return theCopyClauses[i]; }
+  copy_clause_t const& operator[](int i) const { return theCopyClauses[i]; }
 
-	std::vector<copy_clause_t>::const_iterator begin() const
+  std::vector<copy_clause_t>::const_iterator begin() const
   { return theCopyClauses.begin(); }
 
-	std::vector<copy_clause_t>::const_iterator end() const
+  std::vector<copy_clause_t>::const_iterator end() const
   { return theCopyClauses.end(); }
 
-	csize size() const { return theCopyClauses.size(); }
+  csize size() const { return theCopyClauses.size(); }
 
   void compute_scripting_kind();
 
@@ -270,7 +270,7 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 

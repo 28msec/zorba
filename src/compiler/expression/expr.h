@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@
 
 #include "store/api/item.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class expr_visitor;
@@ -51,7 +51,7 @@ class signature;
 /*******************************************************************************
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
 ********************************************************************************/
-class if_expr : public expr 
+class if_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -93,13 +93,13 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class order_expr : public expr 
+class order_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
 
 public:
-  enum order_type_t 
+  enum order_type_t
   {
     ordered,
     unordered
@@ -134,7 +134,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class validate_expr : public expr 
+class validate_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -207,7 +207,7 @@ public:
 /***************************************************************************//**
   Base for cast, treat, promote, castable, instanceof
 ********************************************************************************/
-class cast_or_castable_base_expr : public expr 
+class cast_or_castable_base_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -223,7 +223,7 @@ protected:
         expr_kind_t kind,
         expr_t input,
         xqtref_t type);
-  
+
 public:
   SERIALIZABLE_ABSTRACT_CLASS(cast_or_castable_base_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_or_castable_base_expr, expr)
@@ -254,7 +254,7 @@ public:
 
 public:
   cast_base_expr(
-        static_context* sctx, 
+        static_context* sctx,
         const QueryLoc& loc,
         expr_kind_t kind,
         expr_t input,
@@ -300,10 +300,10 @@ public:
                   static type of theInputExpr is a subtype of the prime type of
                   theTargetType.
 
-  theFnQName    : Stores the QName of the function, if the treat expr is used 
+  theFnQName    : Stores the QName of the function, if the treat expr is used
                   to cast the function's body to its result type
 ********************************************************************************/
-class treat_expr : public cast_base_expr 
+class treat_expr : public cast_base_expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -320,7 +320,7 @@ public:
 
 public:
   treat_expr(
-        static_context* sctx, 
+        static_context* sctx,
         const QueryLoc&,
         expr_t,
         xqtref_t,
@@ -363,7 +363,7 @@ public:
      - If the target type is the NONE type, F(I) = error, else
      - If the actual type is a subtype of the target type, F(I) = I, else
      - If the target type is not an atomic type, F(I) = error, else
-     - If the actual type is untypedAtomic and the target type is not QName, 
+     - If the actual type is untypedAtomic and the target type is not QName,
        F(I) = cast(I, target type), else
      - If the actual type is (subtype of) decimal and the target type is float,
        F(I) = cast(I, target type), else
@@ -383,7 +383,7 @@ class promote_expr : public cast_base_expr
 protected:
   store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
                                // is used to cast the function's body to its result type
-  
+
 public:
   SERIALIZABLE_CLASS(promote_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
@@ -391,10 +391,10 @@ public:
 
 public:
   promote_expr(
-      static_context* sctx, 
-      const QueryLoc& loc, 
-      expr_t input, 
-      xqtref_t type, 
+      static_context* sctx,
+      const QueryLoc& loc,
+      expr_t input,
+      xqtref_t type,
       store::Item_t fnQname = NULL);
 
   expr_t clone(substitution_t& s) const;
@@ -412,7 +412,7 @@ public:
 /***************************************************************************//**
   Base for castable, instanceof
 ********************************************************************************/
-class castable_base_expr : public cast_or_castable_base_expr 
+class castable_base_expr : public cast_or_castable_base_expr
 {
   friend class ExprIterator;
 
@@ -436,7 +436,7 @@ public:
 
   SingleType ::= AtomicType "?"?
 ********************************************************************************/
-class castable_expr : public castable_base_expr 
+class castable_expr : public castable_base_expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -448,7 +448,7 @@ public:
 
 public:
   castable_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
-  
+
   bool is_optional() const;
 
   expr_t clone(substitution_t& s) const;
@@ -462,13 +462,13 @@ public:
 /***************************************************************************//**
 	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
 
-  theCheckPrimeOnly : 
+  theCheckPrimeOnly :
   Normally, this is false. It is set to true only if this is an instanceof expr
   that is created during the translation of a PredicateList (see translator.cpp).
   This flag is used during the PartialEval rule.
 
 ********************************************************************************/
-class instanceof_expr : public castable_base_expr 
+class instanceof_expr : public castable_base_expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -484,8 +484,8 @@ public:
 public:
   instanceof_expr(
       static_context* sctx,
-      const QueryLoc&, 
-      expr_t, 
+      const QueryLoc&,
+      expr_t,
       xqtref_t,
       bool checkPrimeOnly = false);
 
@@ -548,7 +548,7 @@ public:
 /***************************************************************************//**
   CompDocConstructor ::= "document" "{" Expr "}"
 ********************************************************************************/
-class doc_expr : public expr 
+class doc_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -632,7 +632,7 @@ public:
         expr* content,
         const namespace_context* nsCtx,
         bool copyNodes);
-  
+
   elem_expr(
         static_context* sctx,
         const QueryLoc&,
@@ -640,7 +640,7 @@ public:
         expr* content,
         const namespace_context* nsCtx,
         bool copyNodes);
-  
+
   expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
   expr* getContent() const { return theContent.getp(); }
@@ -652,8 +652,8 @@ public:
   void setCopyInputNodes() { theCopyInputNodes = true; }
 
   void compute_scripting_kind();
-  
-  expr_t clone(substitution_t& s) const;  
+
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -685,7 +685,7 @@ public:
   CommonContent ::= PredefinedEntityRef | CharRef | "{{" | "}}" | EnclosedExpr
 
 ********************************************************************************/
-class attr_expr : public expr 
+class attr_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -725,13 +725,13 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class text_expr : public expr 
+class text_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
 
 public:
-  typedef enum 
+  typedef enum
   {
     text_constructor,
     comment_constructor
@@ -759,7 +759,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;  
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -770,7 +770,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class pi_expr : public expr 
+class pi_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -786,14 +786,14 @@ public:
 
 public:
   pi_expr(static_context* sctx, const QueryLoc&, expr_t, expr_t);
- 
+
   expr* get_target_expr() const { return theTargetExpr.getp(); }
 
   expr* get_content_expr() const { return theContentExpr.getp(); }
 
   void compute_scripting_kind();
-  
-  expr_t clone(substitution_t& s) const;  
+
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -804,7 +804,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class const_expr : public expr 
+class const_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -832,7 +832,7 @@ public:
 
   const_expr(static_context* sctx, const QueryLoc&, xs_boolean);
 
-  const_expr(static_context* sctx, const QueryLoc&, store::Item_t);  
+  const_expr(static_context* sctx, const QueryLoc&, store::Item_t);
 
   const_expr(static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
 
@@ -872,7 +872,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class extension_expr : public expr 
+class extension_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -932,7 +932,7 @@ class catch_clause;
 typedef rchandle<catch_clause> catch_clause_t;
 
 
-class catch_clause : public SimpleRCObject 
+class catch_clause : public SimpleRCObject
 {
   friend class expr;
   friend class trycatch_expr;
@@ -957,7 +957,7 @@ public:
 protected:
   nt_list_t  theNameTests;
   var_map_t  theVarMap;
-  
+
 public:
   SERIALIZABLE_CLASS(catch_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(catch_clause, SimpleRCObject)
@@ -965,24 +965,24 @@ public:
 
 public:
   catch_clause();
-  
+
   void set_nametests(nt_list_t& a) { theNameTests = a; }
 
   nt_list_t& get_nametests() { return theNameTests; }
-  
+
   void add_nametest_h(nt_t n) { theNameTests.push_back(n); }
 
   void set_vars(var_map_t& a) { theVarMap = a; }
 
   var_map_t& get_vars() { return theVarMap; }
-  
+
   void add_var(var_type v, var_expr_t n) { theVarMap[v] = n; }
-  
+
   catch_clause_t clone(expr::substitution_t& subst) const;
 };
 
 
-class trycatch_expr : public expr 
+class trycatch_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -1007,9 +1007,9 @@ public:
   void add_catch_expr(expr_t e);
 
   void add_clause(catch_clause_t cc);
-  
+
   csize clause_count() const { return theCatchClauses.size(); }
-  
+
   const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
@@ -1033,7 +1033,7 @@ public:
   Normally, it is used to wrap a var_expr in order to represent a var reference
   (see var_expr.h). But it may wrap any other kind of expr as well.
 ********************************************************************************/
-class wrapper_expr : public expr 
+class wrapper_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -1130,7 +1130,7 @@ public:
   {
     return theFunctionCallLocation;
   }
-  
+
   void setFunctionArity(unsigned int arity)
   {
     theFunctionArity = arity;
@@ -1191,7 +1191,7 @@ public:
 public:
   eval_expr(
       static_context* sctx,
-      const QueryLoc& loc, 
+      const QueryLoc& loc,
       const expr_t& e,
       expr_script_kind_t scriptingKind,
       namespace_context* nsCtx);
@@ -1204,7 +1204,7 @@ public:
 
   const var_expr* get_var(csize i) const { return theVars[i]; }
 
-  void add_var(const var_expr_t& var, const expr_t& arg) 
+  void add_var(const var_expr_t& var, const expr_t& arg)
   {
     theVars.push_back(var);
     theArgs.push_back(arg);
@@ -1279,7 +1279,7 @@ public:
 
   const var_expr* get_var(csize i) const { return theVars[i]; }
 
-  void add_var(const var_expr_t& var, const expr_t& arg) 
+  void add_var(const var_expr_t& var, const expr_t& arg)
   {
     theVars.push_back(var);
     theArgs.push_back(arg);

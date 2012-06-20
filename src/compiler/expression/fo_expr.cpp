@@ -43,7 +43,7 @@ void fo_expr::accept(expr_visitor& v)
 {
   if (v.begin_visit(*this))
   {
-    accept_children(v); 
+    accept_children(v);
   }
 
   v.end_visit(*this);
@@ -185,7 +185,7 @@ void fo_expr::compute_scripting_kind()
           RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
           ERROR_PARAMS(ZED(XUST0001_CONCAT)));
         }
-        
+
         if (i > 0 && !is_updating() && !is_vacuous() && (argKind & UPDATING_EXPR))
         {
           RAISE_ERROR(err::XUST0001, theArgs[i]->get_loc(),
@@ -261,7 +261,7 @@ void fo_expr::compute_scripting_kind()
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
-  if (get_func()->getKind() == 
+  if (get_func()->getKind() ==
       FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1)
   {
     expr::subst_iter_t i = subst.find(this);

@@ -55,17 +55,17 @@ public:
       const expr_t& anExpr,
       const std::vector<expr_t>& args);
 
-	const expr_t get_function() const { return theExpr; }
+  const expr_t get_function() const { return theExpr; }
 
   const std::vector<expr_t>& get_args() const { return theArgs; }
 
-	void compute_scripting_kind();
+  void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
 
-	void accept(expr_visitor&);
+  void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream& os) const;
+  std::ostream& put(std::ostream& os) const;
 };
 
 
@@ -107,7 +107,7 @@ class function_item_expr: public expr
 
 private:
   store::Item_t        theQName;
-	function_t           theFunction;
+  function_t           theFunction;
   uint32_t             theArity;
   std::vector<expr_t>  theScopedVariables;
 
@@ -117,7 +117,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	function_item_expr(
+  function_item_expr(
       static_context* sctx,
       const QueryLoc& loc,
       const store::Item* aQName,
@@ -134,7 +134,7 @@ public:
 
   void set_function(user_function_t& udf);
 
-	function* get_function() const { return theFunction.getp(); }
+  function* get_function() const { return theFunction.getp(); }
 
   const store::Item_t& get_qname() const { return theQName; }
 
@@ -142,13 +142,13 @@ public:
 
   const std::vector<expr_t>& get_vars() const;
 
-	void compute_scripting_kind();
+  void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
 
-	void accept(expr_visitor&);
+  void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream& os) const;
+  std::ostream& put(std::ostream& os) const;
 };
 
 } //end of namespace
