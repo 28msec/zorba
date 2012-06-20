@@ -33,27 +33,21 @@
 #include "store/api/item_factory.h"
 
 
-using namespace std;
-
 namespace zorba
 {
+
 SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
+
 
 /*******************************************************************************
 
@@ -87,7 +81,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  quant = TypeOps::quantifier(*theSequenceType);
+  quant = theSequenceType->get_quantifier();
 
   if (consumeNext(item, theChild.getp(), planState))
   {
@@ -164,7 +158,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -180,10 +174,11 @@ CastIterator::CastIterator(
     const QueryLoc& loc,
     PlanIter_t& aChild,
     const xqtref_t& aCastType)
-  : UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
+  : 
+  UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
@@ -242,7 +237,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     STACK_PUSH(valid, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -258,11 +253,11 @@ CastableIterator::CastableIterator(
   const QueryLoc& aLoc,
   PlanIter_t& aChild,
   const xqtref_t& aCastType)
-:
+  :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, aLoc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
@@ -330,21 +325,35 @@ UNARY_ACCEPT(CastableIterator);
 
 PromoteIterator::PromoteIterator(
     static_context* sctx,
-    const QueryLoc& aLoc,
-    PlanIter_t& aChild,
-    const xqtref_t& aPromoteType,
-    store::Item_t fnQName)
+    const QueryLoc& loc,
+    PlanIter_t& child,
+    const xqtref_t& promoteType,
+    ErrorKind err,
+    store::Item_t qname)
   :
-  UnaryBaseIterator<PromoteIterator, PlanIteratorState>(sctx, aLoc, aChild),
-  theFnQName(fnQName)
+  UnaryBaseIterator<PromoteIterator, PlanIteratorState>(sctx, loc, child),
+  theErrorKind(err),
+  theQName(qname)
 {
-  thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *aPromoteType);
-  theQuantifier = TypeOps::quantifier(*aPromoteType); 
+  thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *promoteType);
+  theQuantifier = promoteType->get_quantifier(); 
 }
 
 
 PromoteIterator::~PromoteIterator()
 {
+}
+
+
+void PromoteIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<PromoteIterator, PlanIteratorState>*)this);
+
+  ar & thePromoteType;
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  SERIALIZE_ENUM(ErrorKind, theErrorKind);
+  ar & theQName;
 }
 
 
@@ -363,21 +372,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring type = thePromoteType->toSchemaString() + 
-                     (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
-
-      if (theFnQName.getp())
-      {
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(EmptySeqNotAsFunctionResult_23),
-                     theFnQName->getStringValue(),
-                     type));
-      }
-      else
-      {
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(EmptySeqNoPromoteTo), type));
-      }
+      raiseError("empty-sequence()");
     }
   }
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
@@ -385,45 +380,14 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     if (consumeNext(temp, theChild.getp(), planState))
     {
-      if (theFnQName.getp())
-      {
-        std::string tmp = BUILD_STRING(thePromoteType->toSchemaString(),
-                                       (theQuantifier == TypeConstants::QUANT_QUESTION ?
-                                        "?" : ""));
-
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(NoSeqTypePromotion_23),
-                     tmp,
-                     theFnQName->getStringValue()));
-      }
-      else
-      {
-        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqTypePromotion)));
-      }
+      raiseError("sequence of more than one item");
     }
 
     // catch exceptions to add/change the error location
     if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
     {
-      xqtref_t valueType = tm->create_value_type(lItem);
-
-      if ( theFnQName.getp() )
-      {
-        throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(NoTypePromotion_234),
-                                            valueType->toSchemaString(),
-                                            thePromoteType->toSchemaString(),
-                                            theFnQName->getStringValue()),
-                               ERROR_LOC(loc));
-      }
-      else
-      {
-        throw XQUERY_EXCEPTION(err::XPTY0004,
-                               ERROR_PARAMS(ZED(NoTypePromotion_23),
-                                            valueType->toSchemaString(),
-                                            thePromoteType->toSchemaString()),
-                               ERROR_LOC(loc));
-      }
+      zstring valueType = tm->create_value_type(lItem)->toSchemaString();
+      raiseError(valueType);
     }
 
     STACK_PUSH(true, state);
@@ -434,21 +398,8 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
       {
-        if (theFnQName.getp())
-        {
-          RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(NoTypePromotion_234),
-                       tm->create_value_type(lItem)->toSchemaString(),
-                       thePromoteType->toSchemaString(),
-                       theFnQName->getStringValue()));
-        }
-        else
-        {
-          RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(NoTypePromotion_23),
-                       tm->create_value_type(lItem)->toSchemaString(),
-                       thePromoteType->toSchemaString()));
-        }
+        zstring valueType = tm->create_value_type(lItem)->toSchemaString();
+        raiseError(valueType);
       }
       else
       {
@@ -462,6 +413,61 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
+void PromoteIterator::raiseError(const zstring& valueType) const
+{
+  zstring targetType;
+
+  if (thePromoteType->type_kind() == XQType::NONE_KIND && 
+      theQuantifier == TypeConstants::QUANT_QUESTION)
+  {
+    targetType = "empty-sequence()";
+  }
+  else
+  {
+    targetType = thePromoteType->toSchemaString();
+
+    if (theQuantifier == TypeConstants::QUANT_PLUS)
+      targetType += "+";
+    else if (theQuantifier == TypeConstants::QUANT_STAR)
+      targetType += "*";
+    else if (theQuantifier == TypeConstants::QUANT_QUESTION)
+      targetType += "?";
+  }
+
+  switch (theErrorKind)
+  {
+  case FUNC_RETURN:
+  {
+    assert(theQName != NULL);
+
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
+                 valueType, targetType, theQName->getStringValue()));
+    break;
+  }
+  case FUNC_PARAM:
+  {
+    assert(theQName != NULL);
+
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
+                 valueType, targetType, theQName->getStringValue()));
+    break;
+  }
+  case TYPE_PROMOTION:
+  {
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
+    break;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+}
+
+
 UNARY_ACCEPT(PromoteIterator);
 
 
@@ -472,19 +478,19 @@ UNARY_ACCEPT(PromoteIterator);
 TreatIterator::TreatIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& aChild,
-    const xqtref_t& aTreatType,
+    PlanIter_t& child,
+    const xqtref_t& treatType,
     bool checkPrime,
-    const Error& aErrorCode,
-    store::Item_t fnQName)
+    ErrorKind errorKind,
+    store::Item_t qname)
   :
-  UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, loc, aChild),
+  UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, loc, child),
   theCheckPrime(checkPrime),
-  theErrorCode(&aErrorCode),
-  theFnQName(fnQName)
+  theErrorKind(errorKind),
+  theQName(qname)
 {
-  theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *aTreatType);
-  theQuantifier = TypeOps::quantifier(*aTreatType);
+  theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *treatType);
+  theQuantifier = treatType->get_quantifier();
 }
 
 
@@ -496,8 +502,8 @@ void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theTreatType;
   SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   ar & theCheckPrime;
-  ar & theErrorCode;
-  ar & theFnQName;
+  SERIALIZE_ENUM(ErrorKind, theErrorKind);
+  ar & theQName;
 }
 
 
@@ -515,22 +521,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theQuantifier == TypeConstants::QUANT_PLUS || 
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring type = theTreatType->toSchemaString() + 
-                     (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
-
-      if (theFnQName.getp() != NULL)
-      {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
-                                "An empty sequence is not allowed as the result "
-                                << "of the function " 
-                                << theFnQName->getStringValue() 
-                                << "() which returns " << type << ".");
-      }
-      else
-      {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
-                                "Cannot treat empty sequence as " << type << ".");
-      }
+      raiseError("empty-sequence()");
     }
   }
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
@@ -538,23 +529,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (consumeNext(temp, theChild.getp(), planState))
     {
-      zstring type = theTreatType->toSchemaString() + 
-                     (theQuantifier == TypeConstants::QUANT_PLUS? "?" : "");
-
-      if (theFnQName.getp() != NULL)
-      {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
-                                "A sequence with more than one item cannot be "
-                                << "the result of the function " 
-                                << theFnQName->getStringValue() 
-                                << "() which returns " << type << ".");
-      }
-      else
-      {
-        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
-                                "Cannot treat sequence with more than one item as "
-                                << type << ".");
-      }
+      raiseError("sequence of more than one item");
     }
 
     if (theCheckPrime)
@@ -576,23 +551,8 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       
       if (!res)
       {
-        xqtref_t valueType = tm->create_value_type(result);
-
-        if (theFnQName.getp() != NULL)
-        {
-          ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                  "Cannot treat " << valueType->toSchemaString() 
-                                  << " as " << theTreatType->toSchemaString()
-                                  << " when returning the result of the function "
-                                  << theFnQName->getStringValue() << "().");
-        }
-        else
-        {
-          ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
-                                  "Cannot treat " << valueType->toSchemaString() 
-                                  << " as " << theTreatType->toSchemaString()
-                                  << ".");
-        }
+        zstring valueType = tm->create_value_type(result)->toSchemaString();
+        raiseError(valueType);
       }
     }
 
@@ -621,22 +581,8 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         
         if (!res)
         {
-          xqtref_t valueType = tm->create_value_type(result);
-
-          if (theFnQName.getp() != NULL)
-          {
-            ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                    "Cannot treat " + valueType->toSchemaString() 
-                                    << " as " << theTreatType->toSchemaString()
-                                    << " when returning the result of the function "
-                                    << theFnQName->getStringValue() << "().");
-          }
-          else
-          {
-            ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
-                                    "Cannot treat " << valueType->toSchemaString() 
-                                    << " as " << theTreatType->toSchemaString());
-          }
+          zstring valueType = tm->create_value_type(result)->toSchemaString();
+          raiseError(valueType);
         }
       }
 
@@ -646,6 +592,88 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   STACK_END(state);
+}
+
+
+void TreatIterator::raiseError(const zstring& valueType) const
+{
+  zstring targetType;
+
+  if (theTreatType->type_kind() == XQType::NONE_KIND && 
+      theQuantifier == TypeConstants::QUANT_QUESTION)
+  {
+    targetType = "empty-sequence()";
+  }
+  else
+  {
+    targetType = theTreatType->toSchemaString();
+
+    if (theQuantifier == TypeConstants::QUANT_PLUS)
+      targetType += "+";
+    else if (theQuantifier == TypeConstants::QUANT_STAR)
+      targetType += "*";
+    else if (theQuantifier == TypeConstants::QUANT_QUESTION)
+      targetType += "?";
+  }
+
+  switch (theErrorKind)
+  {
+  case FUNC_RETURN:
+  {
+    assert(theQName != NULL);
+
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
+                 valueType, targetType, theQName->getStringValue()));
+    break;
+  }
+  case FUNC_PARAM:
+  {
+    assert(theQName != NULL);
+
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
+                 valueType, targetType, theQName->getStringValue()));
+    break;
+  }
+  case TYPE_MATCH:
+  {
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(XPTY0004_TypeMatch), valueType, targetType));
+    break;
+  }
+  case TREAT_EXPR:
+  {
+    RAISE_ERROR(err::XPDY0050, loc, ERROR_PARAMS(valueType, targetType));
+    break;
+  }
+  case INDEX_DOMAIN:
+  {
+    RAISE_ERROR(zerr::ZDTY0010_INDEX_DOMAIN_TYPE_ERROR, loc,
+    ERROR_PARAMS(theQName->getStringValue()));
+    break;
+  }
+  case INDEX_KEY:
+  {
+    RAISE_ERROR(zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR, loc,
+    ERROR_PARAMS(valueType, targetType, theQName->getStringValue()));
+    break;
+  }
+  case PATH_STEP:
+  {
+    RAISE_ERROR_NO_PARAMS(err::XPTY0019, loc);
+    break;
+  }
+  case PATH_DOT:
+  {
+    RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
+    break;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
 }
 
 

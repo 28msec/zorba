@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <stdexcept>
 
 #include <zorba/diagnostic_list.h>
 
@@ -95,12 +96,14 @@ UConverter* icu_streambuf::create_conv( char const *charset ) {
   if ( !conv || U_FAILURE( err ) ) {
     if ( conv )
       ucnv_close( conv );
-    throw invalid_argument( charset );
+    throw invalid_argument( u_errorName( err ) );
   }
   return conv;
 }
 
 bool icu_streambuf::is_necessary( char const *cc_charset ) {
+  if ( !*cc_charset )
+    throw invalid_argument( "empty charset" );
   //
   // Apparently, ucnv_compareNames() doesn't consider "US-ASCII" an alias for
   // "ASCII", so check for "US-ASCII" ourselves.
@@ -160,8 +163,12 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
   char_type const *from = &utf8_byte;
   char ebuf[ Small_External_Buf_Size ], *to = ebuf;
 
+#ifdef NDEBUG
+  to_external( &from, from + 1, &to, to + sizeof ebuf );
+#else
   bool const ok = to_external( &from, from + 1, &to, to + sizeof ebuf );
   assert( ok );
+#endif /* NDEBUG */
   if ( streamsize const n = to - ebuf ) {
     original()->sputn( ebuf, n );
     p_.reset();

@@ -33,6 +33,9 @@
 
 #include "types/typeops.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 #include "store/api/index.h" // needed for destruction of the cache
 
 
@@ -40,7 +43,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(user_function)
-END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
 
 /*******************************************************************************
@@ -490,7 +492,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
 
   // parameter and return types are subtype of xs:anyAtomicType?
   const xqtref_t& lRes = theSignature.returnType();
-  TypeManager* tm = lRes->get_manager();
+  TypeManager* tm = theBodyExpr->get_sctx()->get_typemanager();
 
   if (!TypeOps::is_subtype(tm,
                            *lRes,

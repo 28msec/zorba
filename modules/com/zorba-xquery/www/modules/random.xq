@@ -26,7 +26,7 @@ xquery version "3.0";
  :)
 module namespace r = "http://www.zorba-xquery.com/modules/random";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -75,7 +75,7 @@ declare function r:seeded-random(
  : @return <tt>$num</tt> random integers, or the empty
  :  sequence if <tt>$num</tt> is negative.
  :)
-declare %ann:nondeterministic function r:random(
+declare %an:nondeterministic function r:random(
   $num as xs:integer
 ) as xs:integer* external;
 
@@ -88,7 +88,7 @@ declare %ann:nondeterministic function r:random(
  :
  : @return a random integer
  :)
-declare %ann:nondeterministic function r:random() as xs:integer
+declare %an:nondeterministic function r:random() as xs:integer
 {
   r:random(1)
 };
@@ -157,7 +157,7 @@ declare function r:seeded-random-between(
  :
  : @error r:invalid-arg if <tt>$lower</tt> is greater than <tt>$upper</tt>
  :)
-declare %ann:nondeterministic function r:random-between(
+declare %an:nondeterministic function r:random-between(
   $lower as xs:integer,
   $upper as xs:integer,
   $num as xs:integer) as xs:integer*
@@ -192,7 +192,7 @@ declare %ann:nondeterministic function r:random-between(
  : @param $upper the upper bound for the random number
  : @return a random integer within the given range
  :)
-declare %ann:nondeterministic function r:random-between(
+declare %an:nondeterministic function r:random-between(
   $lower as xs:integer,
   $upper as xs:integer
 ) as xs:integer
@@ -206,5 +206,5 @@ declare %ann:nondeterministic function r:random-between(
  :
  : @return the generated UUID as xs:string
 :)
-declare %ann:nondeterministic function r:uuid() as xs:string external;
+declare %an:nondeterministic function r:uuid() as xs:string external;
 

@@ -24,7 +24,7 @@ xquery version "3.0";
 module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -46,7 +46,7 @@ declare option ver:module-version "2.0";
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:sequential function file:append(
+declare %an:sequential function file:append(
   $file as xs:string,
   $content as item()*,
   $serializer-params as element(output:serialization-parameters)?
@@ -67,7 +67,7 @@ declare %ann:sequential function file:append(
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:sequential function file:append-binary(
+declare %an:sequential function file:append-binary(
   $file as xs:string,
   $content as xs:base64Binary*
 ) as empty-sequence() external;
@@ -81,7 +81,7 @@ declare %ann:sequential function file:append-binary(
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %ann:sequential function file:append-text(
+declare %private %an:sequential function file:append-text(
   $file as xs:string,
   $content as xs:string*
 ) as empty-sequence() external;
@@ -99,7 +99,7 @@ declare %private %ann:sequential function file:append-text(
  :    parent directory does not exist either.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic %ann:sequential function file:copy(
+declare %an:nondeterministic %an:sequential function file:copy(
   $source as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -126,7 +126,7 @@ declare %ann:nondeterministic %ann:sequential function file:copy(
  : @error file:FOFL0004 If <pre>$sourceFile</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %ann:sequential function file:copy-file-impl(
+declare %private %an:sequential function file:copy-file-impl(
   $sourceFile as xs:string,
   $destination as xs:string
 ) as empty-sequence() external;
@@ -143,7 +143,7 @@ declare %private %ann:sequential function file:copy-file-impl(
  :    parent directory does not exist either.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %ann:nondeterministic %ann:sequential function file:copy-directory-impl(
+declare %private %an:nondeterministic %an:sequential function file:copy-directory-impl(
   $sourceDir as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -182,7 +182,7 @@ declare %private %ann:nondeterministic %ann:sequential function file:copy-direct
  : @error file:FOFL0003 If <pre>$destination</pre> directory does not exist.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %ann:nondeterministic %ann:sequential function file:copy-directory-content(
+declare %private %an:nondeterministic %an:sequential function file:copy-directory-content(
   $sourceDir as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -208,7 +208,7 @@ declare %private %ann:nondeterministic %ann:sequential function file:copy-direct
  :    existing file.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:sequential function file:create-directory(
+declare %an:sequential function file:create-directory(
   $dir as xs:string
 ) as empty-sequence() external;
 
@@ -223,7 +223,7 @@ declare %ann:sequential function file:create-directory(
  : @error file:FOFL0001 If the <pre>$path</pre> path does not exist.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic %ann:sequential function file:delete(
+declare %an:nondeterministic %an:sequential function file:delete(
   $path as xs:string
 ) as empty-sequence()
 {
@@ -244,7 +244,7 @@ declare %ann:nondeterministic %ann:sequential function file:delete(
  : @error file:FOFL0001 If the <pre>$file</pre> path does not exist.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %ann:sequential function file:delete-file-impl(
+declare %private %an:sequential function file:delete-file-impl(
   $file as xs:string
 ) as empty-sequence() external;
 
@@ -257,7 +257,7 @@ declare %private %ann:sequential function file:delete-file-impl(
  : @error file:FOFL0003 If <pre>$dir</pre> does not point to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %ann:nondeterministic %ann:sequential function file:delete-directory-impl(
+declare %private %an:nondeterministic %an:sequential function file:delete-directory-impl(
   $dir as xs:string
 ) as empty-sequence()
 {
@@ -278,7 +278,7 @@ declare %private %ann:nondeterministic %ann:sequential function file:delete-dire
  : @param $path The path/URI to test for existence.
  : @return true if the path/URI points to an existing file system item.
  :)
-declare %ann:nondeterministic function file:exists(
+declare %an:nondeterministic function file:exists(
   $path as xs:string
 ) as xs:boolean external;
 
@@ -289,7 +289,7 @@ declare %ann:nondeterministic function file:exists(
  : @param $dir The path/URI to test.
  : @return true if the path/URI points to a directory.
  :)
-declare %ann:nondeterministic function file:is-directory(
+declare %an:nondeterministic function file:is-directory(
   $dir as xs:string
 ) as xs:boolean external;
 
@@ -299,7 +299,7 @@ declare %ann:nondeterministic function file:is-directory(
  : @param $dir The path/URI to test.
  : @return true if the path/URI points to a file.
  :)
-declare %ann:nondeterministic function file:is-file(
+declare %an:nondeterministic function file:is-file(
   $file as xs:string
 ) as xs:boolean external;
 
@@ -316,7 +316,7 @@ declare %ann:nondeterministic function file:is-file(
  :    directory does not exist either.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:sequential function file:move(
+declare %an:sequential function file:move(
   $source as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -335,7 +335,7 @@ declare %ann:sequential function file:move(
  : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:read-binary(
+declare %an:nondeterministic function file:read-binary(
   $file as xs:string
 ) as xs:base64Binary external;
 
@@ -352,7 +352,7 @@ declare %ann:nondeterministic function file:read-binary(
  : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:read-text(
+declare %an:nondeterministic function file:read-text(
   $file as xs:string
 ) as xs:string
 {
@@ -374,7 +374,7 @@ declare %ann:nondeterministic function file:read-text(
  : @error file:FOFL0006 If <pre>$encoding</pre> is not supported.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:read-text(
+declare %an:nondeterministic function file:read-text(
   $file as xs:string,
   $encoding as xs:string
 ) as xs:string external;
@@ -392,7 +392,7 @@ declare %ann:nondeterministic function file:read-text(
  : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:read-text-lines(
+declare %an:nondeterministic function file:read-text-lines(
   $file as xs:string
 ) as xs:string*
 {
@@ -419,14 +419,10 @@ declare %ann:nondeterministic function file:read-text-lines(
  : @error file:FOFL0006 If <pre>$encoding</pre> is not supported.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:read-text-lines(
+declare %an:nondeterministic function file:read-text-lines(
   $file as xs:string,
   $encoding as xs:string
-) as xs:string*
-{
-  let $content := file:read-text($file, $encoding)
-  return fn:tokenize($content, "\n")
-};
+) as xs:string* external;
 
 (:~
  : This is an internal function that copies an entire source directory to an
@@ -437,7 +433,7 @@ declare %ann:nondeterministic function file:read-text-lines(
  : @param $destinationDir The existing destination directory.
  : @return The empty sequence.
  :)
-declare %private %ann:nondeterministic %ann:sequential function file:copy-directory(
+declare %private %an:nondeterministic %an:sequential function file:copy-directory(
   $sourceDir as xs:string,
   $destinationDir as xs:string
 ) as empty-sequence()
@@ -476,7 +472,7 @@ declare %private %ann:nondeterministic %ann:sequential function file:copy-direct
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:sequential function file:write(
+declare %an:sequential function file:write(
   $file as xs:string,
   $content as item()*,
   $serializer-params as element(output:serialization-parameters)?
@@ -497,7 +493,7 @@ declare %ann:sequential function file:write(
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:sequential function file:write-binary(
+declare %an:sequential function file:write-binary(
   $file as xs:string,
   $content as xs:base64Binary*
 ) as empty-sequence() external;
@@ -511,7 +507,7 @@ declare %ann:sequential function file:write-binary(
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:sequential function file:write-binary(
+declare %an:sequential function file:write-binary(
   $file as xs:string,
   $content as xs:base64Binary*
 ) as empty-sequence() external;
@@ -528,7 +524,7 @@ declare %ann:sequential function file:write-binary(
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %ann:sequential function file:write-text(
+declare %private %an:sequential function file:write-text(
   $file as xs:string,
   $content as xs:string*
 ) as empty-sequence() external;
@@ -544,7 +540,7 @@ declare %private %ann:sequential function file:write-text(
  : @error file:FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:list(
+declare %an:nondeterministic function file:list(
   $dir as xs:string
 ) as xs:string* external;
 
@@ -563,7 +559,7 @@ declare %ann:nondeterministic function file:list(
  : @error file:FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:list(
+declare %an:nondeterministic function file:list(
   $path as xs:string,
   $recursive as xs:boolean
 ) as xs:string*
@@ -600,7 +596,7 @@ declare %ann:nondeterministic function file:list(
  : @error file:FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:list(
+declare %an:nondeterministic function file:list(
   $path as xs:string,
   $recursive as xs:boolean,
   $pattern as xs:string
@@ -623,7 +619,7 @@ declare %ann:nondeterministic function file:list(
  :)
 declare function file:glob-to-regex(
   $pattern as xs:string
-) {
+) as xs:string {
   let $pattern := fn:replace($pattern, '(\.|\[|\]|\\|/|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
   let $pattern := fn:replace($pattern, '\\\?', '.')
   let $pattern := fn:replace($pattern, '\\\*', '.*')
@@ -641,7 +637,7 @@ declare function file:glob-to-regex(
  : @error file:FOFL0001 If the <pre>$path</pre> does not exist.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:last-modified(
+declare %an:nondeterministic function file:last-modified(
   $path as xs:string
 ) as xs:dateTime external;
 
@@ -654,7 +650,7 @@ declare %ann:nondeterministic function file:last-modified(
  : @error file:FOFL0004 If the <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %ann:nondeterministic function file:size(
+declare %an:nondeterministic function file:size(
   $file as xs:string
 ) as xs:integer external;
 

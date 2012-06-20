@@ -15,17 +15,17 @@
  */
 #include "stdafx.h"
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 #include <unicode/ustring.h>
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 #include "cxx_util.h"
 #include "utf8_util.h"
 
 using namespace std;
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 U_NAMESPACE_USE
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 unsigned const Mask1Byte   = 0x80;
 unsigned const Mask2Bytes  = 0xC0;
@@ -169,7 +169,7 @@ size_type read( istream &i, storage_type **ps ) {
   return len;
 }
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 bool to_string( unicode::char_type const *in, unicode::size_type in_len,
                 storage_type **out, size_type *out_len ) {
@@ -233,7 +233,7 @@ bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
   return true;
 }
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 storage_type const* validate( storage_type const *s ) {
   while ( *s ) {

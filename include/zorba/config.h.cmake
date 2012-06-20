@@ -96,6 +96,8 @@
 typedef __int64 int64_t;
 #endif /* ZORBA_HAVE_INT64_T */
 
+#cmakedefine ZORBA_SIZEOF_WCHAR_T @ZORBA_SIZEOF_WCHAR_T@
+
 // Compiler
 #cmakedefine CLANG
 #cmakedefine MSVC
@@ -148,13 +150,14 @@ typedef __int64 int64_t;
 
 // Zorba features
 #cmakedefine ZORBA_NO_FULL_TEXT
-#cmakedefine ZORBA_NO_UNICODE
+#cmakedefine ZORBA_NO_ICU
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NUMERIC_OPTIMIZATION
 #cmakedefine ZORBA_VERIFY_PEER_SSL_CERTIFICATE
 #cmakedefine ZORBA_WITH_BIG_INTEGER
 #cmakedefine ZORBA_WITH_DEBUGGER
 #cmakedefine ZORBA_WITH_FILE_ACCESS
+#cmakedefine ZORBA_WITH_JSON
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 
 // Zorba parser configuration

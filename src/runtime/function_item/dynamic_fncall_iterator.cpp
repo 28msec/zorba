@@ -37,15 +37,8 @@ namespace zorba
 {
 
 
-const char* DynamicFnCallIterator::class_name_str = "DynamicFnCallIterator";
 DynamicFnCallIterator::class_factory<DynamicFnCallIterator>
 DynamicFnCallIterator::g_class_factory;
-
-const serialization::ClassVersion 
-DynamicFnCallIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int DynamicFnCallIterator::class_versions_count =
-sizeof(DynamicFnCallIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 
 /*******************************************************************************
@@ -164,13 +157,16 @@ bool DynamicFnCallIterator::nextImpl(
   if (!consumeNext(funcItem, theChildren[0], planState))
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(EmptySeqNoPromoteTo),
+    ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
+                 "empty-sequence()",
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
   if (consumeNext(item, theChildren[0], planState))
   {
-    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqTypePromotion)));
+    RAISE_ERROR(err::XPTY0004, loc, 
+    ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
+                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
   if (!funcItem->isFunction())
@@ -179,7 +175,7 @@ bool DynamicFnCallIterator::nextImpl(
     xqtref_t type = tm->create_value_type(funcItem);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(NoTypePromotion_23),
+    ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
                  type->toSchemaString(),
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }

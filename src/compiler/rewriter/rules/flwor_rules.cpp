@@ -153,7 +153,6 @@ expr_t subst_vars(
 }
 
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -161,7 +160,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   const QueryLoc& loc = LOC(node);
   static_context* sctx = node->get_sctx();
-  TypeManager* tm = sctx->get_typemanager();
 
   if (node->get_expr_kind() != flwor_expr_kind)
     return NULL;
@@ -172,10 +170,19 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   expr::FreeVars myVars;
   collect_flw_vars(flwor, myVars);
 
-  const forletwin_clause& flwc = *reinterpret_cast<const forletwin_clause *>(flwor[0]);
-
   csize numClauses = flwor.num_clauses();
   csize numForLetClauses = 0;
+
+  // numClauses may be 0 in the case this flwor became a common sub-expression
+  // due to var-inlining inside an if-then-else expr (see test 
+  // zorba/optim/flwor_vars_02.xq)
+  if (numClauses == 0)
+  {
+    return flwor.get_return_expr();
+  }
+
+  const forletwin_clause& flwc = 
+  *static_cast<const forletwin_clause *>(flwor.get_clause(0));
 
   // "for $x in E return $x"  --> "E"
   // "let $x := E return $x"  --> "E"
@@ -227,7 +234,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   //     their domain expr.
   // (c) Change a LET var into a FOR var, if its domain expr consists of
   //     exactly one item.
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     bool substitute = false;
 
@@ -246,7 +253,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       xqtref_t domainType = domainExpr->get_return_type();
       var_expr* var = fc->get_var();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
-      ulong domainCount = TypeOps::type_max_cnt(tm, *domainType);
+      ulong domainCount = domainType->max_card();
       const var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL && 
@@ -360,7 +367,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         let_clause_t save = lc;
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
-        var_expr_t fvar = new var_expr(sctx, loc, var_expr::for_var, var->get_name()); 
+        var_expr_t fvar = new var_expr(sctx, loc, var_expr::for_var, var->get_name());
+        fvar->getFreeVars().insert(fvar);
         for_clause_t fc = new for_clause(sctx, loc, fvar, domainExpr);
         flwor.add_clause(i, fc);
 
@@ -431,7 +439,7 @@ static void collect_flw_vars(
 {
   for (csize i = 0; i < flwor.num_clauses(); ++i)
   {
-    const flwor_clause& c = *flwor[i];
+    const flwor_clause& c = *flwor.get_clause(i);
 
     if (c.get_kind() == flwor_clause::for_clause)
     {
@@ -540,7 +548,7 @@ static bool safe_to_fold_single_use(
 
   for (ulong i = 0; i < flwor.num_clauses(); ++i)
   {
-    const flwor_clause& c = *flwor[i];
+    const flwor_clause& c = *flwor.get_clause(i);
     flwor_clause::ClauseKind kind = c.get_kind();
 
     if (kind == flwor_clause::for_clause)
@@ -591,7 +599,7 @@ static bool safe_to_fold_single_use(
       // If X is referenced inside a for loop with more than 1 iterations,
       // then we don't replace the var with its domain expr because the domain
       // expr will be computed once per iteration instead of just once.
-      if (TypeOps::type_max_cnt(tm, *fc.get_expr()->get_return_type()) >= 2)
+      if (fc.get_expr()->get_return_type()->max_card() >= 2)
         return false;
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
@@ -706,8 +714,6 @@ static bool var_in_try_block_or_in_loop(
   if (found)
     return false;
 
-  TypeManager* tm = v->get_type_manager();
-
   expr_kind_t kind = e->get_expr_kind();
 
   if (kind == trycatch_expr_kind)
@@ -765,7 +771,7 @@ static bool var_in_try_block_or_in_loop(
 
     for (ulong i = 0; i < flwor.num_clauses(); ++i)
     {
-      const flwor_clause& c = *flwor[i];
+      const flwor_clause& c = *flwor.get_clause(i);
 
       if (c.get_kind() == flwor_clause::for_clause ||
           c.get_kind() == flwor_clause::let_clause)
@@ -779,7 +785,7 @@ static bool var_in_try_block_or_in_loop(
         }
 
         if (c.get_kind() == flwor_clause::for_clause &&
-            TypeOps::type_max_cnt(tm, *flc.get_expr()->get_return_type()) >= 2)
+            flc.get_expr()->get_return_type()->max_card() >= 2)
         {
           // we assume here that the var will be referenced somewhere in the
           // remainder of the flwor expr, but this is not necessarily true 
@@ -886,8 +892,6 @@ static bool var_in_try_block_or_in_loop(
 ********************************************************************************/
 RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
-  TypeManager* tm = node->get_type_manager();
-
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
   if (flwor == NULL || flwor->is_general())
@@ -918,7 +922,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       !thenExpr->is_sequential() &&
       (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
       !elseExpr->isNonDiscardable() &&
-      TypeOps::is_empty(tm, *elseExpr->get_return_type()))
+      elseExpr->get_return_type()->is_empty())
   {
     flwor->set_where(condExpr);
     flwor->set_return_expr(thenExpr);
@@ -1037,7 +1041,7 @@ static bool is_subseq_pred(
                                                  err::XPTY0004);
 
         if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
-            val->getIntegerValue() >= xs_integer::one())
+            val->getIntegerValue() >= 1)
         {
           return true;
         }
@@ -1105,11 +1109,11 @@ RULE_REWRITE_PRE(MergeFLWOR)
     // after where, groupby, or orderby clauses,
     if (!flwor->is_general())
     {
-      ulong numClauses = flwor->num_clauses();
+      csize numClauses = flwor->num_clauses();
 
-      for (ulong i = 0; i < numClauses; ++i)
+      for (csize i = 0; i < numClauses; ++i)
       {
-        const flwor_clause* c = (*flwor)[i];
+        const flwor_clause* c = flwor->get_clause(i);
 
         if (c->get_kind() == flwor_clause::where_clause ||
             c->get_kind() == flwor_clause::group_clause ||
@@ -1120,11 +1124,11 @@ RULE_REWRITE_PRE(MergeFLWOR)
       }
     }
 
-    ulong numClauses = returnFlwor->num_clauses();
+    csize numClauses = returnFlwor->num_clauses();
     
-    for (ulong i = 0; i < numClauses; ++i)
+    for (csize i = 0; i < numClauses; ++i)
     {
-      const flwor_clause* c = (*returnFlwor)[i];
+      const flwor_clause* c = returnFlwor->get_clause(i);
       
       if (c->get_kind() == flwor_clause::group_clause ||
           c->get_kind() == flwor_clause::order_clause)

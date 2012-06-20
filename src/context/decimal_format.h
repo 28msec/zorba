@@ -20,8 +20,13 @@
 #include <vector>
 
 #include "common/shared_types.h"
+
 #include "zorbatypes/zstring.h"
-#include "zorbaserialization/serialization_engine.h"
+
+#include "zorbaserialization/class_serializer.h"
+
+#include "store/api/item.h"
+
 
 namespace zorba
 {
@@ -39,12 +44,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(DecimalFormat)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(DecimalFormat, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theIsDefault;
-    ar & theName;
-    ar & theParams;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   // Returns true if the given property represents characters used in a

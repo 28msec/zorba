@@ -31,13 +31,7 @@ namespace err {
 XQueryErrorCode XPST0001( "XPST0001" );
 
 
-XQueryErrorCode XPDY0002( "XPDY0002" );
-
-
 XQueryErrorCode XPST0003( "XPST0003" );
-
-
-XQueryErrorCode XPTY0004( "XPTY0004" );
 
 
 XQueryErrorCode XPST0005( "XPST0005" );
@@ -46,16 +40,22 @@ XQueryErrorCode XPST0005( "XPST0005" );
 XQueryErrorCode XPST0008( "XPST0008" );
 
 
-XQueryErrorCode XQST0009( "XQST0009" );
-
-
-XQueryErrorCode XQST0012( "XQST0012" );
-
-
-XQueryErrorCode XQST0013( "XQST0013" );
-
-
 XQueryErrorCode XPST0017( "XPST0017" );
+
+
+XQueryErrorCode XPST0051( "XPST0051" );
+
+
+XQueryErrorCode XPST0080( "XPST0080" );
+
+
+XQueryErrorCode XPST0081( "XPST0081" );
+
+
+XQueryErrorCode XPST0083( "XPST0083" );
+
+
+XQueryErrorCode XPTY0004( "XPTY0004" );
 
 
 XQueryErrorCode XPTY0018( "XPTY0018" );
@@ -67,22 +67,25 @@ XQueryErrorCode XPTY0019( "XPTY0019" );
 XQueryErrorCode XPTY0020( "XPTY0020" );
 
 
-XQueryErrorCode XQST0022( "XQST0022" );
-
-
 XQueryErrorCode XQTY0024( "XQTY0024" );
 
 
-XQueryErrorCode XQDY0025( "XQDY0025" );
-
-
-XQueryErrorCode XQDY0026( "XQDY0026" );
-
-
-XQueryErrorCode XQDY0027( "XQDY0027" );
-
-
 XQueryErrorCode XQTY0030( "XQTY0030" );
+
+
+XQueryErrorCode XQTY0086( "XQTY0086" );
+
+
+XQueryErrorCode XQST0009( "XQST0009" );
+
+
+XQueryErrorCode XQST0012( "XQST0012" );
+
+
+XQueryErrorCode XQST0013( "XQST0013" );
+
+
+XQueryErrorCode XQST0022( "XQST0022" );
 
 
 XQueryErrorCode XQST0031( "XQST0031" );
@@ -112,12 +115,6 @@ XQueryErrorCode XQST0039( "XQST0039" );
 XQueryErrorCode XQST0040( "XQST0040" );
 
 
-XQueryErrorCode XQDY0041( "XQDY0041" );
-
-
-XQueryErrorCode XQDY0044( "XQDY0044" );
-
-
 XQueryErrorCode XQST0045( "XQST0045" );
 
 
@@ -131,12 +128,6 @@ XQueryErrorCode XQST0048( "XQST0048" );
 
 
 XQueryErrorCode XQST0049( "XQST0049" );
-
-
-XQueryErrorCode XPDY0050( "XPDY0050" );
-
-
-XQueryErrorCode XPST0051( "XPST0051" );
 
 
 XQueryErrorCode XQST0054( "XQST0054" );
@@ -155,12 +146,6 @@ XQueryErrorCode XQST0059( "XQST0059" );
 
 
 XQueryErrorCode XQST0060( "XQST0060" );
-
-
-XQueryErrorCode XQDY0061( "XQDY0061" );
-
-
-XQueryErrorCode XQDY0064( "XQDY0064" );
 
 
 XQueryErrorCode XQST0065( "XQST0065" );
@@ -184,34 +169,13 @@ XQueryErrorCode XQST0070( "XQST0070" );
 XQueryErrorCode XQST0071( "XQST0071" );
 
 
-XQueryErrorCode XQDY0072( "XQDY0072" );
-
-
-XQueryErrorCode XQDY0074( "XQDY0074" );
-
-
 XQueryErrorCode XQST0076( "XQST0076" );
 
 
 XQueryErrorCode XQST0079( "XQST0079" );
 
 
-XQueryErrorCode XPST0080( "XPST0080" );
-
-
-XQueryErrorCode XPST0081( "XPST0081" );
-
-
-XQueryErrorCode XPST0083( "XPST0083" );
-
-
-XQueryErrorCode XQDY0084( "XQDY0084" );
-
-
 XQueryErrorCode XQST0085( "XQST0085" );
-
-
-XQueryErrorCode XQTY0086( "XQTY0086" );
 
 
 XQueryErrorCode XQST0087( "XQST0087" );
@@ -226,25 +190,64 @@ XQueryErrorCode XQST0089( "XQST0089" );
 XQueryErrorCode XQST0090( "XQST0090" );
 
 
-XQueryErrorCode XQDY0091( "XQDY0091" );
-
-
-XQueryErrorCode XQDY0092( "XQDY0092" );
-
-
 XQueryErrorCode XQST0093( "XQST0093" );
 
 
-XQueryErrorCode XQDY0096( "XQDY0096" );
-
-
 XQueryErrorCode XQST0098( "XQST0098" );
+
+
+XQueryErrorCode XQST0099( "XQST0099" );
 
 
 XQueryErrorCode XQST0106( "XQST0106" );
 
 
 XQueryErrorCode XQST0111( "XQST0111" );
+
+
+XQueryErrorCode XPDY0002( "XPDY0002" );
+
+
+XQueryErrorCode XPDY0050( "XPDY0050" );
+
+
+XQueryErrorCode XQDY0025( "XQDY0025" );
+
+
+XQueryErrorCode XQDY0026( "XQDY0026" );
+
+
+XQueryErrorCode XQDY0027( "XQDY0027" );
+
+
+XQueryErrorCode XQDY0041( "XQDY0041" );
+
+
+XQueryErrorCode XQDY0044( "XQDY0044" );
+
+
+XQueryErrorCode XQDY0061( "XQDY0061" );
+
+
+XQueryErrorCode XQDY0064( "XQDY0064" );
+
+
+XQueryErrorCode XQDY0072( "XQDY0072" );
+
+
+XQueryErrorCode XQDY0074( "XQDY0074" );
+
+
+XQueryErrorCode XQDY0084( "XQDY0084" );
+
+
+XQueryErrorCode XQDY0091( "XQDY0091" );
+
+
+XQueryErrorCode XQDY0092( "XQDY0092" );
+
+
+XQueryErrorCode XQDY0096( "XQDY0096" );
 
 
 XQueryErrorCode XTDE1310( "XTDE1310" );
@@ -409,6 +412,12 @@ XQueryErrorCode FOTY0014( "FOTY0014" );
 
 
 XQueryErrorCode FOTY0015( "FOTY0015" );
+
+
+XQueryErrorCode FOUT1170( "FOUT1170" );
+
+
+XQueryErrorCode FOUT1190( "FOUT1190" );
 
 
 XQueryErrorCode XUST0001( "XUST0001" );
@@ -601,7 +610,7 @@ ZorbaErrorCode ZXQP0021_USER_ERROR( "ZXQP0021" );
 ZorbaErrorCode ZXQP0024_XML_DOES_NOT_MATCH_SCHEMA( "ZXQP0024" );
 
 
-ZorbaErrorCode ZXQP0025_ITEM_CREATION_FAILED( "ZXQP0025" );
+ZorbaErrorCode ZXQP0025_COULD_NOT_FETCH_RESOURCE( "ZXQP0025" );
 
 
 ZorbaErrorCode ZXQP0026_INVALID_ENUM_VALUE( "ZXQP0026" );
@@ -738,6 +747,12 @@ ZorbaErrorCode ZAPI0041_ITERATOR_ALREADY_OPEN( "ZAPI0041" );
 ZorbaErrorCode ZAPI0042_ITERATOR_CLOSED( "ZAPI0042" );
 
 
+ZorbaErrorCode ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM( "ZAPI0043" );
+
+
+ZorbaErrorCode ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM( "ZAPI0045" );
+
+
 ZorbaErrorCode ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX( "ZAPI0070" );
 
 
@@ -852,9 +867,6 @@ ZorbaErrorCode ZDDY0017_NODE_IS_ORPHAN( "ZDDY0017" );
 ZorbaErrorCode ZDDY0018_NODES_NOT_IN_SAME_COLLECTION( "ZDDY0018" );
 
 
-ZorbaErrorCode ZDDY0019_UNDO_NOT_POSSIBLE( "ZDDY0019" );
-
-
 ZorbaErrorCode ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION( "ZDDY0020" );
 
 
@@ -888,12 +900,6 @@ ZorbaErrorCode ZDDY0029_INDEX_POINT_GENERAL_PROBE_NOT_ALLOWED( "ZDDY0029" );
 ZorbaErrorCode ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED( "ZDDY0030" );
 
 
-ZorbaErrorCode ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES( "ZDDY0034" );
-
-
-ZorbaErrorCode ZDDY0035_INDEX_GENERAL_INSERT( "ZDDY0035" );
-
-
 ZorbaErrorCode ZDDY0031_IC_NOT_DECLARED( "ZDDY0031" );
 
 
@@ -901,6 +907,15 @@ ZorbaErrorCode ZDDY0032_IC_NOT_ACTIVATED( "ZDDY0032" );
 
 
 ZorbaErrorCode ZDDY0033_IC_NOT_MET( "ZDDY0033" );
+
+
+ZorbaErrorCode ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES( "ZDDY0034" );
+
+
+ZorbaErrorCode ZDDY0035_INDEX_GENERAL_INSERT( "ZDDY0035" );
+
+
+ZorbaErrorCode ZDDY0036_NON_ROOT_NODE_DELETION( "ZDDY0036" );
 
 
 ZorbaErrorCode ZDST0001_COLLECTION_ALREADY_DECLARED( "ZDST0001" );
@@ -1046,6 +1061,9 @@ ZorbaErrorCode ZSTR0011_COLLECTION_NON_ROOT_NODE( "ZSTR0011" );
 ZorbaErrorCode ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE( "ZSTR0012" );
 
 
+ZorbaErrorCode ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED( "ZSTR0013" );
+
+
 ZorbaErrorCode ZSTR0015_IC_ALREADY_EXISTS( "ZSTR0015" );
 
 
@@ -1139,6 +1157,9 @@ ZorbaErrorCode ZJPE0008_ILLEGAL_QNAME( "ZJPE0008" );
 ZorbaErrorCode ZJPE0009_ILLEGAL_EMPTY_STRING( "ZJPE0009" );
 
 
+ZorbaErrorCode ZJPE0010_JSONML_ARRAY_REQUIRES_BRACKET( "ZJPE0010" );
+
+
 ZorbaErrorCode ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE( "ZJSE0001" );
 
 
@@ -1164,6 +1185,78 @@ ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
 
 
 } // namespace zerr
+
+namespace jerr {
+
+#if defined(ZORBA_WITH_JSON)
+JSONiqErrorCode JNSE0012( "JNSE0012" );
+
+
+JSONiqErrorCode JNSE0013( "JNSE0013" );
+
+
+JSONiqErrorCode JNSE0014( "JNSE0014" );
+
+
+JSONiqErrorCode JNTY0002( "JNTY0002" );
+
+
+JSONiqErrorCode JNTY0003( "JNTY0003" );
+
+
+JSONiqErrorCode JNTY0004( "JNTY0004" );
+
+
+JSONiqErrorCode JNTY0007( "JNTY0007" );
+
+
+JSONiqErrorCode JNTY0011( "JNTY0011" );
+
+
+JSONiqErrorCode JNDY0003( "JNDY0003" );
+
+
+JSONiqErrorCode JSDY0040( "JSDY0040" );
+
+
+JSONiqErrorCode JNUP0005( "JNUP0005" );
+
+
+JSONiqErrorCode JNUP0006( "JNUP0006" );
+
+
+JSONiqErrorCode JNUP0007( "JNUP0007" );
+
+
+JSONiqErrorCode JNUP0008( "JNUP0008" );
+
+
+JSONiqErrorCode JNUP0009( "JNUP0009" );
+
+
+JSONiqErrorCode JNUP0010( "JNUP0010" );
+
+
+JSONiqErrorCode JNUP0011( "JNUP0011" );
+
+
+JSONiqErrorCode JNUP0012( "JNUP0012" );
+
+
+JSONiqErrorCode JNUP0018( "JNUP0018" );
+
+
+JSONiqErrorCode JNUP0020( "JNUP0020" );
+
+
+JSONiqErrorCode JNUP0021( "JNUP0021" );
+
+
+JSONiqErrorCode JNUP0022( "JNUP0022" );
+#endif
+
+
+} // namespace jerr
 
 namespace zwarn {
 

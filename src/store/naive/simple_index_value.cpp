@@ -18,6 +18,9 @@
 #include <algorithm>
 
 #include "simple_index_value.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
@@ -312,6 +315,15 @@ ValueHashIndex::ValueHashIndex()
 ********************************************************************************/
 ValueHashIndex::~ValueHashIndex()
 {
+  clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ValueHashIndex::clear()
+{
   IndexMap::iterator ite = theMap.begin();
   IndexMap::iterator end = theMap.end();
  
@@ -323,14 +335,7 @@ ValueHashIndex::~ValueHashIndex()
     delete (*ite).first;
     delete (*ite).second;
   }
-}
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void ValueHashIndex::clear()
-{
   theMap.clear();
 }
 
@@ -366,9 +371,9 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
     ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
-  ValueIndexValue* valueSet = NULL;
+  IndexMap::iterator pos = theMap.find(key);
 
-  if (theMap.get(key, valueSet))
+  if (pos != theMap.end())
   {
     if (isUnique())
     {
@@ -376,21 +381,20 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
       ERROR_PARAMS(theQname->getStringValue()));
     }
 
-    valueSet->resize(valueSet->size() + 1);
-    (*valueSet)[valueSet->size()-1].transfer(value);
-    
+    (*pos).second->transfer_back(value);
+    key = const_cast<store::IndexKey*>((*pos).first);
+
     return true;
   }
 
-  valueSet = new ValueIndexValue(1);
+  ValueIndexValue* valueSet = new ValueIndexValue(1);
   (*valueSet)[0].transfer(value);
   
   //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;
 
-  const store::IndexKey* key2 = key;
-  theMap.insert(key2, valueSet);
-  key = NULL; // ownership of the key obj passes to the index.
+  // Note: ownership of the key obj passes to the index.
+  theMap.insert(key, valueSet);
 
   return false;
 } 
@@ -407,7 +411,7 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
 ********************************************************************************/
 bool ValueHashIndex::remove(
     const store::IndexKey* key,
-    store::Item_t& value,
+    const store::Item_t& value,
     bool all)
 {
   if (key->size() != getNumColumns())
@@ -530,6 +534,24 @@ bool ProbeValueHashIndexIterator::next(store::Item_t& result)
 }
 
 
+/******************************************************************************
+ The implementation here doesn't really give anything in terms of
+ performance but other implementations might be able to provide more
+ efficient ones.
+********************************************************************************/
+void ProbeValueHashIndexIterator::count(store::Item_t& result)
+{
+  xs_integer lRes = xs_integer(0);
+
+  open();
+  store::Item_t lTmp;
+  while (next(lTmp)) ++lRes;
+  close();
+
+  GET_FACTORY().createInteger(result, lRes);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Value Tree Index                                                           //
@@ -593,14 +615,7 @@ ValueTreeIndex::ValueTreeIndex()
 ********************************************************************************/
 ValueTreeIndex::~ValueTreeIndex()
 {
-  IndexMap::iterator ite = theMap.begin();
-  IndexMap::iterator end = theMap.end();
- 
-  for (; ite != end; ++ite)
-  {
-    delete (*ite).first;
-    delete (*ite).second;
-  }
+  clear();
 }
 
 
@@ -609,6 +624,15 @@ ValueTreeIndex::~ValueTreeIndex()
 ********************************************************************************/
 void ValueTreeIndex::clear()
 {
+  IndexMap::iterator ite = theMap.begin();
+  IndexMap::iterator end = theMap.end();
+ 
+  for (; ite != end; ++ite)
+  {
+    delete (*ite).first;
+    delete (*ite).second;
+  }
+
   theMap.clear();
 }
 
@@ -649,7 +673,7 @@ bool ValueTreeIndex::insert(store::IndexKey*& key, store::Item_t& value)
 #if 0
   std::cout << "inserting entry : [(";
 
-  for (ulong i = 0; i < getNumColumns(); i++)
+  for (csize i = 0; i < getNumColumns(); i++)
   {
     if (key[i] != NULL)
       std::cout << key[i]->getStringValue() << ", ";
@@ -672,14 +696,16 @@ bool ValueTreeIndex::insert(store::IndexKey*& key, store::Item_t& value)
     }
 
     pos->second->transfer_back(value);
+    key = const_cast<store::IndexKey*>(pos->first);
+
     return true;
   }
 
   ValueIndexValue* valueSet = new ValueIndexValue(1);
   (*valueSet)[0].transfer(value);
 
+  // Note: ownership of the key obj passes to the index.
   theMap.insert(IndexMapPair(key, valueSet));
-  key = NULL; // ownership of the key obj passes to the index.
 
   return false;
 }
@@ -690,7 +716,7 @@ bool ValueTreeIndex::insert(store::IndexKey*& key, store::Item_t& value)
 ********************************************************************************/
 bool ValueTreeIndex::remove(
     const store::IndexKey* key,
-    store::Item_t& value,
+    const store::Item_t& value,
     bool all)
 {
   if (key->size() != getNumColumns())
@@ -991,6 +1017,24 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
   }
 
   return false;
+}
+
+
+/******************************************************************************
+ The implementation here doesn't really give anything in terms of
+ performance but other implementations might be able to provide more
+ efficient ones.
+********************************************************************************/
+void ProbeValueTreeIndexIterator::count(store::Item_t& result)
+{
+  xs_integer lRes = xs_integer(0);
+
+  open();
+  store::Item_t lTmp;
+  while (next(lTmp)) ++lRes;
+  close();
+
+  GET_FACTORY().createInteger(result, lRes);
 }
 
 

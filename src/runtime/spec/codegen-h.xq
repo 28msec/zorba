@@ -56,8 +56,7 @@ declare function local:create-func-version($signature) as xs:string?
   if ($signature/@version eq "1.0")
   then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_1_0;")
   else 
-    if (($signature/@version eq "3.0") or
-        ($signature/@version eq "1.1"))
+    if ($signature/@version eq "3.0")
     then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_3_0;")
     else ()    
 };
@@ -121,12 +120,11 @@ declare function local:create-function-arity($iter, $function, $funcVersion as x
 declare function local:create-function-XQuery-30($iter, $function) as xs:string?
 {
   let $xq30 := count($function//zorba:signature[@version eq "3.0"])
-  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
   let $sigs := count($function//zorba:signature)
-  let $xq10 := ($sigs - $xq30) - $xq11  
+  let $xq10 := ($sigs - $xq30)
   return
     concat(
-    if(($xq30 > 0 ) or ($xq11 > 0)) then
+    if ($xq30 > 0 ) then
        local:create-function-arity( $iter, 
                                     $function,
                                     "theXQueryVersion = StaticContextConsts::xquery_version_3_0;")
@@ -146,7 +144,7 @@ declare function local:create-function($iter, $function) as xs:string?
     if(count($function/zorba:signature) = 0)
     then
       (: TODO user fn:error :)
-      'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
+      'Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element'
     else
       local:create-function-XQuery-30($iter, $function)
       (: local:create-function-arity($iter, $function, xs:integer(1)) :)
@@ -293,6 +291,19 @@ declare function local:add-methods($function) as xs:string*
 
       else if (name($meth) eq 'zorba:propagatesInputNodes')
       then
+        if ($meth/@producer)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesInputNodes(expr* fo, csize producer) const ',
+                     '{ return producer == ', $meth/@producer, '; }',
+                     $gen:newline),'')
+        else if ($meth/@value)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesInputNodes(expr* fo, csize producer) const ',
+                     '{ return ', $meth/@value, '; }',
+                     $gen:newline),'')
+        else
         string-join(($gen:newline, $gen:indent,
                      'bool propagatesInputNodes(expr* fo, csize producer) const;',
                       $gen:newline),'')

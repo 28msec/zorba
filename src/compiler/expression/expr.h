@@ -35,7 +35,11 @@
 
 #include "types/node_test.h"
 
+#include "zorbaserialization/class_serializer.h"
+
 #include "store/api/item.h"
+
+#include "runtime/core/sequencetypes.h"
 
 namespace zorba 
 {
@@ -219,8 +223,8 @@ protected:
         static_context* sctx,
         const QueryLoc& loc,
         expr_kind_t kind,
-        expr_t input,
-        xqtref_t type);
+        const expr_t& input,
+        const xqtref_t& type);
   
 public:
   SERIALIZABLE_ABSTRACT_CLASS(cast_or_castable_base_expr)
@@ -252,11 +256,11 @@ public:
 
 public:
   cast_base_expr(
-        static_context* sctx, 
-        const QueryLoc& loc,
-        expr_kind_t kind,
-        expr_t input,
-        xqtref_t type);
+      static_context* sctx, 
+      const QueryLoc& loc,
+      expr_kind_t kind,
+      const expr_t& input,
+      const xqtref_t& type);
 };
 
 
@@ -276,7 +280,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  cast_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
+  cast_expr(static_context* sctx, const QueryLoc&, const expr_t&, const xqtref_t&);
 
   bool is_optional() const;
 
@@ -307,9 +311,9 @@ class treat_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  const Error  * theError;
-  bool           theCheckPrime;
-  store::Item_t  theFnQName;
+  TreatIterator::ErrorKind theErrorKind;
+  bool                     theCheckPrime;
+  store::Item_t            theQName;
 
 public:
   SERIALIZABLE_CLASS(treat_expr)
@@ -319,22 +323,22 @@ public:
 public:
   treat_expr(
         static_context* sctx, 
-        const QueryLoc&,
-        expr_t,
-        xqtref_t,
-        Error const&,
+        const QueryLoc& loc,
+        const expr_t& input,
+        const xqtref_t& type,
+        TreatIterator::ErrorKind err,
         bool check_prime = true,
-        store::Item_t fnQname = NULL);
+        store::Item* qname = NULL);
 
-  Error const& get_err() const { return *theError; }
+  TreatIterator::ErrorKind get_err() const { return theErrorKind; }
 
   bool get_check_prime() const { return theCheckPrime; }
 
   void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
 
-  void set_fn_qname(store::Item_t fnQName) { theFnQName = fnQName; }
+  void set_qname(const store::Item_t& qname) { theQName = qname; }
 
-  store::Item_t get_fn_qname() const { return theFnQName; }
+  store::Item_t get_qname() const { return theQName; }
 
   expr_t clone(substitution_t& s) const;
 
@@ -372,6 +376,12 @@ public:
      - F(I) = error
 
   4. Put F(I) in the output sequence.
+
+  theFnQName:
+  -----------
+  Stores the QName of the function, if the promote expr is used to cast the
+  function's body to its result type
+  
 ********************************************************************************/
 class promote_expr : public cast_base_expr
 {
@@ -379,31 +389,30 @@ class promote_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
-                               // is used to cast the function's body to its result type
+  PromoteIterator::ErrorKind theErrorKind;
+  store::Item_t              theQName; 
   
 public:
   SERIALIZABLE_CLASS(promote_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (cast_base_expr*)this);
-    ar & theFnQName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   promote_expr(
       static_context* sctx, 
       const QueryLoc& loc, 
-      expr_t input, 
-      xqtref_t type, 
-      store::Item_t fnQname = NULL);
+      const expr_t& input, 
+      const xqtref_t& type, 
+      PromoteIterator::ErrorKind err,
+      store::Item* qname);
 
   expr_t clone(substitution_t& s) const;
 
-  void set_fn_qname(store::Item_t fnQName) { theFnQName = fnQName; }
+  PromoteIterator::ErrorKind get_err() const { return theErrorKind; }
 
-  store::Item_t get_fn_qname() const { return theFnQName; }
+  void set_qname(const store::Item_t& qname) { theQName = qname; }
+
+  store::Item_t get_qname() const { return theQName; }
 
   void accept(expr_visitor&);
 
@@ -428,8 +437,8 @@ public:
         static_context* sctx,
         const QueryLoc&,
         expr_kind_t kind,
-        expr_t,
-        xqtref_t);
+        const expr_t&,
+        const xqtref_t&);
 };
 
 
@@ -449,7 +458,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  castable_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
+  castable_expr(static_context* sctx, const QueryLoc&, const expr_t&, const xqtref_t&);
   
   bool is_optional() const;
 
@@ -487,8 +496,8 @@ public:
   instanceof_expr(
       static_context* sctx,
       const QueryLoc&, 
-      expr_t, 
-      xqtref_t,
+      const expr_t&, 
+      const xqtref_t&,
       bool checkPrimeOnly = false);
 
   bool getCheckPrimeOnly() const { return theCheckPrimeOnly; }
@@ -909,8 +918,8 @@ public:
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	XQuery 1.1 expressions                                             //
-//  [http://www.w3.org/TR/xquery-1.1/]                                 //
+//	XQuery 3.0 expressions                                             //
+//  [http://www.w3.org/TR/xquery-3/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
@@ -1004,6 +1013,8 @@ public:
 
   expr* get_try_expr() const { return theTryExpr.getp(); }
 
+  void set_try_expr(expr* e) { theTryExpr = e; }
+
   expr* get_catch_expr(csize i) const { return theCatchExprs[i].getp(); }
 
   void add_catch_expr(expr_t e);
@@ -1012,7 +1023,7 @@ public:
   
   csize clause_count() const { return theCatchClauses.size(); }
   
-  catch_clause_t const& operator[](csize i) const { return theCatchClauses[i]; }
+  const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 

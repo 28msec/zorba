@@ -77,16 +77,14 @@ public:
   virtual bool findNode(const Item* aNode, xs_integer& position) const = 0;
 
   /**
-   * Returns true if the collection is dynamic or static
+   * Returns true if the collection is dynamic
    */
   virtual bool isDynamic() const = 0;
 
   /**
    * Returns all annotations of the given collection
    */
-  virtual void getAnnotations(
-      std::vector<store::Annotation_t>&
-  ) const = 0;
+  virtual void getAnnotations(std::vector<store::Annotation_t>&) const = 0;
 
 };
 

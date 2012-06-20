@@ -23,6 +23,7 @@
 #include <api/unmarshaller.h>
 #include "http_util.h"
 #include "error_util.h"
+#include "zorbamisc/ns_consts.h"
 
 
 namespace zorba {
@@ -51,10 +52,10 @@ namespace zorba {
     Item lNodeName = lFactory->createQName("http://expath.org/ns/http-client", "http", "request");
     Item lEmptyItem;
     NsBindings nsPairs;
-    nsPairs.push_back(std::make_pair(String("xs"), String("http://www.w3.org/2001/XMLSchema")));
+    nsPairs.push_back(std::make_pair(String(XML_SCHEMA_PREFIX), String(XML_SCHEMA_NS)));
     Item lRequestElement = lFactory->createElementNode(lEmptyItem, lNodeName,
-                                                       lFactory->createQName("http://www.w3.org/2001/XMLSchema",
-                                                                             "xs", "untyped"),
+                                                       lFactory->createQName(XML_SCHEMA_NS,
+                                                                             XML_SCHEMA_PREFIX, "untyped"),
                                                        true, false, nsPairs);
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "method"), Item(), lFactory->createString("GET"));
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "href"), Item(), lFactory->createString(theUri.c_str()));

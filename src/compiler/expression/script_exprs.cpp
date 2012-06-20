@@ -25,33 +25,28 @@
 
 #include "diagnostics/assert.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(block_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(block_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(apply_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(apply_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(var_set_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(var_set_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(exit_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(exit_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(exit_catcher_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(exit_catcher_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(while_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(while_expr)
 
 DEF_EXPR_ACCEPT(block_expr)
 DEF_EXPR_ACCEPT(apply_expr)

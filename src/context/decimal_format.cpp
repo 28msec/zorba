@@ -19,12 +19,15 @@
 #include "context/decimal_format.h"
 #include "common/shared_types.h"
 
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
+
 #include "store/api/item.h"
 
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(DecimalFormat)
-END_SERIALIZABLE_CLASS_VERSIONS(DecimalFormat)
+
 
 DecimalFormat::DecimalFormat(
     bool isDefault,
@@ -36,6 +39,15 @@ DecimalFormat::DecimalFormat(
   theParams(params)
 {
 }
+
+
+void DecimalFormat::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theIsDefault;
+  ar & theName;
+  ar & theParams;
+}
+
 
 bool DecimalFormat::isPictureStringProperty(zstring propertyName)
 {

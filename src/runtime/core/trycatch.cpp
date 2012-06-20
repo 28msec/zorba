@@ -38,20 +38,22 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
-END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
 
 SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
 
 
 TryCatchIteratorState::TryCatchIteratorState()
-  : theTempIterator(NULL),
+  : 
+  theTempIterator(NULL),
   theCatchIterator(NULL)
-{}
+{
+}
+
 
 TryCatchIteratorState::~TryCatchIteratorState()
 {
-  if (theTempIterator != NULL) {
+  if (theTempIterator != NULL) 
+  {
     theTempIterator->close();
     theTempIterator = NULL;
   }
@@ -61,16 +63,19 @@ TryCatchIteratorState::~TryCatchIteratorState()
   for (; lIters != lItersEnd; ++lIters) {
     (*lIters)->close();
   }
-
 }
 
+
 void
-TryCatchIteratorState::init(PlanState& planState) {
+TryCatchIteratorState::init(PlanState& planState) 
+{
   PlanIteratorState::init(planState);
 }
 
+
 void
-TryCatchIteratorState::reset(PlanState& planState) {
+TryCatchIteratorState::reset(PlanState& planState) 
+{
   PlanIteratorState::reset(planState);
   if ( theTargetSequence )
     theTargetSequence->purge(); // release the target sequence
@@ -269,7 +274,8 @@ TryCatchIterator::getStackTrace(const XQueryStackTrace& s) const
 
     // function arity
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getFnArity() );
+    GENV_ITEMFACTORY->createInteger(
+        lTmpValue, xs_integer(lIter->getFnArity()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lFunction.getp(), lArityQName, lTypeName,
         lTmpValue);
@@ -284,28 +290,31 @@ TryCatchIterator::getStackTrace(const XQueryStackTrace& s) const
 
     // location line begin
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLine() );
+    GENV_ITEMFACTORY->createInteger( lTmpValue, xs_integer(lIter->getLine()) );
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lLineBeginQName, lTypeName,
         lTmpValue);
 
     // location line end
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLineEnd() );
+    GENV_ITEMFACTORY->createInteger(
+        lTmpValue, xs_integer(lIter->getLineEnd()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lLineEndQName, lTypeName,
         lTmpValue);
 
     // location column begin
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumn() );
+    GENV_ITEMFACTORY->createInteger(
+      lTmpValue, xs_integer(lIter->getColumn()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lColumnBeginQName, lTypeName,
         lTmpValue);
 
     // location column end
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumnEnd() );
+    GENV_ITEMFACTORY->createInteger(
+      lTmpValue, xs_integer(lIter->getColumnEnd()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lColumnEndQName, lTypeName,
         lTmpValue);
@@ -441,7 +450,8 @@ TryCatchIterator::bindErrorVars(
 	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
                ue->has_source() ) {
             store::Item_t lErrorLineItem;
-            GENV_ITEMFACTORY->createInteger(lErrorLineItem, ue->source_line());
+            GENV_ITEMFACTORY->createInteger(
+                lErrorLineItem, xs_integer(ue->source_line()));
             lErrorLineIter = new ItemIterator(lErrorLineItem);
 	        }
           else
@@ -467,7 +477,8 @@ TryCatchIterator::bindErrorVars(
 	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
                ue->has_source() ) {
             store::Item_t lErrorColumnItem;
-            GENV_ITEMFACTORY->createInteger(lErrorColumnItem, ue->source_column());
+            GENV_ITEMFACTORY->createInteger(
+                lErrorColumnItem, xs_integer(ue->source_column()));
             lErrorColumnIter = new ItemIterator(lErrorColumnItem);
 	        }
           else

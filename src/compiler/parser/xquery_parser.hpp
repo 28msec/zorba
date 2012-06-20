@@ -1,8 +1,10 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
+   Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -38,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/Users/wcandillon/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/markos/zorba/repo/jsoniq-deactivated/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,12 +86,32 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 90 "/home/markos/zorba/repo/jsoniq-deactivated/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
+
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+namespace zorba {
+
+/* Line 35 of lalr1.cc  */
+#line 104 "/home/markos/zorba/repo/jsoniq-deactivated/build/src/compiler/parser/xquery_parser.hpp"
+  class position;
+  class location;
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+} // zorba
+
+/* Line 35 of lalr1.cc  */
+#line 114 "/home/markos/zorba/repo/jsoniq-deactivated/build/src/compiler/parser/xquery_parser.hpp"
+
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -110,11 +132,33 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 # define YYTOKEN_TABLE 0
 #endif
 
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+#ifndef YYLLOC_DEFAULT
+# define YYLLOC_DEFAULT(Current, Rhs, N)		\
+do {							\
+  if (N)						\
+    {							\
+      (Current).begin = (Rhs)[1].begin;			\
+      (Current).end   = (Rhs)[N].end;			\
+    }							\
+  else							\
+    {							\
+      (Current).begin = (Current).end = (Rhs)[0].end;	\
+    }							\
+} while (false)
+#endif
+
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
 
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 162 "/home/markos/zorba/repo/jsoniq-deactivated/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +170,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/Users/wcandillon/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/markos/zorba/repo/jsoniq-deactivated/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -150,7 +194,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 198 "/home/markos/zorba/repo/jsoniq-deactivated/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -466,20 +510,28 @@ namespace zorba {
      FOREACH = 561,
      FOREIGN = 562,
      KEYS = 563,
-     BYTE_ORDER_MARK_UTF8 = 564,
-     RANGE_REDUCE = 565,
-     ADDITIVE_REDUCE = 566,
-     MULTIPLICATIVE_REDUCE = 567,
-     UNION_REDUCE = 568,
-     INTERSECT_EXCEPT_REDUCE = 569,
-     QVARINDECLLIST_REDUCE = 570,
-     COMMA_DOLLAR = 571,
-     UNARY_PREC = 572,
-     SEQUENCE_TYPE_REDUCE = 573,
-     OCCURS_STAR = 574,
-     OCCURS_PLUS = 575,
-     OCCURS_HOOK = 576,
-     STEP_REDUCE = 577
+     L_SIMPLE_OBJ_UNION = 564,
+     R_SIMPLE_OBJ_UNION = 565,
+     L_ACCUMULATOR_OBJ_UNION = 566,
+     R_ACCUMULATOR_OBJ_UNION = 567,
+     JSON = 568,
+     APPEND = 569,
+     POSITION = 570,
+     OBJECT = 571,
+     ARRAY = 572,
+     JSON_ITEM = 573,
+     STRUCTURED_ITEM = 574,
+     BYTE_ORDER_MARK_UTF8 = 575,
+     RANGE_REDUCE = 576,
+     SEQUENCE_TYPE_REDUCE = 577,
+     ADDITIVE_REDUCE = 578,
+     UNION_REDUCE = 579,
+     INTERSECT_EXCEPT_REDUCE = 580,
+     QVARINDECLLIST_REDUCE = 581,
+     COMMA_DOLLAR = 582,
+     UNARY_PREC = 583,
+     STEP_REDUCE = 584,
+     MULTIPLICATIVE_REDUCE = 585
    };
 
     };
@@ -553,14 +605,6 @@ namespace zorba {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
-    /// Whether the given \c yypact_ value indicates a defaulted state.
-    /// \param yyvalue   the value to check
-    static bool yy_pact_value_is_default_ (int yyvalue);
-
-    /// Whether the given \c yytable_ value indicates a syntax error.
-    /// \param yyvalue   the value to check
-    static bool yy_table_value_is_error_ (int yyvalue);
-
     /// Internal symbol numbers.
     typedef unsigned short int token_number_type;
     /* Tables.  */
@@ -568,7 +612,7 @@ namespace zorba {
     static const short int yypact_[];
     static const short int yypact_ninf_;
 
-    /// For a state, default reduction number.
+    /// For a state, default rule to reduce.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned short int yydefact_[];
@@ -581,8 +625,8 @@ namespace zorba {
     /// - if positive, shift that token.
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
-    static const short int yytable_[];
-    static const short int yytable_ninf_;
+    static const unsigned short int yytable_[];
+    static const signed char yytable_ninf_;
 
     static const short int yycheck_[];
 
@@ -599,8 +643,10 @@ namespace zorba {
     static const char* const yytname_[];
 #endif
 
+#if YYERROR_VERBOSE
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    static std::string yytnamerr_ (const char *n);
+    virtual std::string yytnamerr_ (const char *n);
+#endif
 
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
@@ -656,10 +702,13 @@ namespace zorba {
     xquery_driver& driver;
   };
 
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 663 "/Users/wcandillon/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 712 "/home/markos/zorba/repo/jsoniq-deactivated/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

@@ -143,7 +143,8 @@ bool PlanWrapper::next(store::Item_t& result)
   // However, for reasons of lazy evaluation, we also return the result
   // that was computed before the exit expression was evaluated
   // (see test scripting/exit4.xq)
-  if (!theExitValue) {
+  if (!theExitValue) 
+  {
     try
     {
       return PlanIterator::consumeNext(result, theIterator, *thePlanState);

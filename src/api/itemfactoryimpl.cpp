@@ -24,10 +24,13 @@
 #include "zorbatypes/duration.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+#include <store/api/store.h>
+#include "store/api/copymode.h"
 #include "api/unmarshaller.h"
 #include "types/casting.h"
 
 #include "store/api/item.h"
+#include <runtime/util/item_iterator.h>
 
 
 namespace zorba {
@@ -708,6 +711,30 @@ Item ItemFactoryImpl::createUnsignedShort(unsigned short aValue)
   return &*lItem;
 }
 
+void convertNsBindings(
+    zorba::NsBindings& aInBindings,
+    store::NsBindings& aOutBindings)
+{
+  zorba::NsBindings::iterator lIter;
+  for (lIter = aInBindings.begin(); lIter != aInBindings.end(); ++lIter)
+  {
+    zstring lFirst = Unmarshaller::getInternalString(lIter->first);
+    zstring lSecond = Unmarshaller::getInternalString(lIter->second);
+    aOutBindings.push_back(std::pair<zstring, zstring>(lFirst, lSecond));
+  }
+}
+
+void convertItemVector(
+    std::vector<zorba::Item>& aInItems,
+    std::vector<store::Item_t>& aOutItems)
+{
+  std::vector<Item>::iterator lIter;
+
+  for (lIter = aInItems.begin(); lIter != aInItems.end(); ++lIter)
+  {
+    aOutItems.push_back(Unmarshaller::getInternalItem(*lIter));
+  }
+}
 
 zorba::Item ItemFactoryImpl::createElementNode(
     Item& aParent,
@@ -721,14 +748,7 @@ zorba::Item ItemFactoryImpl::createElementNode(
   store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
   store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
   store::NsBindings lNsBindings;
-  
-  std::vector<std::pair<String, String> >::iterator lIter;
-  for (lIter = aNsBindings.begin(); lIter != aNsBindings.end(); ++lIter) 
-  {
-    zstring lFirst = Unmarshaller::getInternalString(lIter->first);
-    zstring lSecond = Unmarshaller::getInternalString(lIter->second);
-    lNsBindings.push_back(std::pair<zstring, zstring>(lFirst, lSecond));
-    }
+  convertNsBindings(aNsBindings, lNsBindings);
 
   zstring lBaseUri;
   theItemFactory->createElementNode(lItem,
@@ -740,6 +760,33 @@ zorba::Item ItemFactoryImpl::createElementNode(
                                     lNsBindings,
                                     lBaseUri);
   return &*lItem;
+}
+
+void ItemFactoryImpl::assignElementTypedValue(
+    Item &aElement,
+    Item aTypedValue)
+{
+  store::Item_t lStoreElement = Unmarshaller::getInternalItem(aElement);
+
+  // Create the internal text node where the Zorba store holds the typed value.
+  store::Item_t lText;
+  store::Item_t lTypedValue = Unmarshaller::getInternalItem(aTypedValue);
+  theItemFactory->createTextNode(lText, lStoreElement, lTypedValue);
+}
+
+void ItemFactoryImpl::assignElementTypedValue(
+    Item &aElement,
+    std::vector<Item> &aTypedValue)
+{
+  store::Item_t lStoreElement = Unmarshaller::getInternalItem(aElement);
+
+  // Convert typed value vector.
+  std::vector<store::Item_t> lTypedValue;
+  convertItemVector(aTypedValue, lTypedValue);
+
+  // Create the internal text node where the Zorba store holds the typed value.
+  store::Item_t lText;
+  theItemFactory->createTextNode(lText, lStoreElement, lTypedValue);
 }
 
 
@@ -772,12 +819,7 @@ zorba::Item ItemFactoryImpl::createAttributeNode(
   store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
   store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
   std::vector<store::Item_t> lTypedValue;
-  std::vector<Item>::iterator lIter;
-
-  for (lIter = aTypedValue.begin(); lIter != aTypedValue.end(); ++lIter) 
-  {
-    lTypedValue.push_back(Unmarshaller::getInternalItem(*lIter));
-  }
+  convertItemVector(aTypedValue, lTypedValue);
 
   theItemFactory->createAttributeNode(lItem,
                                       Unmarshaller::getInternalItem(aParent),
@@ -823,6 +865,81 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
                                  lContent);
   return &*lItem;
 }
+
+#ifdef ZORBA_WITH_JSON
+
+zorba::Item ItemFactoryImpl::createJSONNull()
+{
+  store::Item_t lItem;
+  theItemFactory->createJSONNull(lItem);
+  return &*lItem;
+}
+
+zorba::Item ItemFactoryImpl::createJSONNumber(String aString)
+{
+  store::Item_t lItem;
+  zstring &lString = Unmarshaller::getInternalString(aString);
+  theItemFactory->createJSONNumber(lItem, lString);
+  return &*lItem;
+}
+
+
+zorba::Item ItemFactoryImpl::createJSONObject(
+    std::vector<std::pair<Item, Item> >& aPairs)
+{
+  csize numPairs = aPairs.size();
+
+  // Convert vector of pairs to a vector of names and a vector of values
+  std::vector<store::Item_t> names;
+  std::vector<store::Item_t> values;
+  names.reserve(numPairs);
+  names.reserve(numPairs);
+
+  std::vector<std::pair<Item, Item> >::iterator i = aPairs.begin();
+  std::vector<std::pair<Item, Item> >::iterator end = aPairs.end();
+  for (; i != end; i++) 
+  {
+    names.push_back(Unmarshaller::getInternalItem((*i).first));
+    values.push_back(Unmarshaller::getInternalItem((*i).second));
+  }
+
+  store::Item_t lItem;
+  theItemFactory->createJSONObject(lItem, names, values);
+
+  return &*lItem;
+}
+
+
+zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
+{
+  csize numItems = aItems.size();
+
+  std::vector<store::CopyMode> copyModes(numItems);
+  for (csize i = 0; i < numItems; ++i)
+  {
+    copyModes[i].theDoCopy = false;
+  }
+
+  // Convert vector of Items to vector of store::Item_ts
+  std::vector<store::Item_t> items;
+  items.reserve(numItems);
+  std::vector<Item>::iterator ite = aItems.begin();
+  std::vector<Item>::iterator end = aItems.end();
+  for (; ite != end; ++ite) 
+  {
+    items.push_back(Unmarshaller::getInternalItem(*ite));
+  }
+
+  store::Item_t lItem;
+  theItemFactory->createJSONArray(lItem, items);
+
+  return &*lItem;
+}
+
+
+
+
+#endif /* ZORBA_WITH_JSON */
 
 
 } // namespace zorba

@@ -63,6 +63,7 @@ declare %ann:sequential function local:testXQDoc() as xs:string?
                 ($moduleUri = "http://www.functx.com/") or
                 ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
                 ($moduleUri = "http://www.zorba-xquery.com/errors") or
+                ($moduleUri = "http://www.jsoniq.org/errors") or
                 ($moduleUri = "http://www.zorba-xquery.com/warnings")) then ()
             else(
             local:test-module($xqdoc),
@@ -138,7 +139,9 @@ declare function local:test-function(
     let $docParamCount := count($params)
     let $missing := $paramCount - $docParamCount  
     let $hasDescr := exists($function/xqdoc:comment/xqdoc:description)
-    let $hasReturn := exists($function/xqdoc:comment/xqdoc:return)
+    let $hasReturn := exists($function/xqdoc:return)
+    let $isUpdating := contains($signature, "updating")
+    let $isReturnDocumented := exists($function/xqdoc:comment/xqdoc:return)
     return string-join((
         (: Test for function description :)
         if (not($hasDescr)) then
@@ -158,8 +161,17 @@ declare function local:test-function(
     Arity: ", $paramCount)
         else
             (),
+        (: Test for existing return value in function signature:)
+        if (not($hasReturn) and not($isUpdating)) then
+            concat("
+    ERROR: Return value for the function not stated explicitly in the function signature;
+    Module: ", $module/xqdoc:uri, "
+    Function: ", $function/xqdoc:name, "
+    Arity: ", $paramCount)
+        else
+            (),
         (: Test for documented return value :)
-        if (not($hasReturn)) then
+        if (not($isReturnDocumented)) then
             concat("
     ERROR: Return value not documented;
     Module: ", $module/xqdoc:uri, "

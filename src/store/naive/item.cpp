@@ -26,6 +26,9 @@
 #include "store_defs.h"
 #include "atomic_items.h"
 #include "node_items.h"
+#ifdef ZORBA_WITH_JSON
+#  include "json_items.h"
+#endif
 
 #include "runtime/function_item/function_item.h"
 
@@ -62,6 +65,14 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
     return;
   }
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ:
+  {
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
+    ++theRefCount;
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+  }
+#endif
   case ATOMIC:
   case ERROR_:
   {
@@ -135,6 +146,21 @@ void Item::removeReference()
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
     return;
   }
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ:
+  {
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
+
+    if (--theRefCount == 0)
+    {
+      SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+      free();
+      return;
+    }
+
+    SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+  }
+#endif
   case ATOMIC:
   case ERROR_:
   {
@@ -244,6 +270,64 @@ bool Item::isFunction() const
 }
 
 
+#ifdef ZORBA_WITH_JSON
+
+bool Item::isJSONItem() const
+{
+  return (theUnion.itemKind == JSONIQ); 
+}
+
+
+bool Item::isJSONPair() const
+{
+  return false;
+}
+
+
+bool Item::isJSONObject() const
+{
+  return false;
+}
+
+
+bool Item::isJSONArray() const
+{
+  return false;
+}
+
+#endif
+
+
+zstring Item::printKind() const
+{
+  if (isNode())
+    return "node";
+
+  switch (theUnion.itemKind)
+  {
+  case ATOMIC:
+    return "atomic";
+
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ:
+    return "json";
+#endif
+
+  case FUNCTION:
+    return "function";
+
+  case PUL:
+    return "pul";
+
+  case ERROR_:
+    return "error";
+
+  default:
+    return "unknown";
+  }
+}
+
+
 Item* Item::getBaseItem() const
 {
   return NULL;
@@ -321,7 +405,7 @@ zstring Item::getStringValue() const
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), "string-value",
       getType()->getStringValue()
     )
   );
@@ -333,7 +417,7 @@ void Item::getStringValue2(zstring& val) const
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), "string-value",
       getType()->getStringValue()
     )
   );
@@ -354,7 +438,7 @@ void Item::appendStringValue(zstring& buf) const
 
 #ifndef ZORBA_NO_FULL_TEXT
 FTTokenIterator_t
-Item::getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+Item::getTokens( TokenizerProvider const&, Tokenizer::State&,
                  locale::iso639_1::type, bool ) const
 {
   throw ZORBA_EXCEPTION(
@@ -1303,8 +1387,9 @@ Item* Item::copy(
 }
 
 
-#if 0
-const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
+#ifdef ZORBA_WITH_JSON
+
+store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1313,7 +1398,8 @@ const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
 }
 
 
-int Item::getTupleFieldCount() const
+Iterator_t
+Item::getPairs() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1321,15 +1407,61 @@ int Item::getTupleFieldCount() const
   );
 }
 
-
-const TupleField& Item::getTupleField(int index) const
+Iterator_t
+Item::getMembers() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
-#endif
+
+store::Item*
+Item::getPair(const store::Item_t& name) const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getMember(const store::Item_t& index) const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getName() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item*
+Item::getValue() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+xs_integer
+Item::getSize() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+#endif // ZORBA_WITH_JSON
 
 
 ZorbaException* Item::getError() const
@@ -1381,6 +1513,7 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
+
 } // namespace store
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

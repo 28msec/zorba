@@ -33,15 +33,9 @@
 namespace zorba {
 
 // <FetchContentIterator>
-const char* FetchContentIterator::class_name_str = "FetchContentIterator";
 FetchContentIterator::class_factory<FetchContentIterator>
 FetchContentIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FetchContentIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FetchContentIterator::class_versions_count =
-sizeof(FetchContentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FetchContentIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
@@ -60,16 +54,32 @@ FetchContentIterator::~FetchContentIterator() {}
 // </FetchContentIterator>
 
 
+// <FetchContentBinaryIterator>
+FetchContentBinaryIterator::class_factory<FetchContentBinaryIterator>
+FetchContentBinaryIterator::g_class_factory;
+
+
+void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FetchContentBinaryIterator::~FetchContentBinaryIterator() {}
+
+// </FetchContentBinaryIterator>
+
+
 // <FetchContentTypeIterator>
-const char* FetchContentTypeIterator::class_name_str = "FetchContentTypeIterator";
 FetchContentTypeIterator::class_factory<FetchContentTypeIterator>
 FetchContentTypeIterator::g_class_factory;
 
-const serialization::ClassVersion 
-FetchContentTypeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FetchContentTypeIterator::class_versions_count =
-sizeof(FetchContentTypeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
 void FetchContentTypeIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);

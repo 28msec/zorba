@@ -110,7 +110,7 @@ public:
 
   bool nilledAllowed() const { return theNilledAllowed; }
 
-  bool nameOrKindTest(const store::Item* node, PlanState& planState) const;
+  bool nameOrKindTest(const store::Item* node, const QueryLoc& loc) const;
 };
 
 
@@ -122,7 +122,7 @@ class AxisState : public PlanIteratorState
 public:
   store::Item_t  theContextNode;   
 
-  xs_long           theCurrentPos;
+  xs_long        theCurrentPos;
 
 public:
   void init(PlanState& planState) 
@@ -152,7 +152,7 @@ public:
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, State>*)this);
+    serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, AxisState>*)this);
     SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
     SERIALIZE_ENUM(match_test_t, theTestKind);
     SERIALIZE_ENUM(match_test_t, theDocTestKind);
@@ -189,14 +189,10 @@ class SelfAxisIterator : public AxisIterator<SelfAxisIterator, SelfAxisState>
 public:
   SERIALIZABLE_CLASS(SelfAxisIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  SelfAxisIterator,
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SelfAxisIterator,
   AxisIterator<SelfAxisIterator, SelfAxisState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (AxisIterator<SelfAxisIterator, SelfAxisState>*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   SelfAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
@@ -237,15 +233,10 @@ class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator,
 public:
   SERIALIZABLE_CLASS(AttributeAxisIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  AttributeAxisIterator,
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AttributeAxisIterator,
   AxisIterator<AttributeAxisIterator, AttributeAxisState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (AxisIterator<AttributeAxisIterator,
-                                          AttributeAxisState>*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   AttributeAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
@@ -275,14 +266,10 @@ class ParentAxisIterator : public AxisIterator<ParentAxisIterator, ParentAxisSta
 public:
   SERIALIZABLE_CLASS(ParentAxisIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  ParentAxisIterator,
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParentAxisIterator,
   AxisIterator<ParentAxisIterator, ParentAxisState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (AxisIterator<ParentAxisIterator, ParentAxisState>*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ParentAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
@@ -315,15 +302,10 @@ class AncestorAxisIterator : public AxisIterator<AncestorAxisIterator, AncestorA
 public:
   SERIALIZABLE_CLASS(AncestorAxisIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  AncestorAxisIterator,
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorAxisIterator,
   AxisIterator<AncestorAxisIterator, AncestorAxisState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (AxisIterator<AncestorAxisIterator, AncestorAxisState>*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   AncestorAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
@@ -360,11 +342,7 @@ public:
   AncestorReverseAxisIterator,
   AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   AncestorReverseAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
@@ -394,11 +372,7 @@ public:
   AncestorSelfAxisIterator,
   AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   AncestorSelfAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)

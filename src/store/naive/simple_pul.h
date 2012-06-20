@@ -73,25 +73,28 @@ public:
   class CompareFunction
   {
   public:
-    static bool equal(const XmlNode* n1, const XmlNode* n2)
+    static bool equal(const store::Item* n1, const store::Item* n2)
     {
       return n1 == n2;
     }
 
-    static uint32_t hash(const XmlNode* n)
+    static uint32_t hash(const store::Item* n)
     {
       return hashfun::h32((void*)(&n), sizeof(void*), FNV_32_INIT);
     }
   };
 
-  typedef HashMap<XmlNode*, NodeUpdates*, CompareFunction>::iterator iterator;
+  typedef HashMap<store::Item*, NodeUpdates*, CompareFunction> Map;
+
+  typedef Map::iterator iterator;
 
 private:
 
-  HashMap<XmlNode*, NodeUpdates*, CompareFunction> theMap;
+  Map    theMap;
+  csize  theNumDeletes;
 
 public:
-  NodeToUpdatesMap() : theMap(8, false)
+  NodeToUpdatesMap() : theMap(8, false), theNumDeletes(0)
   {
   }
 
@@ -103,11 +106,11 @@ public:
 
   bool empty() const { return theMap.empty(); }
 
-  bool get(XmlNode* key, NodeUpdates*& value) { return theMap.get(key, value); }
+  bool get(store::Item* key, NodeUpdates*& value) { return theMap.get(key, value); }
 
-  bool insert(XmlNode* key, NodeUpdates* value) { return theMap.insert(key, value); }
+  bool insert(store::Item* key, NodeUpdates* value) { return theMap.insert(key, value); }
 
-  bool remove(XmlNode* key) { return theMap.erase(key); }
+  bool remove(store::Item* key) { return theMap.erase(key); }
 
   void clear() { theMap.clear(); }
 };
@@ -153,7 +156,7 @@ class CollectionPul
 
 protected:
   // Bookeeping
-  Collection                 * theCollection;
+  Collection                       * theCollection;
 
   PULImpl                          * thePul;
 
@@ -204,6 +207,23 @@ protected:
   std::vector<store::IndexDelta>     theInsertedDocsIndexDeltas;
   std::vector<store::IndexDelta>     theDeletedDocsIndexDeltas;
 
+#ifdef ZORBA_WITH_JSON
+  // jsoniq primitives
+  std::vector<UpdatePrimitive*>      theJSONObjectInsertList;
+  std::vector<UpdatePrimitive*>      theJSONObjectDeleteList;
+  std::vector<UpdatePrimitive*>      theJSONObjectReplaceValueList;
+  std::vector<UpdatePrimitive*>      theJSONObjectRenameList;
+
+  std::vector<UpdatePrimitive*>      theJSONArrayInsertList;
+  std::vector<UpdatePrimitive*>      theJSONArrayDeleteList;
+  std::vector<UpdatePrimitive*>      theJSONArrayReplaceValueList;
+#endif
+
+  std::vector<csize>                 theNumBeforeIndexDeltasApplied;
+  std::vector<csize>                 theNumAfterIndexDeltasApplied;
+  std::vector<csize>                 theNumInsertedDocsIndexDeltasApplied;
+  std::vector<csize>                 theNumDeletedDocsIndexDeltasApplied;
+
 public:
   CollectionPul(PULImpl* pul, Collection* collection);
 
@@ -211,17 +231,17 @@ public:
 
   void switchPul(PULImpl* pul);
 
-  void applyUpdates();
-
-  void finalizeUpdates();
-
-  void undoUpdates();
-
   void computeIndexBeforeDeltas();
 
   void computeIndexAfterDeltas();
 
-  void refreshIndices();
+  void refreshIndexes();
+
+  void applyUpdates();
+
+  void undoUpdates();
+
+  void finalizeUpdates();
 
   void setAdjustTreePositions() { theAdjustTreePositions = true; }
 
@@ -231,6 +251,12 @@ protected:
   void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);
 
   void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
+
+  void cleanIndexDeltas();
+
+  void truncateIndexes();
+
+  void undoRefreshIndexes();
 };
 
 
@@ -273,11 +299,14 @@ public:
     UP_LIST_CREATE_INDEX
   };
 
-  typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
+  typedef std::vector<CollectionPul*> CollectionPuls;
+
+  typedef std::map<const QNameItem*, csize> CollectionPulMap;
 
 protected:
   // XQUF and collection primitives, grouped by the collection that is being updated.
-  CollectionPulMap                   theCollectionPuls;
+  CollectionPuls                     theCollectionPuls;
+  CollectionPulMap                   theCollectionPulsMap;
   CollectionPul                    * theNoCollectionPul;
   CollectionPul                    * theLastPul;
   const QNameItem                  * theLastCollection;
@@ -381,13 +410,13 @@ public:
   // Revalidation primitives
   void addSetElementType(
         const QueryLoc* aQueryLoc,
-        store::Item_t&               target,
-        store::Item_t&               typeName,
-        store::Item_t&               value,
-        bool                         haveValue,
-        bool                         haveEmptyValue,
-        bool                         haveTypedValue,
-        bool                         isInSubstitutionGroup);
+        store::Item_t& target,
+        store::Item_t& typeName,
+        store::Item_t& value,
+        bool haveValue,
+        bool haveEmptyValue,
+        bool haveTypedValue,
+        bool isInSubstitutionGroup);
 
   void addSetElementType(
         const QueryLoc* aQueryLoc,
@@ -421,56 +450,56 @@ public:
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addDeleteCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addInsertIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addInsertFirstIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addInsertLastIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addInsertBeforeIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addInsertAfterIntoCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addDeleteFromCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   void addTruncateCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
-        bool dyn_collection = false);
+        bool isDynamic);
 
   // Index primitives
   void addCreateIndex(
@@ -527,15 +556,59 @@ public:
         const store::Item_t& aQName);
 
   virtual void addInsertIntoHashMap(
-        const QueryLoc* aQueryLoc,
-        const store::Item_t& aQName,
-        const std::vector<store::Item_t>& aKey,
-        const store::Iterator_t& aValue);
+      const QueryLoc* aQueryLoc,
+      const store::Item_t& aQName,
+      const std::vector<store::Item_t>& aKey,
+      const store::Iterator_t& aValue);
 
   virtual void addRemoveFromHashMap(
-        const QueryLoc* aQueryLoc,
-        const store::Item_t& aQName,
-        const std::vector<store::Item_t>& aKey);
+      const QueryLoc* aQueryLoc,
+      const store::Item_t& aQName,
+      const std::vector<store::Item_t>& aKey);
+
+#ifdef ZORBA_WITH_JSON
+  // jsoniq primitives
+
+  virtual void addJSONObjectInsert(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      std::vector<store::Item_t>& names,
+      std::vector<store::Item_t>& values);
+
+  virtual void addJSONObjectDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name);
+
+  virtual void addJSONObjectReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newValue);
+
+  virtual void addJSONObjectRename(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& name,
+      store::Item_t& newName);
+
+  virtual void addJSONArrayInsert(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& pos,
+      std::vector<store::Item_t>& members);
+
+  virtual void addJSONArrayDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& pos);
+
+  virtual void addJSONArrayReplaceValue(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& pos,
+      store::Item_t& newValue);
+#endif
 
   // merge
   void mergeUpdates(store::Item* other);
@@ -560,6 +633,7 @@ public:
       store::Index* idx);
 
   void setValidator(store::SchemaValidator* validator);
+
   store::SchemaValidator* getValidator() const { return theValidator; }
 
   bool inheritNSBindings() const { return theInheritNSBindings; }
@@ -571,14 +645,22 @@ public:
 
 
 protected:
-  void mergeUpdateList(
-        CollectionPul* myPul,
-        std::vector<UpdatePrimitive*>& myList,
-        std::vector<UpdatePrimitive*>& otherList,
-        UpdListKind listKind);
+  void mergeTargetedUpdateLists(
+      CollectionPul* myPul,
+      std::vector<UpdatePrimitive*>& myList,
+      std::vector<UpdatePrimitive*>& otherList);
+
+  void mergeCollectionUpdateLists(
+      CollectionPul* myPul,
+      std::vector<UpdatePrimitive*>& myList,
+      std::vector<UpdatePrimitive*>& otherList);
+    
+  void mergeSimpleUpdateLists(
+      std::vector<UpdatePrimitive*>& myList,
+      std::vector<UpdatePrimitive*>& otherList);
 
   void addInsertChildren(
-        const QueryLoc* aQueryLoc,
+        const QueryLoc* loc,
         store::UpdateConsts::UpdPrimKind kind,
         store::Item_t& target,
         store::Item_t& sibling,
@@ -586,9 +668,7 @@ protected:
 
   CollectionPul* getCollectionPul(const store::Item* target);
 
-  CollectionPul* getCollectionPulByName(
-        const store::Item* name,
-        bool dynamicCollection = false);
+  CollectionPul* getCollectionPulByName(const store::Item* name, bool isDynamic);
 
   void undoUpdates();
 };

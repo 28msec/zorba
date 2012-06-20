@@ -18,6 +18,9 @@
 
   std::string XQuery::execute()
   {
+    Zorba_SerializerOptions_t lSerOptions;
+    lSerOptions.indent = ZORBA_INDENT_YES;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
     std::stringstream lStream;
     lStream << theQuery;
     std::string str = lStream.str();
@@ -57,6 +60,11 @@
   StaticContext XQuery::getStaticContext()
   {
     return StaticContext( zorba::StaticContext_t( const_cast<zorba::StaticContext *>(theQuery->getStaticContext()) ) );
+  }
+
+  StaticCollectionManager XQuery::getStaticCollectionManager()
+  {
+    return StaticCollectionManager( theQuery->getStaticCollectionManager() );
   }
 
   void XQuery::getExternalVariables(Iterator& vars) const 

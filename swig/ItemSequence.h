@@ -16,15 +16,36 @@
 #ifndef API_ITEM_SEQUENCE_H
 #define API_ITEM_SEQUENCE_H
 
+  /** 
+   * \brief This interface represents an instance of the XQuery 1.0 and XPath 2.0
+   * Data Model (XDM).
+   *
+   * See http://www.w3.org/TR/xpath-datamodel/.
+   */
 class ItemSequence
 {
   friend class Collection;
+  friend class CollectionManager;
+  friend class StaticCollectionManager;
 private:
   zorba::ItemSequence_t theItemSequence;
+  ItemSequence() {}
 
 public:
   ItemSequence(const ItemSequence& aItemSequence) : theItemSequence(aItemSequence.theItemSequence) {}
   ItemSequence(zorba::ItemSequence_t aItemSequence) : theItemSequence(aItemSequence) {}
+
+      /** \brief Constructor from Item
+      */
+  ItemSequence(const Item &aItem);
+
+      /**
+       * \brief get the Iterator over the items
+       *
+       * @return an iterator over the items
+       * @throw Throws zerr::ZAPI0039 if the implementation of the associated
+       *        ItemSequence does not allow more than one iterator to be created. 
+      */
   Iterator getIterator();
 
 };

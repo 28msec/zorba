@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#include <stdexcept>
+
+#include "stdafx.h"
 #include "passthru_streambuf.h"
 
 using namespace std;
@@ -38,6 +41,8 @@ void passthru_streambuf::imbue( std::locale const &loc ) {
 }
 
 bool passthru_streambuf::is_necessary( char const *cc_charset ) {
+  if ( !*cc_charset )
+    throw invalid_argument( "empty charset" );
   zstring charset( cc_charset );
   ascii::trim_whitespace( charset );
   ascii::to_upper( charset );
@@ -47,7 +52,7 @@ bool passthru_streambuf::is_necessary( char const *cc_charset ) {
 }
 
 bool passthru_streambuf::is_supported( char const *cc_charset ) {
-  return !is_necessary( charset );
+  return !is_necessary( cc_charset );
 }
 
 passthru_streambuf::pos_type

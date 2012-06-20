@@ -35,6 +35,7 @@ ENDIF(NOT ZORBA_WITH_DEBUGGER)
 
 # mappings.xml is only a helper xml file => don't generate any code for it
 LIST(REMOVE_ITEM SPEC_FILES "mappings.xml")
+LIST(REMOVE_ITEM SPEC_FILES "mappings-no-jsoniq.xml")
 
 # sort the list such that all generated files are equal on all systems
 LIST(SORT SPEC_FILES)
@@ -59,6 +60,7 @@ ENDFOREACH(SPEC_FILE)
 #
 # Next, add the files to be compiled into the library
 #
+
 SET(ZORBA_PRECOMPILED_HEADERS OFF CACHE BOOL "Activate Zorba precompiled headers.")
 
 SET(ZORBA_SRCS)
@@ -97,6 +99,7 @@ IF(ZORBA_WITH_DEBUGGER)
 ENDIF(ZORBA_WITH_DEBUGGER)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS unit_tests UNIT_TEST_SRCS)
 
+MESSAGE(STATUS  "PRECOMPILED HEADERS: " ${ZORBA_PRECOMPILED_HEADERS})
 IF(ZORBA_PRECOMPILED_HEADERS)
   ADD_SRC_SUBFOLDER(ZORBA_SRCS precompiled ZORBAMISC_SRCS)
   INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/precompiled")
@@ -223,6 +226,8 @@ TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_NAME} ${requiredlibs})
 
 SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES CLEAN_DIRECT_OUTPUT 0)
+# INSTALL_NAME_DIR is a MacOS X-specific property that causes the
+# "install_name" property of binaries to be corrected at "make install" time.
 SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 
 #

@@ -22,73 +22,78 @@
 
 namespace zorba {
 
-SERIALIZABLE_TEMPLATE_VERSIONS(ZorbaCollectionIteratorHelper)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(ZorbaCollectionIteratorHelper)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>, 1)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>, 2)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>, 3)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>, 4)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>, 5)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>, 6)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>, 7)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>, 8)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>, 9)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>";
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(ZorbaCollectionIteratorHelper,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>, 10)
+template<> const char* 
+ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>::class_name_str =
+"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>";
+
+
 
 void checkNodeType(
     const static_context* sctx,
     const store::Item_t& node, 
     const StaticallyKnownCollection* collectionDecl,
     const QueryLoc& loc,
-    bool dyn_coll)
+    bool isDynamic)
 {
-  if (dyn_coll)
+  if (isDynamic)
+  {
     return;
+  }
 
   const TypeManager* tm = sctx->get_typemanager();
 
   if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType()), loc))
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE,
-      ERROR_PARAMS(
-        TypeOps::toString( *tm->create_value_type( node ) ),
-        collectionDecl->getName()->getStringValue()
-      ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE, loc,
+    ERROR_PARAMS(TypeOps::toString(*tm->create_value_type(node)),
+                 collectionDecl->getName()->getStringValue()));
   }
 }
 
-void
-getCopyMode(
-    store::CopyMode& aCopyMode,
-    const static_context* aSctx)
+
+void getCopyMode(store::CopyMode& copyMode, const static_context* sctx)
 {
-  aCopyMode.set(true, 
-    aSctx->construction_mode() == StaticContextConsts::cons_preserve,
-    aSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-    aSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+  copyMode.set(true, 
+               sctx->construction_mode() == StaticContextConsts::cons_preserve,
+               sctx->preserve_mode() == StaticContextConsts::preserve_ns,
+               sctx->inherit_mode() == StaticContextConsts::inherit_ns);
 }
 
 } /* namespace zorba */

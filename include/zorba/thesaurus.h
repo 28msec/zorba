@@ -32,25 +32,13 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Contains additional data for URIMappers and URLResolvers
- * when mapping/resolving a Thesaurus URI.
+ * A %Thesaurus provides a way to look up related phrases for a given phrase.
  */
-class ZORBA_DLL_PUBLIC ThesaurusEntityData : public EntityData {
+class ZORBA_DLL_PUBLIC Thesaurus {
 public:
-  /**
-   * Gets the language for which a thesaurus is being requested.
-   *
-   * @return said language.
-   */
-  virtual locale::iso639_1::type getLanguage() const = 0;
-};
-
-/**
- * A %Thesaurus is-a Resource for thesaurus implementations.
- */
-class ZORBA_DLL_PUBLIC Thesaurus : public Resource {
-public:
-  typedef std::unique_ptr<Thesaurus,internal::ztd::destroy_delete<Thesaurus> >
+  typedef std::unique_ptr<
+            Thesaurus const,internal::ztd::destroy_delete<Thesaurus const>
+          >
           ptr;
 
   /**
@@ -88,11 +76,11 @@ public:
    * Destroys this %Thesaurus.
    * This function is called by Zorba when the %Thesaurus is no longer needed.
    *
-   * If your URLResolver dynamically allocates %Thesaurus objects, then the
+   * If your implementation dynamically allocates %Thesaurus objects, then your
    * implementation can simply be (and usually is) <code>delete this</code>.
    *
-   * If your URLResolver returns a pointer to a static %Thesaurus object, then
-   * the implementation should do nothing.
+   * If your implementation returns a pointer to a static %Thesaurus object,
+   * then your implementation should do nothing.
    */
   virtual void destroy() const = 0;
 
@@ -115,6 +103,32 @@ public:
 
 protected:
   virtual ~Thesaurus();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A %ThesaurusProvider is-a Resource for providing thesauri for a given
+ * language.
+ */
+class ZORBA_DLL_PUBLIC ThesaurusProvider : public Resource {
+public:
+  typedef std::unique_ptr<
+            ThesaurusProvider const,
+            internal::ztd::destroy_delete<ThesaurusProvider const>
+          >
+          ptr;
+
+  /**
+   * Gets a Thesaurus for the given language.
+   *
+   * @param lang The desired language of the thesaurus.
+   * @param t If not \c null, set to point to a Thesaurus for \a lang.
+   * @return Returns \c true only if this provider can provide a thesaurus for
+   * \a lang.
+   */
+  virtual bool getThesaurus( locale::iso639_1::type lang,
+                             Thesaurus::ptr *t = 0 ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -36,8 +36,9 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialization_engine.h"
-
+#include "zorbaserialization/serialize_basic_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+#include "zorbaserialization/serialize_template_types.h"
 
 namespace zorba
 {
@@ -878,7 +879,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const flwor_clause* clause = (*flworExpr)[i];
+      const flwor_clause* clause = flworExpr->get_clause(i);
 
       switch (clause->get_kind())
       {
@@ -1046,6 +1047,11 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case attr_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  case json_array_expr_kind:
+#endif
   {
     return !contains_expr(e);
   }

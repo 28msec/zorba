@@ -22,7 +22,7 @@
 
 #include "common/shared_types.h"
 
-#include "compiler/parsetree/parsenodes.h"
+//#include "compiler/parsetree/parsenodes.h"
 
 #include "zorbautils/hashmap_itemh.h"
 
@@ -83,7 +83,7 @@ public:
   };
 
 protected:
-  typedef std::bitset<zann_end + 1> RuleBitSet;
+  typedef std::bitset<static_cast<int>(zann_end) + 1> RuleBitSet;
 
 protected:
   static std::vector<store::Item_t>      theAnnotId2NameMap;

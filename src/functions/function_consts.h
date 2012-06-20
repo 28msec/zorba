@@ -17,6 +17,9 @@
 #ifndef ZORBA_FUNCTIONS_FUNCTION_CONSTS
 #define ZORBA_FUNCTIONS_FUNCTION_CONSTS
 
+#include <zorba/config.h>
+
+
 namespace zorba
 {
 
@@ -224,6 +227,18 @@ typedef enum
 
   OP_HOIST_1,
   OP_UNHOIST_1,
+
+#ifdef ZORBA_WITH_JSON
+  OP_OBJECT_INSERT_N,
+#endif
+
+#ifndef ZORBA_NO_FULL_TEXT
+  FULL_TEXT_CURRENT_COMPARE_OPTIONS_0,
+  FULL_TEXT_TOKENIZER_PROPERTIES_1,
+  FULL_TEXT_TOKENIZER_PROPERTIES_0,
+  FULL_TEXT_TOKENIZE_NODE_2,
+  FULL_TEXT_TOKENIZE_NODE_1,
+#endif
 
 #include "functions/function_enum.h"
 

@@ -1,0 +1,1 @@
+fn:unparsed-text-lines("foo.xml")

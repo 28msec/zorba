@@ -30,8 +30,8 @@ return
 },
 {
 try{
-    (dml:insert-nodes($xqddf-test:blue-collection, (fn:doc("auction.xml")//item)[1]),
-    dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[1]));
+    (dml:insert-nodes($xqddf-test:blue-collection, (fn:doc("auction.xml")//item)[@id="item0"]),
+    dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[@id="item0"]));
 }
 catch * { "
 cannot delete first item in blue collection";
@@ -42,12 +42,16 @@ cannot delete first item in blue collection";
 </newline>
 },
 {
-dml:collection($xqddf-test:white-collection)/name
+for $x in dml:collection($xqddf-test:white-collection)
+order by $x/@id
+return $x/name
 },
 {
 <newline> a
 </newline>
 },
 {
-dml:collection($xqddf-test:blue-collection)/name
+for $x in dml:collection($xqddf-test:blue-collection)
+order by $x/@id
+return $x/name
 }
