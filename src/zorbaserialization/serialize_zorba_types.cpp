@@ -1180,7 +1180,7 @@ void serialize_json_array(Archiver &ar, store::Item *&obj)
   xs_integer lSize = xs_integer(0);
   if (ar.is_serializing_out())
   {
-    lSize = obj->getArraySize()->getIntegerValue();
+    lSize = obj->getArraySize();
   }
   ar & lSize;
 

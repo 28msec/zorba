@@ -915,7 +915,7 @@ SimpleJSONArray::getArrayValues() const
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t
+xs_integer
 SimpleJSONArray::getArraySize() const
 {
 #ifndef NDEBUG
@@ -923,8 +923,7 @@ SimpleJSONArray::getArraySize() const
 #endif
   store::Item_t lRes;
   xs_integer lSize(theContent.size());
-  GET_FACTORY().createInteger(lRes, lSize);  
-  return lRes;
+  return lSize;
 }
 
 

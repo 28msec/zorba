@@ -1090,7 +1090,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 {
   store::Item_t member;
-  xs_integer size = array->getArraySize()->getIntegerValue();
+  xs_integer size = array->getArraySize();
   tr << "[ ";
   for (xs_integer i = xs_integer(1); i <= size; ++i) {
     if (i != 1) {

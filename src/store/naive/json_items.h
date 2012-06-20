@@ -295,7 +295,7 @@ public:
   virtual store::Item_t
   replace(const xs_integer& pos, const store::Item_t& value) = 0;
 
-  virtual store::Item_t getArraySize() const = 0;
+  virtual xs_integer getArraySize() const = 0;
 
   virtual store::Item_t getArrayValue(const xs_integer& position) const = 0;
 
@@ -347,7 +347,7 @@ public:
 
   virtual ~SimpleJSONArray();
 
-  store::Item_t getArraySize() const;
+  xs_integer getArraySize() const;
 
   store::Item_t getArrayValue(const xs_integer& position) const;
   

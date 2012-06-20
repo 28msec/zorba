@@ -239,7 +239,7 @@ JSONArraySizeIterator::nextImpl(
 
   consumeNext(lJSONItem, theChild.getp(), planState);
 
-  lSize = lJSONItem->getArraySize()->getIntegerValue();
+  lSize = lJSONItem->getArraySize();
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
 

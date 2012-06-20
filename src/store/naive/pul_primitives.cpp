@@ -2212,7 +2212,7 @@ void UpdJSONArrayAppend::undo()
   JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
 
   csize numNewMembers = theMembers.size();
-  xs_integer numTotalMembers = theTarget->getArraySize()->getIntegerValue();
+  xs_integer numTotalMembers = theTarget->getArraySize();
   xs_integer lPositionToDelete = numTotalMembers - numNewMembers;
 
   for (csize i = 0; i < numNewMembers; ++i) 

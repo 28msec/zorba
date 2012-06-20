@@ -1375,7 +1375,7 @@ void PULImpl::addJSONArrayInsert(
   xs_integer pos = position->getIntegerValue();
 
   if (pos <= xs_integer::zero() ||
-      arr->getArraySize()->getIntegerValue() + 1 < pos)
+      arr->getArraySize() + 1 < pos)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
@@ -1513,7 +1513,7 @@ void PULImpl::addJSONArrayDelete(
   xs_integer pos = position->getIntegerValue();
 
   if (pos <= xs_integer::zero() ||
-      arr->getArraySize()->getIntegerValue() < pos)
+      arr->getArraySize() < pos)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
@@ -1578,7 +1578,7 @@ void PULImpl::addJSONArrayReplaceValue(
   xs_integer pos = position->getIntegerValue();
 
   if (pos <= xs_integer::zero() ||
-      arr->getArraySize()->getIntegerValue() < pos)
+      arr->getArraySize() < pos)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));

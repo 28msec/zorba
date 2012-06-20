@@ -823,7 +823,7 @@ public:
    * (jdm:size accessor on an array)
    * @return the number of values in the array.
    */
-  virtual store::Item_t
+  virtual xs_integer
   getArraySize() const;
 
   /**

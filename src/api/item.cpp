@@ -492,7 +492,7 @@ Item::getArraySize() const
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return to_xs_long(m_item->getArraySize()->getIntegerValue());
+    return to_xs_long(m_item->getArraySize());
   ITEM_CATCH
   return NULL;
 }
