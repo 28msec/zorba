@@ -122,7 +122,7 @@ size_type decode( char const *from, size_type from_len, char *to,
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and \a from_len is not a multiple of 4.
+ * set and the number of Base64 bytes decoded is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
@@ -140,7 +140,7 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to,
  * @param options The options to use.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and \a from_len is not a multiple of 4.
+ * set and the number of Base64 bytes decoded is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
@@ -168,7 +168,7 @@ size_type decode( char const *from, size_type from_len, ToStringType *to,
  * assumed to be padding.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of bytes read is not a multiple of 4.
+ * set and the number of Base64 bytes decoded is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
@@ -187,7 +187,7 @@ size_type decode( std::istream &from, std::ostream &to,
  * assumed to be padding.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of bytes read is not a multiple of 4.
+ * set and the number of Base64 bytes decoded is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
@@ -223,7 +223,7 @@ size_type decode( std::istream &from, ToStringType *to,
  * @param options The options to use.
  * @param Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of bytes read is not a multiple of 4.
+ * set and the number of Base64 bytes decoded is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  */
@@ -238,7 +238,7 @@ size_type decode( std::istream &from, std::vector<char> *to,
  * @param buf_len The number of bytes to validate.
  * @param options The options to use.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and \a buf_len is not a multiple of 4.
+ * set and the number of Base64 bytes validated is not a multiple of 4.
  * @throws base64::exception if an \c = is encountered unexpectedly or an
  * invalid byte is encountered.
  * @see decoded_size()
