@@ -1392,7 +1392,7 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 }
 
 
-store::Item_t
+xs_integer
 Item::getArraySize() const
 {
   throw ZORBA_EXCEPTION(

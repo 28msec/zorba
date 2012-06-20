@@ -203,7 +203,7 @@
     <zorba:type zorbaType="QNAME">xs:QName</zorba:type>
     <zorba:type zorbaType="NOTATION">xs:NOTATION</zorba:type>  
     <zorba:type zorbaType="ANY_FUNCTION">function()</zorba:type>
-    <zorba:type zorbaType="ITEM">structured-item()</zorba:type>
+    <zorba:type zorbaType="STRUCTURED_ITEM">structured-item()</zorba:type>
     <zorba:type zorbaType="JSON_ITEM">json-item()</zorba:type>
     <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
     <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>

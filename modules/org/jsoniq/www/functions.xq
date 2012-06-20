@@ -73,7 +73,7 @@ declare function jn:keys($o as object()) as xs:string* external;
  : @return the value of specified pair within the given object, or the empty sequence.
  :)
 (: obsolete - use $o($name) instead :)
-(: declare function jn:value($o as object(), $name as xs:string) as item()? external; :)
+declare function jn:value($o as object(), $name as xs:string) as item()? external;
 
 
 (:~
@@ -95,7 +95,7 @@ declare function jn:size($j as array()) as xs:integer external;
  : @return The member at the specified position, or empty sequence.
  :)
 (: obsolete - use $a($p) instead :)
-(: declare function jn:member($a as array(), $p as xs:integer) as item()? external; :)
+declare function jn:member($a as array(), $p as xs:integer) as item()? external;
 
 
 (:~
