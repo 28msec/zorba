@@ -149,17 +149,10 @@ size_type decode( char const *from, size_type from_len, ToStringType *to,
                   int options = dopt_none ) {
   size_type total_decoded = 0;
   if ( from_len ) {
-    to->reserve( to->size() + decoded_size( from_len ) );
-    char const *const from_end = from + from_len;
-    while ( from < from_end ) {
-      size_type const buf_size =
-        std::min( size_type( 1024 * 4 ), size_type( from_end - from ) );
-      char to_buf[ 1024 * 3 ];
-      size_type const decoded = decode( from, buf_size, to_buf, options );
-      to->append( to_buf, decoded );
-      from += buf_size;
-      total_decoded += decoded;
-    }
+    typename ToStringType::size_type const orig_size = to->size();
+    to->resize( orig_size + decoded_size( from_len ) );
+    total_decoded = decode( from, from_len, &to->at( orig_size ), options );
+    to->resize( orig_size + total_decoded );
   }
   return total_decoded;
 }

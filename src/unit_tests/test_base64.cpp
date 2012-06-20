@@ -60,15 +60,29 @@ static void print_exception( int no, char const *expr, int line,
 
 ///////////////////////////////////////////////////////////////////////////////}
 
-static void test_decode( int no, string const &in, string const &expected ) {
-  char out[ 1024 ];
+static void test_decode_cCP_s_cP_i( int no, string const &in,
+                                    string const &expected ) {
   base64::size_type n;
+  char out[ 1024 ];
   ASSERT_NO_EXCEPTION(
     no, n = base64::decode( in.data(), in.size(), out, base64::dopt_any_len )
   );
   ASSERT_TRUE( no, n == expected.size() );
   out[ n ] = '\0';
   ASSERT_TRUE( no, out == expected );
+}
+
+static void test_decode_cCP_s_T_i( int no, string const &in,
+                                   string const &expected ) {
+  base64::size_type n;
+  string result;
+  ASSERT_NO_EXCEPTION(
+    no,
+    n = base64::decode( in.data(), in.size(), &result, base64::dopt_any_len )
+  );
+  ASSERT_TRUE( no, n == expected.size() );
+  ASSERT_TRUE( no, result.size() == expected.size() );
+  ASSERT_TRUE( no, result == expected );
 }
 
 static void test_decode_exception( int no, string const &in ) {
@@ -134,8 +148,10 @@ int test_base64( int, char*[] ) {
   for ( test const *t = encode_tests; t->input; ++t, ++test_no )
     test_encode( test_no, t->input, t->expected );
 
-  for ( test const *t = decode_tests; t->input; ++t, ++test_no )
-    test_decode( test_no, t->input, t->expected );
+  for ( test const *t = decode_tests; t->input; ++t, ++test_no ) {
+    test_decode_cCP_s_cP_i( test_no, t->input, t->expected );
+    test_decode_cCP_s_T_i( test_no, t->input, t->expected );
+  }
 
   for ( char const *const *t = decode_exception_tests; *t; ++t, ++test_no )
     test_decode_exception( test_no, *t );
