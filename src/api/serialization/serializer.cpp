@@ -1262,7 +1262,7 @@ void serializer::jsoniq_emitter::emit_item(store::Item *item)
     if ((isJson && theEmitterState == JESTATE_XDM) ||
         (!isJson && theEmitterState == JESTATE_JDM))
     {
-    throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
+      throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
     }
   }
 
@@ -1283,8 +1283,15 @@ void serializer::jsoniq_emitter::emit_item(store::Item *item)
 
 void serializer::jsoniq_emitter::emit_end()
 {
-  // Not really clear what to do if we serialized no items and hence have
-  // no emitter yet, but doing nothing at all seems reasonable.
+  switch(theEmitterState)
+  {
+    case JESTATE_JDM:
+      theJSONEmitter->emit_end();
+      return;
+    case JESTATE_XDM:
+    default:
+      theXMLEmitter->emit_end();
+  }
 }
 
 
