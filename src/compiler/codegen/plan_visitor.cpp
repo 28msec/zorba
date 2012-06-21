@@ -38,6 +38,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
@@ -57,10 +58,12 @@
 #include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/sequences/sequences.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
+#include "runtime/json/json_constructors.h"
 #include "runtime/core/apply_updates.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
@@ -1963,9 +1966,14 @@ bool begin_visit(promote_expr& v)
 void end_visit(promote_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t lChild = pop_itstack();
+  PlanIter_t child = pop_itstack();
   // TODO: Currently we use cast. Promotion may be more efficient.
-  push_itstack(new PromoteIterator(sctx, qloc, lChild, v.get_target_type(), v.get_fn_qname()));
+  push_itstack(new PromoteIterator(sctx,
+                                   qloc,
+                                   child,
+                                   v.get_target_type(),
+                                   v.get_err(),
+                                   v.get_qname()));
 }
 
 
@@ -2355,6 +2363,7 @@ bool begin_visit(instanceof_expr& v)
   return true;
 }
 
+
 void end_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_OUT("");
@@ -2369,19 +2378,26 @@ bool begin_visit(treat_expr& v)
   return true;
 }
 
+
 void end_visit(treat_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t arg;
   arg = pop_itstack();
-  push_itstack(new TreatIterator(sctx, qloc, arg, v.get_target_type(), v.get_check_prime(), v.get_err(), v.get_fn_qname()));
+  push_itstack(new TreatIterator(sctx, qloc, arg, 
+                                 v.get_target_type(),
+                                 v.get_check_prime(),
+                                 v.get_err(),
+                                 v.get_qname()));
 }
+
 
 bool begin_visit(castable_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
+
 
 void end_visit(castable_expr& v)
 {
@@ -2390,11 +2406,13 @@ void end_visit(castable_expr& v)
   push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
+
 bool begin_visit(cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
+
 
 void end_visit(cast_expr& v)
 {
@@ -2784,10 +2802,13 @@ bool begin_visit(match_expr& v)
     axisItep->setDocTestKind(v.getDocTestKind());
     axisItep->setNodeKind(v.getNodeKind());
     axisItep->setQName(v.getQName());
-    store::Item *typeName = v.getTypeName();
+    store::Item* typeName = v.getTypeName();
     if (typeName != NULL) 
     {
-      axisItep->setType(sctx->get_typemanager()->create_named_type(typeName));
+      axisItep->setType(sctx->get_typemanager()->
+                        create_named_type(typeName,
+                                          TypeConstants::QUANT_ONE,
+                                          qloc));
     }
     axisItep->setNilledAllowed(v.getNilledAllowed());
   }
@@ -2988,25 +3009,26 @@ void end_visit(text_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t content = pop_itstack ();
+  PlanIter_t content = pop_itstack();
 
   bool isRoot = false;
   theEnclosedContextStack.pop();
   expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
+
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
     isRoot = true;
   }
 
-  switch (v.get_type ())
+  switch (v.get_type())
   {
   case text_expr::text_constructor:
-    push_itstack (new TextIterator(sctx, qloc, content, isRoot));
+    push_itstack(new TextIterator(sctx, qloc, content, isRoot));
     break;
 
   case text_expr::comment_constructor:
-    push_itstack (new CommentIterator (sctx, qloc, content, isRoot));
+    push_itstack(new CommentIterator(sctx, qloc, content, isRoot));
     break;
 
   default:
@@ -3043,6 +3065,124 @@ void end_visit(pi_expr& v)
   PlanIter_t target = pop_itstack ();
   push_itstack(new PiIterator(sctx, qloc, target, content, isRoot));
 }
+
+
+#ifdef ZORBA_WITH_JSON
+
+/*******************************************************************************
+
+  JSON Constructors
+
+********************************************************************************/
+bool begin_visit(json_array_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_array_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  std::vector<PlanIter_t> inputs;
+
+  expr* inputExpr = v.get_expr();
+
+  if (inputExpr != NULL)
+  {
+    PlanIter_t inputIter = pop_itstack();
+
+    if (dynamic_cast<FnConcatIterator*>(inputIter.getp()) != NULL)
+    {
+      inputs = static_cast<FnConcatIterator*>(inputIter.getp())->getChildren();
+    }
+    else
+    {
+      inputs.push_back(inputIter);
+    }
+  }
+
+  bool copyInput = true;
+
+  push_itstack(new JSONArrayIterator(sctx, qloc, inputs, copyInput));
+}
+
+
+bool begin_visit(json_object_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_object_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  std::vector<PlanIter_t> inputs;
+
+  expr* inputExpr = v.get_expr();
+
+  if (inputExpr != NULL)
+  {
+    PlanIter_t inputIter = pop_itstack();
+
+    if (dynamic_cast<FnConcatIterator*>(inputIter.getp()) != NULL)
+    {
+      inputs = static_cast<FnConcatIterator*>(inputIter.getp())->getChildren();
+    }
+    else
+    {
+      inputs.push_back(inputIter);
+    }
+  }
+
+  bool copyInput = true;
+
+  push_itstack(new JSONObjectIterator(sctx, 
+                                      qloc, 
+                                      inputs, 
+                                      copyInput, 
+                                      v.is_accumulating()));
+}
+
+
+
+bool begin_visit(json_direct_object_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+
+void end_visit(json_direct_object_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  csize numPairs = v.num_pairs();
+
+  std::vector<PlanIter_t> names(numPairs);
+  std::vector<PlanIter_t> values(numPairs);
+
+  for (csize i = numPairs; i > 0; --i)
+  {
+    values[i-1] = pop_itstack();
+  }
+
+  for (csize i = numPairs; i > 0; --i)
+  {
+    names[i-1] = pop_itstack();
+  }
+
+  bool copyInput = true;
+
+  push_itstack(new JSONDirectObjectIterator(sctx, qloc, names, values, copyInput));
+}
+
+
+
+#endif // ZORBA_WITH_JSON
 
 
 bool begin_visit(const_expr& v)

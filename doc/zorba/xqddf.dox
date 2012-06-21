@@ -121,7 +121,7 @@ schema. Therefore, the declaration for the articles collection specifies node()
 as the type of the root nodes. Both employee and article documents may be
 updated during their lifetime. Instead, the months-related information is fixed
 (can not change), so the nodes of the months collection are declared as
-'%ann:read-only-nodes'. Furthermore, the collection itself is declared '%ann:const', meaning
+'%an:read-only-nodes'. Furthermore, the collection itself is declared '%an:const', meaning
 that no months may be added to or deleted from this collection after it is
 created and initialized. Finally, we want the order of the month documents
 within their containing collection to be the same as the actual order of the
@@ -143,13 +143,13 @@ id="lib_module_news_data_collections"></a>
 
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
-  declare namespace ann = "http://www.zorba-xquery.com/annotations";
+  declare namespace an = "http://www.zorba-xquery.com/annotations";
 
   declare collection news-data:employees as schema-element(news-schema:employee)*;
 
   declare collection news-data:articles as node()*;
 
-  declare %ann:const %ann:ordered %ann:read-only-nodes collection news-data:months
+  declare %an:const %an:ordered %an:read-only-nodes collection news-data:months
     as schema-element(news-schema:month)*;
 
   declare variable $news-data:employees := xs:QName("news-data:employees");
@@ -177,7 +177,7 @@ container is populated with the documents in the insertion sequence. In
 months collection. In fact, months must be initialized during creation because
 it is a constant collection, so no documents can be added to it later. The
 months are inserted in the collection in the order from January to December, and
-since the collection was declared as '%ann:ordered', this order is preserved by the
+since the collection was declared as '%an:ordered', this order is preserved by the
 associated document container.
 
 \code
@@ -339,12 +339,12 @@ consistent).
 
 Zorba defines three categories of collection annotations:
 
-<strong>update mode</strong> (with possible values '%ann:const', '%ann:mutable', '%ann:append-only', or '%ann:queue'),
-<strong>ordering mode</strong> (with possible values '%ann:ordered' or '%ann:unordered'), and
-<strong>document update mode</strong> (with possible values '%ann:read-only-nodes' and '%ann:mutable-nodes').
+<strong>update mode</strong> (with possible values '%an:const', '%an:mutable', '%an:append-only', or '%an:queue'),
+<strong>ordering mode</strong> (with possible values '%an:ordered' or '%an:unordered'), and
+<strong>document update mode</strong> (with possible values '%an:read-only-nodes' and '%an:mutable-nodes').
 
-If not specified, the default values for update and ordering mode are '%ann:mutable' and '%ann:unordered', respectively.
-The default value for the document update mode is '%ann:mutable-nodes'.
+If not specified, the default values for update and ordering mode are '%an:mutable' and '%an:unordered', respectively.
+The default value for the document update mode is '%an:mutable-nodes'.
 
 It is a static error [err::XQST0106] if a collection declaration contains more than one value for the same property.
 An <strong>ordered collection</strong> is a collection into which the ordering of documents is assumed to be meaningful for the application, and as a result, programmers can explicitly control the placement of documents via appropriate updating functions.
@@ -352,12 +352,12 @@ In contrast, the ordering of documents inside <strong>unordered collections</str
 A <strong>constant collection</strong> is one that is created with an initial set of documents and
 does not allow any subsequent insertions to or deletions from this initial set.
 
-An '%ann:append-only' collection does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones.
-This implies a user-visible document ordering, and as a result, an '%ann:append-only' collection must also be declared as '%ann:ordered' [err:XQST0106].
-A '%ann:queue' collection forbids both insertions and deletions in/from the "middle"; only documents at
+An '%an:append-only' collection does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones.
+This implies a user-visible document ordering, and as a result, an '%an:append-only' collection must also be declared as '%an:ordered' [err:XQST0106].
+A '%an:queue' collection forbids both insertions and deletions in/from the "middle"; only documents at
 the front of the collection may be deleted, and new documents can be inserted only at the end of a collection.
-Like '%ann:append-only', '%ann:queue' collections must be declared as '%ann:ordered' [err:XQST0106].
-If the document update mode of a collection is '%ann:read-only-nodes' then an error is raised [<a href="#ERRZDDY0010" title="zerr:ZDDY0010">zerr:ZDDY0010</a>] every time a node of the collection appears as the target node of an updating expression; otherwise no such error is raised.
+Like '%an:append-only', '%an:queue' collections must be declared as '%an:ordered' [err:XQST0106].
+If the document update mode of a collection is '%an:read-only-nodes' then an error is raised [<a href="#ERRZDDY0010" title="zerr:ZDDY0010">zerr:ZDDY0010</a>] every time a node of the collection appears as the target node of an updating expression; otherwise no such error is raised.
 
 In addition to the annotations described above, a collection declaration also
 specifies the <strong>collection static type</strong>, i.e., the static type for
@@ -487,10 +487,10 @@ title="zerr:ZDDY0001">zerr:ZDDY0001</a>].</li>
 available collections in the dynamic context of the invoking module, an error is
 raised [<a href="#ERRZDDY0003" title="zerr:ZDDY0003">zerr:ZDDY0003</a>].</li>
   <li>The result of the function is a sequence consisting of the root nodes in
-the collection. If the collection is declared as '%ann:ordered', the ordering of the
+the collection. If the collection is declared as '%an:ordered', the ordering of the
 nodes in the result will reflect the order into which nodes were inserted in the
 collection by the XQDDF node insertion functions (see \ref
-updating_collections). If the collection is declared as '%ann:unordered', the ordering
+updating_collections). If the collection is declared as '%an:unordered', the ordering
 of the nodes in the result is implementation-dependent. In both cases, the nodes
 in the sequence are, by definition, in document order. For unordered
 collections, this document ordering is guaranteed to be stable within a query
@@ -602,11 +602,11 @@ title="zerr:ZDDY0001">zerr:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
 raised [<a href="#ERRZDDY0003" title="zerr:ZDDY0003">zerr:ZDDY0003</a>].</li>
-  <li>If the update mode of the collection is '%ann:const', '%ann:append-only', or '%ann:queue', an
+  <li>If the update mode of the collection is '%an:const', '%an:append-only', or '%an:queue', an
 error is raised [<a href="#ERRZDDY0004" title="zerr:ZDDY0004">zerr:ZDDY0004</a>],
 [<a href="#ERRZDDY0005" title="zerr:ZDDY0005">zerr:ZDDY0005</a>], or [<a
 href="#ERRZDDY0006" title="zerr:ZDDY0006">zerr:ZDDY0006</a>], respectively.</li>
-  <li>If the collection is '%ann:unordered', an error is raised [<a href="#ERRZDDY0012"
+  <li>If the collection is '%an:unordered', an error is raised [<a href="#ERRZDDY0012"
 title="zerr:ZDDY0012">zerr:ZDDY0012</a>].</li>
   <li>The expression that is given as the second argument to the function call
 is evaluated. The result of the evaluation is called the source sequence. If the
@@ -646,7 +646,7 @@ $nodes.</li>
 The insert-nodes-last function is evaluated the same way as the insert-nodes-first function except:
 
   <ul>
-  <li>If the collection is '%ann:append-only' or '%ann:queue', the insertion is allowed (i.e.,
+  <li>If the collection is '%an:append-only' or '%an:queue', the insertion is allowed (i.e.,
 the errors ZDDY0005 or ZDDY0006 are not raised).</li>
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
@@ -679,11 +679,11 @@ title="zerr:ZDDY0001">zerr:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
 raised [<a href="#ERRZDDY0003" title="zerr:ZDDY0003">zerr:ZDDY0003</a>].</li>
-  <li>If the update mode of the collection is '%ann:const', '%ann:append-only', or '%ann:queue', an
+  <li>If the update mode of the collection is '%an:const', '%an:append-only', or '%an:queue', an
 error is raised [<a href="#ERRZDDY0004" title="zerr:ZDDY0004">zerr:ZDDY0004</a>],
 [<a href="#ERRZDDY0005" title="zerr:ZDDY0005">zerr:ZDDY0005</a>], or [<a
 href="#ERRZDDY0006" title="zerr:ZDDY0006">zerr:ZDDY0006</a>], respectively.</li>
-  <li>If the collection is '%ann:unordered', an error is raised [<a href="#ERRZDDY0012"
+  <li>If the collection is '%an:unordered', an error is raised [<a href="#ERRZDDY0012"
 title="zerr:ZDDY0012">zerr:ZDDY0012</a>].</li>
   <li>The expression that appears as the second argument to the function call is
 evaluated. The expression must return a single node, called the target node. If
@@ -758,7 +758,7 @@ there is any node in the deletion sequence that is not a root node belonging to
 a collection, an error is raised [<a href="#ERRZDDY0011"
 title="zerr:ZDDY0011">zerr:ZDDY0011</a>]. Let $nodes be the deletion
 sequence.</li>
-  <li>If the update mode of a collection of any node is '%ann:const', '%ann:append-only', or '%ann:queue', an
+  <li>If the update mode of a collection of any node is '%an:const', '%an:append-only', or '%an:queue', an
 error is raised [<a href="#ERRZDDY0004" title="zerr:ZDDY0004">zerr:ZDDY0004</a>],
 [<a href="#ERRZDDY0007" title="zerr:ZDDY0007">zerr:ZDDY0007</a>], or [<a
 href="#ERRZDDY009" title="zerr:ZDDY009">zerr:ZDDY009</a>], respectively.</li>
@@ -994,24 +994,24 @@ assigns the name news-data:CityEmp to the index. It uses the "on nodes" and "by"
 keywords to specify the domain and key expressions respectively. The "as"
 keyword specifies a target atomic data type which the result of the key
 expression must match with (after atomization). The index is declared as a
-'%ann:value-equality' index. This means that it can be used to find the employees in
+'%an:value-equality' index. This means that it can be used to find the employees in
 a particular city, but not in a "range" of cities. In other words, the index is
 not aware of any ordering among city names. Finally, the maintenance property of
-the index is set to "automatically maintained" ('%ann:automatic'). Briefly, an automatically
+the index is set to "automatically maintained" ('%an:automatic'). Briefly, an automatically
 maintained index is one whose maintenance is the responsibility of Zorba rather
 than the XQuery programmers. 
 
 The second index declaration assigns the name
 news-data:ArtCountEmp to the index. Its domain expression selects all employees
 who are journalists. Its key expression computes the number of articles written
-by the "current" journalist. This index is declared as a "value range" ('%ann:value-range') index,
+by the "current" journalist. This index is declared as a "value range" ('%an:value-range') index,
 which means that it can be used to find journalists whose article count is
 within a given range. Finally, the index is also declared as "manually
-maintained" ('%ann:manual'), which means that programmers must explicitly request that the index
+maintained" ('%an:manual'), which means that programmers must explicitly request that the index
 be synchronized with the underlying data. 
 
 The last index declaration assigns the name news-data:EmpMgr to the index. 
-The index is declared as a '%ann:general-equality' index, which, like '%ann:value-equality'
+The index is declared as a '%an:general-equality' index, which, like '%an:value-equality'
 means that the index does not maintain its keys in any order. The index key
 expression selects, for each employee E, the ids of the employees managed by E. 
 Notice that this set of ids may be empty. The index will contain an entry mapping 
@@ -1031,26 +1031,26 @@ where different kinds of employees have ids of different data types.
 
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
-  declare namespace ann = "http://www.zorba-xquery.com/annotations";
+  declare namespace an = "http://www.zorba-xquery.com/annotations";
 
   declare collection news-data:employees as schema-element(news-schema:employee)*;
 
   declare collection news-data:articles as node()*;
 
-  declare %ann:const %ann:ordered %ann:read-only-nodes collection news-data:months
+  declare %an:const %an:ordered %an:read-only-nodes collection news-data:months
     as schema-element(news-schema:month)*;
 
-  declare %ann:automatic %ann:value-equality index news-data:CityEmp
+  declare %an:automatic %an:value-equality index news-data:CityEmp
     on nodes cdml:collection(xs:QName("news-data:employees"))/employee
     by .//station/city as xs:string;
 
-  declare %ann:manual %ann:value-range index news-data:ArtCountEmp
+  declare %an:manual %an:value-range index news-data:ArtCountEmp
     on nodes cdml:collection(xs:QName("news-data:employees"))/employee[./position/@kind eq "journalist"]
     by count(for $art in cdml:collection(xs:QName("news-data:articles"))//article
              where $art/empid = ./id
              return $art) as xs:integer;
 
-  declare %ann:automatic %ann:general-equality index news-data:EmpMgr
+  declare %an:automatic %an:general-equality index news-data:EmpMgr
     on nodes cdml:collection(xs:QName("news-data:employees"))/employee
     by ./manages//@empid;
 
@@ -1246,13 +1246,13 @@ updated. In general, <a href="#index_maintenance">index maintenance</a>
 is the operation where the index contents are
 updated so that they reflect the index definition with respect to the current
 snapshot of the data. Zorba offers two maintenance modes: manual and
-automatic. If an index is declared as '%ann:manual', index maintenance
+automatic. If an index is declared as '%an:manual', index maintenance
 is done only when the function <a href="#refresh_index">idml:refresh-index</a> 
 is invoked inside a query. Essentially, in manual mode
 maintenance is in the control of the query programmers, and the index may become
 stale between two consecutive calls to the <a href="#refresh_index">
 idml:refresh-index</a> function. In contrast, if an
-index is declared as '%ann:automatic', Zorba guarantees that the index stays up-to-date at any given time.
+index is declared as '%an:automatic', Zorba guarantees that the index stays up-to-date at any given time.
 
 In this example, the CityEmp index was declared as automatic. The <a
 href="#query_index_maintenance">"index-maintenance"</a> query shown below transfers
@@ -1276,7 +1276,7 @@ The ArtCountEmp index is more complex than the CityEmp index, so the system may
 not be able to maintain it in an efficient way. Furthermore, the index contains
 "statistical" information, so it may be acceptable if its contents are not
 always in sync with the underlying data. For these reasons, the ArtCountEmp
-index was declared as '%ann:manual'.
+index was declared as '%an:manual'.
 
 <a name="query_index_maintenance" id="query_index_maintenance"></a>
 \code
@@ -1335,10 +1335,10 @@ receive an error.
 
   Note: the following annotations are accepted within the context of an index declaration:
 
-     %ann:unique, %ann:nonunique,
-     %ann:value-range, %ann:value-equality, 
-     %ann:general-range, %ann:general-equality,
-     %ann:manual or %ann:automatic
+     %an:unique, %an:nonunique,
+     %an:value-range, %an:value-equality, 
+     %an:general-range, %an:general-equality,
+     %an:manual or %an:automatic
 
 \endcode
 
@@ -1375,19 +1375,19 @@ is equal to the expanded QName of an index declared in the importing module
 or in another imported module (even if the declarations are consistent).
 
 Zorba defines three index properties which are syntactically expressed as annotations:
-<strong>uniqueness</strong> (with possible values '%ann:unique' or '%ann:nonunique'),
-<strong>usage</strong> (with possible values '%ann:value-range', '%ann:value-equality', '%ann:general-range', or '%ann:general-equality'), and 
-<strong>maintenance mode</strong> (with possible values '%ann:manual' or '%ann:automatic').
+<strong>uniqueness</strong> (with possible values '%an:unique' or '%an:nonunique'),
+<strong>usage</strong> (with possible values '%an:value-range', '%an:value-equality', '%an:general-range', or '%an:general-equality'), and 
+<strong>maintenance mode</strong> (with possible values '%an:manual' or '%an:automatic').
 The syntax allows the values for these properties to be listed in any order or not be specified at all.
-If not specified, the default values for uniqueness, usage, and maintenance mode are '%ann:nonunique', 
-'%ann:value-equality', and '%ann:automatic', respectively.
+If not specified, the default values for uniqueness, usage, and maintenance mode are '%an:nonunique', 
+'%an:value-equality', and '%an:automatic', respectively.
 It is a static error [zerr::XQST0106] if more than one value is listed in an index declaration for any of these properties.
 
 The uniqueness property determines the kind of relationship between keys and
-domain nodes: if the index is declared as '%ann:unique', Zorba makes sure that the
+domain nodes: if the index is declared as '%an:unique', Zorba makes sure that the
 relationship is one-to-one, that is, each index entry associates a key value
 (or key tuple in the case of value indexs) with exactly one domain node. 
-Otherwise, if the index is '%ann:nonunique', multiple domain nodes may have the 
+Otherwise, if the index is '%an:nonunique', multiple domain nodes may have the 
 same key value, and as a result, each index entry associates a key with a 
 set of domain nodes. In the current implementation, it is not allowed to declare
 an index as unique if it is a general index whose IndexKeyTypeDecl is either absent
@@ -1413,7 +1413,7 @@ involving either value equality or general equality predicates. Finally, a
 kind of value or general comparison predicates. 
 
 The maintenance mode specifies how index maintenance is done. The current Zorba
-implementation offers two maintenance modes: '%ann:manual' and '%ann:automatic'. For a 
+implementation offers two maintenance modes: '%an:manual' and '%an:automatic'. For a 
 <strong>manual index</strong>, maintenance is done only when the function <a
 href="#refresh_index">idml:refresh-index</a> (described in \ref index_maintenance)
 is invoked inside a query. Essentially, in manual mode maintenance is in the
@@ -1445,7 +1445,7 @@ key expressions:
   <li>They must not reference and variables other than the ones defined inside
       the expressions themselves [<a href="#ERRZDST0031">zerr:ZDST0031</a>].</li>
 
-  <li>If the index is declared as '%ann:automatic', an error is raised
+  <li>If the index is declared as '%an:automatic', an error is raised
       [<a href="#ERRZDST0034">zerr:ZDST0034</a>] if the domain and/or the key 
       expressions are too complex for Zorba to perform index maintenance in an 
       efficient manner (see \ref index_maintenance for details)</li>
@@ -1999,7 +1999,7 @@ in/from collections. <strong>Index Maintenance</strong> is the operation by
 which stale index contents are updated so that the index becomes up-to-date.
 Zorba offers two maintenance modes: manual and automatic.
 
-If an index is declared as "automatically maintained" (i.e. '%ann:automatic'), Zorba guarantees that
+If an index is declared as "automatically maintained" (i.e. '%an:automatic'), Zorba guarantees that
 every time a PUL is applied, the index is made up-to-date before the 
 upd:apply-updates function returns. Ideally, all indexes should be automatically
 maintained, but in general, index maintenance can be a very expensive operation
@@ -2011,7 +2011,7 @@ incremental way that is faster than simply re-creating the whole index from
 scratch. However, even incremental maintenance can have a high cost, which
 may make the manual mode described below the preferred choice.
 
-If an index is declared as "manually maintained" (i.e. '%ann:manual'), it is the responsibility of
+If an index is declared as "manually maintained" (i.e. '%an:manual'), it is the responsibility of
 the programmers to keep the index up-to-date. This can be done using the 
 idml:refresh-index updating function described below. Since Zorba does not
 take any maintenance action during PUL applications, manually maintained

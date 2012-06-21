@@ -21,6 +21,7 @@
 
 #include "common/shared_types.h"
 
+#include "compiler/parser/query_loc.h"
 #include "compiler/expression/expr_utils.h"
 
 

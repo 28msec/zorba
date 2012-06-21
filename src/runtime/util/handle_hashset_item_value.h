@@ -72,12 +72,25 @@ public:
       assert (item2 != NULL);
       store::Item_t t1(item1);
       store::Item_t t2(item2);
-      return CompareIterator::valueEqual(theCompareParam->theLocation,
-                                         t1,
-                                         t2,
-                                         theCompareParam->theTypeManager,
-                                         theCompareParam->theTimezone,
-                                         theCompareParam->theCollator);
+
+      try
+      {
+        return CompareIterator::valueEqual(theCompareParam->theLocation,
+                                           t1,
+                                           t2,
+                                           theCompareParam->theTypeManager,
+                                           theCompareParam->theTimezone,
+                                           theCompareParam->theCollator);
+      }
+      catch(ZorbaException& e)
+      {
+        if (e.diagnostic() == err::XPTY0004)
+        {
+          return false;
+        }
+
+        throw e;
+      }
     }
 
     uint32_t hash(const store::Item_t& t) const

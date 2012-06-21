@@ -1,5 +1,5 @@
 (: Fetch a schemas's content :)
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch#2.0";
+import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 fn:parse-xml(
   fetch:content("http://www.zorba-xquery.com/modules/theschema", "SCHEMA")

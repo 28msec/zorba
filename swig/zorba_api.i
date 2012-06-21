@@ -83,6 +83,8 @@ namespace std {
   class ZorbaException;
   class XmlDataManager;
   class StaticCollectionManager;
+  class Store;
+  class InMemoryStore;
 
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
@@ -99,6 +101,9 @@ namespace std {
   #include "StaticCollectionManager.h"
   #include "DocumentManager.h"
   #include "XmlDataManager.h"
+  #include "DiagnosticHandler.h"
+  #include "Store.h"
+  
 %}
 
 #ifndef SWIGRUBY

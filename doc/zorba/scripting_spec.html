@@ -192,7 +192,7 @@ a.env:visited, a.env:link { color: black;
          </li>
       </ul>
             
-      <p>This specification makes use of the prefix ann for some annotations, bound with the namespace http://www.zorba-xquery.com/annotations</p>
+      <p>This specification makes use of the prefix an for some annotations, bound with the namespace http://www.zorba-xquery.com/annotations</p>
           
       <h1><a name="id-extensions-to-processing-model"></a>2. Extensions to the Processing Model
       </h1>
@@ -509,13 +509,13 @@ a.env:visited, a.env:link { color: black;
                   <b>Definitions:</b>
                       
       <p>
-                           XQSX allows the built-in annotations %ann:assignable and %ann:nonassignable
+                           XQSX allows the built-in annotations %an:assignable and %an:nonassignable
                            to be used in a Prolog variable declaration. If both annotations are used, a static error is raised.
       </p>
                       
       <p>
          [An <b>assignable prolog variable</b> is a global
-                           variable whose declaration specifies %ann:assignable, and
+                           variable whose declaration specifies %an:assignable, and
                            may have its
                            value changed by an assign statement.]
          
@@ -523,7 +523,7 @@ a.env:visited, a.env:link { color: black;
                       
       <p>
          [An <b>unassignable prolog variable</b> is a global
-                           variable whose declaration specifies %ann:nonassignable, and may not have its
+                           variable whose declaration specifies %an:nonassignable, and may not have its
                            value changed by an assign statement.]
          
       </p>
@@ -565,14 +565,14 @@ a.env:visited, a.env:link { color: black;
                   <b>Definitions:</b>
                       
       <p>
-                           XQSX allows the built-in annotations %ann:sequential and %ann:nonsequential
+                           XQSX allows the built-in annotations %an:sequential and %an:nonsequential
                            to be used in a Prolog function declaration. If both annotations are used, a static error is raised.
       </p>
                       
       <p>
                            
          [A <b>non-sequential function</b>
-                           is a function whose declaration specifies %ann:nonsequential .
+                           is a function whose declaration specifies %an:nonsequential .
                              ]
          
                            
@@ -581,7 +581,7 @@ a.env:visited, a.env:link { color: black;
       <p>
                            
          [A <b>sequential function</b>
-                             is a function whose declaration specifies the annotation %ann:sequential.]
+                             is a function whose declaration specifies the annotation %an:sequential.]
          
                          
       </p>
@@ -1594,7 +1594,7 @@ into doc("bids.xml")/bids;
       <p>The following function returns true or false
                   according to whether its parameter is a known user name, and logs the event:
       </p>
-            <pre>declare %ann:sequential function validate-and-log($username as xs:string)
+            <pre>declare %an:sequential function validate-and-log($username as xs:string)
     as xs:boolean {
   variable $log as document-node() := fn:doc("log.xml"); 
 

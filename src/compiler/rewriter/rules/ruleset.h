@@ -149,7 +149,7 @@ public:
 protected:
   void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
 
-  void markSources(const std::vector<expr*>& sources, UDFCallChain& udfCaller);
+  void markSources(const std::vector<expr*>& sources);
 
   void markForSerialization(expr* node);
 };
