@@ -176,8 +176,7 @@ void XmlTree::destroy() throw()
 ********************************************************************************/
 void XmlTree::free()
 {
-  if (!theCollection)
-    destroy();
+  destroy();
 }
 
 
