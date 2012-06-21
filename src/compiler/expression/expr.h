@@ -962,11 +962,11 @@ class function_trace_expr : public expr
   friend class ExprIterator;
   friend class expr;
 protected:
-  expr_t theExpr;
+  expr_t        theExpr;
   store::Item_t theFunctionName;
-  QueryLoc theFunctionLocation;
-  QueryLoc theFunctionCallLocation;
-  unsigned int theFunctionArity;
+  QueryLoc      theFunctionLocation;
+  QueryLoc      theFunctionCallLocation;
+  unsigned int  theFunctionArity;
 
 public:
   function_trace_expr(

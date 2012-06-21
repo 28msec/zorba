@@ -1253,7 +1253,8 @@ function_trace_expr::function_trace_expr(
     expr_t aChild)
   :
   expr(sctx, loc, function_trace_expr_kind),
-  theExpr(aChild)
+  theExpr(aChild),
+  theFunctionArity(0)
 {
   bool modified;
   compute_return_type(false, &modified);
@@ -1264,7 +1265,8 @@ function_trace_expr::function_trace_expr(
 function_trace_expr::function_trace_expr(expr_t aExpr)
   :
   expr(aExpr->get_sctx(), aExpr->get_loc(), function_trace_expr_kind),
-  theExpr(aExpr)
+  theExpr(aExpr),
+  theFunctionArity(0)
 {
   bool modified;
   compute_return_type(false, &modified);
@@ -1285,7 +1287,13 @@ void function_trace_expr::compute_scripting_kind()
 
 expr_t function_trace_expr::clone(substitution_t& s) const
 {
-  return new function_trace_expr(theExpr->clone(s));
+  function_trace_expr* clone = new function_trace_expr(theExpr->clone(s));
+
+  clone->theFunctionName = theFunctionName;
+  clone->theFunctionLocation = theFunctionLocation;
+  clone->theFunctionCallLocation = theFunctionCallLocation;
+  clone->theFunctionArity = theFunctionArity;
+  return clone;
 }
 
 

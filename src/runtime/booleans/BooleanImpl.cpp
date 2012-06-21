@@ -1177,7 +1177,6 @@ void AtomicValuesEquivalenceIterator::serialize(::zorba::serialization::Archiver
   serialize_baseclass(ar,
   (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
 
-  SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
   SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
   serialize_long(ar, theTimezone);
   ar & theCollation;

@@ -301,7 +301,6 @@ class AtomicValuesEquivalenceIterator :
 public BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>
 {
 private:
-  CompareConsts::CompareType  theCompType;
   TypeManager               * theTypeManager;
   long                        theTimezone;
   XQPCollator               * theCollation;
