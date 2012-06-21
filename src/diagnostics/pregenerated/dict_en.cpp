@@ -122,12 +122,6 @@ extern entry const dict_en[] = {
   { "JNTY0004", "$1 items do not have typed value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0007", "$1 - wrong type for object/array selector in update expression." },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JNTY0008", "" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
@@ -135,6 +129,12 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0006", "\"$1\": pair to insert already exists in object." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0007", "$1 - wrong type for object/array selector in update expression." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0008", "" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0009", "\"$1\": duplicate pair to replace" },
@@ -590,12 +590,12 @@ extern entry const dict_en[] = {
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
-  { "~JNTY0007_Array", "\"$2\": can not be promoted to type xs:integer" },
-  { "~JNTY0007_Object", "\"$2\": can not be promoted to type xs:string" },
-  { "~JNTY0007_ObjectArray", "\"$2\": can not be promoted to type xs:anyAtomicType" },
-  { "~JNTY0008_Array", "\"$2\": target of an appending expression or of a position-inserting expression is not an array" },
-  { "~JNTY0008_Object", "\"$2\": target of a renaming expression or of a non-position-inserting expression is not an object." },
-  { "~JNTY0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item." },
+  { "~JNUP0007_Array", "\"$2\": can not be promoted to type xs:integer" },
+  { "~JNUP0007_Object", "\"$2\": can not be promoted to type xs:string" },
+  { "~JNUP0007_ObjectArray", "\"$2\": can not be promoted to type xs:anyAtomicType" },
+  { "~JNUP0008_Array", "\"$2\": target of an appending expression or of a position-inserting expression is not an array" },
+  { "~JNUP0008_Object", "\"$2\": target of a renaming expression or of a non-position-inserting expression is not an object." },
+  { "~JNUP0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item." },
   { "~JNUP0016_Array", "\"$2\": selector cannot be resolved against supplied array." },
   { "~JNUP0016_Object", "\"$2\": selector cannot be resolved against supplied object." },
   { "~JSON parser error", "JSON parser error" },

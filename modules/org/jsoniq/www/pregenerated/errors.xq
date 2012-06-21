@@ -70,10 +70,10 @@ declare variable $jerr:JNUP0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0006
 (:~
  :It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.
 :)
-declare variable $jerr:JNTY0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0007");
+declare variable $jerr:JNUP0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0007");
 
 
-declare variable $jerr:JNTY0008 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0008");
+declare variable $jerr:JNUP0008 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0008");
 
 (:~
  :It is a dynamic error if a pending update list contains two replacing update primitives on the same object or array, and with the same selector.

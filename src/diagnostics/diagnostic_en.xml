@@ -2570,7 +2570,7 @@
       <value>"$1": pair to insert already exists in object.</value>
     </diagnostic>
     
-    <diagnostic code="JNTY0007" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.</comment>
       
       <value>$1 - wrong type for object/array selector in update expression.</value>
@@ -2586,7 +2586,7 @@
       </entry>
     </diagnostic>
     
-    <diagnostic code="JNTY0008" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if the target of a deleting or replacing expression is not an array or an object.
         It is a dynamic error if the target of a renaming expression is not an object.
         It is a dynamic error if the target of an appending expression is not an array.

@@ -469,20 +469,20 @@ void PromoteIterator::raiseError(const zstring& valueType) const
   }
   case JSONIQ_ARRAY_SELECTOR:
   {
-    RAISE_ERROR(jerr::JNTY0007, loc,
-    ERROR_PARAMS(ZED(JNTY0007_Array), valueType));
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_Array), valueType));
     break;
   }
   case JSONIQ_OBJECT_SELECTOR:
   {
-    RAISE_ERROR(jerr::JNTY0007, loc,
-    ERROR_PARAMS(ZED(JNTY0007_Object), valueType));
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_Object), valueType));
     break;
   }
   case JSONIQ_SELECTOR:
   {
-    RAISE_ERROR(jerr::JNTY0007, loc,
-    ERROR_PARAMS(ZED(JNTY0007_ObjectArray), valueType));
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_ObjectArray), valueType));
     break;
   }
 #endif
@@ -703,23 +703,23 @@ void TreatIterator::raiseError(const zstring& valueType) const
   }
   case JSONIQ_UPDATE_TARGET:
   {
-    RAISE_ERROR(jerr::JNTY0008, loc,
-    ERROR_PARAMS(ZED(JNTY0008_ObjectArray), valueType));
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_ObjectArray), valueType));
     break;
   }
   case JSONIQ_OBJECT_UPDATE_TARGET:
   {
-    RAISE_ERROR(jerr::JNTY0008, loc,
-    ERROR_PARAMS(ZED(JNTY0008_Object), valueType));
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_Object), valueType));
     break;
   }
   case JSONIQ_ARRAY_UPDATE_TARGET:
   {
-    RAISE_ERROR(jerr::JNTY0008, loc,
-    ERROR_PARAMS(ZED(JNTY0008_Array), valueType));
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_Array), valueType));
     break;
   }
-  case JSONIQ_REPLACEMENT_VALUE:
+  case JSONIQ_OBJECT_UPDATE_VALUE:
   {
     RAISE_ERROR_NO_PARAMS(jerr::JNUP0017, loc);
     break;

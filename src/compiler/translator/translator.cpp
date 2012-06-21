@@ -12866,7 +12866,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   targetExpr = wrap_in_type_match(targetExpr,
                                   rtm.JSON_OBJECT_TYPE_ONE,
                                   loc,
-                                  TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNTY0008
+                                  TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
   args.push_back(targetExpr);
@@ -12875,6 +12875,16 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   {
     expr_t nameExpr = pop_nodestack();
     expr_t valueExpr = pop_nodestack();
+    
+    nameExpr = wrap_in_type_promotion(nameExpr,
+                                      theRTM.STRING_TYPE_ONE,
+                                      PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
+                                   
+    valueExpr = wrap_in_type_match(valueExpr,
+                                   rtm.ITEM_TYPE_ONE,
+                                   loc,
+                                   TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
+                                   NULL);
 
     args.push_back(nameExpr);
     args.push_back(valueExpr);
@@ -12919,12 +12929,12 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
 
   posExpr = wrap_in_type_promotion(posExpr,
                                    rtm.INTEGER_TYPE_ONE,
-                                   PromoteIterator::JSONIQ_ARRAY_SELECTOR); // JNTY0007
+                                   PromoteIterator::JSONIQ_ARRAY_SELECTOR); // JNUP0007
 
   targetExpr = wrap_in_type_match(targetExpr,
                                   rtm.JSON_ARRAY_TYPE_ONE,
                                   loc,
-                                  TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNTY0008
+                                  TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
   std::vector<expr_t> args(3);
@@ -12967,7 +12977,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ARRAY_TYPE_ONE,
                                   loc,
-                                  TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNTY0008
+                                  TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
@@ -13016,13 +13026,13 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
   
   selExpr = wrap_in_type_promotion(selExpr,
                                    theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PromoteIterator::JSONIQ_SELECTOR, // JNTY0007
+                                   PromoteIterator::JSONIQ_SELECTOR, // JNUP0007
                                    NULL);
   
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ITEM_TYPE_ONE,
                                   loc,
-                                  TreatIterator::JSONIQ_UPDATE_TARGET, // JNTY0008
+                                  TreatIterator::JSONIQ_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
@@ -13062,18 +13072,18 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   args[0] = wrap_in_type_match(targetExpr,
                                theRTM.JSON_ITEM_TYPE_ONE,
                                loc,
-                               TreatIterator::JSONIQ_UPDATE_TARGET, // JNTY0008
+                               TreatIterator::JSONIQ_UPDATE_TARGET, // JNUP0008
                                NULL);
 
   args[1] = wrap_in_type_promotion(selExpr,
                                    theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PromoteIterator::JSONIQ_SELECTOR, // JNTY0007
+                                   PromoteIterator::JSONIQ_SELECTOR, // JNUP0007
                                    NULL);
 
   args[2] = wrap_in_type_match(valueExpr,
                                theRTM.ITEM_TYPE_ONE,
                                loc,
-                               TreatIterator::JSONIQ_REPLACEMENT_VALUE, // JNUP0017
+                               TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
                                NULL);
                                
   fo_expr_t updExpr = new fo_expr(theRootSctx,
@@ -13112,16 +13122,16 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
   args[0] = wrap_in_type_match(targetExpr,
                                theRTM.JSON_OBJECT_TYPE_ONE,
                                loc,
-                               TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNTY0008
+                               TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                NULL);
 
   args[1] = wrap_in_type_promotion(nameExpr,
                                    theRTM.STRING_TYPE_ONE,
-                                   PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNTY0007
+                                   PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
 
   args[2] = wrap_in_type_promotion(newNameExpr,
                                    theRTM.STRING_TYPE_ONE,
-                                   PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNTY0007
+                                   PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
                                   loc, 

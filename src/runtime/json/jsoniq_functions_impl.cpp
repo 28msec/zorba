@@ -672,8 +672,8 @@ bool JSONDeleteIterator::nextImpl(
     {
       xqtref_t type = tm->create_value_type(selector, loc);
 
-      RAISE_ERROR(jerr::JNTY0007, loc, 
-      ERROR_PARAMS(ZED(JNTY0007_Object), type->toSchemaString()));
+      RAISE_ERROR(jerr::JNUP0007, loc, 
+      ERROR_PARAMS(ZED(JNUP0007_Object), type->toSchemaString()));
     }
 
     pul->addJSONObjectDelete(&loc, target, selector);
@@ -686,8 +686,8 @@ bool JSONDeleteIterator::nextImpl(
     {
       xqtref_t type = tm->create_value_type(selector, loc);
 
-      RAISE_ERROR(jerr::JNTY0007, loc, 
-      ERROR_PARAMS(ZED(JNTY0007_Array), type->toSchemaString()));
+      RAISE_ERROR(jerr::JNUP0007, loc, 
+      ERROR_PARAMS(ZED(JNUP0007_Array), type->toSchemaString()));
     }
 
     pul->addJSONArrayDelete(&loc, target, selector);
@@ -765,8 +765,8 @@ bool JSONReplaceValueIterator::nextImpl(
     {
       xqtref_t type = tm->create_value_type(selector, loc);
 
-      RAISE_ERROR(jerr::JNTY0007, loc, 
-      ERROR_PARAMS(ZED(JNTY0007_Object), type->toSchemaString()));
+      RAISE_ERROR(jerr::JNUP0007, loc, 
+      ERROR_PARAMS(ZED(JNUP0007_Object), type->toSchemaString()));
     }
 
     pul->addJSONObjectReplaceValue(&loc, target, selector, newValue);
@@ -779,8 +779,8 @@ bool JSONReplaceValueIterator::nextImpl(
     {
       xqtref_t type = tm->create_value_type(selector, loc);
 
-      RAISE_ERROR(jerr::JNTY0007, loc, 
-      ERROR_PARAMS(ZED(JNTY0007_Array), type->toSchemaString()));
+      RAISE_ERROR(jerr::JNUP0007, loc, 
+      ERROR_PARAMS(ZED(JNUP0007_Array), type->toSchemaString()));
     }
 
     pul->addJSONArrayReplaceValue(&loc, target, selector, newValue);
