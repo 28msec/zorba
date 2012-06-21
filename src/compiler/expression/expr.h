@@ -961,6 +961,7 @@ class function_trace_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+
 protected:
   expr_t        theExpr;
   store::Item_t theFunctionName;
