@@ -170,7 +170,7 @@ class SimpleJSONObject : public JSONObject
 {
 protected:
   typedef std::vector<zstring> Keys;
-  typedef std::map<zstring, store::Item_t> Pairs;
+  typedef std::map<zstring, store::Item*> Pairs;
 
   class KeyIterator : public store::Iterator
   {
@@ -328,7 +328,7 @@ public:
 class SimpleJSONArray : public JSONArray
 {
 protected:
-  typedef std::vector<store::Item_t> Members;
+  typedef std::vector<store::Item*> Members;
 
   class ValuesIterator : public store::Iterator
   {

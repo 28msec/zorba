@@ -129,13 +129,14 @@ SimpleJSONObject::~SimpleJSONObject()
        ++lIter)
   {
     if (lIter->second->isJSONItem()) {
-      JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lIter->second.getp());
+      JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lIter->second);
       ZORBA_ASSERT(lJSONItem != NULL);
       if (getCollection() != NULL)
       {
         setJSONRoot(lIter->second, NULL);
       }
     }
+    lIter->second->removeReference();
   }
   theKeys.clear();
   thePairs.clear();
@@ -235,12 +236,13 @@ SimpleJSONObject::add(
 
   if (lIterator == thePairs.end())
   {  
-    store::Item_t lValue = aValue;
+    store::Item* lValue = aValue.getp();
     if (getCollection() != NULL)
     {
       setJSONRoot(aValue, theRoot);
     }
     theKeys.push_back(aName);
+    lValue->addReference();
     thePairs.insert(make_pair(aName, lValue));
 #ifndef NDEBUG
     assertInvariant();
@@ -249,7 +251,7 @@ SimpleJSONObject::add(
   }
   else if (accumulate)
   {
-    store::Item* value = lIterator->second.getp();
+    store::Item* value = lIterator->second;
 
     if (value->isJSONArray())
     {
@@ -265,6 +267,8 @@ SimpleJSONObject::add(
       {
         setJSONRoot(array, theRoot);
       }
+      lIterator->second->removeReference();
+      array->addReference();
       lIterator->second = array;
     }
 #ifndef NDEBUG
@@ -307,6 +311,7 @@ SimpleJSONObject::remove(const zstring& aName)
       setJSONRoot(lRes, NULL);
     }
   }
+  lIter->second->removeReference();
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), aName);
   assert(lKeyIter != theKeys.end());
   theKeys.erase(lKeyIter);
@@ -350,7 +355,9 @@ store::Item_t SimpleJSONObject::setValue(
   {
     setJSONRoot(aValue, theRoot);
   }
-  lIter->second = aValue;
+  lIter->second->removeReference();
+  aValue->addReference();
+  lIter->second = aValue.getp();
 #ifndef NDEBUG
   assertInvariant();
 #endif
@@ -382,9 +389,9 @@ bool SimpleJSONObject::rename(
 #endif
     return false;
   }
-  store::Item_t lValue = lIter->second;
+  store::Item* lValue = lIter->second;
   if (lValue->isJSONItem()) {
-    JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lValue.getp());
+    JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lValue);
     ZORBA_ASSERT(lJSONItem != NULL);
     if (getCollection() != NULL)
     {
@@ -415,9 +422,9 @@ void SimpleJSONObject::setRoot(const JSONItem* aRoot)
        ++lIter)
   {
     SimpleJSONObject* lObject =
-        dynamic_cast<SimpleJSONObject*>(lIter->second.getp());
+        dynamic_cast<SimpleJSONObject*>(lIter->second);
     SimpleJSONArray* lArray =
-        dynamic_cast<SimpleJSONArray*>(lIter->second.getp());
+        dynamic_cast<SimpleJSONArray*>(lIter->second);
     if (lObject != NULL)
     {
       lObject->setRoot(aRoot);
@@ -579,9 +586,9 @@ bool SimpleJSONObject::isThisRootOfAllDescendants(const store::Item* aRoot) cons
        ++lIter)
   {
     const SimpleJSONObject* lObject =
-        dynamic_cast<const SimpleJSONObject*>(lIter->second.getp());
+        dynamic_cast<const SimpleJSONObject*>(lIter->second);
     const SimpleJSONArray* lArray =
-        dynamic_cast<const SimpleJSONArray*>(lIter->second.getp());
+        dynamic_cast<const SimpleJSONArray*>(lIter->second);
     if (lObject != NULL && (!lObject->isThisRootOfAllDescendants(aRoot)))
     {
       return false;
@@ -609,9 +616,9 @@ bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) co
        ++lIter)
   {
     const SimpleJSONObject* lObject =
-        dynamic_cast<const SimpleJSONObject*>(lIter->second.getp());
+        dynamic_cast<const SimpleJSONObject*>(lIter->second);
     const SimpleJSONArray* lArray =
-        dynamic_cast<const SimpleJSONArray*>(lIter->second.getp());
+        dynamic_cast<const SimpleJSONArray*>(lIter->second);
     if (lObject != NULL && lObject->isThisJSONItemInDescendance(anItem))
     {
       return true;
@@ -714,13 +721,14 @@ SimpleJSONArray::~SimpleJSONArray()
        ++lIter)
   {
     if ((*lIter)->isJSONItem()) {
-      JSONItem* lJSONItem = dynamic_cast<JSONItem*>((*lIter).getp());
+      JSONItem* lJSONItem = dynamic_cast<JSONItem*>(*lIter);
       ZORBA_ASSERT(lJSONItem != NULL);
       if (getCollection() != NULL)
       {
         setJSONRoot(*lIter, NULL);
       }
     }
+    (*lIter)->removeReference();
   }
 }
 
@@ -738,6 +746,7 @@ SimpleJSONArray::push_back(const store::Item_t& aValue)
   {
     setJSONRoot(aValue, theRoot);
   }
+  aValue->addReference();
   theContent.push_back(aValue.getp());
 #ifndef NDEBUG
   assertInvariant();
@@ -792,6 +801,7 @@ SimpleJSONArray::insert_before(const xs_integer& pos, const store::Item_t& membe
   {
     setJSONRoot(member, theRoot);
   }
+  member->addReference();
   theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
 #ifndef NDEBUG
   assertInvariant();
@@ -861,6 +871,7 @@ SimpleJSONArray::add(
     {
       setJSONRoot(lItem, theRoot);
     }
+    lItem->addReference();
     theContent.insert(theContent.begin() + aTargetPos + i, lItem);
   }
 
@@ -888,6 +899,7 @@ SimpleJSONArray::remove(const xs_integer& aPos)
       setJSONRoot(lItem, NULL);
     }
   }
+  lItem->removeReference();
   uint64_t lPosStartingZero = cast(aPos) - 1;
   theContent.erase(theContent.begin() + lPosStartingZero);
 
@@ -921,7 +933,9 @@ SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
   {
     setJSONRoot(value, theRoot);
   }
-  theContent[pos] = value;
+  theContent[pos]->removeReference();
+  value->addReference();
+  theContent[pos] = value.getp();
   
 #ifndef NDEBUG
   assertInvariant();
@@ -941,9 +955,9 @@ void SimpleJSONArray::setRoot(const JSONItem* aRoot)
        ++lIter)
   {
     SimpleJSONObject* lObject =
-        dynamic_cast<SimpleJSONObject*>(lIter->getp());
+        dynamic_cast<SimpleJSONObject*>(*lIter);
     SimpleJSONArray* lArray =
-        dynamic_cast<SimpleJSONArray*>(lIter->getp());
+        dynamic_cast<SimpleJSONArray*>(*lIter);
     if (lObject != NULL)
     {
       lObject->setRoot(aRoot);
@@ -1199,9 +1213,9 @@ bool SimpleJSONArray::isThisRootOfAllDescendants(const store::Item* aRoot) const
        ++lIter)
   {
     const SimpleJSONObject* lObject =
-        dynamic_cast<const SimpleJSONObject*>(lIter->getp());
+        dynamic_cast<const SimpleJSONObject*>(*lIter);
     const SimpleJSONArray* lArray =
-        dynamic_cast<const SimpleJSONArray*>(lIter->getp());
+        dynamic_cast<const SimpleJSONArray*>(*lIter);
     if (lObject != NULL && (!lObject->isThisRootOfAllDescendants(aRoot)))
     {
       return false;
@@ -1229,9 +1243,9 @@ bool SimpleJSONArray::isThisJSONItemInDescendance(const store::Item* anItem) con
        ++lIter)
   {
     const SimpleJSONObject* lObject =
-        dynamic_cast<const SimpleJSONObject*>(lIter->getp());
+        dynamic_cast<const SimpleJSONObject*>(*lIter);
     const SimpleJSONArray* lArray =
-        dynamic_cast<const SimpleJSONArray*>(lIter->getp());
+        dynamic_cast<const SimpleJSONArray*>(*lIter);
     if (lObject != NULL && lObject->isThisJSONItemInDescendance(anItem))
     {
       return true;
