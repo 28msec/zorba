@@ -107,7 +107,12 @@ declare %an:sequential function map:delete(
  : If an entry with the given key already exists in the map, the value
  : sequences of the existing entry and the sequence passed using $value
  : argument are concatenated.
- : 
+ :
+ : Note that it is possible to insert entries with empty key attributes.
+ : However as the getting the entries is based on the "eq" comparison and
+ : as "eq" with an empty sequence always return false, it is not possible
+ : to retrieve these entries.
+ :
  : @param $name the name of the map
  : @param $value the value of the entry to insert
  : @param $key an arbitrary number of key attributes.
@@ -135,6 +140,11 @@ declare %an:variadic %an:sequential function map:insert(
 (:~
  : Returns the value of the entry with the given key from the map.
  :
+ : Note that it is possible to insert entries with empty key attributes.
+ : However as the getting the entries is based on the "eq" comparison and
+ : as "eq" with an empty sequence always return false, it is not possible
+ : to retrieve these entries.
+ :
  : @param $name the name of the map
  : @param an arbitrary number of search key attributes.
  :
@@ -159,6 +169,11 @@ declare %an:variadic function map:get(
 (:~
  : Removes an entry identified by the given key from the map.
  :
+ : Note that it is possible to insert entries with empty key attributes.
+ : However as the removing the entries is based on the "eq" comparison and
+ : as "eq" with an empty sequence always return false, it is not possible
+ : to remove these entries.
+ :
  : @param $name the name of the map
  : @param an arbitrary number of search key attributes.
  :
@@ -175,7 +190,6 @@ declare %an:variadic function map:get(
  :        specified when creating the map.
  :
  : @see map:create
- :
  :)
 declare %an:variadic %an:sequential function map:remove(
   $name as xs:QName,
