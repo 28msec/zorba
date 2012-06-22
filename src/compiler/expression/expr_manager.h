@@ -46,6 +46,15 @@ private:
   std::list<expr*> theExprs;
   MemoryManager memory;
 
+private:
+  //An ExprManager is the only objecto to handle a collection of Exprs and
+  //the memory in which they recide. It makes no sense to copy it.
+  ExprManager(const ExprManager&);
+  ExprManager& operator= (const ExprManager&);
+
+public:
+  MemoryManager& getMemory() {return memory;}
+
 public:
   if_expr* create_if_expr(static_context* sctx, const QueryLoc& loc,
                           expr_t cond_expr, expr_t then_expr,

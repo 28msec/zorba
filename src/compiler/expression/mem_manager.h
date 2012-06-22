@@ -61,6 +61,11 @@ private:
 
   char* thePageStart;
   char* theFreeStart;
+
+private:
+  // Pages are unique, there is no sense in copying them
+  MemPage (const MemPage&);
+  MemPage& operator= (const MemPage&);
 };
 
 /*******************************************************************************
@@ -75,7 +80,13 @@ public:
   void* allocate(size_t size);
 
 private:
-  std::list<MemPage> pages;
+  std::list<MemPage*> pages;
+
+private:
+  // A memory manager is the only existing object handling memory
+  // Since it's all data that it contains, there is no sense in copying it.
+  MemoryManager(const MemoryManager&);
+  MemoryManager& operator=(const MemoryManager&);
 };
 
 } // namespace zorba

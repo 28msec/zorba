@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@
 #include "zorbaserialization/serialize_zorba_types.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
@@ -82,7 +82,7 @@ CompilerCB::config::config()
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::config::config(::zorba::serialization::Archiver& ar) 
+CompilerCB::config::config(::zorba::serialization::Archiver& ar)
   :
   parse_cb(NULL),
   translate_cb(NULL),
@@ -119,7 +119,8 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsUpdating(false),
   theIsSequential(false),
   theTimeout(timeout),
-  theTempIndexCounter(0)
+  theTempIndexCounter(0),
+  theExprManager()
 {
   theLocalUdfs = new rclist<user_function*>;
 }
@@ -127,7 +128,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 
 /*******************************************************************************
   Used by the eval iterator to create a new ccb as a copy of the ccb of the
-  enclosing query. 
+  enclosing query.
 *******************************************************************************/
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
@@ -143,7 +144,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theIsSequential(false),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
-  theConfig(cb.theConfig)
+  theConfig(cb.theConfig),
+  theExprManager()
 {
   theLocalUdfs = new rclist<user_function*>;
 }
@@ -160,7 +162,8 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(NULL),
 #endif
-  theIsEval(false)
+  theIsEval(false),
+  theExprManager()
 {
 }
 
@@ -168,7 +171,7 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::~CompilerCB() 
+CompilerCB::~CompilerCB()
 {
 }
 
@@ -210,7 +213,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   ar & theDebuggerCommons;
 #endif
-  if (!ar.is_serializing_out()) 
+  if (!ar.is_serializing_out())
   {
     //don't serialize this
     theXQueryDiagnostics = NULL;
@@ -233,6 +236,6 @@ static_context* CompilerCB::getStaticContext(int c)
   return lIter->second.getp();
 }
 
-  
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

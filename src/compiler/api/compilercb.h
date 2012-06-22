@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,9 @@
 #include "zorbatypes/rclist.h"
 #include "zorbaserialization/class_serializer.h"
 
+#include "compiler/expression/mem_manager.h"
+#include "compiler/expression/expr_manager.h"
+
 namespace zorba {
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -55,7 +58,7 @@ class static_context;
   A query-level (or eval-level) map that stores the sctx objs that need to be
   kept around for the whole duration of a query (including runtime). In non-
   DEBUGGER mode, the map stores only for root sctx of each module. In DEBUGGER
-  mode, it stores all the sctxs created by each module. Each sctx stored in 
+  mode, it stores all the sctxs created by each module. Each sctx stored in
   this map has an associated numeric id, and theSctxMap actually maps these
   numeric ids to their associated sctx objs. The map is modified by the methods
   TranslatorImpl::end_visit(ModuleImport) and TranslatorImpl::push_scope().
@@ -78,7 +81,7 @@ class static_context;
   internally by the StaticContextImpl::loadProlog() method).
 
   - theIsUpdating :
-  Set to true if the root expr of the query or eval expr is an updating expr. 
+  Set to true if the root expr of the query or eval expr is an updating expr.
 
   - theTimeout :
 
@@ -108,13 +111,13 @@ class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseCl
 public:
   struct config : public zorba::serialization::SerializeBaseClass
   {
-    typedef enum 
+    typedef enum
     {
       O0,
       O1,
       O2
     } opt_level_t;
-    
+
     typedef void (* expr_callback) (const expr *, const std::string& name);
 
     typedef void (* ast_callback) (const parsenode *, const std::string& name);
@@ -141,7 +144,7 @@ public:
 
   typedef std::map<int, static_context_t> SctxMap;
 
-public:  
+public:
   XQueryDiagnostics       * theXQueryDiagnostics;
 
   SctxMap                   theSctxMap;
@@ -167,6 +170,8 @@ public:
   config                    theConfig;
 
   rchandle<rclist<user_function*> >    theLocalUdfs;//for plan serializer
+
+  ExprManager theExprManager;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
@@ -195,6 +200,11 @@ public:
   bool isSequential() const { return theIsSequential;}
 
   static_context* getStaticContext(int id);
+
+  ExprManager& getExprManager() {return theExprManager;}
+
+  MemoryManager& getMemoryManager() {return theExprManager.getMemory();}
+
 };
 
 

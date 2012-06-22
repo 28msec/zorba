@@ -105,7 +105,7 @@ void* malloc_fail_alloc(size_t size)
 TEST(PageCreationAllocatesMemoryDeletionFreesIt)
   //block to force deletion of testPage
   {
-    MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+    MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
     ASSERT_TRUE(defPageAlloc == 1);
   }
   ASSERT_TRUE(defPageAlloc == 0);
@@ -117,25 +117,25 @@ TEST(FailedPageCreationThrowsBadAlloc)
 END_TEST
 
 TEST(NewPageHasFullSpace)
-  MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
   ASSERT_TRUE(testPage.space() == DEFSIZE);
 END_TEST
 
 TEST(PageGivesValidAllocationAndLoosesSpace)
-  MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
   char* mem = (char*)testPage.allocate(sizeof(char) * 2);
   ASSERT_TRUE(defaultPage <= mem && defaultPage + DEFSIZE > mem);
   ASSERT_TRUE(DEFSIZE - 2 == testPage.space());
 END_TEST
 
 TEST(AllocationSizeZeroReturnsNull)
-  MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
   char* mem = (char*)testPage.allocate(0);
   ASSERT_TRUE(NULL == mem);
 END_TEST
 
 TEST(PageGivesSeparateAllocations)
-  MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
   char* mem1 = (char*)testPage.allocate(sizeof(char) * 2);
   char* mem2 = (char*)testPage.allocate(sizeof(char) * 3);
   ASSERT_TRUE(mem1 >= (mem2 + 3) || (mem1 + 2) <= mem2);
@@ -144,13 +144,13 @@ TEST(PageGivesSeparateAllocations)
 END_TEST
 
 TEST(PageWillNotAllocateSpaceBiggerThanSize)
-  MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
   char* mem = (char*)testPage.allocate(HUGESIZE);
   ASSERT_TRUE(NULL == mem);
 END_TEST
 
 TEST(PageWillNotAllocateSpaceBiggerThanSpaceAvailable)
-  MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
   char* mem1 = (char*)testPage.allocate(sizeof(char) * 10);
   char* mem2 = (char*)testPage.allocate(testPage.space()+2);
   ASSERT_TRUE(mem1 != NULL);
@@ -158,7 +158,7 @@ TEST(PageWillNotAllocateSpaceBiggerThanSpaceAvailable)
 END_TEST
 
 TEST(FailedAllocationHasNoEffectOnPage)
-  MemPage testPage = MemPage(DEFSIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(DEFSIZE, &malloc_impostor, &free_impostor);
   char* mem1 = (char*)testPage.allocate(sizeof(char) * 5);
   size_t orig_space = testPage.space();
   char* mem2 = (char*)testPage.allocate(testPage.space()+2);
@@ -169,7 +169,7 @@ TEST(FailedAllocationHasNoEffectOnPage)
 END_TEST
 
 TEST(BiggerPagesAllowForBiggerSpaceAndAllocation)
-  MemPage testPage = MemPage(HUGESIZE, &malloc_impostor, &free_impostor);
+  MemPage testPage(HUGESIZE, &malloc_impostor, &free_impostor);
   ASSERT_TRUE(testPage.space() == HUGESIZE);
   char* mem = (char*)testPage.allocate(HUGESIZE);
   ASSERT_TRUE(NULL != mem);

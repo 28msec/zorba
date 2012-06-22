@@ -61,23 +61,29 @@ void* MemPage::allocate(size_t alloc_size)
 
 MemoryManager::MemoryManager()
 {
-  pages.push_front(MemPage());
+  pages.push_front(new MemPage());
 }
 
-MemoryManager::~MemoryManager() {}
+MemoryManager::~MemoryManager()
+{
+    for(std::list<MemPage*>::iterator iter = pages.begin();
+        iter != pages.end();
+        ++iter)
+     delete *iter;
+}
 
 void* MemoryManager::allocate(size_t size)
 {
   if(size > MemPage::DEFAULT_PAGE_SIZE)
   {
-    pages.push_back(MemPage(size));
-    return pages.back().allocate(size);
+    pages.push_back(new MemPage(size));
+    return pages.back()->allocate(size);
   }
 
-  if(pages.front().space() < size)
-    pages.push_front(MemPage());
+  if(pages.front()->space() < size)
+    pages.push_front(new MemPage());
 
-  return pages.front().allocate(size);
+  return pages.front()->allocate(size);
 }
 
 } // namespace zorba
