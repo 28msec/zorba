@@ -10,6 +10,8 @@ Optimizations:
   * Small optimization of comparison operations.
   * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428,
     which is only a performance bug)
+  * No more serialization of compiler expressions.
+  * Big rewrite of plan serializer internals, resulting in big performance improvement.
 
 Bug Fixes/Other Changes:
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
