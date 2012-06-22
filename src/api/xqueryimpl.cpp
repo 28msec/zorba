@@ -68,7 +68,6 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-//#include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -919,16 +918,8 @@ bool XQueryImpl::saveExecutionPlan(
 
     if (archive_format == ZORBA_USE_XML_ARCHIVE)
     {
-      ZORBA_ASSERT(false);
-    /*
-      zorba::serialization::XmlArchiver xmlar(&os);
-
-      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        xmlar.set_serialize_everything();
-
-      serialize(xmlar);
-      xmlar.serialize_out();
-    */
+      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
+      ERROR_PARAMS("XML-format plan serialization", ""));
     }
     else//ZORBA_USE_BINARY_ARCHIVE
     {
