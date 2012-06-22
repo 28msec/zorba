@@ -153,6 +153,28 @@ void serialize_ulong(Archiver& ar, ulong& obj)
 /*******************************************************************************
 
 ********************************************************************************/
+void serialize_csize(Archiver& ar, csize& obj)
+{
+  assert(sizeof(csize) <= 8);
+
+  if (ar.is_serializing_out())
+  {
+    uint64_t uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, &uint64v);
+  }
+  else
+  {
+    uint64_t uint64v;
+    ar.read_next_simple_temp_field(TYPE_UINT64, &uint64v);
+
+    obj = static_cast<csize>(uint64v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void operator&(Archiver& ar, int32_t& obj)
 {
   if (ar.is_serializing_out())
