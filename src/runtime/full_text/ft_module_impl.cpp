@@ -618,15 +618,10 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 
 bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
-  store::Item_t node_name, attr_node;
-  zstring base_uri;
   store::Item_t item;
   iso639_1::type lang;
   Tokenizer::State t_state;
-  store::NsBindings const ns_bindings;
   TokenizerProvider const *tokenizer_provider;
-  store::Item_t type_name;
-  zstring value_string;
 
   TokenizeNodeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeNodeIteratorState, state, plan_state );
@@ -671,17 +666,12 @@ void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
 
 bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
                                       PlanState &plan_state ) const {
-
-  zstring base_uri;
   store::Item_t inc;
   store::Item_t item;
   store::Item_t item_struct;
   iso639_1::type lang;
   Tokenizer::State t_state;
-  store::NsBindings const ns_bindings;
   Tokenizer::ptr tokenizer;
-  store::Item_t type_name;
-  zstring value_string;
 
   TokenizeNodesIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeNodesIteratorState, state, plan_state );
