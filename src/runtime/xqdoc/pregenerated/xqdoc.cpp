@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <XQDocIterator>
-XQDocIterator::class_factory<XQDocIterator>
-XQDocIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
+
+void XQDocIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<XQDocIterator, PlanIteratorState>*)this);
+}
 
 
-void XQDocIterator::accept(PlanIterVisitor& v) const {
+void XQDocIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -55,11 +61,17 @@ XQDocIterator::~XQDocIterator() {}
 
 
 // <XQDocContentIterator>
-XQDocContentIterator::class_factory<XQDocContentIterator>
-XQDocContentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(XQDocContentIterator)
+
+void XQDocContentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<XQDocContentIterator, PlanIteratorState>*)this);
+}
 
 
-void XQDocContentIterator::accept(PlanIterVisitor& v) const {
+void XQDocContentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

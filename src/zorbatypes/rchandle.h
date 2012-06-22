@@ -29,11 +29,16 @@
 #include "zorbatypes/rclock.h"
 
 #include "zorbaserialization/class_serializer.h"
-#include "zorbaserialization/archiver.h"
 
 
 namespace zorba
 {
+
+namespace serialization
+{
+  class archiver;
+}
+
 
 /*******************************************************************************
   
@@ -54,7 +59,7 @@ protected:
   mutable long  theRefCount;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(RCObject);
+  SERIALIZABLE_CLASS(RCObject);
 
   RCObject(::zorba::serialization::Archiver& ar)  
     :
@@ -63,11 +68,7 @@ public:
   {
   }
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    if(!ar.is_serializing_out())
-      theRefCount = 0;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   RCObject()
@@ -92,10 +93,6 @@ public:
 
   long getRefCount() const { return theRefCount; }
 
-  //long* getSharedRefCounter() const { ZORBA_FATAL(0, ""); return NULL; } 
- 
-  //SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; });
-
   void addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const;
 
   void removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock));
@@ -108,13 +105,9 @@ public:
 class ZORBA_DLL_PUBLIC SimpleRCObject : public RCObject
 {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(SimpleRCObject)
+  SERIALIZABLE_CLASS(SimpleRCObject)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(SimpleRCObject, RCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    if(!ar.is_serializing_out())
-      theRefCount = 0;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   SimpleRCObject() : RCObject() { }

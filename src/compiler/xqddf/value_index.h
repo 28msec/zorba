@@ -21,6 +21,7 @@
 
 #include "common/shared_types.h"
 
+#include "compiler/parser/query_loc.h"
 #include "compiler/expression/expr_utils.h"
 
 
@@ -260,6 +261,7 @@ private:
   ContainerKind                   theContainerKind;
 
   for_clause_t                    theDomainClause;
+  csize                           theNumKeyExprs;
   std::vector<expr_t>             theKeyExprs;
   std::vector<xqtref_t>           theKeyTypes;
   std::vector<OrderModifier>      theOrderModifiers;
@@ -325,7 +327,7 @@ public:
 
   void setDomainPositionVariable(var_expr_t domainPosVar);
 
-  const std::vector<expr_t>& getKeyExpressions() const;
+  csize getNumKeyExprs() const { return theNumKeyExprs; }
 
   void setKeyExpressions(const std::vector<expr_t>& keyExprs);
 
@@ -337,13 +339,13 @@ public:
 
   void setOrderModifiers(const std::vector<OrderModifier>& modifiers);
 
-  ulong numSources() const { return (ulong)theSourceNames.size(); }
+  csize numSources() const { return theSourceNames.size(); }
 
-  const store::Item* getSourceName(ulong i) const { return theSourceNames[i]; }
+  const store::Item* getSourceName(csize i) const { return theSourceNames[i]; }
 
-  expr* getDomainSourceExpr(ulong i) const { return theDomainSourceExprs[i]; }
+  expr* getDomainSourceExpr(csize i) const { return theDomainSourceExprs[i]; }
 
-  void analyze();
+  void analyze(CompilerCB* ccb);
 
   expr* getBuildExpr(CompilerCB* ccb, const QueryLoc& loc);
 

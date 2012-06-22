@@ -48,11 +48,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentCompareOptionsIterator,
     NaryBaseIterator<CurrentCompareOptionsIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<CurrentCompareOptionsIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   CurrentCompareOptionsIterator(
     static_context* sctx,
@@ -84,11 +80,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentLangIterator,
     NaryBaseIterator<CurrentLangIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<CurrentLangIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   CurrentLangIterator(
     static_context* sctx,
@@ -120,11 +112,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HostLangIterator,
     NaryBaseIterator<HostLangIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<HostLangIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   HostLangIterator(
     static_context* sctx,
@@ -156,11 +144,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStemLangSupportedIterator,
     NaryBaseIterator<IsStemLangSupportedIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsStemLangSupportedIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsStemLangSupportedIterator(
     static_context* sctx,
@@ -192,11 +176,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStopWordIterator,
     NaryBaseIterator<IsStopWordIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsStopWordIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsStopWordIterator(
     static_context* sctx,
@@ -228,11 +208,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStopWordLangSupportedIterator,
     NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsStopWordLangSupportedIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsStopWordLangSupportedIterator(
     static_context* sctx,
@@ -264,11 +240,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsThesaurusLangSupportedIterator,
     NaryBaseIterator<IsThesaurusLangSupportedIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsThesaurusLangSupportedIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsThesaurusLangSupportedIterator(
     static_context* sctx,
@@ -300,11 +272,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsTokenizerLangSupportedIterator,
     NaryBaseIterator<IsTokenizerLangSupportedIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsTokenizerLangSupportedIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsTokenizerLangSupportedIterator(
     static_context* sctx,
@@ -336,11 +304,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StemIterator,
     NaryBaseIterator<StemIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<StemIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   StemIterator(
     static_context* sctx,
@@ -372,11 +336,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StripDiacriticsIterator,
     NaryBaseIterator<StripDiacriticsIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<StripDiacriticsIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   StripDiacriticsIterator(
     static_context* sctx,
@@ -425,11 +385,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ThesaurusLookupIterator,
     NaryBaseIterator<ThesaurusLookupIterator, ThesaurusLookupIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ThesaurusLookupIterator, ThesaurusLookupIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ThesaurusLookupIterator(
     static_context* sctx,
@@ -517,11 +473,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizerPropertiesIterator,
     NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TokenizerPropertiesIterator(
     static_context* sctx,
@@ -565,11 +517,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeStringIterator,
     NaryBaseIterator<TokenizeStringIterator, TokenizeStringIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TokenizeStringIterator, TokenizeStringIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TokenizeStringIterator(
     static_context* sctx,

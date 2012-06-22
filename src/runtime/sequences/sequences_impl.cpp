@@ -248,6 +248,7 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.1.6 fn:distinct-values
 ********************************************************************************/
@@ -259,6 +260,7 @@ void FnDistinctValuesIteratorState::reset(PlanState& planState)
     theAlreadySeenMap->clear();
 }
 
+
 bool FnDistinctValuesIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -266,7 +268,7 @@ bool FnDistinctValuesIterator::nextImpl(
   store::Item_t lItem;
   xqtref_t lItemType;
   XQPCollator* lCollator;
-  ValueCompareParam* theValueCompare;
+  ValueCompareParam* valueCompare;
 
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
@@ -275,16 +277,16 @@ bool FnDistinctValuesIterator::nextImpl(
   {
     lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
-    theValueCompare->theCollator = lCollator;
+    valueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
+    valueCompare->theCollator = lCollator;
   }
   else
   {
-    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
+    valueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
   }
 
   // theValueCompare managed by state->theAlreadySeenMap
-  state->theAlreadySeenMap.reset(new ItemValueCollHandleHashSet(theValueCompare));
+  state->theAlreadySeenMap.reset(new ItemValueCollHandleHashSet(valueCompare));
 
   while (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -298,7 +300,6 @@ bool FnDistinctValuesIterator::nextImpl(
     }
     else if ( ! state->theAlreadySeenMap->exists(result) )
     {
-      // check if the item is already in the map
       state->theAlreadySeenMap->insert(result);
       STACK_PUSH(true, state);
     }
@@ -306,6 +307,7 @@ bool FnDistinctValuesIterator::nextImpl(
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.1.7 fn:insert-before
@@ -1253,97 +1255,68 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         TypeOps::is_equal(tm, *lRunningType, *lUntypedAtomic))
     {
       lHitNumeric = true;
+
       if ( lHitYearMonth )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-					ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lYearMonthDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+				ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedType_5),
+                     *lYearMonthDuration));
+
       if ( lHitDayTime )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lDayTimeDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED( ExpectedType_5 ),
+                     *lDayTimeDuration));
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lYearMonthDuration))
     {
       lHitYearMonth = true;
+
       if (lHitNumeric)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedNumericType )
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedNumericType)));
+
       if (lHitDayTime)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lDayTimeDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED( ExpectedType_5 ),
+                     *lDayTimeDuration));
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lDayTimeDuration))
     {
       lHitDayTime = true;
+
       if ( lHitNumeric )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedNumericType )
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedNumericType)));
+
       if ( lHitYearMonth )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lYearMonthDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedType_5),
+                     *lYearMonthDuration));
     }
     else
     {
-			throw XQUERY_EXCEPTION(
-				err::FORG0006,
-				ERROR_PARAMS(
-					ZED( BadArgTypeForFn_2o34o ),
-					*lRunningType,
-					"fn:avg",
-					ZED( ExpectedNumericOrDurationType )
-				),
-				ERROR_LOC( loc )
-			);
+			RAISE_ERROR(err::FORG0006, loc,
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                   *lRunningType,
+                   "fn:avg",
+                   ZED(ExpectedNumericOrDurationType)));
     }
 
     if ( lCount++ == 0 )
@@ -1409,11 +1382,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!TypeOps::is_numeric(tm, *lResultType) &&
         (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
          TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
-      throw XQUERY_EXCEPTION(
-				err::FORG0006,
-				ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), *lResultType, "fn:sum" ),
-				ERROR_LOC(loc)
-			);
+    {
+      RAISE_ERROR(err::FORG0006, loc,
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *lResultType, "fn:sum"));
+    }
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {

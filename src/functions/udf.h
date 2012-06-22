@@ -20,7 +20,6 @@
 #include "functions/function.h"
 
 #include "compiler/expression/expr_base.h"
-#include "zorbatypes/rclist.h"
 
 
 namespace zorba 
@@ -111,12 +110,19 @@ public:
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 private:
+  //CompilerCB                * theCCB;
+
   QueryLoc                    theLoc;
+
+  unsigned short              theScriptingKind;
 
   expr_t                      theBodyExpr;
   std::vector<var_expr_t>     theArgVars;
 
-  short                       theScriptingKind;
+  std::vector<unsigned char>  theIgnoresSortedNodes;
+  std::vector<unsigned char>  theIgnoresDuplicateNodes;
+  std::vector<unsigned char>  theMustCopyInputNodes;
+  std::vector<unsigned char>  thePropagatesInputNodes;
 
   bool                        theIsExiting;
   bool                        theIsLeaf;
@@ -130,29 +136,24 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  store::Index_t              theCache; //note: not for serialization
+  store::Index_t              theCache;
   bool                        theCacheResults;
   bool                        theCacheComputed;
-
-  rchandle<rclist<user_function*> > theLocalUdfs;//for plan serializer
 
 public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
-  void prepare_for_serialize(CompilerCB* compilerCB);
 
 public:
   user_function(
       const QueryLoc& loc,
       const signature& sig,
       expr_t expr_body,
-      short kind,
+      unsigned short scriptingKind,
       CompilerCB* compilerCB);
 
   virtual ~user_function();
-
-  short getScriptingKind() const;
 
   //xqtref_t getUDFReturnType(static_context* sctx) const;
 
@@ -176,10 +177,6 @@ public:
 
   var_expr* getArgVar(csize i) const { return theArgVars[i].getp(); }
 
-  void setOptimized(bool v) { theIsOptimized = v; }
-
-  bool isOptimized() const { return theIsOptimized; }
-
   void addMutuallyRecursiveUDFs(
       const std::vector<user_function*>& udfs,
       const std::vector<user_function*>::const_iterator& cycle);
@@ -192,15 +189,38 @@ public:
 
   bool isRecursive() const;
 
+  void setOptimized(bool v) { theIsOptimized = v; }
+
+  bool isOptimized() const { return theIsOptimized; }
+
+  void optimize(CompilerCB* ccb);
+
+  PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
+  
+  void invalidatePlan();
+
+  PlanIter_t codegen(
+        CompilerCB* cb,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        expr& ann) const;
+
+  // The next 6 methods are virtual methods of class function, which are redefined here
+
+  unsigned short getScriptingKind() const;
+
   bool accessesDynCtx() const;
+
+  bool mustCopyInputNodes(expr* fo, csize input) const;
+
+  bool propagatesInputNodes(expr* fo, csize input) const;
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
-  PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
-  
-  void invalidatePlan();
+  // Runtime-related methods
 
   void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }
 
@@ -212,14 +232,7 @@ public:
 
   bool cacheResults() const;
 
-  void computeResultCaching(XQueryDiagnostics*);
-
-  PlanIter_t codegen(
-        CompilerCB* cb,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        expr& ann) const;
+  void computeResultCaching(XQueryDiagnostics* diag);
 };
 
 

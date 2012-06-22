@@ -182,6 +182,18 @@ Item Item::getType() const
   return Item();
 }
 
+#ifdef ZORBA_WITH_JSON
+
+bool
+Item::isJSONItem() const
+{
+  ITEM_TRY
+    return m_item->isJSONItem();
+  ITEM_CATCH
+  return false;
+}
+
+#endif /* ZORBA_WITH_JSON */
 
 Iterator_t Item::getAtomizationValue() const
 {
@@ -459,6 +471,69 @@ Item::getNodeKind() const
   ITEM_CATCH
   return -1;
 }
+
+#ifdef ZORBA_WITH_JSON
+
+store::StoreConsts::JSONItemKind
+Item::getJSONItemKind() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getJSONItemKind();
+  ITEM_CATCH
+  return store::StoreConsts::jsonItem;
+}
+
+Iterator_t
+Item::getArrayMembers() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    // TODO, we should have an error handler here
+    return new StoreIteratorImpl(m_item->getMembers(), nullptr);
+
+  ITEM_CATCH
+  return NULL;
+}
+
+Item
+Item::getObjectValue(String aName) const
+{
+  zstring& lName = Unmarshaller::getInternalString(aName);
+  store::Item_t lIndex;
+  if (!GENV_ITEMFACTORY->createString(lIndex, lName)) {
+    // QQQ probably should throw exception here
+    return Item();
+  }
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ););
+  store::Item_t lPair = m_item->getPair(lIndex);
+  if (lPair.isNull()) {
+    return Item();
+  }
+  return &*lPair->getValue();
+  ITEM_CATCH
+  return Item();
+}
+
+Item
+Item::getArrayMember(uint32_t aIndex) const
+{
+  store::Item_t lIndex;
+  if (!GENV_ITEMFACTORY->createInteger(lIndex, Integer(aIndex))) {
+    // QQQ probably should throw exception here
+    return Item();
+  }
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+      return &*m_item->getMember(lIndex);
+  ITEM_CATCH
+  return Item();
+}
+
+#endif /* ZORBA_WITH_JSON */
 
 bool
 Item::isStreamable() const

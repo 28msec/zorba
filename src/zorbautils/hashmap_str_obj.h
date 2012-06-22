@@ -27,9 +27,10 @@ class CompareCharPtr
 public:
   static uint32_t hash(const char* str)
   {
-    return hashfun::h32(str, 0);
+    return hashfun::h32(str, FNV_32_INIT);
   }
-  static bool equal(const char*s1, const char*s2)
+
+  static bool equal(const char* s1, const char* s2)
   {
     return !strcmp(s1, s2);
   }
@@ -39,14 +40,22 @@ public:
 template<typename T>
 class HashCharPtrObj : public HashMap<const char *, T, CompareCharPtr>
 {
+protected:
+  bool theIsOwner;
+
 public:
-  HashCharPtrObj() 
+  HashCharPtrObj(bool sync, bool owner) 
     :
-    HashMap<const char *, T, CompareCharPtr>(1024, true)
+    HashMap<const char *, T, CompareCharPtr>(1024, sync),
+    theIsOwner(owner)
   {
   }
 
-  virtual ~HashCharPtrObj() { freeAll(); }
+  virtual ~HashCharPtrObj() 
+  {
+    if (theIsOwner)
+      freeAll();
+  }
 
   void freeAll()
   {

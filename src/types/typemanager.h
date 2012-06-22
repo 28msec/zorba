@@ -58,7 +58,7 @@ class TypeManager : public SimpleRCObject
 {
     
 protected:
-  int m_level;
+  unsigned int m_level;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(TypeManager)
@@ -66,13 +66,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  TypeManager(int level) : m_level(level) { }
+  TypeManager(unsigned int level) : m_level(level) { }
   
   virtual ~TypeManager() { }
 
   virtual TypeManager* get_parent_type_manager() const = 0;
 
-  virtual int level() const { return m_level; }
+  virtual unsigned int level() const { return m_level; }
 
   virtual void initializeSchema() = 0;
 
@@ -86,46 +86,54 @@ public:
 
   virtual xqtref_t create_untyped_type() const = 0;
 
+  virtual xqtref_t create_any_simple_type() const = 0;
+
   virtual xqtref_t create_empty_type() const = 0;
 
   virtual xqtref_t create_none_type() const = 0;
 
-  virtual xqtref_t create_any_simple_type() const = 0;
-
-  virtual xqtref_t create_builtin_atomic_type(
-        store::SchemaTypeCode type_code,
-        TypeConstants::quantifier_t quantifier) const = 0;
-
-  virtual xqtref_t create_named_atomic_type(
-        store::Item* qname,
-        TypeConstants::quantifier_t quantifier,
-        const QueryLoc& loc = QueryLoc::null,
-        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
-
-  virtual xqtref_t create_named_type(
-        store::Item* qname,
-        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE,
-        const QueryLoc& loc = QueryLoc::null,
-        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
-
   virtual xqtref_t create_any_item_type(
-        TypeConstants::quantifier_t quantifier) const = 0;
+        TypeConstants::quantifier_t q) const = 0;
 
   virtual xqtref_t create_any_function_type(
-        TypeConstants::quantifier_t quantifier) const = 0;
-
-  virtual xqtref_t create_node_type(
-        store::StoreConsts::NodeKind nodeKind,
-        const store::Item_t& nodeName,
-        xqtref_t contentType,
-        TypeConstants::quantifier_t quantifier,
-        bool nillable,
-        bool schematype) const = 0;
+        TypeConstants::quantifier_t q) const = 0;
 
   virtual xqtref_t create_function_type(
         const std::vector<xqtref_t>& aArgs,
         const xqtref_t& aReturn,
-        TypeConstants::quantifier_t aQuant) const = 0;
+        TypeConstants::quantifier_t q) const = 0;
+
+  virtual xqtref_t create_builtin_atomic_type(
+        store::SchemaTypeCode type_code,
+        TypeConstants::quantifier_t q) const = 0;
+
+  virtual xqtref_t create_named_atomic_type(
+        store::Item* qname,
+        TypeConstants::quantifier_t q,
+        const QueryLoc& loc,
+        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
+
+  virtual xqtref_t create_named_type(
+        store::Item* qname,
+        TypeConstants::quantifier_t q,
+        const QueryLoc& loc,
+        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
+
+#ifdef ZORBA_WITH_JSON
+  virtual xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const = 0;
+
+ virtual xqtref_t create_json_type(
+        store::StoreConsts::JSONItemKind kind,
+        TypeConstants::quantifier_t q) const = 0;
+#endif
+
+  virtual xqtref_t create_node_type(
+        store::StoreConsts::NodeKind nodeKind,
+        const store::Item_t& nodeName,
+        const xqtref_t& contentType,
+        TypeConstants::quantifier_t q,
+        bool nillable,
+        bool schematype) const = 0;
 
   virtual xqtref_t create_type(
         const XQType& type,
