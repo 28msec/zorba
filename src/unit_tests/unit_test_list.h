@@ -22,33 +22,28 @@
 #include <zorba/config.h>
 
 namespace zorba {
+namespace UnitTests {
 
-  namespace UnitTests {
-    int runUriTest(int argc, char* argv[]);
-    int runDebuggerProtocolTest(int argc, char* argv[]);
-    int test_base64( int, char*[] );
-    int test_base64_streambuf( int, char*[] );
-    int test_string( int, char*[] );
-    int test_unique_ptr( int, char*[] );
-    int test_fs_iterator( int, char*[] );
+  int runUriTest(int argc, char* argv[]);
+  int runDebuggerProtocolTest(int argc, char* argv[]);
+  int test_base64( int, char*[] );
+  int test_base64_streambuf( int, char*[] );
+  int test_fs_iterator( int, char*[] );
+  int test_string( int, char*[] );
+  int test_unique_ptr( int, char*[] );
 #ifndef ZORBA_NO_FULL_TEXT
-    int test_stemmer( int, char*[] );
-    int test_thesaurus( int, char*[] );
-    int test_tokenizer( int, char*[] );
+  int test_stemmer( int, char*[] );
+  int test_thesaurus( int, char*[] );
+  int test_tokenizer( int, char*[] );
 #endif /* ZORBA_NO_FULL_TEXT */
-    /**
-     * ADD NEW UNIT TESTS HERE
-     */
 #ifndef ZORBA_NO_ICU
-    int test_icu_streambuf( int, char*[] );
+  int test_icu_streambuf( int, char*[] );
 #endif /* ZORBA_NO_ICU */
-    int json_parser( int, char*[] );
+  int json_parser( int, char*[] );
+  
+  void initializeTestList();
 
-    void initializeTestList();
-  };
-    
-
-} /* namespace zorba */
-
+} // namespace UnitTests
+} // namespace zorba
 #endif /* ZORBA_UNIT_TEST_LIST_H */
 /* vim:set et sw=2 ts=2: */

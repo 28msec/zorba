@@ -47,11 +47,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapCreateIterator,
     NaryBaseIterator<MapCreateIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MapCreateIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MapCreateIterator(
     static_context* sctx,
@@ -82,11 +78,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapDestroyIterator,
     NaryBaseIterator<MapDestroyIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MapDestroyIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MapDestroyIterator(
     static_context* sctx,
@@ -131,11 +123,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapGetIterator,
     NaryBaseIterator<MapGetIterator, MapGetIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MapGetIterator, MapGetIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MapGetIterator(
     static_context* sctx,
@@ -166,11 +154,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapInsertIterator,
     NaryBaseIterator<MapInsertIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MapInsertIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MapInsertIterator(
     static_context* sctx,
@@ -201,11 +185,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapRemoveIterator,
     NaryBaseIterator<MapRemoveIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MapRemoveIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MapRemoveIterator(
     static_context* sctx,
@@ -251,13 +231,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapKeysIterator,
     NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>*)this);
-
-    ar & theNSBindings;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MapKeysIterator(
     static_context* sctx,
@@ -289,11 +263,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapSizeIterator,
     NaryBaseIterator<MapSizeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MapSizeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MapSizeIterator(
     static_context* sctx,
@@ -337,11 +307,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableMapsIterator,
     NaryBaseIterator<AvailableMapsIterator, AvailableMapsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<AvailableMapsIterator, AvailableMapsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   AvailableMapsIterator(
     static_context* sctx,

@@ -28,8 +28,6 @@
 #include "util/base64_util.h"
 #include "util/stl_util.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-
 #define CATCH_BASE64_EXCEPTION()                                            \
   catch ( base64::exception const &e ) {                                    \
     throw XQUERY_EXCEPTION(                                                 \
@@ -54,9 +52,6 @@ static size_t copy_without_ws( char const *from, size_t len, char *to ) {
       *to++ = *from;
   return to - to_orig;
 }
-
-SERIALIZABLE_CLASS_VERSIONS(Base64)
-SERIALIZABLE_CLASS_VERSIONS(Base16)
 
 
 bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
@@ -183,11 +178,6 @@ Base64::Base64(const unsigned char *bin_data, size_t len)
 }
 
 
-void Base64::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theData;
-}
-
 
 bool Base64::equal(const Base64& aBase64) const
 {
@@ -294,17 +284,11 @@ size_t Base16::DECODE_INPUT = 2;
 size_t Base16::DECODE_OUTPUT = 1;
 
 
-Base16::Base16(const Base64& aBase64) : ::zorba::serialization::SerializeBaseClass()
+Base16::Base16(const Base64& aBase64)
 {
   vector<char> lOrig;
   Base64::decode(aBase64.getData(), lOrig);
   Base16::encode(lOrig, theData);
-}
-
-
-void Base16::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theData;
 }
 
 

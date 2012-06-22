@@ -20,24 +20,10 @@
 #include "compiler/expression/expr_visitor.h"
 
 #include "diagnostics/assert.h"
-
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(insert_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(delete_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(replace_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(rename_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(copy_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(transform_expr)
 
 
 DEF_EXPR_ACCEPT (insert_expr)
@@ -62,14 +48,6 @@ update_expr_base::update_expr_base(
   theSourceExpr(sourceExpr)
 {
   compute_scripting_kind();
-}
-
-
-void update_expr_base::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theTargetExpr;
-  ar & theSourceExpr;
 }
 
 
@@ -100,13 +78,6 @@ insert_expr::insert_expr(
 }
 
 
-void insert_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (update_expr_base*)this);
-  SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
-}
-
-
 expr_t insert_expr::clone(substitution_t& subst) const
 {
   return new insert_expr(theSctx,
@@ -127,12 +98,6 @@ delete_expr::delete_expr(
   :
 	update_expr_base(sctx, loc, delete_expr_kind, targetExpr, NULL)
 {
-}
-
-
-void delete_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (update_expr_base*)this);
 }
 
 
@@ -158,13 +123,6 @@ replace_expr::replace_expr(
 }
 
 
-void replace_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (update_expr_base*)this);
-  SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
-}
-
-
 expr_t replace_expr::clone(substitution_t& subst) const
 {
   return new replace_expr(theSctx,
@@ -186,12 +144,6 @@ rename_expr::rename_expr(
   :
 	update_expr_base(sctx, loc, rename_expr_kind, targetExpr, nameExpr)
 {
-}
-
-
-void rename_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (update_expr_base*)this);
 }
 
 
@@ -223,13 +175,6 @@ copy_clause::~copy_clause()
 }
 
 
-void copy_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theVar;
-  ar & theExpr;
-}
-
-
 copy_clause_t copy_clause::clone(expr::substitution_t& subst) const 
 {
   ZORBA_ASSERT(theVar && theExpr);
@@ -251,15 +196,6 @@ transform_expr::transform_expr(
 	expr(sctx, loc, transform_expr_kind)
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-void transform_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theCopyClauses;
-  ar & theModifyExpr;
-  ar & theReturnExpr;
 }
 
 

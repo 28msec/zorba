@@ -214,21 +214,7 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
     $gen:newline,
     gen:indent(2), $base, ');', $gen:newline, $gen:newline,
-    gen:indent(), 'void serialize( ::zorba::serialization::Archiver&amp; ar)',
-    if ( not(exists($iter/@generateSerialize)) or
-         $iter/@generateSerialize eq 'true')
-    then concat(
-      $gen:newline,
-      gen:indent(), '{',
-      $gen:newline,
-      gen:indent(2), 'serialize_baseclass(ar,',
-      $gen:newline,
-      gen:indent(2),'(', $base, '*)this);',
-      $gen:newline,
-      local:add-arch($iter),
-      gen:indent(),'}'
-    )
-    else ";",
+    gen:indent(), 'void serialize( ::zorba::serialization::Archiver&amp; ar);',
     $gen:newline, $gen:newline,
     (: end serialization :)
 
@@ -383,22 +369,6 @@ declare function local:add-protected($iter) as xs:string?
   if(count($iter/zorba:member) > 0) then
   string-join(('protected:',$gen:newline,for $member in $iter/zorba:member return 
   string-join(($gen:indent,$member/@type,' ',$member/@name,'; //',$member/@brief,$gen:newline),'')),'')
-  else ()
-};
-
-
-declare function local:add-arch($iter) as xs:string?
-{
-  if(count($iter/zorba:member) > 0) then
-    string-join(($gen:newline,
-                 for $member in $iter/zorba:member
-                 return 
-                 string-join((gen:indent(2),
-                              'ar &amp; ',
-                              $member/@name,
-                              ';',
-                              $gen:newline),'')),
-                '')
   else ()
 };
 
