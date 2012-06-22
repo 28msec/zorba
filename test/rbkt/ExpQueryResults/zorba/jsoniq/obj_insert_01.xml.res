@@ -1,1 +1,1 @@
-{ "bar" : "foo", "blub" : "so", "foo" : "bar" }
+{ "foo" : "bar", "bar" : "foo", "blub" : "so" }

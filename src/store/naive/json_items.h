@@ -95,8 +95,9 @@ public:
 
   virtual ~JSONItem() {}
 
-  bool 
-  equals(
+  /* store API */
+
+  virtual bool equals(
       const store::Item* other,
       long timezone = 0,
       const XQPCollator* aCollation = 0) const
@@ -117,13 +118,32 @@ class JSONObject : public JSONItem
 public:
   virtual ~JSONObject() {}
 
-  store::StoreConsts::JSONItemKind getJSONItemKind() const 
+  /* store API */
+
+  virtual store::StoreConsts::JSONItemKind getJSONItemKind() const 
   {
     return store::StoreConsts::jsonObject;
   }
 
-  bool isJSONObject() const { return true; }
+  virtual bool isJSONObject() const { return true; }
 
+  virtual store::Iterator_t getObjectKeys() const = 0;
+
+  virtual store::Item_t getObjectValue(
+      const zstring& aKey) const = 0;
+
+  virtual bool getBooleanValue() const { return true; }
+
+  virtual Item* getType() const;
+
+  virtual SimpleCollection* getCollection() const = 0;
+
+#if 0
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+#endif
+
+  /* updates */
+  
   virtual bool add(
       const zstring& aName,
       const store::Item_t& aValue,
@@ -139,24 +159,8 @@ public:
     const zstring& aName,
     const zstring& aNewName) = 0;
     
-  virtual store::Iterator_t getObjectKeys() const = 0;
-
-  virtual store::Item_t getObjectValue(
-      const zstring& aKey) const = 0;
-
-  bool getBooleanValue() const { return true; }
-
-  virtual Item* getType() const;
-
-  virtual SimpleCollection* getCollection() const = 0;
-
   virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 
-#if 0
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  virtual store::Item* copy(store::Item* parent, const store::CopyMode&) const;
-#endif
 };
 
 
@@ -167,13 +171,14 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
+  typedef std::vector<zstring> Keys;
   typedef std::map<zstring, store::Item_t> Pairs;
 
   class KeyIterator : public store::Iterator
   {
     protected:
       SimpleJSONObject_t    theObject;
-      Pairs::iterator theIter;
+      Keys::iterator theIter;
 
     public:
       KeyIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
@@ -196,41 +201,47 @@ public:
 
   virtual ~SimpleJSONObject();
 
-  store::Iterator_t getObjectKeys() const;
+  /* store API */
 
-  store::Item_t getObjectValue(
+  virtual store::Iterator_t getObjectKeys() const;
+
+  virtual store::Item_t getObjectValue(
       const zstring& aKey) const;
 
-  store::Item* copy(
+  virtual store::Item* copy(
       store::Item* parent,
       const store::CopyMode& copymode) const;
 
-  zstring getStringValue() const;
+  virtual zstring getStringValue() const;
 
-  void getStringValue2(zstring& val) const;
+  virtual void getStringValue2(zstring& val) const;
 
-  void appendStringValue(zstring& buf) const;
+  virtual void appendStringValue(zstring& buf) const;
 
-  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   virtual SimpleCollection* getCollection() const { return theCollection; }
 
-  bool add(
+  /* updates */
+  
+  virtual bool add(
       const zstring& aName,
       const store::Item_t& aValue,
       bool accumulate);
 
-  store::Item_t remove(const zstring& aName);
+  virtual store::Item_t remove(const zstring& aName);
 
-  store::Item_t setValue(
+  virtual store::Item_t setValue(
     const zstring& aName,
     const store::Item_t& aValue);
     
-  bool rename(
+  virtual bool rename(
     const zstring& aName,
     const zstring& aNewName);
 
-  void setCollection(SimpleCollection* collection, xs_integer pos);
+  virtual void setCollection(SimpleCollection* collection, xs_integer pos);
+  
+  /* root management */
   
 protected:
   friend void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot);
@@ -239,6 +250,7 @@ protected:
   
 protected:
 
+  Keys theKeys;
   Pairs thePairs;
   SimpleCollection* theCollection;
   const JSONItem* theRoot;

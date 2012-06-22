@@ -1,1 +1,1 @@
-[ { "first" : "Mick", "holdings" : [ { "share" : 23412, "ticker" : "AIG" }, { "share" : 10, "ticker" : "DIS" } ], "last" : "Goulish", "userid" : "M0535" }, { "first" : "Walter", "holdings" : [ { "share" : 153212312, "ticker" : "DIS" } ], "last" : "Denisovich", "userid" : "W0342" } ]
+[ { "userid" : "M0535", "first" : "Mick", "last" : "Goulish", "holdings" : [ { "ticker" : "AIG", "share" : 23412 }, { "ticker" : "DIS", "share" : 10 } ] }, { "userid" : "W0342", "first" : "Walter", "last" : "Denisovich", "holdings" : [ { "ticker" : "DIS", "share" : 153212312 } ] } ]

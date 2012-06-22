@@ -1,1 +1,1 @@
-{ "age" : 100, "friends" : [ "Geordi La Forge" ], "gender" : "positronic matrix", "name" : "Lieutenant Commander Data" }
+{ "name" : "Lieutenant Commander Data", "age" : 100, "gender" : "positronic matrix", "friends" : [ "Geordi La Forge" ] }
