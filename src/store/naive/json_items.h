@@ -136,8 +136,6 @@ public:
 
   virtual Item* getType() const;
 
-  virtual SimpleCollection* getCollection() const = 0;
-
 #if 0
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 #endif
@@ -196,8 +194,8 @@ protected:
 
 public:
   SimpleJSONObject()
-    : theCollection(0),
-      theRoot(this) {}
+    : theCollection(NULL),
+      theRoot(NULL) {}
 
   virtual ~SimpleJSONObject();
 
@@ -220,7 +218,7 @@ public:
 
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  virtual SimpleCollection* getCollection() const { return theCollection; }
+  virtual const store::Collection* getCollection() const;
 
   /* updates */
   
@@ -244,7 +242,9 @@ public:
   /* root management */
   
 protected:
-  friend void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot);
+  friend void setJSONRoot(
+    const store::Item_t& aJSONItem,
+    const JSONItem* aRoot);
   void setRoot(const JSONItem* aRoot);
   const JSONItem* getRoot() { return theRoot; }
   
@@ -252,7 +252,7 @@ protected:
 
   Keys theKeys;
   Pairs thePairs;
-  SimpleCollection* theCollection;
+  store::Collection* theCollection;
   const JSONItem* theRoot;
   
 /* Invariant handling */
@@ -275,6 +275,8 @@ public:
 
   virtual ~JSONArray() {}
 
+  /* store API */
+  
   bool isJSONArray() const { return true; }
 
   store::StoreConsts::JSONItemKind
@@ -282,6 +284,14 @@ public:
 
   virtual store::Item*
   getType() const;
+  
+  virtual xs_integer getArraySize() const = 0;
+
+  virtual store::Item_t getArrayValue(const xs_integer& position) const = 0;
+
+  virtual store::Iterator_t getArrayValues() const = 0;
+
+  /* updates */
 
   virtual void
   push_back(const store::Item_t& aValue) = 0;
@@ -306,14 +316,6 @@ public:
 
   virtual store::Item_t
   replace(const xs_integer& pos, const store::Item_t& value) = 0;
-
-  virtual xs_integer getArraySize() const = 0;
-
-  virtual store::Item_t getArrayValue(const xs_integer& position) const = 0;
-
-  virtual store::Iterator_t getArrayValues() const = 0;
-
-  virtual SimpleCollection* getCollection() const = 0;
 
   virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 };
@@ -352,12 +354,14 @@ protected:
 public:
   SimpleJSONArray()
     :
-    theCollection(0),
-    theRoot(this)
+    theCollection(NULL),
+    theRoot(NULL)
   {
   }
 
   virtual ~SimpleJSONArray();
+  
+  /* store API */
 
   xs_integer getArraySize() const;
 
@@ -378,8 +382,10 @@ public:
   void
   getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  virtual SimpleCollection* getCollection() const { return theCollection; }
-
+  virtual const store::Collection* getCollection() const;
+  
+  /* updates */
+  
   virtual void
   push_back(const store::Item_t& aValue);
 
@@ -406,8 +412,11 @@ public:
 
   void setCollection(SimpleCollection* collection, xs_integer pos);
 
+  /* root management */
 protected:
-  friend void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot);
+  friend void setJSONRoot(
+    const store::Item_t& aJSONItem,
+    const JSONItem* aRoot);
   void setRoot(const JSONItem* aRoot);
   const JSONItem* getRoot() { return theRoot; }
   
@@ -419,9 +428,9 @@ protected:
   cast(const xs_integer& i);
   
 protected:
-  Members            theContent;
-  SimpleCollection * theCollection;
-  const JSONItem* theRoot;
+  Members                  theContent;
+  const store::Collection* theCollection;
+  const JSONItem*          theRoot;
 
 /* Invariant handling */
 protected:
@@ -431,7 +440,9 @@ protected:
   bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
 };
 
-void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot);
+void setJSONRoot(
+    const store::Item_t& aJSONItem,
+    const JSONItem* aRoot);
 
 } // namespace json
 } // namespace simplestore

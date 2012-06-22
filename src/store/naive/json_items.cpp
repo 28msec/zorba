@@ -94,7 +94,9 @@ JSONObject::getType() const
   return GET_STORE().JDM_OBJECT_QNAME;
 }
 
-void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot)
+void setJSONRoot(
+    const store::Item_t& aJSONItem,
+    const JSONItem* aRoot)
 {
     SimpleJSONObject* lObject =
         dynamic_cast<SimpleJSONObject*>(aJSONItem.getp());
@@ -102,14 +104,14 @@ void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot)
         dynamic_cast<SimpleJSONArray*>(aJSONItem.getp());
     if (lObject != NULL)
     {
-      ZORBA_ASSERT(aRoot == lObject ||
-                   lObject->theRoot == lObject);
+      // Only attach or detach allowed - no direct reattach.
+      assert(aRoot == NULL || lObject->theRoot == NULL);
       lObject->setRoot(aRoot);
     }
     else if (lArray != NULL)
     {
-      ZORBA_ASSERT(aRoot == lArray ||
-                   lArray->theRoot == lArray);
+      // Only attach or detach allowed - no direct reattach.
+      assert(aRoot == NULL || lArray->theRoot == NULL);
       lArray->setRoot(aRoot);
     }
 }
@@ -129,7 +131,10 @@ SimpleJSONObject::~SimpleJSONObject()
     if (lIter->second->isJSONItem()) {
       JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lIter->second.getp());
       ZORBA_ASSERT(lJSONItem != NULL);
-      setJSONRoot(lIter->second, lJSONItem);
+      if (getCollection() != NULL)
+      {
+        setJSONRoot(lIter->second, NULL);
+      }
     }
   }
   theKeys.clear();
@@ -194,9 +199,20 @@ SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/
 #ifndef NDEBUG
   assertInvariant();
 #endif
+  // Ensures one either detaches or attaches.
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
   theCollection = collection;
+  
+  if (theCollection != NULL)
+  {
+    // Attach
+    setRoot(this);
+  } else {
+    // Detach
+    setRoot(NULL);
+  }
+  
 #ifndef NDEBUG
   assertInvariant();
 #endif
@@ -220,7 +236,10 @@ SimpleJSONObject::add(
   if (lIterator == thePairs.end())
   {  
     store::Item_t lValue = aValue;
-    setJSONRoot(aValue, theRoot);
+    if (getCollection() != NULL)
+    {
+      setJSONRoot(aValue, theRoot);
+    }
     theKeys.push_back(aName);
     thePairs.insert(make_pair(aName, lValue));
 #ifndef NDEBUG
@@ -242,7 +261,10 @@ SimpleJSONObject::add(
       array->push_back(value);
       array->push_back(aValue);
 
-      setJSONRoot(array, theRoot);
+      if (getCollection() != NULL)
+      {
+        setJSONRoot(array, theRoot);
+      }
       lIterator->second = array;
     }
 #ifndef NDEBUG
@@ -280,7 +302,10 @@ SimpleJSONObject::remove(const zstring& aName)
   if (lRes->isJSONItem()) {
     JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lRes.getp());
     assert(lJSONItem != NULL);
-    setJSONRoot(lRes, lJSONItem);
+    if (getCollection() != NULL)
+    {
+      setJSONRoot(lRes, NULL);
+    }
   }
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), aName);
   assert(lKeyIter != theKeys.end());
@@ -316,9 +341,15 @@ store::Item_t SimpleJSONObject::setValue(
   if (lRes->isJSONItem()) {
     JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lRes.getp());
     ZORBA_ASSERT(lJSONItem != NULL);
-    setJSONRoot(lRes, lJSONItem);
+    if (getCollection() != NULL)
+    {
+      setJSONRoot(lRes, NULL);
+    }
   }
-  setJSONRoot(aValue, theRoot);
+  if (getCollection() != NULL)
+  {
+    setJSONRoot(aValue, theRoot);
+  }
   lIter->second = aValue;
 #ifndef NDEBUG
   assertInvariant();
@@ -355,7 +386,10 @@ bool SimpleJSONObject::rename(
   if (lValue->isJSONItem()) {
     JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lValue.getp());
     ZORBA_ASSERT(lJSONItem != NULL);
-    setJSONRoot(lValue, lJSONItem);
+    if (getCollection() != NULL)
+    {
+      setJSONRoot(lValue, NULL);
+    }
   }
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), aName);
   assert(lKeyIter != theKeys.end());
@@ -482,30 +516,51 @@ SimpleJSONObject::getObjectKeys() const
 /******************************************************************************
 
 *******************************************************************************/
+const store::Collection* SimpleJSONObject::getCollection() const
+{
+  if (theRoot == this)
+  {
+    return theCollection;
+  } else if (theRoot != NULL) {
+    return theRoot->getCollection();
+  } else {
+    return NULL;
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 void SimpleJSONObject::assertInvariant() const
 {
-  ZORBA_ASSERT(theRoot != NULL);
-  const SimpleJSONObject* lObject =
-      dynamic_cast<const SimpleJSONObject*>(theRoot);
-  const SimpleJSONArray* lArray =
-      dynamic_cast<const SimpleJSONArray*>(theRoot);
-  ZORBA_ASSERT(lObject != NULL || lArray != NULL);
+  assert(theCollection == NULL || theRoot == this);
+  if (theRoot != NULL)
+  {
+    const store::Collection* lCollection = getCollection();
+    assert(lCollection != NULL);
+    const SimpleJSONObject* lObject =
+        dynamic_cast<const SimpleJSONObject*>(theRoot);
+    const SimpleJSONArray* lArray =
+        dynamic_cast<const SimpleJSONArray*>(theRoot);
+    assert(lObject != NULL || lArray != NULL);
 
-  if (lObject != NULL) {
-    ZORBA_ASSERT(lObject->isThisRootOfAllDescendants(theRoot));
-    ZORBA_ASSERT(lObject->isThisJSONItemInDescendance(this));
-  } else {
-    ZORBA_ASSERT(lArray->isThisRootOfAllDescendants(theRoot));
-    ZORBA_ASSERT(lArray->isThisJSONItemInDescendance(this));
+    if (lObject != NULL) {
+      assert(lObject->isThisRootOfAllDescendants(theRoot));
+      assert(lObject->isThisJSONItemInDescendance(this));
+    } else {
+      assert(lArray->isThisRootOfAllDescendants(theRoot));
+      assert(lArray->isThisJSONItemInDescendance(this));
+    }
   }
 
-  ZORBA_ASSERT(theKeys.size() == thePairs.size());
+  assert(theKeys.size() == thePairs.size());
   for(Keys::const_iterator lIter = theKeys.begin();
       lIter != theKeys.end();
       ++lIter)
   {
     Pairs::const_iterator lPairIter = thePairs.find(*lIter);
-    ZORBA_ASSERT(lPairIter != thePairs.end());
+    assert(lPairIter != thePairs.end());
   }
 }
 
@@ -661,7 +716,10 @@ SimpleJSONArray::~SimpleJSONArray()
     if ((*lIter)->isJSONItem()) {
       JSONItem* lJSONItem = dynamic_cast<JSONItem*>((*lIter).getp());
       ZORBA_ASSERT(lJSONItem != NULL);
-      setJSONRoot(*lIter, lJSONItem);
+      if (getCollection() != NULL)
+      {
+        setJSONRoot(*lIter, NULL);
+      }
     }
   }
 }
@@ -676,7 +734,10 @@ SimpleJSONArray::push_back(const store::Item_t& aValue)
 #ifndef NDEBUG
   assertInvariant();
 #endif
-  setJSONRoot(aValue, theRoot);
+  if (getCollection() != NULL)
+  {
+    setJSONRoot(aValue, theRoot);
+  }
   theContent.push_back(aValue.getp());
 #ifndef NDEBUG
   assertInvariant();
@@ -727,7 +788,10 @@ SimpleJSONArray::insert_before(const xs_integer& pos, const store::Item_t& membe
 #ifndef NDEBUG
   assertInvariant();
 #endif
-  setJSONRoot(member, theRoot);
+  if (getCollection() != NULL)
+  {
+    setJSONRoot(member, theRoot);
+  }
   theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
 #ifndef NDEBUG
   assertInvariant();
@@ -793,7 +857,10 @@ SimpleJSONArray::add(
   for (size_t i = 0; i < aNewMembers.size(); ++i)
   {
     store::Item* lItem = aNewMembers[i].getp();
-    setJSONRoot(lItem, theRoot);
+    if (getCollection() != NULL)
+    {
+      setJSONRoot(lItem, theRoot);
+    }
     theContent.insert(theContent.begin() + aTargetPos + i, lItem);
   }
 
@@ -816,7 +883,10 @@ SimpleJSONArray::remove(const xs_integer& aPos)
   if (lItem->isJSONItem()) {
     JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lItem.getp());
     ZORBA_ASSERT(lJSONItem != NULL);
-    setJSONRoot(lItem, lJSONItem);
+    if (getCollection() != NULL)
+    {
+      setJSONRoot(lItem, NULL);
+    }
   }
   uint64_t lPosStartingZero = cast(aPos) - 1;
   theContent.erase(theContent.begin() + lPosStartingZero);
@@ -841,10 +911,16 @@ SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
   if (lItem->isJSONItem()) {
     JSONItem* lJSONItem = dynamic_cast<JSONItem*>(lItem.getp());
     ZORBA_ASSERT(lJSONItem != NULL);
-    setJSONRoot(lItem, lJSONItem);
+    if (getCollection() != NULL)
+    {
+      setJSONRoot(lItem, NULL);
+    }
   }
   uint64_t pos = cast(aPos) - 1;
-  setJSONRoot(value, theRoot);
+  if (getCollection() != NULL)
+  {
+    setJSONRoot(value, theRoot);
+  }
   theContent[pos] = value;
   
 #ifndef NDEBUG
@@ -1050,9 +1126,20 @@ SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 #ifndef NDEBUG
   assertInvariant();
 #endif
+  // Ensures one either detaches or attaches.
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
   theCollection = collection;
+  
+  if (theCollection != NULL)
+  {
+    // Attach
+    setRoot(this);
+  } else {
+    // Detach
+    setRoot(NULL);
+  }
+  
 #ifndef NDEBUG
   assertInvariant();
 #endif
@@ -1061,18 +1148,39 @@ SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 /******************************************************************************
 
 *******************************************************************************/
+const store::Collection* SimpleJSONArray::getCollection() const
+{
+  if (theRoot == this)
+  {
+    return theCollection;
+  } else if (theRoot != NULL) {
+    return theRoot->getCollection();
+  } else {
+    return NULL;
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 void SimpleJSONArray::assertInvariant() const
 {
-  ZORBA_ASSERT(theRoot != NULL);
-  const SimpleJSONObject* lObject = dynamic_cast<const SimpleJSONObject*>(theRoot);
-  const SimpleJSONArray* lArray = dynamic_cast<const SimpleJSONArray*>(theRoot);
-  ZORBA_ASSERT(lObject != NULL || lArray != NULL);
-  if (lObject != NULL) {
-    ZORBA_ASSERT(lObject->isThisRootOfAllDescendants(theRoot));
-    ZORBA_ASSERT(lObject->isThisJSONItemInDescendance(this));
-  } else {
-    ZORBA_ASSERT(lArray->isThisRootOfAllDescendants(theRoot));
-    ZORBA_ASSERT(lArray->isThisJSONItemInDescendance(this));
+  assert(theCollection == NULL || theRoot == this);
+  if (theRoot != NULL)
+  {
+    const store::Collection* lCollection = getCollection();
+    assert(lCollection != NULL);
+    const SimpleJSONObject* lObject = dynamic_cast<const SimpleJSONObject*>(theRoot);
+    const SimpleJSONArray* lArray = dynamic_cast<const SimpleJSONArray*>(theRoot);
+    assert(lObject != NULL || lArray != NULL);
+    if (lObject != NULL) {
+      assert(lObject->isThisRootOfAllDescendants(theRoot));
+      assert(lObject->isThisJSONItemInDescendance(this));
+    } else {
+      assert(lArray->isThisRootOfAllDescendants(theRoot));
+      assert(lArray->isThisJSONItemInDescendance(this));
+    }
   }
 }
 
