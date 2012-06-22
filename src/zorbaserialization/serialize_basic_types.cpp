@@ -22,8 +22,6 @@
 #include "zorbaserialization/archiver.h"
 #include "zorbaserialization/base64impl.h"
 
-#include "zorbatypes/floatimpl.h"
-
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/assert.h"
@@ -39,36 +37,21 @@ namespace serialization
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, int& obj)
+void serialize_long_long(Archiver& ar, long long& obj)
 {
+  assert(sizeof(long long) == 8);
+
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%d", obj);
-
-    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    int64_t int64v = obj;
+    ar.add_simple_temp_field(TYPE_INT64, &int64v);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    int64_t int64v;
+    ar.read_next_simple_temp_field(TYPE_INT64, &int64v);
 
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class,
-                                &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "number", is_simple,
-                          field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    sscanf(value.c_str(), "%d", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
+    obj = static_cast<long long>(int64v);
   }
 }
 
@@ -76,18 +59,109 @@ void operator&(Archiver& ar, int& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, const int& obj)
+void serialize_ulong_long(Archiver& ar, unsigned long long& obj)
 {
+  assert(sizeof(unsigned long long) == 8);
+
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%d", obj);
-
-    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    uint64_t uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, &uint64v);
   }
   else
   {
-    ZORBA_ASSERT(false);
+    uint64_t uint64v;
+    ar.read_next_simple_temp_field(TYPE_UINT64, &uint64v);
+
+    obj = static_cast<unsigned long long>(uint64v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, int64_t& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    ar.add_simple_temp_field(TYPE_INT64, &obj);
+  }
+  else
+  {
+    ar.read_next_simple_temp_field(TYPE_INT64, &obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, uint64_t& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    ar.add_simple_temp_field(TYPE_UINT64, &obj);
+  }
+  else
+  {
+    ar.read_next_simple_temp_field(TYPE_UINT64, &obj);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_long(Archiver& ar, long& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    int64_t int64v = obj;
+    ar.add_simple_temp_field(TYPE_INT64, &int64v);
+  }
+  else
+  {
+    int64_t int64v;
+    ar.read_next_simple_temp_field(TYPE_INT64, &int64v);
+
+    obj = static_cast<long>(int64v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serialize_ulong(Archiver& ar, ulong& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    uint64_t uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, &uint64v);
+  }
+  else
+  {
+    uint64_t uint64v;
+    ar.read_next_simple_temp_field(TYPE_UINT64, &uint64v);
+
+    obj = static_cast<ulong>(uint64v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, int32_t& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    ar.add_simple_temp_field(TYPE_INT32, &obj);
+  }
+  else
+  {
+    ar.read_next_simple_temp_field(TYPE_INT32, &obj);
   }
 }
 
@@ -99,32 +173,11 @@ void operator&(Archiver& ar, uint32_t& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%u", obj);
-
-    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_UINT32, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class,
-                                &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "unsigned number", is_simple,
-                          field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    sscanf(value.c_str(), "%u", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
+    ar.read_next_simple_temp_field(TYPE_UINT32, &obj);
   }
 }
 
@@ -132,36 +185,15 @@ void operator&(Archiver& ar, uint32_t& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, long& obj)
+void serialize_enum(Archiver& ar, uint32_t& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%ld", obj);
-
-    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_ENUM, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class,
-                                &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "number", is_simple,
-                          field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    sscanf(value.c_str(), "%ld", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
+    ar.read_next_simple_temp_field(TYPE_ENUM, &obj);
   }
 }
 
@@ -169,45 +201,15 @@ void operator&(Archiver& ar, long& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, unsigned long& obj)
+void operator&(Archiver& ar, int16_t& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%lu", obj);
-
-    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_INT16, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type,
-                                &value,
-                                &id,
-                                &is_simple,
-                                &is_class,
-                                &field_treat,
-                                &referencing);
-
-    ar.check_simple_field(retval,
-                          type,
-                          "unsigned number",
-                          is_simple,
-                          field_treat,
-                          ARCHIVE_FIELD_NORMAL,
-                          id);
-
-    sscanf(value.c_str(), "%lu", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
+    ar.read_next_simple_temp_field(TYPE_INT16, &obj);
   }
 }
 
@@ -215,153 +217,15 @@ void operator&(Archiver& ar, unsigned long& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void operator&(Archiver& ar, long long& obj)
+void operator&(Archiver& ar, uint16_t& obj)
 {
   if (ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%lld", obj);
-
-    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_UINT16, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type,
-                                &value,
-                                &id,
-                                &is_simple,
-                                &is_class,
-                                &field_treat,
-                                &referencing);
-
-    ar.check_simple_field(retval,
-                          type,
-                          "number",
-                          is_simple, 
-                          field_treat,
-                          ARCHIVE_FIELD_NORMAL,
-                          id);
-
-    sscanf(value.c_str(), "%lld", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, unsigned long long& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char  strtemp[30];
-    sprintf(strtemp, "%llu", obj);
-
-    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id, 
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "unsigned number", 
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    sscanf(value.c_str(), "%llu", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, short& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char  strtemp[30];
-    sprintf(strtemp, "%hd", obj);
-
-    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "number", 
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    sscanf(value.c_str(), "%hd", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, unsigned short& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char  strtemp[30];
-    sprintf(strtemp, "%hu", obj);
-
-    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "unsigned number",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    sscanf(value.c_str(), "%hu", &obj);
-
-    ar.register_reference(id, field_treat, &obj);
+    ar.read_next_simple_temp_field(TYPE_UINT16, &obj);
   }
 }
 
@@ -373,125 +237,11 @@ void operator&(Archiver& ar, char& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%d", (int)obj);
-
-    ar.add_simple_field("char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_CHAR, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id, 
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "char",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    int   int_obj;
-    sscanf(value.c_str(), "%d", &int_obj);
-    obj = (char)int_obj;
-
-    ar.register_reference(id, field_treat, &obj);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, char*& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    ar.add_simple_field("char*",
-                        obj,
-                        obj,
-                        obj ? ARCHIVE_FIELD_PTR : ARCHIVE_FIELD_NULL);
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "char*",
-                          is_simple, field_treat, (ArchiveFieldKind)-1, id);
-
-    if (field_treat == ARCHIVE_FIELD_NULL)
-    {
-      obj = NULL;
-      return;
-    }
-
-    if (field_treat != ARCHIVE_FIELD_PTR &&
-        field_treat != ARCHIVE_FIELD_REFERENCING)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-    }
-
-    if (field_treat == ARCHIVE_FIELD_PTR)
-    {
-      obj = strdup(value.c_str());
-      ar.register_reference(id, field_treat, obj);
-    }
-    else if ((obj = (char*)ar.get_reference_value(referencing)) == NULL)// ARCHIVE_FIELD_IS_REFERENCING
-    {
-      ZORBA_ASSERT(false);
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, signed char& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    char  strtemp[30];
-    sprintf(strtemp, "%d", (int)obj);
-
-    ar.add_simple_field("char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "char",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    int int_obj;
-    sscanf(value.c_str(), "%d", &int_obj);
-    obj = (signed char)int_obj;
-
-    ar.register_reference(id, field_treat, &obj);
+    ar.read_next_simple_temp_field(TYPE_CHAR, &obj);
   }
 }
 
@@ -503,33 +253,11 @@ void operator&(Archiver& ar, unsigned char& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[30];
-    sprintf(strtemp, "%u", (unsigned int)obj);
-
-    ar.add_simple_field("unsigned char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_UCHAR, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "unsigned char",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    unsigned int int_obj;
-    sscanf(value.c_str(), "%u", &int_obj);
-    obj = (unsigned char)int_obj;
-
-    ar.register_reference(id, field_treat, &obj);
+    ar.read_next_simple_temp_field(TYPE_UCHAR, &obj);
   }
 }
 
@@ -541,39 +269,26 @@ void operator&(Archiver& ar, float& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[100];
-
-    FloatImpl<float> zorba_float(obj);
+     FloatImpl<float> zorba_float(obj);
     zstring float_str = zorba_float.toString();
 
     if (isdigit(float_str.c_str()[0]))
+    {
+      char strtemp[100];
       sprintf(strtemp, "%.7e", (double)obj);
-    else
-      strcpy(strtemp, float_str.c_str());
+      float_str = strtemp;
+    }
 
-    ar.add_simple_field("float", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_ZSTRING, &float_str);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    zstring float_str;
 
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
+    ar.read_next_simple_temp_field(TYPE_ZSTRING, &float_str);
 
-    ar.check_simple_field(retval, type, "float",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    FloatImpl<float> zorba_float(value.c_str());
+    FloatImpl<float> zorba_float(float_str.c_str());
     obj = zorba_float.getNumber();
-
-    ar.register_reference(id, field_treat, &obj);
   }
 }
 
@@ -585,38 +300,26 @@ void operator&(Archiver& ar, double& obj)
 {
   if (ar.is_serializing_out())
   {
-    char strtemp[100];
     FloatImpl<double> zorba_double(obj);
     zstring double_str = zorba_double.toString();
 
     if (isdigit(double_str.c_str()[0]))
+    {
+      char strtemp[100];
       sprintf(strtemp, "%.16e", obj);
-    else
-      strcpy(strtemp, double_str.c_str());
+      double_str = strtemp;
+    }
 
-    ar.add_simple_field("double", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_ZSTRING, &double_str);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    zstring double_str;
 
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
+    ar.read_next_simple_temp_field(TYPE_ZSTRING, &double_str);
 
-    ar.check_simple_field(retval, type, "double", 
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    FloatImpl<double> zorba_double(value.c_str());
+    FloatImpl<double> zorba_double(double_str.c_str());
     obj = zorba_double.getNumber();
-
-    ar.register_reference(id, field_treat, &obj);
   }
 }
 
@@ -628,39 +331,28 @@ void operator&(Archiver& ar, bool& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar.add_simple_field("bool", obj ? "true" : "false", &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_BOOL, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    ar.read_next_simple_temp_field(TYPE_BOOL, &obj);
+  }
+}
 
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
 
-    ar.check_simple_field(retval, type, "bool",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
-    if (value == "true")
-    {
-      obj = true;
-    }
-    else if (value == "false")
-    {
-      obj = false;
-    }
-    else
-    {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-    }
+/*******************************************************************************
 
-    ar.register_reference(id, field_treat, &obj);
+********************************************************************************/
+void operator&(Archiver& ar, zstring& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    ar.add_simple_temp_field(TYPE_ZSTRING, &obj);
+  }
+  else
+  {
+    ar.read_next_simple_temp_field(TYPE_ZSTRING, &obj);
   }
 }
 
@@ -672,96 +364,27 @@ void operator&(Archiver& ar, std::string& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar.add_simple_field("string", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_temp_field(TYPE_STD_STRING, &obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "string",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    obj = value;
-
-    ar.register_reference(id, field_treat, &obj);
+    ar.read_next_simple_temp_field(TYPE_STD_STRING, &obj);
   }
 }
 
 
 /*******************************************************************************
-
-********************************************************************************/
-void operator&(Archiver& ar, const std::string& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    ar.add_simple_field("string", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
-  }
-}
-
-
-/*******************************************************************************
-
+  This is needed for theDefaultCollation in the static context
 ********************************************************************************/
 void operator&(Archiver& ar, std::string*& obj)
 {
   if (ar.is_serializing_out())
   {
-    ar.add_simple_field("std::string*", obj ? obj->c_str() : NULL, 
-                        obj, 
-                        obj ? ARCHIVE_FIELD_PTR : ARCHIVE_FIELD_NULL);
+    ar.add_simple_ptr_field(TYPE_STD_STRING, obj); 
   }
   else
   {
-    char  *type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_PTR;
-    int   referencing;
-    bool  retval;
-
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_simple_field(retval, type, "std::string*",
-                          is_simple, field_treat, (ArchiveFieldKind)-1, id);
-
-    if (field_treat == ARCHIVE_FIELD_NULL)
-    {
-      obj = NULL;
-      return;
-    }
-
-    if (field_treat != ARCHIVE_FIELD_PTR && 
-        field_treat != ARCHIVE_FIELD_REFERENCING)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(id));
-    }
-
-    if (field_treat == ARCHIVE_FIELD_PTR)
-    {
-      obj = new std::string(value);
-      ar.register_reference(id, field_treat, obj);
-    }
-    else if ((obj = (std::string*)ar.get_reference_value(referencing)) == NULL)
-    {
-      ZORBA_ASSERT(false);
-    }
+    ar.read_next_simple_ptr_field(TYPE_STD_STRING, (void**)&obj);
   }
 }
 
@@ -769,36 +392,74 @@ void operator&(Archiver& ar, std::string*& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void serialize_array(Archiver& ar, unsigned char* obj, int len)
+void operator&(Archiver& ar, XQPCollator*& obj)
 {
   if (ar.is_serializing_out())
   {
-    char* base64string;
-    base64string = (char*)malloc(8*len/6 + 8 + 1);
-    Base64Impl::Encode(obj, len, base64string);
-    ar.add_simple_field("char[]", base64string, obj, ARCHIVE_FIELD_NORMAL);
-    free(base64string);
+    if (obj == NULL)
+    {
+      ar.add_simple_ptr_field(TYPE_NULL, NULL);
+      return;
+    }
+
+    ar.add_simple_ptr_field(TYPE_COLLATOR, obj);
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    ar.read_next_simple_ptr_field(TYPE_COLLATOR, (void**)&obj);
+  }
+}
 
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
 
-    ar.check_simple_field(retval, type, "char[]",
-                          is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+/*******************************************************************************
 
-    Base64Impl::Decode((const unsigned char*)value.c_str(), value.length(), obj);
+********************************************************************************/
+void operator&(Archiver& ar, MAPM& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    int nr_digits = obj.significant_digits();
+    char* lBuffer = (char*)malloc(nr_digits + 20);
 
-    ar.register_reference(id, field_treat, &obj);
+    obj.toString(lBuffer, nr_digits);
+
+    if (strchr(lBuffer, '.'))
+    {
+      //save only necessary decimals
+      char* e_ptr = strrchr(lBuffer, 'E');
+      char* tail = e_ptr ? e_ptr-1 : lBuffer+strlen(lBuffer)-1;
+
+      while (*tail == '0')
+        tail--;
+
+      if (*tail == '.')
+        tail++;
+
+      if (e_ptr)
+      {
+        int i;
+        for(i = 0; e_ptr[i]; ++i)
+          tail[i+1] = e_ptr[i];
+
+        tail[i+1] = 0;
+      }
+      else
+        tail[1] = 0;
+    }
+
+    zstring value = lBuffer;
+
+    ar.add_simple_temp_field(TYPE_ZSTRING, &value);
+
+    free(lBuffer);
+  }
+  else
+  {
+    zstring value;
+
+    ar.read_next_simple_temp_field(TYPE_ZSTRING, &value);
+
+    obj = value.c_str();
   }
 }
 

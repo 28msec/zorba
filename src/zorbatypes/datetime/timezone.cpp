@@ -26,12 +26,9 @@
 
 #include "util/ascii_util.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-
 
 namespace zorba
 {
-SERIALIZABLE_CLASS_VERSIONS(TimeZone)
 
 
 TimeZone::TimeZone(short hours) : Duration(DAYTIMEDURATION_FACET)
@@ -42,13 +39,6 @@ TimeZone::TimeZone(short hours) : Duration(DAYTIMEDURATION_FACET)
     is_negative = true;
 
   data[HOUR_DATA] = abs<long>(hours);
-}
-
-
-void TimeZone::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (Duration*)this);
-  ar & timezone_not_set;
 }
 
 

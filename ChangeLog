@@ -10,6 +10,8 @@ Optimizations:
   * Small optimization of comparison operations.
   * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428,
     which is only a performance bug)
+  * No more serialization of compiler expressions.
+  * Big rewrite of plan serializer internals, resulting in big performance improvement.
 
 Bug Fixes/Other Changes:
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
@@ -21,6 +23,7 @@ Bug Fixes/Other Changes:
     var folding into if-then-else)
   * Fixed bug #1006166 (disabling 2 functions with the same qname)
   * Fixed bug 960083$ (improper error handling of NaN comparisons)
+  * Xml-format plan serialization not supported anymore.
 
 
 version 2.5

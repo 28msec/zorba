@@ -21,11 +21,19 @@
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/schema_types.h"
 
-#include "zorbaserialization/class_serializer.h"
 #include "util/ascii_util.h"
 
 namespace zorba
 {
+
+class Duration;
+
+namespace serialization 
+{
+  class Archiver;
+  void operator&(Archiver& ar, Duration& obj);
+}
+
 
 /*******************************************************************************
   The lexical format of duration is : PnYn MnDTnH nMnS
@@ -34,8 +42,10 @@ namespace zorba
 
   Note: class Timezone (in timezone.h) is a subclass of Duration
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC Duration : public ::zorba::serialization::SerializeBaseClass
+class Duration
 {
+  friend void serialization::operator&(serialization::Archiver& ar, Duration& obj);
+
 public:
 
   typedef enum
@@ -97,11 +107,6 @@ public:
    * Returns 0 on success
    */
   static int fromTimezone(const TimeZone& t, Duration& d);
-
-public:
-  SERIALIZABLE_CLASS(Duration)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(Duration)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   Duration();

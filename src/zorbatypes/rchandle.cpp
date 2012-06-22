@@ -17,6 +17,9 @@
 
 #include "zorbatypes/rchandle.h"
 
+#include "zorbaserialization/archiver.h"
+
+#include "diagnostics/assert.h"
 
 namespace zorba 
 {
@@ -35,6 +38,21 @@ namespace zorba
   reference count becomes 0.
 
 ********************************************************************************/
+
+SERIALIZABLE_CLASS_VERSIONS(RCObject)
+
+SERIALIZABLE_CLASS_VERSIONS_2(SimpleRCObject, TYPE_RCObject)
+
+
+void RCObject::serialize(::zorba::serialization::Archiver& ar)
+{
+  ZORBA_ASSERT(false);
+
+  if (!ar.is_serializing_out())
+    theRefCount = 0;
+}
+
+
 void RCObject::addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
@@ -124,6 +142,18 @@ void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
   SYNC_CODE(if (lock) lock->release());
 
 #endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleRCObject::serialize(::zorba::serialization::Archiver& ar)
+{
+  ZORBA_ASSERT(false);
+
+  if (!ar.is_serializing_out())
+    theRefCount = 0;
 }
 
 

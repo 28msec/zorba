@@ -21,8 +21,6 @@
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbaserialization/class_serializer.h"
-
 
 namespace zorba
 {
@@ -42,11 +40,6 @@ class fo_expr : public expr
 protected:
   checked_vector<expr_t>   theArgs;
   function               * theFunction;
-
-public:
-  SERIALIZABLE_CLASS(fo_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(fo_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   static fo_expr* create_seq(static_context* sctx, const QueryLoc &);

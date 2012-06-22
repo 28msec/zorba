@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <list>
-#include "common/common.h"
-#include "zorbatypes/rchandle.h"
-#pragma once
-#ifndef ZORBA_REF_COUNTED_STD_LIST
-#define ZORBA_REF_COUNTED_STD_LIST
 
-namespace zorba
+#include "compiler/expression/expr_utils.h"
+#include "zorbaserialization/serialize_basic_types.h"
+
+namespace zorba 
 {
 
-template <typename T>
-class rclist : public RCObject, public std::list<T>
+
+void OrderModifier::serialize(::zorba::serialization::Archiver& ar)
 {
-  SYNC_CODE(mutable RCLock  lock;)
-public:
-  long* getSharedRefCounter() const { return NULL; }
-  SYNC_CODE(RCLock* getRCLock() const { return &lock; });
-};
+  ar & theAscending;
+  ar & theEmptyLeast;
+  ar & theCollation;
+}
 
-}//end namespace zorba
 
-#endif
+}
+

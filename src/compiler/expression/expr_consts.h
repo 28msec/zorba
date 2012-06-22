@@ -23,7 +23,7 @@ namespace zorba
 
 enum axis_kind_t
 {
-  axis_kind_self,
+  axis_kind_self = 0,
   axis_kind_child,
   axis_kind_parent,
   axis_kind_descendant,
@@ -40,7 +40,7 @@ enum axis_kind_t
 
 enum match_test_t
 {
-  match_no_test,
+  match_no_test = 0,
   match_name_test,
   match_anykind_test,
   match_doc_test,
@@ -57,7 +57,7 @@ std::string toString(match_test_t a);
 
 enum match_wild_t
 {
-  match_no_wild,
+  match_no_wild = 0,
   match_all_wild,
   match_prefix_wild,
   match_name_wild

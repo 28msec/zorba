@@ -46,7 +46,8 @@ namespace zorba {
 TEMPLATE_DECL(I)
 class IntegerImpl;
 
-namespace serialization {
+namespace serialization 
+{
   class Archiver;
   TEMPLATE_DECL(I) void operator&( Archiver&, INTEGER_IMPL(I)& );
 }
@@ -54,7 +55,8 @@ namespace serialization {
 ///////////////////////////////////////////////////////////////////////////////
 
 TEMPLATE_DECL(IntType)
-class IntegerImpl {
+class IntegerImpl 
+{
 public:
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -111,6 +113,12 @@ public:
    */
   TEMPLATE_DECL(IntType2)
   IntegerImpl( INTEGER_IMPL(IntType2) const &i );
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  #ifndef ZORBA_WITH_BIG_INTEGER
+  IntType& get_value() { return value_; }
+  #endif
 
   ////////// assignment operators /////////////////////////////////////////////
 

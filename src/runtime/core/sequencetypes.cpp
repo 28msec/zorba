@@ -70,6 +70,15 @@ InstanceOfIterator::~InstanceOfIterator()
 }
 
 
+void InstanceOfIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>*)this);
+
+  ar & theSequenceType;
+}
+
+
 bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -187,6 +196,14 @@ CastIterator::~CastIterator()
 }
 
 
+void CastIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
+  ar & theCastType;
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+}
+
+
 bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -263,6 +280,16 @@ CastableIterator::CastableIterator(
 
 CastableIterator::~CastableIterator()
 {
+}
+
+
+void CastableIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
+
+  ar & theCastType;
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
 }
 
 

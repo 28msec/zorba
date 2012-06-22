@@ -48,11 +48,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PutDocumentIterator,
     NaryBaseIterator<PutDocumentIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<PutDocumentIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   PutDocumentIterator(
     static_context* sctx,
@@ -85,11 +81,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RemoveDocumentIterator,
     NaryBaseIterator<RemoveDocumentIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<RemoveDocumentIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   RemoveDocumentIterator(
     static_context* sctx,
@@ -122,11 +114,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RetrieveDocumentIterator,
     NaryBaseIterator<RetrieveDocumentIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<RetrieveDocumentIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   RetrieveDocumentIterator(
     static_context* sctx,
@@ -172,11 +160,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableDocumentsIterator,
     NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   AvailableDocumentsIterator(
     static_context* sctx,
@@ -209,11 +193,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableDocumentIterator,
     NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsAvailableDocumentIterator(
     static_context* sctx,

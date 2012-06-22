@@ -120,7 +120,7 @@ static expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    int rootSctxId,
+    csize rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -561,7 +561,7 @@ protected:
 
   std::set<std::string>                  theImportedSchemas;
 
-  int                                    theCurrSctxId;
+  csize                                  theCurrSctxId;
 
   static_context                       * theRootSctx;
 
@@ -569,7 +569,7 @@ protected:
 
   std::vector<static_context_t>          theSctxList;
 
-  std::stack<int>                        theSctxIdStack;
+  std::stack<csize>                      theSctxIdStack;
 
   static_context                       * export_sctx;
 
@@ -645,7 +645,7 @@ public:
 TranslatorImpl(
     TranslatorImpl* rootTranslator,
     static_context* rootSctx,
-    int rootSctxId,
+    csize rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
@@ -921,7 +921,7 @@ inline bool inUDFBody()
 /******************************************************************************
 
 *******************************************************************************/
-inline int sctxid()
+inline csize sctxid()
 {
   return theCurrSctxId;
 }
@@ -943,7 +943,7 @@ void push_scope()
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
-    theCurrSctxId = (int)theCCB->theSctxMap.size() + 1;
+    theCurrSctxId = theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
   }
   else
@@ -1910,8 +1910,8 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
 {
   function* varGet = GET_BUILTIN_FUNCTION(OP_VAR_GET_1);
 
-  expr_t initExpr = b.second;
-  var_expr_t varExpr = b.first;
+  expr_t initExpr = b.theExpr;
+  var_expr_t varExpr = b.theVar;
 
   const QueryLoc& loc = varExpr->get_loc();
 
@@ -1928,7 +1928,7 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
   stmts.push_back(declExpr);
 
   // check type for vars that are external or have an init expr
-  if (varType != NULL && (b.is_extern() || b.second != NULL))
+  if (varType != NULL && (b.is_extern() || b.theExpr != NULL))
   {
     expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
 
@@ -3017,7 +3017,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       moduleRootSctx->set_entity_retrieval_uri(compURI);
       moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
-      int moduleRootSctxId = (int)theCCB->theSctxMap.size() + 1;
+      csize moduleRootSctxId = theCCB->theSctxMap.size() + 1;
       (theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register
@@ -4312,7 +4312,7 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
   IndexDecl_t index = theIndexDecl;
   theIndexDecl = NULL;
 
-  index->analyze();
+  index->analyze(theCCB);
 
   // Register the index in the sctx of the current module. Raise error if such
   // a binding exists already in the sctx.
@@ -10362,7 +10362,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
 
-        rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+        rchandle<eval_expr> evalExpr = new eval_expr(theCCB,
+                                                     theRootSctx,
                                                      loc,
                                                      foExpr->get_arg(0),
                                                      scriptingKind,
@@ -10517,7 +10518,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                 GET_BUILTIN_FUNCTION(FN_CONCAT_N),
                                 concat_args);
 
-        rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+        rchandle<eval_expr> evalExpr = new eval_expr(theCCB,
+                                                     theRootSctx,
                                                      loc,
                                                      qnameExpr,
                                                      scriptingKind,
@@ -10896,7 +10898,7 @@ void end_visit(const InlineFunction& v, void* aState)
     // begin_visit). We need to add these to the udf obj so that they will bound
     // at runtime. We must do this here (before we optimize the inline function
     // body, because optimization may remove clauses from the flwor expr
-    for (ulong i = 0; i < flwor->num_clauses(); ++i)
+    for (csize i = 0; i < flwor->num_clauses(); ++i)
     {
       const flwor_clause* lClause = flwor->get_clause(i);
       const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
@@ -10920,7 +10922,7 @@ void end_visit(const InlineFunction& v, void* aState)
   // Translate the type declarations for the function params
   std::vector<xqtref_t> paramTypes;
   rchandle<ParamList> params = v.getParamList();
-  if(params != 0)
+  if (params != 0)
   {
     std::vector<rchandle<Param> >::const_iterator lIt = params->begin();
     for(; lIt != params->end(); ++lIt)
@@ -14060,7 +14062,7 @@ expr_t translate_aux(
     TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
-    int rootSctxId,
+    csize rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
