@@ -17,14 +17,17 @@
 #ifndef ZORBA_STORE_JSON_ITEMS_H
 #define ZORBA_STORE_JSON_ITEMS_H
 
-#include <vector>
 #include <set>
+#include <vector>
 
 #include <zorba/config.h>
-#include "atomic_items.h"
-#include "simple_collection.h"
+#include <zorbautils/hashmap_itemh.h>
+
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
+
+#include "atomic_items.h"
+#include "simple_collection.h"
 
 
 namespace zorba
@@ -169,8 +172,8 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  typedef std::vector<zstring> Keys;
-  typedef std::map<zstring, store::Item*> Pairs;
+  typedef std::vector<store::Item*> Keys;
+  typedef ItemHandleHashMap<store::Item*> Pairs;
 
   class KeyIterator : public store::Iterator
   {
@@ -194,7 +197,8 @@ protected:
 
 public:
   SimpleJSONObject()
-    : theCollection(NULL),
+    : thePairs(0, NULL, 64, false),
+      theCollection(NULL),
       theRoot(NULL) {}
 
   virtual ~SimpleJSONObject();
