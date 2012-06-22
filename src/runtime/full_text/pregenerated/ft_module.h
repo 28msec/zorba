@@ -29,6 +29,10 @@
 
 
 #include "runtime/base/narybase.h"
+#include <deque>
+#include <list>
+#include <stack>
+#include "runtime/full_text/ft_module_util.h"
 #include "runtime/full_text/ft_token_seq_iterator.h"
 #include "runtime/full_text/thesaurus.h"
 
@@ -460,6 +464,7 @@ class TokenizeNodeIteratorState : public PlanIteratorState
 public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
+  TokenQNames token_qnames_; //
 
   TokenizeNodeIteratorState();
 
@@ -470,13 +475,6 @@ public:
 
 class TokenizeNodeIterator : public NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>
 { 
-protected:
-  store::Item_t token_qname_; //
-  store::Item_t lang_qname_; //
-  store::Item_t para_qname_; //
-  store::Item_t sent_qname_; //
-  store::Item_t value_qname_; //
-  store::Item_t ref_qname_; //
 public:
   SERIALIZABLE_CLASS(TokenizeNodeIterator);
 
@@ -493,8 +491,6 @@ public:
 
   virtual ~TokenizeNodeIterator();
 
-public:
-  void initMembers();
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -514,6 +510,14 @@ class TokenizeNodesIteratorState : public PlanIteratorState
 public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
+  TokenQNames token_qnames_; //
+  std::list<store::Item_t> includes_; //
+  std::set<store::Item_t> excludes_; //
+  std::stack<Tokenizer*> tokenizers_; //
+  std::stack<locale::iso639_1::type> langs_; //
+  TokenizeNodesCallback callback_; //
+  Tokenizer::State t_state_; //
+  std::deque<FTToken> tokens_; //
 
   TokenizeNodesIteratorState();
 
@@ -524,13 +528,6 @@ public:
 
 class TokenizeNodesIterator : public NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>
 { 
-protected:
-  store::Item_t token_qname_; //
-  store::Item_t lang_qname_; //
-  store::Item_t para_qname_; //
-  store::Item_t sent_qname_; //
-  store::Item_t value_qname_; //
-  store::Item_t ref_qname_; //
 public:
   SERIALIZABLE_CLASS(TokenizeNodesIterator);
 
@@ -547,8 +544,6 @@ public:
 
   virtual ~TokenizeNodesIterator();
 
-public:
-  void initMembers();
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
