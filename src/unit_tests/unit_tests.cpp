@@ -28,9 +28,7 @@ typedef int (*libunittestfunc)(int , char*[]);
 using namespace std;
 
 namespace zorba {
-
-namespace UnitTests 
-{
+namespace UnitTests {
 
 map<string,libunittestfunc> libunittests;
 
@@ -39,14 +37,16 @@ map<string,libunittestfunc> libunittests;
  */
 void initializeTestList() 
 {
-  libunittests["string"] = test_string;
-  libunittests["uri"] = runUriTest;
+  libunittests["base64"] = test_base64;
+  libunittests["base64_streambuf"] = test_base64_streambuf;
   libunittests["fs_iterator"] = test_fs_iterator;
+  libunittests["json_parser"] = json_parser;
+  libunittests["string"] = test_string;
+  libunittests["unique_ptr"] = test_unique_ptr;
+  libunittests["uri"] = runUriTest;
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
-  libunittests["json_parser"] = json_parser;
-  libunittests["unique_ptr"] = test_unique_ptr;
 #ifndef ZORBA_NO_FULL_TEXT
   libunittests["stemmer"] = test_stemmer;
   libunittests["thesaurus"] = test_thesaurus;
@@ -78,7 +78,6 @@ int runUnitTest(int argc, char* argv[])
 }
 
 
-} /* namespace UnitTests */
-} /* namespace zorba */
-
+} // namespace UnitTests
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

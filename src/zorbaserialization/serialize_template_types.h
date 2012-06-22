@@ -65,6 +65,7 @@ void operator&(Archiver& ar, T& obj)
 {
   if (ar.is_serializing_out())
   {
+#if 0
     bool is_ref = ar.add_compound_field(obj.get_serializer_type_code(),
                                         true,
                                         (SerializeBaseClass*)&obj, 
@@ -93,6 +94,7 @@ void operator&(Archiver& ar, T& obj)
     obj.serialize_internal(ar);
 
     ar.read_end_current_level();
+#endif
   }
 }
 
