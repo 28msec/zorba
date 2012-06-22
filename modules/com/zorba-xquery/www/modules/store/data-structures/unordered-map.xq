@@ -16,20 +16,20 @@ xquery version "3.0";
 :)
 
 (:~
- : <p>This module defines a set of functions for working with
- : maps. A map is identified by a QName and can
- : be created using the map:create or map:create-transient functions
- : and deleted using the map:delete function, respectively.</p>
+ : <p>This module defines a set of functions for working with maps. A map
+ : is identified by a QName and can be created using the map:create or
+ : map:create-transient functions and deleted using the map:delete function,
+ : respectively.</p>
  :
- : <p>The lifetime of a transient map is a map is limited by the execution
- : of the current XQuery program. A non-transient (or persistent) map
- : lives until it is explicitly deleted. Accordingly, it's also available
+ : <p>The lifetime of a transient map is limited by the execution of the 
+ : current XQuery program. A non-transient (or persistent) map lives until 
+ : it is explicitly deleted. Accordingly, it's also available
  : to other XQuery programs.</p>
  :
- : <p>The key of a particular entry in the map can consist of a set of
+ : <p>The key of a particular entry in the map can consist of a tuple of
  : atomic values (called attributes). The actual type of each attribute
- : is determined when the map is created. The value can be an
- : arbitrary sequence of items.</p>
+ : is determined when the map is created. The value of each attribute can
+ : be an arbitrary sequence of items.</p>
  :
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
@@ -48,11 +48,10 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Create a map with a given name and a set of types for
- : each key attribute. Note that the function is variadic
- : and might take an arbitrary amount of types for the key
- : attributes. Also note that the function is sequential
- : and immediately creates the map in the store.
+ : Create a map with a given name and a set of type identifiers for each key
+ : attribute. Note that the function is variadic and might take an arbitrary
+ : number of type identifiers for the key attributes. Also note that the 
+ : function is sequential and immediately creates the map in the store.
  :
  : @param $name the name of the map
  : @param $key-type an arbitrary number of types, one
@@ -70,10 +69,9 @@ declare %an:variadic %an:sequential function map:create(
   $key-type as xs:QName) as empty-sequence() external;
 
 (:~
- : Create a transient map with a given name and a set of types for
- : each key attribute. Note that the function is variadic
- : and might take an arbitrary amount of types for the key
- : attributes.
+ : Create a transient map with a given name and a set of type identifiers
+ : for each key attribute. Note that the function is variadic and might
+ : take an arbitrary number of type identifiers for the key attributes.
  :
  : @param $name the name of the map
  : @param $key-type an arbitrary number of types, one
@@ -104,12 +102,11 @@ declare %an:sequential function map:delete(
   $name as xs:QName) as empty-sequence() external;
 
 (:~
- : Inserts a new entry into the map with the given
- : name. Note that the function is variadic
- : and might take an arbitrary amount of key attributes.
- : If an entry with the given key already exists in the
- : map, the value sequences of the existing entry and the
- : sequence passed using $value argument are concatenated.
+ : Inserts a new entry into the map with the given name. Note that the
+ : function is variadic and might take an arbitrary number of key attributes.
+ : If an entry with the given key already exists in the map, the value
+ : sequences of the existing entry and the sequence passed using $value
+ : argument are concatenated.
  : 
  : @param $name the name of the map
  : @param $value the value of the entry to insert
@@ -136,8 +133,7 @@ declare %an:variadic %an:sequential function map:insert(
   $key as xs:anyAtomicType?) as empty-sequence() external;
 
 (:~
- : Returns the value of the entry with the given key
- : from the map.
+ : Returns the value of the entry with the given key from the map.
  :
  : @param $name the name of the map
  : @param an arbitrary number of search key attributes.
@@ -236,7 +232,7 @@ declare function map:available-maps() as xs:QName* external;
 (:~
  : The function returns true if the map identified by the given QName
  : is transient, false otherwise.
-
+ :
  : @param $name the name of the map
  :
  : @return true if the map is transient, false otherwise.
