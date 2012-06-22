@@ -605,18 +605,23 @@ MapKeysIterator::nextImpl(
           static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
           "", "attribute");
 
-      GENV_ITEMFACTORY->createQName(lValueAttrName,
-           "", "", "value");
-
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
 
       GENV_ITEMFACTORY->createElementNode(
           lAttrElem, result, lAttrNodeName, lTypeName,
           true, false, theNSBindings, lBaseURI);
 
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createAttributeNode(
-          lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, (*lIter));
+      store::Item_t& lValue = (*lIter);
+      if (! lValue.isNull())
+      {
+        GENV_ITEMFACTORY->createQName(lValueAttrName,
+            "", "", "value");
+
+        lTypeName = lValue->getType();
+
+        GENV_ITEMFACTORY->createAttributeNode(
+            lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, lValue);
+      }
     }
     STACK_PUSH(true, state);
   }
