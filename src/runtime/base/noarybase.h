@@ -34,7 +34,7 @@ template <class IterType, class StateType>
 class NoaryBaseIterator : public Batcher<IterType>
 {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(NoaryBaseIterator);
+  SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(NoaryBaseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NoaryBaseIterator, Batcher<IterType>);
 

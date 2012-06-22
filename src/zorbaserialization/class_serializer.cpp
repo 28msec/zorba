@@ -20,6 +20,7 @@
 #include "zorbaserialization/mem_archiver.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "zorbautils/hashmap.h"
 
@@ -33,44 +34,6 @@ namespace serialization
 /*******************************************************************************
 
 ********************************************************************************/
-class ClassFactoriesCompare
-{
-public: 
-  uint32_t hash(const char* s1) const
-  {
-    uint32_t h = hashfun::h32(s1, FNV_32_INIT);
-    return h;
-  }
-
-  bool equal(const char * s1, const char * s2) const
-  {
-    if (s1 == s2 || !strcmp(s1, s2))
-      return true;
-    else
-      return false;
-  }
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class ClassFactoriesMap : public zorba::HashMap<const char*,
-                                                ClassDeserializer*,
-                                                ClassFactoriesCompare>
-{
-public:
-  ClassFactoriesMap(ulong sz = 1024) 
-    :
-    zorba::HashMap<const char*, ClassDeserializer*, ClassFactoriesCompare>(sz, false)
-  {
-  }
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
 const unsigned long ClassSerializer::g_zorba_classes_version = 25;
 
 
@@ -79,7 +42,7 @@ const unsigned long ClassSerializer::g_zorba_classes_version = 25;
 ********************************************************************************/
 ClassSerializer::ClassSerializer() 
 {
-  theClassFactories = new ClassFactoriesMap;
+  theClassFactories.resize(TYPE_LAST);
 
   t0 = clock();
 
@@ -92,7 +55,6 @@ ClassSerializer::ClassSerializer()
 ********************************************************************************/
 ClassSerializer::~ClassSerializer()
 {
-  delete theClassFactories;
   delete harcoded_objects_archive;
 }
 
@@ -111,10 +73,11 @@ ClassSerializer* ClassSerializer::getInstance()
 
 ********************************************************************************/
 void ClassSerializer::register_class_factory(
-    const char* class_name,
+    TypeCode code,
     ClassDeserializer* class_factory)
 {
-  theClassFactories->insert(class_name, class_factory);
+  assert(code < TYPE_LAST);
+  theClassFactories[code] = class_factory;
 
   t1 = clock();
 }
@@ -123,11 +86,10 @@ void ClassSerializer::register_class_factory(
 /*******************************************************************************
 
 ********************************************************************************/
-ClassDeserializer* ClassSerializer::get_class_factory(const char* classname)
+ClassDeserializer* ClassSerializer::get_class_factory(TypeCode code)
 {
-  ClassDeserializer* factory = NULL;
-  theClassFactories->get(classname, factory);
-  return factory;
+  assert(code < TYPE_LAST);
+  return theClassFactories[code];
 }
 
 

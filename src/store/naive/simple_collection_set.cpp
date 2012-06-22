@@ -98,7 +98,7 @@ const ulong SimpleCollectionSet::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 SimpleCollectionSet::SimpleCollectionSet()
   :
-  theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true)
+  theCollections(HashMapItemPointerCmp(0, NULL), DEFAULT_COLLECTION_MAP_SIZE, true)
 {
 }
 

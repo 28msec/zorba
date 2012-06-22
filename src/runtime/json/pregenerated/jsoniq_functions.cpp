@@ -34,11 +34,19 @@ namespace zorba {
 
 #ifdef ZORBA_WITH_JSON
 // <JSONParseIterator>
-JSONParseIterator::class_factory<JSONParseIterator>
-JSONParseIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONParseIterator)
+
+void JSONParseIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONParseIterator, PlanIteratorState>*)this);
+
+    ar & theRelativeLocation;
+}
 
 
-void JSONParseIterator::accept(PlanIterVisitor& v) const {
+void JSONParseIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -57,11 +65,17 @@ JSONParseIterator::~JSONParseIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONObjectNamesIterator>
-JSONObjectNamesIterator::class_factory<JSONObjectNamesIterator>
-JSONObjectNamesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONObjectNamesIterator)
+
+void JSONObjectNamesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONObjectNamesIterator, JSONObjectNamesIteratorState>*)this);
+}
 
 
-void JSONObjectNamesIterator::accept(PlanIterVisitor& v) const {
+void JSONObjectNamesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -88,11 +102,17 @@ void JSONObjectNamesIteratorState::reset(PlanState& planState) {
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONObjectValueIterator>
-JSONObjectValueIterator::class_factory<JSONObjectValueIterator>
-JSONObjectValueIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONObjectValueIterator)
+
+void JSONObjectValueIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONObjectValueIterator::accept(PlanIterVisitor& v) const {
+void JSONObjectValueIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -108,11 +128,17 @@ JSONObjectValueIterator::~JSONObjectValueIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONObjectProjectIterator>
-JSONObjectProjectIterator::class_factory<JSONObjectProjectIterator>
-JSONObjectProjectIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONObjectProjectIterator)
+
+void JSONObjectProjectIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONObjectProjectIterator::accept(PlanIterVisitor& v) const {
+void JSONObjectProjectIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -128,11 +154,17 @@ JSONObjectProjectIterator::~JSONObjectProjectIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONArraySizeIterator>
-JSONArraySizeIterator::class_factory<JSONArraySizeIterator>
-JSONArraySizeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONArraySizeIterator)
+
+void JSONArraySizeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONArraySizeIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONArraySizeIterator::accept(PlanIterVisitor& v) const {
+void JSONArraySizeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -147,11 +179,17 @@ JSONArraySizeIterator::~JSONArraySizeIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONArrayMemberIterator>
-JSONArrayMemberIterator::class_factory<JSONArrayMemberIterator>
-JSONArrayMemberIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONArrayMemberIterator)
+
+void JSONArrayMemberIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<JSONArrayMemberIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONArrayMemberIterator::accept(PlanIterVisitor& v) const {
+void JSONArrayMemberIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -167,11 +205,17 @@ JSONArrayMemberIterator::~JSONArrayMemberIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONArrayMembersIterator>
-JSONArrayMembersIterator::class_factory<JSONArrayMembersIterator>
-JSONArrayMembersIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONArrayMembersIterator)
+
+void JSONArrayMembersIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONArrayMembersIterator, JSONArrayMembersIteratorState>*)this);
+}
 
 
-void JSONArrayMembersIterator::accept(PlanIterVisitor& v) const {
+void JSONArrayMembersIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -198,11 +242,17 @@ void JSONArrayMembersIteratorState::reset(PlanState& planState) {
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONArrayFlattenIterator>
-JSONArrayFlattenIterator::class_factory<JSONArrayFlattenIterator>
-JSONArrayFlattenIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONArrayFlattenIterator)
+
+void JSONArrayFlattenIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONArrayFlattenIterator, JSONArrayFlattenIteratorState>*)this);
+}
 
 
-void JSONArrayFlattenIterator::accept(PlanIterVisitor& v) const {
+void JSONArrayFlattenIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -225,11 +275,17 @@ void JSONArrayFlattenIteratorState::init(PlanState& planState) {
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONItemAccessorIterator>
-JSONItemAccessorIterator::class_factory<JSONItemAccessorIterator>
-JSONItemAccessorIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONItemAccessorIterator)
+
+void JSONItemAccessorIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONItemAccessorIterator::accept(PlanIterVisitor& v) const {
+void JSONItemAccessorIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -245,11 +301,17 @@ JSONItemAccessorIterator::~JSONItemAccessorIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONNullIterator>
-JSONNullIterator::class_factory<JSONNullIterator>
-JSONNullIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONNullIterator)
+
+void JSONNullIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NoaryBaseIterator<JSONNullIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONNullIterator::accept(PlanIterVisitor& v) const {
+void JSONNullIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   
@@ -264,11 +326,17 @@ JSONNullIterator::~JSONNullIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONArrayInsertIterator>
-JSONArrayInsertIterator::class_factory<JSONArrayInsertIterator>
-JSONArrayInsertIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONArrayInsertIterator)
+
+void JSONArrayInsertIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONArrayInsertIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONArrayInsertIterator::accept(PlanIterVisitor& v) const {
+void JSONArrayInsertIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -287,11 +355,17 @@ JSONArrayInsertIterator::~JSONArrayInsertIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONDeleteIterator>
-JSONDeleteIterator::class_factory<JSONDeleteIterator>
-JSONDeleteIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONDeleteIterator)
+
+void JSONDeleteIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONDeleteIterator::accept(PlanIterVisitor& v) const {
+void JSONDeleteIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -310,11 +384,19 @@ JSONDeleteIterator::~JSONDeleteIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONReplaceValueIterator>
-JSONReplaceValueIterator::class_factory<JSONReplaceValueIterator>
-JSONReplaceValueIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONReplaceValueIterator)
+
+void JSONReplaceValueIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>*)this);
+
+    ar & theCopyInput;
+}
 
 
-void JSONReplaceValueIterator::accept(PlanIterVisitor& v) const {
+void JSONReplaceValueIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -333,11 +415,17 @@ JSONReplaceValueIterator::~JSONReplaceValueIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONRenameIterator>
-JSONRenameIterator::class_factory<JSONRenameIterator>
-JSONRenameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONRenameIterator)
+
+void JSONRenameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONRenameIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONRenameIterator::accept(PlanIterVisitor& v) const {
+void JSONRenameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -356,11 +444,17 @@ JSONRenameIterator::~JSONRenameIterator() {}
 #endif
 #ifdef ZORBA_WITH_JSON
 // <JSONArrayAppendIterator>
-JSONArrayAppendIterator::class_factory<JSONArrayAppendIterator>
-JSONArrayAppendIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONArrayAppendIterator)
+
+void JSONArrayAppendIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>*)this);
+}
 
 
-void JSONArrayAppendIterator::accept(PlanIterVisitor& v) const {
+void JSONArrayAppendIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

@@ -34,11 +34,23 @@ namespace zorba {
 
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>
-DebugIterator::class_factory<DebugIterator>
-DebugIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DebugIterator)
+
+void DebugIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DebugIterator, DebugIteratorState>*)this);
+
+    ar & varnames;
+    ar & vartypes;
+    ar & theDebuggerChildren;
+    ar & theDebuggerParent;
+    ar & theIsVarDeclaration;
+}
 
 
-void DebugIterator::accept(PlanIterVisitor& v) const {
+void DebugIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

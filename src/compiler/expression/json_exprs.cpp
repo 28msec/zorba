@@ -17,19 +17,10 @@
 #include "compiler/expression/json_exprs.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-
 #ifdef ZORBA_WITH_JSON
 
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(json_array_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(json_object_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(json_direct_object_expr)
 
 DEF_EXPR_ACCEPT(json_array_expr)
 DEF_EXPR_ACCEPT(json_object_expr)
@@ -47,13 +38,6 @@ json_array_expr::json_array_expr(
   theContentExpr(content)
 {
   compute_scripting_kind();
-}
-
-
-void json_array_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theContentExpr;
 }
 
 
@@ -100,14 +84,6 @@ json_object_expr::json_object_expr(
   theAccumulate(accumulate)
 {
   compute_scripting_kind();
-}
-
-
-void json_object_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theContentExpr;
-  ar & theAccumulate;
 }
 
 
@@ -161,14 +137,6 @@ json_direct_object_expr::json_direct_object_expr(
   theValues.swap(values);
 
   compute_scripting_kind();
-}
-
-
-void json_direct_object_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theNames;
-  ar & theValues;
 }
 
 
