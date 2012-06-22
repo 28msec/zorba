@@ -30,6 +30,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
@@ -249,7 +250,7 @@ ostream& let_clause::put(ostream& os) const
 
   os << expr_addr(theVarExpr.getp());
 
-  os << endl << indent << " [\n" << inc_indent;
+  os << endl << indent << "[\n" << inc_indent;
 
   theDomainExpr->put(os);
 #endif
@@ -530,7 +531,8 @@ ostream& fo_expr::put(ostream& os) const
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-ostream& ftcontains_expr::put( ostream &os ) const {
+ostream& ftcontains_expr::put( ostream &os ) const 
+{
   BEGIN_PUT( ftcontains_expr );
   PUT_SUB( "RANGE", range_ );
   ftselection_->put( os );
@@ -822,7 +824,7 @@ ostream& attr_expr::put(ostream& os) const
   BEGIN_PUT(attr_expr);
 
   theQNameExpr->put(os);
-  PUT_SUB( "=", theValueExpr );
+  PUT_SUB("=", theValueExpr);
 
   END_PUT();
 }
@@ -830,21 +832,58 @@ ostream& attr_expr::put(ostream& os) const
 
 ostream& text_expr::put(ostream& os) const
 {
-  BEGIN_PUT( text_expr );
+  BEGIN_PUT(text_expr);
   theContentExpr->put(os);
   END_PUT();
 }
 
-ostream& pi_expr::put( ostream& os) const
+ostream& pi_expr::put(ostream& os) const
 {
-  BEGIN_PUT( pi_expr );
-  PUT_SUB( "TARGET", theTargetExpr );
-  PUT_SUB( "CONTENT", theContentExpr );
+  BEGIN_PUT(pi_expr);
+  PUT_SUB("TARGET", theTargetExpr);
+  PUT_SUB("CONTENT", theContentExpr);
   END_PUT();
 }
 
 
-ostream& insert_expr::put( ostream& os) const
+#ifdef ZORBA_WITH_JSON
+ostream& json_array_expr::put(ostream& os) const
+{
+  BEGIN_PUT(json_array_expr);
+  if (theContentExpr)
+    theContentExpr->put(os);
+  END_PUT();
+}
+
+
+ostream& json_object_expr::put(ostream& os) const
+{
+  BEGIN_PUT(json_object_expr);
+  if (theContentExpr)
+    theContentExpr->put(os);
+  END_PUT();
+}
+
+
+ostream& json_direct_object_expr::put(ostream& os) const
+{
+  BEGIN_PUT(json_direct_object_expr);
+
+  std::vector<expr_t>::const_iterator ite1 = theNames.begin();
+  std::vector<expr_t>::const_iterator end1 = theNames.end();
+  std::vector<expr_t>::const_iterator ite2 = theValues.begin();
+  for (; ite1 != end1; ++ite1, ++ite2)
+  {
+    (*ite1)->put(os);
+    (*ite2)->put(os);
+  }
+
+  END_PUT();
+}
+#endif
+
+
+ostream& insert_expr::put(ostream& os) const
 {
   BEGIN_PUT( insert_expr );
   theSourceExpr->put(os);
@@ -852,14 +891,14 @@ ostream& insert_expr::put( ostream& os) const
   END_PUT();
 }
 
-ostream& delete_expr::put( ostream& os) const
+ostream& delete_expr::put(ostream& os) const
 {
   BEGIN_PUT( delete_expr );
   theTargetExpr->put(os);
   END_PUT();
 }
 
-ostream& replace_expr::put( ostream& os) const
+ostream& replace_expr::put(ostream& os) const
 {
   BEGIN_PUT( replace_expr );
   theTargetExpr->put(os);

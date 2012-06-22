@@ -19,10 +19,7 @@ STRING ( COMPARE NOTEQUAL ${JAVA_INCLUDE_PATH} "JAVA_INCLUDE_PATH-NOTFOUND" JNI_
 
 IF (JAVA_INCLUDE_PATH)
   include (CMakeJavaInformation )
-  MESSAGE(STATUS "SWIG Java: generating Java API")
-
-  # EXECUTE_PROCESS( COMMAND ${JAVA_RUNTIME} -version OUTPUT_VARIABLE JAVA_VERSION )
-  MESSAGE(STATUS "SWIG Java: JNI found at: " ${JAVA_INCLUDE_PATH} )
+  MESSAGE(STATUS "SWIG: Generating Java API")
 
   SET_SOURCE_FILES_PROPERTIES( zorba_api.i PROPERTIES CPLUSPLUS ON )
   INCLUDE_DIRECTORIES( ${JAVA_INCLUDE_PATH} )
@@ -35,48 +32,45 @@ IF (JAVA_INCLUDE_PATH)
 
   SET( CMAKE_SWIG_FLAGS -package org.zorbaxquery.api)
 
-  SWIG_ADD_MODULE( libzorba_api java zorba_api.i )
-  SWIG_LINK_LIBRARIES( libzorba_api zorba_simplestore ${JAVA_LIBRARY} )
-  SET_PROPERTY( TARGET libzorba_api PROPERTY PROJECT_LABEL "Api_Java" )
-  IF(WIN32)
-    set_target_properties( libzorba_api PROPERTIES OUTPUT_NAME "zorba_api" )
-  ENDIF(WIN32)
+  SWIG_ADD_MODULE( lib_zorba_java_api java zorba_api.i )
+  SWIG_LINK_LIBRARIES( lib_zorba_java_api zorba_simplestore ${JAVA_LIBRARY} )
+  IF (WIN32)
+    SET_TARGET_PROPERTIES( lib_zorba_java_api PROPERTIES PROJECT_LABEL "Java" OUTPUT_NAME "zorba_api" FOLDER "APIs")
+  ELSE (WIN32)
+    SET_TARGET_PROPERTIES( lib_zorba_java_api PROPERTIES OUTPUT_NAME "libzorba_api")
+  ENDIF (WIN32)
   IF ( APPLE )
-    set_target_properties( libzorba_api PROPERTIES SUFFIX .jnilib )
+    SET_TARGET_PROPERTIES( lib_zorba_java_api PROPERTIES SUFFIX .jnilib )
   ENDIF ( APPLE )
 
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
-  IF ( LINUX OR CYGWIN )
-    SET_TARGET_PROPERTIES( ${SWIG_MODULE_libzorba_api_REAL_NAME} PROPERTIES PREFIX "" )
-  ENDIF ( LINUX OR CYGWIN )
+  IF (LINUX OR CYGWIN OR APPLE)
+    SET_TARGET_PROPERTIES( lib_zorba_java_api PROPERTIES PREFIX "" )
+  ENDIF (LINUX OR CYGWIN OR APPLE)
 
+  FILE(GLOB ZORBA_API_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../" "${CMAKE_CURRENT_SOURCE_DIR}/../*.h")
+  FOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../${ZORBA_API_HEADER}"  "${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_API_HEADER}" COPYONLY)
+  ENDFOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})
+  
+  ADD_CUSTOM_COMMAND(TARGET lib_zorba_java_api
+                 POST_BUILD
+                 COMMAND cmake -E echo "Compiling Java files..."
+                 COMMAND ${Java_JAVAC_EXECUTABLE} *.java -d ${CMAKE_CURRENT_BINARY_DIR}
+                 COMMAND cmake -E echo "Creating jar file..."
+                 COMMAND ${Java_JAR_EXECUTABLE} cvf zorba_api.jar org
+  )
+
+  # ---  Install
   IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
     SET (JAVA_SITEARCH_DIR "/usr/share/java")
   ELSE (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
     SET (JAVA_SITEARCH_DIR ${CMAKE_INSTALL_PREFIX}/share/java)
   ENDIF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
 
-  MESSAGE(STATUS "Java module install path: " ${JAVA_SITEARCH_DIR})
-
-  FILE(GLOB JAVA_SWIG_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.java")
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticContext.h"  "${CMAKE_CURRENT_BINARY_DIR}/StaticContext.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemFactory.h"    "${CMAKE_CURRENT_BINARY_DIR}/ItemFactory.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Item.h"           "${CMAKE_CURRENT_BINARY_DIR}/Item.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Iterator.h"       "${CMAKE_CURRENT_BINARY_DIR}/Iterator.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../XQuery.h"         "${CMAKE_CURRENT_BINARY_DIR}/XQuery.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../DynamicContext.h" "${CMAKE_CURRENT_BINARY_DIR}/DynamicContext.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../XmlDataManager.h" "${CMAKE_CURRENT_BINARY_DIR}/XmlDataManager.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../TypeIdentifier.h" "${CMAKE_CURRENT_BINARY_DIR}/TypeIdentifier.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../SerializationOptions.h" "${CMAKE_CURRENT_BINARY_DIR}/SerializationOptions.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Collection.h" "${CMAKE_CURRENT_BINARY_DIR}/Collection.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../CollectionManager.h" "${CMAKE_CURRENT_BINARY_DIR}/CollectionManager.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticCollectionManager.h" "${CMAKE_CURRENT_BINARY_DIR}/StaticCollectionManager.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../DocumentManager.h" "${CMAKE_CURRENT_BINARY_DIR}/DocumentManager.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemSequence.h" "${CMAKE_CURRENT_BINARY_DIR}/ItemSequence.h" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../Zorba.h" "${CMAKE_CURRENT_BINARY_DIR}/Zorba.h" COPYONLY)
-#  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZInputStream.java"   "${CMAKE_CURRENT_BINARY_DIR}/ZInputStream.java" COPYONLY)
-#  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/zistream.java"       "${CMAKE_CURRENT_BINARY_DIR}/zistream.java" COPYONLY)
+  FILE(GLOB JAVA_SWIG_FILES "${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar")
+  SET(ZORBA_JAVA_JAR "${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar" PARENT_SCOPE )
 
   IF ( APPLE )
     INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}libzorba_api.jnilib DESTINATION ${JAVA_SITEARCH_DIR})
@@ -104,7 +98,7 @@ IF (JAVA_INCLUDE_PATH)
 		ENDIF(NOT WIN32)
   ENDIF ( APPLE )
 
-
+ 
 ELSE (JAVA_INCLUDE_PATH)
-  MESSAGE ( STATUS "SWIG Java: not generating JAVA API because jni headers not found.")
+  MESSAGE ( STATUS "SWIG: Java binding not generated because JNI was not found.")
 ENDIF (JAVA_INCLUDE_PATH)

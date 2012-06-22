@@ -481,13 +481,19 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeNodeIterator,
     NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar);
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>*)this);
+  }
 
   TokenizeNodeIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    ;
+    : 
+    NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~TokenizeNodeIterator();
 
@@ -534,13 +540,19 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeNodesIterator,
     NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar);
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>*)this);
+  }
 
   TokenizeNodesIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    ;
+    : 
+    NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~TokenizeNodesIterator();
 

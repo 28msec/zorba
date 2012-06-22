@@ -153,6 +153,17 @@ FOREACH(TESTFILE ${TESTFILES})
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
 
+  IF (NOT ZORBA_WITH_JSON)
+    STRING(REGEX MATCH "jsoniq/" NEEDS_FILE "${TESTNAME}")
+    IF(NEEDS_FILE)
+      SET(SKIP_TEST 1)
+    ENDIF(NEEDS_FILE)
+    STRING(REGEX MATCH "cloudscript/" NEEDS_FILE "${TESTNAME}")
+    IF(NEEDS_FILE)
+      SET(SKIP_TEST 1)
+    ENDIF(NEEDS_FILE)
+  ENDIF(NOT ZORBA_WITH_JSON)
+
   IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
     IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
       # If this is an XQTS test and we want to use testdriver_mt instead,
@@ -578,5 +589,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
-
 

@@ -586,12 +586,11 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-  ZORBA_ASSERT( state->tresult_.get() );
-
-  while ( state->tresult_->next( &synonym ) ) {
-    GENV_ITEMFACTORY->createString( result, synonym );
-    STACK_PUSH( true, state );
-  }
+  if ( state->tresult_ )
+    while ( state->tresult_->next( &synonym ) ) {
+      GENV_ITEMFACTORY->createString( result, synonym );
+      STACK_PUSH( true, state );
+    }
 
   STACK_END( state );
 }
@@ -616,15 +615,6 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 ///////////////////////////////////////////////////////////////////////////////
-
-TokenizeNodeIterator::TokenizeNodeIterator( static_context *sctx,
-                                            QueryLoc const &loc,
-                                            std::vector<PlanIter_t>& children ):
-  NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>(
-    sctx, loc, children
-  )
-{
-}
 
 bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
@@ -677,42 +667,7 @@ void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
   state->doc_tokens_->reset();
 }
 
-void TokenizeNodeIterator::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass(
-    ar, (NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>*)this
-  );
-}
-
 ///////////////////////////////////////////////////////////////////////////////
-
-TokenizeNodesIterator::
-TokenizeNodesIterator( static_context *sctx, QueryLoc const &loc,
-                       std::vector<PlanIter_t>& children ) :
-  NaryBaseIterator<TokenizeNodesIterator,TokenizeNodesIteratorState>(
-    sctx, loc, children
-  )
-{
-}
-
-bool find_lang_attribute( store::Item const &item, iso639_1::type *lang ) {
-  bool found_lang = false;
-  if ( item.getNodeKind() == store::StoreConsts::elementNode ) {
-    store::Iterator_t i( item.getAttributes() );
-    i->open();
-    for ( store::Item_t attr; i->next( attr ); ) {
-      store::Item const *const qname = attr->getNodeName();
-      if ( qname &&
-           qname->getLocalName() == "lang" &&
-           qname->getNamespace() == XML_NS ) {
-        *lang = locale::find_lang( attr->getStringValue().c_str() );
-        found_lang = true;
-        break;
-      }
-    }
-    i->close();
-  }
-  return found_lang;
-}
 
 bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
                                       PlanState &plan_state ) const {
@@ -830,13 +785,6 @@ void TokenizeNodesIterator::resetImpl( PlanState &plan_state ) const {
       plan_state, this->theStateOffset
     );
   state->doc_tokens_->reset();
-}
-
-void TokenizeNodesIterator::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass(
-    ar,
-    (NaryBaseIterator<TokenizeNodesIterator,TokenizeNodesIteratorState>*)this
-  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

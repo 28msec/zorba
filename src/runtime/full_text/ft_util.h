@@ -17,11 +17,13 @@
 #ifndef ZORBA_FULL_TEXT_UTIL_H
 #define ZORBA_FULL_TEXT_UTIL_H
 
+#include <zorba/item.h>
 #include <zorba/locale.h>
 
 #include "compiler/expression/ftnode.h"
-#include "zorbatypes/schema_types.h"
+#include "store/api/item.h"
 #include "util/cxx_util.h"
+#include "zorbatypes/schema_types.h"
 
 #include "ft_match.h"
 
@@ -42,6 +44,16 @@ typedef void (*apply_binary_fn)( ft_all_matches const&, ft_all_matches const&,
 typedef xs_unsignedInt ft_int;
 
 ////////// Functions //////////////////////////////////////////////////////////
+
+/**
+ * TODO
+ *
+ * @param item TODO
+ * @param lang TODO
+ * @return Returns \c true only if TODO
+ */
+bool find_lang_attribute( store::Item const &item,
+                          locale::iso639_1::type *lang );
 
 /**
  * Gets the language from the given ftmatch_options, if any.

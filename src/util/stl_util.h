@@ -220,6 +220,7 @@ inline char* new_strdup( char const *s ) {
  */
 template<class SequenceType> inline
 typename SequenceType::value_type pop_front( SequenceType &seq ) {
+  assert( !seq.empty() );
   typename SequenceType::value_type const value( seq.front() );
   seq.pop_front();
   return value;
@@ -230,6 +231,7 @@ typename SequenceType::value_type pop_front( SequenceType &seq ) {
  */
 template<class StackType> inline
 typename StackType::value_type pop_stack( StackType &s ) {
+  assert( !s.empty() );
   typename StackType::value_type const value( s.top() );
   s.pop();
   return value;

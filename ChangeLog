@@ -1,5 +1,28 @@
 Zorba - The XQuery Processor
 
+
+version 2.x
+
+New Features:
+  * Implemented latest W3C soec for group by clause
+
+Optimizations:
+  * Small optimization of comparison operations.
+  * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428,
+    which is only a performance bug)
+
+Bug Fixes/Other Changes:
+  * Fixed bug #932314 (non-comparable values must be treated as distinct by
+    fn:distinct-values)
+  * Fixed bug #991088$ (raise XUST0001 in trycatch with mixed updating and simple clauses)
+  * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
+  * Fixed bug #1008082 (bug in transform expr when a copy var is not used anywhere)
+  * Fixed bug #1003023$ (optimizer problems due to common subexpression after
+    var folding into if-then-else)
+  * Fixed bug #1006166 (disabling 2 functions with the same qname)
+  * Fixed bug 960083$ (improper error handling of NaN comparisons)
+
+
 version 2.5
 
 New Features:
@@ -147,6 +170,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #951772 (Comment node crashes serialization)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
 
+	
 version 2.1
 
 New Features:
