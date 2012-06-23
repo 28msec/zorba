@@ -5,6 +5,7 @@ version 2.x
 
 New Features:
   * Implemented latest W3C soec for group by clause
+  * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
 
 Optimizations:
   * Small optimization of comparison operations.
