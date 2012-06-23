@@ -666,9 +666,9 @@ void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
 
 bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
                                       PlanState &plan_state ) const {
-  store::Item_t inc;
+  typedef pair<store::Item_t,bool> include_type;
+
   store::Item_t item;
-  store::Item_t item_struct;
   iso639_1::type lang;
   Tokenizer::State t_state;
   Tokenizer::ptr tokenizer;
@@ -689,14 +689,16 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
 
   // $includes
   while ( consumeNext( item, theChildren[0], plan_state ) )
-    state->includes_.push_back( item );
-  state->includes_.push_back( store::Item_t() );            // sentinel
+    state->includes_.push_back( make_pair( item, true ) );
+  state->includes_.push_back( make_pair( store::Item_t(), false ) );
 
-#if 0
   // $excludes
-  while ( consumeNext( item, theChildren[1], plan_state ) )
-    state->excludes_.insert( item );
-#endif
+  while ( consumeNext( item, theChildren[1], plan_state ) ) {
+    store::Item_t exc_struct;
+    GENV_STORE.getStructuralInformation( exc_struct, item.getp() );
+    // TODO: change this to an unordered_map
+    state->excludes_.push_back( exc_struct );
+  }
 
   state->callback_.set_tokens( &state->tokens_ );
   state->langs_.push( lang );
@@ -707,52 +709,68 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
       if ( state->includes_.empty() )
         break;
 
-      inc = state->includes_.front();
+      include_type const inc( state->includes_.front() );
       state->includes_.pop_front();
-      if ( inc.isNull() ) {                                 // sentinel
+      if ( inc.first.isNull() ) {                             // sentinel
         state->langs_.pop();
         Tokenizer::ptr temp( ztd::pop_stack( state->tokenizers_ ) );
         continue;
       }
 
-      GENV_STORE.getStructuralInformation( item_struct, inc.getp() );
-      // TODO: check to see if inc is excluded
+      store::Item_t inc_struct;
+      GENV_STORE.getStructuralInformation( inc_struct, inc.first.getp() );
+      bool excluded = false;
+      FOR_EACH( vector<store::Item_t>, exc, state->excludes_ ) {
+        if ( inc_struct->equals( exc->getp() ) /*||
+             inc_struct->isInSubtreeOf( *exc ) */) {
+          excluded = true;
+          break;
+        }
+      }
+      if ( excluded )
+        continue;
 
       bool add_sentinel = false;
-      switch ( inc->getNodeKind() ) {
+      switch ( inc.first->getNodeKind() ) {
         case store::StoreConsts::elementNode:
-          find_lang_attribute( *inc, &lang );
-          state->langs_.push( lang );
-          tokenizer = get_tokenizer( lang, &state->t_state_ );
-          state->tokenizers_.push( tokenizer.release() );
-          add_sentinel = true;
+          if ( find_lang_attribute( *inc.first, &lang ) ) {
+            state->langs_.push( lang );
+            tokenizer = get_tokenizer( lang, &state->t_state_ );
+            state->tokenizers_.push( tokenizer.release() );
+            add_sentinel = true;
+          }
           // no break;
         case store::StoreConsts::documentNode: {
-          list<store::Item_t>::iterator pos = state->includes_.begin();
-          store::Iterator_t i = inc->getChildren();
+          list<include_type>::iterator pos = state->includes_.begin();
+          store::Iterator_t i = inc.first->getChildren();
           i->open();
           for ( store::Item_t child; i->next( child ); ) {
-            pos = state->includes_.insert( pos, child );
+            pos = state->includes_.insert( pos, make_pair( child, false ) );
             ++pos;
           }
           i->close();
           if ( add_sentinel )
-            state->includes_.insert( pos, store::Item_t() );  // sentinel
+            state->includes_.insert( pos, make_pair( store::Item_t(), false ) );
           continue;
         }
 
         case store::StoreConsts::attributeNode:
         case store::StoreConsts::commentNode:
         case store::StoreConsts::piNode:
+          if ( !inc.second )
+            continue;
         case store::StoreConsts::textNode: {
-          zstring const s( inc->getStringValue() );
-          Item const temp( inc.getp() );
+          zstring const s( inc.first->getStringValue() );
+          Item const temp( inc.first.getp() );
           state->tokenizers_.top()->tokenize_string(
             s.data(), s.size(), state->langs_.top(), false, state->callback_,
             &temp
           );
           break;
         }
+
+        default:
+          break;
       } // switch
       continue;
     } // if ( state->tokens_.empty() )

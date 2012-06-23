@@ -9,6 +9,8 @@
   <zorba:include form="Angle-bracket">deque</zorba:include>
   <zorba:include form="Angle-bracket">list</zorba:include>
   <zorba:include form="Angle-bracket">stack</zorba:include>
+  <zorba:include form="Angle-bracket">utility</zorba:include>
+  <zorba:include form="Angle-bracket">vector</zorba:include>
   <zorba:include form="Angle-brakcet">zorba/locale.h</zorba:include>
   <zorba:include form="Quoted">runtime/full_text/ft_module_util.h</zorba:include>
   <zorba:include form="Quoted">runtime/full_text/ft_token_seq_iterator.h</zorba:include>
@@ -215,8 +217,8 @@
 
     <zorba:member type="TokenQNames" name="token_qnames_"/>
 
-    <zorba:member type="std::list&lt;store::Item_t&gt;" name="includes_"/>
-    <zorba:member type="std::set&lt;store::Item_t&gt;" name="excludes_"/>
+    <zorba:member type="std::list&lt;std::pair&lt;store::Item_t,bool&gt; &gt;" name="includes_"/>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="excludes_"/>
 
     <zorba:member type="std::stack&lt;Tokenizer*>" name="tokenizers_"/>
     <zorba:member type="std::stack&lt;locale::iso639_1::type&gt;" name="langs_"/>

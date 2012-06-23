@@ -18,6 +18,7 @@ let $book :=
             </content>
             <source>Lewis Carroll</source>
           </quote>
+          <!-- more content -->
         </content>
       </chapter>
       <chapter>
@@ -30,6 +31,7 @@ let $book :=
             </content>
             <source>Henry VI, part II</source>
           </quote>
+          <!-- more content -->
         </content>
       </chapter>
     </chapters>
@@ -39,7 +41,6 @@ let $includes := $book//chapter
 let $excludes := $book//quote
 
 let $tokens := ft:tokenize-nodes( $includes, $excludes, xs:language("en") )
-
-return  $tokens
+return $tokens
 
 (: vim:set et sw=2 ts=2: :)
