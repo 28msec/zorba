@@ -92,7 +92,8 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
 }
 
 static Tokenizer::ptr get_tokenizer( iso639_1::type lang,
-                                     Tokenizer::State *t_state ) {
+                                     Tokenizer::State *t_state,
+                                     QueryLoc const &loc ) {
   TokenizerProvider const *const provider = GENV_STORE.getTokenizerProvider();
   ZORBA_ASSERT( provider );
   Tokenizer::ptr tokenizer;
@@ -101,7 +102,8 @@ static Tokenizer::ptr get_tokenizer( iso639_1::type lang,
       err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
-      )
+      ),
+      ERROR_LOC( loc )
     );
   return std::move( tokenizer );
 }
@@ -683,7 +685,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
     lang = get_lang_from( sctx );
   }
 
-  tokenizer = get_tokenizer( lang, &state->t_state_ );
+  tokenizer = get_tokenizer( lang, &state->t_state_, loc );
 
   // $includes
   while ( consumeNext( item, theChildren[0], plan_state ) )
@@ -733,7 +735,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
         case store::StoreConsts::elementNode:
           if ( find_lang_attribute( *inc, &lang ) ) {
             state->langs_.push( lang );
-            tokenizer = get_tokenizer( lang, &state->t_state_ );
+            tokenizer = get_tokenizer( lang, &state->t_state_, loc );
             state->tokenizers_.push( tokenizer.release() );
             add_sentinel = true;
           }
@@ -825,7 +827,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
     lang = get_lang_from( sctx );
   }
 
-  tokenizer = get_tokenizer( lang, &t_state );
+  tokenizer = get_tokenizer( lang, &t_state, loc );
   tokenizer->properties( &props );
 
   GENV_ITEMFACTORY->createQName(
@@ -954,7 +956,7 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
 
     { // local scope
     Tokenizer::State t_state;
-    Tokenizer::ptr tokenizer( get_tokenizer( lang, &t_state ) );
+    Tokenizer::ptr const tokenizer( get_tokenizer( lang, &t_state, loc ) );
     TokenizeStringIteratorCallback callback;
     tokenizer->tokenize_string(
       value_string.data(), value_string.size(), lang, false, callback
