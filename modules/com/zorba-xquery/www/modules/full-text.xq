@@ -797,7 +797,7 @@ declare function ft:tokenize-node( $node as node() )
   as element(ft-schema:token)* external;
 
 (:~
- : Tokenizes the set of nodes comprising <code>$includes</code> and (all of its
+ : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
  : descendants) but excluding <code>$excludes</code> (and all of its
  : descendants), if any.
  :
@@ -814,7 +814,7 @@ declare function ft:tokenize-nodes( $includes as node()+,
   as element(ft-schema:token)* external;
 
 (:~
- : Tokenizes the set of nodes comprising <code>$includes</code> and (all of its
+ : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
  : descendants) but excluding <code>$excludes</code> (and all of its
  : descendants), if any.
  :
