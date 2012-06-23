@@ -43,6 +43,7 @@
 namespace zorba
 {
 
+#if 0
 template<> const char* 
 AxisIterator<SelfAxisIterator, SelfAxisState>::class_name_str =
 "AxisIterator<SelfAxisIterator, SelfAxisState>";
@@ -106,6 +107,7 @@ AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>::class_nam
 template<> const char* 
 AxisIterator<FollowingAxisIterator, FollowingAxisState>::class_name_str =
 "AxisIterator<FollowingAxisIterator, FollowingAxisState>";
+#endif
 
 SERIALIZABLE_CLASS_VERSIONS(SelfAxisIterator)
 
@@ -183,6 +185,23 @@ static inline bool isElementOrDocumentNode(const store::Item* node)
 }
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void AxisIteratorHelper::serialize(::zorba::serialization::Archiver& ar)
+{
+  SERIALIZE_ENUM(match_test_t, theTestKind);
+  SERIALIZE_ENUM(match_test_t, theDocTestKind);
+  SERIALIZE_ENUM(store::StoreConsts::NodeKind, theNodeKind);
+  ar & theQName;
+  SERIALIZE_ENUM(match_wild_t, theWildKind);
+  ar & theType;
+  ar & theNilledAllowed;
+  ar & theTargetPos;
+}
+
+
 bool AxisIteratorHelper::setTargetPos(xs_long pos)
 {
   assert(pos == -2 || pos >= 0);
@@ -200,6 +219,7 @@ bool AxisIteratorHelper::setTargetPos(xs_long pos)
 
 
 bool AxisIteratorHelper::nameOrKindTest(
+    static_context* sctx,
     const store::Item* node,
     const QueryLoc& loc) const
 {
@@ -288,11 +308,10 @@ doctest1:
 
     if (theType != NULL)
     {
-      xqtref_t atype = theTypeManager->create_named_type(node->getType(),
-                                                         TypeConstants::QUANT_ONE,
-                                                         loc);
+      xqtref_t atype = sctx->get_typemanager()->
+      create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
 
-      if ((!TypeOps::is_subtype(theTypeManager, *atype, *theType)) ||
+      if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
           (theNilledAllowed == false &&
            node->getNilled()->getBooleanValue() == true))
       {
@@ -314,11 +333,10 @@ doctest2:
     if (!theQName->equals(node->getNodeName()))
       return false;
 
-    xqtref_t atype = theTypeManager->create_named_type(node->getType(),
-                                                       TypeConstants::QUANT_ONE,
-                                                       loc);
+    xqtref_t atype = sctx->get_typemanager()->
+    create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
 
-    if ((!TypeOps::is_subtype(theTypeManager, *atype, *theType)) ||
+    if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
         (theNilledAllowed == false &&
          node->getNilled()->getBooleanValue() == true))
       return false;
@@ -335,11 +353,10 @@ doctest2:
 
     if (theType != NULL)
     {
-      xqtref_t atype = theTypeManager->create_named_type(node->getType(),
-                                                         TypeConstants::QUANT_ONE,
-                                                         loc);
+      xqtref_t atype = sctx->get_typemanager()->
+      create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
 
-      if (! TypeOps::is_subtype(theTypeManager, *atype, *theType))
+      if (! TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType))
         return false;
     }
 
@@ -353,11 +370,10 @@ doctest2:
     if (!theQName->equals(node->getNodeName()))
       return false;
 
-    xqtref_t atype = theTypeManager->create_named_type(node->getType(),
-                                                       TypeConstants::QUANT_ONE,
-                                                       loc);
+    xqtref_t atype = sctx->get_typemanager()->
+    create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
 
-    if (! TypeOps::is_subtype(theTypeManager, *atype, *theType))
+    if (! TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType))
       return false;
 
     return true;
@@ -402,7 +418,10 @@ doctest2:
 ********************************************************************************/
 void SelfAxisIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (AxisIterator<SelfAxisIterator, SelfAxisState>*)this);
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SelfAxisIterator, SelfAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
 }
 
 
@@ -424,7 +443,7 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
     state->theCurrentPos = 0;
 
-    if (nameOrKindTest(result, loc))
+    if (nameOrKindTest(theSctx, result, loc))
     {
       if (theTargetPos >= 1)
         return false;
@@ -458,8 +477,10 @@ void AttributeAxisState::reset(PlanState& planState)
 
 void AttributeAxisIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (AxisIterator<AttributeAxisIterator,
-                           AttributeAxisState>*)this);
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<AttributeAxisIterator, AttributeAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
 }
 
 
@@ -491,7 +512,7 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     while ((attr = state->theAttributes->next()) != NULL)
     {
-      if (nameOrKindTest(attr, loc))
+      if (nameOrKindTest(theSctx, attr, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -522,7 +543,10 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 ********************************************************************************/
 void ParentAxisIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (AxisIterator<ParentAxisIterator, ParentAxisState>*)this);
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<ParentAxisIterator, ParentAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
 }
 
 
@@ -546,7 +570,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     result = state->theContextNode->getParent();
 
-    if (result != NULL && nameOrKindTest(result, loc))
+    if (result != NULL && nameOrKindTest(theSctx, result, loc))
     {
       if (theTargetPos < 1)
         STACK_PUSH(true, state);
@@ -563,7 +587,9 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 void AncestorAxisIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (AxisIterator<AncestorAxisIterator, AncestorAxisState>*)this);
+  (UnaryBaseIterator<AncestorAxisIterator, AncestorAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
 }
 
 
@@ -591,8 +617,9 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     ancestor = state->theContextNode->getParent();
     while (ancestor != NULL)
     {
-      if (nameOrKindTest(ancestor, loc))
+      if (nameOrKindTest(theSctx, ancestor, loc))
         state->theAncestors.push_back(ancestor);
+
       ancestor = ancestor->getParent();
     }
 
@@ -620,7 +647,9 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 void AncestorReverseAxisIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>*)this);
+  (UnaryBaseIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
 }
 
 
@@ -650,7 +679,7 @@ bool AncestorReverseAxisIterator::nextImpl(
 
     while (ancestor != NULL)
     {
-      if (nameOrKindTest(ancestor, loc))
+      if (nameOrKindTest(theSctx, ancestor, loc))
       {
         state->theCurrentAnc = ancestor;
 
@@ -688,7 +717,9 @@ bool AncestorReverseAxisIterator::nextImpl(
 void AncestorSelfAxisIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>*)this);
+  (UnaryBaseIterator<AncestorSelfAxisIterator, AncestorAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
 }
 
 
@@ -718,7 +749,7 @@ bool AncestorSelfAxisIterator::nextImpl(
 
     while (ancestor != NULL)
     {
-      if (nameOrKindTest(ancestor, loc))
+      if (nameOrKindTest(theSctx, ancestor, loc))
       {
         state->theAncestors.push_back(ancestor);
       }
@@ -746,6 +777,15 @@ bool AncestorSelfAxisIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
+void AncestorSelfReverseAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
+}
+
+
 bool AncestorSelfReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -770,7 +810,7 @@ bool AncestorSelfReverseAxisIterator::nextImpl(
 
     while (state->theCurrentAnc != NULL)
     {
-      if (nameOrKindTest(state->theCurrentAnc, loc))
+      if (nameOrKindTest(theSctx, state->theCurrentAnc, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -817,6 +857,15 @@ void SiblingAxisState::reset(PlanState& planState)
 }
 
 
+void RSiblingAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<RSiblingAxisIterator, SiblingAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
+}
+
+
 bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   const store::Item* parent;
@@ -852,7 +901,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     while ((sibling = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(sibling, loc))
+      if (nameOrKindTest(theSctx, sibling, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -881,6 +930,15 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+void LSiblingAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<LSiblingAxisIterator, SiblingAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
+}
+
+
 bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   const store::Item* parent;
@@ -917,7 +975,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     while ((sibling = state->theChildren->next()) != NULL &&
            sibling != state->theContextNode.getp())
     {
-      if (nameOrKindTest(sibling, loc))
+      if (nameOrKindTest(theSctx, sibling, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -963,6 +1021,15 @@ void LSiblingReverseAxisState::reset(PlanState& planState)
 }
 
 
+void LSiblingReverseAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
+}
+
+
 bool LSiblingReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -1000,7 +1067,7 @@ bool LSiblingReverseAxisIterator::nextImpl(
 
     while ((sibling = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(sibling, loc))
+      if (nameOrKindTest(theSctx, sibling, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -1046,6 +1113,15 @@ void ChildAxisState::reset(PlanState& planState)
 }
 
 
+void ChildAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<ChildAxisIterator, ChildAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
+}
+
+
 bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   const store::Item* child;
@@ -1074,7 +1150,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     while ((child = state->theChildren->next()) != NULL)
     {
-      if (nameOrKindTest(child, loc))
+      if (nameOrKindTest(theSctx, child, loc))
       {
         if (theTargetPos >= 0)
         {
@@ -1147,6 +1223,15 @@ void DescendantAxisState::push(const store::Item* node)
 }
 
 
+void DescendantAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<DescendantAxisIterator, DescendantAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
+}
+
+
 bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   const store::Item* desc = NULL;
@@ -1180,7 +1265,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     while (desc != NULL)
     {
-      if (nameOrKindTest(desc, loc))
+      if (nameOrKindTest(theSctx, desc, loc))
       {
         if (desc->getNodeKind() == store::StoreConsts::elementNode &&
             (desc->isRecursive() ||
@@ -1231,6 +1316,15 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 /*******************************************************************************
 
 ********************************************************************************/
+void DescendantSelfAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<DescendantSelfAxisIterator, DescendantAxisState>*)this);
+
+  AxisIteratorHelper::serialize(ar);
+}
+
+
 bool DescendantSelfAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -1265,7 +1359,7 @@ bool DescendantSelfAxisIterator::nextImpl(
     {
       descKind = desc->getNodeKind();
 
-      if (nameOrKindTest(desc, loc))
+      if (nameOrKindTest(theSctx, desc, loc))
       {
         if ((descKind == store::StoreConsts::elementNode ||
              (descKind == store::StoreConsts::documentNode &&
@@ -1339,6 +1433,13 @@ void PrecedingAxisState::reset(PlanState& planState)
 }
 
 
+void PrecedingAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (AxisIterator<PrecedingAxisIterator, PrecedingAxisState>*)this);
+}
+
+
 bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item* ancestor;
@@ -1394,7 +1495,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
         // Special case: C is not element node, so there is no tree to travesre.
         if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          if (nameOrKindTest(child, loc))
+          if (nameOrKindTest(theSctx, child, loc))
           {
             if (theTargetPos >= 0)
             {
@@ -1423,7 +1524,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
         while (desc != NULL)
         {
-          if (nameOrKindTest(desc, loc))
+          if (nameOrKindTest(theSctx, desc, loc))
           {
             if (desc->getNodeKind() == store::StoreConsts::elementNode &&
                 (desc->isRecursive() ||
@@ -1553,6 +1654,13 @@ void PrecedingReverseAxisState::push(const store::Item* node)
 }
 
 
+void PrecedingReverseAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>*)this);
+}
+
+
 bool PrecedingReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -1595,7 +1703,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
       {
         if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          if (nameOrKindTest(child, loc))
+          if (nameOrKindTest(theSctx, child, loc))
           {
             result = child;
             STACK_PUSH(true, state);
@@ -1607,7 +1715,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
           continue;
         }
 
-        if (nameOrKindTest(child, loc))
+        if (nameOrKindTest(theSctx, child, loc))
         {
           if (child->isRecursive() ||
               theTestKind == match_anykind_test ||
@@ -1641,7 +1749,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
           {
             if (desc->getNodeKind() == store::StoreConsts::elementNode)
             {
-              if (nameOrKindTest(desc, loc))
+              if (nameOrKindTest(theSctx, desc, loc))
               {
                 if (desc->isRecursive() ||
                     theTestKind == match_anykind_test ||
@@ -1666,7 +1774,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
             }
             else
             {
-              if (nameOrKindTest(desc, loc))
+              if (nameOrKindTest(theSctx, desc, loc))
               {
                 result = desc;
                 STACK_PUSH(true, state);
@@ -1680,7 +1788,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
           // We have traversed all the subtrees of the node D that is at the
           // top of theCurrentPath. Return D to the caller, if it satifies the
           // node test, and then pop D from theCurrentPath.
-          if (nameOrKindTest(state->topNode(), loc))
+          if (nameOrKindTest(theSctx, state->topNode(), loc))
           {
             result = state->topNode();
             STACK_PUSH(true, state);
@@ -1721,6 +1829,13 @@ void FollowingAxisState::reset(PlanState& planState)
 
   theAncestorPath.clear();
   theAncestorChildren->close();
+}
+
+
+void FollowingAxisIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (AxisIterator<FollowingAxisIterator, FollowingAxisState>*)this);
 }
 
 
@@ -1781,7 +1896,7 @@ bool FollowingAxisIterator::nextImpl(
         // Special case: C is not element node, so there is no tree to travesre.
         if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          if (nameOrKindTest(child, loc))
+          if (nameOrKindTest(theSctx, child, loc))
           {
             if (theTargetPos >= 0)
             {
@@ -1810,7 +1925,7 @@ bool FollowingAxisIterator::nextImpl(
 
         while (desc != NULL)
         {
-          if (nameOrKindTest(desc, loc))
+          if (nameOrKindTest(theSctx, desc, loc))
           {
             if (desc->getNodeKind() == store::StoreConsts::elementNode &&
                 (desc->isRecursive() ||

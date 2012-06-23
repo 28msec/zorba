@@ -27,7 +27,7 @@
 #include "zorbautils/lock.h"
 #include "zorbautils/hashmap.h"
 #include "zorbautils/hashmap_itemp.h"
-#include "zorbautils/hashmap_zstring_nonserializable.h"
+#include "zorbautils/hashmap_zstring.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "node_items.h"
@@ -64,9 +64,9 @@ class PULPrimitiveFactory;
 class TreeIdGeneratorFactory;
 class TreeIdGenerator;
 
-typedef HashMapZString<XmlNode_t> DocumentSet;
-typedef zorba::ItemPointerHashMap<store::Index_t> IndexSet;
-typedef zorba::ItemPointerHashMap<store::IC_t> ICSet;
+ZSTRING_HASH_MAP(XmlNode_t, DocumentSet);
+ITEM_PTR_HASH_MAP(store::Index_t, IndexSet);
+ITEM_PTR_HASH_MAP(store::IC_t, ICSet);
 
 
 

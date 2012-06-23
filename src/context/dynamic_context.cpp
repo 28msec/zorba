@@ -710,7 +710,7 @@ void dynamic_context::bindIndex(
     store::Index_t& index)
 {
   if (theAvailableIndices == NULL)
-    theAvailableIndices = new IndexMap(0, NULL, 8, false);
+    theAvailableIndices = new IndexMap(HashMapItemPointerCmp(0, NULL), 8, false);
 
   if (!theAvailableIndices->insert(qname, index))
   {
@@ -758,7 +758,7 @@ void dynamic_context::bindMap(
     store::Index_t& map)
 {
   if (theAvailableMaps == NULL)
-    theAvailableMaps = new HashMap(0, NULL, 8, false);
+    theAvailableMaps = new IndexMap(HashMapItemPointerCmp(0, NULL), 8, false);
 
   if (!theAvailableMaps->insert(qname, map))
   {
@@ -785,7 +785,7 @@ void dynamic_context::getMapNames(std::vector<store::Item_t>& names) const
   if (theAvailableMaps == NULL)
     return;
 
-  for (HashMap::iterator lIter = theAvailableMaps->begin();
+  for (IndexMap::iterator lIter = theAvailableMaps->begin();
        lIter != theAvailableMaps->end();
        ++lIter)
   {

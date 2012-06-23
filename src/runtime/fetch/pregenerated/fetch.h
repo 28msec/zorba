@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FetchContentIterator,
     NaryBaseIterator<FetchContentIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FetchContentIterator(
     static_context* sctx,
@@ -81,11 +77,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FetchContentBinaryIterator,
     NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FetchContentBinaryIterator(
     static_context* sctx,
@@ -117,11 +109,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FetchContentTypeIterator,
     NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FetchContentTypeIterator(
     static_context* sctx,

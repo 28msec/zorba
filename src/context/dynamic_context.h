@@ -18,7 +18,9 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorba/external_function_parameter.h>
-#include "zorbautils/hashmap_zstring_nonserializable.h"
+
+#include "zorbautils/hashmap_zstring.h"
+#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 
@@ -101,10 +103,9 @@ protected:
     void*       func_param;
   };
 
-  typedef HashMapZString<dctx_value_t> ValueMap;
+  ZSTRING_HASH_MAP(dctx_value_t, ValueMap);
 
-  typedef ItemPointerHashMap<store::Index_t> IndexMap;
-  typedef ItemPointerHashMap<store::Index_t> HashMap;
+  ITEM_PTR_HASH_MAP(store::Index_t, IndexMap);
 
   typedef std::map<const zstring,const zstring> EnvVarMap;
 
@@ -122,7 +123,7 @@ protected:
 
   IndexMap                   * theAvailableIndices;
 
-  HashMap                    * theAvailableMaps;
+  IndexMap                   * theAvailableMaps;
 
     //MODIFY
   EnvVarMap                  * theEnvironmentVariables;
