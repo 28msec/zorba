@@ -452,7 +452,6 @@ bool StemIterator::nextImpl( store::Item_t &result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
   utf8::to_lower( word );
@@ -690,7 +689,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
   // $includes
   while ( consumeNext( item, theChildren[0], plan_state ) )
     state->includes_.push_back( item );
-  state->includes_.push_back( store::Item_t() );              // sentinel
+  state->includes_.push_back( store::Item_t() );  // sentinel
 
   // $excludes
   while ( consumeNext( item, theChildren[1], plan_state ) ) {
@@ -711,7 +710,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
 
       store::Item_t inc( state->includes_.front() );
       state->includes_.pop_front();
-      if ( inc.isNull() ) {                                   // sentinel
+      if ( inc.isNull() ) {                       // sentinel
         state->langs_.pop();
         Tokenizer::ptr temp( ztd::pop_stack( state->tokenizers_ ) );
         continue;
@@ -733,6 +732,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
       bool add_sentinel = false;
       switch ( inc->getNodeKind() ) {
         case store::StoreConsts::elementNode:
+          ++state->t_state_.para;
           if ( find_lang_attribute( *inc, &lang ) ) {
             state->langs_.push( lang );
             tokenizer = get_tokenizer( lang, &state->t_state_, loc );
@@ -756,8 +756,8 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
             }
           }
           i->close();
-          if ( add_sentinel )
-            state->includes_.insert( pos, store::Item_t() );  // sentinel
+          if ( add_sentinel )                     // sentinel
+            state->includes_.insert( pos, store::Item_t() );
           continue;
         }
 
