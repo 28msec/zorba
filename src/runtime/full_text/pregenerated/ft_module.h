@@ -32,7 +32,6 @@
 #include <deque>
 #include <list>
 #include <stack>
-#include <utility>
 #include <vector>
 #include "runtime/full_text/ft_module_util.h"
 #include "runtime/full_text/ft_token_seq_iterator.h"
@@ -519,7 +518,7 @@ public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
   TokenQNames token_qnames_; //
-  std::list<std::pair<store::Item_t,bool> > includes_; //
+  std::list<store::Item_t> includes_; //
   std::vector<store::Item_t> excludes_; //
   std::stack<Tokenizer*> tokenizers_; //
   std::stack<locale::iso639_1::type> langs_; //
