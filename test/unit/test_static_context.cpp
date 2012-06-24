@@ -155,14 +155,17 @@ sctx_test_5(Zorba* zorba)
     << "import module namespace ddl = "
     << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
     << std::endl
-    << "ddl:create(xs:QName(\"ddl:coll1\"));"
+    << "ddl:create(xs:QName(\"coll1\"));"
     << std::endl;
 
   queryString2
     << "import module namespace ddl = "
     << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
+    << "import module namespace dml = "
+    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml\";"
     << std::endl
-    << "ddl:create(xs:QName(\"ddl:coll1\"), <a/>);"
+    << "ddl:create(xs:QName(\"coll1\"), <a/>);"
+    << "count(dml:collection(xs:QName(\"coll1\")))"
     << std::endl;
 
   ItemFactory* factory = zorba->getItemFactory();
@@ -304,17 +307,38 @@ sctx_test_5(Zorba* zorba)
   try
   {
     StaticContext_t sctx = zorba->createStaticContext();
-    sctx->disableFunction(fname, 2);
+    sctx->disableFunction(fname, 1);
 
-    queryString1.clear();
-    queryString1.seekg(0, std::ios::beg);
+    queryString2.clear();
+    queryString2.seekg(0, std::ios::beg);
 
-    XQuery_t query = zorba->compileQuery(queryString1, sctx);
+    {
+      XQuery_t query = zorba->compileQuery(queryString2, sctx);
 
-    std::ofstream planFile("out.plan");
-    assert(planFile.good());
+      std::ofstream planFile("out.plan");
+      assert(planFile.good());
 
-    query->saveExecutionPlan(planFile);
+      query->saveExecutionPlan(planFile);
+    }
+    {
+      std::ifstream planFile("out.plan");
+      assert(planFile.good());
+
+      XQuery_t query = zorba->createQuery();
+
+      query->loadExecutionPlan(planFile);
+
+      Zorba_SerializerOptions serOptions;
+      serOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+      std::ostringstream out;
+      query->execute(out, &serOptions);
+
+      if (out.str() != "1")
+      {
+        std::cerr << out.str() << std::endl;
+        return false;
+      }
+    }
   }
   catch (ZorbaException& e)
   {

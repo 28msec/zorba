@@ -32,8 +32,8 @@
 
 namespace zorba {
 
-FTContainsIterator::class_factory<FTContainsIterator>
-  FTContainsIterator::g_class_factory;
+
+SERIALIZABLE_CLASS_VERSIONS(FTContainsIterator)
 
 
 void FTContainsIterator::accept( PlanIterVisitor &v ) const {

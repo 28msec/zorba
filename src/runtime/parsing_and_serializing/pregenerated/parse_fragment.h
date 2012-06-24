@@ -63,11 +63,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZorbaParseXmlFragmentIterator,
     NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnZorbaParseXmlFragmentIterator(
     static_context* sctx,

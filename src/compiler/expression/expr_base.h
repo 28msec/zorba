@@ -178,28 +178,25 @@ protected:
 
   QueryLoc           theLoc;
 
-  short              theKind;
-  short              theScriptingKind;
+  unsigned short     theKind;
+  unsigned short     theScriptingKind;
 
   xqtref_t           theType;
 
-  ulong              theFlags1;
+  uint32_t           theFlags1;
 
   FreeVars           theFreeVars;
 
 public:
-  static bool is_sequential(short theScriptingKind);
+  static bool is_sequential(unsigned short theScriptingKind);
 
   static void checkSimpleExpr(const expr* e);
 
   static void checkNonUpdating(const expr* e);
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
+  expr() : theSctx(NULL), theFlags1(0) {}
 
-public:
   expr(static_context*, const QueryLoc&, expr_kind_t);
 
   virtual ~expr();
@@ -214,11 +211,11 @@ public:
 
   TypeManager* get_type_manager() const;
 
-  ulong getFlags() const { return theFlags1; }
+  uint32_t getFlags() const { return theFlags1; }
 
-  void setFlags(ulong flags) { theFlags1 = flags; }
+  void setFlags(uint32_t flags) { theFlags1 = flags; }
 
-  short get_scripting_detail() const { return theScriptingKind; }
+  unsigned short get_scripting_detail() const { return theScriptingKind; }
 
   bool is_updating() const;
 

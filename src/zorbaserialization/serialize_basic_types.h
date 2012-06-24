@@ -19,10 +19,19 @@
 
 #include <string>
 
+#include "zorbatypes/zstring.h"
+
 #include "zorbamisc/config/platform.h"
+
+#include "store/api/shared_types.h"
+
+
+class MAPM;
 
 namespace zorba
 {
+
+class XQPCollator;
 
 namespace serialization
 {
@@ -30,27 +39,31 @@ namespace serialization
 class Archiver;
 
 
-void operator&(Archiver& ar, int& obj);
+void operator&(Archiver& ar, int64_t& obj);
 
-void operator&(Archiver& ar, const int& obj);
+void operator&(Archiver& ar, uint64_t& obj);
+
+void serialize_long(Archiver& ar, long& obj);
+
+void serialize_long_long(Archiver& ar, long long& obj);
+
+void serialize_ulong_long(Archiver& ar, unsigned long long& obj);
+
+void serialize_ulong(Archiver& ar, ulong& obj);
+
+void serialize_csize(Archiver& ar, csize& obj);
+
+void operator&(Archiver& ar, int32_t& obj);
 
 void operator&(Archiver& ar, uint32_t& obj);
 
-void operator&(Archiver& ar, long& obj);
+void serialize_enum(Archiver& ar, uint32_t& obj);
 
-void operator&(Archiver& ar, unsigned long& obj);
+void operator&(Archiver& ar, int16_t& obj);
 
-void operator&(Archiver& ar, long long& obj);
-
-void operator&(Archiver& ar, unsigned long long& obj);
-
-void operator&(Archiver& ar, short& obj);
-
-void operator&(Archiver& ar, unsigned short& obj);
+void operator&(Archiver& ar, uint16_t& obj);
 
 void operator&(Archiver& ar, char& obj);
-
-void operator&(Archiver& ar, signed char& obj);
 
 void operator&(Archiver& ar, unsigned char& obj);
 
@@ -60,28 +73,24 @@ void operator&(Archiver& ar, double& obj);
 
 void operator&(Archiver& ar, bool& obj);
 
-void operator&(Archiver& ar, std::string& obj);
+void operator&(Archiver& ar, zorba::zstring& obj);
 
-void operator&(Archiver& ar, const std::string& obj);
+void operator&(Archiver& ar, std::string& obj);
 
 void operator&(Archiver& ar, std::string*& obj);
 
-void operator&(Archiver& ar, char*& obj);
+void operator&(Archiver& ar, XQPCollator*& obj);
 
-void serialize_array(Archiver& ar, unsigned char* obj, int len);
+void operator&(Archiver& ar, MAPM& obj);
 
-#define  SERIALIZE_ENUM(enum_type, obj)           \
-  {                                               \
-    ar.set_is_temp_field(true);                   \
-                                                  \
-    int int_enum = (int)obj;                      \
-    ar & int_enum;                                \
-                                                  \
-    if (!ar.is_serializing_out())                 \
-      obj = (enum_type)int_enum;                  \
-                                                  \
-    ar.set_is_temp_field(false);                  \
-  }
+#define SERIALIZE_ENUM(enum_type, obj)              \
+{                                                   \
+  uint32_t int_enum = static_cast<uint32_t>(obj);   \
+  serialize_enum(ar, int_enum);                     \
+                                                    \
+  if (!ar.is_serializing_out())                     \
+    obj = (enum_type)int_enum;                      \
+}
 
 #define SERIALIZE_BOOL_VEC(vec)                   \
   {                                               \
