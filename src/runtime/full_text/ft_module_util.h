@@ -17,6 +17,12 @@
 #ifndef ZORBA_FT_MODULE_UTIL_H
 #define ZORBA_FT_MODULE_UTIL_H
 
+//
+// The reason this header (and related .cpp) are necessary (instead of just
+// puting this code into ft_module.h/.cpp directly) is because this header
+// needs to be #include'd into the .cpp generated from the ft_module.xml file.
+//
+
 #include <zorba/tokenizer.h>
 
 #include <deque>
@@ -31,13 +37,18 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A %TokenizeNodesCallback is-a Tokenizer::Callback that's used exclusively by
+ * the TokenizeNodesIterator that implements the ft:tokenize-nodes() full-text
+ * module function.
+ */
 class TokenizeNodesCallback : public Tokenizer::Callback {
 public:
   TokenizeNodesCallback() : tokens_( nullptr ) { }
   TokenizeNodesCallback( std::deque<FTToken> &tokens ) : tokens_( &tokens ) { }
 
-  void set_tokens( std::deque<FTToken> *tokens ) {
-    tokens_ = tokens;
+  void set_tokens( std::deque<FTToken> &tokens ) {
+    tokens_ = &tokens;
   }
 
   // inherited

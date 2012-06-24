@@ -699,7 +699,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
     state->excludes_.push_back( exc_struct );
   }
 
-  state->callback_.set_tokens( &state->tokens_ );
+  state->callback_.set_tokens( state->tokens_ );
   state->langs_.push( lang );
   state->tokenizers_.push( tokenizer.release() );
 
@@ -712,7 +712,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
       state->includes_.pop_front();
       if ( inc.isNull() ) {                       // sentinel
         state->langs_.pop();
-        Tokenizer::ptr temp( ztd::pop_stack( state->tokenizers_ ) );
+        Tokenizer::ptr deleter( ztd::pop_stack( state->tokenizers_ ) );
         continue;
       }
 
