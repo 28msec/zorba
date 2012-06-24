@@ -5,6 +5,8 @@ version 2.x
 
 New Features:
   * Implemented latest W3C soec for group by clause
+  * New XQuery 3.0 functions
+    - fn:parse-xml-fragment#1
 
 Optimizations:
   * Small optimization of comparison operations.
@@ -35,7 +37,6 @@ New Features:
     - fn:has-children#0
     - fn:nilled#0
     - fn:path
-    - fn:parse-xml-fragment#1
   * Added base64:decode#2 function which also does transcoding
   * Extended API for Python, Java, PHP and Ruby
   * Added JVM classpath to zorbacmd and to Zorba API
