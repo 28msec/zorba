@@ -250,6 +250,29 @@ public class Api_test {
       return true;
   }
 
+  static boolean example_7() throws XQException
+  {
+    InMemoryStore store = InMemoryStore.getInstance();
+    Zorba zorba = Zorba.getInstance ( store );
+    ReaderStreamWrapper stream = new ReaderStreamWrapper(new StringReader("'Hello world!'"));
+    XQuery query = zorba.compileQuery(stream);
+    System.out.println(query.execute());
+    zorba.shutdown();
+    InMemoryStore.shutdown ( store );
+    return true;
+  }
+  static boolean example_8() throws XQException, UnsupportedEncodingException
+  {
+    InMemoryStore store = InMemoryStore.getInstance();
+    Zorba zorba = Zorba.getInstance ( store );
+    InputStreamWrapper stream = new InputStreamWrapper(new ByteArrayInputStream("'Hello world!'".getBytes("UTF-8")));
+    XQuery query = zorba.compileQuery(stream);
+    System.out.println(query.execute());
+    zorba.shutdown();
+    InMemoryStore.shutdown ( store );
+    return true;
+  }
+
   public static void main ( String argv[] ) throws XQException
   {
     boolean res = false;
@@ -292,6 +315,17 @@ public class Api_test {
     res = example_6b ( );
     if (!res) 
       System.exit ( 1 ); 
+
+    System.out.println ( "executing test 7" );
+    res = example_7 ( );
+    if (!res) 
+      System.exit ( 1 ); 
+
+    System.out.println ( "executing test 8" );
+    res = example_8 ( );
+    if (!res) 
+      System.exit ( 1 ); 
+
     System.out.println ( "done." );
 
   } // main

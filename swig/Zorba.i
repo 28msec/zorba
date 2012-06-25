@@ -53,21 +53,6 @@
     );
   }
 
-  // XQuery Zorba::compileQuery(const ZIStreamHelper& aZorbaStream)
-  // {
-    // zorbabuffer *buffer = new zorbabuffer(&const_cast<ZIStreamHelper &> (aZorbaStream));
-    // std::istream stream = std::istream(buffer);
-    // zistream stream = zistream(buffer);
-    // return XQuery(theZorba->compileQuery(stream));
-  // }
-
-  // XQuery Zorba::compileQuery(const ZIStreamHelper& aZorbaStream, StaticContext &aStaticContext )
-  // { 
-    // zorbabuffer *buffer = new zorbabuffer(&const_cast<ZIStreamHelper &> (aZorbaStream));
-    // std::istream stream = std::istream(buffer);
-    // return XQuery(theZorba->compileQuery(stream, aStaticContext.theStaticContext));
-  // }
-  
   XQuery Zorba::compileQuery(
     const std::string& aStr,
     DiagnosticHandler* aDiagnosticHandler
@@ -130,6 +115,18 @@
     #else //ZORBA_XQUERYX
       return false;
     #endif //ZORBA_XQUERYX
+  }
+
+  XQuery Zorba::compileQuery(StreamWrapperBase& buffer)
+  {
+    std::istream stream = std::istream(&buffer);
+    return XQuery(theZorba->compileQuery(stream));
+  }
+
+  XQuery Zorba::compileQuery(StreamWrapperBase& buffer, StaticContext &aStaticContext )
+  { 
+    std::istream stream = std::istream(&buffer);
+    return XQuery(theZorba->compileQuery(stream, aStaticContext.theStaticContext));
   }
 
 %}  // end Implementation

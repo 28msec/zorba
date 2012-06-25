@@ -86,6 +86,7 @@ namespace std {
   class Store;
   class InMemoryStore;
 
+  #include "StreamWrapperBase.h"
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
   #include "Item.h"
@@ -114,7 +115,7 @@ namespace std {
 
 /* %include "various.i" required for mapping to Java byte[]*/
 
-//%include "ZorbaStreamProxy.i"
+%include "StreamWrapperBase.i"
 %include "SerializationOptions.i"
 %include "TypeIdentifier.i"
 %include "Item.i"
