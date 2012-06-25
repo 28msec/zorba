@@ -639,6 +639,45 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
 /*******************************************************************************
 
 ********************************************************************************/
+template<typename T2, class Tcomp>
+void operator&(Archiver& ar, std::map<csize, T2, Tcomp>& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    csize s = obj.size();
+    serialize_csize(ar, s);
+
+    typename std::map<csize, T2, Tcomp>::iterator it = obj.begin();
+    typename std::map<csize, T2, Tcomp>::iterator end = obj.end();
+
+    for (; it != end; ++it)
+    {
+      csize key = (*it).first;
+      serialize_csize(ar, key);
+      ar & (*it).second;
+    }
+  }
+  else
+  {
+    csize s;
+    serialize_csize(ar, s);
+
+    std::pair<csize, T2> p;
+
+    for (csize i = 0; i < s; ++i)
+    {
+      serialize_csize(ar, p.first);
+      ar & p.second;
+
+      obj.insert(p);
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 template<typename T, typename V, class Tcomp>
 void operator&(Archiver& ar, HashMap<T, V, Tcomp>& obj)
 {
@@ -728,7 +767,7 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
 
     ar.set_is_temp_field(true);
 
-    ar & capacity;
+    serialize_csize(ar, capacity);
     ar & sync;
     ar & comp;
     serialize_csize(ar, size);
@@ -769,7 +808,7 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
 
     ar.set_is_temp_field(true);
 
-    ar & capacity;
+    serialize_csize(ar, capacity);
     ar & sync;
     ar & comp;
     serialize_csize(ar, size);
