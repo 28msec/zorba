@@ -320,6 +320,10 @@ public:
 
   /* --------------------------- Map Management ------------------------------*/
 
+  virtual Index_t createMap(
+      const Item_t& qname,
+      const IndexSpecification& spec) = 0;
+
   virtual Index* getMap(const Item* aQName) const = 0;
 
   virtual Iterator_t listMapNames() = 0;
