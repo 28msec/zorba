@@ -2085,7 +2085,8 @@ bool BasicItemFactory::createJSONNumber(
       xs_double d = FloatImpl<double>(string.c_str());
       return createDouble(result, d);
     }
-  } catch (std::exception& e)
+  }
+  catch (std::exception& e)
   {
     return false;
   }

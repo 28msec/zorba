@@ -36,8 +36,7 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONNull::getType() const
+store::Item* JSONNull::getType() const
 {
   return GET_STORE().JDM_NULL_QNAME;
 }
@@ -46,11 +45,10 @@ JSONNull::getType() const
 /******************************************************************************
 
 *******************************************************************************/
-bool
-JSONNull::equals(
-      const store::Item* other,
-      long /* timezone */,
-      const XQPCollator* /* collation */) const
+bool JSONNull::equals(
+    const store::Item* other,
+    long /* timezone */,
+    const XQPCollator* /* collation */) const
 {
   return other->getTypeCode() == store::JDM_NULL;
 }
@@ -59,8 +57,7 @@ JSONNull::equals(
 /******************************************************************************
 
 *******************************************************************************/
-uint32_t
-JSONNull::hash(long /* timezone */, const XQPCollator* /* aCollation */) const
+uint32_t JSONNull::hash(long /* tmz */, const XQPCollator* /* collation */) const
 {
   const void* tmp = this; // there is only one instance in the store
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
@@ -70,8 +67,7 @@ JSONNull::hash(long /* timezone */, const XQPCollator* /* aCollation */) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+void JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   iter = NULL;
   val = this;
@@ -88,15 +84,16 @@ JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONObject::getType() const
+store::Item* JSONObject::getType() const
 {
   return GET_STORE().JDM_OBJECT_QNAME;
 }
 
-void setJSONRoot(
-    const store::Item_t& aJSONItem,
-    const JSONItem* aRoot)
+
+/******************************************************************************
+
+*******************************************************************************/
+void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot)
 {
   if (aJSONItem->isJSONObject())
   {
@@ -117,10 +114,13 @@ void setJSONRoot(
     // Only attach or detach allowed - no direct reattach.
     assert(aRoot == NULL || lArray->theRoot == NULL);
     lArray->setRoot(aRoot);
-  } else {
+  } 
+  else
+  {
     assert(false);
   }
 }
+
 
 /******************************************************************************
 
@@ -134,7 +134,8 @@ SimpleJSONObject::~SimpleJSONObject()
        lIter != thePairs.end();
        ++lIter)
   {
-    if (lIter.getValue()->isJSONItem()) {
+    if (lIter.getValue()->isJSONItem())
+    {
       if (getCollection() != NULL && lIter.getValue()->isJSONItem())
       {
         setJSONRoot(lIter.getValue(), NULL);
@@ -161,7 +162,8 @@ store::Item* SimpleJSONObject::copy(
   assertInvariant();
 #endif
   SimpleJSONObject* lNewObject = const_cast<SimpleJSONObject*>(this);
-  if (copymode.theDoCopy)
+ 
+ if (copymode.theDoCopy)
   {
     lNewObject = new SimpleJSONObject();
 
@@ -171,14 +173,16 @@ store::Item* SimpleJSONObject::copy(
     {
       zstring lName = (*lIter)->getStringValue();
       store::Item_t lValue = getObjectValue(lName);
-      if (copymode.theDoCopy &&
-          (lValue->isJSONObject() ||
+
+      if (lValue->isJSONObject() ||
            lValue->isJSONArray() ||
-           lValue->isNode()))
+           lValue->isNode())
       {
         store::Item_t lCopiedValue = lValue->copy(NULL, copymode);
         lNewObject->add(lName, lCopiedValue, false);
-      } else {
+      }
+      else
+      {
         lNewObject->add(lName, lValue, false);
       }
     }
@@ -200,8 +204,7 @@ store::Item* SimpleJSONObject::copy(
 /*******************************************************************************
 
 ********************************************************************************/
-void
-SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
+void SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -215,7 +218,9 @@ SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/
   {
     // Attach
     setRoot(this);
-  } else {
+  }
+  else 
+  {
     // Detach
     setRoot(NULL);
   }
@@ -229,11 +234,10 @@ SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/
 /******************************************************************************
 
 *******************************************************************************/
-bool
-SimpleJSONObject::add(
-      const zstring& aName,
-      const store::Item_t& aValue,
-      bool accumulate)
+bool SimpleJSONObject::add(
+    const zstring& aName,
+    const store::Item_t& aValue,
+    bool accumulate)
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -241,18 +245,22 @@ SimpleJSONObject::add(
   store::Item_t lName;
   zstring aNonConstName = aName;
   GET_FACTORY().createString(lName, aNonConstName);
+
   Pairs::iterator lIterator = thePairs.find(lName);
 
   if (lIterator == thePairs.end())
-  {  
+  {
     store::Item* lValue = aValue.getp();
+
     if (getCollection() != NULL && aValue->isJSONItem())
     {
       setJSONRoot(aValue, theRoot);
     }
+
     theKeys.push_back(lName.getp());
     lValue->addReference();
     thePairs.insert(lName, lValue);
+
 #ifndef NDEBUG
     assertInvariant();
 #endif
@@ -276,6 +284,7 @@ SimpleJSONObject::add(
       {
         setJSONRoot(array, theRoot);
       }
+
       lIterator.getValue()->removeReference();
       array->addReference();
       lIterator.setValue(array);
@@ -296,8 +305,7 @@ SimpleJSONObject::add(
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t
-SimpleJSONObject::remove(const zstring& aName)
+store::Item_t SimpleJSONObject::remove(const zstring& aName)
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -305,7 +313,9 @@ SimpleJSONObject::remove(const zstring& aName)
   store::Item_t lName;
   zstring aNonConstName = aName;
   GET_FACTORY().createString(lName, aNonConstName);
+
   Pairs::iterator lIter = thePairs.find(lName);
+
   if (lIter == thePairs.end())
   {
 #ifndef NDEBUG
@@ -315,11 +325,14 @@ SimpleJSONObject::remove(const zstring& aName)
   }
   
   store::Item_t lRes = lIter.getValue();
+
   if (getCollection() != NULL && lRes->isJSONItem())
   {
     setJSONRoot(lRes, NULL);
   }
+
   lIter.getValue()->removeReference();
+
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), lIter.getKey());
   assert(lKeyIter != theKeys.end());
   theKeys.erase(lKeyIter);
@@ -345,8 +358,11 @@ store::Item_t SimpleJSONObject::setValue(
   store::Item_t lName;
   zstring aNonConstName = aName;
   GET_FACTORY().createString(lName, aNonConstName);
+
   Pairs::iterator lIter = thePairs.find(lName);
-  if (lIter == thePairs.end()) {
+
+  if (lIter == thePairs.end())
+  {
 #ifndef NDEBUG
     assertInvariant();
 #endif
@@ -354,17 +370,21 @@ store::Item_t SimpleJSONObject::setValue(
   }
 
   store::Item_t lRes = lIter.getValue();
+
   if (getCollection() != NULL && lRes->isJSONItem())
   {
     setJSONRoot(lRes, NULL);
   }
+
   if (getCollection() != NULL && aValue->isJSONItem())
   {
     setJSONRoot(aValue, theRoot);
   }
+
   lIter.getValue()->removeReference();
   aValue->addReference();
   lIter.setValue(aValue.getp());
+
 #ifndef NDEBUG
   assertInvariant();
 #endif
@@ -384,11 +404,16 @@ bool SimpleJSONObject::rename(
   store::Item_t lName;
   store::Item_t lNewName;
   zstring aNonConstName = aName;
+
   GET_FACTORY().createString(lName, aNonConstName);
   aNonConstName = aNewName;
+
   GET_FACTORY().createString(lNewName, aNonConstName);
+
   Pairs::iterator lIter = thePairs.find(lNewName);
-  if (lIter != thePairs.end()) {
+
+  if (lIter != thePairs.end())
+  {
 #ifndef NDEBUG
     assertInvariant();
 #endif
@@ -396,17 +421,22 @@ bool SimpleJSONObject::rename(
   }
   
   lIter = thePairs.find(lName);
-  if (lIter == thePairs.end()) {
+
+  if (lIter == thePairs.end()) 
+  {
 #ifndef NDEBUG
     assertInvariant();
 #endif
     return false;
   }
+
   store::Item* lValue = lIter.getValue();
+
   if (getCollection() != NULL && lValue->isJSONItem())
   {
     setJSONRoot(lValue, NULL);
   }
+
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), lIter.getKey());
   assert(lKeyIter != theKeys.end());
   *lKeyIter = lNewName.getp();
@@ -420,12 +450,14 @@ bool SimpleJSONObject::rename(
   return true;
 }
 
+
 /******************************************************************************
 
 *******************************************************************************/
 void SimpleJSONObject::setRoot(const JSONItem* aRoot)
 {
   theRoot = aRoot;
+
   for (Pairs::iterator lIter = thePairs.begin();
        lIter != thePairs.end();
        ++lIter)
@@ -433,16 +465,14 @@ void SimpleJSONObject::setRoot(const JSONItem* aRoot)
     if (lIter.getValue()->isJSONObject())
     {
       assert(dynamic_cast<SimpleJSONObject*>(lIter.getValue()));
-      SimpleJSONObject* lObject =
-          static_cast<SimpleJSONObject*>(lIter.getValue());
+      SimpleJSONObject* lObject = static_cast<SimpleJSONObject*>(lIter.getValue());
 
       lObject->setRoot(aRoot);
     }
     else if (lIter.getValue()->isJSONArray())
     {
       assert(dynamic_cast<SimpleJSONArray*>(lIter.getValue()));
-      SimpleJSONArray* lArray =
-          static_cast<SimpleJSONArray*>(lIter.getValue());
+      SimpleJSONArray* lArray = static_cast<SimpleJSONArray*>(lIter.getValue());
       
       lArray->setRoot(aRoot);
     }
@@ -453,8 +483,7 @@ void SimpleJSONObject::setRoot(const JSONItem* aRoot)
 /******************************************************************************
 
 *******************************************************************************/
-zstring
-SimpleJSONObject::getStringValue() const
+zstring SimpleJSONObject::getStringValue() const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -466,8 +495,7 @@ SimpleJSONObject::getStringValue() const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::getStringValue2(zstring& val) const
+void SimpleJSONObject::getStringValue2(zstring& val) const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -479,8 +507,7 @@ SimpleJSONObject::getStringValue2(zstring& val) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::appendStringValue(zstring& buf) const
+void SimpleJSONObject::appendStringValue(zstring& buf) const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -492,8 +519,7 @@ SimpleJSONObject::appendStringValue(zstring& buf) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+void SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -505,8 +531,7 @@ SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t
-SimpleJSONObject::getObjectValue(const zstring& aKey) const
+store::Item_t SimpleJSONObject::getObjectValue(const zstring& aKey) const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -514,10 +539,12 @@ SimpleJSONObject::getObjectValue(const zstring& aKey) const
   store::Item_t lName;
   zstring aNonConstName = aKey;
   GET_FACTORY().createString(lName, aNonConstName);
+
   if (!const_cast<Pairs&>(thePairs).exists(lName))
   {
     return NULL;
   }
+
   store::Item* lRes;
   thePairs.get(lName, lRes);
   return lRes;
@@ -527,8 +554,7 @@ SimpleJSONObject::getObjectValue(const zstring& aKey) const
 /******************************************************************************
 
 *******************************************************************************/
-store::Iterator_t
-SimpleJSONObject::getObjectKeys() const
+store::Iterator_t SimpleJSONObject::getObjectKeys() const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -545,9 +571,13 @@ const store::Collection* SimpleJSONObject::getCollection() const
   if (theRoot == this)
   {
     return theCollection;
-  } else if (theRoot != NULL) {
+  }
+  else if (theRoot != NULL)
+  {
     return theRoot->getCollection();
-  } else {
+  }
+  else
+  {
     return NULL;
   }
 }
@@ -558,27 +588,36 @@ const store::Collection* SimpleJSONObject::getCollection() const
 *******************************************************************************/
 void SimpleJSONObject::assertInvariant() const
 {
+  // Note: only root objects may point to a collection, so if theCollection ==
+  // NULL, it doesn't mean that the object does not belong to a collection.
   assert(theCollection == NULL || theRoot == this);
+
   if (theRoot != NULL)
   {
     const store::Collection* lCollection = getCollection();
     assert(lCollection != NULL);
+
     const SimpleJSONObject* lObject =
         dynamic_cast<const SimpleJSONObject*>(theRoot);
     const SimpleJSONArray* lArray =
         dynamic_cast<const SimpleJSONArray*>(theRoot);
+
     assert(lObject != NULL || lArray != NULL);
 
-    if (lObject != NULL) {
+    if (lObject != NULL) 
+    {
       assert(lObject->isThisRootOfAllDescendants(theRoot));
       assert(lObject->isThisJSONItemInDescendance(this));
-    } else {
+    }
+    else
+    {
       assert(lArray->isThisRootOfAllDescendants(theRoot));
       assert(lArray->isThisJSONItemInDescendance(this));
     }
   }
 
   assert(theKeys.size() == thePairs.size());
+
   for(Keys::const_iterator lIter = theKeys.begin();
       lIter != theKeys.end();
       ++lIter)
@@ -593,19 +632,21 @@ void SimpleJSONObject::assertInvariant() const
 *******************************************************************************/
 bool SimpleJSONObject::isThisRootOfAllDescendants(const store::Item* aRoot) const
 {
-  if(theRoot != aRoot)
+  if (theRoot != aRoot)
   {
     return false;
   }
+
   for (Pairs::iterator lIter = thePairs.begin();
        lIter != thePairs.end();
        ++lIter)
   {
     const SimpleJSONObject* lObject =
-        dynamic_cast<const SimpleJSONObject*>(lIter.getValue());
+      dynamic_cast<const SimpleJSONObject*>(lIter.getValue());
     const SimpleJSONArray* lArray =
-        dynamic_cast<const SimpleJSONArray*>(lIter.getValue());
-    if (lObject != NULL && (!lObject->isThisRootOfAllDescendants(aRoot)))
+      dynamic_cast<const SimpleJSONArray*>(lIter.getValue());
+ 
+   if (lObject != NULL && (!lObject->isThisRootOfAllDescendants(aRoot)))
     {
       return false;
     }
@@ -623,18 +664,20 @@ bool SimpleJSONObject::isThisRootOfAllDescendants(const store::Item* aRoot) cons
 *******************************************************************************/
 bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) const
 {
-  if(this == anItem)
+  if (this == anItem)
   {
     return true;
   }
+
   for (Pairs::iterator lIter = thePairs.begin();
        lIter != thePairs.end();
        ++lIter)
   {
     const SimpleJSONObject* lObject =
-        dynamic_cast<const SimpleJSONObject*>(lIter.getValue());
+      dynamic_cast<const SimpleJSONObject*>(lIter.getValue());
     const SimpleJSONArray* lArray =
-        dynamic_cast<const SimpleJSONArray*>(lIter.getValue());
+      dynamic_cast<const SimpleJSONArray*>(lIter.getValue());
+
     if (lObject != NULL && lObject->isThisJSONItemInDescendance(anItem))
     {
       return true;
@@ -659,8 +702,7 @@ SimpleJSONObject::KeyIterator::~KeyIterator()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::KeyIterator::open()
+void SimpleJSONObject::KeyIterator::open()
 {
   theIter = theObject->theKeys.begin();
 }
@@ -669,8 +711,7 @@ SimpleJSONObject::KeyIterator::open()
 /******************************************************************************
 
 *******************************************************************************/
-bool
-SimpleJSONObject::KeyIterator::next(store::Item_t& res)
+bool SimpleJSONObject::KeyIterator::next(store::Item_t& res)
 {
   if (theIter != theObject->theKeys.end())
   {
@@ -688,8 +729,7 @@ SimpleJSONObject::KeyIterator::next(store::Item_t& res)
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::KeyIterator::reset()
+void SimpleJSONObject::KeyIterator::reset()
 {
   open();
 }
@@ -698,8 +738,7 @@ SimpleJSONObject::KeyIterator::reset()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::KeyIterator::close()
+void SimpleJSONObject::KeyIterator::close()
 {
   theIter = theObject->theKeys.end();
 }
@@ -716,8 +755,7 @@ SimpleJSONObject::KeyIterator::close()
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONArray::getType() const
+store::Item* JSONArray::getType() const
 {
   return GET_STORE().JDM_ARRAY_QNAME;
 }
@@ -747,18 +785,20 @@ SimpleJSONArray::~SimpleJSONArray()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::push_back(const store::Item_t& aValue)
+void SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
+
   if (getCollection() != NULL && aValue->isJSONItem())
   {
     setJSONRoot(aValue, theRoot);
   }
+
   aValue->addReference();
   theContent.push_back(aValue.getp());
+
 #ifndef NDEBUG
   assertInvariant();
 #endif
@@ -768,8 +808,7 @@ SimpleJSONArray::push_back(const store::Item_t& aValue)
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
+void SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -785,8 +824,7 @@ SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
+void SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -802,18 +840,22 @@ SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::insert_before(const xs_integer& pos, const store::Item_t& member)
+void SimpleJSONArray::insert_before(
+    const xs_integer& pos,
+    const store::Item_t& member)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
+
   if (getCollection() != NULL && member->isJSONItem())
   {
     setJSONRoot(member, theRoot);
   }
+
   member->addReference();
   theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
+
 #ifndef NDEBUG
   assertInvariant();
 #endif
@@ -823,8 +865,7 @@ SimpleJSONArray::insert_before(const xs_integer& pos, const store::Item_t& membe
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::insert_before(
+void SimpleJSONArray::insert_before(
     const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
@@ -836,6 +877,7 @@ SimpleJSONArray::insert_before(
   theContent.reserve(theContent.size() + members.size());
 
   add(cast(aPos) - 1, members);
+
 #ifndef NDEBUG
   assertInvariant();
 #endif
@@ -845,8 +887,7 @@ SimpleJSONArray::insert_before(
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::insert_after(
+void SimpleJSONArray::insert_after(
     const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
@@ -867,8 +908,7 @@ SimpleJSONArray::insert_after(
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::add(
+void SimpleJSONArray::add(
     uint64_t aTargetPos,
     const std::vector<store::Item_t>& aNewMembers)
 {
@@ -878,10 +918,12 @@ SimpleJSONArray::add(
   for (size_t i = 0; i < aNewMembers.size(); ++i)
   {
     store::Item* lItem = aNewMembers[i].getp();
+
     if (getCollection() != NULL && lItem->isJSONItem())
     {
       setJSONRoot(lItem, theRoot);
     }
+
     lItem->addReference();
     theContent.insert(theContent.begin() + aTargetPos + i, lItem);
   }
@@ -895,17 +937,18 @@ SimpleJSONArray::add(
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t
-SimpleJSONArray::remove(const xs_integer& aPos)
+store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
   store::Item_t lItem = getArrayValue(aPos);
+
   if (getCollection() != NULL && lItem->isJSONItem())
   {
     setJSONRoot(lItem, NULL);
   }
+
   lItem->removeReference();
   uint64_t lPosStartingZero = cast(aPos) - 1;
   theContent.erase(theContent.begin() + lPosStartingZero);
@@ -920,22 +963,27 @@ SimpleJSONArray::remove(const xs_integer& aPos)
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t
-SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
+store::Item_t SimpleJSONArray::replace(
+    const xs_integer& aPos,
+    const store::Item_t& value)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
   store::Item_t lItem = getArrayValue(aPos);
+
   if (getCollection() != NULL && lItem->isJSONItem())
   {
     setJSONRoot(lItem, NULL);
   }
+
   uint64_t pos = cast(aPos) - 1;
+
   if (getCollection() != NULL && value->isJSONItem())
   {
     setJSONRoot(value, theRoot);
   }
+
   theContent[pos]->removeReference();
   value->addReference();
   theContent[pos] = value.getp();
@@ -953,6 +1001,7 @@ SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
 void SimpleJSONArray::setRoot(const JSONItem* aRoot)
 {
   theRoot = aRoot;
+
   for (Members::const_iterator lIter = theContent.begin();
        lIter != theContent.end();
        ++lIter)
@@ -960,16 +1009,14 @@ void SimpleJSONArray::setRoot(const JSONItem* aRoot)
     if ((*lIter)->isJSONObject())
     {
       assert(dynamic_cast<SimpleJSONObject*>(*lIter));
-      SimpleJSONObject* lObject =
-          static_cast<SimpleJSONObject*>(*lIter);
+      SimpleJSONObject* lObject = static_cast<SimpleJSONObject*>(*lIter);
 
       lObject->setRoot(aRoot);
     }
     else if ((*lIter)->isJSONArray())
     {
       assert(dynamic_cast<SimpleJSONArray*>(*lIter));
-      SimpleJSONArray* lArray =
-          static_cast<SimpleJSONArray*>(*lIter);
+      SimpleJSONArray* lArray = static_cast<SimpleJSONArray*>(*lIter);
       
       lArray->setRoot(aRoot);
     }
@@ -980,8 +1027,7 @@ void SimpleJSONArray::setRoot(const JSONItem* aRoot)
 /******************************************************************************
 
 *******************************************************************************/
-uint64_t
-SimpleJSONArray::cast(const xs_integer& i)
+uint64_t SimpleJSONArray::cast(const xs_integer& i)
 {
   try 
   {
@@ -998,13 +1044,13 @@ SimpleJSONArray::cast(const xs_integer& i)
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t
-SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
+store::Item_t SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
   uint64_t lPos = cast(aPosition);
+
   if (lPos == 0 || lPos > theContent.size())
   {
     return 0;
@@ -1019,8 +1065,7 @@ SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
 /******************************************************************************
 
 *******************************************************************************/
-store::Iterator_t
-SimpleJSONArray::getArrayValues() const
+store::Iterator_t SimpleJSONArray::getArrayValues() const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -1032,8 +1077,7 @@ SimpleJSONArray::getArrayValues() const
 /******************************************************************************
 
 *******************************************************************************/
-xs_integer
-SimpleJSONArray::getArraySize() const
+xs_integer SimpleJSONArray::getArraySize() const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -1089,8 +1133,7 @@ store::Item* SimpleJSONArray::copy(
 /******************************************************************************
 
 *******************************************************************************/
-zstring
-SimpleJSONArray::getStringValue() const
+zstring SimpleJSONArray::getStringValue() const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -1102,8 +1145,7 @@ SimpleJSONArray::getStringValue() const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::getStringValue2(zstring& val) const
+void SimpleJSONArray::getStringValue2(zstring& val) const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -1115,8 +1157,7 @@ SimpleJSONArray::getStringValue2(zstring& val) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::appendStringValue(zstring& buf) const
+void SimpleJSONArray::appendStringValue(zstring& buf) const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -1128,8 +1169,7 @@ SimpleJSONArray::appendStringValue(zstring& buf) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+void SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -1141,8 +1181,7 @@ SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 /*******************************************************************************
 
 ********************************************************************************/
-void
-SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
+void SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
 #ifndef NDEBUG
   assertInvariant();
@@ -1156,7 +1195,9 @@ SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
   {
     // Attach
     setRoot(this);
-  } else {
+  }
+  else
+  {
     // Detach
     setRoot(NULL);
   }
@@ -1174,9 +1215,13 @@ const store::Collection* SimpleJSONArray::getCollection() const
   if (theRoot == this)
   {
     return theCollection;
-  } else if (theRoot != NULL) {
+  }
+  else if (theRoot != NULL)
+  {
     return theRoot->getCollection();
-  } else {
+  }
+  else
+  {
     return NULL;
   }
 }
@@ -1277,8 +1322,7 @@ SimpleJSONArray::ValuesIterator::~ValuesIterator()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::ValuesIterator::open()
+void SimpleJSONArray::ValuesIterator::open()
 {
   theIter = theArray->theContent.begin();
 }
@@ -1287,8 +1331,7 @@ SimpleJSONArray::ValuesIterator::open()
 /******************************************************************************
 
 *******************************************************************************/
-bool
-SimpleJSONArray::ValuesIterator::next(store::Item_t& res)
+bool SimpleJSONArray::ValuesIterator::next(store::Item_t& res)
 {
   if (theIter != theArray->theContent.end())
   {
@@ -1306,8 +1349,7 @@ SimpleJSONArray::ValuesIterator::next(store::Item_t& res)
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::ValuesIterator::reset()
+void SimpleJSONArray::ValuesIterator::reset()
 {
   open();
 }
@@ -1316,8 +1358,7 @@ SimpleJSONArray::ValuesIterator::reset()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::ValuesIterator::close()
+void SimpleJSONArray::ValuesIterator::close()
 {
   theIter = theArray->theContent.end();
 }
