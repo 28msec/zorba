@@ -386,6 +386,7 @@ protected:
 #endif
 
 private:
+  void setTreeInternal(const XmlTree* t);
   void setTree(const XmlTree* t);
 
   void destroyInternal(bool removeType);
@@ -1035,10 +1036,9 @@ public:
   void resetInSubstGroup() { theFlags &= ~IsInSubstGroup; }
 
 #ifndef EMBEDED_TYPE
+  void assertInvariants() const;
   bool haveType() const { return (theFlags & HaveType) != 0; }
-
   void setHaveType() { theFlags |= HaveType; }
-
   void resetHaveType() { theFlags &= ~HaveType; }
 #endif
 
@@ -1209,6 +1209,7 @@ public:
   bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
 
 #ifndef EMBEDED_TYPE
+  void assertInvariants() const;
   bool haveType() const       { return (theFlags & HaveType) != 0; }
   void setHaveType()          { theFlags |= HaveType; }
   void resetHaveType()        { theFlags &= ~HaveType; }

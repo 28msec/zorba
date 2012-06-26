@@ -44,12 +44,7 @@ protected:
 	expr_t  theSourceExpr;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(update_expr_base)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(update_expr_base, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  update_expr_base(
+	update_expr_base(
     static_context* sctx,
     const QueryLoc&,
     expr_kind_t kind,
@@ -76,12 +71,7 @@ protected:
   store::UpdateConsts::InsertType theType;
 
 public:
-  SERIALIZABLE_CLASS(insert_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(insert_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  insert_expr(
+	insert_expr(
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::InsertType,
@@ -107,12 +97,7 @@ class delete_expr : public update_expr_base
   friend class expr;
 
 public:
-  SERIALIZABLE_CLASS(delete_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
+	delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -134,12 +119,7 @@ protected:
   store::UpdateConsts::ReplaceType theType;
 
 public:
-  SERIALIZABLE_CLASS(replace_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(replace_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  replace_expr(
+	replace_expr(
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
@@ -167,12 +147,7 @@ class rename_expr : public update_expr_base
   friend class expr;
 
 public:
-  SERIALIZABLE_CLASS(rename_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  rename_expr(
+	rename_expr(
       static_context* sctx,
       const QueryLoc&,
       const expr_t&,
@@ -207,11 +182,6 @@ private:
   expr_t     theExpr;
 
 public:
-  SERIALIZABLE_CLASS(copy_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(copy_clause, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   copy_clause(var_expr_t aVar, expr_t aExpr);
 
   ~copy_clause();
@@ -237,16 +207,11 @@ protected:
   expr_t                     theReturnExpr;
 
 public:
-  SERIALIZABLE_CLASS(transform_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(transform_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
+	transform_expr(static_context* sctx, const QueryLoc& loc);
 
-public:
-  transform_expr(static_context* sctx, const QueryLoc& loc);
+	expr_t getModifyExpr() const { return theModifyExpr; }
 
-  expr_t getModifyExpr() const { return theModifyExpr; }
-
-  expr_t getReturnExpr() const { return theReturnExpr; }
+	expr_t getReturnExpr() const { return theReturnExpr; }
 
   void setModifyExpr(expr* e);
 

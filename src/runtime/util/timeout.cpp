@@ -43,7 +43,7 @@ void StateWrapper::doBreak()
 }
 
 
-Timeout::Timeout( long aTimeout, const StateWrapper& aWrapper)
+Timeout::Timeout(unsigned long aTimeout, const StateWrapper& aWrapper)
   :
   theTimeout(aTimeout),
   theWrapper(aWrapper)

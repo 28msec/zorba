@@ -47,11 +47,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONParseInternal,
     NaryBaseIterator<JSONParseInternal, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONParseInternal, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONParseInternal(
     static_context* sctx,
@@ -83,11 +79,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONSerializeInternal,
     NaryBaseIterator<JSONSerializeInternal, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONSerializeInternal, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONSerializeInternal(
     static_context* sctx,

@@ -85,20 +85,21 @@ public:
 
   treat_expr* create_treat_expr(
       static_context* sctx,
-      const QueryLoc&,
-      expr_t,
-      xqtref_t,
-      Error const&,
+      const QueryLoc& loc,
+      const expr_t& input,
+      const xqtref_t& type,
+      TreatIterator::ErrorKind err,
       bool check_prime = true,
-      store::Item_t fnQname = NULL);
+      store::Item* qnname = NULL);
 
 
   promote_expr* create_promote_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      expr_t input,
-      xqtref_t type,
-      store::Item_t fnQname = NULL);
+      const expr_t& input,
+      const xqtref_t& type,
+      PromoteIterator::ErrorKind err,
+      store::Item* qname);
 
   castable_expr* create_castable_expr(
       static_context* sctx,
@@ -237,6 +238,7 @@ public:
   function_trace_expr* create_function_trace_expr(expr_t aExpr);
 
   eval_expr* create_eval_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& e,

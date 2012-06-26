@@ -43,9 +43,9 @@ PlanIter_t fn_resolve_uri::codegen(
 
 void populate_context_any_uri(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_resolve_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","resolve-uri"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -55,9 +55,9 @@ void populate_context_any_uri(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_resolve_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","resolve-uri"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 

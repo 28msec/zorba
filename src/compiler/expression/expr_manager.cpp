@@ -29,11 +29,15 @@
 #include "script_exprs.h"
 #include "update_exprs.h"
 
-namespace zorba {
+namespace zorba
+{
 
 ExprManager::ExprManager()
-: memory()
-{}
+  :
+  memory()
+{
+}
+
 
 //calls on the destructors and also keeps tracks of certain numbers
 ExprManager::~ExprManager()
@@ -64,53 +68,67 @@ ExprManager::~ExprManager()
   }
 }
 
+
 expr* ExprManager::reg(expr* exp)
 {
   theExprs.push_back(exp);
   return exp;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CREATE_AND_RETURN_EXPR(EXPRTYPE, ...) \
-  EXPRTYPE *EXPPTR = new (memory) EXPRTYPE(__VA_ARGS__); \
+  EXPRTYPE* EXPPTR = new (memory) EXPRTYPE(__VA_ARGS__); \
   reg(EXPPTR); \
   return EXPPTR
 
 #define CREATE_AND_RETURN(TYPE, ...) \
   TYPE *EXPPTR = new (memory) TYPE(__VA_ARGS__); \
   return EXPPTR
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
-if_expr* ExprManager::create_if_expr(static_context* sctx, const QueryLoc& loc,
-                      expr_t cond_expr, expr_t then_expr, expr_t else_expr)
+
+if_expr* ExprManager::create_if_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t cond_expr,
+    expr_t then_expr,
+    expr_t else_expr)
 {
   CREATE_AND_RETURN_EXPR(if_expr, sctx, loc, cond_expr, then_expr, else_expr);
 }
 
-order_expr* ExprManager::create_order_expr(static_context* sctx,
-                            const QueryLoc& loc,
-                            order_expr::order_type_t order,
-                            expr_t exp)
+
+order_expr* ExprManager::create_order_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    order_expr::order_type_t order,
+    expr_t exp)
 {
   CREATE_AND_RETURN_EXPR(order_expr, sctx, loc, order, exp);
 }
 
-validate_expr* ExprManager::create_validate_expr(static_context* sctx,
-                                  const QueryLoc& loc,
-                                  ParseConstants::validation_mode_t mode,
-                                  const store::Item_t& aTypeName,
-                                  expr_t validated,
-                                  rchandle<TypeManager> tm)
+
+validate_expr* ExprManager::create_validate_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    ParseConstants::validation_mode_t mode,
+    const store::Item_t& aTypeName,
+    expr_t validated,
+    rchandle<TypeManager> tm)
 {
-  CREATE_AND_RETURN_EXPR(validate_expr,
-          sctx, loc, mode, aTypeName, validated, tm);
+  CREATE_AND_RETURN_EXPR(validate_expr, sctx, loc, mode, aTypeName, validated, tm);
 }
 
 
-cast_expr* ExprManager::create_cast_expr(static_context* sctx,
-                            const QueryLoc& loc,
-                            expr_t casted, xqtref_t type)
+cast_expr* ExprManager::create_cast_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t casted,
+    xqtref_t type)
 {
   CREATE_AND_RETURN_EXPR(cast_expr, sctx, loc, casted, type);
 }
@@ -119,46 +137,50 @@ cast_expr* ExprManager::create_cast_expr(static_context* sctx,
 treat_expr* ExprManager::create_treat_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t treated,
-    xqtref_t type,
-    Error const& err,
+    const expr_t& treated,
+    const xqtref_t& type,
+    TreatIterator::ErrorKind err,
     bool check_prime,
-    store::Item_t fnQname)
+    store::Item* qname)
 {
   CREATE_AND_RETURN_EXPR(treat_expr,
-          sctx, loc, treated, type, err, check_prime, fnQname);
+  sctx, loc, treated, type, err, check_prime, qname);
 }
 
 
 promote_expr* ExprManager::create_promote_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  expr_t promoted,
-  xqtref_t type,
-  store::Item_t fnQname)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& promoted,
+    const xqtref_t& type,
+    PromoteIterator::ErrorKind err,
+    store::Item* qname)
 {
-  CREATE_AND_RETURN_EXPR(promote_expr, sctx, loc, promoted, type, fnQname);
+  CREATE_AND_RETURN_EXPR(promote_expr, sctx, loc, promoted, type, err, qname);
 }
 
+
 castable_expr* ExprManager::create_castable_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      expr_t castable,
-      xqtref_t type)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t castable,
+    xqtref_t type)
 {
   CREATE_AND_RETURN_EXPR(castable_expr, sctx, loc, castable, type);
 }
 
+
 instanceof_expr* ExprManager::create_instanceof_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  expr_t instanced,
-  xqtref_t type,
-  bool checkPrimeOnly)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t instanced,
+    xqtref_t type,
+    bool checkPrimeOnly)
 {
   CREATE_AND_RETURN_EXPR(instanceof_expr,
           sctx, loc, instanced, type, checkPrimeOnly);
 }
+
 
 name_cast_expr* ExprManager::create_name_cast_expr(
     static_context* sctx,
@@ -170,14 +192,16 @@ name_cast_expr* ExprManager::create_name_cast_expr(
   CREATE_AND_RETURN_EXPR(name_cast_expr, sctx, loc, casted, ns, isAttr);
 }
 
+
 doc_expr* ExprManager::create_doc_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      expr* content,
-      bool copyNodes)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr* content,
+    bool copyNodes)
 {
   CREATE_AND_RETURN_EXPR(doc_expr, sctx, loc, content, copyNodes);
 }
+
 
 elem_expr* ExprManager::create_elem_expr(
     static_context* sctx,
@@ -192,6 +216,7 @@ elem_expr* ExprManager::create_elem_expr(
           sctx, loc, qnameExpr, attrs, content, nsCtx, copyNodes);
 }
 
+
 elem_expr* ExprManager::create_elem_expr(
     static_context* sctx,
     const QueryLoc& loc,
@@ -204,6 +229,7 @@ elem_expr* ExprManager::create_elem_expr(
           sctx, loc, qnameExpr, content, nsCtx, copyNodes);
 }
 
+
 attr_expr* ExprManager::create_attr_expr(
     static_context* sctx,
     const QueryLoc& loc,
@@ -212,6 +238,7 @@ attr_expr* ExprManager::create_attr_expr(
 {
   CREATE_AND_RETURN_EXPR(attr_expr, sctx, loc, aQNameExpr, aValueExpr);
 }
+
 
 text_expr* ExprManager::create_text_expr(
     static_context* sctx,
@@ -222,138 +249,178 @@ text_expr* ExprManager::create_text_expr(
   CREATE_AND_RETURN_EXPR(text_expr, sctx, loc, textType, text);
 }
 
+
 pi_expr* ExprManager::create_pi_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      expr_t targetExpr,
-      expr_t contentExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t targetExpr,
+    expr_t contentExpr)
 {
   CREATE_AND_RETURN_EXPR(pi_expr, sctx, loc, targetExpr, contentExpr);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, zstring& sval)
+    static_context* sctx,
+    const QueryLoc& loc,
+    zstring& sval)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, sval);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, const std::string& sval)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const std::string& sval)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, sval);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, const char* sval)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const char* sval)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, sval);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, xs_integer val)
+    static_context* sctx,
+    const QueryLoc& loc,
+    xs_integer val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, val);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, xs_decimal val)
+    static_context* sctx,
+    const QueryLoc& loc,
+    xs_decimal val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, val);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, xs_double val)
+    static_context* sctx,
+    const QueryLoc& loc,
+    xs_double val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, val);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, xs_boolean val)
+    static_context* sctx,
+    const QueryLoc& loc,
+    xs_boolean val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, val);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx, const QueryLoc& loc, store::Item_t val)
+    static_context* sctx,
+    const QueryLoc& loc,
+    store::Item_t val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, val);
 }
 
+
 const_expr* ExprManager::create_const_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      const char* ns,
-      const char* pre,
-      const char* local)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const char* ns,
+    const char* pre,
+    const char* local)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, loc, ns, pre, local);
 }
 
-extension_expr* ExprManager::create_extension_expr(static_context* sctx,
-        const QueryLoc& loc)
+
+extension_expr* ExprManager::create_extension_expr(
+    static_context* sctx,
+    const QueryLoc& loc)
 {
   CREATE_AND_RETURN_EXPR(extension_expr, sctx, loc);
 }
 
+
 extension_expr* ExprManager::create_extension_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      expr_t extended)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t extended)
 {
   CREATE_AND_RETURN_EXPR(extension_expr, sctx, loc, extended);
 }
+
 
 catch_clause* ExprManager::create_catch_clause()
 {
   CREATE_AND_RETURN(catch_clause);
 }
 
+
 trycatch_expr* ExprManager::create_trycatch_expr(
-      static_context* sctx, const QueryLoc& loc, expr_t tryExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t tryExpr)
 {
   CREATE_AND_RETURN_EXPR(trycatch_expr, sctx, loc, tryExpr);
 }
 
+
 wrapper_expr* ExprManager::create_wrapper_expr(
-      static_context* sctx, const QueryLoc& loc, expr_t wrapped)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t wrapped)
 {
   CREATE_AND_RETURN_EXPR(wrapper_expr, sctx, loc, wrapped);
 }
 
+
 function_trace_expr* ExprManager::create_function_trace_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  expr_t aChild)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t aChild)
 {
   CREATE_AND_RETURN_EXPR(function_trace_expr, sctx, loc, aChild);
 }
+
 
 function_trace_expr* ExprManager::create_function_trace_expr(expr_t aExpr)
 {
   CREATE_AND_RETURN_EXPR(function_trace_expr, aExpr);
 }
 
+
 eval_expr* ExprManager::create_eval_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const expr_t& e,
-  expr_script_kind_t scriptingKind,
-  namespace_context* nsCtx)
+    CompilerCB* ccb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& e,
+    expr_script_kind_t scriptingKind,
+    namespace_context* nsCtx)
 {
-  CREATE_AND_RETURN_EXPR(eval_expr, sctx, loc, e, scriptingKind, nsCtx);
+  CREATE_AND_RETURN_EXPR(eval_expr, ccb, sctx, loc, e, scriptingKind, nsCtx);
 }
 
 #ifdef ZORBA_WITH_DEBUGGER
 
 debugger_expr* ExprManager::create_debugger_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const expr_t& aChild,
-  namespace_context* nsCtx,
-  bool aIsVarDeclaration)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& aChild,
+    namespace_context* nsCtx,
+    bool aIsVarDeclaration)
 {
   CREATE_AND_RETURN_EXPR(debugger_expr,
-          sctx, loc, aChild, nsCtx, aIsVarDeclaration);
+  sctx, loc, aChild, nsCtx, aIsVarDeclaration);
 }
 
 #endif
@@ -361,20 +428,23 @@ debugger_expr* ExprManager::create_debugger_expr(
 ////////////////////////////////////////////////////////////////////////////////
 
 var_expr* ExprManager::create_var_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  var_expr::var_kind k,
-  store::Item* name)
+    static_context* sctx,
+    const QueryLoc& loc,
+    var_expr::var_kind k,
+    store::Item* name)
 {
   CREATE_AND_RETURN_EXPR(var_expr, sctx, loc, k, name);
 }
+
 
 var_expr* ExprManager::create_var_expr(const var_expr& source)
 {
   CREATE_AND_RETURN_EXPR(var_expr, source);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
+
 
 insert_expr* ExprManager::create_insert_expr(
     static_context* sctx,
@@ -384,14 +454,18 @@ insert_expr* ExprManager::create_insert_expr(
     const expr_t& aTargetExpr)
 {
   CREATE_AND_RETURN_EXPR(insert_expr,
-          sctx, loc, insertType, aSourceExpr, aTargetExpr);
+  sctx, loc, insertType, aSourceExpr, aTargetExpr);
 }
 
+
 delete_expr* ExprManager::create_delete_expr(
-      static_context* sctx, const QueryLoc& loc, const expr_t& aTargetExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& aTargetExpr)
 {
   CREATE_AND_RETURN_EXPR(delete_expr, sctx, loc, aTargetExpr);
 }
+
 
 replace_expr* ExprManager::create_replace_expr(
     static_context* sctx,
@@ -403,85 +477,100 @@ replace_expr* ExprManager::create_replace_expr(
   CREATE_AND_RETURN_EXPR(replace_expr, sctx, loc, aType, aSourceExpr, aTargetExpr);
 }
 
+
 rename_expr* ExprManager::create_rename_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const expr_t& aSourceExpr,
-  const expr_t& aTargetExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& aSourceExpr,
+    const expr_t& aTargetExpr)
 {
   CREATE_AND_RETURN_EXPR(rename_expr, sctx, loc, aSourceExpr, aTargetExpr);
 }
+
 
 copy_clause* ExprManager::create_copy_clause(var_expr_t aVar, expr_t aExpr)
 {
   CREATE_AND_RETURN(copy_clause, aVar, aExpr);
 }
 
+
 transform_expr* ExprManager::create_transform_expr(
-      static_context* sctx, const QueryLoc& loc)
+    static_context* sctx,
+    const QueryLoc& loc)
 {
   CREATE_AND_RETURN_EXPR(transform_expr, sctx, loc);
 }
 
+
 block_expr* ExprManager::create_block_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  bool allowLastUpdating,
-  std::vector<expr_t>& seq,
-  std::vector<var_expr*>* assignedVars)
+    static_context* sctx,
+    const QueryLoc& loc,
+    bool allowLastUpdating,
+    std::vector<expr_t>& seq,
+    std::vector<var_expr*>* assignedVars)
 {
   CREATE_AND_RETURN_EXPR(block_expr,
-          sctx, loc, allowLastUpdating, seq, assignedVars);
+  sctx, loc, allowLastUpdating, seq, assignedVars);
 }
 
+
 apply_expr* ExprManager::create_apply_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const expr_t& inExpr,
-  bool discardXDM)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& inExpr,
+    bool discardXDM)
 {
   CREATE_AND_RETURN_EXPR(apply_expr, sctx, loc, inExpr, discardXDM);
 }
 
+
 var_decl_expr* ExprManager::create_var_decl_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const var_expr_t& varExpr,
-  const expr_t& initExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const var_expr_t& varExpr,
+    const expr_t& initExpr)
 {
   CREATE_AND_RETURN_EXPR(var_decl_expr, sctx, loc, varExpr, initExpr);
 }
 
+
 var_set_expr* ExprManager::create_var_set_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const var_expr_t& varExpr,
-  const expr_t& setExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const var_expr_t& varExpr,
+    const expr_t& setExpr)
 {
   CREATE_AND_RETURN_EXPR(var_set_expr, sctx, loc, varExpr, setExpr);
 }
 
+
 exit_expr* ExprManager::create_exit_expr(
-      static_context* sctx, const QueryLoc& loc, const expr_t& inExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& inExpr)
 {
   CREATE_AND_RETURN_EXPR(exit_expr, sctx, loc, inExpr);
 }
 
+
 exit_catcher_expr* ExprManager::create_exit_catcher_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const expr_t& inExpr,
-  std::vector<expr*>& exitExprs)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& inExpr,
+    std::vector<expr*>& exitExprs)
 {
   CREATE_AND_RETURN_EXPR(exit_catcher_expr, sctx, loc, inExpr, exitExprs);
 }
 
+
 flowctl_expr* ExprManager::create_flowctl_expr(
-      static_context* sctx, const QueryLoc& loc,
-      flowctl_expr::action action)
+    static_context* sctx,
+    const QueryLoc& loc,
+    flowctl_expr::action action)
 {
   CREATE_AND_RETURN_EXPR(flowctl_expr, sctx, loc, action);
 }
+
 
 while_expr* ExprManager::create_while_expr(
       static_context* sctx, const QueryLoc& loc, expr_t body)
@@ -489,54 +578,64 @@ while_expr* ExprManager::create_while_expr(
   CREATE_AND_RETURN_EXPR(while_expr, sctx, loc, body);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 
 relpath_expr* ExprManager::create_relpath_expr(
-        static_context* sctx, const QueryLoc& loc)
+     static_context* sctx,
+     const QueryLoc& loc)
 {
   CREATE_AND_RETURN_EXPR(relpath_expr, sctx, loc);
 }
 
+
 axis_step_expr* ExprManager::create_axis_step_expr(
-        static_context* sctx, const QueryLoc& loc)
+    static_context* sctx,
+    const QueryLoc& loc)
 {
   CREATE_AND_RETURN_EXPR(axis_step_expr, sctx, loc);
 }
 
+
 match_expr* ExprManager::create_match_expr(
-        static_context* sctx, const QueryLoc& loc)
+    static_context* sctx,
+    const QueryLoc& loc)
 {
   CREATE_AND_RETURN_EXPR(match_expr, sctx, loc);
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
 dynamic_function_invocation_expr*
 ExprManager::create_dynamic_function_invocation_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const expr_t& anExpr,
-  const std::vector<expr_t>& args)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& anExpr,
+    const std::vector<expr_t>& args)
 {
   CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, loc, anExpr, args);
 }
 
+
 function_item_expr* ExprManager::create_function_item_expr(
-  static_context* sctx,
-  const QueryLoc& loc,
-  const store::Item* aQName,
-  function* f,
-  uint32_t aArity)
+    static_context* sctx,
+    const QueryLoc& loc,
+    const store::Item* aQName,
+    function* f,
+    uint32_t aArity)
 {
   CREATE_AND_RETURN_EXPR(function_item_expr, sctx, loc, aQName, f, aArity);
 }
 
+
 function_item_expr* ExprManager::create_function_item_expr(
-  static_context* sctx,
-  const QueryLoc& loc)
+    static_context* sctx,
+    const QueryLoc& loc)
 {
   CREATE_AND_RETURN_EXPR(function_item_expr, sctx, loc);
 }
+
 
 ftcontains_expr* ExprManager::create_ftcontains_expr(
     static_context* sctx,
@@ -548,6 +647,7 @@ ftcontains_expr* ExprManager::create_ftcontains_expr(
   CREATE_AND_RETURN_EXPR(ftcontains_expr, sctx, loc, range, ftselection, ftignore);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //this calls the static create_seq within fo_expr
@@ -556,6 +656,7 @@ fo_expr* ExprManager::create_seq(static_context* sctx, const QueryLoc& loc)
   //TODO make fo_expr use this factory to generate everything
   return fo_expr::create_seq(sctx, loc);
 }
+
 
 fo_expr* ExprManager::create_fo_expr(
     static_context* sctx,
@@ -566,6 +667,7 @@ fo_expr* ExprManager::create_fo_expr(
   CREATE_AND_RETURN_EXPR(fo_expr, sctx, loc, f, arg);
 }
 
+
 fo_expr* ExprManager::create_fo_expr(
     static_context* sctx,
     const QueryLoc& loc,
@@ -575,6 +677,7 @@ fo_expr* ExprManager::create_fo_expr(
 {
   CREATE_AND_RETURN_EXPR(fo_expr, sctx, loc, f, arg1, arg2);
 }
+
 
 fo_expr* ExprManager::create_fo_expr(
     static_context* sctx,

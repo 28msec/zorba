@@ -32,10 +32,6 @@ class ftcontains_expr : public expr
   friend class ExprIterator;
 
 public:
-  SERIALIZABLE_CLASS(ftcontains_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,expr)
-  void serialize( serialization::Archiver& );
-
   ftcontains_expr(
     static_context*,
     QueryLoc const&,

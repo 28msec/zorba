@@ -42,6 +42,8 @@
 namespace zorba
 {
 
+SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
+
 SERIALIZABLE_CLASS_VERSIONS(IndexDecl)
 
 
@@ -87,13 +89,17 @@ void IndexDecl::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsTemp;
   SERIALIZE_ENUM(MaintenanceMode, theMaintenanceMode);
   SERIALIZE_ENUM(ContainerKind, theContainerKind);
-  ar & theDomainClause;
-  ar & theKeyExprs;
+  //ar & theDomainClause;
+  //ar & theKeyExprs;
+  serialize_csize(ar, theNumKeyExprs);
   ar & theKeyTypes;
   ar & theOrderModifiers;
 
   ar & theSourceNames;
-  ar & theDomainSourceExprs;
+  //ar & theDomainSourceExprs;
+
+  ar & theBuildPlan;
+  ar & theDocIndexerPlan;
 }
 
 
@@ -183,18 +189,10 @@ void IndexDecl::setDomainPositionVariable(var_expr_t domainPosVar)
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<expr_t>& IndexDecl::getKeyExpressions() const
-{
-  return theKeyExprs;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void IndexDecl::setKeyExpressions(const std::vector<expr_t>& keyExprs)
 {
   theKeyExprs = keyExprs;
+  theNumKeyExprs = theKeyExprs.size();
 }
 
 
@@ -260,7 +258,7 @@ void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
   XQDDF spec. This method is called from the translator, after the domain and
   key exprs have been translated and optimized.
 *******************************************************************************/
-void IndexDecl::analyze()
+void IndexDecl::analyze(CompilerCB* ccb)
 {
   store::Item_t dotQName;
   GENV_ITEMFACTORY->createQName(dotQName, "", "", "$$dot");
@@ -296,11 +294,8 @@ void IndexDecl::analyze()
 
   if (theIsGeneral && numKeys > 1)
   {
-		throw XQUERY_EXCEPTION(
-			zerr::ZDST0035_INDEX_GENERAL_MULTIKEY,
-			ERROR_PARAMS( theName->getStringValue() ),
-			ERROR_LOC( theKeyExprs[1]->get_loc() )
-		);
+    RAISE_ERROR(zerr::ZDST0035_INDEX_GENERAL_MULTIKEY, theKeyExprs[1]->get_loc(),
+		ERROR_PARAMS(theName->getStringValue()));
   }
 
   // Check constraints on the key exprs
@@ -334,6 +329,16 @@ void IndexDecl::analyze()
     getDomainExpr()->get_loc(),
     ERROR_PARAMS(theName->getStringValue()));
   }
+  else if (theMaintenanceMode == DOC_MAP)
+  {
+    // Have to do this here (rather than during runtime) so that we don't have to
+    // serialize the index exprs.
+    (void)getDocIndexer(ccb, theLocation);
+  }
+
+  // Have to do this here (rather than during runtime) so that we don't have to
+  // serialize the index exprs.
+  (void)getBuildPlan(ccb, theLocation);
 }
 
 
@@ -369,7 +374,7 @@ void IndexDecl::analyzeExprInternal(
 
     if (func->isSource())
     {
-      if (func->getKind() == FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1)
+      if (func->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
       {
         const expr* argExpr = foExpr->get_arg(0);
 
@@ -410,21 +415,15 @@ void IndexDecl::analyzeExprInternal(
   {
     if (e == dotVar)
     {
-			throw XQUERY_EXCEPTION(
-				zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM,
-				ERROR_PARAMS( theName->getStringValue() ),
-				ERROR_LOC( e->get_loc() )
-			);
+			RAISE_ERROR(zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM, e->get_loc(),
+			ERROR_PARAMS(theName->getStringValue()));
     }
 
     if (e != getDomainVariable() &&
         std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
     {
-			throw XQUERY_EXCEPTION(
-				zerr::ZDST0031_INDEX_HAS_FREE_VARS,
-				ERROR_PARAMS( theName->getStringValue() ),
-				ERROR_LOC( e->get_loc() )
-			);
+			RAISE_ERROR(zerr::ZDST0031_INDEX_HAS_FREE_VARS,  e->get_loc(),
+			ERROR_PARAMS(theName->getStringValue()));
     }
   }
 
@@ -462,7 +461,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   static_context* sctx = domainExpr->get_sctx();
   const QueryLoc& dotloc = dot->get_loc();
 
-  ulong numKeys = (ulong)theKeyExprs.size();
+  csize numKeys = theKeyExprs.size();
   std::vector<expr_t> clonedExprs(numKeys + 1);
 
   //
@@ -491,7 +490,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  for (ulong i = 0; i < numKeys; ++i)
+  for (csize i = 0; i < numKeys; ++i)
   {
     subst.clear();
     subst[dot] = newdot;
@@ -570,6 +569,21 @@ DocIndexer* IndexDecl::getDocIndexer(
   if (theMaintenanceMode != DOC_MAP)
     return NULL;
 
+  std::stringstream ss;
+  ss << "$$idx_doc_var_" << this;
+  std::string varname = ss.str();
+  store::Item_t docVarName;
+  GENV_ITEMFACTORY->createQName(docVarName, "", "", varname.c_str());
+
+  csize numKeys = theNumKeyExprs;
+
+  if (theDocIndexerPlan != NULL)
+  {
+    theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVarName);
+
+    return theDocIndexer.getp();
+  }
+
   expr* domainExpr = getDomainExpr();
   var_expr* dot = getDomainVariable();
   var_expr* pos = getDomainPositionVariable();
@@ -578,7 +592,6 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   const QueryLoc& dotloc = dot->get_loc();
 
-  ulong numKeys = (ulong)theKeyExprs.size();
   std::vector<expr_t> clonedExprs(numKeys + 1);
 
   //
@@ -587,13 +600,10 @@ DocIndexer* IndexDecl::getDocIndexer(
   // during the apply-updates.
   //
 
-  std::stringstream ss;
-  ss << "$$idx_doc_var_" << this;
-  std::string varname = ss.str();
-  store::Item_t qname;
-  GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-
-  var_expr_t docVar = new var_expr(sctx, dot->get_loc(), var_expr::prolog_var, qname);
+  var_expr_t docVar = new var_expr(sctx,
+                                   dot->get_loc(),
+                                   var_expr::prolog_var,
+                                   docVarName);
   docVar->set_unique_id(1);
   ulong nextVarId = 2;
 
@@ -627,7 +637,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  for (ulong i = 0; i < numKeys; ++i)
+  for (csize i = 0; i < numKeys; ++i)
   {
     subst.clear();
     subst[dot] = newdot;
@@ -679,7 +689,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Create theDocIndexer obj
   //
-  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVar);
+  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVarName);
 
   return theDocIndexer.getp();
 }
@@ -701,9 +711,9 @@ std::string IndexDecl::toString()
   os << "Domain Variable : ";
   getDomainVariable()->put(os);
 
-  ulong numColumns = (ulong)theKeyExprs.size();
+  csize numColumns = theKeyExprs.size();
 
-  for (ulong i = 0; i < numColumns; ++i)
+  for (csize i = 0; i < numColumns; ++i)
   {
     os << std::endl << "Key Expr " << i << " : " << std::endl;
     theKeyExprs[i]->put(os);

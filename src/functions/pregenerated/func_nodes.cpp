@@ -243,9 +243,9 @@ PlanIter_t fn_path_3_0::codegen(
 
 void populate_context_nodes(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
         (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-reference"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -255,9 +255,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_ref_node_by_reference,
         (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-by-reference"), 
         GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
@@ -267,9 +267,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_local_name,
         (createQName("http://www.w3.org/2005/xpath-functions","","local-name"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -278,9 +278,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_local_name,
         (createQName("http://www.w3.org/2005/xpath-functions","","local-name"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -290,9 +290,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_namespace_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri"), 
         GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
@@ -301,9 +301,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_namespace_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -313,9 +313,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_lang,
         (createQName("http://www.w3.org/2005/xpath-functions","","lang"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -325,9 +325,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_lang,
         (createQName("http://www.w3.org/2005/xpath-functions","","lang"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -338,9 +338,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_number,
         (createQName("http://www.w3.org/2005/xpath-functions","","number"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
@@ -349,9 +349,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_number,
         (createQName("http://www.w3.org/2005/xpath-functions","","number"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
@@ -361,9 +361,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_has_children_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","has-children"), 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -372,9 +372,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_has_children_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","has-children"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -384,9 +384,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_innermost_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","innermost"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
@@ -396,9 +396,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_outermost_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","outermost"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
@@ -408,9 +408,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_generate_id_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","generate-id"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -419,9 +419,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_generate_id_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","generate-id"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -431,9 +431,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_ancestor_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","ancestor-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -444,9 +444,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_descendant_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","descendant-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -457,9 +457,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_parent_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","parent-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -470,9 +470,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_child_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","child-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -483,9 +483,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_following_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","following-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -496,9 +496,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_preceding_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","preceding-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -509,9 +509,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_following_sibling_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","following-sibling-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -522,9 +522,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_preceding_sibling_of,
         (createQName("http://www.zorba-xquery.com/modules/node","","preceding-sibling-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -535,9 +535,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_level,
         (createQName("http://www.zorba-xquery.com/modules/node","","level"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -547,9 +547,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_node_least_common_ancestor,
         (createQName("http://www.zorba-xquery.com/modules/node","","least-common-ancestor"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -560,9 +560,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_path_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","path"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
@@ -571,9 +571,9 @@ void populate_context_nodes(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_path_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","path"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 

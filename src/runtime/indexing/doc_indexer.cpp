@@ -17,7 +17,6 @@
 
 #include "context/dynamic_context.h"
 
-#include "compiler/expression/var_expr.h"
 #include "compiler/codegen/plan_visitor.h"
 
 #include "runtime/api/plan_wrapper.h"
@@ -34,11 +33,12 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-DocIndexer::DocIndexer(ulong numColumns, PlanIterator* plan, var_expr* var)
+DocIndexer::DocIndexer(csize numColumns, PlanIterator* plan, store::Item* varName)
   :
   theNumColumns(numColumns),
   theIndexerPlan(plan),
-  theNodeVar(var)
+  theNodeVarName(varName),
+  theNodeVarId(1)
 {
 }
 
@@ -60,11 +60,11 @@ void DocIndexer::setup(CompilerCB* ccb)
 {
   if (thePlanWrapper == NULL)
   {
-    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, NULL, NULL);
+    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, NULL, NULL, 0, false, 0);
 
     theDctx = static_cast<PlanWrapper*>(thePlanWrapper.getp())->dctx();
 
-    theDctx->declare_variable(theNodeVar->get_unique_id());
+    theDctx->declare_variable(theNodeVarId);
 
     thePlanWrapper->open();
   }
@@ -79,10 +79,7 @@ void DocIndexer::createIndexEntries(
     store::IndexDelta& delta)
 {
   store::Item_t tmp = docNode;
-  theDctx->set_variable(theNodeVar->get_unique_id(),
-                        theNodeVar->get_name(),
-                        QueryLoc::null,
-                        tmp);
+  theDctx->set_variable(theNodeVarId, theNodeVarName, QueryLoc::null, tmp);
 
   csize numEntries = delta.size();
   store::Item_t domainNode;
@@ -120,9 +117,7 @@ void DocIndexer::createIndexEntries(
       delete delta[i].second;
     }
 
-    theDctx->unset_variable(theNodeVar->get_unique_id(),
-                            theNodeVar->get_name(),
-                            QueryLoc::null);
+    theDctx->unset_variable(theNodeVarId, theNodeVarName, QueryLoc::null);
 
     thePlanWrapper->reset();
 
@@ -131,9 +126,7 @@ void DocIndexer::createIndexEntries(
 
   //std::cout << std::endl << std::endl;
 
-  theDctx->unset_variable(theNodeVar->get_unique_id(),
-                          theNodeVar->get_name(),
-                          QueryLoc::null);
+  theDctx->unset_variable(theNodeVarId, theNodeVarName, QueryLoc::null);
 
   thePlanWrapper->reset();
 }
