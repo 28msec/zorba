@@ -432,11 +432,6 @@ bool SimpleJSONObject::rename(
 
   store::Item* lValue = lIter.getValue();
 
-  if (getCollection() != NULL && lValue->isJSONItem())
-  {
-    setJSONRoot(lValue, NULL);
-  }
-
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), lIter.getKey());
   assert(lKeyIter != theKeys.end());
   *lKeyIter = lNewName.getp();

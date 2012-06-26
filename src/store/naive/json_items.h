@@ -99,16 +99,6 @@ public:
 
   virtual ~JSONItem() {}
 
-  // store API
-
-  virtual bool equals(
-      const store::Item* other,
-      long timezone = 0,
-      const XQPCollator* aCollation = 0) const
-  {
-    return this == other;
-  }
-  
   // store methods
 
   virtual const JSONItem* getRoot() = 0;
@@ -137,13 +127,7 @@ public:
 
   virtual store::Item_t getObjectValue(const zstring& aKey) const = 0;
 
-  virtual bool getBooleanValue() const { return true; }
-
   virtual Item* getType() const;
-
-#if 0
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-#endif
 
   // updates
   
