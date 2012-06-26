@@ -57,6 +57,25 @@ public:
 };
 
 
+//zorba-store-data-structure-unordered-map:create-transient
+class zorba_store_data_structure_unordered_map_create_transient : public function
+{
+public:
+  zorba_store_data_structure_unordered_map_create_transient(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //zorba-store-data-structure-unordered-map:delete
 class zorba_store_data_structure_unordered_map_delete : public function
 {
@@ -170,6 +189,23 @@ class zorba_store_data_structure_unordered_map_available_maps : public function
 {
 public:
   zorba_store_data_structure_unordered_map_available_maps(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-data-structure-unordered-map:is-transient
+class zorba_store_data_structure_unordered_map_is_transient : public function
+{
+public:
+  zorba_store_data_structure_unordered_map_is_transient(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

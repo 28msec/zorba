@@ -2061,7 +2061,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
 
    if (ar.is_serializing_out())
    {
-     ar & size_of_size_t;
+     serialize_csize(ar, size_of_size_t);
      ar & le_be_value.cvalue[0];
 
      if (!is_grammar_NULL)
@@ -2087,7 +2087,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
      csize size_of_size_t2;
      unsigned char le_be_value_first_char;
 
-     ar & size_of_size_t2;
+     serialize_csize(ar, size_of_size_t2);
      ar & le_be_value_first_char;
 
      if (size_of_size_t2 != size_of_size_t ||
