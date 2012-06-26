@@ -123,6 +123,8 @@ protected:
 
   IndexMap                   * theAvailableIndices;
 
+  IndexMap                   * theAvailableMaps;
+
     //MODIFY
   EnvVarMap                  * theEnvironmentVariables;
 
@@ -203,6 +205,14 @@ public:
   void bindIndex(store::Item* qname, store::Index_t& index);
 
   void unbindIndex(store::Item* qname);
+
+  store::Index* getMap(store::Item* qname) const;
+
+  void bindMap(store::Item* qname, store::Index_t& index);
+
+  void unbindMap(store::Item* qname);
+
+  void getMapNames(std::vector<store::Item_t>& names) const;
 
   /**
    * Lists all active integrity constraints.

@@ -91,7 +91,7 @@ void IndexDecl::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(ContainerKind, theContainerKind);
   //ar & theDomainClause;
   //ar & theKeyExprs;
-  ar & theNumKeyExprs;
+  serialize_csize(ar, theNumKeyExprs);
   ar & theKeyTypes;
   ar & theOrderModifiers;
 

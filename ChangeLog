@@ -5,6 +5,7 @@ version 2.x
 
 New Features:
   * Implemented latest W3C soec for group by clause
+  * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
 
 Optimizations:
   * Small optimization of comparison operations.
@@ -14,6 +15,7 @@ Optimizations:
   * Big rewrite of plan serializer internals, resulting in big performance improvement.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #867357 (Improved parser error messages)
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
     fn:distinct-values)
   * Fixed bug #991088$ (raise XUST0001 in trycatch with mixed updating and simple clauses)

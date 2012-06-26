@@ -621,6 +621,8 @@ namespace zorba{
 
     class MapCreateIterator;
 
+    class MapCreateTransientIterator;
+
     class MapDestroyIterator;
 
     class MapGetIterator;
@@ -634,6 +636,8 @@ namespace zorba{
     class MapSizeIterator;
 
     class AvailableMapsIterator;
+
+    class MapIsTransientIterator;
 
     class CodepointsToStringIterator;
 
@@ -1580,6 +1584,9 @@ public:
     virtual void beginVisit ( const MapCreateIterator& ) = 0;
     virtual void endVisit   ( const MapCreateIterator& ) = 0;
 
+    virtual void beginVisit ( const MapCreateTransientIterator& ) = 0;
+    virtual void endVisit   ( const MapCreateTransientIterator& ) = 0;
+
     virtual void beginVisit ( const MapDestroyIterator& ) = 0;
     virtual void endVisit   ( const MapDestroyIterator& ) = 0;
 
@@ -1600,6 +1607,9 @@ public:
 
     virtual void beginVisit ( const AvailableMapsIterator& ) = 0;
     virtual void endVisit   ( const AvailableMapsIterator& ) = 0;
+
+    virtual void beginVisit ( const MapIsTransientIterator& ) = 0;
+    virtual void endVisit   ( const MapIsTransientIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;

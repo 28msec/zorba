@@ -23,6 +23,7 @@
 
 #include "zorbamisc/config/platform.h"
 
+#include "store/api/shared_types.h"
 
 
 class MAPM;
@@ -49,6 +50,8 @@ void serialize_long_long(Archiver& ar, long long& obj);
 void serialize_ulong_long(Archiver& ar, unsigned long long& obj);
 
 void serialize_ulong(Archiver& ar, ulong& obj);
+
+void serialize_csize(Archiver& ar, csize& obj);
 
 void operator&(Archiver& ar, int32_t& obj);
 
