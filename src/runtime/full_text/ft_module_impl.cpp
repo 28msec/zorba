@@ -379,10 +379,9 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
   }
 
   try {
+    iso639_1::type const lang = get_lang_from( item, loc );
     static_context const *const sctx = getStaticContext();
     ZORBA_ASSERT( sctx );
-    iso639_1::type const lang = get_lang_from( item, loc );
-
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
       uri, internal::EntityData::THESAURUS, error_msg
