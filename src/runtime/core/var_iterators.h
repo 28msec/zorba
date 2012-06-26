@@ -339,11 +339,7 @@ public:
   ForVarIterator, 
   NoaryBaseIterator<ForVarIterator, ForVarState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
-    ar & theVarName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ForVarIterator(

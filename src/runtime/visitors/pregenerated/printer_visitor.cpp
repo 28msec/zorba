@@ -4064,6 +4064,20 @@ void PrinterVisitor::endVisit ( const MapCreateIterator& ) {
 // </MapCreateIterator>
 
 
+// <MapCreateTransientIterator>
+void PrinterVisitor::beginVisit ( const MapCreateTransientIterator& a) {
+  thePrinter.startBeginVisit("MapCreateTransientIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapCreateTransientIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapCreateTransientIterator>
+
+
 // <MapDestroyIterator>
 void PrinterVisitor::beginVisit ( const MapDestroyIterator& a) {
   thePrinter.startBeginVisit("MapDestroyIterator", ++theId);
@@ -4160,6 +4174,20 @@ void PrinterVisitor::endVisit ( const AvailableMapsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </AvailableMapsIterator>
+
+
+// <MapIsTransientIterator>
+void PrinterVisitor::beginVisit ( const MapIsTransientIterator& a) {
+  thePrinter.startBeginVisit("MapIsTransientIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapIsTransientIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapIsTransientIterator>
 
 
 // <CodepointsToStringIterator>

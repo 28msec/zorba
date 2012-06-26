@@ -29,26 +29,28 @@ using namespace std;
 
 namespace zorba {
 
-  namespace UnitTests {
+namespace UnitTests 
+{
 
-    map<string,libunittestfunc> libunittests;
+map<string,libunittestfunc> libunittests;
 
-    /**
-     * ADD NEW UNIT TESTS HERE
-     */
-    void initializeTestList() {
-      libunittests["string"] = test_string;
-      libunittests["uri"] = runUriTest;
-      libunittests["fs_iterator"] = test_fs_iterator;
+/**
+ * ADD NEW UNIT TESTS HERE
+ */
+void initializeTestList() 
+{
+  libunittests["string"] = test_string;
+  libunittests["uri"] = runUriTest;
+  libunittests["fs_iterator"] = test_fs_iterator;
 #ifndef ZORBA_NO_ICU
-      libunittests["icu_streambuf"] = test_icu_streambuf;
+  libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
-      libunittests["json_parser"] = json_parser;
-      libunittests["unique_ptr"] = test_unique_ptr;
+  libunittests["json_parser"] = json_parser;
+  libunittests["unique_ptr"] = test_unique_ptr;
 #ifndef ZORBA_NO_FULL_TEXT
-      libunittests["stemmer"] = test_stemmer;
-      libunittests["thesaurus"] = test_thesaurus;
-      libunittests["tokenizer"] = test_tokenizer;
+  libunittests["stemmer"] = test_stemmer;
+  libunittests["thesaurus"] = test_thesaurus;
+  libunittests["tokenizer"] = test_tokenizer;
 #endif /* ZORBA_NO_FULL_TEXT */
 #ifndef ZORBA_HAVE_UNORDERED_MAP
       libunittests["unordered_map"] = test_unordered_map;
@@ -60,25 +62,29 @@ namespace zorba {
 #ifdef ZORBA_WITH_DEBUGGER
 //      libunittests["debugger_protocol"] = runDebuggerProtocolTest;
 #endif /* ZORBA_WITH_DEBUGGER */
-    }
+}
 
-    int runUnitTest(int argc, char* argv[]) {
-      // Look up the function pointer for the test based on the first arg
-      if (argc < 1) {
-        cerr << "No test name passed to UnitTests::runUnitTest!" << '\n';
-        return 240;
-      }
 
-      initializeTestList();
+int runUnitTest(int argc, char* argv[]) 
+{
+  // Look up the function pointer for the test based on the first arg
+  if (argc < 1) {
+    cerr << "No test name passed to UnitTests::runUnitTest!" << '\n';
+    return 240;
+  }
 
-      map<string,libunittestfunc>::iterator iter = libunittests.find(argv[0]);
-      if (iter == libunittests.end()) {
-        cerr << "No registered test matches '" << argv[0] << "'" << '\n';
-        return 241;
-      }
-      return (* iter->second)(argc, argv);
-    }
-  } /* namespace UnitTests */
+  initializeTestList();
+
+  map<string,libunittestfunc>::iterator iter = libunittests.find(argv[0]);
+  if (iter == libunittests.end()) {
+    cerr << "No registered test matches '" << argv[0] << "'" << '\n';
+    return 241;
+  }
+  return (* iter->second)(argc, argv);
+}
+
+
+} /* namespace UnitTests */
 } /* namespace zorba */
 
 /* vim:set et sw=2 ts=2: */

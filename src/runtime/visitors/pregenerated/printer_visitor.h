@@ -949,6 +949,9 @@ namespace zorba {
     void beginVisit( const MapCreateIterator& );
     void endVisit  ( const MapCreateIterator& );
 
+    void beginVisit( const MapCreateTransientIterator& );
+    void endVisit  ( const MapCreateTransientIterator& );
+
     void beginVisit( const MapDestroyIterator& );
     void endVisit  ( const MapDestroyIterator& );
 
@@ -969,6 +972,9 @@ namespace zorba {
 
     void beginVisit( const AvailableMapsIterator& );
     void endVisit  ( const AvailableMapsIterator& );
+
+    void beginVisit( const MapIsTransientIterator& );
+    void endVisit  ( const MapIsTransientIterator& );
 
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );

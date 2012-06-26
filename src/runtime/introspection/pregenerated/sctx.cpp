@@ -35,11 +35,17 @@
 namespace zorba {
 
 // <StaticNamespacesIterator>
-StaticNamespacesIterator::class_factory<StaticNamespacesIterator>
-StaticNamespacesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(StaticNamespacesIterator)
+
+void StaticNamespacesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<StaticNamespacesIterator, StaticNamespacesIteratorState>*)this);
+}
 
 
-void StaticNamespacesIterator::accept(PlanIterVisitor& v) const {
+void StaticNamespacesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -63,11 +69,17 @@ void StaticNamespacesIteratorState::init(PlanState& planState) {
 
 
 // <DefaultFunctionNamespaceIterator>
-DefaultFunctionNamespaceIterator::class_factory<DefaultFunctionNamespaceIterator>
-DefaultFunctionNamespaceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DefaultFunctionNamespaceIterator)
+
+void DefaultFunctionNamespaceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DefaultFunctionNamespaceIterator, PlanIteratorState>*)this);
+}
 
 
-void DefaultFunctionNamespaceIterator::accept(PlanIterVisitor& v) const {
+void DefaultFunctionNamespaceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -85,11 +97,17 @@ DefaultFunctionNamespaceIterator::~DefaultFunctionNamespaceIterator() {}
 
 
 // <SctxBaseUriIterator>
-SctxBaseUriIterator::class_factory<SctxBaseUriIterator>
-SctxBaseUriIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SctxBaseUriIterator)
+
+void SctxBaseUriIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SctxBaseUriIterator, PlanIteratorState>*)this);
+}
 
 
-void SctxBaseUriIterator::accept(PlanIterVisitor& v) const {
+void SctxBaseUriIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -107,11 +125,17 @@ SctxBaseUriIterator::~SctxBaseUriIterator() {}
 
 
 // <SctxDefaultCollationIterator>
-SctxDefaultCollationIterator::class_factory<SctxDefaultCollationIterator>
-SctxDefaultCollationIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SctxDefaultCollationIterator)
+
+void SctxDefaultCollationIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SctxDefaultCollationIterator, PlanIteratorState>*)this);
+}
 
 
-void SctxDefaultCollationIterator::accept(PlanIterVisitor& v) const {
+void SctxDefaultCollationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -129,11 +153,17 @@ SctxDefaultCollationIterator::~SctxDefaultCollationIterator() {}
 
 
 // <StaticNamespaceBindingIterator>
-StaticNamespaceBindingIterator::class_factory<StaticNamespaceBindingIterator>
-StaticNamespaceBindingIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(StaticNamespaceBindingIterator)
+
+void StaticNamespaceBindingIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<StaticNamespaceBindingIterator, PlanIteratorState>*)this);
+}
 
 
-void StaticNamespaceBindingIterator::accept(PlanIterVisitor& v) const {
+void StaticNamespaceBindingIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -151,11 +181,17 @@ StaticNamespaceBindingIterator::~StaticNamespaceBindingIterator() {}
 
 
 // <InscopeVariablesIterator>
-InscopeVariablesIterator::class_factory<InscopeVariablesIterator>
-InscopeVariablesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InscopeVariablesIterator)
+
+void InscopeVariablesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InscopeVariablesIterator, InscopeVariablesIteratorState>*)this);
+}
 
 
-void InscopeVariablesIterator::accept(PlanIterVisitor& v) const {
+void InscopeVariablesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -179,11 +215,17 @@ void InscopeVariablesIteratorState::init(PlanState& planState) {
 
 
 // <DefaultCollectionTypeIterator>
-DefaultCollectionTypeIterator::class_factory<DefaultCollectionTypeIterator>
-DefaultCollectionTypeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DefaultCollectionTypeIterator)
+
+void DefaultCollectionTypeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DefaultCollectionTypeIterator, PlanIteratorState>*)this);
+}
 
 
-void DefaultCollectionTypeIterator::accept(PlanIterVisitor& v) const {
+void DefaultCollectionTypeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -201,11 +243,17 @@ DefaultCollectionTypeIterator::~DefaultCollectionTypeIterator() {}
 
 
 // <XPath10CompatModeIterator>
-XPath10CompatModeIterator::class_factory<XPath10CompatModeIterator>
-XPath10CompatModeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(XPath10CompatModeIterator)
+
+void XPath10CompatModeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<XPath10CompatModeIterator, PlanIteratorState>*)this);
+}
 
 
-void XPath10CompatModeIterator::accept(PlanIterVisitor& v) const {
+void XPath10CompatModeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -223,11 +271,17 @@ XPath10CompatModeIterator::~XPath10CompatModeIterator() {}
 
 
 // <StaticallyKnownDocumentsIterator>
-StaticallyKnownDocumentsIterator::class_factory<StaticallyKnownDocumentsIterator>
-StaticallyKnownDocumentsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownDocumentsIterator)
+
+void StaticallyKnownDocumentsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<StaticallyKnownDocumentsIterator, StaticallyKnownDocumentsIteratorState>*)this);
+}
 
 
-void StaticallyKnownDocumentsIterator::accept(PlanIterVisitor& v) const {
+void StaticallyKnownDocumentsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -251,11 +305,17 @@ void StaticallyKnownDocumentsIteratorState::init(PlanState& planState) {
 
 
 // <StaticallyKnownDocumentTypeIterator>
-StaticallyKnownDocumentTypeIterator::class_factory<StaticallyKnownDocumentTypeIterator>
-StaticallyKnownDocumentTypeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownDocumentTypeIterator)
+
+void StaticallyKnownDocumentTypeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<StaticallyKnownDocumentTypeIterator, PlanIteratorState>*)this);
+}
 
 
-void StaticallyKnownDocumentTypeIterator::accept(PlanIterVisitor& v) const {
+void StaticallyKnownDocumentTypeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -273,11 +333,17 @@ StaticallyKnownDocumentTypeIterator::~StaticallyKnownDocumentTypeIterator() {}
 
 
 // <StaticallyKnownCollationsIterator>
-StaticallyKnownCollationsIterator::class_factory<StaticallyKnownCollationsIterator>
-StaticallyKnownCollationsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollationsIterator)
+
+void StaticallyKnownCollationsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<StaticallyKnownCollationsIterator, StaticallyKnownCollationsIteratorState>*)this);
+}
 
 
-void StaticallyKnownCollationsIterator::accept(PlanIterVisitor& v) const {
+void StaticallyKnownCollationsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -301,11 +367,17 @@ void StaticallyKnownCollationsIteratorState::init(PlanState& planState) {
 
 
 // <ConstructionModeIterator>
-ConstructionModeIterator::class_factory<ConstructionModeIterator>
-ConstructionModeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ConstructionModeIterator)
+
+void ConstructionModeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ConstructionModeIterator, PlanIteratorState>*)this);
+}
 
 
-void ConstructionModeIterator::accept(PlanIterVisitor& v) const {
+void ConstructionModeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -323,11 +395,17 @@ ConstructionModeIterator::~ConstructionModeIterator() {}
 
 
 // <OrderingModeIterator>
-OrderingModeIterator::class_factory<OrderingModeIterator>
-OrderingModeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(OrderingModeIterator)
+
+void OrderingModeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<OrderingModeIterator, PlanIteratorState>*)this);
+}
 
 
-void OrderingModeIterator::accept(PlanIterVisitor& v) const {
+void OrderingModeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -345,11 +423,17 @@ OrderingModeIterator::~OrderingModeIterator() {}
 
 
 // <DefaultOrderIterator>
-DefaultOrderIterator::class_factory<DefaultOrderIterator>
-DefaultOrderIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DefaultOrderIterator)
+
+void DefaultOrderIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DefaultOrderIterator, PlanIteratorState>*)this);
+}
 
 
-void DefaultOrderIterator::accept(PlanIterVisitor& v) const {
+void DefaultOrderIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -367,11 +451,17 @@ DefaultOrderIterator::~DefaultOrderIterator() {}
 
 
 // <BoundarySpacePolicyIterator>
-BoundarySpacePolicyIterator::class_factory<BoundarySpacePolicyIterator>
-BoundarySpacePolicyIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(BoundarySpacePolicyIterator)
+
+void BoundarySpacePolicyIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<BoundarySpacePolicyIterator, PlanIteratorState>*)this);
+}
 
 
-void BoundarySpacePolicyIterator::accept(PlanIterVisitor& v) const {
+void BoundarySpacePolicyIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -389,11 +479,17 @@ BoundarySpacePolicyIterator::~BoundarySpacePolicyIterator() {}
 
 
 // <CopyNamespacesModeIterator>
-CopyNamespacesModeIterator::class_factory<CopyNamespacesModeIterator>
-CopyNamespacesModeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(CopyNamespacesModeIterator)
+
+void CopyNamespacesModeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<CopyNamespacesModeIterator, PlanIteratorState>*)this);
+}
 
 
-void CopyNamespacesModeIterator::accept(PlanIterVisitor& v) const {
+void CopyNamespacesModeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -411,11 +507,17 @@ CopyNamespacesModeIterator::~CopyNamespacesModeIterator() {}
 
 
 // <FunctionNamesIterator>
-FunctionNamesIterator::class_factory<FunctionNamesIterator>
-FunctionNamesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionNamesIterator)
+
+void FunctionNamesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionNamesIterator, FunctionNamesIteratorState>*)this);
+}
 
 
-void FunctionNamesIterator::accept(PlanIterVisitor& v) const {
+void FunctionNamesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -439,11 +541,17 @@ void FunctionNamesIteratorState::init(PlanState& planState) {
 
 
 // <FunctionArgumentsCountIterator>
-FunctionArgumentsCountIterator::class_factory<FunctionArgumentsCountIterator>
-FunctionArgumentsCountIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionArgumentsCountIterator)
+
+void FunctionArgumentsCountIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionArgumentsCountIterator, FunctionArgumentsCountIteratorState>*)this);
+}
 
 
-void FunctionArgumentsCountIterator::accept(PlanIterVisitor& v) const {
+void FunctionArgumentsCountIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -467,11 +575,17 @@ void FunctionArgumentsCountIteratorState::init(PlanState& planState) {
 
 
 // <InScopeSchemaTypesIterator>
-InScopeSchemaTypesIterator::class_factory<InScopeSchemaTypesIterator>
-InScopeSchemaTypesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InScopeSchemaTypesIterator)
+
+void InScopeSchemaTypesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InScopeSchemaTypesIterator, InScopeSchemaTypesIteratorState>*)this);
+}
 
 
-void InScopeSchemaTypesIterator::accept(PlanIterVisitor& v) const {
+void InScopeSchemaTypesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -495,11 +609,17 @@ void InScopeSchemaTypesIteratorState::init(PlanState& planState) {
 
 
 // <InScopeElementDeclarationsIterator>
-InScopeElementDeclarationsIterator::class_factory<InScopeElementDeclarationsIterator>
-InScopeElementDeclarationsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InScopeElementDeclarationsIterator)
+
+void InScopeElementDeclarationsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InScopeElementDeclarationsIterator, InScopeElementDeclarationsIteratorState>*)this);
+}
 
 
-void InScopeElementDeclarationsIterator::accept(PlanIterVisitor& v) const {
+void InScopeElementDeclarationsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -523,11 +643,17 @@ void InScopeElementDeclarationsIteratorState::init(PlanState& planState) {
 
 
 // <InScopeAttributeDeclarationsIterator>
-InScopeAttributeDeclarationsIterator::class_factory<InScopeAttributeDeclarationsIterator>
-InScopeAttributeDeclarationsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InScopeAttributeDeclarationsIterator)
+
+void InScopeAttributeDeclarationsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InScopeAttributeDeclarationsIterator, InScopeAttributeDeclarationsIteratorState>*)this);
+}
 
 
-void InScopeAttributeDeclarationsIterator::accept(PlanIterVisitor& v) const {
+void InScopeAttributeDeclarationsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -551,11 +677,17 @@ void InScopeAttributeDeclarationsIteratorState::init(PlanState& planState) {
 
 
 // <InScopeElementGroupsIterator>
-InScopeElementGroupsIterator::class_factory<InScopeElementGroupsIterator>
-InScopeElementGroupsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InScopeElementGroupsIterator)
+
+void InScopeElementGroupsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InScopeElementGroupsIterator, InScopeElementGroupsIteratorState>*)this);
+}
 
 
-void InScopeElementGroupsIterator::accept(PlanIterVisitor& v) const {
+void InScopeElementGroupsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -579,11 +711,17 @@ void InScopeElementGroupsIteratorState::init(PlanState& planState) {
 
 
 // <InScopeAttributeGroupsIterator>
-InScopeAttributeGroupsIterator::class_factory<InScopeAttributeGroupsIterator>
-InScopeAttributeGroupsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InScopeAttributeGroupsIterator)
+
+void InScopeAttributeGroupsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InScopeAttributeGroupsIterator, InScopeAttributeGroupsIteratorState>*)this);
+}
 
 
-void InScopeAttributeGroupsIterator::accept(PlanIterVisitor& v) const {
+void InScopeAttributeGroupsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -607,11 +745,17 @@ void InScopeAttributeGroupsIteratorState::init(PlanState& planState) {
 
 
 // <OptionIterator>
-OptionIterator::class_factory<OptionIterator>
-OptionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(OptionIterator)
+
+void OptionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<OptionIterator, PlanIteratorState>*)this);
+}
 
 
-void OptionIterator::accept(PlanIterVisitor& v) const {
+void OptionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -629,11 +773,17 @@ OptionIterator::~OptionIterator() {}
 
 
 // <FunctionAnnotationsIterator>
-FunctionAnnotationsIterator::class_factory<FunctionAnnotationsIterator>
-FunctionAnnotationsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionAnnotationsIterator)
+
+void FunctionAnnotationsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionAnnotationsIterator, FunctionAnnotationsIteratorState>*)this);
+}
 
 
-void FunctionAnnotationsIterator::accept(PlanIterVisitor& v) const {
+void FunctionAnnotationsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

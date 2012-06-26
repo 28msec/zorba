@@ -264,7 +264,8 @@ typedef enum
   isBuiltin = 16,
   isUDF = 32,
   propagatesInputNodes = 64,
-  mustCopyInputNodes = 128
+  mustCopyInputNodes = 128,
+  AccessesDynCtx = 256
 } AnnotationFlags;
 
 };

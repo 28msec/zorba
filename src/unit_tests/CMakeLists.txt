@@ -16,7 +16,6 @@ SET(UNIT_TEST_SRCS
   string_instantiate.cpp
   string.cpp
   test_uri.cpp
-  unique_ptr.cpp
   unit_tests.cpp
   test_uri.cpp
   json_parser.cpp
@@ -35,15 +34,20 @@ IF (NOT ZORBA_NO_ICU)
     test_icu_streambuf.cpp)
 ENDIF (NOT ZORBA_NO_ICU)
 
-IF (NOT ZORBA_CXX_UNORDERED_MAP)
+IF (NOT ZORBA_HAVE_UNIQUE_PTR)
+  LIST (APPEND UNIT_TEST_SRCS
+    unique_ptr.cpp)
+ENDIF (NOT ZORBA_HAVE_UNIQUE_PTR)
+
+IF (NOT ZORBA_HAVE_UNORDERED_MAP)
   LIST (APPEND UNIT_TEST_SRCS
     unordered_map.cpp
     unordered_map_instantiate.cpp)
-ENDIF (NOT ZORBA_CXX_UNORDERED_MAP)
+ENDIF (NOT ZORBA_HAVE_UNORDERED_MAP)
 
-IF (NOT ZORBA_CXX_UNORDERED_SET)
+IF (NOT ZORBA_HAVE_UNORDERED_SET)
   LIST (APPEND UNIT_TEST_SRCS
     unordered_set.cpp)
-ENDIF (NOT ZORBA_CXX_UNORDERED_SET)
+ENDIF (NOT ZORBA_HAVE_UNORDERED_SET)
 
 # vim:set et sw=2 ts=2:

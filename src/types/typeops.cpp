@@ -31,7 +31,10 @@
 #include "types/schema/schema.h"
 
 #include "diagnostics/assert.h"
+
+#include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
+
 
 namespace zorba {
 

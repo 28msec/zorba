@@ -23,46 +23,6 @@
 namespace zorba {
 
 
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>";
-
-template<> const char* 
-ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>::class_name_str =
-"ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>";
-
 
 
 void checkNodeType(
