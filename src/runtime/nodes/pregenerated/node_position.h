@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodePositionIterator,
     NaryBaseIterator<NodePositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<NodePositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   NodePositionIterator(
     static_context* sctx,
@@ -79,11 +75,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAncestorPositionIterator,
     NaryBaseIterator<IsAncestorPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsAncestorPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsAncestorPositionIterator(
     static_context* sctx,
@@ -113,11 +105,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsFollowingSiblingPositionIterator,
     NaryBaseIterator<IsFollowingSiblingPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsFollowingSiblingPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsFollowingSiblingPositionIterator(
     static_context* sctx,
@@ -147,11 +135,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsFollowingPositionIterator,
     NaryBaseIterator<IsFollowingPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsFollowingPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsFollowingPositionIterator(
     static_context* sctx,
@@ -181,11 +165,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsInSubtreeOfPositionIterator,
     NaryBaseIterator<IsInSubtreeOfPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsInSubtreeOfPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsInSubtreeOfPositionIterator(
     static_context* sctx,
@@ -215,11 +195,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDescendantPositionIterator,
     NaryBaseIterator<IsDescendantPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsDescendantPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsDescendantPositionIterator(
     static_context* sctx,
@@ -249,11 +225,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsPrecedingSiblingPositionIterator,
     NaryBaseIterator<IsPrecedingSiblingPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsPrecedingSiblingPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsPrecedingSiblingPositionIterator(
     static_context* sctx,
@@ -283,11 +255,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsPrecedingPositionIterator,
     NaryBaseIterator<IsPrecedingPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsPrecedingPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsPrecedingPositionIterator(
     static_context* sctx,
@@ -317,11 +285,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsChildPositionIterator,
     NaryBaseIterator<IsChildPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsChildPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsChildPositionIterator(
     static_context* sctx,
@@ -351,11 +315,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAttributeOfPositionIterator,
     NaryBaseIterator<IsAttributeOfPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsAttributeOfPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsAttributeOfPositionIterator(
     static_context* sctx,
@@ -385,11 +345,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsParentPositionIterator,
     NaryBaseIterator<IsParentPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsParentPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsParentPositionIterator(
     static_context* sctx,
@@ -419,11 +375,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsPrecedingInDocumentOrderPositionIterator,
     NaryBaseIterator<IsPrecedingInDocumentOrderPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsPrecedingInDocumentOrderPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsPrecedingInDocumentOrderPositionIterator(
     static_context* sctx,
@@ -453,11 +405,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsFollowingInDocumentOrderPositionIterator,
     NaryBaseIterator<IsFollowingInDocumentOrderPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsFollowingInDocumentOrderPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsFollowingInDocumentOrderPositionIterator(
     static_context* sctx,
@@ -487,11 +435,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(LevelPositionIterator,
     NaryBaseIterator<LevelPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<LevelPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   LevelPositionIterator(
     static_context* sctx,
@@ -521,11 +465,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAttributePositionIterator,
     NaryBaseIterator<IsAttributePositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsAttributePositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsAttributePositionIterator(
     static_context* sctx,
@@ -555,11 +495,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsCommentPositionIterator,
     NaryBaseIterator<IsCommentPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsCommentPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsCommentPositionIterator(
     static_context* sctx,
@@ -589,11 +525,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDocumentPositionIterator,
     NaryBaseIterator<IsDocumentPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsDocumentPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsDocumentPositionIterator(
     static_context* sctx,
@@ -623,11 +555,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsElementPositionIterator,
     NaryBaseIterator<IsElementPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsElementPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsElementPositionIterator(
     static_context* sctx,
@@ -657,11 +585,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsProcessingInstructionPositionIterator,
     NaryBaseIterator<IsProcessingInstructionPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsProcessingInstructionPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsProcessingInstructionPositionIterator(
     static_context* sctx,
@@ -691,11 +615,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsTextPositionIterator,
     NaryBaseIterator<IsTextPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsTextPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsTextPositionIterator(
     static_context* sctx,
@@ -725,11 +645,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsSiblingPositionIterator,
     NaryBaseIterator<IsSiblingPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsSiblingPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsSiblingPositionIterator(
     static_context* sctx,
@@ -759,11 +675,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InSameTreePositionIterator,
     NaryBaseIterator<InSameTreePositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InSameTreePositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InSameTreePositionIterator(
     static_context* sctx,
@@ -793,11 +705,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InCollectionPositionIterator,
     NaryBaseIterator<InCollectionPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InCollectionPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InCollectionPositionIterator(
     static_context* sctx,
@@ -827,11 +735,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InSameCollectionPositionIterator,
     NaryBaseIterator<InSameCollectionPositionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InSameCollectionPositionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InSameCollectionPositionIterator(
     static_context* sctx,

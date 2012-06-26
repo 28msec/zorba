@@ -22,7 +22,7 @@
 namespace zorba { namespace store {
 
 /*******************************************************************************
-  !!! ATTENTION: The order of thr enum values within SchemaTypeCode is important.
+  !!! ATTENTION: The order of the enum values within SchemaTypeCode is important.
   !!! DO NOT change this order!!!!
 ********************************************************************************/
 enum SchemaTypeCode
@@ -45,6 +45,7 @@ enum SchemaTypeCode
   XS_DATETIME              = 12,
   XS_DATE                  = 13,
   XS_TIME                  = 14,
+
   XS_DURATION              = 15,
   XS_DT_DURATION           = 16,
   XS_YM_DURATION           = 17,
@@ -82,13 +83,23 @@ enum SchemaTypeCode
 
   XS_QNAME                 = 43,
   XS_NOTATION              = 44,
+  
+  JDM_NULL                 = 45,
 
   XS_LAST
 };
 
+
 class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
+
+  enum NsScoping 
+  {
+    ALL_NAMESPACES,
+    ONLY_LOCAL_NAMESPACES,
+    ONLY_PARENT_NAMESPACES
+  };
 
   enum NodeKind
   {
@@ -101,40 +112,33 @@ class ZORBA_DLL_PUBLIC StoreConsts
     commentNode    = 6
   };
 
-  enum NsScoping 
-  {
-    ALL_NAMESPACES,
-    ONLY_LOCAL_NAMESPACES,
-    ONLY_PARENT_NAMESPACES
-  };
-
   static std::string toString(NodeKind k)
   {
     switch(k) 
     {
-      case anyNode:
-        return "anyNode";
+    case anyNode:
+      return "anyNode";
 
-      case documentNode:
-        return "documentNode";
+    case documentNode:
+      return "documentNode";
 
-      case elementNode:
-        return "elementNode";
+    case elementNode:
+      return "elementNode";
 
-      case attributeNode:
-        return "attributeNode";
+    case attributeNode:
+      return "attributeNode";
 
-      case textNode:
-        return "textNode";
+    case textNode:
+      return "textNode";
 
-      case piNode:
-        return "piNode";
+    case piNode:
+      return "piNode";
 
-      case commentNode:
-        return "commentNode";
+    case commentNode:
+      return "commentNode";
 
-      default:
-        return "<unknown NodeKind>";
+    default:
+      return "<unknown NodeKind>";
     }
   }
 
@@ -142,29 +146,61 @@ class ZORBA_DLL_PUBLIC StoreConsts
   {
     switch(k) 
     {
-      case anyNode:
-        return "node";
+    case anyNode:
+      return "node";
 
-      case documentNode:
-        return "document-node";
+    case documentNode:
+      return "document-node";
 
-      case elementNode:
-        return "element";
+    case elementNode:
+      return "element";
 
-      case attributeNode:
-        return "attribute";
+    case attributeNode:
+      return "attribute";
 
-      case textNode:
-        return "text";
+    case textNode:
+      return "text";
 
-      case piNode:
-        return "processing-instruction";
+    case piNode:
+      return "processing-instruction";
 
-      case commentNode:
-        return "comment";
+    case commentNode:
+      return "comment";
+
+    default:
+      return "<unknown NodeKind>";
+    }
+  }
+
+
+  /* ATTENTION: the ordering of the enum values is important. Do NOT change it! */
+  enum JSONItemKind
+  {
+    jsonItem       = 0,
+    jsonObject     = 1,
+    jsonArray      = 2,
+    jsonPair       = 3
+  };
+
+
+  static std::string toString(JSONItemKind k)
+  {
+    switch(k) 
+    {
+      case jsonItem:
+        return "json-item";
+
+      case jsonObject:
+        return "object";
+
+      case jsonArray:
+        return "array";
+
+      case jsonPair:
+        return "pair";
 
       default:
-        return "<unknown NodeKind>";
+        return "<unknown JSONItemKind>";
     }
   }
 };

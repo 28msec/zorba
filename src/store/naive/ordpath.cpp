@@ -394,6 +394,10 @@ OrdPath& OrdPath::operator=(const OrdPathStack& ops)
 ********************************************************************************/
 ulong OrdPath::getLocalBitLength(ulong& byteLen) const
 {
+  ZORBA_ASSERT_WITH_MSG(isLocal(),
+                        "OrdPath::getLocalBitLength was called even though" <<
+                        "the buffer is remote. This can cause endless loops.");
+
   byteLen = getLocalByteLength();
 
   if (byteLen == 0)
@@ -409,6 +413,10 @@ ulong OrdPath::getLocalBitLength(ulong& byteLen) const
   {
     lastByte >>= 1;
     bitLen--;
+    ZORBA_ASSERT_WITH_MSG(lastByte != 0,
+                          "Enless loop detected in OrdPath::getLocalBitLength." <<
+                          "Value of last byte in local buffer was: " <<
+                          getLocalData()[byteLen - 1]);
   }
 
   return bitLen;

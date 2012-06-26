@@ -35,10 +35,37 @@ class RootTypeManager : public TypeManagerImpl
 {
   friend class GlobalEnvironment;
   friend class TypeOps;
+  friend class XQType;
   friend class TypeManagerImpl;
   friend class AtomicXQType;
 
 public:
+  /**
+   * Pre-allocated XQType object for the "none" type
+   */
+  xqtref_t NONE_TYPE;
+
+  /**
+   * Pre-allocated XQType object for the () sequence type (the empty sequence).
+   */ 
+  xqtref_t EMPTY_TYPE;
+
+  /**
+   *  Pre-allocate XQType objects for item(), item()?, item()+, and item()*.
+   */
+  xqtref_t ITEM_TYPE_ONE; 
+  xqtref_t ITEM_TYPE_QUESTION;
+  xqtref_t ITEM_TYPE_STAR;
+  xqtref_t ITEM_TYPE_PLUS;
+
+  /**
+   * Pre-allocated any function item objects
+   */
+  xqtref_t ANY_FUNCTION_TYPE_ONE; 
+  xqtref_t ANY_FUNCTION_TYPE_QUESTION;
+  xqtref_t ANY_FUNCTION_TYPE_STAR;
+  xqtref_t ANY_FUNCTION_TYPE_PLUS;
+
   /**
    * Pre-allocated XQType and QNameItem objects for all of the 45 built-in atomic
    * types of XQDM. Specifically, for each built-in atomic XQDM type T, we pre-
@@ -99,21 +126,52 @@ public:
   ATOMIC_DECL(NOTATION)
 #undef ATOMIC_DECL
 
+#ifdef ZORBA_WITH_JSON
   /**
-   *  Pre-allocate XQType objects for item(), item()?, item()+, and item()*.
+   * Pre-allocate XQType objects for the following sequence types:
+   *
+   * N, N?, N+, N*, where N is the jdm::null atomic type
    */
-  xqtref_t ITEM_TYPE_ONE; 
-  xqtref_t ITEM_TYPE_QUESTION;
-  xqtref_t ITEM_TYPE_STAR;
-  xqtref_t ITEM_TYPE_PLUS;
-  
+  store::Item_t JDM_NULL_QNAME;
+  xqtref_t JDM_NULL_TYPE_ONE;
+  xqtref_t JDM_NULL_TYPE_QUESTION;
+  xqtref_t JDM_NULL_TYPE_STAR;
+  xqtref_t JDM_NULL_TYPE_PLUS;
+#endif
+
   /**
-   * Pre-allocated any function item objects
+   *  Pre-allocate XQType objects for structured-item(), structured-item()?,
+   *  structured-item()+, and structured-item()*.
    */
-  xqtref_t ANY_FUNCTION_TYPE_ONE; 
-  xqtref_t ANY_FUNCTION_TYPE_QUESTION;
-  xqtref_t ANY_FUNCTION_TYPE_STAR;
-  xqtref_t ANY_FUNCTION_TYPE_PLUS;
+  xqtref_t STRUCTURED_ITEM_TYPE_ONE; 
+  xqtref_t STRUCTURED_ITEM_TYPE_QUESTION;
+  xqtref_t STRUCTURED_ITEM_TYPE_STAR;
+  xqtref_t STRUCTURED_ITEM_TYPE_PLUS;
+
+#ifdef ZORBA_WITH_JSON
+  /**
+   * Pre-allocate XQType objects for the following JSONTest sequence types:
+   *
+   * N(), N()?, N()+, N()*, where N is one of json-item, object, array, or pair
+   */
+#define JSON_DECL(basename) \
+    xqtref_t basename##_TYPE_ONE;\
+    xqtref_t basename##_TYPE_QUESTION; \
+    xqtref_t basename##_TYPE_STAR; \
+    xqtref_t basename##_TYPE_PLUS;\
+
+  JSON_DECL(JSON_ITEM);
+  JSON_DECL(JSON_OBJECT);
+  JSON_DECL(JSON_ARRAY);
+
+#undef JSON_DECL
+
+  /**
+   * Maps a [json item kind, quantifier] to the corresponding pre-allocated json type
+   */
+  static const XQType* JSON_TYPES_MAP[3][4];
+
+#endif // ZORBA_WITH_JSON
 
   /**
    * Pre-allocate XQType objects for the following KindTest sequence types:
@@ -171,21 +229,6 @@ public:
   store::Item_t XS_ANY_TYPE_QNAME;
   store::Item_t XS_UNTYPED_QNAME;
   store::Item_t XS_ANY_SIMPLE_TYPE_QNAME;
-
-  /**
-   * Pre-allocated XQType object for the () sequence type (the empty sequence).
-   */ 
-  xqtref_t EMPTY_TYPE;
-
-  /**
-   *
-   */
-  xqtref_t NONE_TYPE;
-
-  /**
-   *
-   */
-  store::Item_t ZXSE_TUPLE_QNAME;
 
 private:
 

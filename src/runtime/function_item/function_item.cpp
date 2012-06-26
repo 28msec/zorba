@@ -23,7 +23,7 @@
 #include "compiler/expression/function_item_expr.h"
 
 #include "functions/signature.h"
-#include "functions/function.h"
+#include "functions/udf.h"
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -51,9 +51,13 @@ FunctionItem::FunctionItem(
   store::Item(store::Item::FUNCTION),
   theCCB(ccb),
   theSctx(sctx),
-  theExpr(expr),
+  theLoc(expr->get_loc()),
+  theQName(expr->get_qname()),
+  theFunction(expr->get_function()),
+  theArity(expr->get_arity()),
   theVariableValues(varValues)
-{ 
+{
+  assert(theFunction->isUdf());
 }
 
   
@@ -65,8 +69,12 @@ FunctionItem::FunctionItem(
   store::Item(store::Item::FUNCTION),
   theCCB(ccb),
   theSctx(sctx),
-  theExpr(expr)
-{ 
+  theLoc(expr->get_loc()),
+  theQName(expr->get_qname()),
+  theFunction(expr->get_function()),
+  theArity(expr->get_arity())
+{
+  assert(theFunction->isUdf());
 }
   
 
@@ -78,25 +86,35 @@ void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theCCB;
   ar & theSctx;
-  ar & theExpr;
+  ar & theLoc;
+  ar & theQName;
+  ar & theArity;
+  ar & theFunction;
   ar & theVariableValues;
+
+  if (ar.is_serializing_out())
+  {
+    uint32_t planStateSize;
+    (void)static_cast<user_function*>(theFunction.getp())->
+    getPlan(theCCB, planStateSize);
+  }
 }
 
 const store::Item_t FunctionItem::getFunctionName() const 
 {
-  return theExpr->get_qname();
+  return theQName;
 }
 
 
 uint32_t FunctionItem::getArity() const 
 {
-  return theExpr->get_arity();
+  return theArity;
 }
 
 
 const signature& FunctionItem::getSignature() const
 {
-  return theExpr->get_function()->getSignature();
+  return theFunction->getSignature();
 }
 
 
@@ -107,16 +125,18 @@ const std::vector<PlanIter_t>& FunctionItem::getVariables() const
   
  
 PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args) const
-{ 
-  PlanIter_t res = theExpr->get_function()->codegen(theCCB,
+{
+  expr_t dummy = new function_item_expr(theSctx, theLoc);
+
+  PlanIter_t udfCallIterator = theFunction->codegen(theCCB,
                                                     theSctx,
-                                                    theExpr->get_loc(),
+                                                    theLoc,
                                                     args,
-                                                    *theExpr);
+                                                    *dummy.getp());
 
-  static_cast<UDFunctionCallIterator*>(res.getp())->setDynamic();
+  static_cast<UDFunctionCallIterator*>(udfCallIterator.getp())->setDynamic();
 
-  return res;
+  return udfCallIterator;
 }
    
     
@@ -131,7 +151,7 @@ zstring FunctionItem::show() const
   {
     lRes << "inline function";
   }
-  lRes << " (" << theExpr->get_loc() << ")";
+  lRes << " (" << theLoc << ")";
   return lRes.str();
 }
   

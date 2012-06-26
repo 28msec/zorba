@@ -16,9 +16,10 @@
 #include "stdafx.h"
 
 #include <sstream>
+#include <iomanip>
 
 #include <zorba/zorba_string.h>
-
+#include <zorbamisc/ns_consts.h>
 #include "zorbatypes/numconversions.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
@@ -39,7 +40,8 @@
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"
 #include "store/api/item.h"
-
+#include <store/api/item_factory.h>
+#include <store/api/copymode.h>
 
 namespace zorba {
 
@@ -192,9 +194,15 @@ int serializer::emitter::emit_expanded_string(
       const unsigned char* temp = chars;
       unicode::code_point cp = utf8::next_char(temp);
 
-      // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
-      if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == PARAMETER_VALUE_VERSION_1_0 && !xml::is_valid(cp))
+      // raise an error iff (1) the serialization format is XML 1.0 and 
+      // (2) the given character is an invalid XML 1.0 character
+      if (ser &&
+          ser->method == PARAMETER_VALUE_XML &&
+          ser->version == PARAMETER_VALUE_VERSION_1_0 &&
+          !xml::is_valid(cp))
+      {
         throw XQUERY_EXCEPTION( err::FOCH0001, ERROR_PARAMS( cp ) );
+      }
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
@@ -342,7 +350,7 @@ void serializer::emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::emitter::emit_declaration_end()
+void serializer::emitter::emit_end()
 {
   // Do nothing in the default emitter
 }
@@ -416,6 +424,12 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw XQUERY_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
+  }
+#endif
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -787,7 +801,6 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
   return false;
 }
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -832,7 +845,7 @@ bool serializer::emitter::havePrefix(const zstring& pre) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  XML Emitter                                                               //
+//  XML emitter                                                               //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -915,6 +928,387 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
     tr << ser->END_OF_LINE;
 }
 
+
+#ifdef ZORBA_WITH_JSON
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JSON emitter - as defined by CloudScript spec                             //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+serializer::json_emitter::json_emitter(
+  serializer* the_serializer,
+  transcoder& the_transcoder)
+  : emitter(the_serializer, the_transcoder),
+    theXMLStringStream(nullptr),
+    theMultipleItems(false)
+{
+}
+
+serializer::json_emitter::~json_emitter()
+{
+  delete theXMLStringStream;
+}
+
+void serializer::json_emitter::emit_item(store::Item *item)
+{
+  // This is called by serializer for each top-level item. Therefore it's the
+  // right place to check for multiple items in the sequence.
+  if (theMultipleItems && ser->cloudscript_multiple_items == PARAMETER_VALUE_NO)
+  {
+    throw XQUERY_EXCEPTION(jerr::JNSE0012);
+  }
+  emit_json_item(item, 0);
+  theMultipleItems = true;
+}
+
+void serializer::json_emitter::emit_declaration()
+{
+}
+
+void serializer::json_emitter::emit_end()
+{
+}
+
+void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
+{
+  // This is called for any item within a JSON array or object, or for a
+  // top-level item. JSON rules for simple types apply here.
+  if (item->isJSONObject()) {
+    emit_json_object(item, depth);
+  }
+  else if (item->isJSONArray()) {
+    emit_json_array(item, depth);
+  }
+  else if (item->isJSONPair()) {
+    emit_json_pair(item, depth);
+  }
+  else if (item->isAtomic()) {
+    store::SchemaTypeCode type = item->getTypeCode();
+    switch (type) {
+    case store::XS_STRING:
+      emit_json_string(item->getStringValue());
+      break;
+
+    case store::XS_DOUBLE:
+    case store::XS_FLOAT:
+      if (item->isNaN()) {
+        emit_cloudscript_value(type == store::XS_DOUBLE ? "double" : "float",
+                               "NaN", depth);
+        break;
+      }
+      else if (item->isPosOrNegInf()) {
+        // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
+        // I tell which I have?
+        emit_cloudscript_value(type == store::XS_DOUBLE ? "double" : "float",
+                               "Infinity", depth);
+        break;
+      }
+      // else fall through
+    case store::XS_INTEGER:
+    case store::XS_DECIMAL:
+    case store::XS_NON_POSITIVE_INTEGER:
+    case store::XS_NEGATIVE_INTEGER:
+    case store::XS_LONG:
+    case store::XS_INT:
+    case store::XS_SHORT:
+    case store::XS_BYTE:
+    case store::XS_NON_NEGATIVE_INTEGER:
+    case store::XS_UNSIGNED_LONG:
+    case store::XS_UNSIGNED_INT:
+    case store::XS_UNSIGNED_SHORT:
+    case store::XS_UNSIGNED_BYTE:
+    case store::XS_POSITIVE_INTEGER:
+      // All numerics get serialized the same way
+      tr << item->getStringValue();
+      break;
+
+    case store::XS_BOOLEAN:
+      tr << (item->getBooleanValue() ? "true" : "false");
+      break;
+
+    case store::JDM_NULL:
+      tr << "null";
+      break;
+
+    default: {
+      emit_cloudscript_value(item->getType()->getStringValue(),
+                        item->getStringValue(), depth);
+      break;
+    }
+    }
+  }
+  else {
+    emit_cloudscript_xdm_node(item, depth);
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
+{
+  store::Item_t pair;
+  store::Iterator_t it = obj->getPairs();
+  it->open();
+  bool first = true;
+  if (ser->indent) {
+    tr << "{" <<ser->END_OF_LINE;
+  }
+  else {
+    tr << "{ ";
+  }
+  depth++;
+  while (it->next(pair)) {
+    if (first) {
+      first = false;
+    }
+    else {
+      tr << ", ";
+      if (ser->indent) {
+        tr << ser->END_OF_LINE;
+      }
+    }
+    if (ser->indent) {
+      emit_indentation(depth);
+    }
+    emit_json_pair(pair, depth);
+  }
+  if (ser->indent) {
+    tr << ser->END_OF_LINE;
+    emit_indentation(depth-1);
+    tr << "}";
+  }
+  else {
+    tr << " }";
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
+{
+  store::Item_t member;
+  store::Iterator_t it = array->getMembers();
+  it->open();
+  bool first = true;
+  tr << "[ ";
+  while (it->next(member)) {
+    if (first) {
+      first = false;
+    }
+    else {
+      tr << ", ";
+    }
+    emit_json_item(member, depth);
+  }
+  tr << " ]";
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_pair(store::Item* pair, int depth)
+{
+  emit_json_item(pair->getName(), depth);
+  tr << " : ";
+  emit_json_item(pair->getValue(), depth);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_cloudscript_value(
+    zstring type,
+    zstring value,
+    int depth)
+{
+  // First make sure we should be doing these extended values
+  if (ser->cloudscript_extensions == PARAMETER_VALUE_NO) {
+    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS(value));
+  }
+
+  // Create items for constant strings, if not already done
+  if (!theCloudScriptValueName)
+  {
+    zstring cloudscriptvaluestring("CloudScript value");
+    zstring typestring("type");
+    zstring valuestring("value");
+    GENV_ITEMFACTORY->createString(theCloudScriptValueName, cloudscriptvaluestring);
+    GENV_ITEMFACTORY->createString(theTypeName, typestring);
+    GENV_ITEMFACTORY->createString(theValueName, valuestring);
+  }
+
+  // Create the inner JSON object, which contains two pairs
+  std::vector<store::Item_t> names(2);
+  std::vector<store::Item_t> values(2);
+
+  names[0] = theTypeName;
+  names[1] = theValueName;
+
+  GENV_ITEMFACTORY->createString(values[0], type);
+  GENV_ITEMFACTORY->createString(values[1], value);
+
+  store::Item_t inner;
+  GENV_ITEMFACTORY->createJSONObject(inner, names, values);
+
+  // Create the outer JSON object with one pair
+  names.resize(1);
+  values.resize(1);
+  names[0] = theCloudScriptValueName;
+  values[0] = inner;
+
+  store::Item_t outer;
+  GENV_ITEMFACTORY->createJSONObject(outer, names, values);
+
+  emit_json_object(outer, depth);
+}
+
+void serializer::json_emitter::emit_cloudscript_xdm_node(
+    store::Item* item,
+    int depth)
+{
+  // First make sure we should be doing these extended values
+  if (ser->cloudscript_extensions == PARAMETER_VALUE_NO) {
+    // QQQ probably should put "XML node" in diagnostics_en.xml
+    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS("XML node"));
+  }
+
+  // OK, we've got a non-atomic non-JDM Item here, so serialize it as XML
+  // and output it as a "CloudScript XDM node".
+  if (!theXMLEmitter) {
+    theXMLStringStream = new std::stringstream();
+    theXMLTranscoder = ser->create_transcoder(*theXMLStringStream);
+    theXMLEmitter = new serializer::xml_emitter(ser, *theXMLTranscoder);
+  }
+  theXMLEmitter->emit_item(item);
+  zstring xml(theXMLStringStream->str());
+  theXMLStringStream->str("");
+
+  // Create item for constant string, if not already done
+  if (!theCloudScriptValueName)
+  {
+    zstring xdmnodestring("CloudScript XDM node");
+    GENV_ITEMFACTORY->createString(theCloudScriptXDMNodeName, xdmnodestring);
+  }
+
+  // Create the JSON object, which contains one pair
+  std::vector<store::Item_t> names(1);
+  std::vector<store::Item_t> values(1);
+
+  names[0] = theCloudScriptXDMNodeName;
+  GENV_ITEMFACTORY->createString(values[0], xml);
+
+  store::Item_t object;
+  GENV_ITEMFACTORY->createJSONObject(object, names, values);
+
+  emit_json_object(object, depth);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_string(zstring string)
+{
+  tr << '"';
+  zstring::const_iterator i = string.begin();
+  zstring::const_iterator end = string.end();
+  for (; i < end; i++) 
+  {
+    if (*i < 0x20) 
+    {
+      // Escape control sequences
+      std::stringstream hex;
+      hex << "\\u" << std::setw(4) << std::setfill('0')
+          << std::hex << static_cast<int>(*i);
+      tr << hex.str();
+      continue;
+    }
+    if (*i == '\\' || *i == '"') 
+    {
+      // Output escape char for \ or "
+      tr << '\\';
+      // Fall through to output original character
+    }
+    tr << *i;
+  }
+  tr << '"';
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JSONiq emitter (auto-detects JSON or XML)                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+serializer::jsoniq_emitter::jsoniq_emitter(
+  serializer* the_serializer,
+  transcoder& the_transcoder)
+  :
+    emitter(the_serializer, the_transcoder),
+    theEmitterState(JESTATE_UNDETERMINED),
+    theEmitter(nullptr)
+{
+}
+
+serializer::jsoniq_emitter::~jsoniq_emitter()
+{
+  delete theEmitter;
+}
+
+void serializer::jsoniq_emitter::emit_declaration()
+{
+  // Probably I should set a flag here to note whether emit_declaration() has
+  // been called or not. However, I know that all serializer::serialize()
+  // methods DO call emit_declaration() and call it first, so there's no need.
+}
+
+void serializer::jsoniq_emitter::emit_item(store::Item *item)
+{
+  bool isJson = item->isJSONItem();
+
+  if (theEmitterState == JESTATE_UNDETERMINED) {
+    // Initialize theEmitter based on item type, passing through our serializer
+    // and transcoder.
+    if (isJson) {
+      theEmitterState = JESTATE_JDM;
+      theEmitter = new json_emitter(ser, tr);
+    }
+    else {
+      theEmitterState = JESTATE_XDM;
+      theEmitter = new xml_emitter(ser, tr);
+    }
+    // Since this was the first item, call emit_declaration().
+    theEmitter->emit_declaration();
+  }
+  else {
+    // Error checking
+    if ( (isJson && theEmitterState == JESTATE_XDM) ||
+         (!isJson && theEmitterState == JESTATE_JDM) ) {
+      throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
+    }
+  }
+
+  // Pass through
+  theEmitter->emit_item(item);
+}
+
+void serializer::jsoniq_emitter::emit_end()
+{
+  // Not really clear what to do if we serialized no items and hence have
+  // no emitter yet, but doing nothing at all seems reasonable.
+  if (theEmitter) {
+    theEmitter->emit_end();
+  }
+}
+
+
+#endif /* ZORBA_WITH_JSON */
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -1070,7 +1464,7 @@ void serializer::html_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::html_emitter::emit_declaration_end()
+void serializer::html_emitter::emit_end()
 {
 }
 
@@ -1474,7 +1868,7 @@ void serializer::sax2_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::sax2_emitter::emit_declaration_end()
+void serializer::sax2_emitter::emit_end()
 {
   theSAX2ContentHandler->endDocument();
 }
@@ -1946,7 +2340,6 @@ void serializer::binary_emitter::emit_item(store::Item* item)
   }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //  Serializer                                                                //
@@ -1993,7 +2386,15 @@ void serializer::reset()
 
   media_type.clear();
 
+  // This default should match the default for ser_method in Zorba_SerializerOptions
+#ifdef ZORBA_WITH_JSON
+  method = PARAMETER_VALUE_JSONIQ;
+  cloudscript_multiple_items = PARAMETER_VALUE_NO;
+  cloudscript_extensions = PARAMETER_VALUE_NO;
+  cloudscript_xdm_method = PARAMETER_VALUE_XML;
+#else
   method = PARAMETER_VALUE_XML;
+#endif
 
   normalization_form.clear();
 
@@ -2008,6 +2409,30 @@ void serializer::reset()
   version_has_default_value = true;
 
   indent = PARAMETER_VALUE_NO;
+}
+
+static short int
+convertMethodString(const char* aValue, const char* aName) {
+  if (!strcmp(aValue, "xml"))
+    return serializer::PARAMETER_VALUE_XML;
+  else if (!strcmp(aValue, "html"))
+    return serializer::PARAMETER_VALUE_HTML;
+  else if (!strcmp(aValue, "xhtml"))
+    return serializer::PARAMETER_VALUE_XHTML;
+  else if (!strcmp(aValue, "text"))
+    return serializer::PARAMETER_VALUE_TEXT;
+  else if (!strcmp(aValue, "binary"))
+    return serializer::PARAMETER_VALUE_BINARY;
+#ifdef ZORBA_WITH_JSON
+  else if (!strcmp(aValue, "json"))
+    return serializer::PARAMETER_VALUE_JSON;
+  else if (!strcmp(aValue, "jsoniq"))
+    return serializer::PARAMETER_VALUE_JSONIQ;
+#endif
+  else
+    throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
+        );
 }
 
 
@@ -2076,20 +2501,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else if (!strcmp(aName, "method"))
   {
-    if (!strcmp(aValue, "xml"))
-      method = PARAMETER_VALUE_XML;
-    else if (!strcmp(aValue, "html"))
-      method = PARAMETER_VALUE_HTML;
-    else if (!strcmp(aValue, "xhtml"))
-      method = PARAMETER_VALUE_XHTML;
-    else if (!strcmp(aValue, "text"))
-      method = PARAMETER_VALUE_TEXT;
-    else if (!strcmp(aValue, "binary"))
-      method = PARAMETER_VALUE_BINARY;
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
-      );
+    method = convertMethodString(aValue, aName);
   }
   else if (!strcmp(aName, "include-content-type"))
   {
@@ -2144,6 +2556,36 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     cdata_section_elements = aValue;
   }
+#ifdef ZORBA_WITH_JSON
+  else if (!strcmp(aName, "cloudscript-extensions"))
+  {
+    if (!strcmp(aValue, "yes"))
+      cloudscript_extensions = PARAMETER_VALUE_YES;
+    else if (!strcmp(aValue, "no"))
+      cloudscript_extensions = PARAMETER_VALUE_NO;
+    else
+      throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
+  }
+  else if (!strcmp(aName, "cloudscript-multiple-items"))
+  {
+    if (!strcmp(aValue, "no"))
+      cloudscript_multiple_items = PARAMETER_VALUE_NO;
+    else if (!strcmp(aValue, "array"))
+      cloudscript_multiple_items = PARAMETER_VALUE_ARRAY;
+    else if (!strcmp(aValue, "appended"))
+      cloudscript_multiple_items = PARAMETER_VALUE_APPENDED;
+    else
+      throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
+  }
+  else if (!strcmp(aName, "cloudscript-xdm-node-output-method"))
+  {
+    cloudscript_xdm_method = convertMethodString(aValue, aName);
+  }
+#endif /* ZORBA_WITH_JSON */
   else
   {
     throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
@@ -2223,19 +2665,10 @@ serializer::validate_parameters(void)
 ********************************************************************************/
 bool serializer::setup(std::ostream& os)
 {
-  if (encoding == PARAMETER_VALUE_UTF_8)
-  {
-    tr = new transcoder(os, false);
+  tr = create_transcoder(os);
+  if (!tr) {
+    return false;
   }
-  else if (encoding == PARAMETER_VALUE_UTF_16)
-  {
-    tr = new transcoder(os, true);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
-  }
-
   if (method == PARAMETER_VALUE_XML)
     e = new xml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_HTML)
@@ -2246,6 +2679,12 @@ bool serializer::setup(std::ostream& os)
     e = new text_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_BINARY)
     e = new binary_emitter(this, *tr);
+#ifdef ZORBA_WITH_JSON
+  else if (method == PARAMETER_VALUE_JSON)
+    e = new json_emitter(this, *tr);
+  else if (method == PARAMETER_VALUE_JSONIQ)
+    e = new jsoniq_emitter(this, *tr);
+#endif
   else
   {
     ZORBA_ASSERT(0);
@@ -2264,6 +2703,24 @@ bool serializer::setup(std::ostream& os)
   return true;
 }
 
+transcoder* serializer::create_transcoder(std::ostream &os)
+{
+  if (encoding == PARAMETER_VALUE_UTF_8)
+  {
+    return new transcoder(os, false);
+  }
+#ifndef ZORBA_NO_UNICODE
+  else if (encoding == PARAMETER_VALUE_UTF_16)
+  {
+    return new transcoder(os, true);
+  }
+#endif
+  else
+  {
+    ZORBA_ASSERT(0);
+    return nullptr;
+  }
+}
 
 /*******************************************************************************
 
@@ -2297,9 +2754,15 @@ serializer::serialize(
   // in case we use SAX event notifications
   if (aHandler)
   {
-    // only allow XML-based methods for SAX notifications
+    // only allow XML-based methods for SAX notifications. For now at least,
+    // the "JSONIQ" method is consider "XML-based", although you will certainly
+    // get errors if you attempt to serialize JDM this way.
     if (method != PARAMETER_VALUE_XML &&
-        method != PARAMETER_VALUE_XHTML) {
+        method != PARAMETER_VALUE_XHTML
+#ifdef ZORBA_WITH_JSON
+        && method != PARAMETER_VALUE_JSONIQ
+#endif
+      ) {
       throw ZORBA_EXCEPTION(
         zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,
         ERROR_PARAMS( method )
@@ -2325,7 +2788,7 @@ serializer::serialize(
     e->emit_item(&*lItem);
   }
 //+  aObject->close();
-  e->emit_declaration_end();
+  e->emit_end();
 }
 
 
@@ -2371,7 +2834,7 @@ void serializer::serialize(
   }
 
   //object->close();
-  e->emit_declaration_end();
+  e->emit_end();
 }
 
 } // namespace zorba

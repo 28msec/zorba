@@ -68,17 +68,18 @@ public:
 
 
 protected:
-  ulong                           theId;
-  store::Item_t                   theName;
-  checked_vector<store::Item_t>   theXmlTrees;
-  bool                            theIsDynamic;
+  ulong                                  theId;
+  store::Item_t                          theName;
+  checked_vector<store::Item_t>          theXmlTrees;
+  bool                                   theIsDynamic;
 
-  TreeIdGenerator               * theTreeIdGenerator;
+  TreeIdGenerator                      * theTreeIdGenerator;
 
   const std::vector<store::Annotation_t> theAnnotations;
-  store::Item_t                   theNodeType;
 
-  SYNC_CODE(Latch                 theLatch;)
+  store::Item_t                          theNodeType;
+
+  SYNC_CODE(Latch                        theLatch;)
 
   // default constructor added in order to allow subclasses to instantiate
   // a collection without name
@@ -89,7 +90,7 @@ public:
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
-      bool aDynamicCollection = false);
+      bool isDynamic = false);
 
   virtual ~SimpleCollection();
   
@@ -114,7 +115,7 @@ public:
 
   xs_integer addNodes(
       std::vector<store::Item_t>& nodes,
-      const store::Item* aTargetNode,
+      const store::Item* targetNode,
       bool before);
 
   bool removeNode(store::Item* node, xs_integer& pos);
