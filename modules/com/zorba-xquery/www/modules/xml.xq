@@ -340,8 +340,9 @@ declare function parse-xml:parse-xml-fragment(
       if (contains($options, "l"))
         then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
         else (),
+      (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (),
+        then <parse-xml-options:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
         then <parse-xml-options:no-error/> else ()      
     }</parse-xml-options:options>
@@ -400,8 +401,9 @@ declare function parse-xml:parse-xml-fragment(
       if (contains($options, "l"))
         then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
         else (),
+      (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (),
+        then <parse-xml-options:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
         then <parse-xml-options:no-error/> else (),
       <parse-xml-options:base-uri>{
