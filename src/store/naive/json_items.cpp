@@ -179,11 +179,11 @@ store::Item* SimpleJSONObject::copy(
            lValue->isNode())
       {
         store::Item_t lCopiedValue = lValue->copy(NULL, copymode);
-        lNewObject->add(lName, lCopiedValue, false);
+        lNewObject->add((*lIter), lCopiedValue, false);
       }
       else
       {
-        lNewObject->add(lName, lValue, false);
+        lNewObject->add((*lIter), lValue, false);
       }
     }
   }
@@ -235,18 +235,14 @@ void SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*
 
 *******************************************************************************/
 bool SimpleJSONObject::add(
-    const zstring& aName,
+    const store::Item_t& aName,
     const store::Item_t& aValue,
     bool accumulate)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
-  store::Item_t lName;
-  zstring aNonConstName = aName;
-  GET_FACTORY().createString(lName, aNonConstName);
-
-  Pairs::iterator lIterator = thePairs.find(lName);
+  Pairs::iterator lIterator = thePairs.find(aName);
 
   if (lIterator == thePairs.end())
   {
@@ -257,9 +253,9 @@ bool SimpleJSONObject::add(
       setJSONRoot(aValue, theRoot);
     }
 
-    theKeys.push_back(lName.getp());
+    theKeys.push_back(aName.getp());
     lValue->addReference();
-    thePairs.insert(lName, lValue);
+    thePairs.insert(aName, lValue);
 
 #ifndef NDEBUG
     assertInvariant();
@@ -305,16 +301,12 @@ bool SimpleJSONObject::add(
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t SimpleJSONObject::remove(const zstring& aName)
+store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
-  store::Item_t lName;
-  zstring aNonConstName = aName;
-  GET_FACTORY().createString(lName, aNonConstName);
-
-  Pairs::iterator lIter = thePairs.find(lName);
+  Pairs::iterator lIter = thePairs.find(aName);
 
   if (lIter == thePairs.end())
   {
@@ -336,7 +328,7 @@ store::Item_t SimpleJSONObject::remove(const zstring& aName)
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), lIter.getKey());
   assert(lKeyIter != theKeys.end());
   theKeys.erase(lKeyIter);
-  thePairs.erase(lName);
+  thePairs.erase(aName.getp());
 
 #ifndef NDEBUG
   assertInvariant();
@@ -349,17 +341,13 @@ store::Item_t SimpleJSONObject::remove(const zstring& aName)
 
 *******************************************************************************/
 store::Item_t SimpleJSONObject::setValue(
-    const zstring& aName,
+    const store::Item_t& aName,
     const store::Item_t& aValue)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
-  store::Item_t lName;
-  zstring aNonConstName = aName;
-  GET_FACTORY().createString(lName, aNonConstName);
-
-  Pairs::iterator lIter = thePairs.find(lName);
+  Pairs::iterator lIter = thePairs.find(aName);
 
   if (lIter == thePairs.end())
   {
@@ -395,22 +383,13 @@ store::Item_t SimpleJSONObject::setValue(
 
 *******************************************************************************/
 bool SimpleJSONObject::rename(
-    const zstring& aName,
-    const zstring& aNewName)
+    const store::Item_t& aName,
+    const store::Item_t& aNewName)
 {
 #ifndef NDEBUG
   assertInvariant();
 #endif
-  store::Item_t lName;
-  store::Item_t lNewName;
-  zstring aNonConstName = aName;
-
-  GET_FACTORY().createString(lName, aNonConstName);
-  aNonConstName = aNewName;
-
-  GET_FACTORY().createString(lNewName, aNonConstName);
-
-  Pairs::iterator lIter = thePairs.find(lNewName);
+  Pairs::iterator lIter = thePairs.find(aNewName);
 
   if (lIter != thePairs.end())
   {
@@ -420,7 +399,7 @@ bool SimpleJSONObject::rename(
     return false;
   }
   
-  lIter = thePairs.find(lName);
+  lIter = thePairs.find(aName);
 
   if (lIter == thePairs.end()) 
   {
@@ -434,10 +413,10 @@ bool SimpleJSONObject::rename(
 
   Keys::iterator lKeyIter = std::find(theKeys.begin(), theKeys.end(), lIter.getKey());
   assert(lKeyIter != theKeys.end());
-  *lKeyIter = lNewName.getp();
+  *lKeyIter = aNewName.getp();
 
-  thePairs.erase(lName);
-  thePairs.insert(lNewName, lValue);
+  thePairs.erase(aName.getp());
+  thePairs.insert(aNewName, lValue);
 
 #ifndef NDEBUG
   assertInvariant();

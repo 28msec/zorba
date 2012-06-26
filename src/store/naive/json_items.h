@@ -99,6 +99,17 @@ public:
 
   virtual ~JSONItem() {}
 
+  // store API
+
+  virtual bool equals(
+      const store::Item* other,
+      long timezone = 0,
+      const XQPCollator* aCollation = 0) const
+  {
+    return this == other;
+  }
+  
+  // store methods
   // store methods
 
   virtual const JSONItem* getRoot() = 0;
@@ -132,19 +143,19 @@ public:
   // updates
   
   virtual bool add(
-      const zstring& aName,
+      const store::Item_t& aName,
       const store::Item_t& aValue,
       bool accumulate) = 0;
 
-  virtual store::Item_t remove(const zstring& aName) = 0;
+  virtual store::Item_t remove(const store::Item_t& aName) = 0;
 
   virtual store::Item_t setValue(
-    const zstring& aName,
+    const store::Item_t& aName,
     const store::Item_t& aValue) = 0;
     
   virtual bool rename(
-    const zstring& aName,
-    const zstring& aNewName) = 0;
+    const store::Item_t& aName,
+    const store::Item_t& aNewName) = 0;
     
   virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 };
@@ -221,19 +232,19 @@ public:
   // updates
   
   virtual bool add(
-      const zstring& aName,
+      const store::Item_t& aName,
       const store::Item_t& aValue,
       bool accumulate);
 
-  virtual store::Item_t remove(const zstring& aName);
+  virtual store::Item_t remove(const store::Item_t& aName);
 
   virtual store::Item_t setValue(
-      const zstring& aName,
+      const store::Item_t& aName,
       const store::Item_t& aValue);
     
   virtual bool rename(
-      const zstring& aName,
-      const zstring& aNewName);
+      const store::Item_t& aName,
+      const store::Item_t& aNewName);
 
   virtual void setCollection(SimpleCollection* collection, xs_integer pos);
   

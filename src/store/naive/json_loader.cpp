@@ -277,7 +277,7 @@ JSONLoader::addValue(
   lObject = dynamic_cast<JSONObject*>(lLast.getp());
 
   assert(lObject);
-  lObject->add(lString->getStringValue(), aValue, false);
+  lObject->add(lString, aValue, false);
 }
 
 template<typename T> T*
