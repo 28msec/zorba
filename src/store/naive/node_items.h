@@ -386,7 +386,8 @@ protected:
 #endif
 
 private:
-  virtual void setTree(const XmlTree* t);
+  void setTreeInternal(const XmlTree* t);
+  void setTree(const XmlTree* t);
 
   void destroyInternal(bool removeType);
 
@@ -932,27 +933,6 @@ protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;
 };
 
-#ifndef EMBEDED_TYPE
-#ifndef NDEBUG
-// these assertions must hold at any time when entering or leaving an attribute
-// or element function that tampers with types:
-// 1. If haveType() is true, then the tree must contain a non-null type for this
-// node.
-#define ATTRIBUTE_ELEMENT_INVARIANT1 assert(!haveType() || \
-                                            getTree()->getType(this) != NULL)
-// 2. If haveType() is true, then the tree must contain a type for this node
-// that is not xs:untyped.
-#define ATTRIBUTE_ELEMENT_INVARIANT2 assert( \
-    !haveType() || \
-    !getTree()->getType(this)->equals( \
-        GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
-// 3. If haveType() is false, then the tree may not contain type information for
-// this node.
-#define ATTRIBUTE_ELEMENT_INVARIANT3 assert(haveType() || \
-                                            getTree() == NULL || \
-                                            getTree()->getType(this) == NULL)
-#endif
-#endif
 
 /*******************************************************************************
 
@@ -1056,7 +1036,7 @@ public:
   void resetInSubstGroup() { theFlags &= ~IsInSubstGroup; }
 
 #ifndef EMBEDED_TYPE
-  void setTree(const XmlTree* t);
+  void assertInvariants() const;
   bool haveType() const { return (theFlags & HaveType) != 0; }
   void setHaveType() { theFlags |= HaveType; }
   void resetHaveType() { theFlags &= ~HaveType; }
@@ -1229,7 +1209,7 @@ public:
   bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
 
 #ifndef EMBEDED_TYPE
-  void setTree(const XmlTree* t);
+  void assertInvariants() const;
   bool haveType() const       { return (theFlags & HaveType) != 0; }
   void setHaveType()          { theFlags |= HaveType; }
   void resetHaveType()        { theFlags &= ~HaveType; }
