@@ -69,11 +69,17 @@ void FnZorbaParseXmlFragmentIteratorState::init(PlanState& planState) {
 
 
 // <FnParseXmlFragmentIterator>
-FnParseXmlFragmentIterator::class_factory<FnParseXmlFragmentIterator>
-FnParseXmlFragmentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnParseXmlFragmentIterator)
+
+void FnParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>*)this);
+}
 
 
-void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const {
+void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
