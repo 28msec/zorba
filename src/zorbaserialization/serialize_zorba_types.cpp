@@ -119,13 +119,13 @@ void operator&(Archiver& ar, DateTime& obj)
 {
   SERIALIZE_ENUM(DateTime::FACET_TYPE, obj.facet);
 
-  serialize_long(ar, obj.data[0]);
-  serialize_long(ar, obj.data[1]);
-  serialize_long(ar, obj.data[2]);
-  serialize_long(ar, obj.data[3]);
-  serialize_long(ar, obj.data[4]);
-  serialize_long(ar, obj.data[5]);
-  serialize_long(ar, obj.data[6]);
+  ar & obj.data[0];
+  ar & obj.data[1];
+  ar & obj.data[2];
+  ar & obj.data[3];
+  ar & obj.data[4];
+  ar & obj.data[5];
+  ar & obj.data[6];
 
   ar & obj.the_time_zone;
 }
@@ -139,13 +139,13 @@ void operator&(Archiver& ar, Duration& obj)
   SERIALIZE_ENUM(Duration::FACET_TYPE, obj.facet);
   ar & obj.is_negative;
 
-  serialize_long(ar, obj.data[0]);
-  serialize_long(ar, obj.data[1]);
-  serialize_long(ar, obj.data[2]);
-  serialize_long(ar, obj.data[3]);
-  serialize_long(ar, obj.data[4]);
-  serialize_long(ar, obj.data[5]);
-  serialize_long(ar, obj.data[6]);
+  ar & obj.data[0];
+  ar & obj.data[1];
+  ar & obj.data[2];
+  ar & obj.data[3];
+  ar & obj.data[4];
+  ar & obj.data[5];
+  ar & obj.data[6];
 }
 
 
