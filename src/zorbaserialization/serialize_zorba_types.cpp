@@ -385,7 +385,7 @@ void operator&(Archiver& ar, store::Item*& obj)
         break;
       }
 #ifdef ZORBA_WITH_JSON
-      case store::Item::JSON_ITEM:
+      case store::Item::JSONIQ:
       {
         ar.set_is_temp_field(true);
         ar.set_is_temp_field_one_level(true);
@@ -477,7 +477,7 @@ void operator&(Archiver& ar, store::Item*& obj)
         break;
       }
 #ifdef ZORBA_WITH_JSON
-      case store::Item::JSON_ITEM:
+      case store::Item::JSONIQ:
       {
         ar.set_is_temp_field(true);
         ar.set_is_temp_field_one_level(true);
