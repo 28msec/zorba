@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ErrorIterator,
     NaryBaseIterator<ErrorIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ErrorIterator(
     static_context* sctx,
@@ -95,11 +91,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TraceIterator,
     NaryBaseIterator<TraceIterator, TraceIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TraceIterator(
     static_context* sctx,

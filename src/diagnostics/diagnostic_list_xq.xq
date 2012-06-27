@@ -75,6 +75,8 @@ declare function local:getNSURI($namespace as xs:string) as xs:string
 {
   if ($namespace = "err")
     then "http://www.w3.org/2005/xqt-errors"
+  else if ($namespace = "jerr")
+    then "http://www.jsoniq.org/errors"
   else if ($namespace = "zerr")
     then "http://www.zorba-xquery.com/errors"
   else if ($namespace = "zwarn")
@@ -122,7 +124,7 @@ declare function local:writeModule($namespace as element(namespace))
 declare function local:getFilePath($namespace as xs:string) as xs:string{
   if($namespace = "err")
     then "w3/"
-  else if ($namespace = "zerr" or $namespace = "zwarn")
+  else if ($namespace = "jerr" or $namespace = "zerr" or $namespace = "zwarn")
     then "com/zorba-xquery/www/modules/"
   else ""
 };

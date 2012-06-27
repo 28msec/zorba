@@ -18,8 +18,12 @@
 #define ZORBA_BINARY_SERIALIZATION_BINARY_ARCHIVER
 
 #include <iostream>
+
 #include "zorbaserialization/archiver.h"
-#include "zorbautils/hashmap_str_obj.h"
+
+#include "zorbautils/hashmap_zstring.h"
+
+#include "store/api/shared_types.h"
 
 namespace zorba
 {
@@ -27,33 +31,60 @@ namespace zorba
 namespace serialization
 {
 
+/*******************************************************************************
+  theStrings :
+  ------------
+  Stores the set of distinct strings that are found in theValue data member of
+  all the fields. During serialization, theStrings is populated after the full
+  tree of fields has been constructed. Then, the order in which the strings are
+  going to be written to disk is determined and the strings are written 
+  consecutively according to this order. theDiskPos data member reflects this
+  order: the 1st string in disk will have theDiskPos == 1, the 2nd string will
+  have theDiskPos == 2, etc. 
+
+  theStringPool :
+  -------------
+  Maps a string to its position within theStrings vector. It is used during
+  serialization only, to enforce the uniqueness of the strings in theStrings.
+ 
+  theOrderedStrings :
+  -------------------
+  This vector stores an ordering of theStrings, based on their use counts. 
+  Specifically, theOrderedStrings[0] points to the string with the highest
+  string count, theOrderedStrings[1] points to the string with the 2nd highest
+  string count, etc. The string are written to disk in this order.
+
+********************************************************************************/
 class BinArchiver : public Archiver
 {
+protected:
+  typedef struct
+  {
+    zstring      str;
+    bool         binary;
+    csize        count;
+    csize        theDiskPos;//1 based
+  } StringInfo;
+
+  ZSTRING_HASH_MAP(csize, StringPoolMap);
+
+protected:
   std::istream             * is;
 
   std::ostream             * os;
 
-  bool                       has_attributes;
-  bool                       is_compound_field_without_children;
+  StringPoolMap              theStringPool;
 
-  HashCharPtrObj<int>        string_pool;
+  std::vector<StringInfo>    theStrings;
+  std::vector<csize>         theOrderedStrings;
+  csize                      theFirstBinaryString;
 
-  typedef struct
-  {
-    std::string   str;
-    unsigned int  count;
-    unsigned int  final_pos;//1 based
-  } STRING_POS;
+  unsigned int               theLastId;
+  unsigned char              theCurrentByte;
+  unsigned char              theBitfill;
 
-  std::vector<STRING_POS>    strings;
-  std::vector<unsigned int>  strings_pos;
-
-  unsigned int               last_id;
-  unsigned char              current_byte;
-  unsigned char              bitfill;
-
-  unsigned char            * in_buffer;
-  unsigned char            * in_current;
+  unsigned char            * theBuffer;
+  unsigned char            * theCurrentBytePtr;
   size_t                     size_read;
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
@@ -70,57 +101,75 @@ public:
 
   virtual ~BinArchiver();
 
-  virtual bool read_next_field_impl( 
-      char** type, 
-      std::string* value,
-      int* id, 
-      bool* is_simple, 
-      bool* is_class,
-      enum ArchiveFieldKind* field_treat,
-      int* referencing);
+  void read_next_compound_field_impl(
+      bool is_class,
+      ArchiveFieldKind& field_kind,
+      TypeCode& type,
+      int& id, 
+      int& referencing);
 
-  virtual void read_end_current_level_impl();
+  void read_next_simple_temp_field_impl(TypeCode type, void* obj);
 
-  virtual void serialize_out();
+  void read_next_simple_ptr_field_impl(TypeCode type, void** obj);
+
+  void read_end_current_level_impl();
+
+  void serialize_out();
 
 protected:
   //writing
-  int add_to_string_pool(const char* str);
+  void serialize_out_string_pool();
 
   void collect_strings(archive_field* parent_field);
 
-  void serialize_out_string_pool();
+  int add_to_string_pool(const zstring& str);
+
+  void write_string(const StringInfo& info);
 
   void serialize_compound_fields(archive_field* parent_field);
 
-  void write_string(const char* str);
+  void write_int64(int64_t intval);
 
-  void write_bit(unsigned char bit);
+  void write_uint64(uint64_t intval);
 
-  void write_bits(unsigned int value, unsigned int bits);
+  void write_int32(int32_t intval);
 
-  void write_int(unsigned int intval);
+  void write_uint32(uint32_t intval);
 
   void write_int_exp(unsigned int intval);
 
   void write_int_exp2(unsigned int intval);
 
+  void write_enum(unsigned int intval);
+
+  void write_bits(unsigned int value, unsigned int bits);
+
+  void write_bit(unsigned char bit);
+
   //reading
-  void read_string(std::string& str);
+  void read_string_pool();
 
-  void read_string(char* str);
+  void read_string(zstring& str);
 
-  unsigned char read_bit();
+  void read_binary_string(zstring& str);
 
-  unsigned int read_bits(unsigned int bits);
+  int64_t read_int64();
 
-  unsigned int read_int();
+  uint64_t read_uint64();
+
+  int32_t read_int32();
+
+  uint32_t read_uint32();
 
   unsigned int read_int_exp();
 
   unsigned int read_int_exp2();
 
-  void read_string_pool();
+  unsigned int read_enum();
+
+  unsigned char read_bit();
+
+  unsigned int read_bits(unsigned int bits);
 };
 
 }}

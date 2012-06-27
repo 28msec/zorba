@@ -25,10 +25,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void recordStackTrace( QueryLoc const &loc, QueryLoc const &call_loc,
-                       store::Item_t const &fn_name,
-                       XQueryStackTrace::fn_arity_type fn_arity,
-                       ZorbaException &ze );
+void recordStackTrace(
+    QueryLoc const &loc,
+    QueryLoc const &call_loc,
+    store::Item_t const &fn_name,
+    XQueryStackTrace::fn_arity_type fn_arity,
+    ZorbaException &ze );
 
 ///////////////////////////////////////////////////////////////////////////////
 

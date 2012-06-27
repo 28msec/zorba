@@ -34,11 +34,17 @@
 namespace zorba {
 
 // <NodeNameIterator>
-NodeNameIterator::class_factory<NodeNameIterator>
-NodeNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodeNameIterator)
+
+void NodeNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NodeNameIterator, PlanIteratorState>*)this);
+}
 
 
-void NodeNameIterator::accept(PlanIterVisitor& v) const {
+void NodeNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -56,11 +62,17 @@ NodeNameIterator::~NodeNameIterator() {}
 
 
 // <NilledIterator>
-NilledIterator::class_factory<NilledIterator>
-NilledIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NilledIterator)
+
+void NilledIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NilledIterator, PlanIteratorState>*)this);
+}
 
 
-void NilledIterator::accept(PlanIterVisitor& v) const {
+void NilledIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -78,11 +90,19 @@ NilledIterator::~NilledIterator() {}
 
 
 // <FnStringIterator>
-FnStringIterator::class_factory<FnStringIterator>
-FnStringIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnStringIterator)
+
+void FnStringIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnStringIterator, FnStringIteratorState>*)this);
+
+    ar & theEmptyStringOnNULL;
+}
 
 
-void FnStringIterator::accept(PlanIterVisitor& v) const {
+void FnStringIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -114,11 +134,17 @@ void FnStringIteratorState::reset(PlanState& planState) {
 
 
 // <FnDataIterator>
-FnDataIterator::class_factory<FnDataIterator>
-FnDataIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnDataIterator)
+
+void FnDataIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnDataIterator, FnDataIteratorState>*)this);
+}
 
 
-void FnDataIterator::accept(PlanIterVisitor& v) const {
+void FnDataIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -150,11 +176,17 @@ void FnDataIteratorState::reset(PlanState& planState) {
 
 
 // <BaseUriIterator>
-BaseUriIterator::class_factory<BaseUriIterator>
-BaseUriIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(BaseUriIterator)
+
+void BaseUriIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<BaseUriIterator, PlanIteratorState>*)this);
+}
 
 
-void BaseUriIterator::accept(PlanIterVisitor& v) const {
+void BaseUriIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -172,11 +204,17 @@ BaseUriIterator::~BaseUriIterator() {}
 
 
 // <DocumentUriIterator>
-DocumentUriIterator::class_factory<DocumentUriIterator>
-DocumentUriIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DocumentUriIterator)
+
+void DocumentUriIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DocumentUriIterator, PlanIteratorState>*)this);
+}
 
 
-void DocumentUriIterator::accept(PlanIterVisitor& v) const {
+void DocumentUriIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -194,11 +232,17 @@ DocumentUriIterator::~DocumentUriIterator() {}
 
 
 // <RootIterator>
-RootIterator::class_factory<RootIterator>
-RootIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RootIterator)
+
+void RootIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<RootIterator, PlanIteratorState>*)this);
+}
 
 
-void RootIterator::accept(PlanIterVisitor& v) const {
+void RootIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

@@ -343,7 +343,9 @@ store::Item_t Validator::processElement(
 
   if ( typeName!=NULL && typeManager!=NULL )
   {
-    xqtref_t schemaType = typeManager->create_named_type(typeName);
+    xqtref_t schemaType = typeManager->create_named_type(typeName,
+                                                         TypeConstants::QUANT_ONE,
+                                                         loc);
 
     if ( schemaType!=NULL )
     {
@@ -773,7 +775,8 @@ void Validator::processTextValue(
     const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_type(typeQName.getp(),
-                                                 TypeConstants::QUANT_ONE);
+                                                 TypeConstants::QUANT_ONE,
+                                                 loc);
 
   //cout << "     - processTextValue: " << typeQName->getPrefix()
   //     << ":" << typeQName->getLocalName() << "@"

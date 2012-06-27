@@ -26,21 +26,22 @@
       <value>${"1": }undefined value${: 2}</value>
     </diagnostic>
 
-    <diagnostic code="XPDY0002">
-      <comment>
-       It is a dynamic error if evaluation of an expression relies on some part
-       of the dynamic context that has not been assigned a value.
-      </comment>
-      <value>"$1": $2</value>
-    </diagnostic>
-
     <diagnostic code="XPST0003">
+
       <comment>
        It is a static error if an expression is not a valid instance of the
        grammar.
       </comment>
 
       <value>invalid expression${: 1}</value>
+
+      <entry key="StartEndTagMismatch_23">
+        <value>start tag "$2" does not match end tag "$3"</value>
+      </entry>
+
+      <entry key="ModuleDeclNotInMain">
+        <value>module declaration must not be in main module</value>
+      </entry>
 
       <entry key="XQueryVersionAtLeast30_2">
         <value>"$2": XQuery version must be at least 3.0</value>
@@ -77,21 +78,6 @@
       <entry key="PiTarget">
         <value>"XML" not allowed as target of a direct processing-instruction constructor</value>
       </entry>
-    </diagnostic>
-
-    <diagnostic code="XPTY0004">
-      <comment>
-       It is a type error if, during the static analysis phase, an expression
-       is found to have a static type that is not appropriate for the context
-       in which the expression occurs, or during the dynamic evaluation phase,
-       the dynamic type of a value does not match a required type as specified
-       by the matching rules in 2.5.4 SequenceType Matching.
-      </comment>
-      <value>$1</value>
-
-      <entry key="FormatNumber_2">
-        <value>"the first parameter to the format-number() function is of type $2, which is not allowed</value>
-      </entry>
 
     </diagnostic>
 
@@ -112,6 +98,137 @@
        an ElementTest or an AttributeName in an AttributeTest.
       </comment>
       <value>"$1": undefined $2</value>
+    </diagnostic>
+
+    <diagnostic code="XPST0017">
+      <comment>
+       It is a static error if the expanded QName and number of arguments in a
+       function call do not match the name and arity of a function signature in
+       the static context.
+      </comment>
+      <value>"$1": $2</value>
+    </diagnostic>
+
+    <diagnostic code="XPST0051">
+      <comment>
+       It is a static error if a QName that is used as an AtomicType in a
+       SequenceType is not defined in the in-scope schema types as an atomic
+       type.
+      </comment>
+      <value>"$1": not defined as atomic type${: 2}</value>
+    </diagnostic>
+
+    <diagnostic code="XPST0080">
+      <comment>
+       It is a static error if the target type of a \c cast or \c castable
+       expression is \c xs:NOTATION or \c xs:anyAtomicType.
+      </comment>
+      <value>"$1": invalid type for "cast" or "castable" exression</value>
+    </diagnostic>
+
+    <diagnostic code="XPST0081">
+      <comment>
+       It is a static error if a QName used in a query contains a namespace
+       prefix that cannot be expanded into a namespace URI by using the
+       statically known namespaces.
+      </comment>
+      <value>"$1": can not expand namespace prefix to URI</value>
+    </diagnostic>
+
+    <diagnostic code="XPST0083">
+      <comment>
+       It is a static error if the target type of a \c cast expression or
+       constructor function is \c xs:QName or a type derived from \c xs:QName
+       or \c xs:NOTATION, and the argument of the cast expression or
+       constructor function is not a string literal.
+      </comment>
+      <value>"$1": not a string literal</value>
+    </diagnostic>
+
+    <diagnostic code="XPTY0004">
+      <comment>
+       It is a type error if, during the static analysis phase, an expression
+       is found to have a static type that is not appropriate for the context
+       in which the expression occurs, or during the dynamic evaluation phase,
+       the dynamic type of a value does not match a required type as specified
+       by the matching rules in 2.5.4 SequenceType Matching.
+      </comment>
+
+      <value>$1</value>
+
+      <entry key="FuncReturn">
+        <value>$2 can not be promoted to return type $3 of function $4()</value>
+      </entry>
+
+      <entry key="FuncParam">
+        <value>$2 can not be promoted to parameter type $3 of function $4()</value>
+      </entry>
+
+      <entry key="TypePromotion">
+        <value>$2 can not be promoted to type $3</value>
+      </entry>
+
+      <entry key="NoMultiSeqTypePromotion">
+        <value>sequence of more than one item can not be promoted to type $2</value>
+      </entry>
+
+      <entry key="TypeMatch">
+        <value>$2 can not be treated as type $3</value>
+      </entry>
+
+      <entry key="FormatNumber_2">
+        <value>the first parameter to the format-number() function is of type $2, which is not allowed</value>
+      </entry>
+
+    </diagnostic>
+
+    <diagnostic code="XPTY0018">
+      <comment>
+       It is a type error if the result of the last step in a path expression
+       contains both nodes and non-nodes.
+      </comment>
+      <value>path expression last step must not have nodes and atomic values</value>
+    </diagnostic>
+
+    <diagnostic code="XPTY0019">
+      <comment>
+       It is a type error if the result of a step (other than the last step) in a
+       path expression contains an atomic value.
+      </comment>
+
+      <value>a non-last axis step produces non-node items</value>
+    </diagnostic>
+
+    <diagnostic code="XPTY0020">
+      <comment>
+       It is a type error if, in an axis step, the context item is not a node.
+      </comment>
+      <value>context item in axis step is not a node</value>
+    </diagnostic>
+
+    <diagnostic code="XQTY0024">
+      <comment>
+       It is a type error if the content sequence in an element constructor
+       contains an attribute node following a node that is not an attribute node.
+      </comment>
+      <value>element constructor content sequence must not have an attribute node following a non-attribute node</value>
+    </diagnostic>
+
+    <diagnostic code="XQTY0030">
+      <comment>
+       It is a type error if the argument of a validate expression does not
+       evaluate to exactly one document or element node.
+      </comment>
+      <value>validate argument must be exactly one document or element node</value>
+    </diagnostic>
+
+    <diagnostic code="XQTY0086">
+      <comment>
+       It is a type error if the typed value of a copied element or attribute
+       node is namespace-sensitive when construction mode is \c preserve and
+       copy-namespaces mode is \c no-preserve.
+      </comment>
+      <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
     </diagnostic>
 
     <diagnostic code="XQST0009">
@@ -140,87 +257,12 @@
       <value>invalid pragma content</value>
     </diagnostic>
 
-    <diagnostic code="XPST0017">
-      <comment>
-       It is a static error if the expanded QName and number of arguments in a
-       function call do not match the name and arity of a function signature in
-       the static context.
-      </comment>
-      <value>"$1": $2</value>
-    </diagnostic>
-
-    <diagnostic code="XPTY0018">
-      <comment>
-       It is a type error if the result of the last step in a path expression
-       contains both nodes and non-nodes.
-      </comment>
-      <value>path expression last step must not have nodes and atomic values</value>
-    </diagnostic>
-
-    <diagnostic code="XPTY0019">
-      <comment>
-       It is a type error if the result of a step (other than the last step) in a
-       path expression contains an atomic value.
-      </comment>
-      <value>path expression non-last step must not be an atomic value</value>
-    </diagnostic>
-
-    <diagnostic code="XPTY0020">
-      <comment>
-       It is a type error if, in an axis step, the context item is not a node.
-      </comment>
-      <value>axis step context item is not a node</value>
-    </diagnostic>
-
     <diagnostic code="XQST0022">
       <comment>
        It is a static error if the value of a namespace declaration attribute is
        not a URILiteral.
       </comment>
       <value>namespace declaration attribute is not a URI literal</value>
-    </diagnostic>
-
-    <diagnostic code="XQTY0024">
-      <comment>
-       It is a type error if the content sequence in an element constructor
-       contains an attribute node following a node that is not an attribute node.
-      </comment>
-      <value>element constructor content sequence must not have an attribute node following a non-attribute node</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0025">
-      <comment>
-       It is a dynamic error if any attribute of a constructed element does not
-       have a name that is distinct from the names of all other attributes of
-       the constructed element.
-      </comment>
-      <value>"$1": duplicate attribute name</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0026">
-      <comment>
-       It is a dynamic error if the result of the content expression of a
-       computed processing instruction constructor contains the string "?>".
-      </comment>
-      <value>computed processing instrucion must not contain "?&gt;"</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0027">
-      <comment>
-       In a validate expression, it is a dynamic error if the root element
-       information item in the PSVI resulting from validation does not have the
-       expected validity property: \c valid if validation mode is \c strict, or
-       either \c valid or \c notKnown if validation mode is \c lax.
-      </comment>
-      <value>"$1": unexpected validity property${: 2}</value>
-    </diagnostic>
-
-    <diagnostic code="XQTY0030">
-      <comment>
-       It is a type error if the argument of a validate expression does not
-       evaluate to exactly one document or element node.
-      </comment>
-      <value>validate argument must be exactly one document or element node</value>
     </diagnostic>
 
     <diagnostic code="XQST0031">
@@ -318,30 +360,6 @@
       <value>"$1": non-distinct expanded attribute QName</value>
     </diagnostic>
 
-    <diagnostic code="XQDY0041">
-      <comment>
-       It is a dynamic error if the value of the name expression in a computed
-       processing instruction constructor cannot be cast to the type
-       \c xs:NCName.
-      </comment>
-      <value>can not cast to xs:NCName</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0044">
-      <comment>
-       It is a static error the node-name of a node constructed by a computed
-       attribute constructor has any of the following properties:
-       - Its namespace prefix is \c xmlns.
-       - It has no namespace prefix and its local name is \c xmlns.
-       - Its namespace URI is <code>http://www.w3.org/2000/xmlns/</code>.
-       - Its namespace prefix is \c xml and its namespace URI is not
-         <code>http://www.w3.org/XML/1998/namespace</code>.
-       - Its namespace prefix is other than \c xml and its namespace URI is
-         <code>http://www.w3.org/XML/1998/namespace</code>.
-      </comment>
-      <value>"$1": invalid attibute node-name</value>
-    </diagnostic>
-
     <diagnostic code="XQST0045">
       <comment>
        It is a static error if the function name in a function declaration is in
@@ -384,29 +402,6 @@
        module have equal expanded QNames (as defined by the eq operator.)
       </comment>
       <value>"$1": duplicate variable declaration</value>
-    </diagnostic>
-
-    <diagnostic code="XPDY0050">
-      <comment>
-       It is a dynamic error if the dynamic type of the operand of a treat
-       expression does not match the sequence type specified by the treat
-       expression. This error might also be raised by a path expression
-       beginning with "<code>/</code>" or "<code>//</code>" if the context node
-       is not in a tree that is rooted at a document node. This is because a
-       leading "<code>/</code>" or "<code>//</code>" in a path expression is an
-       abbreviation for an initial step that includes the clause \c treat as \c
-       document-node().
-      </comment>
-      <value>invalid treat expression type</value>
-    </diagnostic>
-
-    <diagnostic code="XPST0051">
-      <comment>
-       It is a static error if a QName that is used as an AtomicType in a
-       SequenceType is not defined in the in-scope schema types as an atomic
-       type.
-      </comment>
-      <value>"$1": not defined as atomic type${: 2}</value>
     </diagnostic>
 
     <diagnostic code="XQST0054">
@@ -455,24 +450,6 @@
        is not in a namespace (expanded QName has a null namespace URI).
       </comment>
       <value>"$1": function name has a null namespace URI</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0061">
-      <comment>
-       It is a dynamic error if the operand of a validate expression is a
-       document node whose children do not consist of exactly one element node
-       and zero or more comment and processing instruction nodes, in any order.
-      </comment>
-      <value>invalid validate expression operand${: 1}</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0064">
-      <comment>
-       It is a dynamic error if the value of the name expression in a computed
-       processing instruction constructor is equal to "XML" (in any combination
-       of upper and lower case).
-      </comment>
-      <value>"XML": invalid name expression</value>
     </diagnostic>
 
     <diagnostic code="XQST0065">
@@ -540,25 +517,6 @@
       <value>"$1": duplicate namespace declaration attribute</value>
     </diagnostic>
 
-    <diagnostic code="XQDY0072">
-      <comment>
-       It is a dynamic error if the result of the content expression of a
-       computed comment constructor contains two adjacent hyphens or ends with
-       a hyphen.
-      </comment>
-      <value>comment must not contain "--" or end with "-"</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0074">
-      <comment>
-       It is a dynamic error if the value of the name expression in a computed
-       element or attribute constructor cannot be converted to an expanded
-       QName (for example, because it contains a namespace prefix not found in
-       statically known namespaces).
-      </comment>
-      <value>${"1": }can not convert to expanded QName${: 2}</value>
-    </diagnostic>
-
     <diagnostic code="XQST0076">
       <comment>
        It is a static error if a \c collation subclause in an order by clause
@@ -577,42 +535,6 @@
       <value>unknown pragma or empty expression</value>
     </diagnostic>
 
-    <diagnostic code="XPST0080">
-      <comment>
-       It is a static error if the target type of a \c cast or \c castable
-       expression is \c xs:NOTATION or \c xs:anyAtomicType.
-      </comment>
-      <value>"$1": invalid type for "cast" or "castable" exression</value>
-    </diagnostic>
-
-    <diagnostic code="XPST0081">
-      <comment>
-       It is a static error if a QName used in a query contains a namespace
-       prefix that cannot be expanded into a namespace URI by using the
-       statically known namespaces.
-      </comment>
-      <value>"$1": can not expand namespace prefix to URI</value>
-    </diagnostic>
-
-    <diagnostic code="XPST0083">
-      <comment>
-       It is a static error if the target type of a \c cast expression or
-       constructor function is \c xs:QName or a type derived from \c xs:QName
-       or \c xs:NOTATION, and the argument of the cast expression or
-       constructor function is not a string literal.
-      </comment>
-      <value>"$1": not a string literal</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0084">
-      <comment>
-       It is a dynamic error if the element validated by a \c validate statement
-       does not have a top-level element declaration in the in-scope element
-       declarations, if validation mode is \c strict.
-      </comment>
-      <value>validated element does not have a top-level element declaration in the in-scope element declarations${: 1}</value>
-    </diagnostic>
-
     <diagnostic code="XQST0085">
       <comment>
        It is a static error if the namespace URI in a namespace declaration
@@ -620,15 +542,6 @@
        support [XML Names 1.1].
       </comment>
       <value>namespace URI is empty</value>
-    </diagnostic>
-
-    <diagnostic code="XQTY0086">
-      <comment>
-       It is a type error if the typed value of a copied element or attribute
-       node is namespace-sensitive when construction mode is \c preserve and
-       copy-namespaces mode is \c no-preserve.
-      </comment>
-      <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
     </diagnostic>
 
     <diagnostic code="XQST0087">
@@ -664,23 +577,6 @@
       <value>"$1": invalid character reference in XML $2</value>
     </diagnostic>
 
-    <diagnostic code="XQDY0091">
-      <comment>
-       An implementation MAY raise a dynamic error if an \c xml:id error, as
-       defined in [XML ID], is encountered during construction of an attribute
-       named \c xml:id.
-      </comment>
-      <value>"xml:id" encountered</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0092">
-      <comment>
-       An implementation MAY raise a dynamic error if a constructed attribute
-       named \c xml:space has a value other than \c preserve or \c default.
-      </comment>
-      <value>"$1": must be either "preserve" or "default"</value>
-    </diagnostic>
-
     <diagnostic code="XQST0093">
       <comment>
        It is a static error to import a module M1 if there exists a sequence of
@@ -689,20 +585,6 @@
        some chain of module dependencies.)
       </comment>
       <value>"$1": module must not depend on itself</value>
-    </diagnostic>
-
-    <diagnostic code="XQDY0096">
-      <comment>
-       It is a dynamic error the node-name of a node constructed by a computed
-       element constructor has any of the following properties:
-       - Its namespace prefix is \c xmlns.
-       - Its namespace URI is <code>http://www.w3.org/2000/xmlns/</code>.
-       - Its namespace prefix is \c xml and its namespace URI is not
-         <code>http://www.w3.org/XML/1998/namespace</code>.
-       - Its namespace prefix is other than \c xml and its namespace URI is
-         <code>http://www.w3.org/XML/1998/namespace</code>.
-      </comment>
-      <value>"$1": invalid node-name</value>
     </diagnostic>
 
     <diagnostic code="XQST0098">
@@ -745,6 +627,157 @@
        with the same name, or to contain two default decimal formats.
       </comment>
       <value>$1</value>
+    </diagnostic>
+
+    <diagnostic code="XPDY0002">
+      <comment>
+       It is a dynamic error if evaluation of an expression relies on some part
+       of the dynamic context that has not been assigned a value.
+      </comment>
+      <value>"$1": $2</value>
+    </diagnostic>
+
+    <diagnostic code="XPDY0050">
+      <comment>
+       It is a dynamic error if the dynamic type of the operand of a treat
+       expression does not match the sequence type specified by the treat
+       expression. This error might also be raised by a path expression
+       beginning with "<code>/</code>" or "<code>//</code>" if the context node
+       is not in a tree that is rooted at a document node. This is because a
+       leading "<code>/</code>" or "<code>//</code>" in a path expression is an
+       abbreviation for an initial step that includes the clause \c treat as \c
+       document-node().
+      </comment>
+
+      <value>"$1" cannot be treated as type $2</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0025">
+      <comment>
+       It is a dynamic error if any attribute of a constructed element does not
+       have a name that is distinct from the names of all other attributes of
+       the constructed element.
+      </comment>
+      <value>"$1": duplicate attribute name</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0026">
+      <comment>
+       It is a dynamic error if the result of the content expression of a
+       computed processing instruction constructor contains the string "?>".
+      </comment>
+      <value>computed processing instrucion must not contain "?&gt;"</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0027">
+      <comment>
+       In a validate expression, it is a dynamic error if the root element
+       information item in the PSVI resulting from validation does not have the
+       expected validity property: \c valid if validation mode is \c strict, or
+       either \c valid or \c notKnown if validation mode is \c lax.
+      </comment>
+      <value>"$1": unexpected validity property${: 2}</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0041">
+      <comment>
+       It is a dynamic error if the value of the name expression in a computed
+       processing instruction constructor cannot be cast to the type
+       \c xs:NCName.
+      </comment>
+      <value>can not cast to xs:NCName</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0044">
+      <comment>
+       It is a static error the node-name of a node constructed by a computed
+       attribute constructor has any of the following properties:
+       - Its namespace prefix is \c xmlns.
+       - It has no namespace prefix and its local name is \c xmlns.
+       - Its namespace URI is <code>http://www.w3.org/2000/xmlns/</code>.
+       - Its namespace prefix is \c xml and its namespace URI is not
+         <code>http://www.w3.org/XML/1998/namespace</code>.
+       - Its namespace prefix is other than \c xml and its namespace URI is
+         <code>http://www.w3.org/XML/1998/namespace</code>.
+      </comment>
+      <value>"$1": invalid attibute node-name</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0061">
+      <comment>
+       It is a dynamic error if the operand of a validate expression is a
+       document node whose children do not consist of exactly one element node
+       and zero or more comment and processing instruction nodes, in any order.
+      </comment>
+      <value>invalid validate expression operand${: 1}</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0064">
+      <comment>
+       It is a dynamic error if the value of the name expression in a computed
+       processing instruction constructor is equal to "XML" (in any combination
+       of upper and lower case).
+      </comment>
+      <value>"XML": invalid name expression</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0072">
+      <comment>
+       It is a dynamic error if the result of the content expression of a
+       computed comment constructor contains two adjacent hyphens or ends with
+       a hyphen.
+      </comment>
+      <value>comment must not contain "--" or end with "-"</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0074">
+      <comment>
+       It is a dynamic error if the value of the name expression in a computed
+       element or attribute constructor cannot be converted to an expanded
+       QName (for example, because it contains a namespace prefix not found in
+       statically known namespaces).
+      </comment>
+      <value>${"1": }can not convert to expanded QName${: 2}</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0084">
+      <comment>
+       It is a dynamic error if the element validated by a \c validate statement
+       does not have a top-level element declaration in the in-scope element
+       declarations, if validation mode is \c strict.
+      </comment>
+      <value>validated element does not have a top-level element declaration in the in-scope element declarations${: 1}</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0091">
+      <comment>
+       An implementation MAY raise a dynamic error if an \c xml:id error, as
+       defined in [XML ID], is encountered during construction of an attribute
+       named \c xml:id.
+      </comment>
+      <value>"xml:id" encountered</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0092">
+      <comment>
+       An implementation MAY raise a dynamic error if a constructed attribute
+       named \c xml:space has a value other than \c preserve or \c default.
+      </comment>
+      <value>"$1": must be either "preserve" or "default"</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0096">
+      <comment>
+       It is a dynamic error the node-name of a node constructed by a computed
+       element constructor has any of the following properties:
+       - Its namespace prefix is \c xmlns.
+       - Its namespace URI is <code>http://www.w3.org/2000/xmlns/</code>.
+       - Its namespace prefix is \c xml and its namespace URI is not
+         <code>http://www.w3.org/XML/1998/namespace</code>.
+       - Its namespace prefix is other than \c xml and its namespace URI is
+         <code>http://www.w3.org/XML/1998/namespace</code>.
+      </comment>
+      <value>"$1": invalid node-name</value>
     </diagnostic>
 
     <diagnostic code="XTDE1310">
@@ -1205,6 +1238,10 @@
         <value>comma expression with updating and non-updating branches</value>
       </entry>
 
+      <entry key="TRYCATCH">
+        <value>try-catch expression with updating and non-updating clauses</value>
+      </entry>
+
       <entry key="Generic">
         <value>updating expression illegal here</value>
       </entry>
@@ -1325,7 +1362,7 @@
        In a transform expression, it is a type error if a source expression in
        the \c copy clause does not return a single node.
       </comment>
-      <value>source expression of "copy" clause must return a single node</value>
+      <value>source expression of "copy" clause must return a single node or json-item</value>
     </diagnostic>
 
     <diagnostic code="XUDY0014">
@@ -1903,6 +1940,14 @@
       <value>iterator is closed</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0043" name="CANNOT_SERIALIZE_JSON_ITEM">
+      <value>cannot serialize JSON item using current output method</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0045" name="CANNOT_SERIALIZE_MIXED_XDM_JDM">
+      <value>cannot serialize sequence containing both JSON and XML items</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0070" name="INVALID_SERIALIZATION_METHOD_FOR_SAX">
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
@@ -2239,20 +2284,21 @@
     </diagnostic>
 
     <diagnostic code="ZDTY0001" name="COLLECTION_INVALID_NODE_TYPE">
-      <value>"$1": invalid node type in collection "$2"</value>
+      <value>"$1": invalid item type in collection "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZDTY0010" name="INDEX_DOMAIN_TYPE_ERROR">
-      <value>"$1": index domain expression yields a non-node item</value>
+      <value>non-node item in domain expression of index $1</value>
     </diagnostic>
 
     <diagnostic code="ZDTY0011" name="INDEX_KEY_TYPE_ERROR">
-      <value>result of some key expression of index $1 does not match its declared type</value>
+       <value>item type "$1" does not match declared type "$2" for key expression of index $3</value>
     </diagnostic>
 
     <diagnostic code="ZDTY0012" name="INDEX_KEY_TYPE_ERROR">
       <value>"$1": general range index key item has type for which no ordering relationship exists</value>
     </diagnostic>
+
 
     <!--////////// Zorba Debugger Errors ///////////////////////////////////-->
 
@@ -2326,6 +2372,10 @@
 
     <diagnostic code="ZSTR0012" name="COLLECTION_ITEM_MUST_BE_A_NODE">
       <value>non-node item used with collection "$1"</value>
+    </diagnostic>
+
+    <diagnostic code="ZSTR0013" name="COLLECTION_ITEM_MUST_BE_STRUCTURED">
+      <value>an item that is not a node, object, or array is used with collection "$1"</value>
     </diagnostic>
 
     <diagnostic code="ZSTR0015" name="IC_ALREADY_EXISTS">
@@ -2414,27 +2464,35 @@
     <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
       <value>'$1': illegal JSON character</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0002" name="ILLEGAL_CODEPOINT">
       <value>"$1": illegal Unicode code-point</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0003" name="ILLEGAL_ESCAPE">
       <value>'\\$1': illegal JSON character escape</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0004" name="ILLEGAL_LITERAL">
       <value>illegal JSON literal</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0005" name="ILLEGAL_NUMBER">
       <value>illegal JSON number</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0006" name="UNEXPECTED_TOKEN">
       <value>"$1": unexpected JSON token</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0007" name="UNTERMINATED_STRING">
       <value>unterminated JSON string</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0008" name="ILLEGAL_QNAME">
       <value>"$1": illegal QName</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
       <value>illegal empty string</value>
     </diagnostic>
@@ -2447,26 +2505,178 @@
     <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
       <value>JSON serialization requires document or element node</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
       <value>"$1" element missing required "$2" attribute</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0003" name="BAD_ATTRIBUTE_VALUE">
       <value>"$1": illegal value for attribute "$2"</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
       <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
       <value>"$1": illegal child element of "$2" type; must be "$3"</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
       <value>JSON type "$1" can not have a child element node</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
       <value>JSON type "$1" can not have a child text node</value>
     </diagnostic>
+
     <diagnostic code="ZJSE0008" name="BAD_VALUE">
       <value>"$1": illegal value for JSON type "$2"</value>
+    </diagnostic>
+
+  </namespace>
+
+  <namespace prefix="jerr">
+
+    <!--////////// CloudScript ///////////////////////////////////////////-->
+
+    <diagnostic code="JNSE0012" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a sequence of less
+      or more than one item with the JSON output method if the
+      cloudscript-serialization-multiple-items is set to no.
+      </comment>
+
+      <value>Cannot serialize multiple top-level items as JSON</value>
+    </diagnostic>
+
+    <diagnostic code="JNSE0013" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize an atomic value not
+      supported by JSON or a node with the JSON output method and with
+      the cloudscript-serialization-extensions serialization parameter
+      set to false.</comment>
+
+      <value>Cannot serialize value as JSON: $1</value>
+    </diagnostic>
+
+    <diagnostic code="JNSE0014" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a function with the
+      JSON output method.</comment>
+      <value>Cannot serialize a function item as JSON</value>
+    </diagnostic>
+
+    <!--////////// JSONIQ ///////////////////////////////////////////-->
+
+    <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
+      <comment>Expression computing the value of a pair does not return exactly
+      one item.</comment>
+
+      <value>$1</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
+      <comment>objects or arrays don't have a string value</comment>
+
+      <value>$1 items do not have string value</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
+      <comment>objects or arrays don't have a typed value</comment>
+
+      <value>$1 items do not have typed value</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0007" if="defined(ZORBA_WITH_JSON)">
+      <comment>wrong type for object/array selector in update expr</comment>
+
+      <value>$1</value>
+
+     <entry key="Object">
+        <value>"$2": can not be promoted to type xs:string</value>
+      </entry>
+
+     <entry key="Array">
+        <value>"$2": can not be promoted to type xs:integer</value>
+      </entry>
+
+    </diagnostic>
+
+    <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by node constructor or updating expression indicating that a JSON item cannot appear in the corresponding content sequence</comment>
+      <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
+    </diagnostic>
+
+    <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
+      <comment>error raised by object constructor</comment>
+      <value>"$1": pair with the same name already exists in object</value>
+    </diagnostic>
+
+    <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser errors raised by the JSONIQLoader</comment>
+      <value>$1</value>
+    </diagnostic>
+
+    <!-- jsoniq object updates -->
+
+    <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to insert</comment>
+      <value>"$1": duplicate pair to insert</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to insert already in object</comment>
+      <value>"$1": pair to insert already exists in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to delete not in object</comment>
+      <value>"$1": pair to delete does not exist in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to replace</comment>
+      <value>"$1": duplicate pair to replace</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to replace not in object</comment>
+      <value>"$1": pair to replace does not exist in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate pair to rename</comment>
+      <value>"$1": duplicate pair to rename</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0011" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to rename not in object</comment>
+      <value>"$1": pair to rename does not exist in object</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0012" if="defined(ZORBA_WITH_JSON)">
+      <comment>pair to rename already in object</comment>
+      <value>"$1": pair to rename already exists in object</value>
+    </diagnostic>
+
+    <!-- jsoniq array updates -->
+
+    <diagnostic code="JNUP0018" if="defined(ZORBA_WITH_JSON)">
+      <comment>position to insert not in array</comment>
+      <value>"$1": position to insert at is out of array bounds</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>position to delete not in array</comment>
+      <value>"$1": position to delete does not exist in array</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>position to replace not in array</comment>
+      <value>"$1": position to replace does not exist in array</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0022" if="defined(ZORBA_WITH_JSON)">
+      <comment>duplicate position to replace</comment>
+      <value>"$1": duplicate position to replace</value>
     </diagnostic>
 
   </namespace>
@@ -2678,14 +2888,6 @@
       <value>invalid Base64 character</value>
     </entry>
 
-    <entry key="Base64Equals">
-      <value>in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]</value>
-    </entry>
-
-    <entry key="Base64EqualsEquals">
-      <value>in Base64, "==" must be at the end and followed by one of [AQgw]</value>
-    </entry>
-
     <entry key="Base64Multiple4">
       <value>Base64 data must be a multiple of 4 characters</value>
     </entry>
@@ -2762,19 +2964,11 @@
       <value>empty sequence not allowed as 2nd argument of fn:remove()</value>
     </entry>
 
-    <entry key="EmptySeqNoPromoteTo">
-      <value>empty sequence can not be promoted to type "$2"</value>
-    </entry>
-
     <entry key="EmptySeqNoSearchItem">
       <value>empty sequence not allowed as search item of fn:index-of()</value>
     </entry>
 
-    <entry key="EmptySeqNotAsFunctionResult_23">
-      <value>empty sequence not allowed as result of function $2() that returns "$3"</value>
-    </entry>
-
-    <entry key="EmptySequence">
+     <entry key="EmptySequence">
       <value>empty sequence</value>
     </entry>
 
@@ -2843,7 +3037,7 @@
     </entry>
 
     <entry key="GoodValuesAreXMLEtc">
-      <value>valid values are: xml, html, xhtml, text, binary</value>
+      <value>valid values are: xml, html, xhtml, text, binary, json, jsoniq</value>
     </entry>
 
     <entry key="GoodValuesAreYesNo">
@@ -2872,10 +3066,6 @@
 
     <entry key="LibModVersionMismatch_3">
       <value>XQuery library version can not be imported by a $3 version module</value>
-    </entry>
-
-    <entry key="ModuleDeclNotInMain">
-      <value>module declaration must not be in main module</value>
     </entry>
 
     <entry key="ModuleNotFound">
@@ -2994,14 +3184,6 @@
       <value>sequence of more than one item can not be tested for atomic value equivalence</value>
     </entry>
 
-    <entry key="NoSeqTypePromotion">
-      <value>type promotion not possible on sequence of more than one item</value>
-    </entry>
-
-    <entry key="NoSeqTypePromotion_23">
-      <value>sequence of more than one item can not be promoted to the return type "$2" of function $3()</value>
-    </entry>
-
     <entry key="NoSerializationCallbackForDocColMod">
       <value>document, collection, or module resolver required but no SerializationCallback given</value>
     </entry>
@@ -3032,14 +3214,6 @@
 
     <entry key="NoTypeInModule_45">
       <value>type of variable "$4" is not among the in-scope types module "$5"</value>
-    </entry>
-
-    <entry key="NoTypePromotion_23">
-      <value>"$2": can not promote to type "$3"</value>
-    </entry>
-
-    <entry key="NoTypePromotion_234">
-      <value>"$2": can not promote to return type "$3" of function $4()</value>
     </entry>
 
     <entry key="NoURIAuthority">
@@ -3196,10 +3370,6 @@
 
     <entry key="StackOverflow">
       <value>stack overflow</value>
-    </entry>
-
-    <entry key="StartEndTagMismatch_23">
-      <value>start tag "$2" does not match end tag "$3"</value>
     </entry>
 
     <entry key="StingLiteral">
@@ -3679,6 +3849,34 @@
       <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
     </entry>
     
+
+    <entry key="JSON_ILLEGAL_CHARACTER">
+      <value>'$2': illegal JSON character${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_CODEPOINT">
+      <value>"$2": illegal Unicode code-point${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_ESCAPE">
+      <value>'\\$2': illegal JSON character escape${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_LITERAL">
+      <value>illegal JSON literal${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_ILLEGAL_NUMBER">
+      <value>illegal JSON number${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_UNEXPECTED_TOKEN">
+      <value>"$2": unexpected JSON token${ at 3}</value>
+    </entry>
+
+    <entry key="JSON_UNTERMINATED_STRING">
+      <value>unterminated JSON string${ at 2}</value>
+    </entry>
 
   </subvalues>
 

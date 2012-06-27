@@ -45,7 +45,7 @@ namespace zorba
 bool
 ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  static const char *err_ns = "http://www.w3.org/2005/xqt-errors";
+  static const char* err_ns = "http://www.w3.org/2005/xqt-errors";
   store::Item_t err_qname;
   GENV_ITEMFACTORY->createQName(err_qname, err_ns, "err", "FOER0000");
   store::Item_t lTmpQName;
@@ -54,7 +54,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring description;
   UserException::error_object_type lErrorObject; 
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() >= 1) 

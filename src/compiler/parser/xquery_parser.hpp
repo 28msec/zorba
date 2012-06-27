@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,7 +84,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -114,7 +114,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 118 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -150,7 +150,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 154 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -466,20 +466,28 @@ namespace zorba {
      FOREACH = 561,
      FOREIGN = 562,
      KEYS = 563,
-     BYTE_ORDER_MARK_UTF8 = 564,
-     RANGE_REDUCE = 565,
-     ADDITIVE_REDUCE = 566,
-     MULTIPLICATIVE_REDUCE = 567,
-     UNION_REDUCE = 568,
-     INTERSECT_EXCEPT_REDUCE = 569,
-     QVARINDECLLIST_REDUCE = 570,
-     COMMA_DOLLAR = 571,
-     UNARY_PREC = 572,
-     SEQUENCE_TYPE_REDUCE = 573,
-     OCCURS_STAR = 574,
-     OCCURS_PLUS = 575,
-     OCCURS_HOOK = 576,
-     STEP_REDUCE = 577
+     L_SIMPLE_OBJ_UNION = 564,
+     R_SIMPLE_OBJ_UNION = 565,
+     L_ACCUMULATOR_OBJ_UNION = 566,
+     R_ACCUMULATOR_OBJ_UNION = 567,
+     JSON = 568,
+     APPEND = 569,
+     POSITION = 570,
+     OBJECT = 571,
+     ARRAY = 572,
+     JSON_ITEM = 573,
+     STRUCTURED_ITEM = 574,
+     BYTE_ORDER_MARK_UTF8 = 575,
+     RANGE_REDUCE = 576,
+     SEQUENCE_TYPE_REDUCE = 577,
+     ADDITIVE_REDUCE = 578,
+     UNION_REDUCE = 579,
+     INTERSECT_EXCEPT_REDUCE = 580,
+     QVARINDECLLIST_REDUCE = 581,
+     COMMA_DOLLAR = 582,
+     UNARY_PREC = 583,
+     STEP_REDUCE = 584,
+     MULTIPLICATIVE_REDUCE = 585
    };
 
     };
@@ -659,7 +667,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 663 "/Users/pjl/src/flwor/zorba/repo/feature-ft_module/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 671 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

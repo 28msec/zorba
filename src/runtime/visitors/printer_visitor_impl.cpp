@@ -56,6 +56,8 @@
 #include "runtime/eval/eval.h"
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
+#include "runtime/json/json_constructors.h"
+#include "runtime/json/jsoniq_functions_impl.h"
 #include "runtime/collections/collections_impl.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -644,7 +646,7 @@ void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a)
+void PrinterVisitor::beginVisit(const FnMinMaxIterator& a)
 {
   thePrinter.startBeginVisit("FnMinMaxIterator", ++theId);
   thePrinter.addAttribute("type",
@@ -654,7 +656,7 @@ void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit ( const FnMinMaxIterator& )
+void PrinterVisitor::endVisit(const FnMinMaxIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -663,7 +665,10 @@ void PrinterVisitor::endVisit ( const FnMinMaxIterator& )
 void PrinterVisitor::beginVisit(const ForVarIterator& a)
 {
   thePrinter.startBeginVisit("ForVarIterator", ++theId);
-  thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
+
+  if (a.getVarName())
+    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
+
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
@@ -678,7 +683,8 @@ void PrinterVisitor::beginVisit(const LetVarIterator& a)
 {
   thePrinter.startBeginVisit("LetVarIterator", ++theId);
 
-  thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
+  if (a.getVarName())
+    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
 
   if (a.getTargetPos() > Integer(0))
     thePrinter.addAttribute("targetPos", a.getTargetPos().toString().c_str());
@@ -721,8 +727,8 @@ void PrinterVisitor::beginVisitFlworLetVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1300,6 +1306,14 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
 
   PRINTER_VISITOR_DEFINITION (CommentIterator)
   PRINTER_VISITOR_DEFINITION (PiIterator)
+
+#ifdef ZORBA_WITH_JSON
+  PRINTER_VISITOR_DEFINITION(JSONObjectIterator)
+  PRINTER_VISITOR_DEFINITION(JSONArrayIterator)
+  PRINTER_VISITOR_DEFINITION(JSONDirectObjectIterator)
+  PRINTER_VISITOR_DEFINITION(JSONObjectInsertIterator)
+#endif
+
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
   PRINTER_VISITOR_DEFINITION (IfThenElseIterator)
 

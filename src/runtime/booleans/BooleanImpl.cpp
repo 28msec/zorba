@@ -51,11 +51,25 @@ SERIALIZABLE_CLASS_VERSIONS(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DECIMAL>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_INTEGER>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_DOUBLE>,
+                               1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_FLOAT>,
+                               2)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_DECIMAL>,
+                               3)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_INTEGER>,
+                               4)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_STRING>,
+                               5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 
@@ -72,6 +86,15 @@ FnBooleanIterator::FnBooleanIterator(
   UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>(sctx, loc, aIter),
   theNegate(aNegate)
 {
+}
+
+
+void FnBooleanIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>*)this);
+
+  ar & theNegate;
 }
 
 
@@ -97,6 +120,15 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // node => true
     result = negate ^ true;
   }
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONItem())
+  {
+    xqtref_t type = tm->create_value_type(item);
+
+    RAISE_ERROR(err::FORG0006, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:boolean" ));
+  }
+#endif
   else
   {
     store::SchemaTypeCode type = item->getTypeCode();
@@ -110,6 +142,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
          TypeOps::is_subtype(type, store::XS_STRING) ||
          TypeOps::is_subtype(type, store::XS_ANY_URI) ||
          type == store::XS_UNTYPED_ATOMIC ||
+         type == store::JDM_NULL ||
          TypeOps::is_numeric(type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
@@ -299,6 +332,29 @@ CompareIterator::CompareIterator(
 }
 
 
+CompareIterator::CompareIterator(::zorba::serialization::Archiver& ar)
+  :
+  BinaryBaseIterator<CompareIterator, PlanIteratorState>(ar),
+  theTypeManager(NULL),
+  theTimezone(0),
+  theCollation(NULL)
+{
+}
+
+
+void CompareIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<CompareIterator, PlanIteratorState>*)this);
+
+  SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
+  ar & theIsGeneralComparison;
+  SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
+  serialize_long(ar, theTimezone);
+  ar & theCollation;
+}
+
+
 BINARY_ACCEPT(CompareIterator);
 
 
@@ -443,11 +499,8 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                                                 theCollation)),
                  state);
 
-      if (consumeNext(item0, theChild0.getp(), planState) ||
-          consumeNext(item1, theChild1.getp(), planState))
-      {
-        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqInValueComp)));
-      }
+      assert(!consumeNext(item0, theChild0.getp(), planState) &&
+             !consumeNext(item1, theChild1.getp(), planState));
     }
   }
 
@@ -501,10 +554,11 @@ bool CompareIterator::valueComparison(
     }
     }
   }
-  catch (ZorbaException const& e)
+  catch (const ZorbaException& e)
   {
     if (e.diagnostic() == zerr::ZSTR0041_NAN_COMPARISON)
       return false;
+
     throw;
   }
 }
@@ -665,7 +719,7 @@ bool CompareIterator::generalComparison(
     }
     }
   }
-  catch (ZorbaException const& e)
+  catch (const ZorbaException& e)
   {
     if (e.diagnostic() == zerr::ZSTR0041_NAN_COMPARISON)
       return false;
@@ -943,7 +997,7 @@ long CompareIterator::compare(
       }
     }
   }
-  catch(ZorbaException const& e)
+  catch(const ZorbaException& e)
   {
     // For example, two QName items do not have an order relationship.
     if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
@@ -954,6 +1008,7 @@ long CompareIterator::compare(
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
+
     throw;
   }
 }
@@ -964,6 +1019,17 @@ long CompareIterator::compare(
 //  TypedValueCompareIterator                                                  //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+template <store::SchemaTypeCode ATC>
+void TypedValueCompareIterator<ATC>::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>*)this);
+
+  SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
+  serialize_long(ar, theTimezone);
+  ar & theCollation;
+}
 
 
 template <store::SchemaTypeCode ATC>
@@ -1001,7 +1067,6 @@ bool TypedValueCompareIterator<ATC>::nextImpl(
   store::Item_t lItem0, lItem1;
   bool bRes;
   bool neq = false;
-  bool nonempty = false;
   long cmp;
 
   PlanIteratorState* state;
@@ -1009,8 +1074,6 @@ bool TypedValueCompareIterator<ATC>::nextImpl(
 
   if (CONSUME(lItem0, 0) && CONSUME(lItem1, 1))
   {
-    nonempty = true;
-
     switch (theCompType)
     {
     case CompareConsts::VALUE_NOT_EQUAL:
@@ -1027,39 +1090,41 @@ bool TypedValueCompareIterator<ATC>::nextImpl(
 
     default:
     {
-      cmp = lItem0->compare(lItem1, theTimezone, theCollation);
-
-      switch (theCompType)
+      try
       {
-      case CompareConsts::VALUE_LESS:
-        bRes = (cmp < 0);
-        break;
-      case CompareConsts::VALUE_GREATER:
-        bRes = (cmp > 0);
-        break;
-      case CompareConsts::VALUE_LESS_EQUAL:
-        bRes = (cmp <= 0);
-        break;
-      case CompareConsts::VALUE_GREATER_EQUAL:
-        bRes = (cmp >= 0);
-        break;
-      default:
-        ZORBA_ASSERT(false);
-      } // switch (theCompType)
+        cmp = lItem0->compare(lItem1, theTimezone, theCollation);
+
+        switch (theCompType)
+        {
+        case CompareConsts::VALUE_LESS:
+          bRes = (cmp < 0);
+          break;
+        case CompareConsts::VALUE_GREATER:
+          bRes = (cmp > 0);
+          break;
+        case CompareConsts::VALUE_LESS_EQUAL:
+          bRes = (cmp <= 0);
+          break;
+        case CompareConsts::VALUE_GREATER_EQUAL:
+          bRes = (cmp >= 0);
+          break;
+        default:
+          ZORBA_ASSERT(false);
+        } // switch (theCompType)
+      }
+      catch (const ZorbaException& e)
+      {
+        if (e.diagnostic() == zerr::ZSTR0041_NAN_COMPARISON)
+          bRes = false;
+        else
+          throw;
+      }
     } // default
     } // switch (theCompType)
 
-    if (nonempty)
-      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, bRes), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, bRes), state);
 
-    if (CONSUME(lItem0, 0) || CONSUME(lItem1, 1))
-    {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqInValueComp ) ),
-        ERROR_LOC( this->loc )
-      );
-    }
+    assert(!CONSUME(lItem0, 0) && !CONSUME(lItem1, 1));
   }
 
   STACK_END(state);
@@ -1093,6 +1158,28 @@ AtomicValuesEquivalenceIterator::AtomicValuesEquivalenceIterator(
   theTimezone(0),
   theCollation(NULL)
 {
+}
+
+
+AtomicValuesEquivalenceIterator::AtomicValuesEquivalenceIterator(
+    ::zorba::serialization::Archiver& ar)
+  :
+  BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>(ar),
+  theTypeManager(NULL),
+  theTimezone(0),
+  theCollation(NULL)
+{
+}
+
+
+void AtomicValuesEquivalenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
+
+  SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
+  serialize_long(ar, theTimezone);
+  ar & theCollation;
 }
 
 
