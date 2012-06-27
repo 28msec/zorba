@@ -35,6 +35,23 @@ public:
   static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
 
 public:
+  std::istringstream* theIss;
+  std::istream* theStream;
+  char* theBuffer;
+  unsigned long bytes_in_buffer;
+  unsigned long current_offset;
+  int current_element_depth;
+  int root_elements_to_skip;
+  xmlParserCtxtPtr ctxt;
+  bool first_start_doc;
+  bool forced_parser_stop;
+  bool reached_eof;
+  unsigned int parsed_nodes_count;
+  store::Iterator_t children;
+  bool only_one_doc_node;           // If set to true, all parsed fragments will be added to one
+                                    // single document node, instead of having one for each fragment.
+  
+public:
   FragmentIStream()
     :
     std::istream(NULL),
@@ -50,7 +67,8 @@ public:
     forced_parser_stop(false),
     reached_eof(false),
     parsed_nodes_count(0),
-    children(NULL)
+    children(NULL),
+    only_one_doc_node(false)
   {
   };
 
@@ -90,27 +108,13 @@ public:
     reached_eof = false;
     parsed_nodes_count = 0;
     children = NULL;
+    only_one_doc_node = false;
   }
 
   virtual ~FragmentIStream()
   {
     reset();
   }
-
-public:
-  std::istringstream* theIss;
-  std::istream* theStream;
-  char* theBuffer;
-  unsigned long bytes_in_buffer;
-  unsigned long current_offset;
-  int current_element_depth;
-  int root_elements_to_skip;
-  xmlParserCtxtPtr ctxt;
-  bool first_start_doc;
-  bool forced_parser_stop;
-  bool reached_eof;
-  unsigned int parsed_nodes_count;
-  store::Iterator_t children;
 };
 
 }

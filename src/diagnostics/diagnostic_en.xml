@@ -2881,14 +2881,6 @@
       <value>invalid Base64 character</value>
     </entry>
 
-    <entry key="Base64Equals">
-      <value>in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]</value>
-    </entry>
-
-    <entry key="Base64EqualsEquals">
-      <value>in Base64, "==" must be at the end and followed by one of [AQgw]</value>
-    </entry>
-
     <entry key="Base64Multiple4">
       <value>Base64 data must be a multiple of 4 characters</value>
     </entry>

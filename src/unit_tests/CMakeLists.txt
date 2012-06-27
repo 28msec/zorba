@@ -13,6 +13,8 @@
 # limitations under the License.
 
 SET(UNIT_TEST_SRCS
+  test_base64.cpp
+  test_base64_streambuf.cpp
   string_instantiate.cpp
   string.cpp
   test_uri.cpp

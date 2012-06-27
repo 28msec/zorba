@@ -534,8 +534,6 @@ extern entry const dict_en[] = {
   { "~BadXMLNoOpeningTag", "closing tag without matching opening tag" },
   { "~BadXQueryVersion", "unsupported XQuery version" },
   { "~Base64BadChar", "invalid Base64 character" },
-  { "~Base64Equals", "in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]" },
-  { "~Base64EqualsEquals", "in Base64, \"==\" must be at the end and followed by one of [AQgw]" },
   { "~Base64Multiple4", "Base64 data must be a multiple of 4 characters" },
   { "~BaseURI", "base URI" },
   { "~BoxCondTooManyColumns", "box condition has more columns than index" },
