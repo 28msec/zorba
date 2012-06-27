@@ -76,7 +76,9 @@ public:
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 
-  static zstring decode(std::istream& aStream);
+  static void decode(std::istream& aStream, zstring*);
+
+  static void decode(char const*, size_t, zstring*);
 
 public:
   Base64(const Base64& aBase64) 
@@ -89,8 +91,6 @@ public:
   Base64(const unsigned char *bin_data, size_t len);
 
   Base64() {}
-
-  virtual ~Base64() {}
 
   const std::vector<char>& getData() const { return theData; }
 
@@ -105,9 +105,6 @@ public:
   void decode(std::vector<char>&);
 
   uint32_t hash() const;
-
-private:
-  void insertData(const char* aCharStar, size_t len);
 };
 
 

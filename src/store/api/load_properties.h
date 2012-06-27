@@ -51,6 +51,12 @@ private:
   bool theRemoveRedundantNS;
   bool theNoCDATA;
   bool theNoXIncludeNodes;
+  
+  bool theCreateDocParentLink;  // Default true. If set to false, the parsed input
+                                // nodes will not have their parent link set to the 
+                                // the document node. This is used by the parse-fragment
+                                // functions.
+                               
 
 public:
   LoadProperties()
@@ -71,7 +77,8 @@ public:
     theXincludeSubstitutions(false),
     theRemoveRedundantNS(false),
     theNoCDATA(false),
-    theNoXIncludeNodes(false)
+    theNoXIncludeNodes(false),
+    theCreateDocParentLink(true)
   {
   }
 
@@ -280,6 +287,16 @@ public:
   bool getNoXIncludeNodes() const
   {
     return theNoXIncludeNodes;
+  }
+  
+  // theNoXIncludeNodes
+  void setCreateDocParentLink(bool aCreateDocParentLink)
+  {
+    theCreateDocParentLink = aCreateDocParentLink;
+  }
+  bool getCreateDocParentLink() const
+  {
+    return theCreateDocParentLink;
   }
 };
 

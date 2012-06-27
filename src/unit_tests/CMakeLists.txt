@@ -14,10 +14,11 @@
 
 SET(UNIT_TEST_SRCS
   instantiate_string.cpp
+  test_base64.cpp
+  test_base64_streambuf.cpp
   test_fs_iterator.cpp
   test_json_parser.cpp
   test_string.cpp
-  test_uri.cpp
   test_uri.cpp
   unit_tests.cpp
 )

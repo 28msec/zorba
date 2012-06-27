@@ -21,18 +21,18 @@
 
 #include <zorba/config.h>
 
-namespace zorba 
-{
+namespace zorba {
+namespace UnitTests {
 
-namespace UnitTests 
-{
   int runUriTest(int argc, char* argv[]);
   int runDebuggerProtocolTest(int argc, char* argv[]);
+  int test_base64( int, char*[] );
+  int test_base64_streambuf( int, char*[] );
   int test_fs_iterator( int, char*[] );
 #ifndef ZORBA_NO_ICU
   int test_icu_streambuf( int, char*[] );
 #endif /* ZORBA_NO_ICU */
-  int json_parser( int, char*[] );
+  int test_json_parser( int, char*[] );
   int test_string( int, char*[] );
 #ifndef ZORBA_NO_FULL_TEXT
   int test_stemmer( int, char*[] );
@@ -50,9 +50,7 @@ namespace UnitTests
 #endif /* ZORBA_HAVE_UNORDERED_SET */
 
   void initializeTestList();
-
+} // namespace UnitTests
 } // namespace zorba
-} // namespace zorba
-
 #endif /* ZORBA_UNIT_TEST_LIST_H */
 /* vim:set et sw=2 ts=2: */

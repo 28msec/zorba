@@ -134,10 +134,6 @@ void XmlNode::attach(InternalNode* parent, csize pos)
   XmlTree* newTree = parent->getTree();
   XmlTree* oldTree = getTree();
 
-#ifndef EMBEDED_TYPE
-  newTree->copyTypesMap(oldTree);
-#endif
-
   oldTree->setRoot(NULL);
 
   setTree(newTree);
@@ -422,23 +418,8 @@ void XmlNode::detach()
         {
           ElementNode* elemNode = reinterpret_cast<ElementNode*>(node);
 
-#ifndef EMBEDDED_TYPE
-          store::Item_t type;
-
-          if (elemNode->haveType())
-          {
-            type = elemNode->getType();
-            oldTree->removeType(elemNode);
-            node->setTree(newTree);
-            elemNode->setType(type);
-          }
-          else
-          {
-            node->setTree(newTree);
-          }
-#else
           node->setTree(newTree);
-#endif
+
           // Preserve the namespace bindings of the current node
           NsBindingsContext* nsContext = elemNode->getNsContext();
           NsBindingsContext* parentNsContext = parentNsCtxs.top();
@@ -481,23 +462,7 @@ void XmlNode::detach()
           {
             AttributeNode* attrNode = static_cast<AttributeNode*>(*ite);
             refcount += attrNode->theRefCount;
-#ifndef EMBEDDED_TYPE
-            store::Item_t type;
-
-            if (attrNode->haveType())
-            {
-              type = attrNode->getType();
-              oldTree->removeType(attrNode);
-              attrNode->setTree(newTree);
-              attrNode->setType(type);
-            }
-            else
-            {
-              attrNode->setTree(newTree);
-            }
-#else
             attrNode->setTree(newTree);
-#endif
           }
 
           // Detach the children of the current node

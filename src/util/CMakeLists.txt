@@ -14,6 +14,7 @@
 
 SET(UTIL_SRCS
   ascii_util.cpp
+  base64_util.cpp
   dynamic_bitset.cpp
   error_util.cpp
   file.cpp
