@@ -39,20 +39,6 @@ namespace serialization
 class Archiver;
 
 
-  //void operator&(Archiver& ar, int64_t& obj);
-
-  //void operator&(Archiver& ar, uint64_t& obj);
-
-  //void operator&(Archiver& ar, int32_t& obj);
-
-  //void operator&(Archiver& ar, uint32_t& obj);
-
-  //void operator&(Archiver& ar, int16_t& obj);
-
-  //void operator&(Archiver& ar, uint16_t& obj);
-
-
-
 void operator&(Archiver& ar, short& obj);
 
 void operator&(Archiver& ar, unsigned short& obj);
@@ -68,8 +54,6 @@ void operator&(Archiver& ar, ulong& obj);
 void operator&(Archiver& ar, long long& obj);
 
 void operator&(Archiver& ar, unsigned long long& obj);
-
-void serialize_csize(Archiver& ar, csize& obj);
 
 void serialize_enum(Archiver& ar, uint32_t& obj);
 

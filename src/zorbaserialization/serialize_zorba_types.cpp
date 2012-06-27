@@ -1344,7 +1344,7 @@ void serialize_my_children(Archiver& ar, store::Iterator_t iter)
     iterator_to_vector(iter, childs);
     std::vector<store::Item_t>::iterator  child_it;
     csize child_count = childs.size();
-    serialize_csize(ar, child_count);
+    ar & child_count;
 
     for(child_it = childs.begin(); child_it != childs.end(); ++child_it)
     {
@@ -1358,7 +1358,7 @@ void serialize_my_children(Archiver& ar, store::Iterator_t iter)
   else
   {
     csize child_count;
-    serialize_csize(ar, child_count);
+    ar & child_count;
 
     for (csize i = 0; i < child_count; ++i)
     {
