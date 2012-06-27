@@ -2306,7 +2306,8 @@ void PULImpl::getIndicesToRefresh(
       store::Item* lItem = (*ite).first;
 #ifdef ZORBA_WITH_JSON
       ZORBA_ASSERT(lItem->isNode() || lItem->isJSONItem());
-      if(lItem->isJSONItem())
+
+      if (lItem->isJSONItem())
       {
         json::JSONItem* lJSONItem = dynamic_cast<json::JSONItem*>(lItem);
         ZORBA_ASSERT(lJSONItem != NULL);
