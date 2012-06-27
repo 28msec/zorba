@@ -152,7 +152,7 @@ public:
   };
 
 protected:
-  unsigned long         theUniqueId;
+  ulong                 theUniqueId;
 
   var_kind              theVarKind;
 

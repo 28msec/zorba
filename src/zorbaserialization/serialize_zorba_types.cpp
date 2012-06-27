@@ -92,12 +92,12 @@ void operator&(serialization::Archiver& ar, IntegerImpl& obj)
 
 void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj)
 {
-  serialize_long_long(ar, obj.get_value());
+  ar & obj.get_value();
 }
 
 void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj)
 {
-  serialize_ulong_long(ar, obj.get_value());
+  ar & obj.get_value();
 }
 
 #endif
@@ -190,18 +190,7 @@ void operator&(Archiver& ar, HashMapZStringCmp& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, HashMapItemPointerCmp& obj)
 {
-  if (ar.is_serializing_out())
-  {
-    int32_t tz = obj.theTimeZone;
-    ar & tz;
-  }
-  else
-  {
-    int32_t tz = 0;
-    ar & tz;
-    obj.theTimeZone = tz;
-  }
-
+  ar & obj.theTimeZone;
   ar & obj.theCollator;
 }
 

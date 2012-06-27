@@ -33,7 +33,7 @@ namespace zorba
 namespace serialization
 {
 
-
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -80,7 +80,7 @@ void operator&(Archiver& ar, int32_t& obj)
     ar.read_next_simple_temp_field(TYPE_INT32, &obj);
   }
 }
-
+#endif
 
 /*******************************************************************************
 
@@ -98,6 +98,7 @@ void operator&(Archiver& ar, uint32_t& obj)
 }
 
 
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -126,6 +127,71 @@ void operator&(Archiver& ar, uint16_t& obj)
   else
   {
     ar.read_next_simple_temp_field(TYPE_UINT16, &obj);
+  }
+}
+#endif
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, short& obj)
+{
+  assert(sizeof(short) == 2);
+
+  if (ar.is_serializing_out())
+  {
+    int16_t int16v = obj;
+    ar.add_simple_temp_field(TYPE_INT16, &int16v);
+  }
+  else
+  {
+    int16_t int16v;
+    ar.read_next_simple_temp_field(TYPE_INT16, &int16v);
+
+    obj = static_cast<short>(int16v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, unsigned short& obj)
+{
+  assert(sizeof(unsigned short) == 2);
+
+  if (ar.is_serializing_out())
+  {
+    uint16_t uint16v = obj;
+    ar.add_simple_temp_field(TYPE_UINT16, &uint16v);
+  }
+  else
+  {
+    uint16_t uint16v;
+    ar.read_next_simple_temp_field(TYPE_UINT16, &uint16v);
+
+    obj = static_cast<unsigned short>(uint16v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, int& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    int64_t int64v = obj;
+    ar.add_simple_temp_field(TYPE_INT64, &int64v);
+  }
+  else
+  {
+    int64_t int64v;
+    ar.read_next_simple_temp_field(TYPE_INT64, &int64v);
+
+    obj = static_cast<int>(int64v);
   }
 }
 
@@ -173,7 +239,7 @@ void operator&(Archiver& ar, ulong& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void serialize_long_long(Archiver& ar, long long& obj)
+void operator&(Archiver& ar, long long& obj)
 {
   assert(sizeof(long long) == 8);
 
@@ -195,7 +261,7 @@ void serialize_long_long(Archiver& ar, long long& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void serialize_ulong_long(Archiver& ar, unsigned long long& obj)
+void operator&(Archiver& ar, unsigned long long& obj)
 {
   assert(sizeof(unsigned long long) == 8);
 
