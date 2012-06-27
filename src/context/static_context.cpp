@@ -832,8 +832,10 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     SerializationCallback* lCallback = ar.getUserCallback();
 
     ar.set_is_temp_field(true);
-    ar & lNumURIMappers;   // number of URIMappers passed by the user
-    ar & lNumURLResolvers; // number of URLResolvers passed by the user
+    // number of URIMappers passed by the user
+    ar & lNumURIMappers;
+    // number of URLResolvers passed by the user
+    ar & lNumURLResolvers;
     ar.set_is_temp_field(false);
 
     // callback required but not available

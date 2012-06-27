@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include <vector>
 #include "store/api/index.h"
 
 
@@ -58,6 +59,37 @@ public:
   {}
 
   virtual ~MapCreateIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    
+ * Author: Matthias Brantner
+ */
+class MapCreateTransientIterator : public NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(MapCreateTransientIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapCreateTransientIterator,
+    NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  MapCreateTransientIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~MapCreateTransientIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -289,7 +321,9 @@ public:
 class AvailableMapsIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t nameItState; //the current iterator
+  store::Iterator_t persistentMapNamesIter; //the current iterator
+  std::vector<store::Item_t> transientMapNames; //all the transient map names
+  std::vector<store::Item_t>::const_iterator transientMapNamesIter; //the current iterator
 
   AvailableMapsIteratorState();
 
@@ -318,6 +352,37 @@ public:
   {}
 
   virtual ~AvailableMapsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    
+ * Author: Matthias Brantner
+ */
+class MapIsTransientIterator : public NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(MapIsTransientIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapIsTransientIterator,
+    NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  MapIsTransientIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~MapIsTransientIterator();
 
   void accept(PlanIterVisitor& v) const;
 

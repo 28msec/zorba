@@ -21,12 +21,11 @@
 #include <zorba/config.h>
 #include <zorba/zorba_string.h>
 
-namespace zorba { namespace encoding {
+namespace zorba {
+namespace encoding {
 
-  class ZORBA_DLL_PUBLIC Base64
+  struct ZORBA_DLL_PUBLIC Base64
   {
-    public:
-
       static String
       encode(const String& aString);
 
@@ -38,12 +37,10 @@ namespace zorba { namespace encoding {
       
       static String
       decode(std::istream& aStream);  
-
   };
 
-} /* end namespace encoding */
+} // namespace encoding
+} // namespace zorba
 
-} /* end namespace zorba */
-
-#endif
+#endif /* ZORBA_BASE64_API_H */
 /* vim:set et sw=2 ts=2: */

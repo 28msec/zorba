@@ -2300,7 +2300,9 @@ void serializer::binary_emitter::emit_item(store::Item* item)
     std::istream& stream = item->getStream();
     if (item->isEncoded())
     {
-      tr << Base64::decode(stream);
+      zstring decoded;
+      Base64::decode(stream, &decoded);
+      tr << decoded;
     }
     else
     {
@@ -2322,9 +2324,9 @@ void serializer::binary_emitter::emit_item(store::Item* item)
 
       if (item->isEncoded())
       {
-        std::stringstream tmp;
-        tmp.write(value, len);
-        tr << Base64::decode(tmp);
+        zstring decoded;
+        Base64::decode(value, len, &decoded);
+        tr << decoded;
       }
       else
       {
