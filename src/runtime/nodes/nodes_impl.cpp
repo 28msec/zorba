@@ -653,95 +653,87 @@ int getNodePosition(store::Item_t aNode)
 bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
+  store::Item_t swap;
   store::Item_t nodeName;
-  store::NsBindings nsBindings;
   zstring path;
   zstring temp;
   zstring zNamespace;
   zstring zLocalName;
   zstring zPosition;
-  bool rootIsDocument = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(inNode, theChildren[0], planState))
   {
-    do
-    { 
+    while (inNode->getParent())
+    {
+      temp = path;
+      path = "/";
+
       switch (inNode->getNodeKind())
       {
-        case store::StoreConsts::documentNode:
-          temp = path;
-          path = "/";
-          path += temp;
-          rootIsDocument = true;
-          break;
         case store::StoreConsts::elementNode:
           nodeName = inNode->getNodeName();
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode));
-          temp = path;
-          path = "\""+zNamespace+"\":"+zLocalName+"["+zPosition.c_str()+"]";
-          path += temp;
+          path += "\""+zNamespace+"\":"+zLocalName+"["+zPosition+"]";
           break;
         case store::StoreConsts::attributeNode:
           nodeName = inNode->getNodeName();
           zNamespace =nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
+          path += "@";
           if(zNamespace != "")
           {
-            temp = path;
-            path = "@\""+zNamespace+"\":"+zLocalName;
-            path += temp;
+            path += "\""+zNamespace+"\":";
           }
-          else
-          {
-            temp = path;
-            path = "@"+zLocalName;
-            path += temp;
-          }
+          path += zLocalName;
           break;
         case store::StoreConsts::textNode:
           zPosition = ztd::to_string(getNodePosition(inNode));
-          temp = path;
-          path = "text()["+zPosition+"]";
-          path += temp;
+          path += "text()["+zPosition+"]";
           break;
         case store::StoreConsts::commentNode:
           zPosition = ztd::to_string(getNodePosition(inNode));
-          temp = path;
-          path = "comment()["+zPosition+"]";
-          path += temp;
+          path += "comment()["+zPosition+"]";
+          break;
+        case store::StoreConsts::piNode:
+          nodeName = inNode->getNodeName();
+          zLocalName = nodeName->getLocalName();
+          zPosition = ztd::to_string(getNodePosition(inNode));
+          path += "processing-instruction("+zLocalName+")["+zPosition+"]";
           break;
         default:
-          if(inNode->isProcessingInstruction())
-          {
-            nodeName = inNode->getNodeName();
-            zLocalName = nodeName->getLocalName();
-            zPosition = ztd::to_string(getNodePosition(inNode));
-            temp = path;
-            path = "processing-instruction("+zLocalName+")["+zPosition+"]";
-            path += temp;
-          }
+          // this is either a documentNode which should always be a root
+          // node (and not end up here) or it is something very strange
+          ZORBA_ASSERT(false);
           break;
       }
-      inNode = inNode->getParent();
-      
-      if(inNode && inNode->getNodeKind() != store::StoreConsts::documentNode)
+      path += temp;
+
+      swap = inNode->getParent();
+      inNode = swap;
+    }
+
+    // only the root node is left and there we've got some special cases
+    // cases in the spec
+    if (inNode->getNodeKind() == store::StoreConsts::documentNode)
+    {
+      if (path.empty())
       {
-        temp = path;
         path = "/";
-        path += temp;
       }
-
-    } while (inNode);
-
-    if(rootIsDocument)
-      STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
+    }
     else
-      throw XQUERY_EXCEPTION(err::FODC0001, ERROR_PARAMS("fn:path"), ERROR_LOC(loc));
+    {
+      temp = path;
+      path = "\"http://www.w3.org/2005/xpath-functions\":root()";
+      path += temp;
+    }
+
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
   }
 
   STACK_END (state);
