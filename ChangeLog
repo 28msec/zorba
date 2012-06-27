@@ -20,7 +20,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #867357 (Improved parser error messages)
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
     fn:distinct-values)
-  * Fixed bug #991088$ (raise XUST0001 in trycatch with mixed updating and simple clauses)
+  * Fixed bug #1015580 (Add base64_streambuf / replace inefficient base64 code)
+  * Fixed bug #9910884 (raise XUST0001 in trycatch with mixed updating and simple clauses)
   * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
   * Fixed bug #1008082 (bug in transform expr when a copy var is not used anywhere)
   * Fixed bug #1003023$ (optimizer problems due to common subexpression after
