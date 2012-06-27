@@ -80,7 +80,7 @@ void operator&(Archiver& ar, int32_t& obj)
     ar.read_next_simple_temp_field(TYPE_INT32, &obj);
   }
 }
-#endif
+
 
 /*******************************************************************************
 
@@ -98,7 +98,6 @@ void operator&(Archiver& ar, uint32_t& obj)
 }
 
 
-#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -192,6 +191,26 @@ void operator&(Archiver& ar, int& obj)
     ar.read_next_simple_temp_field(TYPE_INT64, &int64v);
 
     obj = static_cast<int>(int64v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void operator&(Archiver& ar, unsigned int& obj)
+{
+  if (ar.is_serializing_out())
+  {
+    uint64_t uint64v = obj;
+    ar.add_simple_temp_field(TYPE_UINT64, &uint64v);
+  }
+  else
+  {
+    uint64_t uint64v;
+    ar.read_next_simple_temp_field(TYPE_UINT64, &uint64v);
+
+    obj = static_cast<unsigned int>(uint64v);
   }
 }
 
