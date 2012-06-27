@@ -21,7 +21,7 @@
 #include <vector>
 
 #include <zorba/config.h>
-#include <zorbautils/hashmap_itemh.h>
+#include <zorbautils/hashmap_zstring.h>
 
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
@@ -168,14 +168,15 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  typedef std::vector<store::Item*> Keys;
-  typedef ItemHandleHashMap<store::Item*> Pairs;
+  ZSTRING_HASH_MAP(csize, Keys);
+  typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
+  typedef std::vector<csize> FreeList;
 
   class KeyIterator : public store::Iterator
   {
     protected:
       SimpleJSONObject_t    theObject;
-      Keys::iterator theIter;
+      Pairs::iterator theIter;
 
     public:
       KeyIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
@@ -195,13 +196,14 @@ protected:
 
   Keys                 theKeys;
   Pairs                thePairs;
+  FreeList             theFrees;
   store::Collection  * theCollection;
   const JSONItem     * theRoot;
 
 public:
   SimpleJSONObject()
     :
-    thePairs(0, NULL, 64, false),
+    theKeys(64, false),
     theCollection(NULL),
     theRoot(NULL)
   {
