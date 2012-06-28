@@ -4,7 +4,9 @@ Zorba - The XQuery Processor
 version 2.x
 
 New Features:
-  * Implemented latest W3C soec for group by clause
+  * Implemented the latest W3C specification for the group by clause
+  * New XQuery 3.0 functions
+    - fn:parse-xml-fragment#1
   * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
 
 Optimizations:
