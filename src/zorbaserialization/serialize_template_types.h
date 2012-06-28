@@ -65,7 +65,6 @@ void operator&(Archiver& ar, T& obj)
 {
   if (ar.is_serializing_out())
   {
-#if 0
     bool is_ref = ar.add_compound_field(obj.get_serializer_type_code(),
                                         true,
                                         (SerializeBaseClass*)&obj, 
@@ -94,7 +93,6 @@ void operator&(Archiver& ar, T& obj)
     obj.serialize_internal(ar);
 
     ar.read_end_current_level();
-#endif
   }
 }
 
@@ -306,7 +304,7 @@ void operator&(Archiver& ar, checked_vector<T>& obj)
   if (ar.is_serializing_out())
   {
     csize size = obj.size();
-    serialize_csize(ar, size);
+    ar & size;
 
     typename checked_vector<T>::iterator it = obj.begin();
     typename checked_vector<T>::iterator end = obj.end();
@@ -318,7 +316,7 @@ void operator&(Archiver& ar, checked_vector<T>& obj)
   else
   {
     csize size;
-    serialize_csize(ar, size);
+    ar & size;
 
     obj.resize(size);
 
@@ -342,11 +340,11 @@ void operator&(Archiver& ar, std::vector<T>& obj)
   if (ar.is_serializing_out())
   {
     csize size = obj.size();
-    serialize_csize(ar, size);
+    ar & size;
 
     typename std::vector<T>::iterator it = obj.begin();
     typename std::vector<T>::iterator end = obj.end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -354,13 +352,13 @@ void operator&(Archiver& ar, std::vector<T>& obj)
   else
   {
     csize size;
-    serialize_csize(ar, size);
+    ar & size;
 
     obj.resize(size);
 
     typename std::vector<T>::iterator it = obj.begin();
     typename std::vector<T>::iterator end = obj.end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -377,11 +375,11 @@ void operator&(Archiver& ar, std::vector<T*>& obj)
   if (ar.is_serializing_out())
   {
     csize size = obj.size();
-    serialize_csize(ar, size);
+    ar & size;
 
     typename std::vector<T*>::iterator it = obj.begin();
     typename std::vector<T*>::iterator end = obj.end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -389,14 +387,14 @@ void operator&(Archiver& ar, std::vector<T*>& obj)
   else
   {
     csize size;
-    serialize_csize(ar, size);
+    ar & size;
 
     obj.resize(size);
 
     typename std::vector<T*>::iterator it = obj.begin();
     typename std::vector<T*>::iterator end = obj.end();
 
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -427,11 +425,11 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
     (void)is_ref;
 
     size = obj->size();
-    serialize_csize(ar, size);
+    ar & size;
 
     typename std::vector<T>::iterator it = obj->begin();
     typename std::vector<T>::iterator end = obj->end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -460,13 +458,13 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
 
     obj = new std::vector<T>;
 
-    serialize_csize(ar, size);
+    ar & size;
 
     obj->resize(size);
 
     typename std::vector<T>::iterator it = obj->begin();
     typename std::vector<T>::iterator end = obj->end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -485,7 +483,7 @@ void operator&(Archiver& ar, std::list<T>& obj)
   if (ar.is_serializing_out())
   {
     csize size = obj.size();
-    serialize_csize(ar, size);
+    ar & size;
 
     typename std::list<T>::iterator it = obj.begin();
     typename std::list<T>::iterator end = obj.end();
@@ -497,7 +495,7 @@ void operator&(Archiver& ar, std::list<T>& obj)
   else
   {
     csize size;
-    serialize_csize(ar, size);
+    ar & size;
 
     obj.resize(size);
 
@@ -546,7 +544,7 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
     (void)is_ref;
 
     size = obj->size();
-    serialize_csize(ar, size);
+    ar & size;
 
     typename std::map<T1, T2>::iterator it = obj->begin();
     typename std::map<T1, T2>::iterator end = obj->end();
@@ -582,7 +580,7 @@ void operator&(Archiver& ar, std::map<T1, T2>*& obj)
 
     obj = new std::map<T1, T2>;
 
-    serialize_csize(ar, size);
+    ar & size;
 
     std::pair<T1, T2> p;
 
@@ -608,7 +606,7 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
   if (ar.is_serializing_out())
   {
     csize s = obj.size();
-    serialize_csize(ar, s);
+    ar & s;
 
     typename std::map<T1, T2, Tcomp>::iterator it = obj.begin();
     typename std::map<T1, T2, Tcomp>::iterator end = obj.end();
@@ -623,7 +621,7 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
   else
   {
     csize s;
-    serialize_csize(ar, s);
+    ar & s;
 
     std::pair<T1, T2> p;
 
@@ -656,7 +654,7 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>& obj)
     size = obj.size();
 
     ar & sync;
-    serialize_csize(ar, size);
+    ar & size;
 
     typename HashMap<T, V, Tcomp>::iterator it = obj.begin();
     typename HashMap<T, V, Tcomp>::iterator end = obj.end();
@@ -671,7 +669,7 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>& obj)
   else
   {
     ar & sync;
-    serialize_csize(ar, size);
+    ar & size;
 
     obj.theNumEntries = 0;
     obj.theInitialSize = obj.theHashTabSize;
@@ -733,7 +731,7 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
     ar & capacity;
     ar & sync;
     ar & comp;
-    serialize_csize(ar, size);
+    ar & size;
 
     ar.set_is_temp_field(false);
 
@@ -774,7 +772,7 @@ void operator&(Archiver& ar, HashMap<T, V, Tcomp>*& obj)
     ar & capacity;
     ar & sync;
     ar & comp;
-    serialize_csize(ar, size);
+    ar & size;
 
     ar.set_is_temp_field(false);
 

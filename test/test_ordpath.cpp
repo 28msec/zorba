@@ -15,7 +15,7 @@
  */
 
 
-#include  "diagnostics/errors.h"
+#include  "diagnostics/zorba_exception.h"
 #include  "store/naive/simple_store.h"
 #include  "store/naive/ordpath.h"
 
@@ -131,9 +131,9 @@ int main(int argc, char * argv[])
     {
       path.compress(dewey1);
     }
-    catch (zorba::error::ZorbaError& e)
+    catch (ZorbaException& e)
     {
-      std::cout << e.theDescription << std::endl;
+      std::cout << e.what() << std::endl;
       return 1;
     }
 
@@ -184,9 +184,9 @@ int main(int argc, char * argv[])
 
       std::cout << "ordpath = " << path.show() << std::endl;
     }
-    catch (zorba::error::ZorbaError& e)
+    catch (ZorbaException& e)
     {
-      std::cout << e.theDescription << std::endl;
+      std::cout << e.what() << std::endl;
       return 1;
     }
   }
@@ -222,6 +222,8 @@ int main(int argc, char * argv[])
       std::cout << "FOLLOWING" << std::endl; break;
     case zorba::simplestore::OrdPath::PRECEDING:
       std::cout << "PRECEDING" << std::endl; break;
+    default:
+      std::cout << "UNKNOWN POSITION" << std::endl;
     }
   }
 

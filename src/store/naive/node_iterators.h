@@ -21,7 +21,7 @@
 #include "node_items.h"
 
 #include "zorbautils/hashfun.h"
-#include "zorbautils/hashset_itemh.h"
+#include "zorbautils/hashset_node_itemh.h"
 
 
 namespace zorba { namespace simplestore {
@@ -366,7 +366,7 @@ class StoreNodeDistinctIterator : public store::Iterator
 {
 protected:
   store::Iterator_t   theInput;
-  ItemHandleHashSet   theNodeSet;
+  NodeHandleHashSet   theNodeSet;
   bool                theCheckOnly;
 
 public:

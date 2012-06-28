@@ -15,11 +15,11 @@
  */
 
 #include "stdafx.h"
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <string.h>
 
 #include "util/base64_util.h"
 
@@ -53,8 +53,7 @@ static void print_exception( int no, char const *expr, int line,
 
 #define ASSERT_NO_EXCEPTION( NO, EXPR ) \
   try { EXPR; } \
-  catch ( std::exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); } \
-  catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
+  catch ( std::exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); }
 
 #define ASSERT_EXCEPTION( NO, EXPR, EXCEPTION ) \
   try { EXPR; assert_true( NO, #EXPR, __LINE__, false ); } \
@@ -64,7 +63,7 @@ static void print_exception( int no, char const *expr, int line,
 
 static void test_decode_buf_to_buf( int no, string const &in,
                                     string const &expected ) {
-  base64::size_type n;
+  base64::size_type n = 0;
   char out[ 1024 ];
   ASSERT_NO_EXCEPTION(
     no, n = base64::decode( in.data(), in.size(), out, base64::dopt_any_len )
@@ -76,7 +75,7 @@ static void test_decode_buf_to_buf( int no, string const &in,
 
 static void test_decode_buf_to_string( int no, string const &in,
                                        string const &expected ) {
-  base64::size_type n;
+  base64::size_type n = 0;
   string out;
   ASSERT_NO_EXCEPTION(
     no,
@@ -89,7 +88,7 @@ static void test_decode_buf_to_string( int no, string const &in,
 
 static void test_decode_buf_to_vector( int no, string const &in,
                                        string const &expected ) {
-  base64::size_type n;
+  base64::size_type n = 0;
   vector<char> out;
   ASSERT_NO_EXCEPTION(
     no,
@@ -102,7 +101,7 @@ static void test_decode_buf_to_vector( int no, string const &in,
 
 static void test_decode_stream_to_stream( int no, string const &in,
                                           string const &expected ) {
-  base64::size_type n;
+  base64::size_type n = 0;
   istringstream sin( in );
   ostringstream sout;
   ASSERT_NO_EXCEPTION(
@@ -115,7 +114,7 @@ static void test_decode_stream_to_stream( int no, string const &in,
 
 static void test_decode_stream_to_string( int no, string const &in,
                                           string const &expected ) {
-  base64::size_type n;
+  base64::size_type n = 0;
   istringstream sin( in );
   string out;
   ASSERT_NO_EXCEPTION(
@@ -128,7 +127,7 @@ static void test_decode_stream_to_string( int no, string const &in,
 
 static void test_decode_stream_to_vector( int no, string const &in,
                                           string const &expected ) {
-  base64::size_type n;
+  base64::size_type n = 0;
   istringstream sin( in );
   vector<char> out;
   ASSERT_NO_EXCEPTION(
@@ -159,9 +158,8 @@ static void test_encode_buf_to_buf( int no, string const &in,
 
 static void test_encode_buf_to_string( int no, string const &in,
                                        string const &expected ) {
-  base64::size_type n;
   string out;
-  ASSERT_NO_EXCEPTION( no, n = base64::encode( in.data(), in.size(), &out ) );
+  base64::size_type const n = base64::encode( in.data(), in.size(), &out );
   ASSERT_TRUE( no, n == expected.size() );
   ASSERT_TRUE( no, out.size() == expected.size() );
   ASSERT_TRUE( no, out == expected );
@@ -169,9 +167,8 @@ static void test_encode_buf_to_string( int no, string const &in,
 
 static void test_encode_buf_to_vector( int no, string const &in,
                                        string const &expected ) {
-  base64::size_type n;
   vector<char> out;
-  ASSERT_NO_EXCEPTION( no, n = base64::encode( in.data(), in.size(), &out ) );
+  base64::size_type const n = base64::encode( in.data(), in.size(), &out );
   ASSERT_TRUE( no, n == expected.size() );
   ASSERT_TRUE( no, out.size() == expected.size() );
   ASSERT_TRUE( no, !strncmp( &out[0], expected.data(), expected.size() ) );
@@ -179,10 +176,9 @@ static void test_encode_buf_to_vector( int no, string const &in,
 
 static void test_encode_stream_to_stream( int no, string const &in,
                                           string const &expected ) {
-  base64::size_type n;
   istringstream sin( in );
   ostringstream sout;
-  ASSERT_NO_EXCEPTION( no, n = base64::encode( sin, sout ) );
+  base64::size_type const n = base64::encode( sin, sout );
   ASSERT_TRUE( no, n == expected.size() );
   ASSERT_TRUE( no, sout.str().size() == expected.size() );
   ASSERT_TRUE( no, sout.str() == expected );
@@ -190,10 +186,9 @@ static void test_encode_stream_to_stream( int no, string const &in,
 
 static void test_encode_stream_to_string( int no, string const &in,
                                           string const &expected ) {
-  base64::size_type n;
   istringstream sin( in );
   string out;
-  ASSERT_NO_EXCEPTION( no, n = base64::encode( sin, &out ) );
+  base64::size_type const n = base64::encode( sin, &out );
   ASSERT_TRUE( no, n == expected.size() );
   ASSERT_TRUE( no, out.size() == expected.size() );
   ASSERT_TRUE( no, out == expected );
@@ -201,10 +196,9 @@ static void test_encode_stream_to_string( int no, string const &in,
 
 static void test_encode_stream_to_vector( int no, string const &in,
                                           string const &expected ) {
-  base64::size_type n;
   istringstream sin( in );
   vector<char> out;
-  ASSERT_NO_EXCEPTION( no, n = base64::encode( sin, &out ) );
+  base64::size_type const n = base64::encode( sin, &out );
   ASSERT_TRUE( no, n == expected.size() );
   ASSERT_TRUE( no, out.size() == expected.size() );
   ASSERT_TRUE( no, !strncmp( &out[0], expected.data(), expected.size() ) );
