@@ -514,7 +514,6 @@ Item::getObjectKeys() const
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    // TODO, we should have an error handler here
     return new StoreIteratorImpl(m_item->getObjectKeys(), nullptr);
 
   ITEM_CATCH
@@ -527,9 +526,11 @@ Item::getObjectValue(String aName) const
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
     zstring& lName = Unmarshaller::getInternalString(aName);
+    
+    store::Item_t lStringItem;
+    GENV_ITEMFACTORY->createString(lStringItem, lName);
   
-    // TODO, we should have an error handler here
-    return m_item->getObjectValue(lName).getp();
+    return m_item->getObjectValue(lStringItem).getp();
 
   ITEM_CATCH
   return Item();

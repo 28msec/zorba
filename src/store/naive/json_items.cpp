@@ -127,9 +127,7 @@ void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot)
 *******************************************************************************/
 SimpleJSONObject::~SimpleJSONObject()
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   for (Pairs::iterator lIter = thePairs.begin();
        lIter != thePairs.end();
        ++lIter)
@@ -152,9 +150,7 @@ SimpleJSONObject::~SimpleJSONObject()
   theKeys.clear();
   thePairs.clear();
   theFrees.clear();
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -165,9 +161,7 @@ store::Item* SimpleJSONObject::copy(
     store::Item* parent,
     const store::CopyMode& copymode) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   SimpleJSONObject* lNewObject = const_cast<SimpleJSONObject*>(this);
  
  if (copymode.theDoCopy)
@@ -219,11 +213,9 @@ store::Item* SimpleJSONObject::copy(
 ********************************************************************************/
 void SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   // Ensures one either detaches or attaches.
-  ZORBA_ASSERT(collection == NULL || theCollection == NULL);
+  assert(collection == NULL || theCollection == NULL);
 
   theCollection = collection;
   
@@ -238,9 +230,7 @@ void SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*
     setRoot(NULL);
   }
   
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -252,9 +242,7 @@ bool SimpleJSONObject::add(
     const store::Item_t& aValue,
     bool accumulate)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
 
   if (!theKeys.exists(lName))
@@ -284,9 +272,7 @@ bool SimpleJSONObject::add(
       thePairs[lPosition] = std::make_pair(aName.getp(), lValue);
     }
 
-#ifndef NDEBUG
-    assertInvariant();
-#endif
+    ASSERT_INVARIANT();
     return true;
   }
   else if (accumulate)
@@ -315,15 +301,11 @@ bool SimpleJSONObject::add(
       array->addReference();
       thePairs[lPosition].second = array;
     }
-#ifndef NDEBUG
-    assertInvariant();
-#endif
+    ASSERT_INVARIANT();
     return true;
   }
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return false;
 }
 
@@ -333,16 +315,12 @@ bool SimpleJSONObject::add(
 *******************************************************************************/
 store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
 
   if (!theKeys.exists(lName))
   {
-#ifndef NDEBUG
-    assertInvariant();
-#endif
+    ASSERT_INVARIANT();
     return 0;
   }
   
@@ -363,9 +341,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   thePairs[lPosition].second = NULL;
   theFrees.push_back(lPosition);
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return lRes;
 }
 
@@ -377,16 +353,12 @@ store::Item_t SimpleJSONObject::setValue(
     const store::Item_t& aName,
     const store::Item_t& aValue)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
 
   if (!theKeys.exists(lName))
   {
-#ifndef NDEBUG
-    assertInvariant();
-#endif
+    ASSERT_INVARIANT();
     return NULL;
   }
 
@@ -409,9 +381,7 @@ store::Item_t SimpleJSONObject::setValue(
   aValue->addReference();
   thePairs[lPosition].second = aValue.getp();
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return lRes;
 }
 
@@ -422,25 +392,19 @@ bool SimpleJSONObject::rename(
     const store::Item_t& aName,
     const store::Item_t& aNewName)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
   zstring lNewName = aNewName->getStringValue();
 
   if (theKeys.exists(lNewName))
   {
-#ifndef NDEBUG
-    assertInvariant();
-#endif
+    ASSERT_INVARIANT();
     return false;
   }
   
   if (!theKeys.exists(lName)) 
   {
-#ifndef NDEBUG
-    assertInvariant();
-#endif
+    ASSERT_INVARIANT();
     return false;
   }
 
@@ -454,9 +418,7 @@ bool SimpleJSONObject::rename(
   theKeys.erase(lName);
   theKeys.insert(lNewName, lPosition);
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return true;
 }
 
@@ -496,9 +458,7 @@ void SimpleJSONObject::setRoot(const JSONItem* aRoot)
 *******************************************************************************/
 zstring SimpleJSONObject::getStringValue() const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("object"));
 }
 
@@ -508,9 +468,7 @@ zstring SimpleJSONObject::getStringValue() const
 *******************************************************************************/
 void SimpleJSONObject::getStringValue2(zstring& val) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   val = getStringValue();
 }
 
@@ -520,9 +478,7 @@ void SimpleJSONObject::getStringValue2(zstring& val) const
 *******************************************************************************/
 void SimpleJSONObject::appendStringValue(zstring& buf) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   buf = getStringValue();
 }
 
@@ -532,9 +488,7 @@ void SimpleJSONObject::appendStringValue(zstring& buf) const
 *******************************************************************************/
 void SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0004, ERROR_PARAMS("object"));
 }
 
@@ -542,23 +496,18 @@ void SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter
 /******************************************************************************
 
 *******************************************************************************/
-store::Item_t SimpleJSONObject::getObjectValue(const zstring& aKey) const
+store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
-  store::Item_t lName;
-  zstring aNonConstName = aKey;
-  GET_FACTORY().createString(lName, aNonConstName);
-
-  if (!const_cast<Keys&>(theKeys).exists(aKey))
+  ASSERT_INVARIANT();
+  zstring lName = aKey->getStringValue();
+  if (!const_cast<Keys&>(theKeys).exists(lName))
   {
     return NULL;
   }
 
   csize lPosition;
-  theKeys.get(aKey, lPosition);
-  assert(thePairs[lPosition].first->getStringValue() == aKey);
+  theKeys.get(lName, lPosition);
+  assert(thePairs[lPosition].first->equals(aKey));
   return thePairs[lPosition].second;
 }
 
@@ -568,9 +517,7 @@ store::Item_t SimpleJSONObject::getObjectValue(const zstring& aKey) const
 *******************************************************************************/
 store::Iterator_t SimpleJSONObject::getObjectKeys() const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return new KeyIterator(const_cast<SimpleJSONObject*>(this));
 }
 
@@ -796,9 +743,7 @@ store::Item* JSONArray::getType() const
 *******************************************************************************/
 SimpleJSONArray::~SimpleJSONArray()
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   for (Members::const_iterator lIter = theContent.begin();
        lIter != theContent.end();
        ++lIter)
@@ -817,9 +762,7 @@ SimpleJSONArray::~SimpleJSONArray()
 *******************************************************************************/
 void SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 
   if (getCollection() != NULL && aValue->isJSONItem())
   {
@@ -829,9 +772,7 @@ void SimpleJSONArray::push_back(const store::Item_t& aValue)
   aValue->addReference();
   theContent.push_back(aValue.getp());
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -840,14 +781,10 @@ void SimpleJSONArray::push_back(const store::Item_t& aValue)
 *******************************************************************************/
 void SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   theContent.reserve(theContent.size() + members.size());
   add(theContent.size(), members);
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -856,14 +793,10 @@ void SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
 *******************************************************************************/
 void SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   theContent.reserve(theContent.size() + members.size());
   add(0, members);
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -874,9 +807,7 @@ void SimpleJSONArray::insert_before(
     const xs_integer& pos,
     const store::Item_t& member)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 
   if (getCollection() != NULL && member->isJSONItem())
   {
@@ -886,9 +817,7 @@ void SimpleJSONArray::insert_before(
   member->addReference();
   theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -899,18 +828,14 @@ void SimpleJSONArray::insert_before(
     const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   // need to reserve at the beginning because reserve invalidates
   // existing iterators
   theContent.reserve(theContent.size() + members.size());
 
   add(cast(aPos) - 1, members);
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -921,17 +846,13 @@ void SimpleJSONArray::insert_after(
     const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   // need to reserve at the beginning because reserve invalidates
   // existing iterators
   theContent.reserve(theContent.size() + members.size());
 
   add(cast(aPos), members);
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -942,9 +863,7 @@ void SimpleJSONArray::add(
     uint64_t aTargetPos,
     const std::vector<store::Item_t>& aNewMembers)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   for (size_t i = 0; i < aNewMembers.size(); ++i)
   {
     store::Item* lItem = aNewMembers[i].getp();
@@ -958,9 +877,7 @@ void SimpleJSONArray::add(
     theContent.insert(theContent.begin() + aTargetPos + i, lItem);
   }
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 
@@ -969,9 +886,7 @@ void SimpleJSONArray::add(
 *******************************************************************************/
 store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   store::Item_t lItem = getArrayValue(aPos);
 
   if (getCollection() != NULL && lItem->isJSONItem())
@@ -983,9 +898,7 @@ store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
   uint64_t lPosStartingZero = cast(aPos) - 1;
   theContent.erase(theContent.begin() + lPosStartingZero);
 
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return lItem;
 }
 
@@ -997,9 +910,7 @@ store::Item_t SimpleJSONArray::replace(
     const xs_integer& aPos,
     const store::Item_t& value)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   store::Item_t lItem = getArrayValue(aPos);
 
   if (getCollection() != NULL && lItem->isJSONItem())
@@ -1018,9 +929,7 @@ store::Item_t SimpleJSONArray::replace(
   value->addReference();
   theContent[pos] = value.getp();
   
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return lItem;
 }
 
@@ -1076,9 +985,7 @@ uint64_t SimpleJSONArray::cast(const xs_integer& i)
 *******************************************************************************/
 store::Item_t SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   uint64_t lPos = cast(aPosition);
 
   if (lPos == 0 || lPos > theContent.size())
@@ -1097,9 +1004,7 @@ store::Item_t SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
 *******************************************************************************/
 store::Iterator_t SimpleJSONArray::getArrayValues() const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
 }
 
@@ -1109,9 +1014,7 @@ store::Iterator_t SimpleJSONArray::getArrayValues() const
 *******************************************************************************/
 xs_integer SimpleJSONArray::getArraySize() const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   store::Item_t lRes;
   xs_integer lSize(theContent.size());
   return lSize;
@@ -1125,9 +1028,7 @@ store::Item* SimpleJSONArray::copy(
     store::Item* parent,
     const store::CopyMode& copymode) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   SimpleJSONArray* lNewArray = const_cast<SimpleJSONArray*>(this);
   if (copymode.theDoCopy)
   {
@@ -1165,9 +1066,7 @@ store::Item* SimpleJSONArray::copy(
 *******************************************************************************/
 zstring SimpleJSONArray::getStringValue() const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("array"));
 }
 
@@ -1177,9 +1076,7 @@ zstring SimpleJSONArray::getStringValue() const
 *******************************************************************************/
 void SimpleJSONArray::getStringValue2(zstring& val) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   val = getStringValue();
 }
 
@@ -1189,9 +1086,7 @@ void SimpleJSONArray::getStringValue2(zstring& val) const
 *******************************************************************************/
 void SimpleJSONArray::appendStringValue(zstring& buf) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   buf = getStringValue();
 }
 
@@ -1201,9 +1096,7 @@ void SimpleJSONArray::appendStringValue(zstring& buf) const
 *******************************************************************************/
 void SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0004, ERROR_PARAMS("array"));
 }
 
@@ -1213,9 +1106,7 @@ void SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter)
 ********************************************************************************/
 void SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
   // Ensures one either detaches or attaches.
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
@@ -1232,9 +1123,7 @@ void SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*p
     setRoot(NULL);
   }
   
-#ifndef NDEBUG
-  assertInvariant();
-#endif
+  ASSERT_INVARIANT();
 }
 
 /******************************************************************************

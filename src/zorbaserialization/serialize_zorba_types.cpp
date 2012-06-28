@@ -1417,7 +1417,7 @@ void serialize_json_object(Archiver &ar, store::Item *&obj)
     store::Item_t lKey;
     while (lIter->next(lKey))
     {
-      store::Item* lValue = obj->getObjectValue(lKey->getStringValue()).getp();
+      store::Item* lValue = obj->getObjectValue(lKey).getp();
       ar & lKey;
       ar & lValue;
     }

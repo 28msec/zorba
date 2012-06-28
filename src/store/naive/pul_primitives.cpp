@@ -2053,7 +2053,7 @@ void UpdJSONObjectRename::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  if (obj->getObjectValue(theNewName->getStringValue()) != NULL)
+  if (obj->getObjectValue(theNewName) != NULL)
   {
     RAISE_ERROR(jerr::JNUP0006, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
   }

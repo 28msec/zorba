@@ -151,7 +151,7 @@ JSONObjectValueIterator::nextImpl(
   consumeNext(lInput, theChild0.getp(), planState);
   consumeNext(lName, theChild1.getp(), planState);
 
-  result = lInput->getObjectValue(lName->getStringValue());
+  result = lInput->getObjectValue(lName);
   
   STACK_PUSH(result != 0, state);
 
@@ -204,7 +204,7 @@ JSONObjectProjectIterator::nextImpl(
 
     if (i < numNames)
     {
-      value = obj->getObjectValue(key->getStringValue());
+      value = obj->getObjectValue(key);
 
       if (value->isNode() || value->isJSONItem())
         value = value->copy(NULL, copymode);
@@ -412,7 +412,7 @@ JSONItemAccessorIterator::nextImpl(
                    GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
     }
 
-    result = input->getObjectValue(selector->getStringValue());
+    result = input->getObjectValue(selector);
   }
   else
   {

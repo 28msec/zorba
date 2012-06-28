@@ -136,7 +136,7 @@ public:
 
   virtual store::Iterator_t getObjectKeys() const = 0;
 
-  virtual store::Item_t getObjectValue(const zstring& aKey) const = 0;
+  virtual store::Item_t getObjectValue(const store::Item_t& aKey) const = 0;
 
   virtual Item* getType() const;
 
@@ -215,7 +215,7 @@ public:
 
   virtual store::Iterator_t getObjectKeys() const;
 
-  virtual store::Item_t getObjectValue( const zstring& aKey) const;
+  virtual store::Item_t getObjectValue(const store::Item_t& aKey) const;
 
   virtual store::Item* copy(
       store::Item* parent,
@@ -455,6 +455,12 @@ protected:
 void setJSONRoot(
     const store::Item_t& aJSONItem,
     const JSONItem* aRoot);
+    
+#ifndef NDEBUG
+#define ASSERT_INVARIANT() assertInvariant()
+#else
+#define ASSERT_INVARIANT()
+#endif
 
 } // namespace json
 } // namespace simplestore

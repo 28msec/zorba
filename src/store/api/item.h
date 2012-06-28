@@ -856,7 +856,7 @@ public:
    * @return the value associated with a given key
    */
   virtual store::Item_t
-  getObjectValue(const zstring& key) const;
+  getObjectValue(const store::Item_t& key) const;
 
 #endif // ZORBA_WITH_JSON
 

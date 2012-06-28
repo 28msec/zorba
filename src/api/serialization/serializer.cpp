@@ -1072,7 +1072,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     }
     emit_json_item(key, depth);
     tr << " : ";
-    emit_json_item(obj->getObjectValue(key->getStringValue()).getp(), depth);
+    emit_json_item(obj->getObjectValue(key).getp(), depth);
   }
   if (ser->indent) {
     tr << ser->END_OF_LINE;

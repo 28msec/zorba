@@ -1102,7 +1102,7 @@ void PULImpl::addJSONObjectInsert(
 
   for (csize i = 0; i < numPairs; ++i)
   {
-    if (obj->getObjectValue(names[i]->getStringValue()) != NULL)
+    if (obj->getObjectValue(names[i]) != NULL)
     {
       RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(names[i]->getStringValue()));
     }
@@ -1187,7 +1187,7 @@ void PULImpl::addJSONObjectDelete(
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  if (obj->getObjectValue(name->getStringValue()) == NULL)
+  if (obj->getObjectValue(name) == NULL)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
@@ -1247,7 +1247,7 @@ void PULImpl::addJSONObjectReplaceValue(
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  if (obj->getObjectValue(name->getStringValue()) == NULL)
+  if (obj->getObjectValue(name) == NULL)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
@@ -1307,13 +1307,13 @@ void PULImpl::addJSONObjectRename(
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  if (obj->getObjectValue(name->getStringValue()) == NULL)
+  if (obj->getObjectValue(name) == NULL)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
   }
 
-  if (obj->getObjectValue(newName->getStringValue()) != NULL)
+  if (obj->getObjectValue(newName) != NULL)
   {
     RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(newName->getStringValue()));
   }

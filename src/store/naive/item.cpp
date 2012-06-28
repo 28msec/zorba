@@ -1429,7 +1429,7 @@ Item::getObjectKeys() const
 }
 
 store::Item_t
-Item::getObjectValue(const zstring&) const
+Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
