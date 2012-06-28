@@ -83,7 +83,7 @@ SimpleCollection::~SimpleCollection()
 ********************************************************************************/
 store::Iterator_t SimpleCollection::getIterator()
 {
-  return new CollectionIter(this, 0);
+  return new CollectionIter(this, xs_integer(0));
 }
 
 store::Iterator_t SimpleCollection::getIterator(xs_integer aSkip)
@@ -641,7 +641,8 @@ void SimpleCollection::CollectionIter::open()
   SYNC_CODE(theCollection->theLatch.rlock();)
   theHaveLock = true;
 
-  theIterator = theCollection->theXmlTrees.begin() + theSkip;
+  theIterator = theCollection->theXmlTrees.begin();
+  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
 }
 
@@ -675,7 +676,8 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 ********************************************************************************/
 void SimpleCollection::CollectionIter::reset()
 {
-  theIterator = theCollection->theXmlTrees.begin() + theSkip;
+  theIterator = theCollection->theXmlTrees.begin();
+  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
 }
 

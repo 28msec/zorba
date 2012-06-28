@@ -57,7 +57,7 @@ public:
     xs_integer                              theSkip;
 
   public:
-    CollectionIter(SimpleCollection* collection);
+    CollectionIter(SimpleCollection* collection, xs_integer aSkip);
 
     ~CollectionIter();
 
