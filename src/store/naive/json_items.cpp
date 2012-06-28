@@ -294,9 +294,10 @@ bool SimpleJSONObject::add(
 store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
 {
   ASSERT_INVARIANT();
+
   zstring lName = aName->getStringValue();
   csize lPosition;
-  store::Item_t lRes;
+  store::Item_t lValue;
 
   if (!theKeys.get(lName, lPosition))
   {
@@ -304,6 +305,39 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     return 0;
   }
   
+#if 1
+  store::Item* lKey;
+
+  lKey = thePairs[lPosition].first;
+  lValue = thePairs[lPosition].second;
+
+  if (getCollection() != NULL && lValue->isJSONItem())
+  {
+    setJSONRoot(lValue.getp(), NULL);
+  }
+
+  lKey->removeReference();
+  lValue->removeReference();
+
+  thePairs.erase(thePairs.begin() + lPosition);
+  theKeys.erase(lName);
+
+  if (lPosition < thePairs.size())
+  {
+    Keys::iterator lKeysIte = theKeys.begin();
+    Keys::iterator lKeysEnd = theKeys.end();
+    for (; lKeysIte != lKeysEnd; ++lKeysIte)
+    {
+      csize lPos = lKeysIte.getValue();
+      if (lPos > lPosition)
+      {
+        lKeysIte.setValue(lPos - 1);
+      }
+    }
+  }
+
+#else
+
   Pairs::iterator lIterator;
   csize lIteratorPosition;
   for (lIterator = thePairs.begin(), lIteratorPosition = 0;
@@ -320,10 +354,12 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     {
       // Preparing the returned item.
       assert(lIterator->first->getStringValue() == lName);
-      lRes = lIterator->second;
-      if (getCollection() != NULL && lRes->isJSONItem())
+
+      lValue = lIterator->second;
+
+      if (getCollection() != NULL && lValue->isJSONItem())
       {
-        setJSONRoot(lRes.getp(), NULL);
+        setJSONRoot(lValue.getp(), NULL);
       }
 
       // Erasing the corresponding entries.
@@ -341,9 +377,10 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     assert(lKeyIterator.getValue() == lPosition + 1);
     lKeyIterator.setValue(lPosition);
   }
+#endif
 
   ASSERT_INVARIANT();
-  return lRes;
+  return lValue;
 }
 
 
