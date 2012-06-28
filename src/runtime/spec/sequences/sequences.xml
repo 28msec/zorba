@@ -16,11 +16,11 @@
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
     <zorba:fwd-decl ns="store">NodeHashSet</zorba:fwd-decl>
-    <zorba:fwd-decl ns="zorba">ItemValueCollHandleHashSet</zorba:fwd-decl>
+    <zorba:fwd-decl ns="zorba">AtomicItemHandleHashSet</zorba:fwd-decl>
 </zorba:header>
 
 <zorba:source>
-    <zorba:include form="Quoted">runtime/util/handle_hashset_item_value.h</zorba:include>
+    <zorba:include form="Quoted">zorbautils/hashset_atomic_itemh.h</zorba:include>
 </zorba:source>
 
 <zorba:codegen>
@@ -235,7 +235,7 @@
                   brief="indicates whether NaN was found in the sequence"/>
 
     <zorba:member name="theAlreadySeenMap"
-                  type="std::auto_ptr&lt;ItemValueCollHandleHashSet>"
+                  type="std::auto_ptr&lt;AtomicItemHandleHashSet>"
                   brief="hashmap for doing the duplicate elimination"/>
 
   </zorba:state>

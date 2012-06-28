@@ -63,7 +63,7 @@ public:
     };
 
   public:
-    typedef std::map<uint32_t, std::vector<LetVarIter_t> > VarMap_t;
+    typedef std::map<ulong, std::vector<LetVarIter_t> > VarMap_t;
 
   public:
     std::vector<NodeNameTest_t> node_names;
