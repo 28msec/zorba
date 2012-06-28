@@ -143,8 +143,11 @@ SimpleJSONObject::~SimpleJSONObject()
         setJSONRoot(lChild, NULL);
       }
     }
-    lName->removeReference();
-    lChild->removeReference();
+    if (lName != NULL) {
+      lName->removeReference();
+      assert(lChild != NULL);
+      lChild->removeReference();
+    }
   }
   theKeys.clear();
   thePairs.clear();
@@ -171,15 +174,19 @@ store::Item* SimpleJSONObject::copy(
   {
     lNewObject = new SimpleJSONObject();
 
-    for (Keys::iterator lIter = theKeys.begin();
-         lIter != theKeys.end();
+    for (Pairs::const_iterator lIter = thePairs.begin();
+         lIter != thePairs.end();
          ++lIter)
     {
-      zstring lName = lIter.getKey();
-      csize lPosition = lIter.getValue();
-      store::Item_t lKey = thePairs[lPosition].first;
-      store::Item_t lValue = thePairs[lPosition].second;
-
+      store::Item_t lKey = lIter->first;
+      store::Item_t lValue = lIter->second;
+      
+      if (lKey == NULL)
+      {
+        continue;
+      }
+      assert(lValue != NULL);
+      
       if (lValue->isJSONObject() ||
            lValue->isJSONArray() ||
            lValue->isNode())
@@ -331,7 +338,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
 #endif
   zstring lName = aName->getStringValue();
 
-  if (theKeys.exists(lName))
+  if (!theKeys.exists(lName))
   {
 #ifndef NDEBUG
     assertInvariant();
@@ -741,6 +748,7 @@ bool SimpleJSONObject::KeyIterator::next(store::Item_t& res)
   if (theIter != theObject->thePairs.end())
   {
     res = theIter->first;
+    ++theIter;
     return true;
   } else {
     return false;
