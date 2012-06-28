@@ -717,7 +717,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       inNode = swap;
     }
 
-    // only the root node is left and there we've got some special cases
+    // only the root node is left and there we've got some special
     // cases in the spec
     if (inNode->getNodeKind() == store::StoreConsts::documentNode)
     {
