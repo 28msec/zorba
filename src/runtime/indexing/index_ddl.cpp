@@ -260,7 +260,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
-  planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL); 
+  planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL, 0, false, 0); 
 
   createIndexSpec(indexDecl, spec);
 
@@ -389,7 +389,7 @@ bool RefreshIndexIterator::nextImpl(
 
   buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
-  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
+  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL, 0, false, 0); 
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
@@ -636,14 +636,14 @@ bool ProbeIndexPointValueIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
+      if (state->theIndexDecl->getNumKeyExprs() != numChildren-1)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(
           qnameItem->getStringValue(),
           "index",
           numChildren-1,
-          state->theIndexDecl->getKeyExpressions().size())
+          state->theIndexDecl->getNumKeyExprs())
         );
       }
 
@@ -818,14 +818,14 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1 ||
+      if (state->theIndexDecl->getNumKeyExprs() != numChildren-1 ||
           numChildren != 2)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qnameItem->getStringValue(),
                      "index",
                      numChildren-1,
-                     state->theIndexDecl->getKeyExpressions().size()));
+                     state->theIndexDecl->getNumKeyExprs()));
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -1027,13 +1027,13 @@ bool ProbeIndexRangeValueIterator::nextImpl(
                      "multiple of 6"));
       }
 
-      if (indexDecl->getKeyExpressions().size() * 6 < numChildren-1)
+      if (indexDecl->getNumKeyExprs() * 6 < numChildren-1)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qname->getStringValue(),
                      "index",
                      numChildren-1,
-                     indexDecl->getKeyExpressions().size() * 6));
+                     indexDecl->getNumKeyExprs() * 6));
       }
 
       state->theIndex = (indexDecl->isTemp() ?

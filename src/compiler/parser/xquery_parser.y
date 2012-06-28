@@ -28,8 +28,8 @@
 %define "parser_class_name" "xquery_parser"
 %error-verbose
 
-// Expect 3 shift/reduce conflicts
-%expect 3
+// Expect 4 shift/reduce conflicts
+%expect 4
 
 
 %code requires {
@@ -2644,6 +2644,22 @@ ForClause :
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
+  //  ============================ Improved error messages ============================
+  |
+    FOR error VarInDeclList
+    {
+      $$ = $3; // to prevent the Bison warning
+      error(@2, "syntax error, unexpected QName \""
+          + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      YYERROR;
+    }
+  |
+    FOR UNRECOGNIZED
+    {
+      $$ = NULL; // to prevent the Bison warning
+      error(@2, ""); // the error message is already set in the driver's parseError member
+      YYERROR;
+    }
 ;
 
 
@@ -2660,6 +2676,15 @@ VarInDeclList :
       if ( VarInDeclList *vdl = dynamic_cast<VarInDeclList*>($1) )
         vdl->push_back( dynamic_cast<VarInDecl*>($4) );
       $$ = $1;
+    }
+  //  ============================ Improved error messages ============================
+  |
+    VarInDeclList COMMA VarInDecl
+    {
+      $$ = $1; // to prevent the Bison warning
+      error(@3, "syntax error, unexpected QName \""
+          + static_cast<VarInDecl*>($3)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      YYERROR;
     }
 ;
 
@@ -4489,6 +4514,13 @@ DirElemConstructor :
         }
     |   LT_OR_START_TAG QNAME OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($6)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($6)->get_qname().str() + "> does not match start tag <"
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -4497,8 +4529,15 @@ DirElemConstructor :
                 NULL
             );
         }
-    | LT_OR_START_TAG QNAME OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
+    |   LT_OR_START_TAG QNAME OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -4509,6 +4548,13 @@ DirElemConstructor :
         }
     |   LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -4519,6 +4565,13 @@ DirElemConstructor :
         }
     |   LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
         {
+            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($8)->get_qname())
+            {
+              error(@1, "syntax error, end tag </" + static_cast<QName*>($8)->get_qname().str() + "> does not match start tag <"
+                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
+              YYERROR;
+            }
+
             $$ = new DirElemConstructor(
                 LOC(@$),
                 static_cast<QName*>($2),
@@ -6130,7 +6183,7 @@ FTThesaurusID :
 opt_relationship :
         /* empty */
         {
-            $$ = NULL;
+            $$ = 0;
         }
     |   RELATIONSHIP STRING_LITERAL
         {
