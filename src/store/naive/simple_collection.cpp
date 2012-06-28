@@ -81,12 +81,7 @@ SimpleCollection::~SimpleCollection()
   Note: it is allowed to have several concurrent iterators on the same collection
   but each iterator should be used by a single thread only.
 ********************************************************************************/
-store::Iterator_t SimpleCollection::getIterator()
-{
-  return new CollectionIter(this, xs_integer::zero());
-}
-
-store::Iterator_t SimpleCollection::getIterator(xs_integer aSkip)
+store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip)
 {
   return new CollectionIter(this, aSkip);
 }
@@ -614,7 +609,7 @@ TreeId SimpleCollection::createTreeId()
 ********************************************************************************/
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection,
-    xs_integer aSkip)
+    const xs_integer& aSkip)
   :
   theCollection(collection),
   theHaveLock(false),

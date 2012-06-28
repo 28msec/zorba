@@ -374,6 +374,7 @@ bool ZorbaCollectionIterator::nextImpl(
 {
   store::Item_t name;
   store::Collection_t collection;
+  xs_integer lSkip;
 
   ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
@@ -387,11 +388,11 @@ bool ZorbaCollectionIterator::nextImpl(
     // skip parameter passed
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[1].getp(), planState);
-    xs_integer lSkip = lSkipItem->getIntegerValue(); 
+    lSkip = lSkipItem->getIntegerValue(); 
     // negative is transformed into 0
     state->theIterator = ( lSkip > xs_integer::zero() 
                              ? collection->getIterator(lSkip)
-                             : collection->getIterator(lSkip)
+                             : collection->getIterator()
                          );
   }
   else
@@ -400,7 +401,21 @@ bool ZorbaCollectionIterator::nextImpl(
   }
 
   ZORBA_ASSERT(state->theIterator != NULL);
-  state->theIterator->open();
+
+  try
+  {
+    state->theIterator->open();
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQD0004_INVALID_PARAMETER,
+      ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
+                  lSkip),
+      ERROR_LOC( loc )
+    );
+  }
+
   state->theIteratorOpened = true;
 
   while (state->theIterator->next(result))

@@ -10,7 +10,10 @@ declare %ann:sequential function local:test()
   dml:insert-nodes(xs:QName("ns:test2"), <a/>);
   dml:insert-nodes(xs:QName("ns:test2"), <b/>);
   dml:insert-nodes(xs:QName("ns:test2"), (<c/>, <d/>, <e/>));
-  dml:collection(xs:QName("ns:test2"), 3)
+  (
+    dml:collection(xs:QName("ns:test2"), 3),
+    dml:collection(xs:QName("ns:test2"), -1)
+  )
 };
 
 local:test()
