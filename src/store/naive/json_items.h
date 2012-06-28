@@ -170,7 +170,6 @@ class SimpleJSONObject : public JSONObject
 protected:
   ZSTRING_HASH_MAP(csize, Keys);
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
-  typedef std::vector<csize> FreeList;
 
   class KeyIterator : public store::Iterator
   {
@@ -196,7 +195,6 @@ protected:
 
   Keys                 theKeys;
   Pairs                thePairs;
-  FreeList             theFrees;
   store::Collection  * theCollection;
   const JSONItem     * theRoot;
 

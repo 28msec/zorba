@@ -134,22 +134,15 @@ SimpleJSONObject::~SimpleJSONObject()
   {
     store::Item* lName = lIter->first;
     store::Item* lChild = lIter->second;
-    if (lChild != NULL && lChild->isJSONItem())
+    if (getCollection() != NULL && lChild->isJSONItem())
     {
-      if (getCollection() != NULL && lChild->isJSONItem())
-      {
-        setJSONRoot(lChild, NULL);
-      }
+      setJSONRoot(lChild, NULL);
     }
-    if (lName != NULL) {
-      lName->removeReference();
-      assert(lChild != NULL);
-      lChild->removeReference();
-    }
+    lName->removeReference();
+    lChild->removeReference();
   }
   theKeys.clear();
   thePairs.clear();
-  theFrees.clear();
   ASSERT_INVARIANT();
 }
 
@@ -174,12 +167,6 @@ store::Item* SimpleJSONObject::copy(
     {
       store::Item_t lKey = lIter->first;
       store::Item_t lValue = lIter->second;
-      
-      if (lKey == NULL)
-      {
-        continue;
-      }
-      assert(lValue != NULL);
       
       if (lValue->isJSONObject() ||
            lValue->isJSONArray() ||
@@ -254,14 +241,7 @@ bool SimpleJSONObject::add(
       setJSONRoot(aValue, theRoot);
     }
     
-    csize lPosition;
-//    if (theFrees.empty())
-//    {
-      lPosition = thePairs.size();
-//    } else {
-//      lPosition = theFrees.back();
-//      theFrees.pop_back();
-//    }
+    csize lPosition = thePairs.size();
     theKeys.insert(lName, lPosition);
     aName->addReference();
     lValue->addReference();
@@ -334,13 +314,31 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     setJSONRoot(lRes, NULL);
   }
 
-  theKeys.erase(lName);
+  // Deleting the pair
   thePairs[lPosition].first->removeReference();
-  thePairs[lPosition].first = NULL;
   lRes->removeReference();
+#ifndef NDEBUG
+  thePairs[lPosition].first = NULL;
   thePairs[lPosition].second = NULL;
-  theFrees.push_back(lPosition);
+#endif
+  Pairs::iterator lIterator = thePairs.begin();
+  for (csize i = 0; i < lPosition; ++i)
+  {
+    ++lIterator;
+  }
+  assert(lIterator->first == NULL);
+  assert(lIterator->second == NULL);
+  thePairs.erase(lIterator);
 
+  // Rebuilding the key-to-position map
+  theKeys.clear();
+  for (lIterator = thePairs.begin(), lPosition = 0;
+       lIterator != thePairs.end();
+       ++lIterator, ++lPosition)
+  {
+    theKeys.insert(lIterator->first->getStringValue(), lPosition);
+  }
+  
   ASSERT_INVARIANT();
   return lRes;
 }
@@ -575,7 +573,7 @@ void SimpleJSONObject::assertInvariant() const
     }
   }
 
-  assert(theKeys.size() + theFrees.size() == thePairs.size());
+  assert(theKeys.size() == thePairs.size());
 
   for(Keys::iterator lIter = theKeys.begin();
       lIter != theKeys.end();
@@ -585,17 +583,8 @@ void SimpleJSONObject::assertInvariant() const
     assert(lPosition < thePairs.size());
     assert(thePairs[lPosition].first != NULL);
     assert(thePairs[lPosition].first->isAtomic());
+    assert(thePairs[lPosition].first->getStringValue() == lIter.getKey());
     assert(thePairs[lPosition].second != NULL);
-  }
-
-  for(FreeList::const_iterator lIter = theFrees.begin();
-      lIter != theFrees.end();
-      ++lIter)
-  {
-    csize lPosition = *lIter;
-    assert(lPosition < thePairs.size());
-    assert(thePairs[lPosition].first == NULL);
-    assert(thePairs[lPosition].second == NULL);
   }
 }
 
