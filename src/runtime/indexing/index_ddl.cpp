@@ -38,7 +38,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
-#include "zorbautils/hashset_itemh.h"
+#include "zorbautils/hashset_node_itemh.h"
 
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/util_macros.h"
@@ -1372,7 +1372,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
       assert(state->theSearchItems.size() >= 1);
       assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
       
-      state->theNodeHashSet = new ItemHandleHashSet(1024, false);
+      state->theNodeHashSet = new NodeHandleHashSet(1024, false);
       
       state->theSearchItemsIte = state->theSearchItems.begin();
       state->theSearchItemsEnd = state->theSearchItems.end();
