@@ -692,11 +692,10 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
 
   // $excludes
   while ( consumeNext( item, theChildren[1], plan_state ) ) {
-    //store::Item_t exc_struct;
-    //GENV_STORE.getStructuralInformation( exc_struct, item.getp() );
+    store::Item_t exc_si;
+    GENV_STORE.getStructuralInformation( exc_si, item.getp() );
     // TODO: change this to an unordered_map
-    //state->excludes_.push_back( exc_struct );
-    state->excludes_.push_back( item );
+    state->excludes_.push_back( exc_si );
   }
 
   state->callback_.set_tokens( state->tokens_ );
@@ -710,31 +709,17 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
 
       store::Item_t inc( state->includes_.front() );
       state->includes_.pop_front();
-      if ( inc.isNull() ) {                       // sentinel
+      if ( inc.isNull() ) {             // sentinel
         state->langs_.pop();
         Tokenizer::ptr deleter( ztd::pop_stack( state->tokenizers_ ) );
         continue;
       }
 
-      store::Item_t inc_struct;
-      GENV_STORE.getStructuralInformation( inc_struct, inc.getp() );
-      cout << "------------------------------------------------------------\n";
-      cout << "INCLUDE: " << inc->show() << '[' << inc_struct->show() << "]\n";
+      store::Item_t inc_si;
+      GENV_STORE.getStructuralInformation( inc_si, inc.getp() );
       bool excluded = false;
       FOR_EACH( vector<store::Item_t>, exc, state->excludes_ ) {
-
-        store::Item_t exc_struct;
-        GENV_STORE.getStructuralInformation( exc_struct, exc->getp() );
-        cout << "     EXCLUDE: " << (*exc)->show() << '[' << exc_struct->show() << "]\n";
-
-        bool const is_in_subtree = inc_struct->isInSubtreeOf( exc_struct );
-        cout << "  => is include in subtree of exclude? " << (is_in_subtree ? 'Y' : 'N') << endl;
-
-
-        if ( inc_struct->equals( &(*exc_struct) )
-          || is_in_subtree
-          //|| inc_struct->isInSubtreeOf( *exc )
-        ) {
+        if ( inc_si->equals( *exc ) || (*exc)->isInSubtreeOf( inc_si ) ) {
           excluded = true;
           break;
         }
@@ -769,7 +754,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
             }
           }
           i->close();
-          if ( add_sentinel )                     // sentinel
+          if ( add_sentinel )           // sentinel
             state->includes_.insert( pos, store::Item_t() );
           continue;
         }
