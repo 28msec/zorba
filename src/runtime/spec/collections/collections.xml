@@ -280,7 +280,6 @@
     </zorba:constructor>
 
     <zorba:member type="bool" name="theIsDynamic" getterName="isDynamic"/>
-    <zorba:method const="true" name="hasSkip" return="bool"></zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="store::Iterator_t" name="theIterator"/>

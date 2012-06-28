@@ -83,7 +83,7 @@ SimpleCollection::~SimpleCollection()
 ********************************************************************************/
 store::Iterator_t SimpleCollection::getIterator()
 {
-  return new CollectionIter(this, xs_integer(0));
+  return new CollectionIter(this, xs_integer::zero());
 }
 
 store::Iterator_t SimpleCollection::getIterator(xs_integer aSkip)

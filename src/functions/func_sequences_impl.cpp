@@ -543,20 +543,16 @@ PlanIter_t fn_count::codegen(
     ZorbaCollectionIterator& collection =
     static_cast<ZorbaCollectionIterator&>(*argv[0]);
 
-    /* no optimization if collection iterator skips nodes */
-    if (!collection.hasSkip())
-    {
-      return new CountCollectionIterator(
-                   sctx,
-                   loc,
-                   collection.getChildren(),
-                   (
-                     collection.isDynamic()
-                       ? CountCollectionIterator::ZORBADYNAMIC
-                       : CountCollectionIterator::ZORBASTATIC
-                   )
-                 );
-    }
+    return new CountCollectionIterator(
+                 sctx,
+                 loc,
+                 collection.getChildren(),
+                 (
+                   collection.isDynamic()
+                     ? CountCollectionIterator::ZORBADYNAMIC
+                     : CountCollectionIterator::ZORBASTATIC
+                 )
+               );
   }
   else if (typeid(FnCollectionIterator) == counted_type)
   {

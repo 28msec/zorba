@@ -230,6 +230,7 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Collection_t coll;
   store::Item_t name;
+  xs_integer lCount;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -245,7 +246,20 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     coll = getW3CCollection(planState);
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, coll->size()), state);
+  lCount = coll->size();
+  if (theChildren.size() > 1) 
+  {
+    // skip parameter passed
+    store::Item_t lSkipItem;
+    consumeNext(lSkipItem, theChildren[1].getp(), planState);
+    xs_integer lSkip = lSkipItem->getIntegerValue(); 
+    // negative is transformed into 0
+    lCount -= ( lSkip <= xs_integer::zero() ? xs_integer::zero() : lSkip );
+    // negative is transformed into 0
+    lCount = ( lCount < xs_integer::zero() ? xs_integer::zero() : lCount );
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lCount), state);
 
   STACK_END(state);
 }
@@ -368,14 +382,20 @@ bool ZorbaCollectionIterator::nextImpl(
 
   (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
-  // return the nodes of the collection
-  if (hasSkip()) {
+  if (theChildren.size() > 1)
+  {
+    // skip parameter passed
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[1].getp(), planState);
     xs_integer lSkip = lSkipItem->getIntegerValue(); 
-    state->theIterator = collection->getIterator(lSkip);
+    // negative is transformed into 0
+    state->theIterator = ( lSkip > xs_integer::zero() 
+                             ? collection->getIterator(lSkip)
+                             : collection->getIterator(lSkip)
+                         );
   }
-  else {
+  else
+  {
     state->theIterator = collection->getIterator();
   }
 
@@ -391,10 +411,6 @@ bool ZorbaCollectionIterator::nextImpl(
   state->theIteratorOpened = false;
 
   STACK_END(state);
-}
-
-bool ZorbaCollectionIterator::hasSkip() const {
-  return theChildren.size() > 1;
 }
 
 /*******************************************************************************
