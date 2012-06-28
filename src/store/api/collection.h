@@ -53,8 +53,21 @@ public:
    *
    * It is allowed to have several concurrent iterators on the same Collection,
    * but each iterator should be used by a single thread only.
+   *
+   * @return Iterator
    */
   virtual Iterator_t getIterator() = 0;
+  
+  /**
+   * Get an iterator to iterate over the nodes of the collection.
+   *
+   * It is allowed to have several concurrent iterators on the same Collection,
+   * but each iterator should be used by a single thread only.
+   *
+   * @param  aPosition The position of the node in the collection. 
+   * @return Iterator
+   */
+  virtual Iterator_t getIterator(xs_integer aSkip) = 0;
 
   /**
    * Get the node at the given position in the collection.

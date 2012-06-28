@@ -249,8 +249,20 @@
         <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="collection" prefix="static-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
+        <zorba:output>structured-item()*</zorba:output>
+      </zorba:signature>
+
       <zorba:signature localname="collection" prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
+        <zorba:output>structured-item()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="collection" prefix="dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
         <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 
@@ -268,6 +280,7 @@
     </zorba:constructor>
 
     <zorba:member type="bool" name="theIsDynamic" getterName="isDynamic"/>
+    <zorba:method const="true" name="hasSkip" return="bool"></zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="store::Iterator_t" name="theIterator"/>

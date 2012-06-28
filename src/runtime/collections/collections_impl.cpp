@@ -369,7 +369,16 @@ bool ZorbaCollectionIterator::nextImpl(
   (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
   // return the nodes of the collection
-  state->theIterator = collection->getIterator();
+  if (hasSkip()) {
+    store::Item_t lSkipItem;
+    consumeNext(lSkipItem, theChildren[1].getp(), planState);
+    xs_integer lSkip = lSkipItem->getIntegerValue(); 
+    state->theIterator = collection->getIterator(lSkip);
+  }
+  else {
+    state->theIterator = collection->getIterator();
+  }
+
   ZORBA_ASSERT(state->theIterator != NULL);
   state->theIterator->open();
   state->theIteratorOpened = true;
@@ -384,6 +393,9 @@ bool ZorbaCollectionIterator::nextImpl(
   STACK_END(state);
 }
 
+bool ZorbaCollectionIterator::hasSkip() const {
+  return theChildren.size() > 1;
+}
 
 /*******************************************************************************
   declare function index-of($name as xs:QName,

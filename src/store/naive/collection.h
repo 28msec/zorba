@@ -56,6 +56,8 @@ public:
 
   zorba::store::Iterator_t getIterator() = 0;
 
+  zorba::store::Iterator_t getIterator(xs_integer aSkip) = 0;
+
   virtual zorba::store::Item_t nodeAt(xs_integer position) = 0;
 
   virtual bool findNode(const store::Item* node, xs_integer& position) const = 0;

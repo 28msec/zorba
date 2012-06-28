@@ -83,7 +83,12 @@ SimpleCollection::~SimpleCollection()
 ********************************************************************************/
 store::Iterator_t SimpleCollection::getIterator()
 {
-  return new CollectionIter(this);
+  return new CollectionIter(this, 0);
+}
+
+store::Iterator_t SimpleCollection::getIterator(xs_integer aSkip)
+{
+  return new CollectionIter(this, aSkip);
 }
 
 
@@ -607,10 +612,13 @@ TreeId SimpleCollection::createTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::CollectionIter::CollectionIter(SimpleCollection* collection)
+SimpleCollection::CollectionIter::CollectionIter(
+    SimpleCollection* collection,
+    xs_integer aSkip)
   :
   theCollection(collection),
-  theHaveLock(false)
+  theHaveLock(false),
+  theSkip(aSkip)
 {
 }
 
@@ -633,7 +641,7 @@ void SimpleCollection::CollectionIter::open()
   SYNC_CODE(theCollection->theLatch.rlock();)
   theHaveLock = true;
 
-  theIterator = theCollection->theXmlTrees.begin();
+  theIterator = theCollection->theXmlTrees.begin() + theSkip;
   theEnd = theCollection->theXmlTrees.end();
 }
 
@@ -667,7 +675,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 ********************************************************************************/
 void SimpleCollection::CollectionIter::reset()
 {
-  theIterator = theCollection->theXmlTrees.begin();
+  theIterator = theCollection->theXmlTrees.begin() + theSkip;
   theEnd = theCollection->theXmlTrees.end();
 }
 
