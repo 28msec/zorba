@@ -167,12 +167,13 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
-  assert(target->isNode()
 #ifdef ZORBA_WITH_JSON
+  assert(target->isNode()
       || target->isJSONObject()
-      || target->isJSONArray()
+      || target->isJSONArray());
+#else
+  assert(target->isNode());
 #endif
-      );
 
   const XmlNode* n = static_cast<const XmlNode*>(target);
 
