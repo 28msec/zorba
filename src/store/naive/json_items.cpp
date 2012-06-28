@@ -167,8 +167,8 @@ store::Item* SimpleJSONObject::copy(
       store::Item_t lValue = lIter->second;
       
       if (lValue->isJSONObject() ||
-           lValue->isJSONArray() ||
-           lValue->isNode())
+          lValue->isJSONArray() ||
+          lValue->isNode())
       {
         store::Item_t lCopiedValue = lValue->copy(NULL, copymode);
         lNewObject->add(lKey, lCopiedValue, false);
@@ -193,32 +193,6 @@ store::Item* SimpleJSONObject::copy(
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
-{
-  ASSERT_INVARIANT();
-  // Ensures one either detaches or attaches.
-  assert(collection == NULL || theCollection == NULL);
-
-  theCollection = collection;
-  
-  if (theCollection != NULL)
-  {
-    // Attach
-    setRoot(this);
-  }
-  else 
-  {
-    // Detach
-    setRoot(NULL);
-  }
-  
-  ASSERT_INVARIANT();
-}
-
-
 /******************************************************************************
 
 *******************************************************************************/
@@ -230,7 +204,9 @@ bool SimpleJSONObject::add(
   ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
 
-  if (!theKeys.exists(lName))
+  Keys::iterator ite = theKeys.find(lName);
+
+  if (ite == theKeys.end())
   {
     store::Item* lValue = aValue.getp();
 
@@ -241,23 +217,19 @@ bool SimpleJSONObject::add(
     
     csize lPosition = thePairs.size();
     theKeys.insert(lName, lPosition);
+    thePairs.push_back(std::make_pair(aName.getp(), lValue));
     aName->addReference();
     lValue->addReference();
-    if (lPosition == thePairs.size())
-    {
-      thePairs.push_back(std::make_pair(aName.getp(), lValue));
-    } else { 
-      thePairs[lPosition] = std::make_pair(aName.getp(), lValue);
-    }
 
     ASSERT_INVARIANT();
     return true;
   }
   else if (accumulate)
   {
-    csize lPosition;
-    theKeys.get(lName, lPosition);
+    csize lPosition = ite.getValue();
+
     assert(thePairs[lPosition].first->getStringValue() == lName);
+
     store::Item* lValue = thePairs[lPosition].second;
 
     if (lValue->isJSONArray())
@@ -393,35 +365,39 @@ store::Item_t SimpleJSONObject::setValue(
 {
   ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
+  csize lPosition;
 
-  if (!theKeys.exists(lName))
+  if (!theKeys.get(lName, lPosition))
   {
     ASSERT_INVARIANT();
     return NULL;
   }
 
-  csize lPosition;
-  theKeys.get(lName, lPosition);
   assert(thePairs[lPosition].first->getStringValue() == lName);
-  store::Item_t lRes = thePairs[lPosition].second;
 
-  if (getCollection() != NULL && lRes->isJSONItem())
+  store::Item_t lOldValue = thePairs[lPosition].second;
+
+  if (getCollection() != NULL)
   {
-    setJSONRoot(lRes.getp(), NULL);
+    if (lOldValue->isJSONItem())
+    {
+      setJSONRoot(lOldValue.getp(), NULL);
+    }
+
+    if (aValue->isJSONItem())
+    {
+      setJSONRoot(aValue.getp(), theRoot);
+    }
   }
 
-  if (getCollection() != NULL && aValue->isJSONItem())
-  {
-    setJSONRoot(aValue.getp(), theRoot);
-  }
-
-  lRes->removeReference();
+  lOldValue->removeReference();
   aValue->addReference();
   thePairs[lPosition].second = aValue.getp();
 
   ASSERT_INVARIANT();
-  return lRes;
+  return lOldValue;
 }
+
 
 /******************************************************************************
 
@@ -439,21 +415,22 @@ bool SimpleJSONObject::rename(
     ASSERT_INVARIANT();
     return false;
   }
-  
-  if (!theKeys.exists(lName)) 
+
+  Keys::iterator ite = theKeys.find(lName);
+
+  if (ite == theKeys.end())
   {
     ASSERT_INVARIANT();
     return false;
   }
 
-  csize lPosition;
-  theKeys.get(lName, lPosition);
+  csize lPosition = ite.getValue();
   assert(thePairs[lPosition].first->getStringValue() == lName);
   
   thePairs[lPosition].first->removeReference();
   aNewName->addReference();
   thePairs[lPosition].first = aNewName.getp();
-  theKeys.erase(lName);
+  theKeys.erase(ite);
   theKeys.insert(lNewName, lPosition);
 
   ASSERT_INVARIANT();
@@ -487,6 +464,52 @@ void SimpleJSONObject::setRoot(const JSONItem* aRoot)
       
       lArray->setRoot(aRoot);
     }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
+{
+  ASSERT_INVARIANT();
+  // Ensures one either detaches or attaches.
+  assert(collection == NULL || theCollection == NULL);
+
+  theCollection = collection;
+  
+  if (theCollection != NULL)
+  {
+    // Attach
+    setRoot(this);
+  }
+  else 
+  {
+    // Detach
+    setRoot(NULL);
+  }
+  
+  ASSERT_INVARIANT();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+const store::Collection* SimpleJSONObject::getCollection() const
+{
+  if (theRoot == this)
+  {
+    return theCollection;
+  }
+  else if (theRoot != NULL)
+  {
+    return theRoot->getCollection();
+  }
+  else
+  {
+    return NULL;
   }
 }
 
@@ -538,13 +561,13 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
 {
   ASSERT_INVARIANT();
   zstring lName = aKey->getStringValue();
-  if (!const_cast<Keys&>(theKeys).exists(lName))
+
+  csize lPosition;
+  if (!theKeys.get(lName, lPosition))
   {
     return NULL;
   }
 
-  csize lPosition;
-  theKeys.get(lName, lPosition);
   assert(thePairs[lPosition].first->equals(aKey));
   return thePairs[lPosition].second;
 }
@@ -557,26 +580,6 @@ store::Iterator_t SimpleJSONObject::getObjectKeys() const
 {
   ASSERT_INVARIANT();
   return new KeyIterator(const_cast<SimpleJSONObject*>(this));
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-const store::Collection* SimpleJSONObject::getCollection() const
-{
-  if (theRoot == this)
-  {
-    return theCollection;
-  }
-  else if (theRoot != NULL)
-  {
-    return theRoot->getCollection();
-  }
-  else
-  {
-    return NULL;
-  }
 }
 
 
@@ -720,16 +723,14 @@ void SimpleJSONObject::KeyIterator::open()
 *******************************************************************************/
 bool SimpleJSONObject::KeyIterator::next(store::Item_t& res)
 {
-  while (theIter != theObject->thePairs.end() && theIter->first == NULL)
-  {
-    ++theIter;
-  }
   if (theIter != theObject->thePairs.end())
   {
     res = theIter->first;
     ++theIter;
     return true;
-  } else {
+  }
+  else
+  {
     return false;
   }
 }
@@ -1062,6 +1063,7 @@ store::Item* SimpleJSONArray::copy(
 {
   ASSERT_INVARIANT();
   SimpleJSONArray* lNewArray = const_cast<SimpleJSONArray*>(this);
+
   if (copymode.theDoCopy)
   {
     lNewArray = new SimpleJSONArray();
@@ -1072,12 +1074,14 @@ store::Item* SimpleJSONArray::copy(
          ++lIter)
     {
       store::Item_t lValue = *lIter;
+
       if (lValue->isJSONObject() ||
           lValue->isJSONArray() ||
           lValue->isNode())
       {
         lValue = lValue->copy(NULL, copymode);
       }
+
       lNewArray->push_back(lValue);
     }
   }
@@ -1157,6 +1161,7 @@ void SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*p
   
   ASSERT_INVARIANT();
 }
+
 
 /******************************************************************************
 
