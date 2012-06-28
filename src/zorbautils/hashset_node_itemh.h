@@ -51,7 +51,7 @@ public:
 
     static uint32_t hash(const store::Item* t)
     {
-      return (uint32_t)(t);
+      return reinterpret_cast<uint32_t>(t);
     }
   };
 
