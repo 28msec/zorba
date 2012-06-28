@@ -1787,6 +1787,7 @@ protected:
       const QueryLoc* loc,
       store::Item_t& target,
       xs_integer& pos);
+
   UpdJSONArrayUpdate(
       CollectionPul* pul,
       const QueryLoc* loc,
@@ -1851,7 +1852,7 @@ protected:
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
-    return store::UpdateConsts::UP_JSON_ARRAY_INSERT;
+    return store::UpdateConsts::UP_JSON_ARRAY_APPEND;
   }
 
   void apply();

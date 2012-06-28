@@ -93,13 +93,12 @@ store::Item* JSONObject::getType() const
 /******************************************************************************
 
 *******************************************************************************/
-void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot)
+void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot)
 {
   if (aJSONItem->isJSONObject())
   {
-    assert(dynamic_cast<SimpleJSONObject*>(aJSONItem.getp()));
-    SimpleJSONObject* lObject =
-      static_cast<SimpleJSONObject*>(aJSONItem.getp());
+    assert(dynamic_cast<SimpleJSONObject*>(aJSONItem));
+    SimpleJSONObject* lObject = static_cast<SimpleJSONObject*>(aJSONItem);
 
     // Only attach or detach allowed - no direct reattach.
     assert(aRoot == NULL || lObject->theRoot == NULL);
@@ -107,9 +106,8 @@ void setJSONRoot(const store::Item_t& aJSONItem, const JSONItem* aRoot)
   }
   else if (aJSONItem->isJSONArray())
   {
-    assert(dynamic_cast<SimpleJSONArray*>(aJSONItem.getp()));
-    SimpleJSONArray* lArray =
-      static_cast<SimpleJSONArray*>(aJSONItem.getp());
+    assert(dynamic_cast<SimpleJSONArray*>(aJSONItem));
+    SimpleJSONArray* lArray = static_cast<SimpleJSONArray*>(aJSONItem);
 
     // Only attach or detach allowed - no direct reattach.
     assert(aRoot == NULL || lArray->theRoot == NULL);
@@ -238,7 +236,7 @@ bool SimpleJSONObject::add(
 
     if (getCollection() != NULL && aValue->isJSONItem())
     {
-      setJSONRoot(aValue, theRoot);
+      setJSONRoot(lValue, theRoot);
     }
     
     csize lPosition = thePairs.size();
@@ -274,7 +272,7 @@ bool SimpleJSONObject::add(
 
       if (getCollection() != NULL)
       {
-        setJSONRoot(array, theRoot);
+        setJSONRoot(array.getp(), theRoot);
       }
 
       lValue->removeReference();
@@ -311,7 +309,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
 
   if (getCollection() != NULL && lRes->isJSONItem())
   {
-    setJSONRoot(lRes, NULL);
+    setJSONRoot(lRes.getp(), NULL);
   }
 
   // Deleting the pair
@@ -367,12 +365,12 @@ store::Item_t SimpleJSONObject::setValue(
 
   if (getCollection() != NULL && lRes->isJSONItem())
   {
-    setJSONRoot(lRes, NULL);
+    setJSONRoot(lRes.getp(), NULL);
   }
 
   if (getCollection() != NULL && aValue->isJSONItem())
   {
-    setJSONRoot(aValue, theRoot);
+    setJSONRoot(aValue.getp(), theRoot);
   }
 
   lRes->removeReference();
@@ -540,6 +538,8 @@ const store::Collection* SimpleJSONObject::getCollection() const
 }
 
 
+#ifndef NDEBUG
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -653,6 +653,7 @@ bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) co
   }
   return false;
 }
+#endif // NDEBUG
 
 
 /******************************************************************************
@@ -755,7 +756,7 @@ void SimpleJSONArray::push_back(const store::Item_t& aValue)
 
   if (getCollection() != NULL && aValue->isJSONItem())
   {
-    setJSONRoot(aValue, theRoot);
+    setJSONRoot(aValue.getp(), theRoot);
   }
 
   aValue->addReference();
@@ -800,7 +801,7 @@ void SimpleJSONArray::insert_before(
 
   if (getCollection() != NULL && member->isJSONItem())
   {
-    setJSONRoot(member, theRoot);
+    setJSONRoot(member.getp(), theRoot);
   }
 
   member->addReference();
@@ -880,7 +881,7 @@ store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
 
   if (getCollection() != NULL && lItem->isJSONItem())
   {
-    setJSONRoot(lItem, NULL);
+    setJSONRoot(lItem.getp(), NULL);
   }
 
   lItem->removeReference();
@@ -904,14 +905,14 @@ store::Item_t SimpleJSONArray::replace(
 
   if (getCollection() != NULL && lItem->isJSONItem())
   {
-    setJSONRoot(lItem, NULL);
+    setJSONRoot(lItem.getp(), NULL);
   }
 
   uint64_t pos = cast(aPos) - 1;
 
   if (getCollection() != NULL && value->isJSONItem())
   {
-    setJSONRoot(value, theRoot);
+    setJSONRoot(value.getp(), theRoot);
   }
 
   theContent[pos]->removeReference();
@@ -1135,6 +1136,8 @@ const store::Collection* SimpleJSONArray::getCollection() const
 }
 
 
+#ifndef NDEBUG
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -1217,6 +1220,8 @@ bool SimpleJSONArray::isThisJSONItemInDescendance(const store::Item* anItem) con
   }
   return false;
 }
+
+#endif // NDEBUG
 
 
 /******************************************************************************

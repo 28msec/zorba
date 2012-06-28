@@ -251,9 +251,7 @@ public:
   // root management
   
 protected:
-  friend void setJSONRoot(
-      const store::Item_t& aJSONItem,
-      const JSONItem* aRoot);
+  friend void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
 
   void setRoot(const JSONItem* aRoot);
 
@@ -263,11 +261,13 @@ protected:
 protected:
   friend class SimpleJSONArray;
 
+#ifndef NDEBUG
   void assertInvariant() const;
 
   bool isThisRootOfAllDescendants(const store::Item* aRoot) const;
 
   bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+#endif
 };
 
 
@@ -282,7 +282,7 @@ public:
 
   virtual ~JSONArray() {}
 
-  /* store API */
+  // store API
   
   bool isJSONArray() const { return true; }
 
@@ -298,7 +298,7 @@ public:
 
   virtual store::Iterator_t getArrayValues() const = 0;
 
-  /* updates */
+  // updates
 
   virtual void
   push_back(const store::Item_t& aValue) = 0;
@@ -425,9 +425,7 @@ public:
 
   // root management
 protected:
-  friend void setJSONRoot(
-    const store::Item_t& aJSONItem,
-    const JSONItem* aRoot);
+  friend void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
 
   void setRoot(const JSONItem* aRoot);
 
@@ -442,17 +440,17 @@ protected:
 protected:
   friend class SimpleJSONObject;
 
+#ifndef NDEBUG
   void assertInvariant() const;
 
   bool isThisRootOfAllDescendants(const store::Item* aRoot) const;
 
   bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+#endif
 };
 
 
-void setJSONRoot(
-    const store::Item_t& aJSONItem,
-    const JSONItem* aRoot);
+void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
     
 #ifndef NDEBUG
 #define ASSERT_INVARIANT() assertInvariant()

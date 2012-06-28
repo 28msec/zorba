@@ -2177,7 +2177,8 @@ bool BasicItemFactory::createJSONObject(
       store::Iterator_t sourceKeys = sourceObj->getObjectKeys();
 
       sourceKeys->open();
-      while(sourceKeys->next(keyItem))
+
+      while (sourceKeys->next(keyItem))
       {
         valueItem = objItem->getObjectValue(keyItem);
         if (copymode.theDoCopy &&
@@ -2194,6 +2195,7 @@ bool BasicItemFactory::createJSONObject(
           ERROR_PARAMS(keyItem->getStringValue()));
         }
       }
+
       sourceKeys->close();
     }
   }

@@ -464,7 +464,7 @@ protected:
   bool                    theDistinct;
 
   std::vector<XmlNode*>   theNodes;
-  long                    theCurrentNode;
+  csize                   theCurrentNode;
   
 #ifdef ZORBA_WITH_JSON
   std::set<json::JSONItem*>  theJSONItems;
@@ -472,9 +472,9 @@ protected:
 
 public:
   StoreNodeSortIterator(
-        const store::Iterator_t& input,
-        bool                     ascendant,
-        bool                     distinct)
+      const store::Iterator_t& input,
+      bool                     ascendant,
+      bool                     distinct)
     :
     theInput(input),
     theAscending(ascendant),

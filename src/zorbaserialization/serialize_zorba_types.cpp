@@ -1394,9 +1394,10 @@ void serialize_my_children2(Archiver& ar, store::Iterator_t iter)
 /*******************************************************************************
 
 ********************************************************************************/
-void serialize_json_object(Archiver &ar, store::Item *&obj)
+void serialize_json_object(Archiver& ar, store::Item*& obj)
 {
   xs_integer lSize = xs_integer(0);
+
   if (ar.is_serializing_out())
   {
     store::Iterator_t lIter = obj->getObjectKeys();
@@ -1408,6 +1409,7 @@ void serialize_json_object(Archiver &ar, store::Item *&obj)
     }
     lIter->close();
   }
+
   ar & lSize;
 
   if (ar.is_serializing_out())
@@ -1449,7 +1451,7 @@ void serialize_json_object(Archiver &ar, store::Item *&obj)
 /*******************************************************************************
 
 ********************************************************************************/
-void serialize_json_array(Archiver &ar, store::Item *&obj)
+void serialize_json_array(Archiver& ar, store::Item*& obj)
 {
   xs_integer lSize = xs_integer(0);
   if (ar.is_serializing_out())

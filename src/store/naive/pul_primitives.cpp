@@ -1909,6 +1909,8 @@ void UpdJSONObjectInsert::apply()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
+  theIsApplied = true;
+
   csize numPairs = theNames.size();
   for (csize i = 0; i < numPairs; ++i, ++theNumApplied)
   {
@@ -1918,8 +1920,6 @@ void UpdJSONObjectInsert::apply()
       ERROR_PARAMS(theNames[i]->getStringValue()));
     }
   }
-
-  theIsApplied = true;
 }
 
 
@@ -1976,10 +1976,7 @@ void UpdJSONObjectDelete::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  bool inserted = obj->add(
-      theName,
-      theOldValue,
-      false);
+  bool inserted = obj->add(theName, theOldValue, false);
 
   ZORBA_ASSERT(inserted);
 
@@ -1991,11 +1988,11 @@ void UpdJSONObjectDelete::undo()
 
 ********************************************************************************/
 UpdJSONObjectReplaceValue::UpdJSONObjectReplaceValue(
-      CollectionPul* pul,
-      const QueryLoc* loc,
-      store::Item_t& target,
-      store::Item_t& name,
-      store::Item_t& newValue)
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    store::Item_t& name,
+    store::Item_t& newValue)
   :
   UpdatePrimitive(pul, loc, target),
   theName(name),
@@ -2094,6 +2091,7 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
 {
   assert(theTarget->isJSONArray());
 }
+
 
 UpdJSONArrayUpdate::UpdJSONArrayUpdate(
     CollectionPul* pul,
