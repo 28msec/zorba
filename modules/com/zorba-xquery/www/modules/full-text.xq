@@ -808,6 +808,7 @@ declare function ft:tokenize-node( $node as node() )
  : @param $excludes The set of nodes (and its descendants) to exclude.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq
  :)
 declare function ft:tokenize-nodes( $includes as node()+,
                                     $excludes as node()* )
@@ -825,6 +826,7 @@ declare function ft:tokenize-nodes( $includes as node()+,
  : for nodes.
  : @return a (possibly empty) sequence of tokens.
  : @error err:FTST0009 if <code>$lang</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq
  :)
 declare function ft:tokenize-nodes( $includes as node()+,
                                     $excludes as node()*,
