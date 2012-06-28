@@ -295,48 +295,53 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
 {
   ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
+  csize lPosition;
+  store::Item_t lRes;
 
-  if (!theKeys.exists(lName))
+  if (!theKeys.get(lName, lPosition))
   {
     ASSERT_INVARIANT();
     return 0;
   }
   
-  csize lPosition;
-  theKeys.get(lName, lPosition);
-  assert(thePairs[lPosition].first->getStringValue() == lName);
-  store::Item_t lRes = thePairs[lPosition].second;
-
-  if (getCollection() != NULL && lRes->isJSONItem())
-  {
-    setJSONRoot(lRes.getp(), NULL);
-  }
-
-  // Deleting the pair
-  thePairs[lPosition].first->removeReference();
-  lRes->removeReference();
-#ifndef NDEBUG
-  thePairs[lPosition].first = NULL;
-  thePairs[lPosition].second = NULL;
-#endif
-  Pairs::iterator lIterator = thePairs.begin();
-  for (csize i = 0; i < lPosition; ++i)
-  {
-    ++lIterator;
-  }
-  assert(lIterator->first == NULL);
-  assert(lIterator->second == NULL);
-  thePairs.erase(lIterator);
-
-  // Rebuilding the key-to-position map
-  theKeys.clear();
-  for (lIterator = thePairs.begin(), lPosition = 0;
+  Pairs::iterator lIterator;
+  csize lIteratorPosition;
+  for (lIterator = thePairs.begin(), lIteratorPosition = 0;
        lIterator != thePairs.end();
-       ++lIterator, ++lPosition)
+       ++lIterator, ++lIteratorPosition)
   {
-    theKeys.insert(lIterator->first->getStringValue(), lPosition);
-  }
+    if (lIteratorPosition < lPosition)
+    {
+      continue;
+    }
   
+    // This is the position we are looking for.
+    else if (lIteratorPosition == lPosition)
+    {
+      // Preparing the returned item.
+      assert(lIterator->first->getStringValue() == lName);
+      lRes = lIterator->second;
+      if (getCollection() != NULL && lRes->isJSONItem())
+      {
+        setJSONRoot(lRes.getp(), NULL);
+      }
+
+      // Erasing the corresponding entries.
+      lIterator->first->removeReference();
+      lIterator->second->removeReference();
+      lIterator = thePairs.erase(lIterator);
+      theKeys.erase(lName);
+    }
+    
+    // Rebuilding the key positions after this removed pair.
+    assert(lIterator->first != NULL);
+    assert(lIterator->second != NULL);
+    Keys::iterator lKeyIterator = theKeys.find(lIterator->first->getStringValue());
+    assert(lKeyIterator != theKeys.end());
+    assert(lKeyIterator.getValue() == lPosition + 1);
+    lKeyIterator.setValue(lPosition);
+  }
+
   ASSERT_INVARIANT();
   return lRes;
 }
