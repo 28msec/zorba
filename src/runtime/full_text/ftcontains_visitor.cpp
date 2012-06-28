@@ -446,7 +446,7 @@ void V::end_visit( ftwords &w ) {
     }
   }
   catch ( XQueryException &e ) {
-    set_source( e, w.get_value_expr()->get_loc() );
+    set_source( e, w.get_value_iter()->loc );
     throw;
   }
   END_VISIT( ftwords );

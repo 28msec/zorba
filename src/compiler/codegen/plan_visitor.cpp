@@ -2025,25 +2025,25 @@ void end_visit(trycatch_expr& v)
       switch (var_type)
       {
       case catch_clause::err_code:
-        rcc.vars[TryCatchIterator::CatchClause::err_code] = *vec;
+        rcc.theVars[TryCatchIterator::CatchClause::err_code] = *vec;
         break;
       case catch_clause::err_desc:
-        rcc.vars[TryCatchIterator::CatchClause::err_desc] = *vec;
+        rcc.theVars[TryCatchIterator::CatchClause::err_desc] = *vec;
         break;
       case catch_clause::err_value:
-        rcc.vars[TryCatchIterator::CatchClause::err_value] = *vec;
+        rcc.theVars[TryCatchIterator::CatchClause::err_value] = *vec;
         break;
       case catch_clause::err_module:
-        rcc.vars[TryCatchIterator::CatchClause::err_module] = *vec;
+        rcc.theVars[TryCatchIterator::CatchClause::err_module] = *vec;
         break;
       case catch_clause::err_line_no:
-        rcc.vars[TryCatchIterator::CatchClause::err_line_no] = *vec;
+        rcc.theVars[TryCatchIterator::CatchClause::err_line_no] = *vec;
         break;
       case catch_clause::err_column_no:
-        rcc.vars[TryCatchIterator::CatchClause::err_column_no] = *vec;
+        rcc.theVars[TryCatchIterator::CatchClause::err_column_no] = *vec;
         break;
       case catch_clause::zerr_stack_trace:
-        rcc.vars[TryCatchIterator::CatchClause::zerr_stack_trace] = *vec;
+        rcc.theVars[TryCatchIterator::CatchClause::zerr_stack_trace] = *vec;
         break;
       default:
         ZORBA_ASSERT(false);
@@ -2202,8 +2202,10 @@ void end_visit(if_expr& v)
   PlanIter_t iterElse = pop_itstack();
   PlanIter_t iterThen = pop_itstack();
   PlanIter_t iterCond = pop_itstack();
-  PlanIter_t iterIfThenElse = new IfThenElseIterator(
-    sctx, qloc, iterCond, iterThen, iterElse, v.is_updating());
+
+  PlanIter_t iterIfThenElse = 
+  new IfThenElseIterator(sctx, qloc, iterCond, iterThen, iterElse);
+
   push_itstack(&*iterIfThenElse);
 }
 

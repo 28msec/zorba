@@ -29,7 +29,7 @@
 #include <typeinfo>
 #include <string.h>
 
-
+#include "zorbaserialization/archiver_consts.h"
 
 namespace zorba
 {
@@ -42,7 +42,6 @@ namespace serialization
 class SerializeBaseClass;
 class Archiver;
 class MemArchiver;
-class ClassFactoriesMap;
 class ClassDeserializer;
 
 
@@ -81,11 +80,13 @@ class ClassSerializer
 {
   friend class Archiver;
 
+typedef std::vector<ClassDeserializer*> ClassFactoriesMap;
+
 public:
   static const unsigned long g_zorba_classes_version;
 
 private:
-  ClassFactoriesMap   * theClassFactories;
+  ClassFactoriesMap     theClassFactories;
 
   MemArchiver         * harcoded_objects_archive;
 
@@ -101,9 +102,9 @@ public:
 
   ~ClassSerializer();
 
-  void register_class_factory(const char* className, ClassDeserializer* d);
+  void register_class_factory(TypeCode code, ClassDeserializer* d);
 
-  ClassDeserializer* get_class_factory(const char* classname);
+  ClassDeserializer* get_class_factory(TypeCode code);
 
   Archiver* getArchiverForHardcodedObjects();
 
@@ -127,30 +128,11 @@ class ZORBA_DLL_PUBLIC SerializeBaseClass
 public:
   virtual ~SerializeBaseClass() {}
 
+  virtual serialization::TypeCode get_serializer_type_code() const = 0;
+
   virtual void serialize_internal(Archiver& ar) = 0;
 };
 
-
-#define SERIALIZE_INTERNAL_METHOD(class_name)                             \
-virtual void serialize_internal(::zorba::serialization::Archiver& ar)     \
-{                                                                         \
-  CHECK_CLASS_NAME(class_name);                                           \
-                                                                          \
-  if (ar.is_serialize_base_class())                                       \
-    ar.set_serialize_base_class(false);                                   \
-                                                                          \
-  class_name::serialize(ar);                                              \
-}
-
-#ifndef NDEBUG
-#define CHECK_CLASS_NAME(class_name)\
-if (ar.is_serializing_out() && !ar.is_serialize_base_class())             \
-{                                                                         \
-  assert(::strcmp(typeid(*this).name(), typeid(class_name).name()) == 0); \
-}
-#else
-#define CHECK_CLASS_NAME(class_name)
-#endif
 
 /*******************************************************************************
   Every serializable class C has a nested member class D that is a subclass of
@@ -175,7 +157,7 @@ public:                                                                 \
   class_factory()                                                       \
   {                                                                     \
     serialization::ClassSerializer::getInstance()->                     \
-    register_class_factory(T_serialized_class::get_class_name_str_static(), this); \
+    register_class_factory(T_serialized_class::get_serializer_type_code_static(), this); \
   }                                                                     \
                                                                         \
   virtual serialization::SerializeBaseClass* create_new(serialization::Archiver& ar) \
@@ -188,53 +170,104 @@ public:                                                                 \
 /*******************************************************************************
 
 ********************************************************************************/
-#define SERIALIZABLE_CLASS(class_name)                                 \
-SERIALIZE_INTERNAL_METHOD(class_name)                                  \
-                                                                       \
-virtual const char* get_class_name_str() const { return #class_name; } \
-                                                                       \
-static const char* get_class_name_str_static() { return #class_name; } \
-                                                                       \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))        \
-static class_factory<class_name>  g_class_factory;                     \
+#define SERIALIZABLE_CLASS(class_name)                                   \
+  virtual void serialize_internal(::zorba::serialization::Archiver& ar); \
+                                                                         \
+  static serialization::TypeCode theTypeCode;                            \
+                                                                         \
+  virtual serialization::TypeCode get_serializer_type_code() const       \
+  {                                                                      \
+    return theTypeCode;                                                  \
+  }                                                                      \
+                                                                         \
+  static serialization::TypeCode get_serializer_type_code_static()       \
+  {                                                                      \
+    return theTypeCode;                                                  \
+  }                                                                      \
+                                                                         \
+  SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))        \
+  static class_factory<class_name>  g_class_factory;                     \
+  
+
+#define SERIALIZABLE_ABSTRACT_CLASS(class_name)                          \
+  virtual void serialize_internal(::zorba::serialization::Archiver& ar); \
+                                                                         \
+  virtual serialization::TypeCode get_serializer_type_code() const       \
+  {                                                                      \
+    return serialization::TYPE_LAST;                                     \
+  }
 
 
-#define SERIALIZABLE_ABSTRACT_CLASS(class_name)                        \
-SERIALIZE_INTERNAL_METHOD(class_name)                                  \
-                                                                       \
-virtual const char* get_class_name_str() const { return #class_name; } \
-                                                                       \
-static const char* get_class_name_str_static() { return #class_name; } 
+#define SERIALIZE_INTERNAL_METHOD(class_name)                             \
+void class_name::serialize_internal(::zorba::serialization::Archiver& ar) \
+{                                                                         \
+  if (ar.is_serialize_base_class())                                       \
+    ar.set_serialize_base_class(false);                                   \
+                                                                          \
+  class_name::serialize(ar);                                              \
+}
 
 
-#define SERIALIZABLE_CLASS_VERSIONS(class_name)                        \
-class_name::class_factory<class_name> class_name::g_class_factory;
+#define SERIALIZABLE_CLASS_VERSIONS(class_name)                             \
+  serialization::TypeCode class_name::theTypeCode =                         \
+    serialization::TYPE_##class_name;                                       \
+                                                                            \
+  class_name::class_factory<class_name> class_name::g_class_factory;        \
+                                                                            \
+  SERIALIZE_INTERNAL_METHOD(class_name)
+
+
+#define SERIALIZABLE_CLASS_VERSIONS_2(class_name, type_code)                \
+  serialization::TypeCode class_name::theTypeCode =                         \
+    serialization::type_code;                                               \
+                                                                            \
+  class_name::class_factory<class_name> class_name::g_class_factory;        \
+                                                                            \
+  SERIALIZE_INTERNAL_METHOD(class_name)
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-#define SERIALIZABLE_TEMPLATE_CLASS(class_name)                           \
-SERIALIZE_INTERNAL_METHOD(class_name)                                     \
-                                                                          \
-static const char * class_name_str;                                       \
-                                                                          \
-virtual const char* get_class_name_str() const { return class_name_str; } \
-                                                                          \
-static const char* get_class_name_str_static() { return class_name_str; } \
-                                                                          \
-SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))
+
+#define SERIALIZABLE_TEMPLATE_CLASS(class_name)                         \
+  virtual void serialize_internal(::zorba::serialization::Archiver& ar) \
+  {                                                                     \
+    if (ar.is_serialize_base_class())                                   \
+      ar.set_serialize_base_class(false);                               \
+                                                                        \
+    class_name::serialize(ar);                                          \
+  }                                                                     \
+                                                                        \
+  static serialization::TypeCode theTypeCode;                           \
+                                                                        \
+  virtual serialization::TypeCode get_serializer_type_code() const      \
+  {                                                                     \
+    return theTypeCode;                                                 \
+  }                                                                     \
+                                                                        \
+  static serialization::TypeCode get_serializer_type_code_static()      \
+  {                                                                     \
+    return theTypeCode;                                                 \
+  }                                                                     \
+                                                                        \
+  SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))
 
 
-#define SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(class_name)                  \
-SERIALIZE_INTERNAL_METHOD(class_name)                                     \
-                                                                          \
-static const char * class_name_str;                                       \
-                                                                          \
-virtual const char* get_class_name_str() const { return class_name_str; } \
-                                                                          \
-static const char* get_class_name_str_static() { return class_name_str; }
-
+#define SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(class_name)                \
+  virtual void serialize_internal(::zorba::serialization::Archiver& ar) \
+  {                                                                     \
+    if (ar.is_serialize_base_class())                                   \
+      ar.set_serialize_base_class(false);                               \
+                                                                        \
+    class_name::serialize(ar);                                          \
+  }                                                                     \
+                                                                        \
+  virtual serialization::TypeCode get_serializer_type_code() const      \
+  {                                                                     \
+    return serialization::TYPE_LAST;                                    \
+  }
+  
 
 //
 // Static members of template classes with one template param.
@@ -245,15 +278,17 @@ static const char* get_class_name_str_static() { return class_name_str; }
 // Example:
 //
 // SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(
-//     serializable_ItemPointerHashMap, 
-//     serializable_ItemPointerHashMap<StaticallyKnownCollection_t>,
+//     TypedValueCompareIterator, 
+//     TypedValueCompareIterator<store::XS_DOUBLE>,
 //     1)
 //
-#define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(template_name, instance_name, index)   \
-                                                                                       \
-instance_name::class_factory<instance_name> g_class_factory_##template_name##_##index; \
-                                                                                       \
-template<> const char* instance_name::class_name_str = #instance_name;
+#define SERIALIZABLE_TEMPLATE_INSTANCE(template_name, instance_name, index) \
+                                                                            \
+instance_name::class_factory<instance_name>                                 \
+g_class_factory_##template_name##_##index;                                  \
+                                                                            \
+template<> serialization::TypeCode instance_name::theTypeCode =             \
+serialization::TYPE_##template_name##_##index;
 
 //
 //  If the template class has more than one template params, e.g. Foo<T1, T2>,
@@ -269,20 +304,13 @@ template<> const char* instance_name::class_name_str = #instance_name;
 //     StaticallyKnownCollection_t>,
 //     1)
 //
-#define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(template_name, instance_name, second_T, index) \
-instance_name, second_T::class_factory<instance_name,second_T>   \
-g_class_factory_##template_name##_##index;                       \
-                                                                 \
-template<> const char* instance_name, second_T::class_name_str = \
-#instance_name "," #second_T;
-
-
-#define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(template_name, instance_name, second_T, third_T, index) \
-instance_name, second_T, third_T::class_factory<instance_name,second_T,third_T> \
-g_class_factory_##template_name##_##index;                                      \
-                                                                                \
-template<> const char* instance_name, second_T, third_T::class_name_str =       \
-#instance_name "," #second_T "," #third_T;
+#define SERIALIZABLE_TEMPLATE_INSTANCE_2(template_name, instance_name, second_T, index) \
+                                                                          \
+instance_name, second_T::class_factory<instance_name,second_T>            \
+g_class_factory_##template_name##_##index;                                \
+                                                                          \
+template<> serialization::TypeCode instance_name, second_T::theTypeCode = \
+serialization::TYPE_##template_name##_##index;
 
 
 /*******************************************************************************
@@ -320,15 +348,6 @@ class_name(::zorba::serialization::Archiver& ar)                \
 {                                                               \
 }
 
-#define SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM3(class_name, base_class, param1, param2, param3) \
-class_name(::zorba::serialization::Archiver& ar)                \
-  :                                                             \
-  base_class(ar),                                               \
-  param1(NULL),                                                 \
-  param2(NULL),                                                 \
-  param3(NULL)                                                  \
-{                                                               \
-}
 
 #define SERIALIZABLE_CLASS_CONSTRUCTOR3(class_name, base_class1, base_class2) \
 class_name(::zorba::serialization::Archiver& ar)                              \

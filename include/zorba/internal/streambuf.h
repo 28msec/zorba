@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <list>
-#include "common/common.h"
-#include "zorbatypes/rchandle.h"
-#pragma once
-#ifndef ZORBA_REF_COUNTED_STD_LIST
-#define ZORBA_REF_COUNTED_STD_LIST
 
-namespace zorba
-{
+#ifndef ZORBA_INTERNAL_STREAMBUF_H
+#define ZORBA_INTERNAL_STREAMBUF_H
 
-template <typename T>
-class rclist : public RCObject, public std::list<T>
-{
-  SYNC_CODE(mutable RCLock  lock;)
-public:
-  long* getSharedRefCounter() const { return NULL; }
-  SYNC_CODE(RCLock* getRCLock() const { return &lock; });
-};
+#include <streambuf>
 
-}//end namespace zorba
+#include <zorba/config.h>
 
-#endif
+namespace zorba {
+namespace internal {
+
+///////////////////////////////////////////////////////////////////////////////
+
+ZORBA_DLL_PUBLIC
+void dealloc_streambuf( std::streambuf* );
+
+ZORBA_DLL_PUBLIC
+void stream_callback( std::ios_base::event, std::ios_base&, int index );
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace internal
+} // namespace zorba
+#endif  /* ZORBA_INTERNAL_STREAMBUF_H */
+/* vim:set et sw=2 ts=2: */

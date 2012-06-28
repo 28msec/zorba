@@ -48,13 +48,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONParseIterator,
     NaryBaseIterator<JSONParseIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONParseIterator, PlanIteratorState>*)this);
-
-    ar & theRelativeLocation;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONParseIterator(
     static_context* sctx,
@@ -101,11 +95,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectNamesIterator,
     UnaryBaseIterator<JSONObjectNamesIterator, JSONObjectNamesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<JSONObjectNamesIterator, JSONObjectNamesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONObjectNamesIterator(
     static_context* sctx,
@@ -150,11 +140,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectValuesIterator,
     UnaryBaseIterator<JSONObjectValuesIterator, JSONObjectValuesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<JSONObjectValuesIterator, JSONObjectValuesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONObjectValuesIterator(
     static_context* sctx,
@@ -186,11 +172,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectValueIterator,
     BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONObjectValueIterator(
     static_context* sctx,
@@ -222,11 +204,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectProjectIterator,
     BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONObjectProjectIterator(
     static_context* sctx,
@@ -258,11 +236,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArraySizeIterator,
     UnaryBaseIterator<JSONArraySizeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<JSONArraySizeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONArraySizeIterator(
     static_context* sctx,
@@ -294,11 +268,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayMemberIterator,
     BinaryBaseIterator<JSONArrayMemberIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<JSONArrayMemberIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONArrayMemberIterator(
     static_context* sctx,
@@ -343,11 +313,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayMembersIterator,
     UnaryBaseIterator<JSONArrayMembersIterator, JSONArrayMembersIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<JSONArrayMembersIterator, JSONArrayMembersIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONArrayMembersIterator(
     static_context* sctx,
@@ -394,11 +360,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayFlattenIterator,
     UnaryBaseIterator<JSONArrayFlattenIterator, JSONArrayFlattenIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<JSONArrayFlattenIterator, JSONArrayFlattenIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONArrayFlattenIterator(
     static_context* sctx,
@@ -430,11 +392,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONItemAccessorIterator,
     BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONItemAccessorIterator(
     static_context* sctx,
@@ -466,11 +424,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONNullIterator,
     NoaryBaseIterator<JSONNullIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NoaryBaseIterator<JSONNullIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONNullIterator(
     static_context* sctx,
@@ -503,11 +457,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayInsertIterator,
     NaryBaseIterator<JSONArrayInsertIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONArrayInsertIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONArrayInsertIterator(
     static_context* sctx,
@@ -541,11 +491,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDeleteIterator,
     NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONDeleteIterator(
     static_context* sctx,
@@ -581,13 +527,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONReplaceValueIterator,
     NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>*)this);
-
-    ar & theCopyInput;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONReplaceValueIterator(
     static_context* sctx,
@@ -620,11 +560,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONRenameIterator,
     NaryBaseIterator<JSONRenameIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<JSONRenameIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONRenameIterator(
     static_context* sctx,

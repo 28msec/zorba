@@ -108,9 +108,9 @@ Store::Store()
   theTreeIdGenerator(NULL),
   theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
-  theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
-  theICs(0, NULL, DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
-  theHashMaps(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
+  theIndices(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
+  theICs(HashMapItemPointerCmp(0, NULL), DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
+  theHashMaps(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
   theTraceLevel(0)
 #ifndef ZORBA_NO_FULL_TEXT
   , theStemmerProvider( nullptr )
@@ -889,7 +889,7 @@ store::IC* Store::getIC(const store::Item* icQName)
 
 ********************************************************************************/
 store::Index_t
-Store::createHashMap(
+Store::createMap(
     const store::Item_t& aQName,
     const store::IndexSpecification& aSpec)
 {
@@ -905,7 +905,7 @@ Store::createHashMap(
 
   lIndex = new ValueHashIndex(aQName, aSpec);
 
-  addHashMap(lIndex);
+  if (!aSpec.theIsTemp) addMap(lIndex);
 
   return lIndex;
 }
@@ -915,7 +915,7 @@ Store::createHashMap(
 
 ********************************************************************************/
 store::Index_t
-Store::destroyHashMap(const store::Item_t& aQName)
+Store::destroyMap(const store::Item_t& aQName)
 {
   store::Index_t lIndex;
   if (!theHashMaps.get(aQName.getp(), lIndex))
@@ -950,7 +950,7 @@ Store::getMap(const store::Item* aQName) const
 
 ********************************************************************************/
 store::Index_t
-Store::getHashMap(const store::Item_t& aQName) const
+Store::getMap(const store::Item_t& aQName) const
 {
   store::Index_t lIndex;
   if (const_cast<IndexSet*>(&theHashMaps)->get(aQName.getp(), lIndex))
@@ -968,7 +968,7 @@ Store::getHashMap(const store::Item_t& aQName) const
 
 ********************************************************************************/
 void
-Store::addHashMap(const store::Index_t& aIndex)
+Store::addMap(const store::Index_t& aIndex)
 {
   store::Item* lName = aIndex->getName();
   store::Index_t lIndex = aIndex;

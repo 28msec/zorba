@@ -258,6 +258,8 @@ public:
       const zstring& uri,
       std::istream& xmlStream);
   
+  const FragmentIStream* getFragmentStream() const { return theFragmentStream; };
+  
 protected:
   bool fillBuffer(FragmentIStream* theFragmentStream);
 
