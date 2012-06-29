@@ -422,7 +422,8 @@ public:
   isStreamable() const;
 
   /**
-   * Checks whether the item's streamable content is seekable.
+   * Checks whether the item's streamable content is arbitrarily
+   * (forward anb backward) seekable.
    *
    * @return true only if it is.
    */
