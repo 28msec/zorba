@@ -728,7 +728,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "\""+zNamespace+"\":"+zLocalName+"["+zPosition+"]";
+          path += "Q{"+zNamespace+"}"+zLocalName+"["+zPosition+"]";
           break;
         case store::StoreConsts::attributeNode:
           nodeName = inNode->getNodeName();
@@ -737,7 +737,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           path += "@";
           if(zNamespace != "")
           {
-            path += "\""+zNamespace+"\":";
+            path += "Q{"+zNamespace+"}";
           }
           path += zLocalName;
           break;
@@ -779,7 +779,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       temp = path;
-      path = "\"http://www.w3.org/2005/xpath-functions\":root()";
+      path = "Q{http://www.w3.org/2005/xpath-functions\}root()";
       path += temp;
     }
 
