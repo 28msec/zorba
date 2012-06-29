@@ -40,7 +40,7 @@ public:
     expr_t ftignore
   );
 
-  expr_t clone( substitution_t& ) const;
+  expr_t cloneImpl( substitution_t& ) const;
   void compute_scripting_kind();
 
   expr_t get_range() const { return range_; }

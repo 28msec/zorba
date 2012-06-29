@@ -56,7 +56,7 @@ void ftcontains_expr::accept( expr_visitor &v ) {
   v.end_visit( *this );
 }
 
-expr_t ftcontains_expr::clone( substitution_t &s ) const {
+expr_t ftcontains_expr::cloneImpl( substitution_t &s ) const {
   return new ftcontains_expr(
     theSctx, get_loc(),
     range_->clone( s ),
