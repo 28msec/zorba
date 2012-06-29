@@ -24,7 +24,6 @@
 
 #include "types/typeops.h"
 
-#include "util/hashmap32.h"
 #include "util/string_util.h"
 
 #include "diagnostics/assert.h"

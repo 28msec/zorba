@@ -12,20 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(ZORBAUTILS_SRCS
-    fatal.cpp
-    properties_base.cpp
-    hashset_node_itemh.cpp
-    hashset_atomic_itemh.cpp
-    mutex.cpp
-    condition.cpp
-    latch.cpp
-    locale.cpp
-    lock.cpp
-    runnable.cpp
-    synchronous_logger.cpp
-    string_util.cpp)
-
-IF (ZORBA_WITH_LIBXML2_SAX)
-  SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)
-ENDIF (ZORBA_WITH_LIBXML2_SAX)
+SET(UTIL_HASH_SRCS
+  hash.cpp
+  rehash_policy.cpp
+  )

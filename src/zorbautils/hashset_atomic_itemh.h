@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_HANDLE_HAHSET_ITEM_VALUE_H
-#define ZORBA_RUNTIME_HANDLE_HAHSET_ITEM_VALUE_H
+#ifndef ZORBA_ZORBAUTILS_HAHSET_ATOMIC_ITEMH
+#define ZORBA_ZORBAUTILS_HAHSET_ATOMIC_ITEMH
 
 #include "zorbautils/hashset.h"
 
 #include "runtime/booleans/BooleanImpl.h"
 
 #include "context/dynamic_context.h"
+#include "context/static_context.h"
 
 namespace zorba 
 { 
@@ -33,9 +34,9 @@ class ValueCompareParam
 {
 public:
   ValueCompareParam(
-        const QueryLoc& loc,
-        dynamic_context* dctx,
-        static_context* sctx)
+      const QueryLoc& loc,
+      dynamic_context* dctx,
+      static_context* sctx)
     :
     theLocation(loc),
     theTypeManager(sctx->get_typemanager()),
@@ -52,9 +53,9 @@ public:
 
 
 /*******************************************************************************
-
+  Used by the fn:distinct-values function.
 ********************************************************************************/
-class ItemValueCollHandleHashSet
+class AtomicItemHandleHashSet
 {
 public:
 
@@ -66,10 +67,10 @@ public:
   public:
     CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) {}
 
-    bool equal(const store::Item_t& item1, const store::Item_t& item2) const
+    bool equal(store::Item* item1, store::Item* item2) const
     {
-      assert (item1 != NULL);
-      assert (item2 != NULL);
+      assert(item1 != NULL);
+      assert(item2 != NULL);
       store::Item_t t1(item1);
       store::Item_t t2(item2);
 
@@ -93,7 +94,7 @@ public:
       }
     }
 
-    uint32_t hash(const store::Item_t& t) const
+    uint32_t hash(store::Item* t) const
     {
       assert (t != NULL);
       return t->hash(theCompareParam->theTimezone,  theCompareParam->theCollator);
@@ -103,28 +104,34 @@ public:
 private:
   ValueCompareParam                      * theCompareParam;
   CompareFunction                          theCompareFunction;
-  HashSet<store::Item_t, CompareFunction>  theSet;
+  HashSet<store::Item*, CompareFunction>   theSet;
 
 public:
-  ItemValueCollHandleHashSet(ValueCompareParam* compParam, ulong size = 1024)
-  :
-  theCompareParam(compParam),
-  theCompareFunction(compParam),
-  theSet(theCompareFunction, size, false)
+  AtomicItemHandleHashSet(ValueCompareParam* compParam, csize size = 1024);
+
+  ~AtomicItemHandleHashSet();
+
+  void clear();
+
+  bool exists(const store::Item_t& key) 
   {
+    return theSet.exists(key.getp()); 
   }
 
-  ~ItemValueCollHandleHashSet()
+  bool insert(store::Item_t& key) 
   {
-    if (theCompareParam)
-      delete theCompareParam; 
+    assert(key->isAtomic());
+    store::Item* tmp = key.getp();
+
+    bool inserted = theSet.insert(tmp);
+
+    if (inserted)
+    {
+      key->addReference();
+    }
+
+    return inserted;
   }
-
-  void clear() { theSet.clear(); }
-
-  bool exists(const store::Item_t& key) { return theSet.exists(key); }
-
-  bool insert(store::Item_t& key) { return theSet.insert(key); }
 };
 
 
