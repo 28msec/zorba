@@ -19,10 +19,15 @@
 
 // zorba
 #include <zorba/config.h>
+#ifndef ZORBA_HAVE_UNORDERED_MAP
+#include <zorba/internal/unique_ptr.h>
+#endif /* ZORBA_HAVE_UNORDERED_MAP */
 
 // standard
 #include <functional>
+#ifndef ZORBA_HAVE_UNORDERED_MAP
 #include <string>
+#endif /* ZORBA_HAVE_UNORDERED_MAP */
 #include <sys/types.h>
 
 // Exactly ONE of these should be defined.
@@ -142,6 +147,16 @@ struct hash< basic_string<CharT,Traits,Alloc> > :
 {
   size_t operator()( basic_string<CharT,Traits,Alloc> const &s ) const {
     return zorba::ztd::hash_bytes( s.data(), s.size() );
+  }
+};
+
+/** Specialization for \c unique_ptr. */
+template<typename T,class D>
+struct hash< unique_ptr<T,D> > :
+  unary_function<unique_ptr<T,D> const&,size_t>
+{
+  size_t operator()( unique_ptr<T,D> const &p ) const {
+    return reinterpret_cast<size_t>( p.get() );
   }
 };
 
