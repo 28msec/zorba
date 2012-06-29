@@ -108,6 +108,8 @@ protected:
 
   bool hasReference(const store::Item* node);
 
+  bool assignReference(const store::Item* node, const zstring& reference);
+
   bool getNodeByReference(store::Item_t& result, const zstring& reference);
 
 #ifdef ZORBA_WITH_JSON
