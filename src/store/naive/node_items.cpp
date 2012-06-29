@@ -471,9 +471,29 @@ XmlNode::~XmlNode()
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::setTreeInternal(const XmlTree* aNewTree)
+bool XmlNode::equals(const store::Item* other, long, const XQPCollator*) const
 {
-  theUnion.treeRCPtr = (long*)aNewTree;
+  assert(!isConnectorNode());
+  return this == other;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t XmlNode::hash(long, const XQPCollator*) const
+{
+  assert(!isConnectorNode());
+  return reinterpret_cast<uintptr_t>(this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setTreeInternal(const XmlTree* newTree)
+{
+  theUnion.treeRCPtr = (long*)newTree;
 }
 
 
