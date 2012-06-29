@@ -694,7 +694,6 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
   while ( consumeNext( item, theChildren[1], plan_state ) ) {
     store::Item_t exc_si;
     GENV_STORE.getStructuralInformation( exc_si, item.getp() );
-    // TODO: change this to an unordered_map
     state->excludes_.push_back( exc_si );
   }
 
