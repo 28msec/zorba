@@ -3666,6 +3666,10 @@
       <value>JSON serialization error</value>
     </entry>
 
+    <entry key="JSONiq error">
+      <value>JSONIQ error</value>
+    </entry>
+
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>

@@ -605,6 +605,7 @@ extern entry const dict_en[] = {
   { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
   { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
   { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
+  { "~JSONiq error", "JSONIQ error" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
