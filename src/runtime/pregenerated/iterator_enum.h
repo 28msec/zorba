@@ -215,6 +215,8 @@
   TYPE_InCollectionPositionIterator,
   TYPE_InSameCollectionPositionIterator,
   TYPE_NodeReferenceIterator,
+  TYPE_HasNodeReferenceIterator,
+  TYPE_AssignNodeReferenceIterator,
   TYPE_NodeByReferenceIterator,
   TYPE_FnLocalNameIterator,
   TYPE_FnNamespaceUriIterator,
