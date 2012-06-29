@@ -653,87 +653,101 @@ int getNodePosition(store::Item_t aNode)
 bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
-  store::Item_t swap;
   store::Item_t nodeName;
+  store::NsBindings nsBindings;
   zstring path;
   zstring temp;
   zstring zNamespace;
   zstring zLocalName;
   zstring zPosition;
+  bool rootIsDocument = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(inNode, theChildren[0], planState))
   {
-    while (inNode->getParent())
-    {
-      temp = path;
-      path = "/";
-
+    do
+    { 
       switch (inNode->getNodeKind())
       {
+        case store::StoreConsts::documentNode:
+          temp = path;
+          path = "/";
+          path += temp;
+          rootIsDocument = true;
+          break;
+
         case store::StoreConsts::elementNode:
           nodeName = inNode->getNodeName();
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "\""+zNamespace+"\":"+zLocalName+"["+zPosition+"]";
+          temp = path;
+          path = "\""+zNamespace+"\":"+zLocalName+"["+zPosition.c_str()+"]";
+          path += temp;
           break;
+
         case store::StoreConsts::attributeNode:
           nodeName = inNode->getNodeName();
           zNamespace =nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
-          path += "@";
           if(zNamespace != "")
           {
-            path += "\""+zNamespace+"\":";
+            temp = path;
+            path = "@\""+zNamespace+"\":"+zLocalName;
+            path += temp;
           }
-          path += zLocalName;
+          else
+          {
+            temp = path;
+            path = "@"+zLocalName;
+            path += temp;
+          }
           break;
+
         case store::StoreConsts::textNode:
           zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "text()["+zPosition+"]";
+          temp = path;
+          path = "text()["+zPosition+"]";
+          path += temp;
           break;
+
         case store::StoreConsts::commentNode:
           zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "comment()["+zPosition+"]";
+          temp = path;
+          path = "comment()["+zPosition+"]";
+          path += temp;
           break;
-        case store::StoreConsts::piNode:
+
+        case store::StoreConsts::piNode: 
           nodeName = inNode->getNodeName();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "processing-instruction("+zLocalName+")["+zPosition+"]";
+          temp = path;
+          path = "processing-instruction("+zLocalName+")["+zPosition+"]";
+          path += temp;
           break;
+
         default:
-          // this is either a documentNode which should always be a root
-          // node (and not end up here) or it is something very strange
           ZORBA_ASSERT(false);
-          break;
       }
-      path += temp;
 
-      swap = inNode->getParent();
-      inNode = swap;
-    }
-
-    // only the root node is left and there we've got some special
-    // cases in the spec
-    if (inNode->getNodeKind() == store::StoreConsts::documentNode)
-    {
-      if (path.empty())
+      inNode = inNode->getParent();
+      
+      if (inNode && inNode->getNodeKind() != store::StoreConsts::documentNode)
       {
+        temp = path;
         path = "/";
+        path += temp;
       }
-    }
-    else
-    {
-      temp = path;
-      path = "\"http://www.w3.org/2005/xpath-functions\":root()";
-      path += temp;
-    }
 
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
+    } while (inNode);
+
+    if(rootIsDocument)
+      STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
+    else
+      throw XQUERY_EXCEPTION(err::FODC0001, ERROR_PARAMS("fn:path"), ERROR_LOC(loc));
   }
 
   STACK_END (state);

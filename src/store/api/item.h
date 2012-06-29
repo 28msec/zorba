@@ -470,6 +470,43 @@ public:
    */
   virtual bool
   isPosOrNegInf() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isAttributeRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isCommentRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isDocumentRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isElementRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isProcessingInstructionRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isTextRef() const;
+
   
   /* -------------------  Methods for Nodes ------------------------------------- */
 
@@ -753,42 +790,6 @@ public:
    */
   virtual bool
   isSibling(const store::Item_t&) const;
-
-  /**
-   *
-   */
-  virtual bool
-  isAttribute() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isComment() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isDocument() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isElement() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isProcessingInstruction() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isText() const;
 
   /**
    *
