@@ -541,6 +541,30 @@ bool expr::willBeSerialized() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue expr::getContainsPragma() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & CONTAINS_PRAGMA_MASK) >> CONTAINS_PRAGMA);
+}
+
+
+void expr::setContainsPragma(BoolAnnotationValue v)
+{
+  theFlags1 &= ~CONTAINS_PRAGMA_MASK;
+  theFlags1 |= (v << CONTAINS_PRAGMA);
+}
+
+
+bool expr::containsPragma() const
+{
+  BoolAnnotationValue v = getContainsPragma();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
   This annotation tells whether the expr must produce nodes that belong to 
   "standalone" trees or not. A tree is standalone if it does not contain 
   references to other trees. Such references are created when the optimizer 

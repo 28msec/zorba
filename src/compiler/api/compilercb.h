@@ -29,6 +29,7 @@
 // without having the definition of static_context availble.
 # include "context/static_context.h"
 #endif
+#include "compiler/expression/pragma.h"
 
 #include "zorbaserialization/class_serializer.h"
 
@@ -157,6 +158,9 @@ public:
 
   typedef std::map<csize, static_context_t> SctxMap;
 
+  typedef std::multimap<expr*, pragma_t> PragmaMap;
+  typedef PragmaMap::const_iterator      PragmaMapIter;
+
 public:  
   XQueryDiagnostics       * theXQueryDiagnostics;
 
@@ -185,6 +189,8 @@ public:
   uint32_t                  theTempIndexCounter;
 
   config                    theConfig;
+
+  PragmaMap                 thePragmas;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);

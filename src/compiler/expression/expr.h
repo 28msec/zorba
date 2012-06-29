@@ -29,6 +29,7 @@
 #include "functions/signature.h"
 
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/pragma.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -759,22 +760,6 @@ public:
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class pragma : public SimpleRCObject
-{
-  friend class expr;
-
-public:
-  store::Item_t theQName;
-  std::string theContent;
-
-public:
-  pragma(store::Item_t name, std::string const& content);
 };
 
 

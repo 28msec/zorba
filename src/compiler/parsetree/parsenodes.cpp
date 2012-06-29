@@ -2807,8 +2807,8 @@ ExtensionExpr::ExtensionExpr(
 void ExtensionExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (pragmas_);
   ACCEPT (expr_);
+  ACCEPT (pragmas_);
   END_VISITOR();
 }
 

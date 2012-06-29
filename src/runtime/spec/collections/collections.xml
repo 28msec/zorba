@@ -390,6 +390,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -448,6 +449,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -505,6 +507,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -566,6 +569,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -627,6 +631,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:member type="bool" name="theIsDynamic"/>
@@ -683,6 +688,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -750,6 +756,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -817,6 +824,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -888,6 +896,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -959,6 +968,7 @@
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="mustCopyNodes" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 

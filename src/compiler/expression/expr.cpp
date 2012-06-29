@@ -955,14 +955,6 @@ expr_t const_expr::clone(substitution_t&) const
 /*******************************************************************************
 
 ********************************************************************************/
-pragma::pragma(store::Item_t name, std::string const& content)
-  :
-  theQName(name),
-  theContent(content)
-{
-}
-
-
 extension_expr::extension_expr(
     static_context* sctx,
     const QueryLoc& loc)

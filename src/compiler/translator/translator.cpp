@@ -56,6 +56,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/pragma.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/xqddf/value_index.h"
@@ -8261,12 +8262,21 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  // may raise XPST0081
-  if (!v.get_name()->is_eqname())
+  store::Item_t lQName;
+  expand_no_default_qname(lQName, v.get_name(), v.get_name()->get_location());
+
+  if (lQName->getPrefix().empty() && lQName->getNamespace().empty())
+    RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(lQName->getStringValue()));
+
+  if (lQName->getNamespace() == ZORBA_EXTENSIONS_NS)
   {
-    zstring ns;
-    theSctx->lookup_ns(ns, v.get_name()->get_prefix(), loc);
+    pragma_t lPragma = new pragma(lQName, v.get_pragma_lit());
+    expr_t lExpr = top_nodestack();
+
+    theCCB->thePragmas.insert(std::make_pair(lExpr.getp(), lPragma));
+    lExpr->setContainsPragma(ANNOTATION_TRUE);
   }
+
 }
 
 

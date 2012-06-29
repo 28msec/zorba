@@ -379,9 +379,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaInsertNodesIterator();
@@ -414,9 +415,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaInsertNodesFirstIterator();
@@ -449,9 +451,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaInsertNodesLastIterator();
@@ -484,9 +487,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaInsertNodesBeforeIterator();
@@ -521,9 +525,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>(sctx, loc, children, isDynamic),
+    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes),
     theIsDynamic(isDynamic)
   {}
 
@@ -571,9 +576,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaApplyInsertNodesIterator();
@@ -620,9 +626,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaApplyInsertNodesFirstIterator();
@@ -669,9 +676,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaApplyInsertNodesLastIterator();
@@ -718,9 +726,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaApplyInsertNodesBeforeIterator();
@@ -767,9 +776,10 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool mustCopyNodes)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>(sctx, loc, children, isDynamic)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>(sctx, loc, children, isDynamic, mustCopyNodes)
   {}
 
   virtual ~ZorbaApplyInsertNodesAfterIterator();
