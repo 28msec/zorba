@@ -268,7 +268,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   ASSERT_INVARIANT();
 
   zstring lName = aName->getStringValue();
-  csize lPosition;
+  csize lPosition = 0;
   store::Item_t lValue;
 
   if (!theKeys.get(lName, lPosition))
@@ -365,7 +365,7 @@ store::Item_t SimpleJSONObject::setValue(
 {
   ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
-  csize lPosition;
+  csize lPosition = 0;
 
   if (!theKeys.get(lName, lPosition))
   {
@@ -562,7 +562,7 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
   ASSERT_INVARIANT();
   zstring lName = aKey->getStringValue();
 
-  csize lPosition;
+  csize lPosition = 0;
   if (!theKeys.get(lName, lPosition))
   {
     return NULL;
