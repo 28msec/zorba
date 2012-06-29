@@ -10,6 +10,7 @@ New Features:
     - fn:parse-xml-fragment#1
   * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
+  * Positional pagination support for collections
 
 Optimizations:
   * Small optimization of comparison operations.
