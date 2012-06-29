@@ -4726,23 +4726,23 @@ void RenameExpr::accept( parsenode_visitor &v ) const
 TransformExpr::TransformExpr(
   const QueryLoc& loc,
   rchandle<CopyVarList> var_list_h,
-  rchandle<exprnode> source_expr_h,
-  rchandle<exprnode> target_expr_h)
+  rchandle<exprnode> modifyExpr,
+  rchandle<exprnode> returnExpr)
   :
   exprnode(loc),
   var_list(var_list_h),
-  source_expr(source_expr_h),
-  target_expr(target_expr_h)
+  theModifyExpr(modifyExpr),
+  theReturnExpr(returnExpr)
 {
 }
 
 
-void TransformExpr::accept( parsenode_visitor &v ) const
+void TransformExpr::accept( parsenode_visitor& v ) const
 {
   BEGIN_VISITOR();
   ACCEPT (var_list);
-  ACCEPT (source_expr);
-  ACCEPT (target_expr);
+  ACCEPT (theModifyExpr);
+  ACCEPT (theReturnExpr);
   END_VISITOR();
 }
 
@@ -4754,7 +4754,7 @@ CopyVarList::CopyVarList(const QueryLoc& loc)
 }
 
 
-void CopyVarList::accept( parsenode_visitor &v ) const
+void CopyVarList::accept( parsenode_visitor& v ) const
 {
   BEGIN_VISITOR();
 
@@ -4781,7 +4781,7 @@ VarBinding::VarBinding(
 }
 
 
-void VarBinding::accept( parsenode_visitor &v ) const
+void VarBinding::accept( parsenode_visitor& v ) const
 {
   BEGIN_VISITOR();
   ACCEPT (expr);
