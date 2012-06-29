@@ -114,6 +114,7 @@
   TYPE_StripDiacriticsIterator,
   TYPE_ThesaurusLookupIterator,
   TYPE_TokenizeNodeIterator,
+  TYPE_TokenizeNodesIterator,
   TYPE_TokenizerPropertiesIterator,
   TYPE_TokenizeStringIterator,
   TYPE_FunctionNameIterator,

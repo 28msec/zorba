@@ -41,6 +41,7 @@ SET(FULLTEXT_SRCS
     thesaurus.cpp
     tokenizer.cpp
     default_tokenizer.cpp
+    ft_module_util.cpp
     ft_module.cpp
     )
 
