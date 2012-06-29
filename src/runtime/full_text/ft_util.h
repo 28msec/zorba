@@ -46,11 +46,13 @@ typedef xs_unsignedInt ft_int;
 ////////// Functions //////////////////////////////////////////////////////////
 
 /**
- * TODO
+ * Finds the <code>xml:lang</code> attribute, if any, of the XML element
+ * specified by \a item and obtains its value.
  *
- * @param item TODO
- * @param lang TODO
- * @return Returns \c true only if TODO
+ * @param item The item for an XML element to check.
+ * @param lang A pointer to received the found language.
+ * @return Returns \c true only if an <code>xml:lang</code> attribute was
+ * found.
  */
 bool find_lang_attribute( store::Item const &item,
                           locale::iso639_1::type *lang );
