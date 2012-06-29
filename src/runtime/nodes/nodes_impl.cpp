@@ -779,7 +779,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       temp = path;
-      path = "Q{http://www.w3.org/2005/xpath-functions\}root()";
+      path = "Q{http://www.w3.org/2005/xpath-functions}root()";
       path += temp;
     }
 
