@@ -34,6 +34,7 @@
 #include "compiler/expression/expr_base.h"
 #include "types/typemanager.h"
 #endif
+#include "compiler/expression/pragma.h"
 
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
@@ -379,6 +380,12 @@ public:
   or ddl) is enabled. The definition of the features is located in
   context/featueres.h.
 
+  thePragmas:
+  -------------
+  A multimap from expr* to pragma_t such that not every expression needs
+  to keep it's own list of pragmas. Since the expr* pointer is only valid
+  until codegen finished, the pragmas can only be used in the compiler.
+
 ********************************************************************************/
 
 class static_context : public SimpleRCObject
@@ -597,6 +604,10 @@ protected:
   std::vector<store::Item_t>                 theDisabledWarnings;
 
   uint32_t                                   theFeatures;
+
+  typedef std::multimap<const expr*, pragma_t> PragmaMap;
+  typedef PragmaMap::const_iterator      PragmaMapIter;
+  PragmaMap                                  thePragmas;
 
 public:
   static bool is_builtin_module(const zstring& ns);
@@ -938,6 +949,22 @@ public:
       const QueryLoc& loc);
 
   bool lookup_option(const store::Item* qname, zstring& option) const;
+
+  //
+  // Pragmas
+  //
+  void add_pragma(
+      const expr* e,
+      const pragma_t& p);
+
+  void
+  lookup_pragmas(const expr* e, std::vector<pragma_t>& pragmas) const;
+
+  bool
+  lookup_pragma(
+      const expr* e,
+      const zstring& localname,
+      pragma_t&) const;
 
 protected:
   void process_feature_option(

@@ -3536,6 +3536,51 @@ bool static_context::lookup_option(
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::add_pragma(
+    const expr* e,
+    const pragma_t& p)
+{
+  thePragmas.insert(std::make_pair(e, p));
+}
+
+
+void
+static_context::lookup_pragmas(
+    const expr* e,
+    std::vector<pragma_t>& pragmas) const
+{
+  pragmas.clear();
+
+  std::pair<PragmaMapIter, PragmaMapIter> lRange = thePragmas.equal_range(e);
+  while (lRange.first != lRange.second)
+  {
+    pragmas.push_back(lRange.first->second);
+    ++lRange.first;
+  }
+}
+
+bool
+static_context::lookup_pragma(
+    const expr* e,
+    const zstring& localname,
+    pragma_t& p) const
+{
+  std::pair<PragmaMapIter, PragmaMapIter> lRange = thePragmas.equal_range(e);
+  while (lRange.first != lRange.second)
+  {
+    if (lRange.first->second->theQName->getLocalName() == localname)
+    {
+      p = lRange.first->second;
+      return true;
+    }
+    ++lRange.first;
+  }
+  return false;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Auditing                                                                   //

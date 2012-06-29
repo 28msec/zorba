@@ -241,7 +241,9 @@ public:
 
   expr_t clone() const;
 
-  virtual expr_t clone(substitution_t& substitution) const;
+  expr_t clone(substitution_t& substitution) const;
+
+  virtual expr_t cloneImpl(substitution_t& substitution) const;
 
   virtual void accept(expr_visitor& v) = 0;
 

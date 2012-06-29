@@ -74,7 +74,7 @@ void json_array_expr::compute_scripting_kind()
 }
 
 
-expr_t json_array_expr::clone(substitution_t& subst) const
+expr_t json_array_expr::cloneImpl(substitution_t& subst) const
 {
   return new json_array_expr(theSctx,
                              get_loc(),
@@ -128,7 +128,7 @@ void json_object_expr::compute_scripting_kind()
 }
 
 
-expr_t json_object_expr::clone(substitution_t& subst) const
+expr_t json_object_expr::cloneImpl(substitution_t& subst) const
 {
   return new json_object_expr(theSctx,
                               get_loc(),
@@ -202,7 +202,7 @@ void json_direct_object_expr::compute_scripting_kind()
 }
 
 
-expr_t json_direct_object_expr::clone(substitution_t& subst) const
+expr_t json_direct_object_expr::cloneImpl(substitution_t& subst) const
 {
   std::vector<expr_t> names;
   std::vector<expr_t> values;

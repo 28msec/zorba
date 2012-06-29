@@ -8273,10 +8273,9 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
     pragma_t lPragma = new pragma(lQName, v.get_pragma_lit());
     expr_t lExpr = top_nodestack();
 
-    theCCB->thePragmas.insert(std::make_pair(lExpr.getp(), lPragma));
+    theRootSctx->add_pragma(lExpr.getp(), lPragma);
     lExpr->setContainsPragma(ANNOTATION_TRUE);
   }
-
 }
 
 

@@ -163,7 +163,7 @@ void block_expr::compute_scripting_kind2(
 }
 
 
-expr_t block_expr::clone(substitution_t& subst) const
+expr_t block_expr::cloneImpl(substitution_t& subst) const
 {
   checked_vector<expr_t> seq2;
   for (csize i = 0; i < theArgs.size(); ++i)
@@ -201,7 +201,7 @@ void apply_expr::compute_scripting_kind()
 }
 
 
-expr_t apply_expr::clone(substitution_t& subst) const
+expr_t apply_expr::cloneImpl(substitution_t& subst) const
 {
   return new apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
 }
@@ -257,7 +257,7 @@ void var_decl_expr::compute_scripting_kind()
 }
 
 
-expr_t var_decl_expr::clone(substitution_t& s) const
+expr_t var_decl_expr::cloneImpl(substitution_t& s) const
 {
   var_expr_t varCopy(new var_expr(*theVarExpr));
   s[theVarExpr.getp()] = varCopy.getp();
@@ -313,7 +313,7 @@ void var_set_expr::compute_scripting_kind()
 }
 
 
-expr_t var_set_expr::clone(substitution_t& s) const
+expr_t var_set_expr::cloneImpl(substitution_t& s) const
 {
   expr_t varClone = theVarExpr->clone(s);
 
@@ -361,7 +361,7 @@ void exit_expr::compute_scripting_kind()
 }
 
 
-expr_t exit_expr::clone(substitution_t& subst) const
+expr_t exit_expr::cloneImpl(substitution_t& subst) const
 {
   expr* clone = new exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
 
@@ -430,7 +430,7 @@ void exit_catcher_expr::removeExitExpr(const expr* exitExpr)
 }
 
 
-expr_t exit_catcher_expr::clone(substitution_t& subst) const
+expr_t exit_catcher_expr::cloneImpl(substitution_t& subst) const
 {
   expr_t clonedInput = get_expr()->clone(subst);
 
@@ -471,7 +471,7 @@ void flowctl_expr::compute_scripting_kind()
 }
 
 
-expr_t flowctl_expr::clone(substitution_t& subst) const
+expr_t flowctl_expr::cloneImpl(substitution_t& subst) const
 {
   return new flowctl_expr(theSctx, get_loc(), get_action());
 }
@@ -516,7 +516,7 @@ void while_expr::compute_scripting_kind()
 }
 
 
-expr_t while_expr::clone(substitution_t& subst) const
+expr_t while_expr::cloneImpl(substitution_t& subst) const
 {
   return new while_expr(theSctx, get_loc(), get_body()->clone(subst));
 }

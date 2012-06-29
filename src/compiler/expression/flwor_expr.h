@@ -654,7 +654,7 @@ public:
 
   void get_vars_defined(std::vector<var_expr*>& varExprs) const;
 
-  expr_t clone(substitution_t& substitution) const;
+  expr_t cloneImpl(substitution_t& substitution) const;
 
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.

@@ -127,7 +127,7 @@ public:
 
   expr* operator[](csize i) { return theArgs[i]; }
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -167,7 +167,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -227,7 +227,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -270,7 +270,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -302,7 +302,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -358,7 +358,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -385,7 +385,7 @@ public:
 
   enum action get_action() const { return theAction; }
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void compute_scripting_kind();
 
@@ -417,7 +417,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

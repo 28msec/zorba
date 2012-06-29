@@ -98,7 +98,7 @@ void relpath_expr::compute_scripting_kind()
 }
 
 
-expr_t relpath_expr::clone(substitution_t& subst) const
+expr_t relpath_expr::cloneImpl(substitution_t& subst) const
 {
   std::auto_ptr<relpath_expr> re(new relpath_expr(theSctx, get_loc()));
 
@@ -142,7 +142,7 @@ void axis_step_expr::compute_scripting_kind()
 }
 
 
-expr_t axis_step_expr::clone(substitution_t& subst) const
+expr_t axis_step_expr::cloneImpl(substitution_t& subst) const
 {
   axis_step_expr* ae = new axis_step_expr(theSctx, get_loc());
   ae->setAxis(getAxis());
@@ -214,7 +214,7 @@ void match_expr::compute_scripting_kind()
 }
 
 
-expr_t match_expr::clone(substitution_t& subst) const
+expr_t match_expr::cloneImpl(substitution_t& subst) const
 {
   match_expr* me = new match_expr(theSctx, get_loc());
   me->setTestKind(getTestKind());

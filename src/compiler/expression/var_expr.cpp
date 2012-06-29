@@ -299,7 +299,7 @@ void var_expr::compute_scripting_kind()
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr_t var_expr::clone(expr::substitution_t& subst) const
+expr::expr_t var_expr::cloneImpl(expr::substitution_t& subst) const
 {
   expr::subst_iter_t i = subst.find(this);
 

@@ -162,7 +162,7 @@ void if_expr::compute_scripting_kind()
 }
 
 
-expr_t if_expr::clone(substitution_t& subst) const 
+expr_t if_expr::cloneImpl(substitution_t& subst) const 
 {
   return new if_expr(theSctx,
                      get_loc(),
@@ -198,7 +198,7 @@ void order_expr::compute_scripting_kind()
 }
 
 
-expr_t order_expr::clone(substitution_t& subst) const
+expr_t order_expr::cloneImpl(substitution_t& subst) const
 {
   return new order_expr(theSctx, get_loc(), get_type(), get_expr()->clone(subst));
 }
@@ -236,7 +236,7 @@ void validate_expr::compute_scripting_kind()
 }
 
 
-expr_t validate_expr::clone(substitution_t& subst) const
+expr_t validate_expr::cloneImpl(substitution_t& subst) const
 {
   return new validate_expr(theSctx,
                            get_loc(),
@@ -353,7 +353,7 @@ bool cast_expr::is_optional() const
 }
 
 
-expr_t cast_expr::clone(substitution_t& subst) const
+expr_t cast_expr::cloneImpl(substitution_t& subst) const
 {
   return new cast_expr(theSctx,
                        get_loc(),
@@ -382,7 +382,7 @@ treat_expr::treat_expr(
 }
 
 
-expr_t treat_expr::clone(substitution_t& subst) const
+expr_t treat_expr::cloneImpl(substitution_t& subst) const
 {
   return new treat_expr(theSctx,
                         get_loc(),
@@ -412,7 +412,7 @@ promote_expr::promote_expr(
 }
 
 
-expr_t promote_expr::clone(substitution_t& subst) const
+expr_t promote_expr::cloneImpl(substitution_t& subst) const
 {
   return new promote_expr(theSctx, 
                           get_loc(),
@@ -460,7 +460,7 @@ bool castable_expr::is_optional() const
 }
 
 
-expr_t castable_expr::clone(substitution_t& subst) const
+expr_t castable_expr::cloneImpl(substitution_t& subst) const
 {
   return new castable_expr(theSctx, 
                            get_loc(),
@@ -485,7 +485,7 @@ instanceof_expr::instanceof_expr(
 }
 
 
-expr_t instanceof_expr::clone(substitution_t& subst) const
+expr_t instanceof_expr::cloneImpl(substitution_t& subst) const
 {
   return new instanceof_expr(theSctx,
                              get_loc(),
@@ -523,7 +523,7 @@ void name_cast_expr::compute_scripting_kind()
 }
 
 
-expr_t name_cast_expr::clone(substitution_t& subst) const
+expr_t name_cast_expr::cloneImpl(substitution_t& subst) const
 {
   return new name_cast_expr(theSctx,
                             get_loc(),
@@ -561,7 +561,7 @@ void doc_expr::compute_scripting_kind()
 }
 
 
-expr_t doc_expr::clone(substitution_t& subst) const
+expr_t doc_expr::cloneImpl(substitution_t& subst) const
 {
   doc_expr* clone = new doc_expr(theSctx,
                                  get_loc(),
@@ -641,7 +641,7 @@ void elem_expr::compute_scripting_kind()
 }
 
 
-expr_t elem_expr::clone(substitution_t& subst) const
+expr_t elem_expr::cloneImpl(substitution_t& subst) const
 {
   elem_expr* clone =  new elem_expr(theSctx,
                                     get_loc(),
@@ -707,7 +707,7 @@ void attr_expr::compute_scripting_kind()
 }
 
 
-expr_t attr_expr::clone(substitution_t& subst) const
+expr_t attr_expr::cloneImpl(substitution_t& subst) const
 {
   return new attr_expr(theSctx,
                        get_loc(),
@@ -749,7 +749,7 @@ void text_expr::compute_scripting_kind()
 }
 
 
-expr_t text_expr::clone(substitution_t& subst) const
+expr_t text_expr::cloneImpl(substitution_t& subst) const
 {
   return new text_expr(theSctx, get_loc(), get_type(), CLONE(get_text(), subst));
 }
@@ -798,7 +798,7 @@ void pi_expr::compute_scripting_kind()
 }
 
 
-expr_t pi_expr::clone(substitution_t& subst) const
+expr_t pi_expr::cloneImpl(substitution_t& subst) const
 {
   return new pi_expr(theSctx,
                      get_loc(),
@@ -827,7 +827,7 @@ void wrapper_expr::compute_scripting_kind()
 }
 
 
-expr_t wrapper_expr::clone(substitution_t& subst) const
+expr_t wrapper_expr::cloneImpl(substitution_t& subst) const
 {
   expr_t e = theWrappedExpr->clone(subst);
 
@@ -946,7 +946,7 @@ void const_expr::compute_scripting_kind()
 }
 
 
-expr_t const_expr::clone(substitution_t&) const
+expr_t const_expr::cloneImpl(substitution_t&) const
 {
   return new const_expr(theSctx, get_loc(), theValue);
 }
@@ -988,7 +988,7 @@ void extension_expr::compute_scripting_kind()
 }
 
 
-expr_t extension_expr::clone(substitution_t& subst) const 
+expr_t extension_expr::cloneImpl(substitution_t& subst) const 
 {
   rchandle<extension_expr> lClone(0);
   lClone = (
@@ -1122,7 +1122,7 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
 }
 
 
-expr_t trycatch_expr::clone(substitution_t& subst) const
+expr_t trycatch_expr::cloneImpl(substitution_t& subst) const
 {
   std::auto_ptr<trycatch_expr> lTryCatch(
       new trycatch_expr(theSctx, get_loc(), theTryExpr->clone(subst)));
@@ -1188,7 +1188,7 @@ void eval_expr::compute_scripting_kind()
 }
 
 
-expr_t eval_expr::clone(substitution_t& s) const
+expr_t eval_expr::cloneImpl(substitution_t& s) const
 {
   rchandle<eval_expr> new_eval = new eval_expr(NULL,
                                                theSctx, 
@@ -1277,7 +1277,7 @@ void function_trace_expr::compute_scripting_kind()
 }
 
 
-expr_t function_trace_expr::clone(substitution_t& s) const
+expr_t function_trace_expr::cloneImpl(substitution_t& s) const
 {
   function_trace_expr* clone = new function_trace_expr(theExpr->clone(s));
 

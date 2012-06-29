@@ -244,6 +244,27 @@ expr_t expr::clone() const
 
 expr_t expr::clone(substitution_t& subst) const
 {
+  if (containsPragma())
+  {
+    expr_t lNewExpr = cloneImpl(subst);
+    lNewExpr->setContainsPragma(ANNOTATION_TRUE);
+    std::vector<pragma_t> lPragmas;
+    theSctx->lookup_pragmas(this, lPragmas);
+    for (size_t i = 0; i < lPragmas.size(); ++i)
+    {
+      theSctx->add_pragma(lNewExpr.getp(), lPragmas[i]);
+    }
+    return lNewExpr;
+  }
+  else
+  {
+    return cloneImpl(subst);
+  }
+}
+
+
+expr_t expr::cloneImpl(substitution_t& subst) const
+{
   throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
 

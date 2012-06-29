@@ -78,7 +78,7 @@ insert_expr::insert_expr(
 }
 
 
-expr_t insert_expr::clone(substitution_t& subst) const
+expr_t insert_expr::cloneImpl(substitution_t& subst) const
 {
   return new insert_expr(theSctx,
                          get_loc(),
@@ -101,7 +101,7 @@ delete_expr::delete_expr(
 }
 
 
-expr_t delete_expr::clone(substitution_t& subst) const
+expr_t delete_expr::cloneImpl(substitution_t& subst) const
 {
   return new delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
 }
@@ -123,7 +123,7 @@ replace_expr::replace_expr(
 }
 
 
-expr_t replace_expr::clone(substitution_t& subst) const
+expr_t replace_expr::cloneImpl(substitution_t& subst) const
 {
   return new replace_expr(theSctx,
                           get_loc(),
@@ -147,7 +147,7 @@ rename_expr::rename_expr(
 }
 
 
-expr_t rename_expr::clone(substitution_t& subst) const
+expr_t rename_expr::cloneImpl(substitution_t& subst) const
 {
   return new rename_expr(theSctx,
                          get_loc(),
@@ -238,7 +238,7 @@ void transform_expr::compute_scripting_kind()
 }
 
 
-expr_t transform_expr::clone(substitution_t& subst) const 
+expr_t transform_expr::cloneImpl(substitution_t& subst) const 
 {
   ZORBA_ASSERT(theModifyExpr && theReturnExpr);
 

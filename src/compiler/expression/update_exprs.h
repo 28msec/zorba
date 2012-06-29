@@ -80,7 +80,7 @@ public:
 
   store::UpdateConsts::InsertType getType() const { return theType; }
   
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -99,7 +99,7 @@ class delete_expr : public update_expr_base
 public:
 	delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -130,7 +130,7 @@ public:
 
 	expr* getReplaceExpr() const { return theSourceExpr.getp(); }
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -155,7 +155,7 @@ public:
 
 	expr* getNameExpr() const { return theSourceExpr.getp(); }
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -231,7 +231,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

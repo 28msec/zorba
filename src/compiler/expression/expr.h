@@ -78,7 +78,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -114,7 +114,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -155,7 +155,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -248,7 +248,7 @@ public:
 
   bool is_optional() const;
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -299,7 +299,7 @@ public:
 
   store::Item_t get_qname() const { return theQName; }
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -360,7 +360,7 @@ public:
       PromoteIterator::ErrorKind err,
       store::Item* qname);
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   PromoteIterator::ErrorKind get_err() const { return theErrorKind; }
 
@@ -406,7 +406,7 @@ public:
   
   bool is_optional() const;
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -441,7 +441,7 @@ public:
 
   bool getCheckPrimeOnly() const { return theCheckPrimeOnly; }
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -482,7 +482,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -513,7 +513,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -588,7 +588,7 @@ public:
 
   void compute_scripting_kind();
   
-  expr_t clone(substitution_t& s) const;  
+  expr_t cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -644,7 +644,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -684,7 +684,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;  
+  expr_t cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -713,7 +713,7 @@ public:
 
   void compute_scripting_kind();
   
-  expr_t clone(substitution_t& s) const;  
+  expr_t cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -755,7 +755,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -786,7 +786,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& subst) const;
+  expr_t cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -895,7 +895,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& subst) const;
+  expr_t cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -933,7 +933,7 @@ public:
 
   void accept(expr_visitor&);
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -968,7 +968,7 @@ public:
 
   void accept(expr_visitor&);
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 
@@ -1089,7 +1089,7 @@ public:
 
   void accept(expr_visitor&);
 
-  expr_t clone(substitution_t& s) const;
+  expr_t cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
