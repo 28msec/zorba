@@ -15,6 +15,7 @@ Optimizations:
   * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428,
     which is only a performance bug)
   * Optimized hash sets used by fn:distinct-values and nodes-distinct
+  * Optimized hash function used for nodes (also fixes bug #1010051)
   * No more serialization of compiler expressions.
   * Big rewrite of plan serializer internals, resulting in big performance improvement.
 

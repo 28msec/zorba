@@ -48,7 +48,6 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 #include "store/api/pul.h"
-#include "store/util/hashset_node_handle.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"

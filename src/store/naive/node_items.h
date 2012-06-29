@@ -387,6 +387,7 @@ protected:
 
 private:
   void setTreeInternal(const XmlTree* t);
+
   void setTree(const XmlTree* t);
 
   void destroyInternal(bool removeType);
@@ -435,20 +436,9 @@ public:
   bool equals(
       const store::Item* other,
       long timezone = 0,
-      const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    return this == other;
-  }
+      const XQPCollator* aCollation = 0) const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    XmlNode* node = const_cast<XmlNode*>(this);
-    return hashfun::h32((void*)(&node), sizeof(node), FNV_32_INIT);
-  }
-
-  inline long compare2(const XmlNode* other) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   void getBaseURI(zstring& uri) const
   {
@@ -523,6 +513,8 @@ public:
 #ifdef DATAGUIDE
   GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
 #endif
+
+  inline long compare2(const XmlNode* other) const;
 
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,

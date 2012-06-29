@@ -15,7 +15,7 @@
 <zorba:header>
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
-    <zorba:fwd-decl ns="store">NodeHashSet</zorba:fwd-decl>
+    <zorba:fwd-decl ns="zorba">NodeHandleHashSet</zorba:fwd-decl>
     <zorba:fwd-decl ns="zorba">AtomicItemHandleHashSet</zorba:fwd-decl>
 </zorba:header>
 
@@ -680,7 +680,7 @@
 
   <zorba:state generateInit="false" generateReset="false"
                generateConstructor="false" generateDestructor="false">
-    <zorba:member type="store::NodeHashSet*" name="theRightInput" brief=""/>
+    <zorba:member type="NodeHandleHashSet*" name="theRightInput" brief=""/>
   </zorba:state>
 
   <zorba:constructor>
