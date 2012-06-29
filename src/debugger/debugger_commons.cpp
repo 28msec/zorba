@@ -167,7 +167,7 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
   {
     ar.set_is_temp_field(true);
     csize s = theBreakableIDs.size();
-    serialize_csize(ar, s);
+    ar & s;
     ar.set_is_temp_field(false);
 
     BreakableIdMap::iterator it = theBreakableIDs.begin();
@@ -184,7 +184,7 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
   {
     ar.set_is_temp_field(true);
     csize s;
-    serialize_csize(ar, s);
+    ar & s;
     ar.set_is_temp_field(false);
 
     std::pair<QueryLoc, unsigned int> p;
@@ -212,7 +212,7 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
   ar & theBreak;
   ar & theCause;
   ar & theIteratorStack;
-  serialize_csize(ar, theBreakCondition);
+  ar & theBreakCondition;
 
   if (ar.is_serializing_out())
     thePlanState = NULL;

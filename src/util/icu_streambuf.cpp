@@ -15,8 +15,8 @@
  */
 
 #include "stdafx.h"
-#define ZORBA_DEBUG_ICU_STREAMBUF 0
 
+// #define ZORBA_DEBUG_ICU_STREAMBUF
 #ifdef ZORBA_DEBUG_ICU_STREAMBUF
 # include <stdio.h>
 #endif

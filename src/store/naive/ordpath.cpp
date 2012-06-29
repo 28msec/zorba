@@ -2996,7 +2996,7 @@ void OrdPath::decodeByte(
     compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 0;
-    deweyid[numComps + 1] = 1;
+    deweyid[numComps + 2] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     numComps += 3;
     break;
@@ -3037,7 +3037,7 @@ void OrdPath::decodeByte(
     compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
-    deweyid[numComps + 1] = 0;
+    deweyid[numComps + 2] = 0;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     numComps += 3;
     break;
@@ -3048,7 +3048,7 @@ void OrdPath::decodeByte(
     compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
-    deweyid[numComps + 1] = 1;
+    deweyid[numComps + 2] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 7);
     numComps += 3;
     break;
@@ -3059,7 +3059,7 @@ void OrdPath::decodeByte(
     compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
-    deweyid[numComps + 1] = 1;
+    deweyid[numComps + 2] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 7);
     numComps += 3;
     break;
@@ -3070,7 +3070,7 @@ void OrdPath::decodeByte(
     compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
-    deweyid[numComps + 1] = 2;
+    deweyid[numComps + 2] = 2;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     numComps += 3;
     break;
@@ -3081,7 +3081,7 @@ void OrdPath::decodeByte(
     compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
-    deweyid[numComps + 1] = 3;
+    deweyid[numComps + 2] = 3;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     numComps += 3;
     break;
@@ -3099,7 +3099,7 @@ void OrdPath::decodeByte(
   }
   case 143:   // 1000 1111   10,0 + 01 + 111 ...    (3/2,1 + 2/2,0)
   {
-    compOffsets[numComps+1] = bitLen + 3;
+    compOffsets[numComps + 1] = bitLen + 3;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 5);

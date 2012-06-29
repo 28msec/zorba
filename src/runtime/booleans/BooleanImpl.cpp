@@ -350,7 +350,7 @@ void CompareIterator::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
   ar & theIsGeneralComparison;
   SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
-  serialize_long(ar, theTimezone);
+  ar & theTimezone;
   ar & theCollation;
 }
 
@@ -1027,7 +1027,7 @@ void TypedValueCompareIterator<ATC>::serialize(::zorba::serialization::Archiver&
   (NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>*)this);
 
   SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
-  serialize_long(ar, theTimezone);
+  ar & theTimezone;
   ar & theCollation;
 }
 
@@ -1178,7 +1178,7 @@ void AtomicValuesEquivalenceIterator::serialize(::zorba::serialization::Archiver
   (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
 
   SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
-  serialize_long(ar, theTimezone);
+  ar & theTimezone;
   ar & theCollation;
 }
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_ZORBAUTILS_ITEM_HANDLE_HASHSET
-#define ZORBA_ZORBAUTILS_ITEM_HANDLE_HASHSET
+#ifndef ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
+#define ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset.h"
@@ -37,7 +37,7 @@ namespace zorba
   NOTE: Although the set uses raw item pointers instead of rchandles, reference
         counting is still done, but done manually (see insert and clear methods)
 ********************************************************************************/
-class ItemHandleHashSet
+class NodeHandleHashSet
 {
 public:
 
@@ -51,7 +51,7 @@ public:
 
     static uint32_t hash(const store::Item* t)
     {
-      return hashfun::h32((void*)(&t), sizeof(void*), FNV_32_INIT);
+      return reinterpret_cast<uint64_t>(t);
     }
   };
 
@@ -59,9 +59,9 @@ private:
   HashSet<store::Item*, CompareFunction>  theSet;
 
 public:
-  ItemHandleHashSet(ulong size, bool sync) : theSet(size, sync) { }
+  NodeHandleHashSet(csize size, bool sync) : theSet(size, sync) { }
 
-  ~ItemHandleHashSet() { clear(); }
+  ~NodeHandleHashSet() { clear(); }
 
   void clear();
 
@@ -72,6 +72,8 @@ public:
 
   bool insert(store::Item* key) 
   {
+    assert(key->isNode());
+
     bool inserted = theSet.insert(key);
 
     if (inserted) 
