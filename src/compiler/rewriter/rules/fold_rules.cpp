@@ -96,6 +96,7 @@ static expr_t execute (
                                          0,      // dynamic ctx
                                          NULL,   // xquery
                                          0,      // stack depth
+                                         expr_ccb.theHaveTimeout,
                                          expr_ccb.theTimeout));
     for (;;)
     {
@@ -190,31 +191,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       if (!udf->isOptimized())
       {
-        // Set the Optimized flag in advance to prevent an infinte loop (for
-        // recursive functions, an optimization could be attempted again)
-        udf->setOptimized(true);
-
-        RewriterContext rctx(rCtx.theCCB,
-                             udf->getBody(),
-                             udf,
-                             "",
-                             udf->getBody()->get_sctx()->is_in_ordered_mode());
-
-        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
-        udf->setBody(rctx.getRoot());
-
-        if (rCtx.theCCB->theConfig.optimize_cb != NULL)
-        {
-          if (udf->getName())
-          {
-            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(),
-                                               udf->getName()->getStringValue().c_str());
-          }
-          else
-          {
-            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(), "inline function");
-          }
-        }
+        udf->optimize(rCtx.theCCB);
       }
 
       if (rCtx.theUDF != NULL &&
@@ -1048,9 +1025,9 @@ RULE_REWRITE_POST(InlineFunctions)
 
     if (NULL != udf && 
         //!udf->isSequential() && 
+        (NULL != (body = udf->getBody())) &&
         !udf->isExiting() &&
-        udf->isLeaf() &&
-        (NULL != (body = udf->getBody())))
+        udf->isLeaf())
     {
       const std::vector<var_expr_t>& udfArgs = udf->getArgVars();
 

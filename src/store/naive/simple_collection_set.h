@@ -34,7 +34,7 @@ class CollectionIterator;
 class SimpleCollectionSet : public CollectionSet
 {
 public:
-  typedef ItemPointerHashMap<zorba::store::Collection_t> Set;
+  ITEM_PTR_HASH_MAP(zorba::store::Collection_t, Set);
   
   static const ulong DEFAULT_COLLECTION_MAP_SIZE;
     
@@ -70,7 +70,7 @@ public:
   collections(bool isDynamic);  
 };
 
-    
+
 /*******************************************************************************
   Collection iterator
   Returned by the CollectionSet::collections function
@@ -87,7 +87,7 @@ public:
   SimpleCollectionSetIterator(
       SimpleCollectionSet::Set* aCollections,
       bool aDynamicCollections);
-  
+
   virtual ~SimpleCollectionSetIterator();
     
   virtual void

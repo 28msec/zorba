@@ -68,6 +68,15 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_SIZEOF_DOUBLE        @ZORBA_SIZEOF_DOUBLE@
+#cmakedefine ZORBA_SIZEOF_FLOAT         @ZORBA_SIZEOF_FLOAT@
+#cmakedefine ZORBA_SIZEOF_INT           @ZORBA_SIZEOF_INT@
+#cmakedefine ZORBA_SIZEOF_LONG          @ZORBA_SIZEOF_LONG@
+#cmakedefine ZORBA_SIZEOF_LONG_LONG     @ZORBA_SIZEOF_LONG_LONG@
+#cmakedefine ZORBA_SIZEOF_POINTER       @ZORBA_SIZEOF_POINTER@
+#cmakedefine ZORBA_SIZEOF_SHORT         @ZORBA_SIZEOF_SHORT@
+#cmakedefine ZORBA_SIZEOF_SIZE_T        @ZORBA_SIZEOF_SIZE_T@
+#cmakedefine ZORBA_SIZEOF_WCHAR_T       @ZORBA_SIZEOF_WCHAR_T@
 
 // Platform libraries
 #cmakedefine ZORBA_HAVE_CURL
@@ -96,8 +105,6 @@
 typedef __int64 int64_t;
 #endif /* ZORBA_HAVE_INT64_T */
 
-#cmakedefine ZORBA_SIZEOF_WCHAR_T @ZORBA_SIZEOF_WCHAR_T@
-
 // Compiler
 #cmakedefine CLANG
 #cmakedefine MSVC
@@ -106,11 +113,15 @@ typedef __int64 int64_t;
 #cmakedefine MSVC71
 #cmakedefine MSVC80
 
-// C++ language features
-#cmakedefine ZORBA_CXX_ENABLE_IF
+// C++11 language features
 #cmakedefine ZORBA_CXX_NULLPTR
 #cmakedefine ZORBA_CXX_STATIC_ASSERT
-#cmakedefine ZORBA_CXX_UNIQUE_PTR
+
+// C++11 types
+#cmakedefine ZORBA_HAVE_ENABLE_IF
+#cmakedefine ZORBA_HAVE_UNORDERED_MAP
+#cmakedefine ZORBA_HAVE_UNORDERED_SET
+#cmakedefine ZORBA_HAVE_UNIQUE_PTR
 
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 

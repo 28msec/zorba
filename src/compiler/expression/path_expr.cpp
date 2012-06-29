@@ -25,17 +25,9 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
 
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(relpath_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(axis_step_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(match_expr)
 
 
 DEF_EXPR_ACCEPT (relpath_expr)
@@ -53,13 +45,6 @@ relpath_expr::relpath_expr(static_context* sctx, const QueryLoc& loc)
   expr(sctx, loc, relpath_expr_kind)
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-void relpath_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theSteps;
 }
 
 
@@ -141,15 +126,6 @@ axis_step_expr::axis_step_expr(static_context* sctx, const QueryLoc& loc)
 }
 
 
-void axis_step_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(axis_kind_t, theAxis);
-  ar & theReverseOrder;
-  ar & theNodeTest;
-}
-
-
 bool axis_step_expr::is_reverse_axis(axis_kind_t k) 
 {
   return (k == axis_kind_ancestor ||
@@ -198,19 +174,6 @@ match_expr::match_expr(static_context* sctx, const QueryLoc& loc)
   theNilledAllowed(false)
 {
   compute_scripting_kind();
-}
-
-
-void match_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(match_test_t, theTestKind);
-  SERIALIZE_ENUM(match_test_t, theDocTestKind);
-  SERIALIZE_ENUM(match_wild_t, theWildKind);
-  ar & theWildName;
-  ar & theQName;
-  ar & theTypeName;
-  ar & theNilledAllowed;
 }
 
 

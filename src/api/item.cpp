@@ -546,6 +546,17 @@ Item::isStreamable() const
   return false;
 }
 
+bool
+Item::isSeekable() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->isSeekable();
+  ITEM_CATCH
+  return false;
+}
+
 std::istream&
 Item::getStream()
 {

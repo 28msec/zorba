@@ -60,7 +60,7 @@ public class Test_Zorba
 
   static boolean example_3 ( Zorba aZorba )
   {
-
+    
     XQuery lQuery = aZorba.compileQuery("1 div 0"); 
     try 
     {
@@ -135,11 +135,13 @@ public class Test_Zorba
       System.exit ( 1 ); 
   
     System.out.println ( "executing example 3" );
+    System.out.println ( "expecting [err:FOAR0001]" );
     res = example_3 ( zorba );
     if (!res) 
       System.exit ( 1 ); 
   
     System.out.println ( "executing example 4" );
+    System.out.println ( "expecting [err:XPST0003]" );
     res = example_4 ( zorba );
     if (!res) 
       System.exit ( 1 ); 

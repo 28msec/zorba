@@ -692,6 +692,12 @@ namespace zorba {
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );
 
+    void beginVisit( const HasNodeReferenceIterator& );
+    void endVisit  ( const HasNodeReferenceIterator& );
+
+    void beginVisit( const AssignNodeReferenceIterator& );
+    void endVisit  ( const AssignNodeReferenceIterator& );
+
     void beginVisit( const NodeByReferenceIterator& );
     void endVisit  ( const NodeByReferenceIterator& );
 
@@ -772,6 +778,9 @@ namespace zorba {
 
     void beginVisit( const FnZorbaParseXmlFragmentIterator& );
     void endVisit  ( const FnZorbaParseXmlFragmentIterator& );
+
+    void beginVisit( const FnParseXmlFragmentIterator& );
+    void endVisit  ( const FnParseXmlFragmentIterator& );
 
     void beginVisit( const FnParseXmlIterator& );
     void endVisit  ( const FnParseXmlIterator& );
@@ -949,6 +958,9 @@ namespace zorba {
     void beginVisit( const MapCreateIterator& );
     void endVisit  ( const MapCreateIterator& );
 
+    void beginVisit( const MapCreateTransientIterator& );
+    void endVisit  ( const MapCreateTransientIterator& );
+
     void beginVisit( const MapDestroyIterator& );
     void endVisit  ( const MapDestroyIterator& );
 
@@ -969,6 +981,9 @@ namespace zorba {
 
     void beginVisit( const AvailableMapsIterator& );
     void endVisit  ( const AvailableMapsIterator& );
+
+    void beginVisit( const MapIsTransientIterator& );
+    void endVisit  ( const MapIsTransientIterator& );
 
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );
