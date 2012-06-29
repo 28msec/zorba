@@ -243,18 +243,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
   #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-001 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-002 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-003 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-004 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-005 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-006 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-007 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-008 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-009 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-010 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-011 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-012 997045)
 
   IF (NOT ZORBA_WITH_BIG_INTEGER)
     # These test will never pass without big integers beause the integers used
