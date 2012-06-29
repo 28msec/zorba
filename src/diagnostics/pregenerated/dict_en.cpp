@@ -134,7 +134,7 @@ extern entry const dict_en[] = {
   { "JNUP0007", "$1 - wrong type for object/array selector in update expression." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0008", "" },
+  { "JNUP0008", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0009", "\"$1\": duplicate pair to replace" },
@@ -143,7 +143,7 @@ extern entry const dict_en[] = {
   { "JNUP0010", "\"$1\": duplicate pair to rename" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0016", "" },
+  { "JNUP0016", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0017", "Cannot replace with less or more than an item." },

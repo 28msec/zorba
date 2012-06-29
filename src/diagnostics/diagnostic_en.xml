@@ -2562,12 +2562,16 @@
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if a pending update list contains two inserting update primitives on the same object and pair name.</comment>
+
       <value>"$1": duplicate pair to insert</value>
+
     </diagnostic>
     
     <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if upd:applyUpdates causes an object to contain two pairs with the same name.</comment>
+
       <value>"$1": pair to insert already exists in object.</value>
+
     </diagnostic>
     
     <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
@@ -2578,12 +2582,15 @@
       <entry key="Object">
         <value>"$2": can not be promoted to type xs:string</value>
       </entry>
+
       <entry key="Array">
         <value>"$2": can not be promoted to type xs:integer</value>
       </entry>
+
       <entry key="ObjectArray">
         <value>"$2": can not be promoted to type xs:anyAtomicType</value>
       </entry>
+
     </diagnostic>
     
     <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
@@ -2593,15 +2600,20 @@
         It is a dynamic error if the target of a position-inserting expression is not an array.
         It is a dynamic error if the target of a non-position-inserting expression is not an object.</comment>
 
+      <value>$1</value>
+
       <entry key="Object">
         <value>"$2": target of a renaming expression or of a non-position-inserting expression is not an object.</value>
       </entry>
+
       <entry key="Array">
         <value>"$2": target of an appending expression or of a position-inserting expression is not an array</value>
       </entry>
+
       <entry key="ObjectArray">
         <value>"$2": target of a deleting or replacing expression is not a JSON item.</value>
       </entry>
+
     </diagnostic>
     
     <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
@@ -2645,10 +2657,13 @@
 
     <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
+
+      <value>$1</value>
       
       <entry key="Object">
         <value>"$2": selector cannot be resolved against supplied object.</value>
       </entry>
+
       <entry key="Array">
         <value>"$2": selector cannot be resolved against supplied array.</value>
       </entry>

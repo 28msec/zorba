@@ -72,7 +72,13 @@ declare variable $jerr:JNUP0006 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0006
 :)
 declare variable $jerr:JNUP0007 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0007");
 
-
+(:~
+ :It is a dynamic error if the target of a deleting or replacing expression is not an array or an object.
+ : It is a dynamic error if the target of a renaming expression is not an object.
+ : It is a dynamic error if the target of an appending expression is not an array.
+ : It is a dynamic error if the target of a position-inserting expression is not an array.
+ : It is a dynamic error if the target of a non-position-inserting expression is not an object.
+:)
 declare variable $jerr:JNUP0008 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0008");
 
 (:~
@@ -112,7 +118,9 @@ declare variable $jerr:JNSE0013 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0013
 :)
 declare variable $jerr:JNSE0014 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0014");
 
-
+(:~
+ :It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.
+:)
 declare variable $jerr:JNUP0016 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0016");
 
 (:~
