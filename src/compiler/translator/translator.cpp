@@ -10408,9 +10408,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
            let $temp_invoke_var2   := arg1Expr
            ...
            let $temp_invoke_varN+1 := argNExpr
-           let $query := concat("\"",
+           let $query := concat("Q{",
                                 string(namespace-uri-from-QName(temp_invoke_var1)),
-                                "\":",
+                                "}",
                                 string(local-name-from-QName(temp_invoke_var1)),
                                 "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
            return eval { $query }
@@ -10505,11 +10505,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         localExpr =
         new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
-        // qnameExpr := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
+        // qnameExpr := concat("Q{", namespaceExpr, "}", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
         std::vector<expr_t> concat_args;
-        concat_args.push_back(new const_expr(theRootSctx, loc, "\""));
+        concat_args.push_back(new const_expr(theRootSctx, loc, "Q{"));
         concat_args.push_back(namespaceExpr);
-        concat_args.push_back(new const_expr(theRootSctx, loc, "\":"));
+        concat_args.push_back(new const_expr(theRootSctx, loc, "}"));
         concat_args.push_back(localExpr);
         concat_args.push_back(new const_expr(theRootSctx, loc, query_params));
 
