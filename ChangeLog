@@ -4,11 +4,15 @@ Zorba - The XQuery Processor
 version 2.x
 
 New Features:
+
+  * Item::isSeekable API extension for streamable content (xs:string and xs:base64Binary).
   * Implemented the latest W3C specification for the group by clause
+  * Added ft:tokenize-nodes() function to full-text module
   * New XQuery 3.0 functions
     - fn:parse-xml-fragment#1
   * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
+  * Positional pagination support for collections
 
 Optimizations:
   * Small optimization of comparison operations.

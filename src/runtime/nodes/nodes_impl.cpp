@@ -40,8 +40,6 @@ bool
 NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lNode;
-  store::Item_t lGenerateIdentifier;
-  zstring lNodeId;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -49,6 +47,58 @@ NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
   consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
   STACK_PUSH(GENV_STORE.getNodeReference(aResult, lNode), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+HasNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  xs_boolean lHasReference;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+
+  lHasReference = GENV_STORE.hasReference(lNode);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHasReference), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+AssignNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  store::Item_t lUUID;
+  xs_boolean lHaveResult;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+  consumeNext(lUUID, theChildren[1].getp(), aPlanState);
+  try
+  {
+    lHaveResult = GENV_STORE.assignReference(lNode, lUUID->getStringValue());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHaveResult), state);
 
   STACK_END (state);
 }
