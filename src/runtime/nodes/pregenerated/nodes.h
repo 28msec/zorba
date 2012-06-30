@@ -67,6 +67,70 @@ public:
 
 /**
  * 
+ *      declare function ref:has-node-reference($node as node()) as xs:boolean
+ *    
+ * Author: Till Westmann
+ */
+class HasNodeReferenceIterator : public NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(HasNodeReferenceIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HasNodeReferenceIterator,
+    NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  HasNodeReferenceIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~HasNodeReferenceIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      declare function ref:assign-node-reference($node as node()) as xs:boolean
+ *    
+ * Author: Till Westmann
+ */
+class AssignNodeReferenceIterator : public NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(AssignNodeReferenceIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AssignNodeReferenceIterator,
+    NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  AssignNodeReferenceIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~AssignNodeReferenceIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      declare function ref:node-by-reference($reference as xs:anyURI) as node()?
  *    
  * Author: Federico Cavalieri

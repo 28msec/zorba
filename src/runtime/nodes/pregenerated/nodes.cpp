@@ -60,6 +60,62 @@ NodeReferenceIterator::~NodeReferenceIterator() {}
 // </NodeReferenceIterator>
 
 
+// <HasNodeReferenceIterator>
+SERIALIZABLE_CLASS_VERSIONS(HasNodeReferenceIterator)
+
+void HasNodeReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>*)this);
+}
+
+
+void HasNodeReferenceIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+HasNodeReferenceIterator::~HasNodeReferenceIterator() {}
+
+// </HasNodeReferenceIterator>
+
+
+// <AssignNodeReferenceIterator>
+SERIALIZABLE_CLASS_VERSIONS(AssignNodeReferenceIterator)
+
+void AssignNodeReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>*)this);
+}
+
+
+void AssignNodeReferenceIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AssignNodeReferenceIterator::~AssignNodeReferenceIterator() {}
+
+// </AssignNodeReferenceIterator>
+
+
 // <NodeByReferenceIterator>
 SERIALIZABLE_CLASS_VERSIONS(NodeByReferenceIterator)
 
