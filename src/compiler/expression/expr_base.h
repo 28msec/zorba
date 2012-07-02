@@ -45,6 +45,7 @@ typedef rchandle<wrapper_expr> wrapper_expr_t;
 
 class expr_visitor;
 
+class ExprManager;
 
 enum expr_kind_t
 {
@@ -85,7 +86,7 @@ enum expr_kind_t
   order_expr_kind,
 
 #ifndef ZORBA_NO_FULL_TEXT
-	ft_expr_kind,
+  ft_expr_kind,
 #endif /* ZORBA_NO_FULL_TEXT */
 
   delete_expr_kind,
@@ -181,6 +182,8 @@ protected:
 
   FreeVars           theFreeVars;
 
+  ExprManager      * theExprManager;
+
 public:
   static bool is_sequential(short theScriptingKind);
 
@@ -196,9 +199,11 @@ public:
   virtual void free() {}
 
 public:
-  expr(static_context*, const QueryLoc&, expr_kind_t);
+  expr(ExprManager*, static_context*, const QueryLoc&, expr_kind_t);
 
   virtual ~expr();
+
+  ExprManager* get_exprMan() {return theExprManager;}
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 

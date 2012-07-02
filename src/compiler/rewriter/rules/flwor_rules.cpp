@@ -175,14 +175,14 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   csize numForLetClauses = 0;
 
   // numClauses may be 0 in the case this flwor became a common sub-expression
-  // due to var-inlining inside an if-then-else expr (see test 
+  // due to var-inlining inside an if-then-else expr (see test
   // zorba/optim/flwor_vars_02.xq)
   if (numClauses == 0)
   {
     return flwor.get_return_expr();
   }
 
-  const forletwin_clause& flwc = 
+  const forletwin_clause& flwc =
   *static_cast<const forletwin_clause *>(flwor.get_clause(0));
 
   // "for $x in E return $x"  --> "E"
@@ -215,11 +215,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr_t oldWhere = whereExpr;
       flwor.remove_where_clause();
 
-      rchandle<if_expr> ifExpr = new if_expr(sctx,
+      rchandle<if_expr> ifExpr = rCtx.theEM->create_if_expr(sctx,
                                              loc,
                                              oldWhere,
                                              &flwor,
-                                             fo_expr::create_seq(sctx, loc));
+                                             rCtx.theEM->create_seq(sctx, loc));
 
       fix_if_annotations(ifExpr);
 
@@ -257,7 +257,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       ulong domainCount = TypeOps::type_max_cnt(tm, *domainType);
       const var_expr* pvar = fc->get_pos_var();
 
-      if (pvar != NULL && 
+      if (pvar != NULL &&
           expr_tools::count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
       {
         MODIFY(fc->set_pos_var(NULL));
@@ -271,7 +271,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       // FOR clause with 0 cardinality
       if (domainCount == 0)
-        return fo_expr::create_seq(sctx, LOC(node));
+        return rCtx.theEM->create_seq(sctx, LOC(node));
 
       // FOR clause with cardinality 0 or 1
 
@@ -280,7 +280,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         MODIFY(subst_vars(rCtx,
                           node,
                           pvar,
-                          new const_expr(sctx, loc, xs_integer::one())));
+                          rCtx.theEM->create_const_expr(sctx,
+                                                   loc,
+                                                   xs_integer::one())
+        ));
       }
 
       int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
@@ -368,8 +371,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         let_clause_t save = lc;
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
-        var_expr_t fvar = new var_expr(sctx, loc, var_expr::for_var, var->get_name()); 
-        for_clause_t fc = new for_clause(sctx, loc, fvar, domainExpr);
+        var_expr_t fvar = rCtx.theEM->create_var_expr(sctx,
+                                                 loc,
+                                                 var_expr::for_var,
+                                                 var->get_name());
+        for_clause_t fc = new for_clause(sctx, rCtx.theEM, loc, fvar, domainExpr);
         flwor.add_clause(i, fc);
 
         subst_vars(rCtx, node, var, fvar.getp());
@@ -404,15 +410,15 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     if ((whereExpr = flwor.get_where()) != NULL)
     {
-      rchandle<if_expr> ifExpr = 
-      new if_expr(whereExpr->get_sctx(),
+      rchandle<if_expr> ifExpr =
+      rCtx.theEM->create_if_expr(whereExpr->get_sctx(),
                   LOC(whereExpr),
                   whereExpr,
                   result,
-                  fo_expr::create_seq(whereExpr->get_sctx(),
+                  rCtx.theEM->create_seq(whereExpr->get_sctx(),
                                       LOC(whereExpr)));
       fix_if_annotations(ifExpr);
-      
+
       return ifExpr.getp();
     }
 
@@ -434,7 +440,7 @@ RULE_REWRITE_POST(EliminateUnusedLetVars)
   FOR, LET, or WINDOW clauses of a flwor expr.
 ********************************************************************************/
 static void collect_flw_vars(
-    const flwor_expr& flwor, 
+    const flwor_expr& flwor,
     expr::FreeVars& vars)
 {
   for (csize i = 0; i < flwor.num_clauses(); ++i)
@@ -527,9 +533,9 @@ static bool is_trivial_expr(const expr* e)
   Check if it is OK to fold (inline) a FOR/LET var X that we know is referenced
   only once withing its flwor expr.
 
-  For a LET var, varQuant is always QUNAT_ONE. 
+  For a LET var, varQuant is always QUNAT_ONE.
 
-  For a FOR var, varQuant is the quantifier of the type of the domain expr. 
+  For a FOR var, varQuant is the quantifier of the type of the domain expr.
   It can be either QUANT_ONE or QUANT_QUESTION.
 ********************************************************************************/
 static bool safe_to_fold_single_use(
@@ -625,7 +631,7 @@ static bool safe_to_fold_single_use(
         if (varQuant != TypeConstants::QUANT_ONE)
         {
           // X is a FOR var which is referenced in the current LET clause, and
-          // whose domain may be the empty sequence. We cannot inline in this 
+          // whose domain may be the empty sequence. We cannot inline in this
           // case.
           return false;
         }
@@ -640,7 +646,7 @@ static bool safe_to_fold_single_use(
     }
     else if (kind == flwor_clause::where_clause)
     {
-      if (varQuant == TypeConstants::QUANT_ONE && 
+      if (varQuant == TypeConstants::QUANT_ONE &&
           expr_tools::count_variable_uses(c.get_expr(), var, NULL, 1) == 1)
       {
         referencingExpr = c.get_expr();
@@ -671,7 +677,7 @@ static bool safe_to_fold_single_use(
   {
     if (varQuant != TypeConstants::QUANT_ONE)
     {
-      xqtref_t type = 
+      xqtref_t type =
       flwor.get_return_expr()->get_return_type_with_empty_input(var);
 
       if (TypeOps::is_equal(tm,
@@ -693,16 +699,16 @@ static bool safe_to_fold_single_use(
   return !var_in_try_block_or_in_loop(var,
                                       referencingExpr,
                                       false,
-                                      hasNodeConstr, 
+                                      hasNodeConstr,
                                       found);
 }
 
 
 /*******************************************************************************
-  Given a variable V and an expression E that references V at most once, return 
+  Given a variable V and an expression E that references V at most once, return
   true if E does indeed reference V and
   (a) the reference occurs inside a for-loop within E, or
-  (b) 
+  (b)
 ********************************************************************************/
 static bool var_in_try_block_or_in_loop(
     const var_expr* v,
@@ -790,7 +796,7 @@ static bool var_in_try_block_or_in_loop(
             TypeOps::type_max_cnt(tm, *flc.get_expr()->get_return_type()) >= 2)
         {
           // we assume here that the var will be referenced somewhere in the
-          // remainder of the flwor expr, but this is not necessarily true 
+          // remainder of the flwor expr, but this is not necessarily true
           // ???? TODO
           return true;
         }
@@ -954,7 +960,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     args[0] = domainExpr;
     args[1] = posExpr;
 
-    rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx(),
+    rchandle<fo_expr> result = rCtx.theEM->create_fo_expr(whereExpr->get_sctx(),
                                            LOC(whereExpr),
                                            seq_point,
                                            args);
@@ -982,12 +988,12 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 
   (a)  op is eq or =, and
   (b1) posExpr is an integer literal with value >= 1, or
-  (b2) the flwor expr has no sequential clauses and posExpr is an expression 
-       whose type is xs:integer? and which does not reference the for var 
-       associated with posVar nor any other vars that are defined after that 
+  (b2) the flwor expr has no sequential clauses and posExpr is an expression
+       whose type is xs:integer? and which does not reference the for var
+       associated with posVar nor any other vars that are defined after that
        for var.
 
-  TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses are 
+  TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses are
   before the clause that defines the pos var.
 ********************************************************************************/
 static bool is_subseq_pred(
@@ -1076,7 +1082,7 @@ static bool is_subseq_pred(
             if (posExprVarIds[i] >= forVarId)
               return false;
           }
-          
+
           return true;
         }
       }
@@ -1129,11 +1135,11 @@ RULE_REWRITE_PRE(MergeFLWOR)
     }
 
     csize numClauses = returnFlwor->num_clauses();
-    
+
     for (csize i = 0; i < numClauses; ++i)
     {
       const flwor_clause* c = returnFlwor->get_clause(i);
-      
+
       if (c->get_kind() == flwor_clause::group_clause ||
           c->get_kind() == flwor_clause::order_clause)
       {
@@ -1166,7 +1172,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
     expr* domainExpr = c->get_expr();
 
-    if (domainExpr != NULL && 
+    if (domainExpr != NULL &&
         domainExpr->get_expr_kind() == flwor_expr_kind &&
         !domainExpr->is_sequential())
     {

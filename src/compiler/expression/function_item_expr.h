@@ -38,6 +38,7 @@ class dynamic_function_invocation_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 public:
   SERIALIZABLE_CLASS(dynamic_function_invocation_expr)
@@ -48,13 +49,15 @@ protected:
   expr_t                 theExpr;
   checked_vector<expr_t> theArgs;
 
-public:
+protected:
   dynamic_function_invocation_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& anExpr,
       const std::vector<expr_t>& args);
 
+public:
   const expr_t get_function() const { return theExpr; }
 
   const std::vector<expr_t>& get_args() const { return theArgs; }
@@ -104,6 +107,7 @@ class function_item_expr: public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 private:
   store::Item_t        theQName;
@@ -116,8 +120,9 @@ public:
   function_item_expr(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   function_item_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       const store::Item* aQName,
@@ -125,9 +130,11 @@ public:
       uint32_t aArity);
 
   function_item_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc);
 
+public:
   ~function_item_expr();
 
   void add_variable(expr* var);

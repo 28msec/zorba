@@ -18,7 +18,9 @@
 #include <sstream>
 
 #include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "functions/udf.h"
 
@@ -37,6 +39,7 @@ RewriterContext::RewriterContext(
     bool orderedMode)
   :
   theCCB(aCompilerCB),
+  theEM(&(theCCB->getExprManager())),
   theRoot(root),
   theUDF(udf),
   theMessage(msg),
@@ -89,7 +92,7 @@ rchandle<var_expr> RewriterContext::createTempVar(
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  rchandle<var_expr> var = new var_expr(sctx, loc, kind, qname);
+  rchandle<var_expr> var = theEM->create_var_expr(sctx, loc, kind, qname);
 
   return var;
 }

@@ -720,7 +720,7 @@ TranslatorImpl(
 }
 
 
-~TranslatorImpl() 
+~TranslatorImpl()
 {
 #ifndef ZORBA_NO_FULL_TEXT
   while (!theFTNodeStack.empty())
@@ -1299,7 +1299,7 @@ function* lookup_fn(const QName* qname, ulong arity, const QueryLoc& loc)
 ********************************************************************************/
 fo_expr* create_empty_seq(const QueryLoc& loc)
 {
-  return fo_expr::create_seq(theRootSctx, loc);
+  return theExprManager->create_seq(theRootSctx, loc);
 }
 
 
@@ -1512,7 +1512,7 @@ let_clause_t wrap_in_letclause(expr_t e, var_expr_t lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
 
-  return theExprManager->create_let_clause(theRootSctx, e->get_loc(), lv, e.getp());
+  return new let_clause(theRootSctx, theExprManager, e->get_loc(), lv, e.getp());
 }
 
 
@@ -1553,7 +1553,8 @@ for_clause_t wrap_in_forclause(expr_t e, var_expr_t fv, var_expr_t pv)
     assert(pv->get_kind() == var_expr::pos_var);
   }
 
-  return new for_clause(theRootSctx, e->get_loc(), fv, e, pv);
+  return new for_clause(theRootSctx, theExprManager,
+                        e->get_loc(), fv, e, pv);
 }
 
 
@@ -1783,7 +1784,7 @@ void collect_flwor_vars (
 
     if (typeid(c) == typeid(ForClause))
     {
-      const VarInDeclList& varDecls = 
+      const VarInDeclList& varDecls =
       *(static_cast<const ForClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)varDecls.size() - 1; j >= 0; --j)
@@ -1798,7 +1799,7 @@ void collect_flwor_vars (
     }
     else if (typeid(c) == typeid(LetClause))
     {
-      const VarGetsDeclList& lV = 
+      const VarGetsDeclList& lV =
       *(static_cast<const LetClause*>(&c)->get_vardecl_list());
 
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
@@ -2288,7 +2289,7 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
 
   // If an appliaction set a type for the context item via the c++ api, then
   // create a full declaration for it in order to enforce that type.
-  if (!theHaveContextItemDecl && 
+  if (!theHaveContextItemDecl &&
       theSctx->get_context_item_type() != theRTM.ITEM_TYPE_ONE.getp())
   {
     var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
@@ -3628,7 +3629,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   {
     //lc->setLazyEval(!f->isSequential());
 
-    const user_function* udf = 
+    const user_function* udf =
     static_cast<const user_function*>(theCurrentPrologVFDecl.getFunction());
 
     arg_var->set_param_pos(flwor->num_clauses());
@@ -3798,7 +3799,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       bind_var(ve, export_sctx);
 
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
     {
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
@@ -4227,7 +4228,7 @@ void* begin_visit(const AST_IndexDecl& v)
     ERROR_PARAMS(qname->get_qname()));
   }
 
-  IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
+  IndexDecl_t index = new IndexDecl(theSctx, theExprManager,  loc, qnameItem);
   index->setGeneral(false);
   index->setUnique(false);
   index->setMethod(IndexDecl::HASH);
@@ -4636,6 +4637,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // let $x := dc:collection(xs:QName("example:coll1"))
     let_clause* lc = new let_clause(theRootSctx,
+                                    theExprManager,
                                     loc,
                                     varExpr,
                                     collExpr.getp());
@@ -4734,6 +4736,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                   NULL);
 
     let_clause* letClause = new let_clause(theRootSctx,
+                                           theExprManager,
                                            loc,
                                            varExpr,
                                            collExpr.getp());
@@ -5984,6 +5987,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   }
 
   for_clause* fc = new for_clause(theRootSctx,
+                                  theExprManager,
                                   loc,
                                   varExpr,
                                   domainExpr,
@@ -6076,6 +6080,7 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::let_var, type);
 
     let_clause* clause = new let_clause(theRootSctx,
+                                        theExprManager,
                                         loc,
                                         varExpr,
                                         domainExpr);
@@ -6126,6 +6131,7 @@ void intermediate_visit(const WindowClause& v, void* /*visit_state*/)
                                      window_clause::sliding_window);
 
   window_clause* clause = new window_clause(theRootSctx,
+                                            theExprManager,
                                             v.get_location(),
                                             winKind,
                                             NULL,
@@ -6202,7 +6208,7 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
       rchandle<WindowVars> vars = cond->get_winvars();
       pop_wincond_vars(vars, inputCondVarExprs[i]);
 
-      conds[i] = new flwor_wincond(theSctx,
+      conds[i] = new flwor_wincond(theExprManager, theSctx,
                                    cond->is_only(),
                                    inputCondVarExprs[i],
                                    outputCondVarExprs[i],
@@ -9428,7 +9434,7 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
   expr_t right = pop_nodestack();
   expr_t left  = pop_nodestack();
   concat_args.push_back(left);
- 
+
   //If the right leaf is the concat expr,
   //we add directly its leafs to the new concat expr.
   bool rightLeafIsConcatExpr = false;
@@ -9445,13 +9451,13 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
       }
     }
   }
-  
+
   if(!rightLeafIsConcatExpr)
   {
     concat_args.push_back(right);
   }
 
-  rchandle<expr> concat = theExprManager->create_fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args); 
+  rchandle<expr> concat = theExprManager->create_fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_CONCAT_N), concat_args);
   push_nodestack(concat);
 }
 
@@ -11765,7 +11771,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);  
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
@@ -12496,7 +12502,7 @@ void end_visit(const VarBinding& v, void*)
   dynamic_cast<transform_expr*>(theNodeStack.top().getp());
   assert(transformExpr != NULL);
 
-  copy_clause* copyClause = new copy_clause(varExpr, sourceExpr);
+  copy_clause* copyClause = theExprManager->create_copy_clause(varExpr, sourceExpr);
 
   transformExpr->add_back(copyClause);
 }
@@ -12511,7 +12517,7 @@ void end_visit(const VarBinding& v, void*)
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-template<typename FTNodeType> bool flatten( ftnode *n ) 
+template<typename FTNodeType> bool flatten( ftnode *n )
 {
   if ( FTNodeType *const n2 = dynamic_cast<FTNodeType*>( n ) ) {
     typename FTNodeType::ftnode_list_t &list = n2->get_node_list();
@@ -12527,7 +12533,7 @@ template<typename FTNodeType> bool flatten( ftnode *n )
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
-void *begin_visit (const FTAnd& v) 
+void *begin_visit (const FTAnd& v)
 {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_FULL_TEXT
@@ -12536,7 +12542,7 @@ void *begin_visit (const FTAnd& v)
   return no_state;
 }
 
-void end_visit (const FTAnd& v, void* /*visit_state*/) 
+void end_visit (const FTAnd& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
@@ -12558,7 +12564,7 @@ void end_visit (const FTAnd& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const FTAnyallOption& v) 
+void *begin_visit (const FTAnyallOption& v)
 {
   TRACE_VISIT ();
   // nothing to do
@@ -12566,14 +12572,14 @@ void *begin_visit (const FTAnyallOption& v)
 }
 
 
-void end_visit (const FTAnyallOption& v, void* /*visit_state*/) 
+void end_visit (const FTAnyallOption& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
 
-void *begin_visit (const FTBigUnit& v) 
+void *begin_visit (const FTBigUnit& v)
 {
   TRACE_VISIT ();
   // nothing to do
@@ -12581,13 +12587,13 @@ void *begin_visit (const FTBigUnit& v)
 }
 
 
-void end_visit (const FTBigUnit& v, void* /*visit_state*/) 
+void end_visit (const FTBigUnit& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // nothing to do
 }
 
-void *begin_visit (const FTCaseOption& v) 
+void *begin_visit (const FTCaseOption& v)
 {
   TRACE_VISIT ();
   // nothing to do
@@ -12595,7 +12601,7 @@ void *begin_visit (const FTCaseOption& v)
 }
 
 
-void end_visit (const FTCaseOption& v, void* /*visit_state*/) 
+void end_visit (const FTCaseOption& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
@@ -12610,7 +12616,7 @@ void end_visit (const FTCaseOption& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const FTContainsExpr& v) 
+void *begin_visit (const FTContainsExpr& v)
 {
   TRACE_VISIT ();
 #ifdef ZORBA_NO_FULL_TEXT
@@ -12621,7 +12627,7 @@ void *begin_visit (const FTContainsExpr& v)
   return no_state;
 }
 
-void end_visit (const FTContainsExpr& v, void* /*visit_state*/) 
+void end_visit (const FTContainsExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT

@@ -72,12 +72,13 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 
 ********************************************************************************/
 var_expr::var_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)
   :
-  expr(sctx, loc, var_expr_kind),
+  expr(expMan, sctx, loc, var_expr_kind),
   theUniqueId(0),
   theKind(k),
   theName(name),
@@ -240,7 +241,7 @@ for_clause* var_expr::get_for_clause() const
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::remove_set_expr(expr* e) 
+void var_expr::remove_set_expr(expr* e)
 {
   assert(theKind == local_var || theKind == prolog_var);
 

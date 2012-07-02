@@ -77,7 +77,7 @@ struct PathHolder
   expr_t               expr;
   long                 clauseCount;
 
-  PathHolder() 
+  PathHolder()
     :
     prev(NULL),
     clauseCount(0)
@@ -163,7 +163,7 @@ static bool hoist_expressions(
         numForLetClauses = flwor->num_forlet_clauses();
 
         // TODO: the expr that was just hoisted here, may contain sub-exprs that
-        // can be hoisted even earlier. 
+        // can be hoisted even earlier.
       }
       else if (domainExpr->is_sequential())
       {
@@ -379,7 +379,7 @@ static expr_t try_hoisting(
   int i = 0;
 
   // h->prev == NULL means that expr e is not inside any flwor expr, and as a
-  // result, there is nothing to hoist. 
+  // result, there is nothing to hoist.
   while (h->prev != NULL)
   {
     if (h->expr->get_expr_kind() == trycatch_expr_kind)
@@ -402,7 +402,7 @@ static expr_t try_hoisting(
 
           if (contains_var(trycatchVar.getp(), varmap, varset))
             return NULL;
-        } 
+        }
       }
     }
     else
@@ -410,7 +410,7 @@ static expr_t try_hoisting(
       assert(h->expr->get_expr_kind() == flwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(h->expr.getp());
- 
+
       group_clause* gc = flwor->get_group_clause();
 
       // If any free variable is a group-by variable, give up.
@@ -427,7 +427,7 @@ static expr_t try_hoisting(
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
         csize numNonGroupVars = ngvars.size();
-        
+
         for (csize i = 0; i < numNonGroupVars; ++i)
         {
           if (contains_var(ngvars[i].second.getp(), varmap, varset))
@@ -436,14 +436,14 @@ static expr_t try_hoisting(
       }
 
       // Check whether expr e references any variables from the current flwor. If
-      // not, then e can be hoisted out of the current flwor and we repeat the 
+      // not, then e can be hoisted out of the current flwor and we repeat the
       // while-loop to see if e can be hoisted w.r.t. the previous (outer) flwor.
       // If yes, then let V be the inner-most var referenced by e. If there are any
       // FOR vars after V, e can be hoisted out of any such FOR vars. Otherwise, e
       // cannot be hoisted.
       for (i = h->clauseCount - 1; i >= 0; --i)
       {
-        const forletwin_clause* flc = 
+        const forletwin_clause* flc =
         static_cast<const forletwin_clause*>(flwor->get_clause(i));
 
         if (flc->get_expr()->is_sequential())
@@ -459,7 +459,7 @@ static expr_t try_hoisting(
           foundReferencedFLWORVar = true;
           break;
         }
-        
+
         inloop = (inloop ||
                   (flc->get_kind() == flwor_clause::for_clause &&
                    TypeOps::type_max_cnt(tm, *flc->get_expr()->get_return_type()) >= 2));
@@ -481,7 +481,7 @@ static expr_t try_hoisting(
 
   var_expr_t letvar(rCtx.createTempVar(e->get_sctx(), e->get_loc(), var_expr::let_var));
 
-  expr_t hoisted = new fo_expr(e->get_sctx(),
+  expr_t hoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
                                e->get_loc(),
                                GET_BUILTIN_FUNCTION(OP_HOIST_1),
                                e);
@@ -490,6 +490,7 @@ static expr_t try_hoisting(
   letvar->setFlags(e->getFlags());
 
   let_clause_t flref(new let_clause(e->get_sctx(),
+                                    rCtx.theEM,
                                     e->get_loc(),
                                     letvar,
                                     hoisted));
@@ -500,7 +501,7 @@ static expr_t try_hoisting(
   {
     if (h->expr == NULL)
     {
-      h->expr = new flwor_expr(e->get_sctx(), e->get_loc(), false);
+      h->expr = rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
     }
     static_cast<flwor_expr*>(h->expr.getp())->add_clause(flref);
   }
@@ -512,10 +513,10 @@ static expr_t try_hoisting(
     ++h->clauseCount;
   }
 
-  expr_t unhoisted = new fo_expr(e->get_sctx(),
+  expr_t unhoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
                                  e->get_loc(),
                                  GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
-                                 new wrapper_expr(e->get_sctx(),
+                                 rCtx.theEM->create_wrapper_expr(e->get_sctx(),
                                                   e->get_loc(),
                                                   letvar.getp()));
   unhoisted->setFlags(e->getFlags());
@@ -558,7 +559,7 @@ static bool non_hoistable(const expr* e)
       k == const_expr_kind ||
       k == axis_step_expr_kind ||
       k == match_expr_kind ||
-      (k == wrapper_expr_kind && 
+      (k == wrapper_expr_kind &&
        non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
       is_already_hoisted(e) ||
       is_enclosed_expr(e) ||

@@ -53,6 +53,7 @@ class relpath_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   std::vector<expr_t> theSteps;
@@ -62,9 +63,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(relpath_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  relpath_expr(static_context* sctx, const QueryLoc& loc);
+protected:
+  relpath_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc);
 
+public:
   size_t size() const { return theSteps.size(); }
 
   void add_back(expr_t step);
@@ -105,6 +107,7 @@ class axis_step_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   axis_kind_t             theAxis;
@@ -119,9 +122,10 @@ public:
 public:
   static bool is_reverse_axis(axis_kind_t kind);
 
-public:
-  axis_step_expr(static_context* sctx, const QueryLoc&);
+protected:
+  axis_step_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&);
 
+public:
   axis_kind_t getAxis() const { return theAxis; }
 
   void setAxis(axis_kind_t v) { theAxis = v; }
@@ -169,6 +173,7 @@ class match_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   match_test_t      theTestKind;
@@ -186,9 +191,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(match_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  match_expr(static_context* sctx, const QueryLoc&);
+protected:
+  match_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&);
 
+public:
   match_test_t getTestKind() const { return theTestKind; }
 
   void setTestKind(enum match_test_t v) { theTestKind = v; }

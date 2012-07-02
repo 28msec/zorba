@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,13 +18,14 @@
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "diagnostics/assert.h"
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(insert_expr)
@@ -51,14 +52,15 @@ DEF_EXPR_ACCEPT (transform_expr)
 
 ********************************************************************************/
 update_expr_base::update_expr_base(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
     const expr_t& targetExpr,
     const expr_t& sourceExpr)
   :
-	expr(sctx, loc, kind),
-	theTargetExpr(targetExpr),
+  expr(expMan, sctx, loc, kind),
+  theTargetExpr(targetExpr),
   theSourceExpr(sourceExpr)
 {
   compute_scripting_kind();
@@ -88,13 +90,14 @@ void update_expr_base::compute_scripting_kind()
 
 ********************************************************************************/
 insert_expr::insert_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     store::UpdateConsts::InsertType aType,
     const expr_t& sourceExpr,
     const expr_t& targetExpr)
   :
-	update_expr_base(sctx, loc, insert_expr_kind, targetExpr, sourceExpr),
+  update_expr_base(expMan, sctx, loc, insert_expr_kind, targetExpr, sourceExpr),
   theType(aType)
 {
 }
@@ -109,7 +112,7 @@ void insert_expr::serialize(::zorba::serialization::Archiver& ar)
 
 expr_t insert_expr::clone(substitution_t& subst) const
 {
-  return new insert_expr(theSctx,
+  return theExprManager->create_insert_expr(theSctx,
                          get_loc(),
                          getType(),
                          getSourceExpr()->clone(subst),
@@ -121,11 +124,12 @@ expr_t insert_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 delete_expr::delete_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& targetExpr)
   :
-	update_expr_base(sctx, loc, delete_expr_kind, targetExpr, NULL)
+  update_expr_base(expMan, sctx, loc, delete_expr_kind, targetExpr, NULL)
 {
 }
 
@@ -138,7 +142,7 @@ void delete_expr::serialize(::zorba::serialization::Archiver& ar)
 
 expr_t delete_expr::clone(substitution_t& subst) const
 {
-  return new delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
+  return theExprManager->create_delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
 }
 
 
@@ -146,13 +150,14 @@ expr_t delete_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 replace_expr::replace_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     store::UpdateConsts::ReplaceType aType,
     const expr_t& targetExpr,
     const expr_t& replaceExpr)
   :
-	update_expr_base(sctx, loc, replace_expr_kind, targetExpr, replaceExpr),
+  update_expr_base(expMan, sctx, loc, replace_expr_kind, targetExpr, replaceExpr),
   theType(aType)
 {
 }
@@ -167,7 +172,7 @@ void replace_expr::serialize(::zorba::serialization::Archiver& ar)
 
 expr_t replace_expr::clone(substitution_t& subst) const
 {
-  return new replace_expr(theSctx,
+  return theExprManager->create_replace_expr(theSctx,
                           get_loc(),
                           getType(),
                           getTargetExpr()->clone(subst),
@@ -179,12 +184,13 @@ expr_t replace_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 rename_expr::rename_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& targetExpr,
     const expr_t& nameExpr)
   :
-	update_expr_base(sctx, loc, rename_expr_kind, targetExpr, nameExpr)
+  update_expr_base(expMan, sctx, loc, rename_expr_kind, targetExpr, nameExpr)
 {
 }
 
@@ -197,7 +203,7 @@ void rename_expr::serialize(::zorba::serialization::Archiver& ar)
 
 expr_t rename_expr::clone(substitution_t& subst) const
 {
-  return new rename_expr(theSctx,
+  return theExprManager->create_rename_expr(theSctx,
                          get_loc(),
                          getTargetExpr()->clone(subst),
                          getNameExpr()->clone(subst));
@@ -230,25 +236,26 @@ void copy_clause::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-copy_clause_t copy_clause::clone(expr::substitution_t& subst) const 
+copy_clause_t copy_clause::clone(expr::substitution_t& subst) const
 {
   ZORBA_ASSERT(theVar && theExpr);
 
   expr_t domainCopy = theExpr->clone(subst);
 
-  var_expr_t varCopy = new var_expr(*theVar);
+  var_expr_t varCopy = theExpr->get_exprMan()->create_var_expr(*theVar);
 
   subst[theVar.getp()] = varCopy.getp();
 
-  return new copy_clause(varCopy, domainCopy);   
+  return new copy_clause(varCopy, domainCopy);
 }
 
 
 transform_expr::transform_expr(
+    ExprManager* expMan,
     static_context* sctx,
-	  const QueryLoc& loc)
+    const QueryLoc& loc)
   :
-	expr(sctx, loc, transform_expr_kind)
+  expr(expMan, sctx, loc, transform_expr_kind)
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -263,7 +270,7 @@ void transform_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void transform_expr::setModifyExpr(expr* e) 
+void transform_expr::setModifyExpr(expr* e)
 {
   theModifyExpr = e;
 
@@ -302,15 +309,15 @@ void transform_expr::compute_scripting_kind()
 }
 
 
-expr_t transform_expr::clone(substitution_t& subst) const 
+expr_t transform_expr::clone(substitution_t& subst) const
 {
   ZORBA_ASSERT(theModifyExpr && theReturnExpr);
 
-  rchandle<transform_expr> cloneExpr(new transform_expr(theSctx, get_loc()));
+  rchandle<transform_expr> cloneExpr(theExprManager->create_transform_expr(theSctx, get_loc()));
 
   for (std::vector<copy_clause_t>::const_iterator lIter = theCopyClauses.begin();
        lIter != theCopyClauses.end();
-       ++lIter) 
+       ++lIter)
   {
     cloneExpr->add_back((*lIter)->clone(subst));
   }

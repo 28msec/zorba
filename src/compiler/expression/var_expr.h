@@ -19,7 +19,7 @@
 
 #include "compiler/expression/expr_base.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class flwor_clause;
@@ -76,7 +76,7 @@ typedef rchandle<var_expr> var_expr_t;
 
   theFlworClause:
   ---------------
-  If this is a var declared in flwor clause, theFlworClause points to the 
+  If this is a var declared in flwor clause, theFlworClause points to the
   defining clause. That clause also contains the defining expr for the var
   and a pointer back to this var_exr.
 
@@ -90,7 +90,7 @@ typedef rchandle<var_expr> var_expr_t;
   ------------
   For arg vars, it is the position, within the param list, of parameter that is
   bound to this arg var.
-  
+
   theUDF:
   -------
   For arg vars, the corresponding UDF.
@@ -119,6 +119,7 @@ typedef rchandle<var_expr> var_expr_t;
 class var_expr : public expr
 {
   friend class expr;
+  friend class ExprManager;
 
 public:
   enum var_kind
@@ -172,7 +173,7 @@ protected:
 
   bool                  theIsExternal;
 
-  bool                  theIsPrivate; 
+  bool                  theIsPrivate;
 
   bool                  theIsMutable;
 
@@ -186,13 +187,15 @@ public:
 public:
   static std::string decode_var_kind(enum var_kind);
 
-public:
+protected:
   var_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       var_kind k,
       store::Item* name);
 
+public:
   var_expr(const var_expr& source);
 
   ulong get_unique_id() const { return theUniqueId; }
@@ -256,7 +259,7 @@ public:
   std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
 
   std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
-  
+
   bool is_context_item() const;
 
   void compute_scripting_kind();

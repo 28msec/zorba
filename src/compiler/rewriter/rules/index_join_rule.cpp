@@ -68,7 +68,7 @@ struct PredicateInfo
 /*******************************************************************************
   This rule analyzes the where clause of flwor exprs to deterimne whether any
   predicate in the clause is a join predicate and whether the associated join
-  can be converted into a hashjoin using an index that is built on-th-fly. 
+  can be converted into a hashjoin using an index that is built on-th-fly.
 ********************************************************************************/
 expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
@@ -101,11 +101,11 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
     if (isIndexJoinPredicate(rCtx, predInfo))
     {
       rewriteJoin(rCtx, predInfo, modified);
-      
+
       if (modified)
       {
         predInfo.theFlworExpr->remove_where_clause();
-          
+
         expr_t e = rCtx.theFlworStack.back();
 
         ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
@@ -124,28 +124,28 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
         PredicateInfo predInfo;
         predInfo.theFlworExpr = flworExpr;
         predInfo.thePredicate = (*iter);
-        
+
         if (isIndexJoinPredicate(rCtx, predInfo))
         {
           rewriteJoin(rCtx, predInfo, modified);
-          
+
           if (modified)
           {
-            expr_t trueExpr = new const_expr(flworExpr->get_sctx(),
+            expr_t trueExpr = rCtx.theEM->create_const_expr(flworExpr->get_sctx(),
                                              flworExpr->get_loc(),
                                              true);
             (*iter) = trueExpr;
-            
+
             expr_t e = rCtx.theFlworStack.back();
-            
+
             ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
-            
+
             rCtx.theFlworStack.pop_back();
             rCtx.theInReturnClause.pop_back();
             return e;
           }
         }
-        
+
         iter.next();
       }
     }
@@ -168,7 +168,7 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
       assert(modified);
       *iter = newChild;
     }
-    
+
     if (modified)
       break;
 
@@ -198,7 +198,7 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
 
 /*******************************************************************************
-  Check whether the given predicate is a join predicate that can be converted 
+  Check whether the given predicate is a join predicate that can be converted
   to a hashjoin.
 ********************************************************************************/
 static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
@@ -389,7 +389,7 @@ static var_expr* findForVar(
 
       if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
       {
-        // found a real FOR var, so we return it. 
+        // found a real FOR var, so we return it.
         return var;
       }
     }
@@ -480,10 +480,10 @@ static void rewriteJoin(
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
 
-  expr_t qnameExpr(new const_expr(sctx, loc, qname));
+  expr_t qnameExpr(rCtx.theEM->create_const_expr(sctx, loc, qname));
   expr_t buildExpr;
 
-  fo_expr_t createExpr = new fo_expr(sctx,
+  fo_expr_t createExpr = rCtx.theEM->create_fo_expr(sctx,
                                      loc,
                                      GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_2),
                                      qnameExpr,
@@ -501,7 +501,7 @@ static void rewriteJoin(
     // return expr of F. Otherwise, we first break up F by creating a sub-flwor
     // expr (subF) and moving all clauses of F that appear after V's defining
     // clause into subF, making the return expr of f be the return expr of subF,
-    // and setting subF as the return expr of F. Then, we create the index in 
+    // and setting subF as the return expr of F. Then, we create the index in
     // the return expr of F.
 
     const var_expr* mostInnerVar = (*rCtx.theIdVarMap)[maxInnerVarId];
@@ -527,7 +527,7 @@ static void rewriteJoin(
 
       const QueryLoc& nestedLoc = mostInnerVarClause->get_loc();
 
-      flwor_expr_t nestedFlwor = new flwor_expr(sctx, nestedLoc, false);
+      flwor_expr_t nestedFlwor = rCtx.theEM->create_flwor_expr(sctx, nestedLoc, false);
 
       for (ulong i = mostInnerVarPos+1; i < numClauses; ++i)
       {
@@ -545,7 +545,7 @@ static void rewriteJoin(
       args[0] = createExpr.getp();
       args[1] = nestedFlwor.getp();
 
-      block_expr* seqExpr = new block_expr(sctx, loc, false, args, NULL);
+      block_expr* seqExpr = rCtx.theEM->create_block_expr(sctx, loc, false, args, NULL);
 
       innerFlwor->set_return_expr(seqExpr);
 
@@ -582,7 +582,7 @@ static void rewriteJoin(
         args[0] = createExpr.getp();
         args[1] = returnExpr;
 
-        block_expr* seqExpr = new block_expr(sctx, loc, false, args, NULL);
+        block_expr* seqExpr = rCtx.theEM->create_block_expr(sctx, loc, false, args, NULL);
 
         innerFlwor->set_return_expr(seqExpr);
       }
@@ -609,7 +609,7 @@ static void rewriteJoin(
     args[0] = createExpr.getp();
     args[1] = outerFlworExpr;
 
-    block_expr* seqExpr = new block_expr(sctx, loc, false, args, NULL);
+    block_expr* seqExpr = rCtx.theEM->create_block_expr(sctx, loc, false, args, NULL);
 
     rCtx.theFlworStack[outerPosInStack] = seqExpr;
   }
@@ -623,23 +623,23 @@ static void rewriteJoin(
 
   if (predInfo.theIsGeneral)
   {
-    probeExpr = 
-    new fo_expr(sctx,
+    probeExpr =
+    rCtx.theEM->create_fo_expr(sctx,
                 loc,
                 GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N),
                 qnameExpr,
                 const_cast<expr*>(predInfo.theOuterOp));
 
-    probeExpr = 
-    new fo_expr(sctx,
+    probeExpr =
+    rCtx.theEM->create_fo_expr(sctx,
                 loc,
                 GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
                 probeExpr);
   }
   else
   {
-    probeExpr = 
-    new fo_expr(sctx,
+    probeExpr =
+    rCtx.theEM->create_fo_expr(sctx,
                 loc,
                 GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N),
                 qnameExpr,
@@ -651,7 +651,7 @@ static void rewriteJoin(
   //
   // Create the IndexDecl obj
   //
-  IndexDecl_t idx = new IndexDecl(sctx, loc, qname);
+  IndexDecl_t idx = new IndexDecl(sctx, rCtx.theEM, loc, qname);
 
   if (predInfo.theIsGeneral)
     idx->setGeneral(true);
@@ -804,7 +804,7 @@ static bool findFlworForVar(
   flworExpr = NULL;
 
   long numFlwors = (long)rCtx.theFlworStack.size();
- 
+
   for (long i = numFlwors - 1; i >= 0; --i)
   {
     if (rCtx.theFlworStack[i]->get_expr_kind() == trycatch_expr_kind)
@@ -814,7 +814,7 @@ static bool findFlworForVar(
 
     assert(flworExpr != NULL);
 
-    if (i < numFlwors - 1 && 
+    if (i < numFlwors - 1 &&
         rCtx.theInReturnClause[i] == true &&
         flworExpr->is_sequential())
       return false;

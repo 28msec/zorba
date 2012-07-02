@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,11 +24,12 @@
 
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(relpath_expr)
@@ -48,9 +49,9 @@ DEF_EXPR_ACCEPT (match_expr)
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-relpath_expr::relpath_expr(static_context* sctx, const QueryLoc& loc)
+relpath_expr::relpath_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc, relpath_expr_kind)
+  expr(expMan, sctx, loc, relpath_expr_kind)
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -67,7 +68,7 @@ void relpath_expr::add_back(expr_t step)
 {
   if (step->is_updating())
   {
-    throw XQUERY_EXCEPTION(err::XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001,
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(get_loc()));
   }
@@ -96,7 +97,7 @@ void relpath_expr::compute_scripting_kind()
 
     if (step->is_updating())
     {
-      throw XQUERY_EXCEPTION(err::XUST0001, 
+      throw XQUERY_EXCEPTION(err::XUST0001,
                              ERROR_PARAMS(ZED(XUST0001_Generic)),
                              ERROR_LOC(get_loc()));
     }
@@ -115,7 +116,7 @@ void relpath_expr::compute_scripting_kind()
 
 expr_t relpath_expr::clone(substitution_t& subst) const
 {
-  std::auto_ptr<relpath_expr> re(new relpath_expr(theSctx, get_loc()));
+  std::auto_ptr<relpath_expr> re(theExprManager->create_relpath_expr(theSctx, get_loc()));
 
   for (unsigned i = 0; i < size(); ++i)
   {
@@ -132,9 +133,9 @@ expr_t relpath_expr::clone(substitution_t& subst) const
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-axis_step_expr::axis_step_expr(static_context* sctx, const QueryLoc& loc)
+axis_step_expr::axis_step_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc, axis_step_expr_kind),
+  expr(expMan, sctx, loc, axis_step_expr_kind),
   theReverseOrder(false)
 {
   compute_scripting_kind();
@@ -150,7 +151,7 @@ void axis_step_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool axis_step_expr::is_reverse_axis(axis_kind_t k) 
+bool axis_step_expr::is_reverse_axis(axis_kind_t k)
 {
   return (k == axis_kind_ancestor ||
           k == axis_kind_ancestor_or_self ||
@@ -168,7 +169,7 @@ void axis_step_expr::compute_scripting_kind()
 
 expr_t axis_step_expr::clone(substitution_t& subst) const
 {
-  axis_step_expr* ae = new axis_step_expr(theSctx, get_loc());
+  axis_step_expr* ae = theExprManager->create_axis_step_expr(theSctx, get_loc());
   ae->setAxis(getAxis());
   ae->setTest(getTest());
   ae->theReverseOrder = theReverseOrder;
@@ -188,9 +189,9 @@ expr_t axis_step_expr::clone(substitution_t& subst) const
                      PITest | CommentTest | TextTest | AnyKindTest
 
 ********************************************************************************/
-match_expr::match_expr(static_context* sctx, const QueryLoc& loc)
+match_expr::match_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc, match_expr_kind),
+  expr(expMan, sctx, loc, match_expr_kind),
   theDocTestKind(match_no_test),
   theWildKind(match_no_wild),
   theQName(NULL),
@@ -253,7 +254,7 @@ void match_expr::compute_scripting_kind()
 
 expr_t match_expr::clone(substitution_t& subst) const
 {
-  match_expr* me = new match_expr(theSctx, get_loc());
+  match_expr* me = theExprManager->create_match_expr(theSctx, get_loc());
   me->setTestKind(getTestKind());
   me->setDocTestKind(getDocTestKind());
   me->setWildName(getWildName());

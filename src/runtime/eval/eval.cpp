@@ -50,7 +50,7 @@ SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::EvalIteratorState() 
+EvalIteratorState::EvalIteratorState()
 {
 }
 
@@ -58,7 +58,7 @@ EvalIteratorState::EvalIteratorState()
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::~EvalIteratorState() 
+EvalIteratorState::~EvalIteratorState()
 {
 }
 
@@ -76,7 +76,7 @@ EvalIterator::EvalIterator(
     const store::NsBindings& localBindings,
     bool doNodeCopy,
     bool forDebugger)
-  : 
+  :
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
   theVarNames(aVarNames),
   theVarTypes(aVarTypes),
@@ -91,7 +91,7 @@ EvalIterator::EvalIterator(
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIterator::~EvalIterator() 
+EvalIterator::~EvalIterator()
 {
 }
 
@@ -131,16 +131,17 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     csize numEvalVars = theVarNames.size();
 
     // Create an "outer" sctx and register into it (a) global vars corresponding
-    // to the eval vars and (b) the expression-level ns bindings at the place 
+    // to the eval vars and (b) the expression-level ns bindings at the place
     // where the eval call appears at.
     static_context* outerSctx = theSctx->create_child_context();
 
     for (csize i = 0; i < numEvalVars; ++i)
     {
-      var_expr_t ve = new var_expr(outerSctx,
-                                   loc,
-                                   var_expr::prolog_var,
-                                   theVarNames[i].getp());
+      var_expr_t ve = state->ccb->getExprManager().create_var_expr(
+                                                outerSctx,
+                                                loc,
+                                                var_expr::prolog_var,
+                                                theVarNames[i].getp());
 
       ve->set_type(theVarTypes[i]);
 
@@ -177,8 +178,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     // If we are here after a reet, we must set state->thePlanWrapper to NULL
     // before reseting the state->thePlan. Otherwise, the current state->thePlan
-    // will be destroyed first, and then we will attempt to close it when 
-    // state->thePlanWrapper is reset later. 
+    // will be destroyed first, and then we will attempt to close it when
+    // state->thePlanWrapper is reset later.
     state->thePlanWrapper = NULL;
 
     // Compile
@@ -213,7 +214,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 /****************************************************************************//**
-  Copy the values of all the "outer" vars (i.e., global and eval vars) to the 
+  Copy the values of all the "outer" vars (i.e., global and eval vars) to the
   evalDctx. Also, compute the max varid of all these vars and pass this max varid
   to the compiler of the eval query so that the varids that will be generated for
   the eval query will not conflict with the varids of the global and eval vars.
@@ -310,7 +311,7 @@ void EvalIterator::setExternalVariables(
     ulong innerVarId = innerVar->get_unique_id();
 
     var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
-                                                loc, 
+                                                loc,
                                                 zerr::ZXQP0000_NO_ERROR);
 
     if (globalVar == NULL)

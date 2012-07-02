@@ -54,7 +54,7 @@ ExprManager::~ExprManager()
 
     total_bytes += bytes;
 
-    if(exp->getRefCount() == 0)
+    if(exp->getRefCount() <= 0)
     {
       ++zero_ref_expr;
       zero_ref_bytes += bytes;
@@ -73,9 +73,7 @@ expr* ExprManager::reg(expr* exp)
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CREATE_AND_RETURN_EXPR(EXPRTYPE, ...) \
-  EXPRTYPE *EXPPTR = new (memory) EXPRTYPE(__VA_ARGS__); \
-  reg(EXPPTR); \
-  return EXPPTR
+  return static_cast< EXPRTYPE *>(reg(new (memory) EXPRTYPE(this, __VA_ARGS__)));
 
 #define CREATE_AND_RETURN(TYPE, ...) \
   TYPE *EXPPTR = new (memory) TYPE(__VA_ARGS__); \
@@ -330,7 +328,9 @@ function_trace_expr* ExprManager::create_function_trace_expr(
 
 function_trace_expr* ExprManager::create_function_trace_expr(expr_t aExpr)
 {
-  CREATE_AND_RETURN_EXPR(function_trace_expr, aExpr);
+  //this function gets the ExprManager from the expression it recieves.
+  return static_cast<function_trace_expr*>
+      (reg(new (memory) function_trace_expr(aExpr)));
 }
 
 eval_expr* ExprManager::create_eval_expr(
@@ -371,7 +371,8 @@ var_expr* ExprManager::create_var_expr(
 
 var_expr* ExprManager::create_var_expr(const var_expr& source)
 {
-  CREATE_AND_RETURN_EXPR(var_expr, source);
+  return static_cast<var_expr*>
+      (reg(new (memory) var_expr(source)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -554,7 +555,7 @@ ftcontains_expr* ExprManager::create_ftcontains_expr(
 fo_expr* ExprManager::create_seq(static_context* sctx, const QueryLoc& loc)
 {
   //TODO make fo_expr use this factory to generate everything
-  return fo_expr::create_seq(sctx, loc);
+  return fo_expr::create_seq(this, sctx, loc);
 }
 
 fo_expr* ExprManager::create_fo_expr(
@@ -585,10 +586,19 @@ fo_expr* ExprManager::create_fo_expr(
   CREATE_AND_RETURN_EXPR(fo_expr, sctx, loc, f, args);
 }
 
+fo_expr* ExprManager::create_fo_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const function* f)
+{
+
+  CREATE_AND_RETURN_EXPR(fo_expr, sctx, loc, f);
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 for_clause* ExprManager::create_for_clause(
     static_context* sctx,
+    ExprManager* exprMan,
     const QueryLoc& loc,
     var_expr_t varExpr,
     expr_t domainExpr,
@@ -597,21 +607,23 @@ for_clause* ExprManager::create_for_clause(
     bool isOuter)
 {
   CREATE_AND_RETURN(for_clause,
-          sctx, loc, varExpr, domainExpr, posVarExpr, scoreVarExpr, isOuter);
+          sctx, exprMan, loc, varExpr, domainExpr, posVarExpr, scoreVarExpr, isOuter);
 }
 
 let_clause* ExprManager::create_let_clause(
     static_context* sctx,
+    ExprManager* exprMan,
     const QueryLoc& loc,
     var_expr_t varExpr,
     expr_t domainExpr,
     bool lazy)
 {
-  CREATE_AND_RETURN(let_clause, sctx, loc, varExpr, domainExpr, lazy);
+  CREATE_AND_RETURN(let_clause, sctx, exprMan, loc, varExpr, domainExpr, lazy);
 }
 
 window_clause* ExprManager::create_window_clause(
     static_context* sctx,
+    ExprManager* exprMan,
     const QueryLoc& loc,
     window_clause::window_t winKind,
     var_expr_t varExpr,
@@ -621,7 +633,7 @@ window_clause* ExprManager::create_window_clause(
     bool lazy)
 {
   CREATE_AND_RETURN(window_clause,
-          sctx, loc, winKind, varExpr, domainExpr, winStart, winStop, lazy);
+          sctx, exprMan, loc, winKind, varExpr, domainExpr, winStart, winStop, lazy);
 }
 
 flwor_wincond* ExprManager::create_flwor_wincond(
@@ -631,7 +643,7 @@ flwor_wincond* ExprManager::create_flwor_wincond(
   const flwor_wincond::vars& out_vars,
   expr_t cond)
 {
-  CREATE_AND_RETURN(flwor_wincond, sctx, isOnly, in_vars, out_vars, cond);
+  CREATE_AND_RETURN(flwor_wincond, this, sctx, isOnly, in_vars, out_vars, cond);
 }
 
 group_clause* ExprManager::create_group_clause(

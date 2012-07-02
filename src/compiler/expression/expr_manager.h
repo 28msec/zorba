@@ -18,16 +18,11 @@
 #ifndef ZORBA_COMPILER_EXPRMANAGER_H
 #define ZORBA_COMPILER_EXPRMANAGER_H
 
-#include "ftnode.h"
+#include "expr_classes.h"
 #include "expr.h"
-#include "var_expr.h"
-#include "flwor_expr.h"
-#include "fo_expr.h"
-#include "ft_expr.h"
-#include "function_item_expr.h"
-#include "path_expr.h"
 #include "script_exprs.h"
-#include "update_exprs.h"
+#include "flwor_expr.h"
+#include "ftnode.h"
 
 #include "mem_manager.h"
 
@@ -360,10 +355,16 @@ public:
     const function* f,
     const std::vector<expr_t>& args);
 
+  fo_expr* create_fo_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const function* f);
+
 ////////////////////////////////////////////////////////////////////////////////
 
   for_clause* create_for_clause(
         static_context* sctx,
+        ExprManager* exprMan,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -373,6 +374,7 @@ public:
 
   let_clause* create_let_clause(
         static_context* sctx,
+        ExprManager* exprMan,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -380,6 +382,7 @@ public:
 
   window_clause* create_window_clause(
         static_context* sctx,
+        ExprManager* exprMan,
         const QueryLoc& loc,
         window_clause::window_t winKind,
         var_expr_t varExpr,

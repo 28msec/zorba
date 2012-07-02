@@ -30,13 +30,16 @@ namespace zorba {
 class ftcontains_expr : public expr
 {
   friend class ExprIterator;
+  friend class ExprManager;
 
 public:
   SERIALIZABLE_CLASS(ftcontains_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,expr)
   void serialize( serialization::Archiver& );
 
+protected:
   ftcontains_expr(
+    ExprManager* expMan,
     static_context*,
     QueryLoc const&,
     expr_t range,
@@ -44,6 +47,7 @@ public:
     expr_t ftignore
   );
 
+public:
   expr_t clone( substitution_t& ) const;
   void compute_scripting_kind();
 

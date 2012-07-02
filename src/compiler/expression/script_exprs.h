@@ -117,6 +117,7 @@ class exit_catcher_expr;
 ********************************************************************************/
 class block_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -128,14 +129,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(block_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   block_expr(
+      ExprManager* exprMan,
       static_context* sctx,
       const QueryLoc& loc,
       bool allowLastUpdating,
       std::vector<expr_t>& seq,
       std::vector<var_expr*>* assignedVars);
 
+public:
   ~block_expr();
 
   void add_at(csize pos, const expr_t& arg);
@@ -166,6 +169,7 @@ private:
 ********************************************************************************/
 class apply_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -178,13 +182,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(apply_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   apply_expr(
+      ExprManager* exprMan,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& inExpr,
       bool discardXDM);
 
+public:
   expr* get_expr() const { return theExpr.getp(); }
 
   bool discardsXDM() const { return theDiscardXDM; }
@@ -229,6 +235,7 @@ public:
 ********************************************************************************/
 class var_decl_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -241,13 +248,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(var_decl_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   var_decl_expr(
+      ExprManager* exprMan,
       static_context* sctx,
       const QueryLoc& loc,
       const var_expr_t& varExpr,
       const expr_t& initExpr);
 
+public:
   ~var_decl_expr();
 
   var_expr* get_var_expr() const { return theVarExpr.getp(); }
@@ -277,6 +286,7 @@ public:
 ********************************************************************************/
 class var_set_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -289,13 +299,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(var_set_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   var_set_expr(
+      ExprManager* exprMan,
       static_context* sctx,
       const QueryLoc& loc,
       const var_expr_t& varExpr,
       const expr_t& setExpr);
 
+public:
   ~var_set_expr();
 
   var_expr* get_var_expr() const { return theVarExpr.getp(); }
@@ -317,6 +329,7 @@ public:
 ********************************************************************************/
 class exit_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -330,9 +343,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  exit_expr(static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
+protected:
+  exit_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
 
+public:
   ~exit_expr();
 
   expr* get_expr() const { return theExpr.getp(); }
@@ -364,6 +378,7 @@ public:
 ********************************************************************************/
 class exit_catcher_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -377,13 +392,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_catcher_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   exit_catcher_expr(
+      ExprManager* exprMan,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& inExpr,
       std::vector<expr*>& exitExprs);
 
+public:
   ~exit_catcher_expr();
 
   expr* get_expr() const { return theExpr.getp(); }
@@ -415,6 +432,7 @@ public:
 ********************************************************************************/
 class flowctl_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -429,9 +447,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
+protected:
+  flowctl_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, enum action action);
 
+public:
   enum action get_action() const { return theAction; }
 
   expr_t clone(substitution_t& s) const;
@@ -453,6 +472,7 @@ public:
 ********************************************************************************/
 class while_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -464,9 +484,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);
+protected:
+  while_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_t body);
 
+public:
   expr* get_body() const { return theBody.getp(); }
 
   void compute_scripting_kind();

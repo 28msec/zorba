@@ -28,7 +28,7 @@ namespace zorba
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	Update expressions                                                 //
+//  Update expressions                                                 //
 //  [http://www.w3.org/TR/xqupdate/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
@@ -40,8 +40,8 @@ namespace zorba
 class update_expr_base : public expr
 {
 protected:
-	expr_t  theTargetExpr;
-	expr_t  theSourceExpr;
+  expr_t  theTargetExpr;
+  expr_t  theSourceExpr;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(update_expr_base)
@@ -50,6 +50,7 @@ public:
 
 public:
   update_expr_base(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc&,
     expr_kind_t kind,
@@ -71,6 +72,7 @@ class insert_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   store::UpdateConsts::InsertType theType;
@@ -80,14 +82,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(insert_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   insert_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::InsertType,
     const expr_t& aSourceExpr,
     const expr_t& aTargetExpr);
 
+public:
   store::UpdateConsts::InsertType getType() const { return theType; }
 
   expr_t clone(substitution_t& s) const;
@@ -105,20 +109,22 @@ class delete_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 public:
   SERIALIZABLE_CLASS(delete_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
+protected:
+  delete_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const expr_t&);
 
+public:
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -129,6 +135,7 @@ class replace_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   store::UpdateConsts::ReplaceType theType;
@@ -138,14 +145,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(replace_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   replace_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
     const expr_t&,
     const expr_t&);
 
+public:
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
   expr* getReplaceExpr() const { return theSourceExpr.getp(); }
@@ -165,19 +174,22 @@ class rename_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 public:
   SERIALIZABLE_CLASS(rename_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, update_expr_base)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   rename_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc&,
       const expr_t&,
       const expr_t&);
 
+public:
   expr* getNameExpr() const { return theSourceExpr.getp(); }
 
   expr_t clone(substitution_t& s) const;
@@ -201,19 +213,22 @@ class copy_clause : public SimpleRCObject
   friend class expr;
   friend class transform_expr;
   friend class ExprIterator;
+  friend class ExprManager;
 
 private:
   var_expr_t theVar;
   expr_t     theExpr;
+  ExprManager* theExprManager;
 
 public:
   SERIALIZABLE_CLASS(copy_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(copy_clause, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   copy_clause(var_expr_t aVar, expr_t aExpr);
 
+public:
   ~copy_clause();
 
   var_expr* getVar()  const { return theVar.getp(); }
@@ -230,6 +245,7 @@ class transform_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   std::vector<copy_clause_t> theCopyClauses;
@@ -241,9 +257,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(transform_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  transform_expr(static_context* sctx, const QueryLoc& loc);
+protected:
+  transform_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc);
 
+public:
   expr_t getModifyExpr() const { return theModifyExpr; }
 
   expr_t getReturnExpr() const { return theReturnExpr; }

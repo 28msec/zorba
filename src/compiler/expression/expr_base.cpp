@@ -23,6 +23,7 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -88,7 +89,7 @@ bool expr::is_sequential(short theScriptingKind)
   return (theScriptingKind & (VAR_SETTING_EXPR |
                               APPLYING_EXPR |
                               EXITING_EXPR |
-                              BREAKING_EXPR | 
+                              BREAKING_EXPR |
                               SEQUENTIAL_FUNC_EXPR)) != 0;
 }
 
@@ -97,7 +98,7 @@ void expr::checkNonUpdating(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(err::XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001,
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
@@ -108,7 +109,7 @@ void expr::checkSimpleExpr(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(err::XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001,
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
@@ -123,12 +124,13 @@ void expr::checkSimpleExpr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
+expr::expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_kind_t k)
   :
   theSctx(sctx),
   theLoc(loc),
   theKind(k),
-  theFlags1(0)
+  theFlags1(0),
+  theExprManager(expMan)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
@@ -163,9 +165,9 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-TypeManager* expr::get_type_manager() const 
+TypeManager* expr::get_type_manager() const
 {
-  return theSctx->get_typemanager(); 
+  return theSctx->get_typemanager();
 }
 
 
@@ -558,11 +560,11 @@ bool expr::willBeSerialized() const
 
 
 /*******************************************************************************
-  This annotation tells whether the expr must produce nodes that belong to 
-  "standalone" trees or not. A tree is standalone if it does not contain 
-  references to other trees. Such references are created when the optimizer 
+  This annotation tells whether the expr must produce nodes that belong to
+  "standalone" trees or not. A tree is standalone if it does not contain
+  references to other trees. Such references are created when the optimizer
   decides that it is ok to avoid copying the referenced subtree (as would be
-  required by required by a strict implementation of the spec, eg., during 
+  required by required by a strict implementation of the spec, eg., during
   node construction).
 ********************************************************************************/
 BoolAnnotationValue expr::getMustCopyNodes() const
@@ -808,13 +810,13 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   if (found)
     return true;
 
-  if (this == e) 
+  if (this == e)
   {
     found = true;
     return true;
   }
 
-  switch(get_expr_kind()) 
+  switch(get_expr_kind())
   {
 #ifdef ZORBA_WITH_DEBUGGER
   case debugger_expr_kind:
@@ -846,13 +848,13 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     const function* func = foExpr->get_func();
     csize numArgs = foExpr->num_args();
 
-    for (csize i = 0; i < numArgs; ++i) 
+    for (csize i = 0; i < numArgs; ++i)
     {
       const expr* argExpr = foExpr->get_arg(i);
 
-      if (func->isMap(i)) 
+      if (func->isMap(i))
       {
-        if (argExpr->is_map_internal(e, found) && found) 
+        if (argExpr->is_map_internal(e, found) && found)
         {
           return true;
         }
@@ -1178,7 +1180,7 @@ const store::Item* expr::getQName(static_context* sctx) const
 ********************************************************************************/
 xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 {
-  expr_t emptyExpr = new fo_expr(input->get_sctx(),
+  expr_t emptyExpr = theExprManager->create_fo_expr(input->get_sctx(),
                                  QueryLoc::null,
                                  GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
   expr::substitution_t subst;

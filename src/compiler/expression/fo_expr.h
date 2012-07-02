@@ -38,6 +38,7 @@ class fo_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   checked_vector<expr_t>   theArgs;
@@ -48,17 +49,19 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(fo_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  static fo_expr* create_seq(static_context* sctx, const QueryLoc &);
+protected:
+  static fo_expr* create_seq(ExprManager* theExpMan, static_context* sctx, const QueryLoc &);
 
-public:
+protected:
   fo_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg);
 
   fo_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
@@ -66,11 +69,13 @@ public:
     const expr* arg2);
 
   fo_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const std::vector<expr_t>& args);
 
+public:
   function* get_func() const { return theFunction; }
 
   void set_func(function* f) { theFunction = f; }
@@ -94,7 +99,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
 private:
-  fo_expr(static_context* sctx, const QueryLoc& loc, const function* f);
+  fo_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, const function* f);
 };
 
 ////////// The following expressions in the AST "decay" into an fo_expr ///////

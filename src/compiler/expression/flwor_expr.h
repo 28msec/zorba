@@ -23,9 +23,10 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_utils.h"
 
-
 namespace zorba
 {
+
+class ExprManager;
 
 class order_modifier;
 class flwor_clause;
@@ -147,6 +148,7 @@ class forletwin_clause : public flwor_clause
 protected:
   var_expr_t   theVarExpr;
   expr_t       theDomainExpr;
+  ExprManager* theExprManager;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(forletwin_clause)
@@ -156,6 +158,7 @@ public:
 public:
   forletwin_clause(
         static_context* sctx,
+        ExprManager* exprMan,
         const QueryLoc& loc,
         ClauseKind kind,
         var_expr_t varExpr,
@@ -194,6 +197,7 @@ public:
 public:
   for_clause(
         static_context* sctx,
+        ExprManager* exprMan,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -243,6 +247,7 @@ public:
 public:
   let_clause(
         static_context* sctx,
+        ExprManager* exprMan,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -293,6 +298,7 @@ public:
 public:
   window_clause(
         static_context* sctx,
+        ExprManager* exprMan,
         const QueryLoc& loc,
         window_t winKind,
         var_expr_t varExpr,
@@ -386,6 +392,8 @@ protected:
   vars    theOutputVars;
   expr_t  theCondExpr;
 
+  ExprManager* theExprManager;
+
 public:
   SERIALIZABLE_CLASS(flwor_wincond)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_wincond, SimpleRCObject)
@@ -393,6 +401,7 @@ public:
 
 public:
   flwor_wincond(
+      ExprManager* expMan,
       static_context* sctx,
       bool isOnly,
       const vars& in_vars,
@@ -664,6 +673,7 @@ class flwor_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 public:
   typedef std::vector<rchandle<flwor_clause> > clause_list_t;
@@ -679,9 +689,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  flwor_expr(static_context* sctx, const QueryLoc& loc, bool general);
+protected:
+  flwor_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, bool general);
 
+public:
   bool is_general() const { return theIsGeneral; }
 
   void set_general(bool v) { theIsGeneral = true; }

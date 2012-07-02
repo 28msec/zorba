@@ -15,6 +15,7 @@
  */
 #include "stdafx.h"
 
+#include "compiler/expression/expr_manager.h"
 #include "compiler/expression/function_item_expr.h"
 
 #include "compiler/expression/expr_visitor.h"
@@ -36,12 +37,13 @@ DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& anExpr,
     const std::vector<expr_t>& args)
   :
-  expr(sctx, loc, dynamic_function_invocation_expr_kind),
+  expr(expMan, sctx, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args)
 {
@@ -78,7 +80,7 @@ expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
     lNewArgs.push_back((*lIter)->clone(s));
   }
 
-  return new dynamic_function_invocation_expr(theSctx,
+  return theExprManager->create_dynamic_function_invocation_expr(theSctx,
                                               get_loc(),
                                               theExpr->clone(s),
                                               lNewArgs);
@@ -95,13 +97,14 @@ DEF_EXPR_ACCEPT (function_item_expr)
 
 
 function_item_expr::function_item_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const store::Item* aQName,
     function* f,
     uint32_t aArity)
-	:
-  expr(sctx, loc, function_item_expr_kind),
+  :
+  expr(expMan, sctx, loc, function_item_expr_kind),
   theQName(const_cast<store::Item*>(aQName)),
   theFunction(f),
   theArity(aArity)
@@ -112,10 +115,11 @@ function_item_expr::function_item_expr(
 
 
 function_item_expr::function_item_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc)
-	:
-  expr(sctx, loc, function_item_expr_kind),
+  :
+  expr(expMan, sctx, loc, function_item_expr_kind),
   theQName(0),
   theFunction(NULL),
   theArity(0)
@@ -176,7 +180,7 @@ void function_item_expr::compute_scripting_kind()
 expr_t function_item_expr::clone(substitution_t& s) const
 {
   std::auto_ptr<function_item_expr> lNewExpr(
-      new function_item_expr(theSctx,
+      theExprManager->create_function_item_expr(theSctx,
                              get_loc(),
                              theFunction->getName(),
                              theFunction.getp(),

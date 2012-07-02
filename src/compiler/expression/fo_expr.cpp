@@ -19,6 +19,7 @@
 
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "context/static_context.h"
 
@@ -58,22 +59,23 @@ void fo_expr::accept(expr_visitor& v)
   UnionExpr, and IntersectExceptExpr.
 ********************************************************************************/
 
-fo_expr* fo_expr::create_seq(static_context* sctx, const QueryLoc& loc)
+fo_expr* fo_expr::create_seq(ExprManager* theExprManager, static_context* sctx, const QueryLoc& loc)
 {
   function* f = BuiltinFunctionLibrary::getFunction(FunctionConsts::OP_CONCATENATE_N);
 
-  std::auto_ptr<fo_expr> fo(new fo_expr(sctx, loc, f));
+  std::auto_ptr<fo_expr> fo(theExprManager->create_fo_expr(sctx, loc, f));
 
   return fo.release();
 }
 
 
 fo_expr::fo_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f)
   :
-  expr(sctx, loc, fo_expr_kind),
+  expr(expMan, sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   // This method is private and it is to be used only by the clone method
@@ -83,12 +85,13 @@ fo_expr::fo_expr(
 
 
 fo_expr::fo_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg)
   :
-  expr(sctx, loc, fo_expr_kind),
+  expr(expMan, sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
@@ -100,13 +103,14 @@ fo_expr::fo_expr(
 
 
 fo_expr::fo_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg1,
     const expr* arg2)
   :
-  expr(sctx, loc, fo_expr_kind),
+  expr(expMan, sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
@@ -119,12 +123,13 @@ fo_expr::fo_expr(
 
 
 fo_expr::fo_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const std::vector<expr_t>& args)
   :
-  expr(sctx, loc, fo_expr_kind),
+  expr(expMan, sctx, loc, fo_expr_kind),
   theArgs(args),
   theFunction(const_cast<function*>(f))
 {
@@ -270,7 +275,7 @@ expr_t fo_expr::clone(substitution_t& subst) const
       return i->second;
   }
 
-  std::auto_ptr<fo_expr> fo(new fo_expr(theSctx, get_loc(), get_func()));
+  std::auto_ptr<fo_expr> fo(theExprManager->create_fo_expr(theSctx, get_loc(), get_func()));
 
   for (csize i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));

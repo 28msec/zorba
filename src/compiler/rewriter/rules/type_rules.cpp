@@ -43,9 +43,9 @@
 namespace zorba
 {
 
-static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t);
+static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t, RewriterContext& rCtx);
 
-static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx);
+static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx, RewriterContext& rCtx);
 
 static function* flip_value_cmp(FunctionConsts::FunctionKind kind);
 
@@ -154,7 +154,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (node->get_expr_kind() == cast_expr_kind &&
         TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
     {
-      return new treat_expr(sctx,
+      return rCtx.theEM->create_treat_expr(sctx,
                             node->get_loc(),
                             arg,
                             target_type,
@@ -232,7 +232,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                                 *rtm.UNTYPED_ATOMIC_TYPE_STAR,
                                 argExpr->get_loc()))
         {
-          expr_t promoteExpr = new promote_expr(argExpr->get_sctx(),
+          expr_t promoteExpr = rCtx.theEM->create_promote_expr(argExpr->get_sctx(),
                                                 argExpr->get_loc(),
                                                 argExpr,
                                                 rtm.DOUBLE_TYPE_STAR);
@@ -324,7 +324,7 @@ RULE_REWRITE_POST(SpecializeOperations)
             ! TypeOps::is_numeric_or_untyped(tm, *t1))
           return NULL;
 
-        if (specialize_numeric(fo, sctx) != NULL)
+        if (specialize_numeric(fo, sctx, rCtx) != NULL)
           return node;
       }
       else if (props.specializeCmp() && fn->isComparisonFunction())
@@ -355,7 +355,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
             if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc))
             {
-              nargs[i] = new cast_expr(arg->get_sctx(),
+              nargs[i] = rCtx.theEM->create_cast_expr(arg->get_sctx(),
                                        arg->get_loc(),
                                        arg,
                                        string_type);
@@ -387,7 +387,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           }
           else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1))
           {
-            xqtref_t aType = specialize_numeric(fo, sctx);
+            xqtref_t aType = specialize_numeric(fo, sctx, rCtx);
             if (aType != NULL)
             {
               if (TypeOps::is_equal(tm,
@@ -434,7 +434,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           if (!TypeOps::is_equal(tm, *colType, *rtm.EMPTY_TYPE, colLoc) &&
               TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, colLoc))
           {
-            expr_t castExpr = new cast_expr(colExpr->get_sctx(),
+            expr_t castExpr = rCtx.theEM->create_cast_expr(colExpr->get_sctx(),
                                             colExpr->get_loc(),
                                             colExpr,
                                             rtm.STRING_TYPE_QUESTION);
@@ -454,7 +454,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 }
 
 
-static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
+static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx, RewriterContext& rCtx)
 {
   TypeManager* tm = fo->get_type_manager();
 
@@ -484,8 +484,8 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
   {
     fo->set_func(replacement);
 
-    expr_t newArg0 = wrap_in_num_promotion(arg0, t0, aType);
-    expr_t newArg1 = wrap_in_num_promotion(arg1, t1, aType);
+    expr_t newArg0 = wrap_in_num_promotion(arg0, t0, aType, rCtx);
+    expr_t newArg1 = wrap_in_num_promotion(arg1, t1, aType, rCtx);
 
     if (newArg0 != NULL)
       fo->set_arg(0, newArg0);
@@ -500,7 +500,7 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 }
 
 
-static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
+static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t, RewriterContext& rCtx)
 {
   TypeManager* tm = arg->get_type_manager();
 
@@ -518,7 +518,7 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
       arg = pe->get_input();
   }
 
-  return new promote_expr(arg->get_sctx(), arg->get_loc(), arg, t);
+  return rCtx.theEM->create_promote_expr(arg->get_sctx(), arg->get_loc(), arg, t);
 }
 
 

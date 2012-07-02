@@ -24,9 +24,10 @@
 #include "compiler/expression/expr_utils.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
+class ExprManager;
 class dynamic_context;
 class DocIndexer;
 typedef rchandle<DocIndexer> DocIndexer_t;
@@ -41,7 +42,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   context node. Each key expr must return a single atomic value (after atomization
   is applied). Thus, for each domain node D, a tuple K of N atomic values is
   constructed, and an entry mapping K to D is inserted to the index data structure.
- 
+
   Class IndexDecl represents an index declaration, which describes the index
   properties and the domain and key expressions and their types. An instance
   of IndexDecl is constructed by the translator for each DECLARE INDEX stmt
@@ -56,7 +57,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 
   IndexPropertyList := ("unique" | "non" "unique" |
                         "value" "range" | "value" "equality" |
-                        "general" "range" | "general" "equality" | 
+                        "general" "range" | "general" "equality" |
                         "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
@@ -87,7 +88,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
     probe-index-range(...)
 
   See src/functions/Index.cpp for details.
- 
+
 
   Data members:
   -------------
@@ -109,7 +110,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 
   theIsUnique:
   ------------
-  Whether it is a unique index or not. 
+  Whether it is a unique index or not.
 
   theIsTemp:
   ----------
@@ -119,17 +120,17 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   that created it.
 
   theMaintenanceMode:
-  ------------------- 
+  -------------------
   If and how to maintain the index during/after each apply-updates or not.
 
   theContainerKind:
-  ----------------- 
-  The kind if container used to implement the index. Currently, there are 2 
+  -----------------
+  The kind if container used to implement the index. Currently, there are 2
   kinds: a tree-based container (std::map) for ordered indexes, or hash-based
   container for unordered indexes.
 
   theDomainClause:
-  ---------------- 
+  ----------------
   A FOR-clause that associates the domain expr with a FOR var that is referenced
   by the key exprs and acts as the domain node for those exprs. If dexpr is the
   domain expr specified in the index declaration, the actual domain expr is:
@@ -139,7 +140,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 
   theKeyExprs:
   ------------
-  The key expressions of the index. If kexpr is a key expr specified in the 
+  The key expressions of the index. If kexpr is a key expr specified in the
   index declaration, the actual domain expr is:
 
   for value indexes   : keyExpr := fn:data(kexpr) treat as typeDecl
@@ -149,13 +150,13 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   ------------
   For each key expr, this vector contains the builtin atomic item that is the
   base of the atomic type type T specified for that key expr. For value indexes,
-  their index declaration must always specify a type T, and the item type of T 
-  may not be xs:anyAtomicType or xs:untypedAtomic. For general indexes, the key 
-  type declaration may be absent, or its item type may be xs:anyAtomicType or 
-  xs:untypedAtomic. If absent, the associated entry in theKeyTypes will be NULL, 
+  their index declaration must always specify a type T, and the item type of T
+  may not be xs:anyAtomicType or xs:untypedAtomic. For general indexes, the key
+  type declaration may be absent, or its item type may be xs:anyAtomicType or
+  xs:untypedAtomic. If absent, the associated entry in theKeyTypes will be NULL,
   but this is treated the same as xs:anyAtomicType. The translator makes sure
-  that each key value inserted into the index matches with T according to the 
-  rules of sequence type matching. 
+  that each key value inserted into the index matches with T according to the
+  rules of sequence type matching.
 
   theOrderModifiers:
   ------------------
@@ -183,11 +184,11 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   gives to the store this info. Without the restriction, the runtime must
   determine the collection set of an index as the index is being created, and
   then give this info to the store.
-                   
+
   theDomainSourceExprs:
   ---------------------
   A vector containing pointers to the xqddf:collection() exprs within the
-  domain expr.    
+  domain expr.
 
   theBuildExpr:
   -------------
@@ -204,35 +205,35 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   theBuildPlan:
   -------------
   The runtime plan corresponding to theBuildExpr. During runtime (see
-  CreateIndexIterator and RebuildIndexIterator), this plan is wrapper into a 
-  PlanWrapper and then passed to the store, which uses it to create or 
+  CreateIndexIterator and RebuildIndexIterator), this plan is wrapper into a
+  PlanWrapper and then passed to the store, which uses it to create or
   re-build the full index.
 
   theDocIndexerExpr:
-  ------------------ 
+  ------------------
   This is an expr that builds the index over a single xml tree, which is
   provided as an external var to this expr. It is basically the same as
   theBuildExpr except that a reference to a collection inside the domainExpr
   is replaced with a reference to an external var that can be bound dynamically
   to some xml tree.
-                                            
+
   theDocIndexerVar:
   -----------------
   The external var appearing in theDocIndexerExpr.
 
   theDocIndexer:
-  -------------- 
+  --------------
   If the index domain expr is a map over a collection C, then theDocIndexer obj
-  is not NULL and it provides a method that takes as input a document D in C 
+  is not NULL and it provides a method that takes as input a document D in C
   and produces all the index entries for D. theDocIndexer obj is passed to the
-  store during an apply-updates, so that the store can obtain the index entries 
-  corresponding to a document that is being updated within collection C, and 
+  store during an apply-updates, so that the store can obtain the index entries
+  corresponding to a document that is being updated within collection C, and
   using these entries, maintain the index appropriately.
 ********************************************************************************/
-class IndexDecl : public SimpleRCObject 
+class IndexDecl : public SimpleRCObject
 {
 public:
-  typedef enum 
+  typedef enum
   {
     HASH,
     TREE
@@ -273,7 +274,9 @@ private:
 
   expr_t                          theDocIndexerExpr;
   PlanIter_t                      theDocIndexerPlan;
-  DocIndexer_t                    theDocIndexer; 
+  DocIndexer_t                    theDocIndexer;
+
+  ExprManager                   * theExprManager;
 
 public:
   SERIALIZABLE_CLASS(IndexDecl)
@@ -281,7 +284,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  IndexDecl(static_context* sctx, const QueryLoc& loc, const store::Item_t& name);
+  IndexDecl(static_context* sctx, ExprManager* exprMan, const QueryLoc& loc, const store::Item_t& name);
 
   ~IndexDecl();
 
@@ -304,7 +307,7 @@ public:
   MaintenanceMode getMaintenanceMode() const { return theMaintenanceMode; }
 
   void setMaintenanceMode(MaintenanceMode v) { theMaintenanceMode = v; }
- 
+
   bool isAutomatic() const { return theMaintenanceMode != MANUAL; }
 
   ContainerKind getMethod() const { return theContainerKind; }

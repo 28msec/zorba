@@ -39,20 +39,21 @@
 
 #include "store/api/item.h"
 
+
 namespace zorba
 {
 
+class ExprManager;
 class expr_visitor;
 class NodeNameTest;
 class signature;
-
-
 
 /*******************************************************************************
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
 ********************************************************************************/
 class if_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -66,14 +67,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(if_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   if_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc& loc,
         expr_t c,
         expr_t t,
         expr_t e);
 
+public:
   expr* get_cond_expr() const { return theCondExpr.getp(); }
 
   expr* get_then_expr() const { return theThenExpr.getp(); }
@@ -95,6 +98,7 @@ public:
 ********************************************************************************/
 class order_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -114,9 +118,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(order_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  order_expr(static_context* sctx, const QueryLoc&, order_type_t, expr_t);
+protected:
+  order_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, order_type_t, expr_t);
 
+public:
   order_type_t get_type() const { return theType; }
 
   expr* get_expr() const { return theExpr.getp(); }
@@ -136,6 +141,7 @@ public:
 ********************************************************************************/
 class validate_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -150,8 +156,9 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(validate_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   validate_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc&,
         ParseConstants::validation_mode_t,
@@ -159,6 +166,7 @@ public:
         expr_t,
         rchandle<TypeManager>);
 
+public:
   expr* get_expr() const { return theExpr.getp(); }
 
   const store::Item* get_type_name() const { return theTypeName; }
@@ -189,6 +197,7 @@ protected:
 
 protected:
   namespace_context_base_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       expr_kind_t kind,
@@ -218,6 +227,7 @@ protected:
 
 protected:
   cast_or_castable_base_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc& loc,
         expr_kind_t kind,
@@ -252,8 +262,9 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_base_expr, cast_or_castable_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   cast_base_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc& loc,
         expr_kind_t kind,
@@ -269,6 +280,7 @@ public:
 ********************************************************************************/
 class cast_expr : public cast_base_expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -277,9 +289,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_expr, cast_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  cast_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
+protected:
+  cast_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
 
+public:
   bool is_optional() const;
 
   expr_t clone(substitution_t& s) const;
@@ -291,7 +304,7 @@ public:
 
 
 /***************************************************************************//**
-	TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
+  TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
 
   theCheckPrime : Normally, this is true. If false, then during runtime, only
                   the cardinality of theInputExpr will be checked w.r.t. the
@@ -305,6 +318,7 @@ public:
 ********************************************************************************/
 class treat_expr : public cast_base_expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -318,8 +332,9 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(treat_expr, cast_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   treat_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc&,
         expr_t,
@@ -328,6 +343,7 @@ public:
         bool check_prime = true,
         store::Item_t fnQname = NULL);
 
+public:
   Error const& get_err() const { return *theError; }
 
   bool get_check_prime() const { return theCheckPrime; }
@@ -377,6 +393,7 @@ public:
 ********************************************************************************/
 class promote_expr : public cast_base_expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -389,14 +406,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   promote_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       expr_t input,
       xqtref_t type,
       store::Item_t fnQname = NULL);
 
+public:
   expr_t clone(substitution_t& s) const;
 
   void set_fn_qname(store::Item_t fnQName) { theFnQName = fnQName; }
@@ -421,8 +440,9 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_base_expr, cast_or_castable_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   castable_base_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc&,
         expr_kind_t kind,
@@ -438,6 +458,7 @@ public:
 ********************************************************************************/
 class castable_expr : public castable_base_expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -446,9 +467,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_expr, castable_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  castable_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
+protected:
+  castable_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
 
+public:
   bool is_optional() const;
 
   expr_t clone(substitution_t& s) const;
@@ -460,7 +482,7 @@ public:
 
 
 /***************************************************************************//**
-	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
+  InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
 
   theCheckPrimeOnly :
   Normally, this is false. It is set to true only if this is an instanceof expr
@@ -470,6 +492,7 @@ public:
 ********************************************************************************/
 class instanceof_expr : public castable_base_expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -481,14 +504,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(instanceof_expr, castable_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   instanceof_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc&,
       expr_t,
       xqtref_t,
       bool checkPrimeOnly = false);
 
+public:
   bool getCheckPrimeOnly() const { return theCheckPrimeOnly; }
 
   expr_t clone(substitution_t& s) const;
@@ -511,6 +536,7 @@ public:
 ********************************************************************************/
 class name_cast_expr : public namespace_context_base_expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -523,14 +549,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(name_cast_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   name_cast_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc&,
         expr_t,
         const namespace_context*,
         bool isAttr);
 
+public:
   expr* get_input() const { return theInputExpr.getp(); }
 
   bool is_attr_name() const { return theIsAttrName; }
@@ -550,6 +578,7 @@ public:
 ********************************************************************************/
 class doc_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -562,9 +591,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(doc_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  doc_expr(static_context* sctx, const QueryLoc&, expr* content, bool copyNodes);
+protected:
+  doc_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr* content, bool copyNodes);
 
+public:
   expr* getContent() const { return theContent.getp(); }
 
   bool copyInputNodes() const { return theCopyInputNodes; }
@@ -609,6 +639,7 @@ public:
 ********************************************************************************/
 class elem_expr : public namespace_context_base_expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -623,8 +654,9 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(elem_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   elem_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc&,
         expr* qnameExpr,
@@ -634,6 +666,7 @@ public:
         bool copyNodes);
 
   elem_expr(
+        ExprManager* expMan,
         static_context* sctx,
         const QueryLoc&,
         expr* qnameExpr,
@@ -641,6 +674,7 @@ public:
         const namespace_context* nsCtx,
         bool copyNodes);
 
+public:
   expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
   expr* getContent() const { return theContent.getp(); }
@@ -687,6 +721,7 @@ public:
 ********************************************************************************/
 class attr_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -699,13 +734,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(attr_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   attr_expr(
+    ExprManager* expMan,
     static_context* sctx,
     const QueryLoc& loc,
     expr_t aQNameExpr,
     expr_t aValueExpr);
 
+public:
   expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
   expr* getValueExpr() const { return theValueExpr.getp(); }
@@ -727,6 +764,7 @@ public:
 ********************************************************************************/
 class text_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -746,13 +784,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(text_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   text_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc&,
       text_constructor_type,
       expr_t);
 
+public:
   expr* get_text() const { return theContentExpr.getp(); }
 
   text_constructor_type get_type() const { return type; }
@@ -772,6 +812,7 @@ public:
 ********************************************************************************/
 class pi_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -784,9 +825,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(pi_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  pi_expr(static_context* sctx, const QueryLoc&, expr_t, expr_t);
+protected:
+  pi_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t, expr_t);
 
+public:
   expr* get_target_expr() const { return theTargetExpr.getp(); }
 
   expr* get_content_expr() const { return theContentExpr.getp(); }
@@ -806,6 +848,7 @@ public:
 ********************************************************************************/
 class const_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -817,25 +860,26 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(const_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
+protected:
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, zstring& sval);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const std::string& sval);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const char* sval);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_integer);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_decimal);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_double);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_boolean);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, store::Item_t);
+
+  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
+
 public:
-  const_expr(static_context* sctx, const QueryLoc&, zstring& sval);
-
-  const_expr(static_context* sctx, const QueryLoc&, const std::string& sval);
-
-  const_expr(static_context* sctx, const QueryLoc&, const char* sval);
-
-  const_expr(static_context* sctx, const QueryLoc&, xs_integer);
-
-  const_expr(static_context* sctx, const QueryLoc&, xs_decimal);
-
-  const_expr(static_context* sctx, const QueryLoc&, xs_double);
-
-  const_expr(static_context* sctx, const QueryLoc&, xs_boolean);
-
-  const_expr(static_context* sctx, const QueryLoc&, store::Item_t);
-
-  const_expr(static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
-
   store::Item* get_val() const { return theValue.getp(); }
 
   void compute_scripting_kind();
@@ -874,6 +918,7 @@ public:
 ********************************************************************************/
 class extension_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -886,11 +931,12 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(extension_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
+protected:
+  extension_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&);
+
+  extension_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t);
+
 public:
-  extension_expr(static_context* sctx, const QueryLoc&);
-
-  extension_expr(static_context* sctx, const QueryLoc&, expr_t);
-
   void add(rchandle<pragma> p) { thePragmas.push_back(p); }
 
   expr* get_expr() const { return theExpr.getp(); }
@@ -907,7 +953,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	XQuery 3.0 expressions                                             //
+//  XQuery 3.0 expressions                                             //
 //  [http://www.w3.org/TR/xquery-3/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
@@ -966,6 +1012,7 @@ public:
 public:
   catch_clause();
 
+public:
   void set_nametests(nt_list_t& a) { theNameTests = a; }
 
   nt_list_t& get_nametests() { return theNameTests; }
@@ -984,6 +1031,7 @@ public:
 
 class trycatch_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -997,9 +1045,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(trycatch_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  trycatch_expr(static_context* sctx, const QueryLoc&, expr_t tryExpr);
+protected:
+  trycatch_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t tryExpr);
 
+public:
   expr* get_try_expr() const { return theTryExpr.getp(); }
 
   expr* get_catch_expr(csize i) const { return theCatchExprs[i].getp(); }
@@ -1024,7 +1073,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	Zorba expressions                                                  //
+//  Zorba expressions                                                  //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
@@ -1037,6 +1086,7 @@ class wrapper_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   expr_t theWrappedExpr;
@@ -1046,9 +1096,10 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(wrapper_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
-  wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wrapped);
+protected:
+  wrapper_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_t wrapped);
 
+public:
   expr* get_expr() const { return theWrappedExpr.getp(); }
 
   void set_expr(const expr* e) { theWrappedExpr = e; }
@@ -1070,6 +1121,8 @@ class function_trace_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
+
 protected:
   expr_t theExpr;
   store::Item_t theFunctionName;
@@ -1081,14 +1134,17 @@ public:
   SERIALIZABLE_CLASS(function_trace_expr);
   SERIALIZABLE_CLASS_CONSTRUCTOR2(function_trace_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
-public:
+
+protected:
   function_trace_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       expr_t aChild);
 
   function_trace_expr(expr_t aExpr);
 
+public:
   virtual ~function_trace_expr();
 
   void compute_scripting_kind();
@@ -1173,6 +1229,7 @@ class eval_expr : public namespace_context_base_expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   expr_t                      theExpr;
@@ -1188,14 +1245,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(eval_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   eval_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& e,
       expr_script_kind_t scriptingKind,
       namespace_context* nsCtx);
 
+public:
   expr* get_expr() const { return theExpr.getp(); }
 
   expr* get_arg_expr(csize i) { return theArgs[i].getp(); }
@@ -1247,6 +1306,7 @@ class debugger_expr : public namespace_context_base_expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 private:
   expr_t                      theExpr;
@@ -1259,14 +1319,16 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   debugger_expr(
+      ExprManager* expMan,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& aChild,
       namespace_context* nsCtx,
       bool aIsVarDeclaration);
 
+public:
   expr* get_expr() const { return theExpr.getp(); }
 
   bool isVarDeclaration() const { return theIsVarDeclaration; }
