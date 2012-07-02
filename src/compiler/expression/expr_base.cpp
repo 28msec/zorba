@@ -36,9 +36,6 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialize_basic_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-#include "zorbaserialization/serialize_template_types.h"
 
 namespace zorba
 {
@@ -83,7 +80,7 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
-bool expr::is_sequential(short theScriptingKind)
+bool expr::is_sequential(unsigned short theScriptingKind)
 {
   return (theScriptingKind & (VAR_SETTING_EXPR |
                               APPLYING_EXPR |
@@ -143,20 +140,6 @@ expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
 ********************************************************************************/
 expr::~expr()
 {
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theSctx;
-  ar & theLoc;
-  ar & theType;
-  SERIALIZE_ENUM(expr_kind_t, theKind);
-  ar & theScriptingKind;
-  ar & theFlags1;
 }
 
 
@@ -1047,6 +1030,11 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case attr_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  case json_array_expr_kind:
+#endif
   {
     return !contains_expr(e);
   }

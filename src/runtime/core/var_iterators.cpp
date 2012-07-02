@@ -149,6 +149,7 @@ void CtxVarAssignIterator::serialize(::zorba::serialization::Archiver& ar)
   (UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
 
   ar & theVarId;
+
   ar & theVarName;
   ar & theIsLocal;
   ar & theSingleItem;
@@ -211,6 +212,7 @@ void CtxVarIsSetIterator::serialize(::zorba::serialization::Archiver& ar)
   (NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>*)this);
 
   ar & theVarId;
+
   ar & theVarName;
 }
 
@@ -285,6 +287,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
   (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
 
   ar & theVarId;
+
   ar & theVarName;
   ar & theIsLocal;
   ar & theTargetPos;
@@ -631,6 +634,13 @@ ForVarIterator::ForVarIterator(
 }
 
 
+void ForVarIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
+  //ar & theVarName;
+}
+
+
 void ForVarIterator::bind(store::Item* value, PlanState& planState)
 {
   ForVarState* state;
@@ -707,7 +717,7 @@ LetVarIterator::LetVarIterator(
 void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
-  ar & theVarName;
+  // ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;

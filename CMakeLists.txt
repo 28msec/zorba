@@ -65,6 +65,7 @@ ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 # Enable RPaths in installed binaries
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # turn on the folder grouping used by IDEs (VS or XCode)
 SET(ZORBA_USE_TARGET_FOLDERS ON CACHE BOOL "Activate use of target grouping into folders")
@@ -122,14 +123,28 @@ CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32)
 CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
 CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
 
-CHECK_CXX_SOURCE_COMPILES ("#include <type_traits>\nint main() { std::enable_if<true,int> x; }" ZORBA_CXX_ENABLE_IF)
+# C++ built-in type sizes
+CHECK_TYPE_SIZE("double" ZORBA_SIZEOF_DOUBLE BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("float" ZORBA_SIZEOF_FLOAT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("int" ZORBA_SIZEOF_INT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("long" ZORBA_SIZEOF_LONG BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("long long" ZORBA_SIZEOF_LONG_LONG BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("void*" ZORBA_SIZEOF_POINTER BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("short" ZORBA_SIZEOF_SHORT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("size_t" ZORBA_SIZEOF_SIZE_T) 
 SET(CMAKE_EXTRA_INCLUDE_FILES wchar.h)
 CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES)
-CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_CXX_UNIQUE_PTR)
 
+# C++11 langauge features
 CHECK_CXX_SOURCE_COMPILES("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
 CHECK_CXX_SOURCE_COMPILES("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+
+# C++11 standard library types
+CHECK_CXX_SOURCE_COMPILES ("#include <type_traits>\nint main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES ("#include <unordered_map>\nint main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES ("#include <unordered_set>\nint main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 # Various cmake macros
@@ -438,7 +453,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "2")
+SET(ZORBA_MINOR_NUMBER "5")
 SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
@@ -520,13 +535,14 @@ ADD_SUBDIRECTORY(cmake_modules)
 # ZorbaConfig knows about testdriver. We need to include "config"
 # before "modules" so external modules will be able to find
 # ZorbaConfig.cmake. We need to include "modules" before "include" so
-# config.h can know eg. whether we found CURL.
+# config.h can know eg. whether we found CURL. We need to include "modules"
+# before "doc" so xqdoc can know what non-core modules are available.
 
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
-ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(schemas)
 ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(include)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)

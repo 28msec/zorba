@@ -59,7 +59,10 @@ public:
     PUL        = 0x41, 
     FUNCTION   = 0x81,
     LIST       = 0x101,
-    ERROR_     = 0x201
+#ifdef ZORBA_WITH_JSON
+    JSONIQ     = 0x201,
+#endif
+    ERROR_     = 0x401
   };
 
 protected:
@@ -115,6 +118,14 @@ public:
   bool 
   isNode() const;
 
+#ifdef ZORBA_WITH_JSON
+  /**
+   *  @return  "true" if the item is a JSON item
+   */
+  bool
+  isJSONItem() const;
+#endif
+
   /**
    *  @return  "true" if the item is an atomic value
    */
@@ -144,6 +155,31 @@ public:
    */
   bool
   isFunction() const;
+
+  /**
+   * @return a string representation of the item's kind
+   */
+  zstring printKind() const;
+
+#ifdef ZORBA_WITH_JSON
+  /**
+   *  @return  "true" if the item is a JSON pair item
+   */
+  virtual bool 
+  isJSONPair() const;
+
+  /**
+   *  @return  "true" if the item is a JSON object item
+   */
+  virtual bool 
+  isJSONObject() const;
+
+  /**
+   *  @return  "true" if the item is a JSON array item
+   */
+  virtual bool 
+  isJSONArray() const;
+#endif
 
   /**
    *  @return  (dynamic) XQuery type of the item
@@ -421,7 +457,8 @@ public:
 
   /**
    * Helper method for numeric atomic items
-   * @return true, if containing number is not-a-number (possible for floating-point numbers)
+   * @return true, if containing number is not-a-number (possible for
+   *         floating-point numbers)
    */
   virtual bool
   isNaN() const;
@@ -433,6 +470,43 @@ public:
    */
   virtual bool
   isPosOrNegInf() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isAttributeRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isCommentRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isDocumentRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isElementRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isProcessingInstructionRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isTextRef() const;
+
   
   /* -------------------  Methods for Nodes ------------------------------------- */
 
@@ -617,9 +691,8 @@ public:
    * @return         A pointer to the root node of the copied tree, or to this
    *                 node if no copy was actually done. 
    */
-  virtual Item* copy(
-        Item* parent,
-        const CopyMode& copymode) const;
+  virtual Item* 
+  copy(Item* parent, const CopyMode& copymode) const;
 
   /**
    * An optimization method used to indicate to the store that the construction
@@ -722,42 +795,6 @@ public:
    *
    */
   virtual bool
-  isAttribute() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isComment() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isDocument() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isElement() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isProcessingInstruction() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isText() const;
-
-  /**
-   *
-   */
-  virtual bool
   inSameTree(const store::Item_t&) const;
 
   /**
@@ -778,14 +815,69 @@ public:
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
 
-  /* -------------------- Methods for tuples --------------------- */
-#if 0
-  virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;
 
-  virtual int getTupleFieldCount() const;
+#ifdef ZORBA_WITH_JSON
+  /* -------------------- Methods for JSON items --------------------- */
 
-  virtual const TupleField& getTupleField(int index) const;
-#endif
+  /**
+   * @return the kind of the json item
+   */
+  virtual store::StoreConsts::JSONItemKind 
+  getJSONItemKind() const;
+
+  /**
+   * (jdm:pairs accessor)
+   * @return the pairs of a json object or json array
+   */
+  virtual Iterator_t
+  getPairs() const;
+
+  /**
+   * (jdm:members accessor)
+   * @return the values of a json array
+   */
+  virtual Iterator_t
+  getMembers() const;
+
+  /**
+   * defined on JSONObject
+   * (is not an accessor)
+   * @return the pair with given name
+   */
+  virtual store::Item*
+  getPair(const store::Item_t& name) const;
+
+  /**
+   * defined on JSONArray
+   * (is not an accessor)
+   * @return the value at the given position
+   */
+  virtual store::Item*
+  getMember(const store::Item_t& aPosition) const;
+
+  /**
+   * defined on JSONObjectPair (jdm:name accessor)
+   * @return the name of the json pair
+   */
+  virtual store::Item*
+  getName() const;
+
+  /**
+   * defined on JSONObjectPair JSONArrayPair (jdm:value accessor)
+   * @return the value of the json pair
+   */
+  virtual store::Item*
+  getValue() const;
+
+  /**
+   * defined on JSONObject JSONArray
+   * @return the number of pairs or values in the object or array, resp.
+   */
+  virtual xs_integer
+  getSize() const;
+
+#endif // ZORBA_WITH_JSON
+
 
   /* -------------------- Methods for ErrorItem --------------------- */
 
@@ -838,15 +930,16 @@ public:
    * Gets the tokens for this item.
    *
    * @param provider The TokenizerProvider to use.
-   * @param numbers The Tokenizer::Numbers to use.
+   * @param state The Tokenizer::State to use.
    * @param lang The language to use for tokenization.
    * @param wildcards If \c true, allow XQuery wildcard syntax.
    * @return Returns an iterator over the tokens.
    */
   virtual FTTokenIterator_t
-  getTokens(TokenizerProvider const &provider, Tokenizer::Numbers &numbers,
+  getTokens(TokenizerProvider const &provider, Tokenizer::State &state,
             locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+
 
 private:
   Item(const Item& other);

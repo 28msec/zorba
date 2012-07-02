@@ -1,9 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Positions for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+      Copyright (C) 2002-2007, 2009-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,13 +43,10 @@
 # include <algorithm>
 
 
-/* Line 38 of location.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace zorba {
 
-/* Line 38 of location.cc  */
-#line 54 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/position.hh"
+/* Line 37 of location.cc  */
+#line 50 "/home/jsoniq/zorba/debug/src/compiler/parser/position.hh"
   /// Abstract a position.
   class position
   {
@@ -84,12 +80,7 @@ namespace zorba {
     /// (column related) Advance to the COUNT next columns.
     inline void columns (int count = 1)
     {
-// zorba patch: std::max is not available on windows!
-//      column = std::max (1u, column + count);
-      if (1u <= (column+count))
-        column += count;
-      else
-        column = 1u;
+      column = std::max (1u, column + count);
     }
     /** \} */
 
@@ -136,10 +127,11 @@ namespace zorba {
   inline bool
   operator== (const position& pos1, const position& pos2)
   {
-    return
-      (pos1.filename == pos2.filename
-       || pos1.filename && pos2.filename && *pos1.filename == *pos2.filename)
-      && pos1.line == pos2.line && pos1.column == pos2.column;
+    return (pos1.line == pos2.line
+            && pos1.column == pos2.column
+            && (pos1.filename == pos2.filename
+                || (pos1.filename && pos2.filename
+                    && *pos1.filename == *pos2.filename)));
   }
 
   /// Compare two position objects.
@@ -162,11 +154,8 @@ namespace zorba {
   }
 
 
-/* Line 144 of location.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
 
 /* Line 144 of location.cc  */
-#line 167 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/position.hh"
+#line 161 "/home/jsoniq/zorba/debug/src/compiler/parser/position.hh"
 #endif // not BISON_POSITION_HH

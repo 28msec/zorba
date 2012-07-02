@@ -26,7 +26,7 @@
 #include <time.h>
 #endif
 
-//#define ZORBA_TEST_PLAN_SERIALIZATION
+#define ZORBA_TEST_PLAN_SERIALIZATION
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
@@ -418,23 +418,38 @@ main(int argc, char** argv)
     createDynamicContext(driverContext, lContext, lQuery, lSpec.getEnableDtd(),
                          errHandler);
 
-    if (errHandler.errors()) {
+    Zorba_SerializerOptions lSerOptions;
+
+    if (errHandler.errors()) 
+    {
       errors = analyzeError (lSpec, errHandler);
     }
-    else {
+    else 
+    {
       errors = -1;
       {
         // serialize xml/txt
         std::ofstream lResFileStream(lResultFile.get_path().c_str());
         assert (lResFileStream.good());
-        Zorba_SerializerOptions lSerOptions;
-        lSerOptions.ser_method = 
-          lSpec.getSerializationMethod() == "XML" ? ZORBA_SERIALIZATION_METHOD_XML :
-          lSpec.getSerializationMethod() == "TXT" ? ZORBA_SERIALIZATION_METHOD_TEXT :
-                                                  ZORBA_SERIALIZATION_METHOD_XML;
+        // QQQ all this code should be in testdriver_common and used by
+        // testdriver_mt as well
+        // Initialize default serialization method
+#ifdef ZORBA_WITH_JSON
+        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSONIQ;
+#else /* ZORBA_WITH_JSON */
+        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+#endif /* ZORBA_WITH_JSON */
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-        lSerOptions.indent = lSpec.getUseIndent() ?
-          ZORBA_INDENT_YES : ZORBA_INDENT_NO;
+
+        // Now set any options specified in .spec file
+        std::vector<Specification::Option>::const_iterator lIter;
+        for (lIter = lSpec.serializerOptionsBegin();
+             lIter != lSpec.serializerOptionsEnd();
+             ++lIter)
+        {
+          lSerOptions.SetSerializerOption(lIter->theOptName.c_str(),
+                                          lIter->theOptValue.c_str());
+        }
         
         lQuery->execute(lResFileStream, &lSerOptions);
       }
@@ -522,11 +537,18 @@ main(int argc, char** argv)
                   << i << " doesn't match." << std::endl;
 
         // Don't attempt canonical comparison for test cases using --indent;
-        // can lead to false positives
-        if (lSpec.getUseIndent()) {
+        // can lead to false positives.
+        if (lSerOptions.indent == ZORBA_INDENT_YES) {
           std::cout << "testdriver: skipping canonicalization "
-            "when testing with --indent" << std::endl;
+            "when testing with indent==yes" << std::endl;
         }
+#ifdef ZORBA_WITH_JSON
+        // Also skip canonicalization for tests using method==json
+        else if (lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_JSON) {
+          std::cout << "testdriver: skipping canonicalization "
+            "when testing with method=json" << std::endl;
+        }
+#endif
         else {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
             lIter->c_str(),

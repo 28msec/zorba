@@ -40,6 +40,7 @@ namespace zorba {
 class ftnode : public SimpleRCObject {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftnode)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftnode, SimpleRCObject)
   void serialize( serialization::Archiver& );
 
   virtual ft_visit_result::type accept( ftnode_visitor& ) = 0;
@@ -493,7 +494,7 @@ protected:
 class ftprimary_with_options : public ftnode {
 public:
   SERIALIZABLE_CLASS(ftprimary_with_options)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM3(ftprimary_with_options,ftnode,primary_,match_options_,weight_)
+  ftprimary_with_options(serialization::Archiver& ar);
   void serialize( serialization::Archiver& );
 
   ftprimary_with_options( QueryLoc const& );

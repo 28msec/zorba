@@ -162,7 +162,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       theFactory->createQName(lLocalnameQName, "", "", "localname");
       store::Item_t lValueQName;
       theFactory->createQName(lValueQName, "", "", "value");
-     
+
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
         lPrefixQName, lAnnotationElem, lPrefixQName,
@@ -198,7 +198,7 @@ bool is_namespace_schema(zstring aPrefix, zstring aNamespace )
 
 void print_namespaces()
 {
-  store::Item_t lTypeName; 
+  store::Item_t lTypeName;
   store::Item_t lNamespaceQName, lCustomElem;
   store::Item_t lPrefixQName, lURIQName, lIsSchemaQName;
   store::Item_t lNamespace, lAttrValue;
@@ -959,20 +959,20 @@ void end_visit(const VarDecl& n, void*)
       lUriElem, lVariableElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  zstring lUriString(n.get_name()->get_qname());
+  zstring lUriString(n.get_var_name()->get_qname());
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
   store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
 
-  if(n.get_typedecl())
+  if (n.get_var_type())
   {
     std::stringstream os;
-    print_parsetree_xquery(os , &*n.get_typedecl());
+    print_parsetree_xquery(os , &*n.get_var_type());
     print_custom(lCommentElem, "type", os.str());
   }
 
-  if(n.is_extern())
+  if (n.is_extern())
     print_custom(lCommentElem, "isExternal", "true");
 
   // add all invoked function elements as children to the end of the current
@@ -1203,6 +1203,7 @@ XQDOC_NO_BEGIN_END_TAG (InstanceofExpr)
 XQDOC_NO_BEGIN_END_TAG (IntegrityConstraintDecl)
 XQDOC_NO_BEGIN_END_TAG (IntersectExceptExpr)
 XQDOC_NO_BEGIN_END_TAG (ItemType)
+XQDOC_NO_BEGIN_END_TAG (StructuredItemType)
 XQDOC_NO_BEGIN_END_TAG (LetClause)
 XQDOC_NO_BEGIN_END_TAG (LibraryModule)
 XQDOC_NO_BEGIN_END_TAG (Literal)
@@ -1287,6 +1288,19 @@ XQDOC_NO_BEGIN_END_TAG (Wildcard)
 XQDOC_NO_BEGIN_END_TAG (WindowClause)
 XQDOC_NO_BEGIN_END_TAG (WindowVarDecl)
 XQDOC_NO_BEGIN_END_TAG (WindowVars)
+
+XQDOC_NO_BEGIN_END_TAG (JSONArrayConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONDirectObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONPairConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONPairList)
+XQDOC_NO_BEGIN_END_TAG (JSON_Test)
+XQDOC_NO_BEGIN_END_TAG (JSONObjectInsertExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayInsertExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayAppendExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONDeleteExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONReplaceExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONRenameExpr)
 
 XQDOC_NO_BEGIN_END_TAG (LiteralFunctionItem)
 XQDOC_NO_BEGIN_END_TAG (InlineFunction)

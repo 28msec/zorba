@@ -91,12 +91,9 @@ declare function local:process($doc,
             local:create-functions($iter, $function),
             $gen:newline,
 
-            local:propagate($function),
-
             if (exists($iter/@preprocessorGuard))
             then
-              concat($gen:newline, "#endif
-")
+              concat($gen:newline, "#endif", $gen:newline)
             else 
               ""
             )
@@ -120,12 +117,11 @@ declare function local:process($doc,
 declare function local:propagate($function) as xs:string?
 {
   let $xq30 := count($function//zorba:signature[@version eq "3.0"])
-  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
   let $sigs := count($function//zorba:signature)
-  let $xq10 := ($sigs - $xq30) - $xq11  
+  let $xq10 := ($sigs - $xq30)
   return
     concat(
-    if(($xq30 > 0 ) or ($xq11 > 0)) then 
+    if ($xq30 > 0 ) then 
       local:propagateInputToOutput($function,"_3_0") else (),
     if($xq10 >0) then 
       local:propagateInputToOutput($function,"") else ()
@@ -178,12 +174,11 @@ declare function local:propagateInputToOutput($function, $suffix as xs:string) a
 declare function local:create-functions($iter, $function) as xs:string?
 {
   let $xq30 := count($function//zorba:signature[@version eq "3.0"])
-  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
   let $sigs := count($function//zorba:signature)
-  let $xq10 := ($sigs - $xq30) - $xq11  
+  let $xq10 := ($sigs - $xq30)
   return
     concat(
-    if(($xq30 > 0 ) or ($xq11 > 0)) then local:create-function($iter, $function,"_3_0") else (),
+    if ($xq30 > 0 ) then local:create-function($iter, $function,"_3_0") else (),
     if($xq10 >0) then local:create-function($iter, $function,"") else ()
     )    
 };
@@ -256,8 +251,7 @@ declare function local:createSuffix($signature) as xs:string?
 {
   if ($signature/@version eq "1.0") then ""
   else 
-    if (($signature/@version eq "3.0") or
-        ($signature/@version eq "1.1"))
+    if ($signature/@version eq "3.0")
     then "_3_0"
     else ""
 };
@@ -276,9 +270,14 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
           ($gen:newline,
            if (exists($iter/@preprocessorGuard))
            then
-             concat($gen:newline, $iter/@preprocessorGuard, "
-")
+             concat($gen:newline, $iter/@preprocessorGuard, $gen:newline)
            else 
+             "",
+           $gen:newline, $gen:newline, gen:indent(2),
+           if (exists($sig/@preprocessorGuard))
+           then
+            concat($gen:newline, $sig/@preprocessorGuard, $gen:newline)
+           else
              "",
            $gen:indent,
            '{', $gen:newline, $gen:indent, $gen:indent,
@@ -298,8 +297,6 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
            else
              ""
            ,
-           $gen:newline, $gen:newline, gen:indent(2),
-
            'DECL_WITH_KIND(sctx, ',
              concat(
               local:function-name($function),
@@ -339,12 +336,17 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
               'FunctionConsts::', gen:function-kind($sig) ,');',
               $gen:newline, $gen:newline, $gen:indent,
             '}', $gen:newline, $gen:newline,
-            if (exists($iter/@preprocessorGuard))
+            if (exists($sig/@preprocessorGuard))
             then
-              concat($gen:newline, "#endif
-")
-            else 
-              ""
+             concat($gen:newline, "#endif", $gen:newline)
+            else
+              "",
+
+             if (exists($iter/@preprocessorGuard))
+             then
+               concat($gen:newline, "#endif", $gen:newline)
+             else 
+               ""
             ),
         ''),
       '')

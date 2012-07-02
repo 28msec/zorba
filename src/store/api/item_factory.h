@@ -684,7 +684,7 @@ public:
    * @param content The content of the new node.
    * @return        Always true (if any errors occur, the method throws exceptions)
    */
-  virtual bool createCommentNode (
+  virtual bool createCommentNode(
         Item_t&  result,
         Item*    parent,
         zstring& content) = 0;
@@ -699,9 +699,47 @@ public:
    * subclasses of ZorbaException). The new ErrorItem assumes ownership of the
    * ZorbaException obj
    */
-  virtual bool createError(
-          store::Item_t& result,
-          ZorbaException* ze) = 0;
+  virtual bool createError(Item_t& result, ZorbaException* ze) = 0;
+
+#ifdef ZORBA_WITH_JSON
+  virtual bool createJSONNull(Item_t& result) = 0;
+
+  virtual bool createJSONNumber(Item_t& result, Item_t& string) = 0;
+
+  virtual bool createJSONNumber(Item_t& result, zstring& string) = 0;
+
+  /**
+   *
+   */
+  virtual bool createJSONArray(
+      Item_t& result,
+      const std::vector<Iterator_t>& sources,
+      const std::vector<CopyMode>& copyModes) = 0;
+
+  /**
+   * This method is used by the public API only
+   */
+  virtual bool createJSONArray(
+      Item_t& result,
+      const std::vector<Item_t>& items) = 0;
+
+  /**
+   *
+   */
+  virtual bool createJSONObject(
+      Item_t& result,
+      const std::vector<Iterator_t>& sources,
+      const std::vector<CopyMode>& copyModes,
+      bool accumulate) = 0;
+
+  /**
+   * 
+   */
+  virtual bool createJSONObject(
+      Item_t& result,
+      const std::vector<Item_t>& names,
+      const std::vector<Item_t>& values) = 0;
+#endif
 };
 
 } // namespace store

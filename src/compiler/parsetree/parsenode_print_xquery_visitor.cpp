@@ -531,15 +531,26 @@ void* begin_visit(const GeneralComp& n)
   return no_state;
 }
 
-
 DEFAULT_END_VISIT (GeneralComp)
 
-    void* begin_visit(const ItemType& n)
-    {
-      os << "item()";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (ItemType)
+
+void* begin_visit(const ItemType& n)
+{
+  os << "item()";
+  return no_state;
+}
+
+DEFAULT_END_VISIT (ItemType)
+
+
+void* begin_visit(const StructuredItemType& n)
+{
+  os << "structured-item()";
+  return no_state;
+}
+
+DEFAULT_END_VISIT(StructuredItemType)
+
 
     void* begin_visit(const LetClause& n)
     {
@@ -669,7 +680,7 @@ DEFAULT_END_VISIT (GroupByClause)
     void* begin_visit(const GroupSpec& n)
     {
       os << "$" << n.get_var_name();
-      n.group_coll_spec()->accept(*this);
+      n.get_collation_spec()->accept(*this);
       return 0;
     }
     DEFAULT_END_VISIT (GroupSpec)
@@ -1035,17 +1046,17 @@ DEFAULT_END_VISIT (ReverseAxis);
 
     void* begin_visit(const VarDecl& n)
     {
-      os << "declare variable $" << n.get_name()->get_qname();
-      if(n.get_typedecl())
+      os << "declare variable $" << n.get_var_name()->get_qname();
+      if(n.get_var_type())
       {
-        n.get_typedecl()->accept(*this);
+        n.get_var_type()->accept(*this);
       }
       if(n.is_extern())
       {
         os << "external";
-      } else if(n.get_initexpr()) {
+      } else if(n.get_binding_expr()) {
         os << ":=";
-        n.get_initexpr()->accept(*this);
+        n.get_binding_expr()->accept(*this);
       }
       return 0;
     }
@@ -1053,16 +1064,16 @@ DEFAULT_END_VISIT (ReverseAxis);
 
     void* begin_visit(const VarGetsDecl& n)
     {
-      os << "$" << n.get_name()->get_qname() << " ";
-      if(n.get_typedecl())
+      os << "$" << n.get_var_name()->get_qname() << " ";
+      if(n.get_var_type())
       {
         os << "as ";
-        n.get_typedecl()->accept(*this);
+        n.get_var_type()->accept(*this);
       }
-      if(n.get_initexpr())
+      if(n.get_binding_expr())
       {
         os << " := ";
-        n.get_initexpr()->accept(*this);
+        n.get_binding_expr()->accept(*this);
       }
       return 0;
     }
@@ -1085,11 +1096,11 @@ DEFAULT_END_VISIT (ReverseAxis);
 
     void* begin_visit(const VarInDecl& n)
     {
-      os << n.get_name()->get_qname() << ' ';
-      if(n.get_typedecl())
+      os << n.get_var_name()->get_qname() << ' ';
+      if(n.get_var_type())
       {
         os << "as ";
-        n.get_typedecl()->accept(*this);
+        n.get_var_type()->accept(*this);
       }
       if(n.get_posvar())
       {
@@ -1100,7 +1111,7 @@ DEFAULT_END_VISIT (ReverseAxis);
         n.get_ftscorevar()->accept(*this);
       }
       os << "in ";
-      n.get_initexpr()->accept(*this);
+      n.get_binding_expr()->accept(*this);
       return 0;
     }
     DEFAULT_END_VISIT (VarInDecl)
@@ -1827,9 +1838,9 @@ DEFAULT_END_VISIT (ReverseAxis);
       os << "copy $";
       n.get_var_list()->accept(*this);
       os << "modify ";
-      n.get_source_expr()->accept(*this);
+      n.get_modify_expr()->accept(*this);
       os << "return ";
-      n.get_target_expr()->accept(*this);
+      n.get_return_expr()->accept(*this);
       return 0;
     }
     DEFAULT_END_VISIT (TransformExpr)
@@ -1869,11 +1880,42 @@ DEFAULT_END_VISIT (ReverseAxis);
 
       os << "{";
       n.getExprSingle()->accept(*this);
-      os << '}';
+      os << "}";
       return 0;
     }
     DEFAULT_END_VISIT (CatchExpr);
 
+    void* begin_visit(const AnyFunctionTest& n)
+    {
+      os << "function (*)";
+      return 0;
+    }
+    DEFAULT_END_VISIT (AnyFunctionTest);
+    
+    void* begin_visit(const TypedFunctionTest& n)
+    {
+      os << "function (";
+      n.getArgumentTypes()->accept(*this); 
+      os << ") as ";
+      n.getReturnType()->accept(*this); 
+      return 0; 
+    }
+    DEFAULT_END_VISIT (TypedFunctionTest);
+    
+    void* begin_visit(const TypeList& n)
+    {
+      for (size_t i = 0; i < n.size(); ++i)
+      {
+        if (i > 0)
+        {
+          os << ", ";
+        }
+        const SequenceType* e_p = n[i];
+        e_p->accept(*this);
+      }
+      return 0;
+    }
+    DEFAULT_END_VISIT (TypeList);
 
   /* full-text-related */
   DEFAULT_VISIT (FTAnd);
@@ -1914,17 +1956,44 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (FTWordsTimes);
   DEFAULT_VISIT (FTWordsValue);
 
+  /* JSON-related */
+  DEFAULT_VISIT (JSONArrayConstructor);
+
+  DEFAULT_VISIT (JSONObjectConstructor);
+
+  DEFAULT_VISIT (JSONDirectObjectConstructor);
+
+  DEFAULT_VISIT (JSONPairList);
+
+  DEFAULT_VISIT (JSONPairConstructor);
+
+  DEFAULT_VISIT (JSONObjectInsertExpr);
+
+  DEFAULT_VISIT (JSONArrayInsertExpr);
+
+  DEFAULT_VISIT (JSONArrayAppendExpr);
+
+  DEFAULT_VISIT (JSONDeleteExpr);
+
+  DEFAULT_VISIT (JSONReplaceExpr);
+
+  DEFAULT_VISIT (JSONRenameExpr);
+
+  void* begin_visit(const JSON_Test& n)
+  {
+    os << store::StoreConsts::toString(n.get_kind()) << "()";
+    return no_state;
+  }
+  DEFAULT_END_VISIT (JSON_Test);
+
   DEFAULT_VISIT (AssignExpr);
   DEFAULT_VISIT (ExitExpr);
   DEFAULT_VISIT (WhileExpr);
   DEFAULT_VISIT (FlowCtlStatement);
 
-    DEFAULT_VISIT (LiteralFunctionItem);
-    DEFAULT_VISIT (InlineFunction);
-    DEFAULT_VISIT (AnyFunctionTest);
-    DEFAULT_VISIT (TypeList);
-    DEFAULT_VISIT (TypedFunctionTest);
-    DEFAULT_VISIT (DynamicFunctionInvocation);
+  DEFAULT_VISIT (LiteralFunctionItem);
+  DEFAULT_VISIT (InlineFunction);
+  DEFAULT_VISIT (DynamicFunctionInvocation);
 
   DEFAULT_VISIT (ParseErrorNode);
 };

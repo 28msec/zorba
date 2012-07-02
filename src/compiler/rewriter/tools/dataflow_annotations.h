@@ -18,12 +18,10 @@
 #define ZORBA_COMPILER_DATAFLOW_ANNOTATIONS_H
 
 #include "compiler/expression/expr_classes.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
 
 namespace zorba 
 {
-
-class UDFCallChain;
-
 
 /*******************************************************************************
 
@@ -88,11 +86,11 @@ class SourceFinder
   typedef std::pair<expr*, user_function*> SourceUdfMapPair;
 
 protected:
-  VarSourcesMap                theVarSourcesMap;
-  UdfSourcesMap                theUdfSourcesMap;
-  SourceUdfMap                 theSourceUdfMap;
+  VarSourcesMap            theVarSourcesMap;
+  UdfSourcesMap            theUdfSourcesMap;
+  SourceUdfMap             theSourceUdfMap;
 
-  user_function              * theStartingUdf;
+  user_function          * theStartingUdf;
 
 protected:
   void findNodeSourcesRec(
@@ -106,6 +104,10 @@ public:
   void findNodeSources(
       expr* inExpr,
       UDFCallChain* udfChain,
+      std::vector<expr*>& sources);
+
+  void findLocalNodeSources(
+      expr* inExpr,
       std::vector<expr*>& sources);
 };
 

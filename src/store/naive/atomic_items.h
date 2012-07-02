@@ -668,22 +668,22 @@ public:
   getLevel() const;
 
   virtual bool
-  isAttribute() const;
+  isAttributeRef() const;
 
   virtual bool
-  isComment() const;
+  isCommentRef() const;
 
   virtual bool
-  isDocument() const;
+  isDocumentRef() const;
 
   virtual bool
-  isElement() const;
+  isElementRef() const;
 
   virtual bool
-  isProcessingInstruction() const;
+  isProcessingInstructionRef() const;
 
   virtual bool
-  isText() const;
+  isTextRef() const;
 
   virtual bool
   isSibling(const store::Item_t&) const;
@@ -770,22 +770,22 @@ public:
   getLevel() const;
 
   bool
-  isAttribute() const;
+  isAttributeRef() const;
 
   bool
-  isComment() const;
+  isCommentRef() const;
 
   bool
-  isDocument() const;
+  isDocumentRef() const;
 
   bool
-  isElement() const;
+  isElementRef() const;
 
   bool
-  isProcessingInstruction() const;
+  isProcessingInstructionRef() const;
 
   bool
-  isText() const;
+  isTextRef() const;
 
   bool
   isSibling(const store::Item_t&) const;
@@ -852,7 +852,7 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
-      Tokenizer::Numbers&,
+      Tokenizer::State&,
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */

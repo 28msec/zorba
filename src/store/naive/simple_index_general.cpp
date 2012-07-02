@@ -747,7 +747,7 @@ bool GeneralHashIndex::insertInMap(
 *******************************************************************************/
 bool GeneralHashIndex::remove(
     const store::Item_t& key,
-    store::Item_t& item,
+    const store::Item_t& item,
     bool all)
 {
   assert(false);
@@ -922,7 +922,7 @@ bool GeneralTreeIndex::insertInMap(
 *******************************************************************************/
 bool GeneralTreeIndex::remove(
     const store::Item_t& key,
-    store::Item_t& item,
+    const store::Item_t& item,
     bool all)
 {
   return true;
@@ -2077,6 +2077,24 @@ bool ProbeGeneralIndexIterator::next(store::Item_t& result)
   }
 
   return false;
+}
+
+
+/******************************************************************************
+ The implementation here doesn't really give anything in terms of
+ performance but other implementations might be able to provide more
+ efficient ones.
+********************************************************************************/
+void ProbeGeneralIndexIterator::count(store::Item_t& result)
+{
+  xs_integer lRes = xs_integer(0);
+
+  open();
+  store::Item_t lTmp;
+  while (next(lTmp)) ++lRes;
+  close();
+
+  GET_FACTORY().createInteger(result, lRes);
 }
 
 

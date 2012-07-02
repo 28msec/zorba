@@ -21,24 +21,31 @@
 #include <stdio.h>
 #include <zorba/config.h>
 
-#include "zorbaserialization/archiver.h"
-#include "zorbaserialization/class_serializer.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
 
+
 class Base16;
+class Base64;
 
-
-class ZORBA_DLL_PUBLIC Base64 : public ::zorba::serialization::SerializeBaseClass
+namespace serialization 
 {
+  class Archiver;
+  void operator&(Archiver& ar, Base64& obj);
+  void operator&(Archiver& ar, Base16& obj);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class ZORBA_DLL_PUBLIC Base64
+{
+  friend void serialization::operator&(serialization::Archiver& ar, Base64& obj);
+
 private:
   std::vector<char> theData;
-
-public:
-  SERIALIZABLE_CLASS(Base64)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(Base64)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   static bool parseString(const zstring& aString, Base64& aBase64) 
@@ -69,12 +76,12 @@ public:
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 
-  static zstring decode(std::istream& aStream);
+  static void decode(std::istream& aStream, zstring*);
+
+  static void decode(char const*, size_t, zstring*);
 
 public:
   Base64(const Base64& aBase64) 
-    :
-    ::zorba::serialization::SerializeBaseClass() 
   {
     theData = aBase64.theData;
   }
@@ -84,8 +91,6 @@ public:
   Base64(const unsigned char *bin_data, size_t len);
 
   Base64() {}
-
-  virtual ~Base64() {}
 
   const std::vector<char>& getData() const { return theData; }
 
@@ -100,17 +105,19 @@ public:
   void decode(std::vector<char>&);
 
   uint32_t hash() const;
-
-private:
-  void insertData(const char* aCharStar, size_t len);
 };
 
 
 std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
 
 
-class ZORBA_DLL_PUBLIC Base16 : public ::zorba::serialization::SerializeBaseClass
+/*******************************************************************************
+
+********************************************************************************/
+class ZORBA_DLL_PUBLIC Base16
 {
+  friend void serialization::operator&(serialization::Archiver& ar, Base16& obj);
+
 private:
   std::vector<char> theData;
 
@@ -134,14 +141,7 @@ public:
   static void decode(const std::vector<char>&, std::vector<char>&);
 
 public:
-  SERIALIZABLE_CLASS(Base16)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(Base16)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   Base16(const Base16& aBase16) 
-    :
-    ::zorba::serialization::SerializeBaseClass()
   {
     theData = aBase16.theData;
   }

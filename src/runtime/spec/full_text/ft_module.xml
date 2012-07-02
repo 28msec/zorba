@@ -6,6 +6,12 @@
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
+  <zorba:include form="Angle-bracket">deque</zorba:include>
+  <zorba:include form="Angle-bracket">list</zorba:include>
+  <zorba:include form="Angle-bracket">stack</zorba:include>
+  <zorba:include form="Angle-bracket">vector</zorba:include>
+  <zorba:include form="Angle-brakcet">zorba/locale.h</zorba:include>
+  <zorba:include form="Quoted">runtime/full_text/ft_module_util.h</zorba:include>
   <zorba:include form="Quoted">runtime/full_text/ft_token_seq_iterator.h</zorba:include>
   <zorba:include form="Quoted">runtime/full_text/thesaurus.h</zorba:include>
 </zorba:header>
@@ -13,6 +19,8 @@
 <zorba:source>
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
+
+<!--========================================================================-->
 
 <zorba:iterator name="CurrentCompareOptionsIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
@@ -27,6 +35,8 @@
   </zorba:function>
 </zorba:iterator>
 
+<!--========================================================================-->
+
 <zorba:iterator name="HostLangIterator"
                       preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
@@ -35,6 +45,8 @@
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
+
+<!--========================================================================-->
 
 <zorba:iterator name="IsStemLangSupportedIterator"
                       preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
@@ -45,6 +57,8 @@
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
+
+<!--========================================================================-->
 
 <zorba:iterator name="IsStopWordIterator"
                       preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
@@ -61,6 +75,8 @@
   </zorba:function>
 </zorba:iterator>
 
+<!--========================================================================-->
+
 <zorba:iterator name="IsStopWordLangSupportedIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
@@ -70,6 +86,8 @@
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
+
+<!--========================================================================-->
 
 <zorba:iterator name="IsThesaurusLangSupportedIterator"
                       preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
@@ -86,6 +104,8 @@
   </zorba:function>
 </zorba:iterator>
 
+<!--========================================================================-->
+
 <zorba:iterator name="IsTokenizerLangSupportedIterator"
                       preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
@@ -95,6 +115,8 @@
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
+
+<!--========================================================================-->
 
 <zorba:iterator name="StemIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
@@ -111,6 +133,8 @@
   </zorba:function>
 </zorba:iterator>
 
+<!--========================================================================-->
+
 <zorba:iterator name="StripDiacriticsIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
@@ -121,31 +145,33 @@
   </zorba:function>
 </zorba:iterator>
 
+<!--========================================================================-->
+
 <zorba:iterator name="ThesaurusLookupIterator"
                 generateResetImpl="true"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:function>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:param>xs:string</zorba:param>    <!-- relationship -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="thesaurus-lookup" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- URI -->
@@ -154,7 +180,7 @@
       <zorba:param>xs:string</zorba:param>    <!-- relationship -->
       <zorba:param>xs:integer</zorba:param>   <!-- level-least -->
       <zorba:param>xs:integer</zorba:param>   <!-- level-most -->
-      <zorba:output>xs:string+</zorba:output>
+      <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
   </zorba:function>
   <zorba:state generateInit="use-default">
@@ -167,56 +193,69 @@
   </zorba:state>
 </zorba:iterator>
 
-<zorba:iterator name="TokenizeIterator"
-                generateResetImpl="true"
-                generateSerialize="false"
-                generateConstructor="false"
-                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+<!--========================================================================-->
 
+<zorba:iterator name="TokenizeNodeIterator"
+                generateResetImpl="true"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
   <zorba:state generateInit="use-default">
     <zorba:member type="store::Item_t" name="doc_item_"/>
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
+    <zorba:member type="TokenQNames" name="token_qnames_"/>
   </zorba:state>
-
-  <zorba:member type="store::Item_t" name="token_qname_"/>
-  <zorba:member type="store::Item_t" name="lang_qname_"/>
-  <zorba:member type="store::Item_t" name="para_qname_"/>
-  <zorba:member type="store::Item_t" name="sent_qname_"/>
-  <zorba:member type="store::Item_t" name="value_qname_"/>
-  <zorba:member type="store::Item_t" name="ref_qname_"/>
-
-  <zorba:method name="initMembers" return="void"/>
-
 </zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="TokenizeNodesIterator"
+                generateResetImpl="true"
+                preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+  <zorba:state generateInit="use-default">
+    <zorba:member type="store::Item_t" name="doc_item_"/>
+    <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
+
+    <zorba:member type="TokenQNames" name="token_qnames_"/>
+
+    <zorba:member type="std::list&lt;store::Item_t&gt;" name="includes_"/>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="excludes_"/>
+
+    <zorba:member type="std::stack&lt;Tokenizer*>" name="tokenizers_"/>
+    <zorba:member type="std::stack&lt;locale::iso639_1::type&gt;" name="langs_"/>
+    <zorba:member type="TokenizeNodesCallback" name="callback_"/>
+    <zorba:member type="Tokenizer::State" name="t_state_"/>
+    <zorba:member type="std::deque&lt;FTToken&gt;" name="tokens_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
 
 <zorba:iterator name="TokenizerPropertiesIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
 </zorba:iterator>
+
+<!--========================================================================-->
 
 <zorba:iterator name="TokenizeStringIterator"
                 generateResetImpl="true"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
 
   <zorba:function>
-
     <zorba:signature localname="tokenize-string" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- string -->
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
-
     <zorba:signature localname="tokenize-string" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- string -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
-
   </zorba:function>
-
   <zorba:state generateInit="use-default">
     <zorba:member type="FTTokenSeqIterator" name="string_tokens_"/>
   </zorba:state>
-
 </zorba:iterator>
+
+<!--========================================================================-->
 
 </zorba:iterators>
 <!-- vim:set et sw=2 ts=2: -->

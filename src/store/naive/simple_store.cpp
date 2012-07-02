@@ -33,6 +33,11 @@
 #include "util/uuid/uuid.h"
 #include "zorbautils/string_util.h"
 
+#ifdef ZORBA_WITH_JSON
+#include "store/naive/json_loader.h"
+#endif
+
+
 namespace zorba
 {
 
@@ -40,6 +45,7 @@ namespace simplestore
 {
 
 typedef rchandle<store::TempSeq> TempSeq_t;
+
 
 /*******************************************************************************
 
@@ -70,6 +76,7 @@ void SimpleStore::init()
 
   Store::init();
 }
+
 
 void SimpleStore::shutdown(bool soft)
 {
@@ -234,20 +241,18 @@ ulong SimpleStore::createCollectionId()
   an error.
 ********************************************************************************/
 store::Collection_t SimpleStore::createCollection(
-    const store::Item_t& aName,
+    const store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& aNodeType,
-    bool aDynamicCollection)
+    const store::Item_t& nodeType,
+    bool isDynamic)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return NULL;
 
-  store::Collection_t collection(
-      new SimpleCollection(
-        aName,
-        annotations,
-        aNodeType,
-        aDynamicCollection));
+  store::Collection_t collection(new SimpleCollection(name,
+                                                      annotations,
+                                                      nodeType,
+                                                      isDynamic));
 
   const store::Item* lName = collection->getName();
 
@@ -287,10 +292,7 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
   uuid_create(&uuid);
   zstring uuidStr = uuidToURI(uuid);
 
-  const_cast<XmlNode*>(xmlNode)->setHaveReference();
-
-  theNodeToReferencesMap.insert(xmlNode, uuidStr);
-  theReferencesToNodeMap[uuidStr] = node;
+  assignReference(xmlNode, uuidStr);
 
   return theItemFactory->createAnyURI(result, uuidStr);
 }
@@ -305,6 +307,24 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
 bool SimpleStore::hasReference(const store::Item* node)
 {
   return static_cast<const XmlNode*>(node)->haveReference();
+}
+
+
+bool SimpleStore::assignReference(const store::Item* node, const zstring& reference)
+{
+  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
+  zstring uuidStr = reference;
+
+  if (xmlNode->haveReference())
+  {
+    return false;
+  }
+  const_cast<XmlNode*>(xmlNode)->setHaveReference();
+
+  theNodeToReferencesMap.insert(xmlNode, uuidStr);
+  theReferencesToNodeMap[uuidStr] = node;
+
+  return true;
 }
 
 
@@ -366,6 +386,19 @@ bool SimpleStore::unregisterNode(XmlNode* node)
   }
 }
 
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t SimpleStore::parseJSON(
+    std::istream& stream,
+    internal::diagnostic::location* relative_error_loc)
+{
+  json::JSONLoader lLoader(stream, relative_error_loc);
+  return lLoader.next();
+}
+#endif /* ZORBA_WITH_JSON */
 
 } // namespace simplestore
 } // namespace zorba
