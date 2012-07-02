@@ -452,7 +452,7 @@ protected:
 
 void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
     
-#ifndef NDEBUG
+#if 0 // ifndef NDEBUG
 #define ASSERT_INVARIANT() assertInvariant()
 #else
 #define ASSERT_INVARIANT()
