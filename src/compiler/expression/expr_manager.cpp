@@ -31,6 +31,17 @@
 
 namespace zorba {
 
+//A simple expression that can just be deallocated without calling the
+//destructor.
+class NullExpr : public expr
+{
+public:
+  NullExpr() : expr(NULL, NULL, QueryLoc(), unknown_expr_kind){}
+  void accept(expr_visitor& v){}
+  void compute_scripting_kind(){}
+  std::ostream& put(std::ostream& stream) const{return stream;}
+};
+
 ExprManager::ExprManager()
 : memory()
 {}
@@ -44,23 +55,54 @@ ExprManager::~ExprManager()
   unsigned long total_bytes = 0;
   unsigned long zero_ref_bytes = 0;
 
+  bool first_loop = true;
+
+  while(theExprs.size() > 0)
+  {
+    bool deleted_expr = false;
+
+    for(std::list<expr*>::iterator iter = theExprs.begin();
+        iter != theExprs.end();
+        iter++)
+    {
+      expr* exp = *iter;
+      if(exp->getRefCount() <= 0)
+      {
+          deleted_expr = true;
+          unsigned long bytes = sizeof *exp;
+
+          total_bytes += bytes;
+          ++zero_ref_expr;
+          zero_ref_bytes += bytes;
+
+          exp->~expr();
+          iter = theExprs.erase(iter);
+      }
+    }
+
+    if(!deleted_expr)
+      break;
+
+  }
+
   for(std::list<expr*>::iterator iter = theExprs.begin();
       iter != theExprs.end();
       iter++)
   {
-    expr* exp = *iter;
+    //Here we delete all remaining exprs, we assume that they may be "held"
+    //by a reference somewhere.
+    //To prevent deleting an already deleted expr, we replace them with
+    //a NullExpr
 
+    expr* exp = *iter;
     unsigned long bytes = sizeof *exp;
 
     total_bytes += bytes;
 
-    if(exp->getRefCount() <= 0)
-    {
-      ++zero_ref_expr;
-      zero_ref_bytes += bytes;
-    }
-
     exp->~expr();
+
+    //constructs a new NULLExpr where the old expr existed
+    new(exp)NullExpr();
   }
 }
 
