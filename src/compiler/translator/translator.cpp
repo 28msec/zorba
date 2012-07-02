@@ -13795,6 +13795,16 @@ void *begin_visit (const FTThesaurusID& v) {
 void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
+  zstring const &uri = v.get_uri();
+  zstring error_msg;
+  std::auto_ptr<internal::Resource> rsrc(
+    theSctx->resolve_uri( uri, internal::EntityData::THESAURUS, error_msg )
+  );
+  if ( !rsrc.get() )
+    throw XQUERY_EXCEPTION(
+      err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+    );
+
   ftrange *levels;
   if ( v.get_levels() ) {
     levels = dynamic_cast<ftrange*>( pop_ftstack() );
@@ -13802,9 +13812,8 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
   } else
     levels = nullptr;
 
-  ftthesaurus_id *const tid = new ftthesaurus_id(
-    loc, v.get_uri(), v.get_relationship(), levels
-  );
+  ftthesaurus_id *const tid =
+    new ftthesaurus_id( loc, uri, v.get_relationship(), levels );
   push_ftstack( tid );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
