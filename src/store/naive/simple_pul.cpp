@@ -2008,36 +2008,26 @@ void CollectionPul::cleanIndexDeltas()
       csize numApplied;
 
       delta = &theInsertedDocsIndexDeltas[idx].getValueDelta();
-      if (delta)
+      numApplied = theNumInsertedDocsIndexDeltasApplied[idx];
+      ite = delta->begin() + numApplied;
+      end = delta->end();
+      for (; ite != end; ++ite)
       {
-        numApplied = theNumInsertedDocsIndexDeltasApplied[idx];
-        ite = delta->begin() + numApplied;
-        end = delta->end();
-        for (; ite != end; ++ite)
-        {
-          delete (*ite).second;
-        }
+        delete (*ite).second;
       }
 
       delta = &theAfterIndexDeltas[idx].getValueDelta();
-      if (delta)
+      numApplied = theNumAfterIndexDeltasApplied[idx];
+      ite = delta->begin() + numApplied;
+      end = delta->end();
+      for (; ite != end; ++ite)
       {
-        numApplied = theNumAfterIndexDeltasApplied[idx];
-        ite = delta->begin() + numApplied;
-        end = delta->end();
-        for (; ite != end; ++ite)
-        {
-          delete (*ite).second;
-        }
+        delete (*ite).second;
       }
       
-      delta = &theDeletedDocsIndexDeltas[idx].getValueDelta();
-      if (delta)
-        delta->clear();
+      theDeletedDocsIndexDeltas[idx].clear();
       
-      delta = &theBeforeIndexDeltas[idx].getValueDelta();
-      if (delta)
-        delta->clear();
+      theBeforeIndexDeltas[idx].clear();
     }
   }
 }
@@ -2188,13 +2178,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
 
   for (; ite != end; ++ite, ++numBeforeApplied)
   {
-    keyIte = (*ite).second.begin();
-    keyEnd = (*ite).second.end();
-
-    for (; keyIte != keyEnd; ++keyIte)
-    {
-      index->remove((*keyIte), (*ite).first, false);
-    }
+    index->remove((*ite).second, (*ite).first, false);
   }
 
   ite = afterDelta.begin();
@@ -2202,16 +2186,10 @@ void CollectionPul::refreshGeneralIndex(csize idx)
 
   for (; ite != end; ++ite, ++numAfterApplied)
   {
-    keyIte = (*ite).second.begin();
-    keyEnd = (*ite).second.end();
+    node = (*ite).first;
+    key = (*ite).second;
 
-    for (; keyIte != keyEnd; ++keyIte)
-    {
-      node = (*ite).first;
-      key = (*keyIte);
-
-      index->insert(key, node);
-    }
+    index->insert(key, node);
   }
 
   STORE_TRACE2("deleted-delta size = " << deletedDelta.size());
@@ -2221,13 +2199,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
 
   for (; ite != end; ++ite, ++numDeletedApplied)
   {
-    keyIte = (*ite).second.begin();
-    keyEnd = (*ite).second.end();
-
-    for (; keyIte != keyEnd; ++keyIte)
-    {
-      index->remove((*keyIte), (*ite).first, false);
-    }
+    index->remove((*ite).second, (*ite).first, false);
   }
 
   STORE_TRACE2("inserted-delta size = " << insertedDelta.size());
@@ -2237,16 +2209,10 @@ void CollectionPul::refreshGeneralIndex(csize idx)
 
   for (; ite != end; ++ite, ++numInsertedApplied)
   {
-    keyIte = (*ite).second.begin();
-    keyEnd = (*ite).second.end();
-
-    for (; keyIte != keyEnd; ++keyIte)
-    {
-      node = (*ite).first;
-      key = (*keyIte);
+    node = (*ite).first;
+    key = (*ite).second;
     
-      index->insert(key, node);
-    }
+    index->insert(key, node);
   }
 }
 
@@ -2359,7 +2325,6 @@ void CollectionPul::undoValueIndexRefresh(csize idx)
 ********************************************************************************/
 void CollectionPul::undoGeneralIndexRefresh(csize idx)
 {
-#if 0
   GeneralIndex* index = static_cast<GeneralIndex*>(theIncrementalIndices[idx]);
 
   store::IndexDelta::GeneralDelta& 
@@ -2387,7 +2352,27 @@ void CollectionPul::undoGeneralIndexRefresh(csize idx)
   {
     index->remove((*ite).second, (*ite).first, false);
   }
-#endif
+
+  ite = deletedDelta.rbegin() + (deletedDelta.size() - numDeletedApplied);
+  end = deletedDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    index->insert((*ite).second, (*ite).first);
+  }
+
+  ite = afterDelta.rbegin() + (afterDelta.size() - numAfterApplied);
+  end = afterDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    index->remove((*ite).second, (*ite).first, false);
+  }
+
+  ite = beforeDelta.rbegin() + (beforeDelta.size() - numBeforeApplied);
+  end = beforeDelta.rend();
+  for (; ite != end; ++ite)
+  {
+    index->insert((*ite).second, (*ite).first);
+  }
 }
 
 
@@ -2509,10 +2494,10 @@ void CollectionPul::applyUpdates()
           theMergeList.push_back(mergeInfo);
 
           (void)GET_NODE_FACTORY().createTextNode(node->getTree(),
-              node,
-              false,
-              i,
-              newContent);
+                                                  node,
+                                                  false,
+                                                  i,
+                                                  newContent);
         }
       }
     }
@@ -2551,16 +2536,12 @@ void CollectionPul::applyUpdates()
   }
   catch (const std::exception& e) 
   {
-#ifndef NDEBUG
-    std::cerr << "Exception thrown during pul::applyUpdates: " << e.what() << std::endl;
-#endif
+    //std::cerr << "Exception thrown during pul::applyUpdates: " << e.what() << std::endl;
     throw;
   }
   catch (...)
   {
-#ifndef NDEBUG
-    std::cerr << "Exception thrown during pul::applyUpdates " << std::endl;
-#endif
+    //std::cerr << "Exception thrown during pul::applyUpdates " << std::endl;
     throw;
   }
 

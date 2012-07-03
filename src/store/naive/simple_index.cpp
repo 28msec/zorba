@@ -620,22 +620,13 @@ void IndexDelta::addValuePair(store::Item_t& node, store::IndexKey* key)
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexDelta::addGeneralNode(store::Item_t& node)
+void IndexDelta::addGeneralPair(store::Item_t& node, store::Item_t& key)
 {
+  assert(node->isNode() && key->isAtomic());
+
   theGeneralDelta.resize(theGeneralDelta.size() + 1);
   theGeneralDelta.back().first.transfer(node);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexDelta::addGeneralKey(store::Item_t& key)
-{
-  std::vector<Item_t>& keys = theGeneralDelta.back().second;
-
-  keys.resize(keys.size() + 1);
-  keys.back().transfer(key);
+  theGeneralDelta.back().second.transfer(key);
 }
 
 

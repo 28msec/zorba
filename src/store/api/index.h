@@ -159,7 +159,7 @@ public:
 
   typedef std::vector<ValuePair> ValueDelta;
 
-  typedef std::pair<Item_t, std::vector<Item_t> > GeneralPair;
+  typedef std::pair<Item_t, Item_t> GeneralPair;
 
   typedef std::vector<GeneralPair> GeneralDelta;
 
@@ -170,9 +170,7 @@ protected:
 public:
   void addValuePair(Item_t& node, IndexKey* key);
 
-  void addGeneralNode(Item_t& node);
-
-  void addGeneralKey(Item_t& key);
+  void addGeneralPair(Item_t& node, Item_t& key);
 
   void clear();
 

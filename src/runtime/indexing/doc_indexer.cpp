@@ -90,7 +90,6 @@ void DocIndexer::createIndexEntries(
                         tmp);
 
   store::Item_t domainNode;
-  store::IndexKey* key = NULL;
 
   try
   {
@@ -98,55 +97,71 @@ void DocIndexer::createIndexEntries(
     {
       if (thePlanWrapper->next(domainNode))
       {
-        store::Item_t keyItem;
+        store::Item_t key;
         bool more = true;
 
         while (more)
         {
           assert(domainNode->isNode());
 
-          delta.addGeneralNode(domainNode);
-
-          while ((more = thePlanWrapper->next(keyItem)))
+          while ((more = thePlanWrapper->next(key)))
           {
-            if (keyItem->isNode())
+            if (key->isNode())
             {
-              domainNode.transfer(keyItem);
+              domainNode.transfer(key);
               break;
             }
-            
-            delta.addGeneralKey(keyItem);
+
+            store::Item_t node = domainNode;
+            delta.addGeneralPair(node, key);
           }
         }
       }
     }
     else
     {
-      while (thePlanWrapper->next(domainNode))
+      store::IndexKey* key = NULL;
+
+      //std::cout << "Computing value index delta" << std::endl;
+
+      try
       {
-        key = new store::IndexKey(theNumColumns);
-
-        //std::cout << domainNode.getp() << "  " << key << std::endl;
-
-        for (csize i = 0; i < theNumColumns; ++i)
+        while (thePlanWrapper->next(domainNode))
         {
-          if (!thePlanWrapper->next((*key)[i]))
+          key = new store::IndexKey(theNumColumns);
+
+          for (csize i = 0; i < theNumColumns; ++i)
           {
-            throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
-            ERROR_PARAMS(ZED(IncompleteKeyInIndexRefresh)));
+            if (!thePlanWrapper->next((*key)[i]))
+            {
+              throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+              ERROR_PARAMS(ZED(IncompleteKeyInIndexRefresh)));
+            }
           }
-        }
       
-        delta.addValuePair(domainNode, key);
-        key = NULL;
+          /*
+          std::cout << "[ node: " << domainNode.getp()
+                    << " , key: " << key
+                    << " , keyval: " << (*key)[0]->getStringValue()
+                    << " ]" << std::endl;
+          */
+          delta.addValuePair(domainNode, key);
+          key = NULL;
+        }
+
+        //std::cout << std::endl;
+      }
+      catch(...)
+      {
+        if (key != NULL)
+          delete key;
+
+        throw;
       }
     }
   }
   catch(...)
   {
-    if (key != NULL)
-      delete key;
-
     delta.clear();
 
     theDctx->unset_variable(theNodeVar->get_unique_id(),

@@ -334,6 +334,9 @@ public:
   typedef std::vector<store::IndexDelta::GeneralPair>::iterator
   GeneralIterator;
 
+  typedef std::vector<store::IndexDelta::GeneralPair>::reverse_iterator
+  ReverseGeneralIterator;
+
 public:
   IndexDeltaImpl() { }
 
