@@ -232,6 +232,9 @@ namespace zorba{
     class TokenizeNodeIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+    class TokenizeNodesIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     class TokenizerPropertiesIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
@@ -450,6 +453,10 @@ namespace zorba{
 
     class NodeReferenceIterator;
 
+    class HasNodeReferenceIterator;
+
+    class AssignNodeReferenceIterator;
+
     class NodeByReferenceIterator;
 
     class FnLocalNameIterator;
@@ -503,6 +510,8 @@ namespace zorba{
     class FormatIntegerIterator;
 
     class FnZorbaParseXmlFragmentIterator;
+
+    class FnParseXmlFragmentIterator;
 
     class FnParseXmlIterator;
 
@@ -1009,6 +1018,10 @@ public:
     virtual void endVisit   ( const TokenizeNodeIterator& ) = 0;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const TokenizeNodesIterator& ) = 0;
+    virtual void endVisit   ( const TokenizeNodesIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     virtual void beginVisit ( const TokenizerPropertiesIterator& ) = 0;
     virtual void endVisit   ( const TokenizerPropertiesIterator& ) = 0;
 #endif
@@ -1328,6 +1341,12 @@ public:
     virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeReferenceIterator& ) = 0;
 
+    virtual void beginVisit ( const HasNodeReferenceIterator& ) = 0;
+    virtual void endVisit   ( const HasNodeReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const AssignNodeReferenceIterator& ) = 0;
+    virtual void endVisit   ( const AssignNodeReferenceIterator& ) = 0;
+
     virtual void beginVisit ( const NodeByReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeByReferenceIterator& ) = 0;
 
@@ -1408,6 +1427,9 @@ public:
 
     virtual void beginVisit ( const FnZorbaParseXmlFragmentIterator& ) = 0;
     virtual void endVisit   ( const FnZorbaParseXmlFragmentIterator& ) = 0;
+
+    virtual void beginVisit ( const FnParseXmlFragmentIterator& ) = 0;
+    virtual void endVisit   ( const FnParseXmlFragmentIterator& ) = 0;
 
     virtual void beginVisit ( const FnParseXmlIterator& ) = 0;
     virtual void endVisit   ( const FnParseXmlIterator& ) = 0;

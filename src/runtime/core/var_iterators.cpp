@@ -82,7 +82,7 @@ void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
   ar & theVarName;
   ar & theIsExternal;
   ar & theSingleItem;
@@ -148,7 +148,7 @@ void CtxVarAssignIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
 
   ar & theVarName;
   ar & theIsLocal;
@@ -211,7 +211,7 @@ void CtxVarIsSetIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
 
   ar & theVarName;
 }
@@ -286,7 +286,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
 
   ar & theVarName;
   ar & theIsLocal;

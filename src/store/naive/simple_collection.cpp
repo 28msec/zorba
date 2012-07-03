@@ -81,9 +81,9 @@ SimpleCollection::~SimpleCollection()
   Note: it is allowed to have several concurrent iterators on the same collection
   but each iterator should be used by a single thread only.
 ********************************************************************************/
-store::Iterator_t SimpleCollection::getIterator()
+store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip)
 {
-  return new CollectionIter(this);
+  return new CollectionIter(this, aSkip);
 }
 
 
@@ -607,10 +607,13 @@ TreeId SimpleCollection::createTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::CollectionIter::CollectionIter(SimpleCollection* collection)
+SimpleCollection::CollectionIter::CollectionIter(
+    SimpleCollection* collection,
+    const xs_integer& aSkip)
   :
   theCollection(collection),
-  theHaveLock(false)
+  theHaveLock(false),
+  theSkip(aSkip)
 {
 }
 
@@ -634,6 +637,7 @@ void SimpleCollection::CollectionIter::open()
   theHaveLock = true;
 
   theIterator = theCollection->theXmlTrees.begin();
+  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
 }
 
@@ -668,6 +672,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 void SimpleCollection::CollectionIter::reset()
 {
   theIterator = theCollection->theXmlTrees.begin();
+  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
 }
 

@@ -609,7 +609,7 @@ static void test_unterminated_string() {
 namespace zorba {
 namespace UnitTests {
 
-int json_parser( int, char*[] ) {
+int test_json_parser( int, char*[] ) {
 
   // lexer-only tests
   test_lexer_array();

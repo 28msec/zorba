@@ -54,9 +54,10 @@ public:
     checked_vector<store::Item_t>::iterator theIterator;
     checked_vector<store::Item_t>::iterator theEnd;
     bool                                    theHaveLock;
+    xs_integer                              theSkip;
 
   public:
-    CollectionIter(SimpleCollection* collection);
+    CollectionIter(SimpleCollection* collection, const xs_integer& aSkip);
 
     ~CollectionIter();
 
@@ -109,7 +110,7 @@ public:
 
   TreeId createTreeId();
 
-  store::Iterator_t getIterator();
+  store::Iterator_t getIterator(const xs_integer& aSkip);
 
   void addNode(store::Item* node, xs_integer position = xs_integer(-1));
 

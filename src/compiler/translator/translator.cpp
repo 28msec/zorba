@@ -13232,8 +13232,8 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
   transformExpr->setModifyExpr(modifyExpr);
   transformExpr->setReturnExpr(returnExpr);
 
-  const size_t lSize = v.get_var_list()->size();
-  for (size_t i = 0; i < lSize; ++i)
+  const csize lSize = v.get_var_list()->size();
+  for (csize i = 0; i < lSize; ++i)
   {
     pop_scope();
   }
@@ -13256,22 +13256,21 @@ void* begin_visit(const VarBinding& v)
 {
   TRACE_VISIT();
 
-  push_scope();
-  var_expr_t ve = bind_var(loc, v.get_varname(), var_expr::copy_var);
-  push_nodestack(ve.getp());
-
   return no_state;
 }
 
 void end_visit(const VarBinding& v, void*)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   expr_t sourceExpr = pop_nodestack();
+
   if (sourceExpr->is_updating())
     throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
 
-  var_expr_t varExpr = pop_nodestack_var();
+  push_scope();
+
+  var_expr_t varExpr = bind_var(loc, v.get_varname(), var_expr::copy_var);
 
   transform_expr* transformExpr =
   dynamic_cast<transform_expr*>(theNodeStack.top().getp());
