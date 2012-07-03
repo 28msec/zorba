@@ -32,11 +32,6 @@ class ftcontains_expr : public expr
   friend class ExprIterator;
   friend class ExprManager;
 
-public:
-  SERIALIZABLE_CLASS(ftcontains_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,expr)
-  void serialize( serialization::Archiver& );
-
 protected:
   ftcontains_expr(
     ExprManager* expMan,

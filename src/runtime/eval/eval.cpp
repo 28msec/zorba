@@ -195,7 +195,9 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                             evalCCB,
                                             evalDctx,
                                             planState.theQuery,
-                                            planState.theStackDepth + 1);
+                                            planState.theStackDepth + 1,
+                                            state->ccb->theHaveTimeout,
+                                            state->ccb->theTimeout);
 
     state->thePlanWrapper->checkDepth(loc);
 

@@ -17,24 +17,10 @@
 #ifndef ZORBA_COMPILER_SCRIPT_EXPRS
 #define ZORBA_COMPILER_SCRIPT_EXPRS
 
-#include <string>
 #include <vector>
-
-#include <zorba/store_consts.h>
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbautils/checked_vector.h"
-
-#include "zorbatypes/schema_types.h"
-
-#include "diagnostics/xquery_diagnostics.h"
-
-#include "context/static_context.h"
-
-#include "types/typeimpl.h"
-
-#include "store/api/item.h"
 
 namespace zorba
 {
@@ -122,12 +108,7 @@ class block_expr : public expr
   friend class expr;
 
 protected:
-  checked_vector<expr_t> theArgs;
-
-public:
-  SERIALIZABLE_CLASS(block_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(block_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
+  std::vector<expr_t> theArgs;
 
 protected:
   block_expr(
@@ -176,11 +157,6 @@ class apply_expr : public expr
 private:
   expr_t theExpr;
   bool   theDiscardXDM;
-
-public:
-  SERIALIZABLE_CLASS(apply_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(apply_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   apply_expr(
@@ -243,11 +219,6 @@ protected:
   var_expr_t theVarExpr;
   expr_t     theInitExpr;
 
-public:
-  SERIALIZABLE_CLASS(var_decl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_decl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 protected:
   var_decl_expr(
       ExprManager* exprMan,
@@ -294,11 +265,6 @@ protected:
   var_expr_t theVarExpr;
   expr_t     theExpr;
 
-public:
-  SERIALIZABLE_CLASS(var_set_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_set_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 protected:
   var_set_expr(
       ExprManager* exprMan,
@@ -337,11 +303,6 @@ private:
   expr_t               theExpr;
 
   exit_catcher_expr  * theCatcherExpr;
-
-public:
-  SERIALIZABLE_CLASS(exit_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   exit_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
@@ -386,11 +347,6 @@ private:
   expr_t             theExpr;
 
   std::vector<expr*> theExitExprs;
-
-public:
-  SERIALIZABLE_CLASS(exit_catcher_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_catcher_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   exit_catcher_expr(
@@ -442,11 +398,6 @@ public:
 protected:
   enum action theAction;
 
-public:
-  SERIALIZABLE_CLASS(flowctl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 protected:
   flowctl_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, enum action action);
 
@@ -479,15 +430,9 @@ class while_expr : public expr
 protected:
   expr_t theBody;
 
-public:
-  SERIALIZABLE_CLASS(while_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 protected:
   while_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_t body);
 
-public:
   expr* get_body() const { return theBody.getp(); }
 
   void compute_scripting_kind();

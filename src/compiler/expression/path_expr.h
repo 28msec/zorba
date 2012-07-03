@@ -58,11 +58,6 @@ class relpath_expr : public expr
 protected:
   std::vector<expr_t> theSteps;
 
-public:
-  SERIALIZABLE_CLASS(relpath_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(relpath_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 protected:
   relpath_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc);
 
@@ -113,11 +108,6 @@ protected:
   axis_kind_t             theAxis;
   bool                    theReverseOrder;
   expr_t                  theNodeTest;
-
-public:
-  SERIALIZABLE_CLASS(axis_step_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(axis_step_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   static bool is_reverse_axis(axis_kind_t kind);
@@ -185,11 +175,6 @@ protected:
   store::Item_t     theQName;
   store::Item_t     theTypeName;
   bool              theNilledAllowed;
-
-public:
-  SERIALIZABLE_CLASS(match_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(match_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   match_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&);

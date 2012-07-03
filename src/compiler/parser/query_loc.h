@@ -18,10 +18,14 @@
 #define ZORBA_QUERY_LOC_H
 
 #include "zorbatypes/zstring.h"
-#include "zorbaserialization/archiver.h"
-#include "zorbaserialization/class_serializer.h"
+
 
 namespace zorba {
+
+namespace serialization
+{
+  class Archiver;
+}
 
 /**
  * Class to save the query location of zorba elements that correspond to a code
@@ -30,24 +34,17 @@ namespace zorba {
  * parser generator. yy::location is used as few as possible in zorba to reduced
  * dependencies to the parser.
  */
-// exported for unit testing only
-  class QueryLoc : public ::zorba::serialization::SerializeBaseClass
-  {
-
+class QueryLoc 
+{
 public:
   static QueryLoc null;
 
-private:
+public:
   zstring      theFilename;
   unsigned int theLineBegin;
   unsigned int theColumnBegin;
   unsigned int theLineEnd;
   unsigned int theColumnEnd;
-
-public:
-  SERIALIZABLE_CLASS(QueryLoc)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(QueryLoc)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   QueryLoc();
@@ -59,13 +56,9 @@ public:
 public:
   const zstring& getFilename() const { return theFilename; }
  
-  void setFilename(zstring const &aFilename) {
-    theFilename = aFilename;
-  }
+  void setFilename(const zstring& aFilename) { theFilename = aFilename; }
 
-  void setFilename(char const *aFilename) {
-    theFilename = aFilename;
-  }
+  void setFilename(const char* aFilename) { theFilename = aFilename; }
 
   unsigned int getLineBegin() const { return theLineBegin; }  
    

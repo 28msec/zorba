@@ -21,8 +21,6 @@
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbaserialization/class_serializer.h"
-
 
 namespace zorba
 {
@@ -45,9 +43,6 @@ protected:
   function               * theFunction;
 
 public:
-  SERIALIZABLE_CLASS(fo_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(fo_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   static fo_expr* create_seq(ExprManager* theExpMan, static_context* sctx, const QueryLoc &);

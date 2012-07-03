@@ -216,7 +216,13 @@ void apply_updates(
         {
           PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
 
-          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL);
+          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan,
+                                                      ccb,
+                                                      NULL,
+                                                      NULL,
+                                                      0,
+                                                      false,
+                                                      0);
 
           indexPul->addRefreshIndex(&loc, zorbaIndex->getName(), planWrapper);
         }

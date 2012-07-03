@@ -44,11 +44,6 @@ protected:
   expr_t  theSourceExpr;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(update_expr_base)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(update_expr_base, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   update_expr_base(
     ExprManager* expMan,
     static_context* sctx,
@@ -77,10 +72,6 @@ class insert_expr : public update_expr_base
 protected:
   store::UpdateConsts::InsertType theType;
 
-public:
-  SERIALIZABLE_CLASS(insert_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(insert_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   insert_expr(
@@ -111,10 +102,6 @@ class delete_expr : public update_expr_base
   friend class expr;
   friend class ExprManager;
 
-public:
-  SERIALIZABLE_CLASS(delete_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   delete_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const expr_t&);
@@ -139,11 +126,6 @@ class replace_expr : public update_expr_base
 
 protected:
   store::UpdateConsts::ReplaceType theType;
-
-public:
-  SERIALIZABLE_CLASS(replace_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(replace_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   replace_expr(
@@ -175,11 +157,6 @@ class rename_expr : public update_expr_base
   friend class ExprIterator;
   friend class expr;
   friend class ExprManager;
-
-public:
-  SERIALIZABLE_CLASS(rename_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, update_expr_base)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   rename_expr(
@@ -220,10 +197,6 @@ private:
   expr_t     theExpr;
   ExprManager* theExprManager;
 
-public:
-  SERIALIZABLE_CLASS(copy_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(copy_clause, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   copy_clause(var_expr_t aVar, expr_t aExpr);
@@ -252,10 +225,6 @@ protected:
   expr_t                     theModifyExpr;
   expr_t                     theReturnExpr;
 
-public:
-  SERIALIZABLE_CLASS(transform_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(transform_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   transform_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc);

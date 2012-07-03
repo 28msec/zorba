@@ -280,7 +280,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // The domain of the outer var must contain more than 1 item.
   xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->get_return_type();
 
-  if (TypeOps::type_max_cnt(tm, *outerDomainType) < 2)
+  if (outerDomainType->max_card() < 2)
     return false;
 
   // The expr that defines the inner var must not depend on the outer var.
@@ -298,8 +298,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   xqtref_t innerType = predInfo.theInnerOp->get_return_type();
   xqtref_t primeOuterType = TypeOps::prime_type(tm, *outerType);
   xqtref_t primeInnerType = TypeOps::prime_type(tm, *innerType);
-  TypeConstants::quantifier_t outerQuant = TypeOps::quantifier(*outerType);
-  TypeConstants::quantifier_t innerQuant = TypeOps::quantifier(*innerType);
+  TypeConstants::quantifier_t outerQuant = outerType->get_quantifier();
+  TypeConstants::quantifier_t innerQuant = innerType->get_quantifier();
   const QueryLoc& innerLoc = predInfo.theInnerOp->get_loc();
   const QueryLoc& outerLoc = predInfo.theOuterOp->get_loc();
 
@@ -518,7 +518,7 @@ static void rewriteJoin(
                          innerPosInStack))
       return;
 
-    ulong numClauses = innerFlwor->num_clauses();
+    csize numClauses = innerFlwor->num_clauses();
 
     if (innerFlwor->defines_variable(predInfo.theOuterVar) >= 0 ||
         mostInnerVarPos < numClauses-1)
@@ -529,12 +529,12 @@ static void rewriteJoin(
 
       flwor_expr_t nestedFlwor = rCtx.theEM->create_flwor_expr(sctx, nestedLoc, false);
 
-      for (ulong i = mostInnerVarPos+1; i < numClauses; ++i)
+      for (csize i = mostInnerVarPos+1; i < numClauses; ++i)
       {
         nestedFlwor->add_clause(innerFlwor->get_clause(i));
       }
 
-      for (ulong i = numClauses - 1; i > mostInnerVarPos; --i)
+      for (csize i = numClauses - 1; i > mostInnerVarPos; --i)
       {
         innerFlwor->remove_clause(i);
       }
@@ -563,8 +563,8 @@ static void rewriteJoin(
       {
         block_expr* seqExpr = static_cast<block_expr*>(returnExpr);
 
-        ulong numArgs = seqExpr->size();
-        ulong arg;
+        csize numArgs = seqExpr->size();
+        csize arg;
         for (arg = 0; arg < numArgs; ++arg)
         {
           if ((*seqExpr)[arg]->get_function_kind() !=
@@ -590,9 +590,9 @@ static void rewriteJoin(
   }
   else
   {
-    // All the variables referenced by the inner domain expr are defined after
-    // the outer var. In this case, Find the flwor expr defining the outer var
-    // and create the index just before this flwor.
+    // The inner domain expr does not reference any flwor vars. In this case,
+    // find the flwor expr defining the outer var and create the index just 
+    // before this flwor.
     flwor_expr* outerFlworExpr = NULL;
     ulong outerPosInStack = 0;
     ulong dummy = 0;

@@ -273,6 +273,8 @@ int parseCode( int status, std::string &lQueryFileString )
       ParseErrorNode *err = static_cast<ParseErrorNode *> (&*lNode);
       std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
       std::cerr << err->msg << std::endl;
+      std::cerr << "line " << err->get_location().getLineBegin() << std::endl;
+      std::cerr << "column " << err->get_location().getColumnBegin() << std::endl;
       status = 3;
     }
   }	return status;

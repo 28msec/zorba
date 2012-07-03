@@ -29,7 +29,7 @@
 // without having the definition of static_context availble.
 # include "context/static_context.h"
 #endif
-#include "zorbatypes/rclist.h"
+
 #include "zorbaserialization/class_serializer.h"
 
 #include "compiler/expression/mem_manager.h"
@@ -50,11 +50,13 @@ class static_context;
   created as a copy of the query-level ccb during the execution of the eval/xqdoc
   expr.
 
-  - theXQueryDiagnostics :
+  theXQueryDiagnostics :
+  ----------------------
   Pointer to the query's XQueryDiagnostics obj. (see src/api/xqueryimpl.h). The eval
   CompilerCBs share the query's XQueryDiagnostics.
 
-  - theSctxMap :
+  theSctxMap :
+  ------------
   A query-level (or eval-level) map that stores the sctx objs that need to be
   kept around for the whole duration of a query (including runtime). In non-
   DEBUGGER mode, the map stores only for root sctx of each module. In DEBUGGER
@@ -63,46 +65,60 @@ class static_context;
   numeric ids to their associated sctx objs. The map is modified by the methods
   TranslatorImpl::end_visit(ModuleImport) and TranslatorImpl::push_scope().
 
-  - theRootSctx :
+  theRootSctx :
+  -------------
   The root static ctx for the query or for one of the query's eval exprs. For
   an eval expr, its root sctx is a child of the query's root sctx. For the query,
   its root sctx may be (a) a child of a user-provided sctx, or (b) if the query
   is a load-prolog query, the user-provided sctx, or (c) if the user did not
   provide any sctx, a child of zorba's root sctx.
 
-  - theDebuggerCommons :
+  theDebuggerCommons :
+  --------------------
 
-  - theIsEval :
+  theHasEval :
+  ------------
+  True if there is an eval expr within the compilation unit covered by this CCB.
+
+  theIsEval :
+  -----------
   True if this is the CCB for an eval query. This flag is needed to determine
   if a PUL returned by the main program must be applied or not.
 
-  - theIsLoadProlog :
+  theIsLoadProlog :
+  -----------------
   Whether this is a load-prolog query or not (load-prolog queries are created
   internally by the StaticContextImpl::loadProlog() method).
 
-  - theIsUpdating :
-  Set to true if the root expr of the query or eval expr is an updating expr.
+  theIsUpdating :
+  ---------------
+  Set to true if the root expr of the query or eval expr is an updating expr. 
 
-  - theTimeout :
+  theTimeout :
+  ------------
 
-  - theTempIndexCounter :
+  theTempIndexCounter :
+  ---------------------
   A counter used to create unique names for temporary (query-specific) indexes
   created to perform hashjoins (see rewriter/rules/index_join_rule.cpp).
 
-  - theConfig.lib_module :
+  theConfig.lib_module :
+  ----------------------
   If true, then if the query string that is given by the user is a library
   module, zorba will wrap it in a dummy main module and compile/execute that
   dummy module (see  XQueryCompiler::createMainModule() method). This flag is
   a copy of the lib_module flag in Zorba_CompilerHints_t.
 
-  - theConfig.for_serialization_only :
+  theConfig.for_serialization_only :
+  ----------------------------------
   This flag is a copy of the for_serialization_only flag in Zorba_CompilerHints_t.
 
-  - theConfig.parse_cb :
+  theConfig.parse_cb :
   Pointer to the function to call to print the AST that results from parsing
   the query.
 
-  - theConfig.translate_cb :
+  theConfig.translate_cb :
+  ------------------------
   Pointer to the function to call to print the expr tree that results from
   translating the query AST.
 ********************************************************************************/
@@ -142,7 +158,7 @@ public:
     void serialize(::zorba::serialization::Archiver& ar);
   };
 
-  typedef std::map<int, static_context_t> SctxMap;
+  typedef std::map<csize, static_context_t> SctxMap;
 
 public:
   XQueryDiagnostics       * theXQueryDiagnostics;
@@ -152,8 +168,10 @@ public:
   static_context          * theRootSctx;
 
 #ifdef ZORBA_WITH_DEBUGGER
-  DebuggerCommons*          theDebuggerCommons;
+  DebuggerCommons         * theDebuggerCommons;
 #endif
+
+  bool                      theHasEval;
 
   bool                      theIsEval;
 
@@ -163,22 +181,20 @@ public:
 
   bool                      theIsSequential;
 
-  long                      theTimeout;
+  bool                      theHaveTimeout;
 
-  ulong                     theTempIndexCounter;
+  uint32_t                  theTimeout;
+
+  uint32_t                  theTempIndexCounter;
 
   config                    theConfig;
 
-  rchandle<rclist<user_function*> >    theLocalUdfs;//for plan serializer
-
-  ExprManager theExprManager;
+  ExprManager               theExprManager;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
   CompilerCB(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
-  void prepare_for_serialize();
-  rchandle<rclist<user_function*> >  get_local_udfs();
 
 public:
   CompilerCB(XQueryDiagnostics*, long timeout = -1);

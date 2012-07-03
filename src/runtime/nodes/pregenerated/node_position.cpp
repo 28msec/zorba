@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <NodePositionIterator>
-NodePositionIterator::class_factory<NodePositionIterator>
-NodePositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodePositionIterator)
+
+void NodePositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NodePositionIterator, PlanIteratorState>*)this);
+}
 
 
-void NodePositionIterator::accept(PlanIterVisitor& v) const {
+void NodePositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -55,11 +61,17 @@ NodePositionIterator::~NodePositionIterator() {}
 
 
 // <IsAncestorPositionIterator>
-IsAncestorPositionIterator::class_factory<IsAncestorPositionIterator>
-IsAncestorPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAncestorPositionIterator)
+
+void IsAncestorPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAncestorPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsAncestorPositionIterator::accept(PlanIterVisitor& v) const {
+void IsAncestorPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,11 +89,17 @@ IsAncestorPositionIterator::~IsAncestorPositionIterator() {}
 
 
 // <IsFollowingSiblingPositionIterator>
-IsFollowingSiblingPositionIterator::class_factory<IsFollowingSiblingPositionIterator>
-IsFollowingSiblingPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsFollowingSiblingPositionIterator)
+
+void IsFollowingSiblingPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsFollowingSiblingPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsFollowingSiblingPositionIterator::accept(PlanIterVisitor& v) const {
+void IsFollowingSiblingPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -99,11 +117,17 @@ IsFollowingSiblingPositionIterator::~IsFollowingSiblingPositionIterator() {}
 
 
 // <IsFollowingPositionIterator>
-IsFollowingPositionIterator::class_factory<IsFollowingPositionIterator>
-IsFollowingPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsFollowingPositionIterator)
+
+void IsFollowingPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsFollowingPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsFollowingPositionIterator::accept(PlanIterVisitor& v) const {
+void IsFollowingPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -121,11 +145,17 @@ IsFollowingPositionIterator::~IsFollowingPositionIterator() {}
 
 
 // <IsInSubtreeOfPositionIterator>
-IsInSubtreeOfPositionIterator::class_factory<IsInSubtreeOfPositionIterator>
-IsInSubtreeOfPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsInSubtreeOfPositionIterator)
+
+void IsInSubtreeOfPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsInSubtreeOfPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsInSubtreeOfPositionIterator::accept(PlanIterVisitor& v) const {
+void IsInSubtreeOfPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -143,11 +173,17 @@ IsInSubtreeOfPositionIterator::~IsInSubtreeOfPositionIterator() {}
 
 
 // <IsDescendantPositionIterator>
-IsDescendantPositionIterator::class_factory<IsDescendantPositionIterator>
-IsDescendantPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDescendantPositionIterator)
+
+void IsDescendantPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsDescendantPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsDescendantPositionIterator::accept(PlanIterVisitor& v) const {
+void IsDescendantPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -165,11 +201,17 @@ IsDescendantPositionIterator::~IsDescendantPositionIterator() {}
 
 
 // <IsPrecedingSiblingPositionIterator>
-IsPrecedingSiblingPositionIterator::class_factory<IsPrecedingSiblingPositionIterator>
-IsPrecedingSiblingPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsPrecedingSiblingPositionIterator)
+
+void IsPrecedingSiblingPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsPrecedingSiblingPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsPrecedingSiblingPositionIterator::accept(PlanIterVisitor& v) const {
+void IsPrecedingSiblingPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -187,11 +229,17 @@ IsPrecedingSiblingPositionIterator::~IsPrecedingSiblingPositionIterator() {}
 
 
 // <IsPrecedingPositionIterator>
-IsPrecedingPositionIterator::class_factory<IsPrecedingPositionIterator>
-IsPrecedingPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsPrecedingPositionIterator)
+
+void IsPrecedingPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsPrecedingPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsPrecedingPositionIterator::accept(PlanIterVisitor& v) const {
+void IsPrecedingPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -209,11 +257,17 @@ IsPrecedingPositionIterator::~IsPrecedingPositionIterator() {}
 
 
 // <IsChildPositionIterator>
-IsChildPositionIterator::class_factory<IsChildPositionIterator>
-IsChildPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsChildPositionIterator)
+
+void IsChildPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsChildPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsChildPositionIterator::accept(PlanIterVisitor& v) const {
+void IsChildPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -231,11 +285,17 @@ IsChildPositionIterator::~IsChildPositionIterator() {}
 
 
 // <IsAttributeOfPositionIterator>
-IsAttributeOfPositionIterator::class_factory<IsAttributeOfPositionIterator>
-IsAttributeOfPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAttributeOfPositionIterator)
+
+void IsAttributeOfPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAttributeOfPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsAttributeOfPositionIterator::accept(PlanIterVisitor& v) const {
+void IsAttributeOfPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -253,11 +313,17 @@ IsAttributeOfPositionIterator::~IsAttributeOfPositionIterator() {}
 
 
 // <IsParentPositionIterator>
-IsParentPositionIterator::class_factory<IsParentPositionIterator>
-IsParentPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsParentPositionIterator)
+
+void IsParentPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsParentPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsParentPositionIterator::accept(PlanIterVisitor& v) const {
+void IsParentPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -275,11 +341,17 @@ IsParentPositionIterator::~IsParentPositionIterator() {}
 
 
 // <IsPrecedingInDocumentOrderPositionIterator>
-IsPrecedingInDocumentOrderPositionIterator::class_factory<IsPrecedingInDocumentOrderPositionIterator>
-IsPrecedingInDocumentOrderPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsPrecedingInDocumentOrderPositionIterator)
+
+void IsPrecedingInDocumentOrderPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsPrecedingInDocumentOrderPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsPrecedingInDocumentOrderPositionIterator::accept(PlanIterVisitor& v) const {
+void IsPrecedingInDocumentOrderPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -297,11 +369,17 @@ IsPrecedingInDocumentOrderPositionIterator::~IsPrecedingInDocumentOrderPositionI
 
 
 // <IsFollowingInDocumentOrderPositionIterator>
-IsFollowingInDocumentOrderPositionIterator::class_factory<IsFollowingInDocumentOrderPositionIterator>
-IsFollowingInDocumentOrderPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsFollowingInDocumentOrderPositionIterator)
+
+void IsFollowingInDocumentOrderPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsFollowingInDocumentOrderPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsFollowingInDocumentOrderPositionIterator::accept(PlanIterVisitor& v) const {
+void IsFollowingInDocumentOrderPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -319,11 +397,17 @@ IsFollowingInDocumentOrderPositionIterator::~IsFollowingInDocumentOrderPositionI
 
 
 // <LevelPositionIterator>
-LevelPositionIterator::class_factory<LevelPositionIterator>
-LevelPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(LevelPositionIterator)
+
+void LevelPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<LevelPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void LevelPositionIterator::accept(PlanIterVisitor& v) const {
+void LevelPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -341,11 +425,17 @@ LevelPositionIterator::~LevelPositionIterator() {}
 
 
 // <IsAttributePositionIterator>
-IsAttributePositionIterator::class_factory<IsAttributePositionIterator>
-IsAttributePositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAttributePositionIterator)
+
+void IsAttributePositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAttributePositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsAttributePositionIterator::accept(PlanIterVisitor& v) const {
+void IsAttributePositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -363,11 +453,17 @@ IsAttributePositionIterator::~IsAttributePositionIterator() {}
 
 
 // <IsCommentPositionIterator>
-IsCommentPositionIterator::class_factory<IsCommentPositionIterator>
-IsCommentPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsCommentPositionIterator)
+
+void IsCommentPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsCommentPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsCommentPositionIterator::accept(PlanIterVisitor& v) const {
+void IsCommentPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -385,11 +481,17 @@ IsCommentPositionIterator::~IsCommentPositionIterator() {}
 
 
 // <IsDocumentPositionIterator>
-IsDocumentPositionIterator::class_factory<IsDocumentPositionIterator>
-IsDocumentPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDocumentPositionIterator)
+
+void IsDocumentPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsDocumentPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsDocumentPositionIterator::accept(PlanIterVisitor& v) const {
+void IsDocumentPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -407,11 +509,17 @@ IsDocumentPositionIterator::~IsDocumentPositionIterator() {}
 
 
 // <IsElementPositionIterator>
-IsElementPositionIterator::class_factory<IsElementPositionIterator>
-IsElementPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsElementPositionIterator)
+
+void IsElementPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsElementPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsElementPositionIterator::accept(PlanIterVisitor& v) const {
+void IsElementPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -429,11 +537,17 @@ IsElementPositionIterator::~IsElementPositionIterator() {}
 
 
 // <IsProcessingInstructionPositionIterator>
-IsProcessingInstructionPositionIterator::class_factory<IsProcessingInstructionPositionIterator>
-IsProcessingInstructionPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsProcessingInstructionPositionIterator)
+
+void IsProcessingInstructionPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsProcessingInstructionPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsProcessingInstructionPositionIterator::accept(PlanIterVisitor& v) const {
+void IsProcessingInstructionPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -451,11 +565,17 @@ IsProcessingInstructionPositionIterator::~IsProcessingInstructionPositionIterato
 
 
 // <IsTextPositionIterator>
-IsTextPositionIterator::class_factory<IsTextPositionIterator>
-IsTextPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsTextPositionIterator)
+
+void IsTextPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsTextPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsTextPositionIterator::accept(PlanIterVisitor& v) const {
+void IsTextPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -473,11 +593,17 @@ IsTextPositionIterator::~IsTextPositionIterator() {}
 
 
 // <IsSiblingPositionIterator>
-IsSiblingPositionIterator::class_factory<IsSiblingPositionIterator>
-IsSiblingPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsSiblingPositionIterator)
+
+void IsSiblingPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsSiblingPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void IsSiblingPositionIterator::accept(PlanIterVisitor& v) const {
+void IsSiblingPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -495,11 +621,17 @@ IsSiblingPositionIterator::~IsSiblingPositionIterator() {}
 
 
 // <InSameTreePositionIterator>
-InSameTreePositionIterator::class_factory<InSameTreePositionIterator>
-InSameTreePositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InSameTreePositionIterator)
+
+void InSameTreePositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InSameTreePositionIterator, PlanIteratorState>*)this);
+}
 
 
-void InSameTreePositionIterator::accept(PlanIterVisitor& v) const {
+void InSameTreePositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -517,11 +649,17 @@ InSameTreePositionIterator::~InSameTreePositionIterator() {}
 
 
 // <InCollectionPositionIterator>
-InCollectionPositionIterator::class_factory<InCollectionPositionIterator>
-InCollectionPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InCollectionPositionIterator)
+
+void InCollectionPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InCollectionPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void InCollectionPositionIterator::accept(PlanIterVisitor& v) const {
+void InCollectionPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -539,11 +677,17 @@ InCollectionPositionIterator::~InCollectionPositionIterator() {}
 
 
 // <InSameCollectionPositionIterator>
-InSameCollectionPositionIterator::class_factory<InSameCollectionPositionIterator>
-InSameCollectionPositionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InSameCollectionPositionIterator)
+
+void InSameCollectionPositionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<InSameCollectionPositionIterator, PlanIteratorState>*)this);
+}
 
 
-void InSameCollectionPositionIterator::accept(PlanIterVisitor& v) const {
+void InSameCollectionPositionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

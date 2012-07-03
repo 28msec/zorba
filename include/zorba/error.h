@@ -42,6 +42,13 @@ typedef internal::SystemDiagnostic<internal::XQueryErrQName> XQueryErrorCode;
  */
 typedef internal::SystemDiagnostic<internal::ZorbaErrQName> ZorbaErrorCode;
 
+#ifdef ZORBA_WITH_JSON
+/**
+ * An %JSONiqErrorCode is a diagnostic for all JSONiq-specific errors.
+ */
+typedef internal::SystemDiagnostic<internal::JSONiqErrQName> JSONiqErrorCode;
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 
 /**

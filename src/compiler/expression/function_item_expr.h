@@ -40,14 +40,9 @@ class dynamic_function_invocation_expr : public expr
   friend class expr;
   friend class ExprManager;
 
-public:
-  SERIALIZABLE_CLASS(dynamic_function_invocation_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(dynamic_function_invocation_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 protected:
   expr_t                 theExpr;
-  checked_vector<expr_t> theArgs;
+  std::vector<expr_t>    theArgs;
 
 protected:
   dynamic_function_invocation_expr(
@@ -116,9 +111,6 @@ private:
   std::vector<expr_t>  theScopedVariables;
 
 public:
-  SERIALIZABLE_CLASS(function_item_expr)
-  function_item_expr(::zorba::serialization::Archiver& ar);
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   function_item_expr(

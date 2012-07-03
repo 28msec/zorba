@@ -124,7 +124,7 @@ class var_expr : public expr
 public:
   enum var_kind
   {
-    eval_var,
+    eval_var = 0,
 
     for_var,
     let_var,
@@ -153,9 +153,9 @@ public:
   };
 
 protected:
-  ulong                 theUniqueId;
+  unsigned long         theUniqueId;
 
-  var_kind              theKind;
+  var_kind              theVarKind;
 
   store::Item_t         theName;
 
@@ -181,7 +181,7 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(var_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM2(var_expr, expr,theFlworClause,theCopyClause)
+  var_expr(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -204,9 +204,9 @@ public:
 
   store::Item* get_name() const;
 
-  var_kind get_kind() const { return theKind; }
+  var_kind get_kind() const { return theVarKind; }
 
-  void set_kind(var_kind k) { theKind = k; }
+  void set_kind(var_kind k) { theVarKind = k; }
 
   bool is_private() const { return theIsPrivate; }
 
@@ -272,22 +272,19 @@ public:
 };
 
 
-struct GlobalBinding : public std::pair<var_expr_t, expr_t>,
-                       public ::zorba::serialization::SerializeBaseClass
+struct GlobalBinding 
 {
-  bool theIsExternal;
-
-public:
-  SERIALIZABLE_CLASS(GlobalBinding)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(GlobalBinding)
-  void serialize(::zorba::serialization::Archiver& ar);
+  var_expr_t  theVar;
+  expr_t      theExpr;
+  bool        theIsExternal;
 
 public:
   GlobalBinding() : theIsExternal(false) {}
 
   GlobalBinding(const var_expr_t& v, const expr_t& e, bool external)
     :
-    std::pair<var_expr_t, expr_t>(v, e),
+    theVar(v),
+    theExpr(e),
     theIsExternal(external)
   {
   }

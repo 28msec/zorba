@@ -97,7 +97,7 @@ SET(UNIT_TESTS_SRCS
   xquery_functions.cpp
   xmldatamanager.cpp
   staticcollectionmanager.cpp
-  static_context.cpp
+  test_static_context.cpp
 )
 
 # multithread_simple.cpp
