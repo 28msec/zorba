@@ -98,7 +98,9 @@ protected:
 
   void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory* g) const;
 
-  bool unregisterNode(XmlNode* node);
+  bool unregisterReferenceToUnusedNode(XmlNode* node);
+
+  bool unregisterReferenceToDeletedNode(XmlNode* node);
 
   //
   // Store api methods
