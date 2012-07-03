@@ -554,7 +554,7 @@ public:
 
   bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
-  void unregisterReferencesToDeletedSubtree();
+  virtual void unregisterReferencesToDeletedSubtree();
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
@@ -842,7 +842,7 @@ public:
 
   void finalizeNode();
 
-  void unregisterReferencesToDeletedSubtree();
+  virtual void unregisterReferencesToDeletedSubtree();
 
 protected:
   csize findChild(const XmlNode* child) const;
