@@ -254,8 +254,14 @@ class cast_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  cast_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const expr_t&, const xqtref_t&);
+  cast_expr(
+      ExprManager* expMan,
+      static_context* sctx,
+      const QueryLoc&,
+      const expr_t&,
+      const xqtref_t&);
 
+public:
   bool is_optional() const;
 
   expr_t clone(substitution_t& s) const;
@@ -420,8 +426,14 @@ class castable_expr : public castable_base_expr
   friend class expr;
 
 protected:
-  castable_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const expr_t&, const xqtref_t&);
+  castable_expr(
+      ExprManager* expMan,
+      static_context* sctx,
+      const QueryLoc&,
+      const expr_t&,
+      const xqtref_t&);
 
+public:
   bool is_optional() const;
 
   expr_t clone(substitution_t& s) const;
@@ -744,6 +756,7 @@ protected:
 protected:
   pi_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t, expr_t);
 
+public:
   expr* get_target_expr() const { return theTargetExpr.getp(); }
 
   expr* get_content_expr() const { return theContentExpr.getp(); }

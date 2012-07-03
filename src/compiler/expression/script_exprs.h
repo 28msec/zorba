@@ -433,6 +433,7 @@ protected:
 protected:
   while_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_t body);
 
+public:
   expr* get_body() const { return theBody.getp(); }
 
   void compute_scripting_kind();

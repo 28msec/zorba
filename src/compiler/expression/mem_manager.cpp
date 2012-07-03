@@ -21,10 +21,12 @@
 namespace zorba
 {
 
-MemPage::MemPage(size_t page_size,
-            void* (*allocate_func)(size_t), void (*deallocate_func)(void*)
-        )
-: thePageSize(page_size),
+MemPage::MemPage(
+    size_t page_size,
+    void* (*allocate_func)(size_t),
+    void (*deallocate_func)(void*))
+  :
+  thePageSize(page_size),
   theAllocator(allocate_func),
   theDeallocator(deallocate_func)
 {
@@ -36,21 +38,24 @@ MemPage::MemPage(size_t page_size,
   theFreeStart = thePageStart;
 }
 
+
 MemPage::~MemPage()
 {
   (*theDeallocator)(thePageStart);
 }
+
 
 size_t MemPage::space() const
 {
   return thePageSize + thePageStart - theFreeStart;
 }
 
+
 void* MemPage::allocate(size_t alloc_size)
 {
   if (alloc_size == 0 ||
       alloc_size + theFreeStart > thePageSize + thePageStart)
-      return NULL;
+    return NULL;
 
   void* allocation = (void*)theFreeStart;
 
@@ -59,31 +64,37 @@ void* MemPage::allocate(size_t alloc_size)
   return allocation;
 }
 
+
 MemoryManager::MemoryManager()
 {
   pages.push_front(new MemPage());
 }
 
+
 MemoryManager::~MemoryManager()
 {
-    for(std::list<MemPage*>::iterator iter = pages.begin();
-        iter != pages.end();
-        ++iter)
-     delete *iter;
+  for(std::list<MemPage*>::iterator iter = pages.begin();
+      iter != pages.end();
+      ++iter)
+  {
+    delete *iter;
+  }
 }
+
 
 void* MemoryManager::allocate(size_t size)
 {
-  if(size > MemPage::DEFAULT_PAGE_SIZE)
+  if (size > MemPage::DEFAULT_PAGE_SIZE)
   {
     pages.push_back(new MemPage(size));
     return pages.back()->allocate(size);
   }
 
-  if(pages.front()->space() < size)
+  if (pages.front()->space() < size)
     pages.push_front(new MemPage());
 
   return pages.front()->allocate(size);
 }
+
 
 } // namespace zorba

@@ -161,6 +161,8 @@ public:
   typedef std::map<csize, static_context_t> SctxMap;
 
 public:
+  ExprManager               theExprManager;
+
   XQueryDiagnostics       * theXQueryDiagnostics;
 
   SctxMap                   theSctxMap;
@@ -188,8 +190,6 @@ public:
   uint32_t                  theTempIndexCounter;
 
   config                    theConfig;
-
-  ExprManager               theExprManager;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
