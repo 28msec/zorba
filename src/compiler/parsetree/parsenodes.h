@@ -5571,20 +5571,20 @@ class TransformExpr : public exprnode
 {
 protected:
   rchandle<CopyVarList> var_list;
-  rchandle<exprnode> source_expr;
-  rchandle<exprnode> target_expr;
+  rchandle<exprnode>    theModifyExpr;
+  rchandle<exprnode>    theReturnExpr;
 
 public:
   TransformExpr(
     const QueryLoc& loc,
     rchandle<CopyVarList> var_list,
-    rchandle<exprnode> source_expr,
-    rchandle<exprnode> target_expr);
+    rchandle<exprnode> modifyExpr,
+    rchandle<exprnode> returnExpr);
 
 
   rchandle<CopyVarList> get_var_list() const { return var_list; }
-  rchandle<exprnode> get_source_expr() const { return source_expr; }
-  rchandle<exprnode> get_target_expr() const { return target_expr; }
+  rchandle<exprnode> get_modify_expr() const { return theModifyExpr; }
+  rchandle<exprnode> get_return_expr() const { return theReturnExpr; }
 
   void accept(parsenode_visitor&) const;
 };

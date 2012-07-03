@@ -187,11 +187,17 @@ void XmlTree::free()
 ********************************************************************************/
 store::Item* XmlTree::getType(const XmlNode* n) const
 {
-  assert(theTypesMap != NULL);
+  if(theTypesMap == NULL)
+  {
+    return NULL;
+  }
 
   NodeTypeMap::iterator ite = theTypesMap->find(n);
 
-  assert(ite != theTypesMap->end());
+  if (ite == theTypesMap->end())
+  {
+    return NULL;
+  }
 
   return ite.getValue().getp();
 }
@@ -450,12 +456,12 @@ XmlNode::XmlNode(
 
   if (parent == NULL)
   {
-    setTree(tree);
+    setTreeInternal(tree);
     tree->setRoot(this);
   }
   else
   {
-    setTree(parent->getTree());
+    setTreeInternal(parent->getTree());
   }
 }
 
@@ -472,11 +478,85 @@ XmlNode::~XmlNode()
 
 
 /*******************************************************************************
-  Private method
+
 ********************************************************************************/
-void XmlNode::setTree(const XmlTree* t)
+bool XmlNode::equals(const store::Item* other, long, const XQPCollator*) const
 {
-  theUnion.treeRCPtr = (long*)t;
+  assert(!isConnectorNode());
+  return this == other;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t XmlNode::hash(long, const XQPCollator*) const
+{
+  assert(!isConnectorNode());
+  return reinterpret_cast<uintptr_t>(this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setTreeInternal(const XmlTree* newTree)
+{
+  theUnion.treeRCPtr = (long*)newTree;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setTree(const XmlTree* aNewTree)
+{
+#ifndef NDEBUG
+  if (getNodeKind() == store::StoreConsts::elementNode)
+  {
+    static_cast<ElementNode*>(this)->assertInvariants();
+  } else if (getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    static_cast<AttributeNode*>(this)->assertInvariants();
+  }
+#endif
+
+  bool lAdjustTypes = false;
+  if (getNodeKind() == store::StoreConsts::elementNode)
+  {
+    assert(dynamic_cast<ElementNode*>(this));
+    ElementNode* lElementNode = static_cast<ElementNode*>(this);
+    lAdjustTypes = lElementNode->haveType();
+  } else if (getNodeKind() == store::StoreConsts::attributeNode) {
+    assert(dynamic_cast<AttributeNode*>(this));
+    AttributeNode* lAttributeNode = static_cast<AttributeNode*>(this);
+    lAdjustTypes = lAttributeNode->haveType();
+  }
+
+  store::Item_t type;
+  if (lAdjustTypes)
+  {
+    type = getType();
+    getTree()->removeType(this);
+  }
+
+  setTreeInternal(aNewTree);
+
+  if (lAdjustTypes)
+  {
+    getTree()->addType(this, type);
+  }
+  
+#ifndef NDEBUG
+  if (getNodeKind() == store::StoreConsts::elementNode)
+  {
+    static_cast<ElementNode*>(this)->assertInvariants();
+  } else if (getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    static_cast<AttributeNode*>(this)->assertInvariants();
+  }
+#endif
+
 }
 
 
@@ -2429,8 +2509,31 @@ void ElementNode::setType(store::Item_t& type)
 
 #else
 
+void ElementNode::assertInvariants() const
+{
+  // these assertions must hold at any time when entering or leaving an attribute
+  // or element function that tampers with types:
+  
+  // 1. If haveType() is true, then the tree must contain a non-null type for this
+  // node.
+  assert(!haveType() || getTree()->getType(this) != NULL);
+  
+  // 2. If haveType() is true, then the tree must contain a type for this node
+  // that is not xs:untyped.
+  assert(!haveType() || !getTree()->getType(this)->equals(
+      GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]));
+
+  // 3. If haveType() is false, then the tree may not contain type information for
+  // this node.
+  assert(haveType() || getTree() == NULL || getTree()->getType(this) == NULL);
+}
+
 store::Item* ElementNode::getType() const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   return (haveType() ?
           getTree()->getType(this) :
           GET_STORE().XS_UNTYPED_QNAME.getp());
@@ -2439,10 +2542,14 @@ store::Item* ElementNode::getType() const
 
 void ElementNode::setType(store::Item_t& type)
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().XS_UNTYPED_QNAME)
+        type->equals(GET_STORE().XS_UNTYPED_QNAME))
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -2453,11 +2560,15 @@ void ElementNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().XS_UNTYPED_QNAME)
+           !type->equals(GET_STORE().XS_UNTYPED_QNAME))
   {
     getTree()->addType(this, type);
     setHaveType();
   }
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 #endif
@@ -2468,6 +2579,10 @@ void ElementNode::setType(store::Item_t& type)
 ********************************************************************************/
 bool ElementNode::haveTypedTypedValue(TextNode*& textChild) const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   textChild = NULL;
 
   if (numChildren() == 1 &&
@@ -2574,6 +2689,10 @@ bool ElementNode::isIdRefs() const
 ********************************************************************************/
 void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveTypedValue())
   {
     TextNode* textChild;
@@ -3354,7 +3473,6 @@ zstring ElementNode::show() const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
 /*******************************************************************************
   Node constructor used by FastXmlLoader only.
 ********************************************************************************/
@@ -3603,20 +3721,45 @@ void AttributeNode::setType(store::Item_t& type)
 
 #else
 
+void AttributeNode::assertInvariants() const
+{
+  // these assertions must hold at any time when entering or leaving an attribute
+  // or element function that tampers with types:
+  
+  // 1. If haveType() is true, then the tree must contain a non-null type for this
+  // node.
+  assert(!haveType() || getTree()->getType(this) != NULL);
+  
+  // 2. If haveType() is true, then the tree must contain a type for this node
+  // that is not xs:untyped.
+  assert(!haveType() || !getTree()->getType(this)->equals(
+      GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]));
+
+  // 3. If haveType() is false, then the tree may not contain type information for
+  // this node.
+  assert(haveType() || getTree() == NULL || getTree()->getType(this) == NULL);
+}
+
 store::Item* AttributeNode::getType() const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
   return (haveType() ?
           getTree()->getType(this) :
           GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC].getp());
 }
 
-
 void AttributeNode::setType(store::Item_t& type)
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
+        type->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -3627,11 +3770,15 @@ void AttributeNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
+           !type->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
   {
     getTree()->addType(this, type);
     setHaveType();
   }
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 #endif
@@ -3641,8 +3788,16 @@ void AttributeNode::setType(store::Item_t& type)
 ********************************************************************************/
 void AttributeNode::setTypedValue(store::Item_t& value)
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   resetHaveListValue();
   theTypedValue.transfer(value);
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 
@@ -3651,6 +3806,10 @@ void AttributeNode::setTypedValue(store::Item_t& value)
 ********************************************************************************/
 void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveListValue())
   {
     iter = new ItemIterator(getValueVector().getItems(), true);
@@ -3661,6 +3820,10 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
     val = theTypedValue;
     iter = NULL;
   }
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 

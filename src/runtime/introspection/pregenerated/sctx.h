@@ -61,11 +61,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticNamespacesIterator,
     NaryBaseIterator<StaticNamespacesIterator, StaticNamespacesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<StaticNamespacesIterator, StaticNamespacesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   StaticNamespacesIterator(
     static_context* sctx,
@@ -97,11 +93,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultFunctionNamespaceIterator,
     NaryBaseIterator<DefaultFunctionNamespaceIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DefaultFunctionNamespaceIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DefaultFunctionNamespaceIterator(
     static_context* sctx,
@@ -133,11 +125,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxBaseUriIterator,
     NaryBaseIterator<SctxBaseUriIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SctxBaseUriIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SctxBaseUriIterator(
     static_context* sctx,
@@ -169,11 +157,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxDefaultCollationIterator,
     NaryBaseIterator<SctxDefaultCollationIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SctxDefaultCollationIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SctxDefaultCollationIterator(
     static_context* sctx,
@@ -205,11 +189,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticNamespaceBindingIterator,
     NaryBaseIterator<StaticNamespaceBindingIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<StaticNamespaceBindingIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   StaticNamespaceBindingIterator(
     static_context* sctx,
@@ -255,11 +235,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InscopeVariablesIterator,
     NaryBaseIterator<InscopeVariablesIterator, InscopeVariablesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InscopeVariablesIterator, InscopeVariablesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InscopeVariablesIterator(
     static_context* sctx,
@@ -291,11 +267,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultCollectionTypeIterator,
     NaryBaseIterator<DefaultCollectionTypeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DefaultCollectionTypeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DefaultCollectionTypeIterator(
     static_context* sctx,
@@ -327,11 +299,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(XPath10CompatModeIterator,
     NaryBaseIterator<XPath10CompatModeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<XPath10CompatModeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   XPath10CompatModeIterator(
     static_context* sctx,
@@ -377,11 +345,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticallyKnownDocumentsIterator,
     NaryBaseIterator<StaticallyKnownDocumentsIterator, StaticallyKnownDocumentsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<StaticallyKnownDocumentsIterator, StaticallyKnownDocumentsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   StaticallyKnownDocumentsIterator(
     static_context* sctx,
@@ -413,11 +377,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticallyKnownDocumentTypeIterator,
     NaryBaseIterator<StaticallyKnownDocumentTypeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<StaticallyKnownDocumentTypeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   StaticallyKnownDocumentTypeIterator(
     static_context* sctx,
@@ -463,11 +423,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticallyKnownCollationsIterator,
     NaryBaseIterator<StaticallyKnownCollationsIterator, StaticallyKnownCollationsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<StaticallyKnownCollationsIterator, StaticallyKnownCollationsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   StaticallyKnownCollationsIterator(
     static_context* sctx,
@@ -499,11 +455,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ConstructionModeIterator,
     NaryBaseIterator<ConstructionModeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ConstructionModeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ConstructionModeIterator(
     static_context* sctx,
@@ -535,11 +487,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(OrderingModeIterator,
     NaryBaseIterator<OrderingModeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<OrderingModeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   OrderingModeIterator(
     static_context* sctx,
@@ -571,11 +519,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultOrderIterator,
     NaryBaseIterator<DefaultOrderIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DefaultOrderIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DefaultOrderIterator(
     static_context* sctx,
@@ -607,11 +551,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(BoundarySpacePolicyIterator,
     NaryBaseIterator<BoundarySpacePolicyIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<BoundarySpacePolicyIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   BoundarySpacePolicyIterator(
     static_context* sctx,
@@ -643,11 +583,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CopyNamespacesModeIterator,
     NaryBaseIterator<CopyNamespacesModeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<CopyNamespacesModeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   CopyNamespacesModeIterator(
     static_context* sctx,
@@ -693,11 +629,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionNamesIterator,
     NaryBaseIterator<FunctionNamesIterator, FunctionNamesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionNamesIterator, FunctionNamesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionNamesIterator(
     static_context* sctx,
@@ -743,11 +675,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionArgumentsCountIterator,
     NaryBaseIterator<FunctionArgumentsCountIterator, FunctionArgumentsCountIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionArgumentsCountIterator, FunctionArgumentsCountIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionArgumentsCountIterator(
     static_context* sctx,
@@ -793,11 +721,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeSchemaTypesIterator,
     NaryBaseIterator<InScopeSchemaTypesIterator, InScopeSchemaTypesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InScopeSchemaTypesIterator, InScopeSchemaTypesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InScopeSchemaTypesIterator(
     static_context* sctx,
@@ -843,11 +767,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeElementDeclarationsIterator,
     NaryBaseIterator<InScopeElementDeclarationsIterator, InScopeElementDeclarationsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InScopeElementDeclarationsIterator, InScopeElementDeclarationsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InScopeElementDeclarationsIterator(
     static_context* sctx,
@@ -893,11 +813,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeAttributeDeclarationsIterator,
     NaryBaseIterator<InScopeAttributeDeclarationsIterator, InScopeAttributeDeclarationsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InScopeAttributeDeclarationsIterator, InScopeAttributeDeclarationsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InScopeAttributeDeclarationsIterator(
     static_context* sctx,
@@ -943,11 +859,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeElementGroupsIterator,
     NaryBaseIterator<InScopeElementGroupsIterator, InScopeElementGroupsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InScopeElementGroupsIterator, InScopeElementGroupsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InScopeElementGroupsIterator(
     static_context* sctx,
@@ -993,11 +905,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeAttributeGroupsIterator,
     NaryBaseIterator<InScopeAttributeGroupsIterator, InScopeAttributeGroupsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<InScopeAttributeGroupsIterator, InScopeAttributeGroupsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   InScopeAttributeGroupsIterator(
     static_context* sctx,
@@ -1029,11 +937,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(OptionIterator,
     NaryBaseIterator<OptionIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<OptionIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   OptionIterator(
     static_context* sctx,
@@ -1079,11 +983,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionAnnotationsIterator,
     NaryBaseIterator<FunctionAnnotationsIterator, FunctionAnnotationsIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionAnnotationsIterator, FunctionAnnotationsIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionAnnotationsIterator(
     static_context* sctx,

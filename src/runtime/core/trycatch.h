@@ -63,21 +63,22 @@ public:
     };
 
   public:
+    typedef std::map<ulong, std::vector<LetVarIter_t> > VarMap_t;
+
+  public:
     std::vector<NodeNameTest_t> node_names;
-    PlanIter_t     catch_expr;
-    typedef std::map<int, std::vector<LetVarIter_t> > VarMap_t;
-    VarMap_t vars;
+    PlanIter_t                  catch_expr;
+    VarMap_t                    theVars;
 
   public:
     SERIALIZABLE_CLASS(CatchClause);
-
     SERIALIZABLE_CLASS_CONSTRUCTOR(CatchClause);
 
-    void serialize(::zorba::serialization::Archiver &ar)
+    void serialize(::zorba::serialization::Archiver& ar)
     {
       ar & node_names;
       ar & catch_expr;
-      ar & vars;
+      ar & theVars;
     }
 
     CatchClause() {}
@@ -95,7 +96,7 @@ public:
   TryCatchIterator,
   UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, 
     (UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState>*)this);
@@ -122,9 +123,15 @@ public:
   virtual uint32_t getStateSizeOfSubtree() const;
 
 protected:
-  bool matchedCatch(ZorbaException const& e, TryCatchIteratorState* state, PlanState&) const;
+  bool matchedCatch(
+      ZorbaException const& e,
+      TryCatchIteratorState* state,
+      PlanState&) const;
 
-  void bindErrorVars(ZorbaException const& e, const CatchClause* state, PlanState&) const;
+  void bindErrorVars(
+      ZorbaException const& e,
+      const CatchClause* state,
+      PlanState&) const;
 
   store::Item_t getStackTrace(const XQueryStackTrace&) const;
 };

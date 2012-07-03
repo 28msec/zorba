@@ -1737,7 +1737,7 @@ void UpdCreateHashMap::apply()
   lSpec.theTimezone = theTimezone;
 
 
-  GET_STORE().createHashMap(theQName, lSpec);
+  GET_STORE().createMap(theQName, lSpec);
   theIsApplied = true;
 }
 
@@ -1746,7 +1746,7 @@ void UpdCreateHashMap::undo()
 {
   if (theIsApplied)
   {
-    GET_STORE().destroyHashMap(theQName);
+    GET_STORE().destroyMap(theQName);
   }
 }
 
@@ -1766,7 +1766,7 @@ UpdDestroyHashMap::UpdDestroyHashMap(
 
 void UpdDestroyHashMap::apply()
 {
-  theMap = GET_STORE().destroyHashMap(theQName);
+  theMap = GET_STORE().destroyMap(theQName);
   theIsApplied = true;
 }
 
@@ -1775,7 +1775,7 @@ void UpdDestroyHashMap::undo()
 {
   if (theIsApplied)
   {
-    GET_STORE().addHashMap(theMap);
+    GET_STORE().addMap(theMap);
   }
 }
 
@@ -1799,7 +1799,7 @@ UpdInsertIntoHashMap::UpdInsertIntoHashMap(
 
 void UpdInsertIntoHashMap::apply()
 {
-  store::Index_t lMap = GET_STORE().getHashMap(theQName);
+  store::Index_t lMap = GET_STORE().getMap(theQName);
 
   if (!lMap)
   {
@@ -1812,7 +1812,6 @@ void UpdInsertIntoHashMap::apply()
   theValue->open();
   store::Item_t lValue;
 
-  store::IndexKey lKeyPtr;
   while (theValue->next(lValue))
   {
     std::auto_ptr<store::IndexKey> lKey(new store::IndexKey());
@@ -1856,7 +1855,7 @@ UpdRemoveFromHashMap::UpdRemoveFromHashMap(
 
 void UpdRemoveFromHashMap::apply()
 {
-  store::Index_t lMap = GET_STORE().getHashMap(theQName);
+  store::Index_t lMap = GET_STORE().getMap(theQName);
 
   if (!lMap)
   {

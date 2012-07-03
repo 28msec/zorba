@@ -1884,7 +1884,7 @@ public:
   }
 
   /**
-   * Attemts to pre-allocated enough memory to contain the given number of
+   * Attemts to pre-allocate enough memory to contain the given number of
    * bytes.
    *
    * @param n The number of bytes.

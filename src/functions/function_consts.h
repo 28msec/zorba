@@ -238,7 +238,9 @@ typedef enum
   FULL_TEXT_TOKENIZER_PROPERTIES_0,
   FULL_TEXT_TOKENIZE_NODE_2,
   FULL_TEXT_TOKENIZE_NODE_1,
-#endif
+  FULL_TEXT_TOKENIZE_NODES_3,
+  FULL_TEXT_TOKENIZE_NODES_2,
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "functions/function_enum.h"
 
@@ -264,7 +266,8 @@ typedef enum
   isBuiltin = 16,
   isUDF = 32,
   propagatesInputNodes = 64,
-  mustCopyInputNodes = 128
+  mustCopyInputNodes = 128,
+  AccessesDynCtx = 256
 } AnnotationFlags;
 
 };

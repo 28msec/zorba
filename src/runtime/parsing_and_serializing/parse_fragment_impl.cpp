@@ -208,6 +208,7 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
     state->theProperties.setBaseUri(theSctx->get_base_uri());
     state->theProperties.setStoreDocument(false);
     processOptions(tempItem, state->theProperties, theSctx, loc);
+    state->theProperties.setCreateDocParentLink(false);
 
     // baseURI serves both as the base URI used by the XML parser
     // to resolve relative entity references within the document,
@@ -305,7 +306,6 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
 /*******************************************************************************
   14.9.2 fn:parse-xml-fragment
 ********************************************************************************/
-/*
 bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   zstring docString;
@@ -327,30 +327,25 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     }
 
     state->theProperties.setBaseUri(theSctx->get_base_uri());
-    state->baseUri = state->theProperties.getBaseUri();
-    
+    state->baseUri = state->theProperties.getBaseUri();    
     state->theProperties.setParseExternalParsedEntity(true);
-  
-    while ( ! state->theFragmentStream.stream_is_consumed() )
-    {
-      try {
-        state->theProperties.setStoreDocument(false);
-        result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
-      } catch (ZorbaException const& e) {
-        if( ! state->theProperties.getNoError())
-          throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("fn:parse-xml-fragment()", e.what() ), ERROR_LOC(loc));
-        else
-          result = NULL;
-      }
+    state->theFragmentStream.only_one_doc_node = 1; // create only one document node holding all fragment nodes
+       
+    try {
+      state->theProperties.setStoreDocument(false);
+      result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
+    } catch (ZorbaException const& e) {
+      if( ! state->theProperties.getNoError())
+        throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("fn:parse-xml-fragment()", e.what() ), ERROR_LOC(loc));
+      else
+        result = NULL;
+    }
 
-      if (result == NULL)
-        continue;
-        
+    if (result != NULL)
       STACK_PUSH(true, state);
-    } // while
   } // if 
 
-  STACK_END(state)
+  STACK_END(state);
 }
 
 void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
@@ -362,6 +357,5 @@ void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
   baseUri = "";
   docUri = "";
 }
-*/
 
 } /* namespace zorba */
