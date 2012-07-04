@@ -35,7 +35,6 @@ namespace UnitTests {
   int test_json_parser( int, char*[] );
   int test_string( int, char*[] );
   int test_mem_manager( int, char*[] );
->>>>>>> MERGE-SOURCE
 #ifndef ZORBA_NO_FULL_TEXT
   int test_stemmer( int, char*[] );
   int test_thesaurus( int, char*[] );
