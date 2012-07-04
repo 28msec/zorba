@@ -820,8 +820,8 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     lNumURLResolvers = theURLResolvers.size();
 
     ar.set_is_temp_field(true);
-    serialize_csize(ar, lNumURIMappers);
-    serialize_csize(ar, lNumURLResolvers);
+    ar & lNumURIMappers;
+    ar & lNumURLResolvers;
     ar.set_is_temp_field(false);
   }
   else
@@ -833,9 +833,9 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
 
     ar.set_is_temp_field(true);
     // number of URIMappers passed by the user
-    serialize_csize(ar, lNumURIMappers);
+    ar & lNumURIMappers;
     // number of URLResolvers passed by the user
-    serialize_csize(ar, lNumURLResolvers);
+    ar & lNumURLResolvers;
     ar.set_is_temp_field(false);
 
     // callback required but not available

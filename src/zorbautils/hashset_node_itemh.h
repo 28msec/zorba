@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_ZORBAUTILS_ITEM_HANDLE_HASHSET
-#define ZORBA_ZORBAUTILS_ITEM_HANDLE_HASHSET
+#ifndef ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
+#define ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset.h"
@@ -31,13 +31,15 @@ namespace zorba
   A hash-based set container of item handles, where equality is based on
   object identity (i.e. pointer equality) rather than object value.
 
-  It is used by the NodeDistinctIterator and for the population of a general
-  index. 
+  It is used 
+  1. by the NodeDistinctIterator
+  2. for the population of a general index. 
+  3. by the HashSemiJoinIterator, which implements op:intersect and op:except.
 
   NOTE: Although the set uses raw item pointers instead of rchandles, reference
         counting is still done, but done manually (see insert and clear methods)
 ********************************************************************************/
-class ItemHandleHashSet
+class NodeHandleHashSet
 {
 public:
 
@@ -51,7 +53,7 @@ public:
 
     static uint32_t hash(const store::Item* t)
     {
-      return hashfun::h32((void*)(&t), sizeof(void*), FNV_32_INIT);
+      return reinterpret_cast<uint64_t>(t);
     }
   };
 
@@ -59,26 +61,42 @@ private:
   HashSet<store::Item*, CompareFunction>  theSet;
 
 public:
-  ItemHandleHashSet(ulong size, bool sync) : theSet(size, sync) { }
+  NodeHandleHashSet(csize size, bool sync) : theSet(size, sync) { }
 
-  ~ItemHandleHashSet() { clear(); }
+  ~NodeHandleHashSet() { clear(); }
 
   void clear();
 
-  bool exists(store::Item* const key) 
+  bool empty() const { return theSet.empty(); }
+
+  bool exists(const store::Item_t& key) const 
   {
-    return theSet.exists(key); 
+    return theSet.exists(key.getp());
   }
 
-  bool insert(store::Item* key) 
+  bool insert(const store::Item_t& key)
   {
-    bool inserted = theSet.insert(key);
+    assert(key->isNode());
+
+    store::Item* key2 = key.getp();
+
+    bool inserted = theSet.insert(key2);
 
     if (inserted) 
     {
       key->addReference();
     }
     return inserted;
+  }
+
+  bool erase(const store::Item_t& key)
+  {
+    bool found = theSet.erase(key.getp());
+
+    if (found)
+      key->removeReference();
+
+    return found;
   }
 };
 

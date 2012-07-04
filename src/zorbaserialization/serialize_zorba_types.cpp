@@ -92,12 +92,12 @@ void operator&(serialization::Archiver& ar, IntegerImpl& obj)
 
 void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj)
 {
-  serialize_long_long(ar, obj.get_value());
+  ar & obj.get_value();
 }
 
 void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj)
 {
-  serialize_ulong_long(ar, obj.get_value());
+  ar & obj.get_value();
 }
 
 #endif
@@ -119,13 +119,13 @@ void operator&(Archiver& ar, DateTime& obj)
 {
   SERIALIZE_ENUM(DateTime::FACET_TYPE, obj.facet);
 
-  serialize_long(ar, obj.data[0]);
-  serialize_long(ar, obj.data[1]);
-  serialize_long(ar, obj.data[2]);
-  serialize_long(ar, obj.data[3]);
-  serialize_long(ar, obj.data[4]);
-  serialize_long(ar, obj.data[5]);
-  serialize_long(ar, obj.data[6]);
+  ar & obj.data[0];
+  ar & obj.data[1];
+  ar & obj.data[2];
+  ar & obj.data[3];
+  ar & obj.data[4];
+  ar & obj.data[5];
+  ar & obj.data[6];
 
   ar & obj.the_time_zone;
 }
@@ -139,13 +139,13 @@ void operator&(Archiver& ar, Duration& obj)
   SERIALIZE_ENUM(Duration::FACET_TYPE, obj.facet);
   ar & obj.is_negative;
 
-  serialize_long(ar, obj.data[0]);
-  serialize_long(ar, obj.data[1]);
-  serialize_long(ar, obj.data[2]);
-  serialize_long(ar, obj.data[3]);
-  serialize_long(ar, obj.data[4]);
-  serialize_long(ar, obj.data[5]);
-  serialize_long(ar, obj.data[6]);
+  ar & obj.data[0];
+  ar & obj.data[1];
+  ar & obj.data[2];
+  ar & obj.data[3];
+  ar & obj.data[4];
+  ar & obj.data[5];
+  ar & obj.data[6];
 }
 
 
@@ -190,18 +190,7 @@ void operator&(Archiver& ar, HashMapZStringCmp& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, HashMapItemPointerCmp& obj)
 {
-  if (ar.is_serializing_out())
-  {
-    int32_t tz = obj.theTimeZone;
-    ar & tz;
-  }
-  else
-  {
-    int32_t tz = 0;
-    ar & tz;
-    obj.theTimeZone = tz;
-  }
-
+  ar & obj.theTimeZone;
   ar & obj.theCollator;
 }
 
@@ -1355,7 +1344,7 @@ void serialize_my_children(Archiver& ar, store::Iterator_t iter)
     iterator_to_vector(iter, childs);
     std::vector<store::Item_t>::iterator  child_it;
     csize child_count = childs.size();
-    serialize_csize(ar, child_count);
+    ar & child_count;
 
     for(child_it = childs.begin(); child_it != childs.end(); ++child_it)
     {
@@ -1369,7 +1358,7 @@ void serialize_my_children(Archiver& ar, store::Iterator_t iter)
   else
   {
     csize child_count;
-    serialize_csize(ar, child_count);
+    ar & child_count;
 
     for (csize i = 0; i < child_count; ++i)
     {

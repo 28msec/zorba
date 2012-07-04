@@ -362,6 +362,19 @@ void populate_context_collections(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, static_collections_dml_collection,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","collection"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+        FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, static_collections_dml_collection,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         
@@ -372,6 +385,19 @@ void populate_context_collections(static_context* sctx)
 #endif
         ),
         FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, static_collections_dml_collection,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","collection"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+        FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2);
 
   }
 

@@ -40,7 +40,6 @@
 #include <runtime/sequences/sequences.h>
 #include <runtime/core/arithmetic_impl.h>
 #include <runtime/util/iterator_impl.h>
-#include <runtime/util/handle_hashset_item_value.h>
 #include <runtime/visitors/planiter_visitor.h>
 
 #include <system/globalenv.h>
@@ -54,9 +53,11 @@
 #include <store/api/item_factory.h>
 #include "store/api/temp_seq.h"
 #include <store/api/pul.h>
-#include <store/util/hashset_node_handle.h>
 
 #include <context/static_context.h>
+
+#include "zorbautils/hashset_node_itemh.h"
+#include "zorbautils/hashset_atomic_itemh.h"
 
 namespace zorbatm = zorba::time;
 
@@ -286,7 +287,7 @@ bool FnDistinctValuesIterator::nextImpl(
   }
 
   // theValueCompare managed by state->theAlreadySeenMap
-  state->theAlreadySeenMap.reset(new ItemValueCollHandleHashSet(valueCompare));
+  state->theAlreadySeenMap.reset(new AtomicItemHandleHashSet(valueCompare));
 
   while (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -1105,7 +1106,7 @@ bool FnDeepEqualIterator::nextImpl(
 ********************************************************************************/
 HashSemiJoinIteratorState::HashSemiJoinIteratorState()
 {
-  theRightInput = new store::NodeHashSet();
+  theRightInput = new NodeHandleHashSet(1024, false);
 }
 
 

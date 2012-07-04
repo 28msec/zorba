@@ -1266,7 +1266,7 @@ Item::isSibling(const store::Item_t&) const
 }
 
 bool
-Item::isAttribute() const
+Item::isAttributeRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1275,7 +1275,7 @@ Item::isAttribute() const
 }
 
 bool
-Item::isComment() const
+Item::isCommentRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1284,7 +1284,7 @@ Item::isComment() const
 }
 
 bool
-Item::isDocument() const
+Item::isDocumentRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1294,7 +1294,7 @@ Item::isDocument() const
 
 
 bool
-Item::isElement() const
+Item::isElementRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1303,7 +1303,7 @@ Item::isElement() const
 }
 
 bool
-Item::isProcessingInstruction() const
+Item::isProcessingInstructionRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1312,7 +1312,7 @@ Item::isProcessingInstruction() const
 }
 
 bool
-Item::isText() const
+Item::isTextRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

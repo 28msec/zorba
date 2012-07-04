@@ -24,9 +24,9 @@
 #include <zorba/diagnostic_list.h>
 #include "diagnostics/assert.h"
 
-#include "util/tracer.h"
-#include "util/stl_util.h"
 #include "util/hashmap32.h"
+#include "util/stl_util.h"
+#include "util/tracer.h"
 
 #include "system/globalenv.h"
 #include "system/properties.h"

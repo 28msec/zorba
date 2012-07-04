@@ -37,7 +37,9 @@ declare function guestbook:list()
       return  1
 };
 
-declare function guestbook:window() {
+
+declare function guestbook:window() 
+{
   let $x := 1 to 1000
   for tumbling window $w in $x
   start at $s when fn:true()
@@ -46,6 +48,7 @@ declare function guestbook:window() {
 };
 
 
-declare %ann:sequential function guestbook:init() {
+declare %ann:sequential function guestbook:init() 
+{
   ddl:create($guestbook:entries);
 };

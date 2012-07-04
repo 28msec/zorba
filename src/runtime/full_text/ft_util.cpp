@@ -19,13 +19,37 @@
 #include <stdexcept>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbamisc/ns_consts.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbautils/locale.h"
 
 #include "ft_util.h"
+
+using namespace zorba::locale;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+bool find_lang_attribute( store::Item const &item, iso639_1::type *lang ) {
+  bool found_lang = false;
+  if ( item.getNodeKind() == store::StoreConsts::elementNode ) {
+    store::Iterator_t i( item.getAttributes() );
+    i->open();
+    for ( store::Item_t attr; i->next( attr ); ) {
+      store::Item const *const qname = attr->getNodeName();
+      if ( qname &&
+           qname->getLocalName() == "lang" &&
+           qname->getNamespace() == XML_NS ) {
+        *lang = locale::find_lang( attr->getStringValue().c_str() );
+        found_lang = true;
+        break;
+      }
+    }
+    i->close();
+  }
+  return found_lang;
+}
 
 ft_int to_ft_int( xs_integer const &i ) {
   try {

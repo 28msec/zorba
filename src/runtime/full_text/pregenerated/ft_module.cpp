@@ -364,6 +364,12 @@ void ThesaurusLookupIteratorState::reset(PlanState& planState) {
 // <TokenizeNodeIterator>
 SERIALIZABLE_CLASS_VERSIONS(TokenizeNodeIterator)
 
+void TokenizeNodeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>*)this);
+}
+
 
 void TokenizeNodeIterator::accept(PlanIterVisitor& v) const
 {
@@ -389,6 +395,43 @@ void TokenizeNodeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
 // </TokenizeNodeIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+// <TokenizeNodesIterator>
+SERIALIZABLE_CLASS_VERSIONS(TokenizeNodesIterator)
+
+void TokenizeNodesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>*)this);
+}
+
+
+void TokenizeNodesIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+TokenizeNodesIterator::~TokenizeNodesIterator() {}
+
+TokenizeNodesIteratorState::TokenizeNodesIteratorState() {}
+
+TokenizeNodesIteratorState::~TokenizeNodesIteratorState() {}
+
+
+void TokenizeNodesIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </TokenizeNodesIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT

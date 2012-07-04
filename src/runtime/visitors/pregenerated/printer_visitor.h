@@ -356,6 +356,11 @@ namespace zorba {
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
+    void beginVisit( const TokenizeNodesIterator& );
+    void endVisit  ( const TokenizeNodesIterator& );
+#endif
+
+#ifndef ZORBA_NO_FULL_TEXT
     void beginVisit( const TokenizerPropertiesIterator& );
     void endVisit  ( const TokenizerPropertiesIterator& );
 #endif
@@ -691,6 +696,12 @@ namespace zorba {
 
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );
+
+    void beginVisit( const HasNodeReferenceIterator& );
+    void endVisit  ( const HasNodeReferenceIterator& );
+
+    void beginVisit( const AssignNodeReferenceIterator& );
+    void endVisit  ( const AssignNodeReferenceIterator& );
 
     void beginVisit( const NodeByReferenceIterator& );
     void endVisit  ( const NodeByReferenceIterator& );
