@@ -44,8 +44,6 @@ public:
 };
 
 ExprManager::ExprManager()
-  :
-  memory()
 {
 }
 
@@ -53,13 +51,10 @@ ExprManager::ExprManager()
 //calls on the destructors and also keeps tracks of certain numbers
 ExprManager::~ExprManager()
 {
-  unsigned long total_expr = theExprs.size();
   unsigned long zero_ref_expr = 0;
 
   unsigned long total_bytes = 0;
   unsigned long zero_ref_bytes = 0;
-
-  bool first_loop = true;
 
   while(theExprs.size() > 0)
   {
@@ -86,12 +81,11 @@ ExprManager::~ExprManager()
 
     if(!deleted_expr)
       break;
-
   }
 
   for(std::list<expr*>::iterator iter = theExprs.begin();
       iter != theExprs.end();
-      iter++)
+      ++iter)
   {
     //Here we delete all remaining exprs, we assume that they may be "held"
     //by a reference somewhere.
@@ -121,12 +115,12 @@ expr* ExprManager::reg(expr* exp)
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CREATE_AND_RETURN_EXPR(EXPRTYPE, ...) \
-  EXPRTYPE* EXPPTR = new (memory) EXPRTYPE(this, __VA_ARGS__); \
+  EXPRTYPE* EXPPTR = new (theMemoryMgr) EXPRTYPE(this, __VA_ARGS__); \
   reg(EXPPTR); \
   return EXPPTR
 
 #define CREATE_AND_RETURN(TYPE, ...) \
-  TYPE *EXPPTR = new (memory) TYPE(__VA_ARGS__); \
+  TYPE *EXPPTR = new (theMemoryMgr) TYPE(__VA_ARGS__); \
   return EXPPTR
 
 
@@ -439,7 +433,7 @@ function_trace_expr* ExprManager::create_function_trace_expr(expr_t aExpr)
 {
   //this function gets the ExprManager from the expression it recieves.
   return static_cast<function_trace_expr*>
-      (reg(new (memory) function_trace_expr(aExpr)));
+      (reg(new (theMemoryMgr) function_trace_expr(aExpr)));
 }
 
 
@@ -484,7 +478,7 @@ var_expr* ExprManager::create_var_expr(
 var_expr* ExprManager::create_var_expr(const var_expr& source)
 {
   return static_cast<var_expr*>
-      (reg(new (memory) var_expr(source)));
+      (reg(new (theMemoryMgr) var_expr(source)));
 }
 
 

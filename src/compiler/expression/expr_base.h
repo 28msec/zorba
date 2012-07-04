@@ -202,7 +202,7 @@ public:
 protected:
   expr(ExprManager*, static_context*, const QueryLoc&, expr_kind_t);
 
-  expr() : theExprManager(NULL),  theSctx(NULL), theFlags1(0) {}
+  expr() : theSctx(NULL), theFlags1(0), theExprManager(NULL) {}
 
 public:
   virtual ~expr();

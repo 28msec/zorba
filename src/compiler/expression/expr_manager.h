@@ -33,13 +33,14 @@ class ExprManager
 {
 public:
   ExprManager();
+
   ~ExprManager();
 
   expr* reg(expr*);
 
 private:
   std::list<expr*> theExprs;
-  MemoryManager memory;
+  MemoryManager    theMemoryMgr;
 
 private:
   //An ExprManager is the only objecto to handle a collection of Exprs and
@@ -48,7 +49,7 @@ private:
   ExprManager& operator= (const ExprManager&);
 
 public:
-  MemoryManager& getMemory() {return memory;}
+  MemoryManager& getMemory() { return theMemoryMgr; }
 
 public:
   if_expr* create_if_expr(

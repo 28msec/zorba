@@ -34,13 +34,16 @@ namespace zorba
  * manage allocation of memory.
  */
 
-class MemPage {
+class MemPage 
+{
 public:
   static const size_t DEFAULT_PAGE_SIZE = 128;
 
-  MemPage(size_t page_size = DEFAULT_PAGE_SIZE,
-                void* (*allocate_func)(size_t) = &malloc,
-                void (*deallocate_func)(void*) = &free);
+  MemPage(
+      size_t page_size = DEFAULT_PAGE_SIZE,
+      void* (*allocate_func)(size_t) = &malloc,
+      void (*deallocate_func)(void*) = &free);
+
   ~MemPage();
 
   size_t space() const;
@@ -56,17 +59,20 @@ public:
 
 private:
   const size_t thePageSize;
+
   void* (*theAllocator)(size_t);
+
   void (*theDeallocator)(void*);
 
-  char* thePageStart;
-  char* theFreeStart;
+  char   * thePageStart;
+  char   * theFreeStart;
 
 private:
   // Pages are unique, there is no sense in copying them
   MemPage (const MemPage&);
   MemPage& operator= (const MemPage&);
 };
+
 
 /*******************************************************************************
  *                                Memory Manager                               *
@@ -91,16 +97,20 @@ private:
 
 } // namespace zorba
 
+
 //This handles the creation of data within the memory pool using the format
 //new (MemPool) constructor
 //for more information see
 //http://www.parashift.com/c++-faq-lite/dtors.html#faq-11.14
 inline void* operator new(size_t size, zorba::MemoryManager& mem)
 {
-    return mem.allocate(size);
+  return mem.allocate(size);
 }
 
+
 inline void operator delete(void* p, zorba::MemoryManager& mem)
-{ /*Memory is freed when MemoryManager is destroyed */ }
+{
+  /*Memory is freed when MemoryManager is destroyed */ 
+}
 
 #endif /*ZORBA_COMPILER_MEMMANAGER_H*/

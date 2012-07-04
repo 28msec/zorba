@@ -254,7 +254,12 @@ class cast_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  cast_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const expr_t&, const xqtref_t&);
+  cast_expr(
+      ExprManager* expMan,
+      static_context* sctx,
+      const QueryLoc&,
+      const expr_t&,
+      const xqtref_t&);
 
 public:
   bool is_optional() const;
@@ -421,7 +426,12 @@ class castable_expr : public castable_base_expr
   friend class expr;
 
 protected:
-  castable_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const expr_t&, const xqtref_t&);
+  castable_expr(
+      ExprManager* expMan,
+      static_context* sctx,
+      const QueryLoc&,
+      const expr_t&,
+      const xqtref_t&);
 
 public:
   bool is_optional() const;
