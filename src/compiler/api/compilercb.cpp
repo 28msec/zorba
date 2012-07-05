@@ -107,6 +107,7 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   :
+  theExprManager(),
   theXQueryDiagnostics(errmgr),
   theRootSctx(0),
 #ifdef ZORBA_WITH_DEBUGGER
@@ -119,8 +120,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsSequential(false),
   theHaveTimeout(false),
   theTimeout(timeout),
-  theTempIndexCounter(0),
-  theExprManager()
+  theTempIndexCounter(0)
 {
   if (timeout >= 0)
     theHaveTimeout = true;
@@ -134,6 +134,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   zorba::serialization::SerializeBaseClass(cb),
+  theExprManager(),
   theXQueryDiagnostics(cb.theXQueryDiagnostics),
   theRootSctx(NULL),
 #ifdef ZORBA_WITH_DEBUGGER
@@ -147,8 +148,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
-  theConfig(cb.theConfig),
-  theExprManager()
+  theConfig(cb.theConfig)
 {
 }
 
@@ -175,6 +175,7 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 CompilerCB::~CompilerCB()
 {
+  theSctxMap.clear();
 }
 
 

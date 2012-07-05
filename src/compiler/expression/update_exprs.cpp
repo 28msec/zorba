@@ -176,7 +176,7 @@ copy_clause::copy_clause(var_expr_t aVar, expr_t aExpr)
 
 copy_clause::~copy_clause()
 {
-  if(theVar)
+  if (theVar)
     theVar->set_copy_clause(NULL);
 }
 
@@ -249,7 +249,8 @@ expr_t transform_expr::clone(substitution_t& subst) const
 {
   ZORBA_ASSERT(theModifyExpr && theReturnExpr);
 
-  rchandle<transform_expr> cloneExpr(theExprManager->create_transform_expr(theSctx, get_loc()));
+  rchandle<transform_expr> cloneExpr =
+  theExprManager->create_transform_expr(theSctx, get_loc());
 
   for (std::vector<copy_clause_t>::const_iterator lIter = theCopyClauses.begin();
        lIter != theCopyClauses.end();

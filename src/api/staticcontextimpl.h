@@ -65,7 +65,9 @@ class StaticContextImpl : public StaticContext
 protected:
   static_context_t                    theCtx;
 
-  std::map<csize, static_context_t>   theSctxMap;
+  CompilerCB                        * theCompilerCB;
+
+  //std::map<csize, static_context_t>   theSctxMap;
 
   ulong                               theMaxVarId;
 

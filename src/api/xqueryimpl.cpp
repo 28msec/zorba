@@ -489,11 +489,13 @@ void XQueryImpl::compile(
 
     // If the static context results from loadProlog, we need all the contexts
     // that were created when compiling the load-prolog query
-    theCompilerCB->theSctxMap =
-    static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
+    StaticContextImpl* externalSctx = 
+    static_cast<StaticContextImpl*>(aStaticContext.get());
 
-    ulong nextVarId = 
-    static_cast<StaticContextImpl*>(aStaticContext.get())->getMaxVarId();
+    if (externalSctx->theCompilerCB)
+      theCompilerCB->theSctxMap = externalSctx->theCompilerCB->theSctxMap;
+
+    ulong nextVarId = externalSctx->getMaxVarId();
 
     std::istringstream lQueryStream(aQuery.c_str());
 
@@ -522,11 +524,13 @@ void XQueryImpl::compile(
 
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the load-prolog query
-    theCompilerCB->theSctxMap =
-    static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
+    StaticContextImpl* externalSctx = 
+    static_cast<StaticContextImpl*>(aStaticContext.get());
 
-    ulong nextVarId = 
-    static_cast<StaticContextImpl*>(aStaticContext.get())->getMaxVarId();
+    if (externalSctx->theCompilerCB)
+      theCompilerCB->theSctxMap = externalSctx->theCompilerCB->theSctxMap;
+
+    ulong nextVarId = externalSctx->getMaxVarId();
 
     doCompile(aQuery, aHints, true, nextVarId);
   }

@@ -9730,12 +9730,10 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       {
         throw XQUERY_EXCEPTION_VAR(
           error,
-          ERROR_PARAMS(
-            ZED( BadType_23o ),
-            *declaredType,
-            ZED( NoTypeInMainModule_4 ),
-            ve->get_name()->getStringValue()
-          ),
+          ERROR_PARAMS(ZED(BadType_23o),
+                       *declaredType,
+                       ZED( NoTypeInMainModule_4 ),
+                       ve->get_name()->getStringValue()),
           ERROR_LOC( loc )
         );
       }
@@ -9743,13 +9741,11 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       {
         throw XQUERY_EXCEPTION_VAR(
           error,
-          ERROR_PARAMS(
-            ZED( BadType_23o ),
-            *declaredType,
-            ZED( NoTypeInModule_45 ),
-            ve->get_name()->getStringValue(),
-            theModuleNamespace
-          ),
+          ERROR_PARAMS(ZED(BadType_23o),
+                       *declaredType,
+                       ZED( NoTypeInModule_45 ),
+                       ve->get_name()->getStringValue(),
+                       theModuleNamespace),
           ERROR_LOC( loc )
         );
       }
@@ -9761,7 +9757,9 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
     }
   }
 
-  push_nodestack(theExprManager->create_wrapper_expr(theRootSctx, loc, rchandle<expr>(ve)));
+  push_nodestack(theExprManager->create_wrapper_expr(theRootSctx,
+                                                     loc,
+                                                     rchandle<expr>(ve)));
 }
 
 

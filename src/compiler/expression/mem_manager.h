@@ -37,7 +37,19 @@ namespace zorba
 class MemPage 
 {
 public:
-  static const size_t DEFAULT_PAGE_SIZE = 128;
+  static const size_t DEFAULT_PAGE_SIZE = 8192;
+
+private:
+  const size_t  thePageSize;
+
+  char        * thePageStart;
+  char        * theFreeStart;
+
+  void* (*theAllocator)(size_t);
+
+  void (*theDeallocator)(void*);
+
+public:
 
   MemPage(
       size_t page_size = DEFAULT_PAGE_SIZE,
@@ -56,16 +68,6 @@ public:
    *          NULL.
    */
   void* allocate(size_t alloc_size);
-
-private:
-  const size_t thePageSize;
-
-  void* (*theAllocator)(size_t);
-
-  void (*theDeallocator)(void*);
-
-  char   * thePageStart;
-  char   * theFreeStart;
 
 private:
   // Pages are unique, there is no sense in copying them
