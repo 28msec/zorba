@@ -72,13 +72,13 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 
 ********************************************************************************/
 var_expr::var_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)
   :
-  expr(expMan, sctx, loc, var_expr_kind),
+  expr(ccb, sctx, loc, var_expr_kind),
   theUniqueId(0),
   theVarKind(k),
   theName(name),

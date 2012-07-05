@@ -28,6 +28,7 @@
 #include "path_expr.h"
 #include "script_exprs.h"
 #include "update_exprs.h"
+#include "json_exprs.h"
 
 namespace zorba
 {
@@ -43,7 +44,9 @@ public:
   std::ostream& put(std::ostream& stream) const{return stream;}
 };
 
-ExprManager::ExprManager()
+ExprManager::ExprManager(CompilerCB* ccb)
+:
+  theCCB(ccb)
 {
 }
 
@@ -115,7 +118,7 @@ expr* ExprManager::reg(expr* exp)
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CREATE_AND_RETURN_EXPR(EXPRTYPE, ...) \
-  EXPRTYPE* EXPPTR = new (theMemoryMgr) EXPRTYPE(this, __VA_ARGS__); \
+  EXPRTYPE* EXPPTR = new (theMemoryMgr) EXPRTYPE(theCCB, __VA_ARGS__); \
   reg(EXPPTR); \
   return EXPPTR
 
@@ -693,7 +696,7 @@ ftcontains_expr* ExprManager::create_ftcontains_expr(
 fo_expr* ExprManager::create_seq(static_context* sctx, const QueryLoc& loc)
 {
   //TODO make fo_expr use this factory to generate everything
-  return fo_expr::create_seq(this, sctx, loc);
+  return fo_expr::create_seq(theCCB, sctx, loc);
 }
 
 
@@ -739,7 +742,6 @@ fo_expr* ExprManager::create_fo_expr(
 
 for_clause* ExprManager::create_for_clause(
     static_context* sctx,
-    ExprManager* exprMan,
     const QueryLoc& loc,
     var_expr_t varExpr,
     expr_t domainExpr,
@@ -748,23 +750,21 @@ for_clause* ExprManager::create_for_clause(
     bool isOuter)
 {
   CREATE_AND_RETURN(for_clause,
-          sctx, exprMan, loc, varExpr, domainExpr, posVarExpr, scoreVarExpr, isOuter);
+          sctx, theCCB, loc, varExpr, domainExpr, posVarExpr, scoreVarExpr, isOuter);
 }
 
 let_clause* ExprManager::create_let_clause(
     static_context* sctx,
-    ExprManager* exprMan,
     const QueryLoc& loc,
     var_expr_t varExpr,
     expr_t domainExpr,
     bool lazy)
 {
-  CREATE_AND_RETURN(let_clause, sctx, exprMan, loc, varExpr, domainExpr, lazy);
+  CREATE_AND_RETURN(let_clause, sctx, theCCB, loc, varExpr, domainExpr, lazy);
 }
 
 window_clause* ExprManager::create_window_clause(
     static_context* sctx,
-    ExprManager* exprMan,
     const QueryLoc& loc,
     window_clause::window_t winKind,
     var_expr_t varExpr,
@@ -774,7 +774,7 @@ window_clause* ExprManager::create_window_clause(
     bool lazy)
 {
   CREATE_AND_RETURN(window_clause,
-          sctx, exprMan, loc, winKind, varExpr, domainExpr, winStart, winStop, lazy);
+          sctx, theCCB, loc, winKind, varExpr, domainExpr, winStart, winStop, lazy);
 }
 
 flwor_wincond* ExprManager::create_flwor_wincond(
@@ -784,7 +784,7 @@ flwor_wincond* ExprManager::create_flwor_wincond(
   const flwor_wincond::vars& out_vars,
   expr_t cond)
 {
-  CREATE_AND_RETURN(flwor_wincond, this, sctx, isOnly, in_vars, out_vars, cond);
+  CREATE_AND_RETURN(flwor_wincond, theCCB, sctx, isOnly, in_vars, out_vars, cond);
 }
 
 group_clause* ExprManager::create_group_clause(
@@ -831,4 +831,37 @@ flwor_expr* ExprManager::create_flwor_expr(
   CREATE_AND_RETURN_EXPR(flwor_expr, sctx, loc, general);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+#ifdef ZORBA_WITH_JSON
+
+json_array_expr* ExprManager::create_json_array_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const expr_t& content)
+{
+  CREATE_AND_RETURN_EXPR(json_array_expr, sctx, loc, content);
+}
+
+json_object_expr* ExprManager::create_json_object_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const expr_t& content,
+      bool accumulate)
+{
+  CREATE_AND_RETURN_EXPR(json_object_expr, sctx, loc, content, accumulate);
+}
+
+json_direct_object_expr* ExprManager::create_json_direct_object_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<expr_t>& names,
+      std::vector<expr_t>& values)
+{
+  CREATE_AND_RETURN_EXPR(json_direct_object_expr, sctx, loc, names, values);
+}
+
+#endif // ZORBA_WITH_JSON
+
 } // namespace zorba
+

@@ -20,7 +20,8 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
-#include "compiler/expression/expr_manager.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
 
@@ -44,14 +45,14 @@ DEF_EXPR_ACCEPT(while_expr)
 
 ********************************************************************************/
 block_expr::block_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     bool allowLastUpdating,
     std::vector<expr_t>& seq,
     std::vector<var_expr*>* assignedVars)
   :
-  expr(expMan, sctx, loc, block_expr_kind),
+  expr(ccb, sctx, loc, block_expr_kind),
   theArgs(seq)
 {
   compute_scripting_kind2(assignedVars, allowLastUpdating);
@@ -171,7 +172,7 @@ expr_t block_expr::clone(substitution_t& subst) const
   for (csize i = 0; i < theArgs.size(); ++i)
     seq2.push_back(theArgs[i]->clone(subst));
 
-  return theExprManager->create_block_expr(theSctx, get_loc(), true, seq2, NULL);
+  return theCCB->theEM->create_block_expr(theSctx, get_loc(), true, seq2, NULL);
 }
 
 
@@ -179,13 +180,13 @@ expr_t block_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 apply_expr::apply_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& inExpr,
     bool discardXDM)
   :
-  expr(expMan, sctx, loc, apply_expr_kind),
+  expr(ccb, sctx, loc, apply_expr_kind),
   theExpr(inExpr),
   theDiscardXDM(discardXDM)
 {
@@ -206,7 +207,7 @@ void apply_expr::compute_scripting_kind()
 
 expr_t apply_expr::clone(substitution_t& subst) const
 {
-  return theExprManager->create_apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
+  return theCCB->theEM->create_apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
 }
 
 
@@ -214,13 +215,13 @@ expr_t apply_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 var_decl_expr::var_decl_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const var_expr_t& varExpr,
     const expr_t& initExpr)
   :
-  expr(expMan, sctx, loc, var_decl_expr_kind),
+  expr(ccb, sctx, loc, var_decl_expr_kind),
   theVarExpr(varExpr),
   theInitExpr(initExpr)
 {
@@ -266,7 +267,7 @@ expr_t var_decl_expr::clone(substitution_t& s) const
   var_expr_t varCopy(new var_expr(*theVarExpr));
   s[theVarExpr.getp()] = varCopy.getp();
 
-  return theExprManager->create_var_decl_expr(theSctx,
+  return theCCB->theEM->create_var_decl_expr(theSctx,
                            get_loc(),
                            varCopy,
                            (theInitExpr ? theInitExpr->clone(s) : NULL));
@@ -277,13 +278,13 @@ expr_t var_decl_expr::clone(substitution_t& s) const
 
 ********************************************************************************/
 var_set_expr::var_set_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const var_expr_t& varExpr,
     const expr_t& setExpr)
   :
-  expr(expMan, sctx, loc, var_set_expr_kind),
+  expr(ccb, sctx, loc, var_set_expr_kind),
   theVarExpr(varExpr),
   theExpr(setExpr)
 {
@@ -324,7 +325,7 @@ expr_t var_set_expr::clone(substitution_t& s) const
 
   ZORBA_ASSERT(varClone->get_expr_kind() == var_expr_kind);
 
-  return theExprManager->create_var_set_expr(theSctx,
+  return theCCB->theEM->create_var_set_expr(theSctx,
                           get_loc(),
                           static_cast<var_expr*>(varClone.getp()),
                           theExpr->clone(s));
@@ -335,12 +336,12 @@ expr_t var_set_expr::clone(substitution_t& s) const
 
 ********************************************************************************/
 exit_expr::exit_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& inExpr)
   :
-  expr(expMan, sctx, loc, exit_expr_kind),
+  expr(ccb, sctx, loc, exit_expr_kind),
   theExpr(inExpr),
   theCatcherExpr(NULL)
 {
@@ -369,7 +370,7 @@ void exit_expr::compute_scripting_kind()
 
 expr_t exit_expr::clone(substitution_t& subst) const
 {
-  expr* clone = theExprManager->create_exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
+  expr* clone = theCCB->theEM->create_exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
 
   subst[this] = clone;
 
@@ -381,13 +382,13 @@ expr_t exit_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 exit_catcher_expr::exit_catcher_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& inExpr,
     std::vector<expr*>& exitExprs)
   :
-  expr(expMan, sctx, loc, exit_catcher_expr_kind),
+  expr(ccb, sctx, loc, exit_catcher_expr_kind),
   theExpr(inExpr)
 {
   theExitExprs.swap(exitExprs);
@@ -451,7 +452,7 @@ expr_t exit_catcher_expr::clone(substitution_t& subst) const
     clonedExits.push_back(subst[*ite]);
   }
 
-  return theExprManager->create_exit_catcher_expr(theSctx, get_loc(), clonedInput, clonedExits);
+  return theCCB->theEM->create_exit_catcher_expr(theSctx, get_loc(), clonedInput, clonedExits);
 }
 
 
@@ -459,9 +460,9 @@ expr_t exit_catcher_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-flowctl_expr::flowctl_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, enum action action)
+flowctl_expr::flowctl_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, enum action action)
   :
-  expr(expMan, sctx, loc, flowctl_expr_kind),
+  expr(ccb, sctx, loc, flowctl_expr_kind),
   theAction(action)
 {
   compute_scripting_kind();
@@ -480,16 +481,16 @@ void flowctl_expr::compute_scripting_kind()
 
 expr_t flowctl_expr::clone(substitution_t& subst) const
 {
-  return theExprManager->create_flowctl_expr(theSctx, get_loc(), get_action());
+  return theCCB->theEM->create_flowctl_expr(theSctx, get_loc(), get_action());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-while_expr::while_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_t body)
+while_expr::while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_t body)
   :
-  expr(expMan, sctx, loc, while_expr_kind),
+  expr(ccb, sctx, loc, while_expr_kind),
   theBody(body)
 {
   compute_scripting_kind();
@@ -525,7 +526,7 @@ void while_expr::compute_scripting_kind()
 
 expr_t while_expr::clone(substitution_t& subst) const
 {
-  return theExprManager->create_while_expr(theSctx, get_loc(), get_body()->clone(subst));
+  return theCCB->theEM->create_while_expr(theSctx, get_loc(), get_body()->clone(subst));
 }
 
 

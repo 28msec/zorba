@@ -39,7 +39,7 @@ RewriterContext::RewriterContext(
     bool orderedMode)
   :
   theCCB(aCompilerCB),
-  theEM(&(theCCB->getExprManager())),
+  theEM(theCCB->theEM),
   theRoot(root),
   theUDF(udf),
   theMessage(msg),

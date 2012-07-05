@@ -591,7 +591,7 @@ static void rewriteJoin(
   else
   {
     // The inner domain expr does not reference any flwor vars. In this case,
-    // find the flwor expr defining the outer var and create the index just 
+    // find the flwor expr defining the outer var and create the index just
     // before this flwor.
     flwor_expr* outerFlworExpr = NULL;
     ulong outerPosInStack = 0;
@@ -651,7 +651,7 @@ static void rewriteJoin(
   //
   // Create the IndexDecl obj
   //
-  IndexDecl_t idx = new IndexDecl(sctx, rCtx.theEM, loc, qname);
+  IndexDecl_t idx = new IndexDecl(sctx, rCtx.theCCB, loc, qname);
 
   if (predInfo.theIsGeneral)
     idx->setGeneral(true);

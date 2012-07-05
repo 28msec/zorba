@@ -375,7 +375,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                                                  var_expr::for_var,
                                                  var->get_name());
         fvar->getFreeVars().insert(fvar);
-        for_clause_t fc = new for_clause(sctx, rCtx.theEM, loc, fvar, domainExpr);
+        for_clause_t fc = new for_clause(sctx, rCtx.theCCB, loc, fvar, domainExpr);
         flwor.add_clause(i, fc);
 
         subst_vars(rCtx, node, var, fvar.getp());

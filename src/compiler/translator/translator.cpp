@@ -657,7 +657,7 @@ TranslatorImpl(
   theRootTranslator(rootTranslator),
   theRTM(GENV_TYPESYSTEM),
   theCCB(minfo->theCCB),
-  theExprManager(&(theCCB->getExprManager())),
+  theExprManager(theCCB->theEM),
   theModulesInfo(minfo),
   theModulesStack(modulesStack),
   theHaveModuleImportCycle(false),
@@ -1530,7 +1530,7 @@ let_clause_t wrap_in_letclause(expr_t e, var_expr_t lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
 
-  return new let_clause(theRootSctx, theExprManager, e->get_loc(), lv, e.getp());
+  return new let_clause(theRootSctx, theCCB, e->get_loc(), lv, e.getp());
 }
 
 
@@ -1571,7 +1571,7 @@ for_clause_t wrap_in_forclause(expr_t e, var_expr_t fv, var_expr_t pv)
     assert(pv->get_kind() == var_expr::pos_var);
   }
 
-  return new for_clause(theRootSctx, theExprManager,
+  return new for_clause(theRootSctx, theCCB,
                         e->get_loc(), fv, e, pv);
 }
 
@@ -4283,7 +4283,7 @@ void* begin_visit(const AST_IndexDecl& v)
     ERROR_PARAMS(qname->get_qname()));
   }
 
-  IndexDecl_t index = new IndexDecl(theSctx, theExprManager,  loc, qnameItem);
+  IndexDecl_t index = new IndexDecl(theSctx, theCCB,  loc, qnameItem);
   index->setGeneral(false);
   index->setUnique(false);
   index->setMethod(IndexDecl::HASH);
@@ -4694,7 +4694,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // let $x := dc:collection(xs:QName("example:coll1"))
     let_clause* lc = new let_clause(theRootSctx,
-                                    theExprManager,
+                                    theCCB,
                                     loc,
                                     varExpr,
                                     collExpr.getp());
@@ -4793,7 +4793,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                   NULL);
 
     let_clause* letClause = new let_clause(theRootSctx,
-                                           theExprManager,
+                                           theCCB,
                                            loc,
                                            varExpr,
                                            collExpr.getp());
@@ -6047,7 +6047,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   }
 
   for_clause* fc = new for_clause(theRootSctx,
-                                  theExprManager,
+                                  theCCB,
                                   loc,
                                   varExpr,
                                   domainExpr,
@@ -6136,7 +6136,7 @@ void create_let_clause(
   var_expr_t varExpr = bind_var(loc, varName, var_expr::let_var, type);
 
   let_clause* clause = new let_clause(theRootSctx,
-                                      theExprManager,
+                                      theCCB,
                                       loc,
                                       varExpr,
                                       domainExpr);
@@ -6201,7 +6201,7 @@ void intermediate_visit(const WindowClause& v, void* /*visit_state*/)
                                      window_clause::sliding_window);
 
   window_clause* clause = new window_clause(theRootSctx,
-                                            theExprManager,
+                                            theCCB,
                                             v.get_location(),
                                             winKind,
                                             NULL,
@@ -6278,7 +6278,8 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
       rchandle<WindowVars> vars = cond->get_winvars();
       pop_wincond_vars(vars, inputCondVarExprs[i]);
 
-      conds[i] = new flwor_wincond(theExprManager, theSctx,
+      conds[i] = new flwor_wincond(theCCB,
+                                   theSctx,
                                    cond->is_only(),
                                    inputCondVarExprs[i],
                                    outputCondVarExprs[i],

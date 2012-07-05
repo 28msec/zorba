@@ -45,7 +45,7 @@ typedef rchandle<wrapper_expr> wrapper_expr_t;
 
 class expr_visitor;
 
-class ExprManager;
+class CompilerCB;
 
 enum expr_kind_t
 {
@@ -188,7 +188,7 @@ protected:
 
   FreeVars           theFreeVars;
 
-  ExprManager      * theExprManager;
+  CompilerCB       * theCCB;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -200,14 +200,14 @@ public:
   virtual void free() {}
 
 protected:
-  expr(ExprManager*, static_context*, const QueryLoc&, expr_kind_t);
+  expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
 
-  expr() : theSctx(NULL), theFlags1(0), theExprManager(NULL) {}
+  expr() : theSctx(NULL), theFlags1(0), theCCB(NULL) {}
 
 public:
   virtual ~expr();
 
-  ExprManager* get_exprMan() {return theExprManager;}
+  CompilerCB* get_ccb() {return theCCB;}
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 

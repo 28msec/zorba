@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,15 +27,16 @@
 #ifdef ZORBA_WITH_JSON
 
 
-namespace zorba 
+namespace zorba
 {
 
 /*******************************************************************************
   ArrayConstructor ::= "[" Expr? "]"
 ********************************************************************************/
-class json_array_expr : public expr 
+class json_array_expr : public expr
 {
   friend class ExprIterator;
+  friend class ExprManager;
 
 protected:
   expr_t  theContentExpr;
@@ -45,12 +46,14 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(json_array_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   json_array_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& content);
 
+public:
   expr* get_expr() const { return theContentExpr.getp(); }
 
   void compute_scripting_kind();
@@ -59,7 +62,7 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -70,9 +73,10 @@ public:
 
   The Expr must return a sequence of zero or more objects
 ********************************************************************************/
-class json_object_expr : public expr 
+class json_object_expr : public expr
 {
   friend class ExprIterator;
+  friend class ExprManager;
 
 protected:
   expr_t  theContentExpr;
@@ -83,13 +87,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(json_object_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   json_object_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& content,
       bool accumulate);
 
+public:
   expr* get_expr() const { return theContentExpr.getp(); }
 
   bool is_accumulating() const { return theAccumulate; }
@@ -100,7 +106,7 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -112,9 +118,10 @@ public:
   The 1st ExprSingle must return exactly one string.
   The 2nd ExprSingle must contain exactly one item of any kind.
 ********************************************************************************/
-class json_direct_object_expr : public expr 
+class json_direct_object_expr : public expr
 {
   friend class ExprIterator;
+  friend class ExprManager;
 
 protected:
   std::vector<expr_t>  theNames;
@@ -125,13 +132,15 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(json_direct_object_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
-public:
+protected:
   json_direct_object_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<expr_t>& names,
       std::vector<expr_t>& values);
 
+public:
   csize num_pairs() const { return theNames.size(); }
 
   expr* get_value_expr(csize i) const { return theValues[i].getp(); }
@@ -144,7 +153,7 @@ public:
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 

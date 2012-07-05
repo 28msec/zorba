@@ -15,10 +15,10 @@
  */
 #include "stdafx.h"
 
-#include "compiler/expression/expr_manager.h"
 #include "compiler/expression/function_item_expr.h"
-
 #include "compiler/expression/expr_visitor.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
 #include "functions/udf.h"
@@ -31,13 +31,13 @@ DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& anExpr,
     const std::vector<expr_t>& args)
   :
-  expr(expMan, sctx, loc, dynamic_function_invocation_expr_kind),
+  expr(ccb, sctx, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args)
 {
@@ -66,7 +66,7 @@ expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
     lNewArgs.push_back((*lIter)->clone(s));
   }
 
-  return theExprManager->create_dynamic_function_invocation_expr(theSctx,
+  return theCCB->theEM->create_dynamic_function_invocation_expr(theSctx,
                                               get_loc(),
                                               theExpr->clone(s),
                                               lNewArgs);
@@ -81,14 +81,14 @@ DEF_EXPR_ACCEPT (function_item_expr)
 
 
 function_item_expr::function_item_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const store::Item* aQName,
     function* f,
     uint32_t aArity)
   :
-  expr(expMan, sctx, loc, function_item_expr_kind),
+  expr(ccb, sctx, loc, function_item_expr_kind),
   theQName(const_cast<store::Item*>(aQName)),
   theFunction(f),
   theArity(aArity)
@@ -99,11 +99,11 @@ function_item_expr::function_item_expr(
 
 
 function_item_expr::function_item_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc)
   :
-  expr(expMan, sctx, loc, function_item_expr_kind),
+  expr(ccb, sctx, loc, function_item_expr_kind),
   theQName(0),
   theFunction(NULL),
   theArity(0)
@@ -147,7 +147,7 @@ void function_item_expr::compute_scripting_kind()
 expr_t function_item_expr::clone(substitution_t& s) const
 {
   std::auto_ptr<function_item_expr> lNewExpr(
-      theExprManager->create_function_item_expr(theSctx,
+      theCCB->theEM->create_function_item_expr(theSctx,
                              get_loc(),
                              theFunction->getName(),
                              theFunction.getp(),

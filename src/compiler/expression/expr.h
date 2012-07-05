@@ -63,7 +63,7 @@ protected:
 
 protected:
   if_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc& loc,
         expr_t c,
@@ -108,7 +108,7 @@ protected:
   expr_t       theExpr;
 
 protected:
-  order_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, order_type_t, expr_t);
+  order_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, order_type_t, expr_t);
 
 public:
   order_type_t get_type() const { return theType; }
@@ -142,7 +142,7 @@ protected:
 
 protected:
   validate_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc&,
         ParseConstants::validation_mode_t,
@@ -181,7 +181,7 @@ protected:
 
 protected:
   namespace_context_base_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       expr_kind_t kind,
@@ -206,7 +206,7 @@ protected:
 
 protected:
   cast_or_castable_base_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc& loc,
         expr_kind_t kind,
@@ -233,7 +233,7 @@ class cast_base_expr : public cast_or_castable_base_expr
 
 protected:
   cast_base_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc& loc,
         expr_kind_t kind,
@@ -255,7 +255,7 @@ class cast_expr : public cast_base_expr
 
 protected:
   cast_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
       const expr_t&,
@@ -298,7 +298,7 @@ protected:
 
 protected:
   treat_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc&,
         const expr_t&,
@@ -373,7 +373,7 @@ protected:
 
 protected:
   promote_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& input,
@@ -405,7 +405,7 @@ class castable_base_expr : public cast_or_castable_base_expr
 
 protected:
   castable_base_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc&,
         expr_kind_t kind,
@@ -427,7 +427,7 @@ class castable_expr : public castable_base_expr
 
 protected:
   castable_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
       const expr_t&,
@@ -464,7 +464,7 @@ protected:
 
 protected:
   instanceof_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
       const expr_t&,
@@ -504,7 +504,7 @@ private:
 
 protected:
   name_cast_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
       expr_t,
@@ -540,7 +540,7 @@ protected:
   bool   theCopyInputNodes;
 
 protected:
-  doc_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr* content, bool copyNodes);
+  doc_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr* content, bool copyNodes);
 
 public:
   expr* getContent() const { return theContent.getp(); }
@@ -599,7 +599,7 @@ protected:
 
 protected:
   elem_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc&,
         expr* qnameExpr,
@@ -609,7 +609,7 @@ protected:
         bool copyNodes);
 
   elem_expr(
-        ExprManager* expMan,
+        CompilerCB* ccb,
         static_context* sctx,
         const QueryLoc&,
         expr* qnameExpr,
@@ -674,7 +674,7 @@ protected:
 
 protected:
   attr_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     expr_t aQNameExpr,
@@ -719,7 +719,7 @@ protected:
 
 protected:
   text_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
       text_constructor_type,
@@ -754,7 +754,7 @@ protected:
   expr_t theContentExpr;
 
 protected:
-  pi_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t, expr_t);
+  pi_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr_t, expr_t);
 
 public:
   expr* get_target_expr() const { return theTargetExpr.getp(); }
@@ -784,23 +784,23 @@ protected:
   store::Item_t theValue;
 
 protected:
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, zstring& sval);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, zstring& sval);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const std::string& sval);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const std::string& sval);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const char* sval);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* sval);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_integer);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_integer);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_decimal);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_decimal);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_double);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_double);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, xs_boolean);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_boolean);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, store::Item_t);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, store::Item_t);
 
-  const_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
+  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
 
 public:
   store::Item* get_val() const { return theValue.getp(); }
@@ -845,9 +845,9 @@ protected:
   expr_t                         theExpr;
 
 protected:
-  extension_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&);
+  extension_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
 
-  extension_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t);
+  extension_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr_t);
 
 public:
   void add(rchandle<pragma> p) { thePragmas.push_back(p); }
@@ -949,7 +949,7 @@ protected:
   std::vector<catch_clause_t> theCatchClauses;
 
 protected:
-  trycatch_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, expr_t tryExpr);
+  trycatch_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr_t tryExpr);
 
 public:
   expr* get_try_expr() const { return theTryExpr.getp(); }
@@ -997,7 +997,7 @@ protected:
   expr_t theWrappedExpr;
 
 protected:
-  wrapper_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_t wrapped);
+  wrapper_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_t wrapped);
 
 public:
   expr* get_expr() const { return theWrappedExpr.getp(); }
@@ -1032,7 +1032,7 @@ protected:
 
 protected:
   function_trace_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       expr_t aChild);
@@ -1137,7 +1137,7 @@ protected:
 
 protected:
   eval_expr(
-      ExprManager* expMan,
+      CompilerCB* creating_ccb,
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
@@ -1207,7 +1207,7 @@ private:
 
 protected:
   debugger_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& aChild,

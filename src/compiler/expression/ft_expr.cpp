@@ -19,7 +19,8 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
-#include "compiler/expression/expr_manager.h"
+
+#include "compiler/api/compilercb.h"
 
 using namespace std;
 
@@ -32,14 +33,14 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 ftcontains_expr::ftcontains_expr(
-  ExprManager* expMan,
+  CompilerCB* ccb,
   static_context* sctx,
   QueryLoc const &loc,
   expr_t range,
   ftnode *ftselection,
   expr_t ftignore
 ) :
-  expr(expMan, sctx, loc, ft_expr_kind ),
+  expr(ccb, sctx, loc, ft_expr_kind ),
   range_( range ),
   ftselection_( ftselection ),
   ftignore_( ftignore )
@@ -59,7 +60,7 @@ void ftcontains_expr::accept( expr_visitor &v ) {
 }
 
 expr_t ftcontains_expr::clone( substitution_t &s ) const {
-  return theExprManager->create_ftcontains_expr(
+  return theCCB->theEM->create_ftcontains_expr(
     theSctx, get_loc(),
     range_->clone( s ),
     ftselection_->clone( s ).release(),

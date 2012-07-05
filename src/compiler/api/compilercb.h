@@ -92,7 +92,7 @@ class static_context;
 
   theIsUpdating :
   ---------------
-  Set to true if the root expr of the query or eval expr is an updating expr. 
+  Set to true if the root expr of the query or eval expr is an updating expr.
 
   theTimeout :
   ------------
@@ -161,7 +161,7 @@ public:
   typedef std::map<csize, static_context_t> SctxMap;
 
 public:
-  ExprManager               theExprManager;
+  ExprManager             * theEM;
 
   XQueryDiagnostics       * theXQueryDiagnostics;
 
@@ -217,9 +217,7 @@ public:
 
   static_context* getStaticContext(int id);
 
-  ExprManager& getExprManager() {return theExprManager;}
-
-  MemoryManager& getMemoryManager() {return theExprManager.getMemory();}
+  MemoryManager& getMemoryManager() {return theEM->getMemory();}
 
 };
 

@@ -24,7 +24,8 @@
 
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
-#include "compiler/expression/expr_manager.h"
+
+#include "compiler/api/compilercb.h"
 
 
 namespace zorba
@@ -41,9 +42,9 @@ DEF_EXPR_ACCEPT (match_expr)
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-relpath_expr::relpath_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc)
+relpath_expr::relpath_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
   :
-  expr(expMan, sctx, loc, relpath_expr_kind)
+  expr(ccb, sctx, loc, relpath_expr_kind)
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -101,7 +102,7 @@ void relpath_expr::compute_scripting_kind()
 
 expr_t relpath_expr::clone(substitution_t& subst) const
 {
-  std::auto_ptr<relpath_expr> re(theExprManager->create_relpath_expr(theSctx, get_loc()));
+  std::auto_ptr<relpath_expr> re(theCCB->theEM->create_relpath_expr(theSctx, get_loc()));
 
   for (unsigned i = 0; i < size(); ++i)
   {
@@ -118,9 +119,9 @@ expr_t relpath_expr::clone(substitution_t& subst) const
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-axis_step_expr::axis_step_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc)
+axis_step_expr::axis_step_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
   :
-  expr(expMan, sctx, loc, axis_step_expr_kind),
+  expr(ccb, sctx, loc, axis_step_expr_kind),
   theReverseOrder(false)
 {
   compute_scripting_kind();
@@ -145,7 +146,7 @@ void axis_step_expr::compute_scripting_kind()
 
 expr_t axis_step_expr::clone(substitution_t& subst) const
 {
-  axis_step_expr* ae = theExprManager->create_axis_step_expr(theSctx, get_loc());
+  axis_step_expr* ae = theCCB->theEM->create_axis_step_expr(theSctx, get_loc());
   ae->setAxis(getAxis());
   ae->setTest(getTest());
   ae->theReverseOrder = theReverseOrder;
@@ -165,9 +166,9 @@ expr_t axis_step_expr::clone(substitution_t& subst) const
                      PITest | CommentTest | TextTest | AnyKindTest
 
 ********************************************************************************/
-match_expr::match_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc)
+match_expr::match_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
   :
-  expr(expMan, sctx, loc, match_expr_kind),
+  expr(ccb, sctx, loc, match_expr_kind),
   theDocTestKind(match_no_test),
   theWildKind(match_no_wild),
   theQName(NULL),
@@ -217,7 +218,7 @@ void match_expr::compute_scripting_kind()
 
 expr_t match_expr::clone(substitution_t& subst) const
 {
-  match_expr* me = theExprManager->create_match_expr(theSctx, get_loc());
+  match_expr* me = theCCB->theEM->create_match_expr(theSctx, get_loc());
   me->setTestKind(getTestKind());
   me->setDocTestKind(getDocTestKind());
   me->setWildName(getWildName());

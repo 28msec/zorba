@@ -45,7 +45,7 @@ protected:
 
 public:
   update_expr_base(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc&,
     expr_kind_t kind,
@@ -75,7 +75,7 @@ protected:
 
 protected:
   insert_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::InsertType,
@@ -104,7 +104,7 @@ class delete_expr : public update_expr_base
 
 
 protected:
-  delete_expr(ExprManager* expMan, static_context* sctx, const QueryLoc&, const expr_t&);
+  delete_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const expr_t&);
 
 public:
   expr_t clone(substitution_t& s) const;
@@ -129,7 +129,7 @@ protected:
 
 protected:
   replace_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
@@ -160,7 +160,7 @@ class rename_expr : public update_expr_base
 
 protected:
   rename_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
       const expr_t&,
@@ -195,7 +195,7 @@ class copy_clause : public SimpleRCObject
 private:
   var_expr_t theVar;
   expr_t     theExpr;
-  ExprManager* theExprManager;
+  CompilerCB* theExprManager;
 
 
 protected:
@@ -227,7 +227,7 @@ protected:
 
 
 protected:
-  transform_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc);
+  transform_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
 
 public:
   expr_t getModifyExpr() const { return theModifyExpr; }

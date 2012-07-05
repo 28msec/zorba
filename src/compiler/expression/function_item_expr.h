@@ -46,7 +46,7 @@ protected:
 
 protected:
   dynamic_function_invocation_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& anExpr,
@@ -114,7 +114,7 @@ public:
 
 protected:
   function_item_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const store::Item* aQName,
@@ -122,7 +122,7 @@ protected:
       uint32_t aArity);
 
   function_item_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc);
 

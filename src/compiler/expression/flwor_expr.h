@@ -143,12 +143,12 @@ class forletwin_clause : public flwor_clause
 protected:
   var_expr_t   theVarExpr;
   expr_t       theDomainExpr;
-  ExprManager* theExprManager;
+  CompilerCB * theCCB;
 
 public:
   forletwin_clause(
         static_context* sctx,
-        ExprManager* exprMan,
+        CompilerCB* exprMan,
         const QueryLoc& loc,
         ClauseKind kind,
         var_expr_t varExpr,
@@ -182,7 +182,7 @@ protected:
 public:
   for_clause(
         static_context* sctx,
-        ExprManager* exprMan,
+        CompilerCB* exprMan,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -227,7 +227,7 @@ protected:
 public:
   let_clause(
         static_context* sctx,
-        ExprManager* exprMan,
+        CompilerCB* exprMan,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -273,7 +273,7 @@ protected:
 public:
   window_clause(
         static_context* sctx,
-        ExprManager* exprMan,
+        CompilerCB* exprMan,
         const QueryLoc& loc,
         window_t winKind,
         var_expr_t varExpr,
@@ -363,11 +363,11 @@ protected:
   vars    theOutputVars;
   expr_t  theCondExpr;
 
-  ExprManager* theExprManager;
+  CompilerCB* theCCB;
 
 public:
   flwor_wincond(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       bool isOnly,
       const vars& in_vars,
@@ -626,7 +626,7 @@ protected:
   expr_t        theReturnExpr;
 
 protected:
-  flwor_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, bool general);
+  flwor_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, bool general);
 
 public:
   bool is_general() const { return theIsGeneral; }

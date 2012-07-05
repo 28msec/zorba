@@ -189,7 +189,7 @@ public:
 
 protected:
   var_expr(
-      ExprManager* expMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       var_kind k,
@@ -272,7 +272,7 @@ public:
 };
 
 
-struct GlobalBinding 
+struct GlobalBinding
 {
   var_expr_t  theVar;
   expr_t      theExpr;

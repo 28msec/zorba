@@ -45,18 +45,18 @@ protected:
 public:
 
 protected:
-  static fo_expr* create_seq(ExprManager* theExpMan, static_context* sctx, const QueryLoc &);
+  static fo_expr* create_seq(CompilerCB* theExpMan, static_context* sctx, const QueryLoc &);
 
 protected:
   fo_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg);
 
   fo_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
@@ -64,7 +64,7 @@ protected:
     const expr* arg2);
 
   fo_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
@@ -94,7 +94,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
 private:
-  fo_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, const function* f);
+  fo_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, const function* f);
 };
 
 ////////// The following expressions in the AST "decay" into an fo_expr ///////

@@ -34,7 +34,7 @@ class ftcontains_expr : public expr
 
 protected:
   ftcontains_expr(
-    ExprManager* expMan,
+    CompilerCB* ccb,
     static_context*,
     QueryLoc const&,
     expr_t range,

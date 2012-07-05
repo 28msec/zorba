@@ -278,7 +278,7 @@ private:
   PlanIter_t                      theDocIndexerPlan;
   DocIndexer_t                    theDocIndexer;
 
-  ExprManager                   * theExprManager;
+  CompilerCB                    * theCCB;
 
 public:
   SERIALIZABLE_CLASS(IndexDecl)
@@ -286,7 +286,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  IndexDecl(static_context* sctx, ExprManager* exprMan, const QueryLoc& loc, const store::Item_t& name);
+  IndexDecl(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, const store::Item_t& name);
 
   ~IndexDecl();
 

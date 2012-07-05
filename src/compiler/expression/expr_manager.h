@@ -29,6 +29,8 @@
 namespace zorba
 {
 
+class CompilerCB;
+
 class ExprManager
 {
 public:
@@ -41,12 +43,16 @@ public:
 private:
   std::list<expr*> theExprs;
   MemoryManager    theMemoryMgr;
+  CompilerCB     * theCCB;
 
 private:
   //An ExprManager is the only objecto to handle a collection of Exprs and
   //the memory in which they recide. It makes no sense to copy it.
   ExprManager(const ExprManager&);
   ExprManager& operator= (const ExprManager&);
+
+public:
+  ExprManager(CompilerCB* ccb);
 
 public:
   MemoryManager& getMemory() { return theMemoryMgr; }
@@ -406,7 +412,6 @@ public:
 
   for_clause* create_for_clause(
       static_context* sctx,
-      ExprManager* exprMan,
       const QueryLoc& loc,
       var_expr_t varExpr,
       expr_t domainExpr,
@@ -416,7 +421,6 @@ public:
 
   let_clause* create_let_clause(
       static_context* sctx,
-      ExprManager* exprMan,
       const QueryLoc& loc,
       var_expr_t varExpr,
       expr_t domainExpr,
@@ -424,7 +428,6 @@ public:
 
   window_clause* create_window_clause(
       static_context* sctx,
-      ExprManager* exprMan,
       const QueryLoc& loc,
       window_clause::window_t winKind,
       var_expr_t varExpr,
@@ -474,6 +477,28 @@ public:
       bool general);
 };
 
+////////////////////////////////////////////////////////////////////////////////
+
+#ifdef ZORBA_WITH_JSON
+
+json_array_expr* create_json_array_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const expr_t& content);
+
+json_object_expr* create_json_object_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const expr_t& content,
+      bool accumulate);
+
+json_direct_object_expr* create_json_direct_object_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<expr_t>& names,
+      std::vector<expr_t>& values);
+
+#endif
 
 } // namespace zorba
 

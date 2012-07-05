@@ -112,7 +112,7 @@ protected:
 
 protected:
   block_expr(
-      ExprManager* exprMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       bool allowLastUpdating,
@@ -160,7 +160,7 @@ private:
 
 protected:
   apply_expr(
-      ExprManager* exprMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& inExpr,
@@ -221,7 +221,7 @@ protected:
 
 protected:
   var_decl_expr(
-      ExprManager* exprMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const var_expr_t& varExpr,
@@ -267,7 +267,7 @@ protected:
 
 protected:
   var_set_expr(
-      ExprManager* exprMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const var_expr_t& varExpr,
@@ -305,7 +305,7 @@ private:
   exit_catcher_expr  * theCatcherExpr;
 
 protected:
-  exit_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
+  exit_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
 
 public:
   ~exit_expr();
@@ -350,7 +350,7 @@ private:
 
 protected:
   exit_catcher_expr(
-      ExprManager* exprMan,
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& inExpr,
@@ -399,7 +399,7 @@ protected:
   enum action theAction;
 
 protected:
-  flowctl_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, enum action action);
+  flowctl_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, enum action action);
 
 public:
   enum action get_action() const { return theAction; }
@@ -431,7 +431,7 @@ protected:
   expr_t theBody;
 
 protected:
-  while_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_t body);
+  while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_t body);
 
 public:
   expr* get_body() const { return theBody.getp(); }

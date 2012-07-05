@@ -137,7 +137,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     for (csize i = 0; i < numEvalVars; ++i)
     {
-      var_expr_t ve = state->ccb->getExprManager().create_var_expr(
+      var_expr_t ve = state->ccb->theEM->create_var_expr(
                                                 outerSctx,
                                                 loc,
                                                 var_expr::prolog_var,

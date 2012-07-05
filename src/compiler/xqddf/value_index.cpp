@@ -52,7 +52,7 @@ SERIALIZABLE_CLASS_VERSIONS(IndexDecl)
 ********************************************************************************/
 IndexDecl::IndexDecl(
     static_context* sctx,
-    ExprManager* exprMan,
+    CompilerCB* ccb,
     const QueryLoc& loc,
     const store::Item_t& name)
   :
@@ -64,7 +64,7 @@ IndexDecl::IndexDecl(
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH),
-  theExprManager(exprMan)
+  theCCB(ccb)
 {
 }
 
@@ -138,7 +138,7 @@ void IndexDecl::setDomainExpr(expr_t domainExpr)
 {
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainExpr->get_sctx(),
-                                     theExprManager,
+                                     theCCB,
                                      domainExpr->get_loc(),
                                      NULL,
                                      NULL);
@@ -163,7 +163,7 @@ void IndexDecl::setDomainVariable(var_expr_t domainVar)
 {
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainVar->get_sctx(),
-                                     theExprManager,
+                                     theCCB,
                                      domainVar->get_loc(),
                                      NULL,
                                      NULL);
@@ -478,8 +478,8 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
-  var_expr_t newdot = theExprManager->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
-  var_expr_t newpos = theExprManager->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  var_expr_t newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+  var_expr_t newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -488,7 +488,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause_t fc = new for_clause(sctx, theExprManager, dotloc, newdot, newdom, newpos);
+  for_clause_t fc = new for_clause(sctx, theCCB, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables
@@ -510,7 +510,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
-  expr_t domainVarExpr(theExprManager->create_wrapper_expr(sctx, loc, newdot.getp()));
+  expr_t domainVarExpr(theCCB->theEM->create_wrapper_expr(sctx, loc, newdot.getp()));
 
   clonedExprs[0] = domainVarExpr;
 
@@ -523,9 +523,9 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   ZORBA_ASSERT(f != NULL);
 
-  fo_expr_t returnExpr =  theExprManager->create_fo_expr(sctx, loc, f, clonedExprs);
+  fo_expr_t returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theExprManager->create_flwor_expr(sctx, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, loc, false);
   flworExpr->set_return_expr(returnExpr.getp());
   flworExpr->add_clause(fc);
 
@@ -604,14 +604,14 @@ DocIndexer* IndexDecl::getDocIndexer(
   // during the apply-updates.
   //
 
-  var_expr_t docVar = theExprManager->create_var_expr(sctx,
+  var_expr_t docVar = theCCB->theEM->create_var_expr(sctx,
                                    dot->get_loc(),
                                    var_expr::prolog_var,
                                    docVarName);
   docVar->set_unique_id(1);
   ulong nextVarId = 2;
 
-  expr_t wrapperExpr = theExprManager->create_wrapper_expr(sctx, dot->get_loc(), docVar.getp());
+  expr_t wrapperExpr = theCCB->theEM->create_wrapper_expr(sctx, dot->get_loc(), docVar.getp());
 
   docVar->set_type(domainExpr->get_return_type());
 
@@ -625,8 +625,8 @@ DocIndexer* IndexDecl::getDocIndexer(
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
-  var_expr_t newdot = theExprManager->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
-  var_expr_t newpos = theExprManager->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  var_expr_t newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+  var_expr_t newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -635,7 +635,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause_t fc = new for_clause(sctx, theExprManager, dotloc, newdot, newdom, newpos);
+  for_clause_t fc = new for_clause(sctx, theCCB, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables
@@ -657,7 +657,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
-  expr_t domainVarExpr = theExprManager->create_wrapper_expr(sctx, loc, newdot.getp());
+  expr_t domainVarExpr = theCCB->theEM->create_wrapper_expr(sctx, loc, newdot.getp());
 
   clonedExprs[0] = domainVarExpr;
 
@@ -670,9 +670,9 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   ZORBA_ASSERT(f != NULL);
 
-  fo_expr_t returnExpr =  theExprManager->create_fo_expr(sctx, loc, f, clonedExprs);
+  fo_expr_t returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
 
-  flwor_expr_t flworExpr = theExprManager->create_flwor_expr(sctx, loc, false);
+  flwor_expr_t flworExpr = theCCB->theEM->create_flwor_expr(sctx, loc, false);
   flworExpr->set_return_expr(returnExpr.getp());
   flworExpr->add_clause(fc);
 

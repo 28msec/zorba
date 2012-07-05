@@ -25,6 +25,8 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/expr_manager.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "functions/function.h"
 #include "functions/library.h"
 #include "functions/func_errors_and_diagnostics.h"
@@ -121,13 +123,13 @@ void expr::checkSimpleExpr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, expr_kind_t k)
+expr::expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_kind_t k)
   :
   theSctx(sctx),
   theLoc(loc),
   theKind(k),
   theFlags1(0),
-  theExprManager(expMan)
+  theCCB(ccb)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
@@ -1168,7 +1170,7 @@ const store::Item* expr::getQName(static_context* sctx) const
 ********************************************************************************/
 xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 {
-  expr_t emptyExpr = theExprManager->create_fo_expr(input->get_sctx(),
+  expr_t emptyExpr = theCCB->theEM->create_fo_expr(input->get_sctx(),
                                  QueryLoc::null,
                                  GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
   expr::substitution_t subst;
