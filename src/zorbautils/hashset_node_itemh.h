@@ -31,8 +31,10 @@ namespace zorba
   A hash-based set container of item handles, where equality is based on
   object identity (i.e. pointer equality) rather than object value.
 
-  It is used by the NodeDistinctIterator and for the population of a general
-  index. 
+  It is used 
+  1. by the NodeDistinctIterator
+  2. for the population of a general index. 
+  3. by the HashSemiJoinIterator, which implements op:intersect and op:except.
 
   NOTE: Although the set uses raw item pointers instead of rchandles, reference
         counting is still done, but done manually (see insert and clear methods)
@@ -65,22 +67,36 @@ public:
 
   void clear();
 
-  bool exists(store::Item* const key) 
+  bool empty() const { return theSet.empty(); }
+
+  bool exists(const store::Item_t& key) const 
   {
-    return theSet.exists(key); 
+    return theSet.exists(key.getp());
   }
 
-  bool insert(store::Item* key) 
+  bool insert(const store::Item_t& key)
   {
     assert(key->isNode());
 
-    bool inserted = theSet.insert(key);
+    store::Item* key2 = key.getp();
+
+    bool inserted = theSet.insert(key2);
 
     if (inserted) 
     {
       key->addReference();
     }
     return inserted;
+  }
+
+  bool erase(const store::Item_t& key)
+  {
+    bool found = theSet.erase(key.getp());
+
+    if (found)
+      key->removeReference();
+
+    return found;
   }
 };
 

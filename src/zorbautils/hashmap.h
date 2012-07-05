@@ -311,6 +311,17 @@ virtual ~HashMap()
 /*******************************************************************************
 
 ********************************************************************************/
+SYNC_CODE(                 \
+Mutex* get_mutex() const   \
+{                          \
+  return theMutexp;        \
+}                          \
+)
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void set_load_factor(double v)
 {
   theLoadFactor = v;
@@ -410,13 +421,13 @@ iterator end() const
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool exists(const T& item)
+bool exists(const T& item) const
 {
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = bucket(hval);
+  const HashEntry<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;

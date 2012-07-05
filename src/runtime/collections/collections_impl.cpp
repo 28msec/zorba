@@ -230,6 +230,7 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Collection_t coll;
   store::Item_t name;
+  xs_integer lCount;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -245,7 +246,20 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     coll = getW3CCollection(planState);
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, coll->size()), state);
+  lCount = coll->size();
+  if (theChildren.size() > 1) 
+  {
+    // skip parameter passed
+    store::Item_t lSkipItem;
+    consumeNext(lSkipItem, theChildren[1].getp(), planState);
+    xs_integer lSkip = lSkipItem->getIntegerValue(); 
+    // negative is transformed into 0
+    lCount -= ( lSkip <= xs_integer::zero() ? xs_integer::zero() : lSkip );
+    // negative is transformed into 0
+    lCount = ( lCount < xs_integer::zero() ? xs_integer::zero() : lCount );
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lCount), state);
 
   STACK_END(state);
 }
@@ -360,6 +374,7 @@ bool ZorbaCollectionIterator::nextImpl(
 {
   store::Item_t name;
   store::Collection_t collection;
+  xs_integer lSkip;
 
   ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
@@ -368,10 +383,39 @@ bool ZorbaCollectionIterator::nextImpl(
 
   (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
-  // return the nodes of the collection
-  state->theIterator = collection->getIterator();
+  if (theChildren.size() > 1)
+  {
+    // skip parameter passed
+    store::Item_t lSkipItem;
+    consumeNext(lSkipItem, theChildren[1].getp(), planState);
+    lSkip = lSkipItem->getIntegerValue(); 
+    // negative is transformed into 0
+    state->theIterator = ( lSkip > xs_integer::zero() 
+                             ? collection->getIterator(lSkip)
+                             : collection->getIterator()
+                         );
+  }
+  else
+  {
+    state->theIterator = collection->getIterator();
+  }
+
   ZORBA_ASSERT(state->theIterator != NULL);
-  state->theIterator->open();
+
+  try
+  {
+    state->theIterator->open();
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQD0004_INVALID_PARAMETER,
+      ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
+                  lSkip),
+      ERROR_LOC( loc )
+    );
+  }
+
   state->theIteratorOpened = true;
 
   while (state->theIterator->next(result))
@@ -383,7 +427,6 @@ bool ZorbaCollectionIterator::nextImpl(
 
   STACK_END(state);
 }
-
 
 /*******************************************************************************
   declare function index-of($name as xs:QName,

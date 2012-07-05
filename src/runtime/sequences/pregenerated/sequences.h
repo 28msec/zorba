@@ -34,9 +34,7 @@
 
 
 namespace zorba {
-namespace store{
-  class NodeHashSet;
-}
+class NodeHandleHashSet;
 class AtomicItemHandleHashSet;
 /**
  * 
@@ -708,7 +706,7 @@ public:
 class HashSemiJoinIteratorState : public PlanIteratorState
 {
 public:
-  store::NodeHashSet* theRightInput; //
+  NodeHandleHashSet* theRightInput; //
 
   HashSemiJoinIteratorState();
 

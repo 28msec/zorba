@@ -1838,9 +1838,9 @@ DEFAULT_END_VISIT (ReverseAxis);
       os << "copy $";
       n.get_var_list()->accept(*this);
       os << "modify ";
-      n.get_source_expr()->accept(*this);
+      n.get_modify_expr()->accept(*this);
       os << "return ";
-      n.get_target_expr()->accept(*this);
+      n.get_return_expr()->accept(*this);
       return 0;
     }
     DEFAULT_END_VISIT (TransformExpr)
