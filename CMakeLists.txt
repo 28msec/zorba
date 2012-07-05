@@ -137,14 +137,24 @@ CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES)
 
 # C++11 langauge features
-CHECK_CXX_SOURCE_COMPILES("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
-CHECK_CXX_SOURCE_COMPILES("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
 
 # C++11 standard library types
-CHECK_CXX_SOURCE_COMPILES ("#include <type_traits>\nint main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
-CHECK_CXX_SOURCE_COMPILES ("#include <unordered_map>\nint main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
-CHECK_CXX_SOURCE_COMPILES ("#include <unordered_set>\nint main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <type_traits>
+  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES ("
+  #include <memory>
+  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <unordered_map>
+  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <unordered_set>
+  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 # Various cmake macros
