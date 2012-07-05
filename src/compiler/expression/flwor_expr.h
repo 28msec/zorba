@@ -352,7 +352,7 @@ public:
     ~vars();
     void set_flwor_clause(flwor_clause* c);
 
-    void clone(vars& cloneVars, expr::substitution_t& subst) const;
+    void clone(ExprManager* mgr, vars& cloneVars, expr::substitution_t& subst) const;
 
     std::ostream& put(std::ostream&) const;
   };

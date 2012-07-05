@@ -31,16 +31,16 @@ namespace zorba
 
 class ExprManager
 {
+private:
+  std::vector<expr*> theExprs;
+  MemoryManager      theMemoryMgr;
+
 public:
   ExprManager();
 
   ~ExprManager();
 
   expr* reg(expr*);
-
-private:
-  std::list<expr*> theExprs;
-  MemoryManager    theMemoryMgr;
 
 private:
   //An ExprManager is the only objecto to handle a collection of Exprs and
@@ -50,6 +50,8 @@ private:
 
 public:
   MemoryManager& getMemory() { return theMemoryMgr; }
+
+  csize numExprs() const { return theExprs.size(); }
 
 public:
   if_expr* create_if_expr(

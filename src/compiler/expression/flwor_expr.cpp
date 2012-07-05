@@ -197,14 +197,14 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
 {
   expr_t domainCopy = theDomainExpr->clone(subst);
 
-  var_expr_t varCopy(new var_expr(*theVarExpr));
+  var_expr_t varCopy = theExprManager->create_var_expr(*theVarExpr);
   subst[theVarExpr.getp()] = varCopy.getp();
 
   var_expr_t posvarCopy;
   var_expr* pos_var_ptr = thePosVarExpr.getp();
   if (pos_var_ptr)
   {
-    posvarCopy = new var_expr(*pos_var_ptr);
+    posvarCopy = theExprManager->create_var_expr(*pos_var_ptr);
     subst[pos_var_ptr] = posvarCopy.getp();
   }
 
@@ -212,7 +212,7 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
   var_expr* score_var_ptr = theScoreVarExpr.getp();
   if (score_var_ptr)
   {
-    scorevarCopy = new var_expr(*score_var_ptr);
+    scorevarCopy = theExprManager->create_var_expr(*score_var_ptr);
     subst[score_var_ptr] = scorevarCopy.getp();
   }
 
@@ -303,7 +303,7 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
 {
   expr_t domainCopy = theDomainExpr->clone(subst);
 
-  var_expr_t varCopy(new var_expr(*theVarExpr));
+  var_expr_t varCopy = theExprManager->create_var_expr(*theVarExpr);
   subst[theVarExpr.getp()] = varCopy.getp();
 
 #if 0
@@ -316,7 +316,12 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
   }
 #endif
 
-  return new let_clause(theContext, theExprManager, get_loc(), varCopy, domainCopy, theLazyEval);
+  return new let_clause(theContext,
+                        theExprManager,
+                        get_loc(),
+                        varCopy,
+                        domainCopy,
+                        theLazyEval);
 }
 
 
@@ -403,7 +408,7 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst) const
 {
   expr_t domainCopy = theDomainExpr->clone(subst);
 
-  var_expr_t varCopy(new var_expr(*theVarExpr));
+  var_expr_t varCopy = theExprManager->create_var_expr(*theVarExpr);
   subst[theVarExpr.getp()] = varCopy.getp();
 
   flwor_wincond_t cloneStartCond;
@@ -492,33 +497,34 @@ void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
 
 
 void flwor_wincond::vars::clone(
+    ExprManager* mgr,
     flwor_wincond::vars& cloneVars,
     expr::substitution_t& subst) const
 {
   if (posvar != NULL)
   {
-    var_expr_t varCopy(new var_expr(*posvar));
+    var_expr_t varCopy = mgr->create_var_expr(*posvar);
     subst[posvar.getp()] = varCopy.getp();
     cloneVars.posvar = varCopy;
   }
 
   if (curr != NULL)
   {
-    var_expr_t varCopy(new var_expr(*curr));
+    var_expr_t varCopy = mgr->create_var_expr(*curr);
     subst[curr.getp()] = varCopy.getp();
     cloneVars.curr = varCopy;
   }
 
   if (prev != NULL)
   {
-    var_expr_t varCopy(new var_expr(*prev));
+    var_expr_t varCopy = mgr->create_var_expr(*prev);
     subst[prev.getp()] = varCopy.getp();
     cloneVars.prev = varCopy;
   }
 
   if (next != NULL)
   {
-    var_expr_t varCopy(new var_expr(*next));
+    var_expr_t varCopy = mgr->create_var_expr(*next);
     subst[next.getp()] = varCopy.getp();
     cloneVars.next = varCopy;
   }
@@ -537,12 +543,17 @@ flwor_wincond_t flwor_wincond::clone(expr::substitution_t& subst) const
   flwor_wincond::vars cloneInVars;
   flwor_wincond::vars cloneOutVars;
 
-  theInputVars.clone(cloneInVars, subst);
-  theOutputVars.clone(cloneOutVars, subst);
+  theInputVars.clone(theExprManager, cloneInVars, subst);
+  theOutputVars.clone(theExprManager, cloneOutVars, subst);
 
   expr_t cloneCondExpr = theCondExpr->clone(subst);
 
-  return new flwor_wincond(theExprManager, NULL, theIsOnly, cloneInVars, cloneOutVars, cloneCondExpr);
+  return new flwor_wincond(theExprManager,
+                           NULL,
+                           theIsOnly,
+                           cloneInVars,
+                           cloneOutVars,
+                           cloneCondExpr);
 }
 
 
@@ -619,17 +630,24 @@ flwor_clause_t group_clause::clone(expr::substitution_t& subst) const
   rebind_list_t cloneGroupVars(numGroupVars);
   rebind_list_t cloneNonGroupVars(numNonGroupVars);
 
+  ExprManager* exprMgr = NULL;
+
+  if (numGroupVars > 0)
+    exprMgr = theGroupVars[0].first->get_exprMan();
+  else if (numNonGroupVars > 0)
+    exprMgr = theNonGroupVars[0].first->get_exprMan();
+
   for (csize i = 0; i < numGroupVars; ++i)
   {
     cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
-    cloneGroupVars[i].second = new var_expr(*theGroupVars[i].second);
+    cloneGroupVars[i].second = exprMgr->create_var_expr(*theGroupVars[i].second);
     subst[theGroupVars[i].second.getp()] = cloneGroupVars[i].second.getp();
   }
 
   for (csize i = 0; i < numNonGroupVars; ++i)
   {
     cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
-    cloneNonGroupVars[i].second = new var_expr(*theNonGroupVars[i].second);
+    cloneNonGroupVars[i].second = exprMgr->create_var_expr(*theNonGroupVars[i].second);
     subst[theNonGroupVars[i].second.getp()] = cloneNonGroupVars[i].second.getp();
   }
 
@@ -729,7 +747,9 @@ count_clause::~count_clause()
 
 flwor_clause_t count_clause::clone(expr::substitution_t& subst) const
 {
-  var_expr_t cloneVar = new var_expr(*theVarExpr);
+  ExprManager* exprMgr = theVarExpr->get_exprMan();
+
+  var_expr_t cloneVar = exprMgr->create_var_expr(*theVarExpr);
   subst[theVarExpr.getp()] = cloneVar;
 
   return new count_clause(theContext, get_loc(), cloneVar);

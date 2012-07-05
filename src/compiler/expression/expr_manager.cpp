@@ -43,8 +43,10 @@ public:
   std::ostream& put(std::ostream& stream) const{return stream;}
 };
 
+
 ExprManager::ExprManager()
 {
+  theExprs.reserve(1024);
 }
 
 
@@ -56,34 +58,38 @@ ExprManager::~ExprManager()
   unsigned long total_bytes = 0;
   unsigned long zero_ref_bytes = 0;
 
-  while(theExprs.size() > 0)
+#if 0
+  while (theExprs.size() > 0)
   {
     bool deleted_expr = false;
 
-    for(std::list<expr*>::iterator iter = theExprs.begin();
+    for(std::vector<expr*>::iterator iter = theExprs.begin();
         iter != theExprs.end();
-        iter++)
+        ++iter)
     {
       expr* exp = *iter;
-      if(exp->getRefCount() <= 0)
+
+      if (exp->getRefCount() <= 0)
       {
-          deleted_expr = true;
-          unsigned long bytes = sizeof *exp;
+        deleted_expr = true;
+        unsigned long bytes = sizeof *exp;
 
-          total_bytes += bytes;
-          ++zero_ref_expr;
-          zero_ref_bytes += bytes;
+        total_bytes += bytes;
+        ++zero_ref_expr;
+        zero_ref_bytes += bytes;
 
-          exp->~expr();
-          iter = theExprs.erase(iter);
+        exp->~expr();
+        iter = theExprs.erase(iter);
+        --iter;
       }
     }
 
-    if(!deleted_expr)
+    if (!deleted_expr)
       break;
   }
+#endif
 
-  for(std::list<expr*>::iterator iter = theExprs.begin();
+  for(std::vector<expr*>::iterator iter = theExprs.begin();
       iter != theExprs.end();
       ++iter)
   {
@@ -100,7 +106,7 @@ ExprManager::~ExprManager()
     exp->~expr();
 
     //constructs a new NULLExpr where the old expr existed
-    new(exp)NullExpr();
+    new (exp) NullExpr();
   }
 }
 
@@ -120,7 +126,7 @@ expr* ExprManager::reg(expr* exp)
   return EXPPTR
 
 #define CREATE_AND_RETURN(TYPE, ...) \
-  TYPE *EXPPTR = new (theMemoryMgr) TYPE(__VA_ARGS__); \
+  TYPE* EXPPTR = new (theMemoryMgr) TYPE(__VA_ARGS__); \
   return EXPPTR
 
 
@@ -477,8 +483,7 @@ var_expr* ExprManager::create_var_expr(
 
 var_expr* ExprManager::create_var_expr(const var_expr& source)
 {
-  return static_cast<var_expr*>
-      (reg(new (theMemoryMgr) var_expr(source)));
+  return static_cast<var_expr*>(reg(new (theMemoryMgr) var_expr(source)));
 }
 
 

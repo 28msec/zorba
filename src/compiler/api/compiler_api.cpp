@@ -211,6 +211,7 @@ PlanIter_t XQueryCompiler::compile(
   zorba::audit::ScopedRecord sar(ae);
 
   const char* lFileName = aFileName.c_str();
+
   zorba::audit::ScopedAuditor<const char*> filenameAudit(
       sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
 
@@ -282,7 +283,20 @@ PlanIter_t XQueryCompiler::compile(
 ********************************************************************************/
 expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 {
+  time::walltime startTime;
+  time::walltime stopTime;
+  double elapsedTime;
+
+  time::get_current_walltime(startTime);
+
   expr_t lExpr = translate(*aParsenode, theCompilerCB);
+
+  time::get_current_walltime(stopTime);
+  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);      
+  std::cout << "Translation time = " << elapsedTime << std::endl;
+  std::cout << "Num exprs after translation = " 
+            << theCompilerCB->getExprManager().numExprs()
+            << std::endl << std::endl;
 
   if ( lExpr == NULL )
   {
@@ -327,6 +341,10 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 
   if ( theCompilerCB->theConfig.optimize_cb != NULL )
     theCompilerCB->theConfig.optimize_cb(lExpr.getp(), "main query");
+
+  std::cout << "Num exprs after optimization = " 
+            << theCompilerCB->getExprManager().numExprs()
+            << std::endl << std::endl;
 
   return lExpr;
 }

@@ -305,7 +305,11 @@ private:
   exit_catcher_expr  * theCatcherExpr;
 
 protected:
-  exit_expr(ExprManager* expMan, static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
+  exit_expr(
+      ExprManager* expMan,
+      static_context* sctx,
+      const QueryLoc& loc,
+      const expr_t& inExpr);
 
 public:
   ~exit_expr();
