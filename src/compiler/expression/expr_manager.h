@@ -53,6 +53,8 @@ public:
 
   csize numExprs() const { return theExprs.size(); }
 
+  void garbageCollect();
+
 public:
   if_expr* create_if_expr(
       static_context* sctx,

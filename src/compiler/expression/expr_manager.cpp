@@ -53,12 +53,32 @@ ExprManager::ExprManager()
 //calls on the destructors and also keeps tracks of certain numbers
 ExprManager::~ExprManager()
 {
-  unsigned long zero_ref_expr = 0;
+  for(std::vector<expr*>::iterator iter = theExprs.begin();
+      iter != theExprs.end();
+      ++iter)
+  {
+    //Here we delete all remaining exprs, we assume that they may be "held"
+    //by a reference somewhere.
+    //To prevent deleting an already deleted expr, we replace them with
+    //a NullExpr
 
-  unsigned long total_bytes = 0;
-  unsigned long zero_ref_bytes = 0;
+    expr* exp = *iter;
 
-#if 0
+    exp->~expr();
+
+    //constructs a new NULLExpr where the old expr existed
+    new (exp) NullExpr();
+  }
+}
+
+
+void ExprManager::garbageCollect()
+{
+  unsigned long numTotalBytes = 0;
+  unsigned long numDeadBytes = 0;
+  unsigned long numTotalExprs = theExprs.size();
+  unsigned long numDeadExprs = 0;
+
   while (theExprs.size() > 0)
   {
     bool deleted_expr = false;
@@ -74,9 +94,9 @@ ExprManager::~ExprManager()
         deleted_expr = true;
         unsigned long bytes = sizeof *exp;
 
-        total_bytes += bytes;
-        ++zero_ref_expr;
-        zero_ref_bytes += bytes;
+        numTotalBytes += bytes;
+        numDeadBytes += bytes;
+        ++numDeadExprs;
 
         exp->~expr();
         iter = theExprs.erase(iter);
@@ -87,27 +107,19 @@ ExprManager::~ExprManager()
     if (!deleted_expr)
       break;
   }
-#endif
 
   for(std::vector<expr*>::iterator iter = theExprs.begin();
       iter != theExprs.end();
       ++iter)
   {
-    //Here we delete all remaining exprs, we assume that they may be "held"
-    //by a reference somewhere.
-    //To prevent deleting an already deleted expr, we replace them with
-    //a NullExpr
-
     expr* exp = *iter;
-    unsigned long bytes = sizeof *exp;
-
-    total_bytes += bytes;
-
-    exp->~expr();
-
-    //constructs a new NULLExpr where the old expr existed
-    new (exp) NullExpr();
+    numTotalBytes += sizeof *exp;
   }
+
+  std::cout << "Num Total Exprs = " << numTotalExprs
+            << " Num Total Bytes = " << numTotalBytes << std::endl
+            << "Num Dead Exprs  = " << numDeadExprs
+            << " Num Dead Bytes = " << numDeadBytes << std::endl << std::endl;
 }
 
 

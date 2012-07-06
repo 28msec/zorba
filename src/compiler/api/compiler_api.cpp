@@ -213,11 +213,15 @@ PlanIter_t XQueryCompiler::compile(
   const char* lFileName = aFileName.c_str();
 
   zorba::audit::ScopedAuditor<const char*> filenameAudit(
-      sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
+       sar,
+       zorba::audit::XQUERY_COMPILATION_FILENAME,
+       lFileName);
 
   zorba::time::Timer lTimer;
   zorba::audit::DurationAuditor durationAudit(
-      sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+       sar,
+       zorba::audit::XQUERY_COMPILATION_PARSE_DURATION,
+       lTimer);
 
   parsenode_t lAST = parse(aXQuery, aFileName);
 
@@ -245,17 +249,20 @@ PlanIter_t XQueryCompiler::compile(
 {
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(aAuditRecord,
-                                         audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
-                                         lTimer);
+    audit::DurationAuditor durationAudit(
+         aAuditRecord,
+         audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
+         lTimer);
 
     rootExpr = normalize(ast); // also does the translation
   }
+
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(aAuditRecord,
-                                         audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
-                                         lTimer);
+    audit::DurationAuditor durationAudit(
+         aAuditRecord,
+         audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+         lTimer);
 
     rootExpr = optimize(rootExpr);
   }
@@ -267,12 +274,15 @@ PlanIter_t XQueryCompiler::compile(
   PlanIter_t plan;
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(aAuditRecord,
-                                         audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
-                                         lTimer);
+    audit::DurationAuditor durationAudit(
+         aAuditRecord,
+         audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
+         lTimer);
 
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
   }
+
+  //theCompilerCB->getExprManager().garbageCollect();
 
   return plan;
 }
@@ -362,20 +372,27 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 class FakeLibraryModuleURLResolver : public internal::URLResolver
 {
 public:
-  FakeLibraryModuleURLResolver
-  (zstring const& aLibraryModuleNamespace, 
-    zstring const& aLibraryModuleFilename, std::istream& aStream)
-    : theLibraryModuleNamespace(aLibraryModuleNamespace),
-      theLibraryModuleFilename(aLibraryModuleFilename),
-      theStream(aStream)
-  {}
-  virtual ~FakeLibraryModuleURLResolver()
-  {}
-
-  virtual internal::Resource* resolveURL
-  (zstring const& aUrl, internal::EntityData const* aEntityData)
+  FakeLibraryModuleURLResolver(
+      zstring const& aLibraryModuleNamespace, 
+      zstring const& aLibraryModuleFilename,
+      std::istream& aStream)
+    :
+    theLibraryModuleNamespace(aLibraryModuleNamespace),
+    theLibraryModuleFilename(aLibraryModuleFilename),
+    theStream(aStream)
   {
-    if (aUrl != theLibraryModuleNamespace) {
+  }
+
+  virtual ~FakeLibraryModuleURLResolver()
+  {
+  }
+
+  virtual internal::Resource* resolveURL(
+      zstring const& aUrl,
+      internal::EntityData const* aEntityData)
+  {
+    if (aUrl != theLibraryModuleNamespace)
+    {
       return NULL;
     }
     assert (theStream.good());
