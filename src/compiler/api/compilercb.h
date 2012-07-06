@@ -217,6 +217,8 @@ public:
 
   static_context* getStaticContext(int id);
 
+  ExprManager* getExprManager() {return theEM;}
+
   MemoryManager& getMemoryManager() {return theEM->getMemory();}
 
 };

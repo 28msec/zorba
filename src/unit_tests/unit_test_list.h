@@ -34,7 +34,9 @@ namespace UnitTests {
 #endif /* ZORBA_NO_ICU */
   int test_json_parser( int, char*[] );
   int test_string( int, char*[] );
-  int test_mem_manager( int, char*[] );
+  int test_unique_ptr( int, char*[] );
+  int test_fs_iterator( int, char*[] );
+  //int test_mem_manager( int, char*[] );
 #ifndef ZORBA_NO_FULL_TEXT
   int test_stemmer( int, char*[] );
   int test_thesaurus( int, char*[] );

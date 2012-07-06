@@ -33,17 +33,17 @@ class CompilerCB;
 
 class ExprManager
 {
+private:
+  std::vector<expr*> theExprs;
+  MemoryManager      theMemoryMgr;
+  CompilerCB     * theCCB;
+
 public:
-  ExprManager();
+  ExprManager(CompilerCB* ccb);
 
   ~ExprManager();
 
   expr* reg(expr*);
-
-private:
-  std::list<expr*> theExprs;
-  MemoryManager    theMemoryMgr;
-  CompilerCB     * theCCB;
 
 private:
   //An ExprManager is the only objecto to handle a collection of Exprs and
@@ -52,10 +52,11 @@ private:
   ExprManager& operator= (const ExprManager&);
 
 public:
-  ExprManager(CompilerCB* ccb);
-
-public:
   MemoryManager& getMemory() { return theMemoryMgr; }
+
+  csize numExprs() const { return theExprs.size(); }
+
+  void garbageCollect();
 
 public:
   if_expr* create_if_expr(

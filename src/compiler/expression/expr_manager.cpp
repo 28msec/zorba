@@ -48,45 +48,14 @@ ExprManager::ExprManager(CompilerCB* ccb)
 :
   theCCB(ccb)
 {
+  theExprs.reserve(1024);
 }
 
 
 //calls on the destructors and also keeps tracks of certain numbers
 ExprManager::~ExprManager()
 {
-  unsigned long zero_ref_expr = 0;
-
-  unsigned long total_bytes = 0;
-  unsigned long zero_ref_bytes = 0;
-
-  while(theExprs.size() > 0)
-  {
-    bool deleted_expr = false;
-
-    for(std::list<expr*>::iterator iter = theExprs.begin();
-        iter != theExprs.end();
-        iter++)
-    {
-      expr* exp = *iter;
-      if(exp->getRefCount() <= 0)
-      {
-          deleted_expr = true;
-          unsigned long bytes = sizeof *exp;
-
-          total_bytes += bytes;
-          ++zero_ref_expr;
-          zero_ref_bytes += bytes;
-
-          exp->~expr();
-          iter = theExprs.erase(iter);
-      }
-    }
-
-    if(!deleted_expr)
-      break;
-  }
-
-  for(std::list<expr*>::iterator iter = theExprs.begin();
+  for(std::vector<expr*>::iterator iter = theExprs.begin();
       iter != theExprs.end();
       ++iter)
   {
@@ -96,15 +65,63 @@ ExprManager::~ExprManager()
     //a NullExpr
 
     expr* exp = *iter;
-    unsigned long bytes = sizeof *exp;
-
-    total_bytes += bytes;
 
     exp->~expr();
 
     //constructs a new NULLExpr where the old expr existed
-    new(exp)NullExpr();
+    new (exp) NullExpr();
   }
+}
+
+
+void ExprManager::garbageCollect()
+{
+  unsigned long numTotalBytes = 0;
+  unsigned long numDeadBytes = 0;
+  unsigned long numTotalExprs = theExprs.size();
+  unsigned long numDeadExprs = 0;
+
+  while (theExprs.size() > 0)
+  {
+    bool deleted_expr = false;
+
+    for(std::vector<expr*>::iterator iter = theExprs.begin();
+        iter != theExprs.end();
+        ++iter)
+    {
+      expr* exp = *iter;
+
+      if (exp->getRefCount() <= 0)
+      {
+        deleted_expr = true;
+        unsigned long bytes = sizeof *exp;
+
+        numTotalBytes += bytes;
+        numDeadBytes += bytes;
+        ++numDeadExprs;
+
+        exp->~expr();
+        iter = theExprs.erase(iter);
+        --iter;
+      }
+    }
+
+    if (!deleted_expr)
+      break;
+  }
+
+  for(std::vector<expr*>::iterator iter = theExprs.begin();
+      iter != theExprs.end();
+      ++iter)
+  {
+    expr* exp = *iter;
+    numTotalBytes += sizeof *exp;
+  }
+
+  std::cout << "Num Total Exprs = " << numTotalExprs
+            << " Num Total Bytes = " << numTotalBytes << std::endl
+            << "Num Dead Exprs  = " << numDeadExprs
+            << " Num Dead Bytes = " << numDeadBytes << std::endl << std::endl;
 }
 
 
@@ -123,7 +140,7 @@ expr* ExprManager::reg(expr* exp)
   return EXPPTR
 
 #define CREATE_AND_RETURN(TYPE, ...) \
-  TYPE *EXPPTR = new (theMemoryMgr) TYPE(__VA_ARGS__); \
+  TYPE* EXPPTR = new (theMemoryMgr) TYPE(__VA_ARGS__); \
   return EXPPTR
 
 
@@ -480,8 +497,7 @@ var_expr* ExprManager::create_var_expr(
 
 var_expr* ExprManager::create_var_expr(const var_expr& source)
 {
-  return static_cast<var_expr*>
-      (reg(new (theMemoryMgr) var_expr(source)));
+  return static_cast<var_expr*>(reg(new (theMemoryMgr) var_expr(source)));
 }
 
 

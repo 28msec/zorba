@@ -130,6 +130,12 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     csize numEvalVars = theVarNames.size();
 
+    // Create the ccb for the eval query
+    CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
+    evalCCB->theIsEval = true;
+    evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
+    state->ccb.reset(evalCCB);
+
     // Create an "outer" sctx and register into it (a) global vars corresponding
     // to the eval vars and (b) the expression-level ns bindings at the place
     // where the eval call appears at.
@@ -137,12 +143,11 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     for (csize i = 0; i < numEvalVars; ++i)
     {
-      var_expr_t ve = state->ccb->theEM->create_var_expr(
-                                                outerSctx,
-                                                loc,
-                                                var_expr::prolog_var,
-                                                theVarNames[i].getp());
-
+      var_expr_t ve =
+      state->ccb->theEM->create_var_expr(outerSctx,
+                                         loc,
+                                         var_expr::prolog_var,
+                                         theVarNames[i].getp());
       ve->set_type(theVarTypes[i]);
 
       outerSctx->bind_var(ve, loc, err::XQST0049);
@@ -159,14 +164,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // Create the root sctx for the eval query
     static_context* evalSctx = outerSctx->create_child_context();
 
-    // Create the ccb for the eval query
-    CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
-    evalCCB->theIsEval = true;
     evalCCB->theRootSctx = evalSctx;
-    evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
     (evalCCB->theSctxMap)[1] = evalSctx;
-
-    state->ccb.reset(evalCCB);
 
     // Create the dynamic context for the eval query
     dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
@@ -176,7 +175,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     ulong maxOuterVarId;
     copyOuterVariables(planState, outerSctx, evalDctx, maxOuterVarId);
 
-    // If we are here after a reet, we must set state->thePlanWrapper to NULL
+    // If we are here after a reset, we must set state->thePlanWrapper to NULL
     // before reseting the state->thePlan. Otherwise, the current state->thePlan
     // will be destroyed first, and then we will attempt to close it when
     // state->thePlanWrapper is reset later.

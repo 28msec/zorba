@@ -197,12 +197,13 @@ private:
   expr_t     theExpr;
   CompilerCB* theExprManager;
 
-
 protected:
   copy_clause(var_expr_t aVar, expr_t aExpr);
 
 public:
   ~copy_clause();
+
+  void free() {}
 
   var_expr* getVar()  const { return theVar.getp(); }
 
@@ -224,7 +225,6 @@ protected:
   std::vector<copy_clause_t> theCopyClauses;
   expr_t                     theModifyExpr;
   expr_t                     theReturnExpr;
-
 
 protected:
   transform_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);

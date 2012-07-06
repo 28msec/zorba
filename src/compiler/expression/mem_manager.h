@@ -37,35 +37,24 @@ namespace zorba
 class MemPage 
 {
 public:
-  static const size_t DEFAULT_PAGE_SIZE = 128;
+  static const size_t DEFAULT_PAGE_SIZE = 16384;
 
-  MemPage(
-      size_t page_size = DEFAULT_PAGE_SIZE,
-      void* (*allocate_func)(size_t) = &malloc,
-      void (*deallocate_func)(void*) = &free);
+private:
+  size_t    thePageSize;
+  size_t    theFreeSize;
+
+  char    * thePageStart;
+  char    * thePageEnd;
+
+public:
+
+  MemPage(size_t page_size = DEFAULT_PAGE_SIZE);
 
   ~MemPage();
 
-  size_t space() const;
+  size_t space() const { return theFreeSize; }
 
-  /*
-   * Reserves a space of memory within the page.
-   * @param alloc_size the amount of memory to reserve in bytes.
-   * @returns if there is alloc_size space and alloc_size is not 0 returns a
-   *          pointer to a space of memory of the size of allocate. Otherwise
-   *          NULL.
-   */
-  void* allocate(size_t alloc_size);
-
-private:
-  const size_t thePageSize;
-
-  void* (*theAllocator)(size_t);
-
-  void (*theDeallocator)(void*);
-
-  char   * thePageStart;
-  char   * theFreeStart;
+  void* allocate(size_t size);
 
 private:
   // Pages are unique, there is no sense in copying them
@@ -79,14 +68,16 @@ private:
  ******************************************************************************/
 class MemoryManager
 {
+private:
+  std::list<MemPage*>   thePages;
+  MemPage             * theCurrentPage;
+
 public:
   MemoryManager();
+
   ~MemoryManager();
 
   void* allocate(size_t size);
-
-private:
-  std::list<MemPage*> pages;
 
 private:
   // A memory manager is the only existing object handling memory

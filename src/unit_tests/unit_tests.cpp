@@ -40,7 +40,7 @@ void initializeTestList()
   libunittests["base64"] = test_base64;
   libunittests["base64_streambuf"] = test_base64_streambuf;
   libunittests["fs_iterator"] = test_fs_iterator;
-  libunittests["memory_manager"] = test_mem_manager;
+  //libunittests["memory_manager"] = test_mem_manager;
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */

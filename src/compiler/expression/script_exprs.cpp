@@ -239,8 +239,8 @@ var_decl_expr::~var_decl_expr()
 {
   // Note: var_expr objs for global vars live longer than their associated
   // var_decl_expr, because such var_expr objs are also registered in the sctx.
-  if (theInitExpr)
-    theVarExpr->remove_set_expr(this);
+  //if (theInitExpr)
+  //  theVarExpr->remove_set_expr(this);
 }
 
 
@@ -264,7 +264,7 @@ void var_decl_expr::compute_scripting_kind()
 
 expr_t var_decl_expr::clone(substitution_t& s) const
 {
-  var_expr_t varCopy(new var_expr(*theVarExpr));
+  var_expr_t varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
   s[theVarExpr.getp()] = varCopy.getp();
 
   return theCCB->theEM->create_var_decl_expr(theSctx,
@@ -302,7 +302,7 @@ var_set_expr::var_set_expr(
 
 var_set_expr::~var_set_expr()
 {
-  theVarExpr->remove_set_expr(this);
+  //theVarExpr->remove_set_expr(this);
 }
 
 
