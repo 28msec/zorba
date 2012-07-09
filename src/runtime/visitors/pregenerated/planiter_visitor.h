@@ -232,6 +232,9 @@ namespace zorba{
     class TokenizeNodeIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+    class TokenizeNodesIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     class TokenizerPropertiesIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1013,6 +1016,10 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
     virtual void beginVisit ( const TokenizeNodeIterator& ) = 0;
     virtual void endVisit   ( const TokenizeNodeIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const TokenizeNodesIterator& ) = 0;
+    virtual void endVisit   ( const TokenizeNodesIterator& ) = 0;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
     virtual void beginVisit ( const TokenizerPropertiesIterator& ) = 0;

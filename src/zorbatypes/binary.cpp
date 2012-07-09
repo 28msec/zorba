@@ -56,18 +56,21 @@ static size_t copy_without_ws( char const *from, size_t len, char *to ) {
 
 bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
 {
-  try 
-  {
-    base64::validate( aString, aLength, base64::dopt_ignore_ws );
-    aBase64.theData.resize( aLength );
-    aBase64.theData.resize(
-      copy_without_ws( aString, aLength, &aBase64.theData[0] )
-    );
-  }
-  catch (...) 
-  {
-    return false;
-  }
+  if ( aLength ) {
+    try 
+    {
+      base64::validate( aString, aLength, base64::dopt_ignore_ws );
+      aBase64.theData.resize( aLength );
+      aBase64.theData.resize(
+        copy_without_ws( aString, aLength, &aBase64.theData[0] )
+      );
+    }
+    catch (...) 
+    {
+      return false;
+    }
+  } else
+    aBase64.theData.clear();
   return true;
 }
 
@@ -78,19 +81,22 @@ bool Base64::parseString(
     Base64& aBase64, 
     string& lErrorMessage)
 {
-  try 
-  {
-    base64::validate( aString, aLength, base64::dopt_ignore_ws );
-    aBase64.theData.resize( aLength );
-    aBase64.theData.resize(
-      copy_without_ws( aString, aLength, &aBase64.theData[0] )
-    );
-  }
-  catch (ZorbaException const& e) 
-  {
-    lErrorMessage = e.what();
-    return false;
-  }
+  if ( aLength ) {
+    try 
+    {
+      base64::validate( aString, aLength, base64::dopt_ignore_ws );
+      aBase64.theData.resize( aLength );
+      aBase64.theData.resize(
+        copy_without_ws( aString, aLength, &aBase64.theData[0] )
+      );
+    }
+    catch (ZorbaException const& e) 
+    {
+      lErrorMessage = e.what();
+      return false;
+    }
+  } else
+    aBase64.theData.clear();
   return true;
 }
 
@@ -117,7 +123,8 @@ zstring Base64::encode(istream& aStream)
 
 void Base64::encode(const vector<char>& aSource, vector<char>& aResult)
 {
-  base64::encode( &aSource[0], aSource.size(), &aResult );
+  if ( !aSource.empty() )
+    base64::encode( &aSource[0], aSource.size(), &aResult );
 }
 
 
@@ -142,13 +149,15 @@ void Base64::decode(istream& aStream, zstring *result)
 
 void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
 {
-  try {
-    base64::decode(
-      &aSource[0], aSource.size(), &aResult,
-      base64::dopt_any_len | base64::dopt_ignore_ws
-    );
+  if ( !aSource.empty() ) {
+    try {
+      base64::decode(
+        &aSource[0], aSource.size(), &aResult,
+        base64::dopt_any_len | base64::dopt_ignore_ws
+      );
+    }
+    CATCH_BASE64_EXCEPTION()
   }
-  CATCH_BASE64_EXCEPTION()
 }
 
 void Base64::decode( char const *from, size_t from_len, zstring *to ) {
@@ -214,14 +223,16 @@ zstring Base64::str() const
 zstring Base64::decode() const
 {
   zstring result;
-  base64::decode( &theData[0], theData.size(), &result );
+  if ( !theData.empty() )
+    base64::decode( &theData[0], theData.size(), &result );
   return result;
 }
 
 
 void Base64::decode(vector<char>& aResult)
 {
-  base64::decode( &theData[0], theData.size(), &aResult );
+  if ( !theData.empty() )
+    base64::decode( &theData[0], theData.size(), &aResult );
 }
 
 

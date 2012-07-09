@@ -8,6 +8,7 @@ New Features:
     Also updated the fn:path() function.
   * Item::isSeekable API extension for streamable content (xs:string and xs:base64Binary).
   * Implemented the latest W3C specification for the group by clause
+  * Added ft:tokenize-nodes() function to full-text module
   * New XQuery 3.0 functions
     - fn:parse-xml-fragment#1
   * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
