@@ -389,6 +389,9 @@ public:
   store::TempSeq_t         theTempSeq;
   store::TempSeqIterator_t theTempSeqIter;
   store::Item_t            theItem;
+  xs_integer               theWindowStart;
+  xs_integer               theWindowEnd;
+
   xs_integer               thePos;
   xs_integer               theLastPos;
 
