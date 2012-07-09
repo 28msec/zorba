@@ -37,7 +37,8 @@ void BufferWrapperBase::fillBufferCallback()
 
 void BufferWrapperBase::setBuffer(int *aBuffer, int aLen)
 {
-    memcpy(buffer, aBuffer, aLen*sizeof(int));
+    if (aLen > 0)
+      memcpy(buffer, aBuffer, aLen*sizeof(int));
     len = aLen;
   return;
 }
