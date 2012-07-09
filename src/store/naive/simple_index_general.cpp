@@ -369,6 +369,7 @@ bool GeneralIndex::insert(store::Item_t& key, store::Item_t& node)
   {
     // try lossless cast to xs:long
     keyItem->castToLong(castItem);
+
     if (castItem != NULL)
     {
       keyItem = static_cast<AtomicItem*>(castItem.getp());
@@ -410,6 +411,13 @@ longmap:
 
       if (lossy)
       {
+        /*
+        std::cout << "Lossy LONG insertion in index" << getName()->getStringValue()
+                  << std::endl
+                  << "long value = " << longValue
+                  << " double value = " << castItem->getDoubleValue()
+                  << std::endl << std::endl;
+        */
         node2 = node;
         found = insertInMap(key, node2, store::XS_LONG, false);
 
@@ -661,14 +669,12 @@ bool GeneralIndex::insertInMap(
 *******************************************************************************/
 bool GeneralIndex::remove(const store::Item_t& key, const store::Item_t& node, bool all)
 {
-  /*
   bool lossy = false;
   bool found = false;
   store::Item_t castItem;
-  store::Item_t node2;
 
   bool sorted = isSorted();
-  */
+
   AtomicItem* keyItem = static_cast<AtomicItem*>(key.getp());
 
   if (keyItem == NULL)
@@ -687,11 +693,158 @@ bool GeneralIndex::remove(const store::Item_t& key, const store::Item_t& node, b
     keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
   }
 
-  //store::SchemaTypeCode keyType = keyItem->getTypeCode();
-
   if (isTyped())
   {
     return removeFromMap(key, node, theKeyTypeCode, false);
+  }
+
+  store::SchemaTypeCode keyType = keyItem->getTypeCode();
+
+  switch (keyType)
+  {
+  case store::XS_BASE64BINARY:
+  case store::XS_HEXBINARY:
+
+  case store::XS_QNAME:
+  case store::XS_NOTATION:
+
+  case store::XS_GYEAR_MONTH:
+  case store::XS_GYEAR:
+  case store::XS_GMONTH_DAY:
+  case store::XS_GDAY:
+  case store::XS_GMONTH:
+  {
+    assert(!sorted);
+    // falth through
+  }
+
+  case store::XS_ANY_URI:
+
+  case store::XS_BOOLEAN:
+
+  case store::XS_DATETIME:
+  case store::XS_DATE:
+  case store::XS_TIME:
+  {
+    return removeFromMap(key, node, keyType, false);
+  }
+
+  case store::XS_DURATION:
+  case store::XS_YM_DURATION:
+  case store::XS_DT_DURATION:
+  {
+    return removeFromMap(key, node, store::XS_DURATION, false);
+  }
+
+  case store::XS_STRING:
+  case store::XS_NORMALIZED_STRING:
+  case store::XS_TOKEN:
+  case store::XS_NMTOKEN:
+  case store::XS_LANGUAGE:
+  case store::XS_NAME:
+  case store::XS_NCNAME:
+  case store::XS_ID:
+  case store::XS_IDREF:
+  case store::XS_ENTITY:
+  {
+    return removeFromMap(key, node, store::XS_STRING, false);
+  }
+
+  case store::XS_DOUBLE:
+  case store::XS_FLOAT:
+  {
+    return removeFromMap(key, node, store::XS_DOUBLE, false);
+  }
+
+  case store::XS_DECIMAL:
+  case store::XS_INTEGER:
+  case store::XS_NON_POSITIVE_INTEGER:
+  case store::XS_NEGATIVE_INTEGER:
+  case store::XS_NON_NEGATIVE_INTEGER:
+  case store::XS_POSITIVE_INTEGER:
+  case store::XS_UNSIGNED_LONG:
+  {
+    // try lossless cast to xs:long
+    keyItem->castToLong(castItem);
+
+    if (castItem != NULL)
+    {
+      keyItem = static_cast<AtomicItem*>(castItem.getp());
+      goto longmap;
+    }
+
+    // Coerce to xs:double 
+    keyItem->coerceToDouble(castItem, true, lossy);
+
+    found = removeFromMap(key, node, store::XS_DOUBLE, false);
+
+    if (lossy)
+    {
+      found = found || removeFromMap(castItem, node, store::XS_DECIMAL, false);
+    }
+
+    return found;
+  }
+
+  case store::XS_LONG:
+  {
+    // NOTE: here we use KeyItem, instead of key, as arg to removeFromMap, because
+    // we can reach here from the store::XS_DECIMAL case.
+longmap:
+    xs_long longValue = static_cast<LongItem*>(keyItem)->getLongValue();
+
+    if (longValue > theMaxLong || longValue < theMinLong)
+    {
+      if (sorted)
+      {
+        lossy = true;
+        xs_double doubleValue(longValue);
+        GET_FACTORY().createDouble(castItem, doubleValue);
+      }
+      else
+      {
+        keyItem->coerceToDouble(castItem, false, lossy);
+      }
+
+      if (lossy)
+      {
+        /*
+        std::cout << "Lossy LONG insertion in index" << getName()->getStringValue()
+                  << std::endl
+                  << "long value = " << longValue
+                  << " double value = " << castItem->getDoubleValue()
+                  << std::endl << std::endl;
+        */
+        found = removeFromMap(keyItem, node, store::XS_LONG, false);
+
+        found = found || removeFromMap(castItem, node, store::XS_DOUBLE, false);
+      }
+      else
+      {
+        found = removeFromMap(keyItem, node, store::XS_LONG, false);
+      }
+    }
+    else
+    {
+      found = removeFromMap(keyItem, node, store::XS_LONG, false);
+    }
+
+    return found;
+  }
+
+  case store::XS_INT:
+  case store::XS_SHORT:
+  case store::XS_BYTE:
+  case store::XS_UNSIGNED_INT:
+  case store::XS_UNSIGNED_SHORT:
+  case store::XS_UNSIGNED_BYTE:
+  {
+    return removeFromMap(key, node, store::XS_LONG, false);
+  }
+
+  case store::XS_UNTYPED_ATOMIC:
+  default:
+    ZORBA_ASSERT(false);
   }
 
   return true;
