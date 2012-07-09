@@ -17,45 +17,30 @@ package org.zorbaxquery.api;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.zorbaxquery.api.intArray;
 
-public class InputStreamWrapper extends StreamWrapperBase {
+public class InputStreamWrapper extends org.zorbaxquery.api.BufferWrapperBase {
   private InputStream input;
-  private boolean onUnderflow=false;
-  private int byteReaded;
   
   public InputStreamWrapper(InputStream aInput) {
       input= aInput;
   }
-
-    @Override
-  public int underflow() {
-        try {
-            byteReaded = input.read();
-            onUnderflow = true;
-        } catch (IOException ex) {
-            byteReaded = StreamWrapperBase.getEOF();
-        }
-      if (byteReaded == 1) {
-          byteReaded = StreamWrapperBase.getEOF();
-      }
-      return byteReaded;
-  }
-
+  
   @Override
-  public int uflow() {
-    if (!onUnderflow) {
-        try {
-            byteReaded = input.read();
-        } catch (IOException ex) {
-            byteReaded = StreamWrapperBase.getEOF();
+  public void fillBufferCallback() {
+      byte[] b = new byte[1024];
+      int total = 0;
+      try {
+        total = input.read(b, 0, 1024);
+      } catch (IOException ex) {
+      }
+      if (total>0) {
+        intArray lBuffer = new intArray(total);
+        for (int i=0; i<total; i++) {
+            lBuffer.setitem(i, b[i]);
         }
-        if (byteReaded == 1) {
-            byteReaded = StreamWrapperBase.getEOF();
-        }
-    }
-    onUnderflow = false;
-    return byteReaded;
+        setBuffer(lBuffer.cast(), total);
+      }
   }
-
   
 }

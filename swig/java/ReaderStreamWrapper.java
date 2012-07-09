@@ -18,45 +18,31 @@ package org.zorbaxquery.api;
 
 import java.io.IOException;
 import java.io.Reader;
+import org.zorbaxquery.api.intArray;
 
-public class ReaderStreamWrapper extends StreamWrapperBase {
+public class ReaderStreamWrapper extends org.zorbaxquery.api.BufferWrapperBase {
 
   private Reader reader;
-  private boolean onUnderflow=false;
-  private int byteReaded;
-  
+
   public ReaderStreamWrapper(Reader aReader) {
       reader= aReader;
   }
-            
+
   @Override
-  public int underflow() {
-        try {
-            byteReaded = reader.read();
-            onUnderflow = true;
-        } catch (IOException ex) {
-            byteReaded = StreamWrapperBase.getEOF();
-        }
-      if (byteReaded == 1) {
-          byteReaded = StreamWrapperBase.getEOF();
+  public void fillBufferCallback() {
+      char[] b = new char[1024];
+      int total = 0;
+      try {
+        total = reader.read(b, 0, 1024);
+      } catch (IOException ex) {
       }
-      return byteReaded;
-  }
-
-  @Override
-  public int uflow() {
-    if (!onUnderflow) {
-        try {
-            byteReaded = reader.read();
-        } catch (IOException ex) {
-            byteReaded = StreamWrapperBase.getEOF();
+      if (total>0) {
+        intArray lBuffer = new intArray(total);
+        for (int i=0; i<total; i++) {
+            lBuffer.setitem(i, b[i]);
         }
-        if (byteReaded == 1) {
-            byteReaded = StreamWrapperBase.getEOF();
-        }
-    }
-    onUnderflow = false;
-    return byteReaded;
+        setBuffer(lBuffer.cast(), total);
+      }
+      
   }
-
 }

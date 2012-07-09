@@ -20,6 +20,4 @@
 // don't do a JNI call for constants and enums.
 %javaconst(1);
 
-
-
 %include ../zorba_api.i

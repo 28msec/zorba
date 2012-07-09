@@ -58,14 +58,14 @@ IF (JAVA_INCLUDE_PATH)
   FILE(GLOB ZORBA_JAVA_EXTRAS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/" "${CMAKE_CURRENT_SOURCE_DIR}/*.java")
   FOREACH(ZORBA_JAVA_EXTRA ${ZORBA_JAVA_EXTRAS})
     CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/${ZORBA_JAVA_EXTRA}"  "${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_JAVA_EXTRA}" COPYONLY)
-  ENDFOREACH(ZORBA_JAVA_EXTRAS ${ZORBA_JAVA_EXTRA})
+  ENDFOREACH(ZORBA_JAVA_EXTRA ${ZORBA_JAVA_EXTRAS})
   
   ADD_CUSTOM_COMMAND(TARGET lib_zorba_java_api
                  POST_BUILD
                  COMMAND cmake -E echo "Compiling Java files..."
                  COMMAND ${Java_JAVAC_EXECUTABLE} *.java -d ${CMAKE_CURRENT_BINARY_DIR}
                  COMMAND cmake -E echo "Creating jar file..."
-                 COMMAND ${Java_JAR_EXECUTABLE} cvf zorba_api.jar org
+                 COMMAND ${Java_JAR_EXECUTABLE} cf zorba_api.jar org
   )
 
   # ---  Install

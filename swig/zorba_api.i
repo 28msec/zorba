@@ -23,6 +23,8 @@ TSRMLS_FETCH();
 %include "std_string.i"
 %include "std_pair.i"
 %include "exception.i"
+%include "carrays.i"
+%array_class(int, intArray);
 
 #ifndef SWIGRUBY
 %include "std_vector.i"
@@ -86,6 +88,7 @@ namespace std {
   class Store;
   class InMemoryStore;
 
+  #include "BufferWrapperBase.h"
   #include "StreamWrapperBase.h"
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
@@ -115,6 +118,7 @@ namespace std {
 
 /* %include "various.i" required for mapping to Java byte[]*/
 
+%include "BufferWrapperBase.i"
 %include "StreamWrapperBase.i"
 %include "SerializationOptions.i"
 %include "TypeIdentifier.i"

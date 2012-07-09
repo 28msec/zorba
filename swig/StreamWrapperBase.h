@@ -23,35 +23,45 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include "BufferWrapperBase.h"
 
 
 class StreamWrapperBase :
   public std::streambuf
 {
 public:
-  StreamWrapperBase(const char *str) : begin_(str), end_(begin_ + std::strlen(str)), current_(begin_) {};
-  StreamWrapperBase(): begin_(0), end_(0), current_(0) {};
-
+  StreamWrapperBase(BufferWrapperBase &aBufferWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0) { bufferWrapper = &aBufferWrapper; };
+  
+  //BUFFER
+  int * buffer;
+  int * bBegin;
+  int * bEnd;
+  int * bCurrent;
+  BufferWrapperBase *bufferWrapper;
+  
+  // Helper function to return EOF character from other languages
   static int getEOF();
   
   // Get character in the case of underflow
-  virtual int underflow();
+  int underflow();
   // Get character in the case of underflow and advance get pointer
-  virtual int uflow();
+  int uflow();
   // Put character back in the case of backup underflow
-  virtual int pbackfail(int ch);
+  int pbackfail(int ch);
   // Get number of characters available in the sequence
-  virtual std::streamsize showmanyc();
+  std::streamsize showmanyc();
   
 private:
-
+  void checkBuffer();
   // Copy contructor and assignment not allowed
   StreamWrapperBase(const StreamWrapperBase &);
   StreamWrapperBase &operator= (const StreamWrapperBase &);
 
+  /*
   const char * const begin_;
   const char * const end_;
   const char * current_;
+  */
 };
 
 #endif

@@ -22,45 +22,64 @@
 #include <cassert>
 #include <iostream>
 
+void StreamWrapperBase::checkBuffer()
+{
+  if (buffer==0)
+  {
+    bufferWrapper->fillBufferCallback();
+    if (bufferWrapper->len > 0) {
+      bBegin = bCurrent = buffer = bufferWrapper->buffer;
+      bEnd = bBegin + bufferWrapper->len;
+    }
+  } else if (bCurrent == bEnd)
+  {
+    if (bufferWrapper->len==1024)
+    {
+      bufferWrapper->fillBufferCallback();
+      if (bufferWrapper->len > 0) {
+        bBegin = bCurrent = buffer = bufferWrapper->buffer;
+        bEnd = bBegin + bufferWrapper->len;
+      }
+    }
+  }
+  
+}
 int StreamWrapperBase::getEOF()
 {
-  std::cout << "Log: getEOF\n";
   return traits_type::eof();
 }
 
 int StreamWrapperBase::underflow()
 {
-    std::cout << "Log: underflow\n";
-    if (current_ == end_)
+    checkBuffer();
+    if ((bCurrent == bEnd) || (buffer==0))
         return traits_type::eof();
-
-    return traits_type::to_int_type(*current_);
+    return traits_type::to_int_type(*bCurrent);
 }
 
 int StreamWrapperBase::uflow()
 {
-    std::cout << "Log: uflow\n";
-    if (current_ == end_)
+    checkBuffer();
+    if ((bCurrent == bEnd) || (buffer==0))
         return traits_type::eof();
-
-    return traits_type::to_int_type(*current_++);
+    return traits_type::to_int_type(*bCurrent++);
 }
 
 int StreamWrapperBase::pbackfail(int ch)
 {
-    std::cout << "Log: pbackfail\n";
-    if (current_ == begin_ || (ch != traits_type::eof() && ch != current_[-1]))
+    checkBuffer();
+    if (bCurrent == bBegin || (ch != traits_type::eof() && ch != bCurrent[-1]) || (buffer==0))
         return traits_type::eof();
 
-    return traits_type::to_int_type(*--current_);
+    return traits_type::to_int_type(*--bCurrent);
 }
 
 std::streamsize StreamWrapperBase::showmanyc()
 {
-    std::cout << "Log: showmanyc\n";
-    assert(std::less_equal<const char *>()(current_, end_));
-    return end_ - current_;
+    checkBuffer();
+    return bEnd - bCurrent;
 }
+
 
 %}  // end   Implementation
 

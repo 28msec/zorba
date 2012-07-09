@@ -100,7 +100,7 @@ IF (Java_Development_FOUND)
                      COMMAND cmake -E echo "Compiling XQJ files..."
                      COMMAND ${Java_JAVAC_EXECUTABLE} -cp ${XQJ_CLASSPATH} *.java -d ${CMAKE_CURRENT_BINARY_DIR}
                      COMMAND cmake -E echo "Creating jar file..."
-                     COMMAND ${Java_JAR_EXECUTABLE} cvf zorba_xqj.jar org
+                     COMMAND ${Java_JAR_EXECUTABLE} cf zorba_xqj.jar org
     )
   ENDIF (${RESULT} GREATER -1)
 
