@@ -62,7 +62,7 @@ user_function::user_function(
     CompilerCB* ccb)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
-//theCCB(ccb),
+  theCCB(ccb),
   theLoc(loc),
   theScriptingKind(scriptingKind),
   theBodyExpr(expr_body),
@@ -111,12 +111,12 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    getPlan(ar.get_ccb(), planStateSize);
+    getPlan(planStateSize);
     ZORBA_ASSERT(thePlan != NULL);
 
-    computeResultCaching(ar.get_ccb()->theXQueryDiagnostics);
+    computeResultCaching(theCCB->theXQueryDiagnostics);
     
-    if (ar.get_ccb()->theHasEval)
+    if (theCCB->theHasEval)
     {
       SourceFinder sourceFinder;
       std::vector<expr*> sources;
@@ -149,7 +149,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         }
 
         invalidatePlan();
-        getPlan(ar.get_ccb(), planStateSize);
+        getPlan(planStateSize);
         ZORBA_ASSERT(thePlan != NULL);
       }
     }
@@ -161,7 +161,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   }
 
   serialize_baseclass(ar, (function*)this);
-  //ar & theCCB;
+  ar & theCCB;
   //ar & theLoc;
   ar & theScriptingKind;
   //ar & theBodyExpr;
@@ -392,12 +392,12 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::optimize(CompilerCB* ccb)
+void user_function::optimize()
 {
   ZORBA_ASSERT(theBodyExpr);
 
   if (!theIsOptimized && 
-      ccb->theConfig.opt_level > CompilerCB::config::O0)
+      theCCB->theConfig.opt_level > CompilerCB::config::O0)
   {
     // Set the Optimized flag in advance to prevent an infinte loop (for
     // recursive functions, an optimization could be attempted again)
@@ -407,7 +407,7 @@ void user_function::optimize(CompilerCB* ccb)
 
     expr_t body = getBody();
 
-    RewriterContext rctx(ccb,
+    RewriterContext rctx(theCCB,
                          body,
                          this,
                          zstring(),
@@ -435,15 +435,15 @@ void user_function::optimize(CompilerCB* ccb)
       thePropagatesInputNodes[i] = 1;
     }
 
-    if (ccb->theConfig.optimize_cb != NULL)
+    if (theCCB->theConfig.optimize_cb != NULL)
     {
       if (getName())
       {
-        ccb->theConfig.optimize_cb(body, getName()->getStringValue().c_str());
+        theCCB->theConfig.optimize_cb(body, getName()->getStringValue().c_str());
       }
       else
       {
-        ccb->theConfig.optimize_cb(body, "inline function");
+        theCCB->theConfig.optimize_cb(body, "inline function");
       }
     }
   }
@@ -463,11 +463,11 @@ void user_function::invalidatePlan()
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
+PlanIter_t user_function::getPlan(uint32_t& planStateSize)
 {
   if (thePlan == NULL)
   {
-    optimize(ccb);
+    optimize();
 
     csize numArgs = theArgVars.size();
 
@@ -487,7 +487,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
                               "inline function" :
                               lName->getStringValue().c_str()),
                              &*theBodyExpr,
-                             ccb,
+                             theCCB,
                              nextVarId,
                              &argVarToRefsMap);
   }

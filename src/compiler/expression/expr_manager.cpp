@@ -44,8 +44,9 @@ public:
   std::ostream& put(std::ostream& stream) const{return stream;}
 };
 
+
 ExprManager::ExprManager(CompilerCB* ccb)
-:
+  :
   theCCB(ccb)
 {
   theExprs.reserve(1024);
@@ -498,6 +499,12 @@ var_expr* ExprManager::create_var_expr(
 var_expr* ExprManager::create_var_expr(const var_expr& source)
 {
   return static_cast<var_expr*>(reg(new (theMemoryMgr) var_expr(source)));
+}
+
+
+var_expr* ExprManager::create_var_expr(::zorba::serialization::Archiver& ar)
+{
+  return static_cast<var_expr*>(reg(new (theMemoryMgr) var_expr(ar)));
 }
 
 

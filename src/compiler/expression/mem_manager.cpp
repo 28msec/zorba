@@ -101,8 +101,8 @@ void* MemoryManager::allocate(size_t size)
     thePages.push_front(theCurrentPage);
     
 #ifndef NDEBUG
-    std::cout << "allocated new mem page of size " << MemPage::DEFAULT_PAGE_SIZE
-              << " num pages = " << pages.size() << std::endl;
+    //std::cout << "allocated new mem page of size " << MemPage::DEFAULT_PAGE_SIZE
+    //          << " num pages = " << thePages.size() << std::endl;
 #endif
   }
 

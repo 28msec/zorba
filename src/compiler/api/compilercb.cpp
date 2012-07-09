@@ -168,6 +168,7 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   theHasEval(false),
   theIsEval(false)
 {
+  theEM = new ExprManager(this);
 }
 
 
@@ -186,6 +187,8 @@ CompilerCB::~CompilerCB()
 ********************************************************************************/
 void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
+  ar.set_ccb(this);
+
   ar & theHasEval;
   ar & theIsEval;
   ar & theIsLoadProlog;

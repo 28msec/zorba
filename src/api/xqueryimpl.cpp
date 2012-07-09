@@ -191,13 +191,11 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     delete theCompilerCB;
     theCompilerCB = NULL;
   }
-  else
-  {
-    ar.set_ccb(theCompilerCB);
-  }
-
+   
   ar & theCompilerCB;
+
   ar & thePlanProxy;
+
   ar & theStaticContext;
 
   if (!ar.is_serializing_out())

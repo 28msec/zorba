@@ -217,9 +217,9 @@ public:
 
   static_context* getStaticContext(int id);
 
-  ExprManager* getExprManager() {return theEM;}
+  ExprManager* getExprManager() const { return theEM; }
 
-  MemoryManager& getMemoryManager() {return theEM->getMemory();}
+  MemoryManager& getMemoryManager() const { return theEM->getMemory(); }
 
 };
 
