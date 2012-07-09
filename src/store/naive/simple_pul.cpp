@@ -2173,23 +2173,74 @@ void CollectionPul::refreshGeneralIndex(csize idx)
   std::vector<store::Item_t>::iterator keyIte;
   std::vector<store::Item_t>::iterator keyEnd;
 
+  STORE_TRACE2("before-delta size = " << deletedDelta.size());
+
   ite = beforeDelta.begin();
   end = beforeDelta.end();
 
-  for (; ite != end; ++ite, ++numBeforeApplied)
+  while (ite != end)
   {
+    store::Item* nodep = (*ite).first.getp(); 
+
     index->remove((*ite).second, (*ite).first, false);
+    ++numBeforeApplied;
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      index->remove((*ite).second, (*ite).first, false);
+      ++numDeletedApplied;
+      ++ite;
+
+      // Call removeMultiKey() after removing the 2nd key for the same node.
+      // We do this to make undo easier.
+      index->removeMultiKey();
+
+      while (ite != end && (*ite).first.getp() == nodep)
+      {
+        index->remove((*ite).second, (*ite).first, false);
+        ++numBeforeApplied;
+        ++ite;
+      }
+    }
   }
+
+  STORE_TRACE2("after-delta size = " << deletedDelta.size());
 
   ite = afterDelta.begin();
   end = afterDelta.end();
 
-  for (; ite != end; ++ite, ++numAfterApplied)
+  while (ite != end)
   {
     node = (*ite).first;
     key = (*ite).second;
+    store::Item* nodep = node.getp();
 
     index->insert(key, node);
+    ++numAfterApplied;
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      node = (*ite).first;
+      key = (*ite).second;
+
+      index->insert(key, node);
+      ++numAfterApplied;
+      ++ite;
+
+      index->addMultiKey();
+
+      while (ite != end && (*ite).first.getp() == nodep)
+      {
+        node = (*ite).first;
+        key = (*ite).second;
+
+        index->insert(key, node);
+        ++numAfterApplied;
+        ++ite;
+      }
+    }
   }
 
   STORE_TRACE2("deleted-delta size = " << deletedDelta.size());
@@ -2197,9 +2248,31 @@ void CollectionPul::refreshGeneralIndex(csize idx)
   ite = deletedDelta.begin();
   end = deletedDelta.end();
 
-  for (; ite != end; ++ite, ++numDeletedApplied)
+  while (ite != end)
   {
+    store::Item* nodep = (*ite).first.getp(); 
+
     index->remove((*ite).second, (*ite).first, false);
+    ++numDeletedApplied;
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      index->remove((*ite).second, (*ite).first, false);
+      ++numDeletedApplied;
+      ++ite;
+
+      // Call removeMultiKey() after removing the 2nd key for the same node.
+      // We do this to make undo easier.
+      index->removeMultiKey();
+
+      while (ite != end && (*ite).first.getp() == nodep)
+      {
+        index->remove((*ite).second, (*ite).first, false);
+        ++numDeletedApplied;
+        ++ite;
+      }
+    }
   }
 
   STORE_TRACE2("inserted-delta size = " << insertedDelta.size());
@@ -2207,12 +2280,37 @@ void CollectionPul::refreshGeneralIndex(csize idx)
   ite = insertedDelta.begin();
   end = insertedDelta.end();
 
-  for (; ite != end; ++ite, ++numInsertedApplied)
+  while (ite != end)
   {
     node = (*ite).first;
     key = (*ite).second;
-    
+    store::Item* nodep = node.getp(); 
+      
     index->insert(key, node);
+    ++numInsertedApplied;
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      node = (*ite).first;
+      key = (*ite).second;
+
+      index->insert(key, node);
+      ++numInsertedApplied;
+      ++ite;
+
+      index->addMultiKey();
+
+      while (ite != end && (*ite).first.getp() == nodep)
+      {
+        node = (*ite).first;
+        key = (*ite).second;
+
+        index->insert(key, node);
+        ++numInsertedApplied;
+        ++ite;
+      }
+    }
   }
 }
 
@@ -2346,32 +2444,104 @@ void CollectionPul::undoGeneralIndexRefresh(csize idx)
   std::vector<store::Item_t>::reverse_iterator keyIte;
   std::vector<store::Item_t>::reverse_iterator keyEnd;
 
+  // Inserted delta
+
   ite = insertedDelta.rbegin() + (insertedDelta.size() - numInsertedApplied);
   end = insertedDelta.rend();
-  for (; ite != end; ++ite)
+
+  while (ite != end)
   {
+    store::Item* nodep = (*ite).first.getp(); 
+
     index->remove((*ite).second, (*ite).first, false);
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      index->removeMultiKey();
+
+      do
+      {
+        index->remove((*ite).second, (*ite).first, false);
+        ++ite;
+      }
+      while (ite != end && (*ite).first.getp() == nodep);
+    }
   }
+
+  // Deleted delta
 
   ite = deletedDelta.rbegin() + (deletedDelta.size() - numDeletedApplied);
   end = deletedDelta.rend();
-  for (; ite != end; ++ite)
+
+  while (ite != end)
   {
+    store::Item* nodep = (*ite).first.getp(); 
+
     index->insert((*ite).second, (*ite).first);
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      index->addMultiKey();
+
+      do
+      {
+        index->insert((*ite).second, (*ite).first);
+        ++ite;
+      }
+      while (ite != end && (*ite).first.getp() == nodep);
+    }
   }
+
+  // After delta
 
   ite = afterDelta.rbegin() + (afterDelta.size() - numAfterApplied);
   end = afterDelta.rend();
-  for (; ite != end; ++ite)
+
+  while (ite != end)
   {
+    store::Item* nodep = (*ite).first.getp(); 
+
     index->remove((*ite).second, (*ite).first, false);
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      index->removeMultiKey();
+
+      do
+      {
+        index->remove((*ite).second, (*ite).first, false);
+        ++ite;
+      }
+      while (ite != end && (*ite).first.getp() == nodep);
+    }
   }
+
+  // Before delta
 
   ite = beforeDelta.rbegin() + (beforeDelta.size() - numBeforeApplied);
   end = beforeDelta.rend();
-  for (; ite != end; ++ite)
+
+  while (ite != end)
   {
+    store::Item* nodep = (*ite).first.getp(); 
+
     index->insert((*ite).second, (*ite).first);
+    ++ite;
+
+    if (ite != end && (*ite).first.getp() == nodep)
+    {
+      index->addMultiKey();
+
+      do
+      {
+        index->insert((*ite).second, (*ite).first);
+        ++ite;
+      }
+      while (ite != end && (*ite).first.getp() == nodep);
+    }
   }
 }
 

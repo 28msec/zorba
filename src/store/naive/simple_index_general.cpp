@@ -213,7 +213,7 @@ GeneralIndex::GeneralIndex(
   theKeyTypeCode(store::XS_LAST),
   theCompFunction(spec.theTimezone, spec.theCollations[0]),
   theUntypedFlag(false),
-  theMultiKeyFlag(false)
+  theNumMultiKeyNodes(0)
 {
   store::Item* typeName = spec.theKeyTypes[0].getp();
 
@@ -1420,7 +1420,7 @@ void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond)
   if (theProbeKind == store::IndexCondition::POINT_VALUE ||
       theProbeKind == store::IndexCondition::BOX_VALUE)
   {
-    if (theIndex->theMultiKeyFlag)
+    if (theIndex->theNumMultiKeyNodes > 0)
     {
       RAISE_ERROR_NO_LOC(err::XPTY0004,
       ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2), theIndex->getName()->getStringValue()));

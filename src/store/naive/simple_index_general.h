@@ -122,10 +122,10 @@ public:
   returns an item with type xs:untypedAtomic and that item is sucessfully cast
   to an item with a type other than xs:string.
 
-  theMultiKeyFlag:
-  ----------------
-  Set to true if there is at least one domain node for which the key expression
-  returns more than one items.
+  theNumMultiKeyNodes:
+  --------------------
+  The number of domain node for which the key expression returns more than one
+  items. If > 0, then any value probes on the general index raise an error.
 *******************************************************************************/
 class GeneralIndex : public IndexImpl
 {
@@ -152,7 +152,7 @@ protected:
 
   bool                        theUntypedFlag;
 
-  bool                        theMultiKeyFlag;
+  csize                       theNumMultiKeyNodes;
 
 protected:
   GeneralIndex(const store::Item_t& name, const store::IndexSpecification& spec);
@@ -180,7 +180,9 @@ protected:
 public:
   const XQPCollator* getCollator(csize i) const;
 
-  void setMultiKey() { theMultiKeyFlag = true; }
+  void addMultiKey() { ++theNumMultiKeyNodes; }
+
+  void removeMultiKey() { assert(theNumMultiKeyNodes > 0); --theNumMultiKeyNodes; }
 
   csize size() const;
 

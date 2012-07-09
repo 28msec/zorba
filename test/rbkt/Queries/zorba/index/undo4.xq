@@ -27,7 +27,22 @@ dml:insert-nodes($u:c2,
 </person>);
 
 
-idml:probe-index-point-value($u:PersonCars, "vw")
+idml:probe-index-point-general($u:PersonCars, "vw")
+,
+"
+
+TEST 0:
+
+"
+,
+try
+{
+  idml:probe-index-point-value($u:PersonCars, "vw")
+}
+catch * 
+{
+  <exception>{$err:code} : {$err:description}</exception>
+}
 ,
 "
 
@@ -52,7 +67,7 @@ catch *
 "
 "
 ,
-idml:probe-index-point-value($u:PersonCars, "vw")
+idml:probe-index-point-general($u:PersonCars, "vw")
 ,
 "
 
@@ -79,7 +94,7 @@ catch *
 "
 "
 ,
-idml:probe-index-point-value($u:PersonCars, "vw")
+idml:probe-index-point-general($u:PersonCars, "vw")
 ,
 "
 
@@ -111,6 +126,18 @@ catch *
 "
 ,
 idml:probe-index-point-general($u:PersonCars, ("vw", "BMW"))
+,
+"
+
+TEST 4:
+
+"
+,
+{
+delete nodes dml:collection($u:c1)[1]/car[1];
+
+idml:probe-index-point-value($u:PersonCars, "vw")
+}
 ,
 "
 "
