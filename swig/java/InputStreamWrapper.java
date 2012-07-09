@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api;
+package org.zorbaxquery.api2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,13 +34,16 @@ public class InputStreamWrapper extends org.zorbaxquery.api.BufferWrapperBase {
         total = input.read(b, 0, 1024);
       } catch (IOException ex) {
       }
+      intArray lBuffer = null;
       if (total>0) {
-        intArray lBuffer = new intArray(total);
+        lBuffer = new intArray(total);
         for (int i=0; i<total; i++) {
             lBuffer.setitem(i, b[i]);
         }
-        setBuffer(lBuffer.cast(), total);
+      } else {
+          lBuffer = new intArray(1);  // Can't be null
       }
+      setBuffer(lBuffer.cast(), total);
   }
   
 }
