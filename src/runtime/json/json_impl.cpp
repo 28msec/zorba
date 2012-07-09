@@ -25,6 +25,7 @@
 #include "system/globalenv.h"
 
 #include "util/mem_streambuf.h"
+#include "util/string_util.h"
 
 #include "jsonml_array.h"
 #include "snelson.h"
@@ -63,6 +64,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   options_type options;
   istringstream iss;
   mem_streambuf buf;
+  zstring s;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
@@ -78,7 +80,6 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   if ( cur_item->isStreamable() ) {
     is = &cur_item->getStream();
   } else {
-    zstring s;
     cur_item->getStringValue2( s );
     // Doing it this way uses the string data in-place with no copy.
     buf.set( s.data(), s.size() );
@@ -104,7 +105,9 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   catch ( json::illegal_character const &e ) {
     throw XQUERY_EXCEPTION(
       zerr::ZJPE0001_ILLEGAL_CHARACTER,
-      ERROR_PARAMS( e.get_char() ),
+      ERROR_PARAMS(zstring("#x") + 
+      BUILD_STRING(std::uppercase << std::hex
+                   << (static_cast<unsigned int>(e.get_char()) & 0xFF)) ),
       ERROR_LOC( e.get_loc() )
     );
   }
