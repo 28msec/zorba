@@ -137,14 +137,24 @@ CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES)
 
 # C++11 langauge features
-CHECK_CXX_SOURCE_COMPILES("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
-CHECK_CXX_SOURCE_COMPILES("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
 
 # C++11 standard library types
-CHECK_CXX_SOURCE_COMPILES ("#include <type_traits>\nint main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
-CHECK_CXX_SOURCE_COMPILES ("#include <unordered_map>\nint main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
-CHECK_CXX_SOURCE_COMPILES ("#include <unordered_set>\nint main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <type_traits>
+  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES ("
+  #include <memory>
+  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <unordered_map>
+  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <unordered_set>
+  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 # Various cmake macros
@@ -162,12 +172,13 @@ IF (WIN32)
 ENDIF (WIN32)
 
 ################################################################################
-# This section is used for batch script generation. Each executable
-# on Windows needs a bat script in order to set the PATH to the required DLLs.
+# This section is used for batch script and Visual Studio Project file generation. 
+# Each executable on Windows needs a bat script and in the Visual Studio build a \
+# pre-generated Visual Studio Project file in order to set the PATH to the required DLLs.
 # For this we use CACHE variables to gather all the information generated
 # throughout the cmake execution (required DLLs, list of scripts to generate).
 # The generation occurs only at the end of CMake execution (through the macro
-# ZORBA_GENERATE_EXE_SCRIPTS_WIN32) when ALL the requirements have been found.
+# ZORBA_GENERATE_EXE_HELPERS_WIN32) when ALL the requirements have been found.
 # E.g. zorba.exe needs in PATH all the DLLs of all external modules, etc.
 IF (WIN32)
   # Clear all the variables because they are used only for this build.
@@ -180,10 +191,19 @@ IF (WIN32)
   SET (ZORBA_EXE_SCRIPT_LIST ""
     CACHE STRING "List of Windows batch scripts to be generated, one for each executable" FORCE
   )
+  IF (MSVC_IDE)
+    SET (ZORBA_VC_PROJECT_FILE_LIST ""
+      CACHE STRING "List of Visual Studio project files to be generated, one for each executable" FORCE
+    )
+  ENDIF(MSVC_IDE)
+
   # Moreover, mark it as advanced since the CMake GUI user should not see this.
   MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLLS)
   MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLL_PATHS)
   MARK_AS_ADVANCED (FORCE ZORBA_EXE_SCRIPT_LIST)
+  IF (MSVC_IDE)
+    MARK_AS_ADVANCED (FORCE ZORBA_VC_PROJECT_FILE_LIST)
+  ENDIF(MSVC_IDE)
 ENDIF (WIN32)
 ################################################################################
 
@@ -429,10 +449,11 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
   
-  # Clear this variable because this is used only for this build.
+  # Clear those variables because this is used only for this build.
   # A cache variable is needed since this must be modified by subdirectories
-  # and be visible at this level when ZORBA_GENERATE_EXE_SCRIPTS_WIN32 is called
+  # and be visible at this level when ZORBA_GENERATE_EXE_HELPERS_WIN32 is called
   SET(ZORBA_EXE_SCRIPT_LIST "" CACHE STRING "List of bat scripts" FORCE)
+  SET(ZORBA_VC_PROJECT_FILE_LIST "" CACHE STRING "List of VC project files" FORCE)
 ENDIF(WIN32)
 
 ################################################################################
@@ -582,7 +603,7 @@ IF (APPLE AND UNIVERSAL)
 ENDIF (APPLE AND UNIVERSAL)
 
 IF (WIN32)
-  ZORBA_GENERATE_EXE_SCRIPTS_WIN32 ()
+  ZORBA_GENERATE_EXE_HELPERS_WIN32 ()
 ENDIF (WIN32)
 
 # This must be done last! Create the one top-level target which
