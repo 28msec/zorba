@@ -18,6 +18,7 @@
 #include <algorithm>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "store_defs.h"
 #include "simple_store.h"
@@ -27,6 +28,9 @@
 #include "simple_pul.h"
 #include "pul_primitives.h"
 #include "node_items.h"
+#ifdef ZORBA_WITH_JSON
+#  include "json_items.h"
+#endif
 #include "atomic_items.h"
 #include "pul_primitive_factory.h"
 #include "node_factory.h"
@@ -59,10 +63,10 @@ void cleanList(std::vector<UpdatePrimitive*>& aVector)
 /*******************************************************************************
 
 ********************************************************************************/
-void applyList(std::vector<UpdatePrimitive*>& aVector)
+void applyList(std::vector<UpdatePrimitive*>& list)
 {
-  std::vector<UpdatePrimitive*>::iterator iter = aVector.begin();
-  std::vector<UpdatePrimitive*>::iterator end = aVector.end();
+  std::vector<UpdatePrimitive*>::iterator iter = list.begin();
+  std::vector<UpdatePrimitive*>::iterator end = list.end();
 
   for (; iter != end; ++iter) 
   {
@@ -164,7 +168,14 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
+#ifdef ZORBA_WITH_JSON
+  assert(target->isNode()
+      || target->isJSONObject()
+      || target->isJSONArray()
+      );
+#else
   assert(target->isNode());
+#endif
 
   const XmlNode* n = static_cast<const XmlNode*>(target);
 
@@ -194,7 +205,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 
 
 CollectionPul* PULImpl::getCollectionPulByName(
-    const store::Item* name, 
+    const store::Item* name,
     bool isDynamic)
 {
   const QNameItem* collName = static_cast<const QNameItem*>(name)->getNormalized();
@@ -254,8 +265,8 @@ void PULImpl::addDelete(const QueryLoc* aQueryLoc, store::Item_t& target)
   }
   else
   {
-    ulong numUpdates = (ulong)updates->size();
-    for (ulong i = 0; i < numUpdates; i++)
+    csize numUpdates = updates->size();
+    for (csize i = 0; i < numUpdates; ++i)
     {
       if ((*updates)[i]->getKind() == store::UpdateConsts::UP_DELETE)
         return;
@@ -377,8 +388,8 @@ void PULImpl::addInsertAttributes(
 
   ElementNode* n = ELEM_NODE(target);
 
-  ulong numAttrs = (ulong)attrs.size();
-  for (ulong i = 0; i < numAttrs; i++)
+  csize numAttrs = attrs.size();
+  for (csize i = 0; i < numAttrs; i++)
   {
     n->checkNamespaceConflict(attrs[i]->getNodeName(), err::XUDY0023);
   }
@@ -395,8 +406,7 @@ void PULImpl::addInsertAttributes(
   {
     updates = new NodeUpdates(1);
     (*updates)[0] = upd;
-    XmlNode* tmp = reinterpret_cast<XmlNode*>(n);
-    pul->theNodeToUpdatesMap.insert(tmp, updates);
+    pul->theNodeToUpdatesMap.insert(n, updates);
   }
   else
   {
@@ -427,12 +437,12 @@ void PULImpl::addReplaceNode(
 
   if (target->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
+    ElementNode* elemParent = static_cast<ElementNode*>(n->theParent);
 
     if (elemParent != NULL)
     {
-      ulong numNewAttrs = (ulong)newNodes.size();
-      for (ulong i = 0; i < numNewAttrs; ++i)
+      csize numNewAttrs = newNodes.size();
+      for (csize i = 0; i < numNewAttrs; ++i)
       {
         elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), err::XUDY0023); 
       }
@@ -466,7 +476,7 @@ void PULImpl::addReplaceNode(
       {
         const QueryLoc* lLoc = upd->theLoc;
         delete upd;
-        throw XQUERY_EXCEPTION(err::XUDY0016, ERROR_LOC (*lLoc) );
+        throw XQUERY_EXCEPTION(err::XUDY0016, ERROR_LOC(*lLoc));
       }
     }
 
@@ -494,7 +504,9 @@ void PULImpl::addReplaceContent(
 
   if (!found)
   {
-    UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+
     pul->theReplaceContentList.push_back(upd);
 
     updates = new NodeUpdates(1);
@@ -503,14 +515,16 @@ void PULImpl::addReplaceContent(
   }
   else
   {
-    ulong numUpdates = (ulong)updates->size();
-    for (ulong i = 0; i < numUpdates; i++)
+    csize numUpdates = updates->size();
+    for (csize i = 0; i < numUpdates; ++i)
     {
       if ((*updates)[i]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
         throw XQUERY_EXCEPTION(err::XUDY0017);
     }
 
-    UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdReplaceElemContent(pul, aQueryLoc, target, newChild);
+
     pul->theReplaceContentList.push_back(upd);
     updates->push_back(upd);
   }
@@ -568,8 +582,8 @@ void PULImpl::addReplaceValue(
   }
   else
   {
-    ulong numUpdates = (ulong)updates->size();
-    for (ulong i = 0; i < numUpdates; i++)
+    csize numUpdates = updates->size();
+    for (csize i = 0; i < numUpdates; i++)
     {
       if (store::UpdateConsts::isReplaceValue((*updates)[i]->getKind()))
       {
@@ -643,8 +657,8 @@ void PULImpl::addRename(
   }
   else
   {
-    ulong numUpdates = (ulong)updates->size();
-    for (ulong i = 0; i < numUpdates; i++)
+    csize numUpdates = updates->size();
+    for (csize i = 0; i < numUpdates; i++)
     {
       if (store::UpdateConsts::isRename((*updates)[i]->getKind()))
       {
@@ -667,17 +681,15 @@ void PULImpl::addPut(
     store::Item_t& target,
     store::Item_t& uri)
 {
-  ulong numPuts = (ulong)thePutList.size();
+  csize numPuts = thePutList.size();
 
-  for (ulong i = 0; i < numPuts; ++i)
+  for (csize i = 0; i < numPuts; ++i)
   {
     UpdPut* upd = static_cast<UpdPut*>(thePutList[i]);
 
     if (upd->theTargetUri == uri)
     {
-      throw XQUERY_EXCEPTION(
-        err::XUDY0031, ERROR_PARAMS( uri->getStringValue() )
-      );
+      throw XQUERY_EXCEPTION(err::XUDY0031, ERROR_PARAMS( uri->getStringValue()));
     }
   }
 
@@ -700,17 +712,17 @@ void PULImpl::addSetElementType(
     bool haveTypedValue,
     bool isInSubstitutionGroup)
 {
-  UpdatePrimitive* upd = 
-  GET_PUL_FACTORY().createUpdSetElementType(this,
-                                                      aQueryLoc,
-                                                      target,
-                                                      typeName,
-                                                      value,
-                                                      haveValue,
-                                                      haveEmptyValue,
-                                                      haveTypedValue,
-                                                      false,
-                                                      isInSubstitutionGroup);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdSetElementType(this,
+                          aQueryLoc,
+                          target,
+                          typeName,
+                          value,
+                          haveValue,
+                          haveEmptyValue,
+                          haveTypedValue,
+                          false,
+                          isInSubstitutionGroup);
 
   theValidationList.push_back(upd);
 }
@@ -728,55 +740,45 @@ void PULImpl::addSetElementType(
 {
   store::Item_t typedValue = new ItemVector(valueV);
 
-  UpdatePrimitive* upd =
-  GET_PUL_FACTORY().createUpdSetElementType(this,
-                                                      aQueryLoc,
-                                                      target,
-                                                      typeName,
-                                                      typedValue,
-                                                      haveValue,
-                                                      haveEmptyValue,
-                                                      haveTypedValue,
-                                                      true,
-                                                      isInSubstitutionGroup);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdSetElementType(this,
+                          aQueryLoc,
+                          target,
+                          typeName,
+                          typedValue,
+                          haveValue,
+                          haveEmptyValue,
+                          haveTypedValue,
+                          true,
+                          isInSubstitutionGroup);
 
   theValidationList.push_back(upd);
 }
 
 
 void PULImpl::addSetAttributeType(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& target,
     store::Item_t& typeName,
     store::Item_t& typedValue)
 {
-  UpdatePrimitive* upd = 
-  GET_PUL_FACTORY().createUpdSetAttributeType(this, 
-                                                        aQueryLoc,
-                                                        target,
-                                                        typeName,
-                                                        typedValue,
-                                                        false);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdSetAttributeType(this, loc, target, typeName, typedValue, false);
 
   theValidationList.push_back(upd);
 }
 
 
 void PULImpl::addSetAttributeType(
-    const QueryLoc* aQueryLoc,
-    store::Item_t&              target,
-    store::Item_t&              typeName,
+    const QueryLoc* loc,
+    store::Item_t&  target,
+    store::Item_t&  typeName,
     std::vector<store::Item_t>& typedValueV)
 {
   store::Item_t typedValue = new ItemVector(typedValueV);
 
-  UpdatePrimitive* upd =
-  GET_PUL_FACTORY().createUpdSetAttributeType(this,
-                                                        aQueryLoc,
-                                                        target,
-                                                        typeName,
-                                                        typedValue,
-                                                        true);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdSetAttributeType(this, loc, target, typeName, typedValue, true);
 
   theValidationList.push_back(upd);
 }
@@ -815,161 +817,158 @@ void PULImpl::addRevalidate(
  Collection primitives
 ********************************************************************************/
 void PULImpl::addCreateCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
     const store::Item_t& nodeType,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theCreateCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdCreateCollection(
-    pul,
-    aQueryLoc,
-    name,
-    annotations,
-    nodeType,
-    dyn_collection));
+  pul->theCreateCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic));
 }
 
 
 void PULImpl::addDeleteCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theDeleteCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdDeleteCollection(pul, aQueryLoc, name, dyn_collection));
+  pul->theDeleteCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdDeleteCollection(pul, loc, name, isDynamic));
 }
 
 
 void PULImpl::addInsertIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdInsertIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertIntoCollection(pul, loc, name, nodes, isDynamic));
 } 
 
 
 void PULImpl::addInsertFirstIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdInsertFirstIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertFirstIntoCollection(pul, loc, name, nodes, isDynamic));
 }
 
 
 void PULImpl::addInsertLastIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdInsertLastIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertLastIntoCollection(pul, loc, name, nodes, isDynamic));
 }
 
 
 void PULImpl::addInsertBeforeIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     store::Item_t& target,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdInsertBeforeIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertBeforeIntoCollection(pul, loc, name, target, nodes, isDynamic));
 }
 
 
 void PULImpl::addInsertAfterIntoCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     store::Item_t& target,
     std::vector<store::Item_t>& nodes,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theInsertIntoCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdInsertAfterIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
+  pul->theInsertIntoCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdInsertAfterIntoCollection(pul, loc, name, target, nodes, isDynamic));
 }
 
 
 void PULImpl::addDeleteFromCollection(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
     bool isLast,
-    bool dyn_collection)
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theDeleteFromCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdDeleteNodesFromCollection(pul, aQueryLoc, name, nodes, isLast, dyn_collection));
+  pul->theDeleteFromCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdDeleteNodesFromCollection(pul, loc, name, nodes, isLast, isDynamic));
 }
 
 
 void PULImpl::addTruncateCollection(
-        const QueryLoc* aQueryLoc,
-        store::Item_t& name,
-        bool dyn_collection)
+    const QueryLoc* aQueryLoc,
+    store::Item_t& name,
+    bool isDynamic)
 {
-  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theTruncateCollectionList.push_back(
-  GET_PUL_FACTORY().createUpdTruncateCollection(pul, aQueryLoc, name, dyn_collection));
+  pul->theTruncateCollectionList.push_back(GET_PUL_FACTORY().
+  createUpdTruncateCollection(pul, aQueryLoc, name, isDynamic));
 }
+
 
 /*******************************************************************************
   Index primitives
 ********************************************************************************/
 void PULImpl::addCreateIndex(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& qname,
     const store::IndexSpecification& spec,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateIndex(this, aQueryLoc,  qname, spec, sourceIter);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdCreateIndex(this, loc,  qname, spec, sourceIter);
+
   theCreateIndexList.push_back(upd);
 }
 
 
 void PULImpl::addDeleteIndex(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = 
-  GET_PUL_FACTORY().createUpdDeleteIndex(this, aQueryLoc, qname);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdDeleteIndex(this, loc, qname);
 
   theDeleteIndexList.push_back(upd);
 }
 
 
 void PULImpl::addRefreshIndex(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& qname,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = 
-  GET_PUL_FACTORY().createUpdRefreshIndex(this, aQueryLoc,  qname, sourceIter);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().
+  createUpdRefreshIndex(this, loc,  qname, sourceIter);
 
   theRefreshIndexList.push_back(upd);
 }
@@ -979,35 +978,37 @@ void PULImpl::addRefreshIndex(
   Integrity Constraint Primitives
 ********************************************************************************/
 void PULImpl::addActivateIC(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& qname,
       const store::Item_t& aCollectionName)
 {
   UpdatePrimitive* upd = 
-  GET_PUL_FACTORY().createUpdActivateIC(this, aQueryLoc, qname, aCollectionName);
+  GET_PUL_FACTORY().createUpdActivateIC(this, loc, qname, aCollectionName);
 
   theICActivationList.push_back(upd);
 }
 
 void PULImpl::addActivateForeignKeyIC(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& qname,
       const store::Item_t& aFromCollectionName,
       const store::Item_t& aToCollectionName)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdActivateForeignKeyIC(this,
-      aQueryLoc,
+      loc,
       qname,
       aFromCollectionName,
       aToCollectionName);
+
   theICActivationList.push_back(upd);
 }
 
 void PULImpl::addDeActivateIC(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeActivateIC(this, aQueryLoc, qname);
+  UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeActivateIC(this, loc, qname);
+
   theICActivationList.push_back(upd);
 }
 
@@ -1016,22 +1017,22 @@ void PULImpl::addDeActivateIC(
   Document PULs
 ********************************************************************************/
 void PULImpl::addCreateDocument(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& uri,
     store::Item_t& doc)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateDocument(
-      this, aQueryLoc, uri, doc);
+      this, loc, uri, doc);
   theCreateDocumentList.push_back(upd);
 }
 
 
 void PULImpl::addDeleteDocument(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& uri)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDeleteDocument(
-      this, aQueryLoc, uri);
+      this, loc, uri);
   theDeleteDocumentList.push_back(upd);
 }
 
@@ -1040,46 +1041,532 @@ void PULImpl::addDeleteDocument(
   HashMap PULs
 ********************************************************************************/
 void PULImpl::addCreateHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& aQName,
     const std::vector<store::Item_t>& aKeyTypes,
     const std::vector<zstring>& aCollations,
     long  aTimezone)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdCreateHashMap(
-      this, aQueryLoc, aQName, aKeyTypes, aCollations, aTimezone);
+      this, loc, aQName, aKeyTypes, aCollations, aTimezone);
+
   theCreateHashMapList.push_back(upd);
 }
 
 void PULImpl::addDestroyHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& aQName)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdDestroyHashMap(
-      this, aQueryLoc, aQName);
+      this, loc, aQName);
+
   theDestroyHashMapList.push_back(upd);
 }
 
 void PULImpl::addInsertIntoHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     const store::Item_t& aQName,
     const std::vector<store::Item_t>& aKey,
     const store::Iterator_t& aValue)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdInsertIntoHashMap(
-      this, aQueryLoc, aQName, aKey, aValue);
+      this, loc, aQName, aKey, aValue);
+
   theInsertIntoHashMapList.push_back(upd);
 }
 
 void PULImpl::addRemoveFromHashMap(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
       const store::Item_t& aQName,
       const std::vector<store::Item_t>& aKey)
 {
   UpdatePrimitive* upd = GET_PUL_FACTORY().createUpdRemoveFromHashMap(
-      this, aQueryLoc, aQName, aKey);
+      this, loc, aQName, aKey);
+
   theRemoveFromHashMapList.push_back(upd);
 }
+
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectInsert(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& names,
+     std::vector<store::Item_t>& values)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
+
+  csize numPairs = names.size();
+
+  for (csize i = 0; i < numPairs; ++i)
+  {
+    if (obj->getPair(names[i]))
+    {
+      RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(names[i]->getStringValue()));
+    }
+
+    for (csize j = 0; j < i; ++j)
+    {
+      if (names[j]->equals(names[i]))
+      {
+        RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
+      }
+    }
+  }
+  
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(obj, updates);
+
+  // merge object-insert primitives and raise error if duplicate names
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_INSERT)
+        continue;
+
+      UpdJSONObjectInsert* upd = static_cast<UpdJSONObjectInsert*>(*ite);
+
+      csize numPairs1 = upd->theNames.size();
+      csize numPairs2 = names.size();
+      csize numPairs = numPairs1;
+
+      upd->theNames.resize(numPairs1 + numPairs2);
+      upd->theValues.resize(numPairs1 + numPairs2);
+
+      for (csize i = 0; i < numPairs2; ++i, ++numPairs)
+      {
+        for (csize j = 0; j < numPairs1; ++j)
+        {
+          if (names[i]->equals(upd->theNames[j]))
+            RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
+        }
+        
+        upd->theNames[numPairs].transfer(names[i]);
+        upd->theValues[numPairs].transfer(values[i]);
+      }
+      
+      return;
+    }
+
+    UpdatePrimitive* upd =  GET_PUL_FACTORY().
+    createUpdJSONObjectInsert(pul, loc, target, names, values);
+
+    pul->theJSONObjectInsertList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd =  GET_PUL_FACTORY().
+    createUpdJSONObjectInsert(pul, loc, target, names, values);
+
+    pul->theJSONObjectInsertList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectDelete(
+   const QueryLoc* loc,
+   store::Item_t& target,
+   store::Item_t& name)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
+
+  if (!obj->getPair(name))
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc, ERROR_PARAMS(name->getStringValue()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(obj, updates);
+
+  // skip deletions with duplicate names
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_DELETE)
+        continue;
+
+      UpdJSONObjectDelete* upd = static_cast<UpdJSONObjectDelete*>(*ite);
+
+      if (upd->theName->equals(name))
+        return;
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectDelete(pul, loc, target, name);
+
+    pul->theJSONObjectDeleteList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectDelete(pul, loc, target, name);
+
+    pul->theJSONObjectDeleteList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectReplaceValue(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     store::Item_t& name,
+     store::Item_t& newValue)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
+
+  if (!obj->getPair(name))
+  {
+    RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(name->getStringValue()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(obj, updates);
+
+  // raise error if duplicate names
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_REPLACE_VALUE)
+        continue;
+
+      UpdJSONObjectReplaceValue* upd = static_cast<UpdJSONObjectReplaceValue*>(*ite);
+
+      if (name->equals(upd->theName))
+        RAISE_ERROR(jerr::JNUP0008, loc, ERROR_PARAMS(name->getStringValue()));
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectReplaceValue(pul, loc, target, name, newValue);
+
+    pul->theJSONObjectReplaceValueList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectReplaceValue(pul, loc, target, name, newValue);
+
+    pul->theJSONObjectReplaceValueList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectRename(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     store::Item_t& name,
+     store::Item_t& newName)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
+
+  if (!obj->getPair(name))
+  {
+    RAISE_ERROR(jerr::JNUP0011, loc, ERROR_PARAMS(name->getStringValue()));
+  }
+
+  if (obj->getPair(newName))
+  {
+    RAISE_ERROR(jerr::JNUP0012, loc, ERROR_PARAMS(newName->getStringValue()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(obj, updates);
+
+  // raise error if duplicate names
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+  
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_OBJECT_RENAME)
+        continue;
+
+      UpdJSONObjectRename* upd = static_cast<UpdJSONObjectRename*>(*ite);
+
+      if (name->equals(upd->theName))
+        RAISE_ERROR(jerr::JNUP0010, loc, ERROR_PARAMS(name->getStringValue()));
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectRename(pul, loc, target, name, newName);
+
+    pul->theJSONObjectRenameList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONObjectRename(pul, loc, target, name, newName);
+
+    pul->theJSONObjectRenameList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(obj, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONArrayInsert(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     store::Item_t& position,
+     std::vector<store::Item_t>& members)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
+
+  xs_integer pos = position->getIntegerValue();
+
+  if (pos <= xs_integer::zero() || arr->getSize() + 1 < pos)
+  {
+    RAISE_ERROR(jerr::JNUP0018, loc, ERROR_PARAMS(pos));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(arr, updates);
+
+  // merge array-insert primitives
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_INSERT)
+        continue;
+
+      UpdJSONArrayInsert* upd = static_cast<UpdJSONArrayInsert*>(*ite);
+
+      if (upd->thePosition != pos)
+        continue;
+
+      csize numMembers1 = upd->theMembers.size();
+      csize numMembers2 = members.size();
+      csize numMembers = numMembers1;
+
+      upd->theMembers.resize(numMembers1 + numMembers2);
+
+      for (csize i = 0; i < numMembers2; ++i, ++numMembers)
+      {
+        upd->theMembers[numMembers].transfer(members[i]);
+      }
+
+      return;
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayInsert(pul, loc, target, pos, members);
+
+    pul->theJSONArrayInsertList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayInsert(pul, loc, target, pos, members);
+
+    pul->theJSONArrayInsertList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONArrayDelete(
+   const QueryLoc* loc,
+   store::Item_t& target,
+   store::Item_t& position)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
+
+  xs_integer pos = position->getIntegerValue();
+
+  if (pos <= xs_integer::zero() || arr->getSize() < pos)
+  {
+    RAISE_ERROR(jerr::JNUP0020, loc, ERROR_PARAMS(pos.toString()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(arr, updates);
+
+  // skip duplicate deletes
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+        continue;
+
+      UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+      if (upd->thePosition == pos)
+      {
+        return;
+      }
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayDelete(pul, loc, target, pos);
+
+    pul->theJSONArrayDeleteList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayDelete(pul, loc, target, pos);
+
+    pul->theJSONArrayDeleteList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONArrayReplaceValue(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     store::Item_t& position,
+     store::Item_t& newValue)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
+
+  xs_integer pos = position->getIntegerValue();
+
+  if (pos <= xs_integer::zero() || arr->getSize() < pos)
+  {
+    RAISE_ERROR(jerr::JNUP0021, loc, ERROR_PARAMS(pos.toString()));
+  }
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(arr, updates);
+
+  // raise error if duplicate positions and skip if same position as delete
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
+      {
+        UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+        if (upd->thePosition == pos)
+        {
+          RAISE_ERROR(jerr::JNUP0022, loc, ERROR_PARAMS(pos.toString()));
+        }
+      }
+      else if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+      {
+        UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
+        
+        if (upd->thePosition == pos)
+        {
+          return;
+        }
+      }
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayReplaceValue(pul, loc, target, pos, newValue);
+
+    pul->theJSONArrayReplaceValueList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayReplaceValue(pul, loc, target, pos, newValue);
+
+    pul->theJSONArrayReplaceValueList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
+}
+
+#endif // ZORBA_WITH_JSON
 
 
 /*******************************************************************************
@@ -1103,62 +1590,82 @@ void PULImpl::mergeUpdates(store::Item* other)
       CollectionPul* otherPul = otherp->theCollectionPuls[otherIte->second];
 
       // Merge XQUF primitives
-      mergeUpdateList(thisPul,
-                      thisPul->theDoFirstList,
-                      otherPul->theDoFirstList,
-                      UP_LIST_DO_FIRST);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theDoFirstList,
+                               otherPul->theDoFirstList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theInsertList,
-                      otherPul->theInsertList,
-                      UP_LIST_NONE);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theInsertList,
+                               otherPul->theInsertList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theReplaceNodeList,
-                      otherPul->theReplaceNodeList,
-                      UP_LIST_REPLACE_NODE);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theReplaceNodeList,
+                               otherPul->theReplaceNodeList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theReplaceContentList,
-                      otherPul->theReplaceContentList,
-                      UP_LIST_REPLACE_CONTENT);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theReplaceContentList,
+                               otherPul->theReplaceContentList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theDeleteList,
-                      otherPul->theDeleteList,
-                      UP_LIST_DELETE);
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theDeleteList,
+                               otherPul->theDeleteList);
 
       // Merge revalidation primitives
-      mergeUpdateList(thisPul,
-                      thisPul->theRevalidateList,
-                      otherPul->theRevalidateList,
-                      UP_LIST_NONE);
+      mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theRevalidateList,
+                                 otherPul->theRevalidateList);
 
       // Merge collection primitives
-      mergeUpdateList(thisPul,
-                      thisPul->theCreateCollectionList,
-                      otherPul->theCreateCollectionList,
-                      UP_LIST_CREATE_COLLECTION);
+      mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theCreateCollectionList,
+                                 otherPul->theCreateCollectionList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theInsertIntoCollectionList,
-                      otherPul->theInsertIntoCollectionList,
-                      UP_LIST_NONE);
+      mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theInsertIntoCollectionList,
+                                 otherPul->theInsertIntoCollectionList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theDeleteFromCollectionList,
-                      otherPul->theDeleteFromCollectionList,
-                      UP_LIST_NONE);
+      mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theDeleteFromCollectionList,
+                                 otherPul->theDeleteFromCollectionList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theTruncateCollectionList,
-                      otherPul->theTruncateCollectionList,
-                      UP_LIST_NONE);
+      mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theTruncateCollectionList,
+                                 otherPul->theTruncateCollectionList);
 
-      mergeUpdateList(thisPul,
-                      thisPul->theDeleteCollectionList,
-                      otherPul->theDeleteCollectionList,
-                      UP_LIST_NONE);
+      mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theDeleteCollectionList,
+                                 otherPul->theDeleteCollectionList);
+
+#ifdef ZORBA_WITH_JSON
+      // merge jsoniq primitives
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONObjectInsertList,
+                               otherPul->theJSONObjectInsertList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONObjectDeleteList,
+                               otherPul->theJSONObjectDeleteList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONObjectReplaceValueList,
+                               otherPul->theJSONObjectReplaceValueList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONObjectRenameList,
+                               otherPul->theJSONObjectRenameList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayInsertList,
+                               otherPul->theJSONArrayInsertList);
+      
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayDeleteList,
+                               otherPul->theJSONArrayDeleteList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayReplaceValueList,
+                               otherPul->theJSONArrayReplaceValueList);
+#endif
 
       ++thisIte;
       ++otherIte;
@@ -1194,260 +1701,437 @@ void PULImpl::mergeUpdates(store::Item* other)
   }
 
   // Merge fn:put primitives
-  csize numPuts = thePutList.size();
-  csize numOtherPuts = otherp->thePutList.size();
+  mergeSimpleUpdateLists(thePutList, otherp->thePutList);
 
-  for (csize i = 0; i < numOtherPuts; ++i)
-  {
-    UpdPut* otherUpd = static_cast<UpdPut*>(otherp->thePutList[i]);
+  // merge index and IC primitives
+  mergeSimpleUpdateLists(theCreateIndexList, otherp->theCreateIndexList);
 
-    for (csize j = 0; j < numPuts; ++j)
-    {
-      UpdPut* upd = static_cast<UpdPut*>(thePutList[j]);
-      
-      if (upd->theTargetUri->equals(otherUpd->theTargetUri))
-      {
-        throw XQUERY_EXCEPTION(err::XUDY0031,
-        ERROR_PARAMS(upd->theTargetUri->getStringValue()));
-      }
-    }
+  mergeSimpleUpdateLists(theDeleteIndexList, otherp->theDeleteIndexList);
 
-    thePutList.push_back(otherUpd);
-    otherUpd->thePul = this;
-    otherp->thePutList[i] = NULL;
-  }
+  mergeSimpleUpdateLists(theRefreshIndexList, otherp->theRefreshIndexList);
 
-  // merge index primitives
-  mergeUpdateList(NULL,
-                  theCreateIndexList,
-                  otherp->theCreateIndexList,
-                  UP_LIST_CREATE_INDEX);
-
-  mergeUpdateList(NULL,
-                  theDeleteIndexList,
-                  otherp->theDeleteIndexList,
-                  UP_LIST_NONE);
-
-  mergeUpdateList(NULL,
-                  theRefreshIndexList,
-                  otherp->theRefreshIndexList,
-                  UP_LIST_NONE);
-
-  mergeUpdateList(NULL,
-                  theICActivationList,
-                  otherp->theICActivationList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theICActivationList, otherp->theICActivationList);
 
   // merge document primitives
-  mergeUpdateList(NULL,
-                  theCreateDocumentList,
-                  otherp->theCreateDocumentList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theCreateDocumentList, otherp->theCreateDocumentList);
 
-  mergeUpdateList(NULL,
-                  theDeleteDocumentList,
-                  otherp->theDeleteDocumentList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theDeleteDocumentList, otherp->theDeleteDocumentList);
 
   // merge hashmap primitives
-  mergeUpdateList(NULL,
-                  theCreateHashMapList,
-                  otherp->theCreateHashMapList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theCreateHashMapList, otherp->theCreateHashMapList);
 
-  mergeUpdateList(NULL,
-                  theDestroyHashMapList,
-                  otherp->theDestroyHashMapList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theDestroyHashMapList, otherp->theDestroyHashMapList);
 
-  mergeUpdateList(NULL,
-                  theInsertIntoHashMapList,
-                  otherp->theInsertIntoHashMapList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theInsertIntoHashMapList, otherp->theInsertIntoHashMapList);
 
-  mergeUpdateList(NULL,
-                  theRemoveFromHashMapList,
-                  otherp->theRemoveFromHashMapList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theRemoveFromHashMapList, otherp->theRemoveFromHashMapList);
 
   // merge validation primitives
-  mergeUpdateList(NULL,
-                  theValidationList,
-                  otherp->theValidationList,
-                  UP_LIST_NONE);
+  mergeSimpleUpdateLists(theValidationList, otherp->theValidationList);
 }
 
 
-void PULImpl::mergeUpdateList(
-    CollectionPul* myPul,
-    std::vector<UpdatePrimitive*>& myList,
-    std::vector<UpdatePrimitive*>& otherList,
-    UpdListKind listKind)
-{
-  csize numUpdates;
-  csize numOtherUpdates;
+/*******************************************************************************
 
-  numUpdates = myList.size();
-  numOtherUpdates = otherList.size();
+********************************************************************************/
+void PULImpl::mergeSimpleUpdateLists(
+    std::vector<UpdatePrimitive*>& myList,
+    std::vector<UpdatePrimitive*>& otherList)
+{
+  csize numUpdates = myList.size();
+  csize numOtherUpdates = otherList.size();
+
+  myList.reserve(numUpdates + numOtherUpdates);
 
   for (csize i = 0; i < numOtherUpdates; ++i)
   {
-    if (listKind == UP_LIST_CREATE_COLLECTION) 
-    {
-      UpdCreateCollection* otherUpd = static_cast<UpdCreateCollection*>(otherList[i]);
-      for (csize j = 0; j < numUpdates; ++j) 
-      {
-        if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) 
-        {
-          UpdCreateCollection* upd = static_cast<UpdCreateCollection*>(myList[j]);
-          if (upd->getName()->equals(otherUpd->getName())) 
-          {
-            throw XQUERY_EXCEPTION(
-              zerr::ZDDY0016_COLLECTION_MULTIPLE_CREATES,
-              ERROR_PARAMS( upd->getName()->getStringValue() ),
-              ERROR_LOC( *upd->theLoc )
-            );
-          }
-        }
-      }
-    }
-    else if (listKind == UP_LIST_CREATE_INDEX) 
-    {
-      UpdCreateIndex* otherUpd = static_cast<UpdCreateIndex*>(otherList[i]);
-      for (csize j = 0; j < numUpdates; ++j) 
-      {
-        if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_INDEX) 
-        {
-          UpdCreateIndex* upd = static_cast<UpdCreateIndex*>(myList[j]);
-          if (upd->getName()->equals(otherUpd->getName())) 
-          {
-            throw XQUERY_EXCEPTION(
-              zerr::ZDDY0027_INDEX_MULTIPLE_CREATES,
-              ERROR_PARAMS( upd->getName()->getStringValue() ),
-              ERROR_LOC( *upd->theLoc )
-            );
-          }
-        }
-      }
-    }
+    UpdatePrimitive* otherUpd = otherList[i];
+    otherUpd->thePul = this;
 
+    myList.push_back(otherUpd);
+    otherList[i] = NULL;
+
+    store::UpdateConsts::UpdPrimKind otherUpdKind = otherUpd->getKind();
+
+    switch (otherUpdKind)
+    {
+    case store::UpdateConsts::UP_CREATE_INDEX:
+    {
+      UpdCreateIndex* otherUpd2 = static_cast<UpdCreateIndex*>(otherUpd);
+
+      for (csize j = 0; j < numUpdates; ++j) 
+      {
+        UpdCreateIndex* myUpd = static_cast<UpdCreateIndex*>(myList[j]);
+
+        if (myUpd->getName()->equals(otherUpd2->getName())) 
+        {
+          RAISE_ERROR(zerr::ZDDY0027_INDEX_MULTIPLE_CREATES, otherUpd->theLoc,
+          ERROR_PARAMS(myUpd->getName()->getStringValue()));
+        }
+      }
+    }
+    case store::UpdateConsts::UP_PUT:
+    {
+      UpdPut* otherUpd2 = static_cast<UpdPut*>(otherUpd);
+
+      for (csize j = 0; j < numUpdates; ++j)
+      {
+        UpdPut* myUpd = static_cast<UpdPut*>(myList[j]);
+      
+      if (myUpd->theTargetUri->equals(otherUpd2->theTargetUri))
+      {
+        RAISE_ERROR(err::XUDY0031, otherUpd->theLoc,
+        ERROR_PARAMS(myUpd->theTargetUri->getStringValue()));
+      }
+    }
+    }
+    default:
+      break;
+    }
+  }
+
+  otherList.clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::mergeTargetedUpdateLists(
+    CollectionPul* myPul,
+    std::vector<UpdatePrimitive*>& myList,
+    std::vector<UpdatePrimitive*>& otherList)
+{
+  csize numUpdates = myList.size();
+  csize numOtherUpdates = otherList.size();
+
+  myList.reserve(numUpdates + numOtherUpdates);
+
+  for (csize i = 0; i < numOtherUpdates; ++i)
+  {
     UpdatePrimitive* otherUpd = otherList[i];
     otherUpd->thePul = this;
     otherUpd->theCollectionPul = myPul;
 
-    store::UpdateConsts::UpdPrimKind updKind = otherUpd->getKind();
-    XmlNode* target;
+    myList.push_back(otherUpd);
+    otherList[i] = NULL;  
 
-    if (updKind == store::UpdateConsts::UP_REPLACE_CHILD)
-      target = BASE_NODE(reinterpret_cast<UpdReplaceChild*>(otherUpd)->theChild);
+    store::UpdateConsts::UpdPrimKind otherUpdKind = otherUpd->getKind();
 
-    else if (updKind == store::UpdateConsts::UP_REPLACE_ATTRIBUTE)
-      target = BASE_NODE(reinterpret_cast<UpdReplaceAttribute*>(otherUpd)->theAttr);
+    // Get the target and see if myPul has any other updates on the same target
+    store::Item* target = otherUpd->theTarget.getp();
 
-    else
-      target = BASE_NODE(otherUpd->theTarget);
+    if (otherUpdKind == store::UpdateConsts::UP_REPLACE_CHILD)
+      target = static_cast<UpdReplaceChild*>(otherUpd)->theChild.getp();
+    else if (otherUpdKind == store::UpdateConsts::UP_REPLACE_ATTRIBUTE)
+      target = static_cast<UpdReplaceAttribute*>(otherUpd)->theAttr.getp();
 
     NodeUpdates* targetUpdates = NULL;
-    bool found = (target == NULL || myPul == NULL?
-                  false : 
-                  myPul->theNodeToUpdatesMap.get(target, targetUpdates));
+    bool found = myPul->theNodeToUpdatesMap.get(target, targetUpdates);
 
     if (!found)
     {
-      myList.push_back(otherUpd);
-      otherList[i] = NULL;
-
-      if (target && myPul)
-      {
-        targetUpdates = new NodeUpdates(1);
-        (*targetUpdates)[0] = otherUpd;
-        myPul->theNodeToUpdatesMap.insert(target, targetUpdates);
-      }
+      targetUpdates = new NodeUpdates(1);
+      (*targetUpdates)[0] = otherUpd;
+      
+      myPul->theNodeToUpdatesMap.insert(target, targetUpdates);
     }
     else
     {
-      switch (listKind)
+      bool merged = false;
+
+      switch (otherUpdKind)
       {
-      case UP_LIST_DO_FIRST:
+      case store::UpdateConsts::UP_RENAME_ELEM:
+      case store::UpdateConsts::UP_RENAME_ATTR:
+      case store::UpdateConsts::UP_RENAME_PI:
+
+      case store::UpdateConsts::UP_REPLACE_CHILD:
+      case store::UpdateConsts::UP_REPLACE_ATTRIBUTE:
+
+      case store::UpdateConsts::UP_REPLACE_ATTR_VALUE:
+      case store::UpdateConsts::UP_REPLACE_TEXT_VALUE:
+      case store::UpdateConsts::UP_REPLACE_PI_VALUE:
+      case store::UpdateConsts::UP_REPLACE_COMMENT_VALUE:
+
+      case store::UpdateConsts::UP_REPLACE_CONTENT:
       {
-        if (store::UpdateConsts::isRename(updKind))
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
         {
-          ulong numTargetUpdates = (ulong)targetUpdates->size();
-          for (ulong j = 0; j < numTargetUpdates; j++)
+          if ((*ite)->getKind() == otherUpdKind)
           {
-            if (store::UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
-              throw XQUERY_EXCEPTION(err::XUDY0015,
-              ERROR_LOC((*targetUpdates)[j]->theLoc));
+            if (store::UpdateConsts::isRename(otherUpdKind))
+              RAISE_ERROR_NO_PARAMS(err::XUDY0015, otherUpd->theLoc);
+
+            else if (store::UpdateConsts::isReplaceNode(otherUpdKind))
+              RAISE_ERROR_NO_PARAMS(err::XUDY0016, otherUpd->theLoc);
+
+            else 
+              RAISE_ERROR_NO_PARAMS(err::XUDY0017, otherUpd->theLoc);
           }
         }
-        else if (store::UpdateConsts::isReplaceValue(updKind))
-        {
-          csize numTargetUpdates = targetUpdates->size();
-          for (csize j = 0; j < numTargetUpdates; j++)
-          {
-            if (store::UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
-              throw XQUERY_EXCEPTION(err::XUDY0017,
-              ERROR_LOC((*targetUpdates)[j]->theLoc));
-          }
-        }
+
         break;
       }
-      case UP_LIST_REPLACE_NODE:
+
+      case store::UpdateConsts::UP_DELETE:
       {
-        if (store::UpdateConsts::isReplaceNode(updKind))
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
         {
-          csize numTargetUpdates = (ulong)targetUpdates->size();
-          for (csize j = 0; j < numTargetUpdates; ++j)
+          if ((*ite)->getKind() == otherUpdKind)
           {
-            if (store::UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
-              throw XQUERY_EXCEPTION(err::XUDY0016,
-              ERROR_LOC((*targetUpdates)[j]->theLoc));
+            merged = true;
+            break;
           }
         }
+        
         break;
       }
-      case UP_LIST_REPLACE_CONTENT:
+
+#ifdef ZORBA_WITH_JSON
+      // merge object-insert primitives and raise error if duplicate names
+      case store::UpdateConsts::UP_JSON_OBJECT_INSERT:
       {
-        if (updKind == store::UpdateConsts::UP_REPLACE_CONTENT)
+        UpdJSONObjectInsert* otherUpd2 = static_cast<UpdJSONObjectInsert*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
         {
-          csize numTargetUpdates = targetUpdates->size();
-          for (csize j = 0; j < numTargetUpdates; ++j)
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+          
+          UpdJSONObjectInsert* myUpd = static_cast<UpdJSONObjectInsert*>(*ite);
+
+          csize numMyPairs = myUpd->theNames.size();
+          csize numOtherPairs = otherUpd2->theNames.size();
+          csize numPairs = numMyPairs;
+
+          myUpd->theNames.resize(numMyPairs + numOtherPairs);
+          myUpd->theValues.resize(numMyPairs + numOtherPairs);
+
+          for (csize i = 0; i < numOtherPairs; ++i, ++numPairs)
           {
-            if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
-              throw XQUERY_EXCEPTION(err::XUDY0017,
-              ERROR_LOC((*targetUpdates)[j]->theLoc));
-          }
-        }
-        break;
-      }
-      case UP_LIST_DELETE:
-      {
-        if (updKind == store::UpdateConsts::UP_DELETE)
-        {
-          csize numTargetUpdates = targetUpdates->size();
-          csize j;
-          for (j = 0; j < numTargetUpdates; ++j)
-          {
-            if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_DELETE)
-              break;
+            for (csize j = 0; j < numMyPairs; ++j)
+            {
+              if (otherUpd2->theNames[i]->equals(myUpd->theNames[j]))
+                RAISE_ERROR(jerr::JNUP0005, otherUpd->theLoc,
+                ERROR_PARAMS(myUpd->theNames[j]->getStringValue()));
+            }
+        
+            myUpd->theNames[numPairs].transfer(otherUpd2->theNames[i]);
+            myUpd->theValues[numPairs].transfer(otherUpd2->theValues[i]);
           }
 
-          if (j < numTargetUpdates)
-          {
-            delete otherUpd;
-            otherList[i] = NULL;
-            continue;
-          }
+          merged = true;
+          break;
         }
+
         break;
       }
+
+      // skip deletions with duplicate names
+      case store::UpdateConsts::UP_JSON_OBJECT_DELETE:
+      {
+        UpdJSONObjectDelete* otherUpd2 = static_cast<UpdJSONObjectDelete*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+          
+          UpdJSONObjectDelete* myUpd = static_cast<UpdJSONObjectDelete*>(*ite);
+
+          if (myUpd->theName->equals(otherUpd2->theName))
+          {
+            merged = true;
+            break;
+          }
+        }
+
+        break;
+      }
+
+      // raise error if duplicate names
+      case store::UpdateConsts::UP_JSON_OBJECT_REPLACE_VALUE:
+      {
+        UpdJSONObjectReplaceValue* otherUpd2 = 
+        static_cast<UpdJSONObjectReplaceValue*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+          
+          UpdJSONObjectReplaceValue* myUpd = 
+          static_cast<UpdJSONObjectReplaceValue*>(*ite);
+
+          if (myUpd->theName->equals(otherUpd2->theName))
+          {
+            RAISE_ERROR(jerr::JNUP0008, otherUpd->theLoc, 
+            ERROR_PARAMS(myUpd->theName->getStringValue()));
+          }
+        }
+
+        break;
+      }
+
+      // raise error if duplicate names
+      case store::UpdateConsts::UP_JSON_OBJECT_RENAME:
+      {
+        UpdJSONObjectRename* otherUpd2 = static_cast<UpdJSONObjectRename*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+          
+          UpdJSONObjectRename* myUpd = static_cast<UpdJSONObjectRename*>(*ite);
+
+          if (myUpd->theName->equals(otherUpd2->theName))
+          {
+            RAISE_ERROR(jerr::JNUP0010, otherUpd->theLoc, 
+            ERROR_PARAMS(myUpd->theName->getStringValue()));
+          }
+        }
+
+        break;
+      }
+
+      // skip duplicate deletes
+      case store::UpdateConsts::UP_JSON_ARRAY_DELETE:
+      {
+        UpdJSONArrayUpdate* otherUpd2 = static_cast<UpdJSONArrayUpdate*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite)->getKind() != otherUpdKind)
+            continue;
+
+          UpdJSONArrayUpdate* myUpd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+          if (myUpd->thePosition == otherUpd2->thePosition)
+          {
+            merged = true;
+            break;
+          }
+        }
+
+        break;
+      }
+
+      // raise error if duplicate positions and skip if same position as delete
+      case store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE:
+      {
+        UpdJSONArrayUpdate* otherUpd2 = static_cast<UpdJSONArrayUpdate*>(otherUpd);
+
+        NodeUpdates::iterator ite = targetUpdates->begin();
+        NodeUpdates::iterator end = targetUpdates->end();
+
+        for (; ite != end; ++ite)
+        {
+          UpdJSONArrayUpdate* myUpd = static_cast<UpdJSONArrayUpdate*>(*ite);
+
+          if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
+          {
+            if (myUpd->thePosition == otherUpd2->thePosition)
+            {
+              RAISE_ERROR(jerr::JNUP0022, otherUpd->theLoc, 
+              ERROR_PARAMS(myUpd->thePosition.toString()));
+            }
+          }
+          else if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+          {
+            if (myUpd->thePosition == otherUpd2->thePosition)
+            {
+              merged = true;
+              break;
+            }
+          }
+        }
+
+        break;
+      }
+
+#endif
+
       default:
         break;
       }
 
-      myList.push_back(otherUpd);
-      otherList[i] = NULL;
-      targetUpdates->push_back(otherUpd);
+      if (merged)
+      {
+        delete otherUpd;
+        myList.pop_back();
+      }
+      else
+      {
+        targetUpdates->push_back(otherUpd);
+      }
+    } // target has other updates in this pul
+  } // for each primitive in other list
+
+  otherList.clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::mergeCollectionUpdateLists(
+    CollectionPul* myPul,
+    std::vector<UpdatePrimitive*>& myList,
+    std::vector<UpdatePrimitive*>& otherList)
+{
+  csize numUpdates = myList.size();
+  csize numOtherUpdates = otherList.size();
+
+  myList.reserve(numUpdates + numOtherUpdates);
+
+  for (csize i = 0; i < numOtherUpdates; ++i)
+  {
+    UpdatePrimitive* otherUpd = otherList[i];
+    otherUpd->thePul = this;
+    otherUpd->theCollectionPul = myPul;
+
+    myList.push_back(otherUpd);
+    otherList[i] = NULL;  
+
+    store::UpdateConsts::UpdPrimKind otherUpdKind = otherUpd->getKind();
+
+    if (otherUpdKind == store::UpdateConsts::UP_CREATE_COLLECTION) 
+    {
+      UpdCreateCollection* otherUpd2 = static_cast<UpdCreateCollection*>(otherUpd);
+
+      for (csize j = 0; j < numUpdates; ++j) 
+      {
+        UpdCreateCollection* myUpd = static_cast<UpdCreateCollection*>(myList[j]);
+
+        if (myUpd->getName()->equals(otherUpd2->getName())) 
+        {
+          RAISE_ERROR(zerr::ZDDY0016_COLLECTION_MULTIPLE_CREATES, otherUpd->theLoc,
+          ERROR_PARAMS(myUpd->getName()->getStringValue()));
+        }
+      }
     }
   }
 
@@ -1476,13 +2160,13 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
 
     for (; it != end; ++it)
     {
-      const XmlNode* targetNode = (*it).first;
+      const XmlNode* targetNode = static_cast<XmlNode*>((*it).first);
 
       bool found = false;
 
       for (csize i = 0; i < numRoots; i++)
       {
-        XmlNode* rootNode = reinterpret_cast<XmlNode*>(rootNodes[i]);
+        XmlNode* rootNode = static_cast<XmlNode*>(rootNodes[i]);
         
         if (targetNode->getTree() == rootNode->getTree())
         {
@@ -1550,7 +2234,7 @@ void PULImpl::getIndicesToRefresh(
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
     for (; ite != end; ++ite)
     {
-      XmlNode* node = (*ite).first;
+      XmlNode* node = static_cast<XmlNode*>((*ite).first);
       pul->theModifiedDocs.insert(node->getRoot());
     }
 
@@ -1641,7 +2325,7 @@ void PULImpl::addIndexEntryCreator(
     store::Index* idx,
     store::IndexEntryCreator* creator)
 {
-  CollectionPul* pul = getCollectionPulByName(collectionName,false);
+  CollectionPul* pul = getCollectionPulByName(collectionName, false);
 
   pul->theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
   pul->theIndexEntryCreators.push_back(creator);
@@ -1655,7 +2339,7 @@ void PULImpl::addIndexTruncator(
     const store::Item* collectionName,
     store::Index* idx)
 {
-  CollectionPul* pul = getCollectionPulByName(collectionName,false);
+  CollectionPul* pul = getCollectionPulByName(collectionName, false);
   pul->theTruncatedIndices.push_back(static_cast<IndexImpl*>(idx));
 }
 
@@ -1854,6 +2538,16 @@ CollectionPul::~CollectionPul()
   cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
 
+#ifdef ZORBA_WITH_JSON
+  cleanList(theJSONObjectInsertList);
+  cleanList(theJSONObjectDeleteList);
+  cleanList(theJSONObjectReplaceValueList);
+  cleanList(theJSONObjectRenameList);
+  cleanList(theJSONArrayInsertList);
+  cleanList(theJSONArrayDeleteList);
+  cleanList(theJSONArrayReplaceValueList);
+#endif
+
   cleanIndexDeltas();
 }
 
@@ -1871,6 +2565,16 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theReplaceContentList);
   switchPulInPrimitivesList(theDeleteList);
   switchPulInPrimitivesList(theRevalidateList);
+
+#ifdef ZORBA_WITH_JSON
+  switchPulInPrimitivesList(theJSONObjectInsertList);
+  switchPulInPrimitivesList(theJSONObjectDeleteList);
+  switchPulInPrimitivesList(theJSONObjectReplaceValueList);
+  switchPulInPrimitivesList(theJSONObjectRenameList);
+  switchPulInPrimitivesList(theJSONArrayInsertList);
+  switchPulInPrimitivesList(theJSONArrayDeleteList);
+  switchPulInPrimitivesList(theJSONArrayReplaceValueList);
+#endif
 
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
@@ -2623,6 +3327,37 @@ void CollectionPul::applyUpdates()
     applyList(theReplaceContentList);
     applyList(theDeleteList);
 
+#ifdef ZORBA_WITH_JSON
+    applyList(theJSONObjectDeleteList);
+    applyList(theJSONObjectReplaceValueList);
+    applyList(theJSONObjectRenameList);
+    applyList(theJSONObjectInsertList);
+
+    if (!theJSONArrayDeleteList.empty() ||
+        !theJSONArrayInsertList.empty() ||
+        !theJSONArrayReplaceValueList.empty())
+    {
+      NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
+      NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
+      for (; ite != end; ++ite)
+      {
+        if (!(*ite).first->isJSONArray())
+          continue;
+
+        NodeUpdates* updates = (*ite).second;
+
+        std::sort(updates->begin(), updates->end(), UpdJSONArrayUpdate::Comparator());
+
+        NodeUpdates::iterator updIte = updates->begin();
+        NodeUpdates::iterator updEnd = updates->end();
+        for (; updIte != updEnd; ++updIte)
+        {
+          (*updIte)->apply();
+        }
+      }
+    }
+#endif
+
     // Check if any inconsistencies that were detected during the application
     // of XQUF primitives were only temporary and have been resolved by now.
     // If not, an exception will be raised, and the updates will be undone
@@ -2653,7 +3388,7 @@ void CollectionPul::applyUpdates()
           csize j = i;
 
           while (j < node->numChildren() &&
-              node->getChild(j)->getNodeKind() == store::StoreConsts::textNode)
+                 node->getChild(j)->getNodeKind() == store::StoreConsts::textNode)
           {
             TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(j));
             newContent += mergedNode->getText();
@@ -2766,6 +3501,35 @@ void CollectionPul::undoUpdates()
         merge.theMergedNodes[j]->connect(merge.theParent, merge.thePos + j);
     }
     theMergeList.clear();
+
+#ifdef ZORBA_WITH_JSON
+    undoList(theJSONObjectInsertList);
+    undoList(theJSONObjectRenameList);
+    undoList(theJSONObjectReplaceValueList);
+    undoList(theJSONObjectDeleteList);
+
+    if (!theJSONArrayDeleteList.empty() ||
+        !theJSONArrayInsertList.empty() ||
+        !theJSONArrayReplaceValueList.empty())
+    {
+      NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
+      NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
+      for (; ite != end; ++ite)
+      {
+        if (!(*ite).first->isJSONArray())
+          continue;
+
+        NodeUpdates* updates = (*ite).second;
+
+        NodeUpdates::reverse_iterator updIte = updates->rbegin();
+        NodeUpdates::reverse_iterator updEnd = updates->rend();
+        for (; updIte != updEnd; ++updIte)
+        {
+          (*updIte)->undo();
+        }
+      }
+    }
+#endif
 
     undoList(theDeleteList);
     undoList(theReplaceContentList);

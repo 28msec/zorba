@@ -190,6 +190,8 @@ public:
 
   bool insert(store::IndexKey*& key, store::Item_t& node);
 
+  bool remove(const store::IndexKey* key, const store::Item_t& node, bool all);
+
   bool remove(const store::Item_t& key, const store::Item_t& node, bool all);
 };
 

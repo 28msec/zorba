@@ -96,6 +96,7 @@ static expr_t execute (
                                          0,      // dynamic ctx
                                          NULL,   // xquery
                                          0,      // stack depth
+                                         expr_ccb.theHaveTimeout,
                                          expr_ccb.theTimeout));
     for (;;)
     {
@@ -190,31 +191,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       if (!udf->isOptimized())
       {
-        // Set the Optimized flag in advance to prevent an infinte loop (for
-        // recursive functions, an optimization could be attempted again)
-        udf->setOptimized(true);
-
-        RewriterContext rctx(rCtx.theCCB,
-                             udf->getBody(),
-                             udf,
-                             "",
-                             udf->getBody()->get_sctx()->is_in_ordered_mode());
-
-        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
-        udf->setBody(rctx.getRoot());
-
-        if (rCtx.theCCB->theConfig.optimize_cb != NULL)
-        {
-          if (udf->getName())
-          {
-            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(),
-                                               udf->getName()->getStringValue().c_str());
-          }
-          else
-          {
-            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(), "inline function");
-          }
-        }
+        udf->optimize(rCtx.theCCB);
       }
 
       if (rCtx.theUDF != NULL &&
@@ -430,7 +407,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
   if (node->get_expr_kind() == var_expr_kind)
   {
-    var_expr_t v = dynamic_cast<var_expr *>(node);
+    var_expr_t v = static_cast<var_expr *>(node);
     freevars.insert(v);
   }
   else
@@ -553,15 +530,13 @@ static void remove_wincond_vars(
 
 RULE_REWRITE_PRE(FoldConst)
 {
-  TypeManager* tm = node->get_type_manager();
-
   xqtref_t rtype = node->get_return_type();
 
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
       node->getFreeVars().empty() &&
       ! node->isUnfoldable() &&
-      TypeOps::type_max_cnt(tm, *rtype) <= 1)
+      rtype->max_card() <= 1)
   {
     vector<store::Item_t> result;
     expr_t folded = execute(rCtx.getCompilerCB(), node, result);
@@ -746,8 +721,8 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     if (!arg->isNonDiscardable())
     {
       xqtref_t argType = arg->get_return_type();
-      TypeConstants::quantifier_t argQuant = TypeOps::quantifier(*argType);
-      int type_cnt = TypeOps::type_cnt(tm, *argType);
+      TypeConstants::quantifier_t argQuant = argType->get_quantifier();
+      int type_cnt = argType->card();
 
       if (fkind == FunctionConsts::FN_COUNT_1 && type_cnt != -1)
       {
@@ -978,13 +953,11 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 ********************************************************************************/
 static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
 {
-  TypeManager* tm = flworExpr->get_type_manager();
-
   expr* returnExpr = flworExpr->get_return_expr();
 
   if (returnExpr->get_expr_kind() == const_expr_kind ||
       (!returnExpr->isNonDiscardable() &&
-       TypeOps::type_cnt(tm, *(returnExpr->get_return_type())) == 1))
+       returnExpr->get_return_type()->card() == 1))
   {
     if (flworExpr->num_clauses() == 1)
     {
@@ -1052,9 +1025,9 @@ RULE_REWRITE_POST(InlineFunctions)
 
     if (NULL != udf && 
         //!udf->isSequential() && 
+        (NULL != (body = udf->getBody())) &&
         !udf->isExiting() &&
-        udf->isLeaf() &&
-        (NULL != (body = udf->getBody())))
+        udf->isLeaf())
     {
       const std::vector<var_expr_t>& udfArgs = udf->getArgVars();
 

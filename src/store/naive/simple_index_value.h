@@ -93,9 +93,9 @@ public:
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 
   virtual bool remove(
-        const store::IndexKey* key,
-        const store::Item_t& node,
-        bool all) = 0;
+      const store::IndexKey* key,
+      const store::Item_t& node,
+      bool all) = 0;
 };
 
 

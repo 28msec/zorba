@@ -75,19 +75,31 @@ public:
   during the evaluation of a given expr E. We call this graph the "call-graph
   of E".
 
-  theExpr    : The expr whose call graph is represented by "this".
-  theNodes   : Maps a user_function ptr to the node that represents that udf in
-               the graph.
-  theRoot    : A "dummy" udf node representing theExpr 
-  theVisitId : During a traversal of the graph, we need to know if we reach at
-               a node that we have visited already in the same traversal. This
-               is done as follows: Every time we start a new traversal, we 
-               increment theVisitId, and pass its value to the traversal 
-               method(s). Each node has a "visit id" data member. When a
-               traversal reaches a node, we check whether the visit id of the
-               node is == to the traversal visit id. If true, we know that the
-               node has been visited already by the current traversal. Otherwise,
-               we set its visit id to the visit id of the traversal.   
+  The graph is built right after translation is done and before optimization
+  starts (see XQueryCompiler::optimize() in src/compiler/api/compiler_api.cpp)
+
+  theExpr:
+  --------
+  The expr whose call graph is represented by "this".
+
+  theNodes:
+  ---------
+  Maps a user_function ptr to the node that represents that udf in the graph.
+
+  theRoot:
+  --------
+  A "dummy" udf node representing theExpr 
+
+  theVisitId:
+  -----------
+  During a traversal of the graph, we need to know if we reach at a node that
+  we have visited already in the same traversal. This is done as follows: Every
+  time we start a new traversal, we increment theVisitId, and pass its value to
+  the traversal method(s). Each node has a "visit id" data member. When a
+  traversal reaches a node, we check whether the visit id of the node is == to
+  the traversal visit id. If true, we know that the node has been visited already
+  by the current traversal. Otherwise, we set its visit id to the visit id of
+  the traversal.   
 *******************************************************************************/
 class UDFGraph 
 {

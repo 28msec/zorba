@@ -15,13 +15,7 @@
  */
 #include "stdafx.h"
 
-#include "diagnostics/assert.h"
-#include "diagnostics/util_macros.h"
-
 #include "system/globalenv.h"
-
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
 
 #include "context/static_context.h"
 
@@ -32,50 +26,17 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
+#include "types/root_typemanager.h"
+#include "types/typeops.h"
 
+#include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba
 {
 
-SERIALIZABLE_CLASS_VERSIONS(for_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(let_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(window_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(group_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(materialize_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(count_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(where_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(flwor_wincond)
-
-SERIALIZABLE_CLASS_VERSIONS(flwor_wincond::vars)
-
-
 DEF_EXPR_ACCEPT (flwor_expr)
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void flwor_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  //serialize_baseclass(ar, (SimpleRCObject*)this);
-  ar & theContext;
-  ar & theLocation;
-  SERIALIZE_ENUM(ClauseKind, theKind);
-  ar & theFlworExpr;
-}
 
 
 /*******************************************************************************
@@ -104,14 +65,6 @@ forletwin_clause::~forletwin_clause()
 {
   if (theVarExpr != NULL)
     theVarExpr->set_flwor_clause(NULL);
-}
-
-
-void forletwin_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (flwor_clause*)this);
-  ar & theVarExpr;
-  ar & theDomainExpr;
 }
 
 
@@ -160,9 +113,11 @@ for_clause::for_clause(
     xqtref_t declaredType = varExpr->get_type();
     if (declaredType != NULL)
     {
-      if (TypeOps::is_empty(tm, *declaredType))
+      if (declaredType->is_empty())
+      {
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(BadType_23o), "empty-sequence"));
+      }
 
       xqtref_t domainType = domainExpr->get_return_type();
 
@@ -182,7 +137,11 @@ for_clause::for_clause(
                          *declaredType));
           }
 
-          domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
+          domainExpr = new treat_expr(sctx,
+                                      loc,
+                                      domainExpr,
+                                      declaredType,
+                                      TreatIterator::TYPE_MATCH);
 
           set_expr(domainExpr);
         }
@@ -199,15 +158,6 @@ for_clause::~for_clause()
 
   if (theScoreVarExpr != NULL)
     theScoreVarExpr->set_flwor_clause(NULL);
-}
-
-
-void for_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (forletwin_clause*)this);
-  ar & thePosVarExpr;
-  ar & theScoreVarExpr;
-  ar & theAllowingEmpty;
 }
 
 
@@ -309,7 +259,11 @@ let_clause::let_clause(
           ERROR_PARAMS(ZED(BadType_23o), *domainType, ZED(NoTreatAs_4), *declaredType));
         }
 
-        domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
+        domainExpr = new treat_expr(sctx,
+                                    loc,
+                                    domainExpr,
+                                    declaredType,
+                                    TreatIterator::TYPE_MATCH);
 
         set_expr(domainExpr);
       }
@@ -322,14 +276,6 @@ let_clause::~let_clause()
 {
   if (theScoreVarExpr != NULL)
     theScoreVarExpr->set_flwor_clause(NULL);
-}
-
-
-void let_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (forletwin_clause*)this);
-  ar & theScoreVarExpr;
-  ar & theLazyEval;
 }
 
 
@@ -407,7 +353,11 @@ window_clause::window_clause(
       if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
           !TypeOps::is_subtype(tm, *domainType, *varType, loc))
       {
-        domainExpr = new treat_expr(sctx, loc, domainExpr, varType, err::XPTY0004);
+        domainExpr = new treat_expr(sctx,
+                                    loc,
+                                    domainExpr,
+                                    varType,
+                                    TreatIterator::TYPE_MATCH);
 
         set_expr(domainExpr);
       }
@@ -423,16 +373,6 @@ window_clause::~window_clause()
 
   if (theWinStopCond != NULL)
     theWinStopCond->set_flwor_clause(NULL);
-}
-
-
-void window_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (forletwin_clause*)this);
-  SERIALIZE_ENUM(window_t, theWindowKind);
-  ar & theWinStartCond;
-  ar & theWinStopCond;
-  ar & theLazyEval;
 }
 
 
@@ -521,21 +461,6 @@ flwor_wincond::~flwor_wincond()
   set_flwor_clause(NULL);
 }
 
-void flwor_wincond::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theIsOnly;
-  ar & theInputVars;
-  ar & theOutputVars;
-  ar & theCondExpr;
-}
-
-void flwor_wincond::vars::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & posvar;
-  ar & curr;
-  ar & prev;
-  ar & next;
-}
 
 flwor_wincond::vars::vars()
 {
@@ -650,15 +575,6 @@ group_clause::~group_clause()
 }
 
 
-void group_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (flwor_clause*)this);
-  ar & theGroupVars;
-  ar & theNonGroupVars;
-  ar & theCollations;
-}
-
-
 expr* group_clause::get_input_for_group_var(const var_expr* var)
 {
   csize numVars = theGroupVars.size();
@@ -740,15 +656,6 @@ orderby_clause::orderby_clause(
 }
 
 
-void orderby_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (flwor_clause*)this);
-  ar & theStableOrder;
-  ar & theModifiers;
-  ar & theOrderingExprs;
-}
-
-
 flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) const
 {
   ulong numColumns = num_columns();
@@ -777,12 +684,6 @@ materialize_clause::materialize_clause(
   :
   flwor_clause(sctx, loc, flwor_clause::materialize_clause)
 {
-}
-
-
-void materialize_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (flwor_clause*)this);
 }
 
 
@@ -816,13 +717,6 @@ count_clause::~count_clause()
 }
 
 
-void count_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (flwor_clause*)this);
-  ar & theVarExpr;
-}
-
-
 flwor_clause_t count_clause::clone(expr::substitution_t& subst) const
 {
   var_expr_t cloneVar = new var_expr(*theVarExpr);
@@ -841,13 +735,6 @@ where_clause::where_clause(static_context* sctx, const QueryLoc& loc, expr_t whe
   theWhereExpr(where)
 {
   expr::checkSimpleExpr(theWhereExpr);
-}
-
-
-void where_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (flwor_clause*)this);
-  ar & theWhereExpr;
 }
 
 
@@ -875,19 +762,6 @@ flwor_expr::flwor_expr(static_context* sctx, const QueryLoc& loc, bool general)
   theHasSequentialClauses(false)
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theIsGeneral;
-  ar & theHasSequentialClauses;
-  ar & theClauses;
-  ar & theReturnExpr;
 }
 
 

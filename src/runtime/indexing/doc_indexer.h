@@ -36,13 +36,19 @@ protected:
   csize               theNumColumns;
 
   PlanIter_t          theIndexerPlan;
-  var_expr_t          theNodeVar; 
+
+  store::Item_t       theNodeVarName;
+  ulong               theNodeVarId; 
 
   dynamic_context   * theDctx;
   store::Iterator_t   thePlanWrapper;
   
 public:
-  DocIndexer(bool general, csize numColumns, PlanIterator* plan, var_expr* var);
+  DocIndexer(
+      bool general,
+      csize numColumns,
+      PlanIterator* plan,
+      store::Item* varName);
 
   ~DocIndexer();
 

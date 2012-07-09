@@ -137,6 +137,11 @@ ostream& operator<<( ostream &o, category c ) {
     case JSON_PARSER         : o << "JSON parser"           ; break;
     case JSON_SERIALIZATION  : o << "JSON serialization"    ; break;
 
+#   ifdef ZORBA_WITH_JSON
+    case JSONIQ_CORE         : o << "JSONiq"                ; break;
+    case JSONIQ_UPDATE       : o << "JSONiq update"         ; break;
+#   endif
+
     default                  : /* suppresses warning */       break;
   }
   return o;

@@ -27,6 +27,8 @@
 
 #include "zorbatypes/collation_manager.h"
 
+#include "zorbautils/hashfun.h"
+
 namespace zorba 
 { 
 

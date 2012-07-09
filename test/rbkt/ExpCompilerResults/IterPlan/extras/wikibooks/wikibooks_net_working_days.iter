@@ -9,6 +9,13 @@ Iterator tree for const-folded expr:
 </CastIterator>
 
 Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
 <CastIterator type="xs:date">
   <SingletonIterator value="xs:string(1901-01-06)"/>
 </CastIterator>
@@ -72,11 +79,6 @@ Iterator tree for const-folded expr:
 
 Iterator tree for const-folded expr:
 <SingletonIterator value="2008-07-01+01:00"/>
-
-Iterator tree for const-folded expr:
-<FnEmptyIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-</FnEmptyIterator>
 
 Iterator tree for main query:
 <ElementIterator>
@@ -259,41 +261,12 @@ Iterator tree for main query:
 </ElementIterator>
 
 Iterator tree for functx:day-of-week-name-en:
-<PromoteIterator type="xs:string">
-  <flwor::FLWORIterator>
-    <LetVariable name="date" materialize="true">
-      <LetVarIterator varname="date"/>
-    </LetVariable>
-    <LetVariable name="$$opt_temp_0" materialize="true">
-      <HoistIterator>
-        <SpecificNumArithIterator_AddOperation_INTEGER>
-          <FunctionTraceIterator>
-            <IfThenElseIterator>
-              <FnEmptyIterator>
-                <LetVarIterator varname="date"/>
-              </FnEmptyIterator>
-              <FnConcatIterator/>
-              <NumArithIterator_ModOperation>
-                <CastIterator type="xs:integer">
-                  <GenericArithIterator_DivideOperation>
-                    <GenericArithIterator_SubtractOperation>
-                      <CastIterator type="xs:date">
-                        <LetVarIterator varname="date"/>
-                      </CastIterator>
-                      <SingletonIterator value="1901-01-06"/>
-                    </GenericArithIterator_SubtractOperation>
-                    <SingletonIterator value="P1D"/>
-                  </GenericArithIterator_DivideOperation>
-                </CastIterator>
-                <SingletonIterator value="xs:integer(7)"/>
-              </NumArithIterator_ModOperation>
-            </IfThenElseIterator>
-          </FunctionTraceIterator>
-          <SingletonIterator value="xs:integer(1)"/>
-        </SpecificNumArithIterator_AddOperation_INTEGER>
-      </HoistIterator>
-    </LetVariable>
-    <ForVariable name="$$dot">
+<flwor::FLWORIterator>
+  <LetVariable name="date" materialize="true">
+    <LetVarIterator varname="date"/>
+  </LetVariable>
+  <ReturnClause>
+    <SequencePointAccessIterator>
       <FnConcatIterator>
         <SingletonIterator value="xs:string(Sunday)"/>
         <SingletonIterator value="xs:string(Monday)"/>
@@ -303,38 +276,34 @@ Iterator tree for functx:day-of-week-name-en:
         <SingletonIterator value="xs:string(Friday)"/>
         <SingletonIterator value="xs:string(Saturday)"/>
       </FnConcatIterator>
-    </ForVariable>
-    <LetVariable name="$$temp21" materialize="true">
-      <UnhoistIterator>
-        <LetVarIterator varname="$$opt_temp_0"/>
-      </UnhoistIterator>
-    </LetVariable>
-    <ReturnClause>
-      <IfThenElseIterator>
-        <InstanceOfIterator>
-          <LetVarIterator varname="$$temp21"/>
-        </InstanceOfIterator>
-        <IfThenElseIterator>
-          <FnBooleanIterator>
-            <TypedValueCompareIterator_INTEGER>
-              <ForVarIterator varname="$$pos"/>
-              <LetVarIterator varname="$$temp21"/>
-            </TypedValueCompareIterator_INTEGER>
-          </FnBooleanIterator>
-          <ForVarIterator varname="$$dot"/>
-          <FnConcatIterator/>
-        </IfThenElseIterator>
-        <IfThenElseIterator>
-          <FnBooleanIterator>
-            <LetVarIterator varname="$$temp21"/>
-          </FnBooleanIterator>
-          <ForVarIterator varname="$$dot"/>
-          <FnConcatIterator/>
-        </IfThenElseIterator>
-      </IfThenElseIterator>
-    </ReturnClause>
-  </flwor::FLWORIterator>
-</PromoteIterator>
+      <SpecificNumArithIterator_AddOperation_INTEGER>
+        <FunctionTraceIterator>
+          <IfThenElseIterator>
+            <FnEmptyIterator>
+              <LetVarIterator varname="date"/>
+            </FnEmptyIterator>
+            <FnConcatIterator/>
+            <NumArithIterator_ModOperation>
+              <CastIterator type="xs:integer">
+                <GenericArithIterator_DivideOperation>
+                  <GenericArithIterator_SubtractOperation>
+                    <CastIterator type="xs:date">
+                      <LetVarIterator varname="date"/>
+                    </CastIterator>
+                    <SingletonIterator value="1901-01-06"/>
+                  </GenericArithIterator_SubtractOperation>
+                  <SingletonIterator value="P1D"/>
+                </GenericArithIterator_DivideOperation>
+              </CastIterator>
+              <SingletonIterator value="xs:integer(7)"/>
+            </NumArithIterator_ModOperation>
+          </IfThenElseIterator>
+        </FunctionTraceIterator>
+        <SingletonIterator value="xs:integer(1)"/>
+      </SpecificNumArithIterator_AddOperation_INTEGER>
+    </SequencePointAccessIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
 
 Iterator tree for fxx:net-working-days:
 <UDFunctionCallIterator>
