@@ -593,3 +593,5 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
 # Failing due to flworfound.org hosting changes.
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)
 EXPECTED_FAILURE(test/rbkt/zorba/fetch/fetch_bogus2 1022494)
+
+EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err16 1023168)
