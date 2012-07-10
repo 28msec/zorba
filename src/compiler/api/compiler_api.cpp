@@ -214,16 +214,23 @@ PlanIter_t XQueryCompiler::compile(
   zorba::audit::ScopedAuditor<const char*> filenameAudit(
       sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
 
-  zorba::time::Timer lTimer;
-  zorba::audit::DurationAuditor durationAudit(
-      sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+  parsenode_t lAST;
 
-  parsenode_t lAST = parse(aXQuery, aFileName);
-
-  if (theCompilerCB->theConfig.lib_module &&
-      dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
   {
-    lAST = createMainModule(lAST, aXQuery, aFileName);
+    time::Timer lTimer;
+
+    audit::DurationAuditor 
+    durationAudit(sar,
+                  audit::XQUERY_COMPILATION_PARSE_DURATION,
+                  lTimer);
+
+    lAST = parse(aXQuery, aFileName);
+
+    if (theCompilerCB->theConfig.lib_module &&
+        dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
+    {
+      lAST = createMainModule(lAST, aXQuery, aFileName);
+    }
   }
 
   expr_t rootExpr;

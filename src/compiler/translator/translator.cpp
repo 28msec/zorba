@@ -1930,7 +1930,12 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
   // check type for vars that are external or have an init expr
   if (varType != NULL && (b.is_extern() || b.theExpr != NULL))
   {
-    expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
+    expr_t getExpr;
+
+    if (b.is_extern())
+      getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
+    else
+      getExpr = varExpr;
 
     stmts.push_back(new treat_expr(theRootSctx,
                                    loc,

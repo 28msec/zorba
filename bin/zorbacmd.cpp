@@ -41,7 +41,7 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
 
-#define DO_AUDIT
+//#define DO_AUDIT
 
 #ifdef DO_AUDIT
 #include <zorba/audit.h>
