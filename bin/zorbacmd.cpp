@@ -803,7 +803,9 @@ compileAndExecute(
 
         if (properties.trailingNl()) 
           outputStream << std::endl;
- 
+
+        query->close();
+
          // stop the execution timer
         if (doTiming)
           timing.stopTimer(TimingInfo::EXEC_TIMER, i);
