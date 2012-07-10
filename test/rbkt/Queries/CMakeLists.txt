@@ -558,7 +558,6 @@ IF(NOT ZORBA_NO_ICU)
   ENDIF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err16 1023168)
-  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err17 1023168)
 ENDIF(NOT ZORBA_NO_ICU)
 
 IF(ZORBA_NO_ICU)
