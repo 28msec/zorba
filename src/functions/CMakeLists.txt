@@ -16,11 +16,7 @@ SET(FUNCTIONS_SRCS)
 SET(CODEGEN_HEADER_GENERATOR     "${SPEC_DIR}/codegen-h.xq")
 SET(CODEGEN_SOURCE_GENERATOR     "${SPEC_DIR}/codegen-cpp.xq")
 SET(FUNCTION_HEADER_GENERATOR    "${SPEC_DIR}/function-enum.xq")
-IF(ZORBA_WITH_JSON)
-  SET(CODEGEN_MAPPINGS_FILE        "${SPEC_DIR}/mappings.xml")
-ELSE()
-  SET(CODEGEN_MAPPINGS_FILE        "${SPEC_DIR}/mappings-no-jsoniq.xml")
-ENDIF()
+SET(CODEGEN_MAPPINGS_FILE        "${SPEC_DIR}/mappings.xml")
 
 SET(CODEGEN_UTILS_FILE           "${SPEC_DIR}/utils.xq")
 

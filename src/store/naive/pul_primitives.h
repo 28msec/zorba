@@ -1787,6 +1787,11 @@ protected:
       const QueryLoc* loc,
       store::Item_t& target,
       xs_integer& pos);
+
+  UpdJSONArrayUpdate(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target);
 };
 
 
@@ -1816,6 +1821,38 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_JSON_ARRAY_INSERT;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdJSONArrayAppend : public UpdJSONArrayUpdate
+{
+  friend class PULImpl;
+  friend class CollectionPul;
+  friend class PULPrimitiveFactory;
+
+protected:
+  std::vector<store::Item_t>  theMembers;
+
+  long                        theNumApplied;
+
+protected:
+  UpdJSONArrayAppend(
+      CollectionPul* pul,
+      const QueryLoc* loc,
+      store::Item_t& target,
+      std::vector<store::Item_t>& members);
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_JSON_ARRAY_APPEND;
   }
 
   void apply();

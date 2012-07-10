@@ -178,8 +178,7 @@ class ZORBA_DLL_PUBLIC StoreConsts
   {
     jsonItem       = 0,
     jsonObject     = 1,
-    jsonArray      = 2,
-    jsonPair       = 3
+    jsonArray      = 2
   };
 
 
@@ -195,9 +194,6 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
       case jsonArray:
         return "array";
-
-      case jsonPair:
-        return "pair";
 
       default:
         return "<unknown JSONItemKind>";
