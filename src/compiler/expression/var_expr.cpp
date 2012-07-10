@@ -21,6 +21,7 @@
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #include "types/typeops.h"
 
@@ -35,7 +36,16 @@
 namespace zorba
 {
 
-SERIALIZABLE_CLASS_VERSIONS(var_expr)
+var_expr::class_factory var_expr::g_class_factory;
+
+SERIALIZE_INTERNAL_METHOD(var_expr)
+
+
+serialization::SerializeBaseClass* var_expr::class_factory::create_new(
+    serialization::Archiver& ar)
+{                                                                    
+  return ar.get_ccb()->getExprManager()->create_var_expr(ar);
+}
 
 
 /*******************************************************************************

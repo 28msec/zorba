@@ -110,7 +110,7 @@ public:
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 private:
-  //CompilerCB                * theCCB;
+  CompilerCB                * theCCB;
 
   QueryLoc                    theLoc;
 
@@ -193,9 +193,9 @@ public:
 
   bool isOptimized() const { return theIsOptimized; }
 
-  void optimize(CompilerCB* ccb);
+  void optimize();
 
-  PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
+  PlanIter_t getPlan(uint32_t& planStateSize);
   
   void invalidatePlan();
 

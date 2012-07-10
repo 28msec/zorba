@@ -212,7 +212,7 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
   // Note: the body can be NULL when using Plan Serialization
   while (body != NULL)
   {
-    udf->optimize(ccb);
+    udf->optimize();
 
     body = udf->getBody();
 

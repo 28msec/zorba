@@ -191,7 +191,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       if (!udf->isOptimized())
       {
-        udf->optimize(rCtx.theCCB);
+        udf->optimize();
       }
 
       if (rCtx.theUDF != NULL &&

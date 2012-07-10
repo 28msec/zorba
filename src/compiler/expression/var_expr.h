@@ -180,9 +180,28 @@ protected:
   bool                  theHasInitializer;
 
 public:
-  SERIALIZABLE_CLASS(var_expr)
-  var_expr(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
+
+  void serialize_internal(::zorba::serialization::Archiver& ar);
+                                                                        
+  serialization::TypeCode get_serializer_type_code() const      
+  {                                                                     
+    return serialization::TYPE_var_expr;                                                 
+  }                                                                     
+                                                                        
+  class class_factory : public ::zorba::serialization::ClassDeserializer
+  {
+  public:
+    class_factory()
+    {                                                                    
+      serialization::ClassSerializer::getInstance()->                    
+      register_class_factory(serialization::TYPE_var_expr, this);
+    }
+
+    serialization::SerializeBaseClass* create_new(serialization::Archiver& ar);
+  };
+       
+  static class_factory g_class_factory;
 
 public:
   static std::string decode_var_kind(enum var_kind);
@@ -196,6 +215,8 @@ protected:
       store::Item* name);
 
   var_expr(const var_expr& source);
+
+  var_expr(::zorba::serialization::Archiver& ar);
 
 public:
   ulong get_unique_id() const { return theUniqueId; }

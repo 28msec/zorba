@@ -96,7 +96,7 @@ void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
   {
     uint32_t planStateSize;
     (void)static_cast<user_function*>(theFunction.getp())->
-    getPlan(theCCB, planStateSize);
+    getPlan(planStateSize);
   }
 }
 
