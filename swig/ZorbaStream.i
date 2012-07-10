@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-%feature("director") StreamWrapperBase;
+%feature("director") ZorbaStream;
 
 %{  // start Implementation
 
-#include "StreamWrapperBase.h"
+#include "ZorbaStream.h"
 #include <cassert>
 #include <iostream>
 
-void StreamWrapperBase::checkBuffer()
+void ZorbaStream::checkBuffer()
 {
   if (buffer==0)
   {
@@ -44,12 +44,12 @@ void StreamWrapperBase::checkBuffer()
   }
   
 }
-int StreamWrapperBase::getEOF()
+int ZorbaStream::getEOF()
 {
   return traits_type::eof();
 }
 
-int StreamWrapperBase::underflow()
+int ZorbaStream::underflow()
 {
     checkBuffer();
     if ((bCurrent == bEnd) || (buffer==0))
@@ -57,7 +57,7 @@ int StreamWrapperBase::underflow()
     return traits_type::to_int_type(*bCurrent);
 }
 
-int StreamWrapperBase::uflow()
+int ZorbaStream::uflow()
 {
     checkBuffer();
     if ((bCurrent == bEnd) || (buffer==0))
@@ -65,7 +65,7 @@ int StreamWrapperBase::uflow()
     return traits_type::to_int_type(*bCurrent++);
 }
 
-int StreamWrapperBase::pbackfail(int ch)
+int ZorbaStream::pbackfail(int ch)
 {
     checkBuffer();
     if (bCurrent == bBegin || (ch != traits_type::eof() && ch != bCurrent[-1]) || (buffer==0))
@@ -74,7 +74,7 @@ int StreamWrapperBase::pbackfail(int ch)
     return traits_type::to_int_type(*--bCurrent);
 }
 
-std::streamsize StreamWrapperBase::showmanyc()
+std::streamsize ZorbaStream::showmanyc()
 {
     checkBuffer();
     return bEnd - bCurrent;
@@ -83,4 +83,4 @@ std::streamsize StreamWrapperBase::showmanyc()
 
 %}  // end   Implementation
 
-%include "StreamWrapperBase.h"
+%include "ZorbaStream.h"

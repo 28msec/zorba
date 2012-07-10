@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api2;
+
+package org.zorbaxquery.api;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import org.zorbaxquery.api.intArray;
 
-public class InputStreamWrapper extends org.zorbaxquery.api.BufferWrapperBase {
-  private InputStream input;
-  
-  public InputStreamWrapper(InputStream aInput) {
-      input= aInput;
+public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaBuffer {
+
+  private Reader reader;
+
+  public ReaderZorbaStream(Reader aReader) {
+      reader= aReader;
   }
-  
+
   @Override
   public void fillBufferCallback() {
-      byte[] b = new byte[1024];
+      char[] b = new char[1024];
       int total = 0;
       try {
-        total = input.read(b, 0, 1024);
+        total = reader.read(b, 0, 1024);
       } catch (IOException ex) {
       }
       intArray lBuffer = null;
@@ -41,9 +43,9 @@ public class InputStreamWrapper extends org.zorbaxquery.api.BufferWrapperBase {
             lBuffer.setitem(i, b[i]);
         }
       } else {
-          lBuffer = new intArray(1);  // Can't be null
+        lBuffer = new intArray(1);  // Can't be null
       }
       setBuffer(lBuffer.cast(), total);
+      
   }
-  
 }

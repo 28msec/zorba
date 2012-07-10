@@ -298,6 +298,13 @@ public:
    * Also note that this function is available for all types of Items.
    */
   void close();
+  
+  /** \brief Checks whether the item's content is streamable.
+  
+  */
+  bool isStreamable();
+  ZorbaBuffer&	getStream();
+  
 }; // class Item
 
 #endif

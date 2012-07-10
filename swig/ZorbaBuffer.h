@@ -16,20 +16,24 @@
 
 #pragma once
 
-#ifndef API_BUFFER_WRAPPER_BASE_H
-#define API_BUFFER_WRAPPER_BASE_H
+#ifndef API_ZORBA_BUFFER_H
+#define API_ZORBA_BUFFER_H
 
 #include <streambuf>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
 
-class BufferWrapperBase
+class ZorbaBuffer
 {
 public:
-  BufferWrapperBase() {};
+  ZorbaBuffer() {};
+  ZorbaBuffer(std::istream &aStream) {stream = &aStream; };
+
+  //BUFFER FROM ZORBA  
+  std::istream *stream;
   
-  //BUFFER
+  //BUFFER TO ZORBA
   int buffer[1024];
   int len;
 
@@ -39,8 +43,8 @@ public:
 private:
 
   // Copy contructor and assignment not allowed
-  BufferWrapperBase(const BufferWrapperBase &);
-  BufferWrapperBase &operator= (const BufferWrapperBase &);
+  ZorbaBuffer(const ZorbaBuffer &);
+  ZorbaBuffer &operator= (const ZorbaBuffer &);
 
 };
 

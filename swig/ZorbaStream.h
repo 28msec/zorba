@@ -16,28 +16,28 @@
 
 #pragma once
 
-#ifndef API_STREAM_WRAPPER_BASE_H
-#define API_STREAM_WRAPPER_BASE_H
+#ifndef API_ZORBA_STREAM_H
+#define API_ZORBA_STREAM_H
 
 #include <streambuf>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
-#include "BufferWrapperBase.h"
+#include "ZorbaBuffer.h"
 
 
-class StreamWrapperBase :
+class ZorbaStream :
   public std::streambuf
 {
 public:
-  StreamWrapperBase(BufferWrapperBase &aBufferWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0) { bufferWrapper = &aBufferWrapper; };
+  ZorbaStream(ZorbaBuffer &aBufferWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0) { bufferWrapper = &aBufferWrapper; };
   
   //BUFFER
   int * buffer;
   int * bBegin;
   int * bEnd;
   int * bCurrent;
-  BufferWrapperBase *bufferWrapper;
+  ZorbaBuffer *bufferWrapper;
   
   // Helper function to return EOF character from other languages
   static int getEOF();
@@ -54,8 +54,8 @@ public:
 private:
   void checkBuffer();
   // Copy contructor and assignment not allowed
-  StreamWrapperBase(const StreamWrapperBase &);
-  StreamWrapperBase &operator= (const StreamWrapperBase &);
+  ZorbaStream(const ZorbaStream &);
+  ZorbaStream &operator= (const ZorbaStream &);
 
   /*
   const char * const begin_;

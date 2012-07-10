@@ -117,16 +117,16 @@
     #endif //ZORBA_XQUERYX
   }
 
-  XQuery Zorba::compileQuery(BufferWrapperBase& aBuffer)
+  XQuery Zorba::compileQuery(ZorbaBuffer& aBuffer)
   {
-    StreamWrapperBase streamBase(aBuffer);
+    ZorbaStream streamBase(aBuffer);
     std::istream stream = std::istream(&streamBase);
     return XQuery(theZorba->compileQuery(stream));
   }
 
-  XQuery Zorba::compileQuery(BufferWrapperBase& aBuffer, StaticContext &aStaticContext )
+  XQuery Zorba::compileQuery(ZorbaBuffer& aBuffer, StaticContext &aStaticContext )
   { 
-    StreamWrapperBase streamBase(aBuffer);
+    ZorbaStream streamBase(aBuffer);
     std::istream stream = std::istream(&streamBase);
     return XQuery(theZorba->compileQuery(stream, aStaticContext.theStaticContext));
   }

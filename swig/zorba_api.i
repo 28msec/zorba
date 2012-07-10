@@ -88,8 +88,8 @@ namespace std {
   class Store;
   class InMemoryStore;
 
-  #include "BufferWrapperBase.h"
-  #include "StreamWrapperBase.h"
+  #include "ZorbaBuffer.h"
+  #include "ZorbaStream.h"
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
   #include "Item.h"
@@ -118,8 +118,8 @@ namespace std {
 
 /* %include "various.i" required for mapping to Java byte[]*/
 
-%include "BufferWrapperBase.i"
-%include "StreamWrapperBase.i"
+%include "ZorbaBuffer.i"
+%include "ZorbaStream.i"
 %include "SerializationOptions.i"
 %include "TypeIdentifier.i"
 %include "Item.i"

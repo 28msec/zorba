@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-%feature("director") BufferWrapperBase;
+%feature("director") ZorbaBuffer;
 
 %{  // start Implementation
 
-#include "BufferWrapperBase.h"
+#include "ZorbaBuffer.h"
 #include <cassert>
 #include <iostream>
 #include <ios>
 
-void BufferWrapperBase::fillBufferCallback()
+void ZorbaBuffer::fillBufferCallback()
 {
   // Local fill buffer
   int len = 10;
@@ -35,7 +35,7 @@ void BufferWrapperBase::fillBufferCallback()
   return;
 }
 
-void BufferWrapperBase::setBuffer(int *aBuffer, int aLen)
+void ZorbaBuffer::setBuffer(int *aBuffer, int aLen)
 {
     if (aLen > 0)
       memcpy(buffer, aBuffer, aLen*sizeof(int));
@@ -47,4 +47,4 @@ void BufferWrapperBase::setBuffer(int *aBuffer, int aLen)
 %}  // end   Implementation
 
 
-%include "BufferWrapperBase.h"
+%include "ZorbaBuffer.h"

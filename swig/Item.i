@@ -122,6 +122,12 @@
   void Item::close()
   { theItem.close(); }
 
+  bool Item::isStreamable()
+  { return theItem.isStreamable(); }
+  
+  ZorbaBuffer&	Item::getStream()
+  { return ZorbaBuffer(); }
+
 %}  // end   Implementation
 
 
