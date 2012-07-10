@@ -557,6 +557,8 @@ IF(NOT ZORBA_NO_ICU)
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err15 866874)
   ENDIF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
+  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err16 1023168)
+  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err17 1023168)
 ENDIF(NOT ZORBA_NO_ICU)
 
 IF(ZORBA_NO_ICU)
@@ -593,5 +595,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
 # Failing due to flworfound.org hosting changes.
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)
 EXPECTED_FAILURE(test/rbkt/zorba/fetch/fetch_bogus2 1022494)
-
-EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err16 1023168)
