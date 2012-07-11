@@ -171,11 +171,9 @@ protected:
       const store::Item_t& key,
       const store::Item_t& node,
       store::SchemaTypeCode targetMap,
-      bool all);
+      bool untyped);
 
-  bool probeMap(
-      const store::Item* key,
-      store::SchemaTypeCode targetMap);
+  bool probeMap(const store::Item* key, store::SchemaTypeCode targetMap);
 
 public:
   const XQPCollator* getCollator(csize i) const;
@@ -192,7 +190,7 @@ public:
 
   bool remove(const store::IndexKey* key, const store::Item_t& node, bool all);
 
-  bool remove(const store::Item_t& key, const store::Item_t& node, bool all);
+  bool remove(const store::Item_t& key, const store::Item_t& node);
 };
 
 
@@ -247,8 +245,7 @@ protected:
   bool removeFromMap(
       const store::Item_t& key,
       const store::Item_t& node,
-      IndexMap* targetMap,
-      bool all);
+      IndexMap* targetMap);
 
 public:
   GeneralHashIndex(
@@ -306,8 +303,7 @@ protected:
   bool removeFromMap(
       const store::Item_t& key,
       const store::Item_t& item,
-      IndexMap* targetMap,
-      bool all);
+      IndexMap* targetMap);
 
 public:
   GeneralTreeIndex(
