@@ -23,6 +23,8 @@ Optimizations:
   * Optimized hash function used for nodes (also fixes bug #1010051)
   * No more serialization of compiler expressions.
   * Big rewrite of plan serializer internals, resulting in big performance improvement.
+  * Avoid (if possible) treat expr for checking that the value of a non-external
+    global variable conforms to the type declaration of the vatiable.
 
 Bug Fixes/Other Changes:
   * Fixed bug #1002993 (bug during revalidation after update; improper condition

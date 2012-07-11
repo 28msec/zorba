@@ -1923,12 +1923,21 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
     varType = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
 
+  if (initExpr != NULL && varType != NULL)
+  {
+    initExpr = new treat_expr(theRootSctx,
+                              loc,
+                              initExpr,
+                              varType,
+                              TreatIterator::TYPE_MATCH);
+  }
+
   expr_t declExpr = new var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
 
   // check type for vars that are external or have an init expr
-  if (varType != NULL && (b.is_extern() || b.theExpr != NULL))
+  if (varType != NULL && b.is_extern())
   {
     expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
 
