@@ -149,6 +149,7 @@ void CtxVarAssignIterator::serialize(::zorba::serialization::Archiver& ar)
   (UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
 
   ar & theVarId;
+
   ar & theVarName;
   ar & theIsLocal;
   ar & theSingleItem;
@@ -211,6 +212,7 @@ void CtxVarIsSetIterator::serialize(::zorba::serialization::Archiver& ar)
   (NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>*)this);
 
   ar & theVarId;
+
   ar & theVarName;
 }
 
@@ -285,6 +287,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
   (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
 
   ar & theVarId;
+
   ar & theVarName;
   ar & theIsLocal;
   ar & theTargetPos;
@@ -631,6 +634,13 @@ ForVarIterator::ForVarIterator(
 }
 
 
+void ForVarIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
+  //ar & theVarName;
+}
+
+
 void ForVarIterator::bind(store::Item* value, PlanState& planState)
 {
   ForVarState* state;
@@ -666,6 +676,8 @@ NOARY_ACCEPT(ForVarIterator);
 
 LetVarState::LetVarState()
 {
+  theWindowStart = 0;
+  theWindowEnd = 0;
 }
 
 
@@ -707,7 +719,7 @@ LetVarIterator::LetVarIterator(
 void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
-  ar & theVarName;
+  // ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
@@ -826,6 +838,11 @@ void LetVarIterator::bind(
       state->theTempSeqIter->open();
     }
   }
+  else
+  {
+    state->theWindowStart = startPos - 1;
+    state->theWindowEnd = endPos;
+  }
 }
 
 
@@ -891,6 +908,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lenItem;
   xs_integer startPos;
   xs_integer len;
+  xs_integer seqSize;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);
@@ -909,7 +927,11 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theTargetLenIter == NULL && theInfLen == false)
     {
       if (startPos > Integer(0))
+      {
+        startPos += state->theWindowStart;
+
         state->theTempSeq->getItem(startPos, result);
+      }
 
       if (result)
         STACK_PUSH(true, state);
@@ -936,17 +958,23 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         startPos = 1;
       }
 
-      state->theLastPos = startPos + len;
+      seqSize = (state->theWindowEnd > 0 ?
+                 state->theWindowEnd :
+                 state->theTempSeq->getSize());
+
+      startPos += state->theWindowStart;
+
       state->thePos = startPos;
+      state->theLastPos = startPos + len;
+      if (state->theLastPos > seqSize)
+        state->theLastPos = seqSize + 1;
 
       while (state->thePos < state->theLastPos)
       {
         state->theTempSeq->getItem(state->thePos++, result);
 
-        if (result)
-          STACK_PUSH(true, state);
-        else
-          break;
+        assert(result);
+        STACK_PUSH(true, state);
       }
     }
   }
@@ -959,6 +987,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   else if (state->theTempSeqIter)
   {
     assert(state->theSourceIter == NULL);
+
     while (state->theTempSeqIter->next(result))
     {
       STACK_PUSH(true, state);
@@ -967,6 +996,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   else
   {
     assert(state->theSourceIter != NULL && state->theTempSeqIter == NULL);
+
     while (state->theSourceIter->next(result))
     {
       STACK_PUSH(true, state);

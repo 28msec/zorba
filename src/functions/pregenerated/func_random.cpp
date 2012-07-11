@@ -63,9 +63,9 @@ PlanIter_t fn_zorba_util_uuid::codegen(
 
 void populate_context_random(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_random_seeded_random,
         (createQName("http://www.zorba-xquery.com/modules/random","","seeded-random"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
@@ -76,9 +76,9 @@ void populate_context_random(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_random_random,
         (createQName("http://www.zorba-xquery.com/modules/random","","random"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
@@ -88,9 +88,9 @@ void populate_context_random(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_util_uuid,
         (createQName("http://www.zorba-xquery.com/zorba/util-functions","","uuid"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -99,9 +99,9 @@ void populate_context_random(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_util_uuid,
         (createQName("http://www.zorba-xquery.com/modules/random","","uuid"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),

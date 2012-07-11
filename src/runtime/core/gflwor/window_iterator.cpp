@@ -276,6 +276,13 @@ StartClause::~StartClause()
 }
 
 
+void StartClause::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theStartClauseIter;
+  ar & theWindowVars;
+}
+
+
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -366,7 +373,7 @@ void StartClause::bindIntern(
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  EndClause                                                                //
+//  EndClause                                                                  //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -405,6 +412,18 @@ EndClause::EndClause(
 ********************************************************************************/
 EndClause::~EndClause()
 {
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void EndClause::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theEndClauseIter;
+  ar & theWindowVars;
+  ar & theOnlyEnd;
+  ar & theHasEndClause;
 }
 
 
@@ -613,6 +632,7 @@ void WindowIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theStartClause;
   ar & theEndClause;
   ar & theLazyEval;
+
   ar & theMaxNeededHistory;
 }
 

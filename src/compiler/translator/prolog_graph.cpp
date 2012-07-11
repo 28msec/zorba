@@ -334,7 +334,7 @@ void PrologGraph::reorder_globals(std::list<GlobalBinding>& prologVarBindings)
   std::list<GlobalBinding>::iterator bindIte = prologVarBindings.begin();
   for (; bindIte != prologVarBindings.end(); ++bindIte)
   {
-    gvmap[(*bindIte).first] = *bindIte;
+    gvmap[(*bindIte).theVar] = *bindIte;
   }
 
   prologVarBindings.clear();

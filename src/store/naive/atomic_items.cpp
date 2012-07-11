@@ -1020,57 +1020,57 @@ store::Item_t AnyUriItem::getLevel() const
 }
 
 
-bool AnyUriItem::isAttribute() const
+bool AnyUriItem::isAttributeRef() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
-  return lThisUri->isAttribute();
+  return lThisUri->isAttributeRef();
 }
 
 
-bool AnyUriItem::isComment() const
+bool AnyUriItem::isCommentRef() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
-  return lThisUri->isComment();
+  return lThisUri->isCommentRef();
 }
 
 
-bool AnyUriItem::isDocument() const
+bool AnyUriItem::isDocumentRef() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
-  return lThisUri->isDocument();
+  return lThisUri->isDocumentRef();
 }
 
 
-bool AnyUriItem::isElement() const
+bool AnyUriItem::isElementRef() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
-  return lThisUri->isElement();
+  return lThisUri->isElementRef();
 }
 
 
-bool AnyUriItem::isProcessingInstruction() const
+bool AnyUriItem::isProcessingInstructionRef() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
-  return lThisUri->isProcessingInstruction();
+  return lThisUri->isProcessingInstructionRef();
 }
 
 
-bool AnyUriItem::isText() const
+bool AnyUriItem::isTextRef() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
-  return lThisUri->isText();
+  return lThisUri->isTextRef();
 }
 
 
@@ -1510,37 +1510,37 @@ store::Item_t StructuralAnyUriItem::getLevel() const
 }
 
 
-bool StructuralAnyUriItem::isAttribute() const
+bool StructuralAnyUriItem::isAttributeRef() const
 {
   return theNodeKind == store::StoreConsts::attributeNode;
 }
 
 
-bool StructuralAnyUriItem::isComment() const
+bool StructuralAnyUriItem::isCommentRef() const
 {
   return theNodeKind == store::StoreConsts::commentNode;
 }
 
 
-bool StructuralAnyUriItem::isDocument() const
+bool StructuralAnyUriItem::isDocumentRef() const
 {
   return theNodeKind == store::StoreConsts::documentNode;
 }
 
 
-bool StructuralAnyUriItem::isElement() const
+bool StructuralAnyUriItem::isElementRef() const
 {
   return theNodeKind == store::StoreConsts::elementNode;
 }
 
 
-bool StructuralAnyUriItem::isProcessingInstruction() const
+bool StructuralAnyUriItem::isProcessingInstructionRef() const
 {
   return theNodeKind == store::StoreConsts::piNode;
 }
 
 
-bool StructuralAnyUriItem::isText() const
+bool StructuralAnyUriItem::isTextRef() const
 {
   return theNodeKind == store::StoreConsts::textNode;
 }

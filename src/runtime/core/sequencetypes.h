@@ -42,18 +42,10 @@ private:
 
 public:
   SERIALIZABLE_CLASS(InstanceOfIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   InstanceOfIterator,
   UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>*)this);
-
-    ar & theSequenceType;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   InstanceOfIterator(
@@ -85,24 +77,17 @@ private:
 
 public:
   SERIALIZABLE_CLASS(CastIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   CastIterator,
   UnaryBaseIterator<CastIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
-    ar & theCastType;
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   CastIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t& aChild,
-        const xqtref_t& aCastType);
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& aChild,
+      const xqtref_t& aCastType);
   
   ~CastIterator();
 
@@ -128,19 +113,10 @@ private:
 
 public:
   SERIALIZABLE_CLASS(CastableIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   CastableIterator,
   UnaryBaseIterator<CastableIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
-
-    ar & theCastType;
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   CastableIterator(
@@ -172,7 +148,11 @@ public:
   {
     FUNC_RETURN,
     FUNC_PARAM,
-    TYPE_PROMOTION
+    TYPE_PROMOTION,
+    JSONIQ_PAIR_NAME,
+    JSONIQ_ARRAY_SELECTOR,
+    JSONIQ_OBJECT_SELECTOR,
+    JSONIQ_SELECTOR
   } ErrorKind;
 
 private:
@@ -183,21 +163,19 @@ private:
 
 public:
   SERIALIZABLE_CLASS(PromoteIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   PromoteIterator,
   UnaryBaseIterator<PromoteIterator, PlanIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   PromoteIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t& child,
-        const xqtref_t& promoteType,
-        ErrorKind err,
-        store::Item_t qname = NULL);
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& child,
+      const xqtref_t& promoteType,
+      ErrorKind err,
+      store::Item_t qname = NULL);
 
   ~PromoteIterator();
 
@@ -236,6 +214,11 @@ public:
     INDEX_KEY,
     PATH_STEP,
     PATH_DOT,
+    JSONIQ_VALUE,
+    JSONIQ_UPDATE_TARGET,
+    JSONIQ_OBJECT_UPDATE_TARGET,
+    JSONIQ_ARRAY_UPDATE_TARGET,
+    JSONIQ_OBJECT_UPDATE_VALUE
   } ErrorKind;
 
 private:
@@ -247,22 +230,20 @@ private:
 
 public:
   SERIALIZABLE_CLASS(TreatIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   TreatIterator,
   UnaryBaseIterator<TreatIterator, PlanIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   TreatIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t& child,
-        const xqtref_t& treatType,
-        bool check_prime,
-        ErrorKind errorKind,
-        store::Item_t qname);
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& child,
+      const xqtref_t& treatType,
+      bool check_prime,
+      ErrorKind errorKind,
+      store::Item_t qname);
 
   void accept(PlanIterVisitor& v) const;
 

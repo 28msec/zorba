@@ -70,6 +70,15 @@ InstanceOfIterator::~InstanceOfIterator()
 }
 
 
+void InstanceOfIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>*)this);
+
+  ar & theSequenceType;
+}
+
+
 bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -81,7 +90,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  quant = TypeOps::quantifier(*theSequenceType);
+  quant = theSequenceType->get_quantifier();
 
   if (consumeNext(item, theChild.getp(), planState))
   {
@@ -158,7 +167,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -174,15 +183,24 @@ CastIterator::CastIterator(
     const QueryLoc& loc,
     PlanIter_t& aChild,
     const xqtref_t& aCastType)
-  : UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
+  : 
+  UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
 CastIterator::~CastIterator()
 {
+}
+
+
+void CastIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
+  ar & theCastType;
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
 }
 
 
@@ -236,7 +254,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     STACK_PUSH(valid, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -252,16 +270,26 @@ CastableIterator::CastableIterator(
   const QueryLoc& aLoc,
   PlanIter_t& aChild,
   const xqtref_t& aCastType)
-:
+  :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, aLoc, aChild)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = TypeOps::quantifier(*aCastType);
+  theQuantifier = aCastType->get_quantifier();
 }
 
 
 CastableIterator::~CastableIterator()
 {
+}
+
+
+void CastableIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
+
+  ar & theCastType;
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
 }
 
 
@@ -335,7 +363,7 @@ PromoteIterator::PromoteIterator(
   theQName(qname)
 {
   thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *promoteType);
-  theQuantifier = TypeOps::quantifier(*promoteType); 
+  theQuantifier = promoteType->get_quantifier(); 
 }
 
 
@@ -459,6 +487,32 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
     break;
   }
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ_PAIR_NAME:
+  {
+    RAISE_ERROR(jerr::JNTY0001, loc,
+    ERROR_PARAMS(valueType));
+    break;
+  }
+  case JSONIQ_ARRAY_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_Array), valueType));
+    break;
+  }
+  case JSONIQ_OBJECT_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_Object), valueType));
+    break;
+  }
+  case JSONIQ_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_ObjectArray), valueType));
+    break;
+  }
+#endif
   default:
   {
     ZORBA_ASSERT(false);
@@ -489,7 +543,7 @@ TreatIterator::TreatIterator(
   theQName(qname)
 {
   theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *treatType);
-  theQuantifier = TypeOps::quantifier(*treatType);
+  theQuantifier = treatType->get_quantifier();
 }
 
 
@@ -668,6 +722,36 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
     break;
   }
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ_VALUE:
+  {
+    RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
+    break;
+  }
+  case JSONIQ_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_ObjectArray), valueType));
+    break;
+  }
+  case JSONIQ_OBJECT_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_Object), valueType));
+    break;
+  }
+  case JSONIQ_ARRAY_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_Array), valueType));
+    break;
+  }
+  case JSONIQ_OBJECT_UPDATE_VALUE:
+  {
+    RAISE_ERROR_NO_PARAMS(jerr::JNUP0017, loc);
+    break;
+  }
+#endif
   default:
   {
     ZORBA_ASSERT(false);

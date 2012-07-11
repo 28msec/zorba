@@ -104,8 +104,9 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
     return nullptr;
 
   switch ( thesaurus_impl::find( scheme_name ) ) {
-    case thesaurus_impl::xqftts: {
-      //
+    case thesaurus_impl::xqftts:
+#   ifdef ZORBA_WITH_FILE_ACCESS
+    {
       // Currently, we presume that an "xqftts:" URL should be used exactly
       // like a "file:" URL.
       //
@@ -114,9 +115,10 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       zstring const t_path( fs::get_normalized_path( t_uri ) );
       return new xqftts::provider( t_path );
     }
+#   endif /* ZORBA_WITH_FILE_ACCESS */
+    case thesaurus_impl::wordnet:
 #   ifdef ZORBA_WITH_FILE_ACCESS
-    case thesaurus_impl::wordnet: {
-      //
+    {
       // Wordnet, on the other hand, needs to find its data file in Zorba's
       // library path using the mangled form of the original URI.  So, mangle
       // here for convenience.
@@ -125,6 +127,9 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       zstring const t_path( t_uri.toPathNotation() );
       return new wordnet::provider( t_path );
     }
+#   endif /* ZORBA_WITH_FILE_ACCESS */
+#   ifndef ZORBA_WITH_FILE_ACCESS
+      throw XQUERY_EXCEPTION( zerr::ZXQP0017_FILE_ACCESS_DISABLED );
 #   endif /* ZORBA_WITH_FILE_ACCESS */
     default:
       throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( url ) );

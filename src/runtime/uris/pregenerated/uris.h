@@ -49,11 +49,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DecodeURIIterator,
     NaryBaseIterator<DecodeURIIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DecodeURIIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DecodeURIIterator(
     static_context* sctx,

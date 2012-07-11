@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(YearsFromDurationIterator,
     NaryBaseIterator<YearsFromDurationIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<YearsFromDurationIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   YearsFromDurationIterator(
     static_context* sctx,
@@ -79,11 +75,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MonthsFromDurationIterator,
     NaryBaseIterator<MonthsFromDurationIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MonthsFromDurationIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MonthsFromDurationIterator(
     static_context* sctx,
@@ -113,11 +105,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DaysFromDurationIterator,
     NaryBaseIterator<DaysFromDurationIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DaysFromDurationIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DaysFromDurationIterator(
     static_context* sctx,
@@ -147,11 +135,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HoursFromDurationIterator,
     NaryBaseIterator<HoursFromDurationIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<HoursFromDurationIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   HoursFromDurationIterator(
     static_context* sctx,
@@ -181,11 +165,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MinutesFromDurationIterator,
     NaryBaseIterator<MinutesFromDurationIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MinutesFromDurationIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MinutesFromDurationIterator(
     static_context* sctx,
@@ -215,11 +195,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SecondsFromDurationIterator,
     NaryBaseIterator<SecondsFromDurationIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SecondsFromDurationIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SecondsFromDurationIterator(
     static_context* sctx,
@@ -249,11 +225,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(YearFromDatetimeIterator,
     NaryBaseIterator<YearFromDatetimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<YearFromDatetimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   YearFromDatetimeIterator(
     static_context* sctx,
@@ -283,11 +255,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MonthFromDatetimeIterator,
     NaryBaseIterator<MonthFromDatetimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MonthFromDatetimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MonthFromDatetimeIterator(
     static_context* sctx,
@@ -317,11 +285,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DayFromDatetimeIterator,
     NaryBaseIterator<DayFromDatetimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DayFromDatetimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DayFromDatetimeIterator(
     static_context* sctx,
@@ -351,11 +315,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HoursFromDatetimeIterator,
     NaryBaseIterator<HoursFromDatetimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<HoursFromDatetimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   HoursFromDatetimeIterator(
     static_context* sctx,
@@ -385,11 +345,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MinutesFromDatetimeIterator,
     NaryBaseIterator<MinutesFromDatetimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MinutesFromDatetimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MinutesFromDatetimeIterator(
     static_context* sctx,
@@ -419,11 +375,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SecondsFromDatetimeIterator,
     NaryBaseIterator<SecondsFromDatetimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SecondsFromDatetimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SecondsFromDatetimeIterator(
     static_context* sctx,
@@ -453,11 +405,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimezoneFromDatetimeIterator,
     NaryBaseIterator<TimezoneFromDatetimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TimezoneFromDatetimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TimezoneFromDatetimeIterator(
     static_context* sctx,
@@ -487,11 +435,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(YearFromDateIterator,
     NaryBaseIterator<YearFromDateIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<YearFromDateIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   YearFromDateIterator(
     static_context* sctx,
@@ -521,11 +465,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MonthFromDateIterator,
     NaryBaseIterator<MonthFromDateIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MonthFromDateIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MonthFromDateIterator(
     static_context* sctx,
@@ -555,11 +495,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DayFromDateIterator,
     NaryBaseIterator<DayFromDateIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DayFromDateIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DayFromDateIterator(
     static_context* sctx,
@@ -589,11 +525,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimezoneFromDateIterator,
     NaryBaseIterator<TimezoneFromDateIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TimezoneFromDateIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TimezoneFromDateIterator(
     static_context* sctx,
@@ -623,11 +555,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HoursFromTimeIterator,
     NaryBaseIterator<HoursFromTimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<HoursFromTimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   HoursFromTimeIterator(
     static_context* sctx,
@@ -657,11 +585,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MinutesFromTimeIterator,
     NaryBaseIterator<MinutesFromTimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<MinutesFromTimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   MinutesFromTimeIterator(
     static_context* sctx,
@@ -691,11 +615,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SecondsFromTimeIterator,
     NaryBaseIterator<SecondsFromTimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SecondsFromTimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SecondsFromTimeIterator(
     static_context* sctx,
@@ -725,11 +645,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimezoneFromTimeIterator,
     NaryBaseIterator<TimezoneFromTimeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TimezoneFromTimeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TimezoneFromTimeIterator(
     static_context* sctx,

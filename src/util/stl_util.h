@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <functional>
 #include <iterator>
 #include <limits>
 #include <set>
@@ -87,6 +88,30 @@ protected:
    * constructed.
    */
   ContainerType *container;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Implementation of SGI's %identity extension.
+ * See: http://www.sgi.com/tech/stl/identity.html
+ */
+template<typename T>
+struct identity : std::unary_function<T,T> {
+  T const& operator()( T const &a ) const {
+    return a;
+  }
+};
+
+/**
+ * Implementation of SGI's %select1st extension.
+ * See: http://www.sgi.com/tech/stl/select1st.html
+ */
+template<typename PairType>
+struct select1st : std::unary_function<PairType,typename PairType::first_type> {
+  typename PairType::first_type const& operator()( PairType const &a ) const {
+    return a.first;
+  }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -220,6 +245,7 @@ inline char* new_strdup( char const *s ) {
  */
 template<class SequenceType> inline
 typename SequenceType::value_type pop_front( SequenceType &seq ) {
+  assert( !seq.empty() );
   typename SequenceType::value_type const value( seq.front() );
   seq.pop_front();
   return value;
@@ -230,6 +256,7 @@ typename SequenceType::value_type pop_front( SequenceType &seq ) {
  */
 template<class StackType> inline
 typename StackType::value_type pop_stack( StackType &s ) {
+  assert( !s.empty() );
   typename StackType::value_type const value( s.top() );
   s.pop();
   return value;
