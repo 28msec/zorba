@@ -26,6 +26,9 @@
 
 #include <zorba/internal/ztd.h>
 
+#include "util/stl_util.h"
+#include "util/unordered_map.h"
+#include "util/unordered_set.h"
 #include "zorbatypes/zstring.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -251,17 +254,47 @@ struct size_traits<char const*> {
 };
 
 /**
+ * Size traits for a MapType&lt;T&gt;.
+ * (This is a base class used by other specializations.)
+ */
+template<class MapType>
+class map_size_traits {
+protected:
+  static size_t map_sizeof( MapType const &m ) {
+    size_t total_size = 0;
+    FOR_EACH( typename MapType, i, m )
+      total_size += mem_sizeof( i->first ) + mem_sizeof( i->second );
+    return total_size;
+  }
+};
+
+/**
  * Specialization for std::map.
  */
-template<typename K,typename V,typename Compare,typename Alloc>
-struct size_traits<std::map<K,V,Compare,Alloc>,false> {
-  static size_t alloc_sizeof( std::map<K,V,Compare,Alloc> const &m ) {
-    size_t total_size = 0;
-    for ( typename std::map<K,V,Compare,Alloc>::const_iterator
-          i = m.begin(); i != m.end(); ++i ) {
-      total_size += mem_sizeof( i->first ) + mem_sizeof( i->second );
-    }
-    return total_size;
+template<typename K,typename V,typename Comp,class Alloc>
+class size_traits<std::map<K,V,Comp,Alloc>,false> :
+  map_size_traits< std::map<K,V,Comp,Alloc> >
+{
+  typedef std::map<K,V,Comp,Alloc> map_type;
+  typedef map_size_traits<map_type> base_type;
+public:
+  static size_t alloc_sizeof( map_type const &m ) {
+    return base_type::map_sizeof( m );
+  }
+};
+
+/**
+ * Specialization for std::unordered_map.
+ */
+template<typename K,typename V,class Hash,class Equal,class Alloc>
+class size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
+  map_size_traits< std::unordered_map<K,V,Hash,Equal,Alloc> >
+{
+  typedef std::unordered_map<K,V,Hash,Equal,Alloc> map_type;
+  typedef map_size_traits<map_type> base_type;
+public:
+  static size_t alloc_sizeof( map_type const &m ) {
+    return base_type::map_sizeof( m );
   }
 };
 
@@ -270,14 +303,12 @@ struct size_traits<std::map<K,V,Compare,Alloc>,false> {
  * (This is a base class used by other specializations.)
  */
 template<class SequenceType>
-struct sequence_size_traits {
+class sequence_size_traits {
 protected:
   static size_t sequence_sizeof( SequenceType const &s ) {
     size_t total_size = 0;
-    for ( typename SequenceType::const_iterator
-          i = s.begin(); i != s.end(); ++i ) {
+    FOR_EACH( typename SequenceType, i, s )
       total_size += mem_sizeof( *i );
-    }
     return total_size;
   }
 };
@@ -285,13 +316,14 @@ protected:
 /**
  * Specialization for std::set.
  */
-template<typename T,typename Alloc>
-class size_traits<std::set<T,Alloc>,false> :
-  sequence_size_traits< std::set<T,Alloc> >
+template<typename T,class Comp,class Alloc>
+class size_traits<std::set<T,Comp,Alloc>,false> :
+  sequence_size_traits< std::set<T,Comp,Alloc> >
 {
-  typedef sequence_size_traits< std::set<T,Alloc> > base_type;
+  typedef std::set<T,Comp,Alloc> set_type;
+  typedef sequence_size_traits<set_type> base_type;
 public:
-  static size_t alloc_sizeof( std::set<T,Alloc> const &s ) {
+  static size_t alloc_sizeof( set_type const &s ) {
     return base_type::sequence_sizeof( s );
   }
 };
@@ -299,13 +331,29 @@ public:
 /**
  * Specialization for std::stack.
  */
-template<typename T,typename Alloc>
-class size_traits<std::stack<T,Alloc>,false> :
-  sequence_size_traits< std::stack<T,Alloc> >
+template<typename T,class Container>
+class size_traits<std::stack<T,Container>,false> :
+  sequence_size_traits< std::stack<T,Container> >
 {
-  typedef sequence_size_traits< std::stack<T,Alloc> > base_type;
+  typedef std::stack<T,Container> stack_type;
+  typedef sequence_size_traits<stack_type> base_type;
 public:
-  static size_t alloc_sizeof( std::stack<T,Alloc> const &s ) {
+  static size_t alloc_sizeof( stack_type const &s ) {
+    return base_type::sequence_sizeof( s );
+  }
+};
+
+/**
+ * Specialization for std::unordered_set.
+ */
+template<typename K,class Hash,class Equal,class Alloc>
+class size_traits<std::unordered_set<K,Hash,Equal,Alloc>,false> :
+  sequence_size_traits< std::unordered_set<K,Hash,Equal,Alloc> >
+{
+  typedef std::unordered_set<K,Hash,Equal,Alloc> set_type;
+  typedef sequence_size_traits<set_type> base_type;
+public:
+  static size_t alloc_sizeof( set_type const &s ) {
     return base_type::sequence_sizeof( s );
   }
 };
@@ -313,13 +361,14 @@ public:
 /**
  * Specialization for std::vector.
  */
-template<typename T,typename Alloc>
+template<typename T,class Alloc>
 class size_traits<std::vector<T,Alloc>,false> :
   sequence_size_traits< std::vector<T,Alloc> >
 {
-  typedef sequence_size_traits< std::vector<T,Alloc> > base_type;
+  typedef std::vector<T,Alloc> vector_type;
+  typedef sequence_size_traits<vector_type> base_type;
 public:
-  static size_t alloc_sizeof( std::vector<T,Alloc> const &v ) {
+  static size_t alloc_sizeof( vector_type const &v ) {
     return base_type::sequence_sizeof( v );
   }
 };

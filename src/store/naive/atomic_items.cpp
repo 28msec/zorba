@@ -370,7 +370,7 @@ store::Item* UserTypedAtomicItem::getBaseItem() const
 
 size_t UserTypedAtomicItem::alloc_size() const
 {
-  return ztd::mem_sizeof( *theBaseItem );
+  return ztd::mem_sizeof( *theBaseItem ) + ztd::mem_sizeof( *theTypeName );
 }
 
 
@@ -1637,6 +1637,12 @@ size_t StructuralAnyUriItem::alloc_size() const
 /*******************************************************************************
   class StringItem
 ********************************************************************************/
+
+size_t StringItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theValue );
+}
+
 store::Item* StringItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_STRING];
@@ -2426,6 +2432,12 @@ uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
   class DecimalItem
 ********************************************************************************/
 
+size_t DecimalItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theValue );
+}
+
+
 store::Item* DecimalItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
@@ -2474,6 +2486,14 @@ zstring DecimalItem::show() const
 /*******************************************************************************
   class IntegerItemImpl
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t IntegerItemImpl::alloc_size() const
+{
+  return ztd::alloc_size( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 
 long IntegerItemImpl::compare( Item const *other, long,
                                const XQPCollator* ) const {
@@ -2581,6 +2601,15 @@ zstring IntegerItemImpl::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonPositiveIntegerItem::alloc_size() const
+{
+  return ztd::alloc_size( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+
 long NonPositiveIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -2693,6 +2722,14 @@ zstring NegativeIntegerItem::show() const
 /*******************************************************************************
   class NonNegativeIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonNegativeIntegerItem::alloc_size() const
+{
+  return ztd::alloc_size( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 long NonNegativeIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -3354,6 +3391,12 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
+
+size_t Base64BinaryItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theValue );
+}
+
 bool
 Base64BinaryItem::equals(
       const store::Item* other,
@@ -3609,6 +3652,13 @@ void StreamableBase64BinaryItem::materialize() const
 /*******************************************************************************
   class HexBinaryItem
 ********************************************************************************/
+
+size_t HexBinaryItem::alloc_size() const
+{
+  return theValue.size();
+}
+
+
 store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
@@ -3651,13 +3701,16 @@ uint32_t HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 /*******************************************************************************
   class ErrorItem
 ********************************************************************************/
+
 ErrorItem::~ErrorItem()
 {
-  if (theError)
-  {
-    delete theError;
-    theError = NULL;
-  }
+  delete theError;
+}
+
+
+size_t ErrorItem::alloc_size() const
+{
+  return theError ? ztd::mem_sizeof( *theError ) : 0;
 }
 
 

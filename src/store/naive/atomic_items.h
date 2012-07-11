@@ -740,6 +740,8 @@ protected:
   StructuralAnyUriItem() {}
 
 public:
+  size_t alloc_size() const;
+
   bool
   isAncestor(const store::Item_t&) const;
 
@@ -808,8 +810,6 @@ public:
 
   bool
   inSameCollection(const store::Item_t&) const;
-
-  size_t alloc_size() const;
 };
 
 
@@ -832,6 +832,7 @@ protected:
   StringItem() {}
 
 public:
+  size_t alloc_size() const;
 
   virtual store::SchemaTypeCode getTypeCode() const { return store::XS_STRING; }
 
@@ -1391,6 +1392,8 @@ protected:
   DecimalItem() {}
 
 public:
+  size_t alloc_size() const;
+
   xs_decimal getDecimalValue() const { return theValue; }
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_DECIMAL; }
@@ -1466,6 +1469,10 @@ protected:
   IntegerItemImpl() {}
 
 public:
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
   xs_decimal getDecimalValue() const;
 
   xs_integer getIntegerValue() const { return theValue; }
@@ -1519,6 +1526,10 @@ protected:
   NonPositiveIntegerItem() {}
 
 public:
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
   xs_decimal getDecimalValue() const;
 
   xs_integer getIntegerValue() const;
@@ -1592,6 +1603,10 @@ protected:
   NonNegativeIntegerItem() {}
 
 public:
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
   xs_decimal getDecimalValue() const;
 
   xs_integer getIntegerValue() const;
@@ -1743,7 +1758,7 @@ class IntItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  int32_t theValue;
+  xs_int theValue;
 
 protected:
   IntItem(xs_int aValue) : theValue(aValue) {}
@@ -1759,7 +1774,7 @@ public:
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  int32_t getIntValue() const { return theValue; }
+  xs_int getIntValue() const { return theValue; }
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_INT; }
 
@@ -2416,6 +2431,8 @@ protected:
   }
 
 public:
+  size_t alloc_size() const;
+
   const char* getBase64BinaryValue(size_t& data) const;
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_BASE64BINARY; }
@@ -2536,6 +2553,8 @@ protected:
   HexBinaryItem() {}
 
 public:
+  size_t alloc_size() const;
+
   xs_hexBinary getHexBinaryValue() const { return theValue; }
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_HEXBINARY; }
@@ -2590,6 +2609,8 @@ protected:
 
 public:
   virtual ~ErrorItem();
+
+  size_t alloc_size() const;
 
   ZorbaException* getError() const { return theError; }
 

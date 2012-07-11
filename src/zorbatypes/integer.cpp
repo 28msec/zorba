@@ -374,6 +374,10 @@ MAPM INTEGER_IMPL(T)::itod() const {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 #ifdef ZORBA_WITH_BIG_INTEGER
+size_t IntegerImpl::alloc_size() const {
+  return value_.significant_digits();
+}
+
 uint32_t IntegerImpl::hash() const {
   return Decimal::hash( value_ );
 }
