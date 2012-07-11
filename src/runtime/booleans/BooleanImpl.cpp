@@ -51,11 +51,25 @@ SERIALIZABLE_CLASS_VERSIONS(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DOUBLE>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_FLOAT>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_DECIMAL>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_INTEGER>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<store::XS_STRING>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_DOUBLE>,
+                               1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_FLOAT>,
+                               2)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_DECIMAL>,
+                               3)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_INTEGER>,
+                               4)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
+                               TypedValueCompareIterator<store::XS_STRING>,
+                               5)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
 
@@ -72,6 +86,15 @@ FnBooleanIterator::FnBooleanIterator(
   UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>(sctx, loc, aIter),
   theNegate(aNegate)
 {
+}
+
+
+void FnBooleanIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>*)this);
+
+  ar & theNegate;
 }
 
 
@@ -97,6 +120,15 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // node => true
     result = negate ^ true;
   }
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONItem())
+  {
+    xqtref_t type = tm->create_value_type(item);
+
+    RAISE_ERROR(err::FORG0006, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:boolean" ));
+  }
+#endif
   else
   {
     store::SchemaTypeCode type = item->getTypeCode();
@@ -110,6 +142,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
          TypeOps::is_subtype(type, store::XS_STRING) ||
          TypeOps::is_subtype(type, store::XS_ANY_URI) ||
          type == store::XS_UNTYPED_ATOMIC ||
+         type == store::JDM_NULL ||
          TypeOps::is_numeric(type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
@@ -296,6 +329,29 @@ CompareIterator::CompareIterator(
     theIsGeneralComparison = false;
     break;
   }
+}
+
+
+CompareIterator::CompareIterator(::zorba::serialization::Archiver& ar)
+  :
+  BinaryBaseIterator<CompareIterator, PlanIteratorState>(ar),
+  theTypeManager(NULL),
+  theTimezone(0),
+  theCollation(NULL)
+{
+}
+
+
+void CompareIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<CompareIterator, PlanIteratorState>*)this);
+
+  SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
+  ar & theIsGeneralComparison;
+  SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
+  ar & theTimezone;
+  ar & theCollation;
 }
 
 
@@ -964,6 +1020,17 @@ long CompareIterator::compare(
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+template <store::SchemaTypeCode ATC>
+void TypedValueCompareIterator<ATC>::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>*)this);
+
+  SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
+  ar & theTimezone;
+  ar & theCollation;
+}
+
 
 template <store::SchemaTypeCode ATC>
 void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
@@ -1091,6 +1158,28 @@ AtomicValuesEquivalenceIterator::AtomicValuesEquivalenceIterator(
   theTimezone(0),
   theCollation(NULL)
 {
+}
+
+
+AtomicValuesEquivalenceIterator::AtomicValuesEquivalenceIterator(
+    ::zorba::serialization::Archiver& ar)
+  :
+  BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>(ar),
+  theTypeManager(NULL),
+  theTimezone(0),
+  theCollation(NULL)
+{
+}
+
+
+void AtomicValuesEquivalenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
+
+  SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
+  ar & theTimezone;
+  ar & theCollation;
 }
 
 

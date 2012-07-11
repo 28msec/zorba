@@ -427,6 +427,11 @@ public:
    *  a general index
    */
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
+
+  virtual bool remove(
+        const store::IndexKey* key,
+        const store::Item_t& item,
+        bool all = false) = 0;
 };
 
 

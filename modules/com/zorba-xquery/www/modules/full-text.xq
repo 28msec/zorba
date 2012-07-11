@@ -767,14 +767,14 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
   as xs:string* external;
 
 (:~
- : Tokenizes the given node and all of its descendants.
+ : Tokenizes the given node and all of its decendants.
  :
  : @param $node The node to tokenize.
  : @param $lang The default
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$node</code>.
  : @return a (possibly empty) sequence of tokens.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-1.xq
  :)
 declare function ft:tokenize-node( $node as node(), $lang as xs:language )
@@ -784,12 +784,11 @@ declare function ft:tokenize-node( $node as node(), $lang as xs:language )
  : Tokenizes the given node and all of its descendants.
  :
  : @param $node The node to tokenize.
- : The document's default
+ : The node's default
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
- : general.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-2.xq
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-3.xq
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-4.xq
@@ -798,10 +797,47 @@ declare function ft:tokenize-node( $node as node() )
   as element(ft-schema:token)* external;
 
 (:~
+ : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
+ : descendants) but excluding <code>$excludes</code> (and all of its
+ : descendants), if any.
+ :
+ : @param $includes The set of nodes (and its descendants) to include.
+ : The default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is assumed to be the one returned by <code>ft:current-lang()</code>.
+ : @param $excludes The set of nodes (and its descendants) to exclude.
+ : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq
+ :)
+declare function ft:tokenize-nodes( $includes as node()+,
+                                    $excludes as node()* )
+  as element(ft-schema:token)* external;
+
+(:~
+ : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
+ : descendants) but excluding <code>$excludes</code> (and all of its
+ : descendants), if any.
+ :
+ : @param $includes The set of nodes (and its descendants) to include.
+ : @param $excludes The set of nodes (and its descendants) to exclude.
+ : @param $lang The default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : for nodes.
+ : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq
+ :)
+declare function ft:tokenize-nodes( $includes as node()+,
+                                    $excludes as node()*,
+                                    $lang as xs:language )
+  as element(ft-schema:token)* external;
+
+(:~
  : Tokenizes the given string.
  :
  : @param $string The string to tokenize.
- : @param $lang The default
+ : @param $lang The
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$string</code>.
  : @return a (possibly empty) sequence of tokens.
@@ -816,7 +852,7 @@ declare function ft:tokenize-string( $string as xs:string,
  : Tokenizes the given string.
  :
  : @param $string The string to tokenize.
- : The string's default
+ : The string's
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.

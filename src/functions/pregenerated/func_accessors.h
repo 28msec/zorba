@@ -134,7 +134,7 @@ public:
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
-  bool isMap(ulong producer) const { return producer == 0; }
+  bool isMap(csize producer) const { return producer == 0; }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 

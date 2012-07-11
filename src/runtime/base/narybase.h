@@ -98,6 +98,17 @@ NaryBaseIterator<IterType, StateType>::NaryBaseIterator(
 
 
 template <class IterType, class StateType>
+void NaryBaseIterator<IterType, StateType>::serialize_internal(
+    ::zorba::serialization::Archiver& ar)
+{
+  if (ar.is_serialize_base_class()) 
+    ar.set_serialize_base_class(false);
+
+  NaryBaseIterator<IterType, StateType>::serialize(ar);
+}
+
+
+template <class IterType, class StateType>
 uint32_t
 NaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 {

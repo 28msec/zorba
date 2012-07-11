@@ -613,6 +613,7 @@ void WindowIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theStartClause;
   ar & theEndClause;
   ar & theLazyEval;
+
   ar & theMaxNeededHistory;
 }
 
