@@ -734,7 +734,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode));
           temp = path;
-          path = "\""+zNamespace+"\":"+zLocalName+"["+zPosition.c_str()+"]";
+          path = "Q{"+zNamespace+"}"+zLocalName+"["+zPosition.c_str()+"]";
           path += temp;
           break;
 
@@ -745,7 +745,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           if(zNamespace != "")
           {
             temp = path;
-            path = "@\""+zNamespace+"\":"+zLocalName;
+            path = "@Q{"+zNamespace+"}"+zLocalName;
             path += temp;
           }
           else
