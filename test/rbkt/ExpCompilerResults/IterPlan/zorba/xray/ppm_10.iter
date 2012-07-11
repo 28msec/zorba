@@ -334,15 +334,9 @@ Iterator tree for main query:
   <CtxVarDeclareIterator varid="2" varname="width">
     <SingletonIterator value="xs:integer(10)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:integer" quant="">
-    <CtxVarIterator varid="2" varname="width" varkind="global"/>
-  </TreatIterator>
   <CtxVarDeclareIterator varid="3" varname="height">
     <SingletonIterator value="xs:integer(10)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:integer" quant="">
-    <CtxVarIterator varid="3" varname="height" varkind="global"/>
-  </TreatIterator>
   <CtxVarDeclareIterator varid="4" varname="scene">
     <UDFunctionCallIterator>
       <TreatIterator quant="">
