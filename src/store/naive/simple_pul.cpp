@@ -170,8 +170,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 #ifdef ZORBA_WITH_JSON
   assert(target->isNode()
       || target->isJSONObject()
-      || target->isJSONArray()
-      );
+      || target->isJSONArray());
 #else
   assert(target->isNode());
 #endif
@@ -1104,7 +1103,7 @@ void PULImpl::addJSONObjectInsert(
 
   for (csize i = 0; i < numPairs; ++i)
   {
-    if (obj->getPair(names[i]))
+    if (obj->getObjectValue(names[i]) != NULL)
     {
       RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(names[i]->getStringValue()));
     }
@@ -1189,9 +1188,10 @@ void PULImpl::addJSONObjectDelete(
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  if (!obj->getPair(name))
+  if (obj->getObjectValue(name) == NULL)
   {
-    RAISE_ERROR(jerr::JNUP0007, loc, ERROR_PARAMS(name->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1248,9 +1248,10 @@ void PULImpl::addJSONObjectReplaceValue(
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  if (!obj->getPair(name))
+  if (obj->getObjectValue(name) == NULL)
   {
-    RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(name->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1270,7 +1271,7 @@ void PULImpl::addJSONObjectReplaceValue(
       UpdJSONObjectReplaceValue* upd = static_cast<UpdJSONObjectReplaceValue*>(*ite);
 
       if (name->equals(upd->theName))
-        RAISE_ERROR(jerr::JNUP0008, loc, ERROR_PARAMS(name->getStringValue()));
+        RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(name->getStringValue()));
     }
 
     UpdatePrimitive* upd = GET_PUL_FACTORY().
@@ -1307,14 +1308,15 @@ void PULImpl::addJSONObjectRename(
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  if (!obj->getPair(name))
+  if (obj->getObjectValue(name) == NULL)
   {
-    RAISE_ERROR(jerr::JNUP0011, loc, ERROR_PARAMS(name->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Object), name->getStringValue()));
   }
 
-  if (obj->getPair(newName))
+  if (obj->getObjectValue(newName) != NULL)
   {
-    RAISE_ERROR(jerr::JNUP0012, loc, ERROR_PARAMS(newName->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(newName->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1373,9 +1375,11 @@ void PULImpl::addJSONArrayInsert(
 
   xs_integer pos = position->getIntegerValue();
 
-  if (pos <= xs_integer::zero() || arr->getSize() + 1 < pos)
+  if (pos <= xs_integer::zero() ||
+      arr->getArraySize() + 1 < pos)
   {
-    RAISE_ERROR(jerr::JNUP0018, loc, ERROR_PARAMS(pos));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1435,6 +1439,69 @@ void PULImpl::addJSONArrayInsert(
 /*******************************************************************************
 
 ********************************************************************************/
+void PULImpl::addJSONArrayAppend(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& members)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  json::JSONArray* arr = static_cast<json::JSONArray*>(target.getp());
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(arr, updates);
+
+  // merge array-append primitives
+  if (found)
+  {
+    NodeUpdates::iterator ite = updates->begin();
+    NodeUpdates::iterator end = updates->end();
+
+    for (; ite != end; ++ite)
+    {
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_INSERT)
+        continue;
+
+      UpdJSONArrayAppend* upd = static_cast<UpdJSONArrayAppend*>(*ite);
+
+      csize numMembers1 = upd->theMembers.size();
+      csize numMembers2 = members.size();
+      csize numMembers = numMembers1;
+
+      upd->theMembers.resize(numMembers1 + numMembers2);
+
+      for (csize i = 0; i < numMembers2; ++i, ++numMembers)
+      {
+        upd->theMembers[numMembers].transfer(members[i]);
+      }
+
+      return;
+    }
+
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayAppend(pul, loc, target, members);
+
+    pul->theJSONArrayAppendList.push_back(upd);
+
+    updates->push_back(upd);
+  }
+  else
+  {
+    UpdatePrimitive* upd = GET_PUL_FACTORY().
+    createUpdJSONArrayAppend(pul, loc, target, members);
+
+    pul->theJSONArrayAppendList.push_back(upd);
+
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(arr, updates);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void PULImpl::addJSONArrayDelete(
    const QueryLoc* loc,
    store::Item_t& target,
@@ -1446,9 +1513,11 @@ void PULImpl::addJSONArrayDelete(
 
   xs_integer pos = position->getIntegerValue();
 
-  if (pos <= xs_integer::zero() || arr->getSize() < pos)
+  if (pos <= xs_integer::zero() ||
+      arr->getArraySize() < pos)
   {
-    RAISE_ERROR(jerr::JNUP0020, loc, ERROR_PARAMS(pos.toString()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1509,9 +1578,11 @@ void PULImpl::addJSONArrayReplaceValue(
 
   xs_integer pos = position->getIntegerValue();
 
-  if (pos <= xs_integer::zero() || arr->getSize() < pos)
+  if (pos <= xs_integer::zero() ||
+      arr->getArraySize() < pos)
   {
-    RAISE_ERROR(jerr::JNUP0021, loc, ERROR_PARAMS(pos.toString()));
+    RAISE_ERROR(jerr::JNUP0016, loc,
+    ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
   }
 
   NodeUpdates* updates = 0;
@@ -1531,7 +1602,7 @@ void PULImpl::addJSONArrayReplaceValue(
 
         if (upd->thePosition == pos)
         {
-          RAISE_ERROR(jerr::JNUP0022, loc, ERROR_PARAMS(pos.toString()));
+          RAISE_ERROR(jerr::JNUP0009, loc, ERROR_PARAMS(pos.toString()));
         }
       }
       else if ((*ite)->getKind() == store::UpdateConsts::UP_JSON_ARRAY_DELETE)
@@ -1980,7 +2051,7 @@ void PULImpl::mergeTargetedUpdateLists(
 
           if (myUpd->theName->equals(otherUpd2->theName))
           {
-            RAISE_ERROR(jerr::JNUP0008, otherUpd->theLoc, 
+            RAISE_ERROR(jerr::JNUP0009, otherUpd->theLoc, 
             ERROR_PARAMS(myUpd->theName->getStringValue()));
           }
         }
@@ -2054,7 +2125,7 @@ void PULImpl::mergeTargetedUpdateLists(
           {
             if (myUpd->thePosition == otherUpd2->thePosition)
             {
-              RAISE_ERROR(jerr::JNUP0022, otherUpd->theLoc, 
+              RAISE_ERROR(jerr::JNUP0009, otherUpd->theLoc, 
               ERROR_PARAMS(myUpd->thePosition.toString()));
             }
           }
@@ -2233,8 +2304,23 @@ void PULImpl::getIndicesToRefresh(
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
     for (; ite != end; ++ite)
     {
-      XmlNode* node = static_cast<XmlNode*>((*ite).first);
+      store::Item* lItem = (*ite).first;
+#ifdef ZORBA_WITH_JSON
+      ZORBA_ASSERT(lItem->isNode() || lItem->isJSONItem());
+
+      if (lItem->isJSONItem())
+      {
+        json::JSONItem* lJSONItem = dynamic_cast<json::JSONItem*>(lItem);
+        ZORBA_ASSERT(lJSONItem != NULL);
+        pul->theModifiedDocs.insert(const_cast<json::JSONItem*>(lJSONItem->getRoot()));
+        continue;
+      }
+#endif
+      ZORBA_ASSERT(lItem->isNode());
+      XmlNode* node = dynamic_cast<XmlNode*>((*ite).first);
+      ZORBA_ASSERT(node != NULL);
       pul->theModifiedDocs.insert(node->getRoot());
+      continue;
     }
 
     csize numCollUpdates = pul->theInsertIntoCollectionList.size();
@@ -2247,7 +2333,7 @@ void PULImpl::getIndicesToRefresh(
       csize numDocs = upd->numNodes();
 
       for (csize j = 0; j < numDocs; ++j)
-        pul->theInsertedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
+        pul->theInsertedDocs.push_back(upd->getNode(j));
     }
 
     numCollUpdates = pul->theDeleteFromCollectionList.size();
@@ -2260,7 +2346,7 @@ void PULImpl::getIndicesToRefresh(
       csize numDocs = upd->numNodes();
 
       for (csize j = 0; j < numDocs; ++j)
-        pul->theDeletedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
+        pul->theDeletedDocs.push_back(upd->getNode(j));
     }
   }
 
@@ -2615,8 +2701,8 @@ void CollectionPul::computeIndexBeforeDeltas()
   if (numIncrementalIndices == 0)
     return;
 
-  std::vector<XmlNode*>::const_iterator docIte = theDeletedDocs.begin();
-  std::vector<XmlNode*>::const_iterator docEnd = theDeletedDocs.end();
+  std::vector<store::Item*>::const_iterator docIte = theDeletedDocs.begin();
+  std::vector<store::Item*>::const_iterator docEnd = theDeletedDocs.end();
 
   for (; docIte != docEnd; ++docIte)
   {
@@ -2649,8 +2735,8 @@ void CollectionPul::computeIndexAfterDeltas()
 
   computeIndexDeltas(theAfterIndexDeltas);
 
-  std::vector<XmlNode*>::const_iterator docIte = theInsertedDocs.begin();
-  std::vector<XmlNode*>::const_iterator docEnd = theInsertedDocs.end();
+  std::vector<store::Item*>::const_iterator docIte = theInsertedDocs.begin();
+  std::vector<store::Item*>::const_iterator docEnd = theInsertedDocs.end();
 
   for (; docIte != docEnd; ++docIte)
   {
@@ -2674,8 +2760,8 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 {
   csize numIncrementalIndices = theIncrementalIndices.size();
 
-  std::set<XmlNode*>::const_iterator docIte = theModifiedDocs.begin();
-  std::set<XmlNode*>::const_iterator docEnd = theModifiedDocs.end();
+  std::set<store::Item*>::const_iterator docIte = theModifiedDocs.begin();
+  std::set<store::Item*>::const_iterator docEnd = theModifiedDocs.end();
 
   for (; docIte != docEnd; ++docIte)
   {
@@ -3022,7 +3108,8 @@ void CollectionPul::applyUpdates()
 
     if (!theJSONArrayDeleteList.empty() ||
         !theJSONArrayInsertList.empty() ||
-        !theJSONArrayReplaceValueList.empty())
+        !theJSONArrayReplaceValueList.empty() ||
+        !theJSONArrayAppendList.empty())
     {
       NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
@@ -3201,7 +3288,8 @@ void CollectionPul::undoUpdates()
 
     if (!theJSONArrayDeleteList.empty() ||
         !theJSONArrayInsertList.empty() ||
-        !theJSONArrayReplaceValueList.empty())
+        !theJSONArrayReplaceValueList.empty() ||
+        !theJSONArrayAppendList.empty())
     {
       NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();

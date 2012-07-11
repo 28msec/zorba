@@ -1,7 +1,5 @@
 
-import module namespace j = "http://www.jsoniq.org/functions";
-
-count(j:members(
+count(jn:members(
   [
     [1, 2, 3],
     [4, 5, 6],

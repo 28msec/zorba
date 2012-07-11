@@ -631,7 +631,6 @@ bool TypeOps::is_subtype(
 
     case store::StoreConsts::jsonObject:
     case store::StoreConsts::jsonArray:
-    case store::StoreConsts::jsonPair:
       return (subKind == supKind);
       
     default:
@@ -868,7 +867,6 @@ bool TypeOps::is_subtype(
 
     case store::StoreConsts::jsonObject:
     case store::StoreConsts::jsonArray:
-    case store::StoreConsts::jsonPair:
       return (subKind == supKind);
       
     default:
@@ -1358,9 +1356,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
     case store::StoreConsts::jsonArray:
       return TypeIdentifier::createJSONArrayType(q);
-
-    case store::StoreConsts::jsonPair:
-      return TypeIdentifier::createJSONPairType(q);
 
     default:
       ZORBA_ASSERT(false);

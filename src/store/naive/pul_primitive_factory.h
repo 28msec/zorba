@@ -73,6 +73,7 @@ namespace zorba { namespace simplestore {
   class UpdJSONObjectDelete;
   class UpdJSONObjectReplaceValue;
   class UpdJSONObjectRename;
+  class UpdJSONArrayAppend;
   class UpdJSONArrayInsert;
   class UpdJSONArrayDelete;
   class UpdJSONArrayReplaceValue;
@@ -407,6 +408,13 @@ public:
         const QueryLoc* loc,
         store::Item_t& target,
         xs_integer& pos,
+        std::vector<store::Item_t>& members);
+
+  virtual UpdJSONArrayAppend*
+  createUpdJSONArrayAppend(
+        CollectionPul* pul,
+        const QueryLoc* loc,
+        store::Item_t& target,
         std::vector<store::Item_t>& members);
 
   virtual UpdJSONArrayDelete*

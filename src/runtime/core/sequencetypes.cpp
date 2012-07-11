@@ -487,6 +487,32 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
     break;
   }
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ_PAIR_NAME:
+  {
+    RAISE_ERROR(jerr::JNTY0001, loc,
+    ERROR_PARAMS(valueType));
+    break;
+  }
+  case JSONIQ_ARRAY_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_Array), valueType));
+    break;
+  }
+  case JSONIQ_OBJECT_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_Object), valueType));
+    break;
+  }
+  case JSONIQ_SELECTOR:
+  {
+    RAISE_ERROR(jerr::JNUP0007, loc,
+    ERROR_PARAMS(ZED(JNUP0007_ObjectArray), valueType));
+    break;
+  }
+#endif
   default:
   {
     ZORBA_ASSERT(false);
@@ -696,6 +722,36 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
     break;
   }
+#ifdef ZORBA_WITH_JSON
+  case JSONIQ_VALUE:
+  {
+    RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
+    break;
+  }
+  case JSONIQ_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_ObjectArray), valueType));
+    break;
+  }
+  case JSONIQ_OBJECT_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_Object), valueType));
+    break;
+  }
+  case JSONIQ_ARRAY_UPDATE_TARGET:
+  {
+    RAISE_ERROR(jerr::JNUP0008, loc,
+    ERROR_PARAMS(ZED(JNUP0008_Array), valueType));
+    break;
+  }
+  case JSONIQ_OBJECT_UPDATE_VALUE:
+  {
+    RAISE_ERROR_NO_PARAMS(jerr::JNUP0017, loc);
+    break;
+  }
+#endif
   default:
   {
     ZORBA_ASSERT(false);
