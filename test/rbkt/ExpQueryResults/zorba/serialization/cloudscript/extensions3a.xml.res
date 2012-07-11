@@ -1,1 +1,1 @@
-{ "CloudScript XDM node" : "<a/>" }
+{ "JSONiq XDM node" : "<a/>" }

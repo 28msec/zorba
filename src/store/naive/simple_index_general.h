@@ -116,15 +116,16 @@ public:
   A vector storing all domain nodes for which the key expr returns the empty
   sequence.
 
-  theUntypedFlag:
-  ---------------
-  Set to true if there is at least one domain node for which the key expression
-  returns an item with type xs:untypedAtomic and that item is sucessfully cast
-  to an item with a type other than xs:string.
+  theNumUntypedEntries:
+  ---------------------
+  The number of [key, node] index entries where the key is the result of casting
+  an originally untyped key to a non-string atomic item. If > 0, then any value
+  probes with a key (or keys) whose type cannot be promoted to xs:string will
+  raise an error.
 
   theNumMultiKeyNodes:
   --------------------
-  The number of domain node for which the key expression returns more than one
+  The number of domain nodes for which the key expression returns more than one
   items. If > 0, then any value probes on the general index raise an error.
 *******************************************************************************/
 class GeneralIndex : public IndexImpl
@@ -150,7 +151,7 @@ protected:
 
   std::vector<store::Item_t>  theEmptyKeyNodes;
 
-  bool                        theUntypedFlag;
+  csize                       theNumUntypedEntries;
 
   csize                       theNumMultiKeyNodes;
 

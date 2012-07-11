@@ -309,6 +309,11 @@ public:
         store::Item_t& pos,
         std::vector<Item_t>& members) = 0;
 
+  virtual void addJSONArrayAppend(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        std::vector<Item_t>& members) = 0;
+
   virtual void addJSONArrayDelete(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,

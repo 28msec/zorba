@@ -1,6 +1,4 @@
-import module namespace j = "http://www.jsoniq.org/functions";
-
-j:flatten(
+jn:flatten(
   [
     [1, 2, 3],
     [[4, 5], 6],

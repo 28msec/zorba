@@ -93,7 +93,7 @@ void operator&(Archiver& ar, MAPM& obj);
     if (ar.is_serializing_out())                  \
     {                                             \
       lSize = vec.size();                         \
-      ar & lSize;                                 \
+      ar & lSize;                 \
       for (csize i = 0; i < lSize; ++i)           \
       {                                           \
         bool b = vec[i];                          \
@@ -102,7 +102,7 @@ void operator&(Archiver& ar, MAPM& obj);
     }                                             \
     else                                          \
     {                                             \
-      ar & lSize;                                 \
+      ar & lSize;                 \
       vec.reserve(lSize);                         \
       for (csize i = 0; i < lSize; ++i)           \
       {                                           \

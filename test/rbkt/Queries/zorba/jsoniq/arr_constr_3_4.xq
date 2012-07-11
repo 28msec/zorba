@@ -1,8 +1,6 @@
 
-import module namespace j = "http://www.jsoniq.org/functions";
-
 count(
-for $arr in j:members
+for $arr in jn:members
   (
   [
     [1, "two", 3],
@@ -10,5 +8,5 @@ for $arr in j:members
     [7, ["eight", 9]]
   ]
   )
-return j:flatten($arr)
+return jn:flatten($arr)
 )

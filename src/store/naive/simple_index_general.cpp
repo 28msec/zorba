@@ -212,7 +212,7 @@ GeneralIndex::GeneralIndex(
   IndexImpl(qname, spec),
   theKeyTypeCode(store::XS_LAST),
   theCompFunction(spec.theTimezone, spec.theCollations[0]),
-  theUntypedFlag(false),
+  theNumUntypedEntries(0),
   theNumMultiKeyNodes(0)
 {
   store::Item* typeName = spec.theKeyTypes[0].getp();
@@ -385,7 +385,8 @@ bool GeneralIndex::insert(store::Item_t& key, store::Item_t& node)
     if (lossy)
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DECIMAL, false);
+      if (insertInMap(castItem, node2, store::XS_DECIMAL, false))
+        found = true;
     }
 
     return found;
@@ -421,7 +422,8 @@ longmap:
         node2 = node;
         found = insertInMap(key, node2, store::XS_LONG, false);
 
-        found = found || insertInMap(castItem, node, store::XS_DOUBLE, false);
+        if (insertInMap(castItem, node, store::XS_DOUBLE, false))
+          found = true;
       }
       else
       {
@@ -469,7 +471,8 @@ longmap:
       xs_long longValue = longItem->getLongValue();
 
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_LONG, true);
+      if (insertInMap(castItem, node2, store::XS_LONG, true))
+        found = true;
 
       if (longValue > theMaxLong || longValue < theMinLong)
       {
@@ -487,7 +490,8 @@ longmap:
         if (lossy)
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_DOUBLE, true);
+          if (insertInMap(castItem, node2, store::XS_DOUBLE, true))
+            found = true;
         }
       }
 
@@ -497,19 +501,22 @@ longmap:
         if (untypedItem->castToGYear(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_GYEAR, true);
+          if (insertInMap(castItem, node2, store::XS_GYEAR, true))
+            found = true;
         }
 
         if (untypedItem->castToHexBinary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_HEXBINARY, true);
+          if (insertInMap(castItem, node2, store::XS_HEXBINARY, true))
+            found = true;
         }
 
         if (untypedItem->castToBase64Binary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_BASE64BINARY, true);
+          if (insertInMap(castItem, node2, store::XS_BASE64BINARY, true))
+            found = true;
         }
       }
     }
@@ -523,13 +530,15 @@ longmap:
       decimalItem->coerceToDouble(castItem, true, lossy);
 
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DOUBLE, true);
+      if (insertInMap(castItem, node2, store::XS_DOUBLE, true))
+        found = true;
 
       if (lossy)
       {
         castItem.transfer(decimalItem);
         node2 = node;
-        found = found || insertInMap(castItem, node2, store::XS_DECIMAL, true);
+        if (insertInMap(castItem, node2, store::XS_DECIMAL, true))
+          found = true;
       }
 
       // may also be hexBinary or base64Binary
@@ -538,13 +547,15 @@ longmap:
         if (untypedItem->castToHexBinary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_HEXBINARY, true);
+          if (insertInMap(castItem, node2, store::XS_HEXBINARY, true))
+            found = true;
         }
 
         if (untypedItem->castToBase64Binary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_BASE64BINARY, true);
+          if (insertInMap(castItem, node2, store::XS_BASE64BINARY, true))
+            found = true;
         }
       }
     }
@@ -553,77 +564,88 @@ longmap:
     else if (untypedItem->castToDouble(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DOUBLE, true);
+      if (insertInMap(castItem, node2, store::XS_DOUBLE, true))
+        found = true;
     }
 
     // try casting to xs:datetime
     else if (untypedItem->castToDateTime(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DATETIME, true);
+      if (insertInMap(castItem, node2, store::XS_DATETIME, true))
+        found = true;
     }
 
     // try casting to xs:date
     else if (untypedItem->castToDate(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DATE, true);
+      if (insertInMap(castItem, node2, store::XS_DATE, true))
+        found = true;
     }
 
     // try casting to xs:time
     else if (untypedItem->castToTime(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_TIME, true);
+      if (insertInMap(castItem, node2, store::XS_TIME, true))
+        found = true;
     }
 
     // try casting to xs:gYearMonth
     if (!sorted && untypedItem->castToGYearMonth(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GYEAR_MONTH, true);
+      if (insertInMap(castItem, node2, store::XS_GYEAR_MONTH, true))
+        found = true;
     }
 
     // try casting to xs:gMonthDay
     else if (!sorted && untypedItem->castToGMonthDay(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GMONTH_DAY, true);
+      if (insertInMap(castItem, node2, store::XS_GMONTH_DAY, true))
+        found = true;
     }
 
     // try casting to xs:gDay
     else if (!sorted && untypedItem->castToGDay(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GDAY, true);
+      if (insertInMap(castItem, node2, store::XS_GDAY, true))
+        found = true;
     }
 
     // try casting to xs:gMonth
     else if (!sorted && untypedItem->castToGMonth(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GMONTH, true);
+      if (insertInMap(castItem, node2, store::XS_GMONTH, true))
+        found = true;
     }
 
     // try casting to xs:duration
     else if (untypedItem->castToDuration(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DURATION, true);
+      if (insertInMap(castItem, node2, store::XS_DURATION, true))
+        found = true;
     }
 
     // try casting to xs:hexBinary
     else if (!sorted && untypedItem->castToHexBinary(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_HEXBINARY, true);
+      if (insertInMap(castItem, node2, store::XS_HEXBINARY, true))
+        found = true;
     }
 
     // try casting to xs:base64Binary
     else if (!sorted && untypedItem->castToBase64Binary(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_BASE64BINARY, true);
+      if (insertInMap(castItem, node2, store::XS_BASE64BINARY, true))
+        found = true;
     }
 
     return found;
@@ -649,7 +671,7 @@ bool GeneralIndex::insertInMap(
     bool untyped)
 {
   if (untyped)
-    theUntypedFlag = true;
+    ++theNumUntypedEntries;
 
   if (isSorted())
   {
@@ -780,7 +802,8 @@ bool GeneralIndex::remove(const store::Item_t& key, const store::Item_t& node)
 
     if (lossy)
     {
-      found = found || removeFromMap(castItem, node, store::XS_DECIMAL, false);
+      if (removeFromMap(castItem, node, store::XS_DECIMAL, false))
+        found = true;
     }
 
     return found;
@@ -817,7 +840,8 @@ longmap:
         */
         found = removeFromMap(keyItem, node, store::XS_LONG, false);
 
-        found = found || removeFromMap(castItem, node, store::XS_DOUBLE, false);
+        if (removeFromMap(castItem, node, store::XS_DOUBLE, false))
+          found = true;
       }
       else
       {
@@ -859,7 +883,8 @@ longmap:
 
       xs_long longValue = longItem->getLongValue();
 
-      found = found || removeFromMap(castItem, node, store::XS_LONG, true);
+      if (removeFromMap(castItem, node, store::XS_LONG, true))
+        found = true;
 
       if (longValue > theMaxLong || longValue < theMinLong)
       {
@@ -876,7 +901,8 @@ longmap:
 
         if (lossy)
         {
-          found = found || removeFromMap(castItem, node2, store::XS_DOUBLE, true);
+          if (removeFromMap(castItem, node, store::XS_DOUBLE, true))
+            found = true;
         }
       }
 
@@ -885,17 +911,20 @@ longmap:
       {
         if (untypedItem->castToGYear(castItem))
         {
-          found = found || removeFromMap(castItem, node, store::XS_GYEAR, true);
+          if (removeFromMap(castItem, node, store::XS_GYEAR, true))
+            found = true;
         }
 
         if (untypedItem->castToHexBinary(castItem))
         {
-          found = found || removeFromMap(castItem, node, store::XS_HEXBINARY, true);
+          if (removeFromMap(castItem, node, store::XS_HEXBINARY, true))
+            found = true;
         }
 
         if (untypedItem->castToBase64Binary(castItem))
         {
-          found = found || removeFromMap(castItem, node, store::XS_BASE64BINARY, true);
+          if (removeFromMap(castItem, node, store::XS_BASE64BINARY, true))
+            found = true;
         }
       }
     }
@@ -908,12 +937,14 @@ longmap:
 
       decimalItem->coerceToDouble(castItem, true, lossy);
 
-      found = found || removeFromMap(castItem, node, store::XS_DOUBLE, true);
+      if (removeFromMap(castItem, node, store::XS_DOUBLE, true))
+        found = true;
 
       if (lossy)
       {
         castItem.transfer(decimalItem);
-        found = found || removeFromMap(castItem, node, store::XS_DECIMAL, true);
+        if (removeFromMap(castItem, node, store::XS_DECIMAL, true))
+          found = true;
       }
 
       // may also be hexBinary or base64Binary
@@ -921,12 +952,14 @@ longmap:
       {
         if (untypedItem->castToHexBinary(castItem))
         {
-          found = found || removeFromMap(castItem, node, store::XS_HEXBINARY, true);
+          if (removeFromMap(castItem, node, store::XS_HEXBINARY, true))
+            found = true;
         }
 
         if (untypedItem->castToBase64Binary(castItem))
         {
-          found = found || removeFromMap(castItem, node, store::XS_BASE64BINARY, true);
+          if (removeFromMap(castItem, node, store::XS_BASE64BINARY, true))
+            found = true;
         }
       }
     }
@@ -934,67 +967,78 @@ longmap:
     // try casting to xs:double
     else if (untypedItem->castToDouble(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_DOUBLE, true);
+      if (removeFromMap(castItem, node, store::XS_DOUBLE, true))
+        found = true;
     }
 
     // try casting to xs:datetime
     else if (untypedItem->castToDateTime(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_DATETIME, true);
+      if (removeFromMap(castItem, node, store::XS_DATETIME, true))
+        found = true;
     }
 
     // try casting to xs:date
     else if (untypedItem->castToDate(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_DATE, true);
+      if (removeFromMap(castItem, node, store::XS_DATE, true))
+        found = true;
     }
 
     // try casting to xs:time
     else if (untypedItem->castToTime(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_TIME, true);
+      if (removeFromMap(castItem, node, store::XS_TIME, true))
+        found = true;
     }
 
     // try casting to xs:gYearMonth
     if (!sorted && untypedItem->castToGYearMonth(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_GYEAR_MONTH, true);
+      if (removeFromMap(castItem, node, store::XS_GYEAR_MONTH, true))
+        found = true;
     }
 
     // try casting to xs:gMonthDay
     else if (!sorted && untypedItem->castToGMonthDay(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_GMONTH_DAY, true);
+      if (removeFromMap(castItem, node, store::XS_GMONTH_DAY, true))
+        found = true;
     }
 
     // try casting to xs:gDay
     else if (!sorted && untypedItem->castToGDay(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_GDAY, true);
+      if (removeFromMap(castItem, node, store::XS_GDAY, true))
+        found = true;
     }
 
     // try casting to xs:gMonth
     else if (!sorted && untypedItem->castToGMonth(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_GMONTH, true);
+      if (removeFromMap(castItem, node, store::XS_GMONTH, true))
+        found = true;
     }
 
     // try casting to xs:duration
     else if (untypedItem->castToDuration(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_DURATION, true);
+      if (removeFromMap(castItem, node, store::XS_DURATION, true))
+        found = true;
     }
 
     // try casting to xs:hexBinary
     else if (!sorted && untypedItem->castToHexBinary(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_HEXBINARY, true);
+      if (removeFromMap(castItem, node, store::XS_HEXBINARY, true))
+        found = true;
     }
 
     // try casting to xs:base64Binary
     else if (!sorted && untypedItem->castToBase64Binary(castItem))
     {
-      found = found || removeFromMap(castItem, node, store::XS_BASE64BINARY, true);
+      if (removeFromMap(castItem, node, store::XS_BASE64BINARY, true))
+        found = true;
     }
 
     return found;
@@ -1029,6 +1073,9 @@ bool GeneralIndex::removeFromMap(
     store::SchemaTypeCode targetMap,
     bool untyped)
 {
+  if (untyped)
+    --theNumUntypedEntries;
+
   if (isSorted())
   {
     GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(this);
@@ -1577,7 +1624,7 @@ void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond)
       ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2), theIndex->getName()->getStringValue()));
     }
 
-    if (theIndex->theUntypedFlag)
+    if (theIndex->theNumUntypedEntries > 0)
     {
       checkStringKeyType(theCondition->theKey.getp());
       checkStringKeyType(theCondition->theLowerBound.getp());

@@ -15,6 +15,6 @@ dml:insert-last(xs:QName("users"),
 );
 
 let $dbj := dml:collection(xs:QName("users"))[ .("name") = "Deadbeat Jim" ]
-return insert json "status" : "credit card declined" into $dbj;
+return insert json { "status" : "credit card declined" } into $dbj;
 
 dml:collection(xs:QName("users"))

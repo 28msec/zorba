@@ -193,9 +193,9 @@ protected:
   std::vector<UpdatePrimitive*>      theRevalidateList;
 
   // Index Maintenance
-  std::set<XmlNode*>                 theModifiedDocs;
-  std::vector<XmlNode*>              theInsertedDocs;
-  std::vector<XmlNode*>              theDeletedDocs;
+  std::set<store::Item*>             theModifiedDocs;
+  std::vector<store::Item*>          theInsertedDocs;
+  std::vector<store::Item*>          theDeletedDocs;
 
   std::vector<IndexImpl*>            theIncrementalIndices;
   std::vector<IndexImpl*>            theTruncatedIndices;
@@ -215,6 +215,7 @@ protected:
   std::vector<UpdatePrimitive*>      theJSONObjectRenameList;
 
   std::vector<UpdatePrimitive*>      theJSONArrayInsertList;
+  std::vector<UpdatePrimitive*>      theJSONArrayAppendList;
   std::vector<UpdatePrimitive*>      theJSONArrayDeleteList;
   std::vector<UpdatePrimitive*>      theJSONArrayReplaceValueList;
 #endif
@@ -604,6 +605,11 @@ public:
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
       store::Item_t& pos,
+      std::vector<store::Item_t>& members);
+
+  virtual void addJSONArrayAppend(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
       std::vector<store::Item_t>& members);
 
   virtual void addJSONArrayDelete(
