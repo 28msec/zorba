@@ -1,3 +1,5 @@
 import module namespace j = "http://www.jsoniq.org/functions";
 
-j:values(j:parse-json('{ "foo" : "bar" }'))
+let $json := j:parse-json('{ "foo" : "bar" }')
+let $keys := j:keys($json)
+return $json($keys[1])

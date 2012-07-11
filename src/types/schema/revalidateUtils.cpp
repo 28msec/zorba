@@ -580,7 +580,7 @@ store::Item_t SchemaValidatorImpl::findAttributeItem(const store::Item *parent,
 }
   
 bool SchemaValidatorImpl::isPossibleSimpleContentRevalidation(
-    store::Item *typeQName)
+    store::Item* typeQName)
 {
   TypeManager* typeManager = theSctx->get_typemanager();
   
@@ -604,7 +604,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
 {
   if ( schemaType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
   {
-    if (schemaType->is_builtin())
+    if (schemaType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
       store::SchemaTypeCode schemaTypeCode = 
           TypeOps::get_atomic_type_code(*schemaType);

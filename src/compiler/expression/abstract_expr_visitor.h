@@ -53,7 +53,6 @@ public:
   EXPR_VISITOR_METHODS (pi_expr);
   EXPR_VISITOR_METHODS (text_expr);
 #ifdef ZORBA_WITH_JSON
-  EXPR_VISITOR_METHODS (json_pair_expr);
   EXPR_VISITOR_METHODS (json_object_expr);
   EXPR_VISITOR_METHODS (json_array_expr);
 #endif

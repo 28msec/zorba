@@ -34,7 +34,7 @@ void TokenizeNodesCallback::token( char const *utf8_s, size_type utf8_len,
                                    Item const *api_item ) {
   store::Item const *const item = Unmarshaller::getInternalItem( *api_item );
   tokens_->push_back(
-    FTToken( utf8_s, utf8_len, token_no, sent_no, para_no, item )
+    FTToken( utf8_s, utf8_len, token_no, sent_no, para_no, item, lang )
   );
 }
 

@@ -22,6 +22,7 @@ using namespace std;
 
 static void instantiate() {
   return;
+  instantiate(); // eliminates "defined but not used" warning
 
   typedef unordered_map<string,int> map_type;
 

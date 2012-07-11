@@ -98,6 +98,22 @@ bool op_zorba_json_replace_value::mustCopyInputNodes(expr* fo, csize producer) c
 /*******************************************************************************
 
 ********************************************************************************/
+bool op_zorba_json_array_append::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  if (producer == 2 &&
+      fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)
+  {
+    return true;
+  }
+
+  return false;
+}
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t op_zorba_json_replace_value::codegen(
   CompilerCB*,
   static_context* sctx,

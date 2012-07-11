@@ -77,7 +77,7 @@ public:
 class JSONObjectNamesIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t thePairs; //
+  store::Iterator_t theNames; //
 
   JSONObjectNamesIteratorState();
 
@@ -106,51 +106,6 @@ public:
   {}
 
   virtual ~JSONObjectNamesIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-#endif
-
-#ifdef ZORBA_WITH_JSON
-/**
- * 
- * Author: 
- */
-class JSONObjectValuesIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t thePairs; //
-
-  JSONObjectValuesIteratorState();
-
-  ~JSONObjectValuesIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class JSONObjectValuesIterator : public UnaryBaseIterator<JSONObjectValuesIterator, JSONObjectValuesIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONObjectValuesIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectValuesIterator,
-    UnaryBaseIterator<JSONObjectValuesIterator, JSONObjectValuesIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  JSONObjectValuesIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
-    UnaryBaseIterator<JSONObjectValuesIterator, JSONObjectValuesIteratorState>(sctx, loc, child)
-  {}
-
-  virtual ~JSONObjectValuesIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -571,6 +526,40 @@ public:
   {}
 
   virtual ~JSONRenameIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ *      internal function 
+ *    
+ * Author: Zorba Team
+ */
+class JSONArrayAppendIterator : public NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONArrayAppendIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayAppendIterator,
+    NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONArrayAppendIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONArrayAppendIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONArrayAppendIterator();
 
   void accept(PlanIterVisitor& v) const;
 

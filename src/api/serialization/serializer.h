@@ -116,9 +116,10 @@ protected:
   zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
 #ifdef ZORBA_WITH_JSON
-  short int cloudscript_multiple_items;  // "no", "array", "appended", implemented
-  short int cloudscript_extensions;      // implemented
-  short int cloudscript_xdm_method;  // A legal value for "method", implemented
+  short int jsoniq_multiple_items;  // "no", "array", "appended", implemented
+  short int jsoniq_extensions;      // implemented
+  short int jsoniq_xdm_method;      // A legal value for "method", implemented
+  short int jsoniq_allow_mixed_xdm_jdm; // "yes" or "no", implemented
 #endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
@@ -377,20 +378,18 @@ protected:
 
     void emit_json_array(store::Item* array, int depth);
 
-    void emit_json_pair(store::Item* pair, int depth);
-
     void emit_json_value(store::Item* value, int depth);
 
-    void emit_cloudscript_value(zstring type, zstring value, int depth);
+    void emit_jsoniq_value(zstring type, zstring value, int depth);
 
-    void emit_cloudscript_xdm_node(store::Item *item, int depth);
+    void emit_jsoniq_xdm_node(store::Item *item, int depth);
 
     void emit_json_string(zstring string);
 
-    store::Item_t theCloudScriptValueName;
+    store::Item_t theJSONiqValueName;
     store::Item_t theTypeName;
     store::Item_t theValueName;
-    store::Item_t theCloudScriptXDMNodeName;
+    store::Item_t theJSONiqXDMNodeName;
 
     rchandle<emitter> theXMLEmitter;
     rchandle<transcoder> theXMLTranscoder;
@@ -425,7 +424,8 @@ protected:
       JESTATE_XDM
     }                           theEmitterState;
 
-    serializer::emitter*        theEmitter;
+    serializer::xml_emitter*        theXMLEmitter;
+    serializer::json_emitter*       theJSONEmitter;
   };
 
 #endif /* ZORBA_WITH_JSON */

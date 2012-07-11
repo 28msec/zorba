@@ -33,7 +33,7 @@ namespace jsoniq_test {
 bool
 example_1(Zorba* aZorba)
 {
-  Iterator_t lIterator, lMembers;
+  Iterator_t lIterator;
   XQuery_t lQuery = aZorba->compileQuery("[ 1, 2, 3 ]");
   lIterator = lQuery->iterator();
   lIterator->open();
@@ -48,20 +48,17 @@ example_1(Zorba* aZorba)
   }
 
   // Ensure array has 3 integer members
-  lMembers = lItem.getArrayMembers();
-  lMembers->open();
-  Item lMember;
-  int count = 0;
-  while (lMembers->next(lMember)) {
-    // This will throw an exception if the item isn't an integer
-    std::cout << lMember.getLongValue() << std::endl;
-    count++;
-  }
-  if (count != 3) {
-    std::cerr << count << " array members returned, expecting 3" << std::endl;
+  int lSize = lItem.getArraySize();
+  if (lSize != 3) {
+    std::cerr << lSize << " array members returned, expecting 3" << std::endl;
     return false;
   }
-  lMembers->close();
+  for(int i = 1; i <= lSize; ++i)
+  {
+    Item lMember = lItem.getArrayValue(i);
+    // This will throw an exception if the item isn't an integer
+    std::cout << lMember.getLongValue() << std::endl;
+  }
   lIterator->close();
 
   return true;
@@ -83,7 +80,7 @@ example_2(Zorba* aZorba)
 
   Item lMember;
   for (int i = 1; i <= 3; i++) {
-    lMember = lItem.getArrayMember(i);
+    lMember = lItem.getArrayValue(i);
     std::cout << lMember.getLongValue() << std::endl;
   }
 
@@ -130,7 +127,7 @@ example_4(Zorba* aZorba)
   Item lItem;
   lIterator->next(lItem);
 
-  Item lNonMember = lItem.getArrayMember(4);
+  Item lNonMember = lItem.getArrayValue(4);
   lIterator->close();
 
   if (!lNonMember.isNull()) {

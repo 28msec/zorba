@@ -40,7 +40,6 @@ public:
     JSON_ITEM_TYPE,
     JSON_OBJECT_TYPE,
     JSON_ARRAY_TYPE,
-    JSON_PAIR_TYPE,
 #endif
     ITEM_TYPE,     // item()
     EMPTY_TYPE,    // empty-sequence()
