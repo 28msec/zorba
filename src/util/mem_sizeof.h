@@ -25,6 +25,7 @@
 #include <vector>
 
 #include <zorba/internal/ztd.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/stl_util.h"
 #include "util/unordered_map.h"
@@ -240,6 +241,16 @@ struct size_traits<T*,false> {
   }
 };
 
+/**
+ * Specialization for <code>char const*</code>.
+ */
+template<>
+struct size_traits<char const*> {
+  static size_t alloc_sizeof( char const *s ) {
+    return s ? std::strlen( s ) : 0;
+  }
+};
+
 ////////// C++ Specializations ////////////////////////////////////////////////
 
 /**
@@ -249,16 +260,6 @@ template<>
 struct size_traits<std::string> {
   static size_t alloc_sizeof( std::string const &s ) {
     return s.size();
-  }
-};
-
-/**
- * Specialization for <code>char const*</code>.
- */
-template<>
-struct size_traits<char const*> {
-  static size_t alloc_sizeof( char const *s ) {
-    return s ? std::strlen( s ) : 0;
   }
 };
 
@@ -328,6 +329,16 @@ template<typename T,class Container>
 struct size_traits<std::stack<T,Container>,false> :
   sequence_size_traits< std::stack<T,Container> >
 {
+};
+
+/**
+ * Specialization for std::unique_ptr.
+ */
+template<typename T,class D>
+struct size_traits<std::unique_ptr<T,D>,false> {
+  static size_t alloc_sizeof( std::unique_ptr<T,D> const &p ) {
+    return p ? mem_sizeof( *p ) : 0;
+  }
 };
 
 /**
