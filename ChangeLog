@@ -24,6 +24,7 @@ Optimizations:
   * Big rewrite of plan serializer internals, resulting in big performance improvement.
   * Avoid (if possible) treat expr for checking that the value of a non-external
     global variable conforms to the type declaration of the vatiable.
+  * Streaming execution for tumbling windows (also fixes bug #1010051).
 
 Bug Fixes/Other Changes:
   * Fixed bug #867357 (Improved parser error messages)
