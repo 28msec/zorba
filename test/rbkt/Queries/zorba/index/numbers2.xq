@@ -64,5 +64,29 @@ TEST 2:
 }
 ,
 "
+
+TEST 3:
+
+"
+,
+{
+  insert node <untyped>2</untyped> as last into dml:collection($num:collname2)[1];
+
+  idml:probe-index-point-general($num:idx-g-h-untyped, 2),
+"
+",
+  idml:probe-index-point-general($num:idx-g-h-untyped, 2.0),
+"
+",
+  idml:probe-index-point-general($num:idx-g-h-untyped, xs:double(2.0)),
+"
+",
+  idml:probe-index-point-general($num:idx-g-h-untyped, xs:int(2)),
+"
+",
+  idml:probe-index-point-general($num:idx-g-h-untyped, "2")
+}
+,
+"
 "
 
