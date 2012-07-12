@@ -63,7 +63,9 @@ Iterator tree for testlib:searchUser:
                 <PromoteIterator type="xs:anyAtomicType">
                   <FnDataIterator>
                     <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,deleted)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$dot"/>
+                      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                        <ForVarIterator varname="$$dot"/>
+                      </TreatIterator>
                     </AttributeAxisIterator>
                   </FnDataIterator>
                 </PromoteIterator>
