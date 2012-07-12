@@ -335,6 +335,21 @@ bool iterator::next() {
         case DT_REG:
           ent_type_ = file;
           break;
+        case DT_UNKNOWN: {
+          // d_type is not supported by all filesystem types. If it is not supported
+          // d_type will be set to DT_UNKNOWN. To make sure that we skip '.' and '..'
+          // in any case we have to make an explicit stat() to find out the file type.
+          // see also bug #1023862 or readdir manpage
+          char const *const name = ent_->d_name;
+          zstring lEntry(dir_path_);
+          lEntry.append("/").append(name);
+          ent_type_ = get_type(lEntry.c_str());
+          // skip "." and ".." entries
+          if ( ent_type_ == directory &&
+               name[0] == '.' && (!name[1] || (name[1] == '.' && !name[2])) )
+            continue;
+          break;
+        }
         default:
           ent_type_ = other;
       }
