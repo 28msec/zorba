@@ -189,6 +189,8 @@ public:
 
   void free();
 
+  void destroy() throw();
+
   long getRefCount() const { return theRefCount; }
 
   long& getRefCount()      { return theRefCount; }
@@ -386,6 +388,8 @@ protected:
 #endif
 
 private:
+  void setTreeInternal(const XmlTree* t);
+
   void setTree(const XmlTree* t);
 
   void destroyInternal(bool removeType);
@@ -434,20 +438,9 @@ public:
   bool equals(
       const store::Item* other,
       long timezone = 0,
-      const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    return this == other;
-  }
+      const XQPCollator* aCollation = 0) const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    XmlNode* node = const_cast<XmlNode*>(this);
-    return hashfun::h32((void*)(&node), sizeof(node), FNV_32_INIT);
-  }
-
-  inline long compare2(const XmlNode* other) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   void getBaseURI(zstring& uri) const
   {
@@ -523,6 +516,8 @@ public:
   GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
 #endif
 
+  inline long compare2(const XmlNode* other) const;
+
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,
       InternalNode* parent,
@@ -552,10 +547,12 @@ public:
 
   bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
 
+  virtual void unregisterReferencesToDeletedSubtree();
+
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
-      Tokenizer::Numbers&,
+      Tokenizer::State&,
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -838,6 +835,8 @@ public:
 
   void finalizeNode();
 
+  virtual void unregisterReferencesToDeletedSubtree();
+
 protected:
   csize findChild(const XmlNode* child) const;
 
@@ -1035,10 +1034,9 @@ public:
   void resetInSubstGroup() { theFlags &= ~IsInSubstGroup; }
 
 #ifndef EMBEDED_TYPE
+  void assertInvariants() const;
   bool haveType() const { return (theFlags & HaveType) != 0; }
-
   void setHaveType() { theFlags |= HaveType; }
-
   void resetHaveType() { theFlags &= ~HaveType; }
 #endif
 
@@ -1209,6 +1207,7 @@ public:
   bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
 
 #ifndef EMBEDED_TYPE
+  void assertInvariants() const;
   bool haveType() const       { return (theFlags & HaveType) != 0; }
   void setHaveType()          { theFlags |= HaveType; }
   void resetHaveType()        { theFlags &= ~HaveType; }
@@ -1233,7 +1232,7 @@ public:
   isPrecedingSibling(const store::Item_t&) const { return false; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::State&,
                                locale::iso639_1::type,
                                bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */

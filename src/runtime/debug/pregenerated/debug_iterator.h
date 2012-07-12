@@ -77,17 +77,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DebugIterator,
     NaryBaseIterator<DebugIterator, DebugIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DebugIterator, DebugIteratorState>*)this);
-
-    ar & varnames;
-    ar & vartypes;
-    ar & theDebuggerChildren;
-    ar & theDebuggerParent;
-    ar & theIsVarDeclaration;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DebugIterator(
     static_context* sctx,

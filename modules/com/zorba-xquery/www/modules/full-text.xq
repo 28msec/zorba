@@ -636,7 +636,8 @@ declare function ft:strip-diacritics( $string as xs:string )
  : The phrase's
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
- : @return the original and related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
  : by the currently running version of Zorba.
@@ -646,7 +647,7 @@ declare function ft:strip-diacritics( $string as xs:string )
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-1.xq
  :)
 declare function ft:thesaurus-lookup( $phrase as xs:string )
-  as xs:string+ external;
+  as xs:string* external;
 
 (:~
  : Looks-up the given phrase in the thesaurus specified by the given URI.
@@ -656,7 +657,8 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @param $lang The
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$phrase</code>.
- : @return the original and related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0009 if <code>$lang</code> is not supported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
@@ -671,7 +673,7 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language )
-  as xs:string+ external;
+  as xs:string* external;
 
 (:~
  : Looks-up the given phrase in a thesaurus.
@@ -681,7 +683,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : The phrase's
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one the one returned by <code>ft:current-lang()</code>.
- : @return the original and related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is unsupported.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
@@ -695,7 +698,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-3.xq
  :)
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
-  as xs:string+ external;
+  as xs:string* external;
 
 (:~
  : Looks-up the given phrase in a thesaurus.
@@ -707,7 +710,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : of <code>$phrase</code>.
  : @param $relationship The relationship the results are to have to
  : <code>$phrase</code>.
- : @return the original and related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
  : that is not found in the statically known thesauri.
  : @error err:FTST0009 if <code>$lang</code> is not supported.
@@ -723,7 +727,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
 declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $lang as xs:language,
                                       $relationship as xs:string )
-  as xs:string+ external;
+  as xs:string* external;
 
 (:~
  : Looks-up the given phrase in a thesaurus.
@@ -739,7 +743,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : travers$ed.
  : @param $level-most The maximum number of levels within the thesaurus to be
  : traversed.
- : @return the original and related phrases.
+ : @return the related phrases if <code>$phrase</code> is found in the
+ : thesaurus or the empty sequence if not.
  : @error err:FOCA0003 if either <code>$level-least</code> or
  : <code>$level-most</code> is either negative or too large.
  : @error err:FTST0018 if <code>$uri</code> refers to a thesaurus
@@ -759,44 +764,80 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
                                       $relationship as xs:string,
                                       $level-least as xs:integer,
                                       $level-most as xs:integer )
-  as xs:string+ external;
+  as xs:string* external;
 
 (:~
- : Tokenizes the given document.
+ : Tokenizes the given node and all of its decendants.
  :
  : @param $node The node to tokenize.
  : @param $lang The default
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$node</code>.
  : @return a (possibly empty) sequence of tokens.
- : @error err:FTST0009 if <code>$lang</code> is not supported in general.
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-1.xq
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-1.xq
  :)
-declare function ft:tokenize( $node as node(), $lang as xs:language )
+declare function ft:tokenize-node( $node as node(), $lang as xs:language )
   as element(ft-schema:token)* external;
 
 (:~
- : Tokenizes the given document.
+ : Tokenizes the given node and all of its descendants.
  :
  : @param $node The node to tokenize.
- : The document's default
+ : The node's default
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.
- : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported in
- : general.
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-2.xq
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-3.xq
- : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-4.xq
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-2.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-3.xq
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-4.xq
  :)
-declare function ft:tokenize( $node as node() )
+declare function ft:tokenize-node( $node as node() )
+  as element(ft-schema:token)* external;
+
+(:~
+ : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
+ : descendants) but excluding <code>$excludes</code> (and all of its
+ : descendants), if any.
+ :
+ : @param $includes The set of nodes (and its descendants) to include.
+ : The default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : is assumed to be the one returned by <code>ft:current-lang()</code>.
+ : @param $excludes The set of nodes (and its descendants) to exclude.
+ : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq
+ :)
+declare function ft:tokenize-nodes( $includes as node()+,
+                                    $excludes as node()* )
+  as element(ft-schema:token)* external;
+
+(:~
+ : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
+ : descendants) but excluding <code>$excludes</code> (and all of its
+ : descendants), if any.
+ :
+ : @param $includes The set of nodes (and its descendants) to include.
+ : @param $excludes The set of nodes (and its descendants) to exclude.
+ : @param $lang The default
+ : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ : for nodes.
+ : @return a (possibly empty) sequence of tokens.
+ : @error err:FTST0009 if <code>$lang</code> is not supported.
+ : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq
+ :)
+declare function ft:tokenize-nodes( $includes as node()+,
+                                    $excludes as node()*,
+                                    $lang as xs:language )
   as element(ft-schema:token)* external;
 
 (:~
  : Tokenizes the given string.
  :
  : @param $string The string to tokenize.
- : @param $lang The default
+ : @param $lang The
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : of <code>$string</code>.
  : @return a (possibly empty) sequence of tokens.
@@ -811,7 +852,7 @@ declare function ft:tokenize-string( $string as xs:string,
  : Tokenizes the given string.
  :
  : @param $string The string to tokenize.
- : The string's default
+ : The string's
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
  : is assumed to be the one returned by <code>ft:current-lang()</code>.
  : @return a (possibly empty) sequence of tokens.

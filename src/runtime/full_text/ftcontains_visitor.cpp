@@ -426,9 +426,9 @@ void V::end_visit( ftwords &w ) {
     // actual query.
     //
     while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
-      Tokenizer::Numbers no;
+      Tokenizer::State t_state;
       query_item_t const qi(
-        item->getTokens( tokenizer_provider, no, lang, wildcards )
+        item->getTokens( tokenizer_provider, t_state, lang, wildcards )
       );
       if ( qi->hasNext() )
         query_items.push_back( qi );
@@ -446,7 +446,7 @@ void V::end_visit( ftwords &w ) {
     }
   }
   catch ( XQueryException &e ) {
-    set_source( e, w.get_value_expr()->get_loc() );
+    set_source( e, w.get_value_iter()->loc );
     throw;
   }
   END_VISIT( ftwords );

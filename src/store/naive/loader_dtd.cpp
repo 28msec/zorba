@@ -125,7 +125,7 @@ FragmentXmlLoader::FragmentXmlLoader(
   theOrdPath.init();
 
   theTraceLevel = GET_STORE().getTraceLevel();
-
+  
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
   theSaxHandler.startDocument = &FragmentXmlLoader::startDocument;
@@ -261,6 +261,12 @@ store::Item_t FragmentXmlLoader::loadXml(
     {
       // std::cerr << "\n==================\n--> skip_root: " << theFragmentStream->root_elements_to_skip << " current_depth: " << theFragmentStream->current_element_depth << " about to parse: [" << theFragmentStream->ctxt->input->cur << "] " << std::endl;
 
+      if (theFragmentStream->only_one_doc_node && !theFragmentStream->first_start_doc)
+      {
+        theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
+        theFragmentStream->ctxt->disableSAX = false; // xmlStopParser() sets disableSAX to true
+      }
+
       // This case needs to be handled here, otherwise LibXml2 will segfault
       if (theFragmentStream->ctxt->input->cur[0] == '<' &&
           theFragmentStream->ctxt->input->cur[1] == '/' &&
@@ -276,20 +282,15 @@ store::Item_t FragmentXmlLoader::loadXml(
       xmlParseChunk(theFragmentStream->ctxt, (const char*)theFragmentStream->ctxt->input->cur,
                     theFragmentStream->ctxt->input->length, 0);
 
-      if (theFragmentStream->ctxt->input->base == (xmlChar*)(theFragmentStream->theBuffer)
-          &&
-          theFragmentStream->current_offset < getCurrentInputOffset())
-        theFragmentStream->current_offset = getCurrentInputOffset();
-
       // If we didn't get an error and we haven't moved, we might have some freestanding text. Parse it as element character data.
       if (theXQueryDiagnostics->errors().empty()
           &&
           theFragmentStream->current_offset == 0)
       {
-        // The input has been reset by xmlStopParser()
-        theFragmentStream->ctxt->input->base = (xmlChar*)(theFragmentStream->theBuffer);
-        theFragmentStream->ctxt->input->cur = theFragmentStream->ctxt->input->base;
+        if (theFragmentStream->first_start_doc)
+          FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
         xmlParseCharData(theFragmentStream->ctxt, 0);
+        theFragmentStream->current_offset = getCurrentInputOffset(); // update current offset
       }
 
       if ( ! theXQueryDiagnostics->errors().empty())
@@ -307,6 +308,12 @@ store::Item_t FragmentXmlLoader::loadXml(
         );
       throw 0;
     }
+    
+    // this happens when the input is an empty string
+    if (theFragmentStream->first_start_doc
+        &&
+        theFragmentStream->stream_is_consumed())
+      FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
 
     FragmentXmlLoader::endDocument(theFragmentStream->ctxt->userData); // this would not be called otherwise
   }
@@ -382,12 +389,14 @@ void FragmentXmlLoader::checkStopParsing(void* ctx, bool force)
       ||
       (loader.theFragmentStream->current_element_depth <= loader.theFragmentStream->root_elements_to_skip
           &&
-          loader.theFragmentStream->parsed_nodes_count >= FragmentIStream::PARSED_NODES_BATCH_SIZE))
+          loader.theFragmentStream->parsed_nodes_count >= loader.theFragmentStream->PARSED_NODES_BATCH_SIZE))
   {
     loader.theFragmentStream->current_offset = offset;
-    xmlStopParser(loader.theFragmentStream->ctxt);
+    loader.theFragmentStream->ctxt->instate = XML_PARSER_CONTENT;
+    loader.theFragmentStream->ctxt->disableSAX = 1;
     loader.theFragmentStream->ctxt->errNo = XML_SCHEMAV_MISC; // fake error to force stopping
-    loader.theFragmentStream->forced_parser_stop = true;
+    if (!loader.theFragmentStream->only_one_doc_node)
+      loader.theFragmentStream->forced_parser_stop = true;
   }
 
   loader.theFragmentStream->parsed_nodes_count++;
@@ -1066,7 +1075,7 @@ void DtdXmlLoader::endDocument(void * ctx)
       loader.theGuideStack.pop();
       assert(loader.theGuideStack.empty());
 
-        loader.theTree->setDataGuide(rootGNode);
+      loader.theTree->setDataGuide(rootGNode);
 
 #ifndef NDEBUG
       std::cout << rootGNode->show(0) << std::endl;

@@ -40,8 +40,6 @@ bool
 NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lNode;
-  store::Item_t lGenerateIdentifier;
-  zstring lNodeId;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -49,6 +47,58 @@ NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
   consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
   STACK_PUSH(GENV_STORE.getNodeReference(aResult, lNode), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+HasNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  xs_boolean lHasReference;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+
+  lHasReference = GENV_STORE.hasReference(lNode);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHasReference), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+AssignNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  store::Item_t lUUID;
+  xs_boolean lHaveResult;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+  consumeNext(lUUID, theChildren[1].getp(), aPlanState);
+  try
+  {
+    lHaveResult = GENV_STORE.assignReference(lNode, lUUID->getStringValue());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHaveResult), state);
 
   STACK_END (state);
 }
@@ -638,11 +688,13 @@ int getNodePosition(store::Item_t aNode)
   lIterator->open();
   while(lIterator->next(lItem))
   {
-    if(lItem->getNodeKind() == aNode->getNodeKind())
+    if (lItem->getNodeKind() == aNode->getNodeKind())
+    {
       if(lItem->equals(aNode))
         break;
       else
         count++;
+    }
   }
   lIterator->close();
   return count;
@@ -663,7 +715,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(inNode, theChildren[0], planState));
+  if (consumeNext(inNode, theChildren[0], planState))
   {
     do
     { 
@@ -675,15 +727,17 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           path += temp;
           rootIsDocument = true;
           break;
+
         case store::StoreConsts::elementNode:
           nodeName = inNode->getNodeName();
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode));
           temp = path;
-          path = "\""+zNamespace+"\":"+zLocalName+"["+zPosition.c_str()+"]";
+          path = "Q{"+zNamespace+"}"+zLocalName+"["+zPosition.c_str()+"]";
           path += temp;
           break;
+
         case store::StoreConsts::attributeNode:
           nodeName = inNode->getNodeName();
           zNamespace =nodeName->getNamespace();
@@ -691,7 +745,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           if(zNamespace != "")
           {
             temp = path;
-            path = "@\""+zNamespace+"\":"+zLocalName;
+            path = "@Q{"+zNamespace+"}"+zLocalName;
             path += temp;
           }
           else
@@ -701,33 +755,37 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
             path += temp;
           }
           break;
+
         case store::StoreConsts::textNode:
           zPosition = ztd::to_string(getNodePosition(inNode));
           temp = path;
           path = "text()["+zPosition+"]";
           path += temp;
           break;
+
         case store::StoreConsts::commentNode:
           zPosition = ztd::to_string(getNodePosition(inNode));
           temp = path;
           path = "comment()["+zPosition+"]";
           path += temp;
           break;
-        default:
-          if(inNode->isProcessingInstruction())
-          {
-            nodeName = inNode->getNodeName();
-            zLocalName = nodeName->getLocalName();
-            zPosition = ztd::to_string(getNodePosition(inNode));
-            temp = path;
-            path = "processing-instruction("+zLocalName+")["+zPosition+"]";
-            path += temp;
-          }
+
+        case store::StoreConsts::piNode: 
+          nodeName = inNode->getNodeName();
+          zLocalName = nodeName->getLocalName();
+          zPosition = ztd::to_string(getNodePosition(inNode));
+          temp = path;
+          path = "processing-instruction("+zLocalName+")["+zPosition+"]";
+          path += temp;
           break;
+
+        default:
+          ZORBA_ASSERT(false);
       }
+
       inNode = inNode->getParent();
       
-      if(inNode && inNode->getNodeKind() != store::StoreConsts::documentNode)
+      if (inNode && inNode->getNodeKind() != store::StoreConsts::documentNode)
       {
         temp = path;
         path = "/";

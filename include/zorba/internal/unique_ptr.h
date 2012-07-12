@@ -19,7 +19,7 @@
 
 #include <zorba/config.h>
 
-#ifdef ZORBA_CXX_UNIQUE_PTR
+#ifdef ZORBA_HAVE_UNIQUE_PTR
 # include <memory>                      /* for unique_ptr */
 # include <utility>                     /* for forward, move */
 #else
@@ -577,6 +577,6 @@ void swap( unique_ptr<T,D> &a, unique_ptr<T,D> &b ) {
 
 } // namespace std
 
-#endif /* ZORBA_CXX_UNIQUE_PTR */
+#endif /* ZORBA_HAVE_UNIQUE_PTR */
 #endif /* ZORBA_UNIQUE_PTR_H */
 /* vim:set et sw=2 ts=2: */

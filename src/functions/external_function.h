@@ -40,7 +40,7 @@ class external_function : public function
 protected:
   QueryLoc           theLoc;
   zstring            theNamespace;
-  short              theScriptingKind;
+  unsigned short     theScriptingKind;
   ExternalFunction * theImpl;
 
 public:
@@ -54,12 +54,12 @@ public:
         static_context* modSctx,
         const zstring& ns,
         const signature& sig,
-        short scriptingType,
+        unsigned short scriptingType,
         ExternalFunction* internal);
 
   ~external_function() { }
 
-  short getScriptingKind() const { return theScriptingKind; }
+  unsigned short getScriptingKind() const { return theScriptingKind; }
 
   bool accessesDynCtx() const;
 

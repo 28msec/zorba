@@ -30,11 +30,31 @@ namespace zorba
 ///////////////////////////////////////////////////////////////////////////////
 
 //full-text:tokenize
-class full_text_tokenize : public function
+class full_text_tokenize_node : public function
 {
 public:
-  full_text_tokenize(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
+  full_text_tokenize_node(const signature& sig,
+                          FunctionConsts::FunctionKind kind) : 
+    function(sig, kind)
+  {
+
+  }
+
+  // Mark the function as accessing the dyn ctx so that it won't be
+  // const-folded. We must prevent const-folding because the function
+  // uses the store to get access to the tokenizer provider.
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//full-text:tokenize_nodes
+class full_text_tokenize_nodes : public function
+{
+public:
+  full_text_tokenize_nodes(const signature& sig,
+                           FunctionConsts::FunctionKind kind) : 
     function(sig, kind)
   {
 

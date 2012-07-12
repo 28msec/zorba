@@ -29,7 +29,7 @@ namespace zorba
 {
 
 class IndexDecl;
-class ItemHandleHashSet;
+class NodeHandleHashSet;
 
 
 /*******************************************************************************
@@ -370,6 +370,7 @@ class ProbeIndexPointValueIterator
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointValueIterator);
@@ -377,18 +378,13 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexPointValueIterator,
   NaryBaseIterator<ProbeIndexPointValueIterator, ProbeIndexPointValueIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ProbeIndexPointValueIterator,
-                      ProbeIndexPointValueIteratorState>*)this);
-    ar & theCheckKeyType;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
   ProbeIndexPointValueIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& children);
+        std::vector<PlanIter_t>& children,
+        bool aCountOnly = false);
 
   ~ProbeIndexPointValueIterator();
 
@@ -425,6 +421,7 @@ public NaryBaseIterator<ProbeIndexPointGeneralIterator,
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointGeneralIterator);
@@ -438,7 +435,8 @@ public:
   ProbeIndexPointGeneralIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children);
+      std::vector<PlanIter_t>& children,
+      bool aCountOnly = false);
   
   ~ProbeIndexPointGeneralIterator();
 
@@ -495,6 +493,7 @@ public NaryBaseIterator<ProbeIndexRangeValueIterator,
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeValueIterator);
@@ -508,7 +507,8 @@ public:
   ProbeIndexRangeValueIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children);
+      std::vector<PlanIter_t>& children,
+      bool aCountOnly = false);
 
   ~ProbeIndexRangeValueIterator();
 
@@ -547,7 +547,7 @@ public:
 
   store::IndexProbeIterator_t          theIterator;
 
-  ItemHandleHashSet                  * theNodeHashSet;
+  NodeHandleHashSet                  * theNodeHashSet;
 
 public:
   ProbeIndexRangeGeneralIteratorState();
@@ -566,6 +566,7 @@ public NaryBaseIterator<ProbeIndexRangeGeneralIterator,
 {
 protected:
   bool theCheckKeyType;
+  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeGeneralIterator);
@@ -579,7 +580,8 @@ public:
   ProbeIndexRangeGeneralIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children);
+      std::vector<PlanIter_t>& children,
+      bool aCountOnly = false);
   
   ~ProbeIndexRangeGeneralIterator();
 
