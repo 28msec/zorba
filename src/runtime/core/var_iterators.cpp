@@ -578,7 +578,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else if (state->theTempSeq != NULL)
     {
       if (state->theSourceIter == NULL)
-        state->theSourceIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+        state->theSourceIter = GENV_STORE.getIteratorFactory()->
+        createTempSeqIterator(false);
 
       state->theSourceIter->init(state->theTempSeq);
       state->theSourceIter->open();
@@ -800,7 +801,8 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
     else
     {
       if (state->theTempSeqIter == NULL)
-        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->
+                                createTempSeqIterator(false);
 
       state->theTempSeqIter->init(value);
       state->theTempSeqIter->open();
@@ -832,7 +834,8 @@ void LetVarIterator::bind(
     else
     {
       if (state->theTempSeqIter == NULL)
-        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->
+        createTempSeqIterator(value->isLazy());
 
       state->theTempSeqIter->init(value, startPos, endPos);
       state->theTempSeqIter->open();
