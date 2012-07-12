@@ -45,6 +45,7 @@
 #include "dataguide.h"
 #include "node_factory.h"
 
+#include "util/mem_sizeof.h"
 #include "util/stl_util.h"
 #include "util/string_util.h"
 
@@ -936,6 +937,10 @@ ConnectorNode::ConnectorNode(
   }
 }
 
+size_t ConnectorNode::alloc_size() const
+{
+  return ztd::mem_sizeof( *theNode );
+}
 
 /*******************************************************************************
 
@@ -1172,6 +1177,13 @@ void OrdPathNode::setOrdPath(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t OrdPathNode::alloc_size() const
+{
+  return ztd::alloc_sizeof( theOrdPath );
+}
+
+
 bool
 OrdPathNode::getDescendantNodeByOrdPath(
     const OrdPath& aOrdPath,
@@ -1462,6 +1474,13 @@ store::Item_t OrdPathNode::leastCommonAncestor(const store::Item_t& aOther) cons
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t InternalNode::alloc_size() const
+{
+  return OrdPathNode::alloc_size() + ztd::alloc_sizeof( theNodes );
+}
+
+
 const OrdPath* InternalNode::getFirstChildOrdPathAfter(csize pos) const
 {
   assert((pos == 0 && numChildren() == 0) || pos < numChildren());

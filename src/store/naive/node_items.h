@@ -576,6 +576,8 @@ protected:
       const XmlNode* child);
 
 public:
+  size_t alloc_size() const;
+
   XmlNode* getNode() const { return theNode.getp(); }
 
   store::Item* getNodeName() const { return theNode->getNodeName(); }
@@ -638,6 +640,8 @@ protected:
   virtual ~OrdPathNode() {}
 
 public:
+  size_t alloc_size() const;
+
   const OrdPath& getOrdPath() const { return theOrdPath; }
 
   OrdPath& getOrdPath() { return theOrdPath; }
@@ -747,6 +751,8 @@ public:
   //
   // SimpleStore Methods
   //
+
+  size_t alloc_size() const;
 
   // To be used by the loader ONLY!
   NodeVector& nodes() { return theNodes; }

@@ -107,7 +107,7 @@ namespace ztd {
  *  public:
  *    // ...
  *    size_t alloc_size() const {
- *      return alloc_sizeof( s ) + mem_sizeof( *p );
+ *      return alloc_sizeof( s ) + alloc_sizeof( p );
  *    }
  *  private:
  *    int i;
@@ -126,10 +126,8 @@ namespace ztd {
  *      The function will be optimized away by the compiler.)
  *    </li>
  *    <li>
- *      The reason it's \c mem_sizeof(*p) rather than \c alloc_sizeof(*p)
- *      is because the former adds in \c sizeof(*p)
- *      (which is what we want).
- *      For any pointer \c p, always use \c mem_sizeof(*p).
+ *      Calling \c alloc_sizeof(p) for a pointer automatically dereferences it
+ *      (if it's non-null) and adds in the \c mem_sizeof(*p).
  *    </li>
  *  </ul>
  *
@@ -198,7 +196,7 @@ struct size_traits {
 };
 
 /**
- * Specialization for any type.
+ * Specialization for any non-pointer type.
  * @tparam T The type to use.
  */
 template<typename T>
@@ -223,13 +221,24 @@ inline size_t alloc_sizeof( T const &t ) {
 /**
  * Gets the total memory size of an object.
  *
- * @tparam T The type to get the data size of.
+ * @tparam T The type to get the memory size of.
  * @param t An instance of \a T to get the memory size of.
  */
 template<typename T>
 inline size_t mem_sizeof( T const &t ) {
   return sizeof( T ) + alloc_sizeof( t );
 }
+
+/**
+ * Specialization for pointer types.
+ * @tparam T A pointer type.
+ */
+template<typename T>
+struct size_traits<T*,false> {
+  static size_t alloc_sizeof( T *p ) {
+    return p ? mem_sizeof( *p ) : 0;
+  }
+};
 
 ////////// C++ Specializations ////////////////////////////////////////////////
 
@@ -254,14 +263,17 @@ struct size_traits<char const*> {
 };
 
 /**
- * Size traits for a MapType&lt;T&gt;.
+ * Size traits for a MapType.
  * (This is a base class used by other specializations.)
  */
 template<class MapType>
-class map_size_traits {
-protected:
-  static size_t map_sizeof( MapType const &m ) {
-    size_t total_size = 0;
+struct map_size_traits {
+  static size_t alloc_sizeof( MapType const &m ) {
+    size_t const padding =
+        sizeof( typename MapType::value_type )
+      - sizeof( typename MapType::key_type )
+      - sizeof( typename MapType::mapped_type );
+    size_t total_size = m.size() * padding;
     FOR_EACH( typename MapType, i, m )
       total_size += mem_sizeof( i->first ) + mem_sizeof( i->second );
     return total_size;
@@ -272,40 +284,27 @@ protected:
  * Specialization for std::map.
  */
 template<typename K,typename V,typename Comp,class Alloc>
-class size_traits<std::map<K,V,Comp,Alloc>,false> :
+struct size_traits<std::map<K,V,Comp,Alloc>,false> :
   map_size_traits< std::map<K,V,Comp,Alloc> >
 {
-  typedef std::map<K,V,Comp,Alloc> map_type;
-  typedef map_size_traits<map_type> base_type;
-public:
-  static size_t alloc_sizeof( map_type const &m ) {
-    return base_type::map_sizeof( m );
-  }
 };
 
 /**
  * Specialization for std::unordered_map.
  */
 template<typename K,typename V,class Hash,class Equal,class Alloc>
-class size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
+struct size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
   map_size_traits< std::unordered_map<K,V,Hash,Equal,Alloc> >
 {
-  typedef std::unordered_map<K,V,Hash,Equal,Alloc> map_type;
-  typedef map_size_traits<map_type> base_type;
-public:
-  static size_t alloc_sizeof( map_type const &m ) {
-    return base_type::map_sizeof( m );
-  }
 };
 
 /**
- * Size traits for a SequenceType&lt;T&gt;.
+ * Size traits for a SequenceType.
  * (This is a base class used by other specializations.)
  */
 template<class SequenceType>
-class sequence_size_traits {
-protected:
-  static size_t sequence_sizeof( SequenceType const &s ) {
+struct sequence_size_traits {
+  static size_t alloc_sizeof( SequenceType const &s ) {
     size_t total_size = 0;
     FOR_EACH( typename SequenceType, i, s )
       total_size += mem_sizeof( *i );
@@ -317,60 +316,36 @@ protected:
  * Specialization for std::set.
  */
 template<typename T,class Comp,class Alloc>
-class size_traits<std::set<T,Comp,Alloc>,false> :
+struct size_traits<std::set<T,Comp,Alloc>,false> :
   sequence_size_traits< std::set<T,Comp,Alloc> >
 {
-  typedef std::set<T,Comp,Alloc> set_type;
-  typedef sequence_size_traits<set_type> base_type;
-public:
-  static size_t alloc_sizeof( set_type const &s ) {
-    return base_type::sequence_sizeof( s );
-  }
 };
 
 /**
  * Specialization for std::stack.
  */
 template<typename T,class Container>
-class size_traits<std::stack<T,Container>,false> :
+struct size_traits<std::stack<T,Container>,false> :
   sequence_size_traits< std::stack<T,Container> >
 {
-  typedef std::stack<T,Container> stack_type;
-  typedef sequence_size_traits<stack_type> base_type;
-public:
-  static size_t alloc_sizeof( stack_type const &s ) {
-    return base_type::sequence_sizeof( s );
-  }
 };
 
 /**
  * Specialization for std::unordered_set.
  */
 template<typename K,class Hash,class Equal,class Alloc>
-class size_traits<std::unordered_set<K,Hash,Equal,Alloc>,false> :
+struct size_traits<std::unordered_set<K,Hash,Equal,Alloc>,false> :
   sequence_size_traits< std::unordered_set<K,Hash,Equal,Alloc> >
 {
-  typedef std::unordered_set<K,Hash,Equal,Alloc> set_type;
-  typedef sequence_size_traits<set_type> base_type;
-public:
-  static size_t alloc_sizeof( set_type const &s ) {
-    return base_type::sequence_sizeof( s );
-  }
 };
 
 /**
  * Specialization for std::vector.
  */
 template<typename T,class Alloc>
-class size_traits<std::vector<T,Alloc>,false> :
+struct size_traits<std::vector<T,Alloc>,false> :
   sequence_size_traits< std::vector<T,Alloc> >
 {
-  typedef std::vector<T,Alloc> vector_type;
-  typedef sequence_size_traits<vector_type> base_type;
-public:
-  static size_t alloc_sizeof( vector_type const &v ) {
-    return base_type::sequence_sizeof( v );
-  }
 };
 
 ////////// Zorba specializations //////////////////////////////////////////////

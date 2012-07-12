@@ -17,6 +17,7 @@
 #include <iostream>
 #include <string>
 
+#include "util/cxx_util.h"
 #include "util/mem_sizeof.h"
 
 using namespace std;
@@ -43,17 +44,21 @@ static void test_int() {
   ASSERT_TRUE( ztd::mem_sizeof( i ) == sizeof( i ) );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 static void test_map_string_int() {
   typedef map<string,int> map_type;
   map_type m;
   string const key( "a" );
   m[ key ] = 1;
 
-  size_t const expected_size =
-    sizeof( m ) + sizeof( key ) + key.size() + sizeof( map_type::value_type );
+  size_t const expected_size = sizeof( m )
+    + sizeof( map_type::value_type ) + key.size();
 
   ASSERT_TRUE( ztd::mem_sizeof( m ) == expected_size );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 struct point {
   int x, y, z;
@@ -63,6 +68,18 @@ static void test_pod() {
   point p;
   ASSERT_TRUE( ztd::mem_sizeof( p ) == sizeof( p ) );
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+static void test_pointer() {
+  int *p = nullptr;
+  ASSERT_TRUE( ztd::mem_sizeof( p ) == sizeof( p ) );
+  p = new int;
+  ASSERT_TRUE( ztd::mem_sizeof( p ) == sizeof( p ) + sizeof( int ) );
+  delete p;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 template<class StringType>
 static void test_string_empty() {
@@ -76,6 +93,8 @@ static void test_string_not_empty() {
   ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + s.size() );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 static void test_vector_int() {
   typedef vector<int> vector_type;
   vector_type v;
@@ -85,6 +104,8 @@ static void test_vector_int() {
 
   ASSERT_TRUE( ztd::mem_sizeof( v ) == expected_size );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 struct my_base {
   virtual size_t alloc_size() const {
@@ -122,6 +143,7 @@ namespace UnitTests {
 
 int test_mem_sizeof( int, char*[] ) {
   test_int();
+  test_pointer();
   test_pod();
 
   test_string_empty<string>();
