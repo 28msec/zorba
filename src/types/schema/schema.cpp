@@ -115,13 +115,14 @@ public:
     // QQQ Is this reinterpret_cast necessary? Is it safe? Can I just
     // pump the chars from read() to the XMLBytes Xerces wants?
     char* const lToFill = reinterpret_cast<char*>(toFill);
+    TRACE("lToFill: " << lToFill );
     theStream->read(lToFill, maxToRead);
     return static_cast<unsigned int>(theStream->gcount());
   }
 
   virtual const XMLCh* getContentType() const
   {
-    // Unless we know it, do what Xerces' implemtation does: return 0
+    // Unless we know it, do what Xerces' implementation does: return 0
     return 0;
   }
 
@@ -232,7 +233,7 @@ public:
       
       try
       {
-        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved);
+        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved << " thePhysURI: " << StrX(thePhysicalURI));
         zstring lErrorMessage;
         lResource = theSctx->resolve_uri(lResolved, internal::EntityData::SCHEMA, lErrorMessage);
         internal::StreamResource* lStream =
@@ -245,10 +246,10 @@ public:
           lStream->setStreamReleaser(nullptr);
           
           if (isSystemId)
-            lRetval->setSystemId(thePhysicalURI);
+            lRetval->setSystemId(XMLString::transcode(lResolved.c_str()));
           
           if (isPublicId)
-            lRetval->setPublicId(thePhysicalURI);
+            lRetval->setPublicId(XMLString::transcode(lResolved.c_str()));
             
           return lRetval;
         }
