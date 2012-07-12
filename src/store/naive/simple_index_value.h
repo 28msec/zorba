@@ -43,7 +43,7 @@ public:
 
   ~ValueIndexCompareFunction();
 
-  const XQPCollator* getCollator(ulong i) const { return theCollators[i]; }
+  const XQPCollator* getCollator(csize i) const { return theCollators[i]; }
 
   uint32_t hash(const store::IndexKey* key) const;
 
@@ -64,7 +64,7 @@ public:
 class ValueIndexValue : public store::ItemVector
 {
 public:
-  ValueIndexValue(ulong size = 0) : store::ItemVector(size) {}
+  ValueIndexValue(csize size = 0) : store::ItemVector(size) {}
 };
 
 
@@ -86,16 +86,16 @@ protected:
   virtual ~ValueIndex();
 
 public:
-  const XQPCollator* getCollator(ulong i) const;
+  const XQPCollator* getCollator(csize i) const;
 
   virtual bool isTreeIndex() = 0;
 
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 
   virtual bool remove(
-        const store::IndexKey* key,
-        const store::Item_t& item,
-        bool all = false) = 0;
+      const store::IndexKey* key,
+      const store::Item_t& node,
+      bool all) = 0;
 };
 
 
@@ -148,7 +148,7 @@ public:
 
   void clear();
 
-  ulong size() const;
+  csize size() const;
 
   Index::KeyIterator_t keys() const;
 
@@ -237,13 +237,13 @@ public:
 
   void clear();
 
-  ulong size() const;
+  csize size() const;
 
   Index::KeyIterator_t keys() const;
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all = false);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all);
 };
 
 

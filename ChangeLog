@@ -15,7 +15,8 @@ New Features:
     http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
   * Positional pagination support for collections
-
+  * Incremental maintenance for general indexes.
+	
 Optimizations:
   * Small optimization of comparison operations.
   * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428,
