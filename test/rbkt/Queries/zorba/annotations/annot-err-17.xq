@@ -14,6 +14,6 @@
      http://www.w3.org/2005/xpath-functions/math
 :)
 
-declare %"http://www.w3.org/XML/1998/namespace":nonexistent variable $var := 3;
+declare %Q{http://www.w3.org/XML/1998/namespace}nonexistent variable $var := 3;
 
 $var

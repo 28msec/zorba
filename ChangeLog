@@ -4,13 +4,15 @@ Zorba - The XQuery Processor
 version 2.x
 
 New Features:
-
+  * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local).
+    Also updated the fn:path() function.
   * Item::isSeekable API extension for streamable content (xs:string and xs:base64Binary).
   * Implemented the latest W3C specification for the group by clause
   * Added ft:tokenize-nodes() function to full-text module
   * New XQuery 3.0 functions
     - fn:parse-xml-fragment#1
-  * Added support for transient maps to the http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
+  * Added support for transient maps to the
+    http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
   * Positional pagination support for collections
 
@@ -22,8 +24,13 @@ Optimizations:
   * Optimized hash function used for nodes (also fixes bug #1010051)
   * No more serialization of compiler expressions.
   * Big rewrite of plan serializer internals, resulting in big performance improvement.
+  * Avoid (if possible) treat expr for checking that the value of a non-external
+    global variable conforms to the type declaration of the vatiable.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1002993 (bug during revalidation after update; improper condition
+    for calling TypeOps::get_atomic_type_code() from
+    SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
   * Fixed bug #867357 (Improved parser error messages)
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
     fn:distinct-values)
@@ -35,7 +42,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1003023$ (optimizer problems due to common subexpression after
     var folding into if-then-else)
   * Fixed bug #1006166 (disabling 2 functions with the same qname)
-  * Fixed bug 960083$ (improper error handling of NaN comparisons)
+  * Fixed bug #960083 (improper error handling of NaN comparisons)
   * Xml-format plan serialization not supported anymore.
 
 
