@@ -34,11 +34,19 @@
 namespace zorba {
 
 // <IndexKeysIterator>
-IndexKeysIterator::class_factory<IndexKeysIterator>
-IndexKeysIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IndexKeysIterator)
+
+void IndexKeysIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IndexKeysIterator, IndexKeysIteratorState>*)this);
+
+    ar & theNSBindings;
+}
 
 
-void IndexKeysIterator::accept(PlanIterVisitor& v) const {
+void IndexKeysIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

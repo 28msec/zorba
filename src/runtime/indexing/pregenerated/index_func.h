@@ -63,13 +63,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexKeysIterator,
     NaryBaseIterator<IndexKeysIterator, IndexKeysIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IndexKeysIterator, IndexKeysIteratorState>*)this);
-
-    ar & theNSBindings;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IndexKeysIterator(
     static_context* sctx,

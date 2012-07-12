@@ -43,9 +43,9 @@ PlanIter_t zorba_store_indexes_static_dml_keys::codegen(
 
 void populate_context_index_func(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_indexes_static_dml_keys,
         (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml","","keys"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
