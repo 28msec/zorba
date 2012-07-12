@@ -24,7 +24,6 @@
 #include "system/globalenv.h"
 
 #include "runtime/store/maps.h"
-#include "runtime/indexing/index_util.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -564,6 +563,11 @@ MapKeysIterator::nextImpl(
   store::Item_t    lTypeName;
   zstring          lBaseURI =
     static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+
+  store::Item_t lKeyNodeName;
+  GENV_ITEMFACTORY->createQName(lKeyNodeName,
+      static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
+      "", "key");
 
   MapKeysIteratorState* state;
   DEFAULT_STACK_INIT(MapKeysIteratorState, state, aPlanState);
