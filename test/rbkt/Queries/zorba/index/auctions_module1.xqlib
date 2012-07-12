@@ -44,7 +44,7 @@ by xs:string(.//city) as xs:string;
   auction. A person may watch multiple open auctions.
 :)
 
-declare %ann:general-equality %ann:manual index auctions:PersonWatches
+declare %ann:general-equality %ann:automatic index auctions:PersonWatches
 on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by (for $x in ./watches/watch/@open_auction return xs:string($x)) as xs:string*;
 

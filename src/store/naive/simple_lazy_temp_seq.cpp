@@ -33,9 +33,9 @@ namespace simplestore
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleLazyTempSeq::SimpleLazyTempSeq(const store::Iterator_t& aIter)
+SimpleLazyTempSeq::SimpleLazyTempSeq(const store::Iterator_t& iter)
 {
-  init(aIter);
+  init(iter);
 }
 
 
@@ -44,66 +44,42 @@ SimpleLazyTempSeq::SimpleLazyTempSeq(const store::Iterator_t& aIter)
 ********************************************************************************/
 SimpleLazyTempSeq::~SimpleLazyTempSeq()
 {
+  clear();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::init(const store::Iterator_t& aIter)
+void SimpleLazyTempSeq::clear()
 {
-  theIterator = aIter;
-  theMatFinished = false;
-  thePurgedUpTo = 0;
+  std::vector<store::Item*>::iterator ite = theItems.begin();
+  std::vector<store::Item*>::iterator end = theItems.end();
+  for (; ite != end; ++ite)
+  {
+    (*ite)->removeReference();
+  }
+
   theItems.clear();
 }
 
 
 /*******************************************************************************
-
+  Get the next item (if any) from the input iterator and put it at the end of 
+  the queue.  
 ********************************************************************************/
-void SimpleLazyTempSeq::append(const store::Iterator_t& iter)
+void SimpleLazyTempSeq::matNextItem() 
 {
-  while (!theMatFinished)
+  store::Item_t item;
+
+  if (! theIterator->next(item)) 
   {
-    matNextItem();
+    theMatFinished = true;
   }
-
-  theMatFinished = false;
-  theIterator = iter;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleLazyTempSeq::purge()
-{
-  //Not supported
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleLazyTempSeq::purgeUpTo(xs_integer upTo)
-{
-  xs_long lUpTo;
-  try 
+  else
   {
-    lUpTo = to_xs_long(upTo);
+    theItems.push_back(item.release());
   }
-  catch (std::range_error& e)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("sequence too big (" << e.what() << ")")));
-  }
-
-  ZORBA_ASSERT(lUpTo >= thePurgedUpTo);
-  ZORBA_ASSERT(lUpTo - thePurgedUpTo <= theItems.size());
-
-  theItems.erase(theItems.begin(), (theItems.begin() + (lUpTo - thePurgedUpTo)));
-  thePurgedUpTo = lUpTo;
 }
 
 
@@ -134,12 +110,97 @@ bool SimpleLazyTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
+xs_integer SimpleLazyTempSeq::getSize() const
 {
-  xs_long lPos;
+  ZORBA_ASSERT(false);
+  return xs_integer(thePurgedUpTo + theItems.size());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::init(const store::Iterator_t& iter)
+{
+  theIterator = iter;
+
+  theMatFinished = false;
+  thePurgedUpTo = 0;
+
+  clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::append(const store::Iterator_t& iter)
+{
+  while (!theMatFinished)
+  {
+    matNextItem();
+  }
+
+  theMatFinished = false;
+  theIterator = iter;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::purge()
+{
+  theIterator = NULL;
+
+  theMatFinished = false;
+  thePurgedUpTo = 0;
+
+  clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::purgeUpTo(xs_integer position)
+{
+  xs_long pos;
   try 
   {
-    lPos = to_xs_long(position);
+    pos = to_xs_long(position);
+  }
+  catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("sequence too big (" << e.what() << ")")));
+  }
+
+  ZORBA_ASSERT(pos >= thePurgedUpTo);
+  ZORBA_ASSERT(pos - thePurgedUpTo <= theItems.size());
+
+  std::vector<store::Item*>::iterator ite = theItems.begin();
+  std::vector<store::Item*>::iterator end = theItems.begin() + (pos - thePurgedUpTo);
+  for (; ite != end; ++ite)
+  {
+    (*ite)->removeReference();
+  }
+
+  theItems.erase(theItems.begin(), end);
+
+  thePurgedUpTo = pos;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
+{
+  xs_long pos;
+  try 
+  {
+    pos = to_xs_long(position);
   }
   catch (std::range_error& e)
   {
@@ -147,9 +208,18 @@ void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
     ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
   }
 
-  if (this->containsItem(position)) 
+  ZORBA_ASSERT(pos > thePurgedUpTo);
+
+  xs_long numItemsToBuffer = pos - thePurgedUpTo;
+
+  while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
   {
-    result = theItems[lPos - thePurgedUpTo - 1];
+    matNextItem();
+  }
+
+  if (theItems.size() >= numItemsToBuffer)
+  {
+    result = theItems[pos - thePurgedUpTo - 1];
   }
   else 
   {
@@ -180,10 +250,10 @@ void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
 ********************************************************************************/
 inline bool SimpleLazyTempSeq::containsItem(xs_integer position) 
 {
-  xs_long lPos;
+  xs_long pos;
   try 
   {
-    lPos = to_xs_long(position);
+    pos = to_xs_long(position);
   }
   catch (std::range_error& e)
   {
@@ -191,9 +261,9 @@ inline bool SimpleLazyTempSeq::containsItem(xs_integer position)
     ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
   }
 
-  assert(lPos > thePurgedUpTo);
+  ZORBA_ASSERT(pos > thePurgedUpTo);
 
-  xs_long numItemsToBuffer = lPos - thePurgedUpTo;
+  xs_long numItemsToBuffer = pos - thePurgedUpTo;
 
   while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
   {
@@ -205,44 +275,6 @@ inline bool SimpleLazyTempSeq::containsItem(xs_integer position)
 
 
 /*******************************************************************************
-  Get the next item (if any) from the input iterator and put it at the end of 
-  the queue.  
-********************************************************************************/
-void SimpleLazyTempSeq::matNextItem() 
-{
-  theItems.push_back(NULL);
-
-  store::Item_t& lLocation = theItems.back();
-
-  if (theIterator->next(lLocation)) 
-  {
-    if (theCopy && lLocation->isNode()) 
-    {
-      store::CopyMode lCopyMode;
-      lLocation = lLocation->copy(NULL, lCopyMode);
-    }
-  }
-  else 
-  {
-    // We do not want to have an empty item materialized.
-    theItems.pop_back();
-    theMatFinished = true;
-    theIterator->close();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-xs_integer SimpleLazyTempSeq::getSize() const
-{
-  ZORBA_ASSERT(false);
-  return xs_integer(0);
-}
-
-
-/*******************************************************************************
   Reads the whole Sequence from beginning to end; it is allowed to have several
   concurrent iterators on the same TempSeq.
 
@@ -250,23 +282,28 @@ xs_integer SimpleLazyTempSeq::getSize() const
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator() const
 {
-  return new SimpleLazyTempSeqIter(this, xs_integer(1), xs_integer(std::numeric_limits<long>::max()));
+  return new SimpleLazyTempSeqIter(this,
+                                   xs_integer(1),
+                                   xs_integer(std::numeric_limits<long>::max()));
 }
 
 
-/*******************************************************************************
-  Returns an iterator which reads just a part of the underlying TempSeq
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  SimpleLazyTempSeqIter                                                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-  @param startPos The first item which the iterator returns
-  @param endPos The last item which the iterator returns
-  @return Iterator
+
+/*******************************************************************************
+
 ********************************************************************************/
-store::Iterator_t SimpleLazyTempSeq::getIterator(
-    xs_integer startPos,
-    xs_integer endPos,
-    bool streaming) const
+SimpleLazyTempSeqIter::SimpleLazyTempSeqIter()
+  :
+  theCurPos(0),
+  theStartPos(0),
+  theEndPos(0)
 {
-  return new SimpleLazyTempSeqIter(this, startPos, endPos);
 }
 
 
@@ -274,17 +311,17 @@ store::Iterator_t SimpleLazyTempSeq::getIterator(
 
 ********************************************************************************/
 SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
-    const SimpleLazyTempSeq* aTempSeq,
-    xs_integer aStartPos,
-    xs_integer aEndPos)
+    const SimpleLazyTempSeq* tempSeq,
+    xs_integer startPos,
+    xs_integer endPos)
   :
-  theTempSeq(const_cast<SimpleLazyTempSeq*>(aTempSeq))
+  theTempSeq(const_cast<SimpleLazyTempSeq*>(tempSeq))
 {
   try 
   {
-    theCurPos = to_xs_long(aStartPos) - 1;
-    theStartPos = to_xs_long(aStartPos);
-    theEndPos = to_xs_long(aEndPos);
+    theStartPos = to_xs_long(startPos);
+    theEndPos = to_xs_long(endPos);
+    theCurPos = theStartPos - 1;
   }
   catch (std::range_error& e)
   {
@@ -294,17 +331,61 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 SimpleLazyTempSeqIter::~SimpleLazyTempSeqIter()
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeqIter::init(const store::TempSeq_t& seq)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeqIter::init(
+    const store::TempSeq_t& seq,
+    xs_integer startPos,
+    xs_integer endPos)
+{
+  assert(seq->isLazy());
+
+  theTempSeq = static_cast<SimpleLazyTempSeq*>(seq.getp());
+
+  try 
+  {
+    theStartPos = to_xs_long(startPos);
+    theEndPos = to_xs_long(endPos);
+    theCurPos = theStartPos - 1;
+  }
+  catch (std::range_error& e)
+  {
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
+    ERROR_PARAMS(BUILD_STRING("sequence too big (" << e.what() << ")")));
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void SimpleLazyTempSeqIter::open()
 {
   theCurPos = theStartPos - 1;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool SimpleLazyTempSeqIter::next(store::Item_t& result)
 {
   if (theCurPos < theEndPos && theTempSeq->containsItem(xs_integer(theCurPos+1)))
@@ -320,12 +401,18 @@ bool SimpleLazyTempSeqIter::next(store::Item_t& result)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void SimpleLazyTempSeqIter::reset()
 {
   theCurPos = theStartPos - 1;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void SimpleLazyTempSeqIter::close()
 {
 }

@@ -246,7 +246,21 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
     xs_long longValue = static_cast<xs_long>(doubleValue.getNumber());
 
+    /*
+    std::cout << "original long value = " << item->theValue << std::endl
+              << "double value        = " << doubleValue << std::endl
+              << "new long value      = " << longValue << std::endl << std::endl;
+    
+    */
     lossy = (longValue != item->theValue);
+
+    /*    
+    std::cout << "original long value = " << item->theValue << std::endl
+              << "double value        = " << doubleValue << std::endl
+              << "new long value      = " << longValue << std::endl << std::endl;
+    */
+    std::cout << "lossy = " << lossy << std::endl << std::endl;
+    
     break;
   }
 

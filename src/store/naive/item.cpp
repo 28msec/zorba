@@ -19,6 +19,8 @@
 
 #include <zorba/error.h>
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+
 #include "zorbatypes/datetime.h"
 
 #include "store/api/item.h"
@@ -31,6 +33,9 @@
 #endif
 
 #include "runtime/function_item/function_item.h"
+
+# include <cstdlib>
+# include <execinfo.h>
 
 
 namespace zorba
@@ -494,11 +499,50 @@ const zstring& Item::getLocalName() const
 }
 
 
+static void print_stack_trace( std::ostream& o ) 
+{
+  int BUF_SIZE = 250;
+  void* buf[ BUF_SIZE ];
+
+  int const size = backtrace(buf, BUF_SIZE);
+
+  if (char** symbols = backtrace_symbols(buf, size)) 
+  {
+    for ( int i = 0; i < size; ++i )
+      o << symbols[i] << std::endl;
+
+    free( symbols );
+  }
+  else
+  {
+    o << "allocation of backtrace symbols failed" << std::endl;
+  }
+}
+
+
 /**
  * Accessor for xs:untypedAtomic and xs:string and its subtypes
  */
 const zstring& Item::getString() const
 {
+  if (isAtomic())
+  {
+    std::cerr << "Atomic item value: " << getStringValue() << std::endl;
+  }
+  else if (isNode())
+  {
+    std::cerr << "Node item: " << this << std::endl
+              << " node name: " << getNodeName()->getStringValue() << std::endl
+              << " node string value: " << getStringValue() << std::endl;
+  }
+  else
+  {
+    std::cerr << "???????" << std::endl;
+  }
+
+  
+  print_stack_trace(std::cerr);
+
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(

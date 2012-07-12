@@ -376,6 +376,18 @@ RootTypeManager::RootTypeManager()
   ATOMIC_TYPE_DEFN(NOTATION)
 #undef ATOMIC_TYPE_DEFN
 
+  STRUCTURED_ITEM_TYPE_ONE = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_ONE, true);
+
+  STRUCTURED_ITEM_TYPE_QUESTION = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_QUESTION, true);
+
+  STRUCTURED_ITEM_TYPE_STAR = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_STAR, true);
+
+  STRUCTURED_ITEM_TYPE_PLUS = 
+  new StructuredItemXQType(this, TypeConstants::QUANT_PLUS, true);
+
 #ifdef ZORBA_WITH_JSON
   JDM_NULL_TYPE_ONE = new AtomicXQType(this,
                                       store::JDM_NULL,
@@ -414,18 +426,6 @@ RootTypeManager::RootTypeManager()
                                                                            
   m_atomic_typecode_map[store::JDM_NULL][TypeConstants::QUANT_PLUS] =    
     &JDM_NULL_TYPE_PLUS;
-
-  STRUCTURED_ITEM_TYPE_ONE = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_ONE, true);
-
-  STRUCTURED_ITEM_TYPE_QUESTION = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_QUESTION, true);
-
-  STRUCTURED_ITEM_TYPE_STAR = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_STAR, true);
-
-  STRUCTURED_ITEM_TYPE_PLUS = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_PLUS, true);
 
 #define JSON_TYPE_DEFN(basename, kind)                                  \
   basename##_TYPE_ONE = new JSONXQType(this,                            \
@@ -555,11 +555,10 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(DOCUMENT)
   DELETE_TYPE(ANY_NODE_UNTYPED)
   DELETE_TYPE(ANY_NODE)
+  DELETE_TYPE(STRUCTURED_ITEM)
 
 #ifdef ZORBA_WITH_JSON
   DELETE_TYPE(JDM_NULL)
-
-  DELETE_TYPE(STRUCTURED_ITEM)
 
   DELETE_TYPE(JSON_ITEM)
   DELETE_TYPE(JSON_OBJECT)
