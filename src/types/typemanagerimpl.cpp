@@ -379,7 +379,6 @@ xqtref_t TypeManagerImpl::create_named_type(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -402,6 +401,7 @@ xqtref_t TypeManagerImpl::create_structured_item_type(
 }
 
 
+#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Create a sequence type based on json item kind and a quantifier
 ********************************************************************************/
@@ -896,12 +896,12 @@ xqtref_t TypeManagerImpl::create_type(
     }
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::STRUCTURED_ITEM_KIND:
   {
     return create_structured_item_type(quantifier);
   }
 
+#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);

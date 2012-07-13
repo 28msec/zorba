@@ -89,11 +89,11 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
     TypeIdentifier_t
     createAnyNodeType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
-#ifdef ZORBA_WITH_JSON
     static
     TypeIdentifier_t
     createStructuredItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
+#ifdef ZORBA_WITH_JSON
     static
     TypeIdentifier_t
     createJSONItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);

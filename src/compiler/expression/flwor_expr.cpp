@@ -340,6 +340,9 @@ window_clause::window_clause(
   if (theWinStopCond != NULL)
     theWinStopCond->set_flwor_clause(this);
 
+  if (winKind == tumbling_window)
+    theLazyEval = true;
+
   if (varExpr != NULL && sctx != NULL)
   {
     RootTypeManager& rtm = GENV_TYPESYSTEM;

@@ -351,10 +351,10 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
                                     TypeConstants::QUANT_ONE);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::STRUCTURED_ITEM_KIND:
     return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE;
 
+#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND: 
 #endif 
   case XQType::NODE_TYPE_KIND:
@@ -512,8 +512,8 @@ bool TypeOps::is_subtype(
     case XQType::FUNCTION_TYPE_KIND:
     case XQType::ANY_FUNCTION_TYPE_KIND:
     case XQType::EMPTY_KIND:
-#ifdef ZORBA_WITH_JSON
     case XQType::STRUCTURED_ITEM_KIND:
+#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
 #endif
       return true;
@@ -594,7 +594,6 @@ bool TypeOps::is_subtype(
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::STRUCTURED_ITEM_KIND:
   {
     switch(subtype.type_kind())
@@ -602,7 +601,9 @@ bool TypeOps::is_subtype(
     case XQType::NODE_TYPE_KIND:
     case XQType::EMPTY_KIND:
     case XQType::STRUCTURED_ITEM_KIND:
+#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
+#endif
       return true;
 
     default:
@@ -613,6 +614,7 @@ bool TypeOps::is_subtype(
     break;
   }
 
+#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     if (subtype.type_kind() != XQType::JSON_TYPE_KIND)
@@ -680,8 +682,8 @@ bool TypeOps::is_subtype(
     case XQType::ITEM_KIND:
 #ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
-    case XQType::STRUCTURED_ITEM_KIND:
 #endif
+    case XQType::STRUCTURED_ITEM_KIND:
       return false;
 
     default:
@@ -841,15 +843,19 @@ bool TypeOps::is_subtype(
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::STRUCTURED_ITEM_KIND:
   {
+#ifdef ZORBA_WITH_JSON
     if (subitem->isJSONItem() || subitem->isNode())
+#else
+    if (subitem->isNode())
+#endif
       return true;
 
     return false;
   }
 
+#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     if (!subitem->isJSONItem())
@@ -1036,10 +1042,10 @@ xqtref_t TypeOps::union_type(
       case XQType::NODE_TYPE_KIND:
           return rtm.ANY_NODE_TYPE_ONE;
 
-#ifdef ZORBA_WITH_JSON
       case XQType::STRUCTURED_ITEM_KIND:
         return rtm.STRUCTURED_ITEM_TYPE_ONE;
 
+#ifdef ZORBA_WITH_JSON
       case XQType::JSON_TYPE_KIND:
         return rtm.JSON_ITEM_TYPE_ONE;
 #endif
@@ -1047,17 +1053,19 @@ xqtref_t TypeOps::union_type(
         break;
       }
     }
-#ifdef ZORBA_WITH_JSON
     else if ((kind1 == XQType::NODE_TYPE_KIND || 
+#ifdef ZORBA_WITH_JSON
               kind1 == XQType::JSON_TYPE_KIND ||
+#endif
               kind1 == XQType::STRUCTURED_ITEM_KIND) &&
              (kind2 == XQType::NODE_TYPE_KIND ||
+#ifdef ZORBA_WITH_JSON
               kind2 == XQType::JSON_TYPE_KIND ||
+#endif
               kind2 == XQType::STRUCTURED_ITEM_KIND))
     {
       return rtm.STRUCTURED_ITEM_TYPE_ONE;
     }
-#endif
 
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
@@ -1161,12 +1169,12 @@ xqtref_t TypeOps::intersect_type(
               rtm.ANY_NODE_TYPE_ONE); // ????
     }
 
-#ifdef ZORBA_WITH_JSON
     case XQType::STRUCTURED_ITEM_KIND:
     {
       return rtm.NONE_TYPE;
     }
 
+#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
     {
       return rtm.NONE_TYPE;
@@ -1336,12 +1344,12 @@ TypeIdentifier_t TypeOps::get_type_identifier(
         q);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::STRUCTURED_ITEM_KIND:
   {
     return TypeIdentifier::createStructuredItemType(q);
   }
 
+#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& t = static_cast<const JSONXQType&>(type);

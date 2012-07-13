@@ -21,7 +21,7 @@
 #include "shared_types.h"
 
 #include "store/api/pul.h"
-#include "store/api/index.h"
+#include "store/naive/simple_index.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
@@ -202,10 +202,10 @@ protected:
 
   std::vector<IndexEntryCreator_t>   theIndexEntryCreators;
 
-  std::vector<store::IndexDelta>     theBeforeIndexDeltas;
-  std::vector<store::IndexDelta>     theAfterIndexDeltas;
-  std::vector<store::IndexDelta>     theInsertedDocsIndexDeltas;
-  std::vector<store::IndexDelta>     theDeletedDocsIndexDeltas;
+  std::vector<IndexDeltaImpl>        theBeforeIndexDeltas;
+  std::vector<IndexDeltaImpl>        theAfterIndexDeltas;
+  std::vector<IndexDeltaImpl>        theInsertedDocsIndexDeltas;
+  std::vector<IndexDeltaImpl>        theDeletedDocsIndexDeltas;
 
 #ifdef ZORBA_WITH_JSON
   // jsoniq primitives
@@ -251,9 +251,17 @@ public:
 protected:
   void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);
 
-  void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
+  void computeIndexDeltas(std::vector<IndexDeltaImpl>& deltas);
 
   void cleanIndexDeltas();
+
+  void refreshValueIndex(csize idx);
+
+  void refreshGeneralIndex(csize idx);
+
+  void undoValueIndexRefresh(csize idx);
+
+  void undoGeneralIndexRefresh(csize idx);
 
   void truncateIndexes();
 
