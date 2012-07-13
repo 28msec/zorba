@@ -2507,7 +2507,7 @@ zstring DecimalItem::show() const
 #ifdef ZORBA_WITH_BIG_INTEGER
 size_t IntegerItemImpl::alloc_size() const
 {
-  return ztd::alloc_size( theValue );
+  return ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -2622,7 +2622,7 @@ zstring IntegerItemImpl::show() const
 #ifdef ZORBA_WITH_BIG_INTEGER
 size_t NonPositiveIntegerItem::alloc_size() const
 {
-  return ztd::alloc_size( theValue );
+  return ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -2743,7 +2743,7 @@ zstring NegativeIntegerItem::show() const
 #ifdef ZORBA_WITH_BIG_INTEGER
 size_t NonNegativeIntegerItem::alloc_size() const
 {
-  return ztd::alloc_size( theValue );
+  return ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
