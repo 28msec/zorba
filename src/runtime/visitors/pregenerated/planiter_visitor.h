@@ -232,6 +232,9 @@ namespace zorba{
     class TokenizeNodeIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+    class TokenizeNodesIterator;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     class TokenizerPropertiesIterator;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
@@ -310,9 +313,6 @@ namespace zorba{
     class JSONObjectNamesIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
-    class JSONObjectValuesIterator;
-#endif
-#ifdef ZORBA_WITH_JSON
     class JSONObjectValueIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -347,6 +347,9 @@ namespace zorba{
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONRenameIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONArrayAppendIterator;
 #endif
     class SqrtIterator;
 
@@ -449,6 +452,10 @@ namespace zorba{
     class InSameCollectionPositionIterator;
 
     class NodeReferenceIterator;
+
+    class HasNodeReferenceIterator;
+
+    class AssignNodeReferenceIterator;
 
     class NodeByReferenceIterator;
 
@@ -1011,6 +1018,10 @@ public:
     virtual void endVisit   ( const TokenizeNodeIterator& ) = 0;
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+    virtual void beginVisit ( const TokenizeNodesIterator& ) = 0;
+    virtual void endVisit   ( const TokenizeNodesIterator& ) = 0;
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
     virtual void beginVisit ( const TokenizerPropertiesIterator& ) = 0;
     virtual void endVisit   ( const TokenizerPropertiesIterator& ) = 0;
 #endif
@@ -1126,10 +1137,6 @@ public:
     virtual void endVisit   ( const JSONObjectNamesIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
-    virtual void beginVisit ( const JSONObjectValuesIterator& ) = 0;
-    virtual void endVisit   ( const JSONObjectValuesIterator& ) = 0;
-#endif
-#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONObjectValueIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectValueIterator& ) = 0;
 #endif
@@ -1176,6 +1183,10 @@ public:
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONRenameIterator& ) = 0;
     virtual void endVisit   ( const JSONRenameIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONArrayAppendIterator& ) = 0;
+    virtual void endVisit   ( const JSONArrayAppendIterator& ) = 0;
 #endif
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
@@ -1329,6 +1340,12 @@ public:
 
     virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const HasNodeReferenceIterator& ) = 0;
+    virtual void endVisit   ( const HasNodeReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const AssignNodeReferenceIterator& ) = 0;
+    virtual void endVisit   ( const AssignNodeReferenceIterator& ) = 0;
 
     virtual void beginVisit ( const NodeByReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeByReferenceIterator& ) = 0;

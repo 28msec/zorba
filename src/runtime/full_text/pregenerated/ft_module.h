@@ -29,6 +29,11 @@
 
 
 #include "runtime/base/narybase.h"
+#include <deque>
+#include <list>
+#include <stack>
+#include <vector>
+#include "runtime/full_text/ft_module_util.h"
 #include "runtime/full_text/ft_token_seq_iterator.h"
 #include "runtime/full_text/thesaurus.h"
 
@@ -416,6 +421,7 @@ class TokenizeNodeIteratorState : public PlanIteratorState
 public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
+  TokenQNames token_qnames_; //
 
   TokenizeNodeIteratorState();
 
@@ -426,13 +432,6 @@ public:
 
 class TokenizeNodeIterator : public NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>
 { 
-protected:
-  store::Item_t token_qname_; //
-  store::Item_t lang_qname_; //
-  store::Item_t para_qname_; //
-  store::Item_t sent_qname_; //
-  store::Item_t value_qname_; //
-  store::Item_t ref_qname_; //
 public:
   SERIALIZABLE_CLASS(TokenizeNodeIterator);
 
@@ -445,12 +444,67 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    ;
+    : 
+    NaryBaseIterator<TokenizeNodeIterator, TokenizeNodeIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~TokenizeNodeIterator();
 
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
+};
+
+#endif
+
+#ifndef ZORBA_NO_FULL_TEXT
+/**
+ * 
+ * Author: 
+ */
+class TokenizeNodesIteratorState : public PlanIteratorState
+{
 public:
-  void initMembers();
+  store::Item_t doc_item_; //
+  FTTokenIterator_t doc_tokens_; //
+  TokenQNames token_qnames_; //
+  std::list<store::Item_t> includes_; //
+  std::vector<store::Item_t> excludes_; //
+  std::stack<Tokenizer*> tokenizers_; //
+  std::stack<locale::iso639_1::type> langs_; //
+  TokenizeNodesCallback callback_; //
+  Tokenizer::State t_state_; //
+  std::deque<FTToken> tokens_; //
+
+  TokenizeNodesIteratorState();
+
+  ~TokenizeNodesIteratorState();
+
+  void reset(PlanState&);
+};
+
+class TokenizeNodesIterator : public NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(TokenizeNodesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeNodesIterator,
+    NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  TokenizeNodesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TokenizeNodesIterator, TokenizeNodesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~TokenizeNodesIterator();
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

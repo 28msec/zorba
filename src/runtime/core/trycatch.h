@@ -36,9 +36,11 @@ public:
   void reset(PlanState&);
 
   // used for evaluating the target expression eagerly
-  store::TempSeq_t  theTargetSequence;
-  store::Iterator_t theTempIterator;
-  PlanIter_t theCatchIterator;
+  store::TempSeq_t               theTargetSequence;
+
+  store::Iterator_t              theTempIterator;
+
+  PlanIter_t                     theCatchIterator;
 
   std::vector<store::Iterator_t> theErrorIters;
 };
@@ -63,7 +65,7 @@ public:
     };
 
   public:
-    typedef std::map<uint32_t, std::vector<LetVarIter_t> > VarMap_t;
+    typedef std::map<ulong, std::vector<LetVarIter_t> > VarMap_t;
 
   public:
     std::vector<NodeNameTest_t> node_names;
@@ -119,8 +121,9 @@ public:
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
-  virtual void accept(PlanIterVisitor& v) const;
-  virtual uint32_t getStateSizeOfSubtree() const;
+  void accept(PlanIterVisitor& v) const;
+
+  uint32_t getStateSizeOfSubtree() const;
 
 protected:
   bool matchedCatch(

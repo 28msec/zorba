@@ -615,6 +615,23 @@ declare function dml:collection($name as xs:QName) as item()* external;
 
 
 (:~
+ : The collection function returns the sequence of nodes and/or json items
+ : that belong to the collection identified by the given name.
+ :
+ : @param $name The name of the collection.
+ : @param $skip The number of collection items to skip.
+ :
+ : @return The sequence contained in the given collection.
+ :
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
+ :        for the expanded QName $name.
+ :
+ :)
+declare function
+dml:collection($name as xs:QName, $skip as xs:integer) as item()* external;
+
+
+(:~
  : The collection-name function returns the name of the collection the given
  : item (node or json item) belongs to.
  :

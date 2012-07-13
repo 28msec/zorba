@@ -82,7 +82,7 @@ void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
   ar & theVarName;
   ar & theIsExternal;
   ar & theSingleItem;
@@ -148,7 +148,7 @@ void CtxVarAssignIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
 
   ar & theVarName;
   ar & theIsLocal;
@@ -211,7 +211,7 @@ void CtxVarIsSetIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
 
   ar & theVarName;
 }
@@ -286,7 +286,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
 
-  serialize_ulong(ar, theVarId);
+  ar & theVarId;
 
   ar & theVarName;
   ar & theIsLocal;
@@ -578,7 +578,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else if (state->theTempSeq != NULL)
     {
       if (state->theSourceIter == NULL)
-        state->theSourceIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+        state->theSourceIter = GENV_STORE.getIteratorFactory()->
+        createTempSeqIterator(false);
 
       state->theSourceIter->init(state->theTempSeq);
       state->theSourceIter->open();
@@ -676,6 +677,8 @@ NOARY_ACCEPT(ForVarIterator);
 
 LetVarState::LetVarState()
 {
+  theWindowStart = 0;
+  theWindowEnd = 0;
 }
 
 
@@ -798,7 +801,8 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
     else
     {
       if (state->theTempSeqIter == NULL)
-        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->
+                                createTempSeqIterator(false);
 
       state->theTempSeqIter->init(value);
       state->theTempSeqIter->open();
@@ -830,11 +834,17 @@ void LetVarIterator::bind(
     else
     {
       if (state->theTempSeqIter == NULL)
-        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->
+        createTempSeqIterator(value->isLazy());
 
       state->theTempSeqIter->init(value, startPos, endPos);
       state->theTempSeqIter->open();
     }
+  }
+  else
+  {
+    state->theWindowStart = startPos - 1;
+    state->theWindowEnd = endPos;
   }
 }
 
@@ -901,6 +911,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lenItem;
   xs_integer startPos;
   xs_integer len;
+  xs_integer seqSize;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);
@@ -919,7 +930,11 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theTargetLenIter == NULL && theInfLen == false)
     {
       if (startPos > Integer(0))
+      {
+        startPos += state->theWindowStart;
+
         state->theTempSeq->getItem(startPos, result);
+      }
 
       if (result)
         STACK_PUSH(true, state);
@@ -946,17 +961,23 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         startPos = 1;
       }
 
-      state->theLastPos = startPos + len;
+      seqSize = (state->theWindowEnd > 0 ?
+                 state->theWindowEnd :
+                 state->theTempSeq->getSize());
+
+      startPos += state->theWindowStart;
+
       state->thePos = startPos;
+      state->theLastPos = startPos + len;
+      if (state->theLastPos > seqSize)
+        state->theLastPos = seqSize + 1;
 
       while (state->thePos < state->theLastPos)
       {
         state->theTempSeq->getItem(state->thePos++, result);
 
-        if (result)
-          STACK_PUSH(true, state);
-        else
-          break;
+        assert(result);
+        STACK_PUSH(true, state);
       }
     }
   }
@@ -969,6 +990,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   else if (state->theTempSeqIter)
   {
     assert(state->theSourceIter == NULL);
+
     while (state->theTempSeqIter->next(result))
     {
       STACK_PUSH(true, state);
@@ -977,6 +999,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   else
   {
     assert(state->theSourceIter != NULL && state->theTempSeqIter == NULL);
+
     while (state->theSourceIter->next(result))
     {
       STACK_PUSH(true, state);

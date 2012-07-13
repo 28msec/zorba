@@ -38,7 +38,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
-#include "zorbautils/hashset_itemh.h"
+#include "zorbautils/hashset_node_itemh.h"
 
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/util_macros.h"
@@ -471,27 +471,15 @@ NARY_ACCEPT(ValueIndexEntryBuilderIterator)
   GeneralIndexEntryBuilderIterator
 ********************************************************************************/
 
-GeneralIndexEntryBuilderIteratorState::GeneralIndexEntryBuilderIteratorState() 
+GeneralIndexEntryBuilderIterator::GeneralIndexEntryBuilderIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child0,
+    PlanIter_t& child1)
+  : 
+  BinaryBaseIterator<GeneralIndexEntryBuilderIterator,
+                     PlanIteratorState>(sctx, loc, child0, child1)
 {
-}
-
-
-GeneralIndexEntryBuilderIteratorState::~GeneralIndexEntryBuilderIteratorState() 
-{
-}
-
-
-void GeneralIndexEntryBuilderIteratorState::init(PlanState& planState) 
-{
-  PlanIteratorState::init(planState);
-  theCurChild = 0;
-}
-
-
-void GeneralIndexEntryBuilderIteratorState::reset(PlanState& planState) 
-{
-  PlanIteratorState::reset(planState);
-  theCurChild = 0;
 }
 
 
@@ -500,38 +488,36 @@ GeneralIndexEntryBuilderIterator::~GeneralIndexEntryBuilderIterator()
 }
 
 
+void GeneralIndexEntryBuilderIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<GeneralIndexEntryBuilderIterator,
+                      PlanIteratorState>*)this);
+}
+
+
 bool GeneralIndexEntryBuilderIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  GeneralIndexEntryBuilderIteratorState* state;
-  DEFAULT_STACK_INIT(GeneralIndexEntryBuilderIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for (; state->theCurChild < theChildren.size(); ++state->theCurChild) 
+  consumeNext(result, theChild0.getp(), planState);
+  ZORBA_ASSERT(result);
+
+  STACK_PUSH(true, state);
+
+  while (consumeNext(result, theChild1.getp(), planState))
   {
-    while (consumeNext(result, theChildren[state->theCurChild].getp(), planState))
-    {
-      STACK_PUSH(true, state);
-    }
+    STACK_PUSH(true, state);
   }
   
   STACK_END(state);
 }
 
 
-void GeneralIndexEntryBuilderIterator::accept(PlanIterVisitor& v) const 
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter )
-  {
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
+BINARY_ACCEPT(GeneralIndexEntryBuilderIterator)
 
 
 /*******************************************************************************
@@ -1372,7 +1358,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
       assert(state->theSearchItems.size() >= 1);
       assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
       
-      state->theNodeHashSet = new ItemHandleHashSet(1024, false);
+      state->theNodeHashSet = new NodeHandleHashSet(1024, false);
       
       state->theSearchItemsIte = state->theSearchItems.begin();
       state->theSearchItemsEnd = state->theSearchItems.end();

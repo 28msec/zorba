@@ -160,12 +160,6 @@ void FastXmlLoader::abortload()
   theBaseUri.~zstring();
   theDocUri.~zstring();
 
-  if (theTree != NULL)
-  {
-    delete theTree;
-    theTree = NULL;
-  }
-
   theOrdPath.init();
   theRootNode = NULL;
 
@@ -175,6 +169,12 @@ void FastXmlLoader::abortload()
     theNodeStack.pop();
     if (node != NULL)
       node->destroy(true);
+  }
+
+  if (theTree != NULL)
+  {
+    delete theTree;
+    theTree = NULL;
   }
 
   thePathStack.clear();

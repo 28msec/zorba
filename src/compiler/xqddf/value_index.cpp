@@ -91,7 +91,7 @@ void IndexDecl::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(ContainerKind, theContainerKind);
   //ar & theDomainClause;
   //ar & theKeyExprs;
-  serialize_csize(ar, theNumKeyExprs);
+  ar & theNumKeyExprs;
   ar & theKeyTypes;
   ar & theOrderModifiers;
 
@@ -295,7 +295,7 @@ void IndexDecl::analyze(CompilerCB* ccb)
   if (theIsGeneral && numKeys > 1)
   {
     RAISE_ERROR(zerr::ZDST0035_INDEX_GENERAL_MULTIKEY, theKeyExprs[1]->get_loc(),
-		ERROR_PARAMS(theName->getStringValue()));
+    ERROR_PARAMS(theName->getStringValue()));
   }
 
   // Check constraints on the key exprs
@@ -579,7 +579,7 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   if (theDocIndexerPlan != NULL)
   {
-    theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVarName);
+    theDocIndexer = new DocIndexer(isGeneral(), numKeys, theDocIndexerPlan, docVarName);
 
     return theDocIndexer.getp();
   }
@@ -689,7 +689,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Create theDocIndexer obj
   //
-  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVarName);
+  theDocIndexer = new DocIndexer(isGeneral(), numKeys, theDocIndexerPlan, docVarName);
 
   return theDocIndexer.getp();
 }

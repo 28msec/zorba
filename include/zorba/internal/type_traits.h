@@ -27,7 +27,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_CXX_ENABLE_IF
+#ifndef ZORBA_HAVE_ENABLE_IF
 namespace std {
 
 /**
@@ -49,11 +49,11 @@ struct enable_if<true,T> {
 };
 
 } // namespace std
-#endif /* ZORBA_CXX_ENABLE_IF */
+#endif /* ZORBA_HAVE_ENABLE_IF */
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_CXX_UNIQUE_PTR
+#ifndef ZORBA_HAVE_UNIQUE_PTR
 namespace zorba {
 namespace internal {
 
@@ -90,7 +90,7 @@ struct is_movable< rv<T> > : bool_value<false> {
 
 } // namespace internal
 } // namespace zorba
-#endif /* ZORBA_CXX_UNIQUE_PTR */
+#endif /* ZORBA_HAVE_UNIQUE_PTR */
 
 ///////////////////////////////////////////////////////////////////////////////
 

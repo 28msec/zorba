@@ -281,21 +281,7 @@ NCName                ({NCNameStartChar}{NCNameChar}*)
    |
    |  QName definition
    |______________________________________________________________________*/
-QName       ({NCName}":")?{NCName}
-
-  /*_____________________________________________________________________
-   |
-   |  QName definition
-   |______________________________________________________________________*/
-EQName       ({StringLiteral}":"){NCName}
-
-  /*_____________________________________________________________________
-   |
-   |  Annotation QName definition
-   |______________________________________________________________________*/
-AnnotationQName  "%"({NCName}":")?{NCName}
-
-AnnotationEQName "%"{StringLiteral}":"{NCName}
+QName                 ({NCName}":")?{NCName}
 
   /*_____________________________________________________________________
    |
@@ -304,6 +290,20 @@ AnnotationEQName "%"{StringLiteral}":"{NCName}
 CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
 PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
+
+  /*_____________________________________________________________________
+   |
+   |  EQName definition
+   |______________________________________________________________________*/
+BracedURILiteral      "Q{"({PredefinedEntityRef}|{CharRef}|[^&{}])*"}"
+EQName                {BracedURILiteral}{NCName}
+
+  /*_____________________________________________________________________
+   |
+   |  Annotation QName definition
+   |______________________________________________________________________*/
+AnnotationQName       "%"({NCName}":")?{NCName}
+AnnotationEQName      "%"{EQName}
 
   /*_____________________________________________________________________
    |
@@ -767,7 +767,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 {NCName}":*"                  { TRY_SVAL_TOKEN(ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext); }
 
-{StringLiteral}":*"           { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+1, yyleng-4), yytext+1); }
+{BracedURILiteral}"*"         { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+2, yyleng-4), yytext+2); }
 
 {QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 
@@ -894,7 +894,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |______________________________________________________________________*/
 
 <MODE_PRAGMA>{QName}{WSplus}                         { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
-<MODE_PRAGMA>{StringLiteral}":"{NCName}{WSplus}      { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{EQName}{WSplus}                        { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
 <MODE_PRAGMA>{QName}"#)"                             { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA,  put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{StringLiteral}":"{NCName}"#)"          { BEGIN INITIAL; TRY_SVAL_TOKEN(EQNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{WSplus}                                { /* continue lexing */ }
