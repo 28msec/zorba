@@ -271,15 +271,16 @@ struct size_traits<std::string> {
 template<class MapType>
 struct map_size_traits {
   static size_t alloc_sizeof( MapType const &m ) {
-    size_t const padding =
-        sizeof( typename MapType::value_type )
-      - sizeof( typename MapType::key_type )
-      - sizeof( typename MapType::mapped_type );
-    size_t total_size = m.size() * padding;
+    size_t total_size = m.size() * value_type_padding;
     FOR_EACH( typename MapType, i, m )
       total_size += mem_sizeof( i->first ) + mem_sizeof( i->second );
     return total_size;
   }
+private:
+  static size_t const value_type_padding =
+      sizeof( typename MapType::value_type )
+    - sizeof( typename MapType::key_type )
+    - sizeof( typename MapType::mapped_type );
 };
 
 /**
