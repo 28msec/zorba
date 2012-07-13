@@ -697,8 +697,7 @@ GeneralHashIndex::~GeneralHashIndex()
 *******************************************************************************/
 store::Index::KeyIterator_t GeneralHashIndex::keys() const
 {
-  assert(false);
-  return 0;
+  return new KeyIterator(theMaps);
 }
 
 
@@ -781,6 +780,14 @@ void GeneralHashIndex::clear()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/*******************************************************************************
+
+********************************************************************************/
+GeneralHashIndex::KeyIterator::KeyIterator(IndexMap* const* aMaps)
+  :
+  theMaps(aMaps)
+{
+}
 
 /******************************************************************************
 
@@ -789,23 +796,51 @@ GeneralHashIndex::KeyIterator::~KeyIterator()
 {
 }
 
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralHashIndex::KeyIterator::setNextIter()
+{
+  for ( ;
+    theCurType < store::XS_LAST && theMaps[theCurType] == 0; 
+    ++theCurType)
+  {}
+
+  if (theCurType != store::XS_LAST)
+    theIterator = theMaps[theCurType]->begin();
+}
 
 /******************************************************************************
 
 *******************************************************************************/
 void GeneralHashIndex::KeyIterator::open()
 {
-  assert(false);
+  theCurType = 0;
+  setNextIter();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
+bool GeneralHashIndex::KeyIterator::next(store::IndexKey& aKey)
 {
-  assert(false);
-  return false;
+  if (theCurType == store::XS_LAST)
+    return false;
+
+  const store::Item* lKeyItem = (*theIterator).first;
+  aKey.empty();
+  aKey.push_back(const_cast<zorba::store::Item*>(lKeyItem));
+
+  ++theIterator;
+
+  if (theIterator == theMaps[theCurType]->end())
+  {
+    ++theCurType;
+    setNextIter();
+  }
+
+  return true;
 }
 
 
@@ -814,7 +849,7 @@ bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
 *******************************************************************************/
 void GeneralHashIndex::KeyIterator::close()
 {
-  assert(false);
+  theCurType = store::XS_LAST;
 }
 
 

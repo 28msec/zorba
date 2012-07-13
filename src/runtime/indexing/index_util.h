@@ -46,6 +46,7 @@ public:
   ********************************************************************************/
   static void
   createIndexKeyElement(
+      bool aIsGeneralIndex,
       store::Item_t& result,
       store::IndexKey& aKey,
       const zstring& aBase)
@@ -70,6 +71,7 @@ public:
     {
       store::Item_t lAttrElem, lAttrNodeName;
       store::Item_t lNameAttr, lValueAttr, lValueAttrName;
+      store::Item_t lTypeAttr, lTypeAttrName;
   
       GENV_ITEMFACTORY->createQName(lAttrNodeName,
           lBase, "", "attribute");
@@ -81,12 +83,25 @@ public:
   
       if (*lIter != NULL)
       {
+
+        if (aIsGeneralIndex)
+        {
+          GENV_ITEMFACTORY->createQName(lTypeAttrName,
+               "", "", "type");
+
+          store::Item_t lType = (*lIter)->getType();
+          GENV_ITEMFACTORY->createAttributeNode(
+              lValueAttr, lAttrElem.getp(), lTypeAttrName,
+              lTypeName, lType);
+        }
+
         GENV_ITEMFACTORY->createQName(lValueAttrName,
              "", "", "value");
   
         lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createAttributeNode(
             lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, (*lIter));
+
       }
     }
   }

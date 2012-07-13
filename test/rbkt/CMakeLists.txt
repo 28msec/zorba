@@ -88,8 +88,8 @@ IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE)
     ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
     )
 
-  ZORBA_GENERATE_EXE(
-    "testdriver_mt" "${TESTDRIVER_MT_SRCS}" "${Boost_LIBRARIES}" "" "")
+#  ZORBA_GENERATE_EXE(
+#    "testdriver_mt" "${TESTDRIVER_MT_SRCS}" "${Boost_LIBRARIES}" "" "")
 
   SET (ZORBATEST_USE_MT_XQTS NO CACHE BOOLEAN
     "If true, use testdriver_mt (when available) for running XQTS")

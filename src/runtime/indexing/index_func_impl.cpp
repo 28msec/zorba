@@ -89,7 +89,9 @@ IndexKeysIterator::nextImpl(
   // </key>
   while (state->theIter->next(lKey))
   {
+    std::cout << "hallo " << lIndex->getSpecification().theIsGeneral << std::endl;
     IndexUtil::createIndexKeyElement(
+        lIndex->getSpecification().theIsGeneral,
         result, lKey, static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS
       );
     STACK_PUSH(true, state);
