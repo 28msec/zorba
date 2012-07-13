@@ -842,7 +842,7 @@ bool NotationItem::equals(
 
 size_t NotationItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theQName );
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theQName );
 }
 
 
@@ -2507,7 +2507,7 @@ zstring DecimalItem::show() const
 #ifdef ZORBA_WITH_BIG_INTEGER
 size_t IntegerItemImpl::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -2622,7 +2622,7 @@ zstring IntegerItemImpl::show() const
 #ifdef ZORBA_WITH_BIG_INTEGER
 size_t NonPositiveIntegerItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -2743,7 +2743,7 @@ zstring NegativeIntegerItem::show() const
 #ifdef ZORBA_WITH_BIG_INTEGER
 size_t NonNegativeIntegerItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -3672,7 +3672,7 @@ void StreamableBase64BinaryItem::materialize() const
 
 size_t HexBinaryItem::alloc_size() const
 {
-  return theValue.size();
+  return AtomicItem::alloc_size() + theValue.size();
 }
 
 
@@ -3727,7 +3727,7 @@ ErrorItem::~ErrorItem()
 
 size_t ErrorItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theError );
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theError );
 }
 
 
