@@ -245,11 +245,15 @@ public:
               (lStream->getStream(), lStream->getStreamReleaser());
           lStream->setStreamReleaser(nullptr);
           
+          XMLCh * lResolvedXMLCh = XMLString::transcode(lResolved.c_str());
           if (isSystemId)
-            lRetval->setSystemId(XMLString::transcode(lResolved.c_str()));
+            lRetval->setSystemId(lResolvedXMLCh);
           
           if (isPublicId)
-            lRetval->setPublicId(XMLString::transcode(lResolved.c_str()));
+            lRetval->setPublicId(lResolvedXMLCh);
+
+          // release lResolvedXMLCh since setSystemId and setPublicId are makeing their own copies
+          XMLString::release(&lResolvedXMLCh);
             
           return lRetval;
         }
