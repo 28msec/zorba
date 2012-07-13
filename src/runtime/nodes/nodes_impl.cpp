@@ -728,7 +728,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode, nodeName));
-          path += "\""+zNamespace+"\":"+zLocalName+"["+zPosition+"]";
+          path += "Q{" + zNamespace + "}" + zLocalName + "[" + zPosition + "]";
           break;
         case store::StoreConsts::attributeNode:
           nodeName = inNode->getNodeName();
@@ -737,23 +737,23 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           path += "@";
           if(zNamespace != "")
           {
-            path += "\""+zNamespace+"\":";
+            path += "Q{" + zNamespace + "}";
           }
           path += zLocalName;
           break;
         case store::StoreConsts::textNode:
           zPosition = ztd::to_string(getNodePosition(inNode, NULL));
-          path += "text()["+zPosition+"]";
+          path += "text()[" + zPosition + "]";
           break;
         case store::StoreConsts::commentNode:
           zPosition = ztd::to_string(getNodePosition(inNode, NULL));
-          path += "comment()["+zPosition+"]";
+          path += "comment()[" + zPosition + "]";
           break;
         case store::StoreConsts::piNode:
           nodeName = inNode->getNodeName();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode, nodeName));
-          path += "processing-instruction("+zLocalName+")["+zPosition+"]";
+          path += "processing-instruction(" + zLocalName + ")[" + zPosition + "]";
           break;
         default:
           // this is either a documentNode which should always be a root
@@ -779,7 +779,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       temp = path;
-      path = "\"http://www.w3.org/2005/xpath-functions\":root()";
+      path = "Q{http://www.w3.org/2005/xpath-functions}root()";
       path += temp;
     }
 
