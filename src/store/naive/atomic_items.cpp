@@ -842,7 +842,7 @@ bool NotationItem::equals(
 
 size_t NotationItem::alloc_size() const
 {
-  return ztd::mem_sizeof( *theQName );
+  return ztd::alloc_sizeof( theQName );
 }
 
 
@@ -3727,7 +3727,7 @@ ErrorItem::~ErrorItem()
 
 size_t ErrorItem::alloc_size() const
 {
-  return theError ? ztd::mem_sizeof( *theError ) : 0;
+  return ztd::alloc_sizeof( theError );
 }
 
 
