@@ -30,6 +30,7 @@
 #include "util/stl_util.h"
 #include "util/unordered_map.h"
 #include "util/unordered_set.h"
+#include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -368,6 +369,16 @@ template<class RepType>
 struct size_traits<rstring<RepType>,false> {
   static size_t alloc_sizeof( rstring<RepType> const &s ) {
     return s.size();
+  }
+};
+
+/**
+ * Specialization for rchandle.
+ */
+template<class T>
+struct size_traits<rchandle<T>,false> {
+  static size_t alloc_sizeof( rchandle<T> const &h ) {
+    return h.get() ? mem_sizeof( *h ) : 0;
   }
 };
 

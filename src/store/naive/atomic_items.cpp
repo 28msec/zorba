@@ -384,7 +384,9 @@ store::Item* UserTypedAtomicItem::getBaseItem() const
 
 size_t UserTypedAtomicItem::alloc_size() const
 {
-  return ztd::mem_sizeof( *theBaseItem ) + ztd::mem_sizeof( *theTypeName );
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theBaseItem )
+        + ztd::alloc_sizeof( theTypeName );
 }
 
 
@@ -580,7 +582,7 @@ uint32_t UntypedAtomicItem::hash(long timezone, const XQPCollator* aCollation) c
 
 size_t UntypedAtomicItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
 
@@ -694,7 +696,8 @@ uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 
 size_t QNameItem::alloc_size() const
 {
-  return  ztd::alloc_sizeof( theNamespace )
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theNamespace )
         + ztd::alloc_sizeof( thePrefix )
         + ztd::alloc_sizeof( theLocal );
 }
@@ -898,7 +901,7 @@ uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 
 size_t AnyUriItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
 
@@ -1654,7 +1657,7 @@ size_t StructuralAnyUriItem::alloc_size() const
 
 size_t StringItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
 store::Item* StringItem::getType() const
@@ -2448,7 +2451,7 @@ uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
 
 size_t DecimalItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
 
@@ -3408,7 +3411,7 @@ zstring BooleanItem::show() const
 
 size_t Base64BinaryItem::alloc_size() const
 {
-  return ztd::alloc_sizeof( theValue );
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
 bool

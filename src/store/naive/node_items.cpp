@@ -939,7 +939,7 @@ ConnectorNode::ConnectorNode(
 
 size_t ConnectorNode::alloc_size() const
 {
-  return ztd::mem_sizeof( *theNode );
+  return XmlNode::alloc_size() + ztd::alloc_sizeof( theNode );
 }
 
 /*******************************************************************************
@@ -1017,6 +1017,12 @@ OrdPathNode::OrdPathNode(
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+size_t OrdPathNode::alloc_size() const
+{
+  return XmlNode::alloc_size() + ztd::alloc_sizeof( theOrdPath );
+}
 
 /*******************************************************************************
 
@@ -1177,12 +1183,6 @@ void OrdPathNode::setOrdPath(
 /*******************************************************************************
 
 ********************************************************************************/
-
-size_t OrdPathNode::alloc_size() const
-{
-  return ztd::alloc_sizeof( theOrdPath );
-}
-
 
 bool
 OrdPathNode::getDescendantNodeByOrdPath(
@@ -1795,6 +1795,13 @@ DocumentNode::DocumentNode()
   STORE_TRACE1("Loaded doc node " << this);
 }
 
+
+size_t DocumentNode::alloc_size() const
+{
+  return  InternalNode::alloc_size()
+        + ztd::alloc_sizeof( theBaseUri )
+        + ztd::alloc_sizeof( theDocUri );
+}
 
 /*******************************************************************************
 
@@ -2512,6 +2519,16 @@ XmlNode* ElementNode::copyInternal(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t ElementNode::alloc_size() const
+{
+  return InternalNode::alloc_size()
+#ifdef EMBEDED_TYPE
+      + ztd::alloc_sizeof( theTypeName )
+#endif
+      + ztd::alloc_sizeof( theName );
+}
+
 #ifdef EMBEDED_TYPE
 store::Item* ElementNode::getType() const
 {
@@ -3641,6 +3658,18 @@ AttributeNode::AttributeNode(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t AttributeNode::alloc_size() const
+{
+  return  OrdPathNode::alloc_size()
+        + ztd::alloc_sizeof( theName )
+#ifdef EMBEDED_TYPE
+        + ztd::alloc_sizeof( theTypeName )
+#endif
+        + ztd::alloc_sizeof( theTypedValue );
+}
+
+
 XmlNode* AttributeNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
@@ -4134,6 +4163,18 @@ TextNode::TextNode(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t TextNode::alloc_size() const
+{
+  return  base_type::alloc_size()
+        + (isTyped() ?
+            ztd::alloc_sizeof( theContent.getValue() ) :
+            ztd::alloc_sizeof( theContent.getText() )
+        );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 XmlNode* TextNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
@@ -4764,6 +4805,17 @@ PiNode::PiNode(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t PiNode::alloc_size() const
+{
+  return  OrdPathNode::alloc_size()
+        + ztd::alloc_sizeof( theTarget )
+        + ztd::alloc_sizeof( theContent )
+        + ztd::alloc_sizeof( theName );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 XmlNode* PiNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
@@ -4898,6 +4950,14 @@ CommentNode::CommentNode(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t CommentNode::alloc_size() const
+{
+  return  OrdPathNode::alloc_size() + ztd::alloc_sizeof( theContent );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 XmlNode* CommentNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
