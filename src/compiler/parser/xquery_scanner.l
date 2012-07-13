@@ -361,6 +361,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  Exclusive start states
    |______________________________________________________________________*/
 
+%x MODE_SHEBANG
 %x INITIAL_ACCUMULATOR
 %x MODE_APOS_ATTRIBUTE_CONTENT
 %x MODE_QUOTE_ATTRIBUTE_CONTENT
@@ -386,7 +387,33 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 %}
 
 
-%%
+  /*______________________________________________________________________
+   |
+   |  Override Flex's starting state here.
+   |______________________________________________________________________*/
+%{
+#define YY_USER_INIT      \
+{                         \
+  BEGIN MODE_SHEBANG;     \
+}
+%}  
+
+
+%% 
+
+
+  /*______________________________________________________________________
+   |
+   |  MODE_SHEBANG state
+   |
+   |  Accepts the "#!/path/interpreter" unix script shebang string
+   |______________________________________________________________________*/
+   
+<MODE_SHEBANG>{
+"#!".*[\n]  { return token::SHEBANG; }
+.|[\n]      { BEGIN INITIAL; yyless(0); }
+}   
+
 
   /*______________________________________________________________________
    |
