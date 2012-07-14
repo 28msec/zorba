@@ -16,7 +16,6 @@
  */
  
 #ifdef STDAFX
-
   #include <fstream>
   #include <iostream>
   #include <stdexcept>
