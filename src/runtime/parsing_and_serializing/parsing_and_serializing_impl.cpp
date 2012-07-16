@@ -74,34 +74,9 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       is = iss.get();
     }
 
-    // optional base URI argument
-    if (theChildren.size() == 2)
-    {
-      consumeNext(result, theChildren[1].getp(), planState);
-      ZORBA_ASSERT(result);
-
-      try {
-        lValidatedBaseUri = URI(result->getStringValue());
-      } catch (ZorbaException const& /* e */) {
-        throw XQUERY_EXCEPTION(
-          err::FODC0007,
-          ERROR_PARAMS( result->getStringValue() ),
-          ERROR_LOC( loc )
-        );
-      }
-
-      if (!lValidatedBaseUri.is_absolute()) {
-        throw XQUERY_EXCEPTION(
-          err::FODC0007,
-          ERROR_PARAMS( lValidatedBaseUri.toString() ),
-          ERROR_LOC( loc )
-        );
-      }
-
-      result->getStringValue2(baseUri);
-    } else {
-      baseUri = theSctx->get_base_uri();
-    }
+    
+    baseUri = theSctx->get_base_uri();
+    
 
     try {
       store::LoadProperties loadProps;
