@@ -87,12 +87,16 @@ static void test_illegal_character() {
 
 static void test_illegal_codepoint() {
   static char const *const sources[] = {
-    " \" \\u  \" ",
-    " \" \\u0  \" ",
-    " \" \\u00  \" ",
-    " \" \\u000  \" ",
-    " \" \\uG  \" ",
+    " \" \\u \" ",
+    " \" \\u0 \" ",
+    " \" \\u00 \" ",
+    " \" \\u000 \" ",
+    " \" \\uG \" ",
     " \" \\u\" ",
+    " \" \\uD83D \" ",
+    " \" \\uD83D\\u0041 \" ",
+    " \" \\uD83D\\uD83E \" ",
+    " \" \\uDC4A \" ",
     0
   };
 
@@ -369,47 +373,54 @@ static void test_json_org_example() {
 }
 
 static void test_lexer_array() {
-  char const source[] = "[ 1, \"2\", false, true, null ]";
+  char const source[] = "[ 1, \"2\", false, true, null, \"\\uD83D\\uDC4A\" ]";
   istringstream iss( source );
   lexer lex( iss );
   token t;
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::begin_array );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::begin_array );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::number );
-  ASSERT_TRUE( t.get_value() == "1" );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::number );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t.get_value() == "1" );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::value_separator );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::string );
-  ASSERT_TRUE( t.get_value() == "2" );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::string );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t.get_value() == "2" );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::value_separator );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::json_false );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::json_false );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::value_separator );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::json_true );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::json_true );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::value_separator );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::json_null );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::json_null );
 
-  ASSERT_TRUE( lex.next( &t ) );
-  ASSERT_TRUE( t == token::end_array );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
 
-  ASSERT_TRUE( !lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::string );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t.get_value() == "\xF0\x9F\x91\x8A" );
+
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::end_array );
+
+  ASSERT_TRUE_AND_NO_EXCEPTION( !lex.next( &t ) );
 }
 
 static void test_lexer_object() {
@@ -418,34 +429,34 @@ static void test_lexer_object() {
   lexer lex( iss );
   token t;
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::begin_object );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::string );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::name_separator );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::number );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::value_separator );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::string );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::name_separator );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::string );
 
-  ASSERT_TRUE( lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
   ASSERT_TRUE( t == token::end_object );
 
-  ASSERT_TRUE( !lex.next( &t ) );
+  ASSERT_TRUE_AND_NO_EXCEPTION( !lex.next( &t ) );
 }
 
 static void test_parser_array() {
