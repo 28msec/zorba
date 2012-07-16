@@ -379,46 +379,46 @@ static void test_lexer_array() {
   token t;
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::begin_array );
+  ASSERT_TRUE( t == token::begin_array );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::number );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t.get_value() == "1" );
+  ASSERT_TRUE( t == token::number );
+  ASSERT_TRUE( t.get_value() == "1" );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
+  ASSERT_TRUE( t == token::value_separator );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::string );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t.get_value() == "2" );
+  ASSERT_TRUE( t == token::string );
+  ASSERT_TRUE( t.get_value() == "2" );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
+  ASSERT_TRUE( t == token::value_separator );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::json_false );
+  ASSERT_TRUE( t == token::json_false );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
+  ASSERT_TRUE( t == token::value_separator );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::json_true );
+  ASSERT_TRUE( t == token::json_true );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
+  ASSERT_TRUE( t == token::value_separator );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::json_null );
+  ASSERT_TRUE( t == token::json_null );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::value_separator );
+  ASSERT_TRUE( t == token::value_separator );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::string );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t.get_value() == "\xF0\x9F\x91\x8A" );
+  ASSERT_TRUE( t == token::string );
+  ASSERT_TRUE( t.get_value() == "\xF0\x9F\x91\x8A" );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( lex.next( &t ) );
-  ASSERT_TRUE_AND_NO_EXCEPTION( t == token::end_array );
+  ASSERT_TRUE( t == token::end_array );
 
   ASSERT_TRUE_AND_NO_EXCEPTION( !lex.next( &t ) );
 }
