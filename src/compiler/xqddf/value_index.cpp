@@ -134,7 +134,7 @@ expr* IndexDecl::getDomainExpr() const
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexDecl::setDomainExpr(expr_t domainExpr)
+void IndexDecl::setDomainExpr(expr* domainExpr)
 {
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainExpr->get_sctx(),
@@ -159,7 +159,7 @@ var_expr* IndexDecl::getDomainVariable() const
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexDecl::setDomainVariable(var_expr_t domainVar)
+void IndexDecl::setDomainVariable(var_expr* domainVar)
 {
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainVar->get_sctx(),
@@ -184,7 +184,7 @@ var_expr* IndexDecl::getDomainPositionVariable() const
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexDecl::setDomainPositionVariable(var_expr_t domainPosVar)
+void IndexDecl::setDomainPositionVariable(var_expr* domainPosVar)
 {
   theDomainClause->set_pos_var(domainPosVar);
 }
@@ -193,7 +193,7 @@ void IndexDecl::setDomainPositionVariable(var_expr_t domainPosVar)
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexDecl::setKeyExpressions(const std::vector<expr_t>& keyExprs)
+void IndexDecl::setKeyExpressions(const std::vector<expr*>& keyExprs)
 {
   theKeyExprs = keyExprs;
   theNumKeyExprs = theKeyExprs.size();
@@ -305,7 +305,7 @@ void IndexDecl::analyze(CompilerCB* ccb)
   // Check constraints on the key exprs
   for (csize i = 0; i < numKeys; ++i)
   {
-    analyzeExprInternal(theKeyExprs[i].getp(),
+    analyzeExprInternal(theKeyExprs[i],
                         theSourceNames,
                         keySources,
                         varExprs,
@@ -434,7 +434,7 @@ void IndexDecl::analyzeExprInternal(
   ExprIterator iter(e);
   while (!iter.done())
   {
-    analyzeExprInternal((*iter), sourceNames, sourceExprs, varExprs, dotVar);
+    analyzeExprInternal((**iter), sourceNames, sourceExprs, varExprs, dotVar);
     iter.next();
   }
 }
@@ -457,7 +457,7 @@ void IndexDecl::analyzeExprInternal(
 expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 {
   if (theBuildExpr != NULL)
-    return theBuildExpr.getp();
+    return theBuildExpr;
 
   expr* domainExpr = getDomainExpr();
   var_expr* dot = getDomainVariable();
@@ -466,20 +466,20 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   const QueryLoc& dotloc = dot->get_loc();
 
   csize numKeys = theKeyExprs.size();
-  std::vector<expr_t> clonedExprs(numKeys + 1);
+  std::vector<expr*> clonedExprs(numKeys + 1);
 
   //
   // Clone the domain expr.
   //
   expr::substitution_t subst;
-  expr_t newdom = domainExpr->clone(subst);
+  expr* newdom = domainExpr->clone(subst);
 
   //
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
-  var_expr_t newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
-  var_expr_t newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  var_expr* newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+  var_expr* newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -510,7 +510,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
-  expr_t domainVarExpr(theCCB->theEM->create_wrapper_expr(sctx, loc, newdot.getp()));
+  expr* domainVarExpr(theCCB->theEM->create_wrapper_expr(sctx, loc, newdot));
 
   clonedExprs[0] = domainVarExpr;
 
@@ -523,10 +523,10 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   ZORBA_ASSERT(f != NULL);
 
-  fo_expr_t returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
+  fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
 
   flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, loc, false);
-  flworExpr->set_return_expr(returnExpr.getp());
+  flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
   theBuildExpr = flworExpr;
@@ -535,10 +535,10 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   {
     std::string msg = "build expr for index " + theName->getStringValue().str();
 
-    ccb->theConfig.optimize_cb(theBuildExpr.getp(), msg);
+    ccb->theConfig.optimize_cb(theBuildExpr, msg);
   }
 
-  return theBuildExpr.getp();
+  return theBuildExpr;
 }
 
 
@@ -596,7 +596,7 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   const QueryLoc& dotloc = dot->get_loc();
 
-  std::vector<expr_t> clonedExprs(numKeys + 1);
+  std::vector<expr*> clonedExprs(numKeys + 1);
 
   //
   // Clone the domain expr and replace the reference to the collection with a
@@ -604,14 +604,14 @@ DocIndexer* IndexDecl::getDocIndexer(
   // during the apply-updates.
   //
 
-  var_expr_t docVar = theCCB->theEM->create_var_expr(sctx,
+  var_expr* docVar = theCCB->theEM->create_var_expr(sctx,
                                    dot->get_loc(),
                                    var_expr::prolog_var,
                                    docVarName);
   docVar->set_unique_id(1);
   ulong nextVarId = 2;
 
-  expr_t wrapperExpr = theCCB->theEM->create_wrapper_expr(sctx, dot->get_loc(), docVar.getp());
+  expr* wrapperExpr = theCCB->theEM->create_wrapper_expr(sctx, dot->get_loc(), docVar);
 
   docVar->set_type(domainExpr->get_return_type());
 
@@ -619,14 +619,14 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   subst[theDomainSourceExprs[0]] = wrapperExpr;
 
-  expr_t newdom = domainExpr->clone(subst);
+  expr* newdom = domainExpr->clone(subst);
 
   //
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
-  var_expr_t newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
-  var_expr_t newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  var_expr* newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+  var_expr* newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -657,7 +657,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
-  expr_t domainVarExpr = theCCB->theEM->create_wrapper_expr(sctx, loc, newdot.getp());
+  expr* domainVarExpr = theCCB->theEM->create_wrapper_expr(sctx, loc, newdot);
 
   clonedExprs[0] = domainVarExpr;
 
@@ -670,17 +670,17 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   ZORBA_ASSERT(f != NULL);
 
-  fo_expr_t returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
+  fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
 
-  flwor_expr_t flworExpr = theCCB->theEM->create_flwor_expr(sctx, loc, false);
-  flworExpr->set_return_expr(returnExpr.getp());
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, loc, false);
+  flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
   if (ccb->theConfig.optimize_cb != NULL)
   {
     std::string msg = "entry-creator expr for index " + theName->getStringValue().str();
 
-    ccb->theConfig.optimize_cb(flworExpr.getp(), msg);
+    ccb->theConfig.optimize_cb(flworExpr, msg);
   }
 
   theDocIndexerExpr = flworExpr;

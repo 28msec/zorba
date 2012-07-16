@@ -40,8 +40,8 @@ namespace zorba
 class update_expr_base : public expr
 {
 protected:
-  expr_t  theTargetExpr;
-  expr_t  theSourceExpr;
+  expr*  theTargetExpr;
+  expr*  theSourceExpr;
 
 public:
   update_expr_base(
@@ -49,12 +49,12 @@ public:
     static_context* sctx,
     const QueryLoc&,
     expr_kind_t kind,
-    const expr_t& targetExpr,
-    const expr_t& sourceExpr);
+    expr* targetExpr,
+    expr* sourceExpr);
 
-  expr* getTargetExpr() const { return theTargetExpr.getp(); }
+  expr* getTargetExpr() const { return theTargetExpr; }
 
-  expr* getSourceExpr() const { return theSourceExpr.getp(); }
+  expr* getSourceExpr() const { return theSourceExpr; }
 
   void compute_scripting_kind();
 };
@@ -79,13 +79,13 @@ protected:
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::InsertType,
-    const expr_t& aSourceExpr,
-    const expr_t& aTargetExpr);
+    expr* aSourceExpr,
+    expr* aTargetExpr);
 
 public:
   store::UpdateConsts::InsertType getType() const { return theType; }
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -104,10 +104,10 @@ class delete_expr : public update_expr_base
 
 
 protected:
-  delete_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const expr_t&);
+  delete_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr*);
 
 public:
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -133,15 +133,15 @@ protected:
     static_context* sctx,
     const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
-    const expr_t&,
-    const expr_t&);
+    expr*,
+    expr*);
 
 public:
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
-  expr* getReplaceExpr() const { return theSourceExpr.getp(); }
+  expr* getReplaceExpr() const { return theSourceExpr; }
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -163,13 +163,13 @@ protected:
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
-      const expr_t&,
-      const expr_t&);
+      expr*,
+      expr*);
 
 public:
-  expr* getNameExpr() const { return theSourceExpr.getp(); }
+  expr* getNameExpr() const { return theSourceExpr; }
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -193,21 +193,21 @@ class copy_clause : public SimpleRCObject
   friend class ExprManager;
 
 private:
-  var_expr_t theVar;
-  expr_t     theExpr;
+  var_expr* theVar;
+  expr*     theExpr;
   CompilerCB* theExprManager;
 
 protected:
-  copy_clause(var_expr_t aVar, expr_t aExpr);
+  copy_clause(var_expr* aVar, expr_t aExpr);
 
 public:
   ~copy_clause();
 
   void free() {}
 
-  var_expr* getVar()  const { return theVar.getp(); }
+  var_expr* getVar()  const { return theVar; }
 
-  expr* getExpr() const { return theExpr.getp(); }
+  expr* getExpr() const { return theExpr; }
 
   copy_clause_t clone(expr::substitution_t& s) const;
 
@@ -223,16 +223,16 @@ class transform_expr : public expr
 
 protected:
   std::vector<copy_clause_t> theCopyClauses;
-  expr_t                     theModifyExpr;
-  expr_t                     theReturnExpr;
+  expr*                     theModifyExpr;
+  expr*                     theReturnExpr;
 
 protected:
   transform_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
 
 public:
-  expr_t getModifyExpr() const { return theModifyExpr; }
+  expr* getModifyExpr() const { return theModifyExpr; }
 
-  expr_t getReturnExpr() const { return theReturnExpr; }
+  expr* getReturnExpr() const { return theReturnExpr; }
 
   void setModifyExpr(expr* e);
 
@@ -252,7 +252,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

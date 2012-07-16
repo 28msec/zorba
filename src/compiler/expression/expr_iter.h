@@ -35,11 +35,11 @@ class ExprIterator
 protected:
   expr                                 * theExpr;
 
-  expr_t                               * theCurrentChild;
+  expr*                                * theCurrentChild;
   int                                    theState;
 
-  std::vector<expr_t>::iterator          theArgsIter;
-  std::vector<expr_t>::iterator          theArgsEnd;
+  std::vector<expr*>::iterator          theArgsIter;
+  std::vector<expr*>::iterator          theArgsEnd;
 
   flwor_expr::clause_list_t::iterator    theClausesIter;
   flwor_expr::clause_list_t::iterator    theClausesBegin;
@@ -54,9 +54,9 @@ protected:
   std::vector<copy_clause_t>::iterator   theCopyClauseEnd;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  std::vector<expr_t*>                   theFTSelectionExprs;
-  std::vector<expr_t*>::iterator         theFTSelectionExprsIter;
-  std::vector<expr_t*>::iterator         theFTSelectionExprsEnd;
+  std::vector<expr**>                   theFTSelectionExprs;
+  std::vector<expr**>::iterator         theFTSelectionExprsIter;
+  std::vector<expr**>::iterator         theFTSelectionExprsEnd;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 public:
@@ -66,7 +66,7 @@ public:
 
   void next();
 
-  expr_t& operator*() const { return *(theCurrentChild); }
+  expr** operator*() const { return (theCurrentChild); }
 
   bool done() const { return theCurrentChild == expr::iter_done; }
 
@@ -87,7 +87,7 @@ public:
   {
   }
 
-  expr* get_expr() const { return theCurrentChild->getp(); }
+  expr* get_expr() const { return *theCurrentChild; }
 };
 
 

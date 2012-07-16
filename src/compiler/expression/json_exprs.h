@@ -39,7 +39,7 @@ class json_array_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr_t  theContentExpr;
+  expr*  theContentExpr;
 
 public:
   SERIALIZABLE_CLASS(json_array_expr)
@@ -51,14 +51,14 @@ protected:
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& content);
+      expr* content);
 
 public:
   expr* get_expr() const { return theContentExpr.getp(); }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -79,7 +79,7 @@ class json_object_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr_t  theContentExpr;
+  expr*  theContentExpr;
   bool    theAccumulate;
 
 public:
@@ -92,7 +92,7 @@ protected:
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& content,
+      expr* content,
       bool accumulate);
 
 public:
@@ -102,7 +102,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -124,8 +124,8 @@ class json_direct_object_expr : public expr
   friend class ExprManager;
 
 protected:
-  std::vector<expr_t>  theNames;
-  std::vector<expr_t>  theValues;
+  std::vector<expr*>  theNames;
+  std::vector<expr*>  theValues;
 
 public:
   SERIALIZABLE_CLASS(json_direct_object_expr)
@@ -137,8 +137,8 @@ protected:
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<expr_t>& names,
-      std::vector<expr_t>& values);
+      std::vector<expr*>& names,
+      std::vector<expr*>& values);
 
 public:
   csize num_pairs() const { return theNames.size(); }
@@ -149,7 +149,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

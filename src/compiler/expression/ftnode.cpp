@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@ using namespace zorba::locale;
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
-  
+
 
 SERIALIZE_INTERNAL_METHOD(ftnode)
 
@@ -173,6 +173,11 @@ SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
 template<typename PointerType>
 inline PointerType clone_ptr( PointerType p, expr::substitution_t &s ) {
   return static_cast<PointerType>( p->clone( s ).release() );
+}
+
+template<>
+inline expr* clone_ptr( expr* p, expr::substitution_t &s ) {
+  return static_cast<expr*>( p->clone( s ) );
 }
 
 template<class RCHandleValueType>
@@ -734,8 +739,8 @@ void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
 ftrange::ftrange(
   QueryLoc const &loc,
   ft_range_mode::type mode,
-  expr_t const &expr1,
-  expr_t expr2
+  expr* const &expr1,
+  expr* expr2
 ) :
   ftnode( loc ),
   mode_( mode ),
@@ -1114,7 +1119,7 @@ void ftunary_not::serialize( serialization::Archiver &ar ) {
   ar & subnode_;
 }
 
-ftweight::ftweight( QueryLoc const &loc, expr_t const &weight_expr ) :
+ftweight::ftweight( QueryLoc const &loc, expr* const &weight_expr ) :
   ftnode( loc ), weight_expr_( weight_expr )
 {
 }
@@ -1126,7 +1131,7 @@ ft_visit_result::type ftweight::accept( ftnode_visitor &v ) {
 }
 
 ftnode_t ftweight::clone( expr::substitution_t &s ) const {
-  return new ftweight( get_loc(), weight_expr_->clone( s ).release() );
+  return new ftweight( get_loc(), weight_expr_->clone( s ) );
 }
 
 ostream& ftweight::put( ostream &o ) const {
@@ -1172,7 +1177,7 @@ void ftwild_card_option::serialize( serialization::Archiver &ar ) {
 
 ftwindow_filter::ftwindow_filter(
   QueryLoc const &loc,
-  expr_t const &window_expr,
+  expr* const &window_expr,
   ft_unit::type unit )
 :
   ftpos_filter( loc ),
@@ -1190,7 +1195,7 @@ ft_visit_result::type ftwindow_filter::accept( ftnode_visitor &v ) {
 
 ftnode_t ftwindow_filter::clone( expr::substitution_t &s ) const {
   return new ftwindow_filter(
-    get_loc(), window_expr_->clone( s ).release(), unit_
+    get_loc(), window_expr_->clone( s ), unit_
   );
 }
 
@@ -1211,7 +1216,7 @@ void ftwindow_filter::serialize( serialization::Archiver &ar ) {
 
 ftwords::ftwords(
   QueryLoc const &loc,
-  expr_t const &value_expr,
+  expr* const &value_expr,
   ft_anyall_mode::type mode
 ) :
   ftnode( loc ),
@@ -1227,7 +1232,7 @@ ft_visit_result::type ftwords::accept( ftnode_visitor &v ) {
 }
 
 ftnode_t ftwords::clone( expr::substitution_t &s ) const {
-  return new ftwords( get_loc(), value_expr_->clone( s ).release(), mode_ );
+  return new ftwords( get_loc(), value_expr_->clone( s ), mode_ );
 }
 
 ostream& ftwords::put( ostream &o ) const {

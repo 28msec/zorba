@@ -191,7 +191,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     delete theCompilerCB;
     theCompilerCB = NULL;
   }
-   
+
   ar & theCompilerCB;
 
   ar & thePlanProxy;
@@ -335,7 +335,7 @@ void XQueryImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler
     theDiagnosticHandler = aDiagnosticHandler;
     theUserDiagnosticHandler = true;
 
-    if (theCollMgr) 
+    if (theCollMgr)
     {
       theCollMgr->registerDiagnosticHandler(theDiagnosticHandler);
     }
@@ -487,7 +487,7 @@ void XQueryImpl::compile(
 
     // If the static context results from loadProlog, we need all the contexts
     // that were created when compiling the load-prolog query
-    StaticContextImpl* externalSctx = 
+    StaticContextImpl* externalSctx =
     static_cast<StaticContextImpl*>(aStaticContext.get());
 
     if (externalSctx->theCompilerCB)
@@ -522,7 +522,7 @@ void XQueryImpl::compile(
 
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the load-prolog query
-    StaticContextImpl* externalSctx = 
+    StaticContextImpl* externalSctx =
     static_cast<StaticContextImpl*>(aStaticContext.get());
 
     if (externalSctx->theCompilerCB)
@@ -591,7 +591,7 @@ void XQueryImpl::doCompile(
 
 #ifdef ZORBA_WITH_DEBUGGER
   // if the debug mode is set, we force the gflwor, we set the query input stream
-  if (theIsDebugMode) 
+  if (theIsDebugMode)
   {
     theCompilerCB->theConfig.force_gflwor = true;
     theCompilerCB->theDebuggerCommons = new DebuggerCommons(theCompilerCB->theRootSctx);
@@ -727,7 +727,7 @@ XQueryImpl::getStaticCollectionManager() const
   checkNotClosed();
   checkCompiled();
 
-  if (!theCollMgr) 
+  if (!theCollMgr)
   {
     std::vector<StaticCollectionManagerImpl*> lMgrs;
 
@@ -736,7 +736,7 @@ XQueryImpl::getStaticCollectionManager() const
 
     for (CompilerCB::SctxMap::iterator lIter = theCompilerCB->theSctxMap.begin();
         lIter != theCompilerCB->theSctxMap.end();
-         ++lIter) 
+         ++lIter)
     {
       // this object is only need to construct the StaticCollectionManagerImpl
       // but it's not used after the construction anymore
@@ -764,7 +764,7 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
     checkNotClosed();
     checkCompiled();
 
-    std::vector<var_expr_t> lVars;
+    std::vector<var_expr*> lVars;
 
     CompilerCB::SctxMap::const_iterator lIte = theCompilerCB->theSctxMap.begin();
     CompilerCB::SctxMap::const_iterator lEnd = theCompilerCB->theSctxMap.end();
@@ -773,20 +773,20 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
     {
       lIte->second.getp()->getVariables(lVars, false, false, true);
     }
-    
-    std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
-    std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
+
+    std::vector<var_expr*>::const_iterator lVarIte = lVars.begin();
+    std::vector<var_expr*>::const_iterator lVarEnd = lVars.end();
     std::vector<store::Item_t> lExVars;
-   
+
     for(; lVarIte != lVarEnd; ++lVarIte)
-    { 
+    {
       lExVars.push_back((*lVarIte)->get_name());
-    } 
+    }
 
    Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
 
-    aVarsIter = vIter; 
-    
+   aVarsIter = vIter;
+
   }
   QUERY_CATCH
 }
@@ -807,10 +807,10 @@ bool XQueryImpl::isBoundVariable(
 
     zstring& nameSpace = Unmarshaller::getInternalString(aNamespace);
     zstring& localName = Unmarshaller::getInternalString(aLocalname);
-    
+
     store::Item_t qname;
     GENV_ITEMFACTORY->createQName(qname, nameSpace, zstring(), localName);
-    
+
     CompilerCB::SctxMap& lMap = theCompilerCB->theSctxMap;
     CompilerCB::SctxMap::const_iterator lIte = lMap.begin();
     CompilerCB::SctxMap::const_iterator lEnd = lMap.end();
@@ -818,18 +818,18 @@ bool XQueryImpl::isBoundVariable(
     for (; lIte != lEnd; ++lIte)
     {
       var = lIte->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
-      
+
       if(var)
         break;
     }
-    
+
     if(var == NULL)
       throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
       ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
 
     if (var->hasInitializer())
       return true;
-    
+
     ulong varId = var->get_unique_id();
 
     if (theDynamicContext->is_set_variable(varId))
@@ -1410,7 +1410,7 @@ void XQueryImpl::debug(
                                    aCallbackData,
                                    aHost,
                                    aPort);
-    if (!aDebuggerServer.run()) 
+    if (!aDebuggerServer.run())
     {
       aDebuggerServer.throwError();
     }
@@ -1429,14 +1429,14 @@ void XQueryImpl::close()
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
-  try 
+  try
   {
-    if (theIsClosed) 
+    if (theIsClosed)
     {
       return;
     }
 
-    if (theResultIterator != NULL) 
+    if (theResultIterator != NULL)
     {
       theResultIterator->closeInternal();
       theResultIterator = NULL;
@@ -1444,7 +1444,7 @@ void XQueryImpl::close()
 
     theExecuting = false;
 
-    if (thePlanProxy) 
+    if (thePlanProxy)
     {
       thePlanProxy = NULL;
     }
@@ -1453,7 +1453,7 @@ void XQueryImpl::close()
     theXQueryDiagnostics = NULL;
 
     // see registerDiagnosticHandler
-    if (!theUserDiagnosticHandler) 
+    if (!theUserDiagnosticHandler)
     {
       delete theDiagnosticHandler;
       theDiagnosticHandler = NULL;
@@ -1468,7 +1468,7 @@ void XQueryImpl::close()
     theStaticContext = NULL;
 
     // theCompilerCB may be NULL if an error occured while serializing "this" in.
-    if (theCompilerCB) 
+    if (theCompilerCB)
     {
 #ifdef ZORBA_WITH_DEBUGGER
       delete theCompilerCB->theDebuggerCommons;
@@ -1490,7 +1490,7 @@ void XQueryImpl::close()
 ********************************************************************************/
 void XQueryImpl::checkIsDebugMode() const
 {
-  if (!theIsDebugMode) 
+  if (!theIsDebugMode)
   {
     throw ZORBA_EXCEPTION( zerr::ZAPI0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE );
   }

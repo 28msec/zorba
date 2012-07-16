@@ -46,7 +46,7 @@ namespace zorba
 do                                                                  \
 {                                                                   \
   theState = __LINE__;                                              \
-  theCurrentChild = reinterpret_cast<expr_t*>(&(subExprHandle));    \
+  theCurrentChild = reinterpret_cast<expr**>(&(subExprHandle));    \
                                                                     \
   if ((subExprHandle) != NULL)                                      \
   {                                                                 \

@@ -80,7 +80,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     ExprIterator iter(this);
     while (!iter.done())
     {
-      (*iter)->compute_return_type(deep, modified);
+      (**iter)->compute_return_type(deep, modified);
       iter.next();
     }
   }
@@ -258,9 +258,9 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         xqtref_t stepType = sourceType;
 
-        for (csize i = 1; i < e->size(); ++i) 
+        for (csize i = 1; i < e->size(); ++i)
         {
-          const axis_step_expr* axisStep = e->theSteps[i].cast<axis_step_expr>();
+          const axis_step_expr* axisStep = static_cast<axis_step_expr*>(e->theSteps[i]);
 
           stepType = axis_step_type(theSctx,
                                     axisStep,
@@ -325,7 +325,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     }
     case FunctionConsts::FN_SUBSEQUENCE_3:
     {
-      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2].getp());
+      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2]);
 
       if (lenExpr != NULL)
       {
@@ -465,7 +465,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   case doc_expr_kind:
   {
     contentType = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-                   rtm.ANY_TYPE : 
+                   rtm.ANY_TYPE :
                    rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::documentNode,

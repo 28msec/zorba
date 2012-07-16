@@ -55,17 +55,17 @@ namespace zorba {
 
 static void remove_wincond_vars(const flwor_wincond*, expr::FreeVars&);
 
-static bool standalone_expr(expr_t);
+static bool standalone_expr(expr*);
 
-static bool already_folded(expr_t, RewriterContext&);
+static bool already_folded(expr*, RewriterContext&);
 
-static expr_t partial_eval_fo (RewriterContext&, fo_expr*);
+static expr* partial_eval_fo (RewriterContext&, fo_expr*);
 
-static expr_t partial_eval_logic(fo_expr*, bool, RewriterContext&);
+static expr* partial_eval_logic(fo_expr*, bool, RewriterContext&);
 
-static expr_t partial_eval_eq(RewriterContext&, fo_expr&);
+static expr* partial_eval_eq(RewriterContext&, fo_expr&);
 
-static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified, RewriterContext& rCtx);
+static expr* partial_eval_return_clause(flwor_expr* flworExpr, bool& modified, RewriterContext& rCtx);
 
 static bool maybe_needs_implicit_timezone(const fo_expr* fo);
 
@@ -73,9 +73,9 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo);
 /*******************************************************************************
 
 ********************************************************************************/
-static expr_t execute (
+static expr* execute (
     CompilerCB* compilercb,
-    expr_t node,
+    expr* node,
     vector<store::Item_t>& result)
 {
   ulong nextVarId = 1;
@@ -135,7 +135,7 @@ static expr_t execute (
                               "http://www.w3.org/2005/xqt-errors",
                               "err",
                               error::ZorbaError::toString(lErrorCode).c_str());
-    expr_t err_expr = rCtx.theEM->create_fo_expr(node->get_sctx_id(),
+    expr* err_expr = rCtx.theEM->create_fo_expr(node->get_sctx_id(),
                                   loc,
                                   GET_BUILTIN_FUNCTION(FN_ERROR_2),
                                   rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, qname),
@@ -165,7 +165,7 @@ static expr_t execute (
   The NON_DISCARDABLE property is used during the application of the PartialEval
   rule below.
 ********************************************************************************/
-expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
+expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
   BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
   BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
@@ -407,7 +407,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
   if (node->get_expr_kind() == var_expr_kind)
   {
-    var_expr_t v = static_cast<var_expr *>(node);
+    var_expr* v = static_cast<var_expr *>(node);
     freevars.insert(v);
   }
   else
@@ -417,7 +417,7 @@ RULE_REWRITE_POST(MarkFreeVars)
     ExprIterator iter(node);
     while (!iter.done())
     {
-      expr* e = *iter;
+      expr* e = **iter;
 
       const expr::FreeVars& kfv = e->getFreeVars();
       std::copy(kfv.begin(),
@@ -477,7 +477,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
           for (csize i = 0; i < numGroupVars; ++i)
           {
-            freevars.erase(gvars[i].second.getp());
+            freevars.erase(gvars[i].second);
           }
 
           const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
@@ -485,7 +485,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
           for (csize i = 0; i < numNonGroupVars; ++i)
           {
-            freevars.erase(ngvars[i].second.getp());
+            freevars.erase(ngvars[i].second);
           }
         }
         else if (c->get_kind() == flwor_clause::count_clause)
@@ -509,15 +509,15 @@ static void remove_wincond_vars(
   const flwor_wincond::vars& inVars = cond->get_in_vars();
   const flwor_wincond::vars& outVars = cond->get_out_vars();
 
-  freevars.erase(inVars.posvar.getp());
-  freevars.erase(inVars.curr.getp());
-  freevars.erase(inVars.prev.getp());
-  freevars.erase(inVars.next.getp());
+  freevars.erase(inVars.posvar);
+  freevars.erase(inVars.curr);
+  freevars.erase(inVars.prev);
+  freevars.erase(inVars.next);
 
-  freevars.erase(outVars.posvar.getp());
-  freevars.erase(outVars.curr.getp());
-  freevars.erase(outVars.prev.getp());
-  freevars.erase(outVars.next.getp());
+  freevars.erase(outVars.posvar);
+  freevars.erase(outVars.curr);
+  freevars.erase(outVars.prev);
+  freevars.erase(outVars.next);
 }
 
 
@@ -539,7 +539,7 @@ RULE_REWRITE_PRE(FoldConst)
       rtype->max_card() <= 1)
   {
     vector<store::Item_t> result;
-    expr_t folded = execute(rCtx.getCompilerCB(), node, result);
+    expr* folded = execute(rCtx.getCompilerCB(), node, result);
     if (folded == NULL)
     {
       ZORBA_ASSERT (result.size () <= 1);
@@ -558,21 +558,21 @@ RULE_REWRITE_POST(FoldConst)
 }
 
 
-static bool standalone_expr(expr_t e)
+static bool standalone_expr(expr* e)
 {
   expr_kind_t k = e->get_expr_kind ();
   return k != match_expr_kind && k != axis_step_expr_kind;
 }
 
 
-static bool already_folded(expr_t e, RewriterContext& rCtx)
+static bool already_folded(expr* e, RewriterContext& rCtx)
 {
   if (e->get_expr_kind () == const_expr_kind)
     return true;
   if (e->get_expr_kind () != fo_expr_kind)
     return false;
 
-  const fo_expr* fo = e.dyn_cast<fo_expr>().getp ();
+  const fo_expr* fo = dynamic_cast<fo_expr*>(e);
 
   return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&
           fo->num_args() == 0);
@@ -692,7 +692,7 @@ RULE_REWRITE_POST(PartialEval)
 }
 
 
-static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
+static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
 {
   TypeManager* tm = fo->get_type_manager();
 
@@ -759,11 +759,11 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     if (arg->get_expr_kind() == flwor_expr_kind)
     {
       bool modified = false;
-      expr_t newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
+      expr* newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
                                                  modified,
                                                  rCtx);
 
-      if (newArg.getp() != arg)
+      if (newArg != arg)
         fo->set_arg(0, newArg);
 
       if (modified)
@@ -774,7 +774,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   }
   else if (fkind == FunctionConsts::FN_BOOLEAN_1)
   {
-    expr_t arg = fo->get_arg(0);
+    expr* arg = fo->get_arg(0);
     if (!arg->isNonDiscardable())
     {
       xqtref_t argType = arg->get_return_type();
@@ -796,7 +796,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   fo is a logical "and" or "or" expr. If "and" then the shortcircuit_val is
   false, otherwise, shortcircuit_val is true.
 ********************************************************************************/
-static expr_t partial_eval_logic(
+static expr* partial_eval_logic(
     fo_expr* fo,
     bool shortcircuit_val,
     RewriterContext& rCtx)
@@ -843,7 +843,7 @@ static expr_t partial_eval_logic(
     // Only one of the args is a constant expr. The non-const arg is pointed
     // to by nonConst1.
 
-    expr_t arg = fo->get_arg(nonConst1);
+    expr* arg = fo->get_arg(nonConst1);
 
     if (! TypeOps::is_subtype(tm,
                               *arg->get_return_type(),
@@ -871,7 +871,7 @@ static expr_t partial_eval_logic(
   3. if int_const == 1 --> fn:exactly-one-noraise(expr)
   4. if int_const > 1  --> fn:exactly-one-noraise(fn:subsequence(expr, int_const, 2))
 ********************************************************************************/
-static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
+static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 {
   int i;
   fo_expr* count_expr = NULL;
@@ -926,12 +926,12 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     }
     else
     {
-      std::vector<expr_t> args(3);
+      std::vector<expr*> args(3);
       args[0] = count_expr->get_arg(0);
       args[1] = val_expr;
       args[2] = rCtx.theEM->create_const_expr(val_expr->get_sctx(), LOC(val_expr), xs_integer(2));
 
-      expr_t subseq_expr = expr_tools::fix_annotations(
+      expr* subseq_expr = expr_tools::fix_annotations(
       rCtx.theEM->create_fo_expr(count_expr->get_sctx(),
                   LOC(count_expr),
                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
@@ -952,7 +952,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 /*******************************************************************************
 
 ********************************************************************************/
-static expr_t partial_eval_return_clause(flwor_expr* flworExpr,
+static expr* partial_eval_return_clause(flwor_expr* flworExpr,
                                         bool& modified,
                                         RewriterContext& rCtx)
 {
@@ -983,7 +983,7 @@ static expr_t partial_eval_return_clause(flwor_expr* flworExpr,
     {
       modified = true;
 
-      expr_t newRet =
+      expr* newRet =
       rCtx.theEM->create_const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
 
       flworExpr->set_return_expr(newRet);
@@ -994,10 +994,10 @@ static expr_t partial_eval_return_clause(flwor_expr* flworExpr,
 
   if (returnExpr->get_expr_kind() == flwor_expr_kind)
   {
-    expr_t newRet =
+    expr* newRet =
     partial_eval_return_clause(static_cast<flwor_expr*>(returnExpr),  modified, rCtx);
 
-    if (newRet.getp() != returnExpr)
+    if (newRet != returnExpr)
     {
       flworExpr->set_return_expr(newRet);
       assert(modified);
@@ -1024,7 +1024,7 @@ RULE_REWRITE_POST(InlineFunctions)
     const fo_expr* fo = static_cast<const fo_expr *> (node);
 
     const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
-    expr_t body;
+    expr* body;
 
     if (NULL != udf &&
         //!udf->isSequential() &&
@@ -1032,13 +1032,13 @@ RULE_REWRITE_POST(InlineFunctions)
         !udf->isExiting() &&
         udf->isLeaf())
     {
-      const std::vector<var_expr_t>& udfArgs = udf->getArgVars();
+      const std::vector<var_expr*>& udfArgs = udf->getArgVars();
 
       expr::substitution_t subst;
 
       for (ulong i = 0; i < udfArgs.size(); ++i)
       {
-        var_expr_t p = udfArgs[i];
+        var_expr* p = udfArgs[i];
         subst[p] = fo->get_arg(i);
 
         if (fo->get_arg(i)->is_sequential())
@@ -1047,7 +1047,7 @@ RULE_REWRITE_POST(InlineFunctions)
 
       try
       {
-        expr_t body = udf->getBody();
+        expr* body = udf->getBody();
         body = body->clone(subst);
         body->clear_annotations();
         if (rCtx.getCompilerCB()->theConfig.opt_level <= CompilerCB::config::O1)

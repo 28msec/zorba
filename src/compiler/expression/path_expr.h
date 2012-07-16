@@ -56,7 +56,7 @@ class relpath_expr : public expr
   friend class ExprManager;
 
 protected:
-  std::vector<expr_t> theSteps;
+  std::vector<expr*> theSteps;
 
 protected:
   relpath_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
@@ -64,21 +64,21 @@ protected:
 public:
   size_t size() const { return theSteps.size(); }
 
-  void add_back(expr_t step);
+  void add_back(expr* step);
 
   void erase(csize i) { theSteps.erase(theSteps.begin() + i); }
 
   csize numSteps() const { return theSteps.size(); }
 
-  expr* operator[](csize n) const { return theSteps[n].getp(); }
+  expr* operator[](csize n) const { return theSteps[n]; }
 
-  std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
+  std::vector<expr*>::const_iterator begin() const { return theSteps.begin(); }
 
-  std::vector<expr_t>::const_iterator end() const { return theSteps.end(); }
+  std::vector<expr*>::const_iterator end() const { return theSteps.end(); }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t &) const;
+  expr* clone(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -107,7 +107,7 @@ class axis_step_expr : public expr
 protected:
   axis_kind_t             theAxis;
   bool                    theReverseOrder;
-  expr_t                  theNodeTest;
+  expr*                   theNodeTest;
 
 public:
   static bool is_reverse_axis(axis_kind_t kind);
@@ -128,14 +128,14 @@ public:
 
   match_expr* getTest() const
   {
-    return reinterpret_cast<match_expr*>(theNodeTest.getp());
+    return reinterpret_cast<match_expr*>(theNodeTest);
   }
 
-  void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
+  void setTest(match_expr* v);
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t &) const;
+  expr* clone(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -213,7 +213,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t &) const;
+  expr* clone(substitution_t &) const;
 
   void accept(expr_visitor&);
 

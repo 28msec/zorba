@@ -389,7 +389,7 @@ class static_context : public SimpleRCObject
 
   ITEM_PTR_HASH_MAP(ValueIC_t, ICMap);
 
-  ITEM_PTR_HASH_MAP(var_expr_t, VariableMap);
+  ITEM_PTR_HASH_MAP(var_expr*, VariableMap);
 
   ITEM_PTR_HASH_MAP(FunctionInfo, FunctionMap);
 
@@ -508,7 +508,7 @@ protected:
 
   std::ostream                          * theTraceStream;
 
-  expr_t                                  theQueryExpr;
+  expr*                                  theQueryExpr;
 
   std::string                             theModuleNamespace;
 
@@ -631,9 +631,9 @@ public:
 
   bool is_global_root_sctx() const;
 
-  expr_t get_query_expr() const;
+  expr* get_query_expr() const;
 
-  void set_query_expr(expr_t expr);
+  void set_query_expr(expr* expr);
 
   void set_trace_stream(std::ostream&);
 
@@ -811,7 +811,7 @@ public:
   // Variables
   //
   void bind_var(
-        var_expr_t& expr,
+        var_expr* expr,
         const QueryLoc& loc,
         const Error& err);
 
@@ -821,7 +821,7 @@ public:
         const Error& err) const;
 
   void getVariables(
-    std::vector<var_expr_t>& variableList,
+    std::vector<var_expr*>& variableList,
     bool localsOnly = false,
     bool returnPrivateVars = false,
     bool externalVarsOnly = false) const;

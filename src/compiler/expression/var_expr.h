@@ -28,9 +28,6 @@ class for_clause;
 class copy_clause;
 class var_expr;
 
-typedef rchandle<var_expr> var_expr_t;
-
-
 /******************************************************************************
 
   var_expr represents a variable. There is one var_expr for each distinct
@@ -183,24 +180,24 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
   void serialize_internal(::zorba::serialization::Archiver& ar);
-                                                                        
-  serialization::TypeCode get_serializer_type_code() const      
-  {                                                                     
-    return serialization::TYPE_var_expr;                                                 
-  }                                                                     
-                                                                        
+
+  serialization::TypeCode get_serializer_type_code() const
+  {
+    return serialization::TYPE_var_expr;
+  }
+
   class class_factory : public ::zorba::serialization::ClassDeserializer
   {
   public:
     class_factory()
-    {                                                                    
-      serialization::ClassSerializer::getInstance()->                    
+    {
+      serialization::ClassSerializer::getInstance()->
       register_class_factory(serialization::TYPE_var_expr, this);
     }
 
     serialization::SerializeBaseClass* create_new(serialization::Archiver& ar);
   };
-       
+
   static class_factory g_class_factory;
 
 public:
@@ -285,7 +282,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& subst) const;
+  expr* clone(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -295,14 +292,14 @@ public:
 
 struct GlobalBinding
 {
-  var_expr_t  theVar;
-  expr_t      theExpr;
+  var_expr*  theVar;
+  expr*      theExpr;
   bool        theIsExternal;
 
 public:
   GlobalBinding() : theIsExternal(false) {}
 
-  GlobalBinding(const var_expr_t& v, const expr_t& e, bool external)
+  GlobalBinding(var_expr* v, expr* e, bool external)
     :
     theVar(v),
     theExpr(e),

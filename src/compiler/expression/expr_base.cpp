@@ -75,9 +75,9 @@ typedef std::set<const var_expr *> var_ptr_set;
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t expr::iter_end_expr = NULL;
+expr* expr::iter_end_expr = NULL;
 
-expr_t* expr::iter_done = &expr::iter_end_expr;
+expr** expr::iter_done = &expr::iter_end_expr;
 
 
 /*******************************************************************************
@@ -239,14 +239,14 @@ void expr::checkScriptingKind() const
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t expr::clone() const
+expr* expr::clone() const
 {
   substitution_t subst;
   return clone(subst);
 }
 
 
-expr_t expr::clone(substitution_t& subst) const
+expr* expr::clone(substitution_t& subst) const
 {
   throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
@@ -260,8 +260,8 @@ void expr::accept_children(expr_visitor& v)
   ExprIterator iter(this);
   while (!iter.done())
   {
-    if (*iter != NULL)
-      (*iter)->accept(v);
+    if (**iter != NULL)
+      (**iter)->accept(v);
 
     iter.next();
   }
@@ -320,7 +320,7 @@ void expr::clear_annotations()
   ExprIterator iter(this);
   while (!iter.done())
   {
-    (*iter)->clear_annotations();
+    (**iter)->clear_annotations();
     iter.next();
   }
 }
@@ -594,18 +594,18 @@ bool expr::is_constant() const
 /*******************************************************************************
   Replace all references to "oldExpr" inside "e" with references to "newExpr".
 ********************************************************************************/
-void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
+void expr::replace_expr(expr* oldExpr, expr* newExpr)
 {
   ExprIterator iter(this);
   while (!iter.done())
   {
-    if ((*iter).getp() == oldExpr)
+    if ((**iter) == oldExpr)
     {
-      (*iter) = newExpr;
+      (**iter) = newExpr;
     }
     else
     {
-      (*iter)->replace_expr(oldExpr, newExpr);
+      (**iter)->replace_expr(oldExpr, newExpr);
     }
 
     iter.next();
@@ -1170,13 +1170,13 @@ const store::Item* expr::getQName(static_context* sctx) const
 ********************************************************************************/
 xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 {
-  expr_t emptyExpr = theCCB->theEM->create_fo_expr(input->get_sctx(),
+  expr* emptyExpr = theCCB->theEM->create_fo_expr(input->get_sctx(),
                                  QueryLoc::null,
                                  GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
   expr::substitution_t subst;
   subst[input] = emptyExpr;
 
-  expr_t cloneExpr = clone(subst);
+  expr* cloneExpr = clone(subst);
 
   return cloneExpr->get_return_type();
 }

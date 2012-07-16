@@ -37,27 +37,27 @@ protected:
     CompilerCB* ccb,
     static_context*,
     QueryLoc const&,
-    expr_t range,
+    expr* range,
     ftnode *ftselection,
-    expr_t ftignore
+    expr* ftignore
   );
 
 public:
-  expr_t clone( substitution_t& ) const;
+  expr* clone( substitution_t& ) const;
   void compute_scripting_kind();
 
-  expr_t get_range() const { return range_; }
+  expr* get_range() const { return range_; }
   ftnode_t get_ftselection() const { return ftselection_; }
-  expr_t get_ignore() const { return ftignore_; }
+  expr* get_ignore() const { return ftignore_; }
 
   void accept( expr_visitor& );
 
   std::ostream& put( std::ostream& ) const;
 
 private:
-  expr_t range_;
+  expr* range_;
   ftnode_t ftselection_;
-  expr_t ftignore_;
+  expr* ftignore_;
 };
 
 } // namespace zorba

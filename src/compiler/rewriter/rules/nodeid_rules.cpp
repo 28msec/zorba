@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@
 #include "diagnostics/assert.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -48,7 +48,7 @@ namespace zorba
   already, set it to the value of the ignore-sorted-nodes annotations of the
   source expr.
 ********************************************************************************/
-static void pushdown_ignores_sorted_nodes(expr* src, expr* target) 
+static void pushdown_ignores_sorted_nodes(expr* src, expr* target)
 {
   if (target->getIgnoresSortedNodes() != ANNOTATION_FALSE)
     target->setIgnoresSortedNodes(src->getIgnoresSortedNodes());
@@ -59,7 +59,7 @@ static void pushdown_ignores_sorted_nodes(expr* src, expr* target)
   If the ignore-sorted-nodes annotation of the target expr is not set to false
   already, set it to the given value.
 ********************************************************************************/
-static void set_ignores_sorted_nodes(expr* target, BoolAnnotationValue v) 
+static void set_ignores_sorted_nodes(expr* target, BoolAnnotationValue v)
 {
   if (target->getIgnoresSortedNodes() != ANNOTATION_FALSE)
     target->setIgnoresSortedNodes(v);
@@ -71,7 +71,7 @@ static void set_ignores_sorted_nodes(expr* target, BoolAnnotationValue v)
   false already, set it to the value of the ignore-duplicate-nodes annotations
   of the source expr.
 ********************************************************************************/
-static void pushdown_ignores_duplicate_nodes(expr* src, expr* target) 
+static void pushdown_ignores_duplicate_nodes(expr* src, expr* target)
 {
   if (target->getIgnoresDuplicateNodes() != ANNOTATION_FALSE)
     target->setIgnoresDuplicateNodes(src->getIgnoresDuplicateNodes());
@@ -82,7 +82,7 @@ static void pushdown_ignores_duplicate_nodes(expr* src, expr* target)
   If the ignore-duplicates-nodes annotation of the target expr is not set to
   false already, set it to the given value.
 ********************************************************************************/
-static void set_ignores_duplicate_nodes(expr* target, BoolAnnotationValue v) 
+static void set_ignores_duplicate_nodes(expr* target, BoolAnnotationValue v)
 {
   if (target->getIgnoresDuplicateNodes() != ANNOTATION_FALSE)
     target->setIgnoresDuplicateNodes(v);
@@ -102,7 +102,7 @@ static void set_ignores_duplicate_nodes(expr* target, BoolAnnotationValue v)
   The rule works in a top-down fashion, first setting the annotations of an
   expression e and then moving down to the children of e.
 ********************************************************************************/
-expr_t MarkConsumerNodeProps::apply(
+expr* MarkConsumerNodeProps::apply(
     RewriterContext& rCtx,
     expr* node,
     bool& modified)
@@ -119,7 +119,7 @@ expr_t MarkConsumerNodeProps::apply(
   case order_expr_kind :
   {
     saveInOrderedMode = rCtx.theIsInOrderedMode;
-      
+
     order_expr* orderExpr = static_cast<order_expr *>(node);
 
     rCtx.theIsInOrderedMode = (orderExpr->get_type() == order_expr::ordered ?
@@ -182,18 +182,18 @@ expr_t MarkConsumerNodeProps::apply(
     break;
   }
 
-  case flwor_expr_kind: 
+  case flwor_expr_kind:
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(node);
 
     // no need to do anything for the where expr or the orderby exprs because
     // they don't produce nodes.
-    
+
     // The annotations for the return expr are the same as those of its
     // containing flwor expr.
     pushdown_ignores_sorted_nodes(node, flwor->get_return_expr());
     pushdown_ignores_duplicate_nodes(node, flwor->get_return_expr());
-    
+
     // apply the rule recursively on the return expr
     apply(rCtx, flwor->get_return_expr(), modified);
 
@@ -210,12 +210,12 @@ expr_t MarkConsumerNodeProps::apply(
         let_clause* lc = static_cast<let_clause*>(clause);
         expr* domainExpr = lc->get_expr();
         var_expr* var = lc->get_var();
-        
+
         // The annotations for the domain expr are the same as those of its
         // associated LET var.
         domainExpr->setIgnoresSortedNodes(var->getIgnoresSortedNodes());
         domainExpr->setIgnoresDuplicateNodes(var->getIgnoresDuplicateNodes());
-        
+
         // apply the rule recursively on the domainExpr
         apply(rCtx, domainExpr, modified);
       }
@@ -224,8 +224,8 @@ expr_t MarkConsumerNodeProps::apply(
         for_clause* fc = static_cast<for_clause*>(clause);
         expr* domainExpr = fc->get_expr();
         var_expr* posVar = fc->get_pos_var();
-        assert(posVar == NULL || posVar->get_kind() == var_expr::pos_var); 
-        
+        assert(posVar == NULL || posVar->get_kind() == var_expr::pos_var);
+
         // If a flwor expr does not need to care about producing nodes in doc
         // order, then the domain expr of a FOR variable does not need to care
         // either, unless there is a POS variable associated with the FOR var.
@@ -240,7 +240,7 @@ expr_t MarkConsumerNodeProps::apply(
         {
           domainExpr->setIgnoresSortedNodes(ANNOTATION_FALSE);
         }
-        
+
         // apply the rule recursively on the domainExpr
         apply(rCtx, domainExpr, modified);
       }
@@ -254,9 +254,9 @@ expr_t MarkConsumerNodeProps::apply(
       {
         // apply the rule recursively on the orderby exprs
         orderby_clause* oc = static_cast<orderby_clause*>(clause);
-      
+
         csize numExprs = oc->num_columns();
-      
+
         for (csize i = 0; i < numExprs; ++i)
         {
           apply(rCtx, oc->get_column_expr(i), modified);
@@ -265,8 +265,8 @@ expr_t MarkConsumerNodeProps::apply(
     }
     return NULL;
   }
-  
-  case if_expr_kind: 
+
+  case if_expr_kind:
   {
     if_expr* ite = static_cast<if_expr *>(node);
     pushdown_ignores_sorted_nodes(node, ite->get_then_expr());
@@ -276,14 +276,14 @@ expr_t MarkConsumerNodeProps::apply(
     break;
   }
 
-  case wrapper_expr_kind : 
+  case wrapper_expr_kind :
   {
     wrapper_expr* we = static_cast<wrapper_expr *>(node);
     pushdown_ignores_sorted_nodes(node, we->get_expr());
     pushdown_ignores_duplicate_nodes(node, we->get_expr());
     break;
-  }    
-  
+  }
+
   case function_trace_expr_kind :
   {
     function_trace_expr* fte = static_cast<function_trace_expr*>(node);
@@ -292,9 +292,9 @@ expr_t MarkConsumerNodeProps::apply(
     break;
   }
 
-  case relpath_expr_kind : 
+  case relpath_expr_kind :
   {
-    expr_t arg = (*static_cast<relpath_expr *>(node))[0];
+    expr* arg = (*static_cast<relpath_expr *>(node))[0];
     pushdown_ignores_sorted_nodes(node, arg);
     pushdown_ignores_duplicate_nodes(node, arg);
     break;
@@ -304,17 +304,17 @@ expr_t MarkConsumerNodeProps::apply(
   case castable_expr_kind :
   case instanceof_expr_kind :
   {
-    cast_or_castable_base_expr* curExpr = 
+    cast_or_castable_base_expr* curExpr =
     static_cast<cast_or_castable_base_expr*>(node);
 
     expr* arg = curExpr->get_input();
 
     xqtref_t targetType = curExpr->get_target_type();
     TypeConstants::quantifier_t q = targetType->get_quantifier();
-    
+
     set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
 
-    if (targetType->is_empty()) 
+    if (targetType->is_empty())
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
     }
@@ -328,28 +328,28 @@ expr_t MarkConsumerNodeProps::apply(
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_FALSE);
     }
-    
+
     break;
   }
-  
+
   case promote_expr_kind :
   case treat_expr_kind :
   {
     cast_base_expr* curExpr = static_cast<cast_base_expr*>(node);
 
     expr* arg = curExpr->get_input();
-      
+
     xqtref_t targetType = curExpr->get_target_type();
     TypeConstants::quantifier_t q = targetType->get_quantifier();
 
-    if (targetType->is_empty()) 
+    if (targetType->is_empty())
     {
       set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
     }
     else
     {
-      if (q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION) 
+      if (q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION)
       {
         set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
       }
@@ -357,7 +357,7 @@ expr_t MarkConsumerNodeProps::apply(
       {
         pushdown_ignores_sorted_nodes(curExpr, arg);
       }
-      
+
       if (curExpr->getIgnoresDuplicateNodes() == ANNOTATION_TRUE &&
           (q == TypeConstants::QUANT_STAR ||
            (q == TypeConstants::QUANT_PLUS &&
@@ -370,41 +370,41 @@ expr_t MarkConsumerNodeProps::apply(
         set_ignores_duplicate_nodes(arg, ANNOTATION_FALSE);
       }
     }
-    
+
     break;
   }
-  
-  case fo_expr_kind : 
+
+  case fo_expr_kind :
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func();
-    
+
     FunctionConsts::FunctionKind fkind = f->getKind();
-    
+
     csize numArgs = fo->num_args();
-    
+
     for (csize i = 0; i < numArgs; ++i)
     {
       expr* arg = fo->get_arg(i);
-        
+
       set_ignores_sorted_nodes(arg, f->ignoresSortedNodes(node, i));
-      
+
       set_ignores_duplicate_nodes(arg, f->ignoresDuplicateNodes(node, i));
     }
-      
+
     if (fkind == FunctionConsts::FN_ZERO_OR_ONE_1 ||
         fkind == FunctionConsts::FN_EXACTLY_ONE_1)
     {
-      // If these functions are over a duplicate elimination function, the 
+      // If these functions are over a duplicate elimination function, the
       // duplicate elimination is pulled up into the runtime iterators for
       // fn:zero-or-one or fn:exactly-one.
-      expr_t arg = fo->get_arg(0);
-      
+      expr* arg = fo->get_arg(0);
+
       if (arg->get_expr_kind() == fo_expr_kind)
       {
-        const fo_expr* fo = static_cast<fo_expr *>(arg.getp());
+        const fo_expr* fo = static_cast<fo_expr *>(arg);
         const function* argFunc = fo->get_func();
-        
+
         if (argFunc->isNodeDistinctFunction())
         {
           set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
@@ -412,10 +412,10 @@ expr_t MarkConsumerNodeProps::apply(
         }
       }
     }
-    
+
     break;
   }
-  
+
 #ifdef ZORBA_WITH_JSON
   case json_object_expr_kind :
   {
@@ -467,13 +467,13 @@ expr_t MarkConsumerNodeProps::apply(
   case function_item_expr_kind : // TODO
   {
     ExprIterator iter(node);
-    while (!iter.done()) 
+    while (!iter.done())
     {
       if (rCtx.theIsInOrderedMode)
-        (*iter)->setIgnoresSortedNodes(ANNOTATION_FALSE);
+        (**iter)->setIgnoresSortedNodes(ANNOTATION_FALSE);
 
-      (*iter)->setIgnoresDuplicateNodes(ANNOTATION_TRUE);
-      
+      (**iter)->setIgnoresDuplicateNodes(ANNOTATION_TRUE);
+
       iter.next();
     }
 
@@ -492,14 +492,14 @@ expr_t MarkConsumerNodeProps::apply(
     ZORBA_ASSERT(false);
   }
   }
-  
+
   ExprIterator iter(node);
   while (!iter.done())
   {
-    apply(rCtx, *iter, modified);
+    apply(rCtx, **iter, modified);
     iter.next();
   }
- 
+
   if (node->get_expr_kind() == order_expr_kind)
      rCtx.theIsInOrderedMode = saveInOrderedMode;
 
@@ -508,9 +508,9 @@ expr_t MarkConsumerNodeProps::apply(
 
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
-expr_t MarkProducerNodeProps::apply(
+expr* MarkProducerNodeProps::apply(
     RewriterContext& rCtx,
     expr* node,
     bool& modified)
@@ -529,7 +529,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
 {
   fo_expr* fo = dynamic_cast<fo_expr *>(node);
 
-  if (fo != NULL) 
+  if (fo != NULL)
   {
     const function* f = fo->get_func();
 
@@ -540,7 +540,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
     const op_node_sort_distinct_base* nsdf;
     nsdf = dynamic_cast<const op_node_sort_distinct_base*>(f);
 
-    if (nsdf != NULL) 
+    if (nsdf != NULL)
     {
       expr* argExpr = fo->get_arg(0);
 
@@ -548,12 +548,12 @@ RULE_REWRITE_PRE(EliminateNodeOps)
 
       if (fmin != f)
       {
-        if (fmin != NULL) 
+        if (fmin != NULL)
         {
           fo->set_func(fmin);
           return fo;
         }
-        else 
+        else
         {
           return fo->get_arg(0);
         }
@@ -565,16 +565,16 @@ RULE_REWRITE_PRE(EliminateNodeOps)
 }
 
 
-RULE_REWRITE_POST(EliminateNodeOps) 
+RULE_REWRITE_POST(EliminateNodeOps)
 {
-  return NULL; 
+  return NULL;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t MarkNodeCopyProps::apply(
+expr* MarkNodeCopyProps::apply(
     RewriterContext& rCtx,
     expr* node,
     bool& modified)
@@ -635,7 +635,7 @@ void MarkNodeCopyProps::applyInternal(
     expr* node,
     UDFCallChain& udfCaller)
 {
-  switch (node->get_expr_kind()) 
+  switch (node->get_expr_kind())
   {
   case const_expr_kind:
   case var_expr_kind:
@@ -709,12 +709,12 @@ void MarkNodeCopyProps::applyInternal(
     }
     else
     {
-      std::vector<expr_t>::const_iterator ite = e->begin();
-      std::vector<expr_t>::const_iterator end = e->end();
+      std::vector<expr*>::const_iterator ite = e->begin();
+      std::vector<expr*>::const_iterator end = e->end();
 
       for (++ite; ite != end; ++ite)
       {
-        axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite).getp());
+        axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite));
         axis_kind_t axisKind = axisExpr->getAxis();
 
         if (axisKind != axis_kind_child &&
@@ -769,7 +769,7 @@ void MarkNodeCopyProps::applyInternal(
         {
           var_expr* argVar = udf->getArgVar(i);
 
-          // if an arg var of this udf has been marked as a source before, it 
+          // if an arg var of this udf has been marked as a source before, it
           // means that that var is consumed in some "nodeid-sesitive" operation,
           // so we now have to find the sources of the arg expr and mark them.
           if (theSourceFinder->theVarSourcesMap.find(argVar) !=
@@ -878,7 +878,7 @@ void MarkNodeCopyProps::applyInternal(
   case while_expr_kind:
   case flowctl_expr_kind:
   case exit_expr_kind:
-  case exit_catcher_expr_kind: 
+  case exit_catcher_expr_kind:
   {
     break;
   }
@@ -906,7 +906,7 @@ void MarkNodeCopyProps::applyInternal(
         {
           short scriptingKind = child->get_scripting_detail();
 
-          if (scriptingKind & APPLYING_EXPR || 
+          if (scriptingKind & APPLYING_EXPR ||
               scriptingKind & EXITING_EXPR ||
               scriptingKind & SEQUENTIAL_FUNC_EXPR)
           {
@@ -937,12 +937,12 @@ void MarkNodeCopyProps::applyInternal(
       markSources(sources);
     }
 
-    std::vector<var_expr_t> globalVars;
+    std::vector<var_expr*> globalVars;
     node->get_sctx()->getVariables(globalVars, false, true);
-  
-    FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+
+    FOR_EACH(std::vector<var_expr*>, ite, globalVars)
     {
-      var_expr* globalVar = (*ite).getp();
+      var_expr* globalVar = (*ite);
 
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(globalVar, &udfCaller, sources);
@@ -975,16 +975,16 @@ void MarkNodeCopyProps::applyInternal(
     // Conservatively assume that the function item that is going to be executed
     // requires stand-alone trees as inputs, so find and mark the sources in the
     // arguments. TODO: look for function_item_expr in the subtree to check if
-    // this assumption is really true. 
-    dynamic_function_invocation_expr* e = 
+    // this assumption is really true.
+    dynamic_function_invocation_expr* e =
     static_cast<dynamic_function_invocation_expr*>(node);
 
-    const std::vector<expr_t>& args = e->get_args();
+    const std::vector<expr*>& args = e->get_args();
 
-    FOR_EACH(std::vector<expr_t>, ite, args)
+    FOR_EACH(std::vector<expr*>, ite, args)
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources((*ite).getp(), &udfCaller, sources);
+      theSourceFinder->findNodeSources((*ite), &udfCaller, sources);
       markSources(sources);
     }
 
@@ -1011,10 +1011,10 @@ void MarkNodeCopyProps::applyInternal(
   }
 
   ExprIterator iter(node);
-  while(!iter.done()) 
+  while(!iter.done())
   {
-    expr* child = (*iter).getp();
-    if (child != NULL) 
+    expr* child = (**iter);
+    if (child != NULL)
     {
       applyInternal(rCtx, child, udfCaller);
     }
@@ -1035,7 +1035,7 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
   for (; ite != end; ++ite)
   {
     expr* source = (*ite);
-    
+
     switch (source->get_expr_kind())
     {
     case doc_expr_kind:
@@ -1114,7 +1114,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
       return;
     }
 
-    case var_expr::prolog_var: 
+    case var_expr::prolog_var:
     case var_expr::local_var:
     {
       if (!e->willBeSerialized())
@@ -1215,11 +1215,11 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
         markForSerialization(body);
       }
 
-      std::vector<var_expr_t>::const_iterator ite = udf->getArgVars().begin();
-      std::vector<var_expr_t>::const_iterator end = udf->getArgVars().end();
+      std::vector<var_expr*>::const_iterator ite = udf->getArgVars().begin();
+      std::vector<var_expr*>::const_iterator end = udf->getArgVars().end();
       for (; ite != end; ++ite)
       {
-        expr* argVar = (*ite).getp();
+        expr* argVar = (*ite);
         if (argVar->willBeSerialized())
         {
           expr* argExpr = e->get_arg(ite - udf->getArgVars().begin());
@@ -1286,7 +1286,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     break;
   }
 
-  case exit_catcher_expr_kind: 
+  case exit_catcher_expr_kind:
   {
     exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
 
@@ -1315,12 +1315,12 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
       markForSerialization(e->get_arg_expr(i));
     }
 
-    std::vector<var_expr_t> globalVars;
+    std::vector<var_expr*> globalVars;
     e->get_sctx()->getVariables(globalVars, true, true);
-  
-    FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+
+    FOR_EACH(std::vector<var_expr*>, ite, globalVars)
     {
-      var_expr* globalVar = (*ite).getp();
+      var_expr* globalVar = (*ite);
       markForSerialization(globalVar);
     }
 
@@ -1334,14 +1334,14 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
   case dynamic_function_invocation_expr_kind:
   {
-    dynamic_function_invocation_expr* e = 
+    dynamic_function_invocation_expr* e =
     static_cast<dynamic_function_invocation_expr*>(node);
 
-    const std::vector<expr_t>& args = e->get_args();
+    const std::vector<expr*>& args = e->get_args();
 
-    FOR_EACH(std::vector<expr_t>, ite, args)
+    FOR_EACH(std::vector<expr*>, ite, args)
     {
-      markForSerialization((*ite).getp());
+      markForSerialization((*ite));
     }
 
     break;
@@ -1383,10 +1383,10 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   node->setWillBeSerialized(ANNOTATION_TRUE);
 
   ExprIterator iter(node);
-  while(!iter.done()) 
+  while(!iter.done())
   {
-    expr* child = (*iter).getp();
-    if (child != NULL) 
+    expr* child = (**iter);
+    if (child != NULL)
     {
       markForSerialization(child);
     }

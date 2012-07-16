@@ -43,8 +43,8 @@ update_expr_base::update_expr_base(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    const expr_t& targetExpr,
-    const expr_t& sourceExpr)
+    expr* targetExpr,
+    expr* sourceExpr)
   :
   expr(ccb, sctx, loc, kind),
   theTargetExpr(targetExpr),
@@ -73,8 +73,8 @@ insert_expr::insert_expr(
     static_context* sctx,
     const QueryLoc& loc,
     store::UpdateConsts::InsertType aType,
-    const expr_t& sourceExpr,
-    const expr_t& targetExpr)
+    expr* sourceExpr,
+    expr* targetExpr)
   :
   update_expr_base(ccb, sctx, loc, insert_expr_kind, targetExpr, sourceExpr),
   theType(aType)
@@ -82,7 +82,7 @@ insert_expr::insert_expr(
 }
 
 
-expr_t insert_expr::clone(substitution_t& subst) const
+expr* insert_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_insert_expr(theSctx,
                          get_loc(),
@@ -99,14 +99,14 @@ delete_expr::delete_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& targetExpr)
+    expr* targetExpr)
   :
   update_expr_base(ccb, sctx, loc, delete_expr_kind, targetExpr, NULL)
 {
 }
 
 
-expr_t delete_expr::clone(substitution_t& subst) const
+expr* delete_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
 }
@@ -120,8 +120,8 @@ replace_expr::replace_expr(
     static_context* sctx,
     const QueryLoc& loc,
     store::UpdateConsts::ReplaceType aType,
-    const expr_t& targetExpr,
-    const expr_t& replaceExpr)
+    expr* targetExpr,
+    expr* replaceExpr)
   :
   update_expr_base(ccb, sctx, loc, replace_expr_kind, targetExpr, replaceExpr),
   theType(aType)
@@ -129,7 +129,7 @@ replace_expr::replace_expr(
 }
 
 
-expr_t replace_expr::clone(substitution_t& subst) const
+expr* replace_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_replace_expr(theSctx,
                           get_loc(),
@@ -146,15 +146,15 @@ rename_expr::rename_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& targetExpr,
-    const expr_t& nameExpr)
+    expr* targetExpr,
+    expr* nameExpr)
   :
   update_expr_base(ccb, sctx, loc, rename_expr_kind, targetExpr, nameExpr)
 {
 }
 
 
-expr_t rename_expr::clone(substitution_t& subst) const
+expr* rename_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_rename_expr(theSctx,
                          get_loc(),
@@ -166,7 +166,7 @@ expr_t rename_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-copy_clause::copy_clause(var_expr_t aVar, expr_t aExpr)
+copy_clause::copy_clause(var_expr* aVar, expr_t aExpr)
   :
   theVar(aVar),
   theExpr(aExpr)
@@ -186,11 +186,11 @@ copy_clause_t copy_clause::clone(expr::substitution_t& subst) const
 {
   ZORBA_ASSERT(theVar && theExpr);
 
-  expr_t domainCopy = theExpr->clone(subst);
+  expr* domainCopy = theExpr->clone(subst);
 
-  var_expr_t varCopy = theExpr->get_ccb()->theEM->create_var_expr(*theVar);
+  var_expr* varCopy = theExpr->get_ccb()->theEM->create_var_expr(*theVar);
 
-  subst[theVar.getp()] = varCopy.getp();
+  subst[theVar] = varCopy;
 
   return new copy_clause(varCopy, domainCopy);
 }
@@ -246,7 +246,7 @@ void transform_expr::compute_scripting_kind()
 }
 
 
-expr_t transform_expr::clone(substitution_t& subst) const
+expr* transform_expr::clone(substitution_t& subst) const
 {
   ZORBA_ASSERT(theModifyExpr && theReturnExpr);
 
@@ -263,7 +263,7 @@ expr_t transform_expr::clone(substitution_t& subst) const
   cloneExpr->setModifyExpr(theModifyExpr->clone(subst));
   cloneExpr->setReturnExpr(theReturnExpr->clone(subst));
 
-  return cloneExpr.getp();
+  return cloneExpr;
 }
 
 

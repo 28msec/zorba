@@ -944,7 +944,7 @@ void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) 
+  if (type != NULL)
   {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
@@ -1498,7 +1498,7 @@ StaticContextImpl::invoke(
     // The same is true for this sctx
     Iterator_t lIter = impl->iterator();
     return new InvokeItemSequence(impl.release(), lIter, const_cast<StaticContextImpl*>(this));
-  } 
+  }
   catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
@@ -1543,20 +1543,20 @@ void
 StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 {
   ZORBA_TRY
-  std::vector<var_expr_t> lVars;
+  std::vector<var_expr*> lVars;
   theCtx->getVariables(lVars, true, false, true);
 
-  std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
-  std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
+  std::vector<var_expr*>::const_iterator lIte = lVars.begin();
+  std::vector<var_expr*>::const_iterator lEnd = lVars.end();
   std::vector<store::Item_t> lExVars;
 
-  for (; lIte != lEnd; ++lIte) 
-  { 
-    lExVars.push_back(lIte->getp()->get_name());        
+  for (; lIte != lEnd; ++lIte)
+  {
+    lExVars.push_back((*lIte)->get_name());
   }
 
   Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
-  aVarsIter = vIter; 
+  aVarsIter = vIter;
   ZORBA_CATCH
 }
 

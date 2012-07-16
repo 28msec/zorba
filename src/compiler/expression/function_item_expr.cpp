@@ -34,8 +34,8 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& anExpr,
-    const std::vector<expr_t>& args)
+    expr* anExpr,
+    const std::vector<expr*>& args)
   :
   expr(ccb, sctx, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
@@ -56,10 +56,10 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 }
 
 
-expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
+expr* dynamic_function_invocation_expr::clone(substitution_t& s) const
 {
-  checked_vector<expr_t> lNewArgs;
-  for (checked_vector<expr_t>::const_iterator lIter = theArgs.begin();
+  checked_vector<expr*> lNewArgs;
+  for (checked_vector<expr*>::const_iterator lIter = theArgs.begin();
        lIter != theArgs.end();
        ++lIter)
   {
@@ -123,7 +123,7 @@ void function_item_expr::add_variable(expr* var)
 }
 
 
-const std::vector<expr_t>& function_item_expr::get_vars() const
+const std::vector<expr*>& function_item_expr::get_vars() const
 {
   return theScopedVariables;
 }
@@ -144,7 +144,7 @@ void function_item_expr::compute_scripting_kind()
 }
 
 
-expr_t function_item_expr::clone(substitution_t& s) const
+expr* function_item_expr::clone(substitution_t& s) const
 {
   std::auto_ptr<function_item_expr> lNewExpr(
       theCCB->theEM->create_function_item_expr(theSctx,
@@ -154,8 +154,8 @@ expr_t function_item_expr::clone(substitution_t& s) const
                              theArity)
   );
 
-  std::vector<expr_t> lNewVariables;
-  for (std::vector<expr_t>::const_iterator lIter = theScopedVariables.begin();
+  std::vector<expr*> lNewVariables;
+  for (std::vector<expr*>::const_iterator lIter = theScopedVariables.begin();
        lIter != theScopedVariables.end();
        ++lIter)
   {

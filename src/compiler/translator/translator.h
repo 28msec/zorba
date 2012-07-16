@@ -23,7 +23,7 @@
 namespace zorba
 {
 
-expr_t translate (const parsenode &, CompilerCB* aCompilerCB);
+expr* translate (const parsenode &, CompilerCB* aCompilerCB);
 
 }
 #endif

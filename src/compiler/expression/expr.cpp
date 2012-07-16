@@ -94,9 +94,9 @@ if_expr::if_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t condExpr,
-    expr_t thenExpr,
-    expr_t elseExpr)
+    expr* condExpr,
+    expr* thenExpr,
+    expr* elseExpr)
   :
   expr(ccb, sctx, loc, if_expr_kind),
   theThenExpr(thenExpr),
@@ -166,7 +166,7 @@ void if_expr::compute_scripting_kind()
 }
 
 
-expr_t if_expr::clone(substitution_t& subst) const
+expr* if_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_if_expr(theSctx,
                      get_loc(),
@@ -184,7 +184,7 @@ order_expr::order_expr(
     static_context* sctx,
     const QueryLoc& loc,
     order_type_t type,
-    expr_t inExpr)
+    expr* inExpr)
   :
   expr(ccb, sctx, loc, order_expr_kind),
   theType(type),
@@ -203,7 +203,7 @@ void order_expr::compute_scripting_kind()
 }
 
 
-expr_t order_expr::clone(substitution_t& subst) const
+expr* order_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_order_expr(theSctx, get_loc(), get_type(), get_expr()->clone(subst));
 }
@@ -218,7 +218,7 @@ validate_expr::validate_expr(
     const QueryLoc& loc,
     enum ParseConstants::validation_mode_t mode,
     const store::Item_t& typeName,
-    expr_t inExpr,
+    expr* inExpr,
     rchandle<TypeManager> typemgr)
   :
   expr(ccb, sctx, loc, validate_expr_kind),
@@ -242,7 +242,7 @@ void validate_expr::compute_scripting_kind()
 }
 
 
-expr_t validate_expr::clone(substitution_t& subst) const
+expr* validate_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_validate_expr(theSctx,
                            get_loc(),
@@ -284,7 +284,7 @@ cast_or_castable_base_expr::cast_or_castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    const expr_t& input,
+    expr* input,
     const xqtref_t& type)
   :
   expr(ccb, sctx, loc, kind),
@@ -329,7 +329,7 @@ cast_base_expr::cast_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    const expr_t& input,
+    expr* input,
     const xqtref_t& type)
   :
   cast_or_castable_base_expr(ccb, sctx, loc, kind, input, type)
@@ -347,7 +347,7 @@ cast_expr::cast_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inputExpr,
+    expr* inputExpr,
     const xqtref_t& type)
   :
   cast_base_expr(ccb, sctx, loc, cast_expr_kind, inputExpr, type)
@@ -363,7 +363,7 @@ bool cast_expr::is_optional() const
 }
 
 
-expr_t cast_expr::clone(substitution_t& subst) const
+expr* cast_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_cast_expr(theSctx,
                        get_loc(),
@@ -379,7 +379,7 @@ treat_expr::treat_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inputExpr,
+    expr* inputExpr,
     const xqtref_t& type,
     TreatIterator::ErrorKind err,
     bool check_prime,
@@ -393,7 +393,7 @@ treat_expr::treat_expr(
 }
 
 
-expr_t treat_expr::clone(substitution_t& subst) const
+expr* treat_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_treat_expr(theSctx,
                         get_loc(),
@@ -412,7 +412,7 @@ promote_expr::promote_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& input,
+    expr* input,
     const xqtref_t& type,
     PromoteIterator::ErrorKind err,
     store::Item* qname)
@@ -424,7 +424,7 @@ promote_expr::promote_expr(
 }
 
 
-expr_t promote_expr::clone(substitution_t& subst) const
+expr* promote_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_promote_expr(theSctx,
                           get_loc(),
@@ -443,7 +443,7 @@ castable_base_expr::castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_kind_t kind,
-    const expr_t& input,
+    expr* input,
     const xqtref_t& type)
   :
   cast_or_castable_base_expr(ccb, sctx, loc, kind, input, type)
@@ -460,7 +460,7 @@ castable_expr::castable_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inputExpr,
+    expr* inputExpr,
     const xqtref_t& type)
   :
   castable_base_expr (ccb, sctx, loc, castable_expr_kind, inputExpr, type)
@@ -474,7 +474,7 @@ bool castable_expr::is_optional() const
 }
 
 
-expr_t castable_expr::clone(substitution_t& subst) const
+expr* castable_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_castable_expr(theSctx,
                            get_loc(),
@@ -490,7 +490,7 @@ instanceof_expr::instanceof_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inputExpr,
+    expr* inputExpr,
     const xqtref_t& type,
     bool checkPrimeOnly)
   :
@@ -500,7 +500,7 @@ instanceof_expr::instanceof_expr(
 }
 
 
-expr_t instanceof_expr::clone(substitution_t& subst) const
+expr* instanceof_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_instanceof_expr(theSctx,
                              get_loc(),
@@ -516,7 +516,7 @@ name_cast_expr::name_cast_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t inputExpr,
+    expr* inputExpr,
     const namespace_context* aNSCtx,
     bool isAttrName)
   :
@@ -539,7 +539,7 @@ void name_cast_expr::compute_scripting_kind()
 }
 
 
-expr_t name_cast_expr::clone(substitution_t& subst) const
+expr* name_cast_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_name_cast_expr(theSctx,
                             get_loc(),
@@ -578,7 +578,7 @@ void doc_expr::compute_scripting_kind()
 }
 
 
-expr_t doc_expr::clone(substitution_t& subst) const
+expr* doc_expr::clone(substitution_t& subst) const
 {
   doc_expr* clone = theCCB->theEM->create_doc_expr(theSctx,
                                  get_loc(),
@@ -660,7 +660,7 @@ void elem_expr::compute_scripting_kind()
 }
 
 
-expr_t elem_expr::clone(substitution_t& subst) const
+expr* elem_expr::clone(substitution_t& subst) const
 {
   elem_expr* clone =  theCCB->theEM->create_elem_expr(theSctx,
                                     get_loc(),
@@ -680,8 +680,8 @@ attr_expr::attr_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aQNameExpr,
-    expr_t aValueExpr)
+    expr* aQNameExpr,
+    expr* aValueExpr)
   :
   expr(ccb, sctx, loc, attr_expr_kind),
   theQNameExpr(aQNameExpr),
@@ -695,7 +695,7 @@ attr_expr::attr_expr(
 
 const store::Item* attr_expr::getQName() const
 {
-  const_expr* qnExpr =  dynamic_cast<const_expr*>(theQNameExpr.getp());
+  const_expr* qnExpr =  dynamic_cast<const_expr*>(theQNameExpr);
   if (qnExpr != 0)
     return qnExpr->get_val();
 
@@ -727,7 +727,7 @@ void attr_expr::compute_scripting_kind()
 }
 
 
-expr_t attr_expr::clone(substitution_t& subst) const
+expr* attr_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_attr_expr(theSctx,
                        get_loc(),
@@ -747,7 +747,7 @@ text_expr::text_expr(
     static_context* sctx,
     const QueryLoc& loc,
     text_constructor_type type_arg,
-    expr_t content)
+    expr* content)
   :
   expr(ccb, sctx, loc, text_expr_kind),
   type(type_arg),
@@ -770,7 +770,7 @@ void text_expr::compute_scripting_kind()
 }
 
 
-expr_t text_expr::clone(substitution_t& subst) const
+expr* text_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_text_expr(theSctx, get_loc(), get_type(), CLONE(get_text(), subst));
 }
@@ -783,8 +783,8 @@ pi_expr::pi_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t targetExpr,
-    expr_t contentExpr)
+    expr* targetExpr,
+    expr* contentExpr)
 :
   expr(ccb, sctx, loc, pi_expr_kind),
   theTargetExpr(targetExpr),
@@ -820,7 +820,7 @@ void pi_expr::compute_scripting_kind()
 }
 
 
-expr_t pi_expr::clone(substitution_t& subst) const
+expr* pi_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_pi_expr(theSctx,
                      get_loc(),
@@ -834,7 +834,7 @@ expr_t pi_expr::clone(substitution_t& subst) const
   Normally, it is used to wrap a var_expr in order to represent a var reference
   (see var_expr.h). But it may wrap any other kind of expr as well.
 ********************************************************************************/
-wrapper_expr::wrapper_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_t wrapped)
+wrapper_expr::wrapper_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* wrapped)
   :
   expr(ccb, sctx, loc, wrapper_expr_kind),
   theWrappedExpr(wrapped)
@@ -849,9 +849,9 @@ void wrapper_expr::compute_scripting_kind()
 }
 
 
-expr_t wrapper_expr::clone(substitution_t& subst) const
+expr* wrapper_expr::clone(substitution_t& subst) const
 {
-  expr_t e = theWrappedExpr->clone(subst);
+  expr* e = theWrappedExpr->clone(subst);
 
   if (theWrappedExpr->get_expr_kind() == var_expr_kind &&
       e->get_expr_kind() != var_expr_kind)
@@ -973,7 +973,7 @@ void const_expr::compute_scripting_kind()
 }
 
 
-expr_t const_expr::clone(substitution_t&) const
+expr* const_expr::clone(substitution_t&) const
 {
   return theCCB->theEM->create_const_expr(theSctx, get_loc(), theValue);
 }
@@ -1005,7 +1005,7 @@ extension_expr::extension_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t e)
+    expr* e)
   :
   expr(ccb, sctx, loc, extension_expr_kind),
   theExpr(e)
@@ -1025,9 +1025,9 @@ void extension_expr::compute_scripting_kind()
 }
 
 
-expr_t extension_expr::clone(substitution_t& subst) const
+expr* extension_expr::clone(substitution_t& subst) const
 {
-  rchandle<extension_expr> lClone(0);
+  extension_expr* lClone(0);
   lClone = (
     theExpr == 0 ? theCCB->theEM->create_extension_expr(theSctx, get_loc())
                  : theCCB->theEM->create_extension_expr(theSctx, get_loc(), theExpr->clone()) );
@@ -1038,7 +1038,7 @@ expr_t extension_expr::clone(substitution_t& subst) const
   {
     lClone->add(*lIter);
   }
-  return lClone.getp();
+  return lClone;
 }
 
 
@@ -1062,7 +1062,7 @@ trycatch_expr::trycatch_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t tryExpr)
+    expr* tryExpr)
   :
   expr(ccb, sctx, loc, trycatch_expr_kind),
   theTryExpr(tryExpr)
@@ -1071,7 +1071,7 @@ trycatch_expr::trycatch_expr(
 }
 
 
-void trycatch_expr::add_catch_expr(expr_t e)
+void trycatch_expr::add_catch_expr(expr* e)
 {
   theCatchExprs.insert(theCatchExprs.begin(), e);
 
@@ -1100,7 +1100,7 @@ void trycatch_expr::compute_scripting_kind()
 
   for (csize i = 0; i < numCatchClauses; ++i)
   {
-    const expr* catchExpr = theCatchExprs[i].getp();
+    const expr* catchExpr = theCatchExprs[i];
     short catchKind = catchExpr->get_scripting_detail();
 
     if (catchKind == VACUOUS_EXPR)
@@ -1153,19 +1153,19 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
        lIter != theVarMap.end();
        ++lIter)
   {
-    lClause->add_var((catch_clause::var_type)lIter->first, lIter->second.getp());
+    lClause->add_var((catch_clause::var_type)lIter->first, lIter->second);
   }
 
   return lClause.getp();
 }
 
 
-expr_t trycatch_expr::clone(substitution_t& subst) const
+expr* trycatch_expr::clone(substitution_t& subst) const
 {
   std::auto_ptr<trycatch_expr> lTryCatch(
       theCCB->theEM->create_trycatch_expr(theSctx, get_loc(), theTryExpr->clone(subst)));
 
-  for (std::vector<expr_t>::const_iterator lIter = theCatchExprs.begin();
+  for (std::vector<expr*>::const_iterator lIter = theCatchExprs.begin();
        lIter != theCatchExprs.end();
        ++lIter)
   {
@@ -1189,7 +1189,7 @@ eval_expr::eval_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& e,
+    expr* e,
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
   :
@@ -1227,9 +1227,9 @@ void eval_expr::compute_scripting_kind()
 }
 
 
-expr_t eval_expr::clone(substitution_t& s) const
+expr* eval_expr::clone(substitution_t& s) const
 {
-  rchandle<eval_expr> new_eval = theCCB->theEM->create_eval_expr(
+  eval_expr* new_eval = theCCB->theEM->create_eval_expr(
                                                NULL,
                                                theSctx,
                                                theLoc,
@@ -1240,12 +1240,12 @@ expr_t eval_expr::clone(substitution_t& s) const
 
   for (csize i = 0; i < theVars.size(); ++i)
   {
-    var_expr_t cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s).getp());
+    var_expr* cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s));
     assert(cloneVar != NULL);
     new_eval->add_var(cloneVar, theArgs[i]->clone(s));
   }
 
-  return new_eval.getp();
+  return new_eval;
 }
 
 
@@ -1257,7 +1257,7 @@ debugger_expr::debugger_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& aChild,
+    expr* aChild,
     namespace_context* nsCtx,
     bool aIsVarDeclaration)
   :
@@ -1284,7 +1284,7 @@ function_trace_expr::function_trace_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    expr_t aChild)
+    expr* aChild)
   :
   expr(ccb, sctx, loc, aChild->get_expr_kind()),
   theExpr(aChild),
@@ -1296,7 +1296,7 @@ function_trace_expr::function_trace_expr(
 }
 
 
-function_trace_expr::function_trace_expr(expr_t aExpr)
+function_trace_expr::function_trace_expr(expr* aExpr)
   :
   expr(aExpr->get_ccb(), aExpr->get_sctx(), aExpr->get_loc(), function_trace_expr_kind),
   theExpr(aExpr),
@@ -1319,7 +1319,7 @@ void function_trace_expr::compute_scripting_kind()
 }
 
 
-expr_t function_trace_expr::clone(substitution_t& s) const
+expr* function_trace_expr::clone(substitution_t& s) const
 {
   function_trace_expr* clone = theCCB->theEM->
       create_function_trace_expr(theExpr->clone(s));

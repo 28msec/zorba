@@ -38,10 +38,8 @@ namespace zorba
 class static_context;
 
 class expr;
-typedef rchandle<expr> expr_t;
 
 class wrapper_expr;
-typedef rchandle<wrapper_expr> wrapper_expr_t;
 
 class expr_visitor;
 
@@ -133,9 +131,7 @@ class expr : public SimpleRCObject
   friend class function_trace_expr;
 
 public:
-  typedef rchandle<expr> expr_t;
-
-  typedef std::map<const expr *, expr_t> substitution_t;
+  typedef std::map<const expr *, expr*> substitution_t;
 
   typedef substitution_t::iterator subst_iter_t;
 
@@ -171,8 +167,8 @@ public:
 
 
 protected:
-  static expr_t      iter_end_expr;
-  static expr_t    * iter_done;
+  static expr*      iter_end_expr;
+  static expr*    * iter_done;
 
 protected:
   static_context   * theSctx;
@@ -245,9 +241,9 @@ public:
 
   xqtref_t get_return_type();
 
-  expr_t clone() const;
+  expr* clone() const;
 
-  virtual expr_t clone(substitution_t& substitution) const;
+  virtual expr* clone(substitution_t& substitution) const;
 
   virtual void accept(expr_visitor& v) = 0;
 
@@ -335,7 +331,7 @@ public:
 
   bool is_nondeterministic() const;
 
-  void replace_expr(const expr* oldExpr, const expr* newExpr);
+  void replace_expr(expr* oldExpr, expr* newExpr);
 
   bool contains_expr(const expr* e) const;
 

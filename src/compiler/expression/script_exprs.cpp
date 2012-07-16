@@ -49,7 +49,7 @@ block_expr::block_expr(
     static_context* sctx,
     const QueryLoc& loc,
     bool allowLastUpdating,
-    std::vector<expr_t>& seq,
+    std::vector<expr*>& seq,
     std::vector<var_expr*>* assignedVars)
   :
   expr(ccb, sctx, loc, block_expr_kind),
@@ -64,7 +64,7 @@ block_expr::~block_expr()
 }
 
 
-void block_expr::add_at(csize pos, const expr_t& arg)
+void block_expr::add_at(csize pos, expr* arg)
 {
   assert(arg->get_expr_kind() != var_set_expr_kind);
 
@@ -97,7 +97,7 @@ void block_expr::compute_scripting_kind2(
 
     if (theArgs[i]->get_expr_kind() == var_decl_expr_kind)
     {
-      var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i].getp());
+      var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i]);
 
       var_expr* varExpr = varDeclExpr->get_var_expr();
 
@@ -166,9 +166,9 @@ void block_expr::compute_scripting_kind2(
 }
 
 
-expr_t block_expr::clone(substitution_t& subst) const
+expr* block_expr::clone(substitution_t& subst) const
 {
-  checked_vector<expr_t> seq2;
+  checked_vector<expr*> seq2;
   for (csize i = 0; i < theArgs.size(); ++i)
     seq2.push_back(theArgs[i]->clone(subst));
 
@@ -183,7 +183,7 @@ apply_expr::apply_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr,
+    expr* inExpr,
     bool discardXDM)
   :
   expr(ccb, sctx, loc, apply_expr_kind),
@@ -205,7 +205,7 @@ void apply_expr::compute_scripting_kind()
 }
 
 
-expr_t apply_expr::clone(substitution_t& subst) const
+expr* apply_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
 }
@@ -218,8 +218,8 @@ var_decl_expr::var_decl_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const var_expr_t& varExpr,
-    const expr_t& initExpr)
+    var_expr* varExpr,
+    expr* initExpr)
   :
   expr(ccb, sctx, loc, var_decl_expr_kind),
   theVarExpr(varExpr),
@@ -262,10 +262,10 @@ void var_decl_expr::compute_scripting_kind()
 }
 
 
-expr_t var_decl_expr::clone(substitution_t& s) const
+expr* var_decl_expr::clone(substitution_t& s) const
 {
-  var_expr_t varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
-  s[theVarExpr.getp()] = varCopy.getp();
+  var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
+  s[theVarExpr] = varCopy;
 
   return theCCB->theEM->create_var_decl_expr(theSctx,
                            get_loc(),
@@ -281,8 +281,8 @@ var_set_expr::var_set_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const var_expr_t& varExpr,
-    const expr_t& setExpr)
+    var_expr* varExpr,
+    expr* setExpr)
   :
   expr(ccb, sctx, loc, var_set_expr_kind),
   theVarExpr(varExpr),
@@ -319,15 +319,15 @@ void var_set_expr::compute_scripting_kind()
 }
 
 
-expr_t var_set_expr::clone(substitution_t& s) const
+expr* var_set_expr::clone(substitution_t& s) const
 {
-  expr_t varClone = theVarExpr->clone(s);
+  expr* varClone = theVarExpr->clone(s);
 
   ZORBA_ASSERT(varClone->get_expr_kind() == var_expr_kind);
 
   return theCCB->theEM->create_var_set_expr(theSctx,
                           get_loc(),
-                          static_cast<var_expr*>(varClone.getp()),
+                          static_cast<var_expr*>(varClone),
                           theExpr->clone(s));
 }
 
@@ -339,7 +339,7 @@ exit_expr::exit_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr)
+    expr* inExpr)
   :
   expr(ccb, sctx, loc, exit_expr_kind),
   theExpr(inExpr),
@@ -368,7 +368,7 @@ void exit_expr::compute_scripting_kind()
 }
 
 
-expr_t exit_expr::clone(substitution_t& subst) const
+expr* exit_expr::clone(substitution_t& subst) const
 {
   expr* clone = theCCB->theEM->create_exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
 
@@ -385,7 +385,7 @@ exit_catcher_expr::exit_catcher_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr,
+    expr* inExpr,
     std::vector<expr*>& exitExprs)
   :
   expr(ccb, sctx, loc, exit_catcher_expr_kind),
@@ -438,9 +438,9 @@ void exit_catcher_expr::removeExitExpr(const expr* exitExpr)
 }
 
 
-expr_t exit_catcher_expr::clone(substitution_t& subst) const
+expr* exit_catcher_expr::clone(substitution_t& subst) const
 {
-  expr_t clonedInput = get_expr()->clone(subst);
+  expr* clonedInput = get_expr()->clone(subst);
 
   std::vector<expr*> clonedExits;
   std::vector<expr*>::const_iterator ite = theExitExprs.begin();
@@ -479,7 +479,7 @@ void flowctl_expr::compute_scripting_kind()
 }
 
 
-expr_t flowctl_expr::clone(substitution_t& subst) const
+expr* flowctl_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_flowctl_expr(theSctx, get_loc(), get_action());
 }
@@ -488,7 +488,7 @@ expr_t flowctl_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-while_expr::while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_t body)
+while_expr::while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* body)
   :
   expr(ccb, sctx, loc, while_expr_kind),
   theBody(body)
@@ -499,7 +499,7 @@ while_expr::while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& lo
 
 void while_expr::compute_scripting_kind()
 {
-  block_expr* seqExpr = static_cast<block_expr*>(theBody.getp());
+  block_expr* seqExpr = static_cast<block_expr*>(theBody);
 
   expr* condExpr = (*seqExpr)[0];
 
@@ -524,11 +524,10 @@ void while_expr::compute_scripting_kind()
 }
 
 
-expr_t while_expr::clone(substitution_t& subst) const
+expr* while_expr::clone(substitution_t& subst) const
 {
   return theCCB->theEM->create_while_expr(theSctx, get_loc(), get_body()->clone(subst));
 }
-
 
 
 }

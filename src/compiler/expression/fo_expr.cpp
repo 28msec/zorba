@@ -85,7 +85,7 @@ fo_expr::fo_expr(
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
-    const expr* arg)
+    expr* arg)
   :
   expr(ccb, sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
@@ -103,8 +103,8 @@ fo_expr::fo_expr(
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
-    const expr* arg1,
-    const expr* arg2)
+    expr* arg1,
+    expr* arg2)
   :
   expr(ccb, sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
@@ -123,7 +123,7 @@ fo_expr::fo_expr(
     static_context* sctx,
     const QueryLoc& loc,
     const function* f,
-    const std::vector<expr_t>& args)
+    const std::vector<expr*>& args)
   :
   expr(ccb, sctx, loc, fo_expr_kind),
   theArgs(args),
@@ -219,7 +219,7 @@ void fo_expr::compute_scripting_kind()
       if (theArgs[i] == NULL)
         continue;
 
-      expr* arg = theArgs[i].getp();
+      expr* arg = theArgs[i];
 
       if (arg->is_updating())
       {
@@ -252,7 +252,7 @@ void fo_expr::compute_scripting_kind()
 }
 
 
-expr_t fo_expr::clone(substitution_t& subst) const
+expr* fo_expr::clone(substitution_t& subst) const
 {
   if (get_func()->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
   {

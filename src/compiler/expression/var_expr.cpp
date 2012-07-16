@@ -43,7 +43,7 @@ SERIALIZE_INTERNAL_METHOD(var_expr)
 
 serialization::SerializeBaseClass* var_expr::class_factory::create_new(
     serialization::Archiver& ar)
-{                                                                    
+{
   return ar.get_ccb()->getExprManager()->create_var_expr(ar);
 }
 
@@ -310,7 +310,7 @@ void var_expr::compute_scripting_kind()
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr_t var_expr::clone(expr::substitution_t& subst) const
+expr* var_expr::clone(expr::substitution_t& subst) const
 {
   expr::subst_iter_t i = subst.find(this);
 

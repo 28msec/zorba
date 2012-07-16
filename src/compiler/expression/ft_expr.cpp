@@ -36,9 +36,9 @@ ftcontains_expr::ftcontains_expr(
   CompilerCB* ccb,
   static_context* sctx,
   QueryLoc const &loc,
-  expr_t range,
+  expr* range,
   ftnode *ftselection,
-  expr_t ftignore
+  expr* ftignore
 ) :
   expr(ccb, sctx, loc, ft_expr_kind ),
   range_( range ),
@@ -59,12 +59,12 @@ void ftcontains_expr::accept( expr_visitor &v ) {
   v.end_visit( *this );
 }
 
-expr_t ftcontains_expr::clone( substitution_t &s ) const {
+expr* ftcontains_expr::clone( substitution_t &s ) const {
   return theCCB->theEM->create_ftcontains_expr(
     theSctx, get_loc(),
     range_->clone( s ),
     ftselection_->clone( s ).release(),
-    ftignore_.isNull() ? 0 : ftignore_->clone( s )
+    ftignore_ == NULL ? 0 : ftignore_->clone( s )
   );
 }
 

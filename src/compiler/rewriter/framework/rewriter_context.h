@@ -90,7 +90,7 @@ public:
   VarIdMap                   * theVarIdMap;
   IdVarMap                   * theIdVarMap;
   ExprVarsMap                * theExprVarsMap;
-  std::vector<expr_t>          theFlworStack;
+  std::vector<expr*>           theFlworStack;
   std::vector<bool>            theInReturnClause;
 
 public:

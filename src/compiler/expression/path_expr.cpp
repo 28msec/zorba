@@ -50,7 +50,7 @@ relpath_expr::relpath_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc
 }
 
 
-void relpath_expr::add_back(expr_t step)
+void relpath_expr::add_back(expr* step)
 {
   if (step->is_updating())
   {
@@ -79,7 +79,7 @@ void relpath_expr::compute_scripting_kind()
 
   for (unsigned i = 0; i < size(); ++i)
   {
-    expr* step = theSteps[i].getp();
+    expr* step = theSteps[i];
 
     if (step->is_updating())
     {
@@ -100,7 +100,7 @@ void relpath_expr::compute_scripting_kind()
 }
 
 
-expr_t relpath_expr::clone(substitution_t& subst) const
+expr* relpath_expr::clone(substitution_t& subst) const
 {
   std::auto_ptr<relpath_expr> re(theCCB->theEM->create_relpath_expr(theSctx, get_loc()));
 
@@ -137,6 +137,10 @@ bool axis_step_expr::is_reverse_axis(axis_kind_t k)
           k == axis_kind_preceding_sibling);
 }
 
+void axis_step_expr::setTest(match_expr* v)
+{
+  theNodeTest = v;
+}
 
 void axis_step_expr::compute_scripting_kind()
 {
@@ -144,7 +148,7 @@ void axis_step_expr::compute_scripting_kind()
 }
 
 
-expr_t axis_step_expr::clone(substitution_t& subst) const
+expr* axis_step_expr::clone(substitution_t& subst) const
 {
   axis_step_expr* ae = theCCB->theEM->create_axis_step_expr(theSctx, get_loc());
   ae->setAxis(getAxis());
@@ -216,7 +220,7 @@ void match_expr::compute_scripting_kind()
 }
 
 
-expr_t match_expr::clone(substitution_t& subst) const
+expr* match_expr::clone(substitution_t& subst) const
 {
   match_expr* me = theCCB->theEM->create_match_expr(theSctx, get_loc());
   me->setTestKind(getTestKind());

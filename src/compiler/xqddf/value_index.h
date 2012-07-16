@@ -263,7 +263,7 @@ private:
 
   for_clause_t                    theDomainClause;
   csize                           theNumKeyExprs;
-  std::vector<expr_t>             theKeyExprs;
+  std::vector<expr*>              theKeyExprs;
   std::vector<xqtref_t>           theKeyTypes;
   std::vector<OrderModifier>      theOrderModifiers;
 
@@ -271,10 +271,10 @@ private:
 
   std::vector<expr*>              theDomainSourceExprs;
 
-  expr_t                          theBuildExpr;
+  expr*                           theBuildExpr;
   PlanIter_t                      theBuildPlan;
 
-  expr_t                          theDocIndexerExpr;
+  expr*                           theDocIndexerExpr;
   PlanIter_t                      theDocIndexerPlan;
   DocIndexer_t                    theDocIndexer;
 
@@ -320,19 +320,19 @@ public:
 
   expr* getDomainExpr() const;
 
-  void setDomainExpr(expr_t domainExpr);
+  void setDomainExpr(expr* domainExpr);
 
   var_expr* getDomainVariable() const;
 
-  void setDomainVariable(var_expr_t domainVar);
+  void setDomainVariable(var_expr* domainVar);
 
   var_expr* getDomainPositionVariable() const;
 
-  void setDomainPositionVariable(var_expr_t domainPosVar);
+  void setDomainPositionVariable(var_expr* domainPosVar);
 
   csize getNumKeyExprs() const { return theNumKeyExprs; }
 
-  void setKeyExpressions(const std::vector<expr_t>& keyExprs);
+  void setKeyExpressions(const std::vector<expr*>& keyExprs);
 
   const std::vector<xqtref_t>& getKeyTypes() const;
 

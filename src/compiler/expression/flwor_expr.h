@@ -48,8 +48,6 @@ typedef rchandle<orderby_clause> orderby_clause_t;
 typedef rchandle<materialize_clause> materialize_clause_t;
 typedef rchandle<group_clause> group_clause_t;
 
-typedef rchandle<flwor_expr> flwor_expr_t;
-
 
 /***************************************************************************//**
 
@@ -60,7 +58,7 @@ class flwor_clause : public SimpleRCObject
   friend class ExprIterator;
 
 public:
-  typedef std::vector<std::pair<expr_t, var_expr_t> > rebind_list_t;
+  typedef std::vector<std::pair<expr*, var_expr*> > rebind_list_t;
 
   typedef enum
   {
@@ -99,7 +97,7 @@ public:
 
   virtual expr* get_expr() const { return NULL; }
 
-  virtual void set_expr(expr_t v) { }
+  virtual void set_expr(expr* v) { }
 
   virtual var_expr* get_pos_var() const { return NULL; }
 
@@ -141,8 +139,8 @@ class forletwin_clause : public flwor_clause
   friend class ExprIterator;
 
 protected:
-  var_expr_t   theVarExpr;
-  expr_t       theDomainExpr;
+  var_expr*   theVarExpr;
+  expr*       theDomainExpr;
   CompilerCB * theCCB;
 
 public:
@@ -151,18 +149,18 @@ public:
         CompilerCB* exprMan,
         const QueryLoc& loc,
         ClauseKind kind,
-        var_expr_t varExpr,
-        expr_t domainExpr);
+        var_expr* varExpr,
+        expr* domainExpr);
 
   ~forletwin_clause();
 
-  void set_expr(expr_t v);
+  void set_expr(expr* v);
 
-  expr* get_expr() const { return theDomainExpr.getp(); }
+  expr* get_expr() const { return theDomainExpr; }
 
-  var_expr* get_var() const { return theVarExpr.getp(); }
+  var_expr* get_var() const { return theVarExpr; }
 
-  void set_var(var_expr_t v);
+  void set_var(var_expr* v);
 };
 
 
@@ -175,8 +173,8 @@ class for_clause : public forletwin_clause
   friend class ExprIterator;
 
 protected:
-  var_expr_t    thePosVarExpr;
-  var_expr_t    theScoreVarExpr;
+  var_expr*    thePosVarExpr;
+  var_expr*    theScoreVarExpr;
   bool          theAllowingEmpty;
 
 public:
@@ -184,10 +182,10 @@ public:
         static_context* sctx,
         CompilerCB* exprMan,
         const QueryLoc& loc,
-        var_expr_t varExpr,
-        expr_t domainExpr,
-        var_expr_t posVarExpr = NULL,
-        var_expr_t scoreVarExpr = NULL,
+        var_expr* varExpr,
+        expr* domainExpr,
+        var_expr* posVarExpr = NULL,
+        var_expr* scoreVarExpr = NULL,
         bool isOuter = false);
 
   ~for_clause();
@@ -201,9 +199,9 @@ public:
 
   var_expr* get_score_var() const;
 
-  void set_pos_var(var_expr_t v);
+  void set_pos_var(var_expr* v);
 
-  void set_score_var(var_expr_t v);
+  void set_score_var(var_expr* v);
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 
@@ -221,7 +219,7 @@ class let_clause : public forletwin_clause
   friend class ExprIterator;
 
 protected:
-  var_expr_t  theScoreVarExpr;
+  var_expr*  theScoreVarExpr;
   bool        theLazyEval;
 
 public:
@@ -229,8 +227,8 @@ public:
         static_context* sctx,
         CompilerCB* exprMan,
         const QueryLoc& loc,
-        var_expr_t varExpr,
-        expr_t domainExpr,
+        var_expr* varExpr,
+        expr* domainExpr,
         bool lazy = false);
 
   ~let_clause();
@@ -238,7 +236,7 @@ public:
 public:
   var_expr* get_score_var() const;
 
-  void set_score_var(var_expr_t v);
+  void set_score_var(var_expr* v);
 
   void setLazyEval(bool v) { theLazyEval = v; }
 
@@ -276,8 +274,8 @@ public:
         CompilerCB* exprMan,
         const QueryLoc& loc,
         window_t winKind,
-        var_expr_t varExpr,
-        expr_t domainExpr,
+        var_expr* varExpr,
+        expr* domainExpr,
         flwor_wincond_t winStart,
         flwor_wincond_t winStop,
         bool lazy = false);
@@ -343,10 +341,10 @@ class flwor_wincond : public SimpleRCObject
 public:
   struct vars
   {
-    var_expr_t posvar;
-    var_expr_t curr;
-    var_expr_t prev;
-    var_expr_t next;
+    var_expr* posvar;
+    var_expr* curr;
+    var_expr* prev;
+    var_expr* next;
 
     vars();
     ~vars();
@@ -361,7 +359,7 @@ protected:
   bool    theIsOnly;
   vars    theInputVars;
   vars    theOutputVars;
-  expr_t  theCondExpr;
+  expr*  theCondExpr;
 
   CompilerCB* theCCB;
 
@@ -372,11 +370,11 @@ public:
       bool isOnly,
       const vars& in_vars,
       const vars& out_vars,
-      expr_t cond);
+      expr* cond);
 
   ~flwor_wincond();
 
-  expr* get_cond() const { return theCondExpr.getp(); }
+  expr* get_cond() const { return theCondExpr; }
 
   void set_cond(expr* cond) { theCondExpr = cond; }
 
@@ -490,7 +488,7 @@ protected:
 
   bool                        theStableOrder;
   std::vector<OrderModifier>  theModifiers;
-  std::vector<expr_t>         theOrderingExprs;
+  std::vector<expr*>         theOrderingExprs;
 
 public:
   orderby_clause (
@@ -498,23 +496,23 @@ public:
       const QueryLoc& loc,
       bool stable,
       const std::vector<OrderModifier>& modifiers,
-      const std::vector<expr_t>& orderingExprs);
+      const std::vector<expr*>& orderingExprs);
 
   bool is_stable() const { return theStableOrder; }
 
   const std::vector<OrderModifier>& get_modifiers() const { return theModifiers; }
 
-  const std::vector<expr_t>& get_column_exprs() const { return theOrderingExprs; }
+  const std::vector<expr*>& get_column_exprs() const { return theOrderingExprs; }
 
-  std::vector<expr_t>::iterator begin() { return theOrderingExprs.begin(); }
+  std::vector<expr*>::iterator begin() { return theOrderingExprs.begin(); }
 
-  std::vector<expr_t>::iterator end() { return theOrderingExprs.end(); }
+  std::vector<expr*>::iterator end() { return theOrderingExprs.end(); }
 
   csize num_columns() const { return theOrderingExprs.size(); }
 
-  expr* get_column_expr(csize i) const { return theOrderingExprs[i].getp(); }
+  expr* get_column_expr(csize i) const { return theOrderingExprs[i]; }
 
-  void set_column_expr(csize i, expr_t e) { theOrderingExprs[i] = e; }
+  void set_column_expr(csize i, expr* e) { theOrderingExprs[i] = e; }
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 
@@ -550,14 +548,14 @@ class count_clause : public flwor_clause
   friend class ExprIterator;
 
 protected:
-  var_expr_t theVarExpr;
+  var_expr* theVarExpr;
 
 public:
-  count_clause(static_context* sctx, const QueryLoc& loc, var_expr_t var);
+  count_clause(static_context* sctx, const QueryLoc& loc, var_expr* var);
 
   ~count_clause();
 
-  var_expr* get_var() const { return theVarExpr.getp(); }
+  var_expr* get_var() const { return theVarExpr; }
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 };
@@ -571,14 +569,14 @@ class where_clause : public flwor_clause
   friend class ExprIterator;
   friend class flwor_expr;
 
-  expr_t theWhereExpr;
+  expr* theWhereExpr;
 
 public:
-  where_clause(static_context* sctx, const QueryLoc& loc, expr_t where);
+  where_clause(static_context* sctx, const QueryLoc& loc, expr* where);
 
-  expr* get_expr() const { return theWhereExpr.getp(); }
+  expr* get_expr() const { return theWhereExpr; }
 
-  void set_expr(expr_t where);
+  void set_expr(expr* where);
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 };
@@ -623,7 +621,7 @@ protected:
   bool          theIsGeneral;
   bool          theHasSequentialClauses;
   clause_list_t theClauses;
-  expr_t        theReturnExpr;
+  expr*        theReturnExpr;
 
 protected:
   flwor_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, bool general);
@@ -633,9 +631,9 @@ public:
 
   void set_general(bool v) { theIsGeneral = true; }
 
-  expr* get_return_expr() const { return theReturnExpr.getp(); }
+  expr* get_return_expr() const { return theReturnExpr; }
 
-  void set_return_expr(expr_t e)
+  void set_return_expr(expr* e)
   {
     theReturnExpr = e;
     compute_scripting_kind();
@@ -651,7 +649,7 @@ public:
 
   void add_clause(ulong pos, flwor_clause* c);
 
-  void add_where(expr_t e);
+  void add_where(expr* e);
 
   void remove_clause(csize pos);
 
@@ -665,7 +663,7 @@ public:
 
   void get_vars_defined(std::vector<var_expr*>& varExprs) const;
 
-  expr_t clone(substitution_t& substitution) const;
+  expr* clone(substitution_t& substitution) const;
 
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.

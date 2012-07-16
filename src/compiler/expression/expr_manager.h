@@ -46,8 +46,9 @@ public:
   expr* reg(expr*);
 
 private:
-  //An ExprManager is the only objecto to handle a collection of Exprs and
-  //the memory in which they recide. It makes no sense to copy it.
+  //An ExprManager is the only object to handle a collection of Exprs and
+  //the memory in which they recide. Copying it in a senseful way would.
+  //require copying all the memory, which is costly and useless.
   ExprManager(const ExprManager&);
   ExprManager& operator= (const ExprManager&);
 
@@ -62,34 +63,34 @@ public:
   if_expr* create_if_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      expr_t cond_expr,
-      expr_t then_expr,
-      expr_t else_expr);
+      expr* cond_expr,
+      expr* then_expr,
+      expr* else_expr);
 
   order_expr* create_order_expr(
       static_context* sctx,
       const QueryLoc& loc,
       order_expr::order_type_t,
-      expr_t);
+      expr*);
 
   validate_expr* create_validate_expr(
       static_context*,
       const QueryLoc&,
       ParseConstants::validation_mode_t,
       const store::Item_t& aTypeName,
-      expr_t validated,
+      expr* validated,
       rchandle<TypeManager>);
 
   cast_expr* create_cast_expr(
       static_context* sctx,
       const QueryLoc&,
-      expr_t,
+      expr*,
       xqtref_t);
 
   treat_expr* create_treat_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& input,
+      expr* input,
       const xqtref_t& type,
       TreatIterator::ErrorKind err,
       bool check_prime = true,
@@ -99,7 +100,7 @@ public:
   promote_expr* create_promote_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& input,
+      expr* input,
       const xqtref_t& type,
       PromoteIterator::ErrorKind err,
       store::Item* qname);
@@ -107,20 +108,20 @@ public:
   castable_expr* create_castable_expr(
       static_context* sctx,
       const QueryLoc&,
-      expr_t,
+      expr*,
       xqtref_t);
 
   instanceof_expr* create_instanceof_expr(
       static_context* sctx,
       const QueryLoc&,
-      expr_t,
+      expr*,
       xqtref_t,
       bool checkPrimeOnly = false);
 
   name_cast_expr* create_name_cast_expr(
       static_context* sctx,
       const QueryLoc&,
-      expr_t,
+      expr*,
       const namespace_context*,
       bool isAttr);
 
@@ -150,20 +151,20 @@ public:
   attr_expr* create_attr_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      expr_t aQNameExpr,
-      expr_t aValueExpr);
+      expr* aQNameExpr,
+      expr* aValueExpr);
 
   text_expr* create_text_expr(
       static_context* sctx,
       const QueryLoc&,
       text_expr::text_constructor_type,
-      expr_t);
+      expr*);
 
   pi_expr* create_pi_expr(
       static_context* sctx,
       const QueryLoc&,
-      expr_t,
-      expr_t);
+      expr*,
+      expr*);
 
   const_expr* create_const_expr(
       static_context* sctx,
@@ -219,32 +220,32 @@ public:
   extension_expr* create_extension_expr(
       static_context* sctx,
       const QueryLoc&,
-      expr_t);
+      expr*);
 
   catch_clause* create_catch_clause();
 
   trycatch_expr* create_trycatch_expr(
       static_context* sctx,
       const QueryLoc&,
-      expr_t tryExpr);
+      expr* tryExpr);
 
   wrapper_expr* create_wrapper_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      expr_t wrapped);
+      expr* wrapped);
 
   function_trace_expr* create_function_trace_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      expr_t aChild);
+      expr* aChild);
 
-  function_trace_expr* create_function_trace_expr(expr_t aExpr);
+  function_trace_expr* create_function_trace_expr(expr* aExpr);
 
   eval_expr* create_eval_expr(
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& e,
+      expr* e,
       expr_script_kind_t scriptingKind,
       namespace_context* nsCtx);
 
@@ -252,7 +253,7 @@ public:
   debugger_expr* create_debugger_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& aChild,
+      expr* aChild,
       namespace_context* nsCtx,
       bool aIsVarDeclaration);
 #endif
@@ -275,28 +276,28 @@ public:
       static_context* sctx,
       const QueryLoc&,
       store::UpdateConsts::InsertType,
-      const expr_t& aSourceExpr,
-      const expr_t& aTargetExpr);
+      expr* aSourceExpr,
+      expr* aTargetExpr);
 
   delete_expr* create_delete_expr(
       static_context* sctx,
       const QueryLoc&,
-      const expr_t&);
+      expr*);
 
   replace_expr* create_replace_expr(
       static_context* sctx,
       const QueryLoc&,
       store::UpdateConsts::ReplaceType aType,
-      const expr_t&,
-      const expr_t&);
+      expr*,
+      expr*);
 
   rename_expr* create_rename_expr(
       static_context* sctx,
       const QueryLoc&,
-      const expr_t&,
-      const expr_t&);
+      expr*,
+      expr*);
 
-  copy_clause* create_copy_clause(var_expr_t aVar, expr_t aExpr);
+  copy_clause* create_copy_clause(var_expr* aVar, expr_t aExpr);
 
   transform_expr* create_transform_expr(
       static_context* sctx,
@@ -306,36 +307,36 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       bool allowLastUpdating,
-      std::vector<expr_t>& seq,
+      std::vector<expr*>& seq,
       std::vector<var_expr*>* assignedVars);
 
   apply_expr* create_apply_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr,
+      expr* inExpr,
       bool discardXDM);
 
   var_decl_expr* create_var_decl_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const var_expr_t& varExpr,
-      const expr_t& initExpr);
+      var_expr* varExpr,
+      expr* initExpr);
 
   var_set_expr* create_var_set_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const var_expr_t& varExpr,
-      const expr_t& setExpr);
+      var_expr* varExpr,
+      expr* setExpr);
 
   exit_expr* create_exit_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr);
+      expr* inExpr);
 
   exit_catcher_expr* create_exit_catcher_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr,
+      expr* inExpr,
       std::vector<expr*>& exitExprs);
 
   flowctl_expr* create_flowctl_expr(
@@ -346,7 +347,7 @@ public:
   while_expr* create_while_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      expr_t body);
+      expr* body);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -361,8 +362,8 @@ public:
   dynamic_function_invocation_expr* create_dynamic_function_invocation_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& anExpr,
-      const std::vector<expr_t>& args);
+      expr* anExpr,
+      const std::vector<expr*>& args);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
@@ -378,9 +379,9 @@ public:
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
       QueryLoc const&,
-      expr_t range,
+      expr* range,
       ftnode *ftselection,
-      expr_t ftignore);
+      expr* ftignore);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -391,20 +392,20 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       const function* f,
-      const expr* arg);
+      expr* arg);
 
   fo_expr* create_fo_expr(
       static_context* sctx,
       const QueryLoc& loc,
       const function* f,
-      const expr* arg1,
-      const expr* arg2);
+      expr* arg1,
+      expr* arg2);
 
   fo_expr* create_fo_expr(
       static_context* sctx,
       const QueryLoc& loc,
       const function* f,
-      const std::vector<expr_t>& args);
+      const std::vector<expr*>& args);
 
   fo_expr* create_fo_expr(
     static_context* sctx,
@@ -416,25 +417,25 @@ public:
   for_clause* create_for_clause(
       static_context* sctx,
       const QueryLoc& loc,
-      var_expr_t varExpr,
-      expr_t domainExpr,
-      var_expr_t posVarExpr = NULL,
-      var_expr_t scoreVarExpr = NULL,
+      var_expr* varExpr,
+      expr* domainExpr,
+      var_expr* posVarExpr = NULL,
+      var_expr* scoreVarExpr = NULL,
       bool isOuter = false);
 
   let_clause* create_let_clause(
       static_context* sctx,
       const QueryLoc& loc,
-      var_expr_t varExpr,
-      expr_t domainExpr,
+      var_expr* varExpr,
+      expr* domainExpr,
       bool lazy = false);
 
   window_clause* create_window_clause(
       static_context* sctx,
       const QueryLoc& loc,
       window_clause::window_t winKind,
-      var_expr_t varExpr,
-      expr_t domainExpr,
+      var_expr* varExpr,
+      expr* domainExpr,
       flwor_wincond_t winStart,
       flwor_wincond_t winStop,
       bool lazy = false);
@@ -444,7 +445,7 @@ public:
       bool isOnly,
       const flwor_wincond::vars& in_vars,
       const flwor_wincond::vars& out_vars,
-      expr_t cond);
+      expr* cond);
 
   group_clause* create_group_clause(
       static_context* sctx,
@@ -458,7 +459,7 @@ public:
       const QueryLoc& loc,
       bool stable,
       const std::vector<OrderModifier>& modifiers,
-      const std::vector<expr_t>& orderingExprs);
+      const std::vector<expr*>& orderingExprs);
 
   materialize_clause* create_materialize_clause(
       static_context* sctx,
@@ -467,12 +468,12 @@ public:
   count_clause* create_count_clause(
       static_context* sctx,
       const QueryLoc& loc,
-      var_expr_t var);
+      var_expr* var);
 
   where_clause* create_where_clause(
       static_context* sctx,
       const QueryLoc& loc,
-      expr_t where);
+      expr* where);
 
   flwor_expr* create_flwor_expr(
       static_context* sctx,
@@ -487,19 +488,19 @@ public:
 json_array_expr* create_json_array_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& content);
+      expr* content);
 
 json_object_expr* create_json_object_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& content,
+      expr* content,
       bool accumulate);
 
 json_direct_object_expr* create_json_direct_object_expr(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<expr_t>& names,
-      std::vector<expr_t>& values);
+      std::vector<expr*>& names,
+      std::vector<expr*>& values);
 
 #endif
 

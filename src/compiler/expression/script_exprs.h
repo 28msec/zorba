@@ -108,7 +108,7 @@ class block_expr : public expr
   friend class expr;
 
 protected:
-  std::vector<expr_t> theArgs;
+  std::vector<expr*> theArgs;
 
 protected:
   block_expr(
@@ -116,13 +116,13 @@ protected:
       static_context* sctx,
       const QueryLoc& loc,
       bool allowLastUpdating,
-      std::vector<expr_t>& seq,
+      std::vector<expr*>& seq,
       std::vector<var_expr*>* assignedVars);
 
 public:
   ~block_expr();
 
-  void add_at(csize pos, const expr_t& arg);
+  void add_at(csize pos, expr* arg);
 
   csize size() const { return theArgs.size(); }
 
@@ -130,7 +130,7 @@ public:
 
   expr* operator[](csize i) { return theArgs[i]; }
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -155,7 +155,7 @@ class apply_expr : public expr
   friend class expr;
 
 private:
-  expr_t theExpr;
+  expr* theExpr;
   bool   theDiscardXDM;
 
 protected:
@@ -163,17 +163,17 @@ protected:
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr,
+      expr* inExpr,
       bool discardXDM);
 
 public:
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr;}
 
   bool discardsXDM() const { return theDiscardXDM; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -216,27 +216,27 @@ class var_decl_expr : public expr
   friend class expr;
 
 protected:
-  var_expr_t theVarExpr;
-  expr_t     theInitExpr;
+  var_expr* theVarExpr;
+  expr*     theInitExpr;
 
 protected:
   var_decl_expr(
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const var_expr_t& varExpr,
-      const expr_t& initExpr);
+      var_expr* varExpr,
+      expr* initExpr);
 
 public:
   ~var_decl_expr();
 
-  var_expr* get_var_expr() const { return theVarExpr.getp(); }
+  var_expr* get_var_expr() const { return theVarExpr; }
 
-  expr* get_init_expr() const { return theInitExpr.getp(); }
+  expr* get_init_expr() const { return theInitExpr; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -262,27 +262,27 @@ class var_set_expr : public expr
   friend class expr;
 
 protected:
-  var_expr_t theVarExpr;
-  expr_t     theExpr;
+  var_expr* theVarExpr;
+  expr*     theExpr;
 
 protected:
   var_set_expr(
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const var_expr_t& varExpr,
-      const expr_t& setExpr);
+      var_expr* varExpr,
+      expr* setExpr);
 
 public:
   ~var_set_expr();
 
-  var_expr* get_var_expr() const { return theVarExpr.getp(); }
+  var_expr* get_var_expr() const { return theVarExpr; }
 
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -300,7 +300,7 @@ class exit_expr : public expr
   friend class expr;
 
 private:
-  expr_t               theExpr;
+  expr*               theExpr;
 
   exit_catcher_expr  * theCatcherExpr;
 
@@ -309,18 +309,18 @@ protected:
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr);
+      expr* inExpr);
 
 public:
   ~exit_expr();
 
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr; }
 
   void setCatcherExpr(exit_catcher_expr* e) { theCatcherExpr = e; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -348,7 +348,7 @@ class exit_catcher_expr : public expr
   friend class expr;
 
 private:
-  expr_t             theExpr;
+  expr*             theExpr;
 
   std::vector<expr*> theExitExprs;
 
@@ -357,13 +357,13 @@ protected:
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr,
+      expr* inExpr,
       std::vector<expr*>& exitExprs);
 
 public:
   ~exit_catcher_expr();
 
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr; }
 
   std::vector<expr*>::const_iterator exitExprsBegin() const
   {
@@ -379,7 +379,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -408,7 +408,7 @@ protected:
 public:
   enum action get_action() const { return theAction; }
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void compute_scripting_kind();
 
@@ -432,17 +432,17 @@ class while_expr : public expr
   friend class expr;
 
 protected:
-  expr_t theBody;
+  expr* theBody;
 
 protected:
-  while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_t body);
+  while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* body);
 
 public:
-  expr* get_body() const { return theBody.getp(); }
+  expr* get_body() const { return theBody; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

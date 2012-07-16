@@ -41,25 +41,25 @@ class dynamic_function_invocation_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr_t                 theExpr;
-  std::vector<expr_t>    theArgs;
+  expr*                 theExpr;
+  std::vector<expr*>    theArgs;
 
 protected:
   dynamic_function_invocation_expr(
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& anExpr,
-      const std::vector<expr_t>& args);
+      expr* anExpr,
+      const std::vector<expr*>& args);
 
 public:
-  const expr_t get_function() const { return theExpr; }
+  const expr* get_function() const { return theExpr; }
 
-  const std::vector<expr_t>& get_args() const { return theArgs; }
+  const std::vector<expr*>& get_args() const { return theArgs; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -108,7 +108,7 @@ private:
   store::Item_t        theQName;
   function_t           theFunction;
   uint32_t             theArity;
-  std::vector<expr_t>  theScopedVariables;
+  std::vector<expr*>  theScopedVariables;
 
 public:
 
@@ -139,11 +139,11 @@ public:
 
   uint32_t get_arity() const { return theArity; }
 
-  const std::vector<expr_t>& get_vars() const;
+  const std::vector<expr*>& get_vars() const;
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
