@@ -210,6 +210,9 @@ class GeneralHashIndex : public GeneralIndex
 
   typedef IndexMap::iterator EntryIterator;
 
+  /*
+   * This iterator iterates over all index keys from all types
+   */
   class KeyIterator : public Index::KeyIterator
   {
   protected:

@@ -86,6 +86,8 @@ public:
 
         if (aIsGeneralIndex)
         {
+          // for general indices, the type of index key values
+          // is returned too
           GENV_ITEMFACTORY->createQName(lTypeAttrName,
                "", "", "type");
 
