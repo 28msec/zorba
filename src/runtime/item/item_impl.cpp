@@ -24,6 +24,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
+#include "util/mem_sizeof.h"
+
 using namespace std;
 
 namespace zorba {
@@ -31,7 +33,7 @@ namespace zorba {
 /*******************************************************************************
 ********************************************************************************/
 bool
-AllocatedSizeIterator::nextImpl(
+MemSizeIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -43,7 +45,7 @@ AllocatedSizeIterator::nextImpl(
 
   consumeNext(lItem, theChildren[0].getp(), planState);
 
-  lSize = xs_integer(lItem->alloc_size());
+  lSize = xs_integer(ztd::mem_sizeof(lItem));
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
 

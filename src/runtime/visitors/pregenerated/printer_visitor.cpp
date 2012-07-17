@@ -1922,18 +1922,18 @@ void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
 // </FunctionAnnotationsIterator>
 
 
-// <AllocatedSizeIterator>
-void PrinterVisitor::beginVisit ( const AllocatedSizeIterator& a) {
-  thePrinter.startBeginVisit("AllocatedSizeIterator", ++theId);
+// <MemSizeIterator>
+void PrinterVisitor::beginVisit ( const MemSizeIterator& a) {
+  thePrinter.startBeginVisit("MemSizeIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const AllocatedSizeIterator& ) {
+void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </AllocatedSizeIterator>
+// </MemSizeIterator>
 
 
 // <JSONParseInternal>

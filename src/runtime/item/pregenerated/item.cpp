@@ -32,17 +32,17 @@
 
 namespace zorba {
 
-// <AllocatedSizeIterator>
-SERIALIZABLE_CLASS_VERSIONS(AllocatedSizeIterator)
+// <MemSizeIterator>
+SERIALIZABLE_CLASS_VERSIONS(MemSizeIterator)
 
-void AllocatedSizeIterator::serialize(::zorba::serialization::Archiver& ar)
+void MemSizeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<AllocatedSizeIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<MemSizeIterator, PlanIteratorState>*)this);
 }
 
 
-void AllocatedSizeIterator::accept(PlanIterVisitor& v) const
+void MemSizeIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -55,9 +55,9 @@ void AllocatedSizeIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-AllocatedSizeIterator::~AllocatedSizeIterator() {}
+MemSizeIterator::~MemSizeIterator() {}
 
-// </AllocatedSizeIterator>
+// </MemSizeIterator>
 
 
 

@@ -38,11 +38,11 @@ void populate_context_item(static_context* sctx);
 
 
 
-//fn-zorba-item:allocated-size
-class fn_zorba_item_allocated_size : public function
+//fn-zorba-item:size
+class fn_zorba_item_size : public function
 {
 public:
-  fn_zorba_item_allocated_size(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_item_size(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

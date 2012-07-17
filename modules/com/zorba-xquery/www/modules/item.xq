@@ -36,4 +36,4 @@ declare option ver:module-version "1.0";
  :
  : @return the size allocated by the item in bytes.
  :)
-declare function item:allocated-size($item as item()) as xs:integer external;
+declare function item:size($item as item()) as xs:integer external;

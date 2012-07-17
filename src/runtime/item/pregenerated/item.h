@@ -37,25 +37,25 @@ namespace zorba {
  * 
  * Author: Zorba Team
  */
-class AllocatedSizeIterator : public NaryBaseIterator<AllocatedSizeIterator, PlanIteratorState>
+class MemSizeIterator : public NaryBaseIterator<MemSizeIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(AllocatedSizeIterator);
+  SERIALIZABLE_CLASS(MemSizeIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AllocatedSizeIterator,
-    NaryBaseIterator<AllocatedSizeIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MemSizeIterator,
+    NaryBaseIterator<MemSizeIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  AllocatedSizeIterator(
+  MemSizeIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<AllocatedSizeIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<MemSizeIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~AllocatedSizeIterator();
+  virtual ~MemSizeIterator();
 
   void accept(PlanIterVisitor& v) const;
 

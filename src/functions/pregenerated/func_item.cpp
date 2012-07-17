@@ -31,14 +31,14 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_item_allocated_size::codegen(
+PlanIter_t fn_zorba_item_size::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new AllocatedSizeIterator(sctx, loc, argv);
+  return new MemSizeIterator(sctx, loc, argv);
 }
 
 void populate_context_item(static_context* sctx)
@@ -46,11 +46,11 @@ void populate_context_item(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_item_allocated_size,
-        (createQName("http://www.zorba-xquery.com/modules/item","","allocated-size"), 
+    DECL_WITH_KIND(sctx, fn_zorba_item_size,
+        (createQName("http://www.zorba-xquery.com/modules/item","","size"), 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_ITEM_ALLOCATED_SIZE_1);
+        FunctionConsts::FN_ZORBA_ITEM_SIZE_1);
 
   }
 
