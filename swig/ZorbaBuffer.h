@@ -27,24 +27,33 @@
 class ZorbaBuffer
 {
 public:
-  ZorbaBuffer() {};
-  ZorbaBuffer(std::istream &aStream) {stream = &aStream; };
+  ZorbaBuffer():stream(0) {};
+  ZorbaBuffer(std::istream &aStream): stream(&aStream) {};
 
-  //BUFFER FROM ZORBA  
-  std::istream *stream;
-  
   //BUFFER TO ZORBA
-  int buffer[1024];
-  int len;
-
   virtual void fillBufferCallback();
   void setBuffer(int *aBuffer, int aLen);
 
+  //BUFFER FROM ZORBA
+  int * getBuffer();
+  int getLen();
+  
+  char * getBufferStream();
+  int read(char * aBuffer, int offset, int lenght);
+  
 private:
+  //FOR BUFFER TO ZORBA
+  int buffer[1024];
+  int len;
+
+  //FOR BUFFER FROM ZORBA
+  std::istream *stream;
+  char cBuffer[1024];
 
   // Copy contructor and assignment not allowed
   ZorbaBuffer(const ZorbaBuffer &);
   ZorbaBuffer &operator= (const ZorbaBuffer &);
+  
 
 };
 

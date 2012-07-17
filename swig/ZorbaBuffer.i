@@ -37,12 +37,39 @@ void ZorbaBuffer::fillBufferCallback()
 
 void ZorbaBuffer::setBuffer(int *aBuffer, int aLen)
 {
-    if (aLen > 0)
-      memcpy(buffer, aBuffer, aLen*sizeof(int));
-    len = aLen;
+  if (aLen > 0)
+    memcpy(buffer, aBuffer, aLen*sizeof(int));
+  len = aLen;
   return;
 }
 
+int * ZorbaBuffer::getBuffer()
+{
+  return buffer;
+}
+
+int ZorbaBuffer::getLen()
+{
+  return len;
+}
+
+char * ZorbaBuffer::getBufferStream()
+{
+  // Local fill buffer
+  stream->read(cBuffer, 1024);
+  len=stream->gcount();
+  return cBuffer;
+}
+
+int ZorbaBuffer::read(char * aBuffer, int offset, int lenght)
+{
+  // Local fill buffer
+  stream->seekg(offset);
+  stream->read(cBuffer, lenght);
+  len=stream->gcount();
+  aBuffer = cBuffer;
+  return len;
+}
 
 %}  // end   Implementation
 

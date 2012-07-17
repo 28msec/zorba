@@ -27,18 +27,18 @@ void ZorbaStream::checkBuffer()
   if (buffer==0)
   {
     bufferWrapper->fillBufferCallback();
-    if (bufferWrapper->len > 0) {
-      bBegin = bCurrent = buffer = bufferWrapper->buffer;
-      bEnd = bBegin + bufferWrapper->len;
+    if (bufferWrapper->getLen() > 0) {
+      bBegin = bCurrent = buffer = bufferWrapper->getBuffer();
+      bEnd = bBegin + bufferWrapper->getLen();
     }
   } else if (bCurrent == bEnd)
   {
-    if (bufferWrapper->len==1024)
+    if (bufferWrapper->getLen()==1024)
     {
       bufferWrapper->fillBufferCallback();
-      if (bufferWrapper->len > 0) {
-        bBegin = bCurrent = buffer = bufferWrapper->buffer;
-        bEnd = bBegin + bufferWrapper->len;
+      if (bufferWrapper->getLen() > 0) {
+        bBegin = bCurrent = buffer = bufferWrapper->getBuffer();
+        bEnd = bBegin + bufferWrapper->getLen();
       }
     }
   }

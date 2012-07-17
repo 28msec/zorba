@@ -303,6 +303,8 @@ public:
   
   */
   bool isStreamable();
+  
+  
   ZorbaBuffer&	getStream();
   
 }; // class Item

@@ -126,7 +126,7 @@
   { return theItem.isStreamable(); }
   
   ZorbaBuffer&	Item::getStream()
-  { return ZorbaBuffer(); }
+  { return ZorbaBuffer(theItem.getStream()); }
 
 %}  // end   Implementation
 

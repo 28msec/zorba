@@ -30,14 +30,7 @@ class ZorbaStream :
   public std::streambuf
 {
 public:
-  ZorbaStream(ZorbaBuffer &aBufferWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0) { bufferWrapper = &aBufferWrapper; };
-  
-  //BUFFER
-  int * buffer;
-  int * bBegin;
-  int * bEnd;
-  int * bCurrent;
-  ZorbaBuffer *bufferWrapper;
+  ZorbaStream(ZorbaBuffer &aBufferWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0), bufferWrapper(&aBufferWrapper) {};
   
   // Helper function to return EOF character from other languages
   static int getEOF();
@@ -57,11 +50,14 @@ private:
   ZorbaStream(const ZorbaStream &);
   ZorbaStream &operator= (const ZorbaStream &);
 
-  /*
-  const char * const begin_;
-  const char * const end_;
-  const char * current_;
-  */
+  //BUFFER
+  int * buffer;
+  int * bBegin;
+  int * bEnd;
+  int * bCurrent;
+  ZorbaBuffer *bufferWrapper;
+
+  char * cBuffer;
 };
 
 #endif
