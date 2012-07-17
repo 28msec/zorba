@@ -145,6 +145,8 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
           props.setSkipRootNodes(ztd::aton<xs_int>(attr->getStringValue().c_str()));
         else if (attr->getNodeName()->getLocalName() == "skip-top-level-text-nodes")
           props.setSkipTopLevelTextNodes(true);
+        else if (attr->getNodeName()->getLocalName() == "error-on-doctype")
+          props.setErrorOnDoctype(true);
       }
       attribs->close();
     }
