@@ -133,14 +133,20 @@ namespace ztd {
  *    </li>
  *  </ul>
  *
- * If your class has derived classes, then:
+ * If a class has derived classes
+ * (and at least one derived class allocates additional memory
+ * or contains a data member that does),
+ * then:
  *  <ol>
  *    <li>
- *      \c alloc_size() must be virtual.
+ *      \c alloc_size() must be \c virtual.
+ *      (It need not be otherwise.)
  *    </li>
  *    <li>
- *      Derived classes must also implement of \c alloc_size()
- *      and they must call their base class's implementations.
+ *      A given derived class must also implement of \c alloc_size()
+ *      (but only if it allocates additional memory
+ *      or contains a data member that does)
+ *      and it must call its base class's implementation.
  *    </li>
  *  </ol>
  * For example:
@@ -149,7 +155,7 @@ namespace ztd {
  *  public:
  *    // ...
  *    size_t alloc_size() const {
- *      return my_class::alloc_size() + alloc_size( u );
+ *      return my_class::alloc_size() + alloc_sizeof( u );
  *    }
  *  private:
  *    std::string u;
