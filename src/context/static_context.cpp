@@ -380,6 +380,10 @@ static_context::ZORBA_NODE_FN_NS =
 "http://www.zorba-xquery.com/modules/node";
 
 const char*
+static_context::ZORBA_ITEM_FN_NS =
+"http://www.zorba-xquery.com/modules/item";
+
+const char*
 static_context::ZORBA_XML_FN_NS =
 "http://www.zorba-xquery.com/modules/xml";
 
@@ -464,6 +468,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
+            ns == ZORBA_ITEM_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */

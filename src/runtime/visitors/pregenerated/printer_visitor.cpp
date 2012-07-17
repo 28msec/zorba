@@ -51,6 +51,7 @@
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/introspection/sctx.h"
+#include "runtime/item/item.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/maths/maths.h"
@@ -1919,6 +1920,20 @@ void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FunctionAnnotationsIterator>
+
+
+// <AllocatedSizeIterator>
+void PrinterVisitor::beginVisit ( const AllocatedSizeIterator& a) {
+  thePrinter.startBeginVisit("AllocatedSizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AllocatedSizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AllocatedSizeIterator>
 
 
 // <JSONParseInternal>

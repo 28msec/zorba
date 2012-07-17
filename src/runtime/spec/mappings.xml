@@ -120,6 +120,10 @@
 		<zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
                      define="ZORBA_NODE_FN_NS" 
                      prefix="fn-zorba-node"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/item"
+                     define="ZORBA_ITEM_FN_NS" 
+                     prefix="fn-zorba-item"/>
                      
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xml"
                      define="ZORBA_XML_FN_NS" 

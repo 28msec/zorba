@@ -15,6 +15,8 @@ New Features:
     http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
   * Positional pagination support for collections
+  * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item) to
+    estimate the size an item allocates in memory.
   * Incremental maintenance for general indexes.
 	
 Optimizations:

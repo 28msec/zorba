@@ -148,6 +148,7 @@
   TYPE_InScopeAttributeGroupsIterator,
   TYPE_OptionIterator,
   TYPE_FunctionAnnotationsIterator,
+  TYPE_AllocatedSizeIterator,
   TYPE_JSONParseInternal,
   TYPE_JSONSerializeInternal,
   TYPE_JSONParseIterator,
