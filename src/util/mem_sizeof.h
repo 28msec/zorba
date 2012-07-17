@@ -183,6 +183,12 @@ class has_alloc_size : zorba::internal::ztd::sfinae_base {
   template<typename U>
   static no& test( ... );
 
+  //
+  // The struct and friend declaration below suppress the "all member functions
+  // are private" warning.
+  //
+  struct suppress_warning;
+  friend struct suppress_warning;
 public:
   static bool const value = sizeof( test<T>(0) ) == sizeof( yes );
 };
