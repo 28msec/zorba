@@ -34,8 +34,10 @@
 
 #include "runtime/function_item/function_item.h"
 
-# include <cstdlib>
-# include <execinfo.h>
+#include <cstdlib>
+#ifndef WIN32
+#include <execinfo.h>
+#endif
 
 
 namespace zorba
@@ -499,6 +501,7 @@ const zstring& Item::getLocalName() const
 }
 
 
+#ifndef WIN32
 static void print_stack_trace( std::ostream& o ) 
 {
   int BUF_SIZE = 250;
@@ -518,7 +521,7 @@ static void print_stack_trace( std::ostream& o )
     o << "allocation of backtrace symbols failed" << std::endl;
   }
 }
-
+#endif
 
 /**
  * Accessor for xs:untypedAtomic and xs:string and its subtypes
@@ -540,8 +543,9 @@ const zstring& Item::getString() const
     std::cerr << "???????" << std::endl;
   }
 
-  
+#ifndef WIN32
   print_stack_trace(std::cerr);
+#endif
 
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
