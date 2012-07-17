@@ -97,7 +97,8 @@ PlanIter_t op_general_index_entry_builder::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new GeneralIndexEntryBuilderIterator(sctx, loc, argv);
+  assert(argv.size() == 2);
+  return new GeneralIndexEntryBuilderIterator(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -158,7 +159,7 @@ void populate_context_index_ddl(static_context* sctx)
   DECL(sctx, op_general_index_entry_builder,
        (createQName(zorba_op_ns, "", "general-index-entry-builder"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-        true,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_create_internal_index,

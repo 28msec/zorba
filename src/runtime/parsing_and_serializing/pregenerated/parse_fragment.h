@@ -63,11 +63,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZorbaParseXmlFragmentIterator,
     NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnZorbaParseXmlFragmentIterator(
     static_context* sctx,
@@ -78,6 +74,52 @@ public:
   {}
 
   virtual ~FnZorbaParseXmlFragmentIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:parse-xml-fragment
+ * Author: Zorba Team
+ */
+class FnParseXmlFragmentIteratorState : public PlanIteratorState
+{
+public:
+  FragmentIStream theFragmentStream; //the input fragment
+  store::LoadProperties theProperties; //loader properties
+  zstring baseUri; //
+  zstring docUri; //
+
+  FnParseXmlFragmentIteratorState();
+
+  ~FnParseXmlFragmentIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnParseXmlFragmentIterator : public NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnParseXmlFragmentIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseXmlFragmentIterator,
+    NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnParseXmlFragmentIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnParseXmlFragmentIterator();
 
   void accept(PlanIterVisitor& v) const;
 

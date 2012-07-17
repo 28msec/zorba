@@ -53,6 +53,16 @@ char const *const type_string[] = {
 
 ////////// helper functions ///////////////////////////////////////////////////
 
+#ifndef WIN32
+inline bool is_dots( char const *s ) {
+  return s[0] == '.' && (!s[1] || (s[1] == '.' && !s[2]));
+}
+#else
+inline bool is_dots( LPCWSTR s ) {
+  return s[0] == TEXT('.') && (!s[1] || (s[1] == TEXT('.') && !s[2]));
+}
+#endif /* WIN32 */
+
 inline void replace_foreign( zstring *path ) {
 #ifdef WIN32
   ascii::replace_all( *path, '/', '\\' );
@@ -321,20 +331,32 @@ bool iterator::next() {
 #ifndef WIN32
     if ( (ent_ = ::readdir( dir_ )) ) {
       switch ( ent_->d_type ) {
-        case DT_DIR: {
-          char const *const name = ent_->d_name;
-          // skip "." and ".." entries
-          if ( name[0] == '.' && (!name[1] || (name[1] == '.' && !name[2])) )
-            continue;
+        case DT_DIR:
+          if ( is_dots( ent_->d_name ) )
+            continue;                   // skip "." and ".." entries
           ent_type_ = directory;
           break;
-        }
         case DT_LNK:
           ent_type_ = link;
           break;
         case DT_REG:
           ent_type_ = file;
           break;
+        case DT_UNKNOWN: {
+          //
+          // The d_type member is not supported by all filesystems. If it's
+          // not, it will be set to DT_UNKNOWN.  Hence, we're forced to do an
+          // explicit stat() to determine the entry type.
+          //
+          // This check fixes bug #1023862.
+          //
+          zstring ent_path( dir_path_ );
+          fs::append( ent_path, ent_->d_name );
+          ent_type_ = get_type( ent_path );
+          if ( ent_type_ == directory && is_dots( ent_->d_name ) )
+            continue;                   // skip "." and ".." entries
+          break;
+        }
         default:
           ent_type_ = other;
       }
@@ -352,11 +374,8 @@ bool iterator::next() {
         }
 
       LPCWSTR const wname = ent_data_.cFileName;
-      // skip "." and ".." entries
-      if ( wname[0] == TEXT('.') &&
-         (!wname[1] || wname[1] == TEXT('.') && !wname[2]) )
-        continue;
-
+      if ( is_dots( wname ) )
+        continue;                       // skip "." and ".." entries
       win32::to_char( wname, ent_name_ );
       ent_type_ = win32::map_type( ent_data_.dwFileAttributes );
       return true;

@@ -27,6 +27,8 @@
 
 #include "zorbatypes/collation_manager.h"
 
+#include "zorbautils/hashfun.h"
+
 namespace zorba 
 { 
 
@@ -220,7 +222,7 @@ ValueIndex::~ValueIndex()
 /******************************************************************************
 
 ********************************************************************************/
-const XQPCollator* ValueIndex::getCollator(ulong i) const 
+const XQPCollator* ValueIndex::getCollator(csize i) const 
 {
   return theCompFunction.getCollator(i);
 }
@@ -343,7 +345,7 @@ void ValueHashIndex::clear()
 /*******************************************************************************
 
 ********************************************************************************/
-ulong ValueHashIndex::size() const
+csize ValueHashIndex::size() const
 {
   return theMap.size();
 }
@@ -427,9 +429,8 @@ bool ValueHashIndex::remove(
     const store::IndexKey* keyp = (*pos).first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                 valueSet->end(),
-                                                 value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (all)
     {
@@ -640,10 +641,9 @@ void ValueTreeIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
-ulong ValueTreeIndex::size() const
+csize ValueTreeIndex::size() const
 {
-  assert(false);
-  return 0;
+  return theMap.size();
 }
 
 
@@ -734,9 +734,8 @@ bool ValueTreeIndex::remove(
     const store::IndexKey* keyp = pos->first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                   valueSet->end(),
-                                                   value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (valIte != valueSet->end())
     {
@@ -819,7 +818,7 @@ void ProbeValueTreeIndexIterator::initExact()
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::initBox()
 {
-  ulong numRanges = theBoxCond->numRanges();
+  csize numRanges = theBoxCond->numRanges();
 
   assert(numRanges > 0 && numRanges <= theIndex->getNumColumns());
 
@@ -872,7 +871,7 @@ void ProbeValueTreeIndexIterator::initBox()
   //
   // Adjust the lower and/or upper bound index keys before probing the index.
   //
-  for (ulong i = 0; i < numRanges; i++)
+  for (csize i = 0; i < numRanges; i++)
   {
     const XQPCollator* collator = theIndex->getCollator(i);
 

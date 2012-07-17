@@ -146,13 +146,18 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
       aXQuery.read(strtemp, sizeof(strtemp)-1);
       strtemp[aXQuery.gcount()] = 0;
       xquery_str += strtemp;
-    }while(aXQuery.gcount() == (sizeof(strtemp)-1));
+    }
+    while(aXQuery.gcount() == (sizeof(strtemp)-1));
   }
 
   XQueryXConvertor* xqxconvertor = GENV.getXQueryXConvertor();
 
-  if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))//identify XQueryX by content: root tag = "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
+  if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))
   {
+    // identify XQueryX by content: 
+    // root tag = 
+    // "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
+
     is_xqueryx = true;
     //translate from xqueryx to xquery using XSLT
     //read all input stream into std::string
@@ -186,7 +191,7 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   {
     ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
     throw XQUERY_EXCEPTION_VAR(
-      pen->err, ERROR_PARAMS( pen->msg ), ERROR_LOC( pen->get_location() )
+      pen->err, ERROR_PARAMS(pen->msg), ERROR_LOC(pen->get_location())
 		);
   }
 
@@ -209,15 +214,24 @@ PlanIter_t XQueryCompiler::compile(
   zorba::audit::ScopedAuditor<const char*> filenameAudit(
       sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
 
-  zorba::time::Timer lTimer;
-  zorba::audit::DurationAuditor durationAudit(
-      sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+  parsenode_t lAST;
 
-  parsenode_t lAST = parse(aXQuery, aFileName);
+  {
+    time::Timer lTimer;
 
-  if (theCompilerCB->theConfig.lib_module &&
-      dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
-    lAST = createMainModule(lAST, aXQuery, aFileName);
+    audit::DurationAuditor 
+    durationAudit(sar,
+                  audit::XQUERY_COMPILATION_PARSE_DURATION,
+                  lTimer);
+
+    lAST = parse(aXQuery, aFileName);
+
+    if (theCompilerCB->theConfig.lib_module &&
+        dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
+    {
+      lAST = createMainModule(lAST, aXQuery, aFileName);
+    }
+  }
 
   expr_t rootExpr;
 
@@ -237,17 +251,22 @@ PlanIter_t XQueryCompiler::compile(
 {
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(aAuditRecord,
-                                         audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
-                                         lTimer);
+
+    audit::DurationAuditor 
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
+                  lTimer);
 
     rootExpr = normalize(ast); // also does the translation
   }
+
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(aAuditRecord,
-                                         audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
-                                         lTimer);
+
+    audit::DurationAuditor
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+                  lTimer);
 
     rootExpr = optimize(rootExpr);
   }
@@ -259,9 +278,11 @@ PlanIter_t XQueryCompiler::compile(
   PlanIter_t plan;
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(aAuditRecord,
-                                         audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
-                                         lTimer);
+
+    audit::DurationAuditor
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
+                  lTimer);
 
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
   }
@@ -275,7 +296,21 @@ PlanIter_t XQueryCompiler::compile(
 ********************************************************************************/
 expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 {
+#if 0
+  time::walltime startTime;
+  time::walltime stopTime;
+  double elapsedTime;
+
+  time::get_current_walltime(startTime);
+#endif
+
   expr_t lExpr = translate(*aParsenode, theCompilerCB);
+
+#if 0
+  time::get_current_walltime(stopTime);
+  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);      
+  std::cout << "Translation time = " << elapsedTime << std::endl;
+#endif
 
   if ( lExpr == NULL )
   {

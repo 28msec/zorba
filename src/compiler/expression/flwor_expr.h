@@ -81,11 +81,6 @@ protected:
   flwor_expr              * theFlworExpr;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(flwor_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_clause, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   flwor_clause(static_context* sctx, const QueryLoc& loc, ClauseKind kind)
     :
     theContext(sctx),
@@ -149,11 +144,6 @@ protected:
   expr_t       theDomainExpr;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(forletwin_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(forletwin_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   forletwin_clause(
         static_context* sctx,
         const QueryLoc& loc,
@@ -185,11 +175,6 @@ protected:
   var_expr_t    thePosVarExpr;
   var_expr_t    theScoreVarExpr;
   bool          theAllowingEmpty;
-
-public:
-  SERIALIZABLE_CLASS(for_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(for_clause, forletwin_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   for_clause(
@@ -236,11 +221,6 @@ protected:
   bool        theLazyEval;
 
 public:
-  SERIALIZABLE_CLASS(let_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(let_clause, forletwin_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   let_clause(
         static_context* sctx,
         const QueryLoc& loc,
@@ -284,11 +264,6 @@ protected:
   flwor_wincond_t   theWinStartCond;
   flwor_wincond_t   theWinStopCond;
   bool              theLazyEval;
-
-public:
-  SERIALIZABLE_CLASS(window_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(window_clause, forletwin_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   window_clause(
@@ -360,7 +335,7 @@ class flwor_wincond : public SimpleRCObject
   friend class ExprIterator;
 
 public:
-  struct vars : public SerializeBaseClass
+  struct vars
   {
     var_expr_t posvar;
     var_expr_t curr;
@@ -374,10 +349,6 @@ public:
     void clone(vars& cloneVars, expr::substitution_t& subst) const;
 
     std::ostream& put(std::ostream&) const;
-  public:
-    SERIALIZABLE_CLASS(vars)
-    SERIALIZABLE_CLASS_CONSTRUCTOR(vars)
-    void serialize(::zorba::serialization::Archiver& ar);
   };
 
 protected:
@@ -385,11 +356,6 @@ protected:
   vars    theInputVars;
   vars    theOutputVars;
   expr_t  theCondExpr;
-
-public:
-  SERIALIZABLE_CLASS(flwor_wincond)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_wincond, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   flwor_wincond(
@@ -455,17 +421,12 @@ protected:
   std::vector<std::string> theCollations;
 
 public:
-  SERIALIZABLE_CLASS(group_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(group_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   group_clause(
-        static_context* sctx,
-        const QueryLoc& loc,
-        const rebind_list_t& gvars,
-        rebind_list_t ngvars,
-        const std::vector<std::string>& collations);
+      static_context* sctx,
+      const QueryLoc& loc,
+      const rebind_list_t& gvars,
+      rebind_list_t ngvars,
+      const std::vector<std::string>& collations);
 
   ~group_clause();
 
@@ -523,11 +484,6 @@ protected:
   std::vector<expr_t>         theOrderingExprs;
 
 public:
-  SERIALIZABLE_CLASS(orderby_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(orderby_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   orderby_clause (
       static_context* sctx,
       const QueryLoc& loc,
@@ -568,11 +524,6 @@ class materialize_clause : public flwor_clause
   friend class flwor_expr;
 
 public:
-  SERIALIZABLE_CLASS(materialize_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(materialize_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   materialize_clause(static_context* sctx, const QueryLoc& loc);
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
@@ -591,11 +542,6 @@ class count_clause : public flwor_clause
 
 protected:
   var_expr_t theVarExpr;
-
-public:
-  SERIALIZABLE_CLASS(count_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(count_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   count_clause(static_context* sctx, const QueryLoc& loc, var_expr_t var);
@@ -617,11 +563,6 @@ class where_clause : public flwor_clause
   friend class flwor_expr;
 
   expr_t theWhereExpr;
-
-public:
-  SERIALIZABLE_CLASS(where_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(where_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   where_clause(static_context* sctx, const QueryLoc& loc, expr_t where);
@@ -673,11 +614,6 @@ protected:
   bool          theHasSequentialClauses;
   clause_list_t theClauses;
   expr_t        theReturnExpr;
-
-public:
-  SERIALIZABLE_CLASS(flwor_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   flwor_expr(static_context* sctx, const QueryLoc& loc, bool general);

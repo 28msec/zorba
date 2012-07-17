@@ -36,6 +36,17 @@ PlanIter_t full_text_tokenize_node::codegen(
 }
 
 
+PlanIter_t full_text_tokenize_nodes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new TokenizeNodesIterator(sctx, loc, argv);
+}
+
+
 PlanIter_t full_text_tokenizer_properties::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -58,7 +69,6 @@ PlanIter_t full_text_current_compare_options::codegen(
 }
 
 #endif // ZORBA_NO_FULL_TEXT
-
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -105,6 +115,25 @@ void populate_context_ft_module_impl(static_context* sctx)
                     tokenize_return_type),
                    FunctionConsts::FULL_TEXT_TOKENIZE_NODE_2);
   }
+  {
+    DECL_WITH_KIND(sctx,
+                   full_text_tokenize_nodes,
+                   (createQName( FT_MODULE_NS, "", "tokenize-nodes"),
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+                    tokenize_return_type),
+                   FunctionConsts::FULL_TEXT_TOKENIZE_NODES_2);
+  }
+  {
+    DECL_WITH_KIND(sctx,
+                   full_text_tokenize_nodes,
+                   (createQName( FT_MODULE_NS, "", "tokenize-nodes"),
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+                    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+                    GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE,
+                    tokenize_return_type),
+                   FunctionConsts::FULL_TEXT_TOKENIZE_NODES_3);
+  }
 
   xqtref_t tokenizer_properties_return_type =
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
@@ -128,10 +157,10 @@ void populate_context_ft_module_impl(static_context* sctx)
                     tokenizer_properties_return_type),
                    FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1);
   }
-#endif // ZORBA_NO_FULL_TEXT
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <ResolveQNameIterator>
-ResolveQNameIterator::class_factory<ResolveQNameIterator>
-ResolveQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ResolveQNameIterator)
+
+void ResolveQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>*)this);
+}
 
 
-void ResolveQNameIterator::accept(PlanIterVisitor& v) const {
+void ResolveQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -52,11 +58,17 @@ ResolveQNameIterator::~ResolveQNameIterator() {}
 
 
 // <QNameIterator>
-QNameIterator::class_factory<QNameIterator>
-QNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(QNameIterator)
+
+void QNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<QNameIterator, PlanIteratorState>*)this);
+}
 
 
-void QNameIterator::accept(PlanIterVisitor& v) const {
+void QNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -71,11 +83,17 @@ QNameIterator::~QNameIterator() {}
 
 
 // <QNameEqualIterator>
-QNameEqualIterator::class_factory<QNameEqualIterator>
-QNameEqualIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(QNameEqualIterator)
+
+void QNameEqualIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>*)this);
+}
 
 
-void QNameEqualIterator::accept(PlanIterVisitor& v) const {
+void QNameEqualIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -90,11 +108,17 @@ QNameEqualIterator::~QNameEqualIterator() {}
 
 
 // <PrefixFromQNameIterator>
-PrefixFromQNameIterator::class_factory<PrefixFromQNameIterator>
-PrefixFromQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PrefixFromQNameIterator)
+
+void PrefixFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>*)this);
+}
 
 
-void PrefixFromQNameIterator::accept(PlanIterVisitor& v) const {
+void PrefixFromQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -108,11 +132,17 @@ PrefixFromQNameIterator::~PrefixFromQNameIterator() {}
 
 
 // <LocalNameFromQNameIterator>
-LocalNameFromQNameIterator::class_factory<LocalNameFromQNameIterator>
-LocalNameFromQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(LocalNameFromQNameIterator)
+
+void LocalNameFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>*)this);
+}
 
 
-void LocalNameFromQNameIterator::accept(PlanIterVisitor& v) const {
+void LocalNameFromQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -126,11 +156,17 @@ LocalNameFromQNameIterator::~LocalNameFromQNameIterator() {}
 
 
 // <NamespaceUriFromQNameIterator>
-NamespaceUriFromQNameIterator::class_factory<NamespaceUriFromQNameIterator>
-NamespaceUriFromQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NamespaceUriFromQNameIterator)
+
+void NamespaceUriFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>*)this);
+}
 
 
-void NamespaceUriFromQNameIterator::accept(PlanIterVisitor& v) const {
+void NamespaceUriFromQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -144,11 +180,17 @@ NamespaceUriFromQNameIterator::~NamespaceUriFromQNameIterator() {}
 
 
 // <NamespaceUriForPrefixIterator>
-NamespaceUriForPrefixIterator::class_factory<NamespaceUriForPrefixIterator>
-NamespaceUriForPrefixIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NamespaceUriForPrefixIterator)
+
+void NamespaceUriForPrefixIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>*)this);
+}
 
 
-void NamespaceUriForPrefixIterator::accept(PlanIterVisitor& v) const {
+void NamespaceUriForPrefixIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -166,11 +208,17 @@ NamespaceUriForPrefixIterator::~NamespaceUriForPrefixIterator() {}
 
 
 // <InScopePrefixesIterator>
-InScopePrefixesIterator::class_factory<InScopePrefixesIterator>
-InScopePrefixesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InScopePrefixesIterator)
+
+void InScopePrefixesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesIteratorState>*)this);
+}
 
 
-void InScopePrefixesIterator::accept(PlanIterVisitor& v) const {
+void InScopePrefixesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);

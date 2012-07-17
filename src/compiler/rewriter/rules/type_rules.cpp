@@ -43,7 +43,11 @@
 namespace zorba
 {
 
-static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t);
+static expr_t wrap_in_num_promotion(
+    function* fn,
+    expr* arg,
+    const xqtref_t& oldt,
+    const xqtref_t& t);
 
 static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx);
 
@@ -158,7 +162,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
                             node->get_loc(),
                             arg,
                             target_type,
-                            err::XPTY0004,
+                            TreatIterator::TYPE_MATCH,
                             false); // do not check the prime types
     }
 
@@ -235,7 +239,9 @@ RULE_REWRITE_POST(SpecializeOperations)
           expr_t promoteExpr = new promote_expr(argExpr->get_sctx(),
                                                 argExpr->get_loc(),
                                                 argExpr,
-                                                rtm.DOUBLE_TYPE_STAR);
+                                                rtm.DOUBLE_TYPE_STAR,
+                                                PromoteIterator::FUNC_PARAM,
+                                                replacement->getName());
 
           fo->set_arg(0, promoteExpr);
         }
@@ -315,7 +321,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       xqtref_t t0 = arg0->get_return_type();
       xqtref_t t1 = arg1->get_return_type();
 
-      if (TypeOps::type_max_cnt(tm, *t0) > 1 || TypeOps::type_max_cnt(tm, *t1) > 1)
+      if (t0->max_card() > 1 || t1->max_card() > 1)
         return NULL;
 
       if (props.specializeNum() && fn->isArithmeticFunction())
@@ -484,8 +490,8 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
   {
     fo->set_func(replacement);
 
-    expr_t newArg0 = wrap_in_num_promotion(arg0, t0, aType);
-    expr_t newArg1 = wrap_in_num_promotion(arg1, t1, aType);
+    expr_t newArg0 = wrap_in_num_promotion(replacement, arg0, t0, aType);
+    expr_t newArg1 = wrap_in_num_promotion(replacement, arg1, t1, aType);
 
     if (newArg0 != NULL)
       fo->set_arg(0, newArg0);
@@ -500,14 +506,18 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 }
 
 
-static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
+static expr_t wrap_in_num_promotion(
+    function* fn,
+    expr* arg,
+    const xqtref_t& oldt,
+    const xqtref_t& t)
 {
   TypeManager* tm = arg->get_type_manager();
 
   if (TypeOps::is_subtype(tm, *oldt, *t, arg->get_loc()))
     return NULL;
 
-  if (arg->get_expr_kind() == promote_expr_kind && TypeOps::type_max_cnt(tm, *t) <= 1)
+  if (arg->get_expr_kind() == promote_expr_kind && t->max_card() <= 1)
   {
     promote_expr* pe = static_cast<promote_expr*>(arg);
     xqtref_t peType = pe->get_target_type();
@@ -518,7 +528,12 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
       arg = pe->get_input();
   }
 
-  return new promote_expr(arg->get_sctx(), arg->get_loc(), arg, t);
+  return new promote_expr(arg->get_sctx(),
+                          arg->get_loc(),
+                          arg,
+                          t,
+                          PromoteIterator::FUNC_PARAM,
+                          fn->getName());
 }
 
 

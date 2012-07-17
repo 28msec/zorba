@@ -31,6 +31,7 @@
 #include "ascii_util.h"
 #include "cxx_util.h"
 #include "error_util.h"
+#include "string_util.h"
 #include "zorbatypes/zstring.h"
 
 #ifndef MAX_PATH
@@ -78,6 +79,13 @@ enum type {
 };
 extern char const *const type_string[];
 
+/**
+ * Emits the string representation of a file type to the given ostream.
+ *
+ * @param o The ostream to emit to.
+ * @param t The file type to emit.
+ * @return Returns \a o.
+ */
 inline std::ostream& operator<<( std::ostream &o, type t ) {
   return o << type_string[ t ];
 }
@@ -115,7 +123,10 @@ void chdir( char const *path );
  * @param path The full path of the directory to change to.
  */
 template<class PathStringType> inline
-void chdir( PathStringType const &path ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        void>::type
+chdir( PathStringType const &path ) {
   chdir( path.c_str() );
 }
 
@@ -147,7 +158,10 @@ void mkdir( char const *path );
  * @throws fs::exception if the creation fails.
  */
 template<class PathStringType> inline
-void mkdir( PathStringType const &path ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        void>::type
+mkdir( PathStringType const &path ) {
   mkdir( path.c_str() );
 }
 
@@ -257,7 +271,10 @@ void create( char const *path );
  * @throws fs::exception if the creation failed.
  */
 template<class PathStringType> inline
-void create( PathStringType const &path ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        void>::type
+create( PathStringType const &path ) {
   create( path.c_str() );
 }
 
@@ -283,7 +300,10 @@ bool remove( char const *path );
  * @return Returns \c true only if the file or directory was removed.
  */
 template<class PathStringType> inline
-bool remove( PathStringType const &path ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        bool>::type
+remove( PathStringType const &path ) {
   return remove( path.c_str() );
 }
 
@@ -467,7 +487,10 @@ type get_type( char const *path, size_type *size = nullptr );
  * @return Returns said type.
  */
 template<class PathStringType> inline
-type get_type( PathStringType const &path, size_type *size = nullptr ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        type>::type
+get_type( PathStringType const &path, size_type *size = nullptr ) {
   return get_type( path.c_str(), size );
 }
 
@@ -499,7 +522,10 @@ inline bool is_absolute( char const *path ) {
  * @return Returns \c true only if the path is absolute.
  */
 template<class PathStringType> inline
-bool is_absolute( PathStringType const &path ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        bool>::type
+is_absolute( PathStringType const &path ) {
   return is_absolute( path.c_str() );
 }
 
@@ -525,7 +551,10 @@ void rename( char const *from, char const *to );
  * @throws fs::exception if the rename fails.
  */
 template<class FromStringType> inline
-void rename( FromStringType const &from, char const *to ) {
+typename std::enable_if<ztd::has_c_str<FromStringType,
+                          char const* (FromStringType::*)() const>::value,
+                        void>::type
+rename( FromStringType const &from, char const *to ) {
   rename( from.c_str(), to );
 }
 
@@ -538,7 +567,10 @@ void rename( FromStringType const &from, char const *to ) {
  * @throws fs::exception if the rename fails.
  */
 template<class ToStringType> inline
-void rename( char const *from, ToStringType const &to ) {
+typename std::enable_if<ztd::has_c_str<ToStringType,
+                          char const* (ToStringType::*)() const>::value,
+                        void>::type
+rename( char const *from, ToStringType const &to ) {
   rename( from, to.c_str() );
 }
 
@@ -552,7 +584,12 @@ void rename( char const *from, ToStringType const &to ) {
  * @throws fs::exception if the rename fails.
  */
 template<class FromStringType,class ToStringType> inline
-void rename( FromStringType const &from, ToStringType const &to ) {
+typename std::enable_if<ztd::has_c_str<FromStringType,
+                          char const* (FromStringType::*)() const>::value
+                     && ztd::has_c_str<ToStringType,
+                          char const* (ToStringType::*)() const>::value,
+                        void>::type
+rename( FromStringType const &from, ToStringType const &to ) {
   rename( from.c_str(), to.c_str() );
 }
 
@@ -573,14 +610,17 @@ zstring get_normalized_path( char const *path, char const *base = nullptr );
 /**
  * Gets the normalized path of the given path.
  *
- * @tparam PathStringType The path string type.
+ * @tparam PathStringType The \a path string type.
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
  * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
-zstring get_normalized_path( PathStringType const &path,
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        zstring>::type
+get_normalized_path( PathStringType const &path,
                              PathStringType const &base = "" ) {
   return get_normalized_path( path.c_str(), base.c_str() );
 }
@@ -595,7 +635,10 @@ zstring get_normalized_path( PathStringType const &path,
  * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
-void normalize_path( PathStringType &path, PathStringType const &base = "" ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        void>::type
+normalize_path( PathStringType &path, PathStringType const &base = "" ) {
   path = get_normalized_path( path, base );
 }
 
@@ -605,11 +648,15 @@ void normalize_path( PathStringType &path, PathStringType const &base = "" ) {
  * Appends a path component onto another path ensuring that exactly one
  * separator is used.
  *
+ * @tparam PathStringType1 The \a path1 string type.
  * @param path1 The path to append to.
  * @param path2 The path to append.
  */
-template<class PathStringType1>
-inline void append( PathStringType1 &path1, char const *path2 ) {
+template<class PathStringType1> inline
+typename std::enable_if<ztd::has_c_str<PathStringType1,
+                          char const* (PathStringType1::*)() const>::value,
+                        void>::type
+append( PathStringType1 &path1, char const *path2 ) {
   if ( !ascii::ends_with( path1, dir_separator ) )
     path1 += dir_separator;
   path1 += path2;
@@ -623,8 +670,13 @@ inline void append( PathStringType1 &path1, char const *path2 ) {
  * @param path1 The path to append to.
  * @param path2 The path to append.
  */
-template<class PathStringType1,class PathStringType2>
-inline void append( PathStringType1 &path1, PathStringType2 const &path2 ) {
+template<class PathStringType1,class PathStringType2> inline
+typename std::enable_if<ztd::has_c_str<PathStringType1,
+                          char const* (PathStringType1::*)() const>::value
+                     && ztd::has_c_str<PathStringType2,
+                          char const* (PathStringType2::*)() const>::value,
+                        void>::type
+append( PathStringType1 &path1, PathStringType2 const &path2 ) {
   append( path1, path2.c_str() );
 }
 
@@ -635,7 +687,10 @@ inline void append( PathStringType1 &path1, PathStringType2 const &path2 ) {
  * @param path The path to make absolute.
  */
 template<class PathStringType> inline
-void make_absolute( PathStringType &path ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        void>::type
+make_absolute( PathStringType &path ) {
   if ( !is_absolute( path ) ) {
 #ifndef WIN32
     typedef typename PathStringType::size_type size_type;
@@ -670,7 +725,10 @@ void get_temp_file( char *path_buf );
  * @throws fs::exception if the operation fails.
  */
 template<class PathStringType> inline
-void get_temp_file( PathStringType *path ) {
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        void>::type
+get_temp_file( PathStringType *path ) {
   char path_buf[ MAX_PATH ];
   get_temp_file( path_buf );
   *path = path_buf;

@@ -69,6 +69,12 @@ public:
     PARAMETER_VALUE_XHTML,
     PARAMETER_VALUE_TEXT,
     PARAMETER_VALUE_BINARY,
+#ifdef ZORBA_WITH_JSON
+    PARAMETER_VALUE_JSON,
+    PARAMETER_VALUE_JSONIQ,
+    PARAMETER_VALUE_ARRAY,
+    PARAMETER_VALUE_APPENDED,
+#endif
 
     PARAMETER_VALUE_UTF_8,
     PARAMETER_VALUE_UTF_16,
@@ -109,6 +115,12 @@ protected:
   short int version;               // "1.0"
   zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
+#ifdef ZORBA_WITH_JSON
+  short int jsoniq_multiple_items;  // "no", "array", "appended", implemented
+  short int jsoniq_extensions;      // implemented
+  short int jsoniq_xdm_method;      // A legal value for "method", implemented
+  short int jsoniq_allow_mixed_xdm_jdm; // "yes" or "no", implemented
+#endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
   rchandle<emitter>    e;
@@ -129,8 +141,12 @@ public:
    * @param object The serializable object that provides a sequence
    *        to be serialized.
    * @param stream The stream to serialize to.
+   * @param aEmitAttributeValue If true, attributes are emitted.
    */
-  void serialize(store::Iterator_t object, std::ostream& stream);
+  void serialize(
+      store::Iterator_t object, 
+      std::ostream& stream, 
+      bool aEmitAttributes = false);
 
   void serialize(
         store::Iterator_t object,
@@ -146,11 +162,13 @@ public:
    *        to be serialized.
    * @param stream The stream to serialize to.
    * @param handler The SAX handler.
+   * @param aEmitAttributes If true, attributes are emitted.
    */
   void serialize(
         store::Iterator_t     object,
         std::ostream&         stream,
-        SAX2_ContentHandler*  handler);
+        SAX2_ContentHandler*  handler,
+        bool aEmitAttributes = false);
 
   /**
    * Set the serializer's parameters. The list of handled parameters
@@ -173,8 +191,9 @@ protected:
 
   void validate_parameters();
 
-  bool setup(std::ostream& os);
+  bool setup(std::ostream& os, bool aEmitAttributes = false);
 
+  transcoder* create_transcoder(std::ostream& os);
 
   ///////////////////////////////////////////////////////////
   //                                                       //
@@ -192,8 +211,12 @@ protected:
      *
      * @param the_serializer The parent serializer object.
      * @param output_stream Target output stream.
+     * @param aEmitAttributes If true, attributes are emitted.
      */
-    emitter(serializer* the_serializer, transcoder& the_transcoder);
+    emitter(
+        serializer* the_serializer, 
+        transcoder& the_transcoder,
+        bool aEmitAttributes = false);
 
     /**
      * Outputs the start of the serialized document, which, depending on
@@ -205,21 +228,26 @@ protected:
     /**
      * Outputs the end of the serialized document.
      */
-    virtual void emit_declaration_end();
+    virtual void emit_end();
 
+    /**
+     * Serializes the given item, depending on its type, and its children. This
+     * will be called by serializer for each top-level item in the sequence.
+     *
+     * @param item the item to serialize
+     */
+    virtual void emit_item(store::Item* item);
+
+    // End of the "public" emitter API. All remaining methods are implementation
+    // details and will not be called from outside.
+
+  protected:
     /**
      * Outputs the doctype declaration. This function is not used by the
      * default emitter, it is intended to be defined by the XML, HTML and XHTML
      * serializers.
      */
     virtual void emit_doctype(const zstring& elementName);
-
-    /**
-     * Serializes the given item, depending on its type, and its children.
-     *
-     * @param item the item to serialize
-     */
-    virtual void emit_item(store::Item* item);
 
     /**
      * Serializes the given streamable item.
@@ -277,7 +305,6 @@ protected:
      */
     void emit_indentation(int depth);
 
-  protected:
     bool haveBinding(std::pair<zstring, zstring>& nsBinding) const;
 
     bool havePrefix(const zstring& pre) const;
@@ -307,6 +334,7 @@ protected:
     store::AttributesIterator           * theAttrIter;
 
     bool                                  isFirstElementNode;
+    bool                                  theEmitAttributes;
   };
 
 
@@ -319,12 +347,107 @@ protected:
   class xml_emitter : public emitter
   {
   public:
-    xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    xml_emitter(
+        serializer* the_serializer, 
+        transcoder& the_transcoder, 
+        bool aEmitAttributes = false
+    );
 
     virtual void emit_declaration();
 
+  protected:
     virtual void emit_doctype(const zstring& elementName);
+
+  protected:
+    bool theEmitAttributes;
   };
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class json_emitter                                   //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
+
+#ifdef ZORBA_WITH_JSON
+
+  class json_emitter : public emitter
+  {
+  public:
+    json_emitter(serializer* the_serializer, transcoder& the_transcoder);
+
+    virtual ~json_emitter();
+
+    virtual void emit_declaration();
+
+    virtual void emit_item(store::Item *item);
+
+    virtual void emit_end();
+
+  private:
+
+    /**
+     * Outputs a JSON item. This method is called both for top-level JSON
+     * items as well as any items within a JSON object or array, so it may
+     * output simple typed values differently than standard XML serialization.
+     */
+    void emit_json_item(store::Item* item, int depth);
+
+    void emit_json_object(store::Item* object, int depth);
+
+    void emit_json_array(store::Item* array, int depth);
+
+    void emit_json_value(store::Item* value, int depth);
+
+    void emit_jsoniq_value(zstring type, zstring value, int depth);
+
+    void emit_jsoniq_xdm_node(store::Item *item, int depth);
+
+    void emit_json_string(zstring string);
+
+    store::Item_t theJSONiqValueName;
+    store::Item_t theTypeName;
+    store::Item_t theValueName;
+    store::Item_t theJSONiqXDMNodeName;
+
+    rchandle<emitter> theXMLEmitter;
+    rchandle<transcoder> theXMLTranscoder;
+    std::stringstream* theXMLStringStream;
+    bool theMultipleItems;
+  };
+
+
+  ///////////////////////////////////////////////////////////
+  //                                                       //
+  //  class jsoniq_emitter (auto-detects JSON or XML)      //
+  //                                                       //
+  ///////////////////////////////////////////////////////////
+
+  class jsoniq_emitter : public emitter
+  {
+  public:
+    jsoniq_emitter(serializer* the_serializer, transcoder& the_transcoder);
+
+    virtual ~jsoniq_emitter();
+
+    virtual void emit_declaration();
+
+    virtual void emit_item(store::Item *item);
+
+    virtual void emit_end();
+
+  private:
+    enum JSONiqEmitterState {
+      JESTATE_UNDETERMINED,
+      JESTATE_JDM,
+      JESTATE_XDM
+    }                           theEmitterState;
+
+    serializer::xml_emitter*        theXMLEmitter;
+    serializer::json_emitter*       theJSONEmitter;
+  };
+
+#endif /* ZORBA_WITH_JSON */
+
 
 
   ///////////////////////////////////////////////////////////
@@ -338,6 +461,7 @@ protected:
   public:
     xhtml_emitter(serializer* the_serializer, transcoder& the_transcoder);
 
+  protected:
     virtual void emit_node(const store::Item* item, int depth);
   };
 
@@ -354,7 +478,9 @@ protected:
     html_emitter(serializer* the_serializer, transcoder& the_transcoder);
 
     virtual void emit_declaration();
-    virtual void emit_declaration_end();
+    virtual void emit_end();
+
+  protected:
     virtual void emit_doctype(const zstring& elementName);
     virtual void emit_node(const store::Item* item, int depth);
   };
@@ -373,14 +499,15 @@ protected:
 
     virtual void emit_declaration();
 
+    virtual void emit_item(store::Item* item);
+
+  protected:
     virtual void emit_node(const store::Item* item, int depth);
 
     virtual int emit_node_children(
         const store::Item* item,
         int depth,
         bool perform_escaping = true);
-
-    virtual void emit_item(store::Item* item);
 
     virtual void emit_streamable_item(store::Item* item);
   };
@@ -407,15 +534,16 @@ protected:
           std::stringstream& aSStream,
           SAX2_ContentHandler* aSAX2ContentHandler);
 
+    void emit_declaration();
+    void emit_item(store::Item* item );
+    void emit_end();
+
+  protected:
     void emit_startPrefixMapping(
           const store::Item* item,
           store::NsBindings& nsBindings );
 
     void emit_endPrefixMapping(store::NsBindings& nsBindings );
-
-    void emit_declaration();
-
-    void emit_declaration_end();
 
     void emit_node(const store::Item* item, int depth);
 
@@ -434,8 +562,6 @@ protected:
     void emit_node_children(const store::Item* item);
 
     bool emit_bindings(const store::Item* item, int depth);
-
-    void emit_item(store::Item* item );
   };
 
 

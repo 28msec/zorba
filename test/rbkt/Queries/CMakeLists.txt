@@ -153,6 +153,17 @@ FOREACH(TESTFILE ${TESTFILES})
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
 
+  IF (NOT ZORBA_WITH_JSON)
+    STRING(REGEX MATCH "jsoniq/" NEEDS_FILE "${TESTNAME}")
+    IF(NEEDS_FILE)
+      SET(SKIP_TEST 1)
+    ENDIF(NEEDS_FILE)
+    STRING(REGEX MATCH "cloudscript/" NEEDS_FILE "${TESTNAME}")
+    IF(NEEDS_FILE)
+      SET(SKIP_TEST 1)
+    ENDIF(NEEDS_FILE)
+  ENDIF(NOT ZORBA_WITH_JSON)
+
   IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
     IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
       # If this is an XQTS test and we want to use testdriver_mt instead,
@@ -232,18 +243,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
   #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-001 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-002 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-003 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-004 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-005 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-006 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-007 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-008 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-009 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-010 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-011 997045)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-012 997045)
 
   IF (NOT ZORBA_WITH_BIG_INTEGER)
     # These test will never pass without big integers beause the integers used
@@ -527,6 +526,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
+EXPECTED_FAILURE(test/rbkt/zorba/xmlid/valid-ncname 1010728)
+
 # Failing test due to the new scripting spec. The test should be
 # removed as it does not make sense any longer
 EXPECTED_FAILURE(test/rbkt/zorba/scripting/exit4 666)
@@ -541,9 +542,11 @@ IF(NOT ZORBA_NO_ICU)
   IF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m40 866874)
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m41 866874)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err17 1023168)
   ELSE ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err10 994610)
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err15 866874)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err16 1023168)
   ENDIF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
 ENDIF(NOT ZORBA_NO_ICU)
@@ -579,4 +582,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
 
-
+# Failing due to flworfound.org hosting changes.
+EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)
+EXPECTED_FAILURE(test/rbkt/zorba/fetch/fetch_bogus2 1022494)
