@@ -216,7 +216,7 @@ public:
 class InscopeVariablesIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<var_expr_t> theVariables; //vector of variables
+  std::vector<var_expr*> theVariables; //vector of variables
   ulong thePosition; //current position
 
   InscopeVariablesIteratorState();

@@ -126,7 +126,7 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="std::vector&lt;var_expr_t&gt;" name="theVariables"
+    <zorba:member type="std::vector&lt;var_expr*&gt;" name="theVariables"
                   brief="vector of variables"/>
     <zorba:member type="ulong" name="thePosition" brief="current position"/>
   </zorba:state>
@@ -545,7 +545,7 @@
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>
-    
+
     <zorba:state generateReset="false" generateDestructor="false">
       <zorba:member type="const function*" name="theFunction"
                   brief="the function"/>

@@ -292,7 +292,7 @@ void EvalIterator::setExternalVariables(
     static_context* evalSctx,
     dynamic_context* evalDctx) const
 {
-  std::vector<var_expr_t> innerVars;
+  std::vector<var_expr*> innerVars;
 
   CompilerCB::SctxMap::const_iterator sctxIte = ccb->theSctxMap.begin();
   CompilerCB::SctxMap::const_iterator sctxEnd = ccb->theSctxMap.end();
@@ -302,9 +302,9 @@ void EvalIterator::setExternalVariables(
     sctxIte->second->getVariables(innerVars, true, false, true);
   }
 
-  FOR_EACH(std::vector<var_expr_t>, ite, innerVars)
+  FOR_EACH(std::vector<var_expr*>, ite, innerVars)
   {
-    var_expr* innerVar = (*ite).getp();
+    var_expr* innerVar = (*ite);
 
     if (!innerVar->is_external())
       continue;
