@@ -1,1 +1,1 @@
-{ "CloudScript value" : { "type" : "double", "value" : "-INF" } }
+{ "JSONiq value" : { "type" : "double", "value" : "INF" } }

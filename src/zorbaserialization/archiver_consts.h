@@ -273,6 +273,13 @@ enum TypeCode
   TYPE_DeleteIterator,
   TYPE_InsertIterator,
 
+#ifdef ZORBA_WITH_JSON
+  TYPE_JSONObjectInsertIterator,
+  TYPE_JSONObjectIterator,
+  TYPE_JSONDirectObjectIterator,
+  TYPE_JSONArrayIterator,
+#endif
+
   TYPE_EvalIterator,
 
   TYPE_ProbeIndexPointValueIterator,
