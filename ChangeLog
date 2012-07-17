@@ -4,6 +4,7 @@ Zorba - The XQuery Processor
 version 2.x
 
 New Features:
+  * The parse-fragment function now allows a DOCTYPE declaration in the input.
   * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local).
     Also updated the fn:path() function.
   * Item::isSeekable API extension for streamable content (xs:string and xs:base64Binary).
