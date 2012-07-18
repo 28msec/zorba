@@ -4,6 +4,8 @@ Zorba - The XQuery Processor
 version 2.x
 
 New Features:
+  * The parse-fragment function now allows a DOCTYPE declaration in the input.
+    (Also fixed bug #1016606 with the feature request). 
   * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local).
     Also updated the fn:path() function.
   * Item::isSeekable API extension for streamable content (xs:string and xs:base64Binary).
@@ -32,6 +34,7 @@ Optimizations:
   * Streaming execution for tumbling windows (also fixes bug #1010051).
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1016606 (DOCTYPE in the input of the parse-fragment function)
   * Fixed bug #1002993 (bug during revalidation after update; improper condition
     for calling TypeOps::get_atomic_type_code() from
     SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
