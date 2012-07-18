@@ -23,6 +23,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <utility>                      /* for pair */
 
 #include <zorba/internal/ztd.h>
 #include <zorba/internal/unique_ptr.h>
@@ -312,6 +313,17 @@ template<typename K,typename V,class Hash,class Equal,class Alloc>
 struct size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
   map_size_traits< std::unordered_map<K,V,Hash,Equal,Alloc> >
 {
+};
+
+/**
+ * Specialization for std::pair.
+ */
+template<typename T,typename U>
+struct size_traits<std::pair<T,U>,false> {
+  static size_t alloc_sizeof( std::pair<T,U> const &p ) {
+    // Yes, alloc_sizeof() is correct here.
+    return alloc_sizof( p.first ) + alloc_sizeof( p.second );
+  }
 };
 
 /**
