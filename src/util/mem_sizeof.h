@@ -49,7 +49,7 @@ namespace ztd {
  * For all built-in types as well as arrays, structs, classes, and unions
  * composed of only built-in types, <code>mem_sizeof(t) == sizeof(t)</code>.
  * However, for a \c std::string \s,
- * <code>mem_sizeof(s) == sizeof(s) + s.size()</code>.
+ * <code>mem_sizeof(s) == sizeof(s) + s.capacity()</code>.
  *
  * To implement this, there has to be a distinction between
  * <em>memory size</em> (<code>mem_sizeof()</code)
@@ -92,7 +92,7 @@ namespace ztd {
  *  template<>
  *  struct size_traits<std::string> {
  *    static size_t alloc_sizeof( std::string const &s ) {
- *      return s.size();
+ *      return s.capacity();
  *    }
  *  };
  * \endcode
@@ -272,7 +272,7 @@ struct size_traits<char const*> {
 template<>
 struct size_traits<std::string> {
   static size_t alloc_sizeof( std::string const &s ) {
-    return s.size();
+    return s.capacity();
   }
 };
 
@@ -371,6 +371,10 @@ template<typename T,class Alloc>
 struct size_traits<std::vector<T,Alloc>,false> :
   sequence_size_traits< std::vector<T,Alloc> >
 {
+  static size_t alloc_sizeof( std::vector<T,Alloc> const &v ) {
+    return  sequence_size_traits< std::vector<T,Alloc> >::alloc_sizeof( v )
+          + (v.capacity() - v.size()) * sizeof( T );
+  }
 };
 
 ////////// Zorba specializations //////////////////////////////////////////////
@@ -381,7 +385,7 @@ struct size_traits<std::vector<T,Alloc>,false> :
 template<class RepType>
 struct size_traits<rstring<RepType>,false> {
   static size_t alloc_sizeof( rstring<RepType> const &s ) {
-    return s.size();
+    return s.capacity();
   }
 };
 

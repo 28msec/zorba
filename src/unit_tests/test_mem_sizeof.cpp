@@ -53,7 +53,7 @@ static void test_map_string_int() {
   m[ key ] = 1;
 
   size_t const expected_size = sizeof( m )
-    + sizeof( map_type::value_type ) + key.size();
+    + sizeof( map_type::value_type ) + key.capacity();
 
   ASSERT_TRUE( ztd::mem_sizeof( m ) == expected_size );
 }
@@ -90,7 +90,7 @@ static void test_string_empty() {
 template<class StringType>
 static void test_string_not_empty() {
   StringType const s( "hello" );
-  ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + s.size() );
+  ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + s.capacity() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,7 +100,9 @@ static void test_vector_int() {
   vector_type v;
   v.push_back( 1 );
 
-  size_t const expected_size = sizeof( v ) + sizeof( vector_type::value_type );
+  size_t const expected_size = sizeof( v )
+    + v.size() * sizeof( vector_type::value_type )
+    + (v.capacity() - v.size()) * sizeof( vector_type::value_type );
 
   ASSERT_TRUE( ztd::mem_sizeof( v ) == expected_size );
 }
@@ -133,7 +135,7 @@ static void test_base_empty() {
 static void test_derived_not_empty() {
   string const s( "hello" );
   my_derived d( s );
-  ASSERT_TRUE( ztd::mem_sizeof( d ) == sizeof( d ) + s.size() );
+  ASSERT_TRUE( ztd::mem_sizeof( d ) == sizeof( d ) + s.capacity() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
