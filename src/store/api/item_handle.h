@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_ITEM_HANDLE_H
 #define ZORBA_STORE_ITEM_HANDLE_H
 
+#include "util/mem_sizeof.h"
 
 namespace zorba 
 {
@@ -63,6 +64,10 @@ public:
       p->removeReference();
 
     p = NULL; // do not remove
+  }
+
+  size_t alloc_size() const {
+    return p ? ztd::mem_sizeof( *p ) : 0;
   }
 
   bool isNull () const { return p == NULL; }
@@ -209,8 +214,8 @@ protected:
   }
 };
 
-
 } // namespace store
+
 } // namespace zorba
 
 #endif
