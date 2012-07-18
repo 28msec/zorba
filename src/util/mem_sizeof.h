@@ -19,6 +19,7 @@
 
 #include <cstring>
 #include <deque>
+#include <list>
 #include <map>
 #include <set>
 #include <stack>
@@ -318,6 +319,15 @@ struct sequence_size_traits {
 template<typename T,class Alloc>
 struct size_traits<std::deque<T,Alloc>,false> :
   sequence_size_traits< std::deque<T,Alloc> >
+{
+};
+
+/**
+ * Specialization for std::list.
+ */
+template<typename T,class Alloc>
+struct size_traits<std::list<T,Alloc>,false> :
+  sequence_size_traits< std::list<T,Alloc> >
 {
 };
 
