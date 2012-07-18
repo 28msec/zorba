@@ -398,7 +398,7 @@ protected:
 
     void emit_json_value(store::Item* value, int depth);
 
-    void emit_jsoniq_value(zstring const &type, zstring const &value, int depth);
+    void emit_jsoniq_value(zstring type, zstring value, int depth);
 
     void emit_jsoniq_xdm_node(store::Item *item, int depth);
 
