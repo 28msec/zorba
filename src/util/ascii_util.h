@@ -160,6 +160,25 @@ bool is_digit( CharType c ) {
 }
 
 /**
+ * Checks whether the given character is a printing character.  This function
+ * exists to make a proper function out of the standard isprint(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a punctuation character.
+ */
+template<typename CharType> inline
+bool is_print( CharType c ) {
+#ifdef WIN32
+  // Windows' isprint() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isprint( c );
+#else
+  return isprint( c );
+#endif
+}
+
+/**
  * Checks whether the given character is a punctuation character.  This function
  * exists to make a proper function out of the standard ispunct(3) that may be
  * implemented as a macro.
