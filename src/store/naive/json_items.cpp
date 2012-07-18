@@ -36,8 +36,7 @@ namespace json
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONNull::getType() const
+store::Item* JSONNull::getType() const
 {
   return GET_STORE().JDM_NULL_QNAME;
 }
@@ -46,11 +45,10 @@ JSONNull::getType() const
 /******************************************************************************
 
 *******************************************************************************/
-bool
-JSONNull::equals(
-      const store::Item* other,
-      long /* timezone */,
-      const XQPCollator* /* collation */) const
+bool JSONNull::equals(
+    const store::Item* other,
+    long /* timezone */,
+    const XQPCollator* /* collation */) const
 {
   return other->getTypeCode() == store::JDM_NULL;
 }
@@ -59,8 +57,7 @@ JSONNull::equals(
 /******************************************************************************
 
 *******************************************************************************/
-uint32_t
-JSONNull::hash(long /* timezone */, const XQPCollator* /* aCollation */) const
+uint32_t JSONNull::hash(long /* tmz */, const XQPCollator* /* collation */) const
 {
   const void* tmp = this; // there is only one instance in the store
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
@@ -70,8 +67,7 @@ JSONNull::hash(long /* timezone */, const XQPCollator* /* aCollation */) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+void JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   iter = NULL;
   val = this;
@@ -88,8 +84,7 @@ JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONObject::getType() const
+store::Item* JSONObject::getType() const
 {
   return GET_STORE().JDM_OBJECT_QNAME;
 }
@@ -98,12 +93,30 @@ JSONObject::getType() const
 /******************************************************************************
 
 *******************************************************************************/
-bool
-SimpleJSONObject::JSONObjectPairComparator::operator()(
-    const store::Item* lhs,
-    const store::Item* rhs) const
+void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot)
 {
-  return lhs->getStringValue().compare(rhs->getStringValue()) < 0;
+  if (aJSONItem->isJSONObject())
+  {
+    assert(dynamic_cast<SimpleJSONObject*>(aJSONItem));
+    SimpleJSONObject* lObject = static_cast<SimpleJSONObject*>(aJSONItem);
+
+    // Only attach or detach allowed - no direct reattach.
+    assert(aRoot == NULL || lObject->theRoot == NULL);
+    lObject->setRoot(aRoot);
+  }
+  else if (aJSONItem->isJSONArray())
+  {
+    assert(dynamic_cast<SimpleJSONArray*>(aJSONItem));
+    SimpleJSONArray* lArray = static_cast<SimpleJSONArray*>(aJSONItem);
+
+    // Only attach or detach allowed - no direct reattach.
+    assert(aRoot == NULL || lArray->theRoot == NULL);
+    lArray->setRoot(aRoot);
+  } 
+  else
+  {
+    assert(false);
+  }
 }
 
 
@@ -112,12 +125,23 @@ SimpleJSONObject::JSONObjectPairComparator::operator()(
 *******************************************************************************/
 SimpleJSONObject::~SimpleJSONObject()
 {
-  thePairMap.clear();
-  for (PairsIter lIter = thePairs.begin(); lIter != thePairs.end(); ++lIter)
+  ASSERT_INVARIANT();
+  for (Pairs::iterator lIter = thePairs.begin();
+       lIter != thePairs.end();
+       ++lIter)
   {
-    (*lIter)->removeReference();
+    store::Item* lName = lIter->first;
+    store::Item* lChild = lIter->second;
+    if (getCollection() != NULL && lChild->isJSONItem())
+    {
+      setJSONRoot(lChild, NULL);
+    }
+    lName->removeReference();
+    lChild->removeReference();
   }
+  theKeys.clear();
   thePairs.clear();
+  ASSERT_INVARIANT();
 }
 
 
@@ -128,135 +152,374 @@ store::Item* SimpleJSONObject::copy(
     store::Item* parent,
     const store::CopyMode& copymode) const
 {
+  ASSERT_INVARIANT();
   SimpleJSONObject* lNewObject = const_cast<SimpleJSONObject*>(this);
-  if (copymode.theDoCopy)
+ 
+ if (copymode.theDoCopy)
   {
     lNewObject = new SimpleJSONObject();
 
-    for (PairsConstIter lIter = thePairs.begin();
+    for (Pairs::const_iterator lIter = thePairs.begin();
          lIter != thePairs.end();
          ++lIter)
     {
-      SimpleJSONObjectPair* lNewPair = 
-      static_cast<SimpleJSONObjectPair*>((*lIter)->copy(NULL, copymode));
-
-      lNewObject->add(lNewPair, false);
+      store::Item_t lKey = lIter->first;
+      store::Item_t lValue = lIter->second;
+      
+      if (lValue->isJSONObject() ||
+          lValue->isJSONArray() ||
+          lValue->isNode())
+      {
+        store::Item_t lCopiedValue = lValue->copy(NULL, copymode);
+        lNewObject->add(lKey, lCopiedValue, false);
+      }
+      else
+      {
+        lNewObject->add(lKey, lValue, false);
+      }
     }
   }
 
   if (parent)
   {
-    if (parent->isJSONArray())
+    assert(parent->isJSONArray());
+    assert(dynamic_cast<JSONArray*>(parent));
+    JSONArray* a = static_cast<JSONArray*>(parent);
+
+    a->push_back(lNewObject);
+  }
+  
+  return lNewObject;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool SimpleJSONObject::add(
+    const store::Item_t& aName,
+    const store::Item_t& aValue,
+    bool accumulate)
+{
+  ASSERT_INVARIANT();
+  zstring lName = aName->getStringValue();
+
+  Keys::iterator ite = theKeys.find(lName);
+
+  if (ite == theKeys.end())
+  {
+    store::Item* lValue = aValue.getp();
+
+    if (getCollection() != NULL && aValue->isJSONItem())
     {
-      JSONArray* a = static_cast<JSONArray*>(parent);
-      a->push_back(lNewObject);
+      setJSONRoot(lValue, theRoot);
     }
-    else if (parent->isJSONPair())
+    
+    csize lPosition = thePairs.size();
+    theKeys.insert(lName, lPosition);
+    thePairs.push_back(std::make_pair(aName.getp(), lValue));
+    aName->addReference();
+    lValue->addReference();
+
+    ASSERT_INVARIANT();
+    return true;
+  }
+  else if (accumulate)
+  {
+    csize lPosition = ite.getValue();
+
+    assert(thePairs[lPosition].first->getStringValue() == lName);
+
+    store::Item* lValue = thePairs[lPosition].second;
+
+    if (lValue->isJSONArray())
     {
-      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
-      p->setValue(lNewObject);
+      static_cast<SimpleJSONArray*>(lValue)->push_back(aValue);
+    }
+    else
+    {
+      SimpleJSONArray_t array = new SimpleJSONArray();
+      array->push_back(lValue);
+      array->push_back(aValue);
+
+      if (getCollection() != NULL)
+      {
+        setJSONRoot(array.getp(), theRoot);
+      }
+
+      lValue->removeReference();
+      array->addReference();
+      thePairs[lPosition].second = array;
+    }
+    ASSERT_INVARIANT();
+    return true;
+  }
+
+  ASSERT_INVARIANT();
+  return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
+{
+  ASSERT_INVARIANT();
+
+  zstring lName = aName->getStringValue();
+  csize lPosition = 0;
+  store::Item_t lValue;
+
+  if (!theKeys.get(lName, lPosition))
+  {
+    ASSERT_INVARIANT();
+    return 0;
+  }
+  
+#if 1
+  store::Item* lKey;
+
+  lKey = thePairs[lPosition].first;
+  lValue = thePairs[lPosition].second;
+
+  if (getCollection() != NULL && lValue->isJSONItem())
+  {
+    setJSONRoot(lValue.getp(), NULL);
+  }
+
+  lKey->removeReference();
+  lValue->removeReference();
+
+  thePairs.erase(thePairs.begin() + lPosition);
+  theKeys.erase(lName);
+
+  if (lPosition < thePairs.size())
+  {
+    Keys::iterator lKeysIte = theKeys.begin();
+    Keys::iterator lKeysEnd = theKeys.end();
+    for (; lKeysIte != lKeysEnd; ++lKeysIte)
+    {
+      csize lPos = lKeysIte.getValue();
+      if (lPos > lPosition)
+      {
+        lKeysIte.setValue(lPos - 1);
+      }
     }
   }
 
-  return lNewObject;
+#else
+
+  Pairs::iterator lIterator;
+  csize lIteratorPosition;
+  for (lIterator = thePairs.begin(), lIteratorPosition = 0;
+       lIterator != thePairs.end();
+       ++lIterator, ++lIteratorPosition)
+  {
+    if (lIteratorPosition < lPosition)
+    {
+      continue;
+    }
+  
+    // This is the position we are looking for.
+    else if (lIteratorPosition == lPosition)
+    {
+      // Preparing the returned item.
+      assert(lIterator->first->getStringValue() == lName);
+
+      lValue = lIterator->second;
+
+      if (getCollection() != NULL && lValue->isJSONItem())
+      {
+        setJSONRoot(lValue.getp(), NULL);
+      }
+
+      // Erasing the corresponding entries.
+      lIterator->first->removeReference();
+      lIterator->second->removeReference();
+      lIterator = thePairs.erase(lIterator);
+      theKeys.erase(lName);
+    }
+    
+    // Rebuilding the key positions after this removed pair.
+    assert(lIterator->first != NULL);
+    assert(lIterator->second != NULL);
+    Keys::iterator lKeyIterator = theKeys.find(lIterator->first->getStringValue());
+    assert(lKeyIterator != theKeys.end());
+    assert(lKeyIterator.getValue() == lPosition + 1);
+    lKeyIterator.setValue(lPosition);
+  }
+#endif
+
+  ASSERT_INVARIANT();
+  return lValue;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Item_t SimpleJSONObject::setValue(
+    const store::Item_t& aName,
+    const store::Item_t& aValue)
+{
+  ASSERT_INVARIANT();
+  zstring lName = aName->getStringValue();
+  csize lPosition = 0;
+
+  if (!theKeys.get(lName, lPosition))
+  {
+    ASSERT_INVARIANT();
+    return NULL;
+  }
+
+  assert(thePairs[lPosition].first->getStringValue() == lName);
+
+  store::Item_t lOldValue = thePairs[lPosition].second;
+
+  if (getCollection() != NULL)
+  {
+    if (lOldValue->isJSONItem())
+    {
+      setJSONRoot(lOldValue.getp(), NULL);
+    }
+
+    if (aValue->isJSONItem())
+    {
+      setJSONRoot(aValue.getp(), theRoot);
+    }
+  }
+
+  lOldValue->removeReference();
+  aValue->addReference();
+  thePairs[lPosition].second = aValue.getp();
+
+  ASSERT_INVARIANT();
+  return lOldValue;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool SimpleJSONObject::rename(
+    const store::Item_t& aName,
+    const store::Item_t& aNewName)
+{
+  ASSERT_INVARIANT();
+  zstring lName = aName->getStringValue();
+  zstring lNewName = aNewName->getStringValue();
+
+  if (theKeys.exists(lNewName))
+  {
+    ASSERT_INVARIANT();
+    return false;
+  }
+
+  Keys::iterator ite = theKeys.find(lName);
+
+  if (ite == theKeys.end())
+  {
+    ASSERT_INVARIANT();
+    return false;
+  }
+
+  csize lPosition = ite.getValue();
+  assert(thePairs[lPosition].first->getStringValue() == lName);
+  
+  thePairs[lPosition].first->removeReference();
+  aNewName->addReference();
+  thePairs[lPosition].first = aNewName.getp();
+  theKeys.erase(ite);
+  theKeys.insert(lNewName, lPosition);
+
+  ASSERT_INVARIANT();
+  return true;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONObject::setRoot(const JSONItem* aRoot)
+{
+  theRoot = aRoot;
+
+  for (Pairs::iterator lIter = thePairs.begin();
+       lIter != thePairs.end();
+       ++lIter)
+  {
+    store::Item* lValue = lIter->second;
+    if (lValue->isJSONObject())
+    {
+      assert(dynamic_cast<SimpleJSONObject*>(lValue));
+      SimpleJSONObject* lObject = static_cast<SimpleJSONObject*>(lValue);
+
+      lObject->setRoot(aRoot);
+    }
+    else if (lValue->isJSONArray())
+    {
+      assert(dynamic_cast<SimpleJSONArray*>(lValue));
+      SimpleJSONArray* lArray = static_cast<SimpleJSONArray*>(lValue);
+      
+      lArray->setRoot(aRoot);
+    }
+  }
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void
-SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
+void SimpleJSONObject::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
-  ZORBA_ASSERT(collection == NULL || theCollection == NULL);
+  ASSERT_INVARIANT();
+  // Ensures one either detaches or attaches.
+  assert(collection == NULL || theCollection == NULL);
 
   theCollection = collection;
+  
+  if (theCollection != NULL)
+  {
+    // Attach
+    setRoot(this);
+  }
+  else 
+  {
+    // Detach
+    setRoot(NULL);
+  }
+  
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-bool
-SimpleJSONObject::add(const JSONObjectPair_t& p, bool accumulate)
+const store::Collection* SimpleJSONObject::getCollection() const
 {
-  store::Item* lName = p->getName();
-
-  std::pair<PairMapIter, bool> res =
-  thePairMap.insert(std::make_pair(lName, thePairs.size()));
-
-  bool inserted = res.second;
-
-  if (inserted)
+  if (theRoot == this)
   {
-    thePairs.push_back(p.getp());
-    thePairs.back()->addReference(); // manual counting for performance reasons
+    return theCollection;
   }
-  else if (accumulate)
+  else if (theRoot != NULL)
   {
-    JSONObjectPair* pair = thePairs[(res.first)->second];
-    store::Item* value = pair->getValue();
-
-    if (value->isJSONArray())
-    {
-      static_cast<SimpleJSONArray*>(value)->push_back(p->getValue());
-    }
-    else
-    {
-      SimpleJSONArray_t array = new SimpleJSONArray();
-      array->push_back(value);
-      array->push_back(p->getValue());
-
-      JSONObjectPair_t newPair = new SimpleJSONObjectPair(pair->getName(), array);
-
-      thePairs[(res.first)->second] = newPair.release();
-
-      pair->removeReference();
-    }
+    return theRoot->getCollection();
   }
-
-  return (inserted || accumulate);
+  else
+  {
+    return NULL;
+  }
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-JSONObjectPair_t
-SimpleJSONObject::remove(const store::Item_t& aName)
+zstring SimpleJSONObject::getStringValue() const
 {
-  PairMapIter lIter = thePairMap.find(aName.getp());
-  if (lIter == thePairMap.end())
-  {
-    return 0;
-  }
-  size_t lPos = lIter->second;
-
-  thePairMap.erase(lIter);
-  JSONObjectPair_t lRes = thePairs[lPos];
-  thePairs.erase(thePairs.begin() + lPos);
-
-  lRes->removeReference();
-
-  // adapt indexes in the map
-  for (lIter = thePairMap.begin(); lIter != thePairMap.end(); ++lIter)
-  {
-    if (lIter->second > lPos)
-    {
-      --(lIter->second);
-    }
-  }
-
-  return lRes;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-zstring
-SimpleJSONObject::getStringValue() const
-{
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("object"));
 }
 
@@ -264,9 +527,9 @@ SimpleJSONObject::getStringValue() const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::getStringValue2(zstring& val) const
+void SimpleJSONObject::getStringValue2(zstring& val) const
 {
+  ASSERT_INVARIANT();
   val = getStringValue();
 }
 
@@ -274,9 +537,9 @@ SimpleJSONObject::getStringValue2(zstring& val) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::appendStringValue(zstring& buf) const
+void SimpleJSONObject::appendStringValue(zstring& buf) const
 {
+  ASSERT_INVARIANT();
   buf = getStringValue();
 }
 
@@ -284,9 +547,9 @@ SimpleJSONObject::appendStringValue(zstring& buf) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+void SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0004, ERROR_PARAMS("object"));
 }
 
@@ -294,19 +557,79 @@ SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-SimpleJSONObject::getPair(const store::Item_t& name) const
+store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
 {
-  PairMapConstIter lIter = thePairMap.find(name.getp());
-  if (lIter == thePairMap.end())
+  ASSERT_INVARIANT();
+  zstring lName = aKey->getStringValue();
+
+  csize lPosition = 0;
+  if (!theKeys.get(lName, lPosition))
   {
-    return 0;
+    return NULL;
   }
-  else
+
+  assert(thePairs[lPosition].first->equals(aKey));
+  return thePairs[lPosition].second;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Iterator_t SimpleJSONObject::getObjectKeys() const
+{
+  ASSERT_INVARIANT();
+  return new KeyIterator(const_cast<SimpleJSONObject*>(this));
+}
+
+
+#ifndef NDEBUG
+
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONObject::assertInvariant() const
+{
+  // Note: only root objects may point to a collection, so if theCollection ==
+  // NULL, it doesn't mean that the object does not belong to a collection.
+  assert(theCollection == NULL || theRoot == this);
+
+  if (theRoot != NULL)
   {
-    size_t lPos = lIter->second;
-    JSONObjectPair_t lPair = thePairs[lPos];
-    return lPair.getp();
+    const store::Collection* lCollection = getCollection();
+    assert(lCollection != NULL);
+
+    const SimpleJSONObject* lObject =
+        dynamic_cast<const SimpleJSONObject*>(theRoot);
+    const SimpleJSONArray* lArray =
+        dynamic_cast<const SimpleJSONArray*>(theRoot);
+
+    assert(lObject != NULL || lArray != NULL);
+
+    if (lObject != NULL) 
+    {
+      assert(lObject->isThisRootOfAllDescendants(theRoot));
+      assert(lObject->isThisJSONItemInDescendance(this));
+    }
+    else
+    {
+      assert(lArray->isThisRootOfAllDescendants(theRoot));
+      assert(lArray->isThisJSONItemInDescendance(this));
+    }
+  }
+
+  assert(theKeys.size() == thePairs.size());
+
+  for(Keys::iterator lIter = theKeys.begin();
+      lIter != theKeys.end();
+      ++lIter)
+  {
+    csize lPosition = lIter.getValue();
+    assert(lPosition < thePairs.size());
+    assert(thePairs[lPosition].first != NULL);
+    assert(thePairs[lPosition].first->isAtomic());
+    assert(thePairs[lPosition].first->getStringValue() == lIter.getKey());
+    assert(thePairs[lPosition].second != NULL);
   }
 }
 
@@ -314,17 +637,74 @@ SimpleJSONObject::getPair(const store::Item_t& name) const
 /******************************************************************************
 
 *******************************************************************************/
-store::Iterator_t
-SimpleJSONObject::getPairs() const
+bool SimpleJSONObject::isThisRootOfAllDescendants(const store::Item* aRoot) const
 {
-  return new PairIterator(const_cast<SimpleJSONObject*>(this));
+  if (theRoot != aRoot)
+  {
+    return false;
+  }
+
+  for (Pairs::const_iterator lIter = thePairs.begin();
+       lIter != thePairs.end();
+       ++lIter)
+  {
+    store::Item* lValue = lIter->second;
+    const SimpleJSONObject* lObject =
+      dynamic_cast<const SimpleJSONObject*>(lValue);
+    const SimpleJSONArray* lArray =
+      dynamic_cast<const SimpleJSONArray*>(lValue);
+ 
+   if (lObject != NULL && (!lObject->isThisRootOfAllDescendants(aRoot)))
+    {
+      return false;
+    }
+    else if (lArray != NULL && (!lArray->isThisRootOfAllDescendants(aRoot)))
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-SimpleJSONObject::PairIterator::~PairIterator() 
+bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) const
+{
+  if (this == anItem)
+  {
+    return true;
+  }
+
+  for (Pairs::const_iterator lIter = thePairs.begin();
+       lIter != thePairs.end();
+       ++lIter)
+  {
+    store::Item* lValue = lIter->second;
+    const SimpleJSONObject* lObject =
+      dynamic_cast<const SimpleJSONObject*>(lValue);
+    const SimpleJSONArray* lArray =
+      dynamic_cast<const SimpleJSONArray*>(lValue);
+ 
+    if (lObject != NULL && lObject->isThisJSONItemInDescendance(anItem))
+    {
+      return true;
+    }
+    else if (lArray != NULL && lArray->isThisJSONItemInDescendance(anItem))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+#endif // NDEBUG
+
+
+/******************************************************************************
+
+*******************************************************************************/
+SimpleJSONObject::KeyIterator::~KeyIterator() 
 {
 }
 
@@ -332,8 +712,7 @@ SimpleJSONObject::PairIterator::~PairIterator()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::PairIterator::open()
+void SimpleJSONObject::KeyIterator::open()
 {
   theIter = theObject->thePairs.begin();
 }
@@ -342,13 +721,11 @@ SimpleJSONObject::PairIterator::open()
 /******************************************************************************
 
 *******************************************************************************/
-bool
-SimpleJSONObject::PairIterator::next(store::Item_t& res)
+bool SimpleJSONObject::KeyIterator::next(store::Item_t& res)
 {
   if (theIter != theObject->thePairs.end())
   {
-    JSONObjectPair_t lPair = *theIter;
-    res = lPair;
+    res = theIter->first;
     ++theIter;
     return true;
   }
@@ -362,8 +739,7 @@ SimpleJSONObject::PairIterator::next(store::Item_t& res)
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::PairIterator::reset()
+void SimpleJSONObject::KeyIterator::reset()
 {
   open();
 }
@@ -372,8 +748,7 @@ SimpleJSONObject::PairIterator::reset()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObject::PairIterator::close()
+void SimpleJSONObject::KeyIterator::close()
 {
   theIter = theObject->thePairs.end();
 }
@@ -390,8 +765,7 @@ SimpleJSONObject::PairIterator::close()
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-JSONArray::getType() const
+store::Item* JSONArray::getType() const
 {
   return GET_STORE().JDM_ARRAY_QNAME;
 }
@@ -402,10 +776,16 @@ JSONArray::getType() const
 *******************************************************************************/
 SimpleJSONArray::~SimpleJSONArray()
 {
-  for (MembersIter lIter = theContent.begin(); lIter != theContent.end(); ++lIter)
+  ASSERT_INVARIANT();
+  for (Members::const_iterator lIter = theContent.begin();
+       lIter != theContent.end();
+       ++lIter)
   {
-    store::Item* lItem = *lIter;
-    lItem->removeReference();
+    if (getCollection() != NULL && (*lIter)->isJSONItem())
+    {
+      setJSONRoot(*lIter, NULL);
+    }
+    (*lIter)->removeReference();
   }
 }
 
@@ -413,127 +793,213 @@ SimpleJSONArray::~SimpleJSONArray()
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::push_back(const store::Item_t& aValue)
+void SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
+  ASSERT_INVARIANT();
+
+  if (getCollection() != NULL && aValue->isJSONItem())
+  {
+    setJSONRoot(aValue.getp(), theRoot);
+  }
+
+  aValue->addReference();
   theContent.push_back(aValue.getp());
-  theContent.back()->addReference();
+
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
+void SimpleJSONArray::push_back(const std::vector<store::Item_t>& members)
 {
+  ASSERT_INVARIANT();
   theContent.reserve(theContent.size() + members.size());
   add(theContent.size(), members);
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
+void SimpleJSONArray::push_front(const std::vector<store::Item_t>& members)
 {
+  ASSERT_INVARIANT();
   theContent.reserve(theContent.size() + members.size());
   add(0, members);
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::insert_before(const xs_integer& pos, const store::Item_t& member)
+void SimpleJSONArray::insert_before(
+    const xs_integer& pos,
+    const store::Item_t& member)
 {
-  theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
+  ASSERT_INVARIANT();
+
+  if (getCollection() != NULL && member->isJSONItem())
+  {
+    setJSONRoot(member.getp(), theRoot);
+  }
+
   member->addReference();
+  theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
+
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::insert_before(
+void SimpleJSONArray::insert_before(
     const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
+  ASSERT_INVARIANT();
   // need to reserve at the beginning because reserve invalidates
   // existing iterators
   theContent.reserve(theContent.size() + members.size());
 
   add(cast(aPos) - 1, members);
+
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::insert_after(
+void SimpleJSONArray::insert_after(
     const xs_integer& aPos,
     const std::vector<store::Item_t>& members)
 {
+  ASSERT_INVARIANT();
   // need to reserve at the beginning because reserve invalidates
   // existing iterators
   theContent.reserve(theContent.size() + members.size());
 
   add(cast(aPos), members);
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::add(
+void SimpleJSONArray::add(
     uint64_t aTargetPos,
     const std::vector<store::Item_t>& aNewMembers)
 {
+  ASSERT_INVARIANT();
   for (size_t i = 0; i < aNewMembers.size(); ++i)
   {
     store::Item* lItem = aNewMembers[i].getp();
-    theContent.insert(theContent.begin() + aTargetPos + i, lItem);
+
+    if (getCollection() != NULL && lItem->isJSONItem())
+    {
+      setJSONRoot(lItem, theRoot);
+    }
+
     lItem->addReference();
+    theContent.insert(theContent.begin() + aTargetPos + i, lItem);
   }
 
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::remove(const xs_integer& aPos)
+store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
 {
-  uint64_t lPos = cast(aPos) - 1;
-  store::Item* lItem = const_cast<store::Item*>(operator[](aPos));
-  theContent.erase(theContent.begin() + lPos);
+  ASSERT_INVARIANT();
+  store::Item_t lItem = getArrayValue(aPos);
+
+  if (getCollection() != NULL && lItem->isJSONItem())
+  {
+    setJSONRoot(lItem.getp(), NULL);
+  }
+
   lItem->removeReference();
+  uint64_t lPosStartingZero = cast(aPos) - 1;
+  theContent.erase(theContent.begin() + lPosStartingZero);
+
+  ASSERT_INVARIANT();
+  return lItem;
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::replace(const xs_integer& aPos, const store::Item_t& value)
+store::Item_t SimpleJSONArray::replace(
+    const xs_integer& aPos,
+    const store::Item_t& value)
 {
+  ASSERT_INVARIANT();
+  store::Item_t lItem = getArrayValue(aPos);
+
+  if (getCollection() != NULL && lItem->isJSONItem())
+  {
+    setJSONRoot(lItem.getp(), NULL);
+  }
+
   uint64_t pos = cast(aPos) - 1;
-  theContent[pos] = value.getp();
+
+  if (getCollection() != NULL && value->isJSONItem())
+  {
+    setJSONRoot(value.getp(), theRoot);
+  }
+
+  theContent[pos]->removeReference();
   value->addReference();
+  theContent[pos] = value.getp();
+  
+  ASSERT_INVARIANT();
+  return lItem;
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-uint64_t
-SimpleJSONArray::cast(const xs_integer& i)
+void SimpleJSONArray::setRoot(const JSONItem* aRoot)
+{
+  theRoot = aRoot;
+
+  for (Members::const_iterator lIter = theContent.begin();
+       lIter != theContent.end();
+       ++lIter)
+  {
+    if ((*lIter)->isJSONObject())
+    {
+      assert(dynamic_cast<SimpleJSONObject*>(*lIter));
+      SimpleJSONObject* lObject = static_cast<SimpleJSONObject*>(*lIter);
+
+      lObject->setRoot(aRoot);
+    }
+    else if ((*lIter)->isJSONArray())
+    {
+      assert(dynamic_cast<SimpleJSONArray*>(*lIter));
+      SimpleJSONArray* lArray = static_cast<SimpleJSONArray*>(*lIter);
+      
+      lArray->setRoot(aRoot);
+    }
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+uint64_t SimpleJSONArray::cast(const xs_integer& i)
 {
   try 
   {
@@ -550,10 +1016,11 @@ SimpleJSONArray::cast(const xs_integer& i)
 /******************************************************************************
 
 *******************************************************************************/
-const store::Item*
-SimpleJSONArray::operator[](const xs_integer& aPos) const
+store::Item_t SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
 {
-  uint64_t lPos = cast(aPos);
+  ASSERT_INVARIANT();
+  uint64_t lPos = cast(aPosition);
+
   if (lPos == 0 || lPos > theContent.size())
   {
     return 0;
@@ -568,9 +1035,9 @@ SimpleJSONArray::operator[](const xs_integer& aPos) const
 /******************************************************************************
 
 *******************************************************************************/
-store::Iterator_t
-SimpleJSONArray::getMembers() const
+store::Iterator_t SimpleJSONArray::getArrayValues() const
 {
+  ASSERT_INVARIANT();
   return new ValuesIterator(const_cast<SimpleJSONArray*>(this));
 }
 
@@ -578,10 +1045,12 @@ SimpleJSONArray::getMembers() const
 /******************************************************************************
 
 *******************************************************************************/
-store::Item*
-SimpleJSONArray::getMember(const store::Item_t& aPosition) const
+xs_integer SimpleJSONArray::getArraySize() const
 {
-  return const_cast<store::Item*>(operator[](aPosition->getIntegerValue()));
+  ASSERT_INVARIANT();
+  store::Item_t lRes;
+  xs_integer lSize(theContent.size());
+  return lSize;
 }
 
 
@@ -592,39 +1061,36 @@ store::Item* SimpleJSONArray::copy(
     store::Item* parent,
     const store::CopyMode& copymode) const
 {
+  ASSERT_INVARIANT();
   SimpleJSONArray* lNewArray = const_cast<SimpleJSONArray*>(this);
+
   if (copymode.theDoCopy)
   {
     lNewArray = new SimpleJSONArray();
     lNewArray->theContent.reserve(theContent.size());
 
-    for (MembersConstIter lIter = theContent.begin();
+    for (Members::const_iterator lIter = theContent.begin();
          lIter != theContent.end();
          ++lIter)
     {
       store::Item_t lValue = *lIter;
+
       if (lValue->isJSONObject() ||
           lValue->isJSONArray() ||
           lValue->isNode())
       {
         lValue = lValue->copy(NULL, copymode);
       }
+
       lNewArray->push_back(lValue);
     }
   }
 
   if (parent)
   {
-    if (parent->isJSONArray())
-    {
-      JSONArray* a = static_cast<JSONArray*>(parent);
-      a->push_back(lNewArray);
-    }
-    else if (parent->isJSONPair())
-    {
-      JSONObjectPair* p = static_cast<JSONObjectPair*>(parent);
-      p->setValue(lNewArray);
-    }
+    assert(parent->isJSONArray());
+    JSONArray* a = static_cast<JSONArray*>(parent);
+    a->push_back(lNewArray);
   }
 
   return lNewArray;
@@ -634,9 +1100,9 @@ store::Item* SimpleJSONArray::copy(
 /******************************************************************************
 
 *******************************************************************************/
-zstring
-SimpleJSONArray::getStringValue() const
+zstring SimpleJSONArray::getStringValue() const
 {
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("array"));
 }
 
@@ -644,9 +1110,9 @@ SimpleJSONArray::getStringValue() const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::getStringValue2(zstring& val) const
+void SimpleJSONArray::getStringValue2(zstring& val) const
 {
+  ASSERT_INVARIANT();
   val = getStringValue();
 }
 
@@ -654,9 +1120,9 @@ SimpleJSONArray::getStringValue2(zstring& val) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::appendStringValue(zstring& buf) const
+void SimpleJSONArray::appendStringValue(zstring& buf) const
 {
+  ASSERT_INVARIANT();
   buf = getStringValue();
 }
 
@@ -664,9 +1130,9 @@ SimpleJSONArray::appendStringValue(zstring& buf) const
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
+void SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+  ASSERT_INVARIANT();
   throw ZORBA_EXCEPTION(jerr::JNTY0004, ERROR_PARAMS("array"));
 }
 
@@ -674,80 +1140,190 @@ SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 /*******************************************************************************
 
 ********************************************************************************/
-void
-SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
+void SimpleJSONArray::setCollection(SimpleCollection* collection, xs_integer /*pos*/)
 {
+  ASSERT_INVARIANT();
+  // Ensures one either detaches or attaches.
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
   theCollection = collection;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Pair                                                                       //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Item*
-JSONObjectPair::getType() const
-{
-  return NULL;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Item* SimpleJSONObjectPair::copy(
-    store::Item* parent,
-    const store::CopyMode& copymode) const
-{
-  SimpleJSONObjectPair* lNewPair = const_cast<SimpleJSONObjectPair*>(this);
-  if (copymode.theDoCopy)
+  
+  if (theCollection != NULL)
   {
-    store::Item_t lNewValue;
-    if (theValue->isJSONObject() ||
-        theValue->isJSONArray() ||
-        theValue->isNode())
-    {
-      lNewValue = theValue->copy(NULL, copymode);
-    }
-    else
-    {
-      lNewValue = theValue;
-    }
-    lNewPair = new SimpleJSONObjectPair(theName, lNewValue);
+    // Attach
+    setRoot(this);
   }
-
-  if (parent)
+  else
   {
-    assert(parent->isJSONObject());
-
-    JSONObject* p = static_cast<JSONObject*>(parent);
-    
-    p->add(lNewPair, false);
+    // Detach
+    setRoot(NULL);
   }
-  return lNewPair;
+  
+  ASSERT_INVARIANT();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void
-SimpleJSONObjectPair::getTypedValue(
-    store::Item_t& val,
-    store::Iterator_t& iter) const
+const store::Collection* SimpleJSONArray::getCollection() const
 {
-  iter = NULL;
-  val = NULL;
-  theValue->getTypedValue(val, iter);
+  if (theRoot == this)
+  {
+    return theCollection;
+  }
+  else if (theRoot != NULL)
+  {
+    return theRoot->getCollection();
+  }
+  else
+  {
+    return NULL;
+  }
 }
+
+
+#ifndef NDEBUG
+
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONArray::assertInvariant() const
+{
+  assert(theCollection == NULL || theRoot == this);
+  if (theRoot != NULL)
+  {
+    const store::Collection* lCollection = getCollection();
+    assert(lCollection != NULL);
+    const SimpleJSONObject* lObject = dynamic_cast<const SimpleJSONObject*>(theRoot);
+    const SimpleJSONArray* lArray = dynamic_cast<const SimpleJSONArray*>(theRoot);
+    assert(lObject != NULL || lArray != NULL);
+    if (lObject != NULL) {
+      assert(lObject->isThisRootOfAllDescendants(theRoot));
+      assert(lObject->isThisJSONItemInDescendance(this));
+    } else {
+      assert(lArray->isThisRootOfAllDescendants(theRoot));
+      assert(lArray->isThisJSONItemInDescendance(this));
+    }
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool SimpleJSONArray::isThisRootOfAllDescendants(const store::Item* aRoot) const
+{
+  if(theRoot != aRoot)
+  {
+    return false;
+  }
+  for (Members::const_iterator lIter = theContent.begin();
+       lIter != theContent.end();
+       ++lIter)
+  {
+    const SimpleJSONObject* lObject =
+        dynamic_cast<const SimpleJSONObject*>(*lIter);
+    const SimpleJSONArray* lArray =
+        dynamic_cast<const SimpleJSONArray*>(*lIter);
+    if (lObject != NULL && (!lObject->isThisRootOfAllDescendants(aRoot)))
+    {
+      return false;
+    }
+    else if (lArray != NULL && (!lArray->isThisRootOfAllDescendants(aRoot)))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool SimpleJSONArray::isThisJSONItemInDescendance(const store::Item* anItem) const
+{
+  if(this == anItem)
+  {
+    return true;
+  }
+  for (Members::const_iterator lIter = theContent.begin();
+       lIter != theContent.end();
+       ++lIter)
+  {
+    const SimpleJSONObject* lObject =
+        dynamic_cast<const SimpleJSONObject*>(*lIter);
+    const SimpleJSONArray* lArray =
+        dynamic_cast<const SimpleJSONArray*>(*lIter);
+    if (lObject != NULL && lObject->isThisJSONItemInDescendance(anItem))
+    {
+      return true;
+    }
+    else if (lArray != NULL && lArray->isThisJSONItemInDescendance(anItem))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+#endif // NDEBUG
+
+
+/******************************************************************************
+
+*******************************************************************************/
+SimpleJSONArray::ValuesIterator::~ValuesIterator() 
+{
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONArray::ValuesIterator::open()
+{
+  theIter = theArray->theContent.begin();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool SimpleJSONArray::ValuesIterator::next(store::Item_t& res)
+{
+  if (theIter != theArray->theContent.end())
+  {
+    res = *theIter;
+    ++theIter;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONArray::ValuesIterator::reset()
+{
+  open();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONArray::ValuesIterator::close()
+{
+  theIter = theArray->theContent.end();
+}
+
+
 
 
 } // namespace json

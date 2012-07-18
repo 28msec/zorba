@@ -8,7 +8,7 @@ try
 {
   insert json 1 to 2 into $a1 at position -2
 } 
-catch jerr:JNUP0018 
+catch jerr:JNUP0016
 {
   fn:true()
 }
@@ -17,7 +17,7 @@ try
 {
   insert json 1 to 2 into $a1 at position 5
 } 
-catch jerr:JNUP0018
+catch jerr:JNUP0016
 {
   fn:true()
 }
@@ -26,7 +26,7 @@ try
 {
   insert json 1 to 2 into $a1 at position -1
 } 
-catch jerr:JNUP0018 
+catch jerr:JNUP0016 
 {
   fn:true()
 }
@@ -35,7 +35,7 @@ try
 {
   insert json 1 to 2 into $a1 at position 4
 }
-catch jerr:JNUP0018 
+catch jerr:JNUP0016 
 {
   fn:false()
 }

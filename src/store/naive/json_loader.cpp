@@ -118,7 +118,7 @@ JSONLoader::next( )
     JSONItem_t lRootItem;
 
     // stack of objects, arrays, and object pairs
-    std::vector<JSONItem_t> lStack;
+    std::vector<store::Item_t> lStack;
 
     parser lParser(in);
     if (theRelativeLoc)
@@ -153,17 +153,7 @@ JSONLoader::next( )
             }
             else
             {
-              JSONObjectPair* lOPair = dynamic_cast<JSONObjectPair*>(lStack.back().getp());
-              if (lOPair)
-              {
-                lOPair->setValue(lItem);
-                lStack.pop_back();
-              }
-              else
-              {
-                JSONArray* lArray = dynamic_cast<JSONArray*>(lStack.back().getp());
-                lArray->push_back(lItem);
-              }
+              addValue(lStack, lItem);
             }
 
             break;
@@ -251,10 +241,10 @@ JSONLoader::next( )
 
 void
 JSONLoader::addValue(
-  std::vector<JSONItem_t>& aStack,
+  std::vector<store::Item_t>& aStack,
   const store::Item_t& aValue)
 {
-  JSONItem_t lLast = aStack.back();
+  store::Item_t lLast = aStack.back();
 
   JSONObject* lObject = dynamic_cast<JSONObject*>(lLast.getp());
 
@@ -262,27 +252,32 @@ JSONLoader::addValue(
   {
     // if the top of the stack is an object, then
     // the value must be a string which is the name
-    // of the object's name value pair
-    JSONObjectPair_t lOPair = new SimpleJSONObjectPair();
-    lOPair->setName(aValue);
-    lObject->add(lOPair, false);
-    aStack.push_back(lOPair);
-
-    return;
-  }
-
-  JSONObjectPair* lOPair = dynamic_cast<JSONObjectPair*>(lLast.getp());
-  if (lOPair)
-  {
-    lOPair->setValue(aValue);
-    aStack.pop_back();
-
+    // of the object's next name/value pair
+    aStack.push_back(aValue);
     return;
   }
 
   JSONArray* lArray  = dynamic_cast<JSONArray*>(lLast.getp());
-  lArray->push_back(aValue);
+  if (lArray)
+  {
+    // if the top of the stack is an array, then
+    // the value must be appended to it
+    lArray->push_back(aValue);
+    return;
+  }
+
+  // Otherwise, the top of the stack must be a string, which means
+  // that the second-to-top must be an object awaiting a value associated with
+  // this name.
+  store::Item_t lString = aStack.back();
+  aStack.pop_back();
   
+  lLast = aStack.back();
+
+  lObject = dynamic_cast<JSONObject*>(lLast.getp());
+
+  assert(lObject);
+  lObject->add(lString, aValue, false);
 }
 
 template<typename T> T*

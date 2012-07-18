@@ -35,12 +35,11 @@ public:
     TEXT_TYPE,
     COMMENT_TYPE,
     ANY_NODE_TYPE, // node()
-#ifdef ZORBA_WITH_JSON
     STRUCTURED_ITEM_TYPE,
+#ifdef ZORBA_WITH_JSON
     JSON_ITEM_TYPE,
     JSON_OBJECT_TYPE,
     JSON_ARRAY_TYPE,
-    JSON_PAIR_TYPE,
 #endif
     ITEM_TYPE,     // item()
     EMPTY_TYPE,    // empty-sequence()

@@ -28,7 +28,7 @@ try
 }}
 catch * 
 {
-  $err:code
+  <exception>{$err:code} : {$err:description}</exception>
 }
 ,
 

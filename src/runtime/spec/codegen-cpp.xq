@@ -329,7 +329,7 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
                       else
                         '',
                       $gen:newline, gen:indent(4)
-                    ),
+                      ),
                   local:create-zorba-type($sig/zorba:output, $mapping)
                 ), ''),
               '),', $gen:newline, gen:indent(4), 

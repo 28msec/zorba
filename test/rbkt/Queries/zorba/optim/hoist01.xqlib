@@ -6,6 +6,7 @@ declare variable $testlib:user := xs:QName("testlib:user");
 
 
 declare collection testlib:user;
+
 declare collection testlib:groupmember;
 
 

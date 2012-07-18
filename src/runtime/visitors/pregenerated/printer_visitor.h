@@ -480,11 +480,6 @@ namespace zorba {
 #endif
 
 #ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONObjectValuesIterator& );
-    void endVisit  ( const JSONObjectValuesIterator& );
-#endif
-
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONObjectValueIterator& );
     void endVisit  ( const JSONObjectValueIterator& );
 #endif
@@ -542,6 +537,11 @@ namespace zorba {
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONRenameIterator& );
     void endVisit  ( const JSONRenameIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONArrayAppendIterator& );
+    void endVisit  ( const JSONArrayAppendIterator& );
 #endif
 
     void beginVisit( const SqrtIterator& );
