@@ -1113,8 +1113,8 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 
 ********************************************************************************/
 void serializer::json_emitter::emit_jsoniq_value(
-    zstring type,
-    zstring value,
+    zstring const &type,
+    zstring const &value,
     int depth)
 {
   // First make sure we should be doing these extended values
@@ -1203,7 +1203,7 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_json_string(zstring string)
+void serializer::json_emitter::emit_json_string(zstring const &string)
 {
   tr << '"';
   zstring::const_iterator i = string.begin();
