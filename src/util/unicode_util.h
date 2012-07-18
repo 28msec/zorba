@@ -332,7 +332,7 @@ inline code_point convert_surrogate( unsigned high, unsigned low ) {
 template<typename ResultType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_integral<ResultType>::value,
                         void>::type
-covert_surrogate( code_point c, ResultType *high, ResultType *low ) {
+convert_surrogate( code_point c, ResultType *high, ResultType *low ) {
   code_point const n = c - 0x10000;
   *high = 0xD800 + (static_cast<unsigned>(n) >> 10);
   *low  = 0xDC00 + (n & 0x3FF);
