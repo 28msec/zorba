@@ -1224,6 +1224,7 @@ void serializer::json_emitter::emit_json_string(zstring const &string)
       oss << std::hex << std::setfill('0')
           << "\\u" << std::setw(4) << high
           << "\\u" << std::setw(4) << low;
+      tr << oss.str();
       continue;
     }
     switch ( cp ) {
