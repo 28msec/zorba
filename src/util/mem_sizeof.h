@@ -307,22 +307,13 @@ struct size_traits<std::map<K,V,Comp,Alloc>,false> :
 };
 
 /**
- * Specialization for std::unordered_map.
- */
-template<typename K,typename V,class Hash,class Equal,class Alloc>
-struct size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
-  map_size_traits< std::unordered_map<K,V,Hash,Equal,Alloc> >
-{
-};
-
-/**
  * Specialization for std::pair.
  */
 template<typename T,typename U>
 struct size_traits<std::pair<T,U>,false> {
   static size_t alloc_sizeof( std::pair<T,U> const &p ) {
     // Yes, alloc_sizeof() is correct here.
-    return alloc_sizof( p.first ) + alloc_sizeof( p.second );
+    return ztd::alloc_sizeof( p.first ) + ztd::alloc_sizeof( p.second );
   }
 };
 
@@ -366,6 +357,15 @@ struct size_traits<std::unique_ptr<T,D>,false> {
   static size_t alloc_sizeof( std::unique_ptr<T,D> const &p ) {
     return p ? mem_sizeof( *p ) : 0;
   }
+};
+
+/**
+ * Specialization for std::unordered_map.
+ */
+template<typename K,typename V,class Hash,class Equal,class Alloc>
+struct size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
+  map_size_traits< std::unordered_map<K,V,Hash,Equal,Alloc> >
+{
 };
 
 /**

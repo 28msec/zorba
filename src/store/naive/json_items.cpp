@@ -23,6 +23,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
+#include "util/mem_sizeof.h"
 
 namespace zorba
 {
