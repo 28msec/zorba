@@ -30,6 +30,7 @@
 #include "util/stl_util.h"
 #include "util/unordered_map.h"
 #include "util/unordered_set.h"
+#include "store/api/item_handle.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
@@ -378,6 +379,16 @@ struct size_traits<std::vector<T,Alloc>,false> :
 };
 
 ////////// Zorba specializations //////////////////////////////////////////////
+
+/**
+ * Specialization for ItemHandle.
+ */
+template<class T>
+struct size_traits<store::ItemHandle<T>,false> {
+  static size_t alloc_sizeof( store::ItemHandle<T> const &h ) {
+    return h.getp() ? mem_sizeof( *h ) : 0;
+  }
+};
 
 /**
  * Specialization for rstring.
