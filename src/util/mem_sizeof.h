@@ -18,12 +18,13 @@
 #define ZORBA_MEM_SIZEOF
 
 #include <cstring>
+#include <deque>
 #include <map>
 #include <set>
 #include <stack>
 #include <string>
-#include <vector>
 #include <utility>                      /* for pair */
+#include <vector>
 
 #include <zorba/internal/ztd.h>
 #include <zorba/internal/unique_ptr.h>
@@ -298,6 +299,29 @@ private:
 };
 
 /**
+ * Size traits for a SequenceType.
+ * (This is a base class used by other specializations.)
+ */
+template<class SequenceType>
+struct sequence_size_traits {
+  static size_t alloc_sizeof( SequenceType const &s ) {
+    size_t total_size = 0;
+    FOR_EACH( typename SequenceType, i, s )
+      total_size += mem_sizeof( *i );
+    return total_size;
+  }
+};
+
+/**
+ * Specialization for std::deque.
+ */
+template<typename T,class Alloc>
+struct size_traits<std::deque<T,Alloc>,false> :
+  sequence_size_traits< std::deque<T,Alloc> >
+{
+};
+
+/**
  * Specialization for std::map.
  */
 template<typename K,typename V,typename Comp,class Alloc>
@@ -314,20 +338,6 @@ struct size_traits<std::pair<T,U>,false> {
   static size_t alloc_sizeof( std::pair<T,U> const &p ) {
     // Yes, alloc_sizeof() is correct here.
     return ztd::alloc_sizeof( p.first ) + ztd::alloc_sizeof( p.second );
-  }
-};
-
-/**
- * Size traits for a SequenceType.
- * (This is a base class used by other specializations.)
- */
-template<class SequenceType>
-struct sequence_size_traits {
-  static size_t alloc_sizeof( SequenceType const &s ) {
-    size_t total_size = 0;
-    FOR_EACH( typename SequenceType, i, s )
-      total_size += mem_sizeof( *i );
-    return total_size;
   }
 };
 
