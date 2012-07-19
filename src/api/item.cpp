@@ -20,8 +20,9 @@
 #include <zorba/zorba_exception.h>
 #include <zorba/diagnostic_handler.h>
 
-#include "zorbautils/lock.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "util/mem_sizeof.h"
+#include "zorbautils/lock.h"
 
 #include "system/globalenv.h"
 
@@ -87,6 +88,12 @@ Item::~Item()
   close();
 }
 
+
+size_t
+Item::mem_size() const
+{
+  return ztd::mem_sizeof( m_item );
+}
 
 void
 Item::close()
