@@ -1212,9 +1212,18 @@ void serializer::json_emitter::emit_json_string(zstring const &string)
   FOR_EACH( utf8_string<zstring const>, i, u ) {
     unicode::code_point const cp = *i;
     if ( ascii::is_cntrl( cp ) ) {
-      std::ostringstream oss;
-      oss << std::hex << std::setfill('0') << "\\u" << std::setw(4) << cp;
-      tr << oss.str();
+      switch ( cp ) {
+        case '\b': tr << "\\b"; break;
+        case '\f': tr << "\\f"; break;
+        case '\n': tr << "\\n"; break;
+        case '\r': tr << "\\r"; break;
+        case '\t': tr << "\\t"; break;
+        default: {
+          std::ostringstream oss;
+          oss << std::hex << std::setfill('0') << "\\u" << std::setw(4) << cp;
+          tr << oss.str();
+        }
+      }
       continue;
     }
     if ( unicode::is_supplementary_plane( cp ) ) {
