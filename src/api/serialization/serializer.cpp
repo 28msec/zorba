@@ -31,8 +31,10 @@
 #include "api/unmarshaller.h"
 
 #include "util/ascii_util.h"
-#include "util/utf8_util.h"
 #include "util/string_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_string.h"
+#include "util/utf8_util.h"
 #include "util/xml_util.h"
 
 #include "system/globalenv.h"
@@ -1203,29 +1205,47 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_json_string(zstring string)
+void serializer::json_emitter::emit_json_string(zstring const &string)
 {
   tr << '"';
-  zstring::const_iterator i = string.begin();
-  zstring::const_iterator end = string.end();
-  for (; i < end; i++) 
-  {
-    if (*i < 0x20) 
-    {
-      // Escape control sequences
-      std::stringstream hex;
-      hex << "\\u" << std::setw(4) << std::setfill('0')
-          << std::hex << static_cast<int>(*i);
-      tr << hex.str();
+  utf8_string<zstring const> const u( string );
+  FOR_EACH( utf8_string<zstring const>, i, u ) {
+    unicode::code_point const cp = *i;
+    if ( ascii::is_cntrl( cp ) ) {
+      switch ( cp ) {
+        case '\b': tr << "\\b"; break;
+        case '\f': tr << "\\f"; break;
+        case '\n': tr << "\\n"; break;
+        case '\r': tr << "\\r"; break;
+        case '\t': tr << "\\t"; break;
+        default: {
+          std::ostringstream oss;
+          oss << std::hex << std::setfill('0') << "\\u" << std::setw(4) << cp;
+          tr << oss.str();
+        }
+      }
       continue;
     }
-    if (*i == '\\' || *i == '"') 
-    {
-      // Output escape char for \ or "
-      tr << '\\';
-      // Fall through to output original character
+    if ( unicode::is_supplementary_plane( cp ) ) {
+      unsigned high, low;
+      unicode::convert_surrogate( cp, &high, &low );
+      std::ostringstream oss;
+      oss << std::hex << std::setfill('0')
+          << "\\u" << std::setw(4) << high
+          << "\\u" << std::setw(4) << low;
+      tr << oss.str();
+      continue;
     }
-    tr << *i;
+    switch ( cp ) {
+      case '\\':
+      case '"':
+        tr << '\\';
+        // no break;
+      default: {
+        utf8::encoded_char_type ec;
+        tr.write( ec, utf8::encode( cp, ec ) );
+      }
+    }
   }
   tr << '"';
 }
