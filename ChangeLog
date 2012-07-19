@@ -32,7 +32,7 @@ Optimizations:
   * Streaming execution for tumbling windows (also fixes bug #1010051).
 
 Bug Fixes/Other Changes:
-  * Fixed bug #1025622 (Incorrect JSON serialization of supplementory plane code points)
+  * Fixed bug #1025622 (Incorrect JSON serialization of supplementary plane code points)
   * Fixed bug #1016606 (DOCTYPE in the input of the parse-fragment function)
   * Fixed bug #1002993 (bug during revalidation after update; improper condition
     for calling TypeOps::get_atomic_type_code() from
