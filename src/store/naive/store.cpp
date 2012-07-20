@@ -672,7 +672,7 @@ void Store::populateGeneralIndex(
         // Current domain node has at least 2 keys. So insert them in the index.
         // Note: we have to copy the domainNode rchandle because index->insert()
         // will transfer the given node.
-        index->setMultiKey();
+        index->addMultiKey();
 
         store::Item_t node = domainNode;
         index->insert(firstKeyItem, node);
@@ -724,10 +724,8 @@ store::Index_t Store::refreshIndex(
 
   if (!theIndices.get(non_const_items, index))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   deleteIndex(qname);

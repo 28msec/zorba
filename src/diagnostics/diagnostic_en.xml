@@ -3834,7 +3834,15 @@
     </entry>
     
     <entry key="ParseFragmentInvalidOptions">
-      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
+      <value>invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowed">
+      <value>a DOCTYPE declaration is not allowed</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowedHere">
+      <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
     
     <entry key="FormatNumberDuplicates">

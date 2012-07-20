@@ -4,6 +4,8 @@ Zorba - The XQuery Processor
 version 2.x
 
 New Features:
+  * The parse-fragment function now allows a DOCTYPE declaration in the input.
+    (Also fixed bug #1016606 with the feature request). 
   * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local).
     Also updated the fn:path() function.
   * Item::isSeekable API extension for streamable content (xs:string and xs:base64Binary).
@@ -17,7 +19,8 @@ New Features:
   * Positional pagination support for collections
   * Added a function to the http://www.zorba-xquery.com/modules/store/static/indexes/dml module which returns
     the value of all keys contained in an index.
-
+  * Incremental maintenance for general indexes.
+	
 Optimizations:
   * Small optimization of comparison operations.
   * Improved hoist rule: tighter hoisting of expressions (also fixes bug #967428,
@@ -28,12 +31,16 @@ Optimizations:
   * Big rewrite of plan serializer internals, resulting in big performance improvement.
   * Avoid (if possible) treat expr for checking that the value of a non-external
     global variable conforms to the type declaration of the vatiable.
+  * Streaming execution for tumbling windows (also fixes bug #1010051).
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1025622 (Incorrect JSON serialization of supplementary plane code points)
+  * Fixed bug #1016606 (DOCTYPE in the input of the parse-fragment function)
   * Fixed bug #1002993 (bug during revalidation after update; improper condition
     for calling TypeOps::get_atomic_type_code() from
     SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
   * Fixed bug #867357 (Improved parser error messages)
+  * Fixed bug #1026379 ("q" flag for fn:replace() is ignored)
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
     fn:distinct-values)
   * Fixed bug #1015580 (Add base64_streambuf / replace inefficient base64 code)

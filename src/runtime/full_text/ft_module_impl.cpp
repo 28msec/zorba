@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include <zorba/config.h>
 
 //
@@ -23,7 +24,6 @@
 //
 #ifndef ZORBA_NO_FULL_TEXT
 
-#include "stdafx.h"
 
 #include <limits>
 #include <typeinfo>
