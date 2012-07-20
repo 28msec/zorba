@@ -38,6 +38,7 @@ Bug Fixes/Other Changes:
     for calling TypeOps::get_atomic_type_code() from
     SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
   * Fixed bug #867357 (Improved parser error messages)
+  * Fixed bug #1026379 ("q" flag for fn:replace() is ignored)
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
     fn:distinct-values)
   * Fixed bug #1015580 (Add base64_streambuf / replace inefficient base64 code)
