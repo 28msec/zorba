@@ -45,6 +45,7 @@ IF (SWIG_FOUND)
   ADD_SUBDIRECTORY(ruby)
   ADD_SUBDIRECTORY(php)
   ADD_SUBDIRECTORY(csharp)
+  
 ENDIF (SWIG_FOUND)
 
 # generate Doxygen code documentation
