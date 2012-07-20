@@ -123,7 +123,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
   }
 
-  cast_base_expr* pe;
+  cast_base_expr* pe = NULL;
 
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL)

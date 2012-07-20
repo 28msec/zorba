@@ -168,7 +168,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     var_expr::var_kind varKind = e->get_kind();
 
     xqtref_t derivedType;
-    expr* domainExpr;
+    expr* domainExpr = NULL;
 
     // The translator has already set theDeclaredType of pos_vars, count_vars,
     // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.

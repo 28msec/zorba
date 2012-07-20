@@ -99,11 +99,11 @@ ExprIterator::ExprIterator(expr* e)
 
 void ExprIterator::next()
 {
-  flwor_clause* c;
-  window_clause* wc;
-  orderby_clause* oc;
-  group_clause* gc;
-  flwor_wincond* wincond;
+  flwor_clause* c = NULL;
+  window_clause* wc = NULL;
+  orderby_clause* oc = NULL;
+  group_clause* gc = NULL;
+  flwor_wincond* wincond = NULL;
 
   switch (theExpr->get_expr_kind())
   {

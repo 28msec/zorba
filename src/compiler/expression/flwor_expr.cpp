@@ -201,7 +201,7 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
   var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
   subst[theVarExpr] = varCopy;
 
-  var_expr* posvarCopy;
+  var_expr* posvarCopy = NULL;
   var_expr* pos_var_ptr = thePosVarExpr;
   if (pos_var_ptr)
   {
@@ -209,7 +209,7 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
     subst[pos_var_ptr] = posvarCopy;
   }
 
-  var_expr* scorevarCopy;
+  var_expr* scorevarCopy = NULL;
   var_expr* score_var_ptr = theScoreVarExpr;
   if (score_var_ptr)
   {
@@ -308,7 +308,7 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
   subst[theVarExpr] = varCopy;
 
 #if 0
-  var_expr* scorevarCopy;
+  var_expr* scorevarCopy = NULL;
   var_expr* score_var_ptr = theScoreVarExpr;
   if (score_var_ptr)
   {
@@ -790,7 +790,8 @@ flwor_expr::flwor_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& lo
   :
   expr(ccb, sctx, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
   theIsGeneral(general),
-  theHasSequentialClauses(false)
+  theHasSequentialClauses(false),
+  theReturnExpr(NULL)
 {
   theScriptingKind = SIMPLE_EXPR;
 }

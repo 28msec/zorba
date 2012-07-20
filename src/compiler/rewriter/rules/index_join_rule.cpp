@@ -203,7 +203,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 ********************************************************************************/
 static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 {
-  const fo_expr* foExpr;
+  const fo_expr* foExpr = NULL;
   const function* fn;
   const expr* predExpr = predInfo.thePredicate;
 
@@ -619,7 +619,7 @@ static void rewriteJoin(
   //
   // Replace the expr defining the inner var with an index probe.
   //
-  fo_expr* probeExpr;
+  fo_expr* probeExpr = NULL;
 
   if (predInfo.theIsGeneral)
   {

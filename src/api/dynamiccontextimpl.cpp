@@ -248,7 +248,7 @@ bool DynamicContextImpl::setVariable(
     const zstring& localName = Unmarshaller::getInternalString(inLocalname);
     store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
 
-    var_expr* var;
+    var_expr* var = NULL;
 
     try
     {
@@ -292,7 +292,7 @@ bool DynamicContextImpl::setVariable(
     const zstring& varName = Unmarshaller::getInternalString(inVarName);
     store::Item_t value(Unmarshaller::getInternalItem(inValue));
     ZorbaImpl::checkItem(value);
-    var_expr* var;
+    var_expr* var = NULL;
 
     // For string items, check that the value is a valid Unicode codepoint sequence
     const char* invalid_char;
@@ -305,8 +305,8 @@ bool DynamicContextImpl::setVariable(
         TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
         (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001, 
-      ERROR_PARAMS(zstring("#x") + 
+      throw XQUERY_EXCEPTION(err::FOCH0001,
+      ERROR_PARAMS(zstring("#x") +
       BUILD_STRING(std::uppercase << std::hex
                    << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
     }
@@ -358,7 +358,7 @@ bool DynamicContextImpl::setVariable(
 
     const zstring& varName = Unmarshaller::getInternalString(inVarName);
     store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
-    var_expr* var;
+    var_expr* var = NULL;
 
     try
     {
@@ -617,7 +617,7 @@ DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
 /****************************************************************************//**
 
 ********************************************************************************/
-bool 
+bool
 DynamicContextImpl::isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const
 {
   ZORBA_DCTX_TRY

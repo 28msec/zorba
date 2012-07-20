@@ -3494,7 +3494,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   if (v.get_return_type() != NULL)
     pop_tstack();
 
-  expr* body;
+  expr* body = NULL;
   user_function* udf = NULL;
 
   if (!v.is_external())
@@ -3755,7 +3755,7 @@ void* begin_visit(const VarDecl& v)
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, v.get_var_name(), loc);
 
-  var_expr* ve;
+  var_expr* ve = NULL;
 
   if (v.is_global())
   {
@@ -4011,7 +4011,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* initExpr;
+  expr* initExpr = NULL;
   if (v.get_expr() != NULL)
     initExpr = pop_nodestack();
 
@@ -4028,7 +4028,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
     assert(type != NULL);
   }
 
-  var_expr* var;
+  var_expr* var = NULL;
 
   if (inLibraryModule())
   {
@@ -5002,7 +5002,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   //fill in the body of the function
-  expr* body;
+  expr* body = NULL;
   const QName* qname = v.getName();
 
   // todo cezar: error if user expresions are sequential
@@ -6033,7 +6033,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
 
   var_expr* varExpr = bind_var(loc, v.get_var_name(), var_expr::for_var, type);
-  var_expr* posVarExpr;
+  var_expr* posVarExpr = NULL;
 
   const PositionalVar* pv = v.get_posvar();
 
@@ -6307,10 +6307,10 @@ void bind_wincond_vars(const WindowVars& v, flwor_clause* windowClause, bool inp
                                       var_expr::wincond_in_pos_var :
                                       var_expr::wincond_out_pos_var);
 
-  var_expr* posVarExpr;
-  var_expr* curVarExpr;
-  var_expr* nextVarExpr;
-  var_expr* prevVarExpr;
+  var_expr* posVarExpr = NULL;
+  var_expr* curVarExpr = NULL;
+  var_expr* nextVarExpr = NULL;
+  var_expr* prevVarExpr = NULL;
 
   rchandle<PositionalVar> pv = v.get_posvar();
   if (pv != NULL)
@@ -6592,7 +6592,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
   push_scope();
 
-  var_expr* ngvar;
+  var_expr* ngvar = NULL;
 
   while (NULL != (ngvar = pop_nodestack_var()))
   {
@@ -7131,7 +7131,7 @@ void* begin_visit(const TypeswitchExpr& v)
   expr* flworExpr = wrap_in_let_flwor(se, sv, retExpr);
 
   const QName* defvar_name = v.get_default_varname();
-  var_expr* defvar;
+  var_expr* defvar = NULL;
 
   if (defvar_name)
   {
@@ -7168,13 +7168,13 @@ void* begin_visit(const TypeswitchExpr& v)
   {
     const CaseClause* caseClause = &**it;
     const QueryLoc& loc = caseClause->get_location();
-    expr* clauseExpr;
+    expr* clauseExpr = NULL;
 
     caseClause->get_type()->accept(*this);
     xqtref_t type = pop_tstack();
 
     const QName* varname = caseClause->get_varname();
-    var_expr* caseVar;
+    var_expr* caseVar = NULL;
 
     if (varname)
     {
@@ -9469,7 +9469,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   //   if (fn:boolean($predVar) then $dot else ()
 
   // Check if the pred expr returns a numeric result
-  fo_expr* condExpr;
+  fo_expr* condExpr = NULL;
   std::vector<expr*> condOperands(3);
 
   condOperands[0] =
@@ -10140,8 +10140,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         const for_clause* fc = static_cast<const for_clause*>(flworExpr->get_clause(0));
         expr* flworVarExpr = fc->get_var();
 
-        fo_expr* normExpr;
-        fo_expr* tokenExpr;
+        fo_expr* normExpr = NULL;
+        fo_expr* tokenExpr = NULL;
         zstring space(" ");
         const_expr* constExpr = theExprManager->create_const_expr(theRootSctx, loc, space);
 
@@ -10675,7 +10675,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     function* func;
 
     flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
-    fo_expr* accessorExpr;
+    fo_expr* accessorExpr = NULL;
 
     const for_clause* fc = reinterpret_cast<const for_clause*>(
         flworExpr->get_clause(0));
@@ -10836,7 +10836,7 @@ void* begin_visit(const InlineFunction& v)
 
   push_nodestack(fiExpr);
 
-  flwor_expr* flwor;
+  flwor_expr* flwor = NULL;
 
   // Handle function parameters. Translation of the params, if any, results to
   // a flwor expr with one let binding for each function parameter:
@@ -11034,7 +11034,7 @@ void end_visit(const JSONArrayConstructor& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
-  expr* contentExpr;
+  expr* contentExpr = NULL;
 
   if (v.get_expr() != NULL)
   {
@@ -11067,7 +11067,7 @@ void end_visit(const JSONObjectConstructor& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
-  expr* contentExpr;
+  expr* contentExpr = NULL;
 
   if (v.get_expr() != NULL)
   {
@@ -11246,9 +11246,9 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* nameExpr;
-  expr* attrExpr;
-  expr* contentExpr;
+  expr* nameExpr = NULL;
+  expr* attrExpr = NULL;
+  expr* contentExpr = NULL;
 
   rchandle<QName> end_tag = v.get_end_name();
   rchandle<QName> start_tag = v.get_elem_name();
@@ -11490,7 +11490,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     expr* nameExpr = theExprManager->create_const_expr(theRootSctx, loc, qnameItem);
 
-    fo_expr* foExpr;
+    fo_expr* foExpr = NULL;
     if ((foExpr = dynamic_cast<fo_expr*>(valueExpr)) != NULL &&
         foExpr->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1)
     {
@@ -11945,8 +11945,8 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* nameExpr;
-  expr* contentExpr;
+  expr* nameExpr = NULL;
+  expr* contentExpr = NULL;
 
   if (v.get_content_expr() != 0)
   {
@@ -12000,9 +12000,9 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* nameExpr;
-  expr* valueExpr;
-  expr* attrExpr;
+  expr* nameExpr = NULL;
+  expr* valueExpr = NULL;
+  expr* attrExpr = NULL;
 
   if (v.get_val_expr() != 0)
   {
@@ -12069,8 +12069,8 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* target;
-  expr* content;
+  expr* target = NULL;
+  expr* content = NULL;
 
   if (v.get_content_expr() == NULL)
   {
@@ -12402,7 +12402,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
   SchemaElementTest* schemaTest = v.get_schema_elem_test();
   axis_step_expr* axisExpr =
     dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
-  match_expr* match;
+  match_expr* match = NULL;
 
   if (elemTest == NULL && schemaTest == NULL)
   {

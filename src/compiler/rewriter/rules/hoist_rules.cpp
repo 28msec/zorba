@@ -74,12 +74,13 @@ static bool containsUpdates(const expr*);
 struct PathHolder
 {
   struct PathHolder  * prev;
-  expr*               expr;
+  expr               * expr;
   long                 clauseCount;
 
   PathHolder()
     :
     prev(NULL),
+    expr(NULL),
     clauseCount(0)
   {
   }

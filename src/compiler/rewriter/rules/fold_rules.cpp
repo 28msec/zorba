@@ -623,7 +623,7 @@ RULE_REWRITE_PRE(PartialEval)
   TypeManager* tm = node->get_type_manager();
 
   // if node is a castable or instance-of expr
-  const castable_base_expr* cbe;
+  const castable_base_expr* cbe = NULL;
   if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
   {
     expr* arg = cbe->get_input();
@@ -811,7 +811,7 @@ static expr* partial_eval_logic(
   for (ulong i = 0; i < numArgs; ++i)
   {
     const expr* arg = fo->get_arg(i);
-    const const_expr* constArg;
+    const const_expr* constArg = NULL;
 
     if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
     {
@@ -1024,7 +1024,7 @@ RULE_REWRITE_POST(InlineFunctions)
     const fo_expr* fo = static_cast<const fo_expr *> (node);
 
     const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
-    expr* body;
+    expr* body = NULL;
 
     if (NULL != udf &&
         //!udf->isSequential() &&

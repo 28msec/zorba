@@ -198,7 +198,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "for $x in ... where E ... return ...", and E doesn't depend on FLWOR vars -->
   // "if E then flwor else ()", where flwor is the original flwor expr without the
   // where clause.
-  expr* whereExpr;
+  expr* whereExpr = NULL;
   if ((whereExpr = flwor.get_where()) != NULL && !flwor.has_sequential_clauses())
   {
     const expr::FreeVars& whereVars = whereExpr->getFreeVars();
@@ -406,7 +406,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     }
 
     expr* result = flwor.get_return_expr();
-    expr* whereExpr;
+    expr* whereExpr = NULL;
 
     if ((whereExpr = flwor.get_where()) != NULL)
     {
@@ -907,8 +907,8 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
   if_expr* ifReturnExpr = NULL;
   expr* elseExpr = NULL;
-  expr* condExpr;
-  expr* thenExpr;
+  expr* condExpr = NULL;
+  expr* thenExpr = NULL;
 
   if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
   {
@@ -935,8 +935,8 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     modified = true;
   }
 
-  expr* posExpr;
-  var_expr* posVar;
+  expr* posExpr = NULL;
+  var_expr* posVar = NULL;
 
   // '... for $x at $p in E ... where $p = posExpr ... return ...' -->
   // '... for $x in fn:subsequence(E, posExpr, 1) ... return ...
@@ -1004,7 +1004,7 @@ static bool is_subseq_pred(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   const QueryLoc& posLoc = posExpr->get_loc();
 
-  const fo_expr* fo;
+  const fo_expr* fo = NULL;
   const function* f;
 
   while (true)
@@ -1161,7 +1161,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
   for (ulong i = 0; i < numClauses; ++i)
   {
     bool merge = false;
-    flwor_expr* nestedFlwor;
+    flwor_expr* nestedFlwor = NULL;
     ulong numNestedClauses;
 
     flwor_clause* c = flwor->get_clause(i);

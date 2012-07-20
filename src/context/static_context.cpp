@@ -582,6 +582,7 @@ static_context::static_context()
   :
   theParent(NULL),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -628,6 +629,7 @@ static_context::static_context(static_context* parent)
   :
   theParent(parent),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -679,6 +681,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   SimpleRCObject(ar),
   theParent(NULL),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -2145,7 +2148,7 @@ var_expr* static_context::lookup_var(
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
   const static_context* sctx = this;
-  var_expr* varExpr;
+  var_expr* varExpr = NULL;
 
   while (sctx != NULL)
   {

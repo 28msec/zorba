@@ -35,7 +35,7 @@ class ExprIterator
 protected:
   expr                                 * theExpr;
 
-  expr*                                * theCurrentChild;
+  expr                                ** theCurrentChild;
   int                                    theState;
 
   std::vector<expr*>::iterator          theArgsIter;
