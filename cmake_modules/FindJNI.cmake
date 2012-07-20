@@ -103,6 +103,7 @@ JAVA_APPEND_LIBRARY_DIRECTORIES(JAVA_AWT_LIBRARY_DIRECTORIES
   ${_JAVA_HOME}
   /usr/lib
   /usr/local/lib
+  /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
   /usr/lib/jvm/java/lib
   /usr/lib/java/jre/lib/{libarch}
   /usr/local/lib/java/jre/lib/{libarch}
@@ -113,7 +114,6 @@ JAVA_APPEND_LIBRARY_DIRECTORIES(JAVA_AWT_LIBRARY_DIRECTORIES
   /usr/lib/jvm/java-6-sun/jre/lib/{libarch}
   /usr/lib/jvm/java-1.5.0-sun/jre/lib/{libarch}
   /usr/lib/jvm/java-6-sun-1.6.0.00/jre/lib/{libarch}       # can this one be removed according to #8821 ? Alex
-  /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
   /usr/lib/jvm/java-openjdk/jre/lib/{libarch}
   # Debian specific paths for default JVM
   /usr/lib/jvm/default-java/jre/lib/{libarch}
