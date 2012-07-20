@@ -1587,7 +1587,7 @@ bool FnReplaceIterator::nextImpl(
 
   if ( flags.find( 'q' ) == zstring::npos ) {
 
-    // First, count the number of capturing groups.
+    // count the number of capturing groups
     bool got_paren = false;
     int num_capturing_groups = 0;
     FOR_EACH( zstring, c, pattern ) {
