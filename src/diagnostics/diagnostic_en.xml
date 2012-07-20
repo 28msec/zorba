@@ -2254,7 +2254,7 @@
     </diagnostic>
 
     <diagnostic code="ZDST0035" name="INDEX_GENERAL_MULTIKEY">
-      <value>"$1": number of key expressions for general indexes is restricted one expression</value>
+      <value>"$1": number of key expressions for general indexes is restricted to one expression</value>
     </diagnostic>
 
     <diagnostic code="ZDST0036" name="INDEX_DECL_IN_FOREIGN_MODULE">

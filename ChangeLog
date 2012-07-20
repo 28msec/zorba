@@ -189,7 +189,6 @@ Bug Fixes/Other Changes:
   * Fixed bug #867266 (do not hoist updating expressions)
   * Fixed bug #867022 (added location and params to some XPTY0004 errors)
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
-  * Added API method Item::getNamespaceBindings().
   * Fixed bug #917981 (disallow declaring same module twice).
   * Deprecated StaticContext:getNamespaceURIByPrefix()
   * Fixed bug #943788 (streamable string is not seekable)
