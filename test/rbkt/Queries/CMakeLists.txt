@@ -118,7 +118,8 @@ IF(EXISTS "${WORDNET_THESAURUS_FILE}")
   SET(ZORBA_WORDNET_FOUND 1)
   # Kind of a weird place to put this directive, but convenient
   INSTALL(FILES "${WORDNET_THESAURUS_FILE}"
-    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet")
+    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet"
+    COMPONENT thesaurus)
 ENDIF(EXISTS "${WORDNET_THESAURUS_FILE}")
 
 IF(ZORBA_SUPPRESS_CURL)
