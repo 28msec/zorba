@@ -101,9 +101,11 @@ JAVA_APPEND_LIBRARY_DIRECTORIES(JAVA_AWT_LIBRARY_DIRECTORIES
   ${_JAVA_HOME}/jre/lib
   ${_JAVA_HOME}/lib
   ${_JAVA_HOME}
+  /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
+  /usr/lib/jvm/java-6-openjdk-amd64/jre/lib/{libarch}
+  /usr/lib/jvm/java-6-openjdk-i386/jre/lib/{libarch}
   /usr/lib
   /usr/local/lib
-  /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
   /usr/lib/jvm/java/lib
   /usr/lib/java/jre/lib/{libarch}
   /usr/local/lib/java/jre/lib/{libarch}
