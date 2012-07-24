@@ -31,8 +31,10 @@
 #include "api/unmarshaller.h"
 
 #include "util/ascii_util.h"
-#include "util/utf8_util.h"
 #include "util/string_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_string.h"
+#include "util/utf8_util.h"
 #include "util/xml_util.h"
 
 #include "system/globalenv.h"
@@ -112,14 +114,18 @@ static void tokenize(
 /*******************************************************************************
 
 ********************************************************************************/
-serializer::emitter::emitter(serializer* the_serializer, transcoder& the_transcoder)
+serializer::emitter::emitter(
+    serializer* the_serializer, 
+    transcoder& the_transcoder,
+    bool aEmitAttributes)
   :
   ser(the_serializer),
   tr(the_transcoder),
   previous_item(INVALID_ITEM),
   theChildIters(8),
   theFirstFreeChildIter(0),
-  isFirstElementNode(true)
+  isFirstElementNode(true),
+  theEmitAttributes(aEmitAttributes)
 {
   for (ulong i = 0; i < 8; i++)
     theChildIters[i] = GENV_ITERATOR_FACTORY->createChildrenIterator();
@@ -442,7 +448,8 @@ void serializer::emitter::emit_item(store::Item* item)
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  else if (!theEmitAttributes 
+        && item->getNodeKind() == store::StoreConsts::attributeNode)
   {
     throw XQUERY_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
@@ -855,9 +862,10 @@ bool serializer::emitter::havePrefix(const zstring& pre) const
 ********************************************************************************/
 serializer::xml_emitter::xml_emitter(
   serializer* the_serializer,
-  transcoder& the_transcoder)
+  transcoder& the_transcoder,
+  bool aEmitAttributes)
   :
-  emitter(the_serializer, the_transcoder)
+  emitter(the_serializer, the_transcoder, aEmitAttributes)
 {
 }
 
@@ -1197,29 +1205,47 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_json_string(zstring string)
+void serializer::json_emitter::emit_json_string(zstring const &string)
 {
   tr << '"';
-  zstring::const_iterator i = string.begin();
-  zstring::const_iterator end = string.end();
-  for (; i < end; i++) 
-  {
-    if (*i < 0x20) 
-    {
-      // Escape control sequences
-      std::stringstream hex;
-      hex << "\\u" << std::setw(4) << std::setfill('0')
-          << std::hex << static_cast<int>(*i);
-      tr << hex.str();
+  utf8_string<zstring const> const u( string );
+  FOR_EACH( utf8_string<zstring const>, i, u ) {
+    unicode::code_point const cp = *i;
+    if ( ascii::is_cntrl( cp ) ) {
+      switch ( cp ) {
+        case '\b': tr << "\\b"; break;
+        case '\f': tr << "\\f"; break;
+        case '\n': tr << "\\n"; break;
+        case '\r': tr << "\\r"; break;
+        case '\t': tr << "\\t"; break;
+        default: {
+          std::ostringstream oss;
+          oss << std::hex << std::setfill('0') << "\\u" << std::setw(4) << cp;
+          tr << oss.str();
+        }
+      }
       continue;
     }
-    if (*i == '\\' || *i == '"') 
-    {
-      // Output escape char for \ or "
-      tr << '\\';
-      // Fall through to output original character
+    if ( unicode::is_supplementary_plane( cp ) ) {
+      unsigned high, low;
+      unicode::convert_surrogate( cp, &high, &low );
+      std::ostringstream oss;
+      oss << std::hex << std::setfill('0')
+          << "\\u" << std::setw(4) << high
+          << "\\u" << std::setw(4) << low;
+      tr << oss.str();
+      continue;
     }
-    tr << *i;
+    switch ( cp ) {
+      case '\\':
+      case '"':
+        tr << '\\';
+        // no break;
+      default: {
+        utf8::encoded_char_type ec;
+        tr.write( ec, utf8::encode( cp, ec ) );
+      }
+    }
   }
   tr << '"';
 }
@@ -2664,14 +2690,14 @@ serializer::validate_parameters(void)
 /*******************************************************************************
 
 ********************************************************************************/
-bool serializer::setup(std::ostream& os)
+bool serializer::setup(std::ostream& os, bool aEmitAttributes)
 {
   tr = create_transcoder(os);
   if (!tr) {
     return false;
   }
   if (method == PARAMETER_VALUE_XML)
-    e = new xml_emitter(this, *tr);
+    e = new xml_emitter(this, *tr, aEmitAttributes);
   else if (method == PARAMETER_VALUE_HTML)
     e = new html_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_XHTML)
@@ -2728,9 +2754,10 @@ transcoder* serializer::create_transcoder(std::ostream &os)
 ********************************************************************************/
 void serializer::serialize(
     store::Iterator_t    aObject,
-    std::ostream& aOStream)
+    std::ostream& aOStream,
+    bool aEmitAttributes)
 {
-  serialize(aObject, aOStream, 0);
+  serialize(aObject, aOStream, 0, aEmitAttributes);
 }
 
 
@@ -2741,13 +2768,14 @@ void
 serializer::serialize(
   store::Iterator_t     aObject,
   std::ostream&         aOStream,
-  SAX2_ContentHandler*  aHandler)
+  SAX2_ContentHandler*  aHandler,
+  bool                  aEmitAttributes)
 {
   std::stringstream temp_sstream; // used to temporarily hold expanded strings for the SAX serializer
 
   validate_parameters();
 
-  if (!setup(aOStream))
+  if (!setup(aOStream, aEmitAttributes))
   {
     return;
   }

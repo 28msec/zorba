@@ -207,8 +207,6 @@ public:
 
   virtual void open() = 0;
   
-  virtual Item* next() = 0;
-  
   virtual bool next(Item_t& result) = 0;
   
   virtual void reset() = 0;

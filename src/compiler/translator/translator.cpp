@@ -1923,12 +1923,21 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
     varType = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
 
+  if (initExpr != NULL && varType != NULL)
+  {
+    initExpr = new treat_expr(theRootSctx,
+                              loc,
+                              initExpr,
+                              varType,
+                              TreatIterator::TYPE_MATCH);
+  }
+
   expr_t declExpr = new var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
 
   // check type for vars that are external or have an init expr
-  if (varType != NULL && (b.is_extern() || b.theExpr != NULL))
+  if (varType != NULL && b.is_extern())
   {
     expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
 
@@ -10416,9 +10425,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
            let $temp_invoke_var2   := arg1Expr
            ...
            let $temp_invoke_varN+1 := argNExpr
-           let $query := concat("\"",
+           let $query := concat("Q{",
                                 string(namespace-uri-from-QName(temp_invoke_var1)),
-                                "\":",
+                                "}",
                                 string(local-name-from-QName(temp_invoke_var1)),
                                 "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
            return eval { $query }
@@ -10513,11 +10522,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         localExpr =
         new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
-        // qnameExpr := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
+        // qnameExpr := concat("Q{", namespaceExpr, "}", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
         std::vector<expr_t> concat_args;
-        concat_args.push_back(new const_expr(theRootSctx, loc, "\""));
+        concat_args.push_back(new const_expr(theRootSctx, loc, "Q{"));
         concat_args.push_back(namespaceExpr);
-        concat_args.push_back(new const_expr(theRootSctx, loc, "\":"));
+        concat_args.push_back(new const_expr(theRootSctx, loc, "}"));
         concat_args.push_back(localExpr);
         concat_args.push_back(new const_expr(theRootSctx, loc, query_params));
 
