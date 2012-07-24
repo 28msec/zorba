@@ -479,6 +479,11 @@ flwor_wincond::~flwor_wincond()
 
 
 flwor_wincond::vars::vars()
+:
+posvar(NULL),
+curr(NULL),
+prev(NULL),
+next(NULL)
 {
 }
 
