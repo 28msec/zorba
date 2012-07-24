@@ -64,7 +64,9 @@ IndexDecl::IndexDecl(
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH),
-  theCCB(ccb)
+  theCCB(ccb),
+  theBuildExpr(NULL),
+  theDocIndexerExpr(NULL)
 {
 }
 
