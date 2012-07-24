@@ -34,11 +34,13 @@ Optimizations:
   * Streaming execution for tumbling windows (also fixes bug #1010051).
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1025622 (Incorrect JSON serialization of supplementary plane code points)
   * Fixed bug #1016606 (DOCTYPE in the input of the parse-fragment function)
   * Fixed bug #1002993 (bug during revalidation after update; improper condition
     for calling TypeOps::get_atomic_type_code() from
     SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
   * Fixed bug #867357 (Improved parser error messages)
+  * Fixed bug #1026379 ("q" flag for fn:replace() is ignored)
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
     fn:distinct-values)
   * Fixed bug #1015580 (Add base64_streambuf / replace inefficient base64 code)
