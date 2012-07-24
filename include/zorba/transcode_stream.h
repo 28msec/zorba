@@ -345,6 +345,20 @@ bool is_necessary( char const *charset );
 ZORBA_DLL_PUBLIC
 bool is_supported( char const *charset );
 
+/**
+ * Gets the original streambuf of the given iostream.
+ *
+ * @param ios The stream to get the original streambuf of.
+ * @return the original streambuf.
+ */
+template<typename charT,typename Traits> inline
+std::streambuf* orig_streambuf( std::basic_ios<charT,Traits> &ios ) {
+  std::streambuf *const buf = ios.rdbuf();
+  if ( streambuf *const tbuf = dynamic_cast<streambuf*>( buf ) )
+    return tbuf->orig_streambuf();
+  return buf;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace transcode
