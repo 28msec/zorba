@@ -2797,6 +2797,7 @@ serializer::serialize(
     }
   //+  aObject->close();
     e->emit_end();
+    transcode::detach( aOStream );
   }
   catch ( ... ) {
     transcode::detach( aOStream );
@@ -2809,7 +2810,7 @@ serializer::serialize(
 
 ********************************************************************************/
 void serializer::serialize(
-    store::Iterator_t    object,
+    store::Iterator_t object,
     std::ostream& stream,
     itemHandler aHandler,
     void* aHandlerData)
@@ -2849,6 +2850,7 @@ void serializer::serialize(
 
     //object->close();
     e->emit_end();
+    transcode::detach( stream );
   }
   catch ( ... ) {
     transcode::detach( stream );
