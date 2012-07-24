@@ -48,7 +48,7 @@ static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, cons
 
 static bool var_in_try_block_or_in_loop(const var_expr*, const expr*, bool, bool, bool&);
 
-static bool is_subseq_pred(RewriterContext&, flwor_expr*, expr*, var_expr**, expr*);
+static bool is_subseq_pred(RewriterContext&, flwor_expr*, expr*, var_expr**, expr**);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
@@ -946,7 +946,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // are before the clause that defines the pos var.
   if (whereExpr != NULL &&
       ! flwor->has_sequential_clauses() &&
-      is_subseq_pred(rCtx, flwor, whereExpr, &posVar, posExpr) &&
+      is_subseq_pred(rCtx, flwor, whereExpr, &posVar, &posExpr) &&
       expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
   {
     function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
@@ -956,13 +956,13 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     args[0] = domainExpr;
     args[1] = posExpr;
 
-    rchandle<fo_expr> result = rCtx.theEM->create_fo_expr(whereExpr->get_sctx(),
+    fo_expr* result = rCtx.theEM->create_fo_expr(whereExpr->get_sctx(),
                                            LOC(whereExpr),
                                            seq_point,
                                            args);
-    expr_tools::fix_annotations(&*result);
+    expr_tools::fix_annotations(result);
     for_clause* clause = posVar->get_for_clause();
-    clause->set_expr(&*result);
+    clause->set_expr(result);
     clause->set_pos_var(NULL);
     flwor->remove_where_clause();
 
@@ -997,12 +997,12 @@ static bool is_subseq_pred(
     flwor_expr* flworExpr,
     expr* condExpr,
     var_expr** posVar,
-    expr* posExpr)
+    expr** posExpr)
 {
   static_context* sctx = condExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
-  const QueryLoc& posLoc = posExpr->get_loc();
+  const QueryLoc& posLoc = (*posExpr)->get_loc();
 
   const fo_expr* fo = NULL;
   const function* f;
@@ -1031,8 +1031,8 @@ static bool is_subseq_pred(
   for (ulong i = 0; i < 2; ++i)
   {
     *posVar = const_cast<var_expr*>(fo->get_arg(i)->get_var());
-    posExpr = fo->get_arg(1 - i);
-    const const_expr* posConstExpr = dynamic_cast<const const_expr*>(posExpr);
+    *posExpr = fo->get_arg(1 - i);
+    const const_expr* posConstExpr = dynamic_cast<const const_expr*>(*posExpr);
 
     if (*posVar != NULL &&
         (*posVar)->get_kind() == var_expr::pos_var &&
@@ -1054,7 +1054,7 @@ static bool is_subseq_pred(
       }
       else if (!flworExpr->has_sequential_clauses())
       {
-        xqtref_t posExprType = posExpr->get_return_type();
+        xqtref_t posExprType = (*posExpr)->get_return_type();
 
         if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION, posLoc))
         {
@@ -1064,13 +1064,13 @@ static bool is_subseq_pred(
 
           DynamicBitset varset(numFlworVars);
           ExprVarsMap exprVarMap;
-          expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
+          expr_tools::build_expr_to_vars_map(*posExpr, varidMap, varset, exprVarMap);
 
           var_expr* forVar = (*posVar)->get_for_clause()->get_var();
           ulong forVarId = varidMap[forVar];
 
           std::vector<ulong> posExprVarIds;
-          exprVarMap[posExpr].getSet(posExprVarIds);
+          exprVarMap[*posExpr].getSet(posExprVarIds);
 
           ulong numPosExprVars = (ulong)posExprVarIds.size();
           for (ulong i = 0; i < numPosExprVars; ++i)
