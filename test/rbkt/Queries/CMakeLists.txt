@@ -254,6 +254,11 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
   ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
 
+  IF(ZORBA_WITH_JSON)
+    # These tests fail because of the JSONiq extension which has array constructors.
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 3141592)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 3141592)
+  ENDIF(ZORBA_WITH_JSON)
 
   IF (ZORBA_TEST_XQUERYX)
 
@@ -482,11 +487,6 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-THESAURUS/thesaurus-queries-results-q5b  909375)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-THESAURUS/thesaurus-queries-results-q6b  909375)
   ENDIF(ZORBA_TEST_XQUERYX)
-
-  IF(ZORBA_WITH_JSON)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 909375)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 909375)
-  ENDIF(ZORBA_WITH_JSON)
 
 ENDIF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
