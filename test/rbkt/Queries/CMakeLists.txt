@@ -483,6 +483,11 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_full_text_testsuite/XQueryX/UseCase/UseCase-THESAURUS/thesaurus-queries-results-q6b  909375)
   ENDIF(ZORBA_TEST_XQUERYX)
 
+  IF(ZORBA_WITH_JSON)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 909375)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 909375)
+  ENDIF(ZORBA_WITH_JSON)
+
 ENDIF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
 # The dirname_basename test depends on the system module
