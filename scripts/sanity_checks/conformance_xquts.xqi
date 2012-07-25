@@ -51,9 +51,9 @@ declare %private  variable $conf:serParamXhtml :=
 declare %private  variable $conf:XQUTS_PATH  as xs:string := "/tmp/XQUTS_current";
 
 declare %private  variable $conf:XQUTS_submission as xs:string := 
-"/tmp/XQUTS_current/ReportingResults/zorba_11674_xquts_current.xml";
+"/tmp/XQUTS_current/zorba_xquts_submission.xml";
 declare variable $conf:XQUTSX_submission as xs:string := 
-"/tmp/XQUTS_current/ReportingResults/zorba_11674_xqutsx_current.xml";
+"/tmp/XQUTS_current/zorba_xqutsx_submission.xml";
 
 declare %private  variable $conf:XQuery   as xs:string := "XQuery";
 declare %private  variable $conf:XQueryX  as xs:string := "XQueryX";
