@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <zorba/internal/ztd.h>
+
 #include "unicode_util.h"
 #include "utf8_util.h"
 
@@ -120,10 +122,12 @@ inline bool split_name( InputStringType const &name, PrefixStringType *prefix,
  * @param v The XML version to use.
  * @return Returns \c true only if the code-point is valid.
  */
-template<class CodePointType>
-inline bool is_valid( CodePointType c, version v = v1_0 ) {
+template<typename CodePointType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<CodePointType>::value,
+                        bool>::type
+is_valid( CodePointType c, version v = v1_0 ) {
   //
-  // See "Extensible Markup Language (XML) 1.0 (Fifth Edition)", and
+  // See "Extensible Markup Language (XML) 1.0 (Fifth Edition)" and
   // "Extensible Markup Language (XML) 1.1 (Second Edition)", section 2.2,
   // "Characters", [2] Char.
   //
