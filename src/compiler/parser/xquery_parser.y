@@ -559,6 +559,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* --------------------------------- */
 %token BYTE_ORDER_MARK_UTF8             "'BOM_UTF8'"
 
+/* Unix Shebang -- ignored by Zorba  */
+/* --------------------------------- */
+%token SHEBANG                          "'#!/shebang"
+
 /* Leading slash handling expression */
 /* --------------------------------- */
 %type <expr> LeadingSlash
@@ -1036,6 +1040,16 @@ Module :
       {
         $$ = $2;
       }
+  |   SHEBANG  ModuleWithoutBOM
+      {
+        $$ = $2;
+      }
+  |   BYTE_ORDER_MARK_UTF8  SHEBANG  ModuleWithoutBOM
+      {
+        $$ = $3;
+      }
+  
+
 ;
 
 ERROR :
@@ -1964,7 +1978,17 @@ CollectionTypeDecl :
                                                     $1,
                                                     dynamic_cast<OccurrenceIndicator*>($2)));
     }
-;
+  | JSONTest
+    {
+      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$), $1, NULL));
+    }
+  | JSONTest OccurrenceIndicator
+    {
+      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$),
+                                                    $1,
+                                                    dynamic_cast<OccurrenceIndicator*>($2)));
+
+    };
 
 
 IndexDecl :
@@ -6476,11 +6500,11 @@ JSONPairList :
     ;
 
 JSONInsertExpr :
-        INSERT JSON JSONPairList INTO ExprSingle
+        INSERT JSON LBRACE JSONPairList RBRACE INTO ExprSingle
         {
           $$ = new JSONObjectInsertExpr(LOC(@$),
-                                        static_cast<JSONPairList*>($3),
-                                        $5);
+                                        static_cast<JSONPairList*>($4),
+                                        $7);
         }
     |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
         {
@@ -6489,30 +6513,96 @@ JSONInsertExpr :
     ;
 
 JSONAppendExpr :
-        APPEND JSON ExprSingle TO ExprSingle
+        APPEND JSON LBRACK Expr RBRACK TO ExprSingle
         {
-          $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
+          $$ = new JSONArrayAppendExpr(LOC(@$), $4, $7);
         }
     ;
 
 JSONDeleteExpr :
-        _DELETE JSON PrimaryExpr LPAR ExprSingle RPAR
+        _DELETE JSON FilterExpr
         {
-          $$ = new JSONDeleteExpr(LOC(@$), $3, $5);
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          dynamic_cast<DynamicFunctionInvocation*>($3);
+
+          if (lDynamicFunctionInvocation == NULL)
+          {
+            error(@3, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+
+          rchandle<exprnode> lPrimaryExpr =
+          lDynamicFunctionInvocation->getPrimaryExpr().release();
+
+          rchandle<ArgList> lArgList =
+          lDynamicFunctionInvocation->getArgList().release();
+
+          if (lArgList->size() != 1)
+          {
+            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+
+          rchandle<exprnode> lKey = (*lArgList)[0].release();
+          $$ = new JSONDeleteExpr(LOC(@$), lPrimaryExpr.release(), lKey.release());
         }
     ;
 
 JSONRenameExpr :
-        RENAME JSON PrimaryExpr LPAR ExprSingle RPAR AS ExprSingle
+        RENAME JSON FilterExpr AS ExprSingle
         {
-          $$ = new JSONRenameExpr(LOC(@$), $3, $5, $8);
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          dynamic_cast<DynamicFunctionInvocation*>($3);
+
+          if(lDynamicFunctionInvocation == NULL) 
+          {
+            error(@3, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+
+          rchandle<exprnode> lPrimaryExpr =
+          lDynamicFunctionInvocation->getPrimaryExpr().release();
+
+          rchandle<ArgList> lArgList =
+          lDynamicFunctionInvocation->getArgList().release();
+
+          if (lArgList->size() != 1)
+          {
+            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+
+          rchandle<exprnode> lKey = (*lArgList)[0].release();
+          $$ = new JSONRenameExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $5);
         }
     ;
 
 JSONReplaceExpr :
-        REPLACE JSON VALUE OF PrimaryExpr LPAR ExprSingle RPAR WITH ExprSingle
+        REPLACE JSON VALUE OF FilterExpr WITH ExprSingle
         {
-          $$ = new JSONReplaceExpr(LOC(@$), $5, $7, $10);
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          dynamic_cast<DynamicFunctionInvocation*>($5);
+
+          if(lDynamicFunctionInvocation == NULL) 
+          {
+            error(@3, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+
+          rchandle<exprnode> lPrimaryExpr =
+          lDynamicFunctionInvocation->getPrimaryExpr().release();
+
+          rchandle<ArgList> lArgList =
+          lDynamicFunctionInvocation->getArgList().release();
+
+          if (lArgList->size() != 1)
+          {
+            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+
+          rchandle<exprnode> lKey = (*lArgList)[0].release();
+          $$ = new JSONReplaceExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $7);
         }
     ;
 

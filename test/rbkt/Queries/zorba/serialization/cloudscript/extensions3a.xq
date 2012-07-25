@@ -1,3 +1,3 @@
-(: Serializing XML is OK with cloudscript-extensions :)
+(: Serializing XML is OK with jsoniq-extensions :)
 
 <a/>

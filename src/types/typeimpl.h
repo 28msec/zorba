@@ -47,7 +47,11 @@ namespace zorba
 
   SequenceType ::= ("empty-sequence" "(" ")") | (ItemType OccurrenceIndicator?)
 
-  ItemType ::= KindTest | ("item" "(" ")") | AtomicType | JSONTest
+  ItemType ::= KindTest
+      | ("item" "(" ")")
+      | AtomicType
+      | JSONTest
+      | StructuredItemTest
 
   OccurrenceIndicator ::= "?" | "*" | "+"
 
@@ -104,6 +108,8 @@ namespace zorba
   JSONObjectTest ::= "object" "(" ")"
 
   JSONArrayTest ::= "array" "(" ItemType? ")"
+  
+  StructuredItemTest ::= "structured-item" "(" ")"
 
 
   ******************
@@ -216,6 +222,9 @@ namespace zorba
 
   - attribute(*, xs:untypedAtomic), attribute(*, xs:untypedAtomic)?,
     attribute(*, xs:untypedAtomic)+, attribute(*, xs:untypedAtomic)*
+    
+  - structured-item(), structured-item()?,
+    structured-item()+, structured-item()*
 
   - The none type
 

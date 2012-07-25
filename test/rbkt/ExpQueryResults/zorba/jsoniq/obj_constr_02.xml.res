@@ -1,1 +1,1 @@
-{ "n1" : { "CloudScript XDM node" : "<node>10</node>" }, "n2" : { "CloudScript XDM node" : "<node>20</node>" } }
+{ "n1" : { "JSONiq XDM node" : "<node>10</node>" }, "n2" : { "JSONiq XDM node" : "<node>20</node>" } }

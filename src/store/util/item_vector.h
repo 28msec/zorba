@@ -35,25 +35,25 @@ public:
   std::vector<Item_t> theItems;
 
 public:
-  ItemVector(ulong size = 0) : theItems(size) {}
+  ItemVector(csize size = 0) : theItems(size) {}
 
   bool empty() const { return theItems.empty(); }
 
-  ulong size() const { return (ulong)theItems.size(); }
+  csize size() const { return theItems.size(); }
 
-  void resize(ulong newSize) { theItems.resize(newSize); }
+  void resize(csize newSize) { theItems.resize(newSize); }
 
   void clear() { theItems.clear(); }
 
-  const Item_t& operator[](ulong i) const { return theItems[i]; }
+  const Item_t& operator[](csize i) const { return theItems[i]; }
 
-  Item_t& operator[](ulong i) { return theItems[i]; }
+  Item_t& operator[](csize i) { return theItems[i]; }
 
   void push_back(const Item_t& item) { theItems.push_back(item); }
 
   void transfer_back(Item_t& item) 
   {
-    ulong size_ = size();
+    csize size_ = size();
     theItems.resize(size_+1);
     theItems[size_].transfer(item);
   }

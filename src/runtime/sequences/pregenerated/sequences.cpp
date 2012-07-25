@@ -29,7 +29,7 @@
 #include "system/globalenv.h"
 
 
-#include "runtime/util/handle_hashset_item_value.h"
+#include "zorbautils/hashset_atomic_itemh.h"
 
 namespace zorba {
 

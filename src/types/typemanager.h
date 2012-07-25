@@ -119,9 +119,9 @@ public:
         const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
 
-#ifdef ZORBA_WITH_JSON
   virtual xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const = 0;
 
+#ifdef ZORBA_WITH_JSON
  virtual xqtref_t create_json_type(
         store::StoreConsts::JSONItemKind kind,
         TypeConstants::quantifier_t q) const = 0;

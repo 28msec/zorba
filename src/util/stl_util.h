@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <functional>
 #include <iterator>
 #include <limits>
 #include <set>
@@ -87,6 +88,30 @@ protected:
    * constructed.
    */
   ContainerType *container;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Implementation of SGI's %identity extension.
+ * See: http://www.sgi.com/tech/stl/identity.html
+ */
+template<typename T>
+struct identity : std::unary_function<T,T> {
+  T const& operator()( T const &a ) const {
+    return a;
+  }
+};
+
+/**
+ * Implementation of SGI's %select1st extension.
+ * See: http://www.sgi.com/tech/stl/select1st.html
+ */
+template<typename PairType>
+struct select1st : std::unary_function<PairType,typename PairType::first_type> {
+  typename PairType::first_type const& operator()( PairType const &a ) const {
+    return a.first;
+  }
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1442,6 +1442,21 @@ void PrinterVisitor::endVisit ( const TokenizeNodeIterator& ) {
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+// <TokenizeNodesIterator>
+void PrinterVisitor::beginVisit ( const TokenizeNodesIterator& a) {
+  thePrinter.startBeginVisit("TokenizeNodesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TokenizeNodesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TokenizeNodesIterator>
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 // <TokenizerPropertiesIterator>
 void PrinterVisitor::beginVisit ( const TokenizerPropertiesIterator& a) {
   thePrinter.startBeginVisit("TokenizerPropertiesIterator", ++theId);
@@ -1964,21 +1979,6 @@ void PrinterVisitor::endVisit ( const JSONObjectNamesIterator& ) {
 
 #endif
 #ifdef ZORBA_WITH_JSON
-// <JSONObjectValuesIterator>
-void PrinterVisitor::beginVisit ( const JSONObjectValuesIterator& a) {
-  thePrinter.startBeginVisit("JSONObjectValuesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONObjectValuesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONObjectValuesIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONObjectValueIterator>
 void PrinterVisitor::beginVisit ( const JSONObjectValueIterator& a) {
   thePrinter.startBeginVisit("JSONObjectValueIterator", ++theId);
@@ -2156,6 +2156,21 @@ void PrinterVisitor::endVisit ( const JSONRenameIterator& ) {
   thePrinter.endEndVisit();
 }
 // </JSONRenameIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONArrayAppendIterator>
+void PrinterVisitor::beginVisit ( const JSONArrayAppendIterator& a) {
+  thePrinter.startBeginVisit("JSONArrayAppendIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONArrayAppendIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONArrayAppendIterator>
 
 #endif
 
@@ -2871,6 +2886,34 @@ void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
   thePrinter.endEndVisit();
 }
 // </NodeReferenceIterator>
+
+
+// <HasNodeReferenceIterator>
+void PrinterVisitor::beginVisit ( const HasNodeReferenceIterator& a) {
+  thePrinter.startBeginVisit("HasNodeReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HasNodeReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HasNodeReferenceIterator>
+
+
+// <AssignNodeReferenceIterator>
+void PrinterVisitor::beginVisit ( const AssignNodeReferenceIterator& a) {
+  thePrinter.startBeginVisit("AssignNodeReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AssignNodeReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AssignNodeReferenceIterator>
 
 
 // <NodeByReferenceIterator>

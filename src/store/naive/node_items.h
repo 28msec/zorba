@@ -189,6 +189,8 @@ public:
 
   void free();
 
+  void destroy() throw();
+
   long getRefCount() const { return theRefCount; }
 
   long& getRefCount()      { return theRefCount; }
@@ -387,6 +389,7 @@ protected:
 
 private:
   void setTreeInternal(const XmlTree* t);
+
   void setTree(const XmlTree* t);
 
   void destroyInternal(bool removeType);
@@ -435,20 +438,9 @@ public:
   bool equals(
       const store::Item* other,
       long timezone = 0,
-      const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    return this == other;
-  }
+      const XQPCollator* aCollation = 0) const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    XmlNode* node = const_cast<XmlNode*>(this);
-    return hashfun::h32((void*)(&node), sizeof(node), FNV_32_INIT);
-  }
-
-  inline long compare2(const XmlNode* other) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   void getBaseURI(zstring& uri) const
   {
@@ -524,6 +516,8 @@ public:
   GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
 #endif
 
+  inline long compare2(const XmlNode* other) const;
+
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,
       InternalNode* parent,
@@ -552,6 +546,8 @@ public:
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
   bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
+
+  virtual void unregisterReferencesToDeletedSubtree();
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
@@ -838,6 +834,8 @@ public:
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void finalizeNode();
+
+  virtual void unregisterReferencesToDeletedSubtree();
 
 protected:
   csize findChild(const XmlNode* child) const;

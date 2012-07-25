@@ -292,10 +292,7 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
   uuid_create(&uuid);
   zstring uuidStr = uuidToURI(uuid);
 
-  const_cast<XmlNode*>(xmlNode)->setHaveReference();
-
-  theNodeToReferencesMap.insert(xmlNode, uuidStr);
-  theReferencesToNodeMap[uuidStr] = node;
+  assignReference(xmlNode, uuidStr);
 
   return theItemFactory->createAnyURI(result, uuidStr);
 }
@@ -310,6 +307,24 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
 bool SimpleStore::hasReference(const store::Item* node)
 {
   return static_cast<const XmlNode*>(node)->haveReference();
+}
+
+
+bool SimpleStore::assignReference(const store::Item* node, const zstring& reference)
+{
+  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
+  zstring uuidStr = reference;
+
+  if (xmlNode->haveReference())
+  {
+    return false;
+  }
+  const_cast<XmlNode*>(xmlNode)->setHaveReference();
+
+  theNodeToReferencesMap.insert(xmlNode, uuidStr);
+  theReferencesToNodeMap[uuidStr] = node;
+
+  return true;
 }
 
 
@@ -348,7 +363,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
   @param node XDM node
   @return whether the node was registered or not.
 ********************************************************************************/
-bool SimpleStore::unregisterNode(XmlNode* node)
+bool SimpleStore::unregisterReferenceToUnusedNode(XmlNode* node)
 {
   if (!node->haveReference())
     return false;
@@ -363,6 +378,34 @@ bool SimpleStore::unregisterNode(XmlNode* node)
 
     theReferencesToNodeMap.erase(value);
 
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+/*******************************************************************************
+  Does nothing in the simple store.
+
+  @param node XDM node
+  @return whether the node was registered or not.
+********************************************************************************/
+bool SimpleStore::unregisterReferenceToDeletedNode(XmlNode* node)
+{
+  // Does nothing, since there is no persistency layer. A deleted node can still
+  // be retrieved with a reference, so its reference may not be removed from the
+  // cache.
+  // Merely returns true if entry found, false otherwise.
+  
+  if (!node->haveReference())
+    return false;
+
+  NodeRefMap::iterator resIt;
+
+  if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
+  {
     return true;
   }
   else
