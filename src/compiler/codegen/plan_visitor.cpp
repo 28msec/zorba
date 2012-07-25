@@ -3536,7 +3536,7 @@ DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftrange );
 void V::end_visit( ftrange &r ) {
   PlanIter_t it2 = plan_visitor_->pop_itstack();
   PlanIter_t it1;
-  if ( r.get_expr2() ) {
+  if ( *(r.get_expr2()) ) {
     it1 = plan_visitor_->pop_itstack();
   } else {
     it1 = it2;
