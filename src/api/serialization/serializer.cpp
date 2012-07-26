@@ -31,8 +31,10 @@
 #include "api/unmarshaller.h"
 
 #include "util/ascii_util.h"
-#include "util/utf8_util.h"
+#include "util/json_util.h"
 #include "util/string_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_util.h"
 #include "util/xml_util.h"
 
 #include "system/globalenv.h"
@@ -1204,31 +1206,9 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_json_string(zstring string)
+void serializer::json_emitter::emit_json_string(zstring const &string)
 {
-  tr << '"';
-  zstring::const_iterator i = string.begin();
-  zstring::const_iterator end = string.end();
-  for (; i < end; i++) 
-  {
-    if (*i < 0x20) 
-    {
-      // Escape control sequences
-      std::stringstream hex;
-      hex << "\\u" << std::setw(4) << std::setfill('0')
-          << std::hex << static_cast<int>(*i);
-      tr << hex.str();
-      continue;
-    }
-    if (*i == '\\' || *i == '"') 
-    {
-      // Output escape char for \ or "
-      tr << '\\';
-      // Fall through to output original character
-    }
-    tr << *i;
-  }
-  tr << '"';
+  tr << '"' << json::serialize( string ) << '"';
 }
 
 

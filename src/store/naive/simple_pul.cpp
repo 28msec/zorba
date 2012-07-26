@@ -1532,7 +1532,8 @@ void PULImpl::addJSONArrayDelete(
 
     for (; ite != end; ++ite)
     {
-      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE &&
+          (*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
         continue;
 
       UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
@@ -1612,7 +1613,7 @@ void PULImpl::addJSONArrayReplaceValue(
         
         if (upd->thePosition == pos)
         {
-          return;
+          ite = updates->erase(ite);
         }
       }
     }
@@ -2095,7 +2096,8 @@ void PULImpl::mergeTargetedUpdateLists(
 
         for (; ite != end; ++ite)
         {
-          if ((*ite)->getKind() != otherUpdKind)
+          if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE &&
+              (*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
             continue;
 
           UpdJSONArrayUpdate* myUpd = static_cast<UpdJSONArrayUpdate*>(*ite);
@@ -2134,8 +2136,7 @@ void PULImpl::mergeTargetedUpdateLists(
           {
             if (myUpd->thePosition == otherUpd2->thePosition)
             {
-              merged = true;
-              break;
+              ite = targetUpdates->erase(ite);
             }
           }
         }
@@ -2963,7 +2964,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
   std::vector<store::Item_t>::iterator keyIte;
   std::vector<store::Item_t>::iterator keyEnd;
 
-  STORE_TRACE2("before-delta size = " << deletedDelta.size());
+  STORE_TRACE2("before-delta size = " << beforeDelta.size());
 
   ite = beforeDelta.begin();
   end = beforeDelta.end();
@@ -2995,7 +2996,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
     }
   }
 
-  STORE_TRACE2("after-delta size = " << deletedDelta.size());
+  STORE_TRACE2("after-delta size = " << afterDelta.size());
 
   ite = afterDelta.begin();
   end = afterDelta.end();
