@@ -17,8 +17,12 @@
 #include <iomanip>
 #include <iostream>
 
+//#define ZORBA_JSON_EMIT_SURROGATES
+
 #include "util/stl_util.h"
+#ifdef ZORBA_JSON_EMIT_SURROGATES
 #include "util/unicode_util.h"
+#endif /* ZORBA_JSON_EMIT_SURROGATES */
 #include "util/utf8_util.h"
 
 using namespace std;
@@ -48,7 +52,7 @@ ostream& serialize( ostream &os, char const *s ) {
       }
       continue;
     }
-#if 0
+#ifdef ZORBA_JSON_EMIT_SURROGATES
     if ( unicode::is_supplementary_plane( cp ) ) {
       unsigned high, low;
       unicode::convert_surrogate( cp, &high, &low );
@@ -59,7 +63,7 @@ ostream& serialize( ostream &os, char const *s ) {
       os << oss.str();
       continue;
     }
-#endif
+#endif /* ZORBA_JSON_EMIT_SURROGATES */
     switch ( cp ) {
       case '\\':
       case '"':
