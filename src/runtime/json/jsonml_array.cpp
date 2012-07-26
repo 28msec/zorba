@@ -26,6 +26,7 @@
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/json_parser.h"
+#include "util/json_util.h"
 #include "util/mem_streambuf.h"
 #include "util/omanip.h"
 #include "util/oseparator.h"
@@ -199,7 +200,7 @@ static ostream& serialize_attributes( ostream &o, store::Item_t const &element,
     
     o << '"' << att_name << '"'
       << if_emit( ws, ' ' ) << ':' << if_emit( ws, ' ' )
-      << '"' << att_item->getStringValue() << '"';
+      << '"' << json::serialize( att_item->getStringValue() ) << '"';
   }
   i->close();
   if ( emitted_attributes )
@@ -242,7 +243,7 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
         o << sep << serialize_element( child, sep, ws );
         break;
       case store::StoreConsts::textNode:
-        o << sep << '"' << child->getStringValue() << '"';
+        o << sep << '"' << json::serialize( child->getStringValue() ) << '"';
         break;
       default:
         break;

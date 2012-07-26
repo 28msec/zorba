@@ -50,6 +50,7 @@ Bug Fixes/Other Changes:
     var folding into if-then-else)
   * Fixed bug #1006166 (disabling 2 functions with the same qname)
   * Fixed bug #960083 (improper error handling of NaN comparisons)
+  * Fixed bug #878508 (JsonML serialization not escaping characters)
   * Xml-format plan serialization not supported anymore.
 
 
