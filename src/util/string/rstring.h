@@ -2369,7 +2369,7 @@ template<class Rep> inline
 rstring<Rep>::rstring( const_pointer s, allocator_type const &a ) :
   data_( a )
 {
-  rep().construct( s, s + (s ? traits_type::length( s ) : 0), a );
+  rep().construct( s, s + (s ? traits_type::length( s ) : npos), a );
 }
 
 // RSTRING_C_P_A_X
@@ -2378,7 +2378,7 @@ rstring<Rep>::rstring( pointer s, allocator_type const &a ) :
   data_( a )
 {
   // TODO: calls length unnecessarily when doing ptr_rep
-  rep().construct( s, s + (s ? traits_type::length( s ) : 0), a );
+  rep().construct( s, s + (s ? traits_type::length( s ) : npos), a );
 }
 
 // RSTRING_C_CP_ST_A_X
