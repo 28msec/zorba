@@ -102,11 +102,11 @@ JAVA_APPEND_LIBRARY_DIRECTORIES(JAVA_AWT_LIBRARY_DIRECTORIES
   ${_JAVA_HOME}/lib
   ${_JAVA_HOME}
   /usr/lib/jvm/java-6-openjdk/jre/lib
-  /usr/lib/jvm/java-6-openjdk-amd64/jre/lib
   /usr/lib/jvm/java-6-openjdk-i386/jre/lib
+  /usr/lib/jvm/java-6-openjdk-amd64/jre/lib
   /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
-  /usr/lib/jvm/java-6-openjdk-amd64/jre/lib/{libarch}
   /usr/lib/jvm/java-6-openjdk-i386/jre/lib/{libarch}
+  /usr/lib/jvm/java-6-openjdk-amd64/jre/lib/{libarch}
   /usr/lib
   /usr/local/lib
   /usr/lib/jvm/java/lib
@@ -142,9 +142,9 @@ SET(JAVA_AWT_INCLUDE_DIRECTORIES
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.3;JavaHome]/include"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\${java_install_version};JavaHome]/include"
   ${_JAVA_HOME}/include
-  /usr/lib/jvm/java-6-openjdk/jre/include
-  /usr/lib/jvm/java-6-openjdk-amd64/jre/include
-  /usr/lib/jvm/java-6-openjdk-i386/jre/include
+  /usr/lib/jvm/java-6-openjdk/include
+  /usr/lib/jvm/java-6-openjdk-amd64/include
+  /usr/lib/jvm/java-6-openjdk-i386/include
   /usr/include 
   /usr/local/include
   /usr/lib/java/include
