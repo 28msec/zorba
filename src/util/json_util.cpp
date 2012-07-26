@@ -48,6 +48,7 @@ ostream& serialize( ostream &os, char const *s ) {
       }
       continue;
     }
+#if 0
     if ( unicode::is_supplementary_plane( cp ) ) {
       unsigned high, low;
       unicode::convert_surrogate( cp, &high, &low );
@@ -58,6 +59,7 @@ ostream& serialize( ostream &os, char const *s ) {
       os << oss.str();
       continue;
     }
+#endif
     switch ( cp ) {
       case '\\':
       case '"':
