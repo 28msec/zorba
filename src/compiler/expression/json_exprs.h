@@ -39,7 +39,7 @@ class json_array_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr*  theContentExpr;
+  expr * theContentExpr;
 
 public:
   SERIALIZABLE_CLASS(json_array_expr)
@@ -79,7 +79,7 @@ class json_object_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr*  theContentExpr;
+  expr  * theContentExpr;
   bool    theAccumulate;
 
 public:

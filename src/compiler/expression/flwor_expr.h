@@ -139,8 +139,8 @@ class forletwin_clause : public flwor_clause
   friend class ExprIterator;
 
 protected:
-  var_expr*   theVarExpr;
-  expr*       theDomainExpr;
+  var_expr   * theVarExpr;
+  expr       * theDomainExpr;
   CompilerCB * theCCB;
 
 public:
@@ -173,8 +173,8 @@ class for_clause : public forletwin_clause
   friend class ExprIterator;
 
 protected:
-  var_expr*    thePosVarExpr;
-  var_expr*    theScoreVarExpr;
+  var_expr    * thePosVarExpr;
+  var_expr    * theScoreVarExpr;
   bool          theAllowingEmpty;
 
 public:
@@ -219,7 +219,7 @@ class let_clause : public forletwin_clause
   friend class ExprIterator;
 
 protected:
-  var_expr*  theScoreVarExpr;
+  var_expr  * theScoreVarExpr;
   bool        theLazyEval;
 
 public:
@@ -359,7 +359,7 @@ protected:
   bool    theIsOnly;
   vars    theInputVars;
   vars    theOutputVars;
-  expr*  theCondExpr;
+  expr  * theCondExpr;
 
   CompilerCB* theCCB;
 
@@ -488,7 +488,7 @@ protected:
 
   bool                        theStableOrder;
   std::vector<OrderModifier>  theModifiers;
-  std::vector<expr*>         theOrderingExprs;
+  std::vector<expr*>          theOrderingExprs;
 
 public:
   orderby_clause (

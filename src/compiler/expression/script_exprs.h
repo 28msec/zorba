@@ -155,7 +155,7 @@ class apply_expr : public expr
   friend class expr;
 
 private:
-  expr* theExpr;
+  expr * theExpr;
   bool   theDiscardXDM;
 
 protected:
@@ -216,8 +216,8 @@ class var_decl_expr : public expr
   friend class expr;
 
 protected:
-  var_expr* theVarExpr;
-  expr*     theInitExpr;
+  var_expr * theVarExpr;
+  expr     * theInitExpr;
 
 protected:
   var_decl_expr(
@@ -262,8 +262,8 @@ class var_set_expr : public expr
   friend class expr;
 
 protected:
-  var_expr* theVarExpr;
-  expr*     theExpr;
+  var_expr * theVarExpr;
+  expr     * theExpr;
 
 protected:
   var_set_expr(
@@ -300,7 +300,7 @@ class exit_expr : public expr
   friend class expr;
 
 private:
-  expr*               theExpr;
+  expr               * theExpr;
 
   exit_catcher_expr  * theCatcherExpr;
 
@@ -348,7 +348,7 @@ class exit_catcher_expr : public expr
   friend class expr;
 
 private:
-  expr*             theExpr;
+  expr             * theExpr;
 
   std::vector<expr*> theExitExprs;
 

@@ -41,7 +41,7 @@ class dynamic_function_invocation_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr*                 theExpr;
+  expr                * theExpr;
   std::vector<expr*>    theArgs;
 
 protected:

@@ -39,7 +39,7 @@ class fo_expr : public expr
   friend class ExprManager;
 
 protected:
-  checked_vector<expr*>   theArgs;
+  checked_vector<expr*>    theArgs;
   function               * theFunction;
 
 public:

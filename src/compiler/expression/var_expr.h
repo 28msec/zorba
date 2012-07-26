@@ -292,8 +292,8 @@ public:
 
 struct GlobalBinding
 {
-  var_expr*  theVar;
-  expr*      theExpr;
+  var_expr  * theVar;
+  expr      * theExpr;
   bool        theIsExternal;
 
 public:

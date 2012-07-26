@@ -107,7 +107,7 @@ class axis_step_expr : public expr
 protected:
   axis_kind_t             theAxis;
   bool                    theReverseOrder;
-  expr*                   theNodeTest;
+  expr                  * theNodeTest;
 
 public:
   static bool is_reverse_axis(axis_kind_t kind);

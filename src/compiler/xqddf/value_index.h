@@ -271,10 +271,10 @@ private:
 
   std::vector<expr*>              theDomainSourceExprs;
 
-  expr*                           theBuildExpr;
+  expr                          * theBuildExpr;
   PlanIter_t                      theBuildPlan;
 
-  expr*                           theDocIndexerExpr;
+  expr                          * theDocIndexerExpr;
   PlanIter_t                      theDocIndexerPlan;
   DocIndexer_t                    theDocIndexer;
 

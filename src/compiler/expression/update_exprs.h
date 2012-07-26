@@ -40,8 +40,8 @@ namespace zorba
 class update_expr_base : public expr
 {
 protected:
-  expr*  theTargetExpr;
-  expr*  theSourceExpr;
+  expr * theTargetExpr;
+  expr * theSourceExpr;
 
 public:
   update_expr_base(
@@ -193,8 +193,8 @@ class copy_clause : public SimpleRCObject
   friend class ExprManager;
 
 private:
-  var_expr* theVar;
-  expr*     theExpr;
+  var_expr  * theVar;
+  expr      * theExpr;
   CompilerCB* theExprManager;
 
 protected:
@@ -223,8 +223,8 @@ class transform_expr : public expr
 
 protected:
   std::vector<copy_clause_t> theCopyClauses;
-  expr*                     theModifyExpr;
-  expr*                     theReturnExpr;
+  expr                     * theModifyExpr;
+  expr                     * theReturnExpr;
 
 protected:
   transform_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
