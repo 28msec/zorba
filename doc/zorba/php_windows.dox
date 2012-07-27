@@ -118,7 +118,6 @@ Add the following content in to a file on your htdocs directory:
 </html>
 \endcode
 
-
 Point your browser to http://localhost/test.php and see the result.
 
 \section further_reading Further reading
