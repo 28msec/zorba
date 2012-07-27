@@ -10645,9 +10645,12 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   xqtref_t srcType = sourceExpr->get_return_type();
 
   if (!theSctx->is_feature_set(feature::hof) ||
-      (numArgs == 1 &&
-       !TypeOps::is_subtype(tm, *srcType, *theRTM.ANY_FUNCTION_TYPE_STAR)))
+      (!TypeOps::is_subtype(tm, *srcType, *theRTM.ANY_FUNCTION_TYPE_STAR)))
   {
+    if (numArgs != 1)
+    {
+      RAISE_ERROR_NO_PARAMS(jerr::JNDY0018, loc);
+    }
     function* func;
 
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(sourceExpr, false);

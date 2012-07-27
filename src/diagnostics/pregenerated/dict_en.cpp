@@ -101,6 +101,9 @@ extern entry const dict_en[] = {
   { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNDY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
