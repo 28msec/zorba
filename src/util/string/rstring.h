@@ -2349,7 +2349,8 @@ rstring<Rep>::rstring( std_string const &s, size_type pos, size_type n ) :
   data_( allocator_type() )
 {
   rep().construct( s.data() + check_pos( pos, s.size(), "rstring" ),
-                   s.data() + pos + limit_n( pos, s.size(), n ), allocator_type() );
+                   s.data() + pos + limit_n( pos, s.size(), n ),
+                   allocator_type() );
 }
 
 // RSTRING_C_SS_2ST_A_X
@@ -2377,7 +2378,7 @@ rstring<Rep>::rstring( pointer s, allocator_type const &a ) :
   data_( a )
 {
   // TODO: calls length unnecessarily when doing ptr_rep
-  rep().construct( s, s + (s ? traits_type::length( s ) : 0), a );
+  rep().construct( s, s + (s ? traits_type::length( s ) : npos), a );
 }
 
 // RSTRING_C_CP_ST_A_X
