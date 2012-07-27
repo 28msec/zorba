@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using org.zorbaxquery.api;
@@ -25,29 +23,51 @@ namespace ZorbaApplication
     class Program
     {
         
-        static void Main(string[] args)
-        {
-            System.Console.WriteLine("Running: XQuery execute - printPlanAsXML");
+        static String test(String query) {
             InMemoryStore store = InMemoryStore.getInstance();
             Zorba zorba = Zorba.getInstance(store);
 
-            System.Console.WriteLine("Executing: test05.xq");
+            XQuery xquery = zorba.compileQuery(query);
+            String result = xquery.printPlanAsXML();
+
+            xquery.destroy();
+            xquery.Dispose();
             
+            zorba.shutdown();
+            InMemoryStore.shutdown(store);
+            
+            return result;
+        }
+
+        static String readFile(String file) {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            using (StreamReader sr = File.OpenText("test04.xq")) {
+            using (StreamReader sr = File.OpenText(file)) {
                 String line = "";
                 while ( (line = sr.ReadLine()) != null) {
                     sb.Append(line+"\n");
                 }
             }
-            
-            XQuery xquery = zorba.compileQuery(sb.ToString());
-            System.Console.WriteLine(xquery.printPlanAsXML());
-            xquery.Dispose();
+            return sb.ToString();
+        }
 
-            zorba.shutdown();
-            InMemoryStore.shutdown(store);
+        static void Main(string[] args)
+        {
+            System.Console.WriteLine("Running: XQuery execute from file test05.xq - printPlanAsXML");
+
+            String query = readFile("test05.xq");
+            
+            System.Console.WriteLine("Query: " + query);
+            String result;
+            try {
+                result = test(query);
+            } catch(Exception e) {
+                System.Console.WriteLine("Failed");
+                Console.WriteLine("{0} Exception caught.", e);
+                return;
+            }
+            System.Console.WriteLine(result);
             System.Console.WriteLine("Success");
+
         }
     }
 }

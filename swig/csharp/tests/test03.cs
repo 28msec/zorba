@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using org.zorbaxquery.api;
 
@@ -23,38 +21,65 @@ namespace ZorbaApplication
 {
 
     class MyDiagnosticHandler : DiagnosticHandler {
-        public void error(string [] args) {
-          System.Console.WriteLine("Error args: ");
-          for (int i=0; i<args.Length; i++) {
-            System.Console.WriteLine(args[i]);
-          }
+        public override void error(ZorbaException exception) {
+          System.Console.WriteLine("Exception catched in MyDiagnosticHandler");
+          System.Console.WriteLine("Description: " + exception.getDescription());
         }
     }
 
     class Program
     {
-        static void Main(string[] args)
-        {
-            System.Console.WriteLine("Running: Compile query string using Diagnostic Handler");
+        static String test(String query) {
+            MyDiagnosticHandler diagnosticHandler = new MyDiagnosticHandler();
 
             InMemoryStore store = InMemoryStore.getInstance();
             Zorba zorba = Zorba.getInstance(store);
 
-            MyDiagnosticHandler diagnosticHandler = new MyDiagnosticHandler();
-            try {
-              System.Console.WriteLine("Compiling 1 div 0");
-              XQuery xquery = zorba.compileQuery("1 div 0", diagnosticHandler);
-              System.Console.WriteLine(xquery.execute());
-              xquery.Dispose();
-            } catch (System.Exception e) {
-                System.Console.WriteLine("Error: Exception catch");
-                return;
+            XQuery xquery = zorba.compileQuery(query, diagnosticHandler);
+            StringBuilder sbuilder = new StringBuilder();
+            Iterator iter = xquery.iterator();
+            iter.open();
+            Item item = new Item();
+            while (iter.next(item)) {
+              sbuilder.Append(item.getStringValue());
             }
+            iter.close();
+            iter.Dispose();
+            xquery.destroy();
+            xquery.Dispose();
             
             zorba.shutdown();
             InMemoryStore.shutdown(store);
+            
+            return sbuilder.ToString();
+        }
 
-            System.Console.WriteLine("Success");
+        static void Main(string[] args)
+        {
+            System.Console.WriteLine("Running: Compile query string using Diagnostic Handler");
+
+            String query = "1 div 0";
+            String testResult = "";
+            System.Console.WriteLine("Query: " + query);
+            String result;
+            try {
+                result = test(query);
+            } catch(Exception e) {
+                System.Console.WriteLine("Failed");
+                Console.WriteLine("{0} Exception caught.", e);
+                return;
+            }
+            
+            System.Console.WriteLine("Expecting: " + testResult);
+            System.Console.WriteLine("Result: " + result);
+            
+            if (result.Equals(testResult)) {
+                System.Console.WriteLine("Success");
+            } else {
+                System.Console.WriteLine("Failed");
+            }
+
+            
         }
     }
 }

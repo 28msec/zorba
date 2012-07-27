@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SET(CSharpPath ${CMAKE_BINARY_DIR}/swig/csharp)
 IF (MSVC_IDE)
-  SET(CSharpPath ${CMAKE_BINARY_DIR}/swig/csharp/${CMAKE_BUILD_TYPE};${CMAKE_BINARY_DIR}/swig/csharp)
+  SET(CSharpBuildPath ${CSharpPath}/${CMAKE_BUILD_TYPE})
 ELSE (MSVC_IDE)
-  SET(CSharpPath ${CMAKE_BINARY_DIR}/swig/csharp)
+  SET(CSharpBuildPath ${CSharpPath})
 ENDIF (MSVC_IDE)
-
+STRING(REGEX REPLACE "/" "\\\\" CSharpPath "${CSharpPath}")
+STRING(REGEX REPLACE "/" "\\\\" CSharpBuildPath "${CSharpBuildPath}")
 
 FILE(GLOB CSHARP_EXAMPLES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/" "${CMAKE_CURRENT_SOURCE_DIR}/*.in")
 FOREACH(CSHARP_EXAMPLE ${CSHARP_EXAMPLES})

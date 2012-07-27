@@ -15,8 +15,12 @@
 :: limitations under the License.
 ::
 
-SET CSHARP_PATH=@CSharpPath@
-SET PATH=%PATH%;%CSHARP_PATH%;..
+IF NOT EXIST "@CSharpPath@\tests\zorba_csharp.dll" (
+  COPY @CSharpPath@\zorba_csharp.dll @CSharpPath@\tests\
+)
+IF NOT EXIST @CSharpPath@\tests\zorba_api.dll (
+  COPY @CSharpBuildPath@\zorba_api.dll @CSharpPath@\tests\
+)
 
 ECHO "csharp_test.bat: Compile Test:" %1
 "@csc_EXECUTABLE@" /platform:x86 /out:%1.exe /reference:..\zorba_csharp.dll %1.cs

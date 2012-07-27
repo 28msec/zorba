@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using org.zorbaxquery.api;
@@ -25,29 +23,64 @@ namespace ZorbaApplication
     class Program
     {
         
-        static void Main(string[] args)
-        {
-            System.Console.WriteLine("Running: XQuery execute");
+        static String test(String query) {
             InMemoryStore store = InMemoryStore.getInstance();
             Zorba zorba = Zorba.getInstance(store);
 
-            System.Console.WriteLine("Executing: test04.xq");
+            XQuery xquery = zorba.compileQuery(query);
+            StringBuilder sbuilder = new StringBuilder();
+            Iterator iter = xquery.iterator();
+            iter.open();
+            Item item = new Item();
+            while (iter.next(item)) {
+              sbuilder.Append(item.getStringValue());
+            }
+            iter.close();
+            iter.Dispose();
+            xquery.destroy();
+            xquery.Dispose();
             
+            zorba.shutdown();
+            InMemoryStore.shutdown(store);
+            
+            return sbuilder.ToString();
+        }
+
+        static String readFile(String file) {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            using (StreamReader sr = File.OpenText("test04.xq")) {
+            using (StreamReader sr = File.OpenText(file)) {
                 String line = "";
                 while ( (line = sr.ReadLine()) != null) {
                     sb.Append(line+"\n");
                 }
             }
+            return sb.ToString();
+        }
+        
+        
+        static void Main(string[] args)
+        {
+            System.Console.WriteLine("Running: XQuery execute from file test04.xq");
+            String query = readFile("test04.xq");
+            String testResult = "410";
+            System.Console.WriteLine("Query: " + query);
+            String result;
+            try {
+                result = test(query);
+            } catch(Exception e) {
+                System.Console.WriteLine("Failed");
+                Console.WriteLine("{0} Exception caught.", e);
+                return;
+            }
             
-            XQuery xquery = zorba.compileQuery(sb.ToString());
-            System.Console.WriteLine(xquery.execute());
-            xquery.Dispose();
-            
-            zorba.shutdown();
-            InMemoryStore.shutdown(store);
-            System.Console.WriteLine("Success");
+            System.Console.WriteLine("Expecting: " + testResult);
+            System.Console.WriteLine("Result: " + result);
+
+            if (result.Equals(testResult)) {
+                System.Console.WriteLine("Success");
+            } else {
+                System.Console.WriteLine("Failed");
+            }
         }
     }
 }

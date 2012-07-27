@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.IO;
 using org.zorbaxquery.api;
 
 namespace ZorbaApplication
@@ -100,22 +97,39 @@ namespace ZorbaApplication
             System.Console.WriteLine( pre+"Item not Node, not Atomic");
           }
         }
-    static void Main(string[] args)
-        {
-            System.Console.WriteLine("Running: XQuery execute - Get Iterator and print info from its items");
+
+        static void test(String query) {
             InMemoryStore store = InMemoryStore.getInstance();
             Zorba zorba = Zorba.getInstance(store);
 
-            XQuery xquery = zorba.compileQuery("(1, xs:int(2),\"bla\", <a><b att=\"{(3, xs:int(4),\"foo\", \"bar\")}\"/>text<!--a comment--><?pi?></a>)");
-            System.Console.WriteLine(xquery.execute());
-          
-            System.Console.WriteLine("Iterator:");
+            XQuery xquery = zorba.compileQuery(query);
+
             Iterator iterator = xquery.iterator();
             printIterator(iterator, "");
+            
+            xquery.destroy();
             xquery.Dispose();
             
             zorba.shutdown();
             InMemoryStore.shutdown(store);
+            
+            return;
+        }
+
+        static void Main(string[] args)
+        {
+            System.Console.WriteLine("Running: XQuery execute - Get Iterator and print info from its items");
+
+            String query = "(1, xs:int(2),\"bla\", <a><b att=\"{(3, xs:int(4),\"foo\", \"bar\")}\"/>text<!--a comment--><?pi?></a>)";
+            System.Console.WriteLine("Query: " + query);
+            try {
+                test(query);
+            } catch(Exception e) {
+                System.Console.WriteLine("Failed");
+                Console.WriteLine("{0} Exception caught.", e);
+                return;
+            }
+            
             System.Console.WriteLine("Success");
         }
     }
