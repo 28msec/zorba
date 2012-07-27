@@ -18,7 +18,7 @@ New Features:
   * Added support for fragments to fn:path
   * Positional pagination support for collections
   * Incremental maintenance for general indexes.
-  * http://expath.org/ns/archive module for creating, reading, and updating
+  * http://www.zorba-xquery.com/modules/archive module for creating, reading, and updating
     various (compressed) archives (e.g. zip, tar.gz, or tar.bz2)
 	
 Optimizations:
