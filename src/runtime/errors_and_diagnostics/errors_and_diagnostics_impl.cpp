@@ -94,6 +94,8 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   TraceIteratorState *state;
   DEFAULT_STACK_INIT(TraceIteratorState, state, planState);
 
+  state->theIndex = 1; // XQuery sequences start with 1
+
   if (!consumeNext(state->theTagItem, theChildren[1], planState)) 
   {
     throw XQUERY_EXCEPTION(err::FORG0006,
@@ -119,6 +121,18 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     {
       store::Item_t lTmp = result;
+
+      // implicitly materialize non-seekable streamable strings to 
+      // avoid nasty "streamable string has already been consumed"
+      // errors during debugging
+      if (lTmp->isStreamable() && !lTmp->isSeekable() &&
+          lTmp->getTypeCode() == store::XS_STRING)
+      {
+        zstring lString = lTmp->getString();
+        GENV_ITEMFACTORY->createString(lTmp, lString);
+        result = lTmp;
+      }
+
       store::TempSeq_t lSequence = GENV_STORE.createTempSeq(lTmp);
       store::Iterator_t seq_iter = lSequence->getIterator();
       seq_iter->open();

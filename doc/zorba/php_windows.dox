@@ -4,13 +4,14 @@ These steps were checked on Windows 7. It should work fine with any PHP 5.X vers
 
 \section apache_httpd_install Install Apache HTTP Server
 
-Download and install Apache Server from <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a> for VC6. For apache compiled with VC9 download it from <a href="http://apachelounge.com/">http://apachelounge.com/</a>.
+Download and install Apache Server from <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>. 
+You can also get Apache compiled and optimized with Visual Studio VC9 and other modules (like PHP5 module) from <a href="http://apachelounge.com/">Apache Lounge</a>.
 
 \section php5_install Install PHP5
 
 Download and install PHP5 from <a href="http://windows.php.net/download/">http://windows.php.net/download/</a>. Remember to download and install according your VC version.
 
-PHP will automatically install itself in to your apache server.
+PHP will automatically install itself in to your apache server. If you got Apache from Apache Lounge you may need their PHP module version.
 
 You can verify your install by adding a file in your htdocs directory with the following code:
 
@@ -23,18 +24,21 @@ You can verify your install by adding a file in your htdocs directory with the f
 
 \section zorba_install Install Zorba
 
-Get Zorba sources and follow \ref build.
+You can install the latest version of Zorba by <a href="">downloading the most recent binaries</a>,  additionaly you can also compile Zorba from source by following \ref build.
 
 \section compile_zorba_php Compiling the Zorba PHP Extension
 
-In order to compile the PHP Wrapper you need first to follow the steps to compile Zorba, but before compiling, you need to add three variables to the CMAKE command line:
+If you are compiling Zorba, you will need also to compile the PHP Wrapper,  to do this you besides the \ref build you need to add these three variables to your CMAKE command line:
 
 \code
--D PHP5_BINARY_DIR=...   Specify the directory where php.exe is located, i.e. "C:\php"
+-D PHP5_BINARY_DIR=[PHP INSTALL]
+[PHP INSTALL] is the directory where php.exe is located, i.e. "C:\php"
 
--D PHP5_INCLUDE_DIR=...  Specify the directory where the php source is located, i.e. "C:\php-5.3.5"
+-D PHP5_INCLUDE_DIR=[PHP INCLUDE DIR]
+[PHP INCLUDE DIR] is the directory where the php source is located, i.e. "C:\php-5.3.5"
 
--D PHP5_LIBRARY=... Specify with normal slash the path where the php5ts.lib is located, this file is usually located in dev directory from the binary php installation, i.e. "C:/php/dev/php5ts.lib"
+-D PHP5_LIBRARY=[PHP LIBRARY]
+[PHP LIBRARY] is the path where the php5ts.lib is located, this file is usually located in dev directory from the binary php installation, i.e. "C:/php/dev/php5ts.lib"
 \endcode
 
 After adding those lines CMAKE will add automatically the PHP Wrapper project and you will be able to get zorba_api.dll, which is the extension you can use in your php binary installation.
@@ -51,7 +55,11 @@ C:\zorba.exe -q '2+1'
 
 \section php_enable_zorba_extension Enable Zorba extension in PHP
 
-Copy Zorba extension zorba_api.dll file into your php extensions directory, i.e.
+Copy Zorba extension zorba_api.dll file into your php extensions directory, this extension is located on:
+Zorba compiled from sources: [ZORBA BUILD DIRECTORY]\swig\php\[DEBUG/RELEASE IF VISUAL STUDIO]
+Zorba installed binaries: [ZORBA INSTALL DIRECTORY]\share\php\
+
+this file must be copied to your extensions directory that may be:
 \code
 C:\php\ext\
 \endcode
@@ -62,8 +70,9 @@ Add the following line to php.ini
 
 <code><strong>php.ini</strong>
 extension=zorba_api.dll
-In your Zorba directory, locate the file zorba_api_wrapper.php and copy it to an include directory from where php can find it from your setting include_path, i.e.
 </code>
+
+In your Zorba directory, locate the files zorba_api_wrapper.php and XQueryProcessor.php, copy them it to your include directory from where php can find it, this location is set on your php.ini file with the name <cope>include_path</code>, i.e.
 
 <code><strong>php.ini</strong>
 ; Windows: "\path1;\path2"
@@ -108,7 +117,6 @@ Add the following content in to a file on your htdocs directory:
 </body>
 </html>
 \endcode
-
 
 Point your browser to http://localhost/test.php and see the result.
 
