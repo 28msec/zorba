@@ -2674,7 +2674,7 @@
       <value>Cannot replace with less or more than an item.</value>
     </diagnostic>
     
-    <diagnostic code="JNDY0018" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
 
       <value>Object or array selection needs exactly one parameter.</value>
