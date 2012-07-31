@@ -37,6 +37,7 @@ IF (SWIG_FOUND)
   ADD_SUBDIRECTORY (php)
   ADD_SUBDIRECTORY (java)
   ADD_SUBDIRECTORY (xqj)
+  ADD_SUBDIRECTORY (csharp)
   
   IF (APPLE AND UNIVERSAL)
     MESSAGE (STATUS "Ruby module can't be built Universal")

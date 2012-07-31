@@ -32,11 +32,13 @@ Optimizations:
   * Streaming execution for tumbling windows (also fixes bug #1010051).
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1025622 (Incorrect JSON serialization of supplementary plane code points)
   * Fixed bug #1016606 (DOCTYPE in the input of the parse-fragment function)
   * Fixed bug #1002993 (bug during revalidation after update; improper condition
     for calling TypeOps::get_atomic_type_code() from
     SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
   * Fixed bug #867357 (Improved parser error messages)
+  * Fixed bug #1026379 ("q" flag for fn:replace() is ignored)
   * Fixed bug #932314 (non-comparable values must be treated as distinct by
     fn:distinct-values)
   * Fixed bug #1015580 (Add base64_streambuf / replace inefficient base64 code)
@@ -44,10 +46,13 @@ Bug Fixes/Other Changes:
   * Fixed bug #9910884 (raise XUST0001 in trycatch with mixed updating and simple clauses)
   * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
   * Fixed bug #1008082 (bug in transform expr when a copy var is not used anywhere)
+  * Fixed bug #898066 (Stringstream & fn:trace)
+  * Numbering of items in fn:trace starts with one
   * Fixed bug #1003023$ (optimizer problems due to common subexpression after
     var folding into if-then-else)
   * Fixed bug #1006166 (disabling 2 functions with the same qname)
   * Fixed bug #960083 (improper error handling of NaN comparisons)
+  * Fixed bug #878508 (JsonML serialization not escaping characters)
   * Xml-format plan serialization not supported anymore.
 
 
