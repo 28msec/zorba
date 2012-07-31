@@ -463,9 +463,9 @@ context_example_12(Zorba* aZorba)
     // check if the trace was successful
     std::string lTraceString = lTraceStream.str();
     std::cout << lTraceString << std::endl;
-    if (lTraceString.compare("foo [0]: 1\n"
-          "foo [1]: 2\n"
-          "foo [2]: 3\n") != 0) {
+    if (lTraceString.compare("foo [1]: 1\n"
+          "foo [2]: 2\n"
+          "foo [3]: 3\n") != 0) {
       return false;
     }
     std::cout << lTraceString << std::endl;

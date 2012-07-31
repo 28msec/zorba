@@ -12,20 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(ZORBATYPES_SRCS 
-  decimal.cpp
-  floatimpl.cpp
-  integer.cpp
-  numconversions.cpp
-  binary.cpp
-  URI.cpp
-  collation_manager.cpp
-  chartype.cpp
-  rchandle.cpp)
-  
-IF (NOT ZORBA_NO_FULL_TEXT)
-  LIST(APPEND ZORBATYPES_SRCS ft_token.cpp)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
+ZORBA_DOXYGEN ("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "csharpdocs")
 
-ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS mapm     MAPM_SRCS)
-ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS datetime DATETIME_SRCS)
+IF (DOXYGEN_FOUND)
+  ADD_DEPENDENCIES (doc "csharpdocs")
+
+  CONFIGURE_FILE (
+    ${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_b.gif
+    ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_b.gif
+    COPYONLY
+  )
+  CONFIGURE_FILE (
+    ${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_r.gif
+    ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_r.gif
+    COPYONLY
+  )
+  CONFIGURE_FILE (
+    ${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_l.gif
+    ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_l.gif
+    COPYONLY
+  )
+ENDIF (DOXYGEN_FOUND)
