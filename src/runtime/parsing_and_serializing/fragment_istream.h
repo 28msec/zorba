@@ -44,6 +44,7 @@ public:
 public:
   std::istringstream* theIss;
   std::istream* theStream;
+  StreamReleaser theStreamReleaser;
   char* theBuffer;
   unsigned long bytes_in_buffer;
   unsigned long current_offset;
@@ -64,6 +65,7 @@ public:
     std::istream(NULL),
     theIss(NULL),
     theStream(NULL),
+    theStreamReleaser(nullptr),
     theBuffer(NULL),
     bytes_in_buffer(0),
     current_offset(0),
@@ -83,6 +85,16 @@ public:
   {
     return reached_eof && current_offset >= bytes_in_buffer;
   }
+  
+  StreamReleaser getStreamReleaser()
+  {
+    return theStreamReleaser;
+  }
+  
+  void setStreamReleaser(StreamReleaser aReleaser)
+  {
+    theStreamReleaser = aReleaser;
+  }
 
   void reset()
   {
@@ -94,6 +106,11 @@ public:
     if (theIss)
     {
       delete theIss;
+    }
+    
+    if (theStreamReleaser)
+    {
+      theStreamReleaser(theStream);
     }
 
     if (ctxt)
@@ -117,7 +134,7 @@ public:
     children = NULL;
     only_one_doc_node = false;
   }
-
+  
   virtual ~FragmentIStream()
   {
     reset();
