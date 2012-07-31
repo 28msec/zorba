@@ -10686,7 +10686,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
     pop_scope();
 
-    push_nodestack(flworExpr);
+    push_nodestack(flworExpr.getp());
 
     return;
   }
