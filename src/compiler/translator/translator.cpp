@@ -10649,7 +10649,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   {
     if (numArgs != 1)
     {
-      RAISE_ERROR_NO_PARAMS(jerr::JNDY0018, loc);
+      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
     }
     function* func;
 
