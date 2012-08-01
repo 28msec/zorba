@@ -197,8 +197,10 @@ public:
   }
 
   /**
-   * Checks whether this representation is shared.
+   * Checks if the given shared-count indicates whether some string's
+   * representation is shared.
    *
+   * @param count The shared-count to check.
    * @return Returns \c true only if it is.
    */
   static bool is_shared( count_type count ) {
@@ -206,7 +208,7 @@ public:
   }
 
   /**
-   * Checks whether this representation is unsharable.
+   * Checks whether this representation is sharable.
    *
    * @return Returns \c true only if it is.
    */
@@ -215,8 +217,10 @@ public:
   }
 
   /**
-   * Checks whether this representation is unsharable.
+   * Checks if the given shared-count indicates whether some string's
+   * representation is sharable.
    *
+   * @param count The shared-count to check.
    * @return Returns \c true only if it is.
    */
   static bool is_sharable( count_type count ) {

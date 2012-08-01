@@ -83,27 +83,23 @@ Iterator tree for main query:
             </GenericArithIterator_AddOperation>
           </HoistIterator>
         </LetVariable>
+        <ForVariable name="c">
+          <OpToIterator>
+            <SingletonIterator value="xs:integer(1)"/>
+            <PromoteIterator type="xs:integer">
+              <FnDataIterator>
+                <CtxVarIterator varid="2" varname="x" varkind="local"/>
+              </FnDataIterator>
+            </PromoteIterator>
+          </OpToIterator>
+        </ForVariable>
         <ReturnClause>
-          <flwor::FLWORIterator>
-            <ForVariable name="c">
-              <OpToIterator>
-                <SingletonIterator value="xs:integer(1)"/>
-                <PromoteIterator type="xs:integer">
-                  <FnDataIterator>
-                    <CtxVarIterator varid="2" varname="x" varkind="local"/>
-                  </FnDataIterator>
-                </PromoteIterator>
-              </OpToIterator>
-            </ForVariable>
-            <ReturnClause>
-              <GenericArithIterator_AddOperation>
-                <UnhoistIterator>
-                  <LetVarIterator varname="$$opt_temp_0"/>
-                </UnhoistIterator>
-                <ForVarIterator varname="c"/>
-              </GenericArithIterator_AddOperation>
-            </ReturnClause>
-          </flwor::FLWORIterator>
+          <GenericArithIterator_AddOperation>
+            <UnhoistIterator>
+              <LetVarIterator varname="$$opt_temp_0"/>
+            </UnhoistIterator>
+            <ForVarIterator varname="c"/>
+          </GenericArithIterator_AddOperation>
         </ReturnClause>
       </flwor::FLWORIterator>
     </SequentialIterator>

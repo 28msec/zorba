@@ -18,6 +18,9 @@
 
   std::string XQuery::execute()
   {
+    Zorba_SerializerOptions_t lSerOptions;
+    lSerOptions.indent = ZORBA_INDENT_YES;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
     std::stringstream lStream;
     lStream << theQuery;
     std::string str = lStream.str();

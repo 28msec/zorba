@@ -19,7 +19,6 @@ SET(ZORBATYPES_SRCS
   numconversions.cpp
   binary.cpp
   URI.cpp
-  transcoder.cpp
   collation_manager.cpp
   chartype.cpp
   rchandle.cpp)
