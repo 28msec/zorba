@@ -30,8 +30,7 @@ namespace zorba {
 class FragmentIStream : public std::istream
 {
 public:
-  static const unsigned int BUFFER_SIZE = 4096;
-  static const unsigned int LOOKAHEAD_BYTES = 3; // lookahead fetching is implemented, but currently not used
+  static const unsigned int DEFAULT_BUFFER_SIZE = 4096;
   static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
   
   // names of these states are orientative
@@ -45,7 +44,7 @@ public:
   std::istringstream* theIss;
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
-  char* theBuffer;
+  std::vector<char> theBuffer;
   unsigned long bytes_in_buffer;
   unsigned long current_offset;
   int current_element_depth;
@@ -66,7 +65,6 @@ public:
     theIss(NULL),
     theStream(NULL),
     theStreamReleaser(nullptr),
-    theBuffer(NULL),
     bytes_in_buffer(0),
     current_offset(0),
     current_element_depth(0),
@@ -98,10 +96,7 @@ public:
 
   void reset()
   {
-    if (theBuffer)
-    {
-      delete[] theBuffer;
-    }
+    theBuffer.clear();
 
     if (theIss)
     {
@@ -121,7 +116,6 @@ public:
 
     theIss = NULL;
     theStream = NULL;
-    theBuffer = NULL;
     bytes_in_buffer = 0;
     current_offset = 0;
     current_element_depth = 0;

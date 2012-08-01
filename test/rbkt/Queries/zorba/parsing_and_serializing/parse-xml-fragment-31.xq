@@ -6,7 +6,7 @@ import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
 import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-let $xmlcontents := fetch:content("streamable.xml")
+let $xmlcontents := fetch:content(fn:resolve-uri("streamable.xml"))
 let $contents := parse-xml:parse(
       $xmlcontents,
       <opt:options>
