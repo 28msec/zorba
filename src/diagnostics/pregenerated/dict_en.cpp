@@ -125,6 +125,9 @@ extern entry const dict_en[] = {
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNTY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
 #endif
 #if defined(ZORBA_WITH_JSON)
