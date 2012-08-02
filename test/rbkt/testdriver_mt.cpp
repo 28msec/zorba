@@ -44,8 +44,6 @@
 #include "testdriver_comparator.h"
 #include "testdriver_common.h"
 
-#define BOOST_FILESYSTEM_VERSION 2
-
 // These are included last because they define the <stdint.h>'s INTMAX_C and UINTMAX_C
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -233,25 +231,45 @@ void sigHandler(int sigNum)
 ********************************************************************************/
 void createPath(const fs::path& filePath, std::ofstream& fileStream)
 {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   fileStream.open(filePath.file_string().c_str());
+#else
+  fileStream.open(filePath.generic_string().c_str());
+#endif
   if (!fileStream.good())
   {
     fs::path dirPath = filePath;
     dirPath = dirPath.remove_leaf();
     
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
     if (!fs::exists(dirPath.file_string()))
+#else
+    if (!fs::exists(dirPath.generic_string()))
+#endif
     {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       fs::create_directories(dirPath.file_string());
+#else
+      fs::create_directories(dirPath.generic_string());
+#endif
 
       // clear the bad flag on windows, which for some unknown reason doesn't reset when opening a file again
       fileStream.clear(); 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       fileStream.open(filePath.file_string().c_str());
+#else
+      fileStream.open(filePath.generic_string().c_str());
+#endif
     }
 
     if (!fileStream.good())
     {
       std::cerr << "Could not open file: " 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
                 << filePath.file_string() << std::endl;
+#else
+                << filePath.generic_string() << std::endl;
+#endif
       abort();
     }
   }
@@ -380,7 +398,11 @@ DWORD WINAPI thread_main(LPVOID param)
     relativeQueryFile = queries->theQueryFilenames[queryNo];
     queryPath = fs::path(queries->theQueriesDir) / (relativeQueryFile);
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
     std::string testName = fs::change_extension(queryPath, "").file_string();
+#else
+    std::string testName = fs::change_extension(queryPath, "").generic_string();
+#endif
     ulong pos = testName.find("Queries");
     testName = testName.substr(pos + 8);
 
@@ -393,7 +415,11 @@ DWORD WINAPI thread_main(LPVOID param)
     // exprected errors, or the pathnames of reference-result files.
     specPath = fs::change_extension(queryPath, ".spec");
     if (fs::exists(specPath))
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_bin_dir); 
+#else
+      querySpec.parseFile(specPath.generic_string(), rbkt_src_dir, rbkt_bin_dir);
+#endif
 
     // Get the pathnames of the ref-result files found in the .spec file (if any).
     // If no ref-results file was specified in the .spec file, create a default
@@ -494,14 +520,22 @@ DWORD WINAPI thread_main(LPVOID param)
     setModulePaths(module_path, sctx);
 
     // Set the error file to be used by the error handler for the current query
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
     errHandler.setErrorFile(errorFilePath.file_string());
+#else
+    errHandler.setErrorFile(errorFilePath.generic_string());
+#endif
 
     //
     // Compile the query, if it has not been compiled already. 
     //
     if (queries->theQueryObjects[queryNo] == 0)
     {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       slurp_file(queryPath.file_string().c_str(),
+#else
+      slurp_file(queryPath.generic_string().c_str(),
+#endif
                  queryString,
                  rbkt_src_dir,
                  rbkt_bin_dir);
@@ -509,7 +543,11 @@ DWORD WINAPI thread_main(LPVOID param)
       try
       {
         query = zorba->createQuery(&errHandler);
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         query->setFileName(queryPath.file_string());
+#else
+        query->setFileName(queryPath.generic_string());
+#endif
         query->compile(queryString.c_str(), sctx, getCompilerHints());
       }
       catch(...)
@@ -632,8 +670,13 @@ DWORD WINAPI thread_main(LPVOID param)
       ulong i;
       for (i = 0; i < refFilePaths.size(); i++) 
       {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         std::string refFilePath = refFilePaths[i].file_string();
         std::string resFilePath = resultFilePath.file_string();
+#else
+        std::string refFilePath = refFilePaths[i].generic_string();
+        std::string resFilePath = resultFilePath.generic_string();
+#endif
 
         int lLine, lCol; 
         std::string lRefLine, lResultLine;
@@ -879,23 +922,43 @@ _tmain(int argc, _TCHAR* argv[])
   // Make sure the directories exist. For the results dir, if it doesn't exist,
   // it is created.
   //
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   path = fs::system_complete(fs::path(queriesDir, fs::native));
+#else
+  path = fs::system_complete(fs::path(queriesDir));
+#endif
   if (!fs::is_directory(path))
   {
     std::cerr << "The directory " << queriesDir << " could not be found" << std::endl;
     exit(2);
   }
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   queries.theQueriesDir = path.native_directory_string();
+#else
+  queries.theQueriesDir = path.parent_path().generic_string();
+#endif
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   path = fs::system_complete(fs::path(refsDir, fs::native));
+#else
+  path = fs::system_complete(fs::path(refsDir));
+#endif
   if (!fs::is_directory(path))
   {
     std::cerr << "The directory " << refsDir << " could not be found" << std::endl;
     exit(2);
   }
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   queries.theRefsDir = path.native_directory_string();
+#else
+  queries.theRefsDir = path.parent_path().generic_string();
+#endif
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   path = fs::system_complete(fs::path(resultsDir, fs::native));
+#else
+  path = fs::system_complete(fs::path(resultsDir));
+#endif
   if (!fs::exists(path))
   {
     fs::create_directories(path);
@@ -905,7 +968,11 @@ _tmain(int argc, _TCHAR* argv[])
     std::cerr << "The pathname " << resultsDir << " is not a directory" << std::endl;
     exit(2);
   }
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   queries.theResultsDir = path.native_directory_string();
+#else
+  queries.theResultsDir = path.parent_path().generic_string();
+#endif
 
   //
   // Search and collect all the query files in the bucket, unless some
@@ -934,7 +1001,11 @@ _tmain(int argc, _TCHAR* argv[])
         continue;
       }
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       std::string queryFile = queryPath.file_string();
+#else
+      std::string queryFile = queryPath.generic_string();
+#endif
       std::string relativeQueryFile = queryFile.substr(queries.theQueriesDir.size());
 
       queries.theQueryFilenames.push_back(relativeQueryFile);
@@ -1054,23 +1125,39 @@ _tmain(int argc, _TCHAR* argv[])
     bool queryWasKnownToFail = false;
     if (haveKnownFailures) 
     {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       queryWasKnownToFail = (knownFailures.count(queryName.file_string()) != 0);
+#else
+      queryWasKnownToFail = (knownFailures.count(queryName.generic_string()) != 0);
+#endif
     }
 
     if (queries.theQueryStates[i] == false)
     {
       numFailures++;
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       failedTests << queryName.file_string() << std::endl;
+#else
+      failedTests << queryName.generic_string() << std::endl;
+#endif
 
       if (haveKnownFailures && !queryWasKnownToFail)
       {
         numRegressions++;
         report << "REGRESSION:" << i << ":"
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
                << queryName.file_string() << std::endl;
+#else
+               << queryName.generic_string() << std::endl;
+#endif
       }
       else if (!haveKnownFailures)
       {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         report << i << ":" << queryName.file_string() << std::endl;
+#else
+        report << i << ":" << queryName.generic_string() << std::endl;
+#endif
       }
     }
     else
@@ -1079,13 +1166,21 @@ _tmain(int argc, _TCHAR* argv[])
       {
         numProgressions++;
         report << "Progression:" << i << ":"
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
                << queryName.file_string() << std::endl;
+#else
+               << queryName.generic_string() << std::endl;
+#endif
       }
     }
     if(generateW3CData)
     {
       std::string status = (queries.theQueryStates[i] ==  true)?"pass":"fail";
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       XMLreport << "<Test Status='" << status << "'><Name>" << queryName.file_string() << "</Name></Test>" << std::endl;
+#else
+      XMLreport << "<Test Status='" << status << "'><Name>" << queryName.generic_string() << "</Name></Test>" << std::endl;
+#endif
     }
   }
 
