@@ -48,10 +48,13 @@ Bug Fixes/Other Changes:
   * Fixed bug #9910884 (raise XUST0001 in trycatch with mixed updating and simple clauses)
   * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
   * Fixed bug #1008082 (bug in transform expr when a copy var is not used anywhere)
+  * Fixed bug #898066 (Stringstream & fn:trace)
+  * Numbering of items in fn:trace starts with one
   * Fixed bug #1003023$ (optimizer problems due to common subexpression after
     var folding into if-then-else)
   * Fixed bug #1006166 (disabling 2 functions with the same qname)
   * Fixed bug #960083 (improper error handling of NaN comparisons)
+  * Fixed bug #878508 (JsonML serialization not escaping characters)
   * Xml-format plan serialization not supported anymore.
 
 
