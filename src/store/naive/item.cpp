@@ -161,6 +161,7 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
