@@ -3789,7 +3789,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (v.is_global())
     theCurrentPrologVFDecl.setNull();
 
-  expr* initExpr = (v.get_binding_expr() == NULL ? expr_t(NULL) : pop_nodestack());
+  expr* initExpr = (v.get_binding_expr() == NULL ? NULL : pop_nodestack());
 
   var_expr* ve = dynamic_cast<var_expr*>(pop_nodestack());
 
