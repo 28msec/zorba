@@ -73,6 +73,7 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
