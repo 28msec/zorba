@@ -13,6 +13,7 @@ New Features:
   * Added ft:tokenize-nodes() function to full-text module
   * New XQuery 3.0 functions
     - fn:parse-xml-fragment#1
+  * New ItemFactory function that allows creating dateTime items without timezone
   * Added support for transient maps to the
     http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
