@@ -45,6 +45,7 @@
 
     <zorba:state>
       <zorba:member type="store::Index::KeyIterator_t" name="theIter"/>
+      <zorba:member type="store::Index*" name="theIndex"/>
     </zorba:state>
 
     <zorba:member type="store::NsBindings" name="theNSBindings" brief=""/>

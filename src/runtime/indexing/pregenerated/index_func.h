@@ -44,6 +44,7 @@ class IndexKeysIteratorState : public PlanIteratorState
 {
 public:
   store::Index::KeyIterator_t theIter; //
+  store::Index* theIndex; //
 
   IndexKeysIteratorState();
 

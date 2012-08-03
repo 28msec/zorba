@@ -44,7 +44,6 @@ IndexKeysIterator::nextImpl(
 {
   store::Item_t    lQName;
   IndexDecl_t      indexDecl;
-  store::Index*    lIndex;
   store::IndexKey  lKey;
 
   store::Item_t lKeyNodeName;
@@ -66,9 +65,9 @@ IndexKeysIterator::nextImpl(
     );
   }
 
-  lIndex = GENV_STORE.getIndex(lQName);
+  state->theIndex = GENV_STORE.getIndex(lQName);
 
-  if (!lIndex)
+  if (!state->theIndex)
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
@@ -77,7 +76,7 @@ IndexKeysIterator::nextImpl(
     );
   }
 
-  state->theIter = lIndex->keys();
+  state->theIter = state->theIndex->keys();
 
   state->theIter->open();
 
@@ -89,9 +88,8 @@ IndexKeysIterator::nextImpl(
   // </key>
   while (state->theIter->next(lKey))
   {
-    std::cout << "hallo " << lIndex->getSpecification().theIsGeneral << std::endl;
     IndexUtil::createIndexKeyElement(
-        lIndex->getSpecification().theIsGeneral,
+        state->theIndex->getSpecification().theIsGeneral,
         result, lKey, static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS
       );
     STACK_PUSH(true, state);
