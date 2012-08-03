@@ -122,11 +122,30 @@
   void Item::close()
   { theItem.close(); }
 
-  bool Item::isStreamable()
-  { return theItem.isStreamable(); }
-  
-  ZorbaBuffer&	Item::getStream()
-  { return ZorbaBuffer(theItem.getStream()); }
+  void Item::serializeToStream(ZorbaStream& aStream) const 
+  {
+    ZorbaBuffer buffer(aStream);
+    std::ostream lStream(&buffer);
+
+    Zorba_SerializerOptions_t lOptions;
+    lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    zorba::Serializer_t lSerializer = zorba::Serializer::createSerializer(lOptions);
+    zorba::SingletonItemSequence lSequence(theItem);
+    lSerializer->serialize(&lSequence, lStream);
+    return;
+  }
+  void Item::serializeToStream(ZorbaStream& aStream, SerializationOptions serOptions) const 
+  {
+    ZorbaBuffer buffer(aStream);
+    std::ostream lStream(&buffer);
+
+    Zorba_SerializerOptions_t lOptions;
+    serOptions.lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    zorba::Serializer_t lSerializer = zorba::Serializer::createSerializer(serOptions.lOptions);
+    zorba::SingletonItemSequence lSequence(theItem);
+    lSerializer->serialize(&lSequence, lStream);
+    return;
+  }
 
 %}  // end   Implementation
 

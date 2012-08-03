@@ -15,10 +15,7 @@
  */
 package org.zorbaxquery.api.xqj;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -112,6 +109,43 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         
         }
     }
+
+    public ZorbaXQPreparedExpression (XQConnection conn, Reader reader) throws XQException {
+        if (conn.isClosed()) {
+            throw new XQException ("Connection is closed");
+        }
+        closed = false;
+        connection = conn;
+        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        try {
+            ReaderZorbaStream stream = new ReaderZorbaStream(reader);
+            query =  zorba.compileQuery(stream);
+            dynamicContext = query.getDynamicContext();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+        } catch (Exception e) {
+            throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
+        
+        }
+    }
+
+    public ZorbaXQPreparedExpression (XQConnection conn, InputStream input) throws XQException {
+        if (conn.isClosed()) {
+            throw new XQException ("Connection is closed");
+        }
+        closed = false;
+        connection = conn;
+        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        try {
+            InputZorbaStream stream = new InputZorbaStream(input);
+            query =  zorba.compileQuery(stream);
+            dynamicContext = query.getDynamicContext();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+        } catch (Exception e) {
+            throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
+        
+        }
+    }
+
     public ZorbaXQPreparedExpression (XQConnection conn, String string, XQStaticContext sc) throws XQException {
         if (conn.isClosed()) {
             throw new XQException ("Connection is closed");
@@ -121,6 +155,42 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
             query =  zorba.compileQuery(string, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
+            dynamicContext = query.getDynamicContext();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+        } catch (Exception e) {
+            throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
+        
+        }
+    }
+
+    public ZorbaXQPreparedExpression (XQConnection conn, Reader reader, XQStaticContext sc) throws XQException {
+        if (conn.isClosed()) {
+            throw new XQException ("Connection is closed");
+        }
+        closed = false;
+        connection = conn;
+        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        try {
+            ReaderZorbaStream stream = new ReaderZorbaStream(reader);
+            query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
+            dynamicContext = query.getDynamicContext();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+        } catch (Exception e) {
+            throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
+        
+        }
+    }
+
+    public ZorbaXQPreparedExpression (XQConnection conn, InputStream input, XQStaticContext sc) throws XQException {
+        if (conn.isClosed()) {
+            throw new XQException ("Connection is closed");
+        }
+        closed = false;
+        connection = conn;
+        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        try {
+            InputZorbaStream stream = new InputZorbaStream(input);
+            query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
             xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
         } catch (Exception e) {
@@ -445,9 +515,8 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             throw new XQException ("Variable not found in context.");
         }
         try {
-            Iterator iter = xmlDataManager.parseXML(value);
             Item item = new Item();
-            iter.next(item);
+            item = xmlDataManager.parseXMLtoItem(value);
             dynamicContext.setVariable(varName.getLocalPart(), item);
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {

@@ -13,39 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.zorbaxquery.api;
 
 import java.io.IOException;
-import java.io.Reader;
-import org.zorbaxquery.api.intArray;
+import java.io.OutputStream;
 
-public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaStream {
-
-  private Reader reader;
-
-  public ReaderZorbaStream(Reader aReader) {
-      reader= aReader;
+public class OutputZorbaStream extends ZorbaStream {
+  private OutputStream output;
+  
+  public OutputZorbaStream(OutputStream aOutput) {
+      output = aOutput;
   }
-
+  
   @Override
-  public void fillStreamCallback() {
-      char[] b = new char[1024];
-      int total = 0;
-      try {
-        total = reader.read(b, 0, 1024);
-      } catch (IOException ex) {
-      }
-      intArray lBuffer = null;
-      if (total>0) {
-        lBuffer = new intArray(total);
-        for (int i=0; i<total; i++) {
-            lBuffer.setitem(i, b[i]);
+  public void write(String string, long l){
+        try {
+            output.write(string.getBytes());
+        } catch (IOException ex) {
+            System.out.println("Error writing on output stream" + ex.getLocalizedMessage());
         }
-      } else {
-        lBuffer = new intArray(1);  // Can't be null
-      }
-      setStream(lBuffer.cast(), total);
       
   }
+  
 }

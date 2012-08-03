@@ -16,10 +16,10 @@
 package api_test;
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Properties;
 import javax.xml.namespace.QName;
 import javax.xml.xquery.*;
 import org.zorbaxquery.api.*;
@@ -43,6 +43,7 @@ public class Api_test {
       xqc.close();
       return true;
   }
+
 
   static boolean example_2 () throws XQException
   {
@@ -205,7 +206,6 @@ public class Api_test {
     Zorba zorba = Zorba.getInstance ( store );
     XmlDataManager xmlManager = new XmlDataManager(zorba.getXmlDataManager());
     CollectionManager manager = new CollectionManager(xmlManager.getCollectionManager());
-
     ItemFactory factory = zorba.getItemFactory();
     Item name = factory.createQName("http://www.zorba-xquery.com/", "aaa");
     manager.createCollection(name);
@@ -254,18 +254,36 @@ public class Api_test {
   {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
-    ReaderStreamWrapper stream = new ReaderStreamWrapper(new StringReader("'Hello world!'"));
+    ReaderZorbaStream stream = new ReaderZorbaStream(new StringReader("'Hello world!'"));
     XQuery query = zorba.compileQuery(stream);
     System.out.println(query.execute());
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
     return true;
   }
+
   static boolean example_8() throws XQException, UnsupportedEncodingException
   {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
-    InputStreamWrapper stream = new InputStreamWrapper(new ByteArrayInputStream("'Hello world!'".getBytes("UTF-8")));
+    String test = 
+    "'"+
+    // 500 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    // 500 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
+            
+    "1234567890123456789012"+ // 100 chars
+    "'";
+    InputZorbaStream stream = new InputZorbaStream(new ByteArrayInputStream(test.getBytes("UTF-8")));
     XQuery query = zorba.compileQuery(stream);
     System.out.println(query.execute());
     zorba.shutdown();
@@ -273,60 +291,103 @@ public class Api_test {
     return true;
   }
 
-  public static void main ( String argv[] ) throws XQException
+  static boolean example_9() throws XQException, UnsupportedEncodingException
+  {
+    InMemoryStore store = InMemoryStore.getInstance();
+    Zorba zorba = Zorba.getInstance ( store );
+    String test = "<Hello><ab/><ax/>World</Hello>";
+    InputZorbaStream stream = new InputZorbaStream(new ByteArrayInputStream(test.getBytes("UTF-8")));
+    XQuery query = zorba.compileQuery(stream);
+    System.out.println(query.execute());
+    query.destroy();
+    zorba.shutdown();
+    InMemoryStore.shutdown ( store );
+    
+    return true;
+  }
+
+  static boolean example_10() throws XQException, UnsupportedEncodingException
+  {
+    InMemoryStore store = InMemoryStore.getInstance();
+    Zorba zorba = Zorba.getInstance ( store );
+    String test = "<Hello><ab/><ax/>World</Hello>";
+    InputZorbaStream stream = new InputZorbaStream(new ByteArrayInputStream(test.getBytes("UTF-8")));
+    XQuery query = zorba.compileQuery(stream);
+    
+    OutputZorbaStream OStream = new OutputZorbaStream(System.out);
+    query.execute(OStream);
+
+    query.destroy();
+    zorba.shutdown();
+    InMemoryStore.shutdown ( store );
+    
+    return true;
+  }
+
+  public static void main ( String argv[] ) throws XQException, UnsupportedEncodingException
   {
     boolean res = false;
 
-    System.out.println ("executing test 1" );
-    res = example_1( );
+    System.out.println ("Executing test 1" );
+    res = example_1();
     if ( !res ) 
-      System.exit ( 1 ); 
+      System.exit (1);
 
-    System.out.println ( "executing test 2" );
-    res = example_2 ( );
+    System.out.println ( "Executing test 2" );
+    res = example_2();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
   
-    System.out.println ( "executing test 3a" );
-    res = example_3a ( );
+    System.out.println ( "Executing test 3a" );
+    res = example_3a();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
   
-    System.out.println ( "executing test 3b" );
-    res = example_3b ( );
+    System.out.println ( "Executing test 3b" );
+    res = example_3b();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
     
-    System.out.println ( "executing test 4" );
-    res = example_4 ( );
+    System.out.println ( "Executing test 4" );
+    res = example_4();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
 
-    System.out.println ( "executing test 5" );
-    res = example_5 ( );
+    System.out.println ( "Executing test 5" );
+    res = example_5();
     if (!res) 
-      System.exit ( 1 ); 
-    System.out.println ( "executing test 6a" );
-    res = example_6a ( );
+      System.exit (1);
+    System.out.println ( "Executing test 6a" );
+    res = example_6a();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
 
-    System.out.println ( "executing test 6b" );
-    res = example_6b ( );
+    System.out.println ( "Executing test 6b" );
+    res = example_6b();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
 
-    System.out.println ( "executing test 7" );
-    res = example_7 ( );
+    System.out.println ( "Executing test 7" );
+    res = example_7();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
 
-    System.out.println ( "executing test 8" );
-    res = example_8 ( );
+    System.out.println ( "Executing test 8" );
+    res = example_8();
     if (!res) 
-      System.exit ( 1 ); 
+      System.exit (1);
 
-    System.out.println ( "done." );
+    System.out.println ( "Executing test 9" );
+    res = example_9();
+    if (!res) 
+      System.exit (1);
+
+    System.out.println ( "Executing test 10" );
+    res = example_10();
+    if (!res) 
+      System.exit (1);
+
+    System.out.println ( "Done." );
 
   } // main
 

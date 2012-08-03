@@ -21,66 +21,44 @@
 #include "ZorbaStream.h"
 #include <cassert>
 #include <iostream>
+#include <ios>
 
-void ZorbaStream::checkBuffer()
+void ZorbaStream::fillStreamCallback()
 {
-  if (buffer==0)
-  {
-    bufferWrapper->fillBufferCallback();
-    if (bufferWrapper->getLen() > 0) {
-      bBegin = bCurrent = buffer = bufferWrapper->getBuffer();
-      bEnd = bBegin + bufferWrapper->getLen();
-    }
-  } else if (bCurrent == bEnd)
-  {
-    if (bufferWrapper->getLen()==1024)
-    {
-      bufferWrapper->fillBufferCallback();
-      if (bufferWrapper->getLen() > 0) {
-        bBegin = bCurrent = buffer = bufferWrapper->getBuffer();
-        bEnd = bBegin + bufferWrapper->getLen();
-      }
-    }
-  }
-  
-}
-int ZorbaStream::getEOF()
-{
-  return traits_type::eof();
+  // Local fill buffer
+  int len = 10;
+  int *buffer = (int*) malloc(sizeof(int)*(len));
+  int* p=buffer;
+  for (int i=0; i<(len); i++, *p++ = i+40)
+    ;
+  setStream(buffer, len);
+  return;
 }
 
-int ZorbaStream::underflow()
+void ZorbaStream::setStream(int *aStream, int aLen)
 {
-    checkBuffer();
-    if ((bCurrent == bEnd) || (buffer==0))
-        return traits_type::eof();
-    return traits_type::to_int_type(*bCurrent);
+  if (aLen > 0)
+    memcpy(buffer, aStream, aLen*sizeof(int));
+  len = aLen;
+  return;
 }
 
-int ZorbaStream::uflow()
+int * ZorbaStream::getStream()
 {
-    checkBuffer();
-    if ((bCurrent == bEnd) || (buffer==0))
-        return traits_type::eof();
-    return traits_type::to_int_type(*bCurrent++);
+  return buffer;
 }
 
-int ZorbaStream::pbackfail(int ch)
+int ZorbaStream::getLen()
 {
-    checkBuffer();
-    if (bCurrent == bBegin || (ch != traits_type::eof() && ch != bCurrent[-1]) || (buffer==0))
-        return traits_type::eof();
-
-    return traits_type::to_int_type(*--bCurrent);
+  return len;
 }
 
-std::streamsize ZorbaStream::showmanyc()
+void ZorbaStream::write( const char * str, size_t len )
 {
-    checkBuffer();
-    return bEnd - bCurrent;
+  return;
 }
-
 
 %}  // end   Implementation
+
 
 %include "ZorbaStream.h"

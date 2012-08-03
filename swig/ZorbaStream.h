@@ -23,41 +23,30 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
-#include "ZorbaBuffer.h"
 
-
-class ZorbaStream :
-  public std::streambuf
+class ZorbaStream
 {
 public:
-  ZorbaStream(ZorbaBuffer &aBufferWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0), bufferWrapper(&aBufferWrapper) {};
+  ZorbaStream() {};
+
+  //STREAM TO ZORBA
+  virtual void fillStreamCallback();
+  void setStream(int *aStream, int aLen);
+  int * getStream();
+  int getLen();
   
-  // Helper function to return EOF character from other languages
-  static int getEOF();
-  
-  // Get character in the case of underflow
-  int underflow();
-  // Get character in the case of underflow and advance get pointer
-  int uflow();
-  // Put character back in the case of backup underflow
-  int pbackfail(int ch);
-  // Get number of characters available in the sequence
-  std::streamsize showmanyc();
+  //STREAM FROM ZORBA
+  virtual void write( const char * str, size_t len );
   
 private:
-  void checkBuffer();
+  //FOR STREAM TO ZORBA
+  int buffer[1024];
+  int len;
+
   // Copy contructor and assignment not allowed
   ZorbaStream(const ZorbaStream &);
   ZorbaStream &operator= (const ZorbaStream &);
 
-  //BUFFER
-  int * buffer;
-  int * bBegin;
-  int * bEnd;
-  int * bCurrent;
-  ZorbaBuffer *bufferWrapper;
-
-  char * cBuffer;
 };
 
 #endif

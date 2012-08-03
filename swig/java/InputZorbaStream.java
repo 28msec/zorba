@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.zorbaxquery.api.intArray;
 
-public class InputZorbaStream extends org.zorbaxquery.api.ZorbaBuffer {
+public class InputZorbaStream extends org.zorbaxquery.api.ZorbaStream {
   private InputStream input;
   
   public InputZorbaStream(InputStream aInput) {
@@ -27,7 +27,7 @@ public class InputZorbaStream extends org.zorbaxquery.api.ZorbaBuffer {
   }
   
   @Override
-  public void fillBufferCallback() {
+  public void fillStreamCallback() {
       byte[] b = new byte[1024];
       int total = 0;
       try {
@@ -43,7 +43,7 @@ public class InputZorbaStream extends org.zorbaxquery.api.ZorbaBuffer {
       } else {
           lBuffer = new intArray(1);  // Can't be null
       }
-      setBuffer(lBuffer.cast(), total);
+      setStream(lBuffer.cast(), total);
   }
   
 }

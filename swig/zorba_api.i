@@ -25,6 +25,7 @@ TSRMLS_FETCH();
 %include "exception.i"
 %include "carrays.i"
 %array_class(int, intArray);
+%apply (const char *STRING, size_t LENGTH) { (const char *str, size_t len) };
 
 #ifndef SWIGRUBY
 %include "std_vector.i"
@@ -88,8 +89,8 @@ namespace std {
   class Store;
   class InMemoryStore;
 
-  #include "ZorbaBuffer.h"
   #include "ZorbaStream.h"
+  #include "ZorbaBuffer.h"
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
   #include "Item.h"
@@ -118,8 +119,8 @@ namespace std {
 
 /* %include "various.i" required for mapping to Java byte[]*/
 
-%include "ZorbaBuffer.i"
 %include "ZorbaStream.i"
+%include "ZorbaBuffer.i"
 %include "SerializationOptions.i"
 %include "TypeIdentifier.i"
 %include "Item.i"

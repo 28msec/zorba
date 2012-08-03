@@ -207,10 +207,10 @@ class Zorba
    * This methods creates an XQuery object and compiles the query string
    * passed to this method.
    *
-   * @param buffer the query buffer, this object is an extension to stream data accross the API.
+   * @param stream the query stream, this object is an extension to stream data accross the API.
    * @return XQuery the newly created and compiled XQuery object.
    */
-  XQuery compileQuery(ZorbaBuffer& buffer);
+  XQuery compileQuery(ZorbaStream& stream);
 
   /** \brief Creates and compiles an XQuery object using a StaticContext.
    *
@@ -218,11 +218,11 @@ class Zorba
    * passed to this method. Compilation is done using the information
    * contained in the StaticContext that is passed as parameter.
    *
-   * @param buffer the query buffer, this object is an extension to stream data accross the API.
+   * @param stream the query stream, this object is an extension to stream data accross the API.
    * @param aStaticContext the StaticContext that contains information used for compiling the query.
    * @return XQuery the newly created and compiled XQuery object.
    */
-  XQuery compileQuery(ZorbaBuffer& buffer, StaticContext &aStaticContext );
+  XQuery compileQuery(ZorbaStream& stream, StaticContext &aStaticContext );
 
 }; // class Zorba
 

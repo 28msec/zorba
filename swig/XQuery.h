@@ -156,6 +156,14 @@ public:
    * @throw ZorbaException if an error occured.
    */
   void getExternalVariables(Iterator& vars) const;
+  
+  /** \brief Execute the query and write the result to the given output stream.
+   *  The query only has a result if it's a non-updating query.
+   *
+   * @stream The output stream on which the result is written.
+   */
+  void execute( ZorbaStream& stream );
+  
 }; // class XQuery
 
 #endif

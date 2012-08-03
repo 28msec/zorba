@@ -66,8 +66,7 @@ public:
      * dynamic collections identified by a URI, i.e. those that are
      * not declared in the prolog of a module or identified by a QName.
      *
-     * @return The collection manager responsible for managing
-     *   collections.
+     * @return The collection manager responsible for managing collections.
      *
      */
   CollectionManager getW3CCollectionManager();
@@ -83,6 +82,12 @@ public:
      * @param aDoc the input string whose content should be parsed
      */
   Item parseXMLtoItem(const std::string& aDoc);
+
+  /** \brief Parse an XML stream and return an Item.
+     *
+     * @param aStream the input string whose content should be parsed
+     */
+  Item parseXMLtoItem(ZorbaStream& aStream);
 
 };
 #endif

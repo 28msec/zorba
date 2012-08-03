@@ -21,57 +21,78 @@
 #include "ZorbaBuffer.h"
 #include <cassert>
 #include <iostream>
-#include <ios>
 
-void ZorbaBuffer::fillBufferCallback()
+void ZorbaBuffer::checkBuffer()
 {
-  // Local fill buffer
-  int len = 10;
-  int *buffer = (int*) malloc(sizeof(int)*(len));
-  int* p=buffer;
-  for (int i=0; i<(len); i++, *p++ = i+40)
-    ;
-  setBuffer(buffer, len);
-  return;
+  if (buffer==0)
+  {
+    streamWrapper->fillStreamCallback();
+    if (streamWrapper->getLen() > 0) {
+      bBegin = bCurrent = buffer = streamWrapper->getStream();
+      bEnd = bBegin + streamWrapper->getLen();
+    }
+  } else if (bCurrent == bEnd)
+  {
+    if (streamWrapper->getLen()==1024)
+    {
+      streamWrapper->fillStreamCallback();
+      if (streamWrapper->getLen() > 0) {
+        bBegin = bCurrent = buffer = streamWrapper->getStream();
+        bEnd = bBegin + streamWrapper->getLen();
+      }
+    }
+  }
+  
+}
+int ZorbaBuffer::getEOF()
+{
+  return traits_type::eof();
 }
 
-void ZorbaBuffer::setBuffer(int *aBuffer, int aLen)
+int ZorbaBuffer::underflow()
 {
-  if (aLen > 0)
-    memcpy(buffer, aBuffer, aLen*sizeof(int));
-  len = aLen;
-  return;
+  checkBuffer();
+  if ((bCurrent == bEnd) || (buffer==0))
+    return traits_type::eof();
+  return traits_type::to_int_type(*bCurrent);
 }
 
-int * ZorbaBuffer::getBuffer()
+int ZorbaBuffer::uflow()
 {
-  return buffer;
+  checkBuffer();
+  if ((bCurrent == bEnd) || (buffer==0))
+    return traits_type::eof();
+  return traits_type::to_int_type(*bCurrent++);
 }
 
-int ZorbaBuffer::getLen()
+int ZorbaBuffer::pbackfail(int ch)
 {
+  checkBuffer();
+  if (bCurrent == bBegin || (ch != traits_type::eof() && ch != bCurrent[-1]) || (buffer==0))
+    return traits_type::eof();
+
+  return traits_type::to_int_type(*--bCurrent);
+}
+
+std::streamsize ZorbaBuffer::showmanyc()
+{
+  checkBuffer();
+  return bEnd - bCurrent;
+}
+
+std::streamsize ZorbaBuffer::xsputn ( const char * str, std::streamsize len ) {
+  // Wrapping to virtual function
+  streamWrapper->write(str, len);
   return len;
 }
 
-char * ZorbaBuffer::getBufferStream()
+int ZorbaBuffer::overflow ( int c )
 {
-  // Local fill buffer
-  stream->read(cBuffer, 1024);
-  len=stream->gcount();
-  return cBuffer;
+  streamWrapper->write((const char*)&c, 1);
+  return c;
 }
 
-int ZorbaBuffer::read(char * aBuffer, int offset, int lenght)
-{
-  // Local fill buffer
-  stream->seekg(offset);
-  stream->read(cBuffer, lenght);
-  len=stream->gcount();
-  aBuffer = cBuffer;
-  return len;
-}
 
 %}  // end   Implementation
-
 
 %include "ZorbaBuffer.h"

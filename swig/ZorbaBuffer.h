@@ -23,38 +23,52 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include "ZorbaBuffer.h"
 
-class ZorbaBuffer
+
+class ZorbaBuffer :
+  public std::streambuf
 {
 public:
-  ZorbaBuffer():stream(0) {};
-  ZorbaBuffer(std::istream &aStream): stream(&aStream) {};
+  ZorbaBuffer(ZorbaStream &aStreamWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0), streamWrapper(&aStreamWrapper) {};
 
-  //BUFFER TO ZORBA
-  virtual void fillBufferCallback();
-  void setBuffer(int *aBuffer, int aLen);
+  // HELPER
+  // Function to return EOF character from other languages
+  static int getEOF();
 
-  //BUFFER FROM ZORBA
-  int * getBuffer();
-  int getLen();
+  // INPUT
+  // Get character in the case of underflow
+  int underflow();
+  // Get character in the case of underflow and advance get pointer
+  int uflow();
+  // Put character back in the case of backup underflow
+  int pbackfail(int ch);
+  // Get number of characters available in the sequence
+  std::streamsize showmanyc();
+
+  // OUTPUT
+  // Write sequence of characters <Inherited>
+  virtual std::streamsize xsputn ( const char * str, std::streamsize len );
+  // Write character in the case of overflow
+  virtual int overflow ( int c = EOF );
   
-  char * getBufferStream();
-  int read(char * aBuffer, int offset, int lenght);
   
+  
+
 private:
-  //FOR BUFFER TO ZORBA
-  int buffer[1024];
-  int len;
-
-  //FOR BUFFER FROM ZORBA
-  std::istream *stream;
-  char cBuffer[1024];
-
+  void checkBuffer();
   // Copy contructor and assignment not allowed
   ZorbaBuffer(const ZorbaBuffer &);
   ZorbaBuffer &operator= (const ZorbaBuffer &);
-  
 
+  //BUFFER
+  int * buffer;
+  int * bBegin;
+  int * bEnd;
+  int * bCurrent;
+  ZorbaStream *streamWrapper;
+
+  char * cBuffer;
 };
 
 #endif
