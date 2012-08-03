@@ -143,13 +143,13 @@ JSONLoader::next( )
         case token::end_array:
         case token::end_object:
           {
-            JSONItem_t lItem = lStack.back();
+            store::Item_t lItem = lStack.back();
 
             lStack.pop_back();
 
             if (lStack.empty())
             {
-              lRootItem = lItem;
+              lRootItem = lItem.cast<JSONItem>();
             }
             else
             {
