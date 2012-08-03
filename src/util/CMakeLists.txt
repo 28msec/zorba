@@ -29,6 +29,7 @@ SET(UTIL_SRCS
   unicode_categories.cpp
   uri_util.cpp
   utf8_util.cpp
+  uuid.cpp
   xml_util.cpp
   fx/fxcharheap.cpp
   string/empty_rep_base.cpp
