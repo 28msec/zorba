@@ -19,4 +19,8 @@ IF(ZORBA_WITH_THESAURUS)
     "${CMAKE_BINARY_DIR}/LIB_PATH/edu/princeton/wordnet/wordnet-en.zth" 
     COPYONLY
   )
+
+  INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/wordnet-en.zth"
+    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet"
+    COMPONENT thesaurus)
 ENDIF(ZORBA_WITH_THESAURUS)

@@ -110,18 +110,6 @@ SET(FOUND_XQFTTS 0)
 # way to do the lookup just once - ideally by moving those tests which
 # depend on module features into the modules themselves.
 
-
-# Check if WordNet thesaurus is installed
-SET(WORDNET_THESAURUS_FILE 
-  "${CMAKE_BINARY_DIR}/LIB_PATH/edu/princeton/wordnet/wordnet-en.zth")
-IF(EXISTS "${WORDNET_THESAURUS_FILE}")
-  SET(ZORBA_WORDNET_FOUND 1)
-  # Kind of a weird place to put this directive, but convenient
-  INSTALL(FILES "${WORDNET_THESAURUS_FILE}"
-    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet"
-    COMPONENT thesaurus)
-ENDIF(EXISTS "${WORDNET_THESAURUS_FILE}")
-
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
 ELSE(ZORBA_SUPPRESS_CURL)
@@ -197,13 +185,13 @@ FOREACH(TESTFILE ${TESTFILES})
   ENDIF(WIN32)
 
   # If WordNet thesaurus not found, skip ft-thesaurus-true tests
-  IF (NOT ZORBA_WORDNET_FOUND)
+  IF (NOT ZORBA_WITH_THESAURUS)
     STRING(REGEX MATCH "zorba/fulltext/ft-thesaurus-true" NEEDS_WORDNET
       "${TESTNAME}")
     IF (NEEDS_WORDNET)
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_WORDNET)
-  ENDIF (NOT ZORBA_WORDNET_FOUND)
+  ENDIF (NOT ZORBA_WITH_THESAURUS)
 
   IF(NOT SKIP_TEST)
 
