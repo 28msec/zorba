@@ -172,20 +172,50 @@ inline bool operator!=( uuid const &u1, uuid const &u2 ) {
   return !(u1 == u2);
 }
 
+/**
+ * Compares two UUIDs for less-than.
+ *
+ * @param u1 The first UUID.
+ * @param u2 The second UUID.
+ * @return Returns \c true only if the first UUID is less than the second.
+ */
 inline bool operator<( uuid const &u1, uuid const &u2 ) {
   return std::lexicographical_compare(
     u1.begin(), u1.end(), u2.begin(), u2.end()
   );
 }
 
+/**
+ * Compares two UUIDs for less-than-or-equal-to.
+ *
+ * @param u1 The first UUID.
+ * @param u2 The second UUID.
+ * @return Returns \c true only if the first UUID is less than or equal to the
+ * second.
+ */
 inline bool operator<=( uuid const &u1, uuid const &u2 ) {
   return !(u2 < u1);
 }
 
+/**
+ * Compares two UUIDs for greater-than.
+ *
+ * @param u1 The first UUID.
+ * @param u2 The second UUID.
+ * @return Returns \c true only if the first UUID is greater than the second.
+ */
 inline bool operator>( uuid const &u1, uuid const &u2 ) {
   return u2 < u1;
 }
 
+/**
+ * Compares two UUIDs for greater-than-or-equal-to.
+ *
+ * @param u1 The first UUID.
+ * @param u2 The second UUID.
+ * @return Returns \c true only if the first UUID is greater than or equal to
+ * the second.
+ */
 inline bool operator>=( uuid const &u1, uuid const &u2 ) {
   return !(u1 < u2);
 }

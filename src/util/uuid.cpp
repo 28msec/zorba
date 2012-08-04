@@ -17,11 +17,11 @@
 #include <zorba/config.h>
 
 #include <cstdio>
-#if defined( ZORBA_HAVE_UUID_H )
-# include <uuid/uuid.h>
-#elif defined( __APPLE__ )
-# include <cstring>
+#if defined( __APPLE__ )
+# include <cstring>                     /* for memcpy(3) */
 # include <CoreFoundation/CoreFoundation.h>
+#elif defined( ZORBA_HAVE_UUID_H )
+# include <uuid/uuid.h>
 #elif defined( _WIN32 )
 # include <Rpc.h>
 #else
@@ -37,13 +37,13 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 void uuid::create( uuid *result ) {
-#if defined( ZORBA_HAVE_UUID_H )
-  uuid_generate( result->data );
-#elif defined( __APPLE__ )
+#if defined( __APPLE__ )
   CFUUIDRef uuid_ref = CFUUIDCreate( NULL );
   CFUUIDBytes uuid_bytes = CFUUIDGetUUIDBytes( uuid_ref );
   CFRelease( uuid_ref );
   ::memcpy( result->data, &uuid_bytes, 16 );
+#elif defined( ZORBA_HAVE_UUID_H )
+  uuid_generate( result->data );
 #elif defined( _WIN32 )
   UuidCreateSequential( (UUID*)result->data );
 #endif /* _WIN32 */
