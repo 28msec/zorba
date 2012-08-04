@@ -39,11 +39,11 @@ void uuid::create( uuid *result ) {
   CFUUIDRef uuid_ref = CFUUIDCreate( NULL );
   CFUUIDBytes uuid_bytes = CFUUIDGetUUIDBytes( uuid_ref );
   CFRelease( uuid_ref );
-  ::memcpy( result, &uuid_bytes, 16 );
+  ::memcpy( result->data, &uuid_bytes, 16 );
 #elif defined( __linux__ )
-  uuid_generate( (uuid_t)result );
+  uuid_generate( (uuid_t)result->data );
 #elif defined( _WIN32 )
-  UuidCreateSequential( (UUID*)result );
+  UuidCreateSequential( (UUID*)result->data );
 #endif /* _WIN32 */
 }
 
