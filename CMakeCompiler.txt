@@ -238,6 +238,8 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF (APPLE)
   # Needed for CFUUID*() functions in util/uuid.c.
   SET(CMAKE_SHARED_LINKER_FLAGS "-framework CoreFoundation ${CMAKE_SHARED_LINKER_FLAGS}")
+ELSIF (WIN32)
+  SET(requiredlibs ${requiredlibs} "Rpcrt4")
 ELSEIF (ZORBA_HAVE_UUID_H)
   # Needed for uuid_generate() function in util/uuid.c.
   SET(CMAKE_SHARED_LINKER_FLAGS "-luuid ${CMAKE_SHARED_LINKER_FLAGS}")
