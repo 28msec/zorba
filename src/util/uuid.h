@@ -172,6 +172,24 @@ inline bool operator!=( uuid const &u1, uuid const &u2 ) {
   return !(u1 == u2);
 }
 
+inline bool operator<( uuid const &u1, uuid const &u2 ) {
+  return std::lexicographical_compare(
+    u1.begin(), u1.end(), u2.begin(), u2.end()
+  );
+}
+
+inline bool operator<=( uuid const &u1, uuid const &u2 ) {
+  return !(u2 < u1);
+}
+
+inline bool operator>( uuid const &u1, uuid const &u2 ) {
+  return u2 < u1;
+}
+
+inline bool operator>=( uuid const &u1, uuid const &u2 ) {
+  return !(u1 < u2);
+}
+
 /**
  * Emits the given UUID to the given ostream in canonical UUID format.
  *
