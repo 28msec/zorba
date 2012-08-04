@@ -23,12 +23,26 @@ LIST (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules")
 FIND_PACKAGE (Zorba REQUIRED HINTS "${ZORBA_BUILD_DIR}")
 INCLUDE ("${Zorba_USE_FILE}")
 
-FIND_PACKAGE(zorba_data-converters_module REQUIRED
-  HINTS ${HTTP-CLIENT_BUILD_DIR})
-FIND_PACKAGE(zorba_security_module REQUIRED
-  HINTS ${SECURITY_BUILD_DIR})
+# The _SUPPRESS variables are a work-around for the Ubuntu packaging process.
+IF (NOT SUPPRESS_HTML_MODULE_FIND_PACKAGE)
+  FIND_PACKAGE(zorba_html_module
+    HINTS ${HTML_BUILD_DIR})
+ELSE (NOT SUPPRESS_HTML_MODULE_FIND_PACKAGE)
+  SET (zorba_html_module_FOUND 1)
+ENDIF (NOT SUPPRESS_HTML_MODULE_FIND_PACKAGE)
 
-ADD_TEST_DIRECTORY("${PROJECT_SOURCE_DIR}/test")
-ADD_SUBDIRECTORY("src")
+IF (NOT SUPPRESS_SECURITY_MODULE_FIND_PACKAGE)
+  FIND_PACKAGE(zorba_security_module
+    HINTS ${SECURITY_BUILD_DIR})
+ELSE (NOT SUPPRESS_SECURITY_MODULE_FIND_PACKAGE)
+  SET (zorba_security_module_FOUND 1)
+ENDIF (NOT SUPPRESS_SECURITY_MODULE_FIND_PACKAGE)
+
+IF (zorba_html_module_FOUND AND zorba_security_module_FOUND)
+  ADD_TEST_DIRECTORY("${PROJECT_SOURCE_DIR}/test")
+  ADD_SUBDIRECTORY("src")
+ELSE ( zorba_html_module_FOUND AND zorba_security_module_FOUND)
+  MESSAGE (STATUS "Didn't find Zorba's HTML and Security modules - skipping OAuth module")
+ENDIF ( zorba_html_module_FOUND AND zorba_security_module_FOUND)
 
 DONE_DECLARING_ZORBA_URIS()
