@@ -16,6 +16,12 @@
 
 #include <zorba/config.h>
 
+#ifdef _WIN32
+# include <Winsock2.h>                  /* for ntohl(3) */
+#else
+# include <arpa/inet.h>                 /* for ntohl(3) */
+#endif /* WIN32 */
+
 #include <cstdio>                       /* for sprintf(3) */
 
 #if defined( __APPLE__ )
@@ -28,12 +34,6 @@
 #else
 # error "Unsupported operating system for generating UUIDs"
 #endif
-
-#ifdef _WIN32
-# include <Winsock2.h>                  /* for ntohl(3) */
-#else
-# include <arpa/inet.h>                 /* for ntohl(3) */
-#endif /* WIN32 */
 
 #include "uuid.h"
 
