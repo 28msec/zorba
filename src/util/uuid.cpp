@@ -16,7 +16,8 @@
 
 #include <zorba/config.h>
 
-#include <cstdio>
+#include <cstdio>                       /* for sprintf(3) */
+
 #if defined( __APPLE__ )
 # include <cstring>                     /* for memcpy(3) */
 # include <CoreFoundation/CoreFoundation.h>
@@ -41,7 +42,7 @@ void uuid::create( uuid *result ) {
   CFUUIDRef uuid_ref = CFUUIDCreate( NULL );
   CFUUIDBytes uuid_bytes = CFUUIDGetUUIDBytes( uuid_ref );
   CFRelease( uuid_ref );
-  ::memcpy( result->data, &uuid_bytes, 16 );
+  ::memcpy( result->data, &uuid_bytes, sizeof result->data );
 #elif defined( ZORBA_HAVE_UUID_H )
   uuid_generate( result->data );
 #elif defined( _WIN32 )

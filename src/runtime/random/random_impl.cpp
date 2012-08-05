@@ -15,6 +15,14 @@
  */
 #include "stdafx.h"
 
+#include <sstream>
+
+#ifdef WIN32
+# include <Winsock2.h>
+#else
+# include <arpa/inet.h>
+#endif /* WIN32 */
+
 #include "system/globalenv.h"
 
 #include "runtime/random/random.h"
@@ -27,7 +35,7 @@
 #include <zorba/util/time.h>
 #include <limits>
 
-#include "util/uuid/uuid.h"
+#include "util/uuid.h"
 
 namespace zorba {
 
@@ -104,6 +112,7 @@ RandomIterator::nextImpl(
   store::Item_t    num;
   unsigned int     int_seed;
   long             walltime_millis;
+  uint32_t         time_low;
   zstring ltmp;
 
   RandomIteratorState* state;
@@ -125,11 +134,12 @@ RandomIterator::nextImpl(
     time::get_current_walltime( lCurrWallTime );
     walltime_millis = time::get_walltime_in_millis( lCurrWallTime );
 
-    uuid_t  u;
-    memset(&u, 0, sizeof(uuid_t));
-    uuid_create(&u);
-
-    walltime_millis += u.time_low;
+    uuid u;
+    uuid::create(&u);
+    time_low = ntohl(
+      (u.data[0] << 24) | (u.data[1] << 16) | (u.data[2] << 8) | u.data[3]
+    );
+    walltime_millis += time_low;
 
     int_seed = walltime_millis % std::numeric_limits<unsigned int>::max();
 
@@ -151,16 +161,16 @@ bool
 UuidIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  uuid_t  u;
+  uuid u;
   zstring uuidStr;
+  std::ostringstream oss;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  memset(&u, 0, sizeof(uuid_t));
-
-  uuid_create(&u);
-  uuidStr = uuidToString(u);
+  uuid::create(&u);
+  oss << u;
+  uuidStr = oss.str();
 
   GENV_ITEMFACTORY->createString(result, uuidStr);
   STACK_PUSH(true, state);

@@ -33,8 +33,6 @@ SET(UTIL_SRCS
   xml_util.cpp
   fx/fxcharheap.cpp
   string/empty_rep_base.cpp
-  uuid/sysdep.cpp
-  uuid/uuid.cpp
   http_util.h
   http_util.cpp)
 
