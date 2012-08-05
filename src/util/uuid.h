@@ -22,8 +22,6 @@
 #include <iostream>
 #include <sys/types.h>
 
-#include "zorbatypes/zstring.h"
-
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
