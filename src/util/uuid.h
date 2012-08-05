@@ -54,11 +54,11 @@ struct uuid {
 
   enum version {
     unknown,
-    time_based,
-    dce_security,
-    name_based_md5,
-    random_number_based,
-    name_based_sha1
+    time_based          = 0x10,
+    dce_security        = 0x20,
+    name_based_md5      = 0x30,
+    random_number_based = 0x40,
+    name_based_sha1     = 0x50
   };
 
   /**
@@ -110,6 +110,11 @@ struct uuid {
     return data + size();
   }
 
+  /**
+   * Gets the size of the UUID data.
+   *
+   * @return Always returns 16.
+   */
   size_type size() const {
     return sizeof( data );
   }
@@ -135,7 +140,9 @@ struct uuid {
    *
    * @return Returns said version.
    */
-  version get_version() const;
+  version get_version() const {
+    return static_cast<version>( data[6] & 0xF0u );
+  }
 };
 
 ////////// Functions //////////////////////////////////////////////////////////

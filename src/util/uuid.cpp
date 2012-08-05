@@ -29,6 +29,12 @@
 # error "Unsupported operating system for generating UUIDs"
 #endif
 
+#ifdef _WIN32
+# include <Winsock2.h>                  /* for ntohl(3) */
+#else
+# include <arpa/inet.h>                 /* for ntohl(3) */
+#endif /* WIN32 */
+
 #include "uuid.h"
 
 using namespace std;
@@ -61,24 +67,14 @@ uuid::variant uuid::get_variant() const {
   return future;
 }
 
-uuid::version uuid::get_version() const {
-  switch ( data[6] & 0xF0u ) {
-    case 0x10u: return time_based;
-    case 0x20u: return dce_security;
-    case 0x30u: return name_based_md5;
-    case 0x40u: return random_number_based;
-    case 0x50u: return name_based_sha1;
-    default   : return unknown;
-  }
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 ostream& operator<<( ostream &os, uuid const &u ) {
-  uint32_t const time_low =
-    (u.data[0] << 24) | (u.data[1] << 16) | (u.data[2] << 8) | u.data[3];
-  uint16_t const time_mid = (u.data[4] << 8) | u.data[5];
-  uint16_t const time_hi_and_version = (u.data[6] << 8) | u.data[7];
+  uint32_t const time_low = ntohl(
+    (u.data[0] << 24) | (u.data[1] << 16) | (u.data[2] << 8) | u.data[3]
+  );
+  uint16_t const time_mid = ntohs( (u.data[4] << 8) | u.data[5] );
+  uint16_t const time_hi_and_version = ntohs( (u.data[6] << 8) | u.data[7] );
   uint8_t const clock_seq_hi_and_reserved = u.data[8];
   uint8_t const clock_seq_low = u.data[9];
   uuid::value_type const *const node = u.data + 10;
