@@ -25,7 +25,7 @@ TSRMLS_FETCH();
 %include "exception.i"
 %include "carrays.i"
 %array_class(int, intArray);
-%apply (const char *STRING, size_t LENGTH) { (const char * aStream, size_t aLen) };
+%apply (char *STRING, size_t LENGTH) { (const char aStream[], size_t aLen) }
 
 #ifndef SWIGRUBY
 %include "std_vector.i"

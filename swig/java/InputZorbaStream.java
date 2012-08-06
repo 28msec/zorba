@@ -36,7 +36,7 @@ public class InputZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
         total = input.read(b, 0, @ZORBA_STREAM_BUFFER_SIZE@);
         if (total==-1) 
           total=0;
-        setStream(new String(b), total);
+        setStream(b, total);
       } catch (IOException ex) {
         System.err.println("Unexpected exception trying to get bytes from InputZorbaStream: " + ex.getLocalizedMessage());
         ex.printStackTrace();
