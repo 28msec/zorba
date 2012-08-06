@@ -932,6 +932,9 @@ void MarkNodeCopyProps::applyInternal(
     {
       expr* arg = e->get_arg_expr(i);
 
+      if (arg == NULL)
+        continue;
+
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(arg, &udfCaller, sources);
       markSources(sources);

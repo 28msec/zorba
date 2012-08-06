@@ -810,11 +810,17 @@ static_context::~static_context()
     delete theExternalModulesMap;
   }
 
-  if (theVariablesMap)
-    delete theVariablesMap;
+  if (theW3CCollectionMap)
+    delete theW3CCollectionMap;
 
-  if (theImportedPrivateVariablesMap)
-    delete theImportedPrivateVariablesMap;
+  if (theCollectionMap)
+    delete theCollectionMap;
+
+  if (theIndexMap)
+    delete theIndexMap;
+
+  if (theICMap)
+    delete theICMap;
 
   if (theFunctionMap)
     delete theFunctionMap;
@@ -831,17 +837,11 @@ static_context::~static_context()
     delete theFunctionArityMap;
   }
 
-  if (theW3CCollectionMap)
-    delete theW3CCollectionMap;
+  if (theVariablesMap)
+    delete theVariablesMap;
 
-  if (theCollectionMap)
-    delete theCollectionMap;
-
-  if (theIndexMap)
-    delete theIndexMap;
-
-  if (theICMap)
-    delete theICMap;
+  if (theImportedPrivateVariablesMap)
+    delete theImportedPrivateVariablesMap;
 
   if (theNamespaceBindings)
     delete theNamespaceBindings;
@@ -2247,7 +2247,7 @@ void static_context::clear_var_ptr(const store::Item_t& qname)
     }
   }
 
-  ZORBA_ASSERT(false);
+  //ZORBA_ASSERT(false);
 }
 
 

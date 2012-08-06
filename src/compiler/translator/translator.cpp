@@ -10440,9 +10440,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           var_expr* ve = inscopeVars[i].getVar();
 
-          if (ve->get_kind() == var_expr::prolog_var)
-            continue;
-
           var_expr_t evalVar = create_var(loc,
                                           ve->get_name(),
                                           var_expr::eval_var,
@@ -10451,7 +10448,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           // At thgis point, the domain expr of an eval var is always another var.
           // However, that other var may be later inlined, so in general, the domain
           // expr of an eval var may be any expr.
-          expr_t valueExpr = ve;
+          expr_t valueExpr;
+
+          if (ve->get_kind() != var_expr::prolog_var)
+            valueExpr = ve;
 
           evalExpr->add_var(evalVar, valueExpr);
         }
