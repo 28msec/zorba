@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include "context/static_context.h"
 
 
 namespace zorba {
@@ -216,7 +217,7 @@ public:
 class InscopeVariablesIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<var_expr_t> theVariables; //vector of variables
+  std::vector<VarInfo> theVariables; //vector of variables
   ulong thePosition; //current position
 
   InscopeVariablesIteratorState();

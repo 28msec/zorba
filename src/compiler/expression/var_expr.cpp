@@ -26,16 +26,11 @@
 
 #include "context/static_context.h"
 
-#include "zorbaserialization/serialize_zorba_types.h"
-#include "zorbaserialization/serialize_template_types.h"
-
 #include "diagnostics/assert.h"
 
 
 namespace zorba
 {
-
-SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
 
 /*******************************************************************************
@@ -119,42 +114,13 @@ var_expr::var_expr(const var_expr& source)
 }
 
 
-var_expr::var_expr(::zorba::serialization::Archiver& ar)
-  :
-  theFlworClause(NULL),
-  theCopyClause(NULL),
-  theUDF(NULL)
-{
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::serialize(::zorba::serialization::Archiver& ar)
+var_expr::~var_expr()
 {
-  ar & theSctx;
-  ar & theLoc;
-  ar & theType;
-  theKind = var_expr_kind;
-  ar & theScriptingKind;
-  ar & theFlags1;
-
-  SERIALIZE_ENUM(var_kind, theVarKind);
-
-  ar & theUniqueId;
-
-  ar & theName;
-  ar & theDeclaredType;
-  //ar & theFlworClause;
-  //ar & theCopyClause;
-  //ar & theParamPos;
-  //ar & theUDF;
-  //ar & theSetExprs;
-  ar & theIsPrivate;
-  ar & theIsExternal;
-  ar & theIsMutable;
-  ar & theHasInitializer;
+  if (theVarKind == prolog_var)
+    theSctx->clear_var_ptr(theName);
 }
 
 
@@ -170,9 +136,38 @@ store::Item* var_expr::get_name() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t var_expr::get_type() const
+void var_expr::set_unique_id(ulong v)
 {
-  return theDeclaredType;
+  assert(theUniqueId == 0);
+
+  theUniqueId = v;
+
+  if (theVarKind == prolog_var)
+    theSctx->set_var_id(theName, v);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_external(bool v)
+{
+  assert(theVarKind == prolog_var);
+  theIsExternal = v;
+
+  theSctx->set_var_is_external(theName, v);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_has_initializer(bool v)
+{
+  theHasInitializer = v;
+
+  if (theVarKind == prolog_var)
+    theSctx->set_var_has_initializer(theName, v);
 }
 
 
@@ -182,6 +177,18 @@ xqtref_t var_expr::get_type() const
 void var_expr::set_type(xqtref_t t)
 {
   theDeclaredType = t;
+
+  if (theVarKind == prolog_var)
+    theSctx->set_var_type(theName.getp(), t);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t var_expr::get_type() const
+{
+  return theDeclaredType;
 }
 
 

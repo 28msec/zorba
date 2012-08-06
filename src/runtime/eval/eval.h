@@ -50,7 +50,9 @@ public:
   The names of the "eval" vars. These will be added to the prolog of the eval 
   query as external var declarations. If the prolog of the eval query declares
   or imports any variable with the same name as the name of an eval variable,
-  then the inner var will hide the eval var. Furthermore, if the inner
+  then the inner var will hide the eval var. Furthermore, if the inner var is
+  declared as external, its value will be initialized to the value of the
+  corresponding eval var.
 
   theVarTypes:
   ------------

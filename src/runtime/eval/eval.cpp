@@ -130,6 +130,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     csize numEvalVars = theVarNames.size();
 
+    std::vector<var_expr_t> outerVars(numEvalVars);
+
     // Create an "outer" sctx and register into it (a) global vars corresponding
     // to the eval vars and (b) the expression-level ns bindings at the place 
     // where the eval call appears at.
@@ -137,14 +139,14 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     for (csize i = 0; i < numEvalVars; ++i)
     {
-      var_expr_t ve = new var_expr(outerSctx,
-                                   loc,
-                                   var_expr::prolog_var,
-                                   theVarNames[i].getp());
+      outerVars[i] = new var_expr(outerSctx,
+                                  loc,
+                                  var_expr::prolog_var,
+                                  theVarNames[i].getp());
 
-      ve->set_type(theVarTypes[i]);
+      outerVars[i]->set_type(theVarTypes[i]);
 
-      outerSctx->bind_var(ve, loc, err::XQST0049);
+      outerSctx->bind_var(outerVars[i], loc, err::XQST0049);
     }
 
     store::NsBindings::const_iterator ite = theLocalBindings.begin();
@@ -267,10 +269,12 @@ void EvalIterator::copyOuterVariables(
   // evaluates the domain expr of the eval var.
   for (csize i = 0; i < theChildren.size() - 1; ++i)
   {
-    var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
-                                              loc,
-                                              zerr::ZXQP0000_NO_ERROR);
-    ZORBA_ASSERT(evalVar);
+    VarInfo var;
+    bool found = outerSctx->lookup_var(var, theVarNames[i]);
+
+    ZORBA_ASSERT(found);
+
+    var_expr* evalVar = var.getVar();
 
     evalVar->set_unique_id(maxOuterVarId);
 
@@ -292,7 +296,7 @@ void EvalIterator::setExternalVariables(
     static_context* evalSctx,
     dynamic_context* evalDctx) const
 {
-  std::vector<var_expr_t> innerVars;
+  std::vector<VarInfo> innerVars;
 
   CompilerCB::SctxMap::const_iterator sctxIte = ccb->theSctxMap.begin();
   CompilerCB::SctxMap::const_iterator sctxEnd = ccb->theSctxMap.end();
@@ -302,21 +306,22 @@ void EvalIterator::setExternalVariables(
     sctxIte->second->getVariables(innerVars, true, false, true);
   }
 
-  FOR_EACH(std::vector<var_expr_t>, ite, innerVars)
+  FOR_EACH(std::vector<VarInfo>, ite, innerVars)
   {
-    var_expr* innerVar = (*ite).getp();
+    const VarInfo& innerVar = (*ite);
 
-    if (!innerVar->is_external())
+    if (!innerVar.isExternal())
       continue;
 
-    ulong innerVarId = innerVar->get_unique_id();
+    ulong innerVarId = innerVar.getId();
 
-    var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
-                                                loc, 
-                                                zerr::ZXQP0000_NO_ERROR);
+    VarInfo var;
+    bool found = outerSctx->lookup_var(var, innerVar.getName());
 
-    if (globalVar == NULL)
+    if (!found)
       continue;
+
+    var_expr* globalVar = var.getVar();
 
     store::Item_t itemValue;
     store::TempSeq_t seqValue;

@@ -937,12 +937,15 @@ void MarkNodeCopyProps::applyInternal(
       markSources(sources);
     }
 
-    std::vector<var_expr_t> globalVars;
+    std::vector<VarInfo> globalVars;
     node->get_sctx()->getVariables(globalVars, false, true);
   
-    FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+    FOR_EACH(std::vector<VarInfo>, ite, globalVars)
     {
-      var_expr* globalVar = (*ite).getp();
+      var_expr* globalVar = ite->getVar();
+
+      if (globalVar == NULL)
+        continue;
 
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(globalVar, &udfCaller, sources);
@@ -1315,12 +1318,12 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
       markForSerialization(e->get_arg_expr(i));
     }
 
-    std::vector<var_expr_t> globalVars;
+    std::vector<VarInfo> globalVars;
     e->get_sctx()->getVariables(globalVars, true, true);
   
-    FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+    FOR_EACH(std::vector<VarInfo>, ite, globalVars)
     {
-      var_expr* globalVar = (*ite).getp();
+      var_expr* globalVar = ite->getVar();
       markForSerialization(globalVar);
     }
 

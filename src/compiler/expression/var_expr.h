@@ -27,6 +27,7 @@ class forletwin_clause;
 class for_clause;
 class copy_clause;
 class var_expr;
+class VarInfo;
 
 typedef rchandle<var_expr> var_expr_t;
 
@@ -123,7 +124,9 @@ class var_expr : public expr
 public:
   enum var_kind
   {
-    eval_var = 0,
+    unknown_var = 0,
+
+    eval_var,
 
     for_var,
     let_var,
@@ -146,9 +149,7 @@ public:
 
     local_var,
 
-    arg_var,
-
-    unknown_var  // TODO: get rid
+    arg_var
   };
 
 protected:
@@ -179,11 +180,6 @@ protected:
   bool                  theHasInitializer;
 
 public:
-  SERIALIZABLE_CLASS(var_expr)
-  var_expr(::zorba::serialization::Archiver& ar);
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   static std::string decode_var_kind(enum var_kind);
 
 public:
@@ -195,9 +191,11 @@ public:
 
   var_expr(const var_expr& source);
 
+  virtual ~var_expr();
+
   ulong get_unique_id() const { return theUniqueId; }
 
-  void set_unique_id(ulong v) { assert(theUniqueId == 0); theUniqueId = v; }
+  void set_unique_id(ulong v);
 
   store::Item* get_name() const;
 
@@ -211,11 +209,11 @@ public:
 
   bool is_external() const { return theIsExternal; }
 
-  void set_external(bool v) { theIsExternal = v; }
+  void set_external(bool v);
 
-  bool hasInitializer() const { return theHasInitializer; }
+  bool has_initializer() const { return theHasInitializer; }
 
-  void setHasInitializer(bool v) { theHasInitializer = v; }
+  void set_has_initializer(bool v);
 
   bool is_mutable() const { return theIsMutable; }
 

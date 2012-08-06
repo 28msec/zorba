@@ -55,7 +55,6 @@
 
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
-#include "compiler/expression/var_expr.h"
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/plan_wrapper.h"
@@ -762,7 +761,7 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
     checkNotClosed();
     checkCompiled();
 
-    std::vector<var_expr_t> lVars;
+    std::vector<VarInfo> lVars;
 
     CompilerCB::SctxMap::const_iterator lIte = theCompilerCB->theSctxMap.begin();
     CompilerCB::SctxMap::const_iterator lEnd = theCompilerCB->theSctxMap.end();
@@ -772,13 +771,13 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
       lIte->second.getp()->getVariables(lVars, false, false, true);
     }
     
-    std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
-    std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
+    std::vector<VarInfo>::const_iterator lVarIte = lVars.begin();
+    std::vector<VarInfo>::const_iterator lVarEnd = lVars.end();
     std::vector<store::Item_t> lExVars;
    
     for(; lVarIte != lVarEnd; ++lVarIte)
     { 
-      lExVars.push_back((*lVarIte)->get_name());
+      lExVars.push_back((*lVarIte).getName());
     } 
 
    Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
@@ -801,34 +800,41 @@ bool XQueryImpl::isBoundVariable(
     checkNotClosed();
     checkCompiled();
 
-    var_expr* var = NULL;
-
     zstring& nameSpace = Unmarshaller::getInternalString(aNamespace);
     zstring& localName = Unmarshaller::getInternalString(aLocalname);
     
     store::Item_t qname;
     GENV_ITEMFACTORY->createQName(qname, nameSpace, zstring(), localName);
     
+    bool found = false;
+    VarInfo var;
+
     CompilerCB::SctxMap& lMap = theCompilerCB->theSctxMap;
     CompilerCB::SctxMap::const_iterator lIte = lMap.begin();
     CompilerCB::SctxMap::const_iterator lEnd = lMap.end();
 
     for (; lIte != lEnd; ++lIte)
     {
-      var = lIte->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
+      found = lIte->second->lookup_var(var, qname);
       
-      if(var)
+      if (found)
         break;
     }
     
-    if(var == NULL)
+    if (!found)
+    {
       throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
-      ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
+      ERROR_PARAMS(BUILD_STRING('{',
+                                qname->getNamespace(),
+                                '}',
+                                qname->getLocalName()),
+                   ZED(Variable)));
+    }
 
-    if (var->hasInitializer())
+    if (var.hasInitializer())
       return true;
     
-    ulong varId = var->get_unique_id();
+    ulong varId = var.getId();
 
     if (theDynamicContext->is_set_variable(varId))
       return true;

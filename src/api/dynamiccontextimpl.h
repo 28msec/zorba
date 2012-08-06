@@ -26,6 +26,7 @@ namespace zorba {
 
 class DiagnosticHandler;
 class XQueryImpl;
+class VarInfo;
 
 
 /*******************************************************************************
@@ -138,10 +139,10 @@ public:
   getExternalFunctionParam(const String& aName, void*&) const;
 
   virtual bool
-  addExternalFunctionParameter ( const String& aName, ExternalFunctionParameter* aParam );
+  addExternalFunctionParameter(const String& aName, ExternalFunctionParameter* aParam);
 
   virtual ExternalFunctionParameter*
-  getExternalFunctionParameter ( const String& aName ) const;
+  getExternalFunctionParameter(const String& aName) const;
 
   virtual bool 
   isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const;
@@ -153,9 +154,12 @@ protected:
   void checkNoIterators() const;
 
 private:
-  var_expr* get_var_expr(const zstring& inVarName);
+  void get_var_info(VarInfo& var, const zstring& inVarName);
 
-  var_expr* get_var_expr(const zstring& inVarUri, const zstring& inVarLocalName) const;
+  void get_var_info(
+      VarInfo& var,
+      const zstring& inVarUri,
+      const zstring& inVarLocalName) const;
 };
 
 } /* namespace zorba */
