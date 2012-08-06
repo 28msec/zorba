@@ -20,7 +20,8 @@
 
 #include <algorithm>
 #include <iostream>
-#include <sys/types.h>
+
+#include "zorbamisc/config/stdint.h"
 
 namespace zorba {
 
