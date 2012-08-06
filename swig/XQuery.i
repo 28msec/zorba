@@ -78,12 +78,12 @@
   void XQuery::destroy() { theQuery = 0; }
   Iterator XQuery::iterator() { return Iterator(theQuery->iterator()); }
 
-  void XQuery::execute( ZorbaStream& stream )
+  void XQuery::execute( ZorbaIOStream & stream )
   {
     Zorba_SerializerOptions_t lSerOptions;
     lSerOptions.indent = ZORBA_INDENT_NO;
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    ZorbaBuffer buffer(stream);
+    ZorbaStreamBuffer buffer(stream);
     std::ostream lStream(&buffer);
     theQuery->execute(lStream, &lSerOptions);
     return;

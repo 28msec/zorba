@@ -122,9 +122,9 @@
   void Item::close()
   { theItem.close(); }
 
-  void Item::serializeToStream(ZorbaStream& aStream) const 
+  void Item::serializeToStream(ZorbaIOStream & aStream) const 
   {
-    ZorbaBuffer buffer(aStream);
+    ZorbaStreamBuffer buffer(aStream);
     std::ostream lStream(&buffer);
 
     Zorba_SerializerOptions_t lOptions;
@@ -134,9 +134,9 @@
     lSerializer->serialize(&lSequence, lStream);
     return;
   }
-  void Item::serializeToStream(ZorbaStream& aStream, SerializationOptions serOptions) const 
+  void Item::serializeToStream(ZorbaIOStream & aStream, SerializationOptions serOptions) const 
   {
-    ZorbaBuffer buffer(aStream);
+    ZorbaStreamBuffer buffer(aStream);
     std::ostream lStream(&buffer);
 
     Zorba_SerializerOptions_t lOptions;

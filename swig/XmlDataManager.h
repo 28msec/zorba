@@ -87,7 +87,7 @@ public:
      *
      * @param aStream the input string whose content should be parsed
      */
-  Item parseXMLtoItem(ZorbaStream& aStream);
+  Item parseXMLtoItem(ZorbaIOStream & aStream);
 
 };
 #endif

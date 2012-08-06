@@ -45,9 +45,9 @@
     return Item(lItem);
   }
 
-  Item XmlDataManager::parseXMLtoItem(ZorbaStream& aStream)
+  Item XmlDataManager::parseXMLtoItem(ZorbaIOStream & aStream)
   {
-    ZorbaBuffer streamBuffer(aStream);
+    ZorbaStreamBuffer streamBuffer(aStream);
     std::istream stream = std::istream(&streamBuffer);
     zorba::Item lItem = theManager->parseXML(stream);
     return Item(lItem);

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-%feature("director") ZorbaBuffer;
+%feature("director") ZorbaStreamBuffer;
 
 %{  // start Implementation
 
-#include "ZorbaBuffer.h"
+#include "ZorbaStreamBuffer.h"
 #include <cassert>
 #include <iostream>
 
-void ZorbaBuffer::checkBuffer()
+void ZorbaStreamBuffer::checkBuffer()
 {
   if (buffer==0)
   {
@@ -33,7 +33,7 @@ void ZorbaBuffer::checkBuffer()
     }
   } else if (bCurrent == bEnd)
   {
-    if (streamWrapper->getLen()==1024)
+    if (streamWrapper->getLen()==ZORBA_STREAM_BUFFER_SIZE)
     {
       streamWrapper->fillStreamCallback();
       if (streamWrapper->getLen() > 0) {
@@ -44,12 +44,12 @@ void ZorbaBuffer::checkBuffer()
   }
   
 }
-int ZorbaBuffer::getEOF()
+int ZorbaStreamBuffer::getEOF()
 {
   return traits_type::eof();
 }
 
-int ZorbaBuffer::underflow()
+int ZorbaStreamBuffer::underflow()
 {
   checkBuffer();
   if ((bCurrent == bEnd) || (buffer==0))
@@ -57,7 +57,7 @@ int ZorbaBuffer::underflow()
   return traits_type::to_int_type(*bCurrent);
 }
 
-int ZorbaBuffer::uflow()
+int ZorbaStreamBuffer::uflow()
 {
   checkBuffer();
   if ((bCurrent == bEnd) || (buffer==0))
@@ -65,7 +65,7 @@ int ZorbaBuffer::uflow()
   return traits_type::to_int_type(*bCurrent++);
 }
 
-int ZorbaBuffer::pbackfail(int ch)
+int ZorbaStreamBuffer::pbackfail(int ch)
 {
   checkBuffer();
   if (bCurrent == bBegin || (ch != traits_type::eof() && ch != bCurrent[-1]) || (buffer==0))
@@ -74,19 +74,19 @@ int ZorbaBuffer::pbackfail(int ch)
   return traits_type::to_int_type(*--bCurrent);
 }
 
-std::streamsize ZorbaBuffer::showmanyc()
+std::streamsize ZorbaStreamBuffer::showmanyc()
 {
   checkBuffer();
   return bEnd - bCurrent;
 }
 
-std::streamsize ZorbaBuffer::xsputn ( const char * str, std::streamsize len ) {
+std::streamsize ZorbaStreamBuffer::xsputn ( const char * str, std::streamsize len ) {
   // Wrapping to virtual function
   streamWrapper->write(str, len);
   return len;
 }
 
-int ZorbaBuffer::overflow ( int c )
+int ZorbaStreamBuffer::overflow ( int c )
 {
   streamWrapper->write((const char*)&c, 1);
   return c;
@@ -95,4 +95,4 @@ int ZorbaBuffer::overflow ( int c )
 
 %}  // end   Implementation
 
-%include "ZorbaBuffer.h"
+%include "ZorbaStreamBuffer.h"

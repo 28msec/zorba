@@ -13,6 +13,9 @@
 # limitations under the License.
 
 IF (SWIG_FOUND)
+
+  SET (ZORBA_STREAM_BUFFER_SIZE 1024)
+  
   IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing")
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")

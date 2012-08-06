@@ -16,36 +16,36 @@
 
 #pragma once
 
-#ifndef API_ZORBA_STREAM_H
-#define API_ZORBA_STREAM_H
+#ifndef API_ZORBA_IO_STREAM_H
+#define API_ZORBA_IO_STREAM_H
 
 #include <streambuf>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
 
-class ZorbaStream
+class ZorbaIOStream
 {
 public:
-  ZorbaStream() {};
+  ZorbaIOStream() {};
 
   //STREAM TO ZORBA
   virtual void fillStreamCallback();
-  void setStream(int *aStream, int aLen);
-  int * getStream();
+  void setStream(const char * aStream, size_t aLen);
+  char * getStream();
   int getLen();
   
   //STREAM FROM ZORBA
-  virtual void write( const char * str, size_t len );
+  virtual void write(const char * aStream, size_t aLen);
   
 private:
   //FOR STREAM TO ZORBA
-  int buffer[1024];
+  char buffer[ZORBA_STREAM_BUFFER_SIZE];
   int len;
 
   // Copy contructor and assignment not allowed
-  ZorbaStream(const ZorbaStream &);
-  ZorbaStream &operator= (const ZorbaStream &);
+  ZorbaIOStream (const ZorbaIOStream &);
+  ZorbaIOStream &operator= (const ZorbaIOStream &);
 
 };
 

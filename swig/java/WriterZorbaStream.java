@@ -18,7 +18,7 @@ package org.zorbaxquery.api;
 import java.io.IOException;
 import java.io.Writer;
 
-public class WriterZorbaStream extends org.zorbaxquery.api.ZorbaStream {
+public class WriterZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
   private Writer writer;
   
   public WriterZorbaStream(Writer aWriter) {
@@ -30,7 +30,7 @@ public class WriterZorbaStream extends org.zorbaxquery.api.ZorbaStream {
         try {
             writer.append(string);
         } catch (IOException ex) {
-            System.out.println("Error writing on output stream" + ex.getLocalizedMessage());
+            System.err.println("Error writing on output stream" + ex.getLocalizedMessage());
         }
       
   }

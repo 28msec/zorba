@@ -306,7 +306,7 @@ public:
    * @param aStream The stream to write the value of the Item.
    * @throw ZorbaException if an error occured.
    */
-  void serializeToStream(ZorbaStream& aStream) const;
+  void serializeToStream(ZorbaIOStream & aStream) const;
 
   /** \brief Serializes the object
    *
@@ -317,7 +317,7 @@ public:
    * @return The string value of the Item.
    * @throw ZorbaException if an error occured.
    */
-  void serializeToStream(ZorbaStream& aStream, SerializationOptions serOptions) const;
+  void serializeToStream(ZorbaIOStream & aStream, SerializationOptions serOptions) const;
  
 }; // class Item
 

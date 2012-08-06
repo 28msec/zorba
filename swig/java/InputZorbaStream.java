@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
 package org.zorbaxquery.api;
 
 import java.io.IOException;
 import java.io.InputStream;
 import org.zorbaxquery.api.intArray;
 
-public class InputZorbaStream extends org.zorbaxquery.api.ZorbaStream {
+public class InputZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
+
   private InputStream input;
+  private byte[] b = new byte[@ZORBA_STREAM_BUFFER_SIZE@];;
   
   public InputZorbaStream(InputStream aInput) {
       input= aInput;
@@ -28,22 +31,15 @@ public class InputZorbaStream extends org.zorbaxquery.api.ZorbaStream {
   
   @Override
   public void fillStreamCallback() {
-      byte[] b = new byte[1024];
       int total = 0;
       try {
-        total = input.read(b, 0, 1024);
+        total = input.read(b, 0, @ZORBA_STREAM_BUFFER_SIZE@);
+        if (total==-1) 
+          total=0;
+        setStream(new String(b), total);
       } catch (IOException ex) {
+        System.err.println("Unexpected exception trying to get bytes from InputZorbaStream: " + ex.getLocalizedMessage());
+        ex.printStackTrace();
       }
-      intArray lBuffer = null;
-      if (total>0) {
-        lBuffer = new intArray(total);
-        for (int i=0; i<total; i++) {
-            lBuffer.setitem(i, b[i]);
-        }
-      } else {
-          lBuffer = new intArray(1);  // Can't be null
-      }
-      setStream(lBuffer.cast(), total);
   }
-  
 }

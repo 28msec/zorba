@@ -18,11 +18,13 @@ package org.zorbaxquery.api;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.CharBuffer;
 import org.zorbaxquery.api.intArray;
 
-public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaStream {
+public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
 
   private Reader reader;
+  private char[] b = new char[@ZORBA_STREAM_BUFFER_SIZE@];;
 
   public ReaderZorbaStream(Reader aReader) {
       reader= aReader;
@@ -30,22 +32,15 @@ public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaStream {
 
   @Override
   public void fillStreamCallback() {
-      char[] b = new char[1024];
       int total = 0;
       try {
-        total = reader.read(b, 0, 1024);
+        total = reader.read(b, 0, @ZORBA_STREAM_BUFFER_SIZE@);
+        if (total==-1) 
+          total=0;
+        setStream(new String(b), total);
       } catch (IOException ex) {
+        System.err.println("Unexpected exception trying to get bytes from ReaderZorbaStream: " + ex.getLocalizedMessage());
+        ex.printStackTrace();
       }
-      intArray lBuffer = null;
-      if (total>0) {
-        lBuffer = new intArray(total);
-        for (int i=0; i<total; i++) {
-            lBuffer.setitem(i, b[i]);
-        }
-      } else {
-        lBuffer = new intArray(1);  // Can't be null
-      }
-      setStream(lBuffer.cast(), total);
-      
   }
 }

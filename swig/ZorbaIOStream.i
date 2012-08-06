@@ -14,46 +14,46 @@
  * limitations under the License.
  */
 
-%feature("director") ZorbaStream;
+%feature("director") ZorbaIOStream;
 
 %{  // start Implementation
 
-#include "ZorbaStream.h"
+#include "ZorbaIOStream.h"
 #include <cassert>
 #include <iostream>
 #include <ios>
 
-void ZorbaStream::fillStreamCallback()
+void ZorbaIOStream::fillStreamCallback()
 {
-  // Local fill buffer
-  int len = 10;
-  int *buffer = (int*) malloc(sizeof(int)*(len));
-  int* p=buffer;
-  for (int i=0; i<(len); i++, *p++ = i+40)
+  // Local fill buffer example
+  int len = ZORBA_STREAM_BUFFER_SIZE;
+  char *buffer = (char*) malloc(sizeof(char)*(len));
+  char* p=buffer;
+  for (int i=0; i<(len); i++, *p++ = 'Z')
     ;
   setStream(buffer, len);
   return;
 }
 
-void ZorbaStream::setStream(int *aStream, int aLen)
+void ZorbaIOStream::setStream(const char * aStream, size_t aLen)
 {
   if (aLen > 0)
-    memcpy(buffer, aStream, aLen*sizeof(int));
+    memcpy(buffer, aStream, aLen*sizeof(char));
   len = aLen;
   return;
 }
 
-int * ZorbaStream::getStream()
+char * ZorbaIOStream::getStream()
 {
   return buffer;
 }
 
-int ZorbaStream::getLen()
+int ZorbaIOStream::getLen()
 {
   return len;
 }
 
-void ZorbaStream::write( const char * str, size_t len )
+void ZorbaIOStream::write( const char * aStream, size_t aLen )
 {
   return;
 }
@@ -61,4 +61,4 @@ void ZorbaStream::write( const char * str, size_t len )
 %}  // end   Implementation
 
 
-%include "ZorbaStream.h"
+%include "ZorbaIOStream.h"

@@ -162,7 +162,7 @@ public:
    *
    * @stream The output stream on which the result is written.
    */
-  void execute( ZorbaStream& stream );
+  void execute( ZorbaIOStream & stream );
   
 }; // class XQuery
 

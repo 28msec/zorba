@@ -16,21 +16,21 @@
 
 #pragma once
 
-#ifndef API_ZORBA_BUFFER_H
-#define API_ZORBA_BUFFER_H
+#ifndef API_ZORBA_STREAM_BUFFER_H
+#define API_ZORBA_STREAM_BUFFER_H
 
 #include <streambuf>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
-#include "ZorbaBuffer.h"
+#include "ZorbaStreamBuffer.h"
 
 
-class ZorbaBuffer :
+class ZorbaStreamBuffer :
   public std::streambuf
 {
 public:
-  ZorbaBuffer(ZorbaStream &aStreamWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0), streamWrapper(&aStreamWrapper) {};
+  ZorbaStreamBuffer(ZorbaIOStream &aStreamWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0), streamWrapper(&aStreamWrapper) {};
 
   // HELPER
   // Function to return EOF character from other languages
@@ -58,15 +58,15 @@ public:
 private:
   void checkBuffer();
   // Copy contructor and assignment not allowed
-  ZorbaBuffer(const ZorbaBuffer &);
-  ZorbaBuffer &operator= (const ZorbaBuffer &);
+  ZorbaStreamBuffer(const ZorbaStreamBuffer &);
+  ZorbaStreamBuffer &operator= (const ZorbaStreamBuffer &);
 
   //BUFFER
-  int * buffer;
-  int * bBegin;
-  int * bEnd;
-  int * bCurrent;
-  ZorbaStream *streamWrapper;
+  char * buffer;
+  char * bBegin;
+  char * bEnd;
+  char * bCurrent;
+  ZorbaIOStream *streamWrapper;
 
   char * cBuffer;
 };
