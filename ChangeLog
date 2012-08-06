@@ -4,6 +4,7 @@ Zorba - The XQuery Processor
 version 2.6
 
 New Features:
+  * Fully-featured implementation of JSONiq
   * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local)
   * New function Item::isSeekable for streamable content (xs:string and xs:base64Binary)
   * Implemented the latest W3C specification for the group by clause (backwards incompatible)
