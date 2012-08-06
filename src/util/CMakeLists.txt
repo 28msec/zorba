@@ -21,6 +21,7 @@ SET(UTIL_SRCS
   fs_util.cpp
   indent.cpp
   json_parser.cpp
+  json_util.cpp
   mem_streambuf.cpp
   regex.cpp
   string_util.cpp

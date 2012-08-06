@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 #include <zorba/config.h>
 
 #ifdef ZORBA_WITH_JSON
 
-#include "stdafx.h"
 
 #include <sstream>
 

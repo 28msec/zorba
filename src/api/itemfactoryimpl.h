@@ -118,6 +118,10 @@ namespace zorba {
                      short aTimezone_hours);
 
       virtual Item
+      createDateTime(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond);
+
+      virtual Item
       createDateTime( const String& aDateTimeValue );
 
       virtual Item

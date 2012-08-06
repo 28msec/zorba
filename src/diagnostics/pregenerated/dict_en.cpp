@@ -125,6 +125,9 @@ extern entry const dict_en[] = {
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNTY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
 #endif
 #if defined(ZORBA_WITH_JSON)
@@ -380,7 +383,7 @@ extern entry const dict_en[] = {
   { "ZDST0032", "\"$1\": index references context item" },
   { "ZDST0033", "\"$1\": index non-simple expression" },
   { "ZDST0034", "\"$1\": index can not do automatic maintenance" },
-  { "ZDST0035", "\"$1\": index general multikey" },
+  { "ZDST0035", "\"$1\": number of key expressions for general indexes is restricted to one expression" },
   { "ZDST0036", "\"$1\": index declaration in foreign module" },
   { "ZDST0041", "\"$1\": integrity constraint already declared" },
   { "ZDST0044", "\"$1\": integrity constraint declaration not allowed in main module" },
@@ -670,7 +673,9 @@ extern entry const dict_en[] = {
   { "~OpNodeBeforeMustHaveNodes", "op:node-before() must have nodes as parameters" },
   { "~OperationNotDef_23", "$2 not defined for type \"$3\"" },
   { "~OperationNotPossibleWithTypes_234", "\"$2\": operation not possible with parameters of type \"$3\" and \"$4\"" },
-  { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace" },
+  { "~ParseFragmentDoctypeNotAllowed", "a DOCTYPE declaration is not allowed" },
+  { "~ParseFragmentDoctypeNotAllowedHere", "a DOCTYPE declaration must appear before any element or text node, and at most once" },
+  { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace" },
   { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schema-validate/>, <DTD-validate/> or <parse-external-parsed-entity/> options can be specified" },
   { "~ParserInitFailed", "parser initialization failed" },
   { "~ParserNoCreateTree", "XML tree creation failed" },

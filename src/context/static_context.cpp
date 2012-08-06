@@ -838,10 +838,16 @@ static_context::~static_context()
   }
 
   if (theVariablesMap)
+  {
     delete theVariablesMap;
+    theVariablesMap = NULL;
+  }
 
   if (theImportedPrivateVariablesMap)
+  {
     delete theImportedPrivateVariablesMap;
+    theImportedPrivateVariablesMap = NULL;
+  }
 
   if (theNamespaceBindings)
     delete theNamespaceBindings;
@@ -2268,7 +2274,7 @@ void static_context::set_var_id(const store::Item_t& qname, ulong id)
     }
   }
 
-  ZORBA_ASSERT(false);
+  //ZORBA_ASSERT(false);
 }
 
 
