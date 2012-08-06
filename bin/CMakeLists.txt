@@ -122,6 +122,4 @@ ZORBA_SET_TEST_PROPERTY(bin/zorba_module_path_1
   PASS_REGULAR_EXPRESSION "hello, v2")
 
 # test compilation of the perf script
-# TEMPORARILY COMMENTED OUT - uses non-core http-client module which is
-# temporarily disabled
-#ZORBA_ADD_TEST(bin/zorba_compilechk4 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/../test/zperf/src/start.xq" -f --compile-only)
+ZORBA_ADD_TEST(bin/zorba_compilechk4 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/../test/zperf/src/start.xq" -f --compile-only)
