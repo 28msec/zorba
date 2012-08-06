@@ -71,7 +71,7 @@ JSONLoader::~JSONLoader()
         jerr::JSDY0040, \
         ERROR_PARAMS( \
           ZED(msg), \
-          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
+          BUILD_STRING(e.get_loc().line(), ", ", e.get_loc().column()) \
         ) \
      ); \
   } 
@@ -96,7 +96,7 @@ JSONLoader::~JSONLoader()
         ERROR_PARAMS( \
           ZED(msg), \
           param, \
-          BUILD_STRING("line ", e.get_loc().line(), ", column ", e.get_loc().column()) \
+          BUILD_STRING(e.get_loc().line(), ", ", e.get_loc().column()) \
         ) \
      ); \
   } 
