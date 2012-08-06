@@ -31,6 +31,17 @@ namespace zorba {
  * A %uuid contains the raw bytes for a UUID.  Note that this is intentially a
  * \c struct with no constructors, no destructor, and no user-defined
  * assignment operators so that it remains a POD.
+ *
+ * See also:
+ *  - RFC 4122: A Universally Unique IDentifier (UUID) URN Namespace.
+ *  - http://en.wikipedia.org/wiki/Universally_unique_identifier
+ *
+ * The UUID data is stored as an array of 16 8-bit bytes comprising the 128
+ * bits that is a UUID.  The data is intentionally \e not stored as shown in
+ * "Appendix A - Sample Implementation" of RFC 4122 (the \c struct with
+ * individial fields such as \c time_low, \c time_mid, etc.) since C++ does not
+ * guarantee that the \c struct fields will be laid out in memory as shown in
+ * section "4.1.2. Layout and Byte Order" due to possible padding.
  */
 struct uuid {
   typedef uint8_t value_type;
