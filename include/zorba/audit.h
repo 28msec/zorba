@@ -63,7 +63,7 @@ namespace audit {
     virtual const String& stringValue() const = 0;
     virtual long long          longValue()   const = 0;
 
-    virtual ~Observation() {}
+    virtual ~Observation();
   };
 
   class ZORBA_DLL_PUBLIC Configuration {
@@ -83,7 +83,7 @@ namespace audit {
 
     virtual std::ostream& write(std::ostream&) const = 0;
     
-    virtual ~Configuration() {}
+    virtual ~Configuration();
   };
 
   class ZORBA_DLL_PUBLIC Record {
@@ -96,7 +96,7 @@ namespace audit {
     virtual void add(const Property& prop, long long val)          = 0;
     virtual void add(const Property& prop, const String& val) = 0;
 
-    virtual ~Record() {}
+    virtual ~Record();
   };
 
   class ZORBA_DLL_PUBLIC Event {
@@ -116,7 +116,7 @@ namespace audit {
 
     virtual std::ostream& write(std::ostream&) const = 0;
     
-    virtual ~Event() {}
+    virtual ~Event();
   };
 
   class ZORBA_DLL_PUBLIC Provider {
@@ -127,7 +127,7 @@ namespace audit {
     virtual Event* createEvent(const Configuration*) = 0;
     virtual void   submitEvent(Event*)               = 0;
 
-    virtual ~Provider() {}
+    virtual ~Provider();
   };
 
 } /* namespace audit */
