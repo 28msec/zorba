@@ -2324,7 +2324,7 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
   // If an appliaction set a type for the context item via the c++ api, then
   // create a full declaration for it in order to enforce that type.
   if (!theHaveContextItemDecl &&
-      theSctx->get_context_item_type() != theRTM.ITEM_TYPE_ONE)
+      theRTM.ITEM_TYPE_ONE != theSctx->get_context_item_type())
   {
     var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
     var->set_external(true);
