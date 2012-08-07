@@ -43,7 +43,8 @@ public:
 
 /****************************************************************************//**
   The 1st child iterator computes the query string, and the next N child
-  iterators compute the value of each of the "outer" variables (see below).
+  iterators compute the value of each of the non-global outer variables
+  (see below).
 
   theVarNames:
   ------------
@@ -63,11 +64,13 @@ public:
   For each of the outer vars, this bool vector says whether the var corresponds
   to a global outer-query var. If yes, then its value should appear in the global
   dcx of the outer query, and will be copied from there into the global dctx of
-  the inner query.
+  the inner query (using the same var id as the corresponding outer query var).
 
   theScriptingKind:
   -----------------
 
+  Tells whether the eval query is going to be sequential, updating, or simple.
+ 
   theLocalBindings:
   -----------------
 
@@ -81,9 +84,9 @@ public:
 class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
 { 
 protected:
-  std::vector<store::Item_t>  theVarNames;
+  std::vector<store::Item_t>  theOuterVarNames;
 
-  std::vector<xqtref_t>       theVarTypes;
+  std::vector<xqtref_t>       theOuterVarTypes;
 
   std::vector<int>            theIsGlobalVar;
 
