@@ -16,12 +16,6 @@
 
 #include <zorba/config.h>
 
-#ifdef _WIN32
-# include <Winsock2.h>                  /* for ntohl(3) */
-#else
-# include <arpa/inet.h>                 /* for ntohl(3) */
-#endif /* WIN32 */
-
 #include <cstdio>                       /* for sprintf(3) */
 
 #if defined( __APPLE__ )
@@ -70,19 +64,14 @@ uuid::variant uuid::get_variant() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 ostream& operator<<( ostream &os, uuid const &u ) {
-  uint32_t const time_low = ntohl(
-    (u.data[0] << 24) | (u.data[1] << 16) | (u.data[2] << 8) | u.data[3]
-  );
-  uint16_t const time_mid = ntohs( (u.data[4] << 8) | u.data[5] );
-  uint16_t const time_hi_and_version = ntohs( (u.data[6] << 8) | u.data[7] );
-  uint8_t const clock_seq_hi_and_reserved = u.data[8];
-  uint8_t const clock_seq_low = u.data[9];
-  uuid::value_type const *const node = u.data + 10;
   char buf[37];
-  sprintf(
-    buf, "%8.8x-%4.4x-%4.4x-%2.2x%2.2x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x",
-    time_low, time_mid, time_hi_and_version, clock_seq_hi_and_reserved,
-    clock_seq_low, node[0], node[1], node[2], node[3], node[4], node[5]
+  sprintf(                              // verbose & tedious, but fast
+    buf,
+    "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+    u.data[ 0], u.data[ 1], u.data[ 2], u.data[ 3],
+    u.data[ 4], u.data[ 5], u.data[ 6], u.data[ 7],
+    u.data[ 8], u.data[ 9], u.data[10], u.data[11],
+    u.data[12], u.data[13], u.data[14], u.data[15]
   );
   return os << buf;
 }
