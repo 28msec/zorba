@@ -303,11 +303,10 @@ void EvalIterator::importOuterEnv(
     {
       static_context* outerSctx = importSctx->get_parent();
 
-      VarInfo outerGlobalVar;
-      bool found = outerSctx->lookup_var(outerGlobalVar, theOuterVarNames[i]);
-      ZORBA_ASSERT(found);
+      VarInfo* outerGlobalVar = outerSctx->lookup_var(theOuterVarNames[i]);
+      ZORBA_ASSERT(outerGlobalVar);
 
-      ulong outerGlobalVarId = outerGlobalVar.getId();
+      ulong outerGlobalVarId = outerGlobalVar->getId();
 
       ve->set_unique_id(outerGlobalVarId);
     }
@@ -336,7 +335,7 @@ void EvalIterator::setExternalVariables(
     static_context* evalSctx,
     dynamic_context* evalDctx) const
 {
-  std::vector<VarInfo> innerVars;
+  std::vector<VarInfo*> innerVars;
 
   CompilerCB::SctxMap::const_iterator sctxIte = ccb->theSctxMap.begin();
   CompilerCB::SctxMap::const_iterator sctxEnd = ccb->theSctxMap.end();
@@ -346,26 +345,25 @@ void EvalIterator::setExternalVariables(
     sctxIte->second->getVariables(innerVars, true, false, true);
   }
 
-  FOR_EACH(std::vector<VarInfo>, ite, innerVars)
+  FOR_EACH(std::vector<VarInfo*>, ite, innerVars)
   {
-    const VarInfo& innerVar = (*ite);
+    VarInfo* innerVar = (*ite);
 
-    if (!innerVar.isExternal())
+    if (!innerVar->isExternal())
       continue;
 
-    ulong innerVarId = innerVar.getId();
+    ulong innerVarId = innerVar->getId();
 
-    VarInfo importedVar;
-    bool found = importSctx->lookup_var(importedVar, innerVar.getName());
+    VarInfo* outerVar = importSctx->lookup_var(innerVar->getName());
 
-    if (!found)
+    if (!outerVar)
       continue;
 
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 
-    evalDctx->get_variable(importedVar.getId(),
-                           importedVar.getName(),
+    evalDctx->get_variable(outerVar->getId(),
+                           outerVar->getName(),
                            loc,
                            itemValue,
                            seqValue);

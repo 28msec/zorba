@@ -265,11 +265,10 @@ void IndexDecl::analyze(CompilerCB* ccb)
   expr* dotVar = NULL;
 
   // Get the var_expr representing the context item, if it is defined
-  VarInfo var;
-  bool found = theSctx->lookup_var(var, dotQName);
+  VarInfo* var = theSctx->lookup_var(dotQName);
 
-  if (found)
-    dotVar = var.getVar();
+  if (var)
+    dotVar = var->getVar();
 
   std::vector<var_expr*> varExprs;
 

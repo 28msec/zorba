@@ -129,9 +129,9 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="std::vector&lt;VarInfo&gt;" name="theVariables"
+    <zorba:member type="std::vector&lt;VarInfo*&gt;" name="theVariables"
                   brief="vector of variables"/>
-    <zorba:member type="ulong" name="thePosition" brief="current position"/>
+    <zorba:member type="csize" name="thePosition" brief="current position"/>
   </zorba:state>
 
 </zorba:iterator>

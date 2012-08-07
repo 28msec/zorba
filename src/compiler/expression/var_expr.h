@@ -171,6 +171,8 @@ protected:
 
   std::vector<expr*>    theSetExprs;
 
+  VarInfo             * theVarInfo;
+
   bool                  theIsExternal;
 
   bool                  theIsPrivate; 
@@ -192,6 +194,10 @@ public:
   var_expr(const var_expr& source);
 
   virtual ~var_expr();
+
+  void set_var_info(VarInfo* v);
+
+  VarInfo* get_var_info() const { return theVarInfo; }
 
   ulong get_unique_id() const { return theUniqueId; }
 

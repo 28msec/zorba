@@ -940,12 +940,12 @@ void MarkNodeCopyProps::applyInternal(
       markSources(sources);
     }
 
-    std::vector<VarInfo> globalVars;
+    std::vector<VarInfo*> globalVars;
     node->get_sctx()->getVariables(globalVars, false, true);
   
-    FOR_EACH(std::vector<VarInfo>, ite, globalVars)
+    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
     {
-      var_expr* globalVar = ite->getVar();
+      var_expr* globalVar = (*ite)->getVar();
 
       if (globalVar == NULL)
         continue;
@@ -1321,12 +1321,12 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
       markForSerialization(e->get_arg_expr(i));
     }
 
-    std::vector<VarInfo> globalVars;
+    std::vector<VarInfo*> globalVars;
     e->get_sctx()->getVariables(globalVars, true, true);
   
-    FOR_EACH(std::vector<VarInfo>, ite, globalVars)
+    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
     {
-      var_expr* globalVar = ite->getVar();
+      var_expr* globalVar = (*ite)->getVar();
       markForSerialization(globalVar);
     }
 

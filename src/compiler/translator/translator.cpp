@@ -1230,11 +1230,9 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, qname, loc);
 
-  VarInfo var;
+  VarInfo* var = theSctx->lookup_var(qnameItem.getp());
 
-  bool found =  theSctx->lookup_var(var, qnameItem.getp());
-
-  if (!found)
+  if (!var)
   {
     if (err != zerr::ZXQP0000_NO_ERROR)
     {
@@ -1247,7 +1245,7 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
     return NULL;
   }
 
-  return var.getVar();
+  return var->getVar();
 }
 
 
@@ -1261,11 +1259,9 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
 ********************************************************************************/
 var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, const Error& err)
 {
-  VarInfo var;
+  VarInfo* var = theSctx->lookup_var(qname);
 
-  bool found = theSctx->lookup_var(var, qname);
-
-  if (!found)
+  if (!var)
   {
     if (err != zerr::ZXQP0000_NO_ERROR)
     {
@@ -1278,7 +1274,7 @@ var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, const Error&
     return NULL;
   }
 
-  return var.getVar();
+  return var->getVar();
 }
 
 
@@ -1749,7 +1745,7 @@ void wrap_in_debugger_expr(
     theCCB->theDebuggerCommons->addBreakable(lBreakable, aIsMainModuleBreakable);
 
     // retrieve all variables that are in the current scope
-    typedef std::vector<VarInfo> VarExprVector;
+    typedef std::vector<VarInfo*> VarExprVector;
     VarExprVector lAllInScopeVars;
     theSctx->getVariables(lAllInScopeVars);
 
@@ -1759,7 +1755,7 @@ void wrap_in_debugger_expr(
          lIter != lAllInScopeVars.end();
          ++lIter)
     {
-      var_expr* argVar = lIter->getVar();
+      var_expr* argVar = (*lIter)->getVar();
 
       store::Item* lVarname = argVar->get_name();
 
@@ -6581,16 +6577,15 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       store::Item_t varName;
       expand_no_default_qname(varName, groupSpec.get_var_name(), loc);
 
-      VarInfo var;
-      bool found = sctx->lookup_var(var, varName.getp());
+      VarInfo* var = sctx->lookup_var(varName.getp());
 
-      if (!found)
+      if (!var)
       {
         RAISE_ERROR(err::XPST0008, loc,
         ERROR_PARAMS(varName->getStringValue(), ZED(VariabledUndeclared)));
       }
 
-      expr_t inputExpr = var.getVar();
+      expr_t inputExpr = var->getVar();
 
       if (inputExpr->get_expr_kind() == var_expr_kind)
       {
@@ -10431,14 +10426,14 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                                      theNSCtx);
         resultExpr = evalExpr;
 
-        std::vector<VarInfo> inscopeVars;
+        std::vector<VarInfo*> inscopeVars;
         theSctx->getVariables(inscopeVars);
 
         csize numVars = inscopeVars.size();
 
         for (csize i = 0; i < numVars; ++i)
         {
-          var_expr* ve = inscopeVars[i].getVar();
+          var_expr* ve = inscopeVars[i]->getVar();
 
           var_expr_t evalVar = create_var(loc,
                                           ve->get_name(),
@@ -10518,11 +10513,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           let_clause_t lc;
           store::Item_t qnameItem;
 
-          // cannot use create_temp_var() as the variables created there are not accessible
-          // use a special name but check for name clashes
+          // cannot use create_temp_var() as the variables created there are not
+          // accessible. use a special name but check for name clashes
           do
           {
-            std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
+            std::string localName = "temp_invoke_var" +
+                                    ztd::to_string(theTempVarCounter++);
             GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
           }
           while (lookup_var(qnameItem.getp(), loc, zerr::ZXQP0000_NO_ERROR) != NULL);
@@ -10569,7 +10565,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         localExpr =
         new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
-        // qnameExpr := concat("Q{", namespaceExpr, "}", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
+        // qnameExpr := concat("Q{",
+        //                     namespaceExpr,
+        //                     "}",
+        //                     localExpr,
+        //                     "($temp_invoke_var2, $temp_invoke_var3,...)")
         std::vector<expr_t> concat_args;
         concat_args.push_back(new const_expr(theRootSctx, loc, "Q{"));
         concat_args.push_back(namespaceExpr);
@@ -10592,13 +10592,15 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         flworExpr->set_return_expr(evalExpr.getp());
         resultExpr = flworExpr;
 
-        std::vector<VarInfo> inscopeVars;
+#if 0
+        std::vector<VarInfo*> inscopeVars;
         theSctx->getVariables(inscopeVars);
+
         csize numVars = inscopeVars.size();
 
         for (csize i = 0; i < numVars; ++i)
         {
-          var_expr* ve = inscopeVars[i].getVar();
+          var_expr* ve = inscopeVars[i]->getVar();
 
           if (ve->get_kind() == var_expr::prolog_var)
             continue;
@@ -10611,6 +10613,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           expr_t valueExpr = ve;
           evalExpr->add_var(evalVar, valueExpr);
         }
+#endif
 
         for (csize i = 0; i < temp_vars.size(); ++i)
         {
@@ -10856,7 +10859,7 @@ void* begin_visit(const InlineFunction& v)
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
-  std::vector<VarInfo> scopedVars;
+  std::vector<VarInfo*> scopedVars;
   theSctx->getVariables(scopedVars);
 
   push_scope();
@@ -10889,10 +10892,10 @@ void* begin_visit(const InlineFunction& v)
 
   // Handle inscope variables. For each inscope var, a let binding is added to
   // the flwor.
-  std::vector<VarInfo>::iterator ite = scopedVars.begin();
+  std::vector<VarInfo*>::iterator ite = scopedVars.begin();
   for(; ite != scopedVars.end(); ++ite)
   {
-    var_expr* varExpr = ite->getVar();
+    var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
 
     if (kind == var_expr::prolog_var || kind == var_expr::local_var)

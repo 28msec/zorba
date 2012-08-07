@@ -139,7 +139,7 @@ bool InscopeVariablesIterator::nextImpl(
 
   while (state->thePosition < state->theVariables.size())
   {
-    aResult = state->theVariables[state->thePosition].getName();
+    aResult = state->theVariables[state->thePosition]->getName();
     STACK_PUSH(true, state);
     ++state->thePosition;
   }

@@ -154,12 +154,9 @@ protected:
   void checkNoIterators() const;
 
 private:
-  void get_var_info(VarInfo& var, const zstring& inVarName);
+  VarInfo* get_var_info(const zstring& varName);
 
-  void get_var_info(
-      VarInfo& var,
-      const zstring& inVarUri,
-      const zstring& inVarLocalName) const;
+  VarInfo* get_var_info(const zstring& varUri, const zstring& varLocalName) const;
 };
 
 } /* namespace zorba */

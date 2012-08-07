@@ -81,6 +81,7 @@ var_expr::var_expr(
   theCopyClause(NULL),
   theParamPos(0),
   theUDF(NULL),
+  theVarInfo(NULL),
   theIsExternal(false),
   theIsPrivate(false),
   theIsMutable(true),
@@ -106,6 +107,7 @@ var_expr::var_expr(const var_expr& source)
   theCopyClause(NULL),
   theParamPos(source.theParamPos),
   theUDF(source.theUDF),
+  theVarInfo(NULL),
   theIsExternal(source.theIsExternal),
   theIsPrivate(source.theIsPrivate),
   theIsMutable(source.theIsMutable),
@@ -119,8 +121,21 @@ var_expr::var_expr(const var_expr& source)
 ********************************************************************************/
 var_expr::~var_expr()
 {
-  if (theVarKind == prolog_var)
-    theSctx->clear_var_ptr(theName);
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->clearVar();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_var_info(VarInfo* v)
+{
+  assert(theVarInfo == NULL);
+  theVarInfo = v;
 }
 
 
@@ -142,8 +157,11 @@ void var_expr::set_unique_id(ulong v)
 
   theUniqueId = v;
 
-  if (theVarKind == prolog_var)
-    theSctx->set_var_id(theName, v);
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setId(v);
+  }
 }
 
 
@@ -155,7 +173,11 @@ void var_expr::set_external(bool v)
   assert(theVarKind == prolog_var);
   theIsExternal = v;
 
-  theSctx->set_var_is_external(theName, v);
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setIsExternal(v);
+  }
 }
 
 
@@ -166,8 +188,11 @@ void var_expr::set_has_initializer(bool v)
 {
   theHasInitializer = v;
 
-  if (theVarKind == prolog_var)
-    theSctx->set_var_has_initializer(theName, v);
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setHasInitializer(v);
+  }
 }
 
 
@@ -178,8 +203,11 @@ void var_expr::set_type(xqtref_t t)
 {
   theDeclaredType = t;
 
-  if (theVarKind == prolog_var)
-    theSctx->set_var_type(theName.getp(), t);
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setType(t);
+  }
 }
 
 

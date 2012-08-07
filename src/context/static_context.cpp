@@ -184,7 +184,7 @@ VarInfo::VarInfo()
 *******************************************************************************/
 VarInfo::VarInfo(::zorba::serialization::Archiver& ar)
   :
-  ::zorba::serialization::SerializeBaseClass()
+  SimpleRCObject(ar)
 {
 }
 
@@ -210,6 +210,8 @@ VarInfo::VarInfo(const var_expr_t& v)
   theHasInitializer(v->has_initializer()),
   theVarExpr(v.getp())
 {
+  if (theKind == var_expr::prolog_var)
+    v->set_var_info(this);
 }
 
 
@@ -2192,12 +2194,15 @@ void static_context::bind_var(
 {
   if (theVariablesMap == NULL)
   {
-    theVariablesMap = new VariableMap(HashMapItemPointerCmp(0, NULL), 8, false);
+    theVariablesMap = new VariableMap(HashMapItemPointerCmp(0, NULL), 16, false);
   }
 
   store::Item* qname = varExpr->get_name();
 
-  VarInfo vi(varExpr);
+  VarInfo_t vi = varExpr->get_var_info();
+
+  if (vi == NULL)
+    vi = new VarInfo(varExpr);
 
   if (!theVariablesMap->insert(qname, vi))
   {
@@ -2215,9 +2220,11 @@ void static_context::bind_var(
   If var is not found, the method raises the given error, unless the given error
   is ZXQP0000_NO_ERROR, in which case it returns NULL.
 ********************************************************************************/
-bool static_context::lookup_var(VarInfo& var, const store::Item* qname) const
+VarInfo* static_context::lookup_var(const store::Item* qname) const
 {
   store::Item* qname2 = const_cast<store::Item*>(qname);
+
+  VarInfo_t var;
 
   const static_context* sctx = this;
 
@@ -2226,114 +2233,13 @@ bool static_context::lookup_var(VarInfo& var, const store::Item* qname) const
     if (sctx->theVariablesMap != NULL &&
         sctx->theVariablesMap->get(qname2, var))
     {
-      return true;
+      return var.getp();
     }
 
     sctx = sctx->theParent;
   }
 
-  return false;
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::clear_var_ptr(const store::Item_t& qname)
-{
-  if (theVariablesMap != NULL)
-  {
-    VariableMap::iterator ite = theVariablesMap->find(qname.getp());
-
-    if (ite != theVariablesMap->end())
-    {
-      VarInfo& varInfo = ite.getValue();
-      varInfo.clearVar();
-      return;
-    }
-  }
-
-  //ZORBA_ASSERT(false);
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::set_var_id(const store::Item_t& qname, ulong id)
-{
-  if (theVariablesMap != NULL)
-  {
-    VariableMap::iterator ite = theVariablesMap->find(qname.getp());
-
-    if (ite != theVariablesMap->end())
-    {
-      VarInfo& varInfo = ite.getValue();
-      varInfo.setId(id);
-      return;
-    }
-  }
-
-  //ZORBA_ASSERT(false);
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::set_var_is_external(const store::Item_t& qname, bool v)
-{
-  if (theVariablesMap != NULL)
-  {
-    VariableMap::iterator ite = theVariablesMap->find(qname.getp());
-
-    if (ite != theVariablesMap->end())
-    {
-      VarInfo& varInfo = ite.getValue();
-      varInfo.setIsExternal(v);
-      return;
-    }
-  }
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::set_var_has_initializer(const store::Item_t& qname, bool v)
-{
-  if (theVariablesMap != NULL)
-  {
-    VariableMap::iterator ite = theVariablesMap->find(qname.getp());
-
-    if (ite != theVariablesMap->end())
-    {
-      VarInfo& varInfo = ite.getValue();
-      varInfo.setHasInitializer(v);
-      return;
-    }
-  }
-
-  ZORBA_ASSERT(false);
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::set_var_type(const store::Item_t& qname, const xqtref_t& t)
-{
-  if (theVariablesMap != NULL)
-  {
-    VariableMap::iterator ite = theVariablesMap->find(qname.getp());
-
-    if (ite != theVariablesMap->end())
-    {
-      VarInfo& varInfo = ite.getValue();
-      varInfo.setType(t);
-      return;
-    }
-  }
+  return NULL;
 }
 
 
@@ -2341,7 +2247,7 @@ void static_context::set_var_type(const store::Item_t& qname, const xqtref_t& t)
   This method is used by introspection and debugger
 ********************************************************************************/
 void static_context::getVariables(
-    std::vector<VarInfo>& vars,
+    std::vector<VarInfo*>& vars,
     bool localsOnly,
     bool returnPrivateVars,
     bool externalVarsOnly) const
@@ -2361,7 +2267,7 @@ void static_context::getVariables(
         csize i = 0;
         for (; i < numVars; ++i)
         {
-          if (vars[i].getName()->equals((*ite).first))
+          if (vars[i]->getName()->equals((*ite).first))
             break;
         }
 
@@ -2369,12 +2275,12 @@ void static_context::getVariables(
         {
           if (externalVarsOnly)
           {
-            if((*ite).second.isExternal())
-              vars.push_back((*ite).second);
+            if ((*ite).second->isExternal())
+              vars.push_back((*ite).second.getp());
           }
           else
           {
-            vars.push_back((*ite).second);
+            vars.push_back((*ite).second.getp());
           }
         }
       }
@@ -2391,7 +2297,7 @@ void static_context::getVariables(
         csize i = 0;
         for (; i < numVars; ++i)
         {
-          if (vars[i].getName()->equals((*ite).first))
+          if (vars[i]->getName()->equals((*ite).first))
             break;
         }
 
@@ -2399,11 +2305,11 @@ void static_context::getVariables(
         {
           if (externalVarsOnly)
           {
-            if((*ite).second.isExternal())
-              vars.push_back((*ite).second);
+            if((*ite).second->isExternal())
+              vars.push_back((*ite).second.getp());
           }
           else
-            vars.push_back((*ite).second);
+            vars.push_back((*ite).second.getp());
         }
       }
     }
@@ -4176,7 +4082,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     VariableMap::iterator end = module->theVariablesMap->end();
     for (; ite != end; ++ite)
     {
-      var_expr* ve = (*ite).second.getVar();
+      var_expr* ve = (*ite).second->getVar();
 
       if (!ve->is_private())
       {
@@ -4190,7 +4096,9 @@ void static_context::import_module(const static_context* module, const QueryLoc&
           new VariableMap(HashMapItemPointerCmp(0, NULL), 8, false);
         }
 
-        VarInfo vi(ve);
+        VarInfo_t vi = ve->get_var_info();
+
+        assert (vi != NULL);
 
         if (!theImportedPrivateVariablesMap->insert(ve->get_name(), vi))
         {

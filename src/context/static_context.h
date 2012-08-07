@@ -154,7 +154,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class VarInfo : public ::zorba::serialization::SerializeBaseClass
+class VarInfo : public SimpleRCObject
 {
 protected:
   store::Item_t  theName;
@@ -208,6 +208,8 @@ public:
   void clearVar() { theVarExpr = NULL; }
 };
 
+
+typedef rchandle<VarInfo> VarInfo_t;
 
 
 /*******************************************************************************
@@ -448,7 +450,7 @@ class static_context : public SimpleRCObject
 
   ITEM_PTR_HASH_MAP(ValueIC_t, ICMap);
 
-  ITEM_PTR_HASH_MAP(VarInfo, VariableMap);
+  ITEM_PTR_HASH_MAP(VarInfo_t, VariableMap);
 
   ITEM_PTR_HASH_MAP(FunctionInfo, FunctionMap);
 
@@ -677,8 +679,6 @@ public:
 
   void serialize(serialization::Archiver& ar);
 
-  void prepare_for_serialize(CompilerCB *compiler_cb);
-
 public:
   static_context(::zorba::serialization::Archiver& ar);
 
@@ -871,20 +871,10 @@ public:
   //
   void bind_var(const var_expr_t& expr, const QueryLoc& loc, const Error& err);
 
-  bool lookup_var(VarInfo& var, const store::Item* qname) const;
-
-  void clear_var_ptr(const store::Item_t& qname);
-
-  void set_var_id(const store::Item_t& qname, ulong id);
-
-  void set_var_is_external(const store::Item_t& qname, bool v);
-
-  void set_var_has_initializer(const store::Item_t& qname, bool v);
-
-  void set_var_type(const store::Item_t& qname, const xqtref_t& type);
+  VarInfo* lookup_var(const store::Item* qname) const;
 
   void getVariables(
-      std::vector<VarInfo>& variableList,
+      std::vector<VarInfo*>& variableList,
       bool localsOnly = false,
       bool returnPrivateVars = false,
       bool externalVarsOnly = false) const;

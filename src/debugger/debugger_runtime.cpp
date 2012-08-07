@@ -376,18 +376,18 @@ DebuggerRuntime::getVariables(bool aLocals)
   static_context* lContext = lCommons->getCurrentStaticContext();
 
   // get all visible variables and filter below
-  std::vector<VarInfo> lVars;
+  std::vector<VarInfo*> lVars;
   lContext->getVariables(lVars, false);
 
   std::vector<std::pair<std::string, std::string> > lVarList;
-  std::vector<VarInfo>::iterator lIte = lVars.begin();
-  std::vector<VarInfo>::iterator lEnd = lVars.end();
+  std::vector<VarInfo*>::iterator lIte = lVars.begin();
+  std::vector<VarInfo*>::iterator lEnd = lVars.end();
 
   for (; lIte != lEnd; ++lIte)
   {
     // non-global to locals and globals to globals
-    if ((aLocals && (*lIte).getKind() == var_expr::prolog_var) ||
-        (!aLocals && (*lIte).getKind() != var_expr::prolog_var))
+    if ((aLocals && (*lIte)->getKind() == var_expr::prolog_var) ||
+        (!aLocals && (*lIte)->getKind() != var_expr::prolog_var))
     {
       continue;
     }
@@ -397,7 +397,7 @@ DebuggerRuntime::getVariables(bool aLocals)
 
 
     // read the name ****************************
-    const store::Item_t& lNameItem = (*lIte).getName();
+    const store::Item_t& lNameItem = (*lIte)->getName();
     zstring lLocalName = lNameItem->getLocalName();
 
     // correct the name of the context item
@@ -421,7 +421,7 @@ DebuggerRuntime::getVariables(bool aLocals)
     }
 
     // read the type ****************************
-    xqtref_t lType = (*lIte).getType();
+    xqtref_t lType = (*lIte)->getType();
 
     if (lType == NULL || lType->get_qname() == NULL)
     {
@@ -430,7 +430,7 @@ DebuggerRuntime::getVariables(bool aLocals)
     else
     {
       TypeConstants::quantifier_t lQuantifier = lType->get_quantifier();
-      store::Item_t lQname = (*lIte).getType()->get_qname();
+      store::Item_t lQname = (*lIte)->getType()->get_qname();
       lTypeSs << lQname->getPrefix().str()
             << ":"
             << lQname->getLocalName().str();
