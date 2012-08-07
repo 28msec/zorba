@@ -61,6 +61,20 @@ uuid::variant uuid::get_variant() const {
   return future;
 }
 
+uuid::version uuid::get_version() const {
+  value_type const temp = data[6] & 0xF0u;
+  switch ( temp ) {
+    case time_based:
+    case dce_security:
+    case name_based_md5:
+    case random_number_based:
+    case name_based_sha1:
+      return static_cast<version>( temp );
+    default:
+      return unknown;
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 ostream& operator<<( ostream &os, uuid const &u ) {

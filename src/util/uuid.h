@@ -150,9 +150,7 @@ struct uuid {
    *
    * @return Returns said version.
    */
-  version get_version() const {
-    return static_cast<version>( data[6] & 0xF0u );
-  }
+  version get_version() const;
 };
 
 ////////// Functions //////////////////////////////////////////////////////////
