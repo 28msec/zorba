@@ -17,12 +17,6 @@
 
 #include <sstream>
 
-#ifdef WIN32
-# include <Winsock2.h>
-#else
-# include <arpa/inet.h>
-#endif /* WIN32 */
-
 #include "system/globalenv.h"
 
 #include "runtime/random/random.h"
@@ -136,9 +130,13 @@ RandomIterator::nextImpl(
 
     uuid u;
     uuid::create(&u);
-    time_low = ntohl(
-      (u.data[0] << 24) | (u.data[1] << 16) | (u.data[2] << 8) | u.data[3]
-    );
+    //
+    // Note that the time_low field as extracted here is always big-endian even
+    // on a little-endian CPU, but it doesn't really matter since it's only
+    // being used as a fancy random-number generator seed.
+    //
+    time_low =
+      (u.data[0] << 24) | (u.data[1] << 16) | (u.data[2] << 8) | u.data[3];
     walltime_millis += time_low;
 
     int_seed = walltime_millis % std::numeric_limits<unsigned int>::max();
