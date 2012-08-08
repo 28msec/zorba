@@ -16,10 +16,10 @@ New Features:
     http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
   * Positional pagination support for collections
-  * New function in the http://www.zorba-xquery.com/modules/store/static/indexes/dml module which returns
-    the value of all keys contained in an index
+  * New function in the http://www.zorba-xquery.com/modules/store/static/indexes/dml
+    module which returns the value of all keys contained in an index
   * Incremental maintenance for general indexes
-	
+
 Optimizations:
   * Optimization of comparison operations
   * Tighter hoisting of expressions (also fixes bug #967428)

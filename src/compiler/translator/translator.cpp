@@ -6428,6 +6428,7 @@ void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
   xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
 
   var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::win_var, type);
+
   push_nodestack(ve.getp());
 }
 

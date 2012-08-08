@@ -562,9 +562,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-022 900688) # forward ref
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
 
-# Failing windowing tests.
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling44 899366)
-
 # Failing due to flworfound.org hosting changes.
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)
 EXPECTED_FAILURE(test/rbkt/zorba/fetch/fetch_bogus2 1022494)
