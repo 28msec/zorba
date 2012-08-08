@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zorbaxquery.api2;
+package org.zorbaxquery.api;
 
 import java.io.Reader;
 import java.nio.ByteBuffer;
