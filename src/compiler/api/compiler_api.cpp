@@ -212,23 +212,24 @@ PlanIter_t XQueryCompiler::compile(
 
   const char* lFileName = aFileName.c_str();
 
-  zorba::audit::ScopedAuditor<const char*> filenameAudit(
-       sar,
-       zorba::audit::XQUERY_COMPILATION_FILENAME,
-       lFileName);
+  audit::ScopedAuditor<const char*>
+  filenameAudit(sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
 
-  zorba::time::Timer lTimer;
-  zorba::audit::DurationAuditor durationAudit(
-       sar,
-       zorba::audit::XQUERY_COMPILATION_PARSE_DURATION,
-       lTimer);
+  parsenode_t lAST;
 
-  parsenode_t lAST = parse(aXQuery, aFileName);
-
-  if (theCompilerCB->theConfig.lib_module &&
-      dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
   {
-    lAST = createMainModule(lAST, aXQuery, aFileName);
+    time::Timer lTimer;
+
+    audit::DurationAuditor
+    durationAudit(sar, audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+
+    lAST = parse(aXQuery, aFileName);
+
+    if (theCompilerCB->theConfig.lib_module &&
+        dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
+    {
+      lAST = createMainModule(lAST, aXQuery, aFileName);
+    }
   }
 
   expr_t rootExpr;
@@ -249,20 +250,22 @@ PlanIter_t XQueryCompiler::compile(
 {
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(
-         aAuditRecord,
-         audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
-         lTimer);
+
+    audit::DurationAuditor
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
+                  lTimer);
 
     rootExpr = normalize(ast); // also does the translation
   }
 
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(
-         aAuditRecord,
-         audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
-         lTimer);
+
+    audit::DurationAuditor
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+                  lTimer);
 
     rootExpr = optimize(rootExpr);
   }
@@ -272,17 +275,19 @@ PlanIter_t XQueryCompiler::compile(
 #endif
 
   PlanIter_t plan;
+
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(
-         aAuditRecord,
-         audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
-         lTimer);
+
+    audit::DurationAuditor
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
+                  lTimer);
 
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
   }
 
-  //theCompilerCB->getExprManager().garbageCollect();
+  //theCompilerCB->getExprManager()->garbageCollect();
 
   return plan;
 }
@@ -293,20 +298,9 @@ PlanIter_t XQueryCompiler::compile(
 ********************************************************************************/
 expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 {
-#if 0
-  time::walltime startTime;
-  time::walltime stopTime;
-  double elapsedTime;
-
-  time::get_current_walltime(startTime);
-#endif
-
   expr_t lExpr = translate(*aParsenode, theCompilerCB);
 
 #if 0
-  time::get_current_walltime(stopTime);
-  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);
-  std::cout << "Translation time = " << elapsedTime << std::endl;
   std::cout << "Num exprs after translation = "
             << theCompilerCB->getExprManager()->numExprs()
             << std::endl << std::endl;

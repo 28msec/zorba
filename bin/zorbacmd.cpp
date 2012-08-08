@@ -39,7 +39,8 @@
 #include <zorba/xquery_functions.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/serialization_callback.h>
-
+#include <zorba/audit.h>
+#include <zorba/audit_scoped.h>
 #include <zorba/store_manager.h>
 
 #include "error_printer.h"
@@ -60,6 +61,8 @@
 #  include "system/properties.h"
 #endif
 
+#define DO_AUDIT
+
 using namespace zorba;
 namespace zorbatm = zorba::time;
 
@@ -75,6 +78,9 @@ OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS);
 #endif
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class URIMapperSerializationCallback : public SerializationCallback
 {
 private:
@@ -90,8 +96,13 @@ public:
 URIMapperSerializationCallback theSerializationCallback;
 
 
-bool
-populateStaticContext(zorba::StaticContext_t& sctx, const ZorbaCMDProperties& props)
+/*******************************************************************************
+
+********************************************************************************/
+bool populateStaticContext(
+    Zorba* zorba,
+    zorba::StaticContext_t& sctx,
+    const ZorbaCMDProperties& props)
 {
   try
   {
@@ -168,6 +179,35 @@ populateStaticContext(zorba::StaticContext_t& sctx, const ZorbaCMDProperties& pr
     }
   }
 
+#ifdef DO_AUDIT
+  zorba::audit::Provider* lAuditProvider = zorba->getAuditProvider();
+  zorba::audit::Configuration* config = lAuditProvider->createConfiguration();
+  std::vector<zorba::String> property_names;
+  zorba::audit::Configuration::getPropertyNames(property_names);
+
+  bool lIsStatic;
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/parse-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/translation-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/optimization-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/codegeneration-duration");
+  assert(lIsStatic);
+
+  zorba::audit::Event* event = lAuditProvider->createEvent(config);
+
+  sctx->setAuditEvent(event);
+#endif // DO_AUDIT
+
 #ifndef ZORBA_NO_FULL_TEXT
   {
     ZorbaCMDProperties::FullText_t::const_iterator lIter = props.stopWordsBegin();
@@ -209,8 +249,10 @@ populateStaticContext(zorba::StaticContext_t& sctx, const ZorbaCMDProperties& pr
 }
 
 
-bool
-populateDynamicContext(
+/*******************************************************************************
+
+********************************************************************************/
+bool populateDynamicContext(
     Zorba* zorba,
     zorba::DynamicContext* aDynamicContext,
     const ZorbaCMDProperties& props)
@@ -257,8 +299,10 @@ populateDynamicContext(
 }
 
 
-bool
-createSerializerOptions(
+/*******************************************************************************
+
+********************************************************************************/
+bool createSerializerOptions(
     Zorba_SerializerOptions_t& lSerOptions,
     const ZorbaCMDProperties& props)
 {
@@ -280,11 +324,11 @@ createSerializerOptions(
 }
 
 
-/// Fullfills the command-line "as-file" (-f) switch,
-/// or if not requested, infers -f for file:// queries.
-/// Returns an URI or the empty string.
-std::string
-parseFileURI(bool asPath, const std::string &str)
+/*******************************************************************************
+  Fullfills the command-line "as-file" (-f) switch, or if not requested, infers
+  -f for file:// queries. Returns an URI or the empty string.
+********************************************************************************/
+std::string parseFileURI(bool asPath, const std::string &str)
 {
   if (asPath)
     return str;
@@ -853,6 +897,11 @@ compileAndExecute(
     // stop the total timer
     if (doTiming)
       timing.stopTimer(TimingInfo::TOTAL_TIMER, i);
+
+#ifdef DO_AUDIT
+    audit::Event* event = staticContext->getAuditEvent(); 
+    std::cerr << *event << std::endl;
+#endif
   } // for each execution
 
   return 0;
@@ -896,9 +945,10 @@ _tmain(int argc, _TCHAR* argv[])
   bool compileOnly = (properties.compileOnly() || properties.libModule() );
 
   // write to file or standard out
-  std::auto_ptr<std::ostream> lFileStream(properties.outputFile().size() > 0 ?
-                                           new std::ofstream(properties.outputFile().c_str())
-                                          : 0 );
+  std::auto_ptr<std::ostream> 
+  lFileStream(properties.outputFile().size() > 0 ?
+              new std::ofstream(properties.outputFile().c_str()) : 0);
+
   std::ostream* lOutputStream = lFileStream.get();
   if ( lOutputStream == 0 )
   {
@@ -911,7 +961,7 @@ _tmain(int argc, _TCHAR* argv[])
     return 2;
   }
 
-  if(properties.queriesOrFilesBegin() == properties.queriesOrFilesEnd())
+  if (properties.queriesOrFilesBegin() == properties.queriesOrFilesEnd())
   {
     std::cerr << "no queries submitted." << std::endl;
     properties.printHelp(std::cout);
@@ -996,7 +1046,7 @@ _tmain(int argc, _TCHAR* argv[])
     // Create the static context and populate it with info taken from the properties
     //
     zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
-    if (! populateStaticContext(lStaticContext, properties) )
+    if (! populateStaticContext(lZorbaInstance, lStaticContext, properties) )
     {
       properties.printHelp(std::cout);
       return 3;

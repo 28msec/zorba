@@ -1546,9 +1546,10 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
   std::vector<var_expr_t> lVars;
   theCtx->getVariables(lVars, true, false, true);
 
+  std::vector<store::Item_t> lExVars;
+
   std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
   std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
-  std::vector<store::Item_t> lExVars;
 
   for (; lIte != lEnd; ++lIte) 
   { 
@@ -1560,11 +1561,13 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
   ZORBA_CATCH
 }
 
+
 Item
 StaticContextImpl::fetch(const String& aURI) const
 {
   return fetch(aURI, "SOME_CONTENT", "UTF-8");
 }
+
 
 Item
 StaticContextImpl::fetch(
