@@ -1151,8 +1151,7 @@ GeneralHashIndex::~GeneralHashIndex()
 *******************************************************************************/
 store::Index::KeyIterator_t GeneralHashIndex::keys() const
 {
-  assert(false);
-  return 0;
+  return new KeyIterator(theMaps);
 }
 
 
@@ -1255,6 +1254,14 @@ void GeneralHashIndex::clear()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/*******************************************************************************
+
+********************************************************************************/
+GeneralHashIndex::KeyIterator::KeyIterator(IndexMap* const* aMaps)
+  :
+  theMaps(aMaps)
+{
+}
 
 /******************************************************************************
 
@@ -1263,23 +1270,60 @@ GeneralHashIndex::KeyIterator::~KeyIterator()
 {
 }
 
+/******************************************************************************
+ * moves theIterator to the next available iterator from theMaps
+*******************************************************************************/
+void GeneralHashIndex::KeyIterator::setNextIter()
+{
+  for ( ;
+    theCurType < store::XS_LAST && theMaps[theCurType] == 0; 
+    ++theCurType)
+  {}
+
+  if (theCurType != store::XS_LAST)
+    theIterator = theMaps[theCurType]->begin();
+}
 
 /******************************************************************************
 
 *******************************************************************************/
 void GeneralHashIndex::KeyIterator::open()
 {
-  assert(false);
+  // start with first type from zorba::store::SchemaTypeCode enum
+  theCurType = 0;
+  // Index doesn't contain keys from all atomic types -> we need to skip the
+  // empty ones.
+  setNextIter();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
+bool GeneralHashIndex::KeyIterator::next(store::IndexKey& aKey)
 {
-  assert(false);
-  return false;
+  // XS_LAST marks the end of the type list -> we stop
+  if (theCurType == store::XS_LAST)
+    return false;
+
+  const store::Item* lKeyItem = (*theIterator).first;
+  // the general index doesn't return an IndexKey object because
+  // it doesn't support multi-value keys -> we push the key directly
+  // into the passed IndexKey.
+  aKey.empty();
+  aKey.push_back(const_cast<zorba::store::Item*>(lKeyItem));
+
+  ++theIterator;
+
+  if (theIterator == theMaps[theCurType]->end())
+  {
+    // iteration of the keys of the current type is done.
+    // increase type and search for the next valid iterator.
+    ++theCurType;
+    setNextIter();
+  }
+
+  return true;
 }
 
 
@@ -1288,7 +1332,7 @@ bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
 *******************************************************************************/
 void GeneralHashIndex::KeyIterator::close()
 {
-  assert(false);
+  theCurType = store::XS_LAST;
 }
 
 

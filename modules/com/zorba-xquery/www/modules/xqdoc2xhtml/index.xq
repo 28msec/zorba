@@ -324,10 +324,13 @@ declare %private %an:sequential function xqdoc2html:collectZorbaManifestEntries(
     variable $manifestXML := fn:parse-xml(file:read-text($zorbaManifestPath));
 
     variable $moduleManifests := $manifestXML/z:manifest/z:module;
-
+      
     for $module in $moduleManifests
+    let $uri := $module/z:uri/text()
+    group by $uri
+    let $module := if(count($module) gt 1) then $module[@version = max($module/@version)] else $module
     return
-      insert node <module uri="{data($module/z:uri)}"
+      insert node <module uri="{$uri}"
                           isCore="{data($module/@isCore)}"
                           version="{if (exists(data($module/@version))) then data($module/@version) else ''}"
                           projectRoot="{data($module/z:projectRoot)}"/> as last into $xqdoc2html:ZorbaManifest;

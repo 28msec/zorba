@@ -383,7 +383,7 @@ extern entry const dict_en[] = {
   { "ZDST0032", "\"$1\": index references context item" },
   { "ZDST0033", "\"$1\": index non-simple expression" },
   { "ZDST0034", "\"$1\": index can not do automatic maintenance" },
-  { "ZDST0035", "\"$1\": index general multikey" },
+  { "ZDST0035", "\"$1\": number of key expressions for general indexes is restricted to one expression" },
   { "ZDST0036", "\"$1\": index declaration in foreign module" },
   { "ZDST0041", "\"$1\": integrity constraint already declared" },
   { "ZDST0044", "\"$1\": integrity constraint declaration not allowed in main module" },

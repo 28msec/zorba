@@ -38,16 +38,16 @@ IF (WIN32)
   IF (MSVC_IDE)
     INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll 
     DESTINATION share/csharp
-    COMPONENT "C# Bindings ")
+    COMPONENT csharp_swig)
   ELSE (MSVC_IDE)
     INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll 
     DESTINATION share/csharp
-    COMPONENT "C# Bindings ")
+    COMPONENT csharp_swig)
   ENDIF (MSVC_IDE)
   
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_csharp.dll 
   DESTINATION share/csharp
-  COMPONENT "C# Bindings ")
+  COMPONENT csharp_swig)
 
   ADD_SUBDIRECTORY (tests) 
   
