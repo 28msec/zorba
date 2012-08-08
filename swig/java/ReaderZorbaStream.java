@@ -14,31 +14,52 @@
  * limitations under the License.
  */
 
-package org.zorbaxquery.api;
+package org.zorbaxquery.api2;
 
-import java.io.IOException;
 import java.io.Reader;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import org.zorbaxquery.api.intArray;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 
 public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
 
   private Reader reader;
-  private char[] b = new char[@ZORBA_STREAM_BUFFER_SIZE@];;
-
+  private char[] charsReaded = new char[@ZORBA_STREAM_BUFFER_SIZE@];
+  private byte[] bytesEncoded = new byte[@ZORBA_STREAM_BUFFER_SIZE@];
+  CharBuffer charBuffer;
+  ByteBuffer byteBuffer;
+  CharsetEncoder encoder;
+  
   public ReaderZorbaStream(Reader aReader) {
+      charBuffer = CharBuffer.allocate(@ZORBA_STREAM_BUFFER_SIZE@);
+      byteBuffer = ByteBuffer.allocate(@ZORBA_STREAM_BUFFER_SIZE@*2);
+      encoder = Charset.forName("UTF-8").newEncoder();
       reader= aReader;
+  }
+  
+  private int encode(char[] initialBuffer, int initialIndex, int initialLength, byte[] result, int resultIndex, int resultLength) {
+      charBuffer.clear();
+      charBuffer.put(initialBuffer, initialIndex, initialLength);
+      charBuffer.flip();
+      
+      byteBuffer.clear();
+      encoder.encode(charBuffer, byteBuffer, false);
+      
+      byteBuffer.flip();
+      resultLength = byteBuffer.limit()-byteBuffer.position();
+      byteBuffer.get(result, resultIndex, resultLength);
+      return resultLength;
   }
 
   @Override
   public void fillStreamCallback() {
-      int total = 0;
+      int total;
       try {
-        total = reader.read(b, 0, @ZORBA_STREAM_BUFFER_SIZE@);
-        if (total==-1) 
-          total=0;
-        setStream(new String(b), total);
-      } catch (IOException ex) {
+        total = reader.read(charsReaded, 0, @ZORBA_STREAM_BUFFER_SIZE@);
+        total = encode(charsReaded, 0, total, bytesEncoded, 0, @ZORBA_STREAM_BUFFER_SIZE@);
+        setStream(bytesEncoded, total);
+      } catch (Exception ex) {
         System.err.println("Unexpected exception trying to get bytes from ReaderZorbaStream: " + ex.getLocalizedMessage());
         ex.printStackTrace();
       }

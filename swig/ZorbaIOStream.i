@@ -25,7 +25,7 @@
 
 void ZorbaIOStream::fillStreamCallback()
 {
-  // Local fill buffer example
+  // Local fill buffer EXAMPLE
   int len = ZORBA_STREAM_BUFFER_SIZE;
   char *buffer = (char*) malloc(sizeof(char)*(len));
   char* p=buffer;
@@ -37,6 +37,7 @@ void ZorbaIOStream::fillStreamCallback()
 
 void ZorbaIOStream::setStream(const char aStream[], size_t aLen, int aBufferLength)
 {
+  if (aBufferLength<0) aBufferLength=0;
   if (aBufferLength > 0)
     memcpy(buffer, aStream, aBufferLength*sizeof(char));
   len = aBufferLength;
@@ -45,6 +46,7 @@ void ZorbaIOStream::setStream(const char aStream[], size_t aLen, int aBufferLeng
 
 void ZorbaIOStream::setStream(const char * aStream, size_t aLen)
 {
+  if (aLen<0) aLen=0;
   if (aLen > 0)
     memcpy(buffer, aStream, aLen*sizeof(char));
   len = aLen;
