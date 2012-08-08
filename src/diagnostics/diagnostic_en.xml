@@ -605,6 +605,13 @@
       <value>module contains more than one context item declaration</value>
     </diagnostic>
 
+    <diagnostic code="XQST0103">
+      <comment>
+      All variables in a window clause must have distinct names.
+      </comment>
+      <value>$1: non-distinct variable in window clause</value>
+    </diagnostic>
+
     <diagnostic code="XQST0106">
       <comment>
        It is a static error if a function's annotations contain more than one

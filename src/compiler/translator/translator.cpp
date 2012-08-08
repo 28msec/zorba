@@ -1128,13 +1128,26 @@ void bind_var(var_expr_t e, static_context* sctx)
 {
   assert(sctx != NULL);
 
-  if(e->get_kind() == var_expr::let_var)
+  switch (e->get_kind())
+  {
+  case var_expr::let_var:
   {
     sctx->bind_var(e, e->get_loc(), err::XQST0039);
+    break;
   }
-  else
+  case var_expr::win_var:
+  case var_expr::wincond_out_var:
+  case var_expr::wincond_out_pos_var:
+  case var_expr::wincond_in_var:
+  case var_expr::wincond_in_pos_var:
+  {
+    sctx->bind_var(e, e->get_loc(), err::XQST0103);
+    break;
+  }
+  default:
   {
     sctx->bind_var(e, e->get_loc(), err::XQST0049);
+  }
   }
 }
 
@@ -5883,7 +5896,6 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     {
       // window var + output window condition vars
       pop_scope();
-      pop_scope();
       break;
     }
     case flwor_clause::group_clause:
@@ -6223,10 +6235,6 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
   var_expr_t windowVarExpr = pop_nodestack_var();
   windowVarExpr->set_flwor_clause(windowClause);
 
-  // Create scope for the output window-condition vars. These vars are visible
-  // outside the window clause only.
-  push_scope();
-
   // Create var_exprs for output window-condition vars, associate them with this
   // window clause, and push them to the nodestack.
   rchandle<FLWORWinCond> cond;
@@ -6357,33 +6365,6 @@ void pop_wincond_vars(rchandle<WindowVars> node, flwor_wincond::vars& vars)
 
 
 /*******************************************************************************
-  WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
-********************************************************************************/
-void* begin_visit(const WindowVarDecl& v)
-{
-  TRACE_VISIT();
-
-  // Done with input window condition vars.
-  pop_scope();
-
-  return no_state;
-}
-
-void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  // Create scope for the window var
-  push_scope();
-
-  xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
-
-  var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::win_var, type);
-  push_nodestack(ve.getp());
-}
-
-
-/*******************************************************************************
   WindowStartCondition ::= "start" WindowVars "when" ExprSingle
 
   WindowEndCondition ::= "only"? "end" WindowVars "when" ExprSingle
@@ -6423,6 +6404,32 @@ void end_visit(const WindowVars& v, void* /*visit_state*/)
   bind_wincond_vars(v, windowClause, true);
 }
 
+
+/*******************************************************************************
+  WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
+********************************************************************************/
+void* begin_visit(const WindowVarDecl& v)
+{
+  TRACE_VISIT();
+
+  // Done with input window condition vars.
+  pop_scope();
+
+  return no_state;
+}
+
+void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  // Create scope for the window var and the output window-condition vars
+  push_scope();
+
+  xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
+
+  var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::win_var, type);
+  push_nodestack(ve.getp());
+}
 
 
 /*******************************************************************************
