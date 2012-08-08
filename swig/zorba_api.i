@@ -26,6 +26,7 @@ TSRMLS_FETCH();
 %include "carrays.i"
 %array_class(int, intArray);
 %apply (char *STRING, size_t LENGTH) { (const char aStream[], size_t aLen) }
+%rename(opEquals) operator=;
 
 #ifndef SWIGRUBY
 %include "std_vector.i"

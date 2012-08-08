@@ -31,6 +31,7 @@ class ZorbaStreamBuffer :
 {
 public:
   ZorbaStreamBuffer(ZorbaIOStream &aStreamWrapper): bBegin(0), bEnd(0), bCurrent(0), buffer(0), streamWrapper(&aStreamWrapper) {};
+  virtual ~ZorbaStreamBuffer() {};
 
   // HELPER
   // Function to return EOF character from other languages

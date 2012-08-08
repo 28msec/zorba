@@ -20,4 +20,14 @@
 // don't do a JNI call for constants and enums.
 %javaconst(1);
 
+
+%typemap(directorin, descriptor="[B") (char *STRING, size_t LENGTH) { 
+   jbyteArray jb = (jenv)->NewByteArray($2); 
+   (jenv)->SetByteArrayRegion(jb, 0, $2, (jbyte *)$1); 
+   $input = jb; 
+} 
+%typemap(directorargout) (char *STRING, size_t LENGTH) 
+%{(jenv)->GetByteArrayRegion($input, 0, $2, (jbyte *)$1); %} 
+
+
 %include ../zorba_api.i

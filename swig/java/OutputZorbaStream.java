@@ -26,9 +26,9 @@ public class OutputZorbaStream extends ZorbaIOStream {
   }
   
   @Override
-  public void write(String string, long l){
+  public void write(byte[] stream){
         try {
-            output.write(string.getBytes());
+            output.write(stream);
         } catch (IOException ex) {
             System.err.println("Error writing on output stream" + ex.getLocalizedMessage());
         }

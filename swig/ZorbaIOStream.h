@@ -28,6 +28,7 @@ class ZorbaIOStream
 {
 public:
   ZorbaIOStream() {};
+  virtual ~ZorbaIOStream() {};
 
   //STREAM TO ZORBA
   virtual void fillStreamCallback();
@@ -37,7 +38,7 @@ public:
   int getLen();
   
   //STREAM FROM ZORBA
-  virtual void write(const char * aStream, size_t aLen);
+  virtual void write(const char aStream[], size_t aLen);
   
 private:
   //FOR STREAM TO ZORBA

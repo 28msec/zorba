@@ -24,16 +24,17 @@ import java.nio.charset.CharsetEncoder;
 
 public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
 
+  private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
   private Reader reader;
-  private char[] charsReaded = new char[@ZORBA_STREAM_BUFFER_SIZE@];
-  private byte[] bytesEncoded = new byte[@ZORBA_STREAM_BUFFER_SIZE@];
+  private char[] charsReaded = new char[BUFFER_SIZE];
+  private byte[] bytesEncoded = new byte[BUFFER_SIZE];
   CharBuffer charBuffer;
   ByteBuffer byteBuffer;
   CharsetEncoder encoder;
   
   public ReaderZorbaStream(Reader aReader) {
-      charBuffer = CharBuffer.allocate(@ZORBA_STREAM_BUFFER_SIZE@);
-      byteBuffer = ByteBuffer.allocate(@ZORBA_STREAM_BUFFER_SIZE@*2);
+      charBuffer = CharBuffer.allocate(BUFFER_SIZE);
+      byteBuffer = ByteBuffer.allocate(BUFFER_SIZE*2);
       encoder = Charset.forName("UTF-8").newEncoder();
       reader= aReader;
   }
@@ -56,8 +57,8 @@ public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
   public void fillStreamCallback() {
       int total;
       try {
-        total = reader.read(charsReaded, 0, @ZORBA_STREAM_BUFFER_SIZE@);
-        total = encode(charsReaded, 0, total, bytesEncoded, 0, @ZORBA_STREAM_BUFFER_SIZE@);
+        total = reader.read(charsReaded, 0, BUFFER_SIZE);
+        total = encode(charsReaded, 0, total, bytesEncoded, 0, BUFFER_SIZE);
         setStream(bytesEncoded, total);
       } catch (Exception ex) {
         System.err.println("Unexpected exception trying to get bytes from ReaderZorbaStream: " + ex.getLocalizedMessage());

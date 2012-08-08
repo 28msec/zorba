@@ -22,8 +22,9 @@ import org.zorbaxquery.api.intArray;
 
 public class InputZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
 
+  private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
   private InputStream input;
-  private byte[] b = new byte[@ZORBA_STREAM_BUFFER_SIZE@];;
+  private byte[] b = new byte[BUFFER_SIZE];;
   
   public InputZorbaStream(InputStream aInput) {
       input= aInput;
@@ -33,7 +34,7 @@ public class InputZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
   public void fillStreamCallback() {
       int total = 0;
       try {
-        total = input.read(b, 0, @ZORBA_STREAM_BUFFER_SIZE@);
+        total = input.read(b, 0, BUFFER_SIZE);
         setStream(b, total);
       } catch (IOException ex) {
         System.err.println("Unexpected exception trying to get bytes from InputZorbaStream: " + ex.getLocalizedMessage());

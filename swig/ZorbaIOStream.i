@@ -63,7 +63,7 @@ int ZorbaIOStream::getLen()
   return len;
 }
 
-void ZorbaIOStream::write(const char * aStream, size_t aLen)
+void ZorbaIOStream::write(const char aStream[], size_t aLen)
 {
   return;
 }
