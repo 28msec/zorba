@@ -25,28 +25,24 @@ import java.nio.charset.CharsetEncoder;
 public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
 
   private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
+  private static CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
   private Reader reader;
   private char[] charsReaded = new char[BUFFER_SIZE];
   private byte[] bytesEncoded = new byte[BUFFER_SIZE];
   CharBuffer charBuffer;
   ByteBuffer byteBuffer;
-  CharsetEncoder encoder;
   
   public ReaderZorbaStream(Reader aReader) {
       charBuffer = CharBuffer.allocate(BUFFER_SIZE);
       byteBuffer = ByteBuffer.allocate(BUFFER_SIZE*2);
-      encoder = Charset.forName("UTF-8").newEncoder();
       reader= aReader;
   }
   
-  private int encode(char[] initialBuffer, int initialIndex, int initialLength, byte[] result, int resultIndex, int resultLength) {
-      charBuffer.clear();
-      charBuffer.put(initialBuffer, initialIndex, initialLength);
-      charBuffer.flip();
-      
+  private int encode(char[] initialBuffer, int initialIndex, int initialLength, 
+                     byte[] result,        int resultIndex,  int resultLength) {
+      charBuffer = CharBuffer.wrap(initialBuffer, initialIndex, initialLength);
       byteBuffer.clear();
       encoder.encode(charBuffer, byteBuffer, false);
-      
       byteBuffer.flip();
       resultLength = byteBuffer.limit()-byteBuffer.position();
       byteBuffer.get(result, resultIndex, resultLength);
@@ -58,7 +54,7 @@ public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
       int total;
       try {
         total = reader.read(charsReaded, 0, BUFFER_SIZE);
-        total = encode(charsReaded, 0, total, bytesEncoded, 0, BUFFER_SIZE);
+        total = encode(charsReaded, 0, total, bytesEncoded, 0, total);
         setStream(bytesEncoded, total);
       } catch (Exception ex) {
         System.err.println("Unexpected exception trying to get bytes from ReaderZorbaStream: " + ex.getLocalizedMessage());
