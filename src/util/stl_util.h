@@ -200,8 +200,28 @@ void delete_ptr_seq( SequenceType &seq ) {
 }
 
 /**
- * Erases the first element in the given sequence for which the given predicate
- * is \c true.
+ * Erases all elements in the given container for which the given predicate is
+ * \c true.
+ *
+ * @tparam SequenceType The sequence type.
+ * @tparam PredicateType The predicate type.
+ * @param seq The sequence to modify.
+ * @param pred The predicate to use.
+ * @return Returns \c true only if an element was erased; \c false otherwise.
+ */
+template<class SequenceType,class PredicateType> inline
+void erase_if( SequenceType &seq, PredicateType pred ) {
+  for ( typename SequenceType::iterator i = seq.begin(); i != seq.end(); ) {
+    if ( pred( *i ) )
+      i = seq.erase( i );
+    else
+      ++i;
+  }
+}
+
+/**
+ * Erases only the first element in the given sequence for which the given
+ * predicate is \c true.
  *
  * @tparam SequenceType The sequence type.
  * @tparam PredicateType The predicate type.
