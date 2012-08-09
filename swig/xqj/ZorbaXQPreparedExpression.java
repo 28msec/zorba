@@ -118,7 +118,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         connection = conn;
         Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
-            ReaderZorbaStream stream = new ReaderZorbaStream(reader);
+            ZorbaReaderWrapper stream = new ZorbaReaderWrapper(reader);
             query =  zorba.compileQuery(stream);
             dynamicContext = query.getDynamicContext();
             xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
@@ -136,7 +136,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         connection = conn;
         Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
-            InputZorbaStream stream = new InputZorbaStream(input);
+            ZorbaInputWrapper stream = new ZorbaInputWrapper(input);
             query =  zorba.compileQuery(stream);
             dynamicContext = query.getDynamicContext();
             xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
@@ -171,7 +171,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         connection = conn;
         Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
-            ReaderZorbaStream stream = new ReaderZorbaStream(reader);
+            ZorbaReaderWrapper stream = new ZorbaReaderWrapper(reader);
             query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
             xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
@@ -189,7 +189,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         connection = conn;
         Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
-            InputZorbaStream stream = new InputZorbaStream(input);
+            ZorbaInputWrapper stream = new ZorbaInputWrapper(input);
             query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
             xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();

@@ -22,7 +22,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
-public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
+public class ZorbaReaderWrapper extends org.zorbaxquery.api.ZorbaIOStream {
 
   private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
   private static CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
@@ -32,7 +32,7 @@ public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
   CharBuffer charBuffer;
   ByteBuffer byteBuffer;
   
-  public ReaderZorbaStream(Reader aReader) {
+  public ZorbaReaderWrapper(Reader aReader) {
       charBuffer = CharBuffer.allocate(BUFFER_SIZE);
       byteBuffer = ByteBuffer.allocate(BUFFER_SIZE*2);
       reader= aReader;
@@ -57,7 +57,7 @@ public class ReaderZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
         total = encode(charsReaded, 0, total, bytesEncoded, 0, total);
         setStream(bytesEncoded, total);
       } catch (Exception ex) {
-        System.err.println("Unexpected exception trying to get bytes from ReaderZorbaStream: " + ex.getLocalizedMessage());
+        System.err.println("Unexpected exception trying to get bytes from ZorbaReaderWrapper: " + ex.getLocalizedMessage());
         ex.printStackTrace();
       }
   }

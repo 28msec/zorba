@@ -254,7 +254,7 @@ public class Api_test {
   {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
-    ReaderZorbaStream stream = new ReaderZorbaStream(new StringReader("'Hello world!'"));
+    ZorbaReaderWrapper stream = new ZorbaReaderWrapper(new StringReader("'Hello world!'"));
     XQuery query = zorba.compileQuery(stream);
     System.out.println(query.execute());
     zorba.shutdown();
@@ -283,7 +283,7 @@ public class Api_test {
             
     "1234567890123456789012"+ // 100 chars
     "'";
-    InputZorbaStream stream = new InputZorbaStream(new ByteArrayInputStream(test.getBytes("UTF-8")));
+    ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(test.getBytes("UTF-8")));
     XQuery query = zorba.compileQuery(stream);
     System.out.println(query.execute());
     zorba.shutdown();
@@ -296,7 +296,7 @@ public class Api_test {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
     String test = "<Hello><ab/><ax/>World</Hello>";
-    InputZorbaStream stream = new InputZorbaStream(new ByteArrayInputStream(test.getBytes("UTF-8")));
+    ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(test.getBytes("UTF-8")));
     XQuery query = zorba.compileQuery(stream);
     System.out.println(query.execute());
     query.destroy();
@@ -311,10 +311,10 @@ public class Api_test {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
     String test = "<Hello><ab/><ax/>World</Hello>";
-    InputZorbaStream stream = new InputZorbaStream(new ByteArrayInputStream(test.getBytes("UTF-8")));
+    ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(test.getBytes("UTF-8")));
     XQuery query = zorba.compileQuery(stream);
     
-    OutputZorbaStream OStream = new OutputZorbaStream(System.out);
+    ZorbaOutputWrapper OStream = new ZorbaOutputWrapper(System.out);
     query.execute(OStream);
 
     query.destroy();

@@ -22,7 +22,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
-public class WriterZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
+public class ZorbaWriterWrapper extends org.zorbaxquery.api.ZorbaIOStream {
 
   private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
   private Writer writer;
@@ -30,7 +30,7 @@ public class WriterZorbaStream extends org.zorbaxquery.api.ZorbaIOStream {
   ByteBuffer byteBuffer;
   CharsetDecoder decoder;
   
-  public WriterZorbaStream(Writer aWriter) {
+  public ZorbaWriterWrapper(Writer aWriter) {
       writer = aWriter;
       charBuffer = CharBuffer.allocate(BUFFER_SIZE);
       byteBuffer = ByteBuffer.allocate(BUFFER_SIZE*2);

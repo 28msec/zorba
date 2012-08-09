@@ -720,7 +720,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         try {
             dm = zorba.getXmlDataManager();
             doc = new Item();
-            ReaderZorbaStream stream = new ReaderZorbaStream(value);
+            ZorbaReaderWrapper stream = new ZorbaReaderWrapper(value);
             doc =  dm.parseXMLtoItem(stream);
             item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
         } catch (Exception e) {
@@ -761,7 +761,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         try {
             dm = zorba.getXmlDataManager();
             doc = new Item();
-            InputZorbaStream stream = new InputZorbaStream(value);
+            ZorbaInputWrapper stream = new ZorbaInputWrapper(value);
             doc =  dm.parseXMLtoItem(stream);
             item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
         } catch (Exception e) {

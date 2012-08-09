@@ -699,7 +699,7 @@ class ZorbaXQItem implements javax.xml.xquery.XQItem {
                     opts.setSerializerOption(key, value);
                 }
             }
-            OutputZorbaStream OStream = new OutputZorbaStream(out);
+            ZorbaOutputWrapper OStream = new ZorbaOutputWrapper(out);
             item.serializeToStream(OStream);
         } catch (Exception ex) {
             throw new XQException("Error writing on stream: " + ex.getLocalizedMessage());
@@ -728,7 +728,7 @@ class ZorbaXQItem implements javax.xml.xquery.XQItem {
                     opts.setSerializerOption(key, value);
                 }
             }
-            WriterZorbaStream OStream = new WriterZorbaStream(writer);
+            ZorbaWriterWrapper OStream = new ZorbaWriterWrapper(writer);
             item.serializeToStream(OStream);
             writer.write(item.serialize(opts));
         } catch (Exception ex) {

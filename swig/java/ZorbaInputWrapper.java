@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
 package org.zorbaxquery.api;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import org.zorbaxquery.api.intArray;
 
-public class OutputZorbaStream extends ZorbaIOStream {
-  private OutputStream output;
+public class ZorbaInputWrapper extends org.zorbaxquery.api.ZorbaIOStream {
+
+  private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
+  private InputStream input;
+  private byte[] b = new byte[BUFFER_SIZE];;
   
-  public OutputZorbaStream(OutputStream aOutput) {
-      output = aOutput;
+  public ZorbaInputWrapper(InputStream aInput) {
+      input= aInput;
   }
   
   @Override
-  public void write(byte[] stream){
-        try {
-            output.write(stream);
-        } catch (IOException ex) {
-            System.err.println("Error writing on output stream" + ex.getLocalizedMessage());
-        }
-      
+  public void fillStreamCallback() {
+      int total = 0;
+      try {
+        total = input.read(b, 0, BUFFER_SIZE);
+        setStream(b, total);
+      } catch (IOException ex) {
+        System.err.println("Unexpected exception trying to get bytes from ZorbaInputWrapper: " + ex.getLocalizedMessage());
+        ex.printStackTrace();
+      }
   }
-  
 }
