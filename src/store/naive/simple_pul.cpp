@@ -1737,6 +1737,10 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONArrayReplaceValueList,
                                otherPul->theJSONArrayReplaceValueList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayAppendList,
+                               otherPul->theJSONArrayAppendList);
 #endif
 
       ++thisIte;
@@ -2633,6 +2637,7 @@ CollectionPul::~CollectionPul()
   cleanList(theJSONArrayInsertList);
   cleanList(theJSONArrayDeleteList);
   cleanList(theJSONArrayReplaceValueList);
+  cleanList(theJSONArrayAppendList);
 #endif
 
   cleanIndexDeltas();
@@ -2661,6 +2666,7 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theJSONArrayInsertList);
   switchPulInPrimitivesList(theJSONArrayDeleteList);
   switchPulInPrimitivesList(theJSONArrayReplaceValueList);
+  switchPulInPrimitivesList(theJSONArrayAppendList);
 #endif
 
   switchPulInPrimitivesList(theCreateCollectionList);
