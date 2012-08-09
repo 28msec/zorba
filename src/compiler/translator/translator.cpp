@@ -3169,7 +3169,7 @@ void* begin_visit(const VFO_DeclList& v)
   //  (3) and then creates the udf object and binds it in the sctx.
   // The 1st pass also binds all options, so that the module version information
   // is available if we try to load external function libraries.
-  // 2nd pass;  happens when accept() is called on each individual FunctionDecl
+  // The 2nd pass happens when accept() is called on each individual FunctionDecl
   // node in the list.
 
   for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
