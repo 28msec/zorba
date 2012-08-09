@@ -1,5 +1,11 @@
 Zorba - The XQuery Processor
 
+version 2.7
+
+Bug Fixes/Other Changes:
+  * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
+    variables)
+  * Fixed bug #899366 (enforce the type declaration of a window variable)
 
 version 2.6
 
