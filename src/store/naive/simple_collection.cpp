@@ -155,9 +155,9 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
 
 #ifdef ZORBA_WITH_JSON
   if (object)
-    object->setCollection(this, pos);
+    object->fix(this, createTreeId());
   else if (array)
-    array->setCollection(this, pos);
+    array->fix(this, createTreeId());
   else
 #endif
     node->setCollection(this, pos);
@@ -249,9 +249,9 @@ xs_integer SimpleCollection::addNodes(
 
 #ifdef ZORBA_WITH_JSON
     if (object)
-      object->setCollection(this, pos);
+      object->fix(this, createTreeId());
     else if (array)
-      array->setCollection(this, pos);
+      array->fix(this, createTreeId());
     else
 #endif
       node->setCollection(this, pos);
@@ -331,9 +331,9 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
 
 #ifdef ZORBA_WITH_JSON
     if (object)
-      object->setCollection(NULL, zero);
+      object->unfix();
     else if (array)
-      array->setCollection(NULL, zero);
+      array->unfix();
     else
 #endif
       node->setCollection(NULL, zero);
@@ -381,12 +381,12 @@ bool SimpleCollection::removeNode(xs_integer position)
     else if (item->isJSONObject())
     {
       json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-      object->setCollection(NULL, zero);
+      object->unfix();
     }
     else if (item->isJSONArray())
     {
       json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-      array->setCollection(NULL, zero);
+      array->unfix();
     }
 #endif
     else
@@ -442,12 +442,12 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       else if (item->isJSONObject())
       {
         json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-        object->setCollection(NULL, zero);
+        object->unfix();
       }
       else if (item->isJSONArray())
       {
         json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-        array->setCollection(NULL, zero);
+        array->unfix();
       }
 #endif
       else
