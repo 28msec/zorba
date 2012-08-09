@@ -61,7 +61,7 @@
 #  include "system/properties.h"
 #endif
 
-#define DO_AUDIT
+//#define DO_AUDIT
 
 using namespace zorba;
 namespace zorbatm = zorba::time;
