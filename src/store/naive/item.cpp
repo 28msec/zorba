@@ -19,6 +19,8 @@
 
 #include <zorba/error.h>
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+
 #include "zorbatypes/datetime.h"
 
 #include "store/api/item.h"
@@ -71,6 +73,7 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -159,6 +162,7 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -275,12 +279,6 @@ bool Item::isFunction() const
 bool Item::isJSONItem() const
 {
   return (theUnion.itemKind == JSONIQ); 
-}
-
-
-bool Item::isJSONPair() const
-{
-  return false;
 }
 
 
@@ -1398,62 +1396,44 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 }
 
 
-Iterator_t
-Item::getPairs() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-Iterator_t
-Item::getMembers() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getPair(const store::Item_t& name) const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getMember(const store::Item_t& index) const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getName() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getValue() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
 xs_integer
-Item::getSize() const
+Item::getArraySize() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item_t
+Item::getArrayValue(const xs_integer&) const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Iterator_t
+Item::getArrayValues() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Iterator_t
+Item::getObjectKeys() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item_t
+Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

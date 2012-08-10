@@ -29,7 +29,7 @@ xquery version "1.0";
  : This module depends on having the JSONiq feature enabled in Zorba,
  : i.e., Zorba must be compiled with ZORBA_WITH_JSON.
  :
- : @author Markos Zaharioudakis, Matthias Brantner
+ : @author Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny
  :)
 module namespace jn = "http://www.jsoniq.org/functions";
 
@@ -55,22 +55,13 @@ declare function jn:parse-json($j as xs:string) as json-item()? external;
 
 
 (:~
- : Returns the names used in the Pairs of the object. 
+ : Returns the names used in the object. 
  : The names will be returned in an implementation-defined order
  :
  : @param $o A JSON Object.
  : @return The names of pairs in the object.
  :)
 declare function jn:keys($o as object()) as xs:string* external;
-
-
-(:~
- : Returns the values of the pairs within a given JSON object.
- :
- : @param $o A JSON Object.
- : @return the value of each pair within the given object.
- :)
-declare function jn:values($o as object()) as item()* external;
 
 
 (:~
@@ -81,7 +72,30 @@ declare function jn:values($o as object()) as item()* external;
  : @param $name The name of the pair whose value is to be retrieved
  : @return the value of specified pair within the given object, or the empty sequence.
  :)
+(: obsolete - use $o($name) instead :)
 declare function jn:value($o as object(), $name as xs:string) as item()? external;
+
+
+(:~
+ : Returns the size of a JSON Array. The size of an Array is
+ : the number of members contained within it.
+ :
+ : @param $j A JSON Array.
+ : @return The number of items in $j.
+ :)
+declare function jn:size($j as array()) as xs:integer external;
+
+
+(:~
+ : Returns the member of an Array at the specified position (starting from 1).
+ : If the position is out of bounds of the array, returns the empty sequence.
+ :
+ : @param $a A JSON Array.
+ : @param $p The position in the array.
+ : @return The member at the specified position, or empty sequence.
+ :)
+(: obsolete - use $a($p) instead :)
+declare function jn:member($a as array(), $p as xs:integer) as item()? external;
 
 
 (:~
@@ -94,29 +108,6 @@ declare function jn:value($o as object(), $name as xs:string) as item()? externa
  : @return The new object.
  :)
 declare function jn:project($o as object(), $names as xs:string*) as object() external;
-
-(:~
- : Returns the size of a JSON Object or JSON Array. The size of an Object
- : is the number of Pairs contained within it; the size of an Array is
- : the number of members contained within it.
- :
- : @param $j A JSON Object or JSON Array.
- : @return The number of items in $j.
- : @error jn:JUDY0060 if $j is a JSON Pair.
- :)
-declare function jn:size($j as json-item()) as xs:integer external;
-
-
-(:~
- : Returns the member of an Array at the specified position (starting from 1).
- : If the position is out of bounds of the array, returns the empty sequence.
- :
- : @param $a A JSON Array.
- : @param $p The position in the array.
- : @return The member at the specified position, or empty sequence.
- :)
-declare function jn:member($o as array(), $p as xs:integer) as item()? external;
-
 
 (:~
  : Returns the members of an Array.

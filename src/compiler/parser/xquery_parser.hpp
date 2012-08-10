@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/ceej/zo/src/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,7 +84,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/home/ceej/zo/src/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -114,7 +114,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 118 "/home/ceej/zo/src/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/ceej/zo/src/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -150,7 +150,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 154 "/home/ceej/zo/src/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -478,16 +478,17 @@ namespace zorba {
      JSON_ITEM = 573,
      STRUCTURED_ITEM = 574,
      BYTE_ORDER_MARK_UTF8 = 575,
-     RANGE_REDUCE = 576,
-     SEQUENCE_TYPE_REDUCE = 577,
-     ADDITIVE_REDUCE = 578,
-     UNION_REDUCE = 579,
-     INTERSECT_EXCEPT_REDUCE = 580,
-     QVARINDECLLIST_REDUCE = 581,
-     COMMA_DOLLAR = 582,
-     UNARY_PREC = 583,
-     STEP_REDUCE = 584,
-     MULTIPLICATIVE_REDUCE = 585
+     SHEBANG = 576,
+     RANGE_REDUCE = 577,
+     SEQUENCE_TYPE_REDUCE = 578,
+     ADDITIVE_REDUCE = 579,
+     UNION_REDUCE = 580,
+     INTERSECT_EXCEPT_REDUCE = 581,
+     QVARINDECLLIST_REDUCE = 582,
+     COMMA_DOLLAR = 583,
+     UNARY_PREC = 584,
+     STEP_REDUCE = 585,
+     MULTIPLICATIVE_REDUCE = 586
    };
 
     };
@@ -667,7 +668,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 671 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 672 "/home/ceej/zo/src/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

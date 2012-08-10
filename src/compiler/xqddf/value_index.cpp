@@ -585,7 +585,7 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   if (theDocIndexerPlan != NULL)
   {
-    theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVarName);
+    theDocIndexer = new DocIndexer(isGeneral(), numKeys, theDocIndexerPlan, docVarName);
 
     return theDocIndexer.getp();
   }
@@ -695,7 +695,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Create theDocIndexer obj
   //
-  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVarName);
+  theDocIndexer = new DocIndexer(isGeneral(), numKeys, theDocIndexerPlan, docVarName);
 
   return theDocIndexer.getp();
 }

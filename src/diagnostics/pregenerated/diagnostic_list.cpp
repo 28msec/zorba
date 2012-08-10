@@ -1189,34 +1189,16 @@ ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
 namespace jerr {
 
 #if defined(ZORBA_WITH_JSON)
-JSONiqErrorCode JNSE0012( "JNSE0012" );
-
-
-JSONiqErrorCode JNSE0013( "JNSE0013" );
-
-
-JSONiqErrorCode JNSE0014( "JNSE0014" );
+JSONiqErrorCode JNTY0001( "JNTY0001" );
 
 
 JSONiqErrorCode JNTY0002( "JNTY0002" );
 
 
-JSONiqErrorCode JNTY0003( "JNTY0003" );
-
-
-JSONiqErrorCode JNTY0004( "JNTY0004" );
-
-
-JSONiqErrorCode JNTY0007( "JNTY0007" );
-
-
-JSONiqErrorCode JNTY0011( "JNTY0011" );
-
-
 JSONiqErrorCode JNDY0003( "JNDY0003" );
 
 
-JSONiqErrorCode JSDY0040( "JSDY0040" );
+JSONiqErrorCode JNTY0004( "JNTY0004" );
 
 
 JSONiqErrorCode JNUP0005( "JNUP0005" );
@@ -1237,22 +1219,31 @@ JSONiqErrorCode JNUP0009( "JNUP0009" );
 JSONiqErrorCode JNUP0010( "JNUP0010" );
 
 
-JSONiqErrorCode JNUP0011( "JNUP0011" );
+JSONiqErrorCode JNTY0011( "JNTY0011" );
 
 
-JSONiqErrorCode JNUP0012( "JNUP0012" );
+JSONiqErrorCode JNSE0012( "JNSE0012" );
 
 
-JSONiqErrorCode JNUP0018( "JNUP0018" );
+JSONiqErrorCode JNSE0013( "JNSE0013" );
 
 
-JSONiqErrorCode JNUP0020( "JNUP0020" );
+JSONiqErrorCode JNSE0014( "JNSE0014" );
 
 
-JSONiqErrorCode JNUP0021( "JNUP0021" );
+JSONiqErrorCode JNUP0016( "JNUP0016" );
 
 
-JSONiqErrorCode JNUP0022( "JNUP0022" );
+JSONiqErrorCode JNUP0017( "JNUP0017" );
+
+
+JSONiqErrorCode JNTY0018( "JNTY0018" );
+
+
+JSONiqErrorCode JNTY0003( "JNTY0003" );
+
+
+JSONiqErrorCode JSDY0040( "JSDY0040" );
 #endif
 
 

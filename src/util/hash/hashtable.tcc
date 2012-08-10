@@ -48,7 +48,6 @@ ZORBA_HASHTABLE_CLASS::alloc_node( value_type const &v ) {
   node *const p = node_alloc_.allocate( 1 );
   try {
     node_alloc_.construct( p, v );
-    p->next_ = nullptr;
     return p;
   }
   catch ( ... ) {
@@ -84,9 +83,9 @@ void ZORBA_HASHTABLE_CLASS::dealloc_nodes( node **buckets, size_type n_bkt ) {
 
 ZORBA_HASHTABLE_TEMPLATE
 ZORBA_HASHTABLE_CLASS::hashtable_base( size_type bucket_count,
-                                  hasher const &hash,
-                                  key_equal const &equal,
-                                  allocator_type const &alloc ) :
+                                       hasher const &hash,
+                                       key_equal const &equal,
+                                       allocator_type const &alloc ) :
   equal_( equal ),
   hasher_( hash ),
   n_bkt_( bucket_count ),

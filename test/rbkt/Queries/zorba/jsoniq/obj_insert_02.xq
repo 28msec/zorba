@@ -1,3 +1,3 @@
 import module namespace j = "http://www.jsoniq.org/functions";
 
-insert json "foo" : "blub" into { "foo" : "bar" }
+insert json { "foo" : "blub" } into { "foo" : "bar" }

@@ -154,8 +154,8 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 
   if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))
   {
-    // identify XQueryX by content:
-    // root tag =
+    // identify XQueryX by content: 
+    // root tag = 
     // "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
 
     is_xqueryx = true;
@@ -211,24 +211,26 @@ PlanIter_t XQueryCompiler::compile(
   zorba::audit::ScopedRecord sar(ae);
 
   const char* lFileName = aFileName.c_str();
-
   zorba::audit::ScopedAuditor<const char*> filenameAudit(
-       sar,
-       zorba::audit::XQUERY_COMPILATION_FILENAME,
-       lFileName);
+      sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
 
-  zorba::time::Timer lTimer;
-  zorba::audit::DurationAuditor durationAudit(
-       sar,
-       zorba::audit::XQUERY_COMPILATION_PARSE_DURATION,
-       lTimer);
+  parsenode_t lAST;
 
-  parsenode_t lAST = parse(aXQuery, aFileName);
-
-  if (theCompilerCB->theConfig.lib_module &&
-      dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
   {
-    lAST = createMainModule(lAST, aXQuery, aFileName);
+    time::Timer lTimer;
+
+    audit::DurationAuditor 
+    durationAudit(sar,
+                  audit::XQUERY_COMPILATION_PARSE_DURATION,
+                  lTimer);
+
+    lAST = parse(aXQuery, aFileName);
+
+    if (theCompilerCB->theConfig.lib_module &&
+        dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
+    {
+      lAST = createMainModule(lAST, aXQuery, aFileName);
+    }
   }
 
   expr_t rootExpr;
@@ -249,20 +251,22 @@ PlanIter_t XQueryCompiler::compile(
 {
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(
-         aAuditRecord,
-         audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
-         lTimer);
+
+    audit::DurationAuditor 
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
+                  lTimer);
 
     rootExpr = normalize(ast); // also does the translation
   }
 
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(
-         aAuditRecord,
-         audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
-         lTimer);
+
+    audit::DurationAuditor
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+                  lTimer);
 
     rootExpr = optimize(rootExpr);
   }
@@ -274,15 +278,14 @@ PlanIter_t XQueryCompiler::compile(
   PlanIter_t plan;
   {
     time::Timer lTimer;
-    audit::DurationAuditor durationAudit(
-         aAuditRecord,
-         audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
-         lTimer);
+
+    audit::DurationAuditor
+    durationAudit(aAuditRecord,
+                  audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
+                  lTimer);
 
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
   }
-
-  //theCompilerCB->getExprManager().garbageCollect();
 
   return plan;
 }
@@ -305,11 +308,8 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 
 #if 0
   time::get_current_walltime(stopTime);
-  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);
+  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);      
   std::cout << "Translation time = " << elapsedTime << std::endl;
-  std::cout << "Num exprs after translation = "
-            << theCompilerCB->getExprManager()->numExprs()
-            << std::endl << std::endl;
 #endif
 
   if ( lExpr == NULL )
@@ -356,19 +356,13 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   if ( theCompilerCB->theConfig.optimize_cb != NULL )
     theCompilerCB->theConfig.optimize_cb(lExpr.getp(), "main query");
 
-#if 0
-  std::cout << "Num exprs after optimization = " 
-            << theCompilerCB->getExprManager()->numExprs()
-            << std::endl << std::endl;
-#endif
-
   return lExpr;
 }
 
 
 /******************************************************************************
   This is a small helper class used when the user wants to compile a library
-  module. The ONLY place it is used (and should be used) is in the
+  module. The ONLY place it is used (and should be used) is in the 
   XQueryCompiler::createMainModule method below.
   QQQ When we have the ability to compile a library module indepedently, this
   rather hacky class can go away. At that time, we can also eliminate the
@@ -378,27 +372,20 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 class FakeLibraryModuleURLResolver : public internal::URLResolver
 {
 public:
-  FakeLibraryModuleURLResolver(
-      zstring const& aLibraryModuleNamespace,
-      zstring const& aLibraryModuleFilename,
-      std::istream& aStream)
-    :
-    theLibraryModuleNamespace(aLibraryModuleNamespace),
-    theLibraryModuleFilename(aLibraryModuleFilename),
-    theStream(aStream)
-  {
-  }
-
+  FakeLibraryModuleURLResolver
+  (zstring const& aLibraryModuleNamespace, 
+    zstring const& aLibraryModuleFilename, std::istream& aStream)
+    : theLibraryModuleNamespace(aLibraryModuleNamespace),
+      theLibraryModuleFilename(aLibraryModuleFilename),
+      theStream(aStream)
+  {}
   virtual ~FakeLibraryModuleURLResolver()
-  {
-  }
+  {}
 
-  virtual internal::Resource* resolveURL(
-      zstring const& aUrl,
-      internal::EntityData const* aEntityData)
+  virtual internal::Resource* resolveURL
+  (zstring const& aUrl, internal::EntityData const* aEntityData)
   {
-    if (aUrl != theLibraryModuleNamespace)
-    {
+    if (aUrl != theLibraryModuleNamespace) {
       return NULL;
     }
     assert (theStream.good());

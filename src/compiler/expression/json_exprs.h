@@ -41,11 +41,6 @@ class json_array_expr : public expr
 protected:
   expr * theContentExpr;
 
-public:
-  SERIALIZABLE_CLASS(json_array_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(json_array_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
 protected:
   json_array_expr(
       CompilerCB* ccb,
@@ -81,11 +76,6 @@ class json_object_expr : public expr
 protected:
   expr  * theContentExpr;
   bool    theAccumulate;
-
-public:
-  SERIALIZABLE_CLASS(json_object_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(json_object_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   json_object_expr(
@@ -126,11 +116,6 @@ class json_direct_object_expr : public expr
 protected:
   std::vector<expr*>  theNames;
   std::vector<expr*>  theValues;
-
-public:
-  SERIALIZABLE_CLASS(json_direct_object_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(json_direct_object_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 protected:
   json_direct_object_expr(
