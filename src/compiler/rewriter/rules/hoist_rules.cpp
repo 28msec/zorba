@@ -502,6 +502,7 @@ static expr* try_hoisting(
   else
   {
     assert(step->theExpr->get_expr_kind() == trycatch_expr_kind);
+
     trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->theExpr);
 
     flwor_expr* flwor = rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
