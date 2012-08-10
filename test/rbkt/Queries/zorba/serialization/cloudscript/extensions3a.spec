@@ -1,1 +1,1 @@
-Serialization: method=json cloudscript-extensions=yes
+Serialization: method=json jsoniq-extensions=yes

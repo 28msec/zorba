@@ -2254,7 +2254,7 @@
     </diagnostic>
 
     <diagnostic code="ZDST0035" name="INDEX_GENERAL_MULTIKEY">
-      <value>"$1": index general multikey</value>
+      <value>"$1": number of key expressions for general indexes is restricted to one expression</value>
     </diagnostic>
 
     <diagnostic code="ZDST0036" name="INDEX_DECL_IN_FOREIGN_MODULE">
@@ -2538,12 +2538,103 @@
 
   <namespace prefix="jerr">
 
-    <!--////////// CloudScript ///////////////////////////////////////////-->
+    <!--////////// JSONiq ///////////////////////////////////////////-->
 
+    <diagnostic code="JNTY0001" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.</comment>
+      <value>Cannot atomize and/or cast value of type $1 to a string.</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
+      <value>Pair value returns no, or more than one, item.</value>
+    </diagnostic>
+    
+    <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if two pairs in an object constructor or in a simple object union have the same name.</comment>
+      <value>"$1": pair with the same name already exists in object.</value>
+    </diagnostic>
+    
+    <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
+      <value>$1 items do not have typed value</value>
+    </diagnostic>
+
+    <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if a pending update list contains two inserting update primitives on the same object and pair name.</comment>
+
+      <value>"$1": duplicate pair to insert</value>
+
+    </diagnostic>
+    
+    <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if upd:applyUpdates causes an object to contain two pairs with the same name.</comment>
+
+      <value>"$1": pair to insert already exists in object.</value>
+
+    </diagnostic>
+    
+    <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.</comment>
+      
+      <value>$1 - wrong type for object/array selector in update expression.</value>
+      
+      <entry key="Object">
+        <value>"$2": can not be promoted to type xs:string</value>
+      </entry>
+
+      <entry key="Array">
+        <value>"$2": can not be promoted to type xs:integer</value>
+      </entry>
+
+      <entry key="ObjectArray">
+        <value>"$2": can not be promoted to type xs:anyAtomicType</value>
+      </entry>
+
+    </diagnostic>
+    
+    <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if the target of a deleting or replacing expression is not an array or an object.
+        It is a dynamic error if the target of a renaming expression is not an object.
+        It is a dynamic error if the target of an appending expression is not an array.
+        It is a dynamic error if the target of a position-inserting expression is not an array.
+        It is a dynamic error if the target of a non-position-inserting expression is not an object.</comment>
+
+      <value>$1</value>
+
+      <entry key="Object">
+        <value>"$2": target of a renaming expression or of a non-position-inserting expression is not an object.</value>
+      </entry>
+
+      <entry key="Array">
+        <value>"$2": target of an appending expression or of a position-inserting expression is not an array</value>
+      </entry>
+
+      <entry key="ObjectArray">
+        <value>"$2": target of a deleting or replacing expression is not a JSON item.</value>
+      </entry>
+
+    </diagnostic>
+    
+    <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if a pending update list contains two replacing update primitives on the same object or array, and with the same selector.</comment>
+      <value>"$1": duplicate pair to replace</value>
+    </diagnostic>
+    
+    <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if a pending update list contains two renaming update primitives on the same object and with the same selector.</comment>
+      <value>"$1": duplicate pair to rename</value>
+    </diagnostic>
+    
+    <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error if the content sequence in a node constructor or in an XQUF insert or replace update expression contains an object or an array.</comment>
+      <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
+    </diagnostic>
+    
     <diagnostic code="JNSE0012" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error to serialize a sequence of less
       or more than one item with the JSON output method if the
-      cloudscript-serialization-multiple-items is set to no.
+      jsoniq-serialization-multiple-items is set to no.
       </comment>
 
       <value>Cannot serialize multiple top-level items as JSON</value>
@@ -2552,7 +2643,7 @@
     <diagnostic code="JNSE0013" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error to serialize an atomic value not
       supported by JSON or a node with the JSON output method and with
-      the cloudscript-serialization-extensions serialization parameter
+      the jsoniq-serialization-extensions serialization parameter
       set to false.</comment>
 
       <value>Cannot serialize value as JSON: $1</value>
@@ -2564,14 +2655,32 @@
       <value>Cannot serialize a function item as JSON</value>
     </diagnostic>
 
-    <!--////////// JSONIQ ///////////////////////////////////////////-->
-
-    <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
-      <comment>Expression computing the value of a pair does not return exactly
-      one item.</comment>
+    <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
 
       <value>$1</value>
+      
+      <entry key="Object">
+        <value>"$2": selector cannot be resolved against supplied object.</value>
+      </entry>
+
+      <entry key="Array">
+        <value>"$2": selector cannot be resolved against supplied array.</value>
+      </entry>
     </diagnostic>
+    
+    <diagnostic code="JNUP0017" if="defined(ZORBA_WITH_JSON)">
+      <comment> It is a dynamic error if the value in a replace expression is not exactly a single item.</comment>
+      <value>Cannot replace with less or more than an item.</value>
+    </diagnostic>
+    
+    <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
+
+      <value>Object or array selection needs exactly one parameter.</value>
+    </diagnostic>
+    
+    <!--////////// JSONIQ ///////////////////////////////////////////-->
 
     <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
       <comment>objects or arrays don't have a string value</comment>
@@ -2579,104 +2688,9 @@
       <value>$1 items do not have string value</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
-      <comment>objects or arrays don't have a typed value</comment>
-
-      <value>$1 items do not have typed value</value>
-    </diagnostic>
-
-    <diagnostic code="JNTY0007" if="defined(ZORBA_WITH_JSON)">
-      <comment>wrong type for object/array selector in update expr</comment>
-
-      <value>$1</value>
-
-     <entry key="Object">
-        <value>"$2": can not be promoted to type xs:string</value>
-      </entry>
-
-     <entry key="Array">
-        <value>"$2": can not be promoted to type xs:integer</value>
-      </entry>
-
-    </diagnostic>
-
-    <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by node constructor or updating expression indicating that a JSON item cannot appear in the corresponding content sequence</comment>
-      <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
-    </diagnostic>
-
-    <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
-      <comment>error raised by object constructor</comment>
-      <value>"$1": pair with the same name already exists in object</value>
-    </diagnostic>
-
     <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
       <comment>parser errors raised by the JSONIQLoader</comment>
       <value>$1</value>
-    </diagnostic>
-
-    <!-- jsoniq object updates -->
-
-    <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
-      <comment>duplicate pair to insert</comment>
-      <value>"$1": duplicate pair to insert</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
-      <comment>pair to insert already in object</comment>
-      <value>"$1": pair to insert already exists in object</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
-      <comment>pair to delete not in object</comment>
-      <value>"$1": pair to delete does not exist in object</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
-      <comment>duplicate pair to replace</comment>
-      <value>"$1": duplicate pair to replace</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
-      <comment>pair to replace not in object</comment>
-      <value>"$1": pair to replace does not exist in object</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
-      <comment>duplicate pair to rename</comment>
-      <value>"$1": duplicate pair to rename</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0011" if="defined(ZORBA_WITH_JSON)">
-      <comment>pair to rename not in object</comment>
-      <value>"$1": pair to rename does not exist in object</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0012" if="defined(ZORBA_WITH_JSON)">
-      <comment>pair to rename already in object</comment>
-      <value>"$1": pair to rename already exists in object</value>
-    </diagnostic>
-
-    <!-- jsoniq array updates -->
-
-    <diagnostic code="JNUP0018" if="defined(ZORBA_WITH_JSON)">
-      <comment>position to insert not in array</comment>
-      <value>"$1": position to insert at is out of array bounds</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0020" if="defined(ZORBA_WITH_JSON)">
-      <comment>position to delete not in array</comment>
-      <value>"$1": position to delete does not exist in array</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0021" if="defined(ZORBA_WITH_JSON)">
-      <comment>position to replace not in array</comment>
-      <value>"$1": position to replace does not exist in array</value>
-    </diagnostic>
-
-    <diagnostic code="JNUP0022" if="defined(ZORBA_WITH_JSON)">
-      <comment>duplicate position to replace</comment>
-      <value>"$1": duplicate position to replace</value>
     </diagnostic>
 
   </namespace>
@@ -3673,6 +3687,10 @@
       <value>JSON serialization error</value>
     </entry>
 
+    <entry key="JSONiq error">
+      <value>JSONIQ error</value>
+    </entry>
+
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
@@ -3822,7 +3840,15 @@
     </entry>
     
     <entry key="ParseFragmentInvalidOptions">
-      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
+      <value>invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowed">
+      <value>a DOCTYPE declaration is not allowed</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowedHere">
+      <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
     
     <entry key="FormatNumberDuplicates">

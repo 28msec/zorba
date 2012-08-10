@@ -33,6 +33,13 @@ public:
   static const unsigned int BUFFER_SIZE = 4096;
   static const unsigned int LOOKAHEAD_BYTES = 3; // lookahead fetching is implemented, but currently not used
   static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
+  
+  // names of these states are orientative
+  enum FRAGMENT_PARSER_STATE {
+    FRAGMENT_FIRST_START_DOC = 0,
+    FRAGMENT_PROLOG,
+    FRAGMENT_CONTENT                   // this state is set once an element is encountered
+  };
 
 public:
   std::istringstream* theIss;
@@ -43,7 +50,7 @@ public:
   int current_element_depth;
   int root_elements_to_skip;
   xmlParserCtxtPtr ctxt;
-  bool first_start_doc;
+  FRAGMENT_PARSER_STATE state;
   bool forced_parser_stop;
   bool reached_eof;
   unsigned int parsed_nodes_count;
@@ -63,7 +70,7 @@ public:
     current_element_depth(0),
     root_elements_to_skip(0),
     ctxt(NULL),
-    first_start_doc(true),
+    state(FRAGMENT_FIRST_START_DOC),
     forced_parser_stop(false),
     reached_eof(false),
     parsed_nodes_count(0),
@@ -103,7 +110,7 @@ public:
     current_element_depth = 0;
     root_elements_to_skip = 0;
     ctxt = NULL;
-    first_start_doc = true;
+    state = FRAGMENT_FIRST_START_DOC;
     forced_parser_stop = false;
     reached_eof = false;
     parsed_nodes_count = 0;

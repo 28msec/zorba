@@ -609,8 +609,8 @@ private:
   void rehash_impl( size_type new_n_bkt );
 
   node **buckets_;
-  hasher hasher_;
   KeyEqual equal_;
+  hasher hasher_;
   KeyExtract key_of;
   size_type n_bkt_;
   size_type n_elt_;
