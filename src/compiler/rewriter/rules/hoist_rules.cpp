@@ -112,7 +112,7 @@ expr* HoistRule::apply(
 
   if (modified && root.theExpr != NULL)
   {
-    assert(root.expr->get_expr_kind() == flwor_expr_kind);
+    assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
     static_cast<flwor_expr*>(root.theExpr)->set_return_expr(node);
     return root.theExpr;
@@ -172,7 +172,7 @@ static bool hoist_expressions(
         {
           if (root.theExpr != NULL)
           {
-            assert(root.expr->get_expr_kind() == flwor_expr_kind);
+            assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
             static_cast<flwor_expr*>(root.theExpr)->set_return_expr(domainExpr);
             flc->set_expr(root.theExpr);
@@ -234,7 +234,7 @@ static bool hoist_expressions(
 
       if (nestedModified && root.theExpr != NULL)
       {
-        assert(root.expr->get_expr_kind() == flwor_expr_kind);
+        assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
         static_cast<flwor_expr*>(root.theExpr)->set_return_expr(re);
         flwor->set_return_expr(root.theExpr);
@@ -293,7 +293,7 @@ static bool hoist_expressions(
 
       if (nestedModified && root.theExpr != NULL)
       {
-        assert(root.expr->get_expr_kind() == flwor_expr_kind);
+        assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
         static_cast<flwor_expr*>(root.theExpr)->set_return_expr(ce);
         (**iter) = root.theExpr;
@@ -398,7 +398,7 @@ static expr* try_hoisting(
     }
     else
     {
-      assert(step->expr->get_expr_kind() == flwor_expr_kind);
+      assert(step->theExpr->get_expr_kind() == flwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
       group_clause* gc = flwor->get_group_clause();
@@ -501,7 +501,7 @@ static expr* try_hoisting(
   }
   else
   {
-    assert(step->expr->get_expr_kind() == trycatch_expr_kind);
+    assert(step->theExpr->get_expr_kind() == trycatch_expr_kind);
     trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->theExpr);
 
     flwor_expr* flwor = rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
