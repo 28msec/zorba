@@ -1543,20 +1543,19 @@ void
 StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 {
   ZORBA_TRY
-  std::vector<var_expr_t> lVars;
-  theCtx->getVariables(lVars, true, false, true);
+  std::vector<VarInfo*> vars;
+  theCtx->getVariables(vars, true, false, true);
 
-  std::vector<store::Item_t> lExVars;
+  std::vector<VarInfo*>::const_iterator ite = vars.begin();
+  std::vector<VarInfo*>::const_iterator end = vars.end();
+  std::vector<store::Item_t> extVars;
 
-  std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
-  std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
-
-  for (; lIte != lEnd; ++lIte) 
+  for (; ite != end; ++ite) 
   { 
-    lExVars.push_back(lIte->getp()->get_name());        
+    extVars.push_back((*ite)->getName());        
   }
 
-  Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+  Iterator_t vIter = new VectorIterator(extVars, theDiagnosticHandler);
   aVarsIter = vIter; 
   ZORBA_CATCH
 }

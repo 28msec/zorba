@@ -267,8 +267,6 @@ public:
 
   var_expr* create_var_expr(const var_expr& source);
 
-  var_expr* create_var_expr(::zorba::serialization::Archiver& ar);
-
 ////////////////////////////////////////////////////////////////////////////////
 
   insert_expr* create_insert_expr(

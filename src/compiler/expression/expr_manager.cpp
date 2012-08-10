@@ -502,12 +502,6 @@ var_expr* ExprManager::create_var_expr(const var_expr& source)
 }
 
 
-var_expr* ExprManager::create_var_expr(::zorba::serialization::Archiver& ar)
-{
-  return static_cast<var_expr*>(reg(new (theMemoryMgr) var_expr(ar)));
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 
 
