@@ -154,8 +154,8 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 
   if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))
   {
-    // identify XQueryX by content: 
-    // root tag = 
+    // identify XQueryX by content:
+    // root tag =
     // "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
 
     is_xqueryx = true;
@@ -219,7 +219,7 @@ PlanIter_t XQueryCompiler::compile(
   {
     time::Timer lTimer;
 
-    audit::DurationAuditor 
+    audit::DurationAuditor
     durationAudit(sar,
                   audit::XQUERY_COMPILATION_PARSE_DURATION,
                   lTimer);
@@ -233,7 +233,7 @@ PlanIter_t XQueryCompiler::compile(
     }
   }
 
-  expr_t rootExpr;
+  expr* rootExpr;
 
   return compile(lAST, true, rootExpr, nextDynamicVarId, sar);
 }
@@ -245,14 +245,14 @@ PlanIter_t XQueryCompiler::compile(
 PlanIter_t XQueryCompiler::compile(
     const parsenode_t& ast,
     bool applyPUL,
-    expr_t& rootExpr,
+    expr* rootExpr,
     ulong& nextDynamicVarId,
     audit::ScopedRecord& aAuditRecord)
 {
   {
     time::Timer lTimer;
 
-    audit::DurationAuditor 
+    audit::DurationAuditor
     durationAudit(aAuditRecord,
                   audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
                   lTimer);
@@ -294,7 +294,7 @@ PlanIter_t XQueryCompiler::compile(
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
+expr* XQueryCompiler::normalize(parsenode_t aParsenode)
 {
 #if 0
   time::walltime startTime;
@@ -304,11 +304,11 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   time::get_current_walltime(startTime);
 #endif
 
-  expr_t lExpr = translate(*aParsenode, theCompilerCB);
+  expr* lExpr = translate(*aParsenode, theCompilerCB);
 
 #if 0
   time::get_current_walltime(stopTime);
-  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);      
+  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);
   std::cout << "Translation time = " << elapsedTime << std::endl;
 #endif
 
@@ -325,11 +325,11 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t XQueryCompiler::optimize(expr_t lExpr)
+expr* XQueryCompiler::optimize(expr* lExpr)
 {
   // Build the call-graph among the udfs that are actually used in the query
   // program.
-  UDFGraph udfGraph(lExpr.getp());
+  UDFGraph udfGraph(lExpr);
 
   // By default all UDFs are marked as deterministic. Now, we find which udfs
   // are actually non-deterministic and mark them as such. This has to be done
@@ -354,7 +354,7 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   lExpr = rCtx.getRoot();
 
   if ( theCompilerCB->theConfig.optimize_cb != NULL )
-    theCompilerCB->theConfig.optimize_cb(lExpr.getp(), "main query");
+    theCompilerCB->theConfig.optimize_cb(lExpr, "main query");
 
   return lExpr;
 }
@@ -362,7 +362,7 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 
 /******************************************************************************
   This is a small helper class used when the user wants to compile a library
-  module. The ONLY place it is used (and should be used) is in the 
+  module. The ONLY place it is used (and should be used) is in the
   XQueryCompiler::createMainModule method below.
   QQQ When we have the ability to compile a library module indepedently, this
   rather hacky class can go away. At that time, we can also eliminate the
@@ -373,7 +373,7 @@ class FakeLibraryModuleURLResolver : public internal::URLResolver
 {
 public:
   FakeLibraryModuleURLResolver
-  (zstring const& aLibraryModuleNamespace, 
+  (zstring const& aLibraryModuleNamespace,
     zstring const& aLibraryModuleFilename, std::istream& aStream)
     : theLibraryModuleNamespace(aLibraryModuleNamespace),
       theLibraryModuleFilename(aLibraryModuleFilename),

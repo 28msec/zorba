@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,13 +38,13 @@ namespace zorba {
 ********************************************************************************/
 static bool isHoistableCollection(expr* e)
 {
-  if (e->get_expr_kind() != fo_expr_kind) 
+  if (e->get_expr_kind() != fo_expr_kind)
     return false;
 
   fo_expr* fo = static_cast<fo_expr *>(e);
 
   if (fo->get_func()->getKind() != FunctionConsts::FN_COLLECTION_1 ||
-      fo->num_args() != 1) 
+      fo->num_args() != 1)
     return false;
 
   const expr* arg = fo->get_arg(0);
@@ -72,14 +72,14 @@ typedef std::vector<std::pair<expr_t, expr_t> > hoisted_collections_t;
 /*******************************************************************************
 
 ********************************************************************************/
-static rchandle<var_expr> createTempLetVar(short sctx, const QueryLoc& loc, int counter)
+static var_expr* createTempLetVar(short sctx, const QueryLoc& loc, int counter)
 {
   std::stringstream ss;
   ss << "$$opt_temp_" << (counter);
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  rchandle<var_expr> var = new var_expr(sctx, loc, var_expr::let_var, qname);
+  var_expr* var = new var_expr(sctx, loc, var_expr::let_var, qname);
 
   return var;
 }
@@ -93,16 +93,16 @@ static expr_t hoistCollectionSources(
     hoisted_collections_t& h,
     int& count)
 {
-  if (isHoistableCollection(e.getp())) 
+  if (isHoistableCollection(e.getp()))
   {
-    rchandle<var_expr> var(createTempLetVar(e->get_sctx_id(), e->get_loc(), count));
+    var_expr* var = createTempLetVar(e->get_sctx_id(), e->get_loc(), count);
     std::pair<expr_t, expr_t> p(var.getp(), e);
     h.push_back(p);
     return new wrapper_expr(e->get_sctx_id(), e->get_loc(), var.getp());
   }
 
   expr_iterator i = e->expr_begin();
-  while(!i.done()) 
+  while(!i.done())
   {
     *i = hoistCollectionSources(*i, h, count);
     ++i;
@@ -120,26 +120,26 @@ static expr_t hoistCollectionSources(
 ********************************************************************************/
 static bool isMapInVar(const expr* e, const var_expr* var)
 {
-  if (e == var) 
+  if (e == var)
   {
     return true;
   }
 
-  switch(e->get_expr_kind()) 
+  switch(e->get_expr_kind())
   {
     case wrapper_expr_kind:
       return isMapInVar(static_cast<const wrapper_expr *>(e)->get_expr(), var);
 
-    case flwor_expr_kind: 
+    case flwor_expr_kind:
     {
       const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
-      for(int i = static_cast<int>(flwor->num_clauses()) - 1; i >= 0; --i) 
+      for(int i = static_cast<int>(flwor->num_clauses()) - 1; i >= 0; --i)
       {
         const flwor_clause* clause = (*flwor)[i];
         bool isMap = false;
 
-        switch(clause->get_kind()) 
+        switch(clause->get_kind())
         {
           case flwor_clause::for_clause:
             isMap = (isMap ||
@@ -158,7 +158,7 @@ static bool isMapInVar(const expr* e, const var_expr* var)
       }
     }
 
-    case relpath_expr_kind: 
+    case relpath_expr_kind:
     {
       const relpath_expr* re = static_cast<const relpath_expr *>(e);
       return isMapInVar((*re)[0], var);

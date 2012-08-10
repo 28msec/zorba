@@ -214,7 +214,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr* oldWhere = whereExpr;
       flwor.remove_where_clause();
 
-      rchandle<if_expr> ifExpr = rCtx.theEM->create_if_expr(sctx,
+      if_expr* ifExpr = rCtx.theEM->create_if_expr(sctx,
                                              loc,
                                              oldWhere,
                                              &flwor,
@@ -410,7 +410,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     if ((whereExpr = flwor.get_where()) != NULL)
     {
-      rchandle<if_expr> ifExpr =
+      if_expr* ifExpr =
       rCtx.theEM->create_if_expr(whereExpr->get_sctx(),
                   LOC(whereExpr),
                   whereExpr,

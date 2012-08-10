@@ -77,7 +77,7 @@ public:
 
   ExprManager                * theEM;
 
-  expr_t                       theRoot;
+  expr                       * theRoot;
 
   user_function              * theUDF;
 
@@ -96,7 +96,7 @@ public:
 public:
   RewriterContext(
       CompilerCB* cb,
-      const expr_t& root,
+      expr* root,
       user_function* udf,
       const zstring& msg,
       bool orderedMode);
@@ -105,11 +105,11 @@ public:
 
   CompilerCB* getCompilerCB() const { return theCCB; }
 
-  expr_t getRoot();
+  expr* getRoot();
 
-  void setRoot(expr_t root);
+  void setRoot(expr* root);
 
-  rchandle<var_expr> createTempVar(
+  var_expr* createTempVar(
       static_context* sctx,
       const QueryLoc& loc,
       var_expr::var_kind kind);

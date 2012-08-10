@@ -143,7 +143,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     for (csize i = 0; i < numEvalVars; ++i)
     {
-      var_expr_t ve =
+      var_expr* ve =
       state->ccb->theEM->create_var_expr(outerSctx,
                                          loc,
                                          var_expr::prolog_var,
@@ -381,7 +381,7 @@ PlanIter_t EvalIterator::compile(
   if (mm == NULL)
     throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
-  expr_t rootExpr;
+  expr* rootExpr;
   PlanIter_t rootIter = compiler.compile(ast,
                                          false, // do not apply PUL
                                          rootExpr,

@@ -198,7 +198,7 @@ private:
   CompilerCB* theExprManager;
 
 protected:
-  copy_clause(var_expr* aVar, expr_t aExpr);
+  copy_clause(var_expr* aVar, expr* aExpr);
 
 public:
   ~copy_clause();

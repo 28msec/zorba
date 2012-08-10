@@ -1476,7 +1476,7 @@ fo_expr* wrap_in_enclosed_expr(expr* contentExpr, const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-expr* wrap_in_bev(expr_t e)
+expr* wrap_in_bev(expr * e)
 {
   fo_expr* fo = theExprManager->create_fo_expr(theRootSctx,
                                                e->get_loc(),
@@ -1493,7 +1493,7 @@ expr* wrap_in_bev(expr_t e)
   fn:sort-distinct-nodes-asc, or
   fn:sort-distinct-nodes-desc
 ********************************************************************************/
-expr* wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false)
+expr* wrap_in_dos_and_dupelim(expr* expr, bool atomics, bool reverse = false)
 {
   FunctionConsts::FunctionKind fkind;
 
@@ -1565,7 +1565,7 @@ let_clause_t wrap_in_letclause(expr* e)
   Create a FOR clause for the given FOR variable "fv" and its associated POS var
   "pv" (pv may be NULL). Use the given expr "e" as the defining expr for "fv".
 ********************************************************************************/
-for_clause_t wrap_in_forclause(expr* e, var_expr* fv, var_expr_t pv)
+for_clause_t wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
 {
   assert(fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -13051,8 +13051,8 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
 #ifdef ZORBA_WITH_JSON
-  expr_t targetExpr = pop_nodestack();
-  expr_t contentExpr = pop_nodestack();
+  expr* targetExpr = pop_nodestack();
+  expr* contentExpr = pop_nodestack();
 
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ARRAY_TYPE_ONE,
@@ -13060,7 +13060,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
                                   TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  fo_expr_t updExpr = new fo_expr(theRootSctx,
+  fo_expr* updExpr = new fo_expr(theRootSctx,
                                   loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
                                   targetExpr,

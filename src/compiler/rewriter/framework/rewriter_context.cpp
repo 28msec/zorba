@@ -33,7 +33,7 @@ namespace zorba {
 
 RewriterContext::RewriterContext(
     CompilerCB* aCompilerCB,
-    const expr_t& root,
+    expr* root,
     user_function* udf,
     const zstring& msg,
     bool orderedMode)
@@ -70,19 +70,19 @@ RewriterContext::~RewriterContext()
 }
 
 
-expr_t RewriterContext::getRoot()
+expr* RewriterContext::getRoot()
 {
   return theRoot;
 }
 
 
-void RewriterContext::setRoot(expr_t root)
+void RewriterContext::setRoot(expr* root)
 {
   theRoot = root;
 }
 
 
-rchandle<var_expr> RewriterContext::createTempVar(
+var_expr* RewriterContext::createTempVar(
     static_context* sctx,
     const QueryLoc& loc,
     var_expr::var_kind kind)
@@ -92,7 +92,7 @@ rchandle<var_expr> RewriterContext::createTempVar(
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  rchandle<var_expr> var = theEM->create_var_expr(sctx, loc, kind, qname);
+  var_expr* var = theEM->create_var_expr(sctx, loc, kind, qname);
 
   return var;
 }

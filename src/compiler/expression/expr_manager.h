@@ -297,7 +297,7 @@ public:
       expr*,
       expr*);
 
-  copy_clause* create_copy_clause(var_expr* aVar, expr_t aExpr);
+  copy_clause* create_copy_clause(var_expr* aVar, expr* aExpr);
 
   transform_expr* create_transform_expr(
       static_context* sctx,

@@ -553,7 +553,7 @@ rename_expr* ExprManager::create_rename_expr(
 }
 
 
-copy_clause* ExprManager::create_copy_clause(var_expr* aVar, expr_t aExpr)
+copy_clause* ExprManager::create_copy_clause(var_expr* aVar, expr* aExpr)
 {
   CREATE_AND_RETURN(copy_clause, aVar, aExpr);
 }
