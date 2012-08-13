@@ -482,7 +482,8 @@ static expr* try_hoisting(
   hoisted->setFlags(e->getFlags());
   letvar->setFlags(e->getFlags());
 
-  let_clause_t flref(new let_clause(e->get_sctx(), rCtx.theCCB, e->get_loc(), letvar, hoisted));
+  let_clause_t flref(
+    rCtx.theEM->create_let_clause(e->get_sctx(), e->get_loc(), letvar, hoisted));
 
   letvar->set_flwor_clause(flref.getp());
 

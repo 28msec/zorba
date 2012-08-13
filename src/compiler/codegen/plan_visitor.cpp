@@ -932,7 +932,8 @@ bool begin_visit(flwor_expr& v)
           (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
       {
         materialize_clause* mat =
-        new materialize_clause(v.get_sctx(), v.get_return_expr()->get_loc());
+        theCCB->theEM->create_materialize_clause(v.get_sctx(),
+                                            v.get_return_expr()->get_loc());
 
         v.add_clause(mat);
         ++numClauses;
@@ -981,7 +982,7 @@ bool begin_visit(flwor_expr& v)
                   v.get_clause(i-1)->get_kind() != flwor_clause::group_clause)
               {
                 orderby_clause* mat =
-                new orderby_clause(v.get_sctx(),
+                theCCB->theEM->create_orderby_clause(v.get_sctx(),
                                    c->get_loc(),
                                    true,
                                    modifiers,
@@ -997,7 +998,7 @@ bool begin_visit(flwor_expr& v)
                    v.get_clause(i+1)->get_kind() != flwor_clause::group_clause))
               {
                 orderby_clause* mat =
-                new orderby_clause(v.get_sctx(),
+                theCCB->theEM->create_orderby_clause(v.get_sctx(),
                                    c->get_loc(),
                                    true,
                                    modifiers,
@@ -1032,7 +1033,7 @@ bool begin_visit(flwor_expr& v)
           lastClause->get_kind() != flwor_clause::group_clause)
       {
         orderby_clause* mat =
-        new orderby_clause(v.get_sctx(),
+        theCCB->theEM->create_orderby_clause(v.get_sctx(),
                            v.get_return_expr()->get_loc(),
                            true,
                            modifiers,
@@ -2103,7 +2104,7 @@ void end_visit(eval_expr& v)
                                 args,
                                 varNames,
                                 varTypes,
-                                isGlobalVar, 
+                                isGlobalVar,
                                 v.get_inner_scripting_kind(),
                                 localBindings,
                                 v.getNodeCopy(),

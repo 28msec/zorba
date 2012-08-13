@@ -1559,7 +1559,10 @@ let_clause_t wrap_in_letclause(expr* e, var_expr* lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
 
-  return new let_clause(theRootSctx, theCCB, e->get_loc(), lv, e);
+  return theExprManager->create_let_clause(theRootSctx,
+                                           e->get_loc(),
+                                           lv,
+                                           e);
 }
 
 
@@ -1600,8 +1603,11 @@ for_clause_t wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
     assert(pv->get_kind() == var_expr::pos_var);
   }
 
-  return new for_clause(theRootSctx, theCCB,
-                        e->get_loc(), fv, e, pv);
+  return theExprManager->create_for_clause(theRootSctx,
+                                           e->get_loc(),
+                                           fv,
+                                           e,
+                                           pv);
 }
 
 
@@ -1653,7 +1659,9 @@ flwor_expr* wrap_in_let_flwor(
     var_expr* lv,
     expr* retExpr)
 {
-  flwor_expr* fe = theExprManager->create_flwor_expr(theRootSctx, lv->get_loc(), false);
+  flwor_expr* fe = theExprManager->create_flwor_expr(theRootSctx,
+                                                     lv->get_loc(),
+                                                     false);
 
   fe->add_clause(wrap_in_letclause(domExpr, lv));
 
@@ -1981,7 +1989,7 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
                                                  TreatIterator::TYPE_MATCH);
   }
 
-  expr* declExpr = 
+  expr* declExpr =
   theExprManager->create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
@@ -4740,8 +4748,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     var_expr* varExpr = bind_var(loc, varQName, var_expr::let_var, NULL);
 
     // let $x := dc:collection(xs:QName("example:coll1"))
-    let_clause* lc = new let_clause(theRootSctx,
-                                    theCCB,
+    let_clause* lc = theExprManager->create_let_clause(theRootSctx,
                                     loc,
                                     varExpr,
                                     collExpr);
@@ -4839,12 +4846,13 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                   var_expr::let_var,
                                   NULL);
 
-    let_clause* letClause = new let_clause(theRootSctx,
-                                           theCCB,
+    let_clause* letClause = theExprManager->create_let_clause(theRootSctx,
                                            loc,
                                            varExpr,
                                            collExpr);
-    flwor_expr* flworExpr = theExprManager->create_flwor_expr(theRootSctx, loc, false);
+
+    flwor_expr* flworExpr = theExprManager->create_flwor_expr(theRootSctx,
+                                                              loc, false);
 
 
 
@@ -6093,8 +6101,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
     posVarExpr = bind_var(pv->get_location(), pvarQName, var_expr::pos_var);
   }
 
-  for_clause* fc = new for_clause(theRootSctx,
-                                  theCCB,
+  for_clause* fc = theExprManager->create_for_clause(theRootSctx,
                                   loc,
                                   varExpr,
                                   domainExpr,
@@ -6182,8 +6189,7 @@ void create_let_clause(
 
   var_expr* varExpr = bind_var(loc, varName, var_expr::let_var, type);
 
-  let_clause* clause = new let_clause(theRootSctx,
-                                      theCCB,
+  let_clause* clause = theExprManager->create_let_clause(theRootSctx,
                                       loc,
                                       varExpr,
                                       domainExpr);
@@ -6247,8 +6253,7 @@ void intermediate_visit(const WindowClause& v, void* /*visit_state*/)
                                      window_clause::tumbling_window :
                                      window_clause::sliding_window);
 
-  window_clause* clause = new window_clause(theRootSctx,
-                                            theCCB,
+  window_clause* clause = theExprManager->create_window_clause(theRootSctx,
                                             v.get_location(),
                                             winKind,
                                             NULL,
@@ -6324,7 +6329,7 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
       rchandle<WindowVars> vars = cond->get_winvars();
       pop_wincond_vars(vars, inputCondVarExprs[i]);
 
-      conds[i] = new flwor_wincond(theCCB,
+      conds[i] = theExprManager->create_flwor_wincond(
                                    theSctx,
                                    cond->is_only(),
                                    inputCondVarExprs[i],
@@ -6659,7 +6664,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngvar));
   }
 
-  group_clause* clause = new group_clause(theRootSctx,
+  group_clause* clause = theExprManager->create_group_clause(theRootSctx,
                                           loc,
                                           grouping_rebind,
                                           nongrouping_rebind,
@@ -6782,7 +6787,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
     orderExprs[i] = orderExpr;
   }
 
-  orderby_clause* clause = new orderby_clause(theRootSctx,
+  orderby_clause* clause = theExprManager->create_orderby_clause(theRootSctx,
                                               loc,
                                               v.get_stable_bit(),
                                               modifiers,
@@ -6898,7 +6903,7 @@ void end_visit(const WhereClause& v, void* /*visit_state*/)
 
   wrap_in_debugger_expr(whereExpr, whereExpr->get_loc());
 
-  where_clause* clause = new where_clause(theRootSctx,
+  where_clause* clause = theExprManager->create_where_clause(theRootSctx,
                                           loc,
                                           whereExpr);
 
@@ -6925,7 +6930,7 @@ void end_visit(const CountClause& v, void* /*visit_state*/)
 
   var_expr* varExpr = bind_var(loc, v.get_varname(), var_expr::count_var, NULL);
 
-  count_clause* clause = new count_clause(theRootSctx,
+  count_clause* clause = theExprManager->create_count_clause(theRootSctx,
                                           loc,
                                           varExpr);
 
@@ -13012,7 +13017,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
     nameExpr = wrap_in_type_promotion(nameExpr,
                                       theRTM.STRING_TYPE_ONE,
                                       PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
-                                   
+
     valueExpr = wrap_in_type_match(valueExpr,
                                    rtm.ITEM_TYPE_ONE,
                                    loc,
@@ -13118,7 +13123,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,
-                 loc, 
+                 loc,
                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
                  targetExpr,
                  contentExpr);
@@ -13165,7 +13170,7 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
                                    theRTM.ANY_ATOMIC_TYPE_ONE,
                                    PromoteIterator::JSONIQ_SELECTOR, // JNUP0007
                                    NULL);
-  
+
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ITEM_TYPE_ONE,
                                   loc,
@@ -13224,7 +13229,7 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
                                loc,
                                TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
                                NULL);
-                               
+
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,
                  loc,

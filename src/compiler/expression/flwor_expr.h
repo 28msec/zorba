@@ -56,6 +56,7 @@ class flwor_clause : public SimpleRCObject
 {
   friend class flwor_expr;
   friend class ExprIterator;
+  friend class ExprManager;
 
 public:
   typedef std::vector<std::pair<expr*, var_expr*> > rebind_list_t;
@@ -79,7 +80,6 @@ protected:
   ClauseKind                theKind;
   flwor_expr              * theFlworExpr;
 
-public:
   flwor_clause(static_context* sctx, const QueryLoc& loc, ClauseKind kind)
     :
     theContext(sctx),
@@ -89,6 +89,7 @@ public:
   {
   }
 
+public:
   const QueryLoc& get_loc() const { return theLocation; }
 
   ClauseKind get_kind() const { return theKind; }
@@ -109,7 +110,7 @@ public:
 
 /***************************************************************************//**
 
-  ForClause ::=	"outer"? "for" "$" VarName TypeDeclaration? PositionalVar?
+  ForClause ::= "outer"? "for" "$" VarName TypeDeclaration? PositionalVar?
                 "in" DomainExpr
 
   LetClause ::= "let" "$" VarName TypeDeclaration? ":=" DomainExpr
@@ -136,6 +137,7 @@ public:
 class forletwin_clause : public flwor_clause
 {
   friend class flwor_expr;
+  friend class ExprManager;
   friend class ExprIterator;
 
 protected:
@@ -143,7 +145,6 @@ protected:
   expr       * theDomainExpr;
   CompilerCB * theCCB;
 
-public:
   forletwin_clause(
         static_context* sctx,
         CompilerCB* exprMan,
@@ -152,6 +153,7 @@ public:
         var_expr* varExpr,
         expr* domainExpr);
 
+public:
   ~forletwin_clause();
 
   void set_expr(expr* v);
@@ -170,6 +172,7 @@ public:
 class for_clause : public forletwin_clause
 {
   friend class flwor_expr;
+  friend class ExprManager;
   friend class ExprIterator;
 
 protected:
@@ -177,7 +180,6 @@ protected:
   var_expr    * theScoreVarExpr;
   bool          theAllowingEmpty;
 
-public:
   for_clause(
         static_context* sctx,
         CompilerCB* exprMan,
@@ -188,6 +190,7 @@ public:
         var_expr* scoreVarExpr = NULL,
         bool isOuter = false);
 
+public:
   ~for_clause();
 
 public:
@@ -216,21 +219,22 @@ public:
 class let_clause : public forletwin_clause
 {
   friend class flwor_expr;
+  friend class ExprManager;
   friend class ExprIterator;
 
 protected:
   var_expr  * theScoreVarExpr;
   bool        theLazyEval;
 
-public:
   let_clause(
         static_context* sctx,
-        CompilerCB* exprMan,
+        CompilerCB* ccb,
         const QueryLoc& loc,
         var_expr* varExpr,
         expr* domainExpr,
         bool lazy = false);
 
+public:
   ~let_clause();
 
 public:
@@ -257,6 +261,7 @@ public:
 class window_clause : public forletwin_clause
 {
   friend class flwor_expr;
+  friend class ExprManager;
   friend class ExprIterator;
 
 public:
@@ -268,7 +273,6 @@ protected:
   flwor_wincond_t   theWinStopCond;
   bool              theLazyEval;
 
-public:
   window_clause(
         static_context* sctx,
         CompilerCB* exprMan,
@@ -280,6 +284,7 @@ public:
         flwor_wincond_t winStop,
         bool lazy = false);
 
+public:
   ~window_clause();
 
 public:
@@ -336,6 +341,7 @@ public:
 class flwor_wincond : public SimpleRCObject
 {
   friend class flwor_expr;
+  friend class ExprManager;
   friend class ExprIterator;
 
 public:
@@ -363,7 +369,6 @@ protected:
 
   CompilerCB* theCCB;
 
-public:
   flwor_wincond(
       CompilerCB* ccb,
       static_context* sctx,
@@ -372,6 +377,7 @@ public:
       const vars& out_vars,
       expr* cond);
 
+public:
   ~flwor_wincond();
 
   expr* get_cond() const { return theCondExpr; }
@@ -420,6 +426,7 @@ public:
 class group_clause : public flwor_clause
 {
   friend class flwor_expr;
+  friend class ExprManager;
   friend class ExprIterator;
 
 protected:
@@ -427,7 +434,6 @@ protected:
   rebind_list_t            theNonGroupVars;
   std::vector<std::string> theCollations;
 
-public:
   group_clause(
       static_context* sctx,
       const QueryLoc& loc,
@@ -435,6 +441,7 @@ public:
       rebind_list_t ngvars,
       const std::vector<std::string>& collations);
 
+public:
   ~group_clause();
 
   const std::vector<std::string>& get_collations() const { return theCollations; }
@@ -482,6 +489,7 @@ public:
 class orderby_clause : public flwor_clause
 {
   friend class ExprIterator;
+  friend class ExprManager;
   friend class flwor_expr;
 
 protected:
@@ -490,7 +498,6 @@ protected:
   std::vector<OrderModifier>  theModifiers;
   std::vector<expr*>          theOrderingExprs;
 
-public:
   orderby_clause (
       static_context* sctx,
       const QueryLoc& loc,
@@ -498,6 +505,7 @@ public:
       const std::vector<OrderModifier>& modifiers,
       const std::vector<expr*>& orderingExprs);
 
+public:
   bool is_stable() const { return theStableOrder; }
 
   const std::vector<OrderModifier>& get_modifiers() const { return theModifiers; }
@@ -528,11 +536,12 @@ public:
 class materialize_clause : public flwor_clause
 {
   friend class ExprIterator;
+  friend class ExprManager;
   friend class flwor_expr;
 
-public:
   materialize_clause(static_context* sctx, const QueryLoc& loc);
 
+public:
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
@@ -546,13 +555,14 @@ public:
 class count_clause : public flwor_clause
 {
   friend class ExprIterator;
+  friend class ExprManager;
 
 protected:
   var_expr* theVarExpr;
 
-public:
   count_clause(static_context* sctx, const QueryLoc& loc, var_expr* var);
 
+public:
   ~count_clause();
 
   var_expr* get_var() const { return theVarExpr; }
@@ -567,13 +577,14 @@ public:
 class where_clause : public flwor_clause
 {
   friend class ExprIterator;
+  friend class ExprManager;
   friend class flwor_expr;
 
   expr* theWhereExpr;
 
-public:
   where_clause(static_context* sctx, const QueryLoc& loc, expr* where);
 
+public:
   expr* get_expr() const { return theWhereExpr; }
 
   void set_expr(expr* where);
