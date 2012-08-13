@@ -932,23 +932,29 @@ void MarkNodeCopyProps::applyInternal(
     {
       expr* arg = e->get_arg_expr(i);
 
+      if (arg == NULL)
+        continue;
+
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(arg, &udfCaller, sources);
       markSources(sources);
     }
-
-    std::vector<var_expr*> globalVars;
+#if 1
+    std::vector<VarInfo*> globalVars;
     node->get_sctx()->getVariables(globalVars, false, true);
 
-    FOR_EACH(std::vector<var_expr*>, ite, globalVars)
+    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
     {
-      var_expr* globalVar = (*ite);
+      var_expr* globalVar = (*ite)->getVar();
+
+      if (globalVar == NULL)
+        continue;
 
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(globalVar, &udfCaller, sources);
       markSources(sources);
     }
-
+#endif
     break;
   }
 
@@ -1314,16 +1320,16 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     {
       markForSerialization(e->get_arg_expr(i));
     }
-
-    std::vector<var_expr*> globalVars;
+#if 1
+    std::vector<VarInfo*> globalVars;
     e->get_sctx()->getVariables(globalVars, true, true);
-
-    FOR_EACH(std::vector<var_expr*>, ite, globalVars)
+  
+    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
     {
-      var_expr* globalVar = (*ite);
+      var_expr* globalVar = (*ite)->getVar();
       markForSerialization(globalVar);
     }
-
+#endif
     return;
   }
 

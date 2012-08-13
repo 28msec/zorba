@@ -502,11 +502,41 @@ var_expr* ExprManager::create_var_expr(const var_expr& source)
 }
 
 
-var_expr* ExprManager::create_var_expr(::zorba::serialization::Archiver& ar)
+////////////////////////////////////////////////////////////////////////////////
+
+
+#ifdef ZORBA_WITH_JSON
+
+json_array_expr* ExprManager::create_json_array_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr* content)
 {
-  return static_cast<var_expr*>(reg(new (theMemoryMgr) var_expr(ar)));
+  CREATE_AND_RETURN_EXPR(json_array_expr, sctx, loc, content);
 }
 
+
+json_object_expr* ExprManager::create_json_object_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr* content,
+    bool accumulate)
+{
+  CREATE_AND_RETURN_EXPR(json_object_expr, sctx, loc, content, accumulate);
+}
+
+
+json_direct_object_expr* ExprManager::create_json_direct_object_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<expr*>& names,
+    std::vector<expr*>& values)
+{
+  CREATE_AND_RETURN_EXPR(json_direct_object_expr, sctx, loc, names, values);
+}
+
+
+#endif // ZORBA_WITH_JSON
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -856,35 +886,6 @@ flwor_expr* ExprManager::create_flwor_expr(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
-json_array_expr* ExprManager::create_json_array_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      expr* content)
-{
-  CREATE_AND_RETURN_EXPR(json_array_expr, sctx, loc, content);
-}
-
-json_object_expr* ExprManager::create_json_object_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      expr* content,
-      bool accumulate)
-{
-  CREATE_AND_RETURN_EXPR(json_object_expr, sctx, loc, content, accumulate);
-}
-
-json_direct_object_expr* ExprManager::create_json_direct_object_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<expr*>& names,
-      std::vector<expr*>& values)
-{
-  CREATE_AND_RETURN_EXPR(json_direct_object_expr, sctx, loc, names, values);
-}
-
-#endif // ZORBA_WITH_JSON
 
 } // namespace zorba
 

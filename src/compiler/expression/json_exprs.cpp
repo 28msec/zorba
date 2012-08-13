@@ -16,6 +16,7 @@
 #include "stdafx.h"
 #include "compiler/expression/json_exprs.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #ifdef ZORBA_WITH_JSON
 
@@ -61,9 +62,10 @@ void json_array_expr::compute_scripting_kind()
 
 expr* json_array_expr::clone(substitution_t& subst) const
 {
-  return theCCB->theEM->create_json_array_expr(theSctx,
-                             get_loc(),
-                             theContentExpr->clone(subst));
+  return theCCB->theEM->
+         create_json_array_expr(theSctx,
+                                get_loc(),
+                                theContentExpr->clone(subst));
 }
 
 
@@ -89,7 +91,6 @@ json_object_expr::json_object_expr(
 }
 
 
-
 void json_object_expr::compute_scripting_kind()
 {
   if (theContentExpr)
@@ -109,12 +110,12 @@ void json_object_expr::compute_scripting_kind()
 
 expr* json_object_expr::clone(substitution_t& subst) const
 {
-  return theCCB->theEM->create_json_object_expr(theSctx,
-                              get_loc(),
-                              (theContentExpr ?
-                               theContentExpr->clone(subst) :
-                               NULL),
-                              theAccumulate);
+  return theCCB->theEM->
+         create_json_object_expr(theSctx,
+                                 get_loc(),
+                                 (theContentExpr ?
+                                  theContentExpr->clone(subst) : NULL),
+                                 theAccumulate);
 }
 
 
@@ -197,7 +198,7 @@ expr* json_direct_object_expr::clone(substitution_t& subst) const
   }
 
   return theCCB->theEM->
-      create_json_direct_object_expr(theSctx, get_loc(), names, values);
+         create_json_direct_object_expr(theSctx, get_loc(), names, values);
 }
 
 

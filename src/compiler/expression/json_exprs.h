@@ -49,7 +49,7 @@ protected:
       expr* content);
 
 public:
-  expr* get_expr() const { return theContentExpr.getp(); }
+  expr* get_expr() const { return theContentExpr; }
 
   void compute_scripting_kind();
 
@@ -86,7 +86,7 @@ protected:
       bool accumulate);
 
 public:
-  expr* get_expr() const { return theContentExpr.getp(); }
+  expr* get_expr() const { return theContentExpr; }
 
   bool is_accumulating() const { return theAccumulate; }
 
@@ -128,9 +128,9 @@ protected:
 public:
   csize num_pairs() const { return theNames.size(); }
 
-  expr* get_value_expr(csize i) const { return theValues[i].getp(); }
+  expr* get_value_expr(csize i) const { return theValues[i]; }
 
-  expr* get_name_expr(csize i) const { return theNames[i].getp(); }
+  expr* get_name_expr(csize i) const { return theNames[i]; }
 
   void compute_scripting_kind();
 

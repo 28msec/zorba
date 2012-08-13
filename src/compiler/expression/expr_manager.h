@@ -268,7 +268,28 @@ public:
 
   var_expr* create_var_expr(const var_expr& source);
 
-  var_expr* create_var_expr(::zorba::serialization::Archiver& ar);
+////////////////////////////////////////////////////////////////////////////////
+
+#ifdef ZORBA_WITH_JSON
+
+  json_array_expr* create_json_array_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      expr* content);
+
+  json_object_expr* create_json_object_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      expr* content,
+      bool accumulate);
+
+  json_direct_object_expr* create_json_direct_object_expr(
+      static_context* sctx,
+      const QueryLoc&,
+      std::vector<expr*>& names,
+      std::vector<expr*>& values);
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 

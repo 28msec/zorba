@@ -249,6 +249,8 @@ public:
 
 
 private:
+  CompilerCB                    * theCCB;
+
   QueryLoc                        theLocation;
 
   static_context                * theSctx;
@@ -278,15 +280,17 @@ private:
   PlanIter_t                      theDocIndexerPlan;
   DocIndexer_t                    theDocIndexer;
 
-  CompilerCB                    * theCCB;
-
 public:
   SERIALIZABLE_CLASS(IndexDecl)
   IndexDecl(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  IndexDecl(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, const store::Item_t& name);
+  IndexDecl(
+      static_context* sctx,
+      CompilerCB* ccb,
+      const QueryLoc& loc,
+      const store::Item_t& name);
 
   ~IndexDecl();
 

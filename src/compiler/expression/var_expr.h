@@ -27,6 +27,7 @@ class forletwin_clause;
 class for_clause;
 class copy_clause;
 class var_expr;
+class VarInfo;
 
 /******************************************************************************
 
@@ -121,7 +122,9 @@ class var_expr : public expr
 public:
   enum var_kind
   {
-    eval_var = 0,
+    unknown_var = 0,
+
+    eval_var,
 
     for_var,
     let_var,
@@ -144,9 +147,7 @@ public:
 
     local_var,
 
-    arg_var,
-
-    unknown_var  // TODO: get rid
+    arg_var
   };
 
 protected:
@@ -168,6 +169,8 @@ protected:
 
   std::vector<expr*>    theSetExprs;
 
+  VarInfo             * theVarInfo;
+
   bool                  theIsExternal;
 
   bool                  theIsPrivate;
@@ -177,33 +180,9 @@ protected:
   bool                  theHasInitializer;
 
 public:
-  void serialize(::zorba::serialization::Archiver& ar);
-
-  void serialize_internal(::zorba::serialization::Archiver& ar);
-
-  serialization::TypeCode get_serializer_type_code() const
-  {
-    return serialization::TYPE_var_expr;
-  }
-
-  class class_factory : public ::zorba::serialization::ClassDeserializer
-  {
-  public:
-    class_factory()
-    {
-      serialization::ClassSerializer::getInstance()->
-      register_class_factory(serialization::TYPE_var_expr, this);
-    }
-
-    serialization::SerializeBaseClass* create_new(serialization::Archiver& ar);
-  };
-
-  static class_factory g_class_factory;
-
-public:
   static std::string decode_var_kind(enum var_kind);
 
-protected:
+public:
   var_expr(
       CompilerCB* ccb,
       static_context* sctx,
@@ -213,12 +192,15 @@ protected:
 
   var_expr(const var_expr& source);
 
-  var_expr(::zorba::serialization::Archiver& ar);
+  virtual ~var_expr();
 
-public:
+  void set_var_info(VarInfo* v);
+
+  VarInfo* get_var_info() const { return theVarInfo; }
+
   ulong get_unique_id() const { return theUniqueId; }
 
-  void set_unique_id(ulong v) { assert(theUniqueId == 0); theUniqueId = v; }
+  void set_unique_id(ulong v);
 
   store::Item* get_name() const;
 
@@ -232,11 +214,11 @@ public:
 
   bool is_external() const { return theIsExternal; }
 
-  void set_external(bool v) { theIsExternal = v; }
+  void set_external(bool v);
 
-  bool hasInitializer() const { return theHasInitializer; }
+  bool has_initializer() const { return theHasInitializer; }
 
-  void setHasInitializer(bool v) { theHasInitializer = v; }
+  void set_has_initializer(bool v);
 
   bool is_mutable() const { return theIsMutable; }
 

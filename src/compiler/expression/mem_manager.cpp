@@ -17,7 +17,6 @@
 #include "mem_manager.h"
 
 #include <iostream>
-#include <cassert>
 #include <new>
 
 namespace zorba
@@ -26,51 +25,18 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-MemPage::MemPage(size_t size)
-  :
-  thePageSize(size),
-  theFreeSize(size)
+MemoryManager::MemoryManager()
 {
+  thePages.reserve(1024);
+
   thePageStart = new char[thePageSize];
 
   if (thePageStart == NULL)
     throw std::bad_alloc();
 
   thePageEnd = thePageStart + thePageSize;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-MemPage::~MemPage()
-{
-  delete [] thePageStart;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void* MemPage::allocate(size_t size)
-{
-  assert(size > 0 && size <= theFreeSize);
-
-  void* allocation = (void*)(thePageEnd - theFreeSize);
-
-  theFreeSize -= size;
-
-  return allocation;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-MemoryManager::MemoryManager()
-{
-  theCurrentPage = new MemPage();
-  thePages.push_front(theCurrentPage);
+  theFreeSize = thePageSize;
+  thePages.push_back(thePageStart);
 }
 
 
@@ -79,34 +45,12 @@ MemoryManager::MemoryManager()
 ********************************************************************************/
 MemoryManager::~MemoryManager()
 {
-  for(std::list<MemPage*>::iterator iter = thePages.begin();
+  for(std::vector<char*>::iterator iter = thePages.begin();
       iter != thePages.end();
       ++iter)
   {
-    delete *iter;
+    delete [] (*iter);
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void* MemoryManager::allocate(size_t size)
-{
-  assert(size <= MemPage::DEFAULT_PAGE_SIZE);
-
-  if (theCurrentPage->space() < size)
-  {
-    theCurrentPage = new MemPage();
-    thePages.push_front(theCurrentPage);
-    
-#ifndef NDEBUG
-    //std::cout << "allocated new mem page of size " << MemPage::DEFAULT_PAGE_SIZE
-    //          << " num pages = " << thePages.size() << std::endl;
-#endif
-  }
-
-  return theCurrentPage->allocate(size);
 }
 
 

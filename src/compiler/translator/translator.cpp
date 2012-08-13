@@ -1133,7 +1133,7 @@ void bind_var(var_expr* e, static_context* sctx)
 {
   assert(sctx != NULL);
 
-  if(e->get_kind() == var_expr::let_var)
+  if (e->get_kind() == var_expr::let_var)
   {
     sctx->bind_var(e, e->get_loc(), err::XQST0039);
   }
@@ -1231,7 +1231,22 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, qname, loc);
 
-  return theSctx->lookup_var(qnameItem, loc, err);
+  VarInfo* var = theSctx->lookup_var(qnameItem.getp());
+
+  if (!var)
+  {
+    if (err != zerr::ZXQP0000_NO_ERROR)
+    {
+      zstring varName = static_context::var_name(qnameItem);
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(varName, ZED(VariabledUndeclared)),
+      ERROR_LOC(loc));
+    }
+
+    return NULL;
+  }
+
+  return var->getVar();
 }
 
 
@@ -1243,12 +1258,24 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
   If var is not found, the method raises the given error, unless the given error
   is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
 ********************************************************************************/
-var_expr* lookup_var(
-    const store::Item* qname,
-    const QueryLoc& loc,
-    const Error& err)
+var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, const Error& err)
 {
-  return theSctx->lookup_var(qname, loc, err);
+  VarInfo* var = theSctx->lookup_var(qname);
+
+  if (!var)
+  {
+    if (err != zerr::ZXQP0000_NO_ERROR)
+    {
+      zstring varName = static_context::var_name(qname);
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(varName, ZED(VariabledUndeclared)),
+      ERROR_LOC(loc));
+    }
+
+    return NULL;
+  }
+
+  return var->getVar();
 }
 
 
@@ -1736,7 +1763,7 @@ void wrap_in_debugger_expr(
     theCCB->theDebuggerCommons->addBreakable(lBreakable, aIsMainModuleBreakable);
 
     // retrieve all variables that are in the current scope
-    typedef std::vector<var_expr*> VarExprVector;
+    typedef std::vector<VarInfo*> VarExprVector;
     VarExprVector lAllInScopeVars;
     theSctx->getVariables(lAllInScopeVars);
 
@@ -1746,7 +1773,7 @@ void wrap_in_debugger_expr(
          lIter != lAllInScopeVars.end();
          ++lIter)
     {
-      var_expr* argVar = *lIter;
+      var_expr* argVar = (*lIter)->getVar();
 
       store::Item* lVarname = argVar->get_name();
 
@@ -1945,23 +1972,21 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
     varType = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
 
-  if (initExpr != NULL && varType != NULL)
+  if (initExpr != NULL && varType != NULL && !b.is_extern())
   {
     initExpr = theExprManager->create_treat_expr(theRootSctx,
-                              loc,
-                              initExpr,
-                              varType,
-                              TreatIterator::TYPE_MATCH);
+                                                 loc,
+                                                 initExpr,
+                                                 varType,
+                                                 TreatIterator::TYPE_MATCH);
   }
 
-  expr* declExpr = theExprManager->create_var_decl_expr(theRootSctx,
-                                                        loc,
-                                                        varExpr,
-                                                        initExpr);
+  expr* declExpr = 
+  theExprManager->create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
 
-  // check type for vars that are external or have an init expr
+  // check type for vars that are external
   if (varType != NULL && b.is_extern())
   {
     expr* getExpr = theExprManager->create_fo_expr(theRootSctx, loc, varGet, varExpr);
@@ -3860,7 +3885,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     if (initExpr != NULL)
     {
       expr::checkSimpleExpr(initExpr);
-      ve->setHasInitializer(true);
+      ve->set_has_initializer(true);
     }
 
     // If this is a library module, register the var in the exported sctx as well.
@@ -6557,7 +6582,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       {
         if (groupSpec.get_collation_spec() == NULL &&
             prevSpec.get_collation_spec() == NULL)
-        break;
+          break;
 
         if (groupSpec.get_collation_spec() != NULL &&
             prevSpec.get_collation_spec() != NULL &&
@@ -6576,7 +6601,15 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       store::Item_t varName;
       expand_no_default_qname(varName, groupSpec.get_var_name(), loc);
 
-      expr* inputExpr = sctx->lookup_var(varName, loc, err::XPST0008);
+      VarInfo* var = sctx->lookup_var(varName.getp());
+
+      if (!var)
+      {
+        RAISE_ERROR(err::XPST0008, loc,
+        ERROR_PARAMS(varName->getStringValue(), ZED(VariabledUndeclared)));
+      }
+
+      expr* inputExpr = var->getVar();
 
       if (inputExpr->get_expr_kind() == var_expr_kind)
       {
@@ -8485,32 +8518,33 @@ void* begin_visit(const PathExpr& v)
 #ifdef ZORBA_WITH_JSON
   if (pe_type == ParseConstants::path_relative)
   {
-    RelativePathExpr* lRootRelPathExpr
-      = dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr());
+    RelativePathExpr* lRootRelPathExpr =
+    dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
 
-    ContextItemExpr* lStepExpr
-    = dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr());
+    ContextItemExpr* lStepExpr =
+    dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr());
 
-    AxisStep* lRelPathExpr
-    = dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr());
+    AxisStep* lRelPathExpr =
+    dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr());
+
     // Only rewrites if expression consists of a context item step on the left
     // and of an axis step on the right,
     // AND if this context item was set implicitly by the parser, meaning,
     // the original expression was only an axis step.
     if (lRelPathExpr && lStepExpr && lRootRelPathExpr->is_implicit())
     {
-      ForwardStep* lFwdStep
-        = dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step());
+      ForwardStep* lFwdStep =
+      dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step());
 
       if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
       {
-        AbbrevForwardStep* lAbbrFwdStep
-          = dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step());
+        AbbrevForwardStep* lAbbrFwdStep =
+        dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step());
 
         if (lAbbrFwdStep)
         {
-          const NameTest* lNodetest
-            = dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
+          const NameTest* lNodetest =
+          dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
 
           if (lNodetest)
           {
@@ -8522,19 +8556,19 @@ void* begin_visit(const PathExpr& v)
 
               if (lLocal == "true")
               {
-                push_nodestack(new const_expr(theRootSctx, loc, true));
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, loc, true));
                 return (void*)1;
               }
               else if (lLocal == "false")
               {
-                push_nodestack(new const_expr(theRootSctx, loc, false));
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, loc, false));
                 return (void*)1;
               }
               else if (lLocal == "null")
               {
                 store::Item_t lNull;
                 GENV_ITEMFACTORY->createJSONNull(lNull);
-                push_nodestack(new const_expr(theRootSctx, loc, lNull));
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, loc, lNull));
                 return (void*)1;
               }
             }
@@ -8820,7 +8854,8 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
     // If step-i was a reverse axis with predicates, we must reorder the
     // result of flworExpr because it is going to be produced in reverse
     // doc order.
-    AxisStep* axisStep = rpe.get_step_expr().dyn_cast<AxisStep>();
+    AxisStep* axisStep = dynamic_cast<AxisStep*>(rpe.get_step_expr());
+
     if (axisStep != NULL && axisStep->get_reverse_step() != NULL)
     {
       sourceExpr = wrap_in_dos_and_dupelim(sourceExpr, true);
@@ -10430,24 +10465,27 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                          theNSCtx);
         resultExpr = evalExpr;
 
-        std::vector<var_expr*> inscopeVars;
+        std::vector<VarInfo*> inscopeVars;
         theSctx->getVariables(inscopeVars);
+
         csize numVars = inscopeVars.size();
 
         for (csize i = 0; i < numVars; ++i)
         {
-          if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
-            continue;
+          var_expr* ve = inscopeVars[i]->getVar();
 
           var_expr* evalVar = create_var(loc,
-                                          inscopeVars[i]->get_name(),
+                                          ve->get_name(),
                                           var_expr::eval_var,
-                                          inscopeVars[i]->get_return_type());
+                                          ve->get_return_type());
 
-          // At thgis point, the domain expr of an eval var is always another var.
+          // At this point, the domain expr of an eval var is always another var.
           // However, that other var may be later inlined, so in general, the domain
           // expr of an eval var may be any expr.
-          expr* valueExpr = inscopeVars[i];
+          expr* valueExpr = NULL;
+
+          if (ve->get_kind() != var_expr::prolog_var)
+            valueExpr = ve;
 
           evalExpr->add_var(evalVar, valueExpr);
         }
@@ -10514,11 +10552,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           let_clause_t lc;
           store::Item_t qnameItem;
 
-          // cannot use create_temp_var() as the variables created there are not accessible
-          // use a special name but check for name clashes
+          // cannot use create_temp_var() as the variables created there are not
+          // accessible. use a special name but check for name clashes
           do
           {
-            std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
+            std::string localName = "temp_invoke_var" +
+                                    ztd::to_string(theTempVarCounter++);
             GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
           }
           while (lookup_var(qnameItem, loc, zerr::ZXQP0000_NO_ERROR) != NULL);
@@ -10565,20 +10604,22 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         localExpr =
         theExprManager->create_fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
-        // qnameExpr := concat("Q{", namespaceExpr, "}", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
+        // qnameExpr := concat("Q{",
+        //                     namespaceExpr,
+        //                     "}",
+        //                     localExpr,
+        //                     "($temp_invoke_var2, $temp_invoke_var3,...)")
         std::vector<expr*> concat_args;
-        concat_args.push_back(
-            theExprManager->create_const_expr(theRootSctx, loc, "Q{"));
+        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, loc, "Q{"));
         concat_args.push_back(namespaceExpr);
-        concat_args.push_back(
-            theExprManager->create_const_expr(theRootSctx, loc, "}"));
+        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, loc, "}"));
         concat_args.push_back(localExpr);
         concat_args.push_back(theExprManager->create_const_expr(theRootSctx, loc, query_params));
 
         qnameExpr = theExprManager->create_fo_expr(theRootSctx,
-                                loc,
-                                GET_BUILTIN_FUNCTION(FN_CONCAT_N),
-                                concat_args);
+                                                   loc,
+                                                   GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                                                   concat_args);
 
         eval_expr* evalExpr =
         theExprManager->create_eval_expr(theCCB,
@@ -10591,23 +10632,28 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         flworExpr->set_return_expr(evalExpr);
         resultExpr = flworExpr;
 
-        std::vector<var_expr*> inscopeVars;
+#if 0
+        std::vector<VarInfo*> inscopeVars;
         theSctx->getVariables(inscopeVars);
+
         csize numVars = inscopeVars.size();
 
         for (csize i = 0; i < numVars; ++i)
         {
-          if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
+          var_expr* ve = inscopeVars[i]->getVar();
+
+          if (ve->get_kind() == var_expr::prolog_var)
             continue;
 
           var_expr* evalVar = create_var(loc,
-                                          inscopeVars[i]->get_name(),
-                                          var_expr::eval_var,
-                                          inscopeVars[i]->get_return_type());
+                                         ve->get_name(),
+                                         var_expr::eval_var,
+                                         ve->get_return_type());
 
-          expr* valueExpr = inscopeVars[i];
+          expr* valueExpr = ve;
           evalExpr->add_var(evalVar, valueExpr);
         }
+#endif
 
         for (csize i = 0; i < temp_vars.size(); ++i)
         {
@@ -10720,11 +10766,11 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
       func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
     }
 
-    accessorExpr = new fo_expr(theRootSctx,
-                               loc,
-                               func,
-                               flworVarExpr,
-                               arguments[0]);
+    accessorExpr = theExprManager->create_fo_expr(theRootSctx,
+                                                  loc,
+                                                  func,
+                                                  flworVarExpr,
+                                                  arguments[0]);
 
     normalize_fo(accessorExpr);
 
@@ -10732,7 +10778,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
     pop_scope();
 
-    push_nodestack(flworExpr.getp());
+    push_nodestack(flworExpr);
 
     return;
   }
@@ -10853,7 +10899,7 @@ void* begin_visit(const InlineFunction& v)
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
-  std::vector<var_expr*> scopedVars;
+  std::vector<VarInfo*> scopedVars;
   theSctx->getVariables(scopedVars);
 
   push_scope();
@@ -10886,10 +10932,11 @@ void* begin_visit(const InlineFunction& v)
 
   // Handle inscope variables. For each inscope var, a let binding is added to
   // the flwor.
-  std::vector<var_expr*>::iterator ite = scopedVars.begin();
+  std::vector<VarInfo*>::iterator ite = scopedVars.begin();
+
   for(; ite != scopedVars.end(); ++ite)
   {
-    var_expr* varExpr = (*ite);
+    var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
 
     if (kind == var_expr::prolog_var || kind == var_expr::local_var)
@@ -11067,7 +11114,7 @@ void end_visit(const JSONArrayConstructor& v, void* /*visit_state*/)
     contentExpr = pop_nodestack();
   }
 
-  push_nodestack(new json_array_expr(theRootSctx, loc, contentExpr));
+  push_nodestack(theExprManager->create_json_array_expr(theRootSctx, loc, contentExpr));
 #endif
 }
 
@@ -11099,16 +11146,18 @@ void end_visit(const JSONObjectConstructor& v, void* /*visit_state*/)
   {
     contentExpr = pop_nodestack();
 
-    contentExpr = new treat_expr(theRootSctx,
-                                 contentExpr->get_loc(),
-                                 contentExpr,
-                                 GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
-                                 TreatIterator::TYPE_MATCH,
-                                 true,
-                                 NULL);
+    contentExpr = theExprManager->
+    create_treat_expr(theRootSctx,
+                      contentExpr->get_loc(),
+                      contentExpr,
+                      GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
+                      TreatIterator::TYPE_MATCH,
+                      true,
+                      NULL);
   }
 
-  expr* jo = new json_object_expr(theRootSctx, loc, contentExpr, v.get_accumulate());
+  expr* jo = theExprManager->
+  create_json_object_expr(theRootSctx, loc, contentExpr, v.get_accumulate());
 
   push_nodestack(jo);
 #endif
@@ -11147,7 +11196,8 @@ void end_visit(const JSONDirectObjectConstructor& v, void* /*visit_state*/)
     values[i-1] = pop_nodestack();
   }
 
-  expr* jo = new json_direct_object_expr(theRootSctx, loc, names, values);
+  expr* jo = theExprManager->
+  create_json_direct_object_expr(theRootSctx, loc, names, values);
 
   push_nodestack(jo);
 #endif
@@ -11197,20 +11247,23 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
   expr* valueExpr = pop_nodestack();
 
   nameExpr = wrap_in_atomization(nameExpr);
-  nameExpr = new promote_expr(theRootSctx,
-                              nameExpr->get_loc(),
-                              nameExpr,
-                              GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                              PromoteIterator::JSONIQ_PAIR_NAME, // JNTY0001
-                              NULL);
 
-  valueExpr = new treat_expr(theRootSctx,
-                             valueExpr->get_loc(),
-                             valueExpr,
-                             GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-                             TreatIterator::JSONIQ_VALUE, // JNTY0002
-                             false,
-                             NULL);
+  nameExpr = theExprManager->
+  create_promote_expr(theRootSctx,
+                      nameExpr->get_loc(),
+                      nameExpr,
+                      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                      PromoteIterator::JSONIQ_PAIR_NAME, // JNTY0001
+                      NULL);
+
+  valueExpr = theExprManager->
+  create_treat_expr(theRootSctx,
+                    valueExpr->get_loc(),
+                    valueExpr,
+                    GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+                    TreatIterator::JSONIQ_VALUE, // JNTY0002
+                    false,
+                    NULL);
 
   push_nodestack(valueExpr);
   push_nodestack(nameExpr);
@@ -11324,9 +11377,9 @@ void* begin_visit(const DirAttributeList& v)
   push_nodestack(NULL);
 
   // visit namespace declaratrion attributes first
-  for (int visitType = 0; visitType < 2; visitType++)
+  for (int visitType = 0; visitType < 2; ++visitType)
   {
-    for (int i = 0; i < (int)v.size(); ++i)
+    for (csize i = 0; i < v.size(); ++i)
     {
       const DirAttr* attr = v[i];
       const QName* qname = attr->get_name();
@@ -12959,7 +13012,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
     nameExpr = wrap_in_type_promotion(nameExpr,
                                       theRTM.STRING_TYPE_ONE,
                                       PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
-
+                                   
     valueExpr = wrap_in_type_match(valueExpr,
                                    rtm.ITEM_TYPE_ONE,
                                    loc,
@@ -12970,10 +13023,11 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
     args.push_back(valueExpr);
   }
 
-  expr* updExpr = new fo_expr(theRootSctx,
-                               loc,
-                               GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
-                               args);
+  expr* updExpr = theExprManager->
+  create_fo_expr(theRootSctx,
+                 loc,
+                 GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
+                 args);
 
   push_nodestack(updExpr);
 #endif
@@ -13022,10 +13076,12 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   args[1] = posExpr;
   args[2] = sourceExpr;
 
-  fo_expr* updExpr = new fo_expr(theRootSctx,
-                                  loc,
-                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_INSERT_3),
-                                  args);
+  fo_expr* updExpr = theExprManager->
+  create_fo_expr(theRootSctx,
+                 loc,
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_INSERT_3),
+                 args);
+
   normalize_fo(updExpr);
 
   push_nodestack(updExpr);
@@ -13060,15 +13116,16 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
                                   TreatIterator::JSONIQ_ARRAY_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  fo_expr* updExpr = new fo_expr(theRootSctx,
-                                  loc,
-                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
-                                  targetExpr,
-                                  contentExpr);
-  normalize_fo(updExpr.getp());
+  fo_expr* updExpr = theExprManager->
+  create_fo_expr(theRootSctx,
+                 loc, 
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
+                 targetExpr,
+                 contentExpr);
 
-  push_nodestack(updExpr.getp());
+  normalize_fo(updExpr);
 
+  push_nodestack(updExpr);
 #endif
 }
 
@@ -13108,18 +13165,20 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
                                    theRTM.ANY_ATOMIC_TYPE_ONE,
                                    PromoteIterator::JSONIQ_SELECTOR, // JNUP0007
                                    NULL);
-
+  
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ITEM_TYPE_ONE,
                                   loc,
                                   TreatIterator::JSONIQ_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  fo_expr* updExpr = theExprManager->create_fo_expr(theRootSctx,
-                                  loc,
-                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_DELETE_2),
-                                  targetExpr,
-                                  selExpr);
+  fo_expr* updExpr = theExprManager->
+  create_fo_expr(theRootSctx,
+                 loc,
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_DELETE_2),
+                 targetExpr,
+                 selExpr);
+
   push_nodestack(updExpr);
 #endif
 }
@@ -13165,11 +13224,13 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
                                loc,
                                TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
                                NULL);
+                               
+  fo_expr* updExpr = theExprManager->
+  create_fo_expr(theRootSctx,
+                 loc,
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_REPLACE_VALUE_3),
+                 args);
 
-  fo_expr* updExpr = theExprManager->create_fo_expr(theRootSctx,
-                                  loc,
-                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_REPLACE_VALUE_3),
-                                  args);
   push_nodestack(updExpr);
 #endif
 }
@@ -13213,10 +13274,11 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
                                    theRTM.STRING_TYPE_ONE,
                                    PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
 
-  fo_expr* updExpr = theExprManager->create_fo_expr(theRootSctx,
-                                  loc,
-                                  GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_RENAME_3),
-                                  args);
+  fo_expr* updExpr = theExprManager->
+  create_fo_expr(theRootSctx,
+                 loc,
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_RENAME_3),
+                 args);
 
   push_nodestack(updExpr);
 #endif
@@ -13257,11 +13319,9 @@ void end_visit(const InsertExpr& v, void* /*visit_state*/)
 
   lSource = wrap_in_enclosed_expr(lSource, loc);
 
-  expr* lInsert = theExprManager->create_insert_expr(theRootSctx,
-                                                      loc,
-                                                      v.getType(),
-                                                      lSource,
-                                                      lTarget);
+  expr* lInsert = theExprManager->
+  create_insert_expr(theRootSctx, loc, v.getType(), lSource, lTarget);
+
   push_nodestack(lInsert);
 }
 
@@ -13284,16 +13344,12 @@ void end_visit(const RenameExpr& v, void* /*visit_state*/)
   // We use a name_cast_expr here for static typing reasons. However, during codegen,
   // we are not going to generate a NameCastIterator, because we don't always know at
   // compile time whether the target will an element or an attribute node.
-  nameExpr = theExprManager->create_name_cast_expr(theRootSctx,
-                                                   loc,
-                                                   nameExpr,
-                                                   theNSCtx,
-                                                   false);
+  nameExpr = theExprManager->
+  create_name_cast_expr(theRootSctx, loc, nameExpr, theNSCtx, false);
 
-  expr* renameExpr = theExprManager->create_rename_expr(theRootSctx,
-                                                         loc,
-                                                         targetExpr,
-                                                         nameExpr);
+  expr* renameExpr = theExprManager->
+  create_rename_expr(theRootSctx, loc, targetExpr, nameExpr);
+
   push_nodestack(renameExpr);
 }
 
@@ -13316,10 +13372,9 @@ void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
     lReplacement = wrap_in_enclosed_expr(lReplacement, loc);
   }
 
-  expr* lReplace = theExprManager->create_replace_expr(theRootSctx, loc,
-                                                        v.getType(),
-                                                        lTarget,
-                                                        lReplacement);
+  expr* lReplace = theExprManager->
+  create_replace_expr(theRootSctx, loc, v.getType(), lTarget, lReplacement);
+
   push_nodestack(lReplace);
 }
 
@@ -14220,8 +14275,9 @@ expr* result()
     std::cout << "Error: extra nodes on translator stack:\n";
     while (! theNodeStack.empty())
     {
-      expr* e_h = pop_nodestack();
 #ifndef NDEBUG
+      expr* e_h = pop_nodestack();
+
       if (! Properties::instance()->traceTranslator())
       {
         if (e_h != NULL)
@@ -14229,6 +14285,8 @@ expr* result()
         else
           std::cout << "NULL" << std::endl;
       }
+#else
+      (void)pop_nodestack();
 #endif
     }
     ZORBA_ASSERT (false);

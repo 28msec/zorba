@@ -2075,18 +2075,24 @@ void end_visit(eval_expr& v)
 
   csize numVars = v.var_count();
 
-  checked_vector<PlanIter_t> args(numVars+1);
-  checked_vector<store::Item_t> varnames(numVars);
-  checked_vector<xqtref_t> vartypes(numVars);
+  checked_vector<PlanIter_t> args;
+  args.reserve(numVars+1);
+
+  std::vector<store::Item_t> varNames(numVars);
+  std::vector<xqtref_t> varTypes(numVars);
+  std::vector<int> isGlobalVar(numVars);
 
   for (csize i = 0; i < numVars; ++i)
   {
-    varnames[i] = v.get_var(i)->get_name();
-    vartypes[i] = v.get_var(i)->get_type();
-    args[i] = pop_itstack();
+    varNames[i] = v.get_var(i)->get_name();
+    varTypes[i] = v.get_var(i)->get_type();
+    isGlobalVar[i] = (v.get_arg_expr(i) == NULL);
+
+    if (!isGlobalVar[i])
+      args.push_back(pop_itstack());
   }
 
-  args[numVars] = pop_itstack();
+  args.push_back(pop_itstack());
   reverse(args.begin(), args.end());
 
   store::NsBindings localBindings;
@@ -2095,8 +2101,9 @@ void end_visit(eval_expr& v)
   push_itstack(new EvalIterator(sctx,
                                 qloc,
                                 args,
-                                varnames,
-                                vartypes,
+                                varNames,
+                                varTypes,
+                                isGlobalVar, 
                                 v.get_inner_scripting_kind(),
                                 localBindings,
                                 v.getNodeCopy(),
@@ -2127,14 +2134,17 @@ void end_visit(debugger_expr& v)
   std::vector<PlanIter_t> argvEvalIter;
 
   csize numVars = v.var_count();
-  std::vector<store::Item_t> varnames(numVars);
-  std::vector<xqtref_t> vartypes(numVars);
+  std::vector<store::Item_t> varNames(numVars);
+  std::vector<xqtref_t> varTypes(numVars);
+  std::vector<int> isGlobalVar(numVars);
 
   //create the eval iterator children
   for (csize i = 0; i < numVars; i++)
   {
-    varnames[i] = v.get_var(i)->get_name();
-    vartypes[i] = v.get_var(i)->get_type();
+    varNames[i] = v.get_var(i)->get_name();
+    varTypes[i] = v.get_var(i)->get_type();
+    isGlobalVar[i] = (v.get_var(i)->get_kind() == var_expr::prolog_var);
+
     argvEvalIter.push_back(pop_itstack());
   }
 
@@ -2167,15 +2177,16 @@ void end_visit(debugger_expr& v)
   argv.push_back(new EvalIterator(sctx,
                                   qloc,
                                   argvEvalIter,
-                                  varnames,
-                                  vartypes,
+                                  varNames,
+                                  varTypes,
+                                  isGlobalVar,
                                   SEQUENTIAL_FUNC_EXPR,
                                   localBindings,
                                   true,
                                   true));
 
   lDebugIterator->setChildren(&argv);
-  lDebugIterator->setVariables(varnames, vartypes);
+  lDebugIterator->setVariables(varNames, varTypes);
 
   // link all debugger iterators in the tree
   if (!theDebuggerStack.empty())

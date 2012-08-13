@@ -56,6 +56,7 @@ IndexDecl::IndexDecl(
     const QueryLoc& loc,
     const store::Item_t& name)
   :
+  theCCB(ccb),
   theLocation(loc),
   theSctx(sctx),
   theName(name),
@@ -64,7 +65,6 @@ IndexDecl::IndexDecl(
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH),
-  theCCB(ccb),
   theBuildExpr(NULL),
   theDocIndexerExpr(NULL)
 {
@@ -271,17 +271,10 @@ void IndexDecl::analyze(CompilerCB* ccb)
   expr* dotVar = NULL;
 
   // Get the var_expr representing the context item, if it is defined
-  try
-  {
-    dotVar = theSctx->lookup_var(dotQName, QueryLoc::null, err::XPST0008);
-  }
-  catch (ZorbaException const& e)
-  {
-    if (e.diagnostic() != err::XPST0008)
-    {
-      throw;
-    }
-  }
+  VarInfo* var = theSctx->lookup_var(dotQName);
+
+  if (var)
+    dotVar = var->getVar();
 
   std::vector<var_expr*> varExprs;
 

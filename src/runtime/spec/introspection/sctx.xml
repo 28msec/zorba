@@ -10,9 +10,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
+<zorba:header>
+  <zorba:include form="Quoted">context/static_context.h</zorba:include>
+</zorba:header>
+
 <zorba:source>
-    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
-    <zorba:include  form="Quoted">compiler/expression/var_expr.h</zorba:include>
+  <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
 <!--
@@ -126,9 +129,9 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="std::vector&lt;var_expr*&gt;" name="theVariables"
+    <zorba:member type="std::vector&lt;VarInfo*&gt;" name="theVariables"
                   brief="vector of variables"/>
-    <zorba:member type="ulong" name="thePosition" brief="current position"/>
+    <zorba:member type="csize" name="thePosition" brief="current position"/>
   </zorba:state>
 
 </zorba:iterator>

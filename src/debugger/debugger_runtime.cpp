@@ -376,17 +376,19 @@ DebuggerRuntime::getVariables(bool aLocals)
   static_context* lContext = lCommons->getCurrentStaticContext();
 
   // get all visible variables and filter below
-  std::vector<var_expr*> lVars;
+  std::vector<VarInfo*> lVars;
   lContext->getVariables(lVars, false);
 
   std::vector<std::pair<std::string, std::string> > lVarList;
-  std::vector<var_expr*>::iterator lIte = lVars.begin();
-  std::vector<var_expr*>::iterator lEnd = lVars.end();
+  std::vector<VarInfo*>::iterator lIte = lVars.begin();
+  std::vector<VarInfo*>::iterator lEnd = lVars.end();
 
-  for (; lIte != lEnd; ++lIte) {
+  for (; lIte != lEnd; ++lIte)
+  {
     // non-global to locals and globals to globals
-    if ((aLocals && (*lIte)->get_kind() == var_expr::prolog_var) ||
-        (!aLocals && (*lIte)->get_kind() != var_expr::prolog_var)) {
+    if ((aLocals && (*lIte)->getKind() == var_expr::prolog_var) ||
+        (!aLocals && (*lIte)->getKind() != var_expr::prolog_var))
+    {
       continue;
     }
 
@@ -395,11 +397,12 @@ DebuggerRuntime::getVariables(bool aLocals)
 
 
     // read the name ****************************
-    store::Item* lNameItem = (*lIte)->get_name();
+    const store::Item_t& lNameItem = (*lIte)->getName();
     zstring lLocalName = lNameItem->getLocalName();
 
     // correct the name of the context item
-    if (!aLocals && lLocalName == "$$dot") {
+    if (!aLocals && lLocalName == "$$dot")
+    {
       lVarList.push_back(std::pair<std::string, std::string>(".", "item()*"));
       continue;
     }
@@ -407,29 +410,35 @@ DebuggerRuntime::getVariables(bool aLocals)
     bool lHasNS = ! lNameItem->getNamespace().empty();
 
     // if there is a namespace, append the local name as well
-    if (lHasNS) {
+    if (lHasNS) 
+    {
       lNameSs << lNameItem->getPrefix().str() << ":";
     }
     lNameSs << lNameItem->getLocalName().str();
 
     // if there is a namespace, append the namespace URI
-    if (lHasNS) {
+    if (lHasNS)
+    {
       lNameSs << "\\" << lNameItem->getNamespace().str();
     }
 
-
     // read the type ****************************
-    xqtref_t lType = (*lIte)->get_type();
+    xqtref_t lType = (*lIte)->getType();
 
-    if (lType == NULL || lType->get_qname() == NULL) {
+    if (lType == NULL || lType->get_qname() == NULL)
+    {
       lTypeSs << "item()*";
-    } else {
+    }
+    else
+    {
       TypeConstants::quantifier_t lQuantifier = lType->get_quantifier();
-      store::Item_t lQname = (*lIte)->get_type()->get_qname();
+      store::Item_t lQname = (*lIte)->getType()->get_qname();
       lTypeSs << lQname->getPrefix().str()
-            << ":"
-            << lQname->getLocalName().str();
-      switch (lQuantifier) {
+              << ":"
+              << lQname->getLocalName().str();
+
+      switch (lQuantifier) 
+      {
       case TypeConstants::QUANT_QUESTION:
         lTypeSs << "?";
         break;
