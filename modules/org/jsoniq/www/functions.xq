@@ -135,3 +135,108 @@ declare function jn:members($o as array()) as item()* external;
  :)
 declare function jn:flatten($a as array()) as item()* external;
 
+(:~
+ : This function allows dynamic object construction by merging all
+ : its object parameters into a single object with a so-called "simple
+ : object union". A simple object union creates a new object, the pairs
+ : property of which is obtained by accumulating the pairs of all operand
+ : objects. An error jerr:JNDY0003 is raised if two pairs with the same
+ : name are encountered.
+ :
+ : @param $o A sequence of objects.
+ : @return The simple object union.
+ :)
+declare function jn:object($o as object()*) as object()
+{
+  {| $o |}
+};
+
+(:~
+ : This function dynamically builds an object, like jn:object, except that
+ : it does not throw an error upon pair collision. Instead, it aggregates them
+ : into an array.
+ :
+ : @param $o A sequence of objects.
+ : @return The accumulated object.
+ :)
+declare function jn:accumulate($o as object()*) as object()
+{
+  {[ $o ]}
+};
+
+(:~
+ : This function returns all Objects contained within a JSON item, regardless of
+ : depth.
+ :
+ : @param A JSON item.
+ : @return Its descendant objects.
+ :)
+declare function jn:descendant-objects($i as json-item()) as object()*
+{
+  if ($i instance of object())
+  then
+    (
+      $i,
+      for $v in jn:values($i)
+      where $v instance of json-item()
+      return jn:descendant-objects($v)
+    )
+  else if ($i instance of array())
+  then
+    (
+      for $v in jn:members($i)
+      where $v instance of json-item()
+      return jn:descendant-objects($v)
+    )
+  else
+    ()
+};
+
+(:~
+ : This function returns all pairs contained within an object, recursively.
+ :
+ : @param An object.
+ : @return All direct and indirect descendant pairs.
+ :)
+declare function jn:descendant-pairs($o as object())
+{
+  for $k in jn:keys($o)
+  return (
+    { $k : $o($k) },
+    if ($o($k) instance of object())
+    then
+      jn:descendant-pairs($o($k))
+    else ()
+  )
+};
+
+(:~ This function returns the intersection of two objects, and aggregates
+ : values corresponding to the same name into an array.
+ :
+ : @param $o A sequence of objects.
+ : @return Their insersection.
+ :)
+declare function jn:intersect($o as object()*)
+{
+  {|
+    let $common-keys := jn:keys($o[1])[ every $object in $o[position() > 1]
+                                           satisfies jn:keys($object) = . ]
+    for $key in $common-keys
+    let $values := $o($key)
+    return
+      if (count($values) eq 1)
+      then { $key : $values }
+      else { $key : [ $values ] }
+  |}
+};
+
+(:~
+ : This functions returns all values in an Object.
+ : @param $i An object.
+ : @return Its values.
+ :)
+declare function jn:values($i as object()) as item()*
+{
+  for $k in jn:keys($i)
+  return $i($k)
+};
