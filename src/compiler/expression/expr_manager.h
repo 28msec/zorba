@@ -34,9 +34,9 @@ class CompilerCB;
 class ExprManager
 {
 private:
-  std::vector<expr*> theExprs;
-  MemoryManager      theMemoryMgr;
-  CompilerCB     * theCCB;
+  std::vector<expr*>   theExprs;
+  MemoryManager        theMemoryMgr;
+  CompilerCB         * theCCB;
 
 public:
   ExprManager(CompilerCB* ccb);
@@ -56,8 +56,6 @@ public:
   MemoryManager& getMemory() { return theMemoryMgr; }
 
   csize numExprs() const { return theExprs.size(); }
-
-  void garbageCollect();
 
 public:
   if_expr* create_if_expr(

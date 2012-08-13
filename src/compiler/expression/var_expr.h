@@ -182,7 +182,7 @@ protected:
 public:
   static std::string decode_var_kind(enum var_kind);
 
-public:
+protected:
   var_expr(
       CompilerCB* ccb,
       static_context* sctx,
@@ -194,6 +194,7 @@ public:
 
   virtual ~var_expr();
 
+public:
   void set_var_info(VarInfo* v);
 
   VarInfo* get_var_info() const { return theVarInfo; }

@@ -75,57 +75,6 @@ ExprManager::~ExprManager()
 }
 
 
-void ExprManager::garbageCollect()
-{
-  unsigned long numTotalBytes = 0;
-  unsigned long numDeadBytes = 0;
-  unsigned long numTotalExprs = theExprs.size();
-  unsigned long numDeadExprs = 0;
-
-  while (theExprs.size() > 0)
-  {
-    bool deleted_expr = false;
-
-    for(std::vector<expr*>::iterator iter = theExprs.begin();
-        iter != theExprs.end();
-        ++iter)
-    {
-      expr* exp = *iter;
-
-      if (exp->getRefCount() <= 0)
-      {
-        deleted_expr = true;
-        unsigned long bytes = sizeof *exp;
-
-        numTotalBytes += bytes;
-        numDeadBytes += bytes;
-        ++numDeadExprs;
-
-        exp->~expr();
-        iter = theExprs.erase(iter);
-        --iter;
-      }
-    }
-
-    if (!deleted_expr)
-      break;
-  }
-
-  for(std::vector<expr*>::iterator iter = theExprs.begin();
-      iter != theExprs.end();
-      ++iter)
-  {
-    expr* exp = *iter;
-    numTotalBytes += sizeof *exp;
-  }
-
-  std::cout << "Num Total Exprs = " << numTotalExprs
-            << " Num Total Bytes = " << numTotalBytes << std::endl
-            << "Num Dead Exprs  = " << numDeadExprs
-            << " Num Dead Bytes = " << numDeadBytes << std::endl << std::endl;
-}
-
-
 expr* ExprManager::reg(expr* exp)
 {
   theExprs.push_back(exp);

@@ -120,7 +120,7 @@ enum expr_kind_t
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public SimpleRCObject
+class expr
 {
   friend class expr_iterator_data;
   friend class ExprIterator;
