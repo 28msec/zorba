@@ -68,7 +68,6 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -103,7 +102,7 @@ namespace zorba
   notifyAllWarnings();
 
 
-SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
+SERIALIZABLE_CLASS_VERSIONS_2(XQueryImpl::PlanProxy, TYPE_PLAN_PROXY)
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
@@ -179,7 +178,6 @@ XQueryImpl::~XQueryImpl()
   close();
 }
 
-
 /*******************************************************************************
   Always called while holding theMutex
 ********************************************************************************/
@@ -187,6 +185,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 {
   // static stuff
   ar & theFileName;
+
   if (!ar.is_serializing_out())
   {
     delete theCompilerCB;
@@ -194,13 +193,13 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
   }
   else
   {
-    //ar.compiler_cb = theCompilerCB;
-    theCompilerCB->prepare_for_serialize();
+    ar.set_ccb(theCompilerCB);
   }
 
   ar & theCompilerCB;
   ar & thePlanProxy;
   ar & theStaticContext;
+
   if (!ar.is_serializing_out())
   {
     theDynamicContextWrapper = NULL;
@@ -435,7 +434,11 @@ void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHin
 
     std::istringstream lQueryStream(aQuery.c_str());
 
-    doCompile(lQueryStream, aHints);
+    // 0 is reserved as an invalid var id, and 1 is taken by the context item
+    // in the main module.
+    ulong nextVarId = 2;
+
+    doCompile(lQueryStream, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -455,7 +458,11 @@ void XQueryImpl::compile(
     checkNotClosed();
     checkNotCompiled();
 
-    doCompile(aQuery, aHints);
+    // 0 is reserved as an invalid var id, and 1 is taken by the context item
+    // in the main module.
+    ulong nextVarId = 2;
+
+    doCompile(aQuery, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -485,9 +492,12 @@ void XQueryImpl::compile(
     theCompilerCB->theSctxMap =
     static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
+    ulong nextVarId = 
+    static_cast<StaticContextImpl*>(aStaticContext.get())->getMaxVarId();
+
     std::istringstream lQueryStream(aQuery.c_str());
 
-    doCompile(lQueryStream, aHints);
+    doCompile(lQueryStream, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -515,7 +525,10 @@ void XQueryImpl::compile(
     theCompilerCB->theSctxMap =
     static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
-    doCompile(aQuery, aHints);
+    ulong nextVarId = 
+    static_cast<StaticContextImpl*>(aStaticContext.get())->getMaxVarId();
+
+    doCompile(aQuery, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -527,7 +540,8 @@ void XQueryImpl::compile(
 void XQueryImpl::doCompile(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints,
-    bool fork_sctx)
+    bool fork_sctx,
+    ulong& nextDynamicVarId)
 {
   if ( ! theStaticContext )
   {
@@ -544,7 +558,9 @@ void XQueryImpl::doCompile(
     // otherwise, unless this is a load-prolog query, create a child and we have
     // ownership over that one
     if (fork_sctx)
+    {
       theStaticContext = theStaticContext->create_child_context();
+    }
   }
 
   zstring url;
@@ -581,10 +597,6 @@ void XQueryImpl::doCompile(
   }
 #endif
 
-  // 0 is reserved as an invalid var id, and 1 is taken by the context item
-  // in the main module.
-  ulong nextDynamicVarId = 2;
-
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
 
   thePlanProxy = new PlanProxy(planRoot);
@@ -616,7 +628,13 @@ void XQueryImpl::loadProlog(
 
     theCompilerCB->setLoadPrologQuery();
 
-    doCompile(lQueryStream, aHints, false);
+    StaticContextImpl* sctx = static_cast<StaticContextImpl*>(aStaticContext.get());
+
+    ulong nextVarId = sctx->getMaxVarId();
+
+    doCompile(lQueryStream, aHints, false, nextVarId);
+
+    sctx->setMaxVarId(nextVarId);
   }
   QUERY_CATCH
 }
@@ -900,13 +918,8 @@ bool XQueryImpl::saveExecutionPlan(
 
     if (archive_format == ZORBA_USE_XML_ARCHIVE)
     {
-      zorba::serialization::XmlArchiver xmlar(&os);
-
-      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        xmlar.set_serialize_everything();
-
-      serialize(xmlar);
-      xmlar.serialize_out();
+      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
+      ERROR_PARAMS("XML-format plan serialization", ""));
     }
     else//ZORBA_USE_BINARY_ARCHIVE
     {
@@ -969,12 +982,16 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
         throw;
       //else go try xml archive reader
     }
+
+#if 0
     is.seekg(0);
+
     zorba::serialization::XmlArchiver xmlar(&is);
     xmlar.setUserCallback(aCallback);
     serialize(xmlar);
     xmlar.finalize_input_serialization();
     return true;
+#endif
   }
   QUERY_CATCH
   return false;
@@ -1325,6 +1342,7 @@ PlanWrapper_t XQueryImpl::generateWrapper()
       theDynamicContext,
       this,
       0, // stack depth
+      theCompilerCB->theHaveTimeout,
       theCompilerCB->theTimeout);
 
   return lPlan;

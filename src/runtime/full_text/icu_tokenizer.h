@@ -40,16 +40,17 @@ public:
    * Constructs an %ICU_Tokenizer.
    *
    * @param lang The language of the text that the tokenizer will tokenize.
-   * @param no The Numbers to use.
+   * @param state The State to use.
    */
-  ICU_Tokenizer( locale::iso639_1::type lang, Numbers &no );
+  ICU_Tokenizer( locale::iso639_1::type lang, State &state );
 
   ~ICU_Tokenizer();
 
   // inherited
   void destroy() const;
-  void tokenize( char const*, size_type, locale::iso639_1::type, bool,
-                 Callback&, void* );
+  void properties( Properties* ) const;
+  void tokenize_string( char const*, size_type, locale::iso639_1::type, bool,
+                        Callback&, Item const* );
 
 private:
   typedef std::unique_ptr<RuleBasedBreakIterator> rbbi_ptr;
@@ -63,10 +64,11 @@ private:
 
 class ICU_TokenizerProvider : public TokenizerProvider {
 public:
-  ICU_TokenizerProvider () {}
+  ICU_TokenizerProvider() { }           // needed to work-around compiler bug
+
   // inherited
-  Tokenizer::ptr
-  getTokenizer( locale::iso639_1::type, Tokenizer::Numbers& ) const;
+  bool getTokenizer( locale::iso639_1::type, Tokenizer::State* = 0,
+                     Tokenizer::ptr* = 0 ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

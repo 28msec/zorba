@@ -18,6 +18,8 @@
 
 #include "common/shared_types.h"
 
+#include "compiler/parser/query_loc.h"
+
 #include "store/api/item.h"
 
 
@@ -44,7 +46,10 @@ protected:
 
   static_context               * theSctx;
 
-  rchandle<function_item_expr>   theExpr;
+  QueryLoc                       theLoc;
+  store::Item_t                  theQName;
+	function_t                     theFunction;
+  uint32_t                       theArity;
 
   std::vector<PlanIter_t>        theVariableValues;
 

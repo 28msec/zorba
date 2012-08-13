@@ -17,9 +17,12 @@
 #ifndef ZORBA_FULL_TEXT_UTIL_H
 #define ZORBA_FULL_TEXT_UTIL_H
 
+#include <zorba/item.h>
 #include <zorba/locale.h>
 
 #include "compiler/expression/ftnode.h"
+#include "store/api/item.h"
+#include "util/cxx_util.h"
 #include "zorbatypes/schema_types.h"
 
 #include "ft_match.h"
@@ -41,6 +44,18 @@ typedef void (*apply_binary_fn)( ft_all_matches const&, ft_all_matches const&,
 typedef xs_unsignedInt ft_int;
 
 ////////// Functions //////////////////////////////////////////////////////////
+
+/**
+ * Finds the <code>xml:lang</code> attribute, if any, of the XML element
+ * specified by \a item and obtains its value.
+ *
+ * @param item The item for an XML element to check.
+ * @param lang A pointer to received the found language.
+ * @return Returns \c true only if an <code>xml:lang</code> attribute was
+ * found.
+ */
+bool find_lang_attribute( store::Item const &item,
+                          locale::iso639_1::type *lang );
 
 /**
  * Gets the language from the given ftmatch_options, if any.
@@ -70,7 +85,7 @@ get_thesaurus_option( ftmatch_options const *options ) {
     if ( ftthesaurus_option const *const t = options->get_thesaurus_option() )
       if ( !t->no_thesaurus() )
         return t;
-  return 0;
+  return nullptr;
 }
 
 /**
@@ -86,6 +101,18 @@ inline bool get_wildcards_from( ftmatch_options const *options ) {
       return wc->get_mode() == ft_wild_card_mode::with;
   return false;
 }
+
+/**
+ * Attempts to convert an \c xs:integer to an \c xs:unsignedInt.
+ *
+ * @param i The \c xs:integer to convert.
+ * @return Returns the value converted to an \c xs:unsignedInt.
+ * @throws \c err::FOCA0003 if the value can not be represented as an \c
+ * xs:unsignedInt.
+ */
+ft_int to_ft_int( xs_integer const &i );
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_UTIL_H */

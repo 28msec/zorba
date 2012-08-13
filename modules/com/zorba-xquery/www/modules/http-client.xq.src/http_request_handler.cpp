@@ -39,7 +39,6 @@ namespace zorba { namespace http_client {
       theSerStream(NULL),
       thePost(NULL),
       theLast(NULL),
-      theLastSerializerOptions(NULL),
       theIsHeadRequest(false)
   {
     theHeaderLists.push_back(NULL);
@@ -260,6 +259,7 @@ namespace zorba { namespace http_client {
   void HttpRequestHandler::cleanUpBody()
   {
     delete theSerStream;
+    theSerStream = 0;
     theLastBodyHadContent = false;
   }
 

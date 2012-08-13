@@ -1,9 +1,7 @@
 /*! \mainpage Zorba ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER} Documentation
 
-\section installbuild Installation and Build
-  - \ref installation
+\section installbuild Building Zorba
   - \ref build
-  - \ref build_ubuntu
   - \ref php_ubuntu_tutorial
   - \ref php_windows_tutorial
   - \ref python_windows_tutorial
@@ -57,6 +55,8 @@
   - \ref xqddf
   - <a href="scripting_spec.html">XQuery Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")
   - \ref options_and_annotations
+  - <a href="XQueryforJSON.html">JSONiq for JSON users</a>
+  - <a href="JSONforXQuery.html">JSONiq for XQuery users</a>
 
 \section tutorials Tutorials
   - \ref web_crawler_tutorial

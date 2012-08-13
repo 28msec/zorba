@@ -42,8 +42,8 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #ifndef ZORBA_NO_FULL_TEXT
-#include "context/stemmer_wrappers.h"
-#include "context/thesaurus_wrappers.h"
+#include "stemmer_wrappers.h"
+#include "thesaurus_wrappers.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 #include "uri_resolver_wrappers.h"
 
@@ -65,7 +65,6 @@
 
 namespace zorba {
 
-
 /*******************************************************************************
   Create a StaticContextImpl obj as well as an internal static_context obj S.
   S is created as a child of the zorba root sctx. This constructor is used
@@ -74,6 +73,7 @@ namespace zorba {
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
+  theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -98,6 +98,7 @@ StaticContextImpl::StaticContextImpl(
     DiagnosticHandler* aDiagnosticHandler)
   :
   theCtx(aCtx),
+  theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -119,6 +120,7 @@ StaticContextImpl::StaticContextImpl(
 StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
+  theMaxVarId(2),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)
@@ -1024,9 +1026,11 @@ void StaticContextImpl::loadProlog(
   theSctxMap = impl.theCompilerCB->theSctxMap;
 }
 
+
 static void
-toInternalPath(const std::vector<String>& aPublicStrings,
-               std::vector<zstring>& aInternalStrings)
+toInternalPath(
+    const std::vector<String>& aPublicStrings,
+    std::vector<zstring>& aInternalStrings)
 {
   for (std::vector<String>::const_iterator lIter = aPublicStrings.begin();
        lIter != aPublicStrings.end(); ++lIter)
@@ -1043,9 +1047,11 @@ toInternalPath(const std::vector<String>& aPublicStrings,
   }
 }
 
+
 static void
-toPublicPath(const std::vector<zstring>& aInternalStrings,
-             std::vector<String>& aPublicStrings)
+toPublicPath(
+    const std::vector<zstring>& aInternalStrings,
+    std::vector<String>& aPublicStrings)
 {
   for (std::vector<zstring>::const_iterator lIter = aInternalStrings.begin();
        lIter != aInternalStrings.end(); ++lIter)
@@ -1053,6 +1059,7 @@ toPublicPath(const std::vector<zstring>& aInternalStrings,
     aPublicStrings.push_back(lIter->c_str());
   }
 }
+
 
 void
 StaticContextImpl::setURIPath(const std::vector<String> &aURIPath)
@@ -1475,9 +1482,10 @@ StaticContextImpl::invoke(
 
     // the XQueryImpl object needs to live as long as its iterator
     // because the iterator returned as a result of the query
-    // contains a reference to the query in order to do cleanup work
+    // contains a reference to the query in order to do cleanup work.
+    // The same is true for this sctx
     Iterator_t lIter = impl->iterator();
-    return new InvokeItemSequence(impl.release(), lIter);
+    return new InvokeItemSequence(impl.release(), lIter, const_cast<StaticContextImpl*>(this));
   } 
   catch (ZorbaException const& e)
   {
@@ -1543,11 +1551,67 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 Item
 StaticContextImpl::fetch(const String& aURI) const
 {
-  return fetch(aURI, "SOME_CONTENT");
+  return fetch(aURI, "SOME_CONTENT", "UTF-8");
 }
 
 Item
 StaticContextImpl::fetch(
+    const String& aURI,
+    const String& aEntityKind) const
+{
+  return fetch(aURI, aEntityKind, "UTF-8");
+}
+
+Item
+StaticContextImpl::fetch(
+    const String& aURI,
+    const String& aEntityKind,
+    const String& aEncoding) const
+{
+  ZORBA_TRY
+  {
+    Zorba* lZorba = Zorba::getInstance(0);
+    ItemFactory* lFactory = lZorba->getItemFactory();
+
+    Item lQName = lFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
+                                          "content");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(lFactory->createString(aURI)));
+    lArgs.push_back(
+        new SingletonItemSequence(lFactory->createString(aEntityKind)));
+    lArgs.push_back(
+        new SingletonItemSequence(lFactory->createString(aEncoding)));
+
+    StaticContext_t lCtx = createChildContext();
+
+    Zorba_CompilerHints_t lHints;
+    std::ostringstream lProlog;
+    lProlog
+      << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';";
+
+    lCtx->loadProlog(lProlog.str(), lHints);
+
+    ItemSequence_t lSeq = lCtx->invoke(lQName, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+    return lRes;
+  }
+  ZORBA_CATCH
+  return 0;
+}
+
+Item
+StaticContextImpl::fetchBinary(const String& aURI) const
+{
+  return fetchBinary(aURI, "SOME_CONTENT");
+}
+
+Item
+StaticContextImpl::fetchBinary(
     const String& aURI,
     const String& aEntityKind) const
 {
@@ -1557,7 +1621,7 @@ StaticContextImpl::fetch(
     ItemFactory* lFactory = lZorba->getItemFactory();
 
     Item lQName = lFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
-                                          "content");
+                                          "content-binary");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -1583,6 +1647,23 @@ StaticContextImpl::fetch(
   }
   ZORBA_CATCH
   return 0;
+}
+
+void
+StaticContextImpl::clearBaseURI()
+{
+  try
+  {
+    theCtx->clear_base_uri();
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
 }
 
 } /* namespace zorba */

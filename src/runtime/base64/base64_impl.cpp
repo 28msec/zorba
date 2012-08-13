@@ -15,6 +15,9 @@
  */
 #include "stdafx.h"
 
+#include <sstream>
+#include <zorba/transcode_stream.h>
+
 #include "system/globalenv.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -33,6 +36,7 @@ bool Base64DecodeIterator::nextImpl(
 {
   store::Item_t lItem;
   zstring lResultString;
+  zstring lEncoding("UTF-8");
   const char* lContent;
   size_t lSize;
   result = NULL;
@@ -42,21 +46,45 @@ bool Base64DecodeIterator::nextImpl(
 
   consumeNext(lItem, theChildren[0].getp(), planState);
 
+  if (theChildren.size() == 2)
+  {
+    store::Item_t lEncodingItem;
+    consumeNext(lEncodingItem, theChildren[1].getp(), planState);
+    lEncoding = lEncodingItem->getStringValue();
+
+    if (!transcode::is_supported(lEncoding.c_str()))
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZXQP0006_UNKNOWN_ENCODING,
+        ERROR_PARAMS( lEncoding ),
+        ERROR_LOC( loc )
+      );
+    }
+  }
+
   if (lItem->isStreamable())
   {
     if (lItem->isEncoded())
     {
-      // decode and eventually transcode
-      lResultString = Base64::decode(lItem->getStream());
+      Base64::decode(lItem->getStream(), &lResultString);
     }
     else
     {
-      // streamable string eventually transcoding
-      GENV_ITEMFACTORY->createStreamableString(
-          result,
-          lItem->getStream(),
-          lItem->getStreamReleaser(),
-          lItem->isSeekable());
+      if (transcode::is_necessary(lEncoding.c_str()))
+      {
+        transcode::attach(lItem->getStream(), lEncoding.c_str());
+        GENV_ITEMFACTORY->createStreamableString(
+            result,
+            lItem->getStream(),
+            lItem->getStreamReleaser(),
+            lItem->isSeekable());
+      }
+      else
+      {
+        GENV_ITEMFACTORY->createSharedStreamableString(
+            result,
+            lItem);
+      }
     }
   }
   else
@@ -65,19 +93,43 @@ bool Base64DecodeIterator::nextImpl(
 
     if (lItem->isEncoded())
     {
-      std::vector<char> encoded(lContent, lContent+lSize);
-      std::vector<char> decoded;
-      Base64::decode(encoded, decoded);
-      lResultString.insert(0, &decoded[0], decoded.size());
+      Base64::decode( lContent, lSize, &lResultString );
     }
     else
     {
       lResultString.insert(0, lContent, lSize);
     }
-  }
-  if (!result) // otherwise it's a streamable string already
-  {
-    GENV_ITEMFACTORY->createString(result, lResultString);
+
+    if (transcode::is_necessary(lEncoding.c_str()))
+    {
+      try
+      {
+        zstring lTranscodedString;
+        transcode::stream<std::istringstream> lTranscoder(
+            lEncoding.c_str(),
+            lResultString.c_str()
+          );
+        char buf[1024];
+        while (lTranscoder.good())
+        {
+          lTranscoder.read(buf, 1024);
+          lTranscodedString.append(buf, lTranscoder.gcount());
+        }
+        GENV_ITEMFACTORY->createString(result, lTranscodedString);
+      }
+      catch (ZorbaException& e)
+      {
+        throw XQUERY_EXCEPTION(
+          zerr::ZOSE0006_TRANSCODING_ERROR,
+          ERROR_PARAMS( e.what() ),
+          ERROR_LOC( loc )
+        );
+      }
+    }
+    else
+    {
+      GENV_ITEMFACTORY->createString(result, lResultString);
+    }
   }
   STACK_PUSH (true, state);
 
@@ -101,8 +153,8 @@ bool Base64EncodeIterator::nextImpl(
     // create a base64Binary item
     // the content is the non-encoded string
     GENV_ITEMFACTORY->createBase64Binary(
-          result, lTmpString.c_str(), lTmpString.size(), false
-        );
+      result, lTmpString.c_str(), lTmpString.size(), false
+    );
     STACK_PUSH (true, state);
   }
   STACK_END (state);

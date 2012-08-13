@@ -62,7 +62,7 @@ private:
   locale::iso639_1::type const lang_;
   bool const stemming_;
   match_stemmer const stemmer_;
-  ft_stop_words_set const *const stop_words_;
+  ft_stop_words_set::ptr stop_words_;
   bool const wildcards_;
 };
 

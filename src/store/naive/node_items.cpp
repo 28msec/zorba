@@ -21,6 +21,7 @@
 #include <zorba/config.h>
 #include <zorba/item.h>
 
+#include "api/unmarshaller.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/URI.h"
@@ -143,7 +144,7 @@ ulong XmlTree::getCollectionId() const
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::free()
+void XmlTree::destroy() throw()
 {
   // std::cout << "Deleting Xml Tree: " << this << std::endl;
 
@@ -170,6 +171,15 @@ void XmlTree::free()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::free()
+{
+  destroy();
+}
+
+
 #ifndef EMBEDED_TYPE
 
 /*******************************************************************************
@@ -177,11 +187,17 @@ void XmlTree::free()
 ********************************************************************************/
 store::Item* XmlTree::getType(const XmlNode* n) const
 {
-  assert(theTypesMap != NULL);
+  if(theTypesMap == NULL)
+  {
+    return NULL;
+  }
 
   NodeTypeMap::iterator ite = theTypesMap->find(n);
 
-  assert(ite != theTypesMap->end());
+  if (ite == theTypesMap->end())
+  {
+    return NULL;
+  }
 
   return ite.getValue().getp();
 }
@@ -440,12 +456,12 @@ XmlNode::XmlNode(
 
   if (parent == NULL)
   {
-    setTree(tree);
+    setTreeInternal(tree);
     tree->setRoot(this);
   }
   else
   {
-    setTree(parent->getTree());
+    setTreeInternal(parent->getTree());
   }
 }
 
@@ -456,17 +472,91 @@ XmlNode::XmlNode(
 #ifndef NDEBUG
 XmlNode::~XmlNode()
 {
-  NODE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
+  STORE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
 }
 #endif
 
 
 /*******************************************************************************
-  Private method
+
 ********************************************************************************/
-void XmlNode::setTree(const XmlTree* t)
+bool XmlNode::equals(const store::Item* other, long, const XQPCollator*) const
 {
-  theUnion.treeRCPtr = (long*)t;
+  assert(!isConnectorNode());
+  return this == other;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t XmlNode::hash(long, const XQPCollator*) const
+{
+  assert(!isConnectorNode());
+  return reinterpret_cast<uintptr_t>(this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setTreeInternal(const XmlTree* newTree)
+{
+  theUnion.treeRCPtr = (long*)newTree;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setTree(const XmlTree* aNewTree)
+{
+#ifndef NDEBUG
+  if (getNodeKind() == store::StoreConsts::elementNode)
+  {
+    static_cast<ElementNode*>(this)->assertInvariants();
+  } else if (getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    static_cast<AttributeNode*>(this)->assertInvariants();
+  }
+#endif
+
+  bool lAdjustTypes = false;
+  if (getNodeKind() == store::StoreConsts::elementNode)
+  {
+    assert(dynamic_cast<ElementNode*>(this));
+    ElementNode* lElementNode = static_cast<ElementNode*>(this);
+    lAdjustTypes = lElementNode->haveType();
+  } else if (getNodeKind() == store::StoreConsts::attributeNode) {
+    assert(dynamic_cast<AttributeNode*>(this));
+    AttributeNode* lAttributeNode = static_cast<AttributeNode*>(this);
+    lAdjustTypes = lAttributeNode->haveType();
+  }
+
+  store::Item_t type;
+  if (lAdjustTypes)
+  {
+    type = getType();
+    getTree()->removeType(this);
+  }
+
+  setTreeInternal(aNewTree);
+
+  if (lAdjustTypes)
+  {
+    getTree()->addType(this, type);
+  }
+  
+#ifndef NDEBUG
+  if (getNodeKind() == store::StoreConsts::elementNode)
+  {
+    static_cast<ElementNode*>(this)->assertInvariants();
+  } else if (getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    static_cast<AttributeNode*>(this)->assertInvariants();
+  }
+#endif
+
 }
 
 
@@ -587,8 +677,7 @@ store::Item* XmlNode::copy(
         pnode->checkUniqueAttr(attrName);
 
         try
-        {
-          
+        {    
           pnode->addBindingForQName(attrName, true, false);
         }
         catch (...)
@@ -614,7 +703,14 @@ store::Item* XmlNode::copy(
     }
   } // have parent
 
-  return copyInternal(parent, parent, pos, NULL, copymode);
+  if (copymode.theDoCopy)
+  {
+    return copyInternal(parent, parent, pos, NULL, copymode);
+  }
+  else
+  {
+    return const_cast<XmlNode*>(this);
+  }
 }
 
 
@@ -793,10 +889,20 @@ void XmlNode::destroyInternal(bool removeType)
 #endif
 
   if (haveReference())
-    GET_STORE().unregisterNode(this);
+    GET_STORE().unregisterReferenceToUnusedNode(this);
 
   delete this;
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::unregisterReferencesToDeletedSubtree()
+{
+  if (haveReference())
+    GET_STORE().unregisterReferenceToDeletedNode(this);
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1636,6 +1742,23 @@ void InternalNode::finalizeNode()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void InternalNode::unregisterReferencesToDeletedSubtree()
+{
+  std::for_each(
+      childrenBegin(), childrenEnd(),
+      std::mem_fun(&XmlNode::unregisterReferencesToDeletedSubtree));
+
+  std::for_each(
+      attrsBegin(), attrsEnd(),
+      std::mem_fun(&XmlNode::unregisterReferencesToDeletedSubtree));
+
+  XmlNode::unregisterReferencesToDeletedSubtree();
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class DocumentNode                                                         //
@@ -1650,7 +1773,7 @@ DocumentNode::DocumentNode()
   :
   InternalNode(store::StoreConsts::documentNode)
 {
-  NODE_TRACE1("Loaded doc node " << this);
+  STORE_TRACE1("Loaded doc node " << this);
 }
 
 
@@ -1666,7 +1789,7 @@ DocumentNode::DocumentNode(
   theBaseUri(baseUri),
   theDocUri(docUri)
 {
-  NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
+  STORE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
               << " doc uri = " << docUri);
 }
@@ -1721,8 +1844,8 @@ XmlNode* DocumentNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("}");
-  NODE_TRACE1("Copied doc node " << this << " to node " << copyNode);
+  STORE_TRACE1("}");
+  STORE_TRACE1("Copied doc node " << this << " to node " << copyNode);
 
   return copyNode;
 }
@@ -1891,7 +2014,7 @@ ElementNode::ElementNode(
     theNodes.resize(numAttributes);
   }
 
-  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
+  STORE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
               << " num bindings = " << numBindings << " num attributes = "
               << numAttributes << std::endl);
 }
@@ -2017,7 +2140,7 @@ ElementNode::ElementNode(
     throw;
   }
 
-  NODE_TRACE1("Constructed element node " << this << " parent = "
+  STORE_TRACE1("Constructed element node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -2358,7 +2481,7 @@ XmlNode* ElementNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied elem node " << this << " to node " << copyNode
               << " name = " << theName->getStringValue() << " parent = "
               << (parent ? parent : 0x0)
               << " pos = " << pos << " copy mode = " << copymode.toString());
@@ -2386,8 +2509,31 @@ void ElementNode::setType(store::Item_t& type)
 
 #else
 
+void ElementNode::assertInvariants() const
+{
+  // these assertions must hold at any time when entering or leaving an attribute
+  // or element function that tampers with types:
+  
+  // 1. If haveType() is true, then the tree must contain a non-null type for this
+  // node.
+  assert(!haveType() || getTree()->getType(this) != NULL);
+  
+  // 2. If haveType() is true, then the tree must contain a type for this node
+  // that is not xs:untyped.
+  assert(!haveType() || !getTree()->getType(this)->equals(
+      GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]));
+
+  // 3. If haveType() is false, then the tree may not contain type information for
+  // this node.
+  assert(haveType() || getTree() == NULL || getTree()->getType(this) == NULL);
+}
+
 store::Item* ElementNode::getType() const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   return (haveType() ?
           getTree()->getType(this) :
           GET_STORE().XS_UNTYPED_QNAME.getp());
@@ -2396,10 +2542,14 @@ store::Item* ElementNode::getType() const
 
 void ElementNode::setType(store::Item_t& type)
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().XS_UNTYPED_QNAME)
+        type->equals(GET_STORE().XS_UNTYPED_QNAME))
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -2410,11 +2560,15 @@ void ElementNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().XS_UNTYPED_QNAME)
+           !type->equals(GET_STORE().XS_UNTYPED_QNAME))
   {
     getTree()->addType(this, type);
     setHaveType();
   }
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 #endif
@@ -2425,6 +2579,10 @@ void ElementNode::setType(store::Item_t& type)
 ********************************************************************************/
 bool ElementNode::haveTypedTypedValue(TextNode*& textChild) const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   textChild = NULL;
 
   if (numChildren() == 1 &&
@@ -2531,6 +2689,10 @@ bool ElementNode::isIdRefs() const
 ********************************************************************************/
 void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveTypedValue())
   {
     TextNode* textChild;
@@ -3311,7 +3473,6 @@ zstring ElementNode::show() const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
 /*******************************************************************************
   Node constructor used by FastXmlLoader only.
 ********************************************************************************/
@@ -3326,7 +3487,7 @@ AttributeNode::AttributeNode(store::Item_t& attrName)
   if (qn->isBaseUri())
     theFlags |= IsBaseUri;
 
-  NODE_TRACE1("Loaded attr node " << this << " name = " << theName->getStringValue());
+  STORE_TRACE1("Loaded attr node " << this << " name = " << theName->getStringValue());
 }
 
 
@@ -3449,7 +3610,7 @@ AttributeNode::AttributeNode(
     throw;
   }
 
-  NODE_TRACE1("Constructed attribute node " << this << " parent = "
+  STORE_TRACE1("Constructed attribute node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
@@ -3532,7 +3693,7 @@ XmlNode* AttributeNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " copy mode = " << copymode.toString());
@@ -3560,20 +3721,45 @@ void AttributeNode::setType(store::Item_t& type)
 
 #else
 
+void AttributeNode::assertInvariants() const
+{
+  // these assertions must hold at any time when entering or leaving an attribute
+  // or element function that tampers with types:
+  
+  // 1. If haveType() is true, then the tree must contain a non-null type for this
+  // node.
+  assert(!haveType() || getTree()->getType(this) != NULL);
+  
+  // 2. If haveType() is true, then the tree must contain a type for this node
+  // that is not xs:untyped.
+  assert(!haveType() || !getTree()->getType(this)->equals(
+      GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]));
+
+  // 3. If haveType() is false, then the tree may not contain type information for
+  // this node.
+  assert(haveType() || getTree() == NULL || getTree()->getType(this) == NULL);
+}
+
 store::Item* AttributeNode::getType() const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
   return (haveType() ?
           getTree()->getType(this) :
           GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC].getp());
 }
 
-
 void AttributeNode::setType(store::Item_t& type)
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveType())
   {
     if (type == NULL ||
-        type == GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
+        type->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
     {
       getTree()->removeType(this);
       resetHaveType();
@@ -3584,11 +3770,15 @@ void AttributeNode::setType(store::Item_t& type)
     }
   }
   else if (type != NULL &&
-           type != GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC])
+           !type->equals(GET_STORE().theSchemaTypeNames[store::XS_UNTYPED_ATOMIC]))
   {
     getTree()->addType(this, type);
     setHaveType();
   }
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 #endif
@@ -3598,8 +3788,16 @@ void AttributeNode::setType(store::Item_t& type)
 ********************************************************************************/
 void AttributeNode::setTypedValue(store::Item_t& value)
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   resetHaveListValue();
   theTypedValue.transfer(value);
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 
@@ -3608,6 +3806,10 @@ void AttributeNode::setTypedValue(store::Item_t& value)
 ********************************************************************************/
 void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
+#ifndef DEBUG
+  assertInvariants();
+#endif
+
   if (haveListValue())
   {
     iter = new ItemIterator(getValueVector().getItems(), true);
@@ -3618,6 +3820,10 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
     val = theTypedValue;
     iter = NULL;
   }
+
+#ifndef DEBUG
+  assertInvariants();
+#endif
 }
 
 
@@ -3788,7 +3994,7 @@ TextNode::TextNode(zstring& content)
 {
   setText(content);
 
-  NODE_TRACE1("Loaded text node " << this << " content = " << getText());
+  STORE_TRACE1("Loaded text node " << this << " content = " << getText());
 }
 
 
@@ -3833,13 +4039,13 @@ TextNode::TextNode(
   }
 
 #ifdef TEXT_ORDPATH
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " content = " << getText());
 #else
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " content = " << getText());
@@ -3894,12 +4100,12 @@ TextNode::TextNode(
   p->insertChild(this, p->numChildren());
 
 #ifdef TEXT_ORDPATH
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0)
               << " ordpath = " << theOrdPath.show()
               << " content = " << getValue()->getStringValue());
 #else
-  NODE_TRACE1("Constructed text node " << this << " parent = "
+  STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0)
               << " content = " << getValue()->getStringValue());
 #endif
@@ -4011,7 +4217,7 @@ XmlNode* TextNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied text node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied text node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4496,7 +4702,7 @@ PiNode::PiNode(zstring& target, zstring& content)
 
   theName = qnpool.insert(zstring(), zstring(), theTarget);
 
-  NODE_TRACE1("Loaded pi node " << this << " target = " << theTarget
+  STORE_TRACE1("Loaded pi node " << this << " target = " << theTarget
               << std::endl);
 }
 
@@ -4529,7 +4735,7 @@ PiNode::PiNode(
     parent->insertChild(this, pos);
   }
 
-  NODE_TRACE1("Constructed pi node " << this << " parent = "
+  STORE_TRACE1("Constructed pi node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " target = " << theTarget);
@@ -4578,7 +4784,7 @@ XmlNode* PiNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied pi node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied pi node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4636,7 +4842,7 @@ CommentNode::CommentNode(zstring& content)
 {
   theContent.take(content);
 
-  NODE_TRACE1("Loaded comment node " << this << " content = " << theContent);
+  STORE_TRACE1("Loaded comment node " << this << " content = " << theContent);
 }
 
 
@@ -4662,7 +4868,7 @@ CommentNode::CommentNode(
     parent->insertChild(this, pos);
   }
 
-  NODE_TRACE1("Constructed comment node " << this << " parent = "
+  STORE_TRACE1("Constructed comment node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " content = "
@@ -4709,7 +4915,7 @@ XmlNode* CommentNode::copyInternal(
     throw;
   }
 
-  NODE_TRACE1("Copied coment node " << this << " to node " << copyNode
+  STORE_TRACE1("Copied coment node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
 
@@ -4761,91 +4967,48 @@ store::Iterator_t CommentNode::getChildren() const
  ******************************************************************************/
 
 XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
-  TokenizerProvider const &provider,
-  Tokenizer::Numbers &numbers,
-  iso639_1::type lang,
   FTTokenStore &token_store
 ) :
-  provider_( provider ),
-  numbers_( numbers ),
   token_store_( &token_store ),
   tokens_( token_store.getDocumentTokens() )
 {
-  push_lang( lang );
 }
 
 
 XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
-  TokenizerProvider const &provider,
-  Tokenizer::Numbers &numbers,
-  iso639_1::type lang,
   container_type &tokens
 ) :
-  provider_( provider ),
-  numbers_( numbers ),
-  token_store_( NULL ),
+  token_store_( nullptr ),
   tokens_( tokens )
 {
-  push_lang( lang );
 }
 
 
-XmlNodeTokenizerCallback::~XmlNodeTokenizerCallback()
-{
-  while ( !tokenizer_stack_.empty() )
-    ztd::pop_stack( tokenizer_stack_ )->destroy();
-}
-
-
-inline XmlNodeTokenizerCallback::begin_type
-XmlNodeTokenizerCallback::beginTokenization() const 
-{
-  return token_store_->getDocumentTokens().size();
-}
-
-
-inline void XmlNodeTokenizerCallback::endTokenization(
-  XmlNode const *node,
-  XmlNodeTokenizerCallback::begin_type begin )
-{
-  token_store_->putRange(node, begin, token_store_->getDocumentTokens().size());
-}
-
-
-void XmlNodeTokenizerCallback::pop_lang() 
-{
-  lang_stack_.pop();
-  ztd::pop_stack( tokenizer_stack_ )->destroy();
-}
-
-
-void XmlNodeTokenizerCallback::push_lang( iso639_1::type lang ) 
-{
-  lang_stack_.push( lang );
-  Tokenizer::ptr t( provider_.getTokenizer( lang, numbers_ ) );
-  ZORBA_ASSERT( t.get() );
-  tokenizer_stack_.push( t.get() );
-  t.release();
+void XmlNodeTokenizerCallback::item( Item const &api_item, bool entering ) {
+  if ( token_store_ ) {
+    store::Item const *const item = Unmarshaller::getInternalItem( api_item );
+    if ( entering ) {
+      push_item( item );
+      range_stack_.push( token_store_->getDocumentTokens().size() );
+    } else {
+      pop_item();
+      token_store_->putRange(
+        item,
+        ztd::pop_stack( range_stack_ ),
+        token_store_->getDocumentTokens().size()
+      );
+    }
+  }
 }
 
 
 void XmlNodeTokenizerCallback::
-operator()( char const *utf8_s, size_type utf8_len, size_type pos,
-            size_type sent, size_type para, void *payload )
+token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
+       size_type pos, size_type sent, size_type para, Item const *api_item )
 {
-  store::Item const *const item = static_cast<store::Item*>( payload );
-  FTToken t( utf8_s, utf8_len, pos, sent, para, item, get_lang() );
+  store::Item const *const item = Unmarshaller::getInternalItem( *api_item );
+  FTToken t( utf8_s, utf8_len, pos, sent, para, item, lang );
   tokens_.push_back( t );
-}
-
-
-inline void XmlNodeTokenizerCallback::tokenize( char const *utf8_s,
-                                                size_t len ) 
-{
-  tokenizer().tokenize(
-    utf8_s, len, get_lang(), false, *this,
-    element_stack_.empty() ? NULL : static_cast<void*>( get_element() )
-  );
 }
 
 
@@ -4855,17 +5018,9 @@ void XmlNode::tokenize( XmlNodeTokenizerCallback& )
 }
 
 
-void AttributeNode::tokenize( XmlNodeTokenizerCallback &cb )
-{
-  zstring text;
-  getStringValue2( text );
-  cb.tokenize( text.data(), text.size() );
-}
-
-
 FTTokenIterator_t
 AttributeNode::getTokens( TokenizerProvider const &provider,
-                          Tokenizer::Numbers &numbers, iso639_1::type lang,
+                          Tokenizer::State &state, iso639_1::type lang,
                           bool ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
@@ -4875,62 +5030,21 @@ AttributeNode::getTokens( TokenizerProvider const &provider,
       return FTTokenIterator_t(
         new NaiveFTTokenIterator( *tokens, 0, tokens->size() )
       );
+
     FTTokenStore::container_type att_tokens;
-    XmlNodeTokenizerCallback cb( provider, numbers, lang, att_tokens );
-    const_cast<AttributeNode*>( this )->tokenize( cb );
-    token_store.putAttr( this, att_tokens );
-  }
-}
+    XmlNodeTokenizerCallback callback( att_tokens );
 
-
-void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
-{
-  XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
-  for ( csize i = 0; i < numChildren(); ++i )
-    getChild( i )->tokenize( cb );
-  cb.endTokenization( this, begin );
-}
-
-
-void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
-{
-  Tokenizer &tokenizer = cb.tokenizer();
-
-  zorba::Item element_name;
-  if ( tokenizer.trace_options() )
-    element_name = getNodeName();
-
-  if ( tokenizer.trace_options() & Tokenizer::trace_begin )
-    tokenizer.element( element_name, Tokenizer::trace_begin );
-  else if ( !tokenizer.trace_options() )
-    ++tokenizer.numbers().para;
-
-  //
-  // See if this XML element has an xml:lang attribute: if so, switch to that
-  // language.
-  //
-  bool pushed_lang = false;
-  for ( ulong i = 0; i < numAttrs(); ++i ) {
-    AttributeNode *const at = getAttr( i );
-    Item const *const name = at->getNodeName();
-    if ( name->getLocalName() == "lang" && name->getNamespace() == XML_NS ) {
-      cb.push_lang( locale::find_lang( at->getStringValue().c_str() ) );
-      pushed_lang = true;
-      break;
+    zorba::Item const api_attr( this );
+    Tokenizer::ptr tokenizer;
+    if ( provider.getTokenizer( lang, &state, &tokenizer ) ) {
+      tokenizer->tokenize_node( api_attr, lang, callback );
+      token_store.putAttr( this, att_tokens );
     }
   }
-
-  cb.push_element( this );
-  InternalNode::tokenize( cb );
-  cb.pop_element();
-  if ( pushed_lang )
-    cb.pop_lang();
-
-  if ( tokenizer.trace_options() & Tokenizer::trace_end )
-    tokenizer.element( element_name, Tokenizer::trace_end );
 }
 
 
+#if 0
 void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
 {
   const zstring* text;
@@ -4986,11 +5100,12 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
   cb.tokenize( text->data(), text->size() );
   cb.endTokenization( this, begin );
 }
+#endif
 
 
 FTTokenIterator_t
 XmlNode::getTokens( TokenizerProvider const &provider,
-                    Tokenizer::Numbers &numbers, iso639_1::type lang,
+                    Tokenizer::State &state, iso639_1::type lang,
                     bool ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
@@ -4998,8 +5113,11 @@ XmlNode::getTokens( TokenizerProvider const &provider,
 
   if ( tokens.empty() )
   {
-    XmlNodeTokenizerCallback cb( provider, numbers, lang, token_store );
-    getRoot()->tokenize( cb );
+    zorba::Item const api_root( getRoot() );
+    XmlNodeTokenizerCallback callback( token_store );
+    Tokenizer::ptr tokenizer;
+    if ( provider.getTokenizer( lang, &state, &tokenizer ) )
+      tokenizer->tokenize_node( api_root, lang, callback );
   }
 
   FTTokenStore::range_type const &r = token_store.getRange( this );

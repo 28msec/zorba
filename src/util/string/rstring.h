@@ -1884,7 +1884,7 @@ public:
   }
 
   /**
-   * Attemts to pre-allocated enough memory to contain the given number of
+   * Attemts to pre-allocate enough memory to contain the given number of
    * bytes.
    *
    * @param n The number of bytes.
@@ -2051,13 +2051,12 @@ private: //////////////////////////////////////////////////////////////////////
 
   string_data data_;
 
-#if defined _MSC_VER || defined CLANG
 //
-// Microsoft's Visual Studio C++ compiler doesn't consider the operator+()
-// functions as friends even though they're declared as such.
+// I currently don't understand why the compiler complains about append_safe()
+// being private within operator+() functions even though they are declared as
+// friends.  For now, just make them "public."
 //
 public:
-#endif
   // RSTRING_APPEND_SAFE_CP_ST_CP_ST_X
   /**
    * Appends one or two C strings with known-valid length parameters.
@@ -2073,9 +2072,7 @@ public:
    */
   void append_safe( const_pointer s1, size_type n1,
                     const_pointer s2 = nullptr, size_type n2 = 0 );
-#if defined _MSC_VER || defined CLANG
 private:
-#endif
 
   /**
    * A version of assign() optimized slightly for when \a n == 1.
@@ -2352,7 +2349,8 @@ rstring<Rep>::rstring( std_string const &s, size_type pos, size_type n ) :
   data_( allocator_type() )
 {
   rep().construct( s.data() + check_pos( pos, s.size(), "rstring" ),
-                   s.data() + pos + limit_n( pos, s.size(), n ), allocator_type() );
+                   s.data() + pos + limit_n( pos, s.size(), n ),
+                   allocator_type() );
 }
 
 // RSTRING_C_SS_2ST_A_X
@@ -2380,7 +2378,7 @@ rstring<Rep>::rstring( pointer s, allocator_type const &a ) :
   data_( a )
 {
   // TODO: calls length unnecessarily when doing ptr_rep
-  rep().construct( s, s + (s ? traits_type::length( s ) : 0), a );
+  rep().construct( s, s + (s ? traits_type::length( s ) : npos), a );
 }
 
 // RSTRING_C_CP_ST_A_X
@@ -2946,7 +2944,7 @@ swap( rstring<Rep> &i, rstring<Rep> &j ) {
  * @return Returns \c true only if \a s1 \c == \a s2.
  */
 inline bool equals( char const *s1, size_t s1_n, char const *s2, size_t s2_n ) {
-  return s1_n == s2_n && std::memcmp( s1, s2, s1_n ) == 0;
+  return s1_n == s2_n && (s1 == s2 || std::memcmp( s1, s2, s1_n ) == 0);
 }
 
 template<class Rep> inline bool
@@ -2960,12 +2958,14 @@ operator==( rstring<Rep1> const &s1, rstring<Rep2> const &s2 ) {
 }
 
 template<class Rep> inline bool
-operator==( rstring<Rep> const &s1, typename rstring<Rep>::std_string s2 ) {
+operator==( rstring<Rep> const &s1,
+            typename rstring<Rep>::std_string const &s2 ) {
   return equals( s1.data(), s1.size(), s2.data(), s2.size() );
 }
 
 template<class Rep> inline bool
-operator==( typename rstring<Rep>::std_string s1, rstring<Rep> const &s2 ) {
+operator==( typename rstring<Rep>::std_string const &s1,
+            rstring<Rep> const &s2 ) {
   return equals( s1.data(), s1.size(), s2.data(), s2.size() );
 }
 
@@ -2992,12 +2992,14 @@ operator!=( rstring<Rep1> const &s1, rstring<Rep2> const &s2 ) {
 }
 
 template<class Rep> inline bool
-operator!=( rstring<Rep> const &s1, typename rstring<Rep>::std_string s2 ) {
+operator!=( rstring<Rep> const &s1,
+            typename rstring<Rep>::std_string const &s2 ) {
   return !(s1 == s2);
 }
 
 template<class Rep> inline bool
-operator!=( typename rstring<Rep>::std_string s1, rstring<Rep> const &s2 ) {
+operator!=( typename rstring<Rep>::std_string const &s1,
+            rstring<Rep> const &s2 ) {
   return !(s1 == s2);
 }
 
@@ -3022,12 +3024,14 @@ operator<( rstring<Rep1> const &s1, rstring<Rep2> const &s2 ) {
 }
 
 template<class Rep> inline bool
-operator<( rstring<Rep> const &s1, typename rstring<Rep>::std_string s2 ) {
+operator<( rstring<Rep> const &s1,
+           typename rstring<Rep>::std_string const &s2 ) {
   return s1.compare( s2 ) < 0;
 }
 
 template<class Rep> inline bool
-operator<( typename rstring<Rep>::std_string s1, rstring<Rep> const &s2 ) {
+operator<( typename rstring<Rep>::std_string const &s1,
+           rstring<Rep> const &s2 ) {
   return s2.compare( s1 ) > 0;
 }
 
@@ -3052,12 +3056,14 @@ bool operator<=( rstring<Rep1> const &s1, rstring<Rep2> const &s2 ) {
 }
 
 template<class Rep> inline bool
-operator<=( rstring<Rep> const &s1, typename rstring<Rep>::std_string s2 ) {
+operator<=( rstring<Rep> const &s1,
+            typename rstring<Rep>::std_string const &s2 ) {
   return s1.compare( s2 ) <= 0;
 }
 
 template<class Rep> inline bool
-operator<=( typename rstring<Rep>::std_string s1, rstring<Rep> const &s2 ) {
+operator<=( typename rstring<Rep>::std_string const &s1,
+            rstring<Rep> const &s2 ) {
   return s2.compare( s1 ) >= 0;
 }
 
@@ -3082,12 +3088,14 @@ operator>( rstring<Rep1> const &s1, rstring<Rep2> const &s2 ) {
 }
 
 template<class Rep> inline bool
-operator>( rstring<Rep> const &s1, typename rstring<Rep>::std_string s2 ) {
+operator>( rstring<Rep> const &s1,
+           typename rstring<Rep>::std_string const &s2 ) {
   return s1.compare( s2 ) > 0;
 }
 
 template<class Rep> inline bool
-operator>( typename rstring<Rep>::std_string s1, rstring<Rep> const &s2 ) {
+operator>( typename rstring<Rep>::std_string const &s1,
+           rstring<Rep> const &s2 ) {
   return s2.compare( s1 ) < 0;
 }
 
@@ -3112,12 +3120,14 @@ operator>=( rstring<Rep1> const &s1, rstring<Rep2> const &s2 ) {
 }
 
 template<class Rep> inline bool
-operator>=( rstring<Rep> const &s1, typename rstring<Rep>::std_string s2 ) {
+operator>=( rstring<Rep> const &s1,
+            typename rstring<Rep>::std_string const &s2 ) {
   return s1.compare( s2 ) >= 0;
 }
 
 template<class Rep> inline bool
-operator>=( typename rstring<Rep>::std_string s1, rstring<Rep> const &s2 ) {
+operator>=( typename rstring<Rep>::std_string const &s1,
+            rstring<Rep> const &s2 ) {
   return s2.compare( s1 ) <= 0;
 }
 

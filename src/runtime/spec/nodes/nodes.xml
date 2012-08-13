@@ -41,6 +41,53 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
+  <zorba:iterator name="HasNodeReferenceIterator">
+
+    <zorba:description author="Till Westmann">
+      declare function ref:has-node-reference($node as node()) as xs:boolean
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="has-node-reference" prefix="fn-zorba-ref">
+        <zorba:param>node()</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="AssignNodeReferenceIterator">
+
+    <zorba:description author="Till Westmann">
+      declare function ref:assign-node-reference($node as node()) as xs:boolean
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="assign-node-reference" prefix="fn-zorba-ref">
+        <zorba:param>node()</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="SEQUENTIAL_FUNC_EXPR"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
   <zorba:iterator name="NodeByReferenceIterator">
 
     <zorba:description author="Federico Cavalieri">
@@ -186,6 +233,11 @@
     <zorba:description author="Zorba Team">fn:has-children</zorba:description>
 
     <zorba:function>
+      
+      <zorba:signature localname="has-children" prefix="fn" version="3.0">
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+      
       <zorba:signature localname="has-children" prefix="fn" version="3.0">
         <zorba:param>node()?</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
@@ -510,6 +562,28 @@
     <zorba:methods>
       <zorba:mustCopyInputNodes value="true"/>
     </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+<!--  
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="FnPathIterator">
+
+  <zorba:description author="Zorba Team"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="path" prefix="fn" version="3.0">
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="path" prefix="fn" version="3.0">
+      <zorba:param>node()?</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
 
   </zorba:function>
 

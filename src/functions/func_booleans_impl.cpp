@@ -150,7 +150,7 @@ xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
       return empty;
 
     TypeConstants::quantifier_t aq = 
-    TypeOps::quantifier(*caller->get_arg(i)->get_return_type());
+    caller->get_arg(i)->get_return_type()->get_quantifier();
 
     if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
     {

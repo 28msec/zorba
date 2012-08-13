@@ -24,15 +24,21 @@
 
 #include "types/typeops.h"
 
-#include "util/hashmap32.h"
 #include "util/string_util.h"
 
 #include "diagnostics/assert.h"
 
 #include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba {
+
+
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
+SERIALIZE_INTERNAL_METHOD(function)
+#else
+SERIALIZABLE_CLASS_VERSIONS(function);
+#endif
 
 
 /*******************************************************************************
@@ -43,11 +49,13 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   theSignature(sig),
   theKind(kind),
   theFlags(0),
+  theModuleSctx(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_1_0)
 {
   setFlag(FunctionConsts::isBuiltin);
   setFlag(FunctionConsts::isDeterministic);
 
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   zorba::serialization::Archiver& ar =
   *::zorba::serialization::ClassSerializer::getInstance()->
   getArchiverForHardcodedObjects();
@@ -58,6 +66,7 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
     function* this_ptr = this;
     ar & this_ptr;
   }
+#endif
 }
 
 
@@ -66,20 +75,25 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
 ********************************************************************************/
 void function::serialize(::zorba::serialization::Archiver& ar)
 {
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
+  if (ar.is_loading_hardcoded_objects())
+    return;
+#endif
+
   ar & theSignature;
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;
   ar & theAnnotationList;
+  ar & theModuleSctx;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
-}
 
-
-/*******************************************************************************
-
-********************************************************************************/
-xqtref_t function::getReturnType(const fo_expr*) const
-{
-  return theSignature.returnType();
+  // If we don't pre-serialize builtin function, it is possible that a builtin
+  // functions needs to be serialized. This happens for builtin functions that
+  // are disabled, and as a result, have been registered in a non-root static
+  // context.
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
+  ZORBA_ASSERT(!isBuiltin());
+#endif
 }
 
 
@@ -91,6 +105,7 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
   ulong n = theSignature.paramCount();
   return n == VARIADIC_SIG_SIZE || argv.size() == n;
 }
+
 
 /*******************************************************************************
 
@@ -117,6 +132,16 @@ void function::setAnnotations(AnnotationList* annotations)
 
 
 /*******************************************************************************
+  This is a virstual method. It is redefined by udf and external-function
+  classes. 
+********************************************************************************/
+unsigned short function::getScriptingKind() const 
+{
+  return SIMPLE_EXPR;
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 bool function::isSequential() const
@@ -126,9 +151,33 @@ bool function::isSequential() const
 
 
 /*******************************************************************************
-  Check whether this function is a map with respect to the given input
+  This is a virstual method. It is NOT redefined by udf and external-function
+  classes. However, for UDFs it is possible that the user-declared type is
+  narrowed down to a subtypes; see UDFGraph::optimizeUDFs() in udf_graph.cpp
 ********************************************************************************/
-bool function::isMap(ulong input) const
+xqtref_t function::getReturnType(const fo_expr*) const
+{
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+  This is a virstual method. It is redefined by udf and external-function
+  classes. 
+********************************************************************************/
+bool function::accessesDynCtx() const 
+{
+  return false;
+}
+
+
+/*******************************************************************************
+  Check whether this function is a map with respect to the given input.
+
+  This is a virstual method. It is NOT redefined by udf and external-function
+  classes. TODO ???? redefine it for UDFs
+********************************************************************************/
+bool function::isMap(csize input) const
 {
   if (!theSignature.isVariadic() &&
       theSignature.paramCount() > 0 &&
@@ -148,6 +197,8 @@ bool function::isMap(ulong input) const
 ********************************************************************************/
 bool function::propagatesInputNodes(expr* fo, csize input) const
 {
+  assert(!isUdf());
+
   TypeManager* tm = fo->get_type_manager();
 
   // This method should be called only if the function may indeed return nodes
@@ -176,6 +227,8 @@ bool function::propagatesInputNodes(expr* fo, csize input) const
 ********************************************************************************/
 bool function::mustCopyInputNodes(expr* fo, csize input) const
 {
+  assert(!isUdf());
+
   TypeManager* tm = fo->get_type_manager();
 
   xqtref_t argType = static_cast<fo_expr*>(fo)->get_arg(input)->get_return_type();
@@ -196,7 +249,7 @@ FunctionConsts::AnnotationValue function::producesDistinctNodes() const
 
   TypeManager* tm = rt->get_manager();
 
-  if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
+  if (rt->max_card() <= 1 ||
       TypeOps::is_subtype(tm,
                           *rt,
                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
@@ -219,7 +272,7 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
 
   TypeManager* tm = rt->get_manager();
 
-  if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
+  if (rt->max_card() <= 1 ||
       TypeOps::is_subtype(tm,
                           *rt,
                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
@@ -237,6 +290,9 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
   input parameter is in document order or not. The decision may depend on
   whether the result of this function, at the point where it is called, must
   be in doc order or not.
+
+  This is a virstual method. It is redefined by the udf class but not by the
+  external-function class. 
 ********************************************************************************/
 BoolAnnotationValue function::ignoresSortedNodes(expr* fo, csize input) const
 {
@@ -247,9 +303,7 @@ BoolAnnotationValue function::ignoresSortedNodes(expr* fo, csize input) const
 
   xqtref_t rt = theSignature[input];
 
-  TypeManager* tm = rt->get_manager();
-
-  if (TypeOps::type_max_cnt(tm, *rt) <= 1)
+  if (rt->max_card() <= 1)
   {
     return ANNOTATION_TRUE;
   }
@@ -263,11 +317,29 @@ BoolAnnotationValue function::ignoresSortedNodes(expr* fo, csize input) const
   input parameter contains duplicate nodes or not. The decision may depend on
   whether the result of this function, at the point where it is called, must
   contain distinct nodes or not.
+
+  This is a virstual method. It is redefined by the udf class but not by the
+  external-function class. 
 ********************************************************************************/
 BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, csize input) const
 {
   return ANNOTATION_FALSE;
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t function::codegen(
+    CompilerCB* cb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  ZORBA_ASSERT(false);
+}
+
 
 }
 /* vim:set et sw=2 ts=2: */

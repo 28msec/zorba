@@ -26,9 +26,11 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_iter.h"
 
+#include "types/typeimpl.h"
 #include "types/typeops.h"
 
 #include "functions/func_node_sort_distinct.h"
@@ -307,19 +309,18 @@ expr_t MarkConsumerNodeProps::apply(
 
     expr* arg = curExpr->get_input();
 
-    TypeManager* tm = curExpr->get_type_manager();
     xqtref_t targetType = curExpr->get_target_type();
-    TypeConstants::quantifier_t q = TypeOps::quantifier(*targetType);
+    TypeConstants::quantifier_t q = targetType->get_quantifier();
     
     set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
 
-    if (TypeOps::is_empty(tm, *targetType)) 
+    if (targetType->is_empty()) 
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
     }
     else if (q == TypeConstants::QUANT_STAR ||
              (q == TypeConstants::QUANT_PLUS &&
-              TypeOps::type_min_cnt(tm, *arg->get_return_type()) >= 1))
+              arg->get_return_type()->min_card() >= 1))
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
     }
@@ -338,11 +339,10 @@ expr_t MarkConsumerNodeProps::apply(
 
     expr* arg = curExpr->get_input();
       
-    TypeManager* tm = curExpr->get_type_manager();
     xqtref_t targetType = curExpr->get_target_type();
-    TypeConstants::quantifier_t q = TypeOps::quantifier(*targetType);
+    TypeConstants::quantifier_t q = targetType->get_quantifier();
 
-    if (TypeOps::is_empty(tm, *targetType)) 
+    if (targetType->is_empty()) 
     {
       set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
@@ -361,7 +361,7 @@ expr_t MarkConsumerNodeProps::apply(
       if (curExpr->getIgnoresDuplicateNodes() == ANNOTATION_TRUE &&
           (q == TypeConstants::QUANT_STAR ||
            (q == TypeConstants::QUANT_PLUS &&
-            TypeOps::type_min_cnt(tm, *arg->get_return_type()) >= 1)))
+            arg->get_return_type()->min_card() >= 1)))
       {
         set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
       }
@@ -416,18 +416,33 @@ expr_t MarkConsumerNodeProps::apply(
     break;
   }
   
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind :
+  {
+    break;
+  }
+  case json_direct_object_expr_kind :
+  {
+    break;
+  }
+  case json_array_expr_kind :
+  {
+    json_array_expr* e = static_cast<json_array_expr *>(node);
+    set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
+    set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
+    break;
+  }
+#endif
+
   case attr_expr_kind :
   case elem_expr_kind :
   case pi_expr_kind :
   case text_expr_kind :
   case doc_expr_kind :
 
-  case axis_step_expr_kind :
-  case const_expr_kind :
   case extension_expr_kind :  // TODO
   case flowctl_expr_kind :    // TODO
   case gflwor_expr_kind :     // TODO
-  case match_expr_kind :
   case name_cast_expr_kind :  // TODO
   case trycatch_expr_kind :   // TODO
   case validate_expr_kind :   // TODO
@@ -457,12 +472,19 @@ expr_t MarkConsumerNodeProps::apply(
       if (rCtx.theIsInOrderedMode)
         (*iter)->setIgnoresSortedNodes(ANNOTATION_FALSE);
 
-      (*iter)->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
+      (*iter)->setIgnoresDuplicateNodes(ANNOTATION_TRUE);
       
       iter.next();
     }
 
     break;
+  }
+
+  case const_expr_kind :
+  case axis_step_expr_kind :
+  case match_expr_kind :
+  {
+    return NULL;
   }
 
   default:
@@ -576,7 +598,7 @@ expr_t MarkNodeCopyProps::apply(
         std::vector<expr*> sources;
         UDFCallChain dummyUdfCaller;
         theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
-        markSources(sources, dummyUdfCaller);
+        markSources(sources);
       }
     }
     else
@@ -584,7 +606,7 @@ expr_t MarkNodeCopyProps::apply(
       std::vector<expr*> sources;
       UDFCallChain dummyUdfCaller;
       theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
-      markSources(sources, dummyUdfCaller);
+      markSources(sources);
     }
 
     UDFCallChain dummyUdfCaller;
@@ -630,6 +652,51 @@ void MarkNodeCopyProps::applyInternal(
     break;
   }
 
+#ifdef ZORBA_WITH_JSON
+  case json_direct_object_expr_kind:
+  {
+    // For now, assume that nodes to appear as pair values must be copied first.
+    // TODO improve this
+    json_direct_object_expr* e = static_cast<json_direct_object_expr *>(node);
+
+    static_context* sctx = e->get_sctx();
+
+    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    {
+      csize numPairs = e->num_pairs();
+      for (csize i = 0; i < numPairs; ++i)
+      {
+        std::vector<expr*> sources;
+        theSourceFinder->findNodeSources(e->get_value_expr(i), &udfCaller, sources);
+        markSources(sources);
+      }
+    }
+
+    break;
+  }
+  case json_object_expr_kind:
+  {
+    break;
+  }
+  case json_array_expr_kind:
+  {
+    // For now, assume that nodes to appear as members must be copied first.
+    // TODO improve this
+    json_array_expr* e = static_cast<json_array_expr *>(node);
+
+    static_context* sctx = e->get_sctx();
+
+    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    {
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
+      markSources(sources);
+    }
+
+    break;
+  }
+#endif
+
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
@@ -638,7 +705,7 @@ void MarkNodeCopyProps::applyInternal(
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
-      markSources(sources, udfCaller);
+      markSources(sources);
     }
     else
     {
@@ -657,7 +724,7 @@ void MarkNodeCopyProps::applyInternal(
         {
           std::vector<expr*> sources;
           theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
-          markSources(sources, udfCaller);
+          markSources(sources);
           break;
         }
       }
@@ -681,7 +748,7 @@ void MarkNodeCopyProps::applyInternal(
     fo_expr* e = static_cast<fo_expr *>(node);
     function* f = e->get_func();
 
-    if (f->isUdf())
+    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
     {
       user_function* udf = static_cast<user_function*>(f);
 
@@ -710,7 +777,7 @@ void MarkNodeCopyProps::applyInternal(
           {
             std::vector<expr*> sources;
             theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
-            markSources(sources, udfCaller);
+            markSources(sources);
           }
         }
       }
@@ -724,7 +791,7 @@ void MarkNodeCopyProps::applyInternal(
         {
           std::vector<expr*> sources;
           theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
-          markSources(sources, udfCaller);
+          markSources(sources);
         }
       }
     }
@@ -751,7 +818,7 @@ void MarkNodeCopyProps::applyInternal(
     validate_expr* e = static_cast<validate_expr *>(node);
     std::vector<expr*> sources;
     theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
-    markSources(sources, udfCaller);
+    markSources(sources);
     break;
   }
 
@@ -764,19 +831,20 @@ void MarkNodeCopyProps::applyInternal(
 
     std::vector<expr*> sources;
     theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
-    markSources(sources, udfCaller);
+    markSources(sources);
 
     static_context* sctx = e->get_sctx();
 
     if (e->getSourceExpr() != NULL &&
         (e->get_expr_kind() == insert_expr_kind ||
-         static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE) &&
+         (e->get_expr_kind() == replace_expr_kind &&
+          static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE)) &&
         (sctx->inherit_mode() != StaticContextConsts::no_inherit_ns ||
          sctx->preserve_mode() != StaticContextConsts::no_preserve_ns))
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->getSourceExpr(), &udfCaller, sources);
-      markSources(sources, udfCaller);
+      markSources(sources);
     }
 
     break;
@@ -797,7 +865,7 @@ void MarkNodeCopyProps::applyInternal(
       {
         std::vector<expr*> sources;
         theSourceFinder->findNodeSources((*ite)->getExpr(), &udfCaller, sources);
-        markSources(sources, udfCaller);
+        markSources(sources);
       }
     }
 
@@ -832,7 +900,7 @@ void MarkNodeCopyProps::applyInternal(
         {
           std::vector<expr*> sources;
           theSourceFinder->findNodeSources(child, &udfCaller, sources);
-          markSources(sources, udfCaller);
+          markSources(sources);
         }
         else
         {
@@ -866,7 +934,7 @@ void MarkNodeCopyProps::applyInternal(
 
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(arg, &udfCaller, sources);
-      markSources(sources, udfCaller);
+      markSources(sources);
     }
 
     std::vector<var_expr_t> globalVars;
@@ -878,7 +946,7 @@ void MarkNodeCopyProps::applyInternal(
 
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(globalVar, &udfCaller, sources);
-      markSources(sources, udfCaller);
+      markSources(sources);
     }
 
     break;
@@ -896,7 +964,7 @@ void MarkNodeCopyProps::applyInternal(
 
     std::vector<expr*> sources;
     theSourceFinder->findNodeSources(e->get_range(), &udfCaller, sources);
-    markSources(sources, udfCaller);
+    markSources(sources);
 
     break;
   }
@@ -917,7 +985,7 @@ void MarkNodeCopyProps::applyInternal(
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources((*ite).getp(), &udfCaller, sources);
-      markSources(sources, udfCaller);
+      markSources(sources);
     }
 
     break;
@@ -960,9 +1028,7 @@ void MarkNodeCopyProps::applyInternal(
 /*******************************************************************************
 
 ********************************************************************************/
-void MarkNodeCopyProps::markSources(
-    const std::vector<expr*>& sources,
-    UDFCallChain& udfCaller)
+void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
 {
   std::vector<expr*>::const_iterator ite = sources.begin();
   std::vector<expr*>::const_iterator end = sources.end();
@@ -975,19 +1041,13 @@ void MarkNodeCopyProps::markSources(
     case doc_expr_kind:
     {
       doc_expr* e = static_cast<doc_expr*>(source);
-      if (!e->copyInputNodes())
-      {
-        e->setCopyInputNodes();
-      }
+      e->setCopyInputNodes();
       break;
     }
     case elem_expr_kind:
     {
       elem_expr* e = static_cast<elem_expr*>(source);
-      if (!e->copyInputNodes())
-      {
-        e->setCopyInputNodes();
-      }
+      e->setCopyInputNodes();
       break;
     }
     default:
@@ -1000,7 +1060,9 @@ void MarkNodeCopyProps::markSources(
 
 
 /*******************************************************************************
-
+  The purpose of this method is to find patrh exprs that are inside the subtree
+  of "node" and which return nodes that may propagated in the result of the
+  "node" expr.
 ********************************************************************************/
 void MarkNodeCopyProps::markForSerialization(expr* node)
 {
@@ -1012,7 +1074,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
     return;
 
-  switch (node->get_expr_kind()) 
+  switch (node->get_expr_kind())
   {
   case const_expr_kind:
   {
@@ -1104,6 +1166,15 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     break;
   }
 
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    break;
+  }
+#endif
+
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
@@ -1134,7 +1205,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
     e->setWillBeSerialized(ANNOTATION_TRUE);
 
-    if (f->isUdf())
+    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
     {
       user_function* udf = static_cast<user_function*>(f);
       expr* body = udf->getBody();

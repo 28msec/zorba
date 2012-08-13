@@ -77,7 +77,7 @@ XQPCollator::~XQPCollator()
   delete (Collator*)theCollator;
 }
 
-const std::string& XQPCollator::getURI()
+const std::string& XQPCollator::getURI() const
 {
   return uri;
 }

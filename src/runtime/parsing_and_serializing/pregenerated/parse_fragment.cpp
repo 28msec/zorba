@@ -32,12 +32,54 @@
 
 namespace zorba {
 
+// <FnZorbaParseXmlFragmentIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnZorbaParseXmlFragmentIterator)
+
+void FnZorbaParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
+}
+
+
+void FnZorbaParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnZorbaParseXmlFragmentIterator::~FnZorbaParseXmlFragmentIterator() {}
+
+FnZorbaParseXmlFragmentIteratorState::FnZorbaParseXmlFragmentIteratorState() {}
+
+FnZorbaParseXmlFragmentIteratorState::~FnZorbaParseXmlFragmentIteratorState() {}
+
+
+void FnZorbaParseXmlFragmentIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+// </FnZorbaParseXmlFragmentIterator>
+
+
 // <FnParseXmlFragmentIterator>
-FnParseXmlFragmentIterator::class_factory<FnParseXmlFragmentIterator>
-FnParseXmlFragmentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnParseXmlFragmentIterator)
+
+void FnParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>*)this);
+}
 
 
-void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const {
+void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

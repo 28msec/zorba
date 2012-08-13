@@ -123,7 +123,7 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData a pointer to the base64 binary data.
+       * @param aBinData a pointer to the base6c4 binary data.
        * @param aLength the length of the base64 binary data.
        * @return The Base64Binary Item.
        */
@@ -294,6 +294,21 @@ namespace zorba {
       createDateTime(short aYear, short aMonth, short aDay,
                      short aHour, short aMinute, double aSecond,
                      short aTimeZone_hours) = 0;
+
+      /** \brief Creates a DateTime Item without setting a time zone.
+       *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
+       *
+       * @param aYear short-valued representation of the year.
+       * @param aMonth short-valued representation of the month.
+       * @param aDay short-valued representation of the day.
+       * @param aHour short-valued representation of the hour.
+       * @param aMinute short-valued representation of the minute.
+       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @return The DateTime Item.
+       */
+      virtual Item
+      createDateTime(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond) = 0;
 
       /** \brief Creates a DateTime Item
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -628,7 +643,6 @@ namespace zorba {
                         bool aHasTypedValue,
                         bool aHasEmptyValue,
                         NsBindings aNsBindings) = 0;
-
       /**
       * Create a new attribute node N and place it among the
       * attributes of a given parent node. If no parent is given, N becomes the
@@ -698,7 +712,73 @@ namespace zorba {
       virtual Item createTextNode(
         Item   parent,
         String content) = 0;
-}; // class ItemFactory
+
+#ifdef ZORBA_WITH_JSON
+
+      /**
+       * Create a JSON null item.
+       */
+      virtual Item createJSONNull() = 0;
+
+      /**
+       * Create a JSON Number item from a string. This will actually be
+       * an xs:integer, xs:double, or xs:decimal, depending on the content
+       * of the string.
+       *
+       * @param aString The input string.
+       */
+      virtual Item createJSONNumber(String aString) = 0;
+
+      /**
+       * Create a JSON Object containing the specified JSON Pairs.
+       *
+       * @param aNames A vector containing the name and value of each pair.
+       */
+      virtual Item createJSONObject(std::vector<std::pair<Item, Item> >& aNames) = 0;
+      
+      /**
+       * Create a JSON Array containing the specified items.
+       *
+       * @param aItems A std::vector<Item> containing Items which may
+       * be stored in a JSON Array (namely JSON Arrays, JSON Objects,
+       * JSON nulls, valid JSON numeric types, or xs:strings).
+       */
+      virtual Item createJSONArray(std::vector<Item>& aItems) = 0;
+
+#endif /* ZORBA_WITH_JSON */
+
+      /**
+      * @brief Assigns a simple typed value to an element node.
+      *
+      * Creates a simple typed value for an element. Note that this may only
+      * be done once per element. This method should only be used during
+      * creation of a new tree. Using this method to modify elements after
+      * processing has begun has undefined results.
+      *
+      *
+      * @param aElement       The element for the typed value; may not be NULL.
+      * @param aTypedValue    The typed value for the element.
+      */
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              Item aTypedValue) = 0;
+      /**
+      * @brief Assigns a simple typed value to an element node.
+      *
+      * Creates a simple typed value for an element. Note that this may only
+      * be done once per element. This method should only be used during
+      * creation of a new tree. Using this method to modify elements after
+      * processing has begun has undefined results.
+      *
+      *
+      * @param aElement       The element for the typed value; may not be NULL.
+      * @param aTypedValue    The typed value for the element.
+      */
+      virtual void
+      assignElementTypedValue(Item& aElement,
+                              std::vector<Item>& aTypedValue) = 0;
+
+  }; // class ItemFactory
 
 } // namespace zorba
 #endif

@@ -33,6 +33,17 @@ ELSE(ZORBA_SUPPRESS_CURL)
     DECLARE_ZORBA_MODULE(FILE http-client.xq VERSION 2.0
       URI "http://www.zorba-xquery.com/modules/http-client"
       LINK_LIBRARIES ${CURL_LIBRARIES})
+    
+    IF (WIN32) # Copy certificates for windows only
+      IF (MSVC_IDE)
+        SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../../../../bin/${CMAKE_BUILD_TYPE}/cacert.pem")
+      ELSE (MSVC_IDE)
+        SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../../../../bin/cacert.pem")       
+      ENDIF (MSVC_IDE)
+      CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cacert.pem" ${CACERT_DESTINATION} COPYONLY)
+      INSTALL(FILES ${CACERT_DESTINATION} DESTINATION bin)
+    ENDIF (WIN32) 
+    
   ELSE(CURL_FOUND)
     MESSAGE(STATUS "The cURL library was not found - http-client will not be built")
   ENDIF(CURL_FOUND)
@@ -71,6 +82,13 @@ DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xml")
 DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc")
+
+IF(NOT ZORBA_NO_FULL_TEXT)
+  DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0
+    URI "http://www.zorba-xquery.com/modules/full-text")
+  DECLARE_ZORBA_SCHEMA(FILE full-text.xsd
+    URI "http://www.zorba-xquery.com/modules/full-text")
+ENDIF(NOT ZORBA_NO_FULL_TEXT)
 
 # Subdirectories
 DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0

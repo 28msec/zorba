@@ -40,17 +40,17 @@ external_function::external_function(
     static_context* modSctx,
     const zstring& ns,
     const signature& sig,
-    short scriptingType,
+    unsigned short scriptingType,
     ExternalFunction* impl) 
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
-  theModuleSctx(modSctx),
   theNamespace(ns),
   theScriptingKind(scriptingType),
   theImpl(impl)
 {
   resetFlag(FunctionConsts::isBuiltin);
+  theModuleSctx = modSctx;
 }
 
 
@@ -62,7 +62,6 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
   zorba::serialization::serialize_baseclass(ar, (function*)this);
 
   ar & theLoc;
-  ar & theModuleSctx;
   ar & theNamespace;
   ar & theScriptingKind;
 

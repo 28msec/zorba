@@ -21,6 +21,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/xquery_exception.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/diagnostic_list.h>
 
@@ -79,11 +80,13 @@ class DenyAccessURIMapper : public URIMapper
   virtual ~DenyAccessURIMapper() {}
 
   virtual void mapURI(const zorba::String aUri,
-    EntityData const* aEntityData,
+    EntityData const*,
     std::vector<zorba::String>& oUris) throw ()
   {
     // Deny access to an URI that would otherwise work
-    if(aUri == "http://www.zorba-xquery.com/tutorials/helloworld.xsd") {
+    if(aUri == "http://www.zorba-xquery.com/tutorials/helloworld.xsd" ||
+       aUri == "http://www.zorba-xquery.com/modules/fetch" ||
+       aUri == "http://expath.org/ns/file") {
       oUris.push_back(URIMapper::DENY_ACCESS);
     }
   }
@@ -259,7 +262,57 @@ bool test_unresolved_schema_uri(Zorba* aZorba)
   return false;
 }
 
-bool test_deny_access(Zorba* aZorba)
+bool test_deny_internal_module_access(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  DenyAccessURIMapper lMapper;
+  lContext->registerURIMapper(&lMapper);
+
+  try {
+    XQuery_t lQuery = aZorba->compileQuery
+      ("import module namespace fetch = "
+        "'http://www.zorba-xquery.com/modules/fetch'; "
+        "1 + 1", lContext);
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException& e) {
+    std::cout << "Caught exception: " << e.what() << std::endl;
+    if (e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED) {
+      std::cout << "...the correct exception!" << std::endl;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool test_deny_external_module_access(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  DenyAccessURIMapper lMapper;
+  lContext->registerURIMapper(&lMapper);
+
+  try {
+    XQuery_t lQuery = aZorba->compileQuery
+      ("import module namespace file = "
+        "'http://expath.org/ns/file'; "
+        "1 + 1", lContext);
+    std::cout << lQuery << std::endl;
+  } catch (XQueryException& e) {
+    std::cout << "Caught exception: " << e.what() << std::endl;
+    if (e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED
+        && e.has_source()
+        && e.source_line() == 1) {
+      std::cout << "...the correct exception!" << std::endl;
+      return true;
+    }
+  } catch (ZorbaException& e) {
+    std::cout << "Caught unexpected exception: " << e.what() << std::endl;
+  }
+  return false;
+}
+
+bool test_deny_schema_access(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
@@ -355,8 +408,20 @@ int userdefined_uri_resolution(int argc, char* argv[])
     std::cout << "  ...failed!" << std::endl;
   }
 
-  std::cout << "test_deny_access" << std::endl;
-  if (!test_deny_access(lZorba)) {
+  std::cout << "test_deny_internal_module_access" << std::endl;
+  if (!test_deny_internal_module_access(lZorba)) {
+    retval = 1;
+    std::cout << " ... failed!" << std::endl;
+  }
+
+  std::cout << "test_deny_external_module_access" << std::endl;
+  if (!test_deny_external_module_access(lZorba)) {
+    retval = 1;
+    std::cout << " ... failed!" << std::endl;
+  }
+
+  std::cout << "test_deny_schema_access" << std::endl;
+  if (!test_deny_schema_access(lZorba)) {
     retval = 1;
     std::cout << " ... failed!" << std::endl;
   }

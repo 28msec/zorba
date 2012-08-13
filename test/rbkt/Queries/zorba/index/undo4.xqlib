@@ -1,0 +1,43 @@
+module namespace f = "http://www.zorba-xquery.com/unique-index";
+
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+
+
+declare variable $f:c1 := xs:QName("f:c1");
+declare variable $f:PersonCars := xs:QName("f:PersonCars");
+
+declare %an:ordered collection f:c1 as node()*;
+
+declare %an:automatic %an:general-equality index f:PersonCars
+on nodes dml:collection(xs:QName("f:c1"))
+by (for $x in ./car return xs:string($x/@make)) as xs:string*;
+
+
+
+declare variable $f:c2 := xs:QName("f:c2");
+declare variable $f:PersonId := xs:QName("f:PersonId");
+
+declare %an:ordered collection f:c2 as node()*;
+
+declare %an:unique %an:automatic %an:value-range index f:PersonId
+on nodes dml:collection(xs:QName("f:c2"))
+by xs:string(./@id) as xs:string;
+
+
+
+declare %an:sequential function f:create-db()
+{
+  ddl:create($f:c1);
+
+  ddl:create($f:c2);
+
+  iddl:create($f:PersonCars);
+
+  iddl:create($f:PersonId);
+};

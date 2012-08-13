@@ -199,28 +199,14 @@ declare %private %an:sequential function xqdoc2html:gather-and-copy(
 
 };
 
-(:~
- : Returns the URI of the module given the passed <pre>$folderPath</pre> using
- : the Zorba URI resolving mechanism.
- :
- : @param $folderPath the folder path.
- : @return the URI of the module.
- :)
- (:
-declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:string) as xs:string {
-  let $tok := tokenize($folderPath, fn:concat("\",file:directory-separator()))
-  return
-    fn:concat('http://', $tok[3],'.', $tok[2],'.', $tok[1], substring-after($folderPath, $tok[3]))
-};
-:)
-
-(:~ Returns the string resulting from replacing the directory-separators (i.e. / ) with '_'
+(:~ 
+ : Returns the string resulting from replacing the directory-separators (i.e. // ) with '_'
  :
  : @param $moduleURI the path to the module URI.
- : @return the string resulting from replacing the directory-separators (i.e. / ) with '_'.
+ : @return the string resulting from replacing the directory-separators (i.e. // ) with '_'.
  :
  :)
-declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
+declare function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
   let $lmodule := if(fn:ends-with($moduleURI,"/")) then fn:concat($moduleURI,"index") else $moduleURI
   return
     replace(
@@ -268,7 +254,7 @@ declare %private %an:sequential function xqdoc2html:copy-files(
  :)
 declare %an:sequential function xqdoc2html:copy-xhtml-requisites(
   $xhtmlRequisitesPath  as xs:string,
-  $xqdocBuildPath       as xs:string)
+  $xqdocBuildPath       as xs:string) as empty-sequence()
 {
   let $xhtmlPath      := fn:concat($xqdocBuildPath, file:directory-separator(), "xhtml"),
       $xmlPath        := fn:concat($xqdocBuildPath, file:directory-separator(), "xml"),
@@ -281,15 +267,12 @@ declare %an:sequential function xqdoc2html:copy-xhtml-requisites(
                                    file:directory-separator(), "main.html")
   return
     {
-      (: first - create the xhtml folder if it does not exist already :)
-      file:create-directory($xhtmlPath);
-
-      (: second - clear the XHTML folder :)
       if(file:exists($xhtmlPath)) then
         file:delete($xhtmlPath);
       else ();
 
-      (: third - re-copy these files :)
+      file:create-directory($xhtmlPath);
+
       xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath ,("gif", "png", "svg"));
       xqdoc2html:copy-files($xhtmlRequisitesPath, $libPath    ,"js");
       xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath    ,"css");
@@ -341,10 +324,13 @@ declare %private %an:sequential function xqdoc2html:collectZorbaManifestEntries(
     variable $manifestXML := fn:parse-xml(file:read-text($zorbaManifestPath));
 
     variable $moduleManifests := $manifestXML/z:manifest/z:module;
-
+      
     for $module in $moduleManifests
+    let $uri := $module/z:uri/text()
+    group by $uri
+    let $module := if(count($module) gt 1) then $module[@version = max($module/@version)] else $module
     return
-      insert node <module uri="{data($module/z:uri)}"
+      insert node <module uri="{$uri}"
                           isCore="{data($module/@isCore)}"
                           version="{if (exists(data($module/@version))) then data($module/@version) else ''}"
                           projectRoot="{data($module/z:projectRoot)}"/> as last into $xqdoc2html:ZorbaManifest;
@@ -370,7 +356,7 @@ declare %an:sequential function xqdoc2html:main(
   $xqdocBuildPath as xs:string,
   $indexHtmlPath  as xs:string,
   $zorbaVersion   as xs:string,
-  $xhtmlRequisitesPath as xs:string)
+  $xhtmlRequisitesPath as xs:string) as empty-sequence()
 {
   (: fill out $xqdoc2html:ZorbaManifest :)
   xqdoc2html:collectZorbaManifestEntries($zorbaManifestPath, $xqdocBuildPath);
@@ -419,6 +405,17 @@ declare %an:sequential function xqdoc2html:main(
 
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));
   ddl:delete(xs:QName("xqdoc2html:collection"));
+  
+  (:delete modules_new.svg if it exists:)
+  variable $SVGGraph := fn:concat($xhtmlRequisitesPath,
+                        file:directory-separator(),
+                        "images",
+                        file:directory-separator(),
+                        "modules_new.svg");
+
+  if(file:exists($SVGGraph)) then
+        file:delete($SVGGraph);
+  else ();
 };
 
 declare %private function xqdoc2html:get-project-root(
@@ -839,9 +836,7 @@ declare %private %an:sequential function xqdoc2html:parse-spec-args(
     if(fn:matches($specLine, "Args:")) then
       let $arg_split := fn:substring-after($specLine, "-x")
       return
-      if(fn:string-length($arg_split) eq 0) then
-        fn:error($err:UE008, fn:concat("Unknown Args: in spec file for example <", $exampleSource,"> .
-        Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
+      if(fn:string-length($arg_split) eq 0) then string-join($specLines, " ")
       else
         let $var_value := fn:tokenize($arg_split, "=")
         let $var_name := fn:normalize-space(fn:replace($var_value[1], ":$", ""))
@@ -1124,7 +1119,7 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
      ),
      let $modVersion := xqdoc2html:get-module-version($moduleUri)
      return
-     if($modVersion = "") then ()
+     if($modVersion = "0.0.0") then ()
      else
      (<div class="subsubsection">Zorba version for this module:</div>,
       <p>The latest version of this module is <strong>{$modVersion}</strong>. For more information about module versioning in Zorba please check out <a href="../../html/modules_using.html#mod_versioning" target="_blank">this</a> resource.</p>
@@ -1382,9 +1377,9 @@ declare %private function xqdoc2html:module-function-summary($functions)
           $signature := $function/xqdoc:signature/text(),
           $param-number := $function/@arity,
           $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated),
-          $description := data($function/xqdoc:comment/xqdoc:description),
+          $description := normalize-space(data($function/xqdoc:comment/xqdoc:description)),
           $shortDescription := if(not(fn:substring-before($description,".") = "")) then
-                               fn:concat(fn:substring-before($description,"."),".") else ""
+                               fn:concat(fn:substring-before($description,"."),".") else concat($description,".")
       order by $name, $param-number
       return
         let $type := replace(normalize-space(substring-after(substring-before($signature, "function"), "declare")),"%",""),
@@ -1400,7 +1395,7 @@ declare %private function xqdoc2html:module-function-summary($functions)
                   <span class="functName"><del><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></del></span>
                 else
                   <span class="functName"><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></span>
-              }{xqdoc2html:split-function-signature($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
+              }{xqdoc2html:split-function-params-return($function)}<br /><span class="padding">{$shortDescription}</span>
               </tt>
             </td>
           </tr>
@@ -1415,46 +1410,30 @@ declare %private function xqdoc2html:module-function-summary($functions)
  : @param $signature the function signature.
  : @return the XHTML for the function signature after reformatting was done.
  :)
-declare %private function xqdoc2html:split-function-signature($signature as xs:string) {
-  let $line1 := substring-before($signature, "(")
-  let $rest := substring-after($signature, "(")
-  let $params :=
-    (: if the function has parameter :)
-    if (matches($rest, "\$")) then
-      let $tmp := substring-before($rest, ") as ")
-      return
-        (: if we don't have a return type specified :)
-        if ($tmp eq "") then
-          (: en external function declaration :)
-          if (ends-with($rest, ") external")) then
-            substring-before($rest, ") external")
-          (: no external function :)
-          else
-            substring-before($rest, ")")
-        (: the return type is specified :)
-        else
-          $tmp
-    (: no parameters :)
-    else
-      ""
-  let $after := substring-after($signature, concat($params, ")"))
-  let $parts := fn:tokenize($line1,' ')
-  let $line11 := fn:string-join(for $part in $parts return $part, ' ')
-  let $line12 := fn:substring-after($line1, normalize-space($line11))
-  return (
-    $line11,<span class="functName">{$line12}</span>," (&#0010;",
-    for $param at $pos in tokenize($params, "\$")
-    let $nsParam := normalize-space($param)
-    let $param1 := if(contains($nsParam,"as")) then fn:substring-before($nsParam," as ")
-                   else if(contains($nsParam,",")) then fn:substring-before($nsParam,",")
-                   else if(contains($nsParam,")")) then fn:substring-before($nsParam,")")
-                   else $nsParam
-    let $param2 := fn:substring-after($nsParam, $param1)
-    where $pos > 1
-    return (
-      <span class="funcParam">{concat("            $", $param1)}</span>,$param2,"&#0010;"),
-    concat(")", $after)
-  )
+declare %private function xqdoc2html:split-function-signature($function) {
+  fn:concat("declare function ",fn:data($function/xqdoc:name),
+            xqdoc2html:split-function-params-return($function))
+};
+
+(:~
+ : Pretty print the function params and return.
+ :
+ : @param $signature the function signature.
+ : @return the XHTML for the function params and return after reformatting was done.
+ :)
+declare %private function xqdoc2html:split-function-params-return($function) {
+  fn:concat(" (&#0010;",string-join(for $param in $function/xqdoc:parameters//xqdoc:parameter return
+            concat("            $", data($param/xqdoc:name), " as ", xqdoc2html:get-type($param/xqdoc:type)),",&#0010;"),"&#0010;",
+            ") as ", xqdoc2html:get-type($function/xqdoc:return/xqdoc:type))
+};
+
+declare %private function xqdoc2html:get-type($type) as xs:string?
+{
+    let $occurence := data($type/@occurrence)
+    let $typeString := data($type)
+    return
+        if(exists($occurence) and not(ends-with($typeString, $occurence))) then concat($typeString, $occurence)
+        else $typeString
 };
 
 (:~
@@ -1490,7 +1469,7 @@ declare %private %an:nondeterministic function xqdoc2html:functions($functions, 
           }</p>
         else
           (),
-        <pre class="signature">{xqdoc2html:split-function-signature($signature)}</pre>,
+        <pre class="signature">{xqdoc2html:split-function-signature($function)}</pre>,
         xqdoc2html:description($comment),
         xqdoc2html:function-parameters($comment),
         xqdoc2html:function-return($comment),

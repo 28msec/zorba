@@ -53,8 +53,12 @@ public:
    *
    * It is allowed to have several concurrent iterators on the same Collection,
    * but each iterator should be used by a single thread only.
+   *
+   * @param  aSkip The number of collection entries to skip.
+   * @return Iterator
    */
-  virtual Iterator_t getIterator() = 0;
+  virtual Iterator_t getIterator(
+      const xs_integer& aSkip = xs_integer::zero()) = 0;
 
   /**
    * Get the node at the given position in the collection.
@@ -77,16 +81,14 @@ public:
   virtual bool findNode(const Item* aNode, xs_integer& position) const = 0;
 
   /**
-   * Returns true if the collection is dynamic or static
+   * Returns true if the collection is dynamic
    */
   virtual bool isDynamic() const = 0;
 
   /**
    * Returns all annotations of the given collection
    */
-  virtual void getAnnotations(
-      std::vector<store::Annotation_t>&
-  ) const = 0;
+  virtual void getAnnotations(std::vector<store::Annotation_t>&) const = 0;
 
 };
 

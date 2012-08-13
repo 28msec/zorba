@@ -36,11 +36,17 @@
 namespace zorba {
 
 // <FunctionNameIterator>
-FunctionNameIterator::class_factory<FunctionNameIterator>
-FunctionNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionNameIterator)
+
+void FunctionNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionNameIterator, PlanIteratorState>*)this);
+}
 
 
-void FunctionNameIterator::accept(PlanIterVisitor& v) const {
+void FunctionNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -58,11 +64,17 @@ FunctionNameIterator::~FunctionNameIterator() {}
 
 
 // <FunctionArityIterator>
-FunctionArityIterator::class_factory<FunctionArityIterator>
-FunctionArityIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionArityIterator)
+
+void FunctionArityIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionArityIterator, PlanIteratorState>*)this);
+}
 
 
-void FunctionArityIterator::accept(PlanIterVisitor& v) const {
+void FunctionArityIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -80,11 +92,17 @@ FunctionArityIterator::~FunctionArityIterator() {}
 
 
 // <PartialApplyIterator>
-PartialApplyIterator::class_factory<PartialApplyIterator>
-PartialApplyIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PartialApplyIterator)
+
+void PartialApplyIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<PartialApplyIterator, PlanIteratorState>*)this);
+}
 
 
-void PartialApplyIterator::accept(PlanIterVisitor& v) const {
+void PartialApplyIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

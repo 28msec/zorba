@@ -23,6 +23,8 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <unistd.h>                    /* for chdir(2) */
+#else
+# include <shlwapi.h>
 #endif /* WIN32 */
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -38,7 +40,28 @@ using namespace std;
 namespace zorba {
 namespace fs {
 
+///////////////////////////////////////////////////////////////////////////////
+
+char const *const type_string[] = {
+  "non_existant",
+  "directory",
+  "file",
+  "link",
+  "volume",
+  "other"
+};
+
 ////////// helper functions ///////////////////////////////////////////////////
+
+#ifndef WIN32
+inline bool is_dots( char const *s ) {
+  return s[0] == '.' && (!s[1] || (s[1] == '.' && !s[2]));
+}
+#else
+inline bool is_dots( LPCWSTR s ) {
+  return s[0] == TEXT('.') && (!s[1] || (s[1] == TEXT('.') && !s[2]));
+}
+#endif /* WIN32 */
 
 inline void replace_foreign( zstring *path ) {
 #ifdef WIN32
@@ -56,16 +79,21 @@ namespace win32 {
 
 #ifdef ZORBA_WITH_FILE_ACCESS
 
+static type map_type( DWORD dwFileAttributes ) {
+  if ( dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+    return directory;
+  if ( dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT )
+    return link;
+  return file;
+}
+
 static type get_type( LPCWSTR wpath, size_type *size = nullptr ) {
   WIN32_FILE_ATTRIBUTE_DATA data;
   if ( ::GetFileAttributesEx( wpath, GetFileExInfoStandard, (void*)&data ) ) {
-    if ( data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-      return directory;
-    if ( data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT )
-      return link;
-    if ( size )
+    type const t = map_type( data.dwFileAttributes );
+    if ( t == file && size )
       *size = ((size_type)data.nFileSizeHigh << 32) | data.nFileSizeLow;
-    return file;
+    return t;
   }
   return non_existent;
 }
@@ -90,11 +118,13 @@ void make_absolute_impl( char const *path, char *abs_path ) {
   to_wchar( path, wpath );
   WCHAR wfull_path[ MAX_PATH ];
   DWORD const result = ::GetFullPathName(
-    wpath, sizeof( wpath ) / sizeof( wpath[0] ), wfull_path, NULL
+    wpath, sizeof( wfull_path ) / sizeof( wfull_path[0] ), wfull_path, NULL
   );
   if ( !result )
     throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
   to_char( wfull_path, abs_path );
+#else
+  ::strcpy( abs_path, path );
 #endif /* WINCE */
 }
 
@@ -153,7 +183,7 @@ zstring curdir() {
   win32::to_char( wpath, path );
   if ( !is_absolute( path ) ) {
     // GetCurrentDirectory() sometimes misses drive letter.
-    filesystem_path   fspath( path );
+    filesystem_path fspath( path );
     fspath.resolve_relative();
     return fspath.get_path();
   }
@@ -277,29 +307,116 @@ void mkdir( char const *path ) {
 #endif
 }
 
-void lsdir( char const *path, std::vector<std::string> &list )
-{
-  DIR *dir;
-  struct dirent *ent;
+iterator::iterator( char const *path ) : dir_path_( path ) {
+  make_absolute( dir_path_ );
+#ifndef WIN32
+  if ( !(dir_ = ::opendir( dir_path_.c_str() )) )
+    throw fs::exception( "iterator()", dir_path_.c_str() );
+#else
+  win32_opendir( dir_path_.c_str() );
+#endif /* WIN32 */
+}
 
-  dir = opendir (path);
-  if (dir != NULL)
-  {
-    /* print all the files and directories within directory */
-    while ((ent = readdir (dir)) != NULL)
-    {
-      //printf ("%s\n", ent->d_name);
-      std::string item(ent->d_name);
-      list.push_back(item);
+iterator::~iterator() {
+#ifndef WIN32
+  if ( ::closedir( dir_ ) != 0 )
+    throw fs::exception( "closedir()", path() );
+#else
+  win32_closedir();
+#endif /* WIN32 */
+}
+
+bool iterator::next() {
+  while ( true ) {
+#ifndef WIN32
+    if ( (ent_ = ::readdir( dir_ )) ) {
+      switch ( ent_->d_type ) {
+        case DT_DIR:
+          if ( is_dots( ent_->d_name ) )
+            continue;                   // skip "." and ".." entries
+          ent_type_ = directory;
+          break;
+        case DT_LNK:
+          ent_type_ = link;
+          break;
+        case DT_REG:
+          ent_type_ = file;
+          break;
+        case DT_UNKNOWN: {
+          //
+          // The d_type member is not supported by all filesystems. If it's
+          // not, it will be set to DT_UNKNOWN.  Hence, we're forced to do an
+          // explicit stat() to determine the entry type.
+          //
+          // This check fixes bug #1023862.
+          //
+          zstring ent_path( dir_path_ );
+          fs::append( ent_path, ent_->d_name );
+          ent_type_ = get_type( ent_path );
+          if ( ent_type_ == directory && is_dots( ent_->d_name ) )
+            continue;                   // skip "." and ".." entries
+          break;
+        }
+        default:
+          ent_type_ = other;
+      }
+      return true;
     }
-    closedir (dir);
-  }
-  else
-  {
-    /* could not open directory */
-    throw fs::exception( "lsdir()", path );
+#else
+    if ( !dir_is_empty_ ) {
+      if ( use_first_ )
+        use_first_ = false;
+      else
+        if ( !::FindNextFile( dir_, &ent_data_ ) ) {
+          if ( ::GetLastError() != ERROR_NO_MORE_FILES )
+            throw fs::exception( "FindNextFile()", path() );
+          return false;
+        }
+
+      LPCWSTR const wname = ent_data_.cFileName;
+      if ( is_dots( wname ) )
+        continue;                       // skip "." and ".." entries
+      win32::to_char( wname, ent_name_ );
+      ent_type_ = win32::map_type( ent_data_.dwFileAttributes );
+      return true;
+    }
+#endif /* WIN32 */
+    return false;
+  } // while
+}
+
+void iterator::reset() {
+#ifndef WIN32
+  ::rewinddir( dir_ );
+#else
+  win32_closedir();
+  win32_opendir( dir_path_.c_str() );
+#endif /* WIN32 */
+}
+
+#ifdef WIN32
+void iterator::win32_closedir() {
+  if ( dir_ != INVALID_HANDLE_VALUE && !::FindClose( dir_ ) )
+    throw fs::exception( "FindClose()", path() );
+}
+
+void iterator::win32_opendir( char const *path ) {
+  WCHAR wpath[ MAX_PATH ];
+  win32::to_wchar( path, wpath );
+  WCHAR wpattern[ MAX_PATH ];
+  ::wcscpy( wpattern, wpath );
+  ::PathAppend( wpattern, TEXT("*") );
+  dir_ = ::FindFirstFile( wpattern, &ent_data_ );
+  if ( dir_ == INVALID_HANDLE_VALUE ) {
+    if ( ::GetLastError() != ERROR_FILE_NOT_FOUND )
+      throw fs::exception( "FindFirstFile()", path );
+    dir_is_empty_ = true;
+  } else {
+    dir_is_empty_ = false;
+    use_first_ = true;
   }
 }
+#endif /* WIN32 */
 
 bool remove( char const *path ) {
 #ifndef WIN32

@@ -15,13 +15,14 @@
 :: limitations under the License.
 ::
 
-SET JAVA_LOAD_PATH=@Java_Load_Path@/@CMAKE_BUILD_TYPE@
+SET JAVA_LOAD_PATH=@Java_Load_Path@
+SET JAVA_SOURCE_PATH=@Java_Source_Path@
 SET PATH=%PATH%;%JAVA_LOAD_PATH%
 
 MKDIR build
 
 ECHO "java_test.bat: Compile Zorba API ..."
-"@Java_JAVAC_EXECUTABLE@" -d build %JAVA_LOAD_PATH%/*.java
+"@Java_JAVAC_EXECUTABLE@" -d build %JAVA_SOURCE_PATH%/*.java
 
 ECHO "java_test.bat: Compile Test_Zorba ..."
 "@Java_JAVAC_EXECUTABLE@" -cp build -d build *.java

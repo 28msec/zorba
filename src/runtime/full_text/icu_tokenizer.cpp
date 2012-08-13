@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <cctype>
+#include <cstring>
 #include <unicode/unistr.h>
 
 #define DEBUG_TOKENIZER 0
@@ -54,6 +55,8 @@ class temp_token {
 public:
   typedef Tokenizer::size_type size_type;
 
+  temp_token( iso639_1::type lang ) : lang_( lang ) { }
+
   void append( char const *s, size_type slen ) {
     value_.append( s, slen );
   }
@@ -66,12 +69,14 @@ public:
     return value_.empty();
   }
 
-  void send( void *payload, Tokenizer::Callback &callback ) {
+  void send( Item const *item, Tokenizer::Callback &callback ) {
     if ( !empty() ) {
 #     if DEBUG_TOKENIZER
       cout << "TOKEN: \"" << value_ << "\" (" << pos_ << ',' << sent_ << ',' << para_ << ")\n";
 #     endif
-      callback( value_.data(), value_.size(), pos_, sent_, para_, payload );
+      callback.token(
+        value_.data(), value_.size(), lang_, pos_, sent_, para_, item
+      );
       clear();
     }
   }
@@ -87,6 +92,7 @@ public:
 
 private:
   string value_;
+  iso639_1::type const lang_;
   size_type pos_, sent_, para_;
 };
 
@@ -124,8 +130,8 @@ static Locale const& get_icu_locale_for( iso639_1::type lang ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ICU_Tokenizer::ICU_Tokenizer( iso639_1::type lang, Numbers &no ) :
-  Tokenizer( no ),
+ICU_Tokenizer::ICU_Tokenizer( iso639_1::type lang, State &state ) :
+  Tokenizer( state ),
   lang_( lang )
 {
   Locale const &icu_locale = get_icu_locale_for( lang );
@@ -158,6 +164,21 @@ void ICU_Tokenizer::destroy() const {
   delete this;
 }
 
+void ICU_Tokenizer::properties( Properties *p ) const {
+  p->comments_separate_tokens = true;
+  p->elements_separate_tokens = true;
+  p->processing_instructions_separate_tokens = true;
+
+  p->languages.clear();
+  for ( int32_t n = ubrk_countAvailable(), i = 0; i < n; ++i ) {
+    if ( char const *const icu_locale = ubrk_getAvailable( i ) )
+      if ( iso639_1::type const lang = find_lang( icu_locale ) )
+        p->languages.push_back( lang );
+  }
+
+  p->uri = "http://www.zorba-xquery.com/full-text/tokenizer/icu";
+}
+
 #define HANDLE_BACKSLASH()            \
   if ( !got_backslash ) ; else {      \
     got_backslash = in_wild = false;  \
@@ -174,9 +195,9 @@ void ICU_Tokenizer::destroy() const {
 #define IS_WORD_BREAK(TYPE,STATUS) \
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
-void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
-                              iso639_1::type lang, bool wildcards,
-                              Callback &callback, void *payload ) {
+void ICU_Tokenizer::tokenize_string( char const *utf8_s, size_type utf8_len,
+                                     iso639_1::type lang, bool wildcards,
+                                     Callback &callback, Item const *item ) {
   ZORBA_ASSERT( lang == lang_ );
 
   unicode::char_type *utf16_buf;
@@ -206,7 +227,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
   sent_it_->setText( utf16_s );
   unicode::size_type sent_end = sent_it_->first(); sent_end = sent_it_->next();
 
-  temp_token t;
+  temp_token t( lang );
 
   // True only if the previous token was a backslash ('\').
   bool got_backslash = false;
@@ -295,8 +316,8 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
     else if ( IS_WORD_BREAK( NUMBER, rule_status ) ) {
       //
       // "NUMBER" tokens are obviously for numbers.  Note that a sequence of
-      // digits containing a ',' (e.g., "1,2") is considered a single token by
-      // ICU.
+      // digits containing either a '.' (e.g., "98.6") or a ',' (e.g., "1,2")
+      // are considered a single tokens by ICU.
       //
 #     if DEBUG_TOKENIZER
       cout << "(NUMBER)" << endl;
@@ -346,7 +367,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
     }
 
     if ( !in_wild && !got_backslash )
-      t.send( payload, callback );
+      t.send( item, callback );
 
 set_token:
 #   if DEBUG_TOKENIZER
@@ -360,9 +381,9 @@ set_token:
         cout << "  setting token" << endl;
 #       endif
         t.set(
-          utf8_buf, utf8_len, numbers().token, numbers().sent, numbers().para
+          utf8_buf, utf8_len, state().token, state().sent, state().para
         );
-        ++numbers().token;
+        ++state().token;
       }
     }
 
@@ -387,7 +408,7 @@ next:
       // The addition of the "if" fixes:
       // https://bugs.launchpad.net/bugs/863320
       if ( sent_end != BreakIterator::DONE )
-        ++numbers().sent;
+        ++state().sent;
     }
   } // while
 
@@ -395,10 +416,10 @@ next:
     throw XQUERY_EXCEPTION(
       err::FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar_3 ), '}' )
     );
-  t.send( payload, callback );
+  t.send( item, callback );
   // Incrementing "sent" here fixes:
   // https://bugs.launchpad.net/bugs/897800
-  ++numbers().sent;
+  ++state().sent;
 #if DEBUG_TOKENIZER
   cout << "--------------------\n";
 #endif /* DEBUG_TOKENIZER */
@@ -406,10 +427,18 @@ next:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Tokenizer::ptr
-ICU_TokenizerProvider::getTokenizer( iso639_1::type lang,
-                                     Tokenizer::Numbers &no ) const {
-  return Tokenizer::ptr( new ICU_Tokenizer( lang, no ) );
+bool ICU_TokenizerProvider::getTokenizer( iso639_1::type lang,
+                                          Tokenizer::State *state,
+                                          Tokenizer::ptr *t ) const {
+  for ( int32_t n = ubrk_countAvailable(), i = 0; i < n; ++i ) {
+    if ( char const *const icu_locale = ubrk_getAvailable( i ) )
+      if ( lang == find_lang( icu_locale ) ) {
+        if ( state && t )
+          t->reset( new ICU_Tokenizer( lang, *state ) );
+        return true;
+      }
+  }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

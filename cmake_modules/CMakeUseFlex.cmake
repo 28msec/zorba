@@ -29,6 +29,7 @@ ENDIF(NOT DEFINED FLEX_PREFIX_OUTPUTS)
 
 IF(NOT FLEX_EXECUTABLE)
   MESSAGE(STATUS "Looking for flex")
+  FIND_PATH(FLEX_INCLUDE_DIR FlexLexer.h)
   FIND_PROGRAM(FLEX_EXECUTABLE flex)
   IF(FLEX_EXECUTABLE)
     EXEC_PROGRAM(
@@ -63,15 +64,26 @@ IF(FLEX_EXECUTABLE)
     ELSE(FLEX_PREFIX_OUTPUTS)
       SET(PREFIX "yy")
     ENDIF(FLEX_PREFIX_OUTPUTS)
+    # If we regenerate the scanner, be sure to copy the corresponding
+    # FlexLexer.h as well. Put it in the top-level src/ directory since
+    # that path is on the include-directories list; also, that way
+    # multiple flex'd files will all share the include file.
+    SET(FLEXLEXERH "${CMAKE_CURRENT_BINARY_DIR}/FlexLexer.h")
+    ADD_CUSTOM_COMMAND(
+      OUTPUT "${FLEXLEXERH}"
+      COMMAND "${CMAKE_COMMAND}"
+      ARGS -E copy_if_different
+         "${FLEX_INCLUDE_DIR}/FlexLexer.h"
+	 "${FLEXLEXERH}")
     SET(OUTFILE "${CMAKE_CURRENT_BINARY_DIR}/${PATH}/${PREFIX}.cpp")
     ADD_CUSTOM_COMMAND(
       OUTPUT "${OUTFILE}"
       COMMAND "${FLEX_EXECUTABLE}"
-      ARGS -t 
-	  "--debug"
-      "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
-      > ${OUTFILE}
-      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}")
+      ARGS -t --debug "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
+      # flex's --outfile doesn't seem to work right, so redirect stdout
+          > "${OUTFILE}"
+      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
+         "${FLEXLEXERH}")
     SET_SOURCE_FILES_PROPERTIES("${OUTFILE}" PROPERTIES GENERATED TRUE)
   ENDMACRO(FLEX_FILE)
 ENDIF(FLEX_EXECUTABLE)

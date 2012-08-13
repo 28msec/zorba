@@ -160,12 +160,6 @@ void FastXmlLoader::abortload()
   theBaseUri.~zstring();
   theDocUri.~zstring();
 
-  if (theTree != NULL)
-  {
-    delete theTree;
-    theTree = NULL;
-  }
-
   theOrdPath.init();
   theRootNode = NULL;
 
@@ -175,6 +169,12 @@ void FastXmlLoader::abortload()
     theNodeStack.pop();
     if (node != NULL)
       node->destroy(true);
+  }
+
+  if (theTree != NULL)
+  {
+    delete theTree;
+    theTree = NULL;
   }
 
   thePathStack.clear();
@@ -219,7 +219,8 @@ void FastXmlLoader::reset()
   theOrdPath.init();
   theRootNode = NULL;
 
-  theNodeStack.pop();
+  if (!theNodeStack.empty())
+    theNodeStack.pop();
 
   ZORBA_ASSERT(theNodeStack.empty());
 #ifdef DATAGUIDE
@@ -419,7 +420,7 @@ void FastXmlLoader::startDocument(void * ctx)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-
+  
   try
   {
     DocumentNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
@@ -475,7 +476,7 @@ void FastXmlLoader::endDocument(void * ctx)
   ulong i;
   DocumentNode* docNode;
   XmlNode* currChild;
-
+  
   try
   {
     // This check is required because it is possible (in case of mal-formed doc)
@@ -494,15 +495,19 @@ void FastXmlLoader::endDocument(void * ctx)
 
     // For each child, make this doc node its parent.
     InternalNode::NodeVector& children = docNode->nodes();
+
     numChildren = nodeStack.size() - firstChildPos - 1;
+
     children.resize(numChildren);
 
     numActualChildren = 0;
+
     for (i = firstChildPos + 1; i < stackSize; ++i)
     {
       currChild = nodeStack[i];
       children[numActualChildren] = currChild;
-      currChild->setParent(docNode);
+      if (loader.theLoadProperties.getCreateDocParentLink())
+        currChild->setParent(docNode);
       ++numActualChildren;
     }
 
@@ -516,7 +521,7 @@ void FastXmlLoader::endDocument(void * ctx)
       loader.theGuideStack.pop();
       assert(loader.theGuideStack.empty());
 
-        loader.theTree->setDataGuide(rootGNode);
+      loader.theTree->setDataGuide(rootGNode);
 
 #ifndef NDEBUG
       std::cout << rootGNode->show(0) << std::endl;
@@ -592,7 +597,7 @@ void FastXmlLoader::startElement(
                                                        numAttributes);
     if (nodeStack.empty())
       loader.setRoot(elemNode);
-
+    
 #ifdef DATAGUIDE
     nodeName = elemNode->getNodeName();
 
@@ -662,6 +667,16 @@ void FastXmlLoader::startElement(
                   << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
                   << std::endl << " ordpath = " << elemNode->getOrdPath().show()
                   << std::endl);
+    
+    // Add the base-uri if the parent document node is not being created, which happens when xml fragments are parsed
+    FragmentXmlLoader* fragmentLoader = dynamic_cast<FragmentXmlLoader*>(&loader);
+    if (fragmentLoader != NULL && 
+        fragmentLoader->theLoadProperties.getCreateDocParentLink() == false &&
+        fragmentLoader->getFragmentStream()->current_element_depth == 1)
+    {
+      zstring emptyStr;
+      elemNode->addBaseUriProperty(loader.theBaseUri, emptyStr);
+    }
 
     // Process namespace bindings
     if (numBindings > 0)

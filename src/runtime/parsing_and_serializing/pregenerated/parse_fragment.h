@@ -39,6 +39,52 @@ namespace zorba {
  * fn-zorba-xml:parse
  * Author: Zorba Team
  */
+class FnZorbaParseXmlFragmentIteratorState : public PlanIteratorState
+{
+public:
+  FragmentIStream theFragmentStream; //the input fragment
+  store::LoadProperties theProperties; //loader properties
+  zstring baseUri; //
+  zstring docUri; //
+
+  FnZorbaParseXmlFragmentIteratorState();
+
+  ~FnZorbaParseXmlFragmentIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnZorbaParseXmlFragmentIterator : public NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnZorbaParseXmlFragmentIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZorbaParseXmlFragmentIterator,
+    NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnZorbaParseXmlFragmentIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnZorbaParseXmlFragmentIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:parse-xml-fragment
+ * Author: Zorba Team
+ */
 class FnParseXmlFragmentIteratorState : public PlanIteratorState
 {
 public:
@@ -63,11 +109,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseXmlFragmentIterator,
     NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnParseXmlFragmentIterator(
     static_context* sctx,
