@@ -85,6 +85,10 @@ store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip)
 {
   return new CollectionIter(this, aSkip);
 }
+store::Iterator_t SimpleCollection::getIterator(const zstring& aRefBoundary)
+{
+  return new CollectionIter(this, aRefBoundary);
+}
 
 
 /*******************************************************************************
@@ -613,7 +617,22 @@ SimpleCollection::CollectionIter::CollectionIter(
   :
   theCollection(collection),
   theHaveLock(false),
-  theSkip(aSkip)
+  theSkip(aSkip),
+  theRefBoundary("")
+{
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+SimpleCollection::CollectionIter::CollectionIter(
+    SimpleCollection* collection,
+    const zstring& aRefBoundary)
+  :
+  theCollection(collection),
+  theHaveLock(false),
+  theSkip(0),
+  theRefBoundary(aRefBoundary)
 {
 }
 
@@ -627,6 +646,37 @@ SimpleCollection::CollectionIter::~CollectionIter()
     theCollection->theLatch.unlock();)
 }
 
+void SimpleCollection::CollectionIter::skip()
+{
+  // skip by reference - dummy implementation for main memory store
+  if (theRefBoundary.size() > 0)
+  {
+    while (theIterator != theEnd)
+    {
+      store::Item_t lCur = *theIterator;
+      if (lCur->getKind() == zorba::store::Item::NODE)
+      {
+        const XmlNode* 
+          xmlNode = static_cast<const XmlNode*>(lCur.getp());
+        if (xmlNode->haveReference())
+        {
+          zstring lReference;
+          GET_STORE().getNodeReference(lReference, lCur.getp());
+          if (theRefBoundary == lReference)
+          {
+            ++ theIterator;
+            break;
+          }
+        }
+      }
+      ++theIterator;
+    }
+  }
+
+  // skip by position
+  theIterator += to_xs_long(theSkip);
+}
+
 
 /*******************************************************************************
 
@@ -637,8 +687,8 @@ void SimpleCollection::CollectionIter::open()
   theHaveLock = true;
 
   theIterator = theCollection->theXmlTrees.begin();
-  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
+  skip();
 }
 
 
@@ -672,8 +722,8 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 void SimpleCollection::CollectionIter::reset()
 {
   theIterator = theCollection->theXmlTrees.begin();
-  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
+  skip();
 }
 
 

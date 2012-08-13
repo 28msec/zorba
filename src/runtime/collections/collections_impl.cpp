@@ -367,7 +367,6 @@ void ZorbaCollectionIteratorState::reset(PlanState& planState)
   }
 }
 
-
 bool ZorbaCollectionIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -375,6 +374,7 @@ bool ZorbaCollectionIterator::nextImpl(
   store::Item_t name;
   store::Collection_t collection;
   xs_integer lSkip;
+  zstring lRefBoundary;
 
   ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
@@ -388,12 +388,22 @@ bool ZorbaCollectionIterator::nextImpl(
     // skip parameter passed
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[1].getp(), planState);
-    lSkip = lSkipItem->getIntegerValue(); 
-    // negative is transformed into 0
-    state->theIterator = ( lSkip > xs_integer::zero() 
-                             ? collection->getIterator(lSkip)
-                             : collection->getIterator()
-                         );
+
+    switch (lSkipItem->getTypeCode())
+    {
+    case store::XS_INTEGER:
+      lSkip = lSkipItem->getIntegerValue(); 
+      // negative is transformed into 0
+      state->theIterator = ( lSkip > xs_integer::zero() 
+                               ? collection->getIterator(lSkip)
+                               : collection->getIterator()
+                           );
+    case store::XS_ANY_URI:
+      lRefBoundary = lSkipItem->getString();
+      state->theIterator = collection->getIterator(lRefBoundary);
+    default:
+      ZORBA_ASSERT(true);
+    }
   }
   else
   {

@@ -61,6 +61,18 @@ public:
       const xs_integer& aSkip = xs_integer::zero()) = 0;
 
   /**
+   * Get an iterator to iterate over the nodes of the collection.
+   *
+   * It is allowed to have several concurrent iterators on the same Collection,
+   * but each iterator should be used by a single thread only.
+   *
+   * @param  aRefBoundary All nodes till aRefBoundary are skipped.
+   * @return Iterator
+   */
+  virtual Iterator_t getIterator(
+      const zstring& aRefBoundary) = 0;
+
+  /**
    * Get the node at the given position in the collection.
    * 
    * @param  aPosition The position of the node in the collection. 

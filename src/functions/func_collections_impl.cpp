@@ -38,7 +38,10 @@ PlanIter_t static_collections_dml_collection::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  return new ZorbaCollectionIterator(sctx, loc, argv, dynamic);
+  assert(false);
+  // TODO don't pass true if collection-skip is the case of this code generation
+  bool isCountOptimizable = getName()->getLocalName() == "collection-skip";
+  return new ZorbaCollectionIterator(sctx, loc, argv, dynamic, true);
 }
 
 
