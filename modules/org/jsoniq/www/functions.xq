@@ -168,7 +168,7 @@ declare function jn:accumulate($o as object()*) as object()
  : This function returns all Objects contained within a JSON item, regardless of
  : depth.
  :
- : @param A JSON item.
+ : @param $i A JSON item.
  : @return Its descendant objects.
  :)
 declare function jn:descendant-objects($i as json-item()) as object()*
@@ -195,7 +195,7 @@ declare function jn:descendant-objects($i as json-item()) as object()*
 (:~
  : This function returns all pairs contained within an object, recursively.
  :
- : @param An object.
+ : @param $o An object.
  : @return All direct and indirect descendant pairs.
  :)
 declare function jn:descendant-pairs($o as object())
