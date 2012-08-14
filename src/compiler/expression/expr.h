@@ -1041,8 +1041,8 @@ public:
 
   theVars:
   --------
-  There is one "eval" var for each non-global var that is in scope where the call
-  to the eval function appears at.
+  There is one "eval" var (of kind var_expr::eval_var) for each var that is in
+  scope where the call to the eval function appears at.
 
   theArgs:
   --------

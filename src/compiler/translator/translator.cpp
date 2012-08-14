@@ -583,6 +583,8 @@ protected:
   PrologGraph                            thePrologGraph;
   PrologGraphVertex                      theCurrentPrologVFDecl;
 
+  std::vector<var_expr_t>                theVars;
+
   std::vector<expr*>                     theExitExprs;
 
   bool                                   theHaveUpdatingExitExprs;
@@ -1128,7 +1130,7 @@ void bind_var(var_expr_t e, static_context* sctx)
 {
   assert(sctx != NULL);
 
-  if(e->get_kind() == var_expr::let_var)
+  if (e->get_kind() == var_expr::let_var)
   {
     sctx->bind_var(e, e->get_loc(), err::XQST0039);
   }
@@ -1136,6 +1138,8 @@ void bind_var(var_expr_t e, static_context* sctx)
   {
     sctx->bind_var(e, e->get_loc(), err::XQST0049);
   }
+
+  theVars.push_back(e);
 }
 
 
@@ -1226,7 +1230,22 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, qname, loc);
 
-  return theSctx->lookup_var(qnameItem.getp(), loc, err);
+  VarInfo* var = theSctx->lookup_var(qnameItem.getp());
+
+  if (!var)
+  {
+    if (err != zerr::ZXQP0000_NO_ERROR)
+    {
+      zstring varName = static_context::var_name(qnameItem);
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(varName, ZED(VariabledUndeclared)),
+      ERROR_LOC(loc));
+    }
+
+    return NULL;
+  }
+
+  return var->getVar();
 }
 
 
@@ -1238,12 +1257,24 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
   If var is not found, the method raises the given error, unless the given error
   is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
 ********************************************************************************/
-var_expr* lookup_var(
-    const store::Item* qname,
-    const QueryLoc& loc,
-    const Error& err)
+var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, const Error& err)
 {
-  return theSctx->lookup_var(qname, loc, err);
+  VarInfo* var = theSctx->lookup_var(qname);
+
+  if (!var)
+  {
+    if (err != zerr::ZXQP0000_NO_ERROR)
+    {
+      zstring varName = static_context::var_name(qname);
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(varName, ZED(VariabledUndeclared)),
+      ERROR_LOC(loc));
+    }
+
+    return NULL;
+  }
+
+  return var->getVar();
 }
 
 
@@ -1714,7 +1745,7 @@ void wrap_in_debugger_expr(
     theCCB->theDebuggerCommons->addBreakable(lBreakable, aIsMainModuleBreakable);
 
     // retrieve all variables that are in the current scope
-    typedef std::vector<var_expr_t> VarExprVector;
+    typedef std::vector<VarInfo*> VarExprVector;
     VarExprVector lAllInScopeVars;
     theSctx->getVariables(lAllInScopeVars);
 
@@ -1724,7 +1755,7 @@ void wrap_in_debugger_expr(
          lIter != lAllInScopeVars.end();
          ++lIter)
     {
-      var_expr* argVar = *lIter;
+      var_expr* argVar = (*lIter)->getVar();
 
       store::Item* lVarname = argVar->get_name();
 
@@ -3855,7 +3886,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
   if (initExpr != NULL)
   {
     expr::checkSimpleExpr(initExpr);
-    ve->setHasInitializer(true);
+    ve->set_has_initializer(true);
   }
 
   // If this is a library module, register the var in the exported sctx as well.
@@ -6603,7 +6634,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       {
         if (groupSpec.get_collation_spec() == NULL &&
             prevSpec.get_collation_spec() == NULL)
-        break;
+          break;
 
         if (groupSpec.get_collation_spec() != NULL &&
             prevSpec.get_collation_spec() != NULL &&
@@ -6622,7 +6653,15 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       store::Item_t varName;
       expand_no_default_qname(varName, groupSpec.get_var_name(), loc);
 
-      expr_t inputExpr = sctx->lookup_var(varName.getp(), loc, err::XPST0008);
+      VarInfo* var = sctx->lookup_var(varName.getp());
+
+      if (!var)
+      {
+        RAISE_ERROR(err::XPST0008, loc,
+        ERROR_PARAMS(varName->getStringValue(), ZED(VariabledUndeclared)));
+      }
+
+      expr_t inputExpr = var->getVar();
 
       if (inputExpr->get_expr_kind() == var_expr_kind)
       {
@@ -10462,24 +10501,27 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                                      theNSCtx);
         resultExpr = evalExpr;
 
-        std::vector<var_expr_t> inscopeVars;
+        std::vector<VarInfo*> inscopeVars;
         theSctx->getVariables(inscopeVars);
+
         csize numVars = inscopeVars.size();
 
         for (csize i = 0; i < numVars; ++i)
         {
-          if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
-            continue;
+          var_expr* ve = inscopeVars[i]->getVar();
 
           var_expr_t evalVar = create_var(loc,
-                                          inscopeVars[i]->get_name(),
+                                          ve->get_name(),
                                           var_expr::eval_var,
-                                          inscopeVars[i]->get_return_type());
+                                          ve->get_return_type());
 
           // At thgis point, the domain expr of an eval var is always another var.
           // However, that other var may be later inlined, so in general, the domain
           // expr of an eval var may be any expr.
-          expr_t valueExpr = inscopeVars[i].getp();
+          expr_t valueExpr;
+
+          if (ve->get_kind() != var_expr::prolog_var)
+            valueExpr = ve;
 
           evalExpr->add_var(evalVar, valueExpr);
         }
@@ -10546,11 +10588,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           let_clause_t lc;
           store::Item_t qnameItem;
 
-          // cannot use create_temp_var() as the variables created there are not accessible
-          // use a special name but check for name clashes
+          // cannot use create_temp_var() as the variables created there are not
+          // accessible. use a special name but check for name clashes
           do
           {
-            std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
+            std::string localName = "temp_invoke_var" +
+                                    ztd::to_string(theTempVarCounter++);
             GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
           }
           while (lookup_var(qnameItem.getp(), loc, zerr::ZXQP0000_NO_ERROR) != NULL);
@@ -10597,7 +10640,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         localExpr =
         new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
-        // qnameExpr := concat("Q{", namespaceExpr, "}", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
+        // qnameExpr := concat("Q{",
+        //                     namespaceExpr,
+        //                     "}",
+        //                     localExpr,
+        //                     "($temp_invoke_var2, $temp_invoke_var3,...)")
         std::vector<expr_t> concat_args;
         concat_args.push_back(new const_expr(theRootSctx, loc, "Q{"));
         concat_args.push_back(namespaceExpr);
@@ -10620,23 +10667,28 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         flworExpr->set_return_expr(evalExpr.getp());
         resultExpr = flworExpr;
 
-        std::vector<var_expr_t> inscopeVars;
+#if 0
+        std::vector<VarInfo*> inscopeVars;
         theSctx->getVariables(inscopeVars);
+
         csize numVars = inscopeVars.size();
 
         for (csize i = 0; i < numVars; ++i)
         {
-          if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
+          var_expr* ve = inscopeVars[i]->getVar();
+
+          if (ve->get_kind() == var_expr::prolog_var)
             continue;
 
           var_expr_t evalVar = create_var(loc,
-                                          inscopeVars[i]->get_name(),
+                                          ve->get_name(),
                                           var_expr::eval_var,
-                                          inscopeVars[i]->get_return_type());
+                                          ve->get_return_type());
 
-          expr_t valueExpr = inscopeVars[i].getp();
+          expr_t valueExpr = ve;
           evalExpr->add_var(evalVar, valueExpr);
         }
+#endif
 
         for (csize i = 0; i < temp_vars.size(); ++i)
         {
@@ -10882,7 +10934,7 @@ void* begin_visit(const InlineFunction& v)
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
-  std::vector<var_expr_t> scopedVars;
+  std::vector<VarInfo*> scopedVars;
   theSctx->getVariables(scopedVars);
 
   push_scope();
@@ -10915,10 +10967,10 @@ void* begin_visit(const InlineFunction& v)
 
   // Handle inscope variables. For each inscope var, a let binding is added to
   // the flwor.
-  std::vector<var_expr_t>::iterator ite = scopedVars.begin();
+  std::vector<VarInfo*>::iterator ite = scopedVars.begin();
   for(; ite != scopedVars.end(); ++ite)
   {
-    var_expr* varExpr = (*ite);
+    var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
 
     if (kind == var_expr::prolog_var || kind == var_expr::local_var)

@@ -363,6 +363,7 @@ enum TypeCode
   TYPE_DecimalFormat,
 
   TYPE_BaseUriInfo,
+  TYPE_VarInfo,
   TYPE_FunctionInfo,
   TYPE_PrologOption,
   TYPE_sctx_module,
