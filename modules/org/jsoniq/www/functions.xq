@@ -198,7 +198,7 @@ declare function jn:descendant-objects($i as json-item()) as object()*
  : @param $o An object.
  : @return All direct and indirect descendant pairs.
  :)
-declare function jn:descendant-pairs($o as object())
+declare function jn:descendant-pairs($o as object()) as object()*
 {
   for $k in jn:keys($o)
   return (
@@ -216,7 +216,7 @@ declare function jn:descendant-pairs($o as object())
  : @param $o A sequence of objects.
  : @return Their insersection.
  :)
-declare function jn:intersect($o as object()*)
+declare function jn:intersect($o as object()*) as object()
 {
   {|
     let $common-keys := jn:keys($o[1])[ every $object in $o[position() > 1]
