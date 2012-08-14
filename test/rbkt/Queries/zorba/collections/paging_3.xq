@@ -12,8 +12,8 @@ declare %ann:sequential function local:test()
   dml:insert-nodes-last(xs:QName("ns:test2"), <b/>);
   dml:insert-nodes-last(xs:QName("ns:test2"), (<c/>, <d/>, <e/>));
   (
-    dml:collection(xs:QName("ns:test2"), 3),
-    dml:collection(xs:QName("ns:test2"), -1),
+    dml:collection(xs:QName("ns:test2"), 3), <delim/>,
+    dml:collection(xs:QName("ns:test2"), -1), <delim/>,
     let $ref := ref:node-reference(dml:collection(xs:QName("ns:test2"))[3])
     return dml:collection(xs:QName("ns:test2"), 0, $ref)
   )

@@ -14,7 +14,7 @@ declare %ann:sequential function local:test()
   (
     fn:count(dml:collection(xs:QName("ns:test2"), 3)),
     fn:count(dml:collection(xs:QName("ns:test2"), -1)),
-    fn:count(dml:collection(xs:QName("ns:test2"), 100))
+    fn:count(dml:collection(xs:QName("ns:test2"), 100)),
     let $ref := ref:node-reference(dml:collection(xs:QName("ns:test2"))[3])
     return fn:count(dml:collection(xs:QName("ns:test2"), 0, $ref))
   )
