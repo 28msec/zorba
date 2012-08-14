@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_COMPILER_FLWOR_EXPR_H
 #define ZORBA_COMPILER_FLWOR_EXPR_H
@@ -42,7 +43,7 @@ class flwor_expr;
 /***************************************************************************//**
 
 ********************************************************************************/
-class flwor_clause : public SimpleRCObject
+class flwor_clause
 {
   friend class flwor_expr;
   friend class ExprIterator;
@@ -331,7 +332,7 @@ public:
                  clause).
   theCondExpr  : The start/end condition expr.
 ********************************************************************************/
-class flwor_wincond : public SimpleRCObject
+class flwor_wincond
 {
   friend class flwor_expr;
   friend class ExprManager;

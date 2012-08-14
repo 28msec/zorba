@@ -887,7 +887,7 @@ public:
 
 ********************************************************************************/
 
-class catch_clause : public SimpleRCObject
+class catch_clause
 {
   friend class expr;
   friend class trycatch_expr;

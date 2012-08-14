@@ -182,7 +182,7 @@ public:
                     ("," "$" VarName ":=" ExprSingle)*
                     "modify"  ExprSingle "return" ExprSingle
 ********************************************************************************/
-class copy_clause : public SimpleRCObject
+class copy_clause
 {
   friend class expr;
   friend class transform_expr;

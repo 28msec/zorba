@@ -281,7 +281,7 @@ ostream& flwor_wincond::vars::put(ostream& os) const
 
 ostream& flwor_wincond::put(ostream& os) const
 {
-  BEGIN_PUT(flwor_wincond);
+  BEGIN_PUT_NO_LOCATION(flwor_wincond);
   PUT_SUB("IN-VARS", &get_in_vars());
   PUT_SUB("OUT-VARS", &get_out_vars());
   PUT_SUB("WHEN", theCondExpr);
@@ -917,7 +917,7 @@ ostream& rename_expr::put(ostream& os) const
 
 ostream& copy_clause::put(ostream& os) const
 {
-  BEGIN_PUT(copy);
+  BEGIN_PUT_NO_LOCATION(copy);
   theVar->put(os);
   theExpr->put(os);
   END_PUT();
