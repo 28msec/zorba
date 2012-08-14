@@ -194,7 +194,6 @@ void ZorbaCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
   (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
 
     ar & theIsDynamic;
-    ar & theCountOptimizable;
 }
 
 

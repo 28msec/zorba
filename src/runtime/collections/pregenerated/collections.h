@@ -263,7 +263,6 @@ class ZorbaCollectionIterator : public NaryBaseIterator<ZorbaCollectionIterator,
 { 
 protected:
   bool theIsDynamic; //
-  bool theCountOptimizable; //
 public:
   SERIALIZABLE_CLASS(ZorbaCollectionIterator);
 
@@ -276,20 +275,18 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool isCountOptimizable)
+    bool isDynamic)
     : 
     NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic),
-    theCountOptimizable(isCountOptimizable)
+    theIsDynamic(isDynamic)
   {}
 
   virtual ~ZorbaCollectionIterator();
 
   bool isDynamic() const { return theIsDynamic; }
 
-  bool isCountOptimizable() const { return theCountOptimizable; }
-
+public:
+  bool isCountOptimizable() const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

@@ -54,23 +54,15 @@ public:
    * It is allowed to have several concurrent iterators on the same Collection,
    * but each iterator should be used by a single thread only.
    *
-   * @param  aSkip The number of collection entries to skip.
+   * @param aSkip The number of collection entries to skip.
+   * @param aStartAfterRef Iteration starts after noded identified by 
+   *                       this reference. Behavior when reference is not
+   *                       found is store dependent.
    * @return Iterator
    */
   virtual Iterator_t getIterator(
-      const xs_integer& aSkip = xs_integer::zero()) = 0;
-
-  /**
-   * Get an iterator to iterate over the nodes of the collection.
-   *
-   * It is allowed to have several concurrent iterators on the same Collection,
-   * but each iterator should be used by a single thread only.
-   *
-   * @param  aRefBoundary All nodes till aRefBoundary are skipped.
-   * @return Iterator
-   */
-  virtual Iterator_t getIterator(
-      const zstring& aRefBoundary) = 0;
+      const xs_integer& aSkip = xs_integer::zero(),
+      const zstring& aStartAfterRef = "") = 0;
 
   /**
    * Get the node at the given position in the collection.

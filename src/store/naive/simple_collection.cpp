@@ -81,13 +81,10 @@ SimpleCollection::~SimpleCollection()
   Note: it is allowed to have several concurrent iterators on the same collection
   but each iterator should be used by a single thread only.
 ********************************************************************************/
-store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip)
+store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip,
+                                                const zstring& aStartAfterRef)
 {
-  return new CollectionIter(this, aSkip);
-}
-store::Iterator_t SimpleCollection::getIterator(const zstring& aRefBoundary)
-{
-  return new CollectionIter(this, aRefBoundary);
+  return new CollectionIter(this, aSkip, aStartAfterRef);
 }
 
 
@@ -613,29 +610,15 @@ TreeId SimpleCollection::createTreeId()
 ********************************************************************************/
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection,
-    const xs_integer& aSkip)
+    const xs_integer& aSkip,
+    const zstring& aStartAfterRef)
   :
   theCollection(collection),
   theHaveLock(false),
   theSkip(aSkip),
-  theRefBoundary("")
+  theStartAfterRef(aStartAfterRef)
 {
 }
-
-/*******************************************************************************
-
-********************************************************************************/
-SimpleCollection::CollectionIter::CollectionIter(
-    SimpleCollection* collection,
-    const zstring& aRefBoundary)
-  :
-  theCollection(collection),
-  theHaveLock(false),
-  theSkip(0),
-  theRefBoundary(aRefBoundary)
-{
-}
-
 
 /*******************************************************************************
 
@@ -648,8 +631,9 @@ SimpleCollection::CollectionIter::~CollectionIter()
 
 void SimpleCollection::CollectionIter::skip()
 {
-  // skip by reference - dummy implementation for main memory store
-  if (theRefBoundary.size() > 0)
+  // Start Iteration after reference
+  // dummy implementation for main memory store
+  if (theStartAfterRef.size() > 0)
   {
     while (theIterator != theEnd)
     {
@@ -662,7 +646,7 @@ void SimpleCollection::CollectionIter::skip()
         {
           zstring lReference;
           GET_STORE().getNodeReference(lReference, lCur.getp());
-          if (theRefBoundary == lReference)
+          if (theStartAfterRef == lReference)
           {
             ++ theIterator;
             break;
