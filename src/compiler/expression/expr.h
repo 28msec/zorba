@@ -895,6 +895,7 @@ class catch_clause : public SimpleRCObject
 {
   friend class expr;
   friend class trycatch_expr;
+  friend class ExprManager;
 
 public:
   enum var_type
@@ -916,9 +917,9 @@ public:
 protected:
   nt_list_t  theNameTests;
   var_map_t  theVarMap;
+  CompilerCB* theCCB;
 
-public:
-  catch_clause();
+  catch_clause(CompilerCB* ccb);
 
 public:
   void set_nametests(nt_list_t& a) { theNameTests = a; }

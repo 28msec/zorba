@@ -7435,7 +7435,7 @@ void* begin_visit(const CatchExpr& v)
 
   trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top());
 
-  catch_clause_t cc = new catch_clause();
+  catch_clause_t cc = theExprManager->create_catch_clause();
 
   push_scope();
 

@@ -368,7 +368,7 @@ extension_expr* ExprManager::create_extension_expr(
 
 catch_clause* ExprManager::create_catch_clause()
 {
-  CREATE_AND_RETURN(catch_clause);
+  CREATE_AND_RETURN(catch_clause, theCCB);
 }
 
 
