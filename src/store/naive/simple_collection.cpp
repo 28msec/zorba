@@ -657,8 +657,11 @@ void SimpleCollection::CollectionIter::skip()
     }
   }
 
-  // skip by position
-  theIterator += to_xs_long(theSkip);
+  // skip by position                                                              
+  for (long i = 0; i < to_xs_long(theSkip) && theIterator != theEnd; ++i)          
+  {                                                                                
+    ++theIterator;                                                                 
+  }
 }
 
 
