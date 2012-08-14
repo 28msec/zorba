@@ -564,11 +564,7 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
   }
-  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS
-//#ifdef ZORBA_WITH_JSON
-//      || ns == JSONIQ_FN_NS
-//#endif
-      )
+  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
   }

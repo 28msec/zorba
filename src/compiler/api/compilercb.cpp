@@ -177,8 +177,8 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 CompilerCB::~CompilerCB()
 {
-  theSctxMap.clear();
   delete theEM;
+  theSctxMap.clear();
 }
 
 
