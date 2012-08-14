@@ -914,7 +914,7 @@ inline bool inLibraryModule()
 *******************************************************************************/
 inline bool inUDFBody()
 {
-  return !theCurrentPrologVFDecl.isNull();
+  return (!theCurrentPrologVFDecl.isNull() && theCurrentPrologVFDecl.isUDF());
 }
 
 
@@ -3202,21 +3202,54 @@ void* begin_visit(const VFO_DeclList& v)
       continue;
     }
 
+#if 1
+    const GlobalVarDecl* var_decl = it->dyn_cast<GlobalVarDecl>().getp();
+
+    if (var_decl != NULL &&
+        theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+    {
+      store::Item_t qnameItem;
+      expand_no_default_qname(qnameItem, var_decl.get_var_name(), loc);
+
+      assert(v.is_global());
+
+      var_expr* ve = create_var(loc, qnameItem, var_expr::prolog_var);
+
+      if (v.is_extern())
+        ve->set_external(true);
+
+      xqtref_t type;
+      if (var_decl.get_var_type() != NULL)
+      {
+        var_decl.get_var_type()->accept(*this);
+
+        type = pop_tstack();
+
+        ve->set_type(type);
+      }
+
+      // Put a mapping between the var name and the var_expr in the local sctx.
+      // Raise error if var name exists already in local sctx obj.
+      bind_var(ve, theSctx);
+
+      continue;
+    }
+#endif
+
     const FunctionDecl* func_decl = it->dyn_cast<FunctionDecl>().getp();
 
-    // skip variable and option declarations.
     if (func_decl == NULL)
       continue;
 
-    AnnotationListParsenode* lAnns = func_decl->get_annotations();
-    if (lAnns)
+    AnnotationListParsenode* annotations = func_decl->get_annotations();
+    if (annotations)
     {
       if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
       {
         RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
       }
 
-      lAnns->accept(*this);
+      annotations->accept(*this);
     }
 
     const QueryLoc& loc = func_decl->get_location();
@@ -3293,9 +3326,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
 
     // Create the function signature.
-    bool isVariadic = (theAnnotations ?
-                       ZANN_CONTAINS(zann_variadic):
-                       false);
+    bool isVariadic = (theAnnotations ? ZANN_CONTAINS(zann_variadic): false);
 
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
@@ -3669,7 +3700,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   // theCurrentPrologVFDecl might be null in case of inline functions
   // inline functions currently can't be sequential anyway
   // hence, we can always lazy evaluation
-  if (!theCurrentPrologVFDecl.isNull())
+  if (inUDFBody())
   {
     //lc->setLazyEval(!f->isSequential());
 
@@ -3700,8 +3731,6 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
 /*******************************************************************************
 
-  VarDecl is used to represent both global and block-local var declarations.
-
   Global declarations:
   --------------------
 
@@ -3720,61 +3749,57 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   Note: the applicable annotations are private vs public, and assignable vs
   non-assignable.
-
-
-  Local declarations:
-  -------------------
-
-  VarDeclStatement ::= ("local" Annotation*)? "variable"
-                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
-
-  Note: The initializing ExprSingle in VarValue must be a non-updating expr.
-
-  Note: The applicable annotations are assignable vs non-assignable.
-
-  Note: Local var decls may appear only as direct operands of block exprs.
 ********************************************************************************/
-void* begin_visit(const VarDecl& v)
+#if 1
+void* begin_visit(const GlobalVarDecl& v)
 {
   TRACE_VISIT();
 
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, v.get_var_name(), loc);
 
-  var_expr_t ve;
+  VarInfo_t var = theSctx->unbind_var(qnameItem);
 
-  if (v.is_global())
-  {
-    ve = create_var(loc, qnameItem, var_expr::prolog_var);
+  assert(var);
 
-    if (v.is_extern())
-      ve->set_external(true);
+  var_expr* ve = var->getVar();
 
-    thePrologGraph.addVarVertex(ve);
-    theCurrentPrologVFDecl = PrologGraphVertex(ve);
-  }
-  else
-  {
-    if (theNodeStack.top()->get_expr_kind() != block_expr_kind)
-    {
-      ZORBA_ASSERT(false);
-    }
+  thePrologGraph.addVarVertex(ve);
+  theCurrentPrologVFDecl = PrologGraphVertex(ve);
 
-    ve = create_var(loc, qnameItem, var_expr::local_var);
-  }
+  push_nodestack(ve);
+
+  return no_state;
+}
+
+#else
+
+void* begin_visit(const GlobalVarDecl& v)
+{
+  TRACE_VISIT();
+
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, v.get_var_name(), loc);
+
+  var_expr_t ve = create_var(loc, qnameItem, var_expr::prolog_var);
+
+  if (v.is_extern())
+    ve->set_external(true);
+
+  thePrologGraph.addVarVertex(ve);
+  theCurrentPrologVFDecl = PrologGraphVertex(ve);
 
   push_nodestack(ve.getp());
+
   return no_state;
 }
 
 
-void end_visit(const VarDecl& v, void* /*visit_state*/)
+void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  if (v.is_global())
-    theCurrentPrologVFDecl.setNull();
+  theCurrentPrologVFDecl.setNull();
 
   expr_t initExpr = (v.get_binding_expr() == NULL ? expr_t(NULL) : pop_nodestack());
 
@@ -3782,11 +3807,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
   if (theAnnotations)
   {
-    if (v.is_global())
-    {
-      if (ZANN_CONTAINS(fn_private))
-        ve->set_private(true);
-    }
+    if (ZANN_CONTAINS(fn_private))
+      ve->set_private(true);
 
     if (ZANN_CONTAINS(zann_assignable))
     {
@@ -3796,12 +3818,12 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     {
       ve->set_mutable(false);
     }
-    else if (v.is_global())
+    else
     {
       ve->set_mutable(theSctx->is_feature_set(feature::scripting));
     }
   }
-  else if (v.is_global())
+  else
   {
     ve->set_mutable(theSctx->is_feature_set(feature::scripting));
   }
@@ -3818,67 +3840,47 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   // Raise error if var name exists already in local sctx obj.
   bind_var(ve, theSctx);
 
-  if (v.is_global())
+  // All vars declared in a module must be in the same namespace as the module
+  if (! theModuleNamespace.empty() &&
+      ve->get_name()->getNamespace() != theModuleNamespace)
   {
-    // All vars declared in a module must be in the same namespace as the module
-    if (! theModuleNamespace.empty() &&
-        ve->get_name()->getNamespace() != theModuleNamespace)
-    {
-      RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
-    }
+    RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
+  }
 
-    // Make sure that there is no other prolog var with the same name in any of
-    // modules translated so far.
-    bind_var(ve, theModulesInfo->globalSctx.get());
+  // Make sure that there is no other prolog var with the same name in any of
+  // modules translated so far.
+  bind_var(ve, theModulesInfo->globalSctx.get());
 
-    // Make sure the initExpr is a simple expr.
-    if (initExpr != NULL)
-    {
-      expr::checkSimpleExpr(initExpr);
-      ve->setHasInitializer(true);
-    }
+  // Make sure the initExpr is a simple expr.
+  if (initExpr != NULL)
+  {
+    expr::checkSimpleExpr(initExpr);
+    ve->setHasInitializer(true);
+  }
 
-    // If this is a library module, register the var in the exported sctx as well.
-    if (export_sctx != NULL)
-      bind_var(ve, export_sctx);
+  // If this is a library module, register the var in the exported sctx as well.
+  if (export_sctx != NULL)
+    bind_var(ve, export_sctx);
 
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
-    {
-      QueryLoc lExpandedLocation = expandQueryLoc(v.get_var_name()->get_location(),
-                                                  initExpr->get_loc());
-
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
-    }
-#endif
-
-    // The ve and its associated intExpr will be put into var_decl_expr that
-    // will creaated by the wrap_in_globalvar_assign() method when it is called
-    // at the end of the translation of each module.
-    thePrologVars.push_back(GlobalBinding(ve, initExpr, v.is_extern()));
-  }
-  else
+  if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
   {
-    // The ve and its associated intExpr will be put into var_decl_expr that
-    // will be created by the translation of the parent block expr, immediately
-    // after returning from this method.
-    push_nodestack(ve.getp());
+    QueryLoc lExpandedLocation = expandQueryLoc(v.get_var_name()->get_location(),
+                                                initExpr->get_loc());
 
-#ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
-    {
-      QueryLoc lExpandedLocation = 
-      expandQueryLoc(v.get_var_name()->get_location(), initExpr->get_loc());
-
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
-    }
+    wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
+  }
 #endif
 
-    push_nodestack(initExpr);
-  }
+  // The ve and its associated intExpr will be put into var_decl_expr that
+  // will creaated by the wrap_in_globalvar_assign() method when it is called
+  // at the end of the translation of each module.
+  thePrologVars.push_back(GlobalBinding(ve, initExpr, v.is_extern()));
 
   theAnnotations = NULL;
 }
+
+#endif
 
 
 /*******************************************************************************
@@ -5443,7 +5445,7 @@ void* begin_visit(const BlockBody& v)
   {
     v[i]->accept(*this);
 
-    if (dynamic_cast<const VarDecl*>(v[i]) != NULL)
+    if (dynamic_cast<const LocalVarDecl*>(v[i]) != NULL)
     {
       expr_t val = pop_nodestack();
       var_expr_t ve = pop_nodestack().cast<var_expr>();
@@ -5533,12 +5535,86 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
   Note: Each individual var decl in a VarDeclStatement is parsed into a VarDecl
   parsenode.
 
+  Note: The applicable annotations are assignable vs non-assignable.
+
   Note: The parser makes sure that if a VarDeclStatement does not appear as a
   direct child of a BlockBody, it is wrapped by a BlockBody. Furthermore, the
   parser will flatten-out the VarDeclStatement parsenode by placing its children
   as direct children of the enclosing BlockBody. As a result, VarDeclStatement
-  parsenodes do not appear at all in the final AST.
+  parsenodes do not appear at all in the final AST, and local var decls may
+  appear only as direct operands of block exprs.
 ********************************************************************************/
+void* begin_visit(const LocalVarDecl& v)
+{
+  TRACE_VISIT();
+
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, v.get_var_name(), loc);
+
+  if (theNodeStack.top()->get_expr_kind() != block_expr_kind)
+  {
+    ZORBA_ASSERT(false);
+  }
+
+  var_expr_t ve = create_var(loc, qnameItem, var_expr::local_var);
+
+  push_nodestack(ve.getp());
+
+  return no_state;
+}
+
+
+void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  expr_t initExpr = (v.get_binding_expr() == NULL ? expr_t(NULL) : pop_nodestack());
+
+  var_expr_t ve = dynamic_cast<var_expr*>(pop_nodestack().getp());
+
+  if (theAnnotations)
+  {
+    if (ZANN_CONTAINS(zann_assignable))
+    {
+      ve->set_mutable(true);
+    }
+    else if (ZANN_CONTAINS(zann_nonassignable))
+    {
+      ve->set_mutable(false);
+    }
+  }
+
+  xqtref_t type;
+  if (v.get_var_type() != NULL)
+  {
+    type = pop_tstack();
+
+    ve->set_type(type);
+  }
+
+  // Put a mapping between the var name and the var_expr in the local sctx.
+  // Raise error if var name exists already in local sctx obj.
+  bind_var(ve, theSctx);
+
+  // The ve and its associated intExpr will be put into var_decl_expr that
+  // will be created by the translation of the parent block expr, immediately
+  // after returning from this method.
+  push_nodestack(ve.getp());
+
+#ifdef ZORBA_WITH_DEBUGGER
+  if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
+  {
+    QueryLoc lExpandedLocation = 
+    expandQueryLoc(v.get_var_name()->get_location(), initExpr->get_loc());
+
+    wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
+  }
+#endif
+
+  push_nodestack(initExpr);
+
+  theAnnotations = NULL;
+}
 
 
 /*******************************************************************************
@@ -10283,8 +10359,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     // as a non-leaf function.
     if (f->isUdf())
     {
-      if (! theCurrentPrologVFDecl.isNull() &&
-          theCurrentPrologVFDecl.getKind() == PrologGraphVertex::FUN)
+      if (inUDFBody())
       {
         function* f1 = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
         user_function* udf = dynamic_cast<user_function*>(f1);

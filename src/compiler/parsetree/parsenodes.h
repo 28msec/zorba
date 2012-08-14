@@ -953,29 +953,23 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class VarDecl : public VarDeclWithInit
+class GlobalVarDecl : public VarDeclWithInit
 {
 protected:
   bool theIsExternal;
-  bool theIsGlobal;
 
   rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
-  VarDecl(
+  GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
     SequenceType* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
-    bool global,
     bool external);
 
   bool is_extern() const { return theIsExternal; }
-
-  bool is_global() const { return theIsGlobal; }
-
-  void set_global(bool global) { theIsGlobal = global; }
 
   void set_annotations(rchandle<AnnotationListParsenode> annotations)
   {
@@ -1061,7 +1055,7 @@ public:
 
   rchandle<ParamList> get_paramlist() const { return theParams; }
 
-  ulong get_param_count() const;
+  csize get_param_count() const;
 
   rchandle<SequenceType> get_return_type() const { return theReturnType; }
 
@@ -1643,7 +1637,9 @@ public:
 
 
 /*******************************************************************************
-
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
 class VarDeclStmt : public exprnode
 {
@@ -1659,6 +1655,33 @@ public:
   csize size() const { return theDecls.size(); }
 
   parsenode* getDecl(csize i) const { return theDecls[i].getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class LocalVarDecl : public VarDeclWithInit
+{
+protected:
+  rchandle<AnnotationListParsenode> theAnnotations;
+
+public:
+  LocalVarDecl(
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceType* type_decl,
+    exprnode* init_expr,
+    AnnotationListParsenode* annotations);
+
+  void set_annotations(rchandle<AnnotationListParsenode> annotations)
+  {
+    theAnnotations = annotations;
+  }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
   void accept(parsenode_visitor&) const;
 };

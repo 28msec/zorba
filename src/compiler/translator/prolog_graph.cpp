@@ -38,12 +38,29 @@ void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
   zstring varName;
   if ( v )
     varName = BUILD_STRING('$', v->getVarExpr()->get_name()->getStringValue());
-  throw XQUERY_EXCEPTION(err::XQST0054, ERROR_PARAMS(varName), ERROR_LOC(loc));
+
+  RAISE_ERROR(err::XQST0054, loc, ERROR_PARAMS(varName));
 }
 
 
 /*******************************************************************************
-   This method is part of the mechanism for detecting cycles in the dependency
+
+********************************************************************************/
+void PrologGraph::addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2)
+{
+  addEdge(theGraph, v1, v2);
+
+  if (v1->isVar() && v2->isVar() && v1->getVarExpr() == v2->getVarExpr())
+  {
+    zstring varName = '$' + v1->getVarExpr()->get_name()->getStringValue();
+
+    RAISE_ERROR(err::XPST0008, loc, ERROR_PARAMS(varName));
+  }
+}
+
+
+/*******************************************************************************
+  This method is part of the mechanism for detecting cycles in the dependency
   graph among prolog variables. The method does not actually detect the cycles
   but re-orders the declarations of prolog vars (i.e., reorders theGlobalVars
   list) so that if var v2 depends on var v1, then v1 appears before v2 in the
