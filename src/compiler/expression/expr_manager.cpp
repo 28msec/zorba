@@ -796,7 +796,7 @@ group_clause* ExprManager::create_group_clause(
     flwor_clause::rebind_list_t ngvars,
     const std::vector<std::string>& collations)
 {
-  CREATE_AND_RETURN(group_clause, sctx, loc, gvars, ngvars, collations);
+  CREATE_AND_RETURN(group_clause, sctx, theCCB,  loc, gvars, ngvars, collations);
 }
 
 orderby_clause* ExprManager::create_orderby_clause(
@@ -806,25 +806,25 @@ orderby_clause* ExprManager::create_orderby_clause(
   const std::vector<OrderModifier>& modifiers,
   const std::vector<expr*>& orderingExprs)
 {
-  CREATE_AND_RETURN(orderby_clause, sctx, loc, stable, modifiers, orderingExprs);
+  CREATE_AND_RETURN(orderby_clause, sctx, theCCB, loc, stable, modifiers, orderingExprs);
 }
 
 materialize_clause* ExprManager::create_materialize_clause(
       static_context* sctx, const QueryLoc& loc)
 {
-  CREATE_AND_RETURN(materialize_clause, sctx, loc);
+  CREATE_AND_RETURN(materialize_clause, sctx, theCCB, loc);
 }
 
 count_clause* ExprManager::create_count_clause(
       static_context* sctx, const QueryLoc& loc, var_expr* var)
 {
-  CREATE_AND_RETURN(count_clause, sctx, loc, var);
+  CREATE_AND_RETURN(count_clause, sctx, theCCB, loc, var);
 }
 
 where_clause* ExprManager::create_where_clause(
       static_context* sctx, const QueryLoc& loc, expr* where)
 {
-  CREATE_AND_RETURN(where_clause, sctx, loc, where);
+  CREATE_AND_RETURN(where_clause, sctx, theCCB, loc, where);
 }
 
 flwor_expr* ExprManager::create_flwor_expr(

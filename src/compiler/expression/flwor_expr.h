@@ -80,11 +80,15 @@ protected:
   ClauseKind                theKind;
   flwor_expr              * theFlworExpr;
 
-  flwor_clause(static_context* sctx, const QueryLoc& loc, ClauseKind kind)
+  CompilerCB              * theCCB;
+
+  flwor_clause(static_context* sctx, CompilerCB* ccb,
+               const QueryLoc& loc, ClauseKind kind)
     :
     theContext(sctx),
     theLocation(loc),
     theKind(kind),
+    theCCB(ccb),
     theFlworExpr(NULL)
   {
   }
@@ -143,11 +147,10 @@ class forletwin_clause : public flwor_clause
 protected:
   var_expr   * theVarExpr;
   expr       * theDomainExpr;
-  CompilerCB * theCCB;
 
   forletwin_clause(
         static_context* sctx,
-        CompilerCB* exprMan,
+        CompilerCB* ccb,
         const QueryLoc& loc,
         ClauseKind kind,
         var_expr* varExpr,
@@ -182,7 +185,7 @@ protected:
 
   for_clause(
         static_context* sctx,
-        CompilerCB* exprMan,
+        CompilerCB* ccb,
         const QueryLoc& loc,
         var_expr* varExpr,
         expr* domainExpr,
@@ -275,7 +278,7 @@ protected:
 
   window_clause(
         static_context* sctx,
-        CompilerCB* exprMan,
+        CompilerCB* ccb,
         const QueryLoc& loc,
         window_t winKind,
         var_expr* varExpr,
@@ -436,6 +439,7 @@ protected:
 
   group_clause(
       static_context* sctx,
+      CompilerCB* ccb,
       const QueryLoc& loc,
       const rebind_list_t& gvars,
       rebind_list_t ngvars,
@@ -500,6 +504,7 @@ protected:
 
   orderby_clause (
       static_context* sctx,
+      CompilerCB* ccb,
       const QueryLoc& loc,
       bool stable,
       const std::vector<OrderModifier>& modifiers,
@@ -539,7 +544,7 @@ class materialize_clause : public flwor_clause
   friend class ExprManager;
   friend class flwor_expr;
 
-  materialize_clause(static_context* sctx, const QueryLoc& loc);
+  materialize_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc);
 
 public:
   flwor_clause_t clone(expr::substitution_t& substitution) const;
@@ -560,7 +565,7 @@ class count_clause : public flwor_clause
 protected:
   var_expr* theVarExpr;
 
-  count_clause(static_context* sctx, const QueryLoc& loc, var_expr* var);
+  count_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, var_expr* var);
 
 public:
   ~count_clause();
@@ -582,7 +587,7 @@ class where_clause : public flwor_clause
 
   expr* theWhereExpr;
 
-  where_clause(static_context* sctx, const QueryLoc& loc, expr* where);
+  where_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, expr* where);
 
 public:
   expr* get_expr() const { return theWhereExpr; }
