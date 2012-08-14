@@ -1119,7 +1119,7 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
      ),
      let $modVersion := xqdoc2html:get-module-version($moduleUri)
      return
-     if($modVersion = "") then ()
+     if($modVersion = "0.0.0") then ()
      else
      (<div class="subsubsection">Zorba version for this module:</div>,
       <p>The latest version of this module is <strong>{$modVersion}</strong>. For more information about module versioning in Zorba please check out <a href="../../html/modules_using.html#mod_versioning" target="_blank">this</a> resource.</p>
@@ -1377,9 +1377,9 @@ declare %private function xqdoc2html:module-function-summary($functions)
           $signature := $function/xqdoc:signature/text(),
           $param-number := $function/@arity,
           $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated),
-          $description := data($function/xqdoc:comment/xqdoc:description),
+          $description := normalize-space(data($function/xqdoc:comment/xqdoc:description)),
           $shortDescription := if(not(fn:substring-before($description,".") = "")) then
-                               fn:concat(fn:substring-before($description,"."),".") else ""
+                               fn:concat(fn:substring-before($description,"."),".") else concat($description,".")
       order by $name, $param-number
       return
         let $type := replace(normalize-space(substring-after(substring-before($signature, "function"), "declare")),"%",""),
@@ -1395,7 +1395,7 @@ declare %private function xqdoc2html:module-function-summary($functions)
                   <span class="functName"><del><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></del></span>
                 else
                   <span class="functName"><a href="#{$name}-{$param-number}" title="{$shortDescription}">{$name}</a></span>
-              }{xqdoc2html:split-function-signature($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
+              }{xqdoc2html:split-function-params-return($function)}<br /><span class="padding">{$shortDescription}</span>
               </tt>
             </td>
           </tr>
@@ -1410,46 +1410,30 @@ declare %private function xqdoc2html:module-function-summary($functions)
  : @param $signature the function signature.
  : @return the XHTML for the function signature after reformatting was done.
  :)
-declare %private function xqdoc2html:split-function-signature($signature as xs:string) {
-  let $line1 := substring-before($signature, "(")
-  let $rest := substring-after($signature, "(")
-  let $params :=
-    (: if the function has parameter :)
-    if (matches($rest, "\$")) then
-      let $tmp := substring-before($rest, ") as ")
-      return
-        (: if we don't have a return type specified :)
-        if ($tmp eq "") then
-          (: en external function declaration :)
-          if (ends-with($rest, ") external")) then
-            substring-before($rest, ") external")
-          (: no external function :)
-          else
-            substring-before($rest, ")")
-        (: the return type is specified :)
-        else
-          $tmp
-    (: no parameters :)
-    else
-      ""
-  let $after := substring-after($signature, concat($params, ")"))
-  let $parts := fn:tokenize($line1,' ')
-  let $line11 := fn:string-join(for $part in $parts return $part, ' ')
-  let $line12 := fn:substring-after($line1, normalize-space($line11))
-  return (
-    $line11,<span class="functName">{$line12}</span>," (&#0010;",
-    for $param at $pos in tokenize($params, "\$")
-    let $nsParam := normalize-space($param)
-    let $param1 := if(contains($nsParam,"as")) then fn:substring-before($nsParam," as ")
-                   else if(contains($nsParam,",")) then fn:substring-before($nsParam,",")
-                   else if(contains($nsParam,")")) then fn:substring-before($nsParam,")")
-                   else $nsParam
-    let $param2 := fn:substring-after($nsParam, $param1)
-    where $pos > 1
-    return (
-      <span class="funcParam">{concat("            $", $param1)}</span>,$param2,"&#0010;"),
-    concat(")", $after)
-  )
+declare %private function xqdoc2html:split-function-signature($function) {
+  fn:concat("declare function ",fn:data($function/xqdoc:name),
+            xqdoc2html:split-function-params-return($function))
+};
+
+(:~
+ : Pretty print the function params and return.
+ :
+ : @param $signature the function signature.
+ : @return the XHTML for the function params and return after reformatting was done.
+ :)
+declare %private function xqdoc2html:split-function-params-return($function) {
+  fn:concat(" (&#0010;",string-join(for $param in $function/xqdoc:parameters//xqdoc:parameter return
+            concat("            $", data($param/xqdoc:name), " as ", xqdoc2html:get-type($param/xqdoc:type)),",&#0010;"),"&#0010;",
+            ") as ", xqdoc2html:get-type($function/xqdoc:return/xqdoc:type))
+};
+
+declare %private function xqdoc2html:get-type($type) as xs:string?
+{
+    let $occurence := data($type/@occurrence)
+    let $typeString := data($type)
+    return
+        if(exists($occurence) and not(ends-with($typeString, $occurence))) then concat($typeString, $occurence)
+        else $typeString
 };
 
 (:~
@@ -1485,7 +1469,7 @@ declare %private %an:nondeterministic function xqdoc2html:functions($functions, 
           }</p>
         else
           (),
-        <pre class="signature">{xqdoc2html:split-function-signature($signature)}</pre>,
+        <pre class="signature">{xqdoc2html:split-function-signature($function)}</pre>,
         xqdoc2html:description($comment),
         xqdoc2html:function-parameters($comment),
         xqdoc2html:function-return($comment),
