@@ -166,10 +166,11 @@ expr* rename_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-copy_clause::copy_clause(var_expr* aVar, expr* aExpr)
+copy_clause::copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr)
   :
   theVar(aVar),
-  theExpr(aExpr)
+  theExpr(aExpr),
+  theCCB(ccb)
 {
   theVar->set_copy_clause(this);
 }
@@ -192,7 +193,7 @@ copy_clause_t copy_clause::clone(expr::substitution_t& subst) const
 
   subst[theVar] = varCopy;
 
-  return new copy_clause(varCopy, domainCopy);
+  return theCCB->theEM->create_copy_clause(varCopy, domainCopy);
 }
 
 

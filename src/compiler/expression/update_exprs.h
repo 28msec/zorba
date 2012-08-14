@@ -195,10 +195,10 @@ class copy_clause : public SimpleRCObject
 private:
   var_expr  * theVar;
   expr      * theExpr;
-  CompilerCB* theExprManager;
+  CompilerCB* theCCB;
 
 protected:
-  copy_clause(var_expr* aVar, expr* aExpr);
+  copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr);
 
 public:
   ~copy_clause();
