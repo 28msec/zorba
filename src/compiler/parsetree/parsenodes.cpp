@@ -628,11 +628,19 @@ void ModuleImport::accept( parsenode_visitor &v ) const
 
   VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
 ********************************************************************************/
-VFO_DeclList::VFO_DeclList(
-    const QueryLoc& loc_)
+VFO_DeclList::VFO_DeclList(const QueryLoc& loc)
   :
-  parsenode(loc_)
+  parsenode(loc)
 {
+}
+
+
+void VFO_DeclList::push_back(const rchandle<parsenode>& decl)
+{
+  theDecls.push_back(decl);
+
+  bool isIndexDecl = (dynamic_cast<AST_IndexDecl*>(decl.getp()) != NULL);
+  theIndexDeclFlags.push_back(isIndexDecl);
 }
 
 
@@ -640,12 +648,24 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
-  for (std::vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
-       it != vfo_hv.end();
-       ++it)
+  csize numDecls = theDecls.size();
+
+  for (csize i = 0; i < numDecls; ++i)
   {
-    ACCEPT_CHK (*it);
+    if (theIndexDeclFlags[i])
+      continue;
+
+    ACCEPT_CHK(theDecls[i]);
   }
+
+  for (csize i = 0; i < numDecls; ++i)
+  {
+    if (!theIndexDeclFlags[i])
+      continue;
+
+    ACCEPT_CHK(theDecls[i]);
+  }
+
   END_VISITOR();
 }
 
