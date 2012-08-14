@@ -1987,7 +1987,7 @@ bool begin_visit(trycatch_expr& v)
 
   for(int i = v.clause_count() - 1; i >= 0; --i)
   {
-    catch_clause* cc = &*v[i];
+    catch_clause* cc = const_cast<catch_clause*>(v[i]);
     catch_clause::var_map_t& vars = cc->get_vars();
 
     for (catch_clause::var_map_t::const_iterator lIter = vars.begin();
@@ -2009,7 +2009,7 @@ void end_visit(trycatch_expr& v)
 
   for(int i = v.clause_count() - 1; i >= 0; --i)
   {
-    catch_clause* cc = &*v[i];
+    catch_clause* cc = const_cast<catch_clause*>(v[i]);
     TryCatchIterator::CatchClause rcc;
     rcc.node_names = cc->get_nametests();
     rcc.catch_expr = pop_itstack();
@@ -3407,8 +3407,8 @@ bool begin_visit(transform_expr& v)
 
   TypeManager* tm = v.get_type_manager();
 
-  std::vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
-  std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
+  std::vector<copy_clause*>::const_iterator lIter = v.begin();
+  std::vector<copy_clause*>::const_iterator lEnd  = v.end();
   for (; lIter != lEnd; ++lIter)
   {
     var_expr* var = (*lIter)->getVar();
@@ -3448,8 +3448,8 @@ void end_visit(transform_expr& v)
   // Create an ApplyIterator to apply the above PUL
   PlanIter_t applyIter = new ApplyIterator(sctx, modifyIter->loc, true, pulHolderIter);
 
-  std::vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
-  std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
+  std::vector<copy_clause*>::const_iterator lIter = v.begin();
+  std::vector<copy_clause*>::const_iterator lEnd  = v.end();
   for(; lIter != lEnd; ++lIter)
   {
     PlanIter_t lInput = plan_visitor_ns::pop_stack(lInputs);

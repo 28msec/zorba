@@ -886,10 +886,6 @@ public:
   [173] CatchErrorList ::= NameTest ("|" NameTest)*
 
 ********************************************************************************/
-class catch_clause;
-
-typedef rchandle<catch_clause> catch_clause_t;
-
 
 class catch_clause : public SimpleRCObject
 {
@@ -934,7 +930,7 @@ public:
 
   void add_var(var_type v, var_expr* n) { theVarMap[v] = n; }
 
-  catch_clause_t clone(expr::substitution_t& subst) const;
+  catch_clause* clone(expr::substitution_t& subst) const;
 };
 
 
@@ -947,7 +943,7 @@ class trycatch_expr : public expr
 protected:
   expr*                      theTryExpr;
   std::vector<expr*>         theCatchExprs;
-  std::vector<catch_clause_t> theCatchClauses;
+  std::vector<catch_clause*> theCatchClauses;
 
 protected:
   trycatch_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr* tryExpr);
@@ -961,11 +957,11 @@ public:
 
   void add_catch_expr(expr* e);
 
-  void add_clause(catch_clause_t cc);
+  void add_clause(catch_clause* cc);
 
   csize clause_count() const { return theCatchClauses.size(); }
 
-  const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
+  const catch_clause* operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 

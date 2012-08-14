@@ -481,7 +481,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause_t fc =
+  for_clause* fc =
     theCCB->theEM->create_for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //
@@ -629,7 +629,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause_t fc =
+  for_clause* fc =
     theCCB->theEM->create_for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //

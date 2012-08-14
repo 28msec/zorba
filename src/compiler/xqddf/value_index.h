@@ -263,7 +263,7 @@ private:
   MaintenanceMode                 theMaintenanceMode;
   ContainerKind                   theContainerKind;
 
-  for_clause_t                    theDomainClause;
+  for_clause                    * theDomainClause;
   csize                           theNumKeyExprs;
   std::vector<expr*>              theKeyExprs;
   std::vector<xqtref_t>           theKeyTypes;

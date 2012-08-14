@@ -1080,7 +1080,7 @@ void trycatch_expr::add_catch_expr(expr* e)
 }
 
 
-void trycatch_expr::add_clause(catch_clause_t cc)
+void trycatch_expr::add_clause(catch_clause* cc)
 {
   theCatchClauses.insert(theCatchClauses.begin(), cc);
 }
@@ -1140,7 +1140,7 @@ void trycatch_expr::compute_scripting_kind()
 }
 
 
-catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
+catch_clause* catch_clause::clone(expr::substitution_t& subst) const
 {
   catch_clause* lClause = theCCB->theEM->create_catch_clause();
 

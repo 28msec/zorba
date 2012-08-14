@@ -605,7 +605,7 @@ protected:
 
   std::stack<xqtref_t>                   theTypeStack;
 
-  std::vector<flwor_clause_t>            theFlworClausesStack;
+  std::vector<flwor_clause*>            theFlworClausesStack;
 
   std::vector<const parsenode*>          theTryStack;
 
@@ -1555,7 +1555,7 @@ expr* wrap_in_dos_and_dupelim(expr* expr, bool atomics, bool reverse = false)
   Create a LET clause for the given LET variable "lv", with the given expr "e" as
   its defining expression.
 ********************************************************************************/
-let_clause_t wrap_in_letclause(expr* e, var_expr* lv)
+let_clause* wrap_in_letclause(expr* e, var_expr* lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
 
@@ -1571,7 +1571,7 @@ let_clause_t wrap_in_letclause(expr* e, var_expr* lv)
   local sctx obj. Then, create a LET clause for this new var_expr, with the given
   expr "e" as its defining expression.
 ********************************************************************************/
-let_clause_t wrap_in_letclause(
+let_clause* wrap_in_letclause(
     expr* e,
     const QueryLoc& loc,
     const QName* qname)
@@ -1585,7 +1585,7 @@ let_clause_t wrap_in_letclause(
   this new var_expr, with the given expr "e" as its defining expression. NOTE:
   the internal var is not registered in the sctx.
 ********************************************************************************/
-let_clause_t wrap_in_letclause(expr* e)
+let_clause* wrap_in_letclause(expr* e)
 {
   return wrap_in_letclause(e, create_temp_var(e->get_loc(), var_expr::let_var));
 }
@@ -1595,7 +1595,7 @@ let_clause_t wrap_in_letclause(expr* e)
   Create a FOR clause for the given FOR variable "fv" and its associated POS var
   "pv" (pv may be NULL). Use the given expr "e" as the defining expr for "fv".
 ********************************************************************************/
-for_clause_t wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
+for_clause* wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
 {
   assert(fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -1617,7 +1617,7 @@ for_clause_t wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
   Then, create a FOR clause for these new var_exprs, with the given expr as the
   defining expression of the FOR var.
 ********************************************************************************/
-for_clause_t wrap_in_forclause(
+for_clause* wrap_in_forclause(
     expr* expr,
     const QueryLoc& loc,
     const QName* fv_qname,
@@ -1634,7 +1634,7 @@ for_clause_t wrap_in_forclause(
   this new var_expr, with the given expr as its defining expression. NOTE:
   the internal var is not registered in the sctx.
 ********************************************************************************/
-for_clause_t wrap_in_forclause(expr* expr, bool add_posvar)
+for_clause* wrap_in_forclause(expr* expr, bool add_posvar)
 {
   var_expr* fv = create_temp_var(expr->get_loc(), var_expr::for_var);
 
@@ -1698,7 +1698,7 @@ flwor_expr* wrap_expr_in_flwor(
   if (withContextSize)
   {
     // create a LET var equal to the seq returned by the input epxr
-    let_clause_t lcInputSeq = wrap_in_letclause(inputExpr);
+    let_clause* lcInputSeq = wrap_in_letclause(inputExpr);
 
     // compute the size of the input seq
     fo_expr* countExpr = theExprManager->create_fo_expr(theRootSctx,
@@ -1707,12 +1707,12 @@ flwor_expr* wrap_expr_in_flwor(
                                               lcInputSeq->get_var());
     normalize_fo(countExpr);
 
-    let_clause_t lcLast = wrap_in_letclause(countExpr,
+    let_clause* lcLast = wrap_in_letclause(countExpr,
                                             loc,
                                             LAST_IDX_VARNAME);
 
     // Iterate over the input seq
-    for_clause_t fcDot = wrap_in_forclause(lcInputSeq->get_var(),
+    for_clause* fcDot = wrap_in_forclause(lcInputSeq->get_var(),
                                            loc,
                                            DOT_VARNAME,
                                            DOT_POS_VARNAME);
@@ -1723,7 +1723,7 @@ flwor_expr* wrap_expr_in_flwor(
   else
   {
     // Iterate over the input seq
-    for_clause_t fcDot = wrap_in_forclause(inputExpr,
+    for_clause* fcDot = wrap_in_forclause(inputExpr,
                                            loc,
                                            DOT_VARNAME,
                                            DOT_POS_VARNAME);
@@ -3722,7 +3722,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   var_expr* arg_var = create_var(loc, qnameItem, var_expr::arg_var);
   var_expr* subst_var = bind_var(loc, qnameItem, var_expr::let_var);
 
-  let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+  let_clause* lc = wrap_in_letclause(&*arg_var, subst_var);
 
   // theCurrentPrologVFDecl might be null in case of inline functions
   // inline functions currently can't be sequential anyway
@@ -6275,7 +6275,8 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  window_clause* windowClause = theFlworClausesStack.back().dyn_cast<window_clause>();
+  window_clause* windowClause =
+    dynamic_cast<window_clause*>(theFlworClausesStack.back());
   assert(windowClause != NULL);
 
   // Pop the window var and associate it with this window clause
@@ -6317,7 +6318,7 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
   // them in a flwor_wincond::vars obj. Also pop the condition expr and
   // create a flwor_wincond obj for each condition.
   flwor_wincond::vars inputCondVarExprs[2];
-  flwor_wincond_t conds[2];
+  flwor_wincond* conds[2];
 
   for (int i = 1; i >= 0; i--)
   {
@@ -7435,7 +7436,7 @@ void* begin_visit(const CatchExpr& v)
 
   trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top());
 
-  catch_clause_t cc = theExprManager->create_catch_clause();
+  catch_clause* cc = theExprManager->create_catch_clause();
 
   push_scope();
 
@@ -9036,7 +9037,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
     axisExpr->set_reverse_order();
   }
 
-  rchandle<let_clause> lcPredInput = wrap_in_letclause(predInputExpr);
+  let_clause* lcPredInput = wrap_in_letclause(predInputExpr);
 
   flworExpr->add_clause(lcPredInput);
 
@@ -9331,7 +9332,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
   }
   else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL)
   {
-    catch_clause* cc = &*(*tce)[0];
+    catch_clause* cc = const_cast<catch_clause*>((*tce)[0]);
     if (v.getQName() != NULL)
     {
       store::Item_t qnItem;
@@ -9436,7 +9437,7 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
   {
     // for each item in the input seq compute the input seq for the pred
     // (= outer_dot/primaryExpr)
-    let_clause_t lcPredSeq = wrap_in_letclause(primaryExpr);
+    let_clause* lcPredSeq = wrap_in_letclause(primaryExpr);
 
     flworExpr->add_clause(lcPredSeq);
 
@@ -9513,7 +9514,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   const QueryLoc& loc = predExpr->get_loc();
 
   // let $predVar := predExpr
-  let_clause_t lcPred = wrap_in_letclause(predExpr);
+  let_clause* lcPred = wrap_in_letclause(predExpr);
   var_expr* predvar = lcPred->get_var();
 
   flworExpr->add_clause(lcPred);
@@ -10554,7 +10555,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         for (csize i = 0; i < numArgs ; ++i)
         {
-          let_clause_t lc;
+          let_clause* lc;
           store::Item_t qnameItem;
 
           // cannot use create_temp_var() as the variables created there are not
@@ -10954,7 +10955,7 @@ void* begin_visit(const InlineFunction& v)
     var_expr* arg_var = create_var(loc, qname, var_expr::arg_var);
     var_expr* subst_var = bind_var(loc, qname, var_expr::let_var);
 
-    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+    let_clause* lc = wrap_in_letclause(&*arg_var, subst_var);
 
     arg_var->set_param_pos(flwor->num_clauses());
     arg_var->set_type(varExpr->get_return_type());

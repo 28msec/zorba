@@ -455,8 +455,8 @@ public:
       window_clause::window_t winKind,
       var_expr* varExpr,
       expr* domainExpr,
-      flwor_wincond_t winStart,
-      flwor_wincond_t winStop,
+      flwor_wincond* winStart,
+      flwor_wincond* winStop,
       bool lazy = false);
 
   flwor_wincond* create_flwor_wincond(

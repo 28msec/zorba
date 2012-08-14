@@ -39,16 +39,6 @@ class materialize_clause;
 class group_clause;
 class flwor_expr;
 
-typedef rchandle<flwor_clause> flwor_clause_t;
-typedef rchandle<for_clause> for_clause_t;
-typedef rchandle<let_clause> let_clause_t;
-typedef rchandle<window_clause> window_clause_t;
-typedef rchandle<flwor_wincond> flwor_wincond_t;
-typedef rchandle<orderby_clause> orderby_clause_t;
-typedef rchandle<materialize_clause> materialize_clause_t;
-typedef rchandle<group_clause> group_clause_t;
-
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -108,7 +98,7 @@ public:
 
   virtual var_expr* get_score_var() const { return NULL; }
 
-  virtual flwor_clause_t clone(expr::substitution_t& substitution) const = 0;
+  virtual flwor_clause* clone(expr::substitution_t& substitution) const = 0;
 };
 
 
@@ -209,7 +199,7 @@ public:
 
   void set_score_var(var_expr* v);
 
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -249,7 +239,7 @@ public:
 
   bool lazyEval() const { return theLazyEval; }
 
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -272,8 +262,8 @@ public:
 
 protected:
   window_t          theWindowKind;
-  flwor_wincond_t   theWinStartCond;
-  flwor_wincond_t   theWinStopCond;
+  flwor_wincond*    theWinStartCond;
+  flwor_wincond*    theWinStopCond;
   bool              theLazyEval;
 
   window_clause(
@@ -283,8 +273,8 @@ protected:
         window_t winKind,
         var_expr* varExpr,
         expr* domainExpr,
-        flwor_wincond_t winStart,
-        flwor_wincond_t winStop,
+        flwor_wincond* winStart,
+        flwor_wincond* winStop,
         bool lazy = false);
 
 public:
@@ -293,9 +283,9 @@ public:
 public:
   window_t get_winkind() const { return theWindowKind; }
 
-  flwor_wincond* get_win_start() const { return theWinStartCond.getp(); }
+  flwor_wincond* get_win_start() const { return theWinStartCond; }
 
-  flwor_wincond* get_win_stop() const { return theWinStopCond.getp(); }
+  flwor_wincond* get_win_stop() const { return theWinStopCond; }
 
   void set_win_start(flwor_wincond* cond);
 
@@ -305,7 +295,7 @@ public:
 
   bool lazyEval() const { return theLazyEval; }
 
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -395,7 +385,7 @@ public:
 
   void set_flwor_clause(flwor_clause *);
 
-  flwor_wincond_t clone(expr::substitution_t& substitution) const;
+  flwor_wincond* clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -470,7 +460,7 @@ public:
 
   expr* get_input_for_nongroup_var(const var_expr* var);
 
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -527,7 +517,7 @@ public:
 
   void set_column_expr(csize i, expr* e) { theOrderingExprs[i] = e; }
 
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -547,7 +537,7 @@ class materialize_clause : public flwor_clause
   materialize_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc);
 
 public:
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -572,7 +562,7 @@ public:
 
   var_expr* get_var() const { return theVarExpr; }
 
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 };
 
 
@@ -594,7 +584,7 @@ public:
 
   void set_expr(expr* where);
 
-  flwor_clause_t clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(expr::substitution_t& substitution) const;
 };
 
 
@@ -631,7 +621,7 @@ class flwor_expr : public expr
   friend class ExprManager;
 
 public:
-  typedef std::vector<rchandle<flwor_clause> > clause_list_t;
+  typedef std::vector<flwor_clause*> clause_list_t;
 
 protected:
   bool          theIsGeneral;

@@ -771,8 +771,8 @@ window_clause* ExprManager::create_window_clause(
     window_clause::window_t winKind,
     var_expr* varExpr,
     expr* domainExpr,
-    flwor_wincond_t winStart,
-    flwor_wincond_t winStop,
+    flwor_wincond* winStart,
+    flwor_wincond* winStop,
     bool lazy)
 {
   CREATE_AND_RETURN(window_clause,

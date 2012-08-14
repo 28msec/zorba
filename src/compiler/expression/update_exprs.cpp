@@ -183,7 +183,7 @@ copy_clause::~copy_clause()
 }
 
 
-copy_clause_t copy_clause::clone(expr::substitution_t& subst) const
+copy_clause* copy_clause::clone(expr::substitution_t& subst) const
 {
   ZORBA_ASSERT(theVar && theExpr);
 
@@ -233,7 +233,7 @@ void transform_expr::setReturnExpr(expr* e)
 }
 
 
-void transform_expr::add_back(copy_clause_t c)
+void transform_expr::add_back(copy_clause* c)
 {
   theCopyClauses.push_back(c);
 
@@ -254,7 +254,7 @@ expr* transform_expr::clone(substitution_t& subst) const
   transform_expr* cloneExpr =
     theCCB->theEM->create_transform_expr(theSctx, get_loc());
 
-  for (std::vector<copy_clause_t>::const_iterator lIter = theCopyClauses.begin();
+  for (std::vector<copy_clause*>::const_iterator lIter = theCopyClauses.begin();
        lIter != theCopyClauses.end();
        ++lIter)
   {

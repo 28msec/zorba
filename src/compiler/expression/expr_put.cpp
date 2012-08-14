@@ -263,8 +263,8 @@ ostream& window_clause::put(ostream& os) const
   BEGIN_PUT(WINDOW);
   theVarExpr->put(os);
   PUT_SUB("IN", theDomainExpr);
-  PUT_SUB("START", theWinStartCond.getp());
-  PUT_SUB("STOP", theWinStopCond.getp());
+  PUT_SUB("START", theWinStartCond);
+  PUT_SUB("STOP", theWinStopCond);
   END_PUT();
 }
 
@@ -442,7 +442,7 @@ ostream& trycatch_expr::put( ostream& os) const
 
   for (ulong i = 0; i < numClauses; ++i)
   {
-    catch_clause_t cc = theCatchClauses[i];
+    catch_clause* cc = theCatchClauses[i];
     os << indent << "CATCH ";
     os << "\n";
     theCatchExprs[i]->put(os);
@@ -928,10 +928,10 @@ ostream& transform_expr::put(ostream& os) const
 {
   BEGIN_PUT(transform_expr);
 
-  for (vector<rchandle<copy_clause> >::const_iterator it = theCopyClauses.begin();
+  for (vector<copy_clause*>::const_iterator it = theCopyClauses.begin();
        it != theCopyClauses.end(); ++it)
   {
-    rchandle<copy_clause> e = *it;
+    copy_clause* e = *it;
     e->put(os);
   }
   theModifyExpr->put(os);
