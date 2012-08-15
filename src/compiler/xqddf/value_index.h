@@ -133,7 +133,8 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   theDomainClause:
   ----------------
   A FOR-clause that associates the domain expr with a FOR var that is referenced
-  by the key exprs and acts as the domain node for those exprs. If dexpr is the
+  by the key exprs and acts as the domain node for those exprs. (We need this
+  so that the get_domain_expr() method can work on the FOR var). If dexpr is the
   domain expr specified in the index declaration, the actual domain expr is:
 
   for value indexes   : domainExpr := dexpr treat as node()*
@@ -264,6 +265,10 @@ private:
   ContainerKind                   theContainerKind;
 
   for_clause_t                    theDomainClause;
+  expr                          * theDomainExpr;
+  var_expr                      * theDomainVar;
+  var_expr                      * theDomainPosVar;
+
   csize                           theNumKeyExprs;
   std::vector<expr*>              theKeyExprs;
   std::vector<xqtref_t>           theKeyTypes;

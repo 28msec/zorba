@@ -65,6 +65,9 @@ IndexDecl::IndexDecl(
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH),
+  theDomainExpr(NULL),
+  theDomainVar(NULL),
+  theDomainPosVar(NULL),
   theBuildExpr(NULL),
   theDocIndexerExpr(NULL)
 {
@@ -129,7 +132,7 @@ store::Item* IndexDecl::getName() const
 ********************************************************************************/
 expr* IndexDecl::getDomainExpr() const
 {
-  return theDomainClause->get_expr();
+  return theDomainExpr;
 }
 
 
@@ -138,6 +141,8 @@ expr* IndexDecl::getDomainExpr() const
 ********************************************************************************/
 void IndexDecl::setDomainExpr(expr* domainExpr)
 {
+  theDomainExpr = domainExpr;
+
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainExpr->get_sctx(),
                                      theCCB,
@@ -154,7 +159,7 @@ void IndexDecl::setDomainExpr(expr* domainExpr)
 ********************************************************************************/
 var_expr* IndexDecl::getDomainVariable() const
 {
-  return theDomainClause->get_var();
+  return theDomainVar;
 }
 
 
@@ -163,6 +168,8 @@ var_expr* IndexDecl::getDomainVariable() const
 ********************************************************************************/
 void IndexDecl::setDomainVariable(var_expr* domainVar)
 {
+  theDomainVar = domainVar;
+
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainVar->get_sctx(),
                                      theCCB,
@@ -179,7 +186,7 @@ void IndexDecl::setDomainVariable(var_expr* domainVar)
 ********************************************************************************/
 var_expr* IndexDecl::getDomainPositionVariable() const
 {
-  return theDomainClause->get_pos_var();
+  return theDomainPosVar;
 }
 
 
@@ -188,6 +195,8 @@ var_expr* IndexDecl::getDomainPositionVariable() const
 ********************************************************************************/
 void IndexDecl::setDomainPositionVariable(var_expr* domainPosVar)
 {
+  theDomainPosVar = domainPosVar;
+
   theDomainClause->set_pos_var(domainPosVar);
 }
 
@@ -454,6 +463,8 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   if (theBuildExpr != NULL)
     return theBuildExpr;
 
+  theDomainClause = NULL;
+
   expr* domainExpr = getDomainExpr();
   var_expr* dot = getDomainVariable();
   var_expr* pos = getDomainPositionVariable();
@@ -473,8 +484,11 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
-  var_expr* newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
-  var_expr* newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  var_expr* newdot = theCCB->theEM->
+  create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+
+  var_expr* newpos = theCCB->theEM->
+  create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -600,9 +614,9 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
 
   var_expr* docVar = theCCB->theEM->create_var_expr(sctx,
-                                   dot->get_loc(),
-                                   var_expr::prolog_var,
-                                   docVarName);
+                                                    dot->get_loc(),
+                                                    var_expr::prolog_var,
+                                                    docVarName);
   docVar->set_unique_id(1);
   ulong nextVarId = 2;
 
@@ -620,8 +634,11 @@ DocIndexer* IndexDecl::getDocIndexer(
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
-  var_expr* newdot = theCCB->theEM->create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
-  var_expr* newpos = theCCB->theEM->create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  var_expr* newdot = theCCB->theEM->
+  create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+
+  var_expr* newpos = theCCB->theEM->
+  create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -705,7 +722,7 @@ std::string IndexDecl::toString()
 
   os << "Domain Expr : " << std::endl;
 
-  theDomainClause->get_expr()->put(os) << std::endl;
+  getDomainExpr()->put(os) << std::endl;
 
   os << "Domain Variable : ";
   getDomainVariable()->put(os);
