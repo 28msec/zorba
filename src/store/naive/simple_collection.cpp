@@ -84,6 +84,8 @@ SimpleCollection::~SimpleCollection()
 store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip,
                                                 const zstring& aStartAfterRef)
 {
+  assert(false);
+  // TODO: throw exception if referenced node does't exist anymore
   return new CollectionIter(this, aSkip, aStartAfterRef);
 }
 
