@@ -1,4 +1,4 @@
-import module namespace jn = "http://www.jsoniq.org/functions";
+import module namespace libjn = "http://www.jsoniq.org/function-library";
 
 declare variable $xdoc :=
 <nodes>
@@ -7,7 +7,7 @@ declare variable $xdoc :=
 </nodes>;
 
 variable $obj :=  
-jn:accumulate( 
+libjn:accumulate( 
   for $node at $pos in $xdoc//node 
   return { concat("n", $pos) : $node } 
 );

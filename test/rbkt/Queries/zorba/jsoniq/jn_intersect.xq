@@ -1,4 +1,4 @@
-import module namespace jn = "http://www.jsoniq.org/functions";
+import module namespace libjn = "http://www.jsoniq.org/function-library";
 
 let $object :=
 {
@@ -16,5 +16,5 @@ let $object3 :=
  "foo" : "bar",
  "bar" : [ "this" ]
 }
-return jn:intersect(($object, $object2, $object3))
+return libjn:intersect(($object, $object2, $object3))
 

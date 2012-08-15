@@ -57,6 +57,20 @@ public:
 };
 
 
+class jn_object : public function
+{
+public:
+  jn_object(const signature& sig)
+    :
+  function(sig, FunctionConsts::JN_OBJECT_1)
+  {
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+
+  CODEGEN_DECL();
+};
+
 
 #endif // ZORBA_WITH_JSON
 

@@ -1,4 +1,4 @@
-import module namespace jn = "http://www.jsoniq.org/functions";
+import module namespace libjn = "http://www.jsoniq.org/function-library";
 
 let $object :=
 {
@@ -6,5 +6,5 @@ let $object :=
  "bar" : { "foo" : [1] },
  "foobar" : "foo" 
 }
-return jn:descendant-objects($object)
+return libjn:descendant-objects($object)
 
