@@ -66,7 +66,8 @@ IndexDecl::IndexDecl(
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH),
   theBuildExpr(NULL),
-  theDocIndexerExpr(NULL)
+  theDocIndexerExpr(NULL),
+  theDomainClause(NULL)
 {
 }
 
