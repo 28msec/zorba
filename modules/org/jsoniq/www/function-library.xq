@@ -33,6 +33,8 @@ xquery version "1.0";
  :)
 module namespace libjn = "http://www.jsoniq.org/function-library";
 
+import module namespace jn = "http://www.jsoniq.org/functions";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
