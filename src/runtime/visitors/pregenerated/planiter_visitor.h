@@ -252,6 +252,8 @@ namespace zorba{
 
     class CheckICIterator;
 
+    class IndexKeysIterator;
+
     class StaticNamespacesIterator;
 
     class DefaultFunctionNamespaceIterator;
@@ -1048,6 +1050,9 @@ public:
 
     virtual void beginVisit ( const CheckICIterator& ) = 0;
     virtual void endVisit   ( const CheckICIterator& ) = 0;
+
+    virtual void beginVisit ( const IndexKeysIterator& ) = 0;
+    virtual void endVisit   ( const IndexKeysIterator& ) = 0;
 
     virtual void beginVisit ( const StaticNamespacesIterator& ) = 0;
     virtual void endVisit   ( const StaticNamespacesIterator& ) = 0;

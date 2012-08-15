@@ -388,6 +388,9 @@ namespace zorba {
     void beginVisit( const CheckICIterator& );
     void endVisit  ( const CheckICIterator& );
 
+    void beginVisit( const IndexKeysIterator& );
+    void endVisit  ( const IndexKeysIterator& );
+
     void beginVisit( const StaticNamespacesIterator& );
     void endVisit  ( const StaticNamespacesIterator& );
 

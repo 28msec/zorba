@@ -44,6 +44,7 @@
 #include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
+
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
 
@@ -137,9 +138,7 @@ struct FunctionInfo : public ::zorba::serialization::SerializeBaseClass
 
 public:
   SERIALIZABLE_CLASS(FunctionInfo)
-
   FunctionInfo(::zorba::serialization::Archiver& ar);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -151,13 +150,75 @@ public:
 };
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+class VarInfo : public SimpleRCObject
+{
+protected:
+  store::Item_t  theName;
+
+  ulong          theId;
+
+  int            theKind;
+
+  xqtref_t       theType;
+
+  bool           theIsExternal;
+
+  bool           theHasInitializer;
+
+  var_expr     * theVarExpr;
+
+public:
+  SERIALIZABLE_CLASS(VarInfo)
+  VarInfo(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  VarInfo();
+
+  VarInfo(const var_expr_t& v);
+
+  ~VarInfo();
+
+  const store::Item_t& getName() const { return theName; }
+
+  ulong getId() const { return theId; }
+
+  void setId(ulong id) { theId = id; }
+
+  int getKind() const { return theKind; }
+
+  const XQType* getType() const { return theType.getp(); }
+
+  void setType(const xqtref_t& t);
+
+  bool isExternal() const { return theIsExternal; }
+
+  void setIsExternal(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
+
+  var_expr* getVar() const { return theVarExpr; }
+
+  void clearVar() { theVarExpr = NULL; }
+};
+
+
+typedef rchandle<VarInfo> VarInfo_t;
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 struct PrologOption : public ::zorba::serialization::SerializeBaseClass
 {
-  store::Item_t    theName;
-  zstring theValue;
+  store::Item_t  theName;
+  zstring        theValue;
 
 public:
   SERIALIZABLE_CLASS(PrologOption)
@@ -389,7 +450,7 @@ class static_context : public SimpleRCObject
 
   ITEM_PTR_HASH_MAP(ValueIC_t, ICMap);
 
-  ITEM_PTR_HASH_MAP(var_expr_t, VariableMap);
+  ITEM_PTR_HASH_MAP(VarInfo_t, VariableMap);
 
   ITEM_PTR_HASH_MAP(FunctionInfo, FunctionMap);
 
@@ -619,8 +680,6 @@ public:
 
   void serialize(serialization::Archiver& ar);
 
-  void prepare_for_serialize(CompilerCB *compiler_cb);
-
 public:
   static_context(::zorba::serialization::Archiver& ar);
 
@@ -811,21 +870,15 @@ public:
   //
   // Variables
   //
-  void bind_var(
-        var_expr_t& expr,
-        const QueryLoc& loc,
-        const Error& err);
+  void bind_var(const var_expr_t& expr, const QueryLoc& loc, const Error& err);
 
-  var_expr* lookup_var(
-        const store::Item* qname,
-        const QueryLoc& loc,
-        const Error& err) const;
+  VarInfo* lookup_var(const store::Item* qname) const;
 
   void getVariables(
-    std::vector<var_expr_t>& variableList,
-    bool localsOnly = false,
-    bool returnPrivateVars = false,
-    bool externalVarsOnly = false) const;
+      std::vector<VarInfo*>& variableList,
+      bool localsOnly = false,
+      bool returnPrivateVars = false,
+      bool externalVarsOnly = false) const;
 
   void set_context_item_type(const xqtref_t& t, const QueryLoc& loc);
 

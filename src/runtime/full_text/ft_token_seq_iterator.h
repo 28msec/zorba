@@ -37,7 +37,7 @@ public:
   FTTokenSeqIterator( FTTokens& );
   ~FTTokenSeqIterator();
 
-  void take( FTTokens& );
+  void swap( FTTokens& );
 
   // inherited
   index_t begin() const;

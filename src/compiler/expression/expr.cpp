@@ -1210,7 +1210,7 @@ expr_t eval_expr::clone(substitution_t& s) const
   {
     var_expr_t cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s).getp());
     assert(cloneVar != NULL);
-    new_eval->add_var(cloneVar, theArgs[i]->clone(s));
+    new_eval->add_var(cloneVar, (theArgs[i] ? theArgs[i]->clone(s) : NULL));
   }
 
   return new_eval.getp();
