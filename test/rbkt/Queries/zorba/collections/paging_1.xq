@@ -15,7 +15,7 @@ declare %ann:sequential function local:test()
     dml:collection(xs:QName("ns:test2"), 3), <delim/>,
     dml:collection(xs:QName("ns:test2"), -1), <delim/>,
     let $ref := ref:node-reference(dml:collection(xs:QName("ns:test2"))[3])
-    return dml:collection(xs:QName("ns:test2"), 0, $ref)
+    return dml:collection(xs:QName("ns:test2"), $ref, 0)
   )
 };
 

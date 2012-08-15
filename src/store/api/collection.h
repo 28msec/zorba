@@ -54,10 +54,10 @@ public:
    * It is allowed to have several concurrent iterators on the same Collection,
    * but each iterator should be used by a single thread only.
    *
-   * @param aSkip The number of collection entries to skip.
-   * @param aStartAfterRef Iteration starts after noded identified by 
-   *                       this reference. Behavior when reference is not
-   *                       found is store dependent.
+   * @param aSkip The number of collection items to skip additionally to
+                  the once skipped by reference.
+   * @param aStartAfterRef The reference to the last node (implementation order)
+                           that is skipped.
    * @return Iterator
    */
   virtual Iterator_t getIterator(

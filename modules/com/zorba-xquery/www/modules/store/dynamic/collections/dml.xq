@@ -636,8 +636,10 @@ dml:collection($name as xs:QName, $skip as xs:integer) as item()* external;
  : that belong to the collection identified by the given name.
  :
  : @param $name The name of the collection.
- : @param $skip The number of collection items to skip.
- : @param $ref  The reference of the node till which the nodes are skipped.
+ : @param $ref  The reference to the last node (implementation order)
+                that is skipped.
+ : @param $skip The number of collection items to skip additionally to
+                the once skipped by reference.
  :
  : @return The sequence contained in the given collection.
  :
@@ -647,8 +649,8 @@ dml:collection($name as xs:QName, $skip as xs:integer) as item()* external;
  :)
 declare function
 dml:collection($name as xs:QName, 
-               $skip as xs:integer,
-               $ref  as xs:anyURI) as item()* external;
+               $ref  as xs:anyURI,
+               $skip as xs:integer) as item()* external;
 
 
 (:~

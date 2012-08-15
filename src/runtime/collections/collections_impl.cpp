@@ -390,30 +390,27 @@ bool ZorbaCollectionIterator::nextImpl(
 
   (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
-  if (theChildren.size() > 1)
+  if (theChildren.size() == 0)
+  {
+    state->theIterator = collection->getIterator();
+  }
+  else
   {
     // skip parameter passed
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[1].getp(), planState);
     lSkip = lSkipItem->getIntegerValue(); 
-  }
-
-  if (theChildren.size() == 1)
-  {
-    state->theIterator = collection->getIterator(lSkip);
-  }
-  else
-  {
-    state->theIterator = collection->getIterator();
-  }
-
-  if (theChildren.size() > 2)
-  {
-    // skip parameter passed
-    store::Item_t lRefItem;
-    consumeNext(lRefItem, theChildren[2].getp(), planState);
-    lStartAfterRef = lRefItem->getString(); 
-    state->theIterator = collection->getIterator(lSkip, lStartAfterRef);
+    if (theChildren.size() == 1)
+    {
+      state->theIterator = collection->getIterator(lSkip);
+    }
+    else
+    {
+      store::Item_t lRefItem;
+      consumeNext(lRefItem, theChildren[2].getp(), planState);
+      lStartAfterRef = lRefItem->getString(); 
+      state->theIterator = collection->getIterator(lSkip, lStartAfterRef);
+    }
   }
 
   ZORBA_ASSERT(state->theIterator != NULL);

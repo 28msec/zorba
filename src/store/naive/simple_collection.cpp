@@ -86,6 +86,8 @@ store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip,
 {
   assert(false);
   // TODO: throw exception if referenced node does't exist anymore
+  // TODO: pass the node instead of the reference. CollectionIter 
+  // should compare the nodes and not the references
   return new CollectionIter(this, aSkip, aStartAfterRef);
 }
 
