@@ -43,43 +43,74 @@ public:
 
 /****************************************************************************//**
   The 1st child iterator computes the query string, and the next N child
-  iterators compute the domain expression of each of the "eval" variables.
+  iterators compute the value of each of the non-global outer variables
+  (see below).
 
   theVarNames:
   ------------
-  The names of the "eval" vars. These will be added to the prolog of the eval 
-  query as external var declarations. If the prolog of the eval query declares
-  or imports any variable with the same name as the name of an eval variable,
-  then the inner var will hide the eval var. Furthermore, if the inner
+  The names of all the outer-query vars that are in scope at the place where the
+  eval expr appears. These will be "imported" to the prolog of the eval query as
+  global external var declarations. From the viewpoint of the eval query, we call
+  these vars the "outer vars" of the eval query. If the prolog of the eval query
+  declares or imports any variable with the same name as the name of an outer 
+  var, then the explicit eval var will hide the implicit outer var. 
 
   theVarTypes:
   ------------
-  The data types of the "eval" vars.
+  The data types of the outer vars.
+
+  theIsGlobalVar:
+  ----------------
+  For each of the outer vars, this bool vector says whether the var corresponds
+  to a global outer-query var. If yes, then its value should appear in the global
+  dcx of the outer query, and will be copied from there into the global dctx of
+  the inner query (using the same var id as the corresponding outer query var).
+
+  theScriptingKind:
+  -----------------
+
+  Tells whether the eval query is going to be sequential, updating, or simple.
+ 
+  theLocalBindings:
+  -----------------
+
+  theDoNodeCopy:
+  --------------
+
+  theForDebugger:
+  ---------------
+
 ********************************************************************************/
 class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
 { 
 protected:
-  std::vector<store::Item_t>  theVarNames;
-  std::vector<xqtref_t>       theVarTypes;
+  std::vector<store::Item_t>  theOuterVarNames;
+
+  std::vector<xqtref_t>       theOuterVarTypes;
+
+  std::vector<int>            theIsGlobalVar;
+
   expr_script_kind_t          theScriptingKind;
+
   store::NsBindings           theLocalBindings;
+
   bool                        theDoNodeCopy;
+
   bool                        theForDebugger;
 
 public:
   SERIALIZABLE_CLASS(EvalIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(EvalIterator,
   NaryBaseIterator<EvalIterator, EvalIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
   EvalIterator(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      const std::vector<store::Item_t>& aVarNames,
-      const std::vector<xqtref_t>& aVarTypes,
+      const std::vector<store::Item_t>& varNames,
+      const std::vector<xqtref_t>& varTypes,
+      const std::vector<int>& isGlobalVar,
       expr_script_kind_t scriptingKind,
       const store::NsBindings& localBindings,
       bool doNodeCopy,
@@ -92,15 +123,16 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
 private:
-  void copyOuterVariables(
+  void importOuterEnv(
       PlanState& planState,
-      static_context* outerSctx,
+      static_context* importSctx,
       dynamic_context* evalDctx,
+      std::vector<var_expr_t>& outerVars,
       ulong& maxOuterVarId) const;
 
-void setExternalVariables(
+  void setExternalVariables(
       CompilerCB* ccb,
-      static_context* outerSctx,
+      static_context* importSctx,
       static_context* evalSctx,
       dynamic_context* evalDctx) const;
 

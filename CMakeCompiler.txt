@@ -13,11 +13,18 @@
 # limitations under the License. 
 
 
-IF (${CMAKE_CXX_COMPILER} MATCHES "clang")
- SET (CLANG 1)
-ELSE (${CMAKE_CXX_COMPILER} MATCHES "clang")
- SET (CLANG 0)
-ENDIF(${CMAKE_CXX_COMPILER} MATCHES "clang")
+# check if clang is used to compile c++
+EXEC_PROGRAM(${CMAKE_CXX_COMPILER}
+               ARGS --version
+               OUTPUT_VARIABLE CXX_COMPILER_VERSION_OUTPUT
+)
+STRING(REGEX MATCH "clang"
+  CXX_IS_CLANG "${CXX_COMPILER_VERSION_OUTPUT}")
+IF (CXX_IS_CLANG)
+  SET (CLANG 1)
+ELSE ()
+  SET (CLANG 0)
+ENDIF ()
 
 #-----------------------------------------------------------------------------
 # Let's use the highest warning level.
