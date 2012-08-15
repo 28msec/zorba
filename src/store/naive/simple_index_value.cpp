@@ -563,6 +563,13 @@ void ProbeValueHashIndexIterator::count(store::Item_t& result)
 /******************************************************************************
 
 ********************************************************************************/
+ValueTreeIndex::KeyIterator::KeyIterator(const IndexMap& aMap)
+  :
+  theMap(aMap)
+{
+}
+
+
 ValueTreeIndex::KeyIterator::~KeyIterator()
 {
 };
@@ -570,21 +577,29 @@ ValueTreeIndex::KeyIterator::~KeyIterator()
 
 void ValueTreeIndex::KeyIterator::open()
 {
-  assert(false);
+  theIterator = theMap.begin();
 }
 
 
-bool ValueTreeIndex::KeyIterator::next(store::IndexKey&)
+bool ValueTreeIndex::KeyIterator::next(store::IndexKey& aKey)
 {
-  assert(false);
+  if (theIterator != theMap.end())
+  {
+    const store::IndexKey* lKey = (*theIterator).first;
+    aKey = *lKey;
+
+    ++theIterator;
+    return true;
+  }
   return false;
 }
 
 
 void ValueTreeIndex::KeyIterator::close()
 {
-  assert(false);
-}
+  theIterator = theMap.end();
+};
+
 
 
 /******************************************************************************
@@ -652,8 +667,7 @@ csize ValueTreeIndex::size() const
 ********************************************************************************/
 store::Index::KeyIterator_t ValueTreeIndex::keys() const
 {
-  assert(false);
-  return 0;
+  return new KeyIterator(theMap);
 }
 
 
