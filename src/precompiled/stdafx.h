@@ -62,7 +62,6 @@
   #include "zorbatypes/rclock.h"
   #include "zorbatypes/schema_types.h"
   #include "zorbatypes/timezone.h"
-  #include "zorbatypes/transcoder.h"
   #include "zorbatypes/URI.h"
   #include "zorbatypes/xerces_xmlcharray.h"
   #include "zorbatypes/zorbatypes_decl.h"
