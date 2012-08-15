@@ -2964,7 +2964,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
   std::vector<store::Item_t>::iterator keyIte;
   std::vector<store::Item_t>::iterator keyEnd;
 
-  STORE_TRACE2("before-delta size = " << deletedDelta.size());
+  STORE_TRACE2("before-delta size = " << beforeDelta.size());
 
   ite = beforeDelta.begin();
   end = beforeDelta.end();
@@ -2996,7 +2996,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
     }
   }
 
-  STORE_TRACE2("after-delta size = " << deletedDelta.size());
+  STORE_TRACE2("after-delta size = " << afterDelta.size());
 
   ite = afterDelta.begin();
   end = afterDelta.end();

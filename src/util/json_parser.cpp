@@ -235,9 +235,9 @@ bool lexer::next( token *t ) {
         t->loc_ = cur_loc_;
         parse_number( c, &t->value_ );
         return true;
-      case 'f':
-      case 'n':
-      case 't':
+      case 'f': // false
+      case 'n': // null
+      case 't': // true
         t->type_ = parse_literal( c, &t->value_ );
         t->loc_ = cur_loc_;
         return true;

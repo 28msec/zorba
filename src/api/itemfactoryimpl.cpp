@@ -366,6 +366,20 @@ Item ItemFactoryImpl::createDateTime(short aYear, short aMonth, short aDay,
 }
 
 
+Item
+ItemFactoryImpl::createDateTime(
+    short aYear, short aMonth, short aDay,
+    short aHour, short aMinute, double aSecond)
+{
+  store::Item_t lItem;
+  theItemFactory->createDateTime(
+      lItem, aYear, aMonth, aDay,
+      aHour, aMinute, aSecond);
+
+  return &*lItem;
+}
+
+
 Item ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
 {
   zstring lString = Unmarshaller::getInternalString( aDateTimeValue );

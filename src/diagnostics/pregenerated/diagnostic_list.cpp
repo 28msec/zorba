@@ -199,6 +199,9 @@ XQueryErrorCode XQST0098( "XQST0098" );
 XQueryErrorCode XQST0099( "XQST0099" );
 
 
+XQueryErrorCode XQST0103( "XQST0103" );
+
+
 XQueryErrorCode XQST0106( "XQST0106" );
 
 
@@ -1235,6 +1238,9 @@ JSONiqErrorCode JNUP0016( "JNUP0016" );
 
 
 JSONiqErrorCode JNUP0017( "JNUP0017" );
+
+
+JSONiqErrorCode JNTY0018( "JNTY0018" );
 
 
 JSONiqErrorCode JNTY0003( "JNTY0003" );
