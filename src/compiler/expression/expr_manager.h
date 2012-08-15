@@ -34,9 +34,13 @@ class CompilerCB;
 class ExprManager
 {
 private:
-  std::vector<expr*>   theExprs;
-  MemoryManager        theMemoryMgr;
-  CompilerCB         * theCCB;
+  std::vector<expr*>          theExprs;
+  std::vector<flwor_clause*>  theFlworClauses;
+  std::vector<flwor_wincond*> theWinconds;
+  std::vector<catch_clause*>  theCatchClauses;
+  std::vector<copy_clause*>   theCopyClauses;
+  MemoryManager               theMemoryMgr;
+  CompilerCB                * theCCB;
 
 public:
   ExprManager(CompilerCB* ccb);
@@ -44,6 +48,14 @@ public:
   ~ExprManager();
 
   expr* reg(expr*);
+
+  flwor_clause* reg(flwor_clause*);
+
+  flwor_wincond* reg(flwor_wincond*);
+
+  catch_clause* reg(catch_clause*);
+
+  copy_clause* reg(copy_clause*);
 
 private:
   //An ExprManager is the only object to handle a collection of Exprs and

@@ -44,6 +44,35 @@ public:
   std::ostream& put(std::ostream& stream) const{return stream;}
 };
 
+class NullFlworClause : public flwor_clause
+{
+public:
+  //it being a let clause is arbitrary, it doesn't matter what type it is.
+  NullFlworClause() :
+    flwor_clause(NULL, NULL, QueryLoc(),flwor_clause::let_clause) {}
+  std::ostream& put(std::ostream& stream) const{return stream;}
+  flwor_clause* clone(expr::substitution_t &) const {return NULL;}
+};
+
+class NullWincond : public flwor_wincond
+{
+public:
+  NullWincond() : flwor_wincond(NULL, NULL, false, vars(), vars(), NULL) {}
+  std::ostream& put(std::ostream& stream) const{return stream;}
+};
+
+class NullCatchClause : public catch_clause
+{
+public:
+  NullCatchClause() : catch_clause(NULL) {}
+  std::ostream& put(std::ostream& stream) const{return stream;}
+};
+
+class NullCopyClause : public copy_clause
+{
+public:
+  NullCopyClause() : copy_clause(NULL, NULL, NULL) {}
+};
 
 ExprManager::ExprManager(CompilerCB* ccb)
   :
@@ -60,8 +89,8 @@ ExprManager::~ExprManager()
       iter != theExprs.end();
       ++iter)
   {
-    //Here we delete all remaining exprs, we assume that they may be "held"
-    //by a reference somewhere.
+    //We assume that the exprs being deleted they may be "held"
+    //by a reference or pointer somewhere and will try deleting them again.
     //To prevent deleting an already deleted expr, we replace them with
     //a NullExpr
 
@@ -72,6 +101,42 @@ ExprManager::~ExprManager()
     //constructs a new NULLExpr where the old expr existed
     new (exp) NullExpr();
   }
+
+  for(std::vector<flwor_clause*>::iterator iter = theFlworClauses.begin();
+      iter != theFlworClauses.end();
+      ++iter)
+  {
+    flwor_clause* clause = *iter;
+    clause->~flwor_clause();
+    new (clause) NullFlworClause();
+  }
+
+  for(std::vector<flwor_wincond*>::iterator iter = theWinconds.begin();
+      iter != theWinconds.end();
+      ++iter)
+  {
+    flwor_wincond* wincond = *iter;
+    wincond->~flwor_wincond();
+    new (wincond) NullWincond();
+  }
+
+  for(std::vector<catch_clause*>::iterator iter = theCatchClauses.begin();
+      iter != theCatchClauses.end();
+      ++iter)
+  {
+    catch_clause* clause = *iter;
+    clause->~catch_clause();
+    new (clause) NullCatchClause();
+  }
+
+  for(std::vector<copy_clause*>::iterator iter = theCopyClauses.begin();
+      iter != theCopyClauses.end();
+      ++iter)
+  {
+    copy_clause* clause = *iter;
+    clause->~copy_clause();
+    new (clause) NullCopyClause();
+  }
 }
 
 
@@ -79,6 +144,30 @@ expr* ExprManager::reg(expr* exp)
 {
   theExprs.push_back(exp);
   return exp;
+}
+
+flwor_clause* ExprManager::reg(flwor_clause* clause)
+{
+  theFlworClauses.push_back(clause);
+  return clause;
+}
+
+flwor_wincond* ExprManager::reg(flwor_wincond* wincond)
+{
+  theWinconds.push_back(wincond);
+  return wincond;
+}
+
+catch_clause* ExprManager::reg(catch_clause* clause)
+{
+  theCatchClauses.push_back(clause);
+  return clause;
+}
+
+copy_clause* ExprManager::reg(copy_clause* clause)
+{
+  theCopyClauses.push_back(clause);
+  return clause;
 }
 
 
@@ -91,7 +180,7 @@ expr* ExprManager::reg(expr* exp)
 
 #define CREATE_AND_RETURN(TYPE, ...) \
   TYPE* EXPPTR = new (theMemoryMgr) TYPE(__VA_ARGS__); \
-  return EXPPTR
+  return static_cast<TYPE *>(reg(EXPPTR))
 
 
 ////////////////////////////////////////////////////////////////////////////////
