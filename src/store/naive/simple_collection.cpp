@@ -88,7 +88,7 @@ store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip,
   xs_integer lReferencedPosition = xs_integer::zero();
   if (aStart.size() != 0
    && (!GET_STORE().getNodeByReference(lReferencedNode, aStart)
-    || !findNode(lReferencedNode.getp(),  lReferencedPosition)))
+    || !findNode(lReferencedNode.getp(), lReferencedPosition)))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0066_REFERENCED_NODE_NOT_IN_COLLECTION,
     ERROR_PARAMS(aStart, theName->getStringValue()));
