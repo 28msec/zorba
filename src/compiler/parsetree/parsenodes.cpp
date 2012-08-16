@@ -719,7 +719,6 @@ GlobalVarDecl::GlobalVarDecl(
 void GlobalVarDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(theAnnotations);
   ACCEPT(theType);
   ACCEPT(theExpr);
   END_VISITOR();

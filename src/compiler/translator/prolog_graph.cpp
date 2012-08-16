@@ -24,6 +24,8 @@
 #include "zorbatypes/zstring.h"
 
 #include "diagnostics/xquery_exception.h"
+#include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
 
 namespace zorba 
 {
@@ -48,14 +50,15 @@ void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
 ********************************************************************************/
 void PrologGraph::addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2)
 {
-  addEdge(theGraph, v1, v2);
-
-  if (v1->isVar() && v2->isVar() && v1->getVarExpr() == v2->getVarExpr())
+  if (v1.isVar() && v2.isVar() && v1.getVarExpr() == v2.getVarExpr())
   {
-    zstring varName = '$' + v1->getVarExpr()->get_name()->getStringValue();
+    zstring varName = '$' + v1.getVarExpr()->get_name()->getStringValue();
 
-    RAISE_ERROR(err::XPST0008, loc, ERROR_PARAMS(varName));
+    RAISE_ERROR(err::XPST0008, v2.getVarExpr()->get_loc(),
+    ERROR_PARAMS(varName, ZED(VariabledUndeclared)));
   }
+
+  addEdge(theGraph, v1, v2);
 }
 
 
@@ -66,7 +69,7 @@ void PrologGraph::addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& 
   list) so that if var v2 depends on var v1, then v1 appears before v2 in the
   list (and as a result, v1 will be evaluated before v2 during runtime).
 
-  Circular dependencies among prolog vars can appear only when udfs are invloved.
+  Circular dependencies among prolog vars can appear only when udfs are involved.
   Here is an example:
 
   declare variable $var := local:func1();

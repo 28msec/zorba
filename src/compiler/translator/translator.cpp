@@ -3239,29 +3239,80 @@ void* begin_visit(const VFO_DeclList& v)
     if (var_decl != NULL &&
         theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
     {
+      const QueryLoc& loc = var_decl->get_location();
+
       store::Item_t qnameItem;
-      expand_no_default_qname(qnameItem, var_decl.get_var_name(), loc);
+      expand_no_default_qname(qnameItem, var_decl->get_var_name(), loc);
 
-      assert(v.is_global());
+      // All vars declared in a module must be in the same namespace as the module
+      if (! theModuleNamespace.empty() &&
+          qnameItem->getNamespace() != theModuleNamespace)
+      {
+        RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+      }
 
-      var_expr* ve = create_var(loc, qnameItem, var_expr::prolog_var);
+      var_expr_t ve = create_var(loc, qnameItem, var_expr::prolog_var);
 
-      if (v.is_extern())
+      if (var_decl->is_extern())
         ve->set_external(true);
 
       xqtref_t type;
-      if (var_decl.get_var_type() != NULL)
+      if (var_decl->get_var_type() != NULL)
       {
-        var_decl.get_var_type()->accept(*this);
+        var_decl->get_var_type()->accept(*this);
 
         type = pop_tstack();
 
         ve->set_type(type);
       }
 
+      AnnotationListParsenode* annotations = var_decl->get_annotations();
+      if (annotations)
+      {
+        if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+        {
+          RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
+        }
+
+        annotations->accept(*this);
+
+        if (theAnnotations)
+        {
+          if (ZANN_CONTAINS(fn_private))
+            ve->set_private(true);
+
+          if (ZANN_CONTAINS(zann_assignable))
+          {
+            ve->set_mutable(true);
+          }
+          else if (ZANN_CONTAINS(zann_nonassignable))
+          {
+            ve->set_mutable(false);
+          }
+          else
+          {
+            ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+          }
+        }
+        else
+        {
+          ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+        }
+      }
+
+      theAnnotations = NULL;
+
       // Put a mapping between the var name and the var_expr in the local sctx.
       // Raise error if var name exists already in local sctx obj.
       bind_var(ve, theSctx);
+
+      // Make sure that there is no other prolog var with the same name in any of
+      // modules translated so far.
+      bind_var(ve, theModulesInfo->globalSctx.get());
+
+      // If this is a library module, register the var in the exported sctx as well.
+      if (export_sctx != NULL)
+        bind_var(ve, export_sctx);
 
       continue;
     }
@@ -3781,7 +3832,6 @@ void end_visit(const Param& v, void* /*visit_state*/)
   Note: the applicable annotations are private vs public, and assignable vs
   non-assignable.
 ********************************************************************************/
-#if 1
 void* begin_visit(const GlobalVarDecl& v)
 {
   TRACE_VISIT();
@@ -3789,38 +3839,26 @@ void* begin_visit(const GlobalVarDecl& v)
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, v.get_var_name(), loc);
 
-  VarInfo_t var = theSctx->unbind_var(qnameItem);
+  var_expr_t ve;
 
-  assert(var);
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ve = lookup_var(qnameItem, loc, err::XPST0008);
 
-  var_expr* ve = var->getVar();
+    assert(ve);
+  }
+  else
+  {
+    ve = create_var(loc, qnameItem, var_expr::prolog_var);
+
+    if (v.is_extern())
+      ve->set_external(true);
+  }
 
   thePrologGraph.addVarVertex(ve);
   theCurrentPrologVFDecl = PrologGraphVertex(ve);
 
   push_nodestack(ve);
-
-  return no_state;
-}
-
-#else
-
-void* begin_visit(const GlobalVarDecl& v)
-{
-  TRACE_VISIT();
-
-  store::Item_t qnameItem;
-  expand_no_default_qname(qnameItem, v.get_var_name(), loc);
-
-  var_expr_t ve = create_var(loc, qnameItem, var_expr::prolog_var);
-
-  if (v.is_extern())
-    ve->set_external(true);
-
-  thePrologGraph.addVarVertex(ve);
-  theCurrentPrologVFDecl = PrologGraphVertex(ve);
-
-  push_nodestack(ve.getp());
 
   return no_state;
 }
@@ -3836,51 +3874,59 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 
   var_expr_t ve = dynamic_cast<var_expr*>(pop_nodestack().getp());
 
-  if (theAnnotations)
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    if (ZANN_CONTAINS(fn_private))
-      ve->set_private(true);
-
-    if (ZANN_CONTAINS(zann_assignable))
+    // All vars declared in a module must be in the same namespace as the module
+    if (! theModuleNamespace.empty() &&
+        ve->get_name()->getNamespace() != theModuleNamespace)
     {
-      ve->set_mutable(true);
+      RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
-    else if (ZANN_CONTAINS(zann_nonassignable))
+
+    if (theAnnotations)
     {
-      ve->set_mutable(false);
+      if (ZANN_CONTAINS(fn_private))
+        ve->set_private(true);
+
+      if (ZANN_CONTAINS(zann_assignable))
+      {
+        ve->set_mutable(true);
+      }
+      else if (ZANN_CONTAINS(zann_nonassignable))
+      {
+        ve->set_mutable(false);
+      }
+      else
+      {
+        ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+      }
     }
     else
     {
       ve->set_mutable(theSctx->is_feature_set(feature::scripting));
     }
-  }
-  else
-  {
-    ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+
+    theAnnotations = NULL;
+
+    // Put a mapping between the var name and the var_expr in the local sctx.
+    // Raise error if var name exists already in local sctx obj.
+    bind_var(ve, theSctx);
+
+    // Make sure that there is no other prolog var with the same name in any of
+    // modules translated so far.
+    bind_var(ve, theModulesInfo->globalSctx.get());
+    
+    // If this is a library module, register the var in the exported sctx as well.
+    if (export_sctx != NULL)
+      bind_var(ve, export_sctx);
   }
 
   xqtref_t type;
   if (v.get_var_type() != NULL)
   {
     type = pop_tstack();
-
     ve->set_type(type);
   }
-
-  // Put a mapping between the var name and the var_expr in the local sctx.
-  // Raise error if var name exists already in local sctx obj.
-  bind_var(ve, theSctx);
-
-  // All vars declared in a module must be in the same namespace as the module
-  if (! theModuleNamespace.empty() &&
-      ve->get_name()->getNamespace() != theModuleNamespace)
-  {
-    RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
-  }
-
-  // Make sure that there is no other prolog var with the same name in any of
-  // modules translated so far.
-  bind_var(ve, theModulesInfo->globalSctx.get());
 
   // Make sure the initExpr is a simple expr.
   if (initExpr != NULL)
@@ -3888,10 +3934,6 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
     expr::checkSimpleExpr(initExpr);
     ve->set_has_initializer(true);
   }
-
-  // If this is a library module, register the var in the exported sctx as well.
-  if (export_sctx != NULL)
-    bind_var(ve, export_sctx);
 
 #ifdef ZORBA_WITH_DEBUGGER
   if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
@@ -3907,11 +3949,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
   // will creaated by the wrap_in_globalvar_assign() method when it is called
   // at the end of the translation of each module.
   thePrologVars.push_back(GlobalBinding(ve, initExpr, v.is_extern()));
-
-  theAnnotations = NULL;
 }
-
-#endif
 
 
 /*******************************************************************************
