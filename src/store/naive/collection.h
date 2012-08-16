@@ -56,7 +56,7 @@ public:
 
   zorba::store::Iterator_t getIterator(
       const xs_integer& aSkip, 
-      const zstring& aStartAfterRef) = 0;
+      const zstring& aStart) = 0;
 
   virtual zorba::store::Item_t nodeAt(xs_integer position) = 0;
 

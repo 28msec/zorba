@@ -55,12 +55,10 @@ public:
     checked_vector<store::Item_t>::iterator theEnd;
     bool                                    theHaveLock;
     xs_integer                              theSkip;
-    zstring                                 theStartAfterRef;
 
   public:
     CollectionIter(SimpleCollection* collection, 
-                   const xs_integer& aSkip,
-                   const zstring& aStartAfterRef);
+                   const xs_integer& aSkip);
 
     ~CollectionIter();
 
@@ -116,7 +114,7 @@ public:
   TreeId createTreeId();
 
   store::Iterator_t getIterator(const xs_integer& aSkip, 
-                                const zstring& aStartAfterRef);
+                                const zstring& aStart);
 
   store::Iterator_t getIterator(const zstring& aRefBoundary);
 

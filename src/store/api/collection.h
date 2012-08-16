@@ -53,16 +53,16 @@ public:
    *
    * It is allowed to have several concurrent iterators on the same Collection,
    * but each iterator should be used by a single thread only.
+   * The 
    *
-   * @param aSkip The number of collection items to skip additionally to
-                  the once skipped by reference.
-   * @param aStartAfterRef The reference to the last node (implementation order)
-                           that is skipped.
+   * @param aSkip The number of collection items to skip. Might be negative
+   *              to navigate relative from aStart.
+   * @param aStart The reference to the first node. All nodes before are skipped.
    * @return Iterator
    */
   virtual Iterator_t getIterator(
       const xs_integer& aSkip = xs_integer::zero(),
-      const zstring& aStartAfterRef = "") = 0;
+      const zstring& aStart = "") = 0;
 
   /**
    * Get the node at the given position in the collection.

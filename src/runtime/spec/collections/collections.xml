@@ -258,7 +258,7 @@
       <zorba:signature localname="collection"
                        prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:anyURI</zorba:param><!-- node ref -->
+        <zorba:param>xs:anyURI</zorba:param><!-- start ref -->
         <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
         <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
@@ -270,7 +270,7 @@
 
       <zorba:signature localname="collection" prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
+        <zorba:param>xs:integer</zorba:param><!-- start to skip -->
         <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 

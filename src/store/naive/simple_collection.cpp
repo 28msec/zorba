@@ -82,13 +82,26 @@ SimpleCollection::~SimpleCollection()
   but each iterator should be used by a single thread only.
 ********************************************************************************/
 store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip,
-                                                const zstring& aStartAfterRef)
+                                                const zstring& aStart)
 {
-  assert(false);
-  // TODO: throw exception if referenced node does't exist anymore
-  // TODO: pass the node instead of the reference. CollectionIter 
-  // should compare the nodes and not the references
-  return new CollectionIter(this, aSkip, aStartAfterRef);
+  store::Item_t lReferencedNode;
+  xs_integer lReferencedPosition = xs_integer::zero();
+  if (aStart.size() != 0
+   && (!GET_STORE().getNodeByReference(lReferencedNode, aStart)
+    || !findNode(lReferencedNode.getp(),  lReferencedPosition)))
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0066_REFERENCED_NODE_NOT_IN_COLLECTION,
+    ERROR_PARAMS(aStart, theName->getStringValue()));
+  }
+
+  xs_integer lFinalSkip = aSkip + lReferencedPosition;
+  if (lFinalSkip < xs_integer::zero())
+  {
+    lFinalSkip = xs_integer::zero();
+  }
+  return new CollectionIter(
+               this, 
+               lFinalSkip);
 }
 
 
@@ -614,13 +627,11 @@ TreeId SimpleCollection::createTreeId()
 ********************************************************************************/
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection,
-    const xs_integer& aSkip,
-    const zstring& aStartAfterRef)
+    const xs_integer& aSkip)
   :
   theCollection(collection),
   theHaveLock(false),
-  theSkip(aSkip),
-  theStartAfterRef(aStartAfterRef)
+  theSkip(aSkip)
 {
 }
 
@@ -635,36 +646,16 @@ SimpleCollection::CollectionIter::~CollectionIter()
 
 void SimpleCollection::CollectionIter::skip()
 {
-  // Start Iteration after reference
-  // dummy implementation for main memory store
-  if (theStartAfterRef.size() > 0)
+  // skip by position
+  long lToSkip = to_xs_long(theSkip);
+  if (theSkip >= theCollection->size())
   {
-    while (theIterator != theEnd)
-    {
-      store::Item_t lCur = *theIterator;
-      if (lCur->getKind() == zorba::store::Item::NODE)
-      {
-        const XmlNode* 
-          xmlNode = static_cast<const XmlNode*>(lCur.getp());
-        if (xmlNode->haveReference())
-        {
-          zstring lReference;
-          GET_STORE().getNodeReference(lReference, lCur.getp());
-          if (theStartAfterRef == lReference)
-          {
-            ++ theIterator;
-            break;
-          }
-        }
-      }
-      ++theIterator;
-    }
+    // we need to skip more then possible -> jump to the end
+    theIterator = theEnd;
   }
-
-  // skip by position                                                              
-  for (long i = 0; i < to_xs_long(theSkip) && theIterator != theEnd; ++i)          
-  {                                                                                
-    ++theIterator;                                                                 
+  else
+  {
+    theIterator += to_xs_long(theSkip);
   }
 }
 

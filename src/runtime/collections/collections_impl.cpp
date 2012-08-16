@@ -381,7 +381,7 @@ bool ZorbaCollectionIterator::nextImpl(
   store::Item_t name;
   store::Collection_t collection;
   xs_integer lSkip;
-  zstring lStartAfterRef;
+  zstring lStart;
 
   ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
@@ -390,18 +390,19 @@ bool ZorbaCollectionIterator::nextImpl(
 
   (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
-  if (theChildren.size() == 0)
+  if (theChildren.size() == 1)
   {
     state->theIterator = collection->getIterator();
   }
   else
   {
-    bool lRefPassed = theChildren.size() > 1;
-    // skip parameter passed
+    bool lRefPassed = theChildren.size() >= 3;
+    
+    // read positional skip parameter
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
     lSkip = lSkipItem->getIntegerValue(); 
-    if (lRefPassed)
+    if (!lRefPassed)
     {
       state->theIterator = collection->getIterator(lSkip);
     }
@@ -409,8 +410,16 @@ bool ZorbaCollectionIterator::nextImpl(
     {
       store::Item_t lRefItem;
       consumeNext(lRefItem, theChildren[1].getp(), planState);
-      lStartAfterRef = lRefItem->getString(); 
-      state->theIterator = collection->getIterator(lSkip, lStartAfterRef);
+      lStart = lRefItem->getString(); 
+      try
+      {
+        state->theIterator = collection->getIterator(lSkip, lStart);
+      }
+      catch (ZorbaException& e)
+      {
+        set_source(e, loc);
+        throw;
+      }
     }
   }
 

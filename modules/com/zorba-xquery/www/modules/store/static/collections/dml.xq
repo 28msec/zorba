@@ -888,21 +888,24 @@ cdml:collection($name as xs:QName, $skip as xs:integer) as item()*  external;
  : that belong to the collection identified by the given name.
  :
  : @param $name The name of the collection.
- : @param $ref  The reference to the last node (implementation order)
-                that is skipped.
- : @param $skip The number of collection items to skip additionally to
-                the once skipped by reference.
+ : @param $start The reference to first node to return. All nodes before
+                 are skipped (order is implementation dependent).
+ : @param $skip The number of collection items to skip. Might be negative to
+                navigate relative from $start (order is
+                implementation dependent).
  :
  : @return The sequence contained in the given collection.
  :
  : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZSTR0066 if the passed reference $start doesn't reference
+ :                      a not from the collection identified by $name.
  :
  :)
 declare function 
 cdml:collection($name as xs:QName, 
-               $ref  as xs:anyURI,
-               $skip as xs:integer) as item()* external;
+                $start  as xs:anyURI,
+                $skip as xs:integer) as item()* external;
 (:~
  : The collection-name function returns the name of the collection the given
  : item (node or json item) belongs to.
