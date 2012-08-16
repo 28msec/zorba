@@ -126,7 +126,7 @@ ExprManager::~ExprManager()
   {
     catch_clause* clause = *iter;
     clause->~catch_clause();
-    new (clause) NullCatchClause();
+//    new (clause) NullCatchClause();
   }
 
   for(std::vector<copy_clause*>::iterator iter = theCopyClauses.begin();
@@ -135,7 +135,7 @@ ExprManager::~ExprManager()
   {
     copy_clause* clause = *iter;
     clause->~copy_clause();
-    new (clause) NullCopyClause();
+//    new (clause) NullCopyClause();
   }
 }
 
