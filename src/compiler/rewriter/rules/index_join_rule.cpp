@@ -697,8 +697,8 @@ static void rewriteJoin(
     std::cout << std::endl << idx->toString() << std::endl;
   }
 
-  idx->setDomainExpr(NULL);
-  idx->setDomainVariable(NULL);
+  //idx->setDomainExpr(NULL);
+  //idx->setDomainVariable(NULL);
 
 #if 0
   if (predInfo.theIsGeneral)

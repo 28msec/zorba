@@ -813,30 +813,27 @@ public:
 class VFO_DeclList : public parsenode
 {
 protected:
-  std::vector<rchandle<parsenode> > vfo_hv;
+  std::vector<rchandle<parsenode> > theDecls;
+  std::vector<bool>                 theIndexDeclFlags;
 
 public:
   VFO_DeclList(const QueryLoc&);
 
-  ulong size () const { return (ulong)vfo_hv.size (); }
+  csize size() const { return theDecls.size(); }
 
-  void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin(), vfo_h); }
+  void push_back(const rchandle<parsenode>& vfo);
 
-  void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
+  rchandle<parsenode> operator[](int k) const { return theDecls[k]; }
 
-  void push_back (const VFO_DeclList &other) { vfo_hv.insert(vfo_hv.end(), other.vfo_hv.begin(), other.vfo_hv.end()); }
+  std::vector<rchandle<parsenode> >::const_iterator begin() const 
+  {
+    return theDecls.begin();
+  }
 
-  rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
-
-  std::vector<rchandle<parsenode> >::iterator begin() { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::iterator end() { return vfo_hv.end(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator begin() const { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator end() const { return vfo_hv.end(); }
-
-  const VarDecl* findVarDecl(const QName& varname);
+  std::vector<rchandle<parsenode> >::const_iterator end() const
+  {
+    return theDecls.end();
+  }
 
   void accept(parsenode_visitor&) const;
 };

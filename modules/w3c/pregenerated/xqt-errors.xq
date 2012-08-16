@@ -609,6 +609,14 @@ declare variable $err:XQST0099 as xs:QName := fn:QName($err:NS, "err:XQST0099");
 
 (:~
  :
+ : All variables in a window clause must have distinct names.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0103 as xs:QName := fn:QName($err:NS, "err:XQST0103");
+
+(:~
+ :
  : It is a static error if a function's annotations contain more than one
  : annotation named \c private or \c public.  It is a static error if a
  : function's annotations contain more than one annotation named \c

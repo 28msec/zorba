@@ -356,6 +356,8 @@ RULE_REWRITE_POST(SpecializeOperations)
 
           for (int i = 0; i < 2; ++i)
           {
+            nargs[i] = NULL;
+
             expr* arg = (i == 0 ? arg0 : arg1);
             xqtref_t type = (i == 0 ? t0 : t1);
             const QueryLoc& loc = arg->get_loc();
@@ -363,9 +365,9 @@ RULE_REWRITE_POST(SpecializeOperations)
             if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc))
             {
               nargs[i] = rCtx.theEM->create_cast_expr(arg->get_sctx(),
-                                       arg->get_loc(),
-                                       arg,
-                                       string_type);
+                                                      arg->get_loc(),
+                                                      arg,
+                                                      string_type);
             }
             else if (! TypeOps::is_subtype(tm, *type, *string_type, loc))
             {

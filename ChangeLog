@@ -1,5 +1,16 @@
 Zorba - The XQuery Processor
 
+version 2.7
+
+Optimizations:
+  * New memory management for compiler expressions (no more ref counting)
+
+Bug Fixes/Other Changes:
+  * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
+    variables)
+  * Fixed bug #899366 (enforce the type declaration of a window variable)
+  * Fixed bug #1024892 (index declaration references udf declared after the index)
+
 
 version 2.6
 
@@ -16,10 +27,10 @@ New Features:
     http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
   * Positional pagination support for collections
-  * New function in the http://www.zorba-xquery.com/modules/store/static/indexes/dml module which returns
-    the value of all keys contained in an index
+  * New function in the http://www.zorba-xquery.com/modules/store/static/indexes/dml
+    module which returns the value of all keys contained in an index
   * Incremental maintenance for general indexes
-	
+
 Optimizations:
   * Optimization of comparison operations
   * Tighter hoisting of expressions (also fixes bug #967428)
