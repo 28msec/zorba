@@ -396,18 +396,19 @@ bool ZorbaCollectionIterator::nextImpl(
   }
   else
   {
+    bool lRefPassed = theChildren.size() > 1;
     // skip parameter passed
     store::Item_t lSkipItem;
-    consumeNext(lSkipItem, theChildren[1].getp(), planState);
+    consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
     lSkip = lSkipItem->getIntegerValue(); 
-    if (theChildren.size() == 1)
+    if (lRefPassed)
     {
       state->theIterator = collection->getIterator(lSkip);
     }
     else
     {
       store::Item_t lRefItem;
-      consumeNext(lRefItem, theChildren[2].getp(), planState);
+      consumeNext(lRefItem, theChildren[1].getp(), planState);
       lStartAfterRef = lRefItem->getString(); 
       state->theIterator = collection->getIterator(lSkip, lStartAfterRef);
     }
