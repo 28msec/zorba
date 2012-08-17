@@ -17,12 +17,11 @@
 #ifndef ZORBA_STORE_JSON_ITEMS_H
 #define ZORBA_STORE_JSON_ITEMS_H
 
-#include <map>
 #include <vector>
 
 #include <zorba/config.h>
 #include <zorbautils/hashmap_zstring.h>
-
+#include <util/unordered_map.h>
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
 
@@ -168,14 +167,7 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  class ConstCharComparator {
-  public:
-    bool operator()(const char* a, const char* b) const
-    {
-      return strcmp(a, b) < 0;
-    }
-  };
-  typedef std::map<const char*, csize, ConstCharComparator> Keys;
+  typedef std::unordered_map<const char*, csize> Keys;
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
@@ -458,7 +450,7 @@ protected:
 
 void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
     
-#if 0 // ifndef NDEBUG
+#ifndef NDEBUG
 #define ASSERT_INVARIANT() assertInvariant()
 #else
 #define ASSERT_INVARIANT()
