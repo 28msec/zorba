@@ -800,22 +800,22 @@ public:
   getLevel() const;
 
   bool
-  isAttribute() const;
+  isAttributeRef() const;
 
   bool
-  isComment() const;
+  isCommentRef() const;
 
   bool
-  isDocument() const;
+  isDocumentRef() const;
 
   bool
-  isElement() const;
+  isElementRef() const;
 
   bool
-  isProcessingInstruction() const;
+  isProcessingInstructionRef() const;
 
   bool
-  isText() const;
+  isTextRef() const;
 
   bool
   isSibling(const store::Item_t&) const;
