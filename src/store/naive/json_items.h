@@ -17,7 +17,7 @@
 #ifndef ZORBA_STORE_JSON_ITEMS_H
 #define ZORBA_STORE_JSON_ITEMS_H
 
-#include <set>
+#include <map>
 #include <vector>
 
 #include <zorba/config.h>
@@ -168,7 +168,14 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  ZSTRING_HASH_MAP(csize, Keys);
+  class ConstCharComparator {
+  public:
+    bool operator()(const char* a, const char* b) const
+    {
+      return strcmp(a, b) < 0;
+    }
+  };
+  typedef std::map<const char*, csize, ConstCharComparator> Keys;
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
@@ -201,7 +208,6 @@ protected:
 public:
   SimpleJSONObject()
     :
-    theKeys(64, false),
     theCollection(NULL),
     theRoot(NULL)
   {
