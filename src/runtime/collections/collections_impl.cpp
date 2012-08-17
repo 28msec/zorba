@@ -402,6 +402,11 @@ bool ZorbaCollectionIterator::nextImpl(
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
     lSkip = lSkipItem->getIntegerValue(); 
+    // negative skip is not allowed
+    if (lSkip < xs_integer::zero())
+    {
+      lSkip = xs_integer::zero();
+    }
     if (!lRefPassed)
     {
       state->theIterator = collection->getIterator(lSkip);

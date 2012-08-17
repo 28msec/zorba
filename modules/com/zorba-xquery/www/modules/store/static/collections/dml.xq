@@ -904,7 +904,7 @@ cdml:collection($name as xs:QName, $skip as xs:integer) as item()*  external;
  :)
 declare function 
 cdml:collection($name as xs:QName, 
-                $start  as xs:anyURI,
+                $start as xs:anyURI,
                 $skip as xs:integer) as item()* external;
 (:~
  : The collection-name function returns the name of the collection the given

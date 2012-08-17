@@ -108,8 +108,6 @@ protected:
 
   bool getNodeReference(store::Item_t& result, const store::Item* node);
 
-  void getNodeReference(zstring& result, const store::Item* node);
-
   bool hasReference(const store::Item* node);
 
   bool assignReference(const store::Item* node, const zstring& reference);

@@ -414,8 +414,6 @@ public:
 public:
   virtual bool getNodeReference(store::Item_t& result, const store::Item* node) = 0;
 
-  virtual void getNodeReference(zstring& result, const store::Item* node) = 0;
-
   virtual bool hasReference(const store::Item* node) = 0;
 
   virtual bool getNodeByReference(store::Item_t& result, const zstring& ref) = 0;

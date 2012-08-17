@@ -53,10 +53,8 @@ public:
    *
    * It is allowed to have several concurrent iterators on the same Collection,
    * but each iterator should be used by a single thread only.
-   * The 
    *
-   * @param aSkip The number of collection items to skip. Might be negative
-   *              to navigate relative from aStart.
+   * @param aSkip The number of collection items to skip.
    * @param aStart The reference to the first node. All nodes before are skipped.
    * @return Iterator
    */

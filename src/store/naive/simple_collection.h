@@ -116,8 +116,6 @@ public:
   store::Iterator_t getIterator(const xs_integer& aSkip, 
                                 const zstring& aStart);
 
-  store::Iterator_t getIterator(const zstring& aRefBoundary);
-
   void addNode(store::Item* node, xs_integer position = xs_integer(-1));
 
   xs_integer addNodes(

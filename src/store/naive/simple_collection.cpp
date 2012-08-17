@@ -94,14 +94,9 @@ store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip,
     ERROR_PARAMS(aStart, theName->getStringValue()));
   }
 
-  xs_integer lFinalSkip = aSkip + lReferencedPosition;
-  if (lFinalSkip < xs_integer::zero())
-  {
-    lFinalSkip = xs_integer::zero();
-  }
   return new CollectionIter(
                this, 
-               lFinalSkip);
+               aSkip + lReferencedPosition);
 }
 
 
@@ -634,6 +629,7 @@ SimpleCollection::CollectionIter::CollectionIter(
   theSkip(aSkip)
 {
 }
+
 
 /*******************************************************************************
 

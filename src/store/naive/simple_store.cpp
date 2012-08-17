@@ -276,21 +276,6 @@ store::Collection_t SimpleStore::createCollection(
 ********************************************************************************/
 bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* node)
 {
-  zstring lStrResult;
-
-  getNodeReference(lStrResult, node);
-
-  return theItemFactory->createAnyURI(result, lStrResult);
-}
-
-/*******************************************************************************
- Computes the reference of the given node.
-
- @param node XDM node
- @return the identifier as a zstring
-********************************************************************************/
-void SimpleStore::getNodeReference(zstring& result, const store::Item* node)
-{
   const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
 
   if (xmlNode->haveReference())
@@ -299,15 +284,17 @@ void SimpleStore::getNodeReference(zstring& result, const store::Item* node)
 
     ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
 
-    result = (*resIt).second;
-    return;
+    zstring id = (*resIt).second;
+    return theItemFactory->createAnyURI(result, id);
   }
 
   uuid_t uuid;
   uuid_create(&uuid);
-  result = uuidToURI(uuid);
+  zstring uuidStr = uuidToURI(uuid);
 
-  assignReference(xmlNode, result);
+  assignReference(xmlNode, uuidStr);
+
+  return theItemFactory->createAnyURI(result, uuidStr);
 }
 
 

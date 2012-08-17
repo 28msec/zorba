@@ -652,7 +652,7 @@ dml:collection($name as xs:QName, $skip as xs:integer) as item()* external;
  :)
 declare function
 dml:collection($name as xs:QName, 
-               $start  as xs:anyURI,
+               $start as xs:anyURI,
                $skip as xs:integer) as item()* external;
 
 
