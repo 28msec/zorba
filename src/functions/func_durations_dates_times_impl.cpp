@@ -499,7 +499,7 @@ public:
 
 
 /*
- * XQuery1.1 formatting functions
+ * XQuery 3.0 formatting functions
  *------------------------------------------------*/
 
 class fn_format_datetime_4 : public function

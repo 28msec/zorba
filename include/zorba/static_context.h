@@ -697,7 +697,8 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * registered, the built-in ones are used. 
    *
    * The default EntityKind for resources fetched by this function
-   * is "SOME_CONTENT".
+   * is "SOME_CONTENT". The default encoding that is used to read the
+   * resource is "UTF-8".
    *
    * @param aURI the name of the resource to fetch
    *
@@ -712,6 +713,63 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * in this static context. If no such mappers or resolvers have been
    * registered, the built-in ones are used. 
    *
+   * The default encoding that is used to read the * resource is "UTF-8".
+   *
+   * @param aURI the name of the resource to fetch
+   *
+   * @param aEntityKind the kind of the entity to fetch (i.e.
+   *   SOME_CONTENT, SCHEMA, MODULE, THESAURUS, or STOP_WORDS)
+   *
+   * @return the fetched resource
+   */
+
+  virtual Item
+  fetch(const String& aURI, const String& aEntityKind) const = 0;
+
+  /** \brief Fetches an resource refered to by the given URI.
+   *
+   * Resolution is done using the URI mappers and resolvers registered
+   * in this static context. If no such mappers or resolvers have been
+   * registered, the built-in ones are used. 
+   *
+   * @param aURI the name of the resource to fetch
+   * @param aEncoding the encoding to use when reading the resource.
+   *
+   * @param aEntityKind the kind of the entity to fetch (i.e.
+   *   SOME_CONTENT, SCHEMA, MODULE, THESAURUS, or STOP_WORDS)
+   *
+   * @return the fetched resource
+   */
+  virtual Item
+  fetch(
+      const String& aURI,
+      const String& aEntityKind,
+      const String& aEncoding) const = 0;
+
+  /** \brief Fetches an resource refered to by the given URI
+   *   and returns it as a base64binary.
+   *
+   * Resolution is done using the URI mappers and resolvers registered
+   * in this static context. If no such mappers or resolvers have been
+   * registered, the built-in ones are used. 
+   *
+   * The default EntityKind for resources fetched by this function
+   * is "SOME_CONTENT".
+   *
+   * @param aURI the name of the resource to fetch
+   *
+   * @return the fetched resource
+   */
+  virtual Item
+  fetchBinary(const String& aURI) const = 0;
+
+  /** \brief Fetches an resource refered to by the given URI
+   *   and returns it as a base64binary.
+   *
+   * Resolution is done using the URI mappers and resolvers registered
+   * in this static context. If no such mappers or resolvers have been
+   * registered, the built-in ones are used. 
+   *
    * @param aURI the name of the resource to fetch
    *
    * @param aEntityKind the kind of the entity to fetch (i.e.
@@ -720,7 +778,14 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @return the fetched resource
    */
   virtual Item
-  fetch(const String& aURI, const String& aEntityKind) const = 0;
+  fetchBinary(const String& aURI, const String& aEntityKind) const = 0;
+
+  /** \brief Clears the base URI and sets it to undefined state.
+   *         (see http://www.w3.org/TR/xquery/#static_context)
+   */
+  virtual void
+  clearBaseURI() = 0;
+
 };
 
 } /* namespace zorba */

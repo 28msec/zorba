@@ -24,10 +24,13 @@
 #include "zorbatypes/duration.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+#include <store/api/store.h>
+#include "store/api/copymode.h"
 #include "api/unmarshaller.h"
 #include "types/casting.h"
 
 #include "store/api/item.h"
+#include <runtime/util/item_iterator.h>
 
 
 namespace zorba {
@@ -358,6 +361,20 @@ Item ItemFactoryImpl::createDateTime(short aYear, short aMonth, short aDay,
   store::Item_t lItem;
   theItemFactory->createDateTime(lItem, aYear, aMonth, aDay,
                                  aHour, aMinute, aSecond, aTimezone_hours);
+
+  return &*lItem;
+}
+
+
+Item
+ItemFactoryImpl::createDateTime(
+    short aYear, short aMonth, short aDay,
+    short aHour, short aMinute, double aSecond)
+{
+  store::Item_t lItem;
+  theItemFactory->createDateTime(
+      lItem, aYear, aMonth, aDay,
+      aHour, aMinute, aSecond);
 
   return &*lItem;
 }
@@ -862,6 +879,81 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
                                  lContent);
   return &*lItem;
 }
+
+#ifdef ZORBA_WITH_JSON
+
+zorba::Item ItemFactoryImpl::createJSONNull()
+{
+  store::Item_t lItem;
+  theItemFactory->createJSONNull(lItem);
+  return &*lItem;
+}
+
+zorba::Item ItemFactoryImpl::createJSONNumber(String aString)
+{
+  store::Item_t lItem;
+  zstring &lString = Unmarshaller::getInternalString(aString);
+  theItemFactory->createJSONNumber(lItem, lString);
+  return &*lItem;
+}
+
+
+zorba::Item ItemFactoryImpl::createJSONObject(
+    std::vector<std::pair<Item, Item> >& aPairs)
+{
+  csize numPairs = aPairs.size();
+
+  // Convert vector of pairs to a vector of names and a vector of values
+  std::vector<store::Item_t> names;
+  std::vector<store::Item_t> values;
+  names.reserve(numPairs);
+  names.reserve(numPairs);
+
+  std::vector<std::pair<Item, Item> >::iterator i = aPairs.begin();
+  std::vector<std::pair<Item, Item> >::iterator end = aPairs.end();
+  for (; i != end; i++) 
+  {
+    names.push_back(Unmarshaller::getInternalItem((*i).first));
+    values.push_back(Unmarshaller::getInternalItem((*i).second));
+  }
+
+  store::Item_t lItem;
+  theItemFactory->createJSONObject(lItem, names, values);
+
+  return &*lItem;
+}
+
+
+zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
+{
+  csize numItems = aItems.size();
+
+  std::vector<store::CopyMode> copyModes(numItems);
+  for (csize i = 0; i < numItems; ++i)
+  {
+    copyModes[i].theDoCopy = false;
+  }
+
+  // Convert vector of Items to vector of store::Item_ts
+  std::vector<store::Item_t> items;
+  items.reserve(numItems);
+  std::vector<Item>::iterator ite = aItems.begin();
+  std::vector<Item>::iterator end = aItems.end();
+  for (; ite != end; ++ite) 
+  {
+    items.push_back(Unmarshaller::getInternalItem(*ite));
+  }
+
+  store::Item_t lItem;
+  theItemFactory->createJSONArray(lItem, items);
+
+  return &*lItem;
+}
+
+
+
+
+#endif /* ZORBA_WITH_JSON */
 
 
 } // namespace zorba

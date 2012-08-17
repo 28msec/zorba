@@ -113,9 +113,9 @@ PlanIter_t fn_in_scope_prefixes::codegen(
 
 void populate_context_qnames(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_resolve_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","resolve-QName"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -126,9 +126,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","QName"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -139,9 +139,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_QName_equal,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","QName-equal"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -152,9 +152,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_prefix_from_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","prefix-from-QName"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -164,9 +164,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_local_name_from_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","local-name-from-QName"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -176,9 +176,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_namespace_uri_from_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-from-QName"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -188,9 +188,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_namespace_uri_for_prefix,
         (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-for-prefix"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -201,9 +201,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_in_scope_prefixes,
         (createQName("http://www.w3.org/2005/xpath-functions","","in-scope-prefixes"), 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 

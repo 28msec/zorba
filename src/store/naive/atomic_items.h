@@ -669,22 +669,22 @@ public:
   getLevel() const;
 
   virtual bool
-  isAttribute() const;
+  isAttributeRef() const;
 
   virtual bool
-  isComment() const;
+  isCommentRef() const;
 
   virtual bool
-  isDocument() const;
+  isDocumentRef() const;
 
   virtual bool
-  isElement() const;
+  isElementRef() const;
 
   virtual bool
-  isProcessingInstruction() const;
+  isProcessingInstructionRef() const;
 
   virtual bool
-  isText() const;
+  isTextRef() const;
 
   virtual bool
   isSibling(const store::Item_t&) const;
@@ -899,7 +899,7 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
       TokenizerProvider const&,
-      Tokenizer::Numbers&,
+      Tokenizer::State&,
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -921,6 +921,8 @@ protected:
   bool theIsSeekable;
 
   StreamReleaser theStreamReleaser;
+
+  store::Item_t theStreamableDependent;
 
 public:
   bool equals(
@@ -969,15 +971,10 @@ protected:
   StreamableStringItem(
       std::istream& aStream,
       StreamReleaser streamReleaser,
-      bool seekable = false)
-    :
-    theIstream(aStream),
-    theIsMaterialized(false),
-    theIsConsumed(false),
-    theIsSeekable(seekable),
-    theStreamReleaser(streamReleaser)
-  {
-  }
+      bool seekable = false);
+
+  StreamableStringItem(
+      store::Item_t& aStreamableDependent);
 
   void materialize() const;
 };

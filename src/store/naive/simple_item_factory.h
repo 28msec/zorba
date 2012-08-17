@@ -57,6 +57,9 @@ protected:
   // returns one of them
   store::Item_t theTrueItem;
   store::Item_t theFalseItem;
+#ifdef ZORBA_WITH_JSON
+  store::Item_t theNullItem;
+#endif
 
 public:
   BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
@@ -105,6 +108,10 @@ public:
       std::istream&,
       StreamReleaser,
       bool seekable = false);
+
+  bool createSharedStreamableString(
+      store::Item_t& result,
+      store::Item_t& streamable_dependent);
 
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
 
@@ -387,6 +394,38 @@ public:
           const std::vector<store::Iterator_t>&,
           const signature&,
           const store::Iterator_t&);
+
+#ifdef ZORBA_WITH_JSON
+  bool createJSONNull(store::Item_t& result);
+
+  bool createJSONNumber(
+      store::Item_t& result,
+      store::Item_t& string);
+
+  bool createJSONNumber(
+      store::Item_t& result,
+      zstring& string);
+
+  bool createJSONArray(
+      store::Item_t& result,
+      const std::vector<store::Iterator_t>& sources,
+      const std::vector<store::CopyMode>& copyModes);
+
+  bool createJSONArray(
+      store::Item_t& result,
+      const std::vector<store::Item_t>& items);
+
+  bool createJSONObject(
+      store::Item_t& result,
+      const std::vector<store::Iterator_t>& sources,
+      const std::vector<store::CopyMode>& copyModes,
+      bool accumulate);
+
+  bool createJSONObject(
+      store::Item_t& result,
+      const std::vector<store::Item_t>& names,
+      const std::vector<store::Item_t>& values);
+#endif
 
 private:
   void splitToAtomicTextValues(

@@ -84,9 +84,9 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
   tokenizer_provider = GENV_STORE.getTokenizerProvider();
 
   while ( !ftcontains && consumeNext( doc_item, search_ctx, plan_state ) ) {
-    Tokenizer::Numbers no;
+    Tokenizer::State t_state;
     FTTokenIterator_t doc_tokens(
-      doc_item->getTokens( *tokenizer_provider, no, lang )
+      doc_item->getTokens( *tokenizer_provider, t_state, lang )
     );
     store::Item_t ignore_item;
     if ( ftignore )

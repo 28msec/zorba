@@ -28,15 +28,10 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
-
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba
 {
-
-SERIALIZABLE_CLASS_VERSIONS(fo_expr)
 
 
 void fo_expr::accept(expr_visitor& v)
@@ -130,14 +125,6 @@ fo_expr::fo_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
-}
-
-
-void fo_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theArgs;
-  ar & ((function*&)theFunction);
 }
 
 
@@ -261,8 +248,7 @@ void fo_expr::compute_scripting_kind()
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
-  if (get_func()->getKind() == 
-      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1)
+  if (get_func()->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
   {
     expr::subst_iter_t i = subst.find(this);
 

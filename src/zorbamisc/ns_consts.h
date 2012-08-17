@@ -40,6 +40,10 @@
 
 #define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
 
+#ifdef ZORBA_WITH_JSON
+#define JSONIQ_ERR_NS           "http://www.jsoniq.org/errors"
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #define ZORBA_NS                "http://www.zorba-xquery.com/"

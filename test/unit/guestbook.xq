@@ -21,10 +21,10 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations"; 
 
-declare %ann:ordered collection guestbook:entries as node()*;
+declare collection guestbook:entries as node()*;
 declare variable $guestbook:entries as xs:QName := xs:QName("guestbook:entries");
 
-declare %ann:sequential function guestbook:list() 
+declare function guestbook:list() 
 {  
   let $entries := dml:collection($guestbook:entries)
   let $num_entries := fn:count($entries)
@@ -37,15 +37,18 @@ declare %ann:sequential function guestbook:list()
       return  1
 };
 
-declare function guestbook:window() {
- let $x := 1 to 1000
- for tumbling window $w in $x
- start at $s when fn:true()
- end at $e when $e - $s eq 51
- return <window>{ $w }</window>
+
+declare function guestbook:window() 
+{
+  let $x := 1 to 1000
+  for tumbling window $w in $x
+  start at $s when fn:true()
+  end at $e when $e - $s eq 51
+  return <window>{ $w }</window>
 };
 
 
-declare %ann:sequential function guestbook:init() {
+declare %ann:sequential function guestbook:init() 
+{
   ddl:create($guestbook:entries);
 };

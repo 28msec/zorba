@@ -376,10 +376,10 @@ public:
       (*lQuery)
         << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
         << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl
-        << "declare namespace ann = 'http://www.zorba-xquery.com/annotations';" << std::endl
+        << "declare namespace an = 'http://www.zorba-xquery.com/annotations';" << std::endl
         << "declare variable $mymodule:var  := 'myvar';" << std::endl
         << "declare collection mymodule:collection;" << std::endl
-        << "declare %ann:automatic %ann:value-equality index mymodule:index" << std::endl
+        << "declare %an:automatic %an:value-equality index mymodule:index" << std::endl
         << "  on nodes dml:collection(xs:QName('mymodule:collection'))" << std::endl
         << "  by ./foo as xs:string;" << std::endl;
       return StreamResource::create(lQuery.release(), &releaseStream);
@@ -462,9 +462,10 @@ context_example_12(Zorba* aZorba)
 
     // check if the trace was successful
     std::string lTraceString = lTraceStream.str();
-    if (lTraceString.compare("foo [0]: xs:integer(1)\n"
-          "foo [1]: xs:integer(2)\n"
-          "foo [2]: xs:integer(3)\n") != 0) {
+    std::cout << lTraceString << std::endl;
+    if (lTraceString.compare("foo [1]: 1\n"
+          "foo [2]: 2\n"
+          "foo [3]: 3\n") != 0) {
       return false;
     }
     std::cout << lTraceString << std::endl;

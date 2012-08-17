@@ -88,6 +88,10 @@
       <zorba:member type="store::Item_t" name="theTagItem" defaultValue="NULL" brief=""/>
       <zorba:member type="uint32_t" name="theIndex" defaultValue="0" brief=""/>
       <zorba:member type="std::ostream*" name="theOS" defaultValue="0" brief=""/>
+      <zorba:member type="std::auto_ptr&lt;serializer&gt;"
+                    name="theSerializer"
+                    defaultValue="std::auto_ptr&lt;serializer&gt;(0)"
+                    brief=""/>
     </zorba:state>
     
   </zorba:iterator>

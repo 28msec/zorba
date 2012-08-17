@@ -14,40 +14,46 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include <zorba/config.h>
 
+//
 // This entire file should be effectively skipped when building with
 // ZORBA_NO_FULL_TEXT. We can't prevent it from being compiled, but we
 // can prevent it from having any real content.
+//
 #ifndef ZORBA_NO_FULL_TEXT
 
-# include <limits>
-# include <typeinfo>
 
-# include <zorba/diagnostic_list.h>
+#include <limits>
+#include <typeinfo>
 
-# include "api/unmarshaller.h"
-# include "context/namespace_context.h"
-# include "context/static_context.h"
-# include "diagnostics/assert.h"
-# include "diagnostics/xquery_diagnostics.h"
-# include "store/api/index.h"
-# include "store/api/item.h"
-# include "store/api/item_factory.h"
-# include "store/api/iterator.h"
-# include "store/api/store.h"
-# include "system/globalenv.h"
-# include "types/casting.h"
-# include "types/typeimpl.h"
-# include "types/typeops.h"
-# include "util/utf8_util.h"
-# include "zorbatypes/URI.h"
-# include "zorbautils/locale.h"
+#include <zorba/diagnostic_list.h>
 
-# include "ft_stop_words_set.h"
-# include "ft_token_seq_iterator.h"
-# include "ft_util.h"
-# include "thesaurus.h"
+#include "api/unmarshaller.h"
+#include "context/namespace_context.h"
+#include "context/static_context.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "store/api/index.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/iterator.h"
+#include "store/api/store.h"
+#include "system/globalenv.h"
+#include "types/casting.h"
+#include "types/typeimpl.h"
+#include "types/typeops.h"
+#include "util/stl_util.h"
+#include "util/utf8_util.h"
+#include "zorbatypes/URI.h"
+#include "zorbautils/locale.h"
+
+#include "ft_module_util.h"
+#include "ft_stop_words_set.h"
+#include "ft_token_seq_iterator.h"
+#include "ft_util.h"
+#include "thesaurus.h"
 
 #include "runtime/full_text/ft_module.h"
 
@@ -79,8 +85,151 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
   if ( iso639_1::type const lang = find_lang( lang_string.c_str() ) )
     return lang;
   throw XQUERY_EXCEPTION(
-    err::FTST0009, ERROR_PARAMS( lang_string ), ERROR_LOC( loc )
+    err::FTST0009 /* lang not supported */,
+    ERROR_PARAMS( lang_string ),
+    ERROR_LOC( loc )
   );
+}
+
+static Tokenizer::ptr get_tokenizer( iso639_1::type lang,
+                                     Tokenizer::State *t_state,
+                                     QueryLoc const &loc ) {
+  TokenizerProvider const *const provider = GENV_STORE.getTokenizerProvider();
+  ZORBA_ASSERT( provider );
+  Tokenizer::ptr tokenizer;
+  if ( !provider->getTokenizer( lang, t_state, &tokenizer ) )
+    throw XQUERY_EXCEPTION(
+      err::FTST0009 /* lang not supported */,
+      ERROR_PARAMS(
+        iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
+      ),
+      ERROR_LOC( loc )
+    );
+  return std::move( tokenizer );
+}
+
+static void make_token_element( FTToken const &token,
+                                TokenQNames const &qnames,
+                                store::Item_t &result ) {
+  zstring base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
+  store::Item_t item, attr_node, node_name, type_name;
+  store::NsBindings const ns_bindings;
+  zstring value_string;
+
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  node_name = qnames.token;
+  GENV_ITEMFACTORY->createElementNode(
+    result, nullptr, node_name, type_name, false, false,
+    ns_bindings, base_uri
+  );
+
+  if ( token.lang() ) {
+    value_string = iso639_1::string_of[ token.lang() ];
+    GENV_ITEMFACTORY->createString( item, value_string );
+    type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    node_name = qnames.lang;
+    GENV_ITEMFACTORY->createAttributeNode(
+      attr_node, result, node_name, type_name, item
+    );
+  }
+
+  ztd::to_string( token.para(), &value_string );
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  node_name = qnames.paragraph;
+  GENV_ITEMFACTORY->createAttributeNode(
+    attr_node, result, node_name, type_name, item
+  );
+
+  ztd::to_string( token.sent(), &value_string );
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  node_name = qnames.sentence;
+  GENV_ITEMFACTORY->createAttributeNode(
+    attr_node, result, node_name, type_name, item
+  );
+
+  value_string = token.value();
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  node_name = qnames.value;
+  GENV_ITEMFACTORY->createAttributeNode(
+    attr_node, result, node_name, type_name, item
+  );
+
+  if ( store::Item const *const token_item = token.item() ) {
+    if ( GENV_STORE.getNodeReference( item, token_item ) ) {
+      item->getStringValue2( value_string );
+      GENV_ITEMFACTORY->createString( item, value_string );
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      node_name = qnames.node_ref;
+      GENV_ITEMFACTORY->createAttributeNode(
+        attr_node, result, node_name, type_name, item
+      );
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
+                                              PlanState &plan_state ) const {
+  zstring base_uri;
+  store::Item_t junk, item, name;
+  store::NsBindings const ns_bindings;
+  static_context const *const sctx = getStaticContext();
+  ZORBA_ASSERT( sctx );
+  store::Item_t type_name;
+  zstring value_string;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  GENV_ITEMFACTORY->createQName(
+    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "compare-options"
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    result, nullptr, name, type_name, false, false, ns_bindings, base_uri
+  );
+
+  ft_case_mode::type case_mode;
+  ft_diacritics_mode::type diacritics_mode;
+  ft_stem_mode::type stem_mode;
+
+  if ( ftmatch_options const *const options = sctx->get_match_options() ) {
+    case_mode = options->get_case_option()->get_mode();
+    diacritics_mode = options->get_diacritics_option()->get_mode();
+    stem_mode = options->get_stem_option()->get_mode();
+  } else {
+    case_mode = ft_case_mode::DEFAULT;
+    diacritics_mode = ft_diacritics_mode::DEFAULT;
+    stem_mode = ft_stem_mode::DEFAULT;
+  }
+
+  // case="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "case" );
+  value_string = ft_case_mode::string_of[ case_mode ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  // diacritics="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "diacritics" );
+  value_string = ft_diacritics_mode::string_of[ diacritics_mode ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  // stemming="..."
+  GENV_ITEMFACTORY->createQName( name, "", "", "stemming" );
+  value_string = ft_stem_mode::string_of[ stem_mode ];
+  GENV_ITEMFACTORY->createString( item, value_string );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
+  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -133,8 +282,8 @@ bool IsStemLangSupportedIterator::nextImpl( store::Item_t &result,
       GENV_STORE.getStemmerProvider();
     is_supported = provider->getStemmer( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -151,15 +300,11 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  static_context const *const sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
   ft_stop_words_set::ptr stop_words;
   zstring word;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
-
-  lang = get_lang_from( sctx );
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
@@ -167,12 +312,16 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
     lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
   }
 
   stop_words.reset( ft_stop_words_set::get_default( lang ) );
   if ( !stop_words )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadStopWordsLang )
       ),
@@ -198,8 +347,8 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
   try {
     is_supported = ft_stop_words_set::get_default( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -233,7 +382,6 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     iso639_1::type const lang = get_lang_from( item, loc );
     static_context const *const sctx = getStaticContext();
     ZORBA_ASSERT( sctx );
-
     zstring error_msg;
     auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
       uri, internal::EntityData::THESAURUS, error_msg
@@ -251,8 +399,8 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     ZORBA_ASSERT( provider );
     is_supported = provider->getThesaurus( lang );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 /* lang not supported by Zorba */ )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -278,8 +426,8 @@ bool IsTokenizerLangSupportedIterator::nextImpl( store::Item_t &result,
     TokenizerProvider const *const p = GENV_STORE.getTokenizerProvider();
     is_supported = p && p->getTokenizer( get_lang_from( item, loc ) );
   }
-  catch ( XQueryException const &e ) {
-    if ( e.diagnostic() != err::FTST0009 )
+  catch ( ZorbaException const &e ) {
+    if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
       throw;
     is_supported = false;
   }
@@ -297,16 +445,11 @@ bool StemIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   iso639_1::type lang;
   internal::StemmerProvider const *provider;
-  static_context const *sctx;
   internal::Stemmer::ptr stemmer;
   zstring word, stem;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
-
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
 
   consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( word );
@@ -315,6 +458,10 @@ bool StemIterator::nextImpl( store::Item_t &result,
   if ( theChildren.size() > 1 ) {
     consumeNext( item, theChildren[1], plan_state );
     lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
   }
 
   provider = GENV_STORE.getStemmerProvider();
@@ -325,7 +472,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
     STACK_PUSH( true, state );
   } else {
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadStemmerLang )
       ),
@@ -356,6 +503,19 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
+# define GCC_GREATER_EQUAL_460 1
+#endif
+
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
+# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
+#endif
+
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
@@ -414,7 +574,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   ZORBA_ASSERT( provider );
   if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
-      err::FTST0009,
+      err::FTST0009 /* lang not supported */,
       ERROR_PARAMS(
         iso639_1::string_of[ lang ], ZED( FTST0009_BadThesaurusLang )
       ),
@@ -426,12 +586,11 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-  ZORBA_ASSERT( state->tresult_.get() );
-
-  while ( state->tresult_->next( &synonym ) ) {
-    GENV_ITEMFACTORY->createString( result, synonym );
-    STACK_PUSH( true, state );
-  }
+  if ( state->tresult_ )
+    while ( state->tresult_->next( &synonym ) ) {
+      GENV_ITEMFACTORY->createString( result, synonym );
+      STACK_PUSH( true, state );
+    }
 
   STACK_END( state );
 }
@@ -451,118 +610,189 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
   ZORBA_ASSERT( state->tresult_.get() );
 }
 
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+# pragma GCC diagnostic pop
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+
 ///////////////////////////////////////////////////////////////////////////////
 
-bool TokenizeIterator::nextImpl( store::Item_t &result,
-                                 PlanState &plan_state ) const {
-  store::Item_t attr_name, attr_node;
-  zstring base_uri;
+bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
+                                     PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  Tokenizer::Numbers no;
-  store::NsBindings const ns_bindings;
-  static_context const *const sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
+  Tokenizer::State t_state;
   TokenizerProvider const *tokenizer_provider;
-  store::Item_t type_name;
-  zstring value_string;
 
-  TokenizeIteratorState *state;
-  DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
-
-  lang = get_lang_from( sctx );
+  TokenizeNodeIteratorState *state;
+  DEFAULT_STACK_INIT( TokenizeNodeIteratorState, state, plan_state );
 
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
+    } {
+      static_context const *const sctx = getStaticContext();
+      ZORBA_ASSERT( sctx );
+      lang = get_lang_from( sctx );
     }
 
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
     ZORBA_ASSERT( tokenizer_provider );
     state->doc_tokens_ =
-      state->doc_item_->getTokens( *tokenizer_provider, no, lang );
+      state->doc_item_->getTokens( *tokenizer_provider, t_state, lang );
 
     while ( state->doc_tokens_->hasNext() ) {
-      FTToken const *token;
-      token = state->doc_tokens_->next();
-      ZORBA_ASSERT( token );
-
-      if ( state->token_qname_.isNull() )
-        GENV_ITEMFACTORY->createQName(
-          state->token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "",
-          "token"
-        );
-
-      base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createElementNode(
-        result, nullptr, state->token_qname_, type_name, false, false,
-        ns_bindings, base_uri
+      make_token_element(
+        *state->doc_tokens_->next(), state->token_qnames_, result
       );
-
-      if ( token->lang() ) {
-        value_string = iso639_1::string_of[ token->lang() ];
-        GENV_ITEMFACTORY->createQName( attr_name, "", "", "lang" );
-        GENV_ITEMFACTORY->createString( item, value_string );
-        type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-        GENV_ITEMFACTORY->createAttributeNode(
-          attr_node, result, attr_name, type_name, item
-        );
-      }
-
-      ztd::to_string( token->para(), &value_string );
-      GENV_ITEMFACTORY->createQName( attr_name, "", "", "paragraph" );
-      GENV_ITEMFACTORY->createString( item, value_string );
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, attr_name, type_name, item
-      );
-
-      ztd::to_string( token->sent(), &value_string );
-      GENV_ITEMFACTORY->createQName( attr_name, "", "", "sentence" );
-      GENV_ITEMFACTORY->createString( item, value_string );
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, attr_name, type_name, item
-      );
-
-      value_string = token->value();
-      GENV_ITEMFACTORY->createQName( attr_name, "", "", "value" );
-      GENV_ITEMFACTORY->createString( item, value_string );
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, attr_name, type_name, item
-      );
-
-      if ( store::Item const *const token_item = token->item() ) {
-        if ( GENV_STORE.getNodeReference( item, token_item ) ) {
-          item->getStringValue2( value_string );
-          GENV_ITEMFACTORY->createQName( attr_name, "", "", "node-ref" );
-          GENV_ITEMFACTORY->createString( item, value_string );
-          type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-          GENV_ITEMFACTORY->createAttributeNode(
-            attr_node, result, attr_name, type_name, item
-          );
-        }
-      }
-
-#ifndef ZORBA_NO_XMLSCHEMA
-      sctx->validate( result, result, StaticContextConsts::strict_validation );
-#endif /* ZORBA_NO_XMLSCHEMA */
-
       STACK_PUSH( true, state );
-    } // while
+    }
   }
 
   STACK_END( state );
 }
 
-void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
-  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>::
+void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<TokenizeNodeIterator,TokenizeNodeIteratorState>::
     resetImpl( plan_state );
-  TokenizeIteratorState *const state =
-    StateTraitsImpl<TokenizeIteratorState>::getState(
+  TokenizeNodeIteratorState *const state =
+    StateTraitsImpl<TokenizeNodeIteratorState>::getState(
+      plan_state, this->theStateOffset
+    );
+  state->doc_tokens_->reset();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
+                                      PlanState &plan_state ) const {
+  store::Item_t item;
+  iso639_1::type lang;
+  Tokenizer::State t_state;
+  Tokenizer::ptr tokenizer;
+
+  TokenizeNodesIteratorState *state;
+  DEFAULT_STACK_INIT( TokenizeNodesIteratorState, state, plan_state );
+
+  if ( theChildren.size() > 2 ) {
+    consumeNext( item, theChildren[2], plan_state );
+    lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
+  }
+
+  tokenizer = get_tokenizer( lang, &state->t_state_, loc );
+
+  // $includes
+  while ( consumeNext( item, theChildren[0], plan_state ) )
+    state->includes_.push_back( item );
+  state->includes_.push_back( store::Item_t() );  // sentinel
+
+  // $excludes
+  while ( consumeNext( item, theChildren[1], plan_state ) ) {
+    store::Item_t exc_si;
+    GENV_STORE.getStructuralInformation( exc_si, item.getp() );
+    state->excludes_.push_back( exc_si );
+  }
+
+  state->callback_.set_tokens( state->tokens_ );
+  state->langs_.push( lang );
+  state->tokenizers_.push( tokenizer.release() );
+
+  while ( true ) {
+    if ( state->tokens_.empty() ) {
+      if ( state->includes_.empty() )
+        break;
+
+      store::Item_t inc( state->includes_.front() );
+      state->includes_.pop_front();
+      if ( inc.isNull() ) {             // sentinel
+        state->langs_.pop();
+        Tokenizer::ptr deleter( ztd::pop_stack( state->tokenizers_ ) );
+        continue;
+      }
+
+      store::Item_t inc_si;
+      GENV_STORE.getStructuralInformation( inc_si, inc.getp() );
+      bool excluded = false;
+      FOR_EACH( vector<store::Item_t>, exc, state->excludes_ ) {
+        if ( inc_si->equals( *exc ) || (*exc)->isInSubtreeOf( inc_si ) ) {
+          excluded = true;
+          break;
+        }
+      }
+      if ( excluded )
+        continue;
+
+      bool add_sentinel = false;
+      switch ( inc->getNodeKind() ) {
+        case store::StoreConsts::elementNode:
+          ++state->t_state_.para;
+          if ( find_lang_attribute( *inc, &lang ) ) {
+            state->langs_.push( lang );
+            tokenizer = get_tokenizer( lang, &state->t_state_, loc );
+            state->tokenizers_.push( tokenizer.release() );
+            add_sentinel = true;
+          }
+          // no break;
+        case store::StoreConsts::documentNode: {
+          list<store::Item_t>::iterator pos = state->includes_.begin();
+          store::Iterator_t i = inc->getChildren();
+          i->open();
+          for ( store::Item_t child; i->next( child ); ) {
+            switch ( child->getNodeKind() ) {
+              case store::StoreConsts::attributeNode:
+              case store::StoreConsts::commentNode:
+              case store::StoreConsts::piNode:
+                continue;               // never include these implicitly
+              default:
+                pos = state->includes_.insert( pos, child );
+                ++pos;
+            }
+          }
+          i->close();
+          if ( add_sentinel )           // sentinel
+            state->includes_.insert( pos, store::Item_t() );
+          continue;
+        }
+
+        case store::StoreConsts::attributeNode:
+        case store::StoreConsts::commentNode:
+        case store::StoreConsts::piNode:
+          // tokenize these because they were included explicitly
+        case store::StoreConsts::textNode: {
+          zstring const s( inc->getStringValue() );
+          Item const temp( inc.getp() );
+          state->tokenizers_.top()->tokenize_string(
+            s.data(), s.size(), state->langs_.top(), false, state->callback_,
+            &temp
+          );
+          break;
+        }
+
+        default:
+          break;
+      } // switch
+      continue;
+    } // if ( state->tokens_.empty() )
+
+    make_token_element(
+      state->tokens_.front(), state->token_qnames_, result
+    );
+    state->tokens_.pop_front();
+    STACK_PUSH( true, state );
+  } // while
+
+  STACK_END( state );
+}
+
+void TokenizeNodesIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<TokenizeNodesIterator,TokenizeNodesIteratorState>::
+    resetImpl( plan_state );
+  TokenizeNodesIteratorState *const state =
+    StateTraitsImpl<TokenizeNodesIteratorState>::getState(
       plan_state, this->theStateOffset
     );
   state->doc_tokens_->reset();
@@ -575,36 +805,26 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   store::Item_t element, item, junk, name;
   zstring base_uri;
   iso639_1::type lang;
-  Tokenizer::Numbers no;
+  Tokenizer::State t_state;
   store::NsBindings const ns_bindings;
-  static_context const *sctx;
   Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
-  TokenizerProvider const *tokenizer_provider;
   zstring value_string;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
-
   if ( theChildren.size() > 0 ) {
     consumeNext( item, theChildren[0], plan_state );
     lang = get_lang_from( item, loc );
+  } else {
+    static_context const *const sctx = getStaticContext();
+    ZORBA_ASSERT( sctx );
+    lang = get_lang_from( sctx );
   }
 
-  tokenizer_provider = GENV_STORE.getTokenizerProvider();
-  ZORBA_ASSERT( tokenizer_provider );
-  if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
-    throw XQUERY_EXCEPTION(
-      err::FTST0009,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
-      )
-    );
+  tokenizer = get_tokenizer( lang, &t_state, loc );
   tokenizer->properties( &props );
 
   GENV_ITEMFACTORY->createQName(
@@ -685,10 +905,6 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
     GENV_ITEMFACTORY->createTextNode( junk, lang_element.getp(), value_string );
   }
 
-#ifndef ZORBA_NO_XMLSCHEMA
-  sctx->validate( result, result, StaticContextConsts::strict_validation );
-#endif /* ZORBA_NO_XMLSCHEMA */
-
   STACK_PUSH( true, state );
   STACK_END( state );
 }
@@ -705,9 +921,9 @@ struct TokenizeStringIteratorCallback : Tokenizer::Callback {
 void TokenizeStringIteratorCallback::
 token( char const *utf8_s, size_type utf8_len, iso639_1::type lang,
        size_type token_no, size_type sent_no, size_type para_no,
-       Item const *item ) {
+       Item const *api_item ) {
   store::Item const *const store_item =
-    item ? Unmarshaller::getInternalItem( *item ) : nullptr;
+    api_item ? Unmarshaller::getInternalItem( *api_item ) : nullptr;
 
   FTToken const token(
     utf8_s, utf8_len, token_no, sent_no, para_no, store_item, lang
@@ -719,42 +935,30 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
-  static_context const *sctx;
   zstring value_string;
 
   TokenizeStringIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeStringIteratorState, state, plan_state );
-
-  sctx = getStaticContext();
-  ZORBA_ASSERT( sctx );
-  lang = get_lang_from( sctx );
 
   if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( value_string );
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
+    } else {
+      static_context const *const sctx = getStaticContext();
+      ZORBA_ASSERT( sctx );
+      lang = get_lang_from( sctx );
     }
 
     { // local scope
-    TokenizerProvider const *const tokenizer_provider =
-      GENV_STORE.getTokenizerProvider();
-    ZORBA_ASSERT( tokenizer_provider );
-    Tokenizer::Numbers no;
-    Tokenizer::ptr tokenizer;
-    if ( !tokenizer_provider->getTokenizer( lang, &no, &tokenizer ) )
-      throw XQUERY_EXCEPTION(
-        err::FTST0009,
-        ERROR_PARAMS(
-          iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
-        )
-      );
-
+    Tokenizer::State t_state;
+    Tokenizer::ptr const tokenizer( get_tokenizer( lang, &t_state, loc ) );
     TokenizeStringIteratorCallback callback;
     tokenizer->tokenize_string(
       value_string.data(), value_string.size(), lang, false, callback
     );
-    state->string_tokens_.take( callback.tokens_ );
+    state->string_tokens_.swap( callback.tokens_ );
     } // local scope
 
     while ( state->string_tokens_.hasNext() ) {
@@ -785,5 +989,4 @@ void TokenizeStringIterator::resetImpl( PlanState &plan_state ) const {
 } // namespace zorba
 
 #endif /* ZORBA_NO_FULL_TEXT */
-
 /* vim:set et sw=2 ts=2: */

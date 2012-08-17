@@ -26,10 +26,12 @@
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/json_parser.h"
+#include "util/json_util.h"
 #include "util/mem_streambuf.h"
 #include "util/omanip.h"
 #include "util/oseparator.h"
 #include "util/stl_util.h"
+#include "util/xml_util.h"
 
 #include "jsonml_array.h"
 
@@ -39,20 +41,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void split_name( zstring const &name, zstring *prefix, zstring *local ) {
-  zstring::size_type const colon = name.find( ':' );
-  if ( colon != zstring::npos ) {
-    *prefix = name.substr( 0, colon );
-    *local = name.substr( colon + 1 );
-    if ( prefix->empty() || local->empty() )
-      throw XQUERY_EXCEPTION(
-        zerr::ZJPE0008_ILLEGAL_QNAME,
-        ERROR_PARAMS( name )
-      );
-  } else {
-    prefix->clear();
-    *local = name;
-  }
+inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
+  if ( !xml::split_name( name, prefix, local ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJPE0008_ILLEGAL_QNAME,
+      ERROR_PARAMS( name )
+    );
 }
 
 namespace expect {
@@ -94,6 +88,10 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case '{':
+        if ( state_stack.empty() )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJPE0010_JSONML_ARRAY_REQUIRES_BRACKET
+          );
         PUSH_STATE( in_object );
         expect_what = expect::attribute_name;
         break;
@@ -202,7 +200,7 @@ static ostream& serialize_attributes( ostream &o, store::Item_t const &element,
     
     o << '"' << att_name << '"'
       << if_emit( ws, ' ' ) << ':' << if_emit( ws, ' ' )
-      << '"' << att_item->getStringValue() << '"';
+      << '"' << json::serialize( att_item->getStringValue() ) << '"';
   }
   i->close();
   if ( emitted_attributes )
@@ -245,7 +243,7 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
         o << sep << serialize_element( child, sep, ws );
         break;
       case store::StoreConsts::textNode:
-        o << sep << '"' << child->getStringValue() << '"';
+        o << sep << '"' << json::serialize( child->getStringValue() ) << '"';
         break;
       default:
         break;

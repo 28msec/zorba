@@ -20,8 +20,9 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/diagnostic_handler.h>
 
-#include "api/zorbaimpl.h"
-#include "api/unmarshaller.h"
+#include <diagnostics/assert.h>
+#include <api/zorbaimpl.h>
+#include <api/unmarshaller.h>
 
 #include "serializerimpl.h"
 
@@ -88,6 +89,8 @@ SerializerImpl::getSerializationMethod() const
 {
   switch (theInternalSerializer.getSerializationMethod())
   {
+  case serializer::PARAMETER_VALUE_XML:
+    return ZORBA_SERIALIZATION_METHOD_XML;
   case serializer::PARAMETER_VALUE_HTML:
     return ZORBA_SERIALIZATION_METHOD_HTML;
   case serializer::PARAMETER_VALUE_XHTML:
@@ -96,30 +99,51 @@ SerializerImpl::getSerializationMethod() const
     return ZORBA_SERIALIZATION_METHOD_TEXT;
   case serializer::PARAMETER_VALUE_BINARY:
     return ZORBA_SERIALIZATION_METHOD_BINARY;
+#ifdef ZORBA_WITH_JSON
+  case serializer::PARAMETER_VALUE_JSON:
+    return ZORBA_SERIALIZATION_METHOD_JSON;
+  case serializer::PARAMETER_VALUE_JSONIQ:
+    return ZORBA_SERIALIZATION_METHOD_JSONIQ;
+#endif
   default:
-    return ZORBA_SERIALIZATION_METHOD_XML;
+    ZORBA_ASSERT(0);
   }
 }
 
+static void
+convertSerializationMethod(
+    serializer&            aInternalSerializer,
+    const char*            aParameter,
+    Zorba_serialization_method_t   aMethod)
+{
+  switch (aMethod)
+  {
+  case ZORBA_SERIALIZATION_METHOD_XML:
+    aInternalSerializer.setParameter(aParameter, "xml"); break;
+  case ZORBA_SERIALIZATION_METHOD_HTML:
+    aInternalSerializer.setParameter(aParameter, "html"); break;
+  case ZORBA_SERIALIZATION_METHOD_XHTML:
+    aInternalSerializer.setParameter(aParameter, "xhtml"); break;
+  case ZORBA_SERIALIZATION_METHOD_TEXT:
+    aInternalSerializer.setParameter(aParameter, "text"); break;
+  case ZORBA_SERIALIZATION_METHOD_BINARY:
+    aInternalSerializer.setParameter(aParameter, "binary"); break;
+#ifdef ZORBA_WITH_JSON
+  case ZORBA_SERIALIZATION_METHOD_JSON:
+    aInternalSerializer.setParameter(aParameter, "json"); break;
+  case ZORBA_SERIALIZATION_METHOD_JSONIQ:
+    aInternalSerializer.setParameter(aParameter, "jsoniq"); break;
+#endif
+  }
+}
 
 void
 SerializerImpl::setSerializationParameters(
   serializer&                       aInternalSerializer,
   const Zorba_SerializerOptions_t&  aSerializerOptions)
 {
-  switch (aSerializerOptions.ser_method)
-  {
-  case ZORBA_SERIALIZATION_METHOD_XML:
-    aInternalSerializer.setParameter("method", "xml"); break;
-  case ZORBA_SERIALIZATION_METHOD_HTML:
-    aInternalSerializer.setParameter("method", "html"); break;
-  case ZORBA_SERIALIZATION_METHOD_XHTML:
-    aInternalSerializer.setParameter("method", "xhtml"); break;
-  case ZORBA_SERIALIZATION_METHOD_TEXT:
-    aInternalSerializer.setParameter("method", "text"); break;
-  case ZORBA_SERIALIZATION_METHOD_BINARY:
-    aInternalSerializer.setParameter("method", "binary"); break;
-  }
+  convertSerializationMethod(aInternalSerializer, "method",
+                             aSerializerOptions.ser_method);
 
   switch (aSerializerOptions.byte_order_mark)
   {
@@ -193,6 +217,46 @@ SerializerImpl::setSerializationParameters(
 
   if (aSerializerOptions.version != "")
     aInternalSerializer.setParameter("version", aSerializerOptions.version.c_str());
+
+#ifdef ZORBA_WITH_JSON
+  switch (aSerializerOptions.jsoniq_extensions)
+  {
+    case JSONIQ_EXTENSIONS_YES:
+      aInternalSerializer.setParameter("jsoniq-extensions", "yes");
+      break;
+    case JSONIQ_EXTENSIONS_NO:
+      aInternalSerializer.setParameter("jsoniq-extensions", "no");
+      break;
+  }
+
+  switch (aSerializerOptions.jsoniq_multiple_items)
+  {
+    case JSONIQ_MULTIPLE_ITEMS_NO:
+      aInternalSerializer.setParameter("jsoniq-multiple-items", "no");
+      break;
+    case JSONIQ_MULTIPLE_ITEMS_ARRAY:
+      aInternalSerializer.setParameter("jsoniq-multiple-items", "array");
+      break;
+    case JSONIQ_MULTIPLE_ITEMS_APPENDED:
+      aInternalSerializer.setParameter("jsoniq-multiple-items", "appended");
+      break;
+  }
+
+  switch (aSerializerOptions.jsoniq_allow_mixed_xdm_jdm)
+  {
+    case JSONIQ_ALLOW_MIXED_XDM_JDM_NO:
+      aInternalSerializer.setParameter("jsoniq-allow-mixed-xdm-jdm", "no");
+      break;
+    case JSONIQ_ALLOW_MIXED_XDM_JDM_YES:
+      aInternalSerializer.setParameter("jsoniq-allow-mixed-xdm-jdm", "yes");
+      break;
+  }
+
+  convertSerializationMethod(aInternalSerializer,
+                             "jsoniq-xdm-node-output-method",
+                             aSerializerOptions.jsoniq_xdm_method);
+
+#endif /* ZORBA_WITH_JSON */
 }
 
 void

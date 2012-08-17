@@ -48,11 +48,16 @@ void XQueryStackTrace::push( Entry const &entry ) {
   trace_.push_back( entry );
 }
 
-void recordStackTrace( QueryLoc const &loc, QueryLoc const &call_loc,
-                       store::Item_t const &fn_name,
-                       XQueryStackTrace::fn_arity_type fn_arity,
-                       ZorbaException &ze ) {
-  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) ) {
+
+void recordStackTrace(
+    QueryLoc const &loc,
+    QueryLoc const &call_loc,
+    store::Item_t const &fn_name,
+    XQueryStackTrace::fn_arity_type fn_arity,
+    ZorbaException &ze ) 
+{
+  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) )
+  {
     XQueryStackTrace &trace = xe->query_trace();
 
     if ( trace.empty() && xe->has_source() ) {

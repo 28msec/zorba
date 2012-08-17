@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FetchContentIterator,
     NaryBaseIterator<FetchContentIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FetchContentIterator(
     static_context* sctx,
@@ -73,6 +69,38 @@ public:
  * 
  * Author: Matthias Brantner
  */
+class FetchContentBinaryIterator : public NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FetchContentBinaryIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FetchContentBinaryIterator,
+    NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FetchContentBinaryIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FetchContentBinaryIterator();
+
+public:
+  static void destroyStream(std::istream& aStream);
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Matthias Brantner
+ */
 class FetchContentTypeIterator : public NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>
 { 
 public:
@@ -81,11 +109,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FetchContentTypeIterator,
     NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FetchContentTypeIterator(
     static_context* sctx,

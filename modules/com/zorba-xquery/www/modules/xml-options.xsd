@@ -61,6 +61,7 @@
               </simpleType>
             </attribute>            
             <attribute name="skip-top-level-text-nodes" type="boolean" use="optional"/>
+            <attribute name="error-on-doctype" type="boolean" use="optional"/>
           </complexType>
         </element>
         <element name="substitute-entities" minOccurs="0" maxOccurs="1">
