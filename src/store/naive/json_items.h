@@ -167,7 +167,29 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  typedef std::unordered_map<const char*, csize> Keys;
+  class ConstCharStarHash
+  {
+  public:
+    typedef size_t result_type;
+    size_t operator()(const char* a) const
+    {
+      size_t hash = 0;
+      while (*a)
+      {
+          hash = hash * 101  +  *a++;
+      }
+      return hash;
+    }
+  };
+  class ConstCharStarComparator
+  {
+  public:
+    bool operator()(const char* a, const char* b) const
+    {
+      return strcmp(a, b) == 0;
+    }
+  };
+  typedef std::unordered_map<const char*, csize, ConstCharStarHash, ConstCharStarComparator> Keys;
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
