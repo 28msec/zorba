@@ -836,7 +836,7 @@ private:
 protected:
   friend class BasicItemFactory;
 
-  StructuralAnyUriItem(const zstring& value);
+  StructuralAnyUriItem(zstring& value);
 
   StructuralAnyUriItem(
       ulong collectionId,

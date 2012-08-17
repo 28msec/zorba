@@ -1107,7 +1107,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(
   theEncodedValue("")
 {}
 
-StructuralAnyUriItem::StructuralAnyUriItem(const zstring& value)
+StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 {
   if (value == "")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI,

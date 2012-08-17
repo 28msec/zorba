@@ -113,7 +113,7 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
-    const zstring& value)
+    zstring& value)
 {
   result =  new StructuralAnyUriItem(value);
   return true;
