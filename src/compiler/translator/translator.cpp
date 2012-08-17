@@ -6345,6 +6345,10 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
                                    outputCondVarExprs[i],
                                    condExpr);
     }
+    else
+    {
+      conds[i] = NULL;
+    }
   }
 
   windowClause->set_var(windowVarExpr);
