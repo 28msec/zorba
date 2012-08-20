@@ -2,6 +2,9 @@ Zorba - The XQuery Processor
 
 version 2.7
 
+New Features:
+  * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
+
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
 

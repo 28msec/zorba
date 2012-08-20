@@ -1049,20 +1049,26 @@ _tmain(int argc, _TCHAR* argv[])
   //
 #ifndef WIN32
   pthread_t* threads = new pthread_t[numThreads];
+  ThreadParams* params[numThreads];
+
   for (long i = 0; i < numThreads; i++)
   {
-    ThreadParams* params = new ThreadParams(zorba, &queries, i);
-    pthread_create(&threads[i], NULL, thread_main, (void*)params);
+    params[i] = new ThreadParams(zorba, &queries, i);
+    pthread_create(&threads[i], NULL, thread_main, (void*)params[i]);
   }
 
-  for(long i = 0; i < numThreads; i++)
+  for (long i = 0; i < numThreads; i++)
   {
     void* thread_result;
     pthread_join(threads[i], &thread_result);
   }
+
   // shutdown
   delete[] threads;
-
+  for (long i = 0; i < numThreads; i++)
+  {
+    delete params[i];
+  }
 #else  
 
   // Windows code
