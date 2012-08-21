@@ -40,7 +40,7 @@ private:
   std::vector<catch_clause*>  theCatchClauses;
   std::vector<copy_clause*>   theCopyClauses;
   MemoryManager               theMemoryMgr;
-  CompilerCB                * theCCB;
+  CompilerCB           *const theCCB;
 
 public:
   ExprManager(CompilerCB* ccb);

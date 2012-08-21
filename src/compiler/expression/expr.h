@@ -911,9 +911,9 @@ public:
   typedef std::map<int, var_expr*> var_map_t;
 
 protected:
-  nt_list_t  theNameTests;
-  var_map_t  theVarMap;
-  CompilerCB* theCCB;
+  nt_list_t         theNameTests;
+  var_map_t         theVarMap;
+  CompilerCB *const theCCB;
 
   catch_clause(CompilerCB* ccb);
 

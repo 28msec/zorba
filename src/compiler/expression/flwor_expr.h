@@ -71,7 +71,7 @@ protected:
   ClauseKind                theKind;
   flwor_expr              * theFlworExpr;
 
-  CompilerCB              * theCCB;
+  CompilerCB         *const theCCB;
 
   flwor_clause(static_context* sctx, CompilerCB* ccb,
                const QueryLoc& loc, ClauseKind kind)
@@ -361,7 +361,7 @@ protected:
   vars    theOutputVars;
   expr  * theCondExpr;
 
-  CompilerCB* theCCB;
+  CompilerCB *const theCCB;
 
   flwor_wincond(
       CompilerCB* ccb,

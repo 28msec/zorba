@@ -184,7 +184,7 @@ protected:
 
   FreeVars           theFreeVars;
 
-  CompilerCB       * theCCB;
+  CompilerCB  *const theCCB;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);

@@ -161,7 +161,7 @@ public:
   typedef std::map<csize, static_context_t> SctxMap;
 
 public:
-  ExprManager             * theEM;
+  ExprManager        *const theEM;
 
   XQueryDiagnostics       * theXQueryDiagnostics;
 

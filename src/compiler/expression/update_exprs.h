@@ -190,9 +190,9 @@ class copy_clause
   friend class ExprManager;
 
 private:
-  var_expr  * theVar;
-  expr      * theExpr;
-  CompilerCB* theCCB;
+  var_expr  *       theVar;
+  expr      *       theExpr;
+  CompilerCB *const theCCB;
 
 protected:
   copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr);
