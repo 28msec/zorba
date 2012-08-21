@@ -1420,7 +1420,7 @@ void normalize_fo(fo_expr* foExpr)
       {
         argExpr = wrap_in_atomization(argExpr);
         argExpr = wrap_in_type_promotion(argExpr,
-                                         paramType, 
+                                         paramType,
                                          PromoteIterator::FUNC_PARAM,
                                          func->getName());
       }
@@ -1988,7 +1988,7 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
     stmts.push_back(new treat_expr(theRootSctx,
                                    loc,
                                    getExpr,
-                                   varType, 
+                                   varType,
                                    TreatIterator::TYPE_MATCH));
   }
 }
@@ -3719,7 +3719,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     {
       body = wrap_in_type_match(body,
                                 returnType,
-                                loc, 
+                                loc,
                                 TreatIterator::FUNC_RETURN,
                                 udf->getName());
     }
@@ -3928,7 +3928,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
     // Make sure that there is no other prolog var with the same name in any of
     // modules translated so far.
     bind_var(ve, theModulesInfo->globalSctx.get());
-    
+
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
@@ -5686,7 +5686,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_DEBUGGER
   if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
   {
-    QueryLoc lExpandedLocation = 
+    QueryLoc lExpandedLocation =
     expandQueryLoc(v.get_var_name()->get_location(), initExpr->get_loc());
 
     wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
@@ -6173,7 +6173,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  QueryLoc lExpandedLocation = 
+  QueryLoc lExpandedLocation =
   expandQueryLoc(v.get_var_name()->get_location(), domainExpr->get_loc());
 
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
@@ -6602,7 +6602,7 @@ void* begin_visit(const GroupByClause& v)
   for (csize i = 0; i < lList->size(); ++i)
   {
     GroupSpec* spec = (*lList)[i];
-    
+
     const QName* varname = spec->get_var_name();
 
     const var_expr* ve = NULL;
@@ -6684,7 +6684,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
         if (groupSpec.get_collation_spec() != NULL &&
             prevSpec.get_collation_spec() != NULL &&
-            groupSpec.get_collation_spec()->get_uri() == 
+            groupSpec.get_collation_spec()->get_uri() ==
             prevSpec.get_collation_spec()->get_uri())
           break;
       }
@@ -6801,7 +6801,7 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
 
     if (v.get_var_type() != NULL)
       type = pop_tstack();
-    
+
     create_let_clause(loc, v.get_var_name(), domainExpr, type);
   }
 }
@@ -8277,11 +8277,14 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       // when casting to type T, where T is QName or subtype of, and the input
       // is not a const expr, then the input MUST be of type T or subtype of.
       if (isCast)
+        return new cast_expr(theRootSctx, loc, wrap_in_atomization(node), qnameType);
+        /* Old code -- to remove (NB)
         return new treat_expr(theRootSctx,
                               loc,
                               node,
                               qnameType,
                               TreatIterator::TYPE_MATCH);
+        */
       else
         return new instanceof_expr(theRootSctx, loc, node, qnameType);
     }
@@ -12991,7 +12994,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
     for (int i = 0; i < (int)lParamTypes->size(); ++i)
     {
       const SequenceType* lParamType = (*lParamTypes)[i].getp();
-      if (lParamType == 0) 
+      if (lParamType == 0)
       {
         lParamXQTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
       }
@@ -13024,7 +13027,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONObjectInsertExpr ::= 
+  JSONObjectInsertExpr ::=
   "insert" "json" "{" PairConstructor ("," PairConstructor)* "}"
 ********************************************************************************/
 void* begin_visit(const JSONObjectInsertExpr& v)
@@ -13062,11 +13065,11 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   {
     expr_t nameExpr = pop_nodestack();
     expr_t valueExpr = pop_nodestack();
-    
+
     nameExpr = wrap_in_type_promotion(nameExpr,
                                       theRTM.STRING_TYPE_ONE,
                                       PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
-                                   
+
     valueExpr = wrap_in_type_match(valueExpr,
                                    rtm.ITEM_TYPE_ONE,
                                    loc,
@@ -13078,7 +13081,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   }
 
   expr_t updExpr = new fo_expr(theRootSctx,
-                               loc, 
+                               loc,
                                GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
                                args);
 
@@ -13088,7 +13091,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONArrayInsertExpr ::= 
+  JSONArrayInsertExpr ::=
   "insert" "json" "[" ExprSingle "]" "into" ExprSingle "at" "position" ExprSingle
 ********************************************************************************/
 void* begin_visit(const JSONArrayInsertExpr& v)
@@ -13130,7 +13133,7 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   args[2] = sourceExpr;
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_INSERT_3),
                                   args);
   normalize_fo(updExpr.getp());
@@ -13168,7 +13171,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
                                   NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
                                   targetExpr,
                                   contentExpr);
@@ -13210,12 +13213,12 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   expr_t selExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
-  
+
   selExpr = wrap_in_type_promotion(selExpr,
                                    theRTM.ANY_ATOMIC_TYPE_ONE,
                                    PromoteIterator::JSONIQ_SELECTOR, // JNUP0007
                                    NULL);
-  
+
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ITEM_TYPE_ONE,
                                   loc,
@@ -13223,7 +13226,7 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
                                   NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_DELETE_2),
                                   targetExpr,
                                   selExpr);
@@ -13272,9 +13275,9 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
                                loc,
                                TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
                                NULL);
-                               
+
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_REPLACE_VALUE_3),
                                   args);
   push_nodestack(updExpr.getp());
@@ -13321,7 +13324,7 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
                                    PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_RENAME_3),
                                   args);
   push_nodestack(updExpr.getp());
