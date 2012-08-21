@@ -13045,8 +13045,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   csize numPairs = v.numPairs();
-  std::vector<expr_t> args;
-  args.reserve(1 + 2 * numPairs);
+  std::vector<expr_t> args(1 + 2 * numPairs);
 
   expr_t targetExpr = pop_nodestack();
 
@@ -13056,9 +13055,9 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                                   TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  args.push_back(targetExpr);
+  args[0] = targetExpr;
 
-  for (csize i = numPairs; i > 0; --i)
+  for (csize i = 0; i < numPairs; ++i)
   {
     expr_t nameExpr = pop_nodestack();
     expr_t valueExpr = pop_nodestack();
@@ -13073,8 +13072,8 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                                    TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
                                    NULL);
 
-    args.push_back(nameExpr);
-    args.push_back(valueExpr);
+    args[2 * (numPairs - 1 - i) + 1] = nameExpr;
+    args[2 * (numPairs - 1 - i) + 2] = valueExpr;
   }
 
   expr_t updExpr = new fo_expr(theRootSctx,
