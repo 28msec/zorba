@@ -92,7 +92,7 @@ public:
 
   const std::vector<PlanIter_t>& getVariables() const;
   
-  PlanIter_t getImplementation(std::vector<PlanIter_t>& args);
+  PlanIter_t getImplementation(std::vector<PlanIter_t>& args) const;
 
   zstring show() const;
 };

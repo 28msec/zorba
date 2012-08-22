@@ -454,7 +454,7 @@ void serializer::emitter::emit_item(store::Item* item)
   {
     throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
   }
-  else if (item->isFunction() // TODO: what about function items serialization?
+  else if (item->isFunction()) // TODO: what about function items serialization?
   {
     throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->show(), "function item node"));
   }

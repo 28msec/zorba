@@ -1422,7 +1422,7 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
-  std::vector<var_expr_t> scopedVars;
+  std::vector<VarInfo*> scopedVars;
   theSctx->getVariables(scopedVars);
 
   push_scope();
