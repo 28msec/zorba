@@ -8277,14 +8277,9 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       // when casting to type T, where T is QName or subtype of, and the input
       // is not a const expr, then the input MUST be of type T or subtype of.
       if (isCast)
+        // This was previously a treat_expr() with TYPE_MATCH. It was changed to cast_expr()
+        // in order to allow dynamically computed strings to be cast to xs:QName.
         return new cast_expr(theRootSctx, loc, wrap_in_atomization(node), qnameType);
-        /* Old code -- to remove (NB)
-        return new treat_expr(theRootSctx,
-                              loc,
-                              node,
-                              qnameType,
-                              TreatIterator::TYPE_MATCH);
-        */
       else
         return new instanceof_expr(theRootSctx, loc, node, qnameType);
     }
