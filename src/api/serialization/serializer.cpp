@@ -40,6 +40,9 @@
 #include "store/api/iterator_factory.h"
 #include "store/api/item.h"
 
+// TODO: remove?
+#include "runtime/function_item/function_item.h" 
+
 
 namespace zorba {
 
@@ -428,10 +431,14 @@ void serializer::emitter::emit_item(store::Item* item)
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  else if (item->isFunction() // TODO: what about function items serialization?
+           ||
+           item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
-    ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
+    if (item->isFunction())
+      throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->show(), "function item node"));
+    else      
+      throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
   }
   else
   {

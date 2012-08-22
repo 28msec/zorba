@@ -22,6 +22,8 @@
 
 #include "common/shared_types.h"
 
+#include "runtime/function_item/function_item.h"
+
 // TODO remove the next three includes
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
@@ -117,11 +119,14 @@ public:
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 
 {
+  friend class PrinterVisitor;
+  
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 protected:
   user_function  * theUDF;
   bool             theIsDynamic;
+  store::ItemHandle<FunctionItem> theFunctionItem;
 
 public:
   SERIALIZABLE_CLASS(UDFunctionCallIterator);
@@ -144,6 +149,8 @@ public:
   bool isUpdating() const;
 
   void setDynamic() { theIsDynamic = true; }
+  
+  void setFunctionItem(FunctionItem* fnItem) { theFunctionItem = fnItem; }
 
   bool isCached() const;
 

@@ -58,6 +58,8 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/collections/collections_impl.h"
 
+#include "functions/udf.h"
+
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
 #endif
@@ -724,7 +726,11 @@ void PrinterVisitor::beginVisitFlworLetVariable(
   ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
+#ifndef NDEBUG
+    str << varRefs[i]->getId();
+#else        
     str << varRefs[i].getp();
+#endif    
     if (i < numRefs-1)
       str << " ";
   }
@@ -1226,11 +1232,12 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a )
   {
     thePrinter.startBeginVisit("UDFunctionCallIterator", ++theId);
-    printCommons(  &a, theId );
     if (a.isCached())
     {
       thePrinter.addAttribute("cached", "true");
     }
+    thePrinter.addAttribute("function", a.theUDF->getSignature().getName()->getStringValue().str());
+    printCommons(  &a, theId );
     thePrinter.endBeginVisit( theId);
   }
 

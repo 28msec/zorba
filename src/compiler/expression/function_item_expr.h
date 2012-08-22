@@ -56,7 +56,7 @@ public:
       const std::vector<expr_t>& args);
 
 	const expr_t get_function() const { return theExpr; }
-
+	
   const std::vector<expr_t>& get_args() const { return theArgs; }
 
 	void compute_scripting_kind();
@@ -131,6 +131,8 @@ public:
   ~function_item_expr();
 
   void add_variable(expr* var);
+  
+  bool replace_variable(var_expr_t replacement);
 
   void set_function(user_function_t& udf);
 

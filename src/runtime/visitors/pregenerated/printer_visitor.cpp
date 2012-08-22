@@ -82,7 +82,11 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
     if (Properties::instance()->stableIteratorIds())
       lStream << theId;
     else
+#ifndef NDEBUG
+      lStream << aIter->getId();
+#else
       lStream << aIter;
+#endif
     thePrinter.addAttribute("id", lStream.str());
   }
 }

@@ -245,6 +245,8 @@ public:
   virtual std::ostream& put(std::ostream&) const = 0;
 
   std::string toString() const;
+  
+  std::string show() const; // to mirror the Item's class show() method
 
 public:
   // Annotation : produces-sorted-nodes

@@ -43,10 +43,14 @@ protected:
   CompilerCB                   * theCCB;
 
   static_context               * theSctx;
+  
+  std::auto_ptr<dynamic_context> theDctx;
 
   rchandle<function_item_expr>   theExpr;
 
   std::vector<PlanIter_t>        theVariableValues;
+  
+  std::vector<store::Iterator_t> theVariableWrappers; // TODO: move somewhere else? dctx maybe?
 
   SYNC_CODE(mutable RCLock       theRCLock;)
 
@@ -70,6 +74,10 @@ public:
   ~FunctionItem();
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+      
+  void setVariableWrappers(std::vector<store::Iterator_t>& wrappers);
+  
+  const std::vector<store::Iterator_t>& getVariableWrappers() const;
 
   const store::Item_t getFunctionName() const;
 
@@ -78,8 +86,8 @@ public:
   const signature& getSignature() const;
 
   const std::vector<PlanIter_t>& getVariables() const;
-
-  PlanIter_t getImplementation(std::vector<PlanIter_t>& args) const;
+  
+  PlanIter_t getImplementation(std::vector<PlanIter_t>& args);
 
   zstring show() const;
 };

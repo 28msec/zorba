@@ -381,6 +381,11 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 
     for (csize i = 0; i < numArgs; ++i)
     {
+      std::cerr << "--> argVars: " << theArgVars[i]->toString() 
+                << "    argVarsRefs: " << theArgVarsRefs[i].size();
+      for (csize j=0; j<theArgVarsRefs[i].size(); j++)
+        std::cerr << " " << theArgVarsRefs[i][j].getp();
+      std::cerr << std::endl;
       argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
     }
 

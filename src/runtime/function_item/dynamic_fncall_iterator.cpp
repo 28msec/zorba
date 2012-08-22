@@ -32,6 +32,9 @@
 
 #include "system/globalenv.h"
 
+// TODO: debugging purposes
+#include "runtime/core/var_iterators.h"
+
 
 namespace zorba 
 {
@@ -178,6 +181,14 @@ bool DynamicFnCallIterator::nextImpl(
   }
 
   fnItem = static_cast<FunctionItem*>(funcItem.getp());
+  
+  std::cerr << "--> dynamic fncall nextImpl(): " << this << " theChildren.size(): " << theChildren.size() << ", fnItem params count: " << fnItem->getArity() << std::endl;
+  
+  if (theChildren.size() - 1 != fnItem->getArity())
+  {
+    // TODO: customize error message and take into account partial application
+    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
+  }
 
   argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
 
@@ -190,6 +201,9 @@ bool DynamicFnCallIterator::nextImpl(
   for (; ite2 != end2; ++ite2, ++ite)
   {
     *ite = *ite2;
+    std::cerr << "--> dynamic fncall: argIter: " << *ite << " = " << typeid (ite->getp()).name() << std::endl;
+    if (dynamic_cast<LetVarIterator*>(ite->getp()))
+      std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite->getp())->getVarName()->getStringValue() << std::endl;
   }
 
   ite2 = fnItem->getVariables().begin();
@@ -198,7 +212,10 @@ bool DynamicFnCallIterator::nextImpl(
   for(; ite2 != end2; ++ite2, ++ite) 
   {
     *ite = *ite2;
-  }
+    std::cerr << "--> dynamic fncall: argIter: " << *ite << " = " << typeid (ite->getp()).name() << std::endl;
+    if (dynamic_cast<LetVarIterator*>(ite->getp()))
+      std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite->getp())->getVarName()->getStringValue() << std::endl;
+  }  
 
   state->thePlan = fnItem->getImplementation(argIters);
 

@@ -66,8 +66,12 @@ public:
   const store::Item_t& getValue() const { return theValue; }
 
   void accept(PlanIterVisitor& v) const;
+  
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  
+  uint32_t getStateSizeOfSubtree() const;
 };
 
 

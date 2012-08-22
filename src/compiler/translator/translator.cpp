@@ -1329,7 +1329,7 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
     // body, because optimization may remove clauses from the flwor expr
     for (ulong i = 0; i < flwor->num_clauses(); ++i)
     {
-      const flwor_clause* lClause = (*flwor)[i];
+      const flwor_clause* lClause = flwor->get_clause(i);
       const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
       ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
       var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
@@ -1352,7 +1352,8 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        body->get_scripting_detail()));
+                                        body->get_scripting_detail(),
+                                        theCCB));
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
@@ -1371,7 +1372,8 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
 }
 
 
-expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB)
+// is_function_return is to true when doing coercion to a function's return type. In this particular case 
+expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB, bool is_function_return = false)
 {
 //   std::cerr << "--> targetType: " << targetType->toString() << std::endl;
 //   std::cerr << "----------- Argument to coercion ---------------\n";
@@ -1383,21 +1385,37 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
-  // std::vector<var_expr_t> scopedVars;
-  // theSctx->getVariables(scopedVars);
-  // push_scope();
+  std::vector<var_expr_t> scopedVars;
+  theSctx->getVariables(scopedVars);
+
+  push_scope();
 
   function_item_expr* fiExpr = new function_item_expr(theRootSctx, loc);
 
   push_nodestack(fiExpr);
-
-  // std::cerr << "-------------- NodeStack top -------------------\n";
-  // std::cerr << theNodeStack.top().getp()->toString() << std::endl;
-
-  flwor_expr_t flwor = new flwor_expr(theRootSctx, loc, false);
-
-  // Handle parameters. For each parameter, a let binding is added to the flwor.
+  
+  // Arguments to the dynamic function call
   std::vector<expr_t> arguments;
+  
+  // handle the function item expression
+  flwor_expr_t fnItem_flwor = new flwor_expr(theRootSctx, loc, false);
+  let_clause_t fnItem_lc = wrap_in_letclause(theExpr);
+  var_expr_t fnItem_var = fnItem_lc->get_var();
+  fnItem_flwor->add_clause(fnItem_lc);
+  fiExpr->add_variable(fnItem_var);
+  // arguments.push_back();
+  
+  // bind the function item variable in the inner flwor
+  flwor_expr_t inner_flwor = new flwor_expr(theRootSctx, loc, false);
+  var_expr_t inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::arg_var);
+  var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::let_var);
+  let_clause_t inner_lc = wrap_in_letclause(&*inner_arg_var, inner_subst_var);
+  inner_arg_var->set_param_pos(inner_flwor->num_clauses());
+  // inner_arg_var->set_type(fn_arg_var->get_return_type());
+  inner_flwor->add_clause(inner_lc);
+  
+  
+  // Handle parameters. For each parameter, a let binding is added to the inner flwor.
   for(unsigned i = 0; i<func_type->get_number_params(); i++)
   {
     xqtref_t param_type = func_type->operator[](i);
@@ -1407,30 +1425,88 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
-    arg_var->set_param_pos(flwor->num_clauses());
+    arg_var->set_param_pos(inner_flwor->num_clauses());
     arg_var->set_type(param_type);
 
-    flwor->add_clause(lc);
-    // fiExpr->add_variable(arg_var);
-
+    inner_flwor->add_clause(lc);
+  
     arguments.push_back(new wrapper_expr(theRootSctx, loc, subst_var));
   }
+  
+  // if (!is_function_return) {
+  
+  /*
+  wrapper_expr* theWrapperExpr = dynamic_cast<wrapper_expr*>(theExpr.getp());
+  var_expr* theVarExpr = theWrapperExpr ? dynamic_cast<var_expr*>(theWrapperExpr->get_expr()) : NULL;
+  function_item_expr* theFIExpr = dynamic_cast<function_item_expr*>(theExpr.getp());
+  */
+
+  // Handle inscope variables. For each inscope var, a let binding is added to
+  // the flwor.
+  /*
+  std::vector<var_expr_t>::iterator ite = scopedVars.begin();
+  for(; ite != scopedVars.end(); ++ite)
+  {
+    var_expr* varExpr = (*ite);
+    var_expr::var_kind kind = varExpr->get_kind();
+
+    if (kind == var_expr::prolog_var || kind == var_expr::local_var)
+    {
+      continue;
+    }
+    
+    store::Item_t qname = varExpr->get_name();
+
+    var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
+    var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
+
+    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+    
+    arg_var->set_param_pos(flwor->num_clauses());
+    arg_var->set_type(varExpr->get_return_type());
+
+    // TODO: this could probably be done lazily in some cases
+    //lc->setLazyEval(true);
+    flwor->add_clause(lc);
+    
+    fiExpr->add_variable(varExpr);
+
+    // ???? What about inscope vars that are hidden by param vars ???
+    
+    if (theFIExpr != NULL)
+    {
+      theFIExpr->replace_variable(subst_var);
+    }
+    else if (theVarExpr != NULL && qname->equals(theVarExpr->get_name()))
+    {
+      theWrapperExpr->set_expr(subst_var);
+    }
+  }
+  */
+  
+  // }
 
   expr_t body = new dynamic_function_invocation_expr(
                 theRootSctx,
                 loc,
-                theExpr,
+                new wrapper_expr(theRootSctx, loc, inner_subst_var),
                 arguments);
-
-  create_inline_function(body, flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
+  
+  // TODO: remove, there will always be a clause
+  /*
+  if (inner_flwor->num_clauses() == 0)
+    inner_flwor = NULL;
+  */
+  
+  create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
 
   theExpr = pop_nodestack();
+  fnItem_flwor->set_return_expr(theExpr);
+  theExpr = fnItem_flwor;
 
-  // std::cerr << "-------------- stack top was: -------------------\n";
-  // std::cerr << theExpr->toString() << std::endl;
-
-  // pop_scope();
-
+  // pop the scope.
+  pop_scope();
+  
   return theExpr;
 }
 
@@ -3640,7 +3716,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     {
       RAISE_ERROR(err::XUST0001, loc, ERROR_PARAMS(ZED(XUST0001_UDF_2), fname));
     }
-
+    
     // sequential udfs are implicitly declared as non-deterministic (even if
     // they are actuall deterministic). We do this to avoid having to declare
     // a udf as both sequential and non-deterministic. It is OK to do this,
@@ -3648,6 +3724,15 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // of those imposed by non-deterministic.
     if (udf->isSequential())
       udf->setDeterministic(false);
+    
+    // Get the return type
+    xqtref_t returnType = udf->getSignature().returnType();
+    
+    // Wrap in coercion if the return type is a function item
+    if (returnType->type_kind() == XQType::FUNCTION_TYPE_KIND)
+    {
+      body = wrap_in_coercion(returnType, body, loc, theCCB, true);
+    }
 
     // If function has any params, they have been wraped in a flwor expr. Set the
     // return clause of the flwor to the body expr of the function, and then make
@@ -3679,8 +3764,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     // Wrap the UDF body to the type-related expr that enforce the declared
     // return type.
-    xqtref_t returnType = udf->getSignature().returnType();
-
     if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
       body = wrap_in_atomization(body);
@@ -10749,8 +10832,6 @@ void* begin_visit(const InlineFunction& v)
     fiExpr->add_variable(varExpr);
 
     // ???? What about inscope vars that are hidden by param vars ???
-
-    // TODO: local vars can be used in the body of the function
   }
 
   if (flwor->num_clauses() > 0)
@@ -10766,8 +10847,6 @@ void end_visit(const InlineFunction& v, void* aState)
 {
   TRACE_VISIT_OUT();
 
-  std::vector<var_expr_t> argVars;
-
   // Get the return tyoe
   xqtref_t returnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   if(v.getReturnType() != 0)
@@ -10782,37 +10861,6 @@ void end_visit(const InlineFunction& v, void* aState)
   // Make the body be the return expr of the flwor that binds the function params.
   flwor_expr_t flwor = pop_nodestack().cast<flwor_expr>();
 
-  if (flwor != NULL)
-  {
-    flwor->set_return_expr(body);
-
-    body = flwor;
-
-    // Parameters and inscope vars have been wrapped into a flwor expression (see
-    // begin_visit). We need to add these to the udf obj so that they will bound
-    // at runtime. We must do this here (before we optimize the inline function
-    // body, because optimization may remove clauses from the flwor expr
-    for (ulong i = 0; i < flwor->num_clauses(); ++i)
-    {
-      const flwor_clause* lClause = flwor->get_clause(i);
-      const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
-      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
-      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
-      argVars.push_back(argVar);
-    }
-  }
-
-  if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
-  {
-    RewriterContext rCtx(theCCB,
-                         body,
-                         NULL,
-                         "Inline function",
-                         (theSctx->ordering_mode() == StaticContextConsts::ordered));
-    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-    body = rCtx.getRoot();
-  }
-
   // Translate the type declarations for the function params
   std::vector<xqtref_t> paramTypes;
   rchandle<ParamList> params = v.getParamList();
@@ -10823,7 +10871,7 @@ void end_visit(const InlineFunction& v, void* aState)
     {
       const Param* param = lIt->getp();
       const SequenceType* paramType = param->get_typedecl().getp();
-      if(paramType == NULL)
+      if (paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
       }
@@ -10834,25 +10882,8 @@ void end_visit(const InlineFunction& v, void* aState)
       }
     }
   }
-
-  // create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB);
-// =======
-  // Create the udf obj.
-  user_function_t udf(new user_function(loc,
-                                        signature(0, paramTypes, returnType),
-                                        body.getp(),
-                                        body->get_scripting_detail(),
-                                        theCCB));
-  udf->setArgVars(argVars);
-  udf->setOptimized(true);
-
-  // Get the function_item_expr and set its function to the udf created above.
-  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
-                               theNodeStack.top().getp());
-  assert(fiExpr != NULL);
-
-  fiExpr->set_function(udf);
-// >>>>>>> MERGE-SOURCE
+  
+  create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB);
 
   // pop the scope.
   pop_scope();

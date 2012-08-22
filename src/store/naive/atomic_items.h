@@ -478,6 +478,13 @@ protected:
 
     assert(isNormalized());
     assert(isValid());
+    
+#ifndef NDEBUG
+    debug_holder = theLocal.c_str();
+    if (!thePrefix.empty())
+      debug_holder = thePrefix + ":" + debug_holder;
+    debug_str_ = debug_holder.c_str();
+#endif        
   }
   
   void initializeAsUnnormalizedQName(
@@ -494,6 +501,13 @@ protected:
 
     assert(!isNormalized());
     assert(isValid());
+    
+#ifndef NDEBUG
+    debug_holder = theLocal.c_str();
+    if (!thePrefix.empty())
+      debug_holder = thePrefix + ":" + debug_holder;
+    debug_str_ = debug_holder.c_str();
+#endif
   }
 
   void initializeAsQNameNotInPool(

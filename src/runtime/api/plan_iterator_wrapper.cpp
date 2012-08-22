@@ -30,6 +30,8 @@ PlanIteratorWrapper::PlanIteratorWrapper(const PlanIterator* iter, PlanState& st
   theIterator(iter),
   theStateBlock(&state)
 {
+  std::cerr << "--> PlanIteratorWrapper() " << this << " for iter: " << iter << " = " << typeid (*iter).name()
+      << " state: " << (void*)&state << " theBlock: " << (void*)state.theBlock << std::endl;
 }
 
 

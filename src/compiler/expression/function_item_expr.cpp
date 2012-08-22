@@ -17,6 +17,8 @@
 
 #include "compiler/expression/function_item_expr.h"
 
+#include "compiler/expression/var_expr.h"
+
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
@@ -151,6 +153,21 @@ void function_item_expr::add_variable(expr* var)
   theScopedVariables.push_back(var);
 }
 
+bool function_item_expr::replace_variable(var_expr_t replacement)
+{
+  bool res = false;
+  
+  for (csize i = 0; i<theScopedVariables.size(); i++)
+  {
+    var_expr* scopedVar = dynamic_cast<var_expr*>(theScopedVariables[i].getp());
+    if (scopedVar != NULL && replacement->get_name()->equals(scopedVar->get_name()))
+    {
+      theScopedVariables[i] = replacement;
+      res = true;
+    }
+  }
+  return res;
+}
 
 const std::vector<expr_t>& function_item_expr::get_vars() const
 {

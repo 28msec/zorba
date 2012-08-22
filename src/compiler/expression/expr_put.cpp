@@ -249,7 +249,7 @@ ostream& let_clause::put(ostream& os) const
 
   os << expr_addr(theVarExpr.getp());
 
-  os << endl << indent << " [\n" << inc_indent;
+  os << endl << indent << "[\n" << inc_indent;
 
   theDomainExpr->put(os);
 #endif
@@ -555,6 +555,13 @@ std::ostream& function_item_expr::put(std::ostream& os) const
     os << " inline udf (" << theFunction.getp() << ") [\n";
     if (theFunction.getp() != NULL)
         reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
+    
+    // TODO: remove
+    os << indent << "scoped vars: \n" << inc_indent;
+    for (ulong i = 0; i < theScopedVariables.size(); ++i)
+      theScopedVariables[i]->put(os);
+    os << dec_indent;
+    
     END_PUT();
   }
 }

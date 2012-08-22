@@ -52,6 +52,7 @@
 #include "store/api/store.h"
 #include "store/api/iterator_factory.h"
 #include "store/api/temp_seq.h"
+#include "store/api/item_factory.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -137,6 +138,10 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
                                thePlanStateSize,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
+  
+  std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
+      << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan.getp() 
+      << " " << typeid (thePlan.getp()).name() << std::endl;
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -314,7 +319,16 @@ void UDFunctionCallIterator::insertCacheEntry(
 void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UDFunctionCallIteratorState* state;
-
+  
+  /*
+  UDFunctionCallIteratorState* oldState = StateTraitsImpl<UDFunctionCallIteratorState>::
+      getState(planState, theStateOffset);
+  
+  std::cerr << "--> UDFunctionCallIterator::openImpl() oldState: " << oldState << std::endl;
+  if (oldState->thePlanState != NULL)
+    std::cerr << "    theBlock: " << (void*)oldState->thePlanState->theBlock << std::endl;
+  */
+    
   if (!theIsDynamic)
   {
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
@@ -359,14 +373,26 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
   std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
+  std::vector<store::Iterator_t> fnItemWrappers;
+  std::vector<PlanIter_t> fnItemVariables;
+  if (theIsDynamic)
+  {
+    fnItemWrappers = theFunctionItem->getVariableWrappers();
+    fnItemVariables = theFunctionItem->getVariables();
+  }
 
-  for (; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte)
+  for (csize i=0; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte, ++i)
   {
     const ArgVarRefs& argVarRefs = (*argsRefsIte);
 
     if (!argVarRefs.empty())
     {
-      (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
+      for (csize i=0; i<fnItemVariables.size(); i++)
+        if ((*argsIte) == fnItemVariables[i].getp())
+          (*argWrapsIte) = fnItemWrappers[i];
+          
+      if ((*argWrapsIte) == NULL)
+        (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
 
       // Cannot do the arg bind here because the state->thePlan has not been
       // opened yet, and as a result, state->thePlanState has not been
@@ -511,9 +537,15 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   }
   catch (ZorbaException& err)
   {
+    store::Item_t inlineUdfName;
+    if (theUDF->getName() == NULL)
+    {
+      GENV_ITEMFACTORY->createQName(inlineUdfName, "", "", "inline function");
+    }
+    
     recordStackTrace(theUDF->getLoc(),
                      loc,
-                     theUDF->getName(),
+                     theUDF->getName() ? theUDF->getName() : inlineUdfName.getp(),
                      (unsigned int)theUDF->getArgVars().size(),
                      err);
     throw;

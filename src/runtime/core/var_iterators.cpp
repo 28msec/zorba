@@ -666,6 +666,7 @@ NOARY_ACCEPT(ForVarIterator);
 
 LetVarState::LetVarState()
 {
+  std::cerr << "--> created LetVarState: " << this << std::endl;
 }
 
 
@@ -679,6 +680,8 @@ LetVarState::~LetVarState()
 void LetVarState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+  
+  std::cerr << "--> LetVarState::reset() " << this << " theSourceIter: " << theSourceIter.getp() << " theTempSeqIter: " << theTempSeqIter.getp() << std::endl;
 
   if (theSourceIter != NULL)
     theSourceIter->reset();
@@ -701,6 +704,7 @@ LetVarIterator::LetVarIterator(
   theTargetPos(0),
   theInfLen(false)
 {
+  std::cerr << "--> created LetVarIterator: " << this << " name: " << theVarName->show() << " theStateOffset: " << theStateOffset << std::endl;
 }
 
 
@@ -766,6 +770,10 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
   state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
 
   state->theSourceIter = it;
+  
+  std::cerr << "--> LetVarIterator::bind() " << this << " name: " << theVarName->show() << " theSourceIter: " << it.getp()
+      << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
+      << std::endl;
 }
 
 
@@ -779,7 +787,9 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
 
   state->theTempSeq = value;
 
-  std::cerr << "--> LetVarIterator::bind() " << this << " name: " << theVarName->show() << " tempSequence: " << value->show() << std::endl;
+  std::cerr << "--> LetVarIterator::bind() " << this << " name: " << theVarName->show() << " tempSequence: " << value->show() 
+      << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
+      << std::endl;
 
   if (theTargetPosIter == NULL)
   {
@@ -791,6 +801,9 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
     {
       if (state->theTempSeqIter == NULL)
         state->theTempSeqIter = GENV_STORE.getIteratorFactory()->createTempSeqIterator();
+      
+      std::cerr << "    state->theTempSeqIter: " << state->theTempSeqIter.getp() /* << ", " 
+                << *state->theTempSeqIter */ << std::endl;
 
       state->theTempSeqIter->init(value);
       state->theTempSeqIter->open();
@@ -838,6 +851,7 @@ void LetVarIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
 {
+  std::cerr << "--> LetVarIterator::openImpl " << this << " name: " << theVarName->show() << ", creating state" << std::endl;
   NoaryBaseIterator<LetVarIterator, LetVarState>::openImpl(planState, offset);
 
   if (theTargetPosIter != NULL)

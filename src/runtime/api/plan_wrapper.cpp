@@ -56,12 +56,16 @@ PlanWrapper::PlanWrapper(
   }
 
   uint32_t lStateSize = theIterator->getStateSizeOfSubtree();
-
+  
   thePlanState = new PlanState(aDynamicContext,
                                aDynamicContext,
                                lStateSize,
                                aStackDepth,
                                Properties::instance()->maxUdfCallDepth());
+  
+  std::cerr << "--> PlanWrapper(): theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
+      << " for new PlanState: " << thePlanState << " for PlanIterator: " << theIterator 
+      << " = " << typeid (*theIterator).name() << std::endl;
 
   // set the compiler cb in the state
   thePlanState->theCompilerCB = aCompilerCB;

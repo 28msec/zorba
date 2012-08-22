@@ -731,7 +731,7 @@ void general_var_codegen(const var_expr& var)
 
   bool isForVar = false;
   
-  std::cerr << "--> general_var_codegen() on var: " << var.toString() << std::endl;
+  std::cerr << "--> general_var_codegen() on var: " << var.toString();
 
   switch (var.get_kind())
   {
@@ -3481,7 +3481,12 @@ PlanIter_t codegen(
     // dynamic_cast<function_item_expr*>(root)->
     std::cerr << "--> function_item_expr " << root->get_loc() << std::endl;
   }
-  std::cerr << "--> arg_var_map: " << arg_var_map << std::endl;
+  std::cerr << "--> arg_var_map: " << arg_var_map << " size: " << (arg_var_map==NULL?0 : arg_var_map->size()) << " iterators: ";
+  if (arg_var_map != NULL)
+    for (checked_vector<hash64map<std::vector<LetVarIter_t> *>::entry>::const_iterator it = arg_var_map->begin(); it != arg_var_map->end(); ++it)
+      for (csize i=0; i < it->val->size(); i++)
+        std::cerr << " " << it->val->operator[](i).getp();
+  std::cerr << std::endl;
   std::cerr << root->toString() << std::endl;
   std::cerr << "------------------------------------------------\n";
 

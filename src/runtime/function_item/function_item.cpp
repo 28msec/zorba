@@ -82,6 +82,16 @@ void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
   ar & theVariableValues;
 }
 
+void FunctionItem::setVariableWrappers(std::vector<store::Iterator_t>& wrappers)
+{
+  theVariableWrappers = wrappers;
+}
+
+const std::vector<store::Iterator_t>& FunctionItem::getVariableWrappers() const
+{
+  return theVariableWrappers;
+}
+
 const store::Item_t FunctionItem::getFunctionName() const 
 {
   return theExpr->get_qname();
@@ -106,7 +116,7 @@ const std::vector<PlanIter_t>& FunctionItem::getVariables() const
 }
   
  
-PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args) const
+PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args)
 { 
   PlanIter_t res = theExpr->get_function()->codegen(theCCB,
                                                     theSctx,
@@ -114,7 +124,9 @@ PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args) const
                                                     args,
                                                     *theExpr);
 
-  static_cast<UDFunctionCallIterator*>(res.getp())->setDynamic();
+  UDFunctionCallIterator* udfIter = static_cast<UDFunctionCallIterator*>(res.getp());
+  udfIter->setDynamic();
+  udfIter->setFunctionItem(this);
 
   return res;
 }

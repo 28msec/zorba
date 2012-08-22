@@ -181,16 +181,7 @@ public:
 #endif
 
 public:
-  PlanIteratorState()
-    :
-    theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
-#if ZORBA_BATCHING_TYPE == 1
-    , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
-#endif
-#ifndef NDEBUG
-    , theIsOpened(false)
-#endif
-  {}
+  PlanIteratorState();
 
   ~PlanIteratorState() {}
 
@@ -267,6 +258,11 @@ public:
   {
     stateOffset = offset;
     offset += StateTraitsImpl<T>::getStateSize();
+    /*
+    std::cerr << "--> createState() " << ((void*)(planState.theBlock + stateOffset)) 
+        << " (" << (void*)planState.theBlock << " + " << (void*)stateOffset << ")"
+        << " for " << typeid( T ).name() << std::endl; 
+    */
     new (planState.theBlock + stateOffset)T();
   }
 
@@ -306,27 +302,26 @@ protected:
 public:
   QueryLoc           loc;
   static_context   * theSctx;
+  
+  
+// Stable IDs for debugging purposes. An individual ID is assigned to each iterator 
+// and this can be used to identify it in the debug information.
+#ifndef NDEBUG  
+public:
+  int                theId;
+  int getId() const  { return theId;}
+  void setId(int id) { theId = id;}
+#endif  
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator);
 
-  PlanIterator(zorba::serialization::Archiver& ar)
-    :
-    SimpleRCObject(ar),
-    theSctx(NULL)
-  {
-  }
+  PlanIterator(zorba::serialization::Archiver& ar);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanIterator(static_context* aContext, const QueryLoc& aLoc)
-    :
-    theStateOffset(0),
-    loc(aLoc),
-    theSctx(aContext)
-  {
-  }
+  PlanIterator(static_context* aContext, const QueryLoc& aLoc);
 
   PlanIterator(const PlanIterator& it)
     :
@@ -334,6 +329,9 @@ public:
     theStateOffset(0),
     loc(it.loc),
     theSctx(it.theSctx)
+#ifndef NDEBUG
+    , theId(it.theId)
+#endif                
   {}
 
   virtual ~PlanIterator() {}
@@ -535,6 +533,7 @@ public:
 
   void open(PlanState& planState, uint32_t& offset)
   {
+    // std::cerr << "--> openImpl()    " << theId << " = " << typeid( IterType ).name() << std::endl; 
     static_cast<IterType*>(this)->openImpl(planState, offset);
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
@@ -557,6 +556,7 @@ public:
 
   void close(PlanState& planState)
   {
+    // std::cerr << "--> closeImpl()   " << this << " for " << typeid( IterType ).name() << std::endl; 
 #ifndef NDEBUG
     PlanIteratorState* lState =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);

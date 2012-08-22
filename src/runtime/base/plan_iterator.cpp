@@ -25,6 +25,14 @@
 
 namespace zorba
 {
+  
+/*******************************************************************************
+  Global iterator ID counter, used for debugging purposes. Not really thread safe.
+********************************************************************************/
+#ifndef NDEBUG    
+static int global_iterator_id_counter = 1000;  
+#endif
+
 
 /*******************************************************************************
   class PlanState
@@ -64,14 +72,54 @@ void PlanState::checkDepth(const QueryLoc& loc)
 
 PlanState::~PlanState()
 {
+  // std::cerr << "--> PlanState::~PlanState() " << this << " deleting theBlock: " << (void*)theBlock << std::endl;
   delete[] theBlock;
   theBlock = 0;
+}
+
+/*******************************************************************************
+  class PlanIteratorState
+********************************************************************************/
+
+PlanIteratorState::PlanIteratorState()
+  :
+  theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
+#if ZORBA_BATCHING_TYPE == 1
+  , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
+#endif
+#ifndef NDEBUG
+  , theIsOpened(false)
+#endif
+{
 }
 
 
 /*******************************************************************************
   class PlanIterator
 ********************************************************************************/
+PlanIterator::PlanIterator(zorba::serialization::Archiver& ar)
+    :
+    SimpleRCObject(ar),
+    theSctx(NULL)
+{
+// Used for debugging purposes
+#ifndef NDEBUG  
+  theId = global_iterator_id_counter++; 
+#endif  
+
+}
+
+PlanIterator::PlanIterator(static_context* aContext, const QueryLoc& aLoc)
+    :
+    theStateOffset(0),
+    loc(aLoc),
+    theSctx(aContext)
+{
+// Used for debugging purposes
+#ifndef NDEBUG  
+  theId = global_iterator_id_counter++; 
+#endif  
+}
 
 void PlanIterator::serialize(::zorba::serialization::Archiver &ar)
 {
@@ -102,11 +150,21 @@ bool PlanIterator::consumeNext(
 
     throw FlowCtlException(FlowCtlException::INTERRUPT);
   }
+  
+  if (planState.theCompilerCB->theConfig.print_item_flow)
+  {
+    std::cout << "next (" << iter->theId << " = " << typeid (*iter).name() << ") -> ?"  
+        << " on state: " << (void*)(planState.theBlock + iter->theStateOffset)
+        << " (" << (void*)(planState.theBlock) << " + " << (void*)iter->theStateOffset << ")"
+        << std::endl;
+  }
+  
   bool status = iter->produceNext(result, planState);
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    std::cout << "next (" << iter << " = " << typeid (*iter).name()
+    // std::cout << "next (" << iter << " = " << typeid (*iter).name()
+    std::cout << "next (" << iter->theId << " = " << typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")
