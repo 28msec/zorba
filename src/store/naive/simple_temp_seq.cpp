@@ -30,6 +30,16 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
+SimpleTempSeq::SimpleTempSeq(store::Item_t& item) 
+{
+  theItems.push_back(NULL);
+  theItems[0] = item.release();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 SimpleTempSeq::SimpleTempSeq(std::vector<store::Item_t>& items)
 {
   theItems.resize(items.size());
@@ -41,6 +51,15 @@ SimpleTempSeq::SimpleTempSeq(std::vector<store::Item_t>& items)
   {
     (*ite2) = (*ite).release();
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+SimpleTempSeq::SimpleTempSeq(const store::Iterator_t& iter)
+{
+  init(iter);
 }
 
 
@@ -108,13 +127,14 @@ void SimpleTempSeq::append(const store::Iterator_t& iter)
 ********************************************************************************/
 void SimpleTempSeq::purge()
 {
+  clear();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleTempSeq::purgeUpTo(xs_integer upTo)
+void SimpleTempSeq::purgeUpTo(xs_integer pos)
 {
 }
 
@@ -213,51 +233,46 @@ store::Iterator_t SimpleTempSeq::getIterator() const
 }
 
 
-/*******************************************************************************
-  Returns an iterator which reads just a part of the underlying TempSeq
-
-  @param startPos The first item which the iterator returns
-  @param endPos The last item which the iterator returns 
-  @return Iterator
-********************************************************************************/
-store::Iterator_t SimpleTempSeq::getIterator(
-    xs_integer startPos,
-    xs_integer endPos,
-    bool streaming) const
-{
-  return new SimpleTempSeqIter(this, startPos, endPos);
-}
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  SimpleTempSeqIter                                                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
 
 ********************************************************************************/	
-SimpleTempSeqIter::SimpleTempSeqIter(const SimpleTempSeq* aTempSeq)
+SimpleTempSeqIter::SimpleTempSeqIter(const SimpleTempSeq* tempSeq)
 	:
-  theTempSeq(const_cast<SimpleTempSeq*>(aTempSeq)),
-  theBorderType(none)
+  theTempSeq(const_cast<SimpleTempSeq*>(tempSeq))
 {
   theBegin = theTempSeq->theItems.begin();
   theEnd = theTempSeq->theItems.end();
 }
 
 
-SimpleTempSeqIter::SimpleTempSeqIter(
-    const SimpleTempSeq* seq,
-    xs_integer startPos,
-    xs_integer endPos)
+/*******************************************************************************
+
+********************************************************************************/	
+void SimpleTempSeqIter::init(const store::TempSeq_t& tempSeq)
 {
-  init(const_cast<SimpleTempSeq*>(seq), startPos, endPos);
+  theTempSeq = tempSeq;
+
+  theBegin = theTempSeq->theItems.begin();
+  theEnd = theTempSeq->theItems.end();
 }
 
 
+/*******************************************************************************
+  Return the items in the subrange [startPos, endPos]
+********************************************************************************/	
 void SimpleTempSeqIter::init(
-    const store::TempSeq_t& aTempSeq,
+    const store::TempSeq_t& tempSeq,
     xs_integer startPos,
     xs_integer endPos)
 {
-  theTempSeq = aTempSeq;
-  theBorderType = startEnd;
+  theTempSeq = tempSeq;
 
   xs_long start;
   xs_long end;
@@ -286,22 +301,18 @@ void SimpleTempSeqIter::init(
 }
 
 
-void SimpleTempSeqIter::init(const store::TempSeq_t& aTempSeq)
-{
-  theTempSeq = aTempSeq;
-  theBorderType = none;
+/*******************************************************************************
 
-  theBegin = theTempSeq->theItems.begin();
-  theEnd = theTempSeq->theItems.end();
-}
-
-
+********************************************************************************/	
 void SimpleTempSeqIter::open()
 {
   theIte = theBegin;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/	
 bool SimpleTempSeqIter::next(store::Item_t& result)
 {
   if (theIte != theEnd)
@@ -316,28 +327,22 @@ bool SimpleTempSeqIter::next(store::Item_t& result)
 }
 
 
-store::Item* SimpleTempSeqIter::next()
-{
-  if (theIte != theEnd)
-  {
-    store::Item* result = *theIte;
-    ++theIte;
-    return result;
-  }
+/*******************************************************************************
 
-  return NULL;
-}
-
-
+********************************************************************************/	
 void SimpleTempSeqIter::reset()
 {
   theIte = theBegin;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/	
 void SimpleTempSeqIter::close()
 {
 }
+
 
 } // namespace store
 } // namespace zorba

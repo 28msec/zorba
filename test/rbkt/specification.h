@@ -49,19 +49,20 @@ public:
     std::string theOptValue;
   };
 
+public:
   Specification()
-    : theInline(false),
-      theComparisonMethod("Fragment"),
-      theSerializationMethod("XML"),
-      theUseIndent(false),
-      theEnableDtd(false),
-      theEnableUriTestResolver(false)
+    :
+    theInline(false),
+    theComparisonMethod("Fragment"),
+    theEnableDtd(false),
+    theEnableUriTestResolver(false)
 #ifndef ZORBA_NO_FULL_TEXT
-      ,
-      theStopWordsMapper(zorba::EntityData::STOP_WORDS),
-      theThesaurusMapper(zorba::EntityData::THESAURUS)
+    ,
+    theStopWordsMapper(zorba::EntityData::STOP_WORDS),
+    theThesaurusMapper(zorba::EntityData::THESAURUS)
 #endif /* ZORBA_NO_FULL_TEXT */
-  {}
+  {
+  }
 
 private:
   bool                     theInline;
@@ -69,6 +70,7 @@ private:
   std::string              theVarValue;
   std::vector<Variable>    theVariables;
   std::vector<Option>      theOptions;
+  std::vector<Option>      theSerializerOptions;
   std::vector<std::string> theResultFiles;
   std::vector<std::string> theErrors;
   std::string              theDate;
@@ -76,7 +78,6 @@ private:
   std::string              theInputQueryFile;
   std::string              theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
   std::string              theDefaultCollection;
-  std::string              theSerializationMethod;//"XML" (default), "TXT"(for CSV testing)
   bool                     theUseIndent;
   bool                     theEnableDtd;
   bool                     theEnableUriTestResolver;
@@ -118,6 +119,11 @@ private:
     theOptions.push_back(opt);
   }
 
+  void addSerializerOption() {
+    Option opt = { theVarName, theVarValue };
+    theSerializerOptions.push_back(opt);
+  }
+
   void addError(iterator_t str, iterator_t end) {
     std::string s(str, end);
     theErrors.push_back(s);
@@ -133,14 +139,6 @@ private:
     theTimezone = s;
   }
 
-  void setSerializationMethod(std::string ser_method)
-  {
-    theSerializationMethod = ser_method;
-  }
-  void setUseIndent() {
-    theUseIndent = true;
-  }
-
 public:
   std::vector<Variable>::const_iterator
   variablesBegin() const { return theVariables.begin(); }
@@ -153,6 +151,12 @@ public:
 
   std::vector<Option>::const_iterator
   optionsEnd() const { return theOptions.end(); }
+
+  std::vector<Option>::const_iterator
+  serializerOptionsBegin() const { return theSerializerOptions.begin(); }
+
+  std::vector<Option>::const_iterator
+  serializerOptionsEnd() const { return theSerializerOptions.end(); }
 
   std::vector<std::string>::const_iterator
   errorsBegin() const { return theErrors.begin(); }
@@ -171,6 +175,9 @@ public:
 
   size_t
   optionsSize() const { return theOptions.size(); }
+
+  size_t
+  serializerOptionsSize() const { return theSerializerOptions.size(); }
 
   size_t
   errorsSize() const { return theErrors.size(); }
@@ -213,14 +220,6 @@ public:
 
   std::string getDefaultCollection() const {
     return theDefaultCollection;
-  }
-
-  std::string getSerializationMethod()
-  {
-    return theSerializationMethod;
-  }
-  bool getUseIndent() const {
-    return theUseIndent;
   }
 
   bool getEnableDtd() const {
@@ -295,14 +294,20 @@ public:
     str.erase(notwhite+1); 
   }
 
-bool isKeyword(std::string& str) {
-  bool c = ((str.find("Args:")!=std::string::npos) || (str.find("Options:")!=std::string::npos) || 
-            (str.find("Serialization:")!=std::string::npos) || (str.find("Result:")!=std::string::npos) || 
-            (str.find("InputQuery:")!=std::string::npos) || (str.find("Comparison:")!=std::string::npos) || 
-            (str.find("DefaultCollection:")!=std::string::npos) || (str.find("Error:")!=std::string::npos) || 
-            (str.find("Date:")!=std::string::npos) || (str.find("Timezone:")!=std::string::npos));
-  return c;
-}
+  bool isKeyword(std::string& str) 
+  {
+    bool c = ((str.find("Args:")!=std::string::npos) ||
+              (str.find("Options:")!=std::string::npos) || 
+              (str.find("Serialization:")!=std::string::npos) || 
+              (str.find("Result:")!=std::string::npos) || 
+              (str.find("InputQuery:")!=std::string::npos) || 
+              (str.find("Comparison:")!=std::string::npos) || 
+              (str.find("DefaultCollection:")!=std::string::npos) ||
+              (str.find("Error:")!=std::string::npos) || 
+              (str.find("Date:")!=std::string::npos) || 
+              (str.find("Timezone:")!=std::string::npos));
+    return c;
+  }
 
   bool parseFile(std::string str, std::string rbkt_src_dir,
     std::string rbkt_binary_dir)
@@ -411,20 +416,36 @@ bool isKeyword(std::string& str) {
         }
         else if ( *lIter == "Serialization:" )
         {
-          for(++lIter; lIter!=tokens.end(); ++lIter)
+          for(++lIter; lIter != tokens.end(); ++lIter)
           {
             trim(*lIter);
-            // Just --indent for now
-            if (*lIter == "--indent") {
-              setUseIndent();
+            std::string opt(*lIter);
+            // Have to translate "old-style" --indent and --method options, because
+            // some non-core module tests use them. Deprecated.
+            if (opt == "--indent") {
+              opt = "indent=yes";
+              // Fall through to new-style code below
             } else if(*lIter == "--method") {
-              ++lIter;
-              theSerializationMethod = *lIter;
-              if(theSerializationMethod == "TXT")
+              opt = "method=";
+              std::string lMethod = *(++lIter);
+
+              if (lMethod == "TXT") {
+                // --method TXT implies "Text" comparison and "text" serialization
                 theComparisonMethod = "Text";
-            } else {
+                opt.append("text");
+              }
+              else {
+                opt.append(lMethod);
+              }
+              // Fall through to new-style code below
+            } else if (lIter->find('=') == std::string::npos) {
               return false;
             }
+            // Now, handle the "new-style" opt=value options. Re-use existing
+            // setVarName/Value stuff.
+            setVarName(opt.begin(), opt.begin() + opt.find('='));
+            setVarValue(opt.begin() + opt.find('=') + 1, opt.end());
+            addSerializerOption();
           }
           break;
         }

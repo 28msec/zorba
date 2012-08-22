@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@
 namespace zorba {
 
 class ParseNodePrintDOTVisitor : public parsenode_visitor {
-    
+
 #define INDENT  os << std::string(theIndent, ' ')
 #define INDENT_INC  theIndent += 2
 #define INDENT_DEC  theIndent -= 2
@@ -237,6 +237,13 @@ public:
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( FTWords );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( FTWordsTimes );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( FTWordsValue );
+
+/* JSON-related */
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_ArrayConstructor );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_ObjectConstructor );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_PairConstructor );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_PairList );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSON_Test );
 
  /*..........................................
   :  end visit                              :

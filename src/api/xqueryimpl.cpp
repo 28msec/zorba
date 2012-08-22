@@ -55,7 +55,6 @@
 
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
-#include "compiler/expression/var_expr.h"
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/plan_wrapper.h"
@@ -68,7 +67,6 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -103,7 +101,7 @@ namespace zorba
   notifyAllWarnings();
 
 
-SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
+SERIALIZABLE_CLASS_VERSIONS_2(XQueryImpl::PlanProxy, TYPE_PLAN_PROXY)
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
@@ -179,7 +177,6 @@ XQueryImpl::~XQueryImpl()
   close();
 }
 
-
 /*******************************************************************************
   Always called while holding theMutex
 ********************************************************************************/
@@ -187,6 +184,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 {
   // static stuff
   ar & theFileName;
+
   if (!ar.is_serializing_out())
   {
     delete theCompilerCB;
@@ -194,13 +192,13 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
   }
   else
   {
-    //ar.compiler_cb = theCompilerCB;
-    theCompilerCB->prepare_for_serialize();
+    ar.set_ccb(theCompilerCB);
   }
 
   ar & theCompilerCB;
   ar & thePlanProxy;
   ar & theStaticContext;
+
   if (!ar.is_serializing_out())
   {
     theDynamicContextWrapper = NULL;
@@ -763,26 +761,26 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
     checkNotClosed();
     checkCompiled();
 
-    std::vector<var_expr_t> lVars;
+    std::vector<VarInfo*> vars;
 
-    CompilerCB::SctxMap::const_iterator lIte = theCompilerCB->theSctxMap.begin();
-    CompilerCB::SctxMap::const_iterator lEnd = theCompilerCB->theSctxMap.end();
+    CompilerCB::SctxMap::const_iterator ite = theCompilerCB->theSctxMap.begin();
+    CompilerCB::SctxMap::const_iterator end = theCompilerCB->theSctxMap.end();
 
-    for(; lIte != lEnd; ++lIte)
+    for(; ite != end; ++ite)
     {
-      lIte->second.getp()->getVariables(lVars, false, false, true);
+      ite->second.getp()->getVariables(vars, false, false, true);
     }
     
-    std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
-    std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
-    std::vector<store::Item_t> lExVars;
+    std::vector<VarInfo*>::const_iterator lVarIte = vars.begin();
+    std::vector<VarInfo*>::const_iterator lVarEnd = vars.end();
+    std::vector<store::Item_t> extVars;
    
     for(; lVarIte != lVarEnd; ++lVarIte)
     { 
-      lExVars.push_back((*lVarIte)->get_name());
+      extVars.push_back((*lVarIte)->getName());
     } 
 
-   Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+   Iterator_t vIter = new VectorIterator(extVars, theDiagnosticHandler);
 
     aVarsIter = vIter; 
     
@@ -802,34 +800,40 @@ bool XQueryImpl::isBoundVariable(
     checkNotClosed();
     checkCompiled();
 
-    var_expr* var = NULL;
-
     zstring& nameSpace = Unmarshaller::getInternalString(aNamespace);
     zstring& localName = Unmarshaller::getInternalString(aLocalname);
     
     store::Item_t qname;
     GENV_ITEMFACTORY->createQName(qname, nameSpace, zstring(), localName);
     
-    CompilerCB::SctxMap& lMap = theCompilerCB->theSctxMap;
-    CompilerCB::SctxMap::const_iterator lIte = lMap.begin();
-    CompilerCB::SctxMap::const_iterator lEnd = lMap.end();
+    VarInfo* var = NULL;
 
-    for (; lIte != lEnd; ++lIte)
+    CompilerCB::SctxMap& lMap = theCompilerCB->theSctxMap;
+    CompilerCB::SctxMap::const_iterator ite = lMap.begin();
+    CompilerCB::SctxMap::const_iterator end = lMap.end();
+
+    for (; ite != end; ++ite)
     {
-      var = lIte->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
+      var = ite->second->lookup_var(qname);
       
-      if(var)
+      if (var)
         break;
     }
     
-    if(var == NULL)
+    if (!var)
+    {
       throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
-      ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
+      ERROR_PARAMS(BUILD_STRING('{',
+                                qname->getNamespace(),
+                                '}',
+                                qname->getLocalName()),
+                   ZED(Variable)));
+    }
 
     if (var->hasInitializer())
       return true;
     
-    ulong varId = var->get_unique_id();
+    ulong varId = var->getId();
 
     if (theDynamicContext->is_set_variable(varId))
       return true;
@@ -919,13 +923,8 @@ bool XQueryImpl::saveExecutionPlan(
 
     if (archive_format == ZORBA_USE_XML_ARCHIVE)
     {
-      zorba::serialization::XmlArchiver xmlar(&os);
-
-      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        xmlar.set_serialize_everything();
-
-      serialize(xmlar);
-      xmlar.serialize_out();
+      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
+      ERROR_PARAMS("XML-format plan serialization", ""));
     }
     else//ZORBA_USE_BINARY_ARCHIVE
     {
@@ -988,12 +987,16 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
         throw;
       //else go try xml archive reader
     }
+
+#if 0
     is.seekg(0);
+
     zorba::serialization::XmlArchiver xmlar(&is);
     xmlar.setUserCallback(aCallback);
     serialize(xmlar);
     xmlar.finalize_input_serialization();
     return true;
+#endif
   }
   QUERY_CATCH
   return false;
@@ -1344,6 +1347,7 @@ PlanWrapper_t XQueryImpl::generateWrapper()
       theDynamicContext,
       this,
       0, // stack depth
+      theCompilerCB->theHaveTimeout,
       theCompilerCB->theTimeout);
 
   return lPlan;

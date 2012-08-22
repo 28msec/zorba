@@ -23,9 +23,7 @@
 
 namespace zorba { namespace simplestore {
 
-/**
- * 
- */
+
 typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
 
 
@@ -46,20 +44,21 @@ private:
 public:
   SimpleTempSeq() { }
 
-  SimpleTempSeq(store::Item_t& item) 
-  {
-    theItems.push_back(NULL);
-    theItems[0] = item.release();
-  }
+  SimpleTempSeq(store::Item_t& item);
 
   SimpleTempSeq(std::vector<store::Item_t>& items);
 
-  SimpleTempSeq(const store::Iterator_t& iter)
-  {
-    init(iter);
-  }
+  SimpleTempSeq(const store::Iterator_t& iter);
 
   virtual ~SimpleTempSeq();
+
+  // Store API
+
+  bool isLazy() const { return false; }
+
+  bool empty();
+  
+  xs_integer getSize() const;
 
   void init(const store::Iterator_t& iter);
 
@@ -69,20 +68,11 @@ public:
 
   void purgeUpTo(xs_integer upTo);
 
-  bool empty();
-  
-  xs_integer getSize() const;
-
   void getItem(xs_integer position, store::Item_t& res);
 
   bool containsItem(xs_integer position);
 
   store::Iterator_t getIterator() const;
-
-  store::Iterator_t getIterator(
-      xs_integer startPos,
-      xs_integer endPos,
-      bool streaming = false) const;
   
   virtual zstring show() const;
 };
@@ -94,14 +84,7 @@ public:
 class SimpleTempSeqIter : public store::TempSeqIterator
 {
  private:
-  enum BorderType
-  {
-    none,
-    startEnd
-  };
-
   SimpleTempSeq_t                      theTempSeq;
-  BorderType                           theBorderType;
 
   std::vector<store::Item*>::iterator  theIte;
   std::vector<store::Item*>::iterator  theBegin;
@@ -112,19 +95,20 @@ class SimpleTempSeqIter : public store::TempSeqIterator
 
   SimpleTempSeqIter(const SimpleTempSeq* seq);
 
-  SimpleTempSeqIter(const SimpleTempSeq* seq, xs_integer startPos, xs_integer endPos);
-
   ~SimpleTempSeqIter() {}
+
+  // Store API
 
   void init(const store::TempSeq_t& seq);
 
   void init(const store::TempSeq_t& seq, xs_integer startPos, xs_integer endPos);
 
-  store::Item* next();
-
   void open();
+
   bool next(store::Item_t& result);
+
   void reset();
+
   void close();
  };
 

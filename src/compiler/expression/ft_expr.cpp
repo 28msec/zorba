@@ -24,8 +24,6 @@ using namespace std;
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(ftcontains_expr)
-
 
 #define EV_ACCEPT( EXPR, V )                  \
     if ( !(EXPR) ) ; else (EXPR)->accept( V )
@@ -74,13 +72,6 @@ void ftcontains_expr::compute_scripting_kind() {
   // TODO: checkIsSimple for all sub-expr
 }
 
-void ftcontains_expr::serialize( serialization::Archiver &ar )
-{
-  serialize_baseclass( ar, (expr*)this );
-  ar & range_;
-  ar & ftselection_;
-  ar & ftignore_;
-}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

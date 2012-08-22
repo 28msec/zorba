@@ -118,6 +118,10 @@ namespace zorba {
                      short aTimezone_hours);
 
       virtual Item
+      createDateTime(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond);
+
+      virtual Item
       createDateTime( const String& aDateTimeValue );
 
       virtual Item
@@ -258,6 +262,21 @@ namespace zorba {
       createTextNode(
         Item   parent,
         String content);
+
+#ifdef ZORBA_WITH_JSON
+      virtual Item
+      createJSONNull();
+
+      virtual Item
+      createJSONNumber(String aString);
+
+      virtual Item
+      createJSONObject(std::vector<std::pair<Item, Item> >& aPairs);
+
+      virtual Item
+      createJSONArray(std::vector<Item>& aItems);
+
+#endif /* ZORBA_WITH_JSON */
 
     protected:
       store::ItemFactory* theItemFactory;

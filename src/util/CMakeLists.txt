@@ -14,12 +14,14 @@
 
 SET(UTIL_SRCS
   ascii_util.cpp
+  base64_util.cpp
   dynamic_bitset.cpp
   error_util.cpp
   file.cpp
   fs_util.cpp
   indent.cpp
   json_parser.cpp
+  json_util.cpp
   mem_streambuf.cpp
   regex.cpp
   string_util.cpp
@@ -50,3 +52,7 @@ ENDIF(ZORBA_NO_ICU)
 
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS win32)
+
+IF (NOT (ZORBA_HAVE_UNORDERED_MAP AND ZORBA_HAVE_UNORDERED_SET))
+  ADD_SRC_SUBFOLDER(UTIL_SRCS hash UTIL_HASH_SRCS)
+ENDIF (NOT (ZORBA_HAVE_UNORDERED_MAP AND ZORBA_HAVE_UNORDERED_SET))

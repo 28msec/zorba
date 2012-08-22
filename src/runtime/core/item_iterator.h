@@ -92,7 +92,6 @@ private:
   PlanIter_t theCondIter;
   PlanIter_t theThenIter;
   PlanIter_t theElseIter;
-  bool theIsUpdating;
   bool theIsBooleanIter;
     
 public:
@@ -118,10 +117,7 @@ public:
         PlanIter_t& aCondIter,
         PlanIter_t& aThenIter,
         PlanIter_t& aElseIter,
-        bool aIsUpdating,
         bool aIsBooleanIter = false);
-
-  virtual bool isUpdating() const { return theIsUpdating; }
 
   virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
 

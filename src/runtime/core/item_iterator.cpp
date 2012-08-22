@@ -149,14 +149,12 @@ IfThenElseIterator::IfThenElseIterator(
     PlanIter_t& aCondIter,
     PlanIter_t& aThenIter,
     PlanIter_t& aElseIter,
-    bool aIsUpdating,
     bool aIsBooleanIter)
   :
   Batcher<IfThenElseIterator>(sctx, loc),
   theCondIter(aCondIter),
   theThenIter(aThenIter),
   theElseIter(aElseIter),
-  theIsUpdating(aIsUpdating),
   theIsBooleanIter(aIsBooleanIter)
 { 
 }
@@ -168,7 +166,6 @@ void IfThenElseIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theCondIter;
   ar & theThenIter;
   ar & theElseIter;
-  ar & theIsUpdating;
   ar & theIsBooleanIter;
 }
 

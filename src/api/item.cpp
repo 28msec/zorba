@@ -37,6 +37,7 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 
+#include <zorbatypes/numconversions.h>
 
 namespace zorba {
 
@@ -182,6 +183,18 @@ Item Item::getType() const
   return Item();
 }
 
+#ifdef ZORBA_WITH_JSON
+
+bool
+Item::isJSONItem() const
+{
+  ITEM_TRY
+    return m_item->isJSONItem();
+  ITEM_CATCH
+  return false;
+}
+
+#endif /* ZORBA_WITH_JSON */
 
 Iterator_t Item::getAtomizationValue() const
 {
@@ -460,6 +473,71 @@ Item::getNodeKind() const
   return -1;
 }
 
+#ifdef ZORBA_WITH_JSON
+
+store::StoreConsts::JSONItemKind
+Item::getJSONItemKind() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getJSONItemKind();
+  ITEM_CATCH
+  return store::StoreConsts::jsonItem;
+}
+
+uint64_t
+Item::getArraySize() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return to_xs_long(m_item->getArraySize());
+  ITEM_CATCH
+  return NULL;
+}
+
+Item
+Item::getArrayValue(uint32_t aIndex) const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+    xs_integer lIndex(aIndex);
+    return &*m_item->getArrayValue(lIndex);
+  ITEM_CATCH
+  return Item();
+}
+
+Iterator_t
+Item::getObjectKeys() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return new StoreIteratorImpl(m_item->getObjectKeys(), nullptr);
+
+  ITEM_CATCH
+  return NULL;
+}
+
+Item
+Item::getObjectValue(String aName) const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+    zstring& lName = Unmarshaller::getInternalString(aName);
+    
+    store::Item_t lStringItem;
+    GENV_ITEMFACTORY->createString(lStringItem, lName);
+  
+    return m_item->getObjectValue(lStringItem).getp();
+
+  ITEM_CATCH
+  return Item();
+}
+
+#endif /* ZORBA_WITH_JSON */
+
 bool
 Item::isStreamable() const
 {
@@ -467,6 +545,17 @@ Item::isStreamable() const
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->isStreamable();
+  ITEM_CATCH
+  return false;
+}
+
+bool
+Item::isSeekable() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->isSeekable();
   ITEM_CATCH
   return false;
 }

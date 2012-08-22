@@ -59,7 +59,10 @@ public:
     PUL        = 0x41,
     FUNCTION   = 0x81,
     LIST       = 0x101,
-    ERROR_     = 0x201
+#ifdef ZORBA_WITH_JSON
+    JSONIQ     = 0x201,
+#endif
+    ERROR_     = 0x401
   };
 
 protected:
@@ -124,6 +127,14 @@ public:
   bool
   isNode() const;
 
+#ifdef ZORBA_WITH_JSON
+  /**
+   *  @return  "true" if the item is a JSON item
+   */
+  bool
+  isJSONItem() const;
+#endif
+
   /**
    *  @return  "true" if the item is an atomic value
    */
@@ -153,6 +164,25 @@ public:
    */
   bool
   isFunction() const;
+
+  /**
+   * @return a string representation of the item's kind
+   */
+  zstring printKind() const;
+
+#ifdef ZORBA_WITH_JSON
+  /**
+   *  @return  "true" if the item is a JSON object item
+   */
+  virtual bool 
+  isJSONObject() const;
+
+  /**
+   *  @return  "true" if the item is a JSON array item
+   */
+  virtual bool 
+  isJSONArray() const;
+#endif
 
   /**
    *  @return  (dynamic) XQuery type of the item
@@ -430,7 +460,8 @@ public:
 
   /**
    * Helper method for numeric atomic items
-   * @return true, if containing number is not-a-number (possible for floating-point numbers)
+   * @return true, if containing number is not-a-number (possible for
+   *         floating-point numbers)
    */
   virtual bool
   isNaN() const;
@@ -443,6 +474,43 @@ public:
   virtual bool
   isPosOrNegInf() const;
 
+  /**
+   *
+   */
+  virtual bool
+  isAttributeRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isCommentRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isDocumentRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isElementRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isProcessingInstructionRef() const;
+
+  /**
+   *
+   */
+  virtual bool
+  isTextRef() const;
+
+  
   /* -------------------  Methods for Nodes ------------------------------------- */
 
   /**
@@ -626,9 +694,8 @@ public:
    * @return         A pointer to the root node of the copied tree, or to this
    *                 node if no copy was actually done.
    */
-  virtual Item* copy(
-        Item* parent,
-        const CopyMode& copymode) const;
+  virtual Item* 
+  copy(Item* parent, const CopyMode& copymode) const;
 
   /**
    * An optimization method used to indicate to the store that the construction
@@ -731,42 +798,6 @@ public:
    *
    */
   virtual bool
-  isAttribute() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isComment() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isDocument() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isElement() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isProcessingInstruction() const;
-
-  /**
-   *
-   */
-  virtual bool
-  isText() const;
-
-  /**
-   *
-   */
-  virtual bool
   inSameTree(const store::Item_t&) const;
 
   /**
@@ -787,14 +818,58 @@ public:
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
 
-  /* -------------------- Methods for tuples --------------------- */
-#if 0
-  virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;
 
-  virtual int getTupleFieldCount() const;
+#ifdef ZORBA_WITH_JSON
+  /* -------------------- Methods for JSON items --------------------- */
 
-  virtual const TupleField& getTupleField(int index) const;
-#endif
+  /**
+   * @return the kind of the json item
+   */
+  virtual store::StoreConsts::JSONItemKind 
+  getJSONItemKind() const;
+
+  /**
+   * defined on JSONArray
+   * (jdm:size accessor on an array)
+   * @return the number of values in the array.
+   */
+  virtual xs_integer
+  getArraySize() const;
+
+  /**
+   * defined on JSONArray
+   * (jdm:value accessor on an array)
+   * @return the value of the json array at a given position
+   */
+  virtual store::Item_t
+  getArrayValue(const xs_integer& position) const;
+
+  /**
+   * defined on JSONArray
+   * (not an accessor)
+   * @return the values of a given array
+   */
+  virtual store::Iterator_t
+  getArrayValues() const;
+
+  /**
+   * defined on JSONObject
+   * (jdm:keys accessor on an object)
+   * @return the keys of an object.
+   */
+  virtual store::Iterator_t
+  getObjectKeys() const;
+
+  /**
+   * defined on JSONObject
+   * (jdm:value accessor on an object)
+   * @return the value associated with a given key
+   */
+  virtual store::Item_t
+  getObjectValue(const store::Item_t& key) const;
+
+#endif // ZORBA_WITH_JSON
+
 
   /* -------------------- Methods for ErrorItem --------------------- */
 
@@ -856,6 +931,7 @@ public:
   getTokens(TokenizerProvider const &provider, Tokenizer::State &state,
             locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+
 
 private:
   Item(const Item& other);

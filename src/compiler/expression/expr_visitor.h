@@ -69,6 +69,12 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( text_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
 
+#ifdef ZORBA_WITH_JSON
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_object_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_direct_object_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_array_expr );
+#endif
+
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( trycatch_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_item_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( dynamic_function_invocation_expr );

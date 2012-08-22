@@ -332,11 +332,14 @@ public:
 #ifndef NDEBUG
     , theId(it.theId)
 #endif                
-  {}
+  {
+  }
 
   virtual ~PlanIterator() {}
 
   void setLocation(const QueryLoc& loc_) { loc = loc_; }
+
+  const QueryLoc& getLocation() const { return loc; }
 
   uint32_t getStateOffset() const { return theStateOffset; }
 
@@ -482,7 +485,7 @@ template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(Batcher)
+  SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(Batcher)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(Batcher, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar)
   {

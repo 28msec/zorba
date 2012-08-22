@@ -429,12 +429,11 @@ CollectionImpl::getAnnotations(std::vector<Annotation_t>& aAnnotations) const
 
     store::Store* lStore = & GENV_STORE;
 
-    store::Collection_t lColl = lStore->getCollection(lQName);
+    store::Collection_t lColl = lStore->getCollection(lQName, false);
 
     if (!lColl)
-    {
       lColl = lStore->getCollection(lQName, true);
-    }
+
     // must exist because otherwise we wouldn't have an instance of this class
     ZORBA_ASSERT(lColl);
 
