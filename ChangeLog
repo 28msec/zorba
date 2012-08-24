@@ -8,6 +8,7 @@ Bug Fixes/Other Changes:
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
+  * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
 
 
 version 2.6
