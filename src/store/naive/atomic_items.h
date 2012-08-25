@@ -154,6 +154,8 @@ public:
   void appendStringValue(zstring& buf) const { theBaseItem->appendStringValue(buf); }
 
   const zstring& getString() const { return theBaseItem->getString(); }
+  
+  bool isEncoded() const { return theBaseItem->isEncoded(); }
 
   const char* getBase64BinaryValue(size_t& s) const
   {
