@@ -2998,7 +2998,29 @@ void RelativePathExpr::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
+BangExpr::BangExpr(
+  const QueryLoc& loc_,
+  rchandle<exprnode> left,
+  rchandle<exprnode> right)
+  :
+  exprnode(loc_),
+  left_expr_h(left),
+  right_expr_h(right){}
 
+
+void BangExpr::accept( parsenode_visitor &v ) const
+{
+  void* visitor_state = v.begin_visit(*this);
+
+  if (visitor_state == NULL)
+  {
+    return;
+  }
+
+  ACCEPT (left_expr_h);
+  ACCEPT (right_expr_h);
+  END_VISITOR();
+}
 /*******************************************************************************
 
 [70] StepExpr ::= AxisStep  |  FilterExpr

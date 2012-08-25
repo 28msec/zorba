@@ -1645,14 +1645,21 @@ DEFAULT_END_VISIT (ReverseAxis);
         case ParseConstants::st_slashslash:
           os << "//";
           break;
-        case ParseConstants::st_bang:
-          os << "!";
-          break;
       }
       n.get_relpath_expr()->accept(*this);
       return 0;
     }
     DEFAULT_END_VISIT (RelativePathExpr)
+
+    void* begin_visit(const BangExpr& n)
+    {
+      n.get_left_expr()->accept(*this);
+      os << "!";
+      n.get_right_expr()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT (BangExpr)
+
 
     void* begin_visit(const StringLiteral& n)
     {

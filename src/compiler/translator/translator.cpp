@@ -8788,6 +8788,22 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
   is the StepExpr.
 
 ********************************************************************************/
+void* begin_visit(const BangExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const BangExpr& v, void* /* visit_state */)
+{
+  expr_t right = pop_nodestack();
+  expr_t left  = pop_nodestack();
+  rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(left, true);
+  flworExpr->set_return_expr(right);
+  pop_scope();
+  push_nodestack(flworExpr.getp());
+}
+
 void* begin_visit(const RelativePathExpr& v)
 {
   TRACE_VISIT();

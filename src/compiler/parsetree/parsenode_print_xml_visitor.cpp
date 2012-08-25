@@ -557,6 +557,19 @@ void *begin_visit(const RelativePathExpr &n)
 
 END_TAG(RelativePathExpr)
 
+void *begin_visit(const BangExpr &n)
+{
+  INDENT;
+
+  os << "<BangExpr pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+
+  os << ">";
+
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(BangExpr)
 
 void *begin_visit(const TypeswitchExpr &n)
 {

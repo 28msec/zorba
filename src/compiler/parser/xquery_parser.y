@@ -4003,7 +4003,7 @@ RelativePathExpr :
     }
   | StepExpr BANG RelativePathExpr
     {
-      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_bang, $1, $3, false);
+      $$ = new BangExpr(LOC(@$), $1, $3);
     }
 ;
 

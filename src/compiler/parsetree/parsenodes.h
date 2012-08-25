@@ -211,6 +211,7 @@ class QVarInDecl;
 class QVarInDeclList;
 class RangeExpr;
 class RelativePathExpr;
+class BangExpr;
 class RenameExpr;
 class ReplaceExpr;
 class RevalidationDecl;
@@ -3611,6 +3612,25 @@ public:
   virtual void accept(parsenode_visitor&) const;
 };
 
+class BangExpr : public exprnode
+{
+protected:
+  rchandle<exprnode> left_expr_h;
+  rchandle<exprnode> right_expr_h;
+
+public:
+  BangExpr(
+    const QueryLoc&,
+    rchandle<exprnode>,
+    rchandle<exprnode>
+  );
+
+  rchandle<exprnode> get_left_expr() const { return left_expr_h; }
+
+  rchandle<exprnode> get_right_expr() const { return right_expr_h; }
+
+  virtual void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [93] StepExpr ::= FilterExpr | AxisStep
