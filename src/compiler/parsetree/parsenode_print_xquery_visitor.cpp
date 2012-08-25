@@ -1645,6 +1645,9 @@ DEFAULT_END_VISIT (ReverseAxis);
         case ParseConstants::st_slashslash:
           os << "//";
           break;
+        case ParseConstants::st_bang:
+          os << "!";
+          break;
       }
       n.get_relpath_expr()->accept(*this);
       return 0;

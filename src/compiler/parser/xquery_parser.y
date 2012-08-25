@@ -404,6 +404,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token SEMI                             "';'"
 %token SLASH                            "'/'"
 %token SLASH_SLASH                      "'//'"
+%token BANG                             "'!'"
 %token STAR                             "'*'"
 %token START_TAG_END                    "'</ (start tag end)'"
 %token STRIP                            "'strip'"
@@ -980,10 +981,10 @@ template<typename T> inline void release_hack( T *ref ) {
 /*_____________________________________________________________________
  *
  * resolve shift-reduce conflict for
- * [69] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+ * [69] RelativePathExpr ::= StepExpr (("/" | "//" | "!") StepExpr)*
  *_____________________________________________________________________*/
 %nonassoc STEP_REDUCE
-%left SLASH SLASH_SLASH
+%left SLASH SLASH_SLASH BANG
 
 /*_____________________________________________________________________
  *
@@ -3999,6 +4000,10 @@ RelativePathExpr :
   | StepExpr SLASH_SLASH RelativePathExpr
     {
       $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3, false);
+    }
+  | StepExpr BANG RelativePathExpr
+    {
+      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_bang, $1, $3, false);
     }
 ;
 
