@@ -8791,17 +8791,20 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
 void* begin_visit(const BangExpr& v)
 {
   TRACE_VISIT();
-  return no_state;
+  v.get_left_expr()->accept(*this); 
+  expr_t left  = pop_nodestack();
+  rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(left, true);
+  v.get_right_expr()->accept(*this); 
+  expr_t right = pop_nodestack();
+  flworExpr->set_return_expr(right);
+  pop_scope();
+  push_nodestack(flworExpr.getp());
+  return NULL;
 }
 
 void end_visit(const BangExpr& v, void* /* visit_state */)
 {
-  expr_t right = pop_nodestack();
-  expr_t left  = pop_nodestack();
-  rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(left, true);
-  flworExpr->set_return_expr(right);
-  pop_scope();
-  push_nodestack(flworExpr.getp());
+  TRACE_VISIT_OUT();
 }
 
 void* begin_visit(const RelativePathExpr& v)
