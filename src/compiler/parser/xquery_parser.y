@@ -992,7 +992,7 @@ template<typename T> inline void release_hack( T *ref ) {
  * resolve shift-reduce conflict for
  * SimpleMapExpr ::= PathExpr ("!" PathExpr)*
  *_____________________________________________________________________*/
-%nonassoc PATHEXPR_REDUCE
+%nonassoc SIMPLEMAPEXPR_REDUCE
 %left BANG
 
 /*_____________________________________________________________________
@@ -3800,12 +3800,12 @@ ValueExpr :
     ;
 
 SimpleMapExpr :
-      PathExpr %prec PATHEXPR_REDUCE
+      PathExpr %prec SIMPLEMAPEXPR_REDUCE
       {
         $$ = $1;
       }
     |
-      PathExpr BANG SimpleMapExpr
+      SimpleMapExpr BANG PathExpr
       {
         $$ = new SimpleMapExpr(LOC(@$), $1, $3);
       }
