@@ -4003,7 +4003,21 @@ RelativePathExpr :
     }
   | StepExpr BANG RelativePathExpr
     {
-      $$ = new BangExpr(LOC(@$), $1, $3);
+      RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($3);
+      AxisStep* as = dynamic_cast<AxisStep*>($1);
+      $$ = new BangExpr(
+        LOC(@$),
+        as ? new PathExpr(LOC(@$),
+                          ParseConstants::path_relative,
+                          new RelativePathExpr(
+                            LOC(@$),
+                            ParseConstants::st_slash,
+                            new ContextItemExpr( LOC(@$), true ), $1, true
+                          )
+                        )
+           : $1,
+        !rpe ? $3 : new PathExpr( LOC(@$), ParseConstants::path_relative, $3)
+      );
     }
 ;
 
