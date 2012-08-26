@@ -211,7 +211,7 @@ class QVarInDecl;
 class QVarInDeclList;
 class RangeExpr;
 class RelativePathExpr;
-class BangExpr;
+class SimpleMapExpr;
 class RenameExpr;
 class ReplaceExpr;
 class RevalidationDecl;
@@ -3612,14 +3612,14 @@ public:
   virtual void accept(parsenode_visitor&) const;
 };
 
-class BangExpr : public exprnode
+class SimpleMapExpr : public exprnode
 {
 protected:
   rchandle<exprnode> left_expr_h;
   rchandle<exprnode> right_expr_h;
 
 public:
-  BangExpr(
+  SimpleMapExpr(
     const QueryLoc&,
     rchandle<exprnode>,
     rchandle<exprnode>

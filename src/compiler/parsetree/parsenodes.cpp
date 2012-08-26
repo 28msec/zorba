@@ -2998,7 +2998,7 @@ void RelativePathExpr::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
-BangExpr::BangExpr(
+SimpleMapExpr::SimpleMapExpr(
   const QueryLoc& loc_,
   rchandle<exprnode> left,
   rchandle<exprnode> right)
@@ -3008,7 +3008,7 @@ BangExpr::BangExpr(
   right_expr_h(right){}
 
 
-void BangExpr::accept( parsenode_visitor &v ) const
+void SimpleMapExpr::accept( parsenode_visitor &v ) const
 {
   void* visitor_state = v.begin_visit(*this);
 

@@ -8788,7 +8788,7 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
   is the StepExpr.
 
 ********************************************************************************/
-void* begin_visit(const BangExpr& v)
+void* begin_visit(const SimpleMapExpr& v)
 {
   TRACE_VISIT();
   v.get_left_expr()->accept(*this); 
@@ -8802,7 +8802,7 @@ void* begin_visit(const BangExpr& v)
   return NULL;
 }
 
-void end_visit(const BangExpr& v, void* /* visit_state */)
+void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
 {
   TRACE_VISIT_OUT();
 }

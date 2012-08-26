@@ -557,11 +557,11 @@ void *begin_visit(const RelativePathExpr &n)
 
 END_TAG(RelativePathExpr)
 
-void *begin_visit(const BangExpr &n)
+void *begin_visit(const SimpleMapExpr &n)
 {
   INDENT;
 
-  os << "<BangExpr pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+  os << "<SimpleMapExpr pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
 
   os << ">";
 
@@ -569,7 +569,7 @@ void *begin_visit(const BangExpr &n)
   return no_state;
 }
 
-END_TAG(BangExpr)
+END_TAG(SimpleMapExpr)
 
 void *begin_visit(const TypeswitchExpr &n)
 {

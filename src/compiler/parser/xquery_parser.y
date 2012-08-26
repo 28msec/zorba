@@ -774,6 +774,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> UnorderedExpr
 %type <expr> ValidateExpr
 %type <expr> ValueExpr
+%type <expr> SimpleMapExpr
 %type <expr> VarRef
 %type <expr> ExitStatement
 %type <expr> WhileStatement
@@ -925,7 +926,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -984,7 +985,15 @@ template<typename T> inline void release_hack( T *ref ) {
  * [69] RelativePathExpr ::= StepExpr (("/" | "//" | "!") StepExpr)*
  *_____________________________________________________________________*/
 %nonassoc STEP_REDUCE
-%left SLASH SLASH_SLASH BANG
+%left SLASH SLASH_SLASH
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * SimpleMapExpr ::= PathExpr ("!" PathExpr)*
+ *_____________________________________________________________________*/
+%nonassoc PATHEXPR_REDUCE
+%left BANG
 
 /*_____________________________________________________________________
  *
@@ -3780,7 +3789,7 @@ ValueExpr :
         {
             $$ = $1;
         }
-    |   PathExpr
+    |   SimpleMapExpr
         {
             $$ = $1;
         }
@@ -3788,6 +3797,18 @@ ValueExpr :
         {
             $$ = $1;
         }
+    ;
+
+SimpleMapExpr :
+      PathExpr %prec PATHEXPR_REDUCE
+      {
+        $$ = $1;
+      }
+    |
+      PathExpr BANG SimpleMapExpr
+      {
+        $$ = new SimpleMapExpr(LOC(@$), $1, $3);
+      }
     ;
 
 // [61]
@@ -4000,24 +4021,6 @@ RelativePathExpr :
   | StepExpr SLASH_SLASH RelativePathExpr
     {
       $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3, false);
-    }
-  | StepExpr BANG RelativePathExpr
-    {
-      RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($3);
-      AxisStep* as = dynamic_cast<AxisStep*>($1);
-      $$ = new BangExpr(
-        LOC(@$),
-        as ? new PathExpr(LOC(@$),
-                          ParseConstants::path_relative,
-                          new RelativePathExpr(
-                            LOC(@$),
-                            ParseConstants::st_slash,
-                            new ContextItemExpr( LOC(@$), true ), $1, true
-                          )
-                        )
-           : $1,
-        !rpe ? $3 : new PathExpr( LOC(@$), ParseConstants::path_relative, $3)
-      );
     }
 ;
 

@@ -1651,14 +1651,14 @@ DEFAULT_END_VISIT (ReverseAxis);
     }
     DEFAULT_END_VISIT (RelativePathExpr)
 
-    void* begin_visit(const BangExpr& n)
+    void* begin_visit(const SimpleMapExpr& n)
     {
       n.get_left_expr()->accept(*this);
       os << "!";
       n.get_right_expr()->accept(*this);
       return 0;
     }
-    DEFAULT_END_VISIT (BangExpr)
+    DEFAULT_END_VISIT (SimpleMapExpr)
 
 
     void* begin_visit(const StringLiteral& n)
