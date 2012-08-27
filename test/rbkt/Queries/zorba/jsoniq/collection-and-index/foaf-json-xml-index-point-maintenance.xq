@@ -22,14 +22,14 @@ dml:insert($foaf:network,
     }
 );
 
-(replace json value of dml:collection($foaf:network)[.("name")/first eq "Beverly"]("name") with <name><first>Beverly</first><last>Picard</last></name>,
+(replace json value of dml:collection($foaf:network)[.("name")/first eq "Beverly"]("name") with <name><first>Bev</first><last>Picard</last></name>,
 
 for $person in dml:collection($foaf:network)
 let $friends := $person("friends")
 for $i in 1 to jn:size($friends)
 where $friends($i) eq "Beverly Crusher"
 return
-replace json value of $friends($i) with "Beverly Picard")
+replace json value of $friends($i) with "Bev Picard")
 ;
 
-foaf:probe-point-id($foaf:person, "Beverly")
+foaf:probe-point-id($foaf:person, "Bev")

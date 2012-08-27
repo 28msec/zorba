@@ -1,1 +1,1 @@
-{ "name" : { "JSONiq XDM node" : "<name><first>Beverly</first><last>Picard</last></name>" }, "age" : 38, "gender" : "female", "friends" : [ "Jean-Luc Picard", "Ensign Crusher" ] }
+{ "name" : { "JSONiq XDM node" : "<name><first>Bev</first><last>Picard</last></name>" }, "age" : 38, "gender" : "female", "friends" : [ "Jean-Luc Picard", "Ensign Crusher" ] }
