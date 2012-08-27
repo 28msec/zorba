@@ -22,7 +22,8 @@ dml:insert($foaf:network,
     }
 );
 
-(replace json value of dml:collection($foaf:network)[.("name")/first eq "Beverly"]("name") with <name><first>Bev</first><last>Picard</last></name>,
+(replace value of node dml:collection($foaf:network)[.("name")/first eq "Beverly"]("name")/first with "Bev",
+replace value of node dml:collection($foaf:network)[.("name")/first eq "Beverly"]("name")/last with "Picard",
 
 for $person in dml:collection($foaf:network)
 let $friends := $person("friends")
