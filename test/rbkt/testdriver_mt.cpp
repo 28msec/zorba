@@ -933,9 +933,9 @@ _tmain(int argc, _TCHAR* argv[])
     exit(2);
   }
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
-  queries.theQueriesDir = path.native_directory_string();
+  queries.theQueriesDir = path.file_string();
 #else
-  queries.theQueriesDir = path.parent_path().generic_string();
+  queries.theQueriesDir = path.generic_string();
 #endif
 
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
