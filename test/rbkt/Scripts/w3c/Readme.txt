@@ -19,7 +19,7 @@ To generate a report for submitting to the W3C:
     ZORBA_XQUERYX=ON
     ZORBA_TEST_XQUERYX=ON
     ZORBA_TEST_W3C_TO_SUBMIT_RESULTS=ON
-    All these options are set to OFF by default.
+    ZORBA_WITH_JSON=OFF
     
 1.  Import XQTS/XQFTTS.
 
