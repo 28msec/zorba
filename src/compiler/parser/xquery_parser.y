@@ -982,7 +982,7 @@ template<typename T> inline void release_hack( T *ref ) {
 /*_____________________________________________________________________
  *
  * resolve shift-reduce conflict for
- * [69] RelativePathExpr ::= StepExpr (("/" | "//" | "!") StepExpr)*
+ * [69] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
  *_____________________________________________________________________*/
 %nonassoc STEP_REDUCE
 %left SLASH SLASH_SLASH
