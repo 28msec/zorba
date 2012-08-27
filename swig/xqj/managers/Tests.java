@@ -32,6 +32,28 @@ public class Tests {
     System.loadLibrary ( "zorba_api" );
   }
 
+  static String getFile(String filename) throws FileNotFoundException, IOException {
+    File file = new File(filename);
+    FileInputStream fileStream = new FileInputStream(file);
+    InputStreamReader reader = new InputStreamReader( fileStream, "UTF8" );
+    BufferedReader    buffer = new BufferedReader( reader );
+    String line;
+    StringBuilder builder = new StringBuilder();
+    while ( (line = buffer.readLine()) != null ) 
+    {
+      builder.append(line);
+    }
+    return builder.toString();
+  }
+
+  static boolean checkResult(String test, String queryResult) {
+    System.out.println("Result:");
+    System.out.println(queryResult);
+    System.out.println("Expected:");
+    System.out.println(test);
+    return (queryResult.indexOf(test)>=0) || (test.indexOf(queryResult)>=0);    
+  }
+
   static boolean test_1() throws XQException
   {
       ZorbaXQDataSource xqds = new ZorbaXQDataSource();
@@ -254,45 +276,32 @@ public class Tests {
   {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
-    ZorbaReaderWrapper stream = new ZorbaReaderWrapper(new StringReader("'Hello world!'"));
+    String test = "Hello world!";
+    ZorbaReaderWrapper stream = new ZorbaReaderWrapper(new StringReader("'"+test+"'"));
     XQuery query = zorba.compileQuery(stream);
-    System.out.println(query.execute());
+    String queryResult = query.execute();
+    boolean result = checkResult(test, queryResult);
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
-    return true;
+    return result;
   }
 
   static boolean test_8() throws XQException, UnsupportedEncodingException
   {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
-    String test = 
-    "'"+
-    // 500 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    // 500 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    // 500 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"+ // 100 chars
-    "'";
-    ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(test.getBytes("UTF-8")));
+    StringBuilder test = new StringBuilder();
+    for (int i=0; i<20; i++) {
+      test.append("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"); // 100 chars
+    }
+    String queryString = "'" + test.toString() + "'";
+    ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(queryString.getBytes("UTF-8")));
     XQuery query = zorba.compileQuery(stream);
-    System.out.println(query.execute());
+    String queryResult = query.execute();
+    boolean result = checkResult(test.toString(), queryResult);
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
-    return true;
+    return result;
   }
 
   static boolean test_9() throws XQException, UnsupportedEncodingException
@@ -301,13 +310,15 @@ public class Tests {
     Zorba zorba = Zorba.getInstance ( store );
     String test = "<Hello><ab/><ax/>World</Hello>";
     ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(test.getBytes("UTF-8")));
+    SerializationOptions opts = new SerializationOptions();
+    opts.setIndent(SerializationOptions.Indent.ZORBA_API_INDENT_NO);
     XQuery query = zorba.compileQuery(stream);
-    System.out.println(query.execute());
+    String queryResult = query.execute(opts);
+    boolean result = checkResult(test, queryResult);
     query.destroy();
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
-    
-    return true;
+    return result;
   }
 
   static boolean test_10() throws XQException, UnsupportedEncodingException
@@ -317,53 +328,43 @@ public class Tests {
     String test = "<Hello><ab/><ax/>World</Hello>";
     ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(test.getBytes("UTF-8")));
     XQuery query = zorba.compileQuery(stream);
-    
-    ZorbaOutputWrapper OStream = new ZorbaOutputWrapper(System.out);
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    ZorbaOutputWrapper OStream = new ZorbaOutputWrapper(out);
     query.execute(OStream);
-
+    boolean result = checkResult(test, out.toString());
     query.destroy();
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
-    
-    return true;
+    return result;
   }
 
   static boolean test_11a() throws XQException, FileNotFoundException, IOException
   {
     InMemoryStore store = InMemoryStore.getInstance();
     Zorba zorba = Zorba.getInstance ( store );
-    
-    String test = 
-    "'abcdefghijklmnopqrstuvwxyz ñÑ "+
-    "\u00E1"+
-    "\u0920"+
-    "\u5B66\uD407"+
-    "\uD834\uDD1E" +
-    "áéíó´súiïöठ学퐇ﺔﺖﺚﻀﺺﮚ'";
-    org.zorbaxquery.api.ZorbaReaderWrapper stream = new org.zorbaxquery.api.ZorbaReaderWrapper(new StringReader(test));
+    String test = getFile("managers/utf.txt");
+    org.zorbaxquery.api.ZorbaReaderWrapper stream = new org.zorbaxquery.api.ZorbaReaderWrapper(new StringReader("'"+test+"'"));
     XQuery query = zorba.compileQuery(stream);
-    System.out.println(query.execute());
+    SerializationOptions opts = new SerializationOptions();
+    opts.setOmitXMLDeclaration(SerializationOptions.OmitXMLDeclaration.ZORBA_API_OMIT_XML_DECLARATION_YES);
+    String queryResult = query.execute(opts);
+    boolean result = checkResult(test, queryResult);
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
-    return true;
+    return result;
   }
 
   static boolean test_11b() throws XQException, FileNotFoundException, IOException
   {
-    
-    String test = 
-    "'abcdefghijklmnopqrstuvwxyz ñÑ "+
-    "\u00E1"+
-    "\u0920"+
-    "\u5B66\uD407"+
-    "\uD834\uDD1E" +
-    "áéíó´súiïöठ学퐇ﺔﺖﺚﻀﺺﮚ'";
-    
+    String test = getFile("managers/utf.txt");
     ZorbaXQDataSource xqds = new ZorbaXQDataSource();
     XQConnection xqc = xqds.getConnection();
     XQExpression xqe = xqc.createExpression();
-    org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery(test);
+    org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery("'"+test+"'");
     ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
+    Properties prpts = new Properties();
+    String queryResult =xqs.getSequenceAsString(prpts);
+    boolean result = checkResult(test, queryResult);
     xqc.close();
     xqc.close();
     return true;

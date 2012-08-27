@@ -280,6 +280,14 @@ protected:
   /** \brief Destructor
    */
   virtual ~DynamicContext( ) {}
+
+public:
+  virtual bool
+  getContextSize(Item& outValue) const = 0;
+
+  virtual bool
+  getContextPosition(Item& outValue) const = 0;
+  
 };
 
 } /* namespace zorba */
