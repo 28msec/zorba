@@ -910,7 +910,7 @@ bool AnyUriItem::isAncestor(const store::Item_t& aOther) const
 bool AnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isFollowingSibling(aOther);
 }
@@ -919,7 +919,7 @@ bool AnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
 bool AnyUriItem::isFollowing(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isFollowing(aOther);
 }
@@ -928,7 +928,7 @@ bool AnyUriItem::isFollowing(const store::Item_t& aOther) const
 bool AnyUriItem::isDescendant(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isDescendant(aOther);
 }
@@ -937,7 +937,7 @@ bool AnyUriItem::isDescendant(const store::Item_t& aOther) const
 bool AnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isInSubtreeOf(aOther);
 }
@@ -946,7 +946,7 @@ bool AnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
 bool AnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isPrecedingSibling(aOther);
 }
@@ -955,7 +955,7 @@ bool AnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
 bool AnyUriItem::isPreceding(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isPreceding(aOther);
 }
@@ -964,7 +964,7 @@ bool AnyUriItem::isPreceding(const store::Item_t& aOther) const
 bool AnyUriItem::isChild(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isChild(aOther);
 }
@@ -973,7 +973,7 @@ bool AnyUriItem::isChild(const store::Item_t& aOther) const
 bool AnyUriItem::isAttribute(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isAttribute(aOther);
 }
@@ -982,7 +982,7 @@ bool AnyUriItem::isAttribute(const store::Item_t& aOther) const
 bool AnyUriItem::isParent(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isParent(aOther);
 }
@@ -991,7 +991,7 @@ bool AnyUriItem::isParent(const store::Item_t& aOther) const
 bool AnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isPrecedingInDocumentOrder(aOther);
 }
@@ -1000,7 +1000,7 @@ bool AnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
 bool AnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isFollowingInDocumentOrder(aOther);
 }
@@ -1009,7 +1009,7 @@ bool AnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
 store::Item_t AnyUriItem::getLevel() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->getLevel();
 }
@@ -1072,7 +1072,7 @@ bool AnyUriItem::isTextRef() const
 bool AnyUriItem::isSibling(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isSibling(aOther);
 }
@@ -1081,7 +1081,7 @@ bool AnyUriItem::isSibling(const store::Item_t& aOther) const
 bool AnyUriItem::inSameTree(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->inSameTree(aOther);
 }
@@ -1090,7 +1090,7 @@ bool AnyUriItem::inSameTree(const store::Item_t& aOther) const
 bool AnyUriItem::inCollection() const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return static_cast<StructuralAnyUriItem *>(lThisUri.getp())->inCollection();
 }
@@ -1099,7 +1099,7 @@ bool AnyUriItem::inCollection() const
 bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  zstring tempValue=theValue;
+  zstring tempValue = theValue;
   GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->inSameCollection(aOther);
 }
@@ -1120,7 +1120,9 @@ StructuralAnyUriItem::StructuralAnyUriItem(
   theNodeKind(nodeKind),
   theOrdPath(ordPath),
   theEncodedValue("")
-{}
+{
+}
+
 
 StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 {
@@ -1128,7 +1130,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI,
                           ERROR_PARAMS(theEncodedValue));
 
-  theEncodedValue = value;
+  theEncodedValue.take(value);
   std::istringstream input(theEncodedValue.str());
 
   ulong prefixlen = (ulong)strlen("zorba:");
@@ -1219,6 +1221,7 @@ uint32_t StructuralAnyUriItem::hash(long timezone, const XQPCollator* aCollation
   return hashfun::h32(theEncodedValue.data(), (uint32_t)theEncodedValue.size());
 }
 
+
 void StructuralAnyUriItem::encode() const
 {
   ZORBA_FATAL(theNodeKind,"Unexpected node kind");
@@ -1240,29 +1243,47 @@ zstring StructuralAnyUriItem::show() const
   res += ")";
   return res;
 }
+
  
 bool StructuralAnyUriItem::equals(
-        const store::Item* item,
-        long timezone,
-        const XQPCollator* aCollation) const
+    const store::Item* other,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
-  const StructuralAnyUriItem* lOther =
-      dynamic_cast<const StructuralAnyUriItem*>(item);
-  return (lOther &&
-      lOther->theCollectionId == theCollectionId &&
-      lOther->theTreeId == theTreeId &&
-      lOther->theNodeKind == theNodeKind &&
-      lOther->theOrdPath == theOrdPath);
+  const StructuralAnyUriItem* lOther = 
+  dynamic_cast<const StructuralAnyUriItem*>(other);
+
+  if (lOther == NULL)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+    ERROR_PARAMS(ZED(NoCompareTypes_23),
+                 "xs:structuralAnyURI",
+                 other->getType()->getStringValue()));
+  }
+
+  return (lOther->theCollectionId == theCollectionId &&
+          lOther->theTreeId == theTreeId &&
+          lOther->theNodeKind == theNodeKind &&
+          lOther->theOrdPath == theOrdPath);
 }
  
+
 long StructuralAnyUriItem::compare(
-      const Item* other,
-      long timezone,
-      const XQPCollator* aCollation) const
+    const Item* other,
+    long timezone,
+    const XQPCollator* aCollation) const
 {
   const StructuralAnyUriItem* lOther =
-      dynamic_cast<const StructuralAnyUriItem*>(other);
-  assert(lOther);
+  dynamic_cast<const StructuralAnyUriItem*>(other);
+
+  if (lOther == NULL)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+    ERROR_PARAMS(ZED(NoCompareTypes_23),
+                 "xs:structuralAnyURI",
+                 other->getType()->getStringValue()));
+  }
+
   if (theCollectionId < lOther->theCollectionId)
   {
     return -1;
@@ -1297,22 +1318,31 @@ long StructuralAnyUriItem::compare(
   }
   return 0;
 }
+
  
-zstring StructuralAnyUriItem::getStringValue() const {
+zstring StructuralAnyUriItem::getStringValue() const
+{
   return getString();
 }
+
  
-void StructuralAnyUriItem::getStringValue2(zstring& val) const {
+void StructuralAnyUriItem::getStringValue2(zstring& val) const
+{
   val = getString();
 }
  
-void StructuralAnyUriItem::appendStringValue(zstring& buf) const {
+
+void StructuralAnyUriItem::appendStringValue(zstring& buf) const
+{
   buf += getString();
 }
+
 
 bool StructuralAnyUriItem::isAncestor(const store::Item_t& aOther) const
 {
   // Is the "other" an ancestor of "this"?
+
+  ZORBA_ASSERT(aOther->isAtomic());
 
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
@@ -1338,6 +1368,8 @@ bool StructuralAnyUriItem::isAncestor(const store::Item_t& aOther) const
 bool StructuralAnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
 {
   // Is the "other" a following sibling of "this"?
+
+  ZORBA_ASSERT(aOther->isAtomic());
 
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
@@ -1366,6 +1398,8 @@ bool StructuralAnyUriItem::isFollowing(const store::Item_t& aOther) const
 {
   // Is the "other" a following node of "this"?
 
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1390,6 +1424,8 @@ bool StructuralAnyUriItem::isFollowing(const store::Item_t& aOther) const
 bool StructuralAnyUriItem::isDescendant(const store::Item_t& aOther) const
 {
   // Is the "other" a descendant of "this"?
+
+  ZORBA_ASSERT(aOther->isAtomic());
 
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
@@ -1416,6 +1452,8 @@ bool StructuralAnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
 {
   // Is the "other" in the subtree rooted at "this"?
 
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1439,6 +1477,8 @@ bool StructuralAnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
 bool StructuralAnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
 {
   // Is the "other" a preceding sibling of "this"?
+
+  ZORBA_ASSERT(aOther->isAtomic());
 
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
@@ -1466,6 +1506,8 @@ bool StructuralAnyUriItem::isPreceding(const store::Item_t& aOther) const
 {
   // Is the "other" a preceding node of "this"?
 
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1489,6 +1531,8 @@ bool StructuralAnyUriItem::isPreceding(const store::Item_t& aOther) const
 bool StructuralAnyUriItem::isChild(const store::Item_t& aOther) const
 {
   // Is the "other" a child of "this"?
+
+  ZORBA_ASSERT(aOther->isAtomic());
 
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
@@ -1515,6 +1559,8 @@ bool StructuralAnyUriItem::isAttribute(const store::Item_t& aOther) const
 {
   // Is the "other" an attribute of "this"?
 
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1540,6 +1586,8 @@ bool StructuralAnyUriItem::isParent(const store::Item_t& aOther) const
 {
   // Is the "other" an parent of "this"?
 
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1562,6 +1610,8 @@ bool StructuralAnyUriItem::isParent(const store::Item_t& aOther) const
 
 bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
 {
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1587,6 +1637,8 @@ bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOthe
 
 bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
 {
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AtomicItem* lOtherUriP = static_cast<AtomicItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1656,6 +1708,8 @@ bool StructuralAnyUriItem::isTextRef() const
 
 bool StructuralAnyUriItem::isSibling(const store::Item_t& aOther) const
 {
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1690,6 +1744,8 @@ bool StructuralAnyUriItem::isSibling(const store::Item_t& aOther) const
 
 bool StructuralAnyUriItem::inSameTree(const store::Item_t& aOther) const
 {
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
@@ -1716,6 +1772,8 @@ bool StructuralAnyUriItem::inCollection() const
 
 bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
 {
+  ZORBA_ASSERT(aOther->isAtomic());
+
   AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
 
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
