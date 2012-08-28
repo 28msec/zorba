@@ -368,7 +368,7 @@ extern entry const dict_en[] = {
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },
   { "ZDST0004", "collection multiple property values" },
-  { "ZDST0006", "collection invalid property value" },
+  { "ZDST0006", "\"$1\": invalid annotation for collection \"$2\"" },
   { "ZDST0007", "\"$1\": collection declaration in foreign module" },
   { "ZDST0021", "\"$1\": index already declared" },
   { "ZDST0022", "\"$1\": index already imported into module \"$2\"" },
