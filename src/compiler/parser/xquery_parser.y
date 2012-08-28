@@ -2670,6 +2670,7 @@ ForClause :
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected QName \""
           + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      delete $3;
       YYERROR;
     }
   |
@@ -2685,14 +2686,14 @@ ForClause :
 VarInDeclList :
     VarInDecl
     {
-      VarInDeclList *vdl = new VarInDeclList( LOC(@$) );
+      VarInDeclList* vdl = new VarInDeclList( LOC(@$) );
       vdl->push_back( dynamic_cast<VarInDecl*>($1) );
       $$ = vdl;
     }
   |
     VarInDeclList COMMA DOLLAR VarInDecl
     {
-      if ( VarInDeclList *vdl = dynamic_cast<VarInDeclList*>($1) )
+      if ( VarInDeclList* vdl = dynamic_cast<VarInDeclList*>($1) )
         vdl->push_back( dynamic_cast<VarInDecl*>($4) );
       $$ = $1;
     }
@@ -2703,6 +2704,7 @@ VarInDeclList :
       $$ = $1; // to prevent the Bison warning
       error(@3, "syntax error, unexpected QName \""
           + static_cast<VarInDecl*>($3)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      delete $1;
       YYERROR;
     }
 ;

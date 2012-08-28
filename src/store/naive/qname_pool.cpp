@@ -371,8 +371,9 @@ void QNamePool::cachePin(QNameItem* qn)
     {
       theCache[qn->thePrevFree].theNextFree = qn->theNextFree;
     }
-    else if (theFirstFree == qn->thePosition)
+    else
     {
+      assert(theFirstFree == qn->thePosition);
       theFirstFree = qn->theNextFree;
     }
 

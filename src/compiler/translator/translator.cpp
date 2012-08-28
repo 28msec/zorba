@@ -3871,7 +3871,7 @@ void* begin_visit(const GlobalVarDecl& v)
   thePrologGraph.addVarVertex(ve);
   theCurrentPrologVFDecl = PrologGraphVertex(ve);
 
-  push_nodestack(ve);
+  push_nodestack(ve.getp());
 
   return no_state;
 }
