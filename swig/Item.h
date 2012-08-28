@@ -314,7 +314,6 @@ public:
    *
    * @param aStream The stream to write the value of the Item.
    * @param serOptions The serialization options for this Item
-   * @return The string value of the Item.
    * @throw ZorbaException if an error occured.
    */
   void serializeToStream(ZorbaIOStream & aStream, SerializationOptions serOptions) const;
