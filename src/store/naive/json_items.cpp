@@ -166,7 +166,6 @@ void JSONItem::unfix()
   assert(lTree);
   delete lTree;
   setTree(NULL);
-  return;
 
   ASSERT_INVARIANT();
 }
