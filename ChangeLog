@@ -2,12 +2,15 @@ Zorba - The XQuery Processor
 
 version 2.7
 
+New Features:
+  * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
+
 Bug Fixes/Other Changes:
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
-
+  * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
 
 version 2.6
 
