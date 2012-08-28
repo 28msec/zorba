@@ -301,7 +301,7 @@ public:
   
   /** \brief Serializes the object
    *
-   * Returns a string with the value of the object serialized
+   * Put the serialized object into the specified stream.
    *
    * @param aStream The stream to write the value of the Item.
    * @throw ZorbaException if an error occured.
@@ -310,7 +310,7 @@ public:
 
   /** \brief Serializes the object
    *
-   * Returns a string with the value of the object serialized
+   * Put the serialized object into the specified stream.
    *
    * @param aStream The stream to write the value of the Item.
    * @param serOptions The serialization options for this Item
