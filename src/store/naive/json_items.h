@@ -90,9 +90,9 @@ public:
 class JSONTree
 {
 private:
-  simplestore::Collection* theCollection;
-  TreeId      theId;
-  JSONItem*   theRoot;
+  simplestore::Collection * theCollection;
+  TreeId                    theId;
+  JSONItem                * theRoot;
 
 public:
   JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
@@ -129,6 +129,7 @@ public:
   }
 };
 
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -138,6 +139,8 @@ class JSONItem : public store::Item
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
+  JSONTree  * theTree;
+
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
@@ -145,13 +148,26 @@ public:
 
   virtual ~JSONItem();
   
-  // Returns NULL if in no collection.
+  virtual void free();
+
+  virtual void destroy();
+
   const simplestore::Collection* getCollection() const;
+
+  virtual void setTree(JSONTree* aTree) = 0;
+
+  JSONTree* getTree() const
+  {
+    return theTree;
+  }
+
   // These two functions are only to be called if in a collection.
-  JSONItem* getRoot() const;
   const TreeId& getTreeId() const;
+
+  JSONItem* getRoot() const;
   
   void fix(Collection* aCollection, const TreeId& aTreeId);
+
   void unfix();
   
   // store API
@@ -163,19 +179,6 @@ public:
   {
     return this == other;
   }
-  
-  virtual void free();
-  virtual void destroy();
-  
-  // Internal tree management methods
-  virtual void setTree(JSONTree* aTree) = 0;
-  JSONTree* getTree() const
-  {
-    return theTree;
-  }
-
-protected:
-  JSONTree* theTree;
 
 public:
 #ifndef NDEBUG
@@ -244,8 +247,8 @@ protected:
   class KeyIterator : public store::Iterator
   {
     protected:
-      SimpleJSONObject_t    theObject;
-      Pairs::iterator theIter;
+      SimpleJSONObject_t  theObject;
+      Pairs::iterator     theIter;
 
     public:
       KeyIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
@@ -260,6 +263,10 @@ protected:
 
       virtual void close();
   };
+
+private:
+  Keys   theKeys;
+  Pairs  thePairs;
 
 public:
   SimpleJSONObject()
@@ -309,10 +316,6 @@ public:
   
 protected:
   void setTree(JSONTree* aTree);
-
-private:
-  Keys   theKeys;
-  Pairs  thePairs;
 
   // Invariant handling
 public:
@@ -378,7 +381,6 @@ public:
 
   virtual store::Item_t
   replace(const xs_integer& pos, const store::Item_t& value) = 0;
-
 };
 
 
@@ -411,6 +413,9 @@ protected:
 
       virtual void close();
   };
+
+private:
+  Members theContent;
 
 public:
   SimpleJSONArray()
@@ -472,9 +477,6 @@ protected:
   void add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
 
   static uint64_t cast(const xs_integer& i);
-  
-private:
-  Members theContent;
 
   // Invariant handling
 public:

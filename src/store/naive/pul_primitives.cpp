@@ -1004,12 +1004,15 @@ void UpdDeleteCollection::apply()
       XmlNode* lNode = static_cast<XmlNode*>(lItem);
       lRefCount = lNode->getTree()->getRefCount();
 #ifdef ZORBA_WITH_JSON
-    } else if (lItem->isJSONItem()) {
+    }
+    else if (lItem->isJSONItem())
+    {
       assert(dynamic_cast<json::JSONItem*>(lItem));
       json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(lItem);
       lRefCount = lJSONItem->getRefCount();
 #endif
     }
+
     if (lRefCount > 1)
     {
       RAISE_ERROR(zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES, theLoc,

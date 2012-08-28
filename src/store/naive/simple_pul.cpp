@@ -184,12 +184,15 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
     const XmlNode* lNode = static_cast<const XmlNode*>(target);
     lCollection = lNode->getCollection();
 #ifdef ZORBA_WITH_JSON
-  } else if (target->isJSONItem()) {
+  }
+  else if (target->isJSONItem())
+  {
     assert(dynamic_cast<const json::JSONItem*>(target));
     const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(target);
     lCollection = lJSONItem->getCollection();
 #endif
   }
+
   if (lCollection != NULL)
   {
     collName = static_cast<const QNameItem*>(lCollection->getName())->getNormalized();
@@ -2251,7 +2254,8 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
         const XmlNode* lNode = static_cast<const XmlNode*>(lItem);
         for (csize i = 0; i < numRoots; i++)
         {
-          if (rootNodes[i]->isNode()) {
+          if (rootNodes[i]->isNode())
+          {
             assert(dynamic_cast<const XmlNode*>(rootNodes[i]));
             XmlNode* lRootNode = static_cast<XmlNode*>(rootNodes[i]);
             
@@ -2263,12 +2267,15 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
           }
         }
 #ifdef ZORBA_WITH_JSON
-      } else if (lItem->isJSONItem()) {
+      }
+      else if (lItem->isJSONItem())
+      {
         assert(dynamic_cast<const json::JSONItem*>(lItem));
         const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(lItem);
         for (csize i = 0; i < numRoots; i++)
         {
-          if (rootNodes[i]->isJSONItem()) {
+          if (rootNodes[i]->isJSONItem())
+          {
             assert(dynamic_cast<const json::JSONItem*>(rootNodes[i]));
             json::JSONItem* lRootJSONItem = static_cast<json::JSONItem*>(rootNodes[i]);
             

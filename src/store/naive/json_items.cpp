@@ -79,6 +79,7 @@ void JSONNull::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 //  JSON Item                                                                  //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -86,6 +87,25 @@ JSONItem::~JSONItem()
 {
   delete theTree;
 }
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void JSONItem::free()
+{
+  destroy();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void JSONItem::destroy()
+{
+  delete this;
+}
+
 
 /******************************************************************************
 
@@ -101,7 +121,7 @@ const simplestore::Collection* JSONItem::getCollection() const
 
 
 /******************************************************************************
-
+  Should only to be called if item is in a collection.
 *******************************************************************************/
 const TreeId& JSONItem::getTreeId() const
 {
@@ -111,7 +131,7 @@ const TreeId& JSONItem::getTreeId() const
 
 
 /******************************************************************************
-
+  Should only to be called if item is in a collection.
 *******************************************************************************/
 JSONItem* JSONItem::getRoot() const
 {
@@ -119,21 +139,6 @@ JSONItem* JSONItem::getRoot() const
   return theTree->getRoot();
 }
 
-/******************************************************************************
-
-*******************************************************************************/
-void JSONItem::free()
-{
-  destroy();
-}
-
-/******************************************************************************
-
-*******************************************************************************/
-void JSONItem::destroy()
-{
-  delete this;
-}
 
 /*******************************************************************************
 
@@ -185,6 +190,7 @@ void JSONItem::assertInvariant() const
   }
 }
 #endif
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -363,7 +369,6 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     return 0;
   }
   
-#if 1
   store::Item* lKey;
 
   lKey = thePairs[lPosition].first;
@@ -395,49 +400,6 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
       }
     }
   }
-
-#else
-
-  Pairs::iterator lIterator;
-  csize lIteratorPosition;
-  for (lIterator = thePairs.begin(), lIteratorPosition = 0;
-       lIterator != thePairs.end();
-       ++lIterator, ++lIteratorPosition)
-  {
-    if (lIteratorPosition < lPosition)
-    {
-      continue;
-    }
-  
-    // This is the position we are looking for.
-    else if (lIteratorPosition == lPosition)
-    {
-      // Preparing the returned item.
-      assert(lIterator->first->getStringValue() == lName);
-
-      lValue = lIterator->second;
-
-      if (getCollection() != NULL && lValue->isJSONItem())
-      {
-        lValue->setTree(NULL);
-      }
-
-      // Erasing the corresponding entries.
-      lIterator->first->removeReference();
-      lIterator->second->removeReference();
-      lIterator = thePairs.erase(lIterator);
-      theKeys.erase(lName);
-    }
-    
-    // Rebuilding the key positions after this removed pair.
-    assert(lIterator->first != NULL);
-    assert(lIterator->second != NULL);
-    Keys::iterator lKeyIterator = theKeys.find(lIterator->first->getStringValue());
-    assert(lKeyIterator != theKeys.end());
-    assert(lKeyIterator.getValue() == lPosition + 1);
-    lKeyIterator.setValue(lPosition);
-  }
-#endif
 
   ASSERT_INVARIANT();
   return lValue;
