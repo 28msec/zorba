@@ -32,11 +32,13 @@
 #include "zstring.h"
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(I) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
+# define TEMPLATE_DECL(I)   /* nothing */
+# define INTEGER_IMPL(I)    IntegerImpl
+# define TEMPLATE_TYPENAME  /* nothing */
 #else
-# define TEMPLATE_DECL(I) template<typename I> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
+# define TEMPLATE_DECL(I)   template<typename I> /* spacer */
+# define INTEGER_IMPL(I)    IntegerImpl<I> /* spacer */
+# define TEMPLATE_TYPENAME  typename
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #define INTEGER_IMPL_LL   INTEGER_IMPL(long long)
 #define INTEGER_IMPL_ULL  INTEGER_IMPL(unsigned long long)
@@ -58,6 +60,11 @@ TEMPLATE_DECL(IntType)
 class IntegerImpl 
 {
 public:
+#ifdef ZORBA_WITH_BIG_INTEGER
+  typedef MAPM value_type;
+#else
+  typedef IntType value_type;
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
   ////////// constructors /////////////////////////////////////////////////////
 
@@ -113,12 +120,6 @@ public:
    */
   TEMPLATE_DECL(IntType2)
   IntegerImpl( INTEGER_IMPL(IntType2) const &i );
-
-  /////////////////////////////////////////////////////////////////////////////
-
-#ifndef ZORBA_WITH_BIG_INTEGER
-  IntType& get_value() { return value_; }
-#endif /* ZORBA_WITH_BIG_INTEGER */
 
   ////////// assignment operators /////////////////////////////////////////////
 
@@ -461,6 +462,8 @@ public:
   bool is_xs_unsignedShort() const;
   int sign() const;
   zstring toString() const;
+  value_type& value();
+  value_type const& value() const;
   static IntegerImpl const& one();
   static IntegerImpl const& zero();
 
@@ -468,10 +471,8 @@ public:
 
 private:
 #ifdef ZORBA_WITH_BIG_INTEGER
-  typedef MAPM value_type;
   typedef long int_cast_type;
 #else
-  typedef IntType value_type;
   typedef IntType int_cast_type;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -1123,6 +1124,17 @@ inline int IntegerImpl<I>::sign() const {
 }
 
 #endif /* ZORBA_WITH_BIG_INTEGER */
+
+TEMPLATE_DECL(I) inline
+TEMPLATE_TYPENAME INTEGER_IMPL(I)::value_type& INTEGER_IMPL(I)::value() {
+  return value_;
+}
+
+TEMPLATE_DECL(I) inline
+TEMPLATE_TYPENAME INTEGER_IMPL(I)::value_type const&
+INTEGER_IMPL(I)::value() const {
+  return value_;
+}
 
 TEMPLATE_DECL(I)
 inline std::ostream& operator<<( std::ostream &os, INTEGER_IMPL(I) const &i ) {

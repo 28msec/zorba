@@ -210,8 +210,6 @@ VarInfo::VarInfo(const var_expr_t& v)
   theHasInitializer(v->has_initializer()),
   theVarExpr(v.getp())
 {
-  if (theKind == var_expr::prolog_var)
-    v->set_var_info(this);
 }
 
 
@@ -2203,12 +2201,25 @@ void static_context::bind_var(
   VarInfo_t vi = varExpr->get_var_info();
 
   if (vi == NULL)
+  {
     vi = new VarInfo(varExpr);
 
-  if (!theVariablesMap->insert(qname, vi))
+    if (!theVariablesMap->insert(qname, vi))
+    {
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(qname->getStringValue()), ERROR_LOC(loc));
+    }
+
+    if (varExpr->get_kind() == var_expr::prolog_var)
+      varExpr->set_var_info(vi);
+  }
+  else
   {
-    throw XQUERY_EXCEPTION_VAR(err,
-    ERROR_PARAMS(qname->getStringValue()), ERROR_LOC(loc));
+    if (!theVariablesMap->insert(qname, vi))
+    {
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(qname->getStringValue()), ERROR_LOC(loc));
+    }
   }
 }
 
