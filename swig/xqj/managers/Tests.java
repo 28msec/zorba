@@ -46,12 +46,12 @@ public class Tests {
     return builder.toString();
   }
 
-  static boolean checkResult(String test, String queryResult) {
+  static boolean checkResult(String expected, String result) {
     System.out.println("Result:");
-    System.out.println(queryResult);
+    System.out.println(result);
     System.out.println("Expected:");
-    System.out.println(test);
-    return (queryResult.indexOf(test)>=0) || (test.indexOf(queryResult)>=0);    
+    System.out.println(expected);
+    return expected.equals(result);
   }
 
   static boolean test_1() throws XQException
@@ -279,7 +279,9 @@ public class Tests {
     String test = "Hello world!";
     ZorbaReaderWrapper stream = new ZorbaReaderWrapper(new StringReader("'"+test+"'"));
     XQuery query = zorba.compileQuery(stream);
-    String queryResult = query.execute();
+    SerializationOptions opts = new SerializationOptions();
+    opts.setOmitXMLDeclaration(SerializationOptions.OmitXMLDeclaration.ZORBA_API_OMIT_XML_DECLARATION_YES);
+    String queryResult = query.execute(opts);
     boolean result = checkResult(test, queryResult);
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
@@ -297,7 +299,9 @@ public class Tests {
     String queryString = "'" + test.toString() + "'";
     ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(queryString.getBytes("UTF-8")));
     XQuery query = zorba.compileQuery(stream);
-    String queryResult = query.execute();
+    SerializationOptions opts = new SerializationOptions();
+    opts.setOmitXMLDeclaration(SerializationOptions.OmitXMLDeclaration.ZORBA_API_OMIT_XML_DECLARATION_YES);
+    String queryResult = query.execute(opts);
     boolean result = checkResult(test.toString(), queryResult);
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
@@ -312,6 +316,7 @@ public class Tests {
     ZorbaInputWrapper stream = new ZorbaInputWrapper(new ByteArrayInputStream(test.getBytes("UTF-8")));
     SerializationOptions opts = new SerializationOptions();
     opts.setIndent(SerializationOptions.Indent.ZORBA_API_INDENT_NO);
+    opts.setOmitXMLDeclaration(SerializationOptions.OmitXMLDeclaration.ZORBA_API_OMIT_XML_DECLARATION_YES);
     XQuery query = zorba.compileQuery(stream);
     String queryResult = query.execute(opts);
     boolean result = checkResult(test, queryResult);
@@ -330,7 +335,10 @@ public class Tests {
     XQuery query = zorba.compileQuery(stream);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     ZorbaOutputWrapper OStream = new ZorbaOutputWrapper(out);
-    query.execute(OStream);
+    SerializationOptions opts = new SerializationOptions();
+    opts.setIndent(SerializationOptions.Indent.ZORBA_API_INDENT_NO);
+    opts.setOmitXMLDeclaration(SerializationOptions.OmitXMLDeclaration.ZORBA_API_OMIT_XML_DECLARATION_YES);
+    query.execute(OStream, opts);
     boolean result = checkResult(test, out.toString());
     query.destroy();
     zorba.shutdown();
@@ -363,11 +371,12 @@ public class Tests {
     org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery("'"+test+"'");
     ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
     Properties prpts = new Properties();
+    prpts.setProperty("omit-xml-declaration", "yes");
     String queryResult =xqs.getSequenceAsString(prpts);
     boolean result = checkResult(test, queryResult);
     xqc.close();
     xqc.close();
-    return true;
+    return result;
   }
 
 } // class Test_Zorba
