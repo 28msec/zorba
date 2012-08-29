@@ -143,7 +143,7 @@ JSONItem* JSONItem::getRoot() const
 /*******************************************************************************
 
 ********************************************************************************/
-void JSONItem::fix(Collection* aCollection, const TreeId& aTreeId)
+void JSONItem::attachToCollection(Collection* aCollection, const TreeId& aTreeId)
 {
   ASSERT_INVARIANT();
   
@@ -162,7 +162,7 @@ void JSONItem::fix(Collection* aCollection, const TreeId& aTreeId)
 /*******************************************************************************
 
 ********************************************************************************/
-void JSONItem::unfix()
+void JSONItem::detachFromCollection()
 {
   ASSERT_INVARIANT();
   

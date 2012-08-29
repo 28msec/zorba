@@ -166,9 +166,9 @@ public:
 
   JSONItem* getRoot() const;
   
-  void fix(Collection* aCollection, const TreeId& aTreeId);
+  void attachToCollection(Collection* aCollection, const TreeId& aTreeId);
 
-  void unfix();
+  void detachFromCollection();
   
   // store API
 

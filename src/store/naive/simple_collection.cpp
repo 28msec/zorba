@@ -96,8 +96,7 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
 {
   XmlNode* node = NULL;
 #ifdef ZORBA_WITH_JSON
-  json::SimpleJSONArray* array = NULL;
-  json::SimpleJSONObject* object = NULL;
+  json::JSONItem* lJSONItem = NULL;
 #endif
 
   if (item->isNode())
@@ -111,13 +110,9 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
     }
   }
 #ifdef ZORBA_WITH_JSON
-  else if (item->isJSONObject())
+  else if (item->isJSONItem())
   {
-    object = static_cast<json::SimpleJSONObject*>(item);
-  }
-  else if (item->isJSONArray())
-  {
-    array = static_cast<json::SimpleJSONArray*>(item);
+    lJSONItem = static_cast<json::JSONItem*>(item);
   }
   else
   {
@@ -154,10 +149,8 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
   }
 
 #ifdef ZORBA_WITH_JSON
-  if (object)
-    object->fix(this, createTreeId());
-  else if (array)
-    array->fix(this, createTreeId());
+  if (lJSONItem)
+    lJSONItem->attachToCollection(this, createTreeId());
   else
 #endif
     node->setCollection(this, pos);
@@ -202,8 +195,7 @@ xs_integer SimpleCollection::addNodes(
 
     XmlNode* node = NULL;
 #ifdef ZORBA_WITH_JSON
-    json::SimpleJSONArray* array = NULL;
-    json::SimpleJSONObject* object = NULL;
+    json::JSONItem* lJSONItem = NULL;
 #endif
 
     if (item->isNode())
@@ -217,13 +209,9 @@ xs_integer SimpleCollection::addNodes(
       }
     }
 #ifdef ZORBA_WITH_JSON
-    else if (item->isJSONObject())
+    else if (item->isJSONItem())
     {
-      object = static_cast<json::SimpleJSONObject*>(item);
-    }
-    else if (item->isJSONArray())
-    {
-      array = static_cast<json::SimpleJSONArray*>(item);
+      lJSONItem = static_cast<json::JSONItem*>(item);
     }
     else
     {
@@ -248,10 +236,8 @@ xs_integer SimpleCollection::addNodes(
     pos = targetPos + i;
 
 #ifdef ZORBA_WITH_JSON
-    if (object)
-      object->fix(this, createTreeId());
-    else if (array)
-      array->fix(this, createTreeId());
+    if (lJSONItem)
+      lJSONItem->attachToCollection(this, createTreeId());
     else
 #endif
       node->setCollection(this, pos);
@@ -289,8 +275,7 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
 {
   XmlNode* node = NULL;
 #ifdef ZORBA_WITH_JSON
-  json::SimpleJSONArray* array = NULL;
-  json::SimpleJSONObject* object = NULL;
+  json::JSONItem* lJSONItem = NULL;
 #endif
 
   if (item->isNode())
@@ -298,13 +283,9 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
     node = static_cast<XmlNode*>(item);
   }
 #ifdef ZORBA_WITH_JSON
-  else if (item->isJSONObject())
+  else if (item->isJSONItem())
   {
-    object = static_cast<json::SimpleJSONObject*>(item);
-  }
-  else if (item->isJSONArray())
-  {
-    array = static_cast<json::SimpleJSONArray*>(item);
+    lJSONItem = static_cast<json::JSONItem*>(item);
   }
   else
   {
@@ -330,10 +311,8 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
     xs_integer const &zero = xs_integer::zero();
 
 #ifdef ZORBA_WITH_JSON
-    if (object)
-      object->unfix();
-    else if (array)
-      array->unfix();
+    if (lJSONItem)
+      lJSONItem->detachFromCollection();
     else
 #endif
       node->setCollection(NULL, zero);
@@ -378,15 +357,10 @@ bool SimpleCollection::removeNode(xs_integer position)
       node->setCollection(NULL, zero);
     }
 #ifdef ZORBA_WITH_JSON
-    else if (item->isJSONObject())
+    else if (item->isJSONItem())
     {
-      json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-      object->unfix();
-    }
-    else if (item->isJSONArray())
-    {
-      json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-      array->unfix();
+      json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(item);
+      lJSONItem->detachFromCollection();
     }
 #endif
     else
@@ -439,15 +413,10 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
         node->setCollection(NULL, zero);
       }
 #ifdef ZORBA_WITH_JSON
-      else if (item->isJSONObject())
+      else if (item->isJSONItem())
       {
-        json::SimpleJSONObject* object = static_cast<json::SimpleJSONObject*>(item);
-        object->unfix();
-      }
-      else if (item->isJSONArray())
-      {
-        json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(item);
-        array->unfix();
+        json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(item);
+        lJSONItem->detachFromCollection();
       }
 #endif
       else
