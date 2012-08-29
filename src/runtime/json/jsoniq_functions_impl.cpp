@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 #include <zorba/config.h>
 
 #ifdef ZORBA_WITH_JSON
 
-#include "stdafx.h"
 
 #include <sstream>
 
@@ -514,8 +514,8 @@ bool JSONObjectInsertIterator::nextImpl(
 
   for (csize i = 0; i < numPairs; ++i)
   {
-    consumeNext(name, theChildren[i + 1].getp(), planState);
-    consumeNext(value, theChildren[i + 2].getp(), planState);
+    consumeNext(name, theChildren[2 * i + 1].getp(), planState);
+    consumeNext(value, theChildren[2 * i + 2].getp(), planState);
 
     names[i].transfer(name);
 

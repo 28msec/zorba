@@ -1984,6 +1984,27 @@ whose type does not match the sequence type specified by the index keyspec.
 </li>
 </ul>
 
+\subsection index_keys Retrieving Index Keys
+In addition to probing an index, the <tt>idml</tt> module also provides a function that allows listing all the keys contained in an index.
+
+\code
+  idml:keys($indexName as xs:QName) as item()*
+\endcode
+
+This function returns a sequence of element nodes.
+Each node in the sequence represents one key contained in the index and has the following structure:
+
+\code
+ <key xmlns="http://www.zorba-xquery.com/modules/store/static/indexes/dml">
+   <attribute value="key_1"/>
+   ...
+   <attribute value="key_n"/>
+ </key>
+\endcode
+
+The order of the attribute elements reflects the order of the key specifications in the declaration of the index.
+Also, the types of the values of the attributes are the types of the keys as they are declared.
+If a value attribute is not present, this means that the value of the corresponding key in the index is the empty sequence.
 
 \subsection index_maintenance Index Maintenance
 

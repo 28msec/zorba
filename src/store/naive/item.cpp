@@ -19,6 +19,8 @@
 
 #include <zorba/error.h>
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+
 #include "zorbatypes/datetime.h"
 
 #include "store/api/item.h"
@@ -71,6 +73,7 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -159,6 +162,7 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -348,10 +352,8 @@ Item* Item::getType() const
 
 uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS( ZED( NoHashItemOfType_2 ), getType()->getStringValue() )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoHashItemOfType_2), getType()->getStringValue()));
 };
 
 
@@ -360,13 +362,10 @@ bool Item::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( NoCompareTypes_23 ),
-      getType()->getStringValue(), other->getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoCompareTypes_23),
+               getType()->getStringValue(),
+               other->getType()->getStringValue()));
 }
 
 
@@ -375,13 +374,10 @@ long Item::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( NoCompareTypes_23 ),
-      getType()->getStringValue(), other->getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoCompareTypes_23),
+               getType()->getStringValue(),
+               other->getType()->getStringValue()));
 }
 
 

@@ -199,8 +199,6 @@ TypeIdentifier_t TypeIdentifier::createAnyNodeType(IdentTypes::quantifier_t quan
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 TypeIdentifier_t TypeIdentifier::createStructuredItemType(IdentTypes::quantifier_t q)
 {
   TypeIdentifier_t ti(new TypeIdentifier());
@@ -210,6 +208,8 @@ TypeIdentifier_t TypeIdentifier::createStructuredItemType(IdentTypes::quantifier
   return ti;
 }
 
+
+#ifdef ZORBA_WITH_JSON
 
 TypeIdentifier_t TypeIdentifier::createJSONItemType(IdentTypes::quantifier_t q)
 {

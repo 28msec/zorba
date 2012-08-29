@@ -19,6 +19,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/user_exception.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 
@@ -27,9 +28,14 @@
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/temp_seq.h"
 
 #include "system/globalenv.h"
 #include "zorbatypes/zstring.h"
+
+#include "api/serialization/serializer.h"
+#include "api/serializerimpl.h"
 
 namespace zorba 
 {
@@ -72,9 +78,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  throw USER_EXCEPTION(
-    err_qname, description.c_str(), ERROR_LOC( loc ), &lErrorObject
-  );
+  throw USER_EXCEPTION(err_qname, description.c_str(), ERROR_LOC(loc), &lErrorObject);
 
   STACK_END(state);
 }
@@ -89,12 +93,21 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   TraceIteratorState *state;
   DEFAULT_STACK_INIT(TraceIteratorState, state, planState);
 
+  state->theIndex = 1; // XQuery sequences start with 1
+
   if (!consumeNext(state->theTagItem, theChildren[1], planState)) 
   {
-    throw XQUERY_EXCEPTION(err::FORG0006,
-      ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), ZED(EmptySequence), "fn:trace"),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FORG0006, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), ZED(EmptySequence), "fn:trace"));
+  }
+
+  if (state->theSerializer == NULL)
+  {
+    state->theSerializer = new serializer(0);
+
+    Zorba_SerializerOptions options;
+    options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    SerializerImpl::setSerializationParameters(*(state->theSerializer), options);
   }
 
   state->theOS = theSctx->get_trace_stream();
@@ -102,9 +115,30 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   while (consumeNext(result, theChildren[0], planState)) 
   {
     (*state->theOS) << state->theTagItem->getStringValue() 
-      << " [" << state->theIndex << "]: "
-      << result->show()
-      << std::endl;
+      << " [" << state->theIndex << "]: ";
+
+    {
+      store::Item_t lTmp = result;
+
+      // implicitly materialize non-seekable streamable strings to 
+      // avoid nasty "streamable string has already been consumed"
+      // errors during debugging
+      if (lTmp->isStreamable() && !lTmp->isSeekable() &&
+          lTmp->getTypeCode() == store::XS_STRING)
+      {
+        zstring lString = lTmp->getString();
+        GENV_ITEMFACTORY->createString(lTmp, lString);
+        result = lTmp;
+      }
+
+      store::TempSeq_t lSequence = GENV_STORE.createTempSeq(lTmp);
+      store::Iterator_t seq_iter = lSequence->getIterator();
+      seq_iter->open();
+      state->theSerializer->serialize(seq_iter, (*state->theOS), true);
+      seq_iter->close(); 
+    }
+
+    (*state->theOS) << std::endl;
     ++state->theIndex;
 
     STACK_PUSH(true, state);

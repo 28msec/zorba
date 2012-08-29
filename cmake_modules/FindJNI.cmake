@@ -101,6 +101,12 @@ JAVA_APPEND_LIBRARY_DIRECTORIES(JAVA_AWT_LIBRARY_DIRECTORIES
   ${_JAVA_HOME}/jre/lib
   ${_JAVA_HOME}/lib
   ${_JAVA_HOME}
+  /usr/lib/jvm/java-6-openjdk/jre/lib
+  /usr/lib/jvm/java-6-openjdk-i386/jre/lib
+  /usr/lib/jvm/java-6-openjdk-amd64/jre/lib
+  /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
+  /usr/lib/jvm/java-6-openjdk-i386/jre/lib/{libarch}
+  /usr/lib/jvm/java-6-openjdk-amd64/jre/lib/{libarch}
   /usr/lib
   /usr/local/lib
   /usr/lib/jvm/java/lib
@@ -113,7 +119,6 @@ JAVA_APPEND_LIBRARY_DIRECTORIES(JAVA_AWT_LIBRARY_DIRECTORIES
   /usr/lib/jvm/java-6-sun/jre/lib/{libarch}
   /usr/lib/jvm/java-1.5.0-sun/jre/lib/{libarch}
   /usr/lib/jvm/java-6-sun-1.6.0.00/jre/lib/{libarch}       # can this one be removed according to #8821 ? Alex
-  /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
   /usr/lib/jvm/java-openjdk/jre/lib/{libarch}
   # Debian specific paths for default JVM
   /usr/lib/jvm/default-java/jre/lib/{libarch}
@@ -137,6 +142,9 @@ SET(JAVA_AWT_INCLUDE_DIRECTORIES
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.3;JavaHome]/include"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\${java_install_version};JavaHome]/include"
   ${_JAVA_HOME}/include
+  /usr/lib/jvm/java-6-openjdk/include
+  /usr/lib/jvm/java-6-openjdk-amd64/include
+  /usr/lib/jvm/java-6-openjdk-i386/include
   /usr/include 
   /usr/local/include
   /usr/lib/java/include

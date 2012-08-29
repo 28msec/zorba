@@ -29,6 +29,7 @@
 #include "system/globalenv.h"
 
 
+#include "api/serialization/serializer.h"
 
 namespace zorba {
 
@@ -95,6 +96,7 @@ void TraceIteratorState::init(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
+  theSerializer = NULL;
 }
 
 void TraceIteratorState::reset(PlanState& planState) {
@@ -102,6 +104,7 @@ void TraceIteratorState::reset(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
+  theSerializer = NULL;
 }
 // </TraceIterator>
 

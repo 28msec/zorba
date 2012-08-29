@@ -155,11 +155,13 @@ struct call_traits<T,false> {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A less-verbose way to determine whether the given set<T> contains a
+ * A less-verbose way to determine whether the given map or set contains a
  * particular element.
  */
-template<typename T> inline
-bool contains( std::set<T> const &s, typename call_traits<T>::arg_type v ) {
+template<class ContainerType> inline
+bool contains(
+    ContainerType const &s,
+    typename call_traits<typename ContainerType::key_type>::arg_type v ) {
   return s.find( v ) != s.end();
 }
 
@@ -200,8 +202,32 @@ void delete_ptr_seq( SequenceType &seq ) {
 }
 
 /**
- * Erases the first element in the given sequence for which the given predicate
- * is \c true.
+ * Erases all elements in the given container for which the given predicate is
+ * \c true.
+ *
+ * @tparam SequenceType The sequence type.
+ * @tparam PredicateType The predicate type.
+ * @param seq The sequence to modify.
+ * @param pred The predicate to use.
+ * @return Returns the number of elements erased.
+ */
+template<class SequenceType,class PredicateType> inline
+typename SequenceType::size_type erase_if( SequenceType &seq,
+                                           PredicateType pred ) {
+  typename SequenceType::size_type erased = 0;
+  for ( typename SequenceType::iterator i = seq.begin(); i != seq.end(); ) {
+    if ( pred( *i ) ) {
+      i = seq.erase( i );
+      ++erased;
+    } else
+      ++i;
+  }
+  return erased;
+}
+
+/**
+ * Erases only the first element in the given sequence for which the given
+ * predicate is \c true.
  *
  * @tparam SequenceType The sequence type.
  * @tparam PredicateType The predicate type.

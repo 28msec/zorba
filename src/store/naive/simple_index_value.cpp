@@ -222,7 +222,7 @@ ValueIndex::~ValueIndex()
 /******************************************************************************
 
 ********************************************************************************/
-const XQPCollator* ValueIndex::getCollator(ulong i) const 
+const XQPCollator* ValueIndex::getCollator(csize i) const 
 {
   return theCompFunction.getCollator(i);
 }
@@ -345,7 +345,7 @@ void ValueHashIndex::clear()
 /*******************************************************************************
 
 ********************************************************************************/
-ulong ValueHashIndex::size() const
+csize ValueHashIndex::size() const
 {
   return theMap.size();
 }
@@ -429,9 +429,8 @@ bool ValueHashIndex::remove(
     const store::IndexKey* keyp = (*pos).first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                 valueSet->end(),
-                                                 value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (all)
     {
@@ -564,6 +563,13 @@ void ProbeValueHashIndexIterator::count(store::Item_t& result)
 /******************************************************************************
 
 ********************************************************************************/
+ValueTreeIndex::KeyIterator::KeyIterator(const IndexMap& aMap)
+  :
+  theMap(aMap)
+{
+}
+
+
 ValueTreeIndex::KeyIterator::~KeyIterator()
 {
 };
@@ -571,21 +577,29 @@ ValueTreeIndex::KeyIterator::~KeyIterator()
 
 void ValueTreeIndex::KeyIterator::open()
 {
-  assert(false);
+  theIterator = theMap.begin();
 }
 
 
-bool ValueTreeIndex::KeyIterator::next(store::IndexKey&)
+bool ValueTreeIndex::KeyIterator::next(store::IndexKey& aKey)
 {
-  assert(false);
+  if (theIterator != theMap.end())
+  {
+    const store::IndexKey* lKey = (*theIterator).first;
+    aKey = *lKey;
+
+    ++theIterator;
+    return true;
+  }
   return false;
 }
 
 
 void ValueTreeIndex::KeyIterator::close()
 {
-  assert(false);
-}
+  theIterator = theMap.end();
+};
+
 
 
 /******************************************************************************
@@ -642,10 +656,9 @@ void ValueTreeIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
-ulong ValueTreeIndex::size() const
+csize ValueTreeIndex::size() const
 {
-  assert(false);
-  return 0;
+  return theMap.size();
 }
 
 
@@ -654,8 +667,7 @@ ulong ValueTreeIndex::size() const
 ********************************************************************************/
 store::Index::KeyIterator_t ValueTreeIndex::keys() const
 {
-  assert(false);
-  return 0;
+  return new KeyIterator(theMap);
 }
 
 
@@ -736,9 +748,8 @@ bool ValueTreeIndex::remove(
     const store::IndexKey* keyp = pos->first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                   valueSet->end(),
-                                                   value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (valIte != valueSet->end())
     {
@@ -821,7 +832,7 @@ void ProbeValueTreeIndexIterator::initExact()
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::initBox()
 {
-  ulong numRanges = theBoxCond->numRanges();
+  csize numRanges = theBoxCond->numRanges();
 
   assert(numRanges > 0 && numRanges <= theIndex->getNumColumns());
 
@@ -874,7 +885,7 @@ void ProbeValueTreeIndexIterator::initBox()
   //
   // Adjust the lower and/or upper bound index keys before probing the index.
   //
-  for (ulong i = 0; i < numRanges; i++)
+  for (csize i = 0; i < numRanges; i++)
   {
     const XQPCollator* collator = theIndex->getCollator(i);
 
