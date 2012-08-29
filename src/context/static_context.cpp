@@ -1036,8 +1036,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     else
       ar & theParent;
 
-    if(theParent)
-      theParent->addReference(theParent->getSharedRefCounter() SYNC_PARAM2(theParent->getRCLock()));
+    if (theParent)
+      theParent->addReference(SYNC_CODE(theParent->getRCLock()));
   }
 
   ar & theModuleNamespace;

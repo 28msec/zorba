@@ -93,9 +93,9 @@ public:
 
   long getRefCount() const { return theRefCount; }
 
-  void addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const;
+  void addReference(SYNC_CODE(RCLock* lock)) const;
 
-  void removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock));
+  void removeReference(SYNC_CODE(RCLock* lock));
 };
 
 
@@ -115,8 +115,6 @@ public:
   SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
 
   void free() { delete this; }
-
-  long* getSharedRefCounter() const  { return NULL; } 
 
   SYNC_CODE(RCLock* getRCLock() const { return NULL; })
 
@@ -166,7 +164,7 @@ public:
   ~rchandle()
   {
     if (p)
-      p->removeReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
+      p->removeReference(SYNC_CODE(p->getRCLock()));
     p = 0;
   }
 
@@ -221,8 +219,7 @@ public:
   {
     if (p != rhs)
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = const_cast<T*>(rhs);
       init();
     }
@@ -233,8 +230,7 @@ public:
   {
     if (p != rhs)
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = static_cast<T*>(const_cast<otherT*>(rhs));
       init();
     }
@@ -255,8 +251,7 @@ public:
   {
     if (p != rhs.getp())
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = static_cast<T*>(rhs.getp());
       rhs.setNull();
     }
@@ -267,8 +262,7 @@ public:
   {
     if (p != rhs.p)
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = rhs.p;
       rhs.p = NULL;
     }
@@ -294,7 +288,7 @@ protected:
   void init()
   {
     if (p == 0) return;
-    p->addReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
+    p->addReference(SYNC_CODE(p->getRCLock()));
   }
 
 
@@ -302,8 +296,7 @@ protected:
   {
     if (p != rhs.getp())
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = static_cast<T*>(rhs.getp());
       init();
     }
@@ -312,15 +305,20 @@ protected:
 
 };
 
-namespace ztd {
+
+namespace ztd 
+{
 
 template<typename T> inline
-std::string to_string( rchandle<T> const &r ) {
+std::string to_string(const rchandle<T>& r)
+{
   return !r ? "<null>" : to_string( *r );
 }
 
+
 template<typename T,class OutputStringType> inline
-void to_string( rchandle<T> const &r, OutputStringType *out ) {
+void to_string(const rchandle<T>& r, OutputStringType* out )
+{
   if ( !r )
     *out = "<null>";
   else
@@ -349,11 +347,14 @@ public:
   }
 
 public:
-  bool isNull () const        { return rchandle<T>::isNull(); }
-  void setNull()              { rchandle<T>::setNull();}
+  bool isNull () const { return rchandle<T>::isNull(); }
+
+  void setNull() { rchandle<T>::setNull();}
 
   const T* getp () const { return rchandle<T>::getp (); }
-  typename rchandle<T>::union_T getp_ref()             { return rchandle<T>::getp_ref(); }
+
+  typename rchandle<T>::union_T getp_ref() { return rchandle<T>::getp_ref(); }
+
   operator const T * () const { return rchandle<T>::getp (); }
 
   const T* operator->() const { return getp(); } 
@@ -376,15 +377,13 @@ namespace RCHelper
   template<class T> 
   static void addReference(T *t)
   {
-    t->addReference(t->getSharedRefCounter()
-                    SYNC_PARAM2(t->getRCLock()));
+    t->addReference(SYNC_CODE(t->getRCLock()));
   }
 
   template<class T> 
   static void removeReference(T *t)
   {
-    t->removeReference(t->getSharedRefCounter()
-                       SYNC_PARAM2(t->getRCLock()));
+    t->removeReference(SYNC_CODE(t->getRCLock()));
   }
 
   template<class T> 
