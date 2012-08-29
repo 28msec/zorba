@@ -50,7 +50,7 @@ SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::EvalIteratorState() 
+EvalIteratorState::EvalIteratorState()
 {
 }
 
@@ -58,7 +58,7 @@ EvalIteratorState::EvalIteratorState()
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::~EvalIteratorState() 
+EvalIteratorState::~EvalIteratorState()
 {
 }
 
@@ -77,7 +77,7 @@ EvalIterator::EvalIterator(
     const store::NsBindings& localBindings,
     bool doNodeCopy,
     bool forDebugger)
-  : 
+  :
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
   theOuterVarNames(varNames),
   theOuterVarTypes(varTypes),
@@ -93,7 +93,7 @@ EvalIterator::EvalIterator(
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIterator::~EvalIterator() 
+EvalIterator::~EvalIterator()
 {
 }
 
@@ -154,14 +154,13 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->dctx.reset(evalDctx);
 
     // Import the outer environment.
-    std::vector<var_expr_t> outerVars;
     ulong maxOuterVarId;
-    importOuterEnv(planState, importSctx, evalDctx, outerVars, maxOuterVarId);
+    importOuterEnv(planState, evalCCB, importSctx, evalDctx, maxOuterVarId);
 
-    // If we are here after a reet, we must set state->thePlanWrapper to NULL
+    // If we are here after a reset, we must set state->thePlanWrapper to NULL
     // before reseting the state->thePlan. Otherwise, the current state->thePlan
-    // will be destroyed first, and then we will attempt to close it when 
-    // state->thePlanWrapper is reset later. 
+    // will be destroyed first, and then we will attempt to close it when
+    // state->thePlanWrapper is reset later.
     state->thePlanWrapper = NULL;
 
     // Compile
@@ -214,9 +213,9 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 ********************************************************************************/
 void EvalIterator::importOuterEnv(
     PlanState& planState,
+    CompilerCB* evalCCB,
     static_context* importSctx,
     dynamic_context* evalDctx,
-    std::vector<var_expr_t>& outerVars,
     ulong& maxOuterVarId) const
 {
   maxOuterVarId = 1;
@@ -274,18 +273,14 @@ void EvalIterator::importOuterEnv(
 
   csize numOuterVars = theOuterVarNames.size();
 
-  outerVars.resize(numOuterVars);
-
   for (csize i = 0; i < numOuterVars; ++i)
   {
-    var_expr_t ve = new var_expr(importSctx,
-                                 loc,
-                                 var_expr::prolog_var,
-                                 theOuterVarNames[i].getp());
+    var_expr* ve = evalCCB->theEM->create_var_expr(importSctx,
+                                                   loc,
+                                                   var_expr::prolog_var,
+                                                   theOuterVarNames[i].getp());
 
     ve->set_type(theOuterVarTypes[i]);
-
-    outerVars[i] = ve;
 
     if (!theIsGlobalVar[i])
     {
@@ -422,10 +417,8 @@ PlanIter_t EvalIterator::compile(
   if (mm == NULL)
     throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
-  expr_t rootExpr;
   PlanIter_t rootIter = compiler.compile(ast,
                                          false, // do not apply PUL
-                                         rootExpr,
                                          maxOuterVarId,
                                          sar);
   if (theScriptingKind == SIMPLE_EXPR)

@@ -5,6 +5,9 @@ version 2.7
 New Features:
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
 
+Optimizations:
+  * New memory management for compiler expressions (no more ref counting)
+
 Bug Fixes/Other Changes:
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
