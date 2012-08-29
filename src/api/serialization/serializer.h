@@ -423,7 +423,10 @@ protected:
   class jsoniq_emitter : public emitter
   {
   public:
-    jsoniq_emitter(serializer* the_serializer, std::ostream& the_stream);
+    jsoniq_emitter(
+        serializer* the_serializer, 
+        std::ostream& the_stream,
+        bool aEmitAttributes = false);
 
     virtual ~jsoniq_emitter();
 

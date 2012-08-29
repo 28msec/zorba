@@ -1,5 +1,8 @@
-declare function local:foo() {
+declare function local:foo() 
+{
   $x
 };
+
 declare variable $x external := 5;
-$y instance of xs:decimal
+
+local:foo()

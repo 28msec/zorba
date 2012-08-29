@@ -496,6 +496,14 @@ void XQueryImpl::compile(
 
     std::istringstream lQueryStream(aQuery.c_str());
 
+    /*
+    std::cout << "Query    : " << std::hex << (ulong)this << std::endl
+              << "ccb      : " << (ulong)theCompilerCB << std::endl
+              << "em       : " << (ulong)theCompilerCB->theEM << std::endl
+              << "app SCTX : " << (ulong)externalSctx << std::endl
+              << "app sctx : " << (ulong)externalSctx->theCtx.getp() << std::endl;
+    */
+
     doCompile(lQueryStream, aHints, true, nextVarId);
   }
   QUERY_CATCH
@@ -563,6 +571,8 @@ void XQueryImpl::doCompile(
       theStaticContext = theStaticContext->create_child_context();
     }
   }
+
+  //std::cout << "sctx     : " << theStaticContext << std::endl << std::endl;
 
   zstring url;
   URI::encode_file_URI(theFileName, url);
@@ -706,10 +716,17 @@ XQuery_t XQueryImpl::clone() const
     clone->theCompilerCB->theSctxMap = theCompilerCB->theSctxMap;
 
     int sctxid = (int)clone->theCompilerCB->theSctxMap.size() + 1;
-    (clone->theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
+    (clone->theCompilerCB->theSctxMap)[sctxid] = clone->theStaticContext;
 
     clone->thePlanProxy = thePlanProxy;
 
+    /*
+    std::cout << "Clone Query : " << std::hex << (ulong)clone << std::endl
+              << "Clone ccb   : " << (ulong)clone->theCompilerCB << std::endl
+              << "Clone sctx  : " << (ulong)clone->theStaticContext.getp() << std::endl
+              << "Clone em    : " << (ulong)clone->theCompilerCB->theEM << std::endl
+              << std::endl << std::endl;
+    */
     return lXQuery;
   }
   QUERY_CATCH
