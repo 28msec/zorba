@@ -613,27 +613,21 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-QNameItem::QNameItem(
-    const char* aNamespace,
-    const char* aPrefix,
-    const char* aLocalName)
+QNameItem::QNameItem(const char* ns, const char* prefix, const char* local)
   :
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
-  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+  initializeAsQNameNotInPool(ns, prefix, local);
 }
 
 
-QNameItem::QNameItem(
-    const zstring& aNamespace,
-    const zstring& aPrefix,
-    const zstring& aLocalName)
+QNameItem::QNameItem(const zstring& ns, const zstring& prefix, const zstring& local)
   :
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
-  initializeAsQNameNotInPool(aNamespace, aPrefix, aLocalName);
+  initializeAsQNameNotInPool(ns, prefix, local);
 }
 
 
@@ -673,6 +667,18 @@ void QNameItem::free()
 }
 
 
+bool QNameItem::equals(
+    const store::Item* item,
+    long timezone,
+    const XQPCollator* aCollation) const
+{
+  assert(dynamic_cast<const QNameItem*>(item) != NULL);
+
+  return (theNormalizedQName ==
+          static_cast<const QNameItem*>(item)->theNormalizedQName);
+}
+
+
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   const void* tmp = theNormalizedQName;
@@ -690,16 +696,6 @@ bool QNameItem::getEBV() const
 {
   throw XQUERY_EXCEPTION(err::FORG0006,
   ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "QName"));
-}
-
-
-bool QNameItem::equals(
-    const store::Item* item,
-    long timezone,
-    const XQPCollator* aCollation) const
-{
-  return theNormalizedQName ==
-      static_cast<const QNameItem*>(item)->theNormalizedQName;
 }
 
 

@@ -117,7 +117,11 @@ public:
 
 public:
   Queries(std::ostream& lOutput)
-    : theNumRunsPerQuery(1), theNumThreads(1), theOutput(lOutput) {}
+    :
+    theNumRunsPerQuery(1),
+    theNumThreads(1),
+    theOutput(lOutput)
+  {}
 
   ~Queries();
 
@@ -253,7 +257,8 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
       fs::create_directories(dirPath.generic_string());
 #endif
 
-      // clear the bad flag on windows, which for some unknown reason doesn't reset when opening a file again
+      // clear the bad flag on windows, which for some unknown reason doesn't
+      // reset when opening a file again
       fileStream.clear(); 
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       fileStream.open(filePath.file_string().c_str());
@@ -279,14 +284,17 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
 /*******************************************************************************
 
 ********************************************************************************/
-bool checkErrors(const Specification& lSpec, const TestDiagnosticHandler& errHandler, std::ostream& lOutput) 
+bool checkErrors(
+    const Specification& lSpec,
+    const TestDiagnosticHandler& errHandler,
+    std::ostream& lOutput) 
 {
   if (isErrorExpected(errHandler, &lSpec)) 
   {
     printErrors(errHandler,
-      "The following execution errors occurred as expected",
-      true,
-      lOutput);
+                "The following execution errors occurred as expected",
+                true,
+                lOutput);
     return true;
   }
   else
@@ -502,7 +510,8 @@ DWORD WINAPI thread_main(LPVOID param)
 
     // If --enable-uritestresolver is specified, enable our document
     // URI resolver for test:// scheme URIs as well as a silly URLResolver
-    if (querySpec.getEnableUriTestResolver()) {
+    if (querySpec.getEnableUriTestResolver()) 
+    {
       dmapper.reset(new zorba::TestSchemeURIMapper(rbkt_src_dir));
       addURIMapper(driverContext, sctx, dmapper.get());
       tresolver.reset(new zorba::TestURLResolver());
@@ -533,16 +542,21 @@ DWORD WINAPI thread_main(LPVOID param)
     {
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       slurp_file(queryPath.file_string().c_str(),
-#else
-      slurp_file(queryPath.generic_string().c_str(),
-#endif
                  queryString,
                  rbkt_src_dir,
                  rbkt_bin_dir);
+#else
+      slurp_file(queryPath.generic_string().c_str(),
+                 queryString,
+                 rbkt_src_dir,
+                 rbkt_bin_dir);
+#endif
+                 
 
       try
       {
         query = zorba->createQuery(&errHandler);
+
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         query->setFileName(queryPath.file_string());
 #else
@@ -606,7 +620,9 @@ DWORD WINAPI thread_main(LPVOID param)
     {
       createDynamicContext(driverContext, sctx, query, querySpec.getEnableDtd(),
                            errHandler);
-      if (!errHandler.errors()) {
+
+      if (!errHandler.errors())
+      {
         Zorba_SerializerOptions lSerOptions;
         lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
@@ -874,7 +890,8 @@ _tmain(int argc, _TCHAR* argv[])
   // to shut them up here. QQQ if we can figure out where those
   // messages are coming from it would be better to fix those than
   // take this heavy-handed approach.
-  if (quiet) {
+  if (quiet) 
+  {
 #ifndef WIN32
     close(2);
 #else
@@ -886,14 +903,17 @@ _tmain(int argc, _TCHAR* argv[])
   // Create the full pathname for the top-level query, results, and ref-results
   // directories
   //
-  if (bucketPath == "") {
+  if (bucketPath == "") 
+  {
     bucketPath = zorba::RBKT_SRC_DIR;
     // QQQ Probably should have an option for specifying alternative
     // resultsDir too
   }
-  else {
+  else 
+  {
     rbkt_src_dir = bucketPath;
   }
+
   queriesDir = bucketPath + "/Queries/" + bucketName;
   resultsDir = zorba::RBKT_BINARY_DIR + "/QueryResults/" + bucketName;
   refsDir = bucketPath + "/ExpQueryResults/" + bucketName;
@@ -913,9 +933,9 @@ _tmain(int argc, _TCHAR* argv[])
   }
 
   reportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + reportFilename;
-  if(generateW3CData)
+  if (generateW3CData)
   {
-	XMLreportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + XMLreportFilename;
+    XMLreportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + XMLreportFilename;
   }
 
   //
@@ -978,7 +998,8 @@ _tmain(int argc, _TCHAR* argv[])
   // Search and collect all the query files in the bucket, unless some
   // specific test names were mentioned.
   //
-  if (testNames.size() == 0) {
+  if (testNames.size() == 0) 
+  {
     queries.theOutput << "Searching for queries in directory "
                       << queries.theQueriesDir << std::endl << std::endl;
 
@@ -1179,13 +1200,16 @@ _tmain(int argc, _TCHAR* argv[])
 #endif
       }
     }
-    if(generateW3CData)
+
+    if (generateW3CData)
     {
       std::string status = (queries.theQueryStates[i] ==  true)?"pass":"fail";
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
-      XMLreport << "<Test Status='" << status << "'><Name>" << queryName.file_string() << "</Name></Test>" << std::endl;
+      XMLreport << "<Test Status='" << status << "'><Name>"
+                << queryName.file_string() << "</Name></Test>" << std::endl;
 #else
-      XMLreport << "<Test Status='" << status << "'><Name>" << queryName.generic_string() << "</Name></Test>" << std::endl;
+      XMLreport << "<Test Status='" << status << "'><Name>"
+                << queryName.generic_string() << "</Name></Test>" << std::endl;
 #endif
     }
   }
@@ -1195,8 +1219,10 @@ _tmain(int argc, _TCHAR* argv[])
   
   if(generateW3CData)
   {
-	std::ofstream w3cReportFile(XMLreportFilepath.c_str());
-	w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl << "<Site><Testing>" << std::endl << XMLreport.str() << "</Testing></Site>" << std::endl;
+    std::ofstream w3cReportFile(XMLreportFilepath.c_str());
+    w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl
+                  << "<Site><Testing>" << std::endl << XMLreport.str()
+                  << "</Testing></Site>" << std::endl;
   }
 
   // Don't use theOutput here - this is the summary we always want to
