@@ -916,7 +916,7 @@ inline bool inLibraryModule()
 *******************************************************************************/
 inline bool inUDFBody()
 {
-  return !theCurrentPrologVFDecl.isNull();
+  return (!theCurrentPrologVFDecl.isNull() && theCurrentPrologVFDecl.isUDF());
 }
 
 
@@ -1130,13 +1130,26 @@ void bind_var(var_expr_t e, static_context* sctx)
 {
   assert(sctx != NULL);
 
-  if (e->get_kind() == var_expr::let_var)
+  switch (e->get_kind())
+  {
+  case var_expr::let_var:
   {
     sctx->bind_var(e, e->get_loc(), err::XQST0039);
+    break;
   }
-  else
+  case var_expr::win_var:
+  case var_expr::wincond_out_var:
+  case var_expr::wincond_out_pos_var:
+  case var_expr::wincond_in_var:
+  case var_expr::wincond_in_pos_var:
+  {
+    sctx->bind_var(e, e->get_loc(), err::XQST0103);
+    break;
+  }
+  default:
   {
     sctx->bind_var(e, e->get_loc(), err::XQST0049);
+  }
   }
 
   theVars.push_back(e);
@@ -1407,7 +1420,7 @@ void normalize_fo(fo_expr* foExpr)
       {
         argExpr = wrap_in_atomization(argExpr);
         argExpr = wrap_in_type_promotion(argExpr,
-                                         paramType, 
+                                         paramType,
                                          PromoteIterator::FUNC_PARAM,
                                          func->getName());
       }
@@ -1975,7 +1988,7 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
     stmts.push_back(new treat_expr(theRootSctx,
                                    loc,
                                    getExpr,
-                                   varType, 
+                                   varType,
                                    TreatIterator::TYPE_MATCH));
   }
 }
@@ -3200,7 +3213,7 @@ void* begin_visit(const VFO_DeclList& v)
   //  (3) and then creates the udf object and binds it in the sctx.
   // The 1st pass also binds all options, so that the module version information
   // is available if we try to load external function libraries.
-  // 2nd pass;  happens when accept() is called on each individual FunctionDecl
+  // The 2nd pass happens when accept() is called on each individual FunctionDecl
   // node in the list.
 
   for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
@@ -3233,21 +3246,105 @@ void* begin_visit(const VFO_DeclList& v)
       continue;
     }
 
+#if 1
+    const GlobalVarDecl* var_decl = it->dyn_cast<GlobalVarDecl>().getp();
+
+    if (var_decl != NULL &&
+        theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+    {
+      const QueryLoc& loc = var_decl->get_location();
+
+      store::Item_t qnameItem;
+      expand_no_default_qname(qnameItem, var_decl->get_var_name(), loc);
+
+      // All vars declared in a module must be in the same namespace as the module
+      if (! theModuleNamespace.empty() &&
+          qnameItem->getNamespace() != theModuleNamespace)
+      {
+        RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+      }
+
+      var_expr_t ve = create_var(loc, qnameItem, var_expr::prolog_var);
+
+      if (var_decl->is_extern())
+        ve->set_external(true);
+
+      xqtref_t type;
+      if (var_decl->get_var_type() != NULL)
+      {
+        var_decl->get_var_type()->accept(*this);
+
+        type = pop_tstack();
+
+        ve->set_type(type);
+      }
+
+      AnnotationListParsenode* annotations = var_decl->get_annotations();
+      if (annotations)
+      {
+        if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+        {
+          RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
+        }
+
+        annotations->accept(*this);
+
+        if (theAnnotations)
+        {
+          if (ZANN_CONTAINS(fn_private))
+            ve->set_private(true);
+
+          if (ZANN_CONTAINS(zann_assignable))
+          {
+            ve->set_mutable(true);
+          }
+          else if (ZANN_CONTAINS(zann_nonassignable))
+          {
+            ve->set_mutable(false);
+          }
+          else
+          {
+            ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+          }
+        }
+        else
+        {
+          ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+        }
+      }
+
+      theAnnotations = NULL;
+
+      // Put a mapping between the var name and the var_expr in the local sctx.
+      // Raise error if var name exists already in local sctx obj.
+      bind_var(ve, theSctx);
+
+      // Make sure that there is no other prolog var with the same name in any of
+      // modules translated so far.
+      bind_var(ve, theModulesInfo->globalSctx.get());
+
+      // If this is a library module, register the var in the exported sctx as well.
+      if (export_sctx != NULL)
+        bind_var(ve, export_sctx);
+
+      continue;
+    }
+#endif
+
     const FunctionDecl* func_decl = it->dyn_cast<FunctionDecl>().getp();
 
-    // skip variable and option declarations.
     if (func_decl == NULL)
       continue;
 
-    AnnotationListParsenode* lAnns = func_decl->get_annotations();
-    if (lAnns)
+    AnnotationListParsenode* annotations = func_decl->get_annotations();
+    if (annotations)
     {
       if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
       {
         RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
       }
 
-      lAnns->accept(*this);
+      annotations->accept(*this);
     }
 
     const QueryLoc& loc = func_decl->get_location();
@@ -3324,9 +3421,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
 
     // Create the function signature.
-    bool isVariadic = (theAnnotations ?
-                       ZANN_CONTAINS(zann_variadic):
-                       false);
+    bool isVariadic = (theAnnotations ? ZANN_CONTAINS(zann_variadic): false);
 
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
@@ -3624,7 +3719,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     {
       body = wrap_in_type_match(body,
                                 returnType,
-                                loc, 
+                                loc,
                                 TreatIterator::FUNC_RETURN,
                                 udf->getName());
     }
@@ -3700,7 +3795,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   // theCurrentPrologVFDecl might be null in case of inline functions
   // inline functions currently can't be sequential anyway
   // hence, we can always lazy evaluation
-  if (!theCurrentPrologVFDecl.isNull())
+  if (inUDFBody())
   {
     //lc->setLazyEval(!f->isSequential());
 
@@ -3731,8 +3826,6 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
 /*******************************************************************************
 
-  VarDecl is used to represent both global and block-local var declarations.
-
   Global declarations:
   --------------------
 
@@ -3751,22 +3844,8 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   Note: the applicable annotations are private vs public, and assignable vs
   non-assignable.
-
-
-  Local declarations:
-  -------------------
-
-  VarDeclStatement ::= ("local" Annotation*)? "variable"
-                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
-
-  Note: The initializing ExprSingle in VarValue must be a non-updating expr.
-
-  Note: The applicable annotations are assignable vs non-assignable.
-
-  Note: Local var decls may appear only as direct operands of block exprs.
 ********************************************************************************/
-void* begin_visit(const VarDecl& v)
+void* begin_visit(const GlobalVarDecl& v)
 {
   TRACE_VISIT();
 
@@ -3775,81 +3854,40 @@ void* begin_visit(const VarDecl& v)
 
   var_expr_t ve;
 
-  if (v.is_global())
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ve = lookup_var(qnameItem, loc, err::XPST0008);
+
+    assert(ve);
+  }
+  else
   {
     ve = create_var(loc, qnameItem, var_expr::prolog_var);
 
     if (v.is_extern())
       ve->set_external(true);
-
-    thePrologGraph.addVarVertex(ve);
-    theCurrentPrologVFDecl = PrologGraphVertex(ve);
   }
-  else
-  {
-    if (theNodeStack.top()->get_expr_kind() != block_expr_kind)
-    {
-      ZORBA_ASSERT(false);
-    }
 
-    ve = create_var(loc, qnameItem, var_expr::local_var);
-  }
+  thePrologGraph.addVarVertex(ve);
+  theCurrentPrologVFDecl = PrologGraphVertex(ve);
 
   push_nodestack(ve.getp());
+
   return no_state;
 }
 
 
-void end_visit(const VarDecl& v, void* /*visit_state*/)
+void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  if (v.is_global())
-    theCurrentPrologVFDecl.setNull();
+  theCurrentPrologVFDecl.setNull();
 
   expr_t initExpr = (v.get_binding_expr() == NULL ? expr_t(NULL) : pop_nodestack());
 
   var_expr_t ve = dynamic_cast<var_expr*>(pop_nodestack().getp());
 
-  if (theAnnotations)
-  {
-    if (v.is_global())
-    {
-      if (ZANN_CONTAINS(fn_private))
-        ve->set_private(true);
-    }
-
-    if (ZANN_CONTAINS(zann_assignable))
-    {
-      ve->set_mutable(true);
-    }
-    else if (ZANN_CONTAINS(zann_nonassignable))
-    {
-      ve->set_mutable(false);
-    }
-    else if (v.is_global())
-    {
-      ve->set_mutable(theSctx->is_feature_set(feature::scripting));
-    }
-  }
-  else if (v.is_global())
-  {
-    ve->set_mutable(theSctx->is_feature_set(feature::scripting));
-  }
-
-  xqtref_t type;
-  if (v.get_var_type() != NULL)
-  {
-    type = pop_tstack();
-
-    ve->set_type(type);
-  }
-
-  // Put a mapping between the var name and the var_expr in the local sctx.
-  // Raise error if var name exists already in local sctx obj.
-  bind_var(ve, theSctx);
-
-  if (v.is_global())
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
     // All vars declared in a module must be in the same namespace as the module
     if (! theModuleNamespace.empty() &&
@@ -3858,57 +3896,72 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
 
+    if (theAnnotations)
+    {
+      if (ZANN_CONTAINS(fn_private))
+        ve->set_private(true);
+
+      if (ZANN_CONTAINS(zann_assignable))
+      {
+        ve->set_mutable(true);
+      }
+      else if (ZANN_CONTAINS(zann_nonassignable))
+      {
+        ve->set_mutable(false);
+      }
+      else
+      {
+        ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+      }
+    }
+    else
+    {
+      ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+    }
+
+    theAnnotations = NULL;
+
+    // Put a mapping between the var name and the var_expr in the local sctx.
+    // Raise error if var name exists already in local sctx obj.
+    bind_var(ve, theSctx);
+
     // Make sure that there is no other prolog var with the same name in any of
     // modules translated so far.
     bind_var(ve, theModulesInfo->globalSctx.get());
 
-    // Make sure the initExpr is a simple expr.
-    if (initExpr != NULL)
-    {
-      expr::checkSimpleExpr(initExpr);
-      ve->set_has_initializer(true);
-    }
-
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
-
-#ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
-    {
-      QueryLoc lExpandedLocation = expandQueryLoc(v.get_var_name()->get_location(),
-                                                  initExpr->get_loc());
-
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
-    }
-#endif
-
-    // The ve and its associated intExpr will be put into var_decl_expr that
-    // will creaated by the wrap_in_globalvar_assign() method when it is called
-    // at the end of the translation of each module.
-    thePrologVars.push_back(GlobalBinding(ve, initExpr, v.is_extern()));
   }
-  else
+
+  xqtref_t type;
+  if (v.get_var_type() != NULL)
   {
-    // The ve and its associated intExpr will be put into var_decl_expr that
-    // will be created by the translation of the parent block expr, immediately
-    // after returning from this method.
-    push_nodestack(ve.getp());
-
-#ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
-    {
-      QueryLoc lExpandedLocation = 
-      expandQueryLoc(v.get_var_name()->get_location(), initExpr->get_loc());
-
-      wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
-    }
-#endif
-
-    push_nodestack(initExpr);
+    type = pop_tstack();
+    ve->set_type(type);
   }
 
-  theAnnotations = NULL;
+  // Make sure the initExpr is a simple expr.
+  if (initExpr != NULL)
+  {
+    expr::checkSimpleExpr(initExpr);
+    ve->set_has_initializer(true);
+  }
+
+#ifdef ZORBA_WITH_DEBUGGER
+  if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
+  {
+    QueryLoc lExpandedLocation = expandQueryLoc(v.get_var_name()->get_location(),
+                                                initExpr->get_loc());
+
+    wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
+  }
+#endif
+
+  // The ve and its associated intExpr will be put into var_decl_expr that
+  // will creaated by the wrap_in_globalvar_assign() method when it is called
+  // at the end of the translation of each module.
+  thePrologVars.push_back(GlobalBinding(ve, initExpr, v.is_extern()));
 }
 
 
@@ -5474,7 +5527,7 @@ void* begin_visit(const BlockBody& v)
   {
     v[i]->accept(*this);
 
-    if (dynamic_cast<const VarDecl*>(v[i]) != NULL)
+    if (dynamic_cast<const LocalVarDecl*>(v[i]) != NULL)
     {
       expr_t val = pop_nodestack();
       var_expr_t ve = pop_nodestack().cast<var_expr>();
@@ -5564,12 +5617,86 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
   Note: Each individual var decl in a VarDeclStatement is parsed into a VarDecl
   parsenode.
 
+  Note: The applicable annotations are assignable vs non-assignable.
+
   Note: The parser makes sure that if a VarDeclStatement does not appear as a
   direct child of a BlockBody, it is wrapped by a BlockBody. Furthermore, the
   parser will flatten-out the VarDeclStatement parsenode by placing its children
   as direct children of the enclosing BlockBody. As a result, VarDeclStatement
-  parsenodes do not appear at all in the final AST.
+  parsenodes do not appear at all in the final AST, and local var decls may
+  appear only as direct operands of block exprs.
 ********************************************************************************/
+void* begin_visit(const LocalVarDecl& v)
+{
+  TRACE_VISIT();
+
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, v.get_var_name(), loc);
+
+  if (theNodeStack.top()->get_expr_kind() != block_expr_kind)
+  {
+    ZORBA_ASSERT(false);
+  }
+
+  var_expr_t ve = create_var(loc, qnameItem, var_expr::local_var);
+
+  push_nodestack(ve.getp());
+
+  return no_state;
+}
+
+
+void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  expr_t initExpr = (v.get_binding_expr() == NULL ? expr_t(NULL) : pop_nodestack());
+
+  var_expr_t ve = dynamic_cast<var_expr*>(pop_nodestack().getp());
+
+  if (theAnnotations)
+  {
+    if (ZANN_CONTAINS(zann_assignable))
+    {
+      ve->set_mutable(true);
+    }
+    else if (ZANN_CONTAINS(zann_nonassignable))
+    {
+      ve->set_mutable(false);
+    }
+  }
+
+  xqtref_t type;
+  if (v.get_var_type() != NULL)
+  {
+    type = pop_tstack();
+
+    ve->set_type(type);
+  }
+
+  // Put a mapping between the var name and the var_expr in the local sctx.
+  // Raise error if var name exists already in local sctx obj.
+  bind_var(ve, theSctx);
+
+  // The ve and its associated intExpr will be put into var_decl_expr that
+  // will be created by the translation of the parent block expr, immediately
+  // after returning from this method.
+  push_nodestack(ve.getp());
+
+#ifdef ZORBA_WITH_DEBUGGER
+  if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
+  {
+    QueryLoc lExpandedLocation =
+    expandQueryLoc(v.get_var_name()->get_location(), initExpr->get_loc());
+
+    wrap_in_debugger_expr(initExpr, lExpandedLocation, false, true);
+  }
+#endif
+
+  push_nodestack(initExpr);
+
+  theAnnotations = NULL;
+}
 
 
 /*******************************************************************************
@@ -5914,7 +6041,6 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     {
       // window var + output window condition vars
       pop_scope();
-      pop_scope();
       break;
     }
     case flwor_clause::group_clause:
@@ -6047,7 +6173,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  QueryLoc lExpandedLocation = 
+  QueryLoc lExpandedLocation =
   expandQueryLoc(v.get_var_name()->get_location(), domainExpr->get_loc());
 
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
@@ -6254,10 +6380,6 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
   var_expr_t windowVarExpr = pop_nodestack_var();
   windowVarExpr->set_flwor_clause(windowClause);
 
-  // Create scope for the output window-condition vars. These vars are visible
-  // outside the window clause only.
-  push_scope();
-
   // Create var_exprs for output window-condition vars, associate them with this
   // window clause, and push them to the nodestack.
   rchandle<FLWORWinCond> cond;
@@ -6388,33 +6510,6 @@ void pop_wincond_vars(rchandle<WindowVars> node, flwor_wincond::vars& vars)
 
 
 /*******************************************************************************
-  WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
-********************************************************************************/
-void* begin_visit(const WindowVarDecl& v)
-{
-  TRACE_VISIT();
-
-  // Done with input window condition vars.
-  pop_scope();
-
-  return no_state;
-}
-
-void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  // Create scope for the window var
-  push_scope();
-
-  xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
-
-  var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::win_var, type);
-  push_nodestack(ve.getp());
-}
-
-
-/*******************************************************************************
   WindowStartCondition ::= "start" WindowVars "when" ExprSingle
 
   WindowEndCondition ::= "only"? "end" WindowVars "when" ExprSingle
@@ -6455,6 +6550,33 @@ void end_visit(const WindowVars& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
+********************************************************************************/
+void* begin_visit(const WindowVarDecl& v)
+{
+  TRACE_VISIT();
+
+  // Done with input window condition vars.
+  pop_scope();
+
+  return no_state;
+}
+
+void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  // Create scope for the window var and the output window-condition vars
+  push_scope();
+
+  xqtref_t type = (v.get_var_type() == NULL ? NULL : pop_tstack());
+
+  var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::win_var, type);
+
+  push_nodestack(ve.getp());
+}
+
 
 /*******************************************************************************
   GroupByClause ::= "group" "by" GroupingSpecList
@@ -6480,7 +6602,7 @@ void* begin_visit(const GroupByClause& v)
   for (csize i = 0; i < lList->size(); ++i)
   {
     GroupSpec* spec = (*lList)[i];
-    
+
     const QName* varname = spec->get_var_name();
 
     const var_expr* ve = NULL;
@@ -6562,7 +6684,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
         if (groupSpec.get_collation_spec() != NULL &&
             prevSpec.get_collation_spec() != NULL &&
-            groupSpec.get_collation_spec()->get_uri() == 
+            groupSpec.get_collation_spec()->get_uri() ==
             prevSpec.get_collation_spec()->get_uri())
           break;
       }
@@ -6679,7 +6801,7 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
 
     if (v.get_var_type() != NULL)
       type = pop_tstack();
-    
+
     create_let_clause(loc, v.get_var_name(), domainExpr, type);
   }
 }
@@ -8155,11 +8277,9 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       // when casting to type T, where T is QName or subtype of, and the input
       // is not a const expr, then the input MUST be of type T or subtype of.
       if (isCast)
-        return new treat_expr(theRootSctx,
-                              loc,
-                              node,
-                              qnameType,
-                              TreatIterator::TYPE_MATCH);
+        // This was previously a treat_expr() with TYPE_MATCH. It was changed to cast_expr()
+        // in order to allow dynamically computed strings to be cast to xs:QName.
+        return new cast_expr(theRootSctx, loc, wrap_in_atomization(node), qnameType);
       else
         return new instanceof_expr(theRootSctx, loc, node, qnameType);
     }
@@ -10322,8 +10442,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     // as a non-leaf function.
     if (f->isUdf())
     {
-      if (! theCurrentPrologVFDecl.isNull() &&
-          theCurrentPrologVFDecl.getKind() == PrologGraphVertex::FUN)
+      if (inUDFBody())
       {
         function* f1 = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
         user_function* udf = dynamic_cast<user_function*>(f1);
@@ -12870,7 +12989,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
     for (int i = 0; i < (int)lParamTypes->size(); ++i)
     {
       const SequenceType* lParamType = (*lParamTypes)[i].getp();
-      if (lParamType == 0) 
+      if (lParamType == 0)
       {
         lParamXQTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
       }
@@ -12903,7 +13022,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONObjectInsertExpr ::= 
+  JSONObjectInsertExpr ::=
   "insert" "json" "{" PairConstructor ("," PairConstructor)* "}"
 ********************************************************************************/
 void* begin_visit(const JSONObjectInsertExpr& v)
@@ -12924,8 +13043,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   csize numPairs = v.numPairs();
-  std::vector<expr_t> args;
-  args.reserve(1 + 2 * numPairs);
+  std::vector<expr_t> args(1 + 2 * numPairs);
 
   expr_t targetExpr = pop_nodestack();
 
@@ -12935,29 +13053,29 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                                   TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  args.push_back(targetExpr);
+  args[0] = targetExpr;
 
-  for (csize i = numPairs; i > 0; --i)
+  for (csize i = 0; i < numPairs; ++i)
   {
     expr_t nameExpr = pop_nodestack();
     expr_t valueExpr = pop_nodestack();
-    
+
     nameExpr = wrap_in_type_promotion(nameExpr,
                                       theRTM.STRING_TYPE_ONE,
                                       PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
-                                   
+
     valueExpr = wrap_in_type_match(valueExpr,
                                    rtm.ITEM_TYPE_ONE,
                                    loc,
                                    TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
                                    NULL);
 
-    args.push_back(nameExpr);
-    args.push_back(valueExpr);
+    args[2 * (numPairs - 1 - i) + 1] = nameExpr;
+    args[2 * (numPairs - 1 - i) + 2] = valueExpr;
   }
 
   expr_t updExpr = new fo_expr(theRootSctx,
-                               loc, 
+                               loc,
                                GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
                                args);
 
@@ -12967,7 +13085,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONArrayInsertExpr ::= 
+  JSONArrayInsertExpr ::=
   "insert" "json" "[" ExprSingle "]" "into" ExprSingle "at" "position" ExprSingle
 ********************************************************************************/
 void* begin_visit(const JSONArrayInsertExpr& v)
@@ -13009,7 +13127,7 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   args[2] = sourceExpr;
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_INSERT_3),
                                   args);
   normalize_fo(updExpr.getp());
@@ -13047,7 +13165,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
                                   NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
                                   targetExpr,
                                   contentExpr);
@@ -13089,12 +13207,12 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   expr_t selExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
-  
+
   selExpr = wrap_in_type_promotion(selExpr,
                                    theRTM.ANY_ATOMIC_TYPE_ONE,
                                    PromoteIterator::JSONIQ_SELECTOR, // JNUP0007
                                    NULL);
-  
+
   targetExpr = wrap_in_type_match(targetExpr,
                                   theRTM.JSON_ITEM_TYPE_ONE,
                                   loc,
@@ -13102,7 +13220,7 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
                                   NULL);
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_DELETE_2),
                                   targetExpr,
                                   selExpr);
@@ -13151,9 +13269,9 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
                                loc,
                                TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
                                NULL);
-                               
+
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_REPLACE_VALUE_3),
                                   args);
   push_nodestack(updExpr.getp());
@@ -13200,7 +13318,7 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
                                    PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
 
   fo_expr_t updExpr = new fo_expr(theRootSctx,
-                                  loc, 
+                                  loc,
                                   GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_RENAME_3),
                                   args);
   push_nodestack(updExpr.getp());

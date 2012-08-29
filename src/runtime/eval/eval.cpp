@@ -420,7 +420,10 @@ PlanIter_t EvalIterator::compile(
 
   rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
   if (mm == NULL)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+  {
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(XPST0003_ModuleDeclNotInMain)));
+  }
 
   expr_t rootExpr;
   PlanIter_t rootIter = compiler.compile(ast,

@@ -813,30 +813,27 @@ public:
 class VFO_DeclList : public parsenode
 {
 protected:
-  std::vector<rchandle<parsenode> > vfo_hv;
+  std::vector<rchandle<parsenode> > theDecls;
+  std::vector<bool>                 theIndexDeclFlags;
 
 public:
   VFO_DeclList(const QueryLoc&);
 
-  ulong size () const { return (ulong)vfo_hv.size (); }
+  csize size() const { return theDecls.size(); }
 
-  void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin(), vfo_h); }
+  void push_back(const rchandle<parsenode>& vfo);
 
-  void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
+  rchandle<parsenode> operator[](int k) const { return theDecls[k]; }
 
-  void push_back (const VFO_DeclList &other) { vfo_hv.insert(vfo_hv.end(), other.vfo_hv.begin(), other.vfo_hv.end()); }
+  std::vector<rchandle<parsenode> >::const_iterator begin() const 
+  {
+    return theDecls.begin();
+  }
 
-  rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
-
-  std::vector<rchandle<parsenode> >::iterator begin() { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::iterator end() { return vfo_hv.end(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator begin() const { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator end() const { return vfo_hv.end(); }
-
-  const VarDecl* findVarDecl(const QName& varname);
+  std::vector<rchandle<parsenode> >::const_iterator end() const
+  {
+    return theDecls.end();
+  }
 
   void accept(parsenode_visitor&) const;
 };
@@ -953,29 +950,23 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class VarDecl : public VarDeclWithInit
+class GlobalVarDecl : public VarDeclWithInit
 {
 protected:
   bool theIsExternal;
-  bool theIsGlobal;
 
   rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
-  VarDecl(
+  GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
     SequenceType* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
-    bool global,
     bool external);
 
   bool is_extern() const { return theIsExternal; }
-
-  bool is_global() const { return theIsGlobal; }
-
-  void set_global(bool global) { theIsGlobal = global; }
 
   void set_annotations(rchandle<AnnotationListParsenode> annotations)
   {
@@ -1061,7 +1052,7 @@ public:
 
   rchandle<ParamList> get_paramlist() const { return theParams; }
 
-  ulong get_param_count() const;
+  csize get_param_count() const;
 
   rchandle<SequenceType> get_return_type() const { return theReturnType; }
 
@@ -1643,7 +1634,9 @@ public:
 
 
 /*******************************************************************************
-
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
 class VarDeclStmt : public exprnode
 {
@@ -1659,6 +1652,33 @@ public:
   csize size() const { return theDecls.size(); }
 
   parsenode* getDecl(csize i) const { return theDecls[i].getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class LocalVarDecl : public VarDeclWithInit
+{
+protected:
+  rchandle<AnnotationListParsenode> theAnnotations;
+
+public:
+  LocalVarDecl(
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceType* type_decl,
+    exprnode* init_expr,
+    AnnotationListParsenode* annotations);
+
+  void set_annotations(rchandle<AnnotationListParsenode> annotations)
+  {
+    theAnnotations = annotations;
+  }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
