@@ -17,7 +17,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
   * Fixed bug #1042840 (qname pool free-list corruption)
-
+  * Fixed bug #866984 (better error message for an eval error)
+	
 version 2.6
 
 New Features:
