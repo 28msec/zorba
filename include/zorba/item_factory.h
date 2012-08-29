@@ -295,6 +295,21 @@ namespace zorba {
                      short aHour, short aMinute, double aSecond,
                      short aTimeZone_hours) = 0;
 
+      /** \brief Creates a DateTime Item without setting a time zone.
+       *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
+       *
+       * @param aYear short-valued representation of the year.
+       * @param aMonth short-valued representation of the month.
+       * @param aDay short-valued representation of the day.
+       * @param aHour short-valued representation of the hour.
+       * @param aMinute short-valued representation of the minute.
+       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @return The DateTime Item.
+       */
+      virtual Item
+      createDateTime(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond) = 0;
+
       /** \brief Creates a DateTime Item
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
        *

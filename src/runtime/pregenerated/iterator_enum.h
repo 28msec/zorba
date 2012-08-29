@@ -123,6 +123,7 @@
   TYPE_ActivateICIterator,
   TYPE_DeactivateICIterator,
   TYPE_CheckICIterator,
+  TYPE_IndexKeysIterator,
   TYPE_StaticNamespacesIterator,
   TYPE_DefaultFunctionNamespaceIterator,
   TYPE_SctxBaseUriIterator,

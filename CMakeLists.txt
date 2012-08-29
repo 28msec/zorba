@@ -443,9 +443,6 @@ ELSE (NOT ZORBA_NO_XMLSCHEMA)
     " - build without XMLSchema support")
 ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
-LIST(APPEND requiredlibs ${requiredlibs-store})
-
-
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
   
@@ -474,7 +471,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "5")
+SET(ZORBA_MINOR_NUMBER "6")
 SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
