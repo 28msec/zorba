@@ -1665,45 +1665,42 @@ VarDecl :
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       $4,
-                       nt->get_annotations(),
-                       true,    // global
-                       false);  // not external
+      $$ = new GlobalVarDecl(LOC(@$),
+                             nt->theName,
+                             nt->theType,
+                             $4,
+                             nt->get_annotations(),
+                             false);  // not external
 
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      static_cast<GlobalVarDecl*>($$)->setComment(SYMTAB($1));
     }
   |
     DECLARE VarNameAndType EXTERNAL
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       NULL,   // no init expr
-                       nt->get_annotations(),
-                       true,   // global
-                       true);  // external
+      $$ = new GlobalVarDecl(LOC(@$),
+                             nt->theName,
+                             nt->theType,
+                             NULL,   // no init expr
+                             nt->get_annotations(),
+                             true);  // external
 
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      static_cast<GlobalVarDecl*>($$)->setComment(SYMTAB($1));
     }
   |
     DECLARE VarNameAndType EXTERNAL GETS ExprSingle
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       $5,     // init expr
-                       nt->get_annotations(),
-                       true,   // global
-                       true);  // external
+      $$ = new GlobalVarDecl(LOC(@$),
+                             nt->theName,
+                             nt->theType,
+                             $5,     // init expr
+                             nt->get_annotations(),
+                             true);  // external
 
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      static_cast<GlobalVarDecl*>($$)->setComment(SYMTAB($1));
     }
 ;
 
@@ -2271,7 +2268,8 @@ BlockVarDeclList :
   |
     AnnotationList VARIABLE BlockVarDecl
     {
-      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), static_cast<AnnotationListParsenode*>($1));
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$),
+                                           static_cast<AnnotationListParsenode*>($1));
       vdecl->add($3);
       $$ = vdecl;
     }
@@ -2281,51 +2279,38 @@ BlockVarDeclList :
 BlockVarDecl :
     DOLLAR QNAME
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                NULL,  // no type
-                                NULL,  // no init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          NULL,  // no type
+                                          NULL,  // no init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   | DOLLAR QNAME TypeDeclaration
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                dynamic_cast<SequenceType*>($3), // type
-                                NULL,  // no init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          dynamic_cast<SequenceType*>($3), // type
+                                          NULL,  // no init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   | DOLLAR QNAME GETS ExprSingle
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                NULL,  // no type
-                                $4,    // init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          NULL,  // no type
+                                          $4,    // init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   | DOLLAR QNAME TypeDeclaration GETS ExprSingle
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                dynamic_cast<SequenceType*>($3), // type
-                                $5,    // init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          dynamic_cast<SequenceType*>($3), // type
+                                          $5,    // init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   ;

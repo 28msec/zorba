@@ -2197,7 +2197,7 @@
     </diagnostic>
 
     <diagnostic code="ZDST0006" name="COLLECTION_INVALID_PROPERTY_VALUE">
-      <value>collection invalid property value</value>
+      <value>"$1": invalid annotation for collection "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZDST0007" name="COLLECTION_DECL_IN_FOREIGN_MODULE">

@@ -1220,11 +1220,12 @@ void serializer::json_emitter::emit_json_string(zstring const &string)
 
 serializer::jsoniq_emitter::jsoniq_emitter(
   serializer* the_serializer,
-  std::ostream& the_stream)
+  std::ostream& the_stream,
+  bool aEmitAttributes)
   :
     emitter(the_serializer, the_stream),
     theEmitterState(JESTATE_UNDETERMINED),
-    theXMLEmitter(new xml_emitter(the_serializer, the_stream)),
+    theXMLEmitter(new xml_emitter(the_serializer, the_stream, aEmitAttributes)),
     theJSONEmitter(new json_emitter(the_serializer, the_stream))
 {
 }
@@ -2668,7 +2669,7 @@ bool serializer::setup(std::ostream& os, bool aEmitAttributes)
   else if (method == PARAMETER_VALUE_JSON)
     e = new json_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_JSONIQ)
-    e = new jsoniq_emitter(this, *tr);
+    e = new jsoniq_emitter(this, *tr, aEmitAttributes);
 #endif
   else
   {

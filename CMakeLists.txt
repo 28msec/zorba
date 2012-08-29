@@ -443,9 +443,6 @@ ELSE (NOT ZORBA_NO_XMLSCHEMA)
     " - build without XMLSchema support")
 ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
-LIST(APPEND requiredlibs ${requiredlibs-store})
-
-
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
   

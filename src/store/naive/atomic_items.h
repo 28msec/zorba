@@ -82,6 +82,8 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
+  virtual AnyUriTypeCode getAnyUriTypeCode() const;
+
   bool castToLong(store::Item_t& result) const;
 
   void coerceToDouble(store::Item_t& result, bool force, bool& lossy) const;
@@ -154,6 +156,8 @@ public:
   void appendStringValue(zstring& buf) const { theBaseItem->appendStringValue(buf); }
 
   const zstring& getString() const { return theBaseItem->getString(); }
+  
+  bool isEncoded() const { return theBaseItem->isEncoded(); }
 
   const char* getBase64BinaryValue(size_t& s) const
   {
@@ -574,7 +578,6 @@ public:
 class AnyUriItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class StructuralAnyUriItem;
 
 protected:
   zstring theValue;
@@ -698,34 +701,63 @@ public:
 /*******************************************************************************
   class StructuralAnyUriItem
 ********************************************************************************/
-class StructuralAnyUriItem : public AnyUriItem
+class StructuralAnyUriItem : public AtomicItem
 {
-  friend class BasicItemFactory;
-
 protected:
   ulong                        theCollectionId;
   TreeId                       theTreeId;
   store::StoreConsts::NodeKind theNodeKind;
   OrdPath                      theOrdPath;
+   
+  // The value is computed lazily when needed.
+  // The empty string is used if it has not been computed yet.
+  mutable zstring              theEncodedValue;
 
-protected:
+public:
   virtual AnyUriTypeCode getAnyUriTypeCode() const 
   {
     return STRUCTURAL_INFORMATION_ANY_URI;
   }
+  
+  store::SchemaTypeCode getTypeCode() const
+  {
+    return store::XS_ANY_URI;
+  }
 
-  StructuralAnyUriItem(zstring& value);
+  store::Item* getType() const;
 
-  StructuralAnyUriItem(
-      zstring& value,
-      ulong collectionId,
-      const TreeId& treeId,
-      store::StoreConsts::NodeKind nodeKind,
-      const OrdPath& ordPath);
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
-  StructuralAnyUriItem() {}
+  bool equals(
+        const store::Item* item,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
 
-public:
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  // A structural URI is never empty.
+  bool getEBV() const { return true; }
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  const zstring& getString() const
+  {
+    if (theEncodedValue == "")
+    {
+      encode();
+    }
+    return theEncodedValue;
+  }
+
+  zstring show() const;
+
   bool
   isAncestor(const store::Item_t&) const;
 
@@ -794,6 +826,23 @@ public:
 
   bool
   inSameCollection(const store::Item_t&) const;
+  
+private:
+  // Forces computation of the value.
+  void encode() const;
+ 
+protected:
+  friend class BasicItemFactory;
+
+  StructuralAnyUriItem(zstring& value);
+
+  StructuralAnyUriItem(
+      ulong collectionId,
+      const TreeId& treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
+
+  StructuralAnyUriItem() : theEncodedValue("") {}
 };
 
 
