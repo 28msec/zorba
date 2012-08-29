@@ -13107,8 +13107,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   csize numPairs = v.numPairs();
-  std::vector<expr*> args;
-  args.reserve(1 + 2 * numPairs);
+  std::vector<expr*> args(1 + 2 * numPairs);
 
   expr* targetExpr = pop_nodestack();
 
