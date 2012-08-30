@@ -48,7 +48,7 @@ QNamePool::QNamePool(ulong size, StringPool* nspool)
   QNameItem* qn = &theCache[1];
   QNameItem* last = qn + size - 1;
 
-  for (uint16_t i = 1; qn < last; qn++, i++)
+  for (csize i = 1; qn < last; qn++, i++)
   {
     qn->theNextFree = i + 1;
     qn->thePrevFree = i - 1;
@@ -82,23 +82,121 @@ QNamePool::~QNamePool()
 /*******************************************************************************
 
 ********************************************************************************/
+void QNamePool::addInFreeList(QNameItem* qn)
+{
+  assert(qn->thePrevFree == 0);
+  assert(qn->theNextFree == 0);
+  assert(qn->getRefCount() == 0);
+  assert(theCache[theFirstFree].thePrevFree == 0);
+
+  qn->theNextFree = (uint16_t)theFirstFree;
+
+  if (theFirstFree != 0)
+    theCache[theFirstFree].thePrevFree = qn->thePosition;
+
+  theFirstFree = qn->thePosition;
+
+  theNumFree++;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void QNamePool::removeFromFreeList(QNameItem* qn)
+{
+  assert(qn->isInCache());
+
+  if (qn->theNextFree == 0 && qn->thePrevFree == 0)
+  {
+    // Either qn does not belong to the free list, or is the only one in the
+    // free list
+
+    if (theFirstFree != qn->thePosition)
+      return;
+  }
+
+  assert(qn->getRefCount() == 0);
+
+  if (qn->theNextFree != 0)
+  {
+    assert(theCache[qn->theNextFree].thePrevFree = qn->thePosition);
+
+    theCache[qn->theNextFree].thePrevFree = qn->thePrevFree;
+  }
+
+  if (qn->thePrevFree != 0)
+  {
+    assert(theCache[qn->thePrevFree].theNextFree = qn->thePosition);
+    
+    theCache[qn->thePrevFree].theNextFree = qn->theNextFree;
+  }
+  else
+  {
+    assert(theFirstFree == qn->thePosition);
+
+    theFirstFree = qn->theNextFree;
+  }
+
+  qn->theNextFree = qn->thePrevFree = 0;
+
+  theNumFree--;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+QNameItem* QNamePool::popFreeList()
+{
+  if (theFirstFree != 0)
+  {
+    assert(theNumFree > 0);
+
+    QNameItem* qn = &theCache[theFirstFree];
+
+    assert(qn->getRefCount() == 0);
+
+    theFirstFree = qn->theNextFree;
+
+    if (theFirstFree != 0)
+    {
+      assert(theCache[theFirstFree].thePrevFree == qn->thePosition);
+      theCache[theFirstFree].thePrevFree = 0;
+    }
+
+    qn->theNextFree = qn->thePrevFree = 0;
+
+    theNumFree--;
+
+    return qn;
+  }
+  else
+  {
+    assert(theNumFree == 0);
+    return NULL;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void QNamePool::remove(QNameItem* qn)
 {
   QNameItem* normVictim = NULL;
 
   SYNC_CODE(theHashSet.theMutex.lock(); \
-            bool haveLock = true;)
+  bool haveLock = true;)
 
-  try {
+  try 
+  {
     if (qn->getRefCount() > 0)
       return;
 
     if (qn->isInCache())
     {
-      qn->theNextFree = (uint16_t)theFirstFree;
-      theCache[theFirstFree].thePrevFree = qn->thePosition;
-      theFirstFree = qn->thePosition;
-      theNumFree++;
+      addInFreeList(qn);
     }
     else
     {
@@ -114,13 +212,16 @@ void QNamePool::remove(QNameItem* qn)
     // Releasing the lock here to avoid deadlock, because decrementing the 
     // normVictim counter might reenter QNamePool::remove.
     SYNC_CODE(theHashSet.theMutex.unlock(); \
-              haveLock = false;)
+    haveLock = false;)
+
     if (normVictim)
     {
       normVictim->removeReference();
     }
 
-  } catch(...) {
+  }
+  catch(...)
+  {
     SYNC_CODE(if (haveLock) \
               theHashSet.theMutex.unlock();)
               
@@ -142,8 +243,7 @@ void QNamePool::remove(QNameItem* qn)
 store::Item_t QNamePool::insert(
     const char* ns,
     const char* pre,
-    const char* ln,
-    bool        sync)
+    const char* ln)
 {
   QNameItem* qn;
   QNameItem* normVictim = NULL;
@@ -168,18 +268,16 @@ retry:
     SYNC_CODE(theHashSet.theMutex.lock();\
     haveLock = true;)
 
-    QNHashEntry* entry = hashFind(ns, pre, ln,
-                                  (ulong)pooledNs.size(),
-                                  (ulong)strlen(pre),
-                                  (ulong)strlen(ln),
-                                  hval);
+    QNHashEntry* entry = 
+    hashFind(ns, pre, ln, pooledNs.size(), strlen(pre), strlen(ln), hval);
+
     if (entry == 0)
     {
       if (normalized)
       {
         // Build a new QName (either new object or in cache).
         qn = cacheInsert(normVictim);
-        qn->initializeAsNormalizedQName(pooledNs, zstring(ln));
+        qn->initializeAsNormalizedQName(pooledNs, ln);
       }
       else
       {
@@ -188,7 +286,7 @@ retry:
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
 
-          normItem = insert(ns, NULL, ln, false);
+          normItem = insert(ns, NULL, ln);
           normQName = static_cast<QNameItem*>(normItem.getp());
           goto retry;
         }
@@ -236,8 +334,7 @@ retry:
 store::Item_t QNamePool::insert(
     const zstring& ns,
     const zstring& pre,
-    const zstring& ln,
-    bool sync)
+    const zstring& ln)
 {
   QNameItem* qn = NULL;
   QNameItem* normVictim = NULL;
@@ -259,11 +356,11 @@ retry:
     SYNC_CODE(theHashSet.theMutex.lock();\
     haveLock = true;)
 
-    QNHashEntry* entry = hashFind(ns.c_str(), pre.c_str(), ln.c_str(),
-                                  (ulong)ns.size(),
-                                  (ulong)pre.size(), 
-                                  (ulong)ln.size(),
-                                  hval);
+    QNHashEntry* entry =
+    hashFind(ns.c_str(), pre.c_str(), ln.c_str(),
+             ns.size(), pre.size(), ln.size(),
+             hval);
+
     if (entry == 0)
     {
       if (normalized)
@@ -280,7 +377,7 @@ retry:
           haveLock = false;)
 
           // This call will need the lock.
-          normItem = insert(pooledNs, zstring(), ln, false);
+          normItem = insert(pooledNs, zstring(), ln);
           normQName = static_cast<QNameItem*>(normItem.getp());
 
           goto retry;
@@ -329,30 +426,23 @@ retry:
 ********************************************************************************/
 QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 {
-  assert (normVictim == NULL);
-  if (theFirstFree != 0)
-  {
-    QNameItem* qn = &theCache[theFirstFree];
+  assert(normVictim == NULL);
 
-    theFirstFree = qn->theNextFree;
-    theCache[theFirstFree].thePrevFree = 0;
+  QNameItem* qn = popFreeList();
 
-    if (qn->isValid())
-    {
-      ulong hval = CompareFunction::hash(qn);
-      theHashSet.eraseNoSync(qn, hval);
-      qn->invalidate(true, &normVictim);
-    }
-
-    qn->theNextFree = qn->thePrevFree = 0;
-
-    theNumFree--;
-    return qn;
-  }
-  else
+  if (qn == NULL)
   {
     return new QNameItem();
   }
+
+  if (qn->isValid())
+  {
+    ulong hval = CompareFunction::hash(qn);
+    theHashSet.eraseNoSync(qn, hval);
+    qn->invalidate(true, &normVictim);
+  }
+  
+  return qn;
 }
 
 
@@ -362,23 +452,9 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 ********************************************************************************/
 void QNamePool::cachePin(QNameItem* qn)
 {
-  if (qn->isInCache() && (qn->theNextFree != 0 || qn->thePrevFree != 0))
+  if (qn->isInCache())
   {
-    if (qn->theNextFree != 0)
-      theCache[qn->theNextFree].thePrevFree = qn->thePrevFree;
-
-    if (qn->thePrevFree != 0)
-    {
-      theCache[qn->thePrevFree].theNextFree = qn->theNextFree;
-    }
-    else
-    {
-      assert(theFirstFree == qn->thePosition);
-      theFirstFree = qn->theNextFree;
-    }
-
-    qn->theNextFree = qn->thePrevFree = 0;
-    theNumFree--;
+    removeFromFreeList(qn);
   }
 }
 
@@ -390,10 +466,10 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
     const char* ns,
     const char* pre,
     const char* ln,
-    ulong       nslen,
-    ulong       prelen,
-    ulong       lnlen,
-    ulong       hval)
+    csize       nslen,
+    csize       prelen,
+    csize       lnlen,
+    csize       hval)
 {
   QNHashEntry* entry = theHashSet.bucket(hval);
 

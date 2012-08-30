@@ -40,6 +40,7 @@ void initializeTestList()
   libunittests["base64"] = test_base64;
   libunittests["base64_streambuf"] = test_base64_streambuf;
   libunittests["fs_iterator"] = test_fs_iterator;
+  //libunittests["memory_manager"] = test_mem_manager;
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
@@ -62,7 +63,7 @@ void initializeTestList()
   libunittests["uri"] = runUriTest;
 
 #ifdef ZORBA_WITH_DEBUGGER
-//      libunittests["debugger_protocol"] = runDebuggerProtocolTest;
+  // libunittests["debugger_protocol"] = runDebuggerProtocolTest;
 #endif /* ZORBA_WITH_DEBUGGER */
 }
 
@@ -70,7 +71,8 @@ void initializeTestList()
 int runUnitTest(int argc, char* argv[]) 
 {
   // Look up the function pointer for the test based on the first arg
-  if (argc < 1) {
+  if (argc < 1)
+  {
     cerr << "No test name passed to UnitTests::runUnitTest!" << '\n';
     return 240;
   }
@@ -78,7 +80,8 @@ int runUnitTest(int argc, char* argv[])
   initializeTestList();
 
   map<string,libunittestfunc>::iterator iter = libunittests.find(argv[0]);
-  if (iter == libunittests.end()) {
+  if (iter == libunittests.end())
+  {
     cerr << "No registered test matches '" << argv[0] << "'" << '\n';
     return 241;
   }

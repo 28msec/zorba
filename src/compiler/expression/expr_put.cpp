@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@
 
 using namespace std;
 
-namespace zorba 
+namespace zorba
 {
 
 #define BEGIN_PUT_NO_LOCATION(LABEL) \
@@ -79,7 +79,7 @@ namespace zorba
   if ( !(EXPR) ) ; else { os << indent << (LABEL) << "\n" << inc_indent; (EXPR)->put(os); os << dec_indent; }
 
 
-static inline zstring qname_to_string(store::Item_t qname) 
+static inline zstring qname_to_string(store::Item_t qname)
 {
   zstring result;
   zstring pfx = qname->getPrefix();
@@ -91,7 +91,7 @@ static inline zstring qname_to_string(store::Item_t qname)
 }
 
 
-static inline ostream& put_qname(store::Item_t qname, ostream& os) 
+static inline ostream& put_qname(store::Item_t qname, ostream& os)
 {
   zstring pfx = qname->getPrefix();
   zstring ns = qname->getNamespace();
@@ -102,13 +102,13 @@ static inline ostream& put_qname(store::Item_t qname, ostream& os)
 }
 
 
-static inline string expr_addr(const void* e) 
+static inline string expr_addr(const void* e)
 {
   if (Properties::instance()->noTreeIds ())
   {
     return "";
   }
-  else 
+  else
   {
     ostringstream os;
     os << " (" << e << ")";
@@ -117,7 +117,7 @@ static inline string expr_addr(const void* e)
 }
 
 
-static inline string expr_loc(const expr* e) 
+static inline string expr_loc(const expr* e)
 {
   if (e == NULL)
     return "";
@@ -128,7 +128,7 @@ static inline string expr_loc(const expr* e)
     os << " (loc: " << e->get_loc().getLineBegin() << ", " << e->get_loc().getColumnBegin() << ")";
     return os.str ();
   }
-  else 
+  else
   {
     return "";
   }
@@ -173,7 +173,7 @@ wrapper_expr::put(std::ostream& os) const
 ostream& block_expr::put( ostream& os) const
 {
   BEGIN_PUT( block_expr );
-  for (checked_vector<expr_t>::const_iterator i = this->theArgs.begin ();
+  for (checked_vector<expr*>::const_iterator i = this->theArgs.begin ();
        i != theArgs.end (); i++)
     (*i)->put (os);
   END_PUT();
@@ -189,7 +189,7 @@ ostream& var_expr::put(ostream& os) const
   }
 
 #if VERBOSE
-  if (theDeclaredType != NULL) 
+  if (theDeclaredType != NULL)
   {
     os << " type=" << theDeclaredType->toString();
   }
@@ -216,13 +216,13 @@ ostream& for_clause::put(ostream& os) const
 
   put_qname(theVarExpr->get_name(), os);
 
-  os << expr_addr(theVarExpr.getp());
+  os << expr_addr(theVarExpr);
 
   if (thePosVarExpr != NULL)
   {
     os << " AT ";
     put_qname(thePosVarExpr->get_name(), os);
-    os << expr_addr(thePosVarExpr.getp());
+    os << expr_addr(thePosVarExpr);
   }
   os << endl << indent << "[\n" << inc_indent;
 
@@ -248,7 +248,7 @@ ostream& let_clause::put(ostream& os) const
 
   put_qname(theVarExpr->get_name(), os);
 
-  os << expr_addr(theVarExpr.getp());
+  os << expr_addr(theVarExpr);
 
   os << endl << indent << "[\n" << inc_indent;
 
@@ -289,13 +289,13 @@ ostream& flwor_wincond::put(ostream& os) const
 }
 
 
-ostream& group_clause::put(ostream& os) const 
+ostream& group_clause::put(ostream& os) const
 {
   BEGIN_PUT(group_clause);
 
   os << indent << "GROUP BY EXPRS";
 
-  for (unsigned i = 0; i < theGroupVars.size(); i++) 
+  for (unsigned i = 0; i < theGroupVars.size(); i++)
   {
     PUT_SUB("", theGroupVars[i].first);
     os << inc_indent << indent << "-->" << dec_indent;
@@ -304,18 +304,18 @@ ostream& group_clause::put(ostream& os) const
 
   os << indent << "NON GROUP BY VARS ";
 
-  for (unsigned i = 0; i < theNonGroupVars.size(); i++) 
+  for (unsigned i = 0; i < theNonGroupVars.size(); i++)
   {
     PUT_SUB("", theNonGroupVars[i].first);
     os << inc_indent << indent << "-->" << dec_indent;
     theNonGroupVars[i].second->put(os) << endl;
   }
-  
+
   END_PUT();
 }
 
 
-ostream& orderby_clause::put(ostream& os) const 
+ostream& orderby_clause::put(ostream& os) const
 {
   BEGIN_PUT(orderby_clause);
 
@@ -323,7 +323,7 @@ ostream& orderby_clause::put(ostream& os) const
 
   csize numColumns = num_columns();
 
-  for (csize i = 0; i < numColumns; i++) 
+  for (csize i = 0; i < numColumns; i++)
   {
     theOrderingExprs[i]->put(os);
   }
@@ -331,12 +331,12 @@ ostream& orderby_clause::put(ostream& os) const
   os << endl;
 
   os << indent << "VAR REBINDS ";
-  for (unsigned i = 0; i < theRebindList.size (); i++) 
+  for (unsigned i = 0; i < theRebindList.size (); i++)
   {
     os << "$";
     put_qname(theRebindList[i].first->get_varname(), os);
-    os << " (" << theRebindList[i].first.getp() << " -> " 
-       << theRebindList[i].second.getp() << ") ";
+    os << " (" << theRebindList[i].first << " -> "
+       << theRebindList[i].second << ") ";
   }
   os << endl;
 #endif
@@ -344,7 +344,7 @@ ostream& orderby_clause::put(ostream& os) const
 }
 
 
-ostream& materialize_clause::put(ostream& os) const 
+ostream& materialize_clause::put(ostream& os) const
 {
   BEGIN_PUT(materialize_clause);
 
@@ -356,7 +356,7 @@ ostream& flwor_expr::put(ostream& os) const
 {
   BEGIN_PUT(flwor_expr);
 
-  for (csize i = 0; i < num_clauses(); i++) 
+  for (csize i = 0; i < num_clauses(); i++)
   {
     const flwor_clause& c = *(get_clause(i));
 
@@ -367,9 +367,9 @@ ostream& flwor_expr::put(ostream& os) const
       PUT_SUB( "WHERE", static_cast<const where_clause *>(&c)->get_expr() );
       break;
     }
-    case flwor_clause::count_clause: 
+    case flwor_clause::count_clause:
     {
-      os << indent << "COUNT $"; 
+      os << indent << "COUNT $";
       put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
       os << endl;
       break;
@@ -412,11 +412,11 @@ ostream& flwor_expr::put(ostream& os) const
   }
 
   os << indent << "RETURN\n" << inc_indent;
-  if (theReturnExpr == NULL) 
+  if (theReturnExpr == NULL)
   {
     os << indent << "NULL";
   }
-  else 
+  else
   {
     theReturnExpr->put(os);
   }
@@ -460,7 +460,7 @@ ostream& eval_expr::put(ostream& os) const
     os << endl << inc_indent;
     if (theArgs[i])
       theArgs[i]->put(os);
-    os << dec_indent << indent << "]" << endl; 
+    os << dec_indent << indent << "]" << endl;
   }
   theExpr->put (os);
   END_PUT();
@@ -531,7 +531,7 @@ ostream& fo_expr::put(ostream& os) const
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-ostream& ftcontains_expr::put( ostream &os ) const 
+ostream& ftcontains_expr::put( ostream &os ) const
 {
   BEGIN_PUT( ftcontains_expr );
   PUT_SUB( "RANGE", range_ );
@@ -614,7 +614,7 @@ ostream& validate_expr::put(ostream& os) const
 {
   BEGIN_PUT( validate_expr );
 
-  switch (theMode) 
+  switch (theMode)
   {
   case ParseConstants::val_strict: os << "strict\n"; break;
   case ParseConstants::val_lax: os << "lax\n"; break;
@@ -641,10 +641,10 @@ ostream& extension_expr::put( ostream& os) const
 ostream& relpath_expr::put( ostream& os) const
 {
   BEGIN_PUT( relpath_expr );
-  
-  for (std::vector<expr_t>::const_iterator it = begin(); it != end(); ++it)
+
+  for (std::vector<expr*>::const_iterator it = begin(); it != end(); ++it)
   {
-    expr_t expr = *it;
+    expr* expr = *it;
     if (it == begin ())
     {
       expr->put (os);
@@ -683,7 +683,7 @@ ostream& axis_step_expr::put(ostream& os) const
 
   os << "::";
 
-  if (theNodeTest != NULL) 
+  if (theNodeTest != NULL)
   {
     theNodeTest->put(os);
   }
@@ -777,7 +777,7 @@ ostream& order_expr::put(ostream& os) const
   os << indent << "order_expr" << expr_addr (this) << "\n" << inc_indent
      << indent << "[ ";
 
-  switch (theType) 
+  switch (theType)
   {
   case ordered: os << "ordered\n"; break;
   case unordered: os << "unordered\n"; break;
@@ -869,9 +869,9 @@ ostream& json_direct_object_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_direct_object_expr);
 
-  std::vector<expr_t>::const_iterator ite1 = theNames.begin();
-  std::vector<expr_t>::const_iterator end1 = theNames.end();
-  std::vector<expr_t>::const_iterator ite2 = theValues.begin();
+  std::vector<expr*>::const_iterator ite1 = theNames.begin();
+  std::vector<expr*>::const_iterator end1 = theNames.end();
+  std::vector<expr*>::const_iterator ite2 = theValues.begin();
   for (; ite1 != end1; ++ite1, ++ite2)
   {
     (*ite1)->put(os);

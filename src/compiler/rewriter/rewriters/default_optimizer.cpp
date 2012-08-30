@@ -28,7 +28,7 @@
 #include "system/properties.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class FoldRules : public RuleMajorDriver
@@ -160,7 +160,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     HoistRule rule;
     bool local_modified = false;
 
-    expr_t e = rule.apply(rCtx, rCtx.getRoot().getp(), local_modified);
+    expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
 
     if (e != rCtx.getRoot())
       rCtx.setRoot(e);
@@ -170,7 +170,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     {
       modified = true;
 
-      if (Properties::instance()->printIntermediateOpt()) 
+      if (Properties::instance()->printIntermediateOpt())
       {
         std::cout << "After hoisting : " << std::endl;
         rCtx.getRoot()->put(std::cout) << std::endl;
@@ -211,9 +211,9 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
                                          freeset,
                                          *rCtx.theExprVarsMap);
 
-      local_modified = false; 
+      local_modified = false;
 
-      expr_t e = rule.apply(rCtx, rCtx.getRoot().getp(), local_modified);
+      expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
 
       if (e != rCtx.getRoot())
         rCtx.setRoot(e);
@@ -222,7 +222,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       {
         modified = true;
 
-        if (Properties::instance()->printIntermediateOpt()) 
+        if (Properties::instance()->printIntermediateOpt())
         {
           std::cout << "After index join : " << std::endl;
           rCtx.getRoot()->put(std::cout) << std::endl;

@@ -548,7 +548,7 @@
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>
-    
+
     <zorba:state generateReset="false" generateDestructor="false">
       <zorba:member type="const function*" name="theFunction"
                   brief="the function"/>
