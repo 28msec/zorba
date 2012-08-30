@@ -147,6 +147,16 @@ typedef __int64 int64_t;
 # define ZORBA_TR1_NS std
 #endif
 
+////////// GCC diagnostics ////////////////////////////////////////////////////
+
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
+# define GCC_GREATER_EQUAL_460 1
+#endif
+
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
+# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
+#endif
+
 ////////// Zorba //////////////////////////////////////////////////////////////
 
 // Version
