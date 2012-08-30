@@ -646,5 +646,59 @@ DynamicContextImpl::isBoundContextItem() const
   return false;
 }
 
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setContextSize(const Item& inValue)
+{
+  String varName = Unmarshaller::newString(static_context::DOT_SIZE_VAR_NAME);
+  return setVariable(varName, inValue);
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setContextPosition(const Item& inValue)
+{
+  String varName = Unmarshaller::newString(static_context::DOT_POS_VAR_NAME);
+  return setVariable(varName, inValue);
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::getContextPosition(Item& outValue) const
+{
+  String varName;
+
+  ZORBA_DCTX_TRY
+  {
+    varName = Unmarshaller::newString(static_context::DOT_POS_VAR_NAME);
+  }
+  ZORBA_DCTX_CATCH
+
+  Iterator_t dummy;
+
+  return getVariable("", varName, outValue, dummy);
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::getContextSize(Item& outValue) const
+{
+  String varName;
+
+  ZORBA_DCTX_TRY
+  {
+    varName = Unmarshaller::newString(static_context::DOT_SIZE_VAR_NAME);
+  }
+  ZORBA_DCTX_CATCH
+
+  Iterator_t dummy;
+
+  return getVariable("", varName, outValue, dummy);
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
