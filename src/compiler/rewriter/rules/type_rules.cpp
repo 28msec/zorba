@@ -43,13 +43,14 @@
 namespace zorba
 {
 
-static expr_t wrap_in_num_promotion(
+static expr* wrap_in_num_promotion(
     function* fn,
     expr* arg,
     const xqtref_t& oldt,
-    const xqtref_t& t);
+    const xqtref_t& t,
+    RewriterContext& rCtx);
 
-static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx);
+static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx, RewriterContext& rCtx);
 
 static function* flip_value_cmp(FunctionConsts::FunctionKind kind);
 
@@ -73,7 +74,7 @@ RULE_REWRITE_POST(InferUDFTypes)
 
   static_context* sctx = rCtx.getStaticContext(node);
 
-  expr_t bodyExpr = udf->getBody();
+  expr* bodyExpr = udf->getBody();
   xqtref_t bodyType = bodyExpr->get_return_type();
   xqtref_t declaredType = udf->getSignature().return_type();
 
@@ -103,7 +104,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
     if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1)
     {
-      expr_t arg = fo->get_arg(0);
+      expr* arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
       if (TypeOps::is_subtype(tm, *arg_type, *rtm.BOOLEAN_TYPE_ONE, arg->get_loc()))
         return arg;
@@ -113,7 +114,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
     if (fo->get_func()->getKind() == FunctionConsts::FN_DATA_1)
     {
-      expr_t arg = fo->get_arg(0);
+      expr* arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
       if (TypeOps::is_subtype(tm, *arg_type, *rtm.ANY_ATOMIC_TYPE_STAR, arg->get_loc()))
         return arg;
@@ -122,18 +123,18 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
   }
 
-  cast_base_expr* pe;
+  cast_base_expr* pe = NULL;
 
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL)
   {
-    expr_t arg = pe->get_input();
+    expr* arg = pe->get_input();
     xqtref_t arg_type = arg->get_return_type();
     xqtref_t target_type = pe->get_target_type();
 
     if (arg->get_expr_kind() == fo_expr_kind)
     {
-      fo_expr* fo = static_cast<fo_expr *>(arg.getp());
+      fo_expr* fo = static_cast<fo_expr *>(arg);
       const function* fn = fo->get_func();
 
       if (fn->isExternal())
@@ -158,7 +159,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (node->get_expr_kind() == cast_expr_kind &&
         TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
     {
-      return new treat_expr(sctx,
+      return rCtx.theEM->create_treat_expr(sctx,
                             node->get_loc(),
                             arg,
                             target_type,
@@ -221,7 +222,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     if (fnKind == FunctionConsts::FN_SUM_1 ||
         fnKind == FunctionConsts::FN_SUM_2)
     {
-      expr_t argExpr = fo->get_arg(0);
+      expr* argExpr = fo->get_arg(0);
       xqtref_t argType = argExpr->get_return_type();
       std::vector<xqtref_t> argTypes;
       argTypes.push_back(argType);
@@ -236,7 +237,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                                 *rtm.UNTYPED_ATOMIC_TYPE_STAR,
                                 argExpr->get_loc()))
         {
-          expr_t promoteExpr = new promote_expr(argExpr->get_sctx(),
+          expr* promoteExpr = rCtx.theEM->create_promote_expr(argExpr->get_sctx(),
                                                 argExpr->get_loc(),
                                                 argExpr,
                                                 rtm.DOUBLE_TYPE_STAR,
@@ -252,7 +253,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     else if (fnKind == FunctionConsts::OP_UNARY_MINUS_1 ||
              fnKind == FunctionConsts::OP_UNARY_PLUS_1)
     {
-      expr_t argExpr = fo->get_arg(0);
+      expr* argExpr = fo->get_arg(0);
       xqtref_t argType = argExpr->get_return_type();
       std::vector<xqtref_t> argTypes;
       argTypes.push_back(argType);
@@ -269,10 +270,10 @@ RULE_REWRITE_POST(SpecializeOperations)
              fnKind == FunctionConsts::FN_SUBSTRING_2 ||
              fnKind == FunctionConsts::FN_SUBSTRING_3)
     {
-      expr_t posExpr = fo->get_arg(1);
+      expr* posExpr = fo->get_arg(1);
       if (posExpr->get_expr_kind() == promote_expr_kind)
       {
-        promote_expr* promoteExpr = static_cast<promote_expr*>(posExpr.getp());
+        promote_expr* promoteExpr = static_cast<promote_expr*>(posExpr);
         posExpr = promoteExpr->get_input();
       }
 
@@ -281,10 +282,10 @@ RULE_REWRITE_POST(SpecializeOperations)
 
       if (fo->num_args() == 3)
       {
-        expr_t lenExpr = fo->get_arg(2);
+        expr* lenExpr = fo->get_arg(2);
         if (lenExpr->get_expr_kind() == promote_expr_kind)
         {
-          promote_expr* promoteExpr = static_cast<promote_expr*>(lenExpr.getp());
+          promote_expr* promoteExpr = static_cast<promote_expr*>(lenExpr);
           lenExpr = promoteExpr->get_input();
         }
 
@@ -330,7 +331,7 @@ RULE_REWRITE_POST(SpecializeOperations)
             ! TypeOps::is_numeric_or_untyped(tm, *t1))
           return NULL;
 
-        if (specialize_numeric(fo, sctx) != NULL)
+        if (specialize_numeric(fo, sctx, rCtx) != NULL)
           return node;
       }
       else if (props.specializeCmp() && fn->isComparisonFunction())
@@ -351,20 +352,22 @@ RULE_REWRITE_POST(SpecializeOperations)
         {
           xqtref_t string_type = rtm.STRING_TYPE_QUESTION;
           bool string_cmp = true;
-          expr_t nargs[2];
+          expr* nargs[2];
 
           for (int i = 0; i < 2; ++i)
           {
+            nargs[i] = NULL;
+
             expr* arg = (i == 0 ? arg0 : arg1);
             xqtref_t type = (i == 0 ? t0 : t1);
             const QueryLoc& loc = arg->get_loc();
 
             if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc))
             {
-              nargs[i] = new cast_expr(arg->get_sctx(),
-                                       arg->get_loc(),
-                                       arg,
-                                       string_type);
+              nargs[i] = rCtx.theEM->create_cast_expr(arg->get_sctx(),
+                                                      arg->get_loc(),
+                                                      arg,
+                                                      string_type);
             }
             else if (! TypeOps::is_subtype(tm, *type, *string_type, loc))
             {
@@ -393,7 +396,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           }
           else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1))
           {
-            xqtref_t aType = specialize_numeric(fo, sctx);
+            xqtref_t aType = specialize_numeric(fo, sctx, rCtx);
             if (aType != NULL)
             {
               if (TypeOps::is_equal(tm,
@@ -402,7 +405,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                                     fo->get_loc()) &&
                   TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE, fo->get_loc()))
               {
-                expr_t tmp = fo->get_arg(0);
+                expr* tmp = fo->get_arg(0);
                 fo->set_arg(0, fo->get_arg(1));
                 fo->set_arg(1, tmp);
                 fo->set_func(flip_value_cmp(fo->get_func()->getKind()));
@@ -440,7 +443,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           if (!TypeOps::is_equal(tm, *colType, *rtm.EMPTY_TYPE, colLoc) &&
               TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, colLoc))
           {
-            expr_t castExpr = new cast_expr(colExpr->get_sctx(),
+            expr* castExpr = rCtx.theEM->create_cast_expr(colExpr->get_sctx(),
                                             colExpr->get_loc(),
                                             colExpr,
                                             rtm.STRING_TYPE_QUESTION);
@@ -460,7 +463,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 }
 
 
-static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
+static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx, RewriterContext& rCtx)
 {
   TypeManager* tm = fo->get_type_manager();
 
@@ -490,8 +493,8 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
   {
     fo->set_func(replacement);
 
-    expr_t newArg0 = wrap_in_num_promotion(replacement, arg0, t0, aType);
-    expr_t newArg1 = wrap_in_num_promotion(replacement, arg1, t1, aType);
+    expr* newArg0 = wrap_in_num_promotion(replacement, arg0, t0, aType, rCtx);
+    expr* newArg1 = wrap_in_num_promotion(replacement, arg1, t1, aType, rCtx);
 
     if (newArg0 != NULL)
       fo->set_arg(0, newArg0);
@@ -506,11 +509,12 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 }
 
 
-static expr_t wrap_in_num_promotion(
+static expr* wrap_in_num_promotion(
     function* fn,
     expr* arg,
     const xqtref_t& oldt,
-    const xqtref_t& t)
+    const xqtref_t& t,
+    RewriterContext& rCtx)
 {
   TypeManager* tm = arg->get_type_manager();
 
@@ -528,7 +532,7 @@ static expr_t wrap_in_num_promotion(
       arg = pe->get_input();
   }
 
-  return new promote_expr(arg->get_sctx(),
+  return rCtx.theEM->create_promote_expr(arg->get_sctx(),
                           arg->get_loc(),
                           arg,
                           t,

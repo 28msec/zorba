@@ -19,7 +19,7 @@
 
 #include "compiler/expression/expr_base.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class flwor_clause;
@@ -28,9 +28,6 @@ class for_clause;
 class copy_clause;
 class var_expr;
 class VarInfo;
-
-typedef rchandle<var_expr> var_expr_t;
-
 
 /******************************************************************************
 
@@ -77,7 +74,7 @@ typedef rchandle<var_expr> var_expr_t;
 
   theFlworClause:
   ---------------
-  If this is a var declared in flwor clause, theFlworClause points to the 
+  If this is a var declared in flwor clause, theFlworClause points to the
   defining clause. That clause also contains the defining expr for the var
   and a pointer back to this var_exr.
 
@@ -91,7 +88,7 @@ typedef rchandle<var_expr> var_expr_t;
   ------------
   For arg vars, it is the position, within the param list, of parameter that is
   bound to this arg var.
-  
+
   theUDF:
   -------
   For arg vars, the corresponding UDF.
@@ -120,6 +117,7 @@ typedef rchandle<var_expr> var_expr_t;
 class var_expr : public expr
 {
   friend class expr;
+  friend class ExprManager;
 
 public:
   enum var_kind
@@ -175,7 +173,7 @@ protected:
 
   bool                  theIsExternal;
 
-  bool                  theIsPrivate; 
+  bool                  theIsPrivate;
 
   bool                  theIsMutable;
 
@@ -184,8 +182,9 @@ protected:
 public:
   static std::string decode_var_kind(enum var_kind);
 
-public:
+protected:
   var_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       var_kind k,
@@ -195,6 +194,7 @@ public:
 
   virtual ~var_expr();
 
+public:
   void set_var_info(VarInfo* v);
 
   VarInfo* get_var_info() const { return theVarInfo; }
@@ -260,12 +260,12 @@ public:
   std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
 
   std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
-  
+
   bool is_context_item() const;
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& subst) const;
+  expr* clone(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -273,16 +273,16 @@ public:
 };
 
 
-struct GlobalBinding 
+struct GlobalBinding
 {
-  var_expr_t  theVar;
-  expr_t      theExpr;
+  var_expr  * theVar;
+  expr      * theExpr;
   bool        theIsExternal;
 
 public:
   GlobalBinding() : theIsExternal(false) {}
 
-  GlobalBinding(const var_expr_t& v, const expr_t& e, bool external)
+  GlobalBinding(var_expr* v, expr* e, bool external)
     :
     theVar(v),
     theExpr(e),

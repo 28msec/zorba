@@ -123,7 +123,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 ********************************************************************************/
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
-  thePlan = udf->getPlan(planState.theCompilerCB, thePlanStateSize).getp();
+  thePlan = udf->getPlan(thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
