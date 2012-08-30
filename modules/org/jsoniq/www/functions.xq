@@ -144,6 +144,9 @@ declare function jn:flatten($a as array()) as item()* external;
  : name are encountered.
  :
  : @param $o A sequence of objects.
+ :
  : @return The simple object union.
+ :
+ : @error jerr:JNDY0003 if there is a pair collision.
  :)
 declare function jn:object($o as object()*) as object() external;
