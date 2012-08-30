@@ -34,7 +34,7 @@
 #include "zorbautils/string_util.h"
 
 #ifdef ZORBA_WITH_JSON
-#include "store/naive/json_loader.h"
+#include "json_loader.h"
 #endif
 
 

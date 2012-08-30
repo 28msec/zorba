@@ -21,7 +21,7 @@
 #include "shared_types.h"
 
 #include "store/api/pul.h"
-#include "store/naive/simple_index.h"
+#include "simple_index.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
