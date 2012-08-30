@@ -53,7 +53,7 @@ namespace serialization
   reference count becomes 0.
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC RCObject : public ::zorba::serialization::SerializeBaseClass
+class ZORBA_DLL_PUBLIC RCObject : public serialization::SerializeBaseClass
 {
 protected:
   mutable long  theRefCount;
@@ -102,25 +102,59 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC SimpleRCObject : public RCObject
+class ZORBA_DLL_PUBLIC SimpleRCObject : public serialization::SerializeBaseClass
 {
-public:
-  SERIALIZABLE_CLASS(SimpleRCObject)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(SimpleRCObject, RCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
+protected:
+  mutable long  theRefCount;
 
 public:
-  SimpleRCObject() : RCObject() { }
+  SERIALIZABLE_CLASS(SimpleRCObject);
 
-  SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
+  SimpleRCObject(serialization::Archiver& ar)  
+    :
+    serialization::SerializeBaseClass(),
+    theRefCount(0)
+  {
+  }
 
-  void free() { delete this; }
+  void serialize(serialization::Archiver& ar);
 
-  SYNC_CODE(RCLock* getRCLock() const { return NULL; })
+public:
+  SimpleRCObject()
+    :
+    serialization::SerializeBaseClass(),
+    theRefCount(0)
+  {
+  }
+
+  SimpleRCObject(const SimpleRCObject&) 
+    :
+    serialization::SerializeBaseClass(),
+    theRefCount(0) 
+  {
+  }
+
+  virtual ~SimpleRCObject() { }
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
-};
 
+  virtual void free() { delete this; }
+
+  long getRefCount() const { return theRefCount; }
+
+  void addReference(SYNC_CODE(RCLock* lock)) const { ++theRefCount; }
+
+  void removeReference(SYNC_CODE(RCLock* lock))
+  {
+    if (--theRefCount == 0)
+    {
+      free();
+      return; 
+    }
+  }
+
+  SYNC_CODE(RCLock* getRCLock() const { return NULL; })
+};
 
 
 /*******************************************************************************

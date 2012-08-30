@@ -176,18 +176,31 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   assert(target->isNode());
 #endif
 
-  const XmlNode* n = static_cast<const XmlNode*>(target);
-
-  const store::Collection* collection = n->getCollection();
-
-  if (collection != NULL)
+  const store::Collection* lCollection;
+  
+  if (target->isNode())
   {
-    collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
+    assert(dynamic_cast<const XmlNode*>(target));
+    const XmlNode* lNode = static_cast<const XmlNode*>(target);
+    lCollection = lNode->getCollection();
+#ifdef ZORBA_WITH_JSON
+  }
+  else if (target->isJSONItem())
+  {
+    assert(dynamic_cast<const json::JSONItem*>(target));
+    const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(target);
+    lCollection = lJSONItem->getCollection();
+#endif
+  }
+
+  if (lCollection != NULL)
+  {
+    collName = static_cast<const QNameItem*>(lCollection->getName())->getNormalized();
 
     if (collName == theLastCollection)
       return theLastPul;
 
-    return getCollectionPulByName(collName, collection->isDynamic());
+    return getCollectionPulByName(collName, lCollection->isDynamic());
   }
   else if (theNoCollectionPul != NULL)
   {
@@ -2230,23 +2243,52 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
     NodeToUpdatesMap::iterator it = pul->theNodeToUpdatesMap.begin();
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
 
+    bool found = false;
+    
     for (; it != end; ++it)
     {
-      const XmlNode* targetNode = static_cast<XmlNode*>((*it).first);
-
-      bool found = false;
-
-      for (csize i = 0; i < numRoots; i++)
+      zorba::store::Item* lItem = (*it).first;
+      if (lItem->isNode())
       {
-        XmlNode* rootNode = static_cast<XmlNode*>(rootNodes[i]);
-        
-        if (targetNode->getTree() == rootNode->getTree())
+        assert(dynamic_cast<const XmlNode*>(lItem));
+        const XmlNode* lNode = static_cast<const XmlNode*>(lItem);
+        for (csize i = 0; i < numRoots; i++)
         {
-          found = true;
-          break;
+          if (rootNodes[i]->isNode())
+          {
+            assert(dynamic_cast<const XmlNode*>(rootNodes[i]));
+            XmlNode* lRootNode = static_cast<XmlNode*>(rootNodes[i]);
+            
+            if (lNode->getTree() == lRootNode->getTree())
+            {
+              found = true;
+              break;
+            }
+          }
         }
+#ifdef ZORBA_WITH_JSON
       }
-
+      else if (lItem->isJSONItem())
+      {
+        assert(dynamic_cast<const json::JSONItem*>(lItem));
+        const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(lItem);
+        for (csize i = 0; i < numRoots; i++)
+        {
+          if (rootNodes[i]->isJSONItem())
+          {
+            assert(dynamic_cast<const json::JSONItem*>(rootNodes[i]));
+            json::JSONItem* lRootJSONItem = static_cast<json::JSONItem*>(rootNodes[i]);
+            
+            if (lJSONItem->getTree() == lRootJSONItem->getTree())
+            {
+              found = true;
+              break;
+            }
+          }
+        }
+#endif
+      }
+        
       if (!found)
         throw XQUERY_EXCEPTION(err::XUDY0014);
     }
