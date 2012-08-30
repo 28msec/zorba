@@ -228,6 +228,8 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
 
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
+#else
+# pragma GCC diagnostic warning "-Warray-bounds"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 icu_streambuf::int_type icu_streambuf::underflow() {
