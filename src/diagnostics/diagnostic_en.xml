@@ -3697,7 +3697,43 @@
     <entry key="JSONiq error">
       <value>JSONIQ error</value>
     </entry>
-
+    
+    <entry key="JSONiq type error">
+      <value>JSONIQ type error</value>
+    </entry>
+    
+    <entry key="JSONiq static error">
+      <value>JSONIQ static error</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic error">
+      <value>JSONIQ dynamic error</value>
+    </entry>
+    
+    <entry key="JSONiq serialization error">
+      <value>JSONIQ serialization error</value>
+    </entry>
+    
+    <entry key="JSONiq warning">
+      <value>JSONIQ warning</value>
+    </entry>
+    
+    <entry key="JSONiq type warning">
+      <value>JSONIQ type warning</value>
+    </entry>
+    
+    <entry key="JSONiq static warning">
+      <value>JSONIQ static warning</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic warning">
+      <value>JSONIQ dynamic warning</value>
+    </entry>
+    
+    <entry key="JSONiq serialization warning">
+      <value>JSONIQ serialization warning</value>
+    </entry>
+    
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
