@@ -8666,7 +8666,7 @@ void* begin_visit(const PathExpr& v)
           {
             const rchandle<QName> lQName = lNodetest->getQName();
 
-            if (lQName && lQName->get_namespace() == "")
+            if (lQName && lQName->get_prefix() == "")
             {
               const zstring& lLocal = lQName->get_localname();
 
