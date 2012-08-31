@@ -85,16 +85,89 @@ public:
 
 *******************************************************************************/
 
+class JSONTree
+{
+private:
+  simplestore::Collection * theCollection;
+  TreeId                    theId;
+  JSONItem                * theRoot;
+
+public:
+  JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
+  {}
+
+  simplestore::Collection* getCollection() const
+  {
+    return theCollection;
+  }
+
+  void setCollection(simplestore::Collection* aCollection)
+  {
+    theCollection = aCollection;
+  }
+
+  const TreeId& getTreeId() const
+  {
+    return theId;
+  }
+
+  void setTreeId(const TreeId& aId)
+  {
+    theId = aId;
+  }
+
+  JSONItem* getRoot() const
+  {
+    return theRoot;
+  }
+
+  void setRoot(JSONItem* aRoot)
+  {
+    theRoot = aRoot;
+  }
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+
 class JSONItem : public store::Item
 {
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
+  JSONTree  * theTree;
+
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : store::Item(JSONIQ) {}
+  JSONItem() : store::Item(JSONIQ), theTree(NULL) {}
 
+  virtual ~JSONItem();
+  
+  virtual void free();
+
+  virtual void destroy();
+
+  const simplestore::Collection* getCollection() const;
+
+  virtual void setTree(JSONTree* aTree) = 0;
+
+  JSONTree* getTree() const
+  {
+    return theTree;
+  }
+
+  // These two functions are only to be called if in a collection.
+  const TreeId& getTreeId() const;
+
+  JSONItem* getRoot() const;
+  
+  void attachToCollection(Collection* aCollection, const TreeId& aTreeId);
+
+  void detachFromCollection();
+  
   // store API
 
   virtual bool equals(
@@ -104,11 +177,15 @@ public:
   {
     return this == other;
   }
-  
-  // store methods
-  // store methods
 
-  virtual const JSONItem* getRoot() = 0;
+public:
+#ifndef NDEBUG
+  virtual void assertInvariant() const;
+
+  virtual bool isThisTreeOfAllDescendants(const JSONTree* aTree) const = 0;
+
+  virtual bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const = 0;
+#endif
 };
 
 
@@ -151,8 +228,6 @@ public:
   virtual bool rename(
     const store::Item_t& aName,
     const store::Item_t& aNewName) = 0;
-    
-  virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 };
 
 
@@ -169,8 +244,8 @@ protected:
   class KeyIterator : public store::Iterator
   {
     protected:
-      SimpleJSONObject_t    theObject;
-      Pairs::iterator theIter;
+      SimpleJSONObject_t  theObject;
+      Pairs::iterator     theIter;
 
     public:
       KeyIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
@@ -186,19 +261,14 @@ protected:
       virtual void close();
   };
 
-protected:
-
-  Keys                 theKeys;
-  Pairs                thePairs;
-  store::Collection  * theCollection;
-  const JSONItem     * theRoot;
+private:
+  Keys   theKeys;
+  Pairs  thePairs;
 
 public:
   SimpleJSONObject()
     :
-    theKeys(64, false),
-    theCollection(NULL),
-    theRoot(NULL)
+    theKeys(64, false)
   {
   }
 
@@ -224,8 +294,6 @@ public:
 
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  virtual const store::Collection* getCollection() const;
-
   // updates
   
   virtual bool add(
@@ -243,25 +311,17 @@ public:
       const store::Item_t& aName,
       const store::Item_t& aNewName);
 
-  virtual void setCollection(SimpleCollection* collection, xs_integer pos);
-  
   // root management
   
 protected:
-  friend void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
+  void setTree(JSONTree* aTree);
 
-  void setRoot(const JSONItem* aRoot);
-
-  const JSONItem* getRoot() { return theRoot; }
-  
   // Invariant handling
-protected:
-  friend class SimpleJSONArray;
-
+public:
 #ifndef NDEBUG
   void assertInvariant() const;
-
-  bool isThisRootOfAllDescendants(const store::Item* aRoot) const;
+  
+  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
 
   bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
 #endif
@@ -318,8 +378,6 @@ public:
 
   virtual store::Item_t
   replace(const xs_integer& pos, const store::Item_t& value) = 0;
-
-  virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 };
 
 
@@ -353,18 +411,12 @@ protected:
       virtual void close();
   };
 
-protected:
-  Members                   theContent;
-  const store::Collection * theCollection;
-  const JSONItem          * theRoot;
+private:
+  Members theContent;
 
 public:
   SimpleJSONArray()
-    :
-    theCollection(NULL),
-    theRoot(NULL)
-  {
-  }
+  {}
 
   virtual ~SimpleJSONArray();
   
@@ -390,8 +442,6 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  virtual const store::Collection* getCollection() const;
-  
   // updates
   
   virtual void
@@ -418,38 +468,26 @@ public:
   virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
 
-  void setCollection(SimpleCollection* collection, xs_integer pos);
-
   // root management
-protected:
-  friend void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
+public:
+  void setTree(JSONTree* aTree);
 
-  void setRoot(const JSONItem* aRoot);
-
-  const JSONItem* getRoot() { return theRoot; }
-  
 protected:
   void add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
 
   static uint64_t cast(const xs_integer& i);
-  
+
   // Invariant handling
-protected:
-  friend class SimpleJSONObject;
-
+public:
 #ifndef NDEBUG
-  void assertInvariant() const;
-
-  bool isThisRootOfAllDescendants(const store::Item* aRoot) const;
+  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
 
   bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
 #endif
 };
 
 
-void setJSONRoot(store::Item* aJSONItem, const JSONItem* aRoot);
-    
-#if 0 // ifndef NDEBUG
+#ifndef NDEBUG
 #define ASSERT_INVARIANT() assertInvariant()
 #else
 #define ASSERT_INVARIANT()

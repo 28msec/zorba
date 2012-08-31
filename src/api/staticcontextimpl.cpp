@@ -73,6 +73,7 @@ namespace zorba {
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
+  theCompilerCB(NULL),
   theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
@@ -98,6 +99,7 @@ StaticContextImpl::StaticContextImpl(
     DiagnosticHandler* aDiagnosticHandler)
   :
   theCtx(aCtx),
+  theCompilerCB(NULL),
   theMaxVarId(2),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
@@ -120,6 +122,7 @@ StaticContextImpl::StaticContextImpl(
 StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
+  theCompilerCB(NULL),
   theMaxVarId(2),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
@@ -151,6 +154,11 @@ StaticContextImpl::~StaticContextImpl()
   {
     delete theCollectionMgr;
   }
+
+  theCtx = NULL;
+
+  if (theCompilerCB)
+    delete theCompilerCB;
 }
 
 
@@ -936,7 +944,7 @@ void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) 
+  if (type != NULL)
   {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
@@ -1015,6 +1023,8 @@ void StaticContextImpl::loadProlog(
     const String& prolog,
     const Zorba_CompilerHints_t& hints)
 {
+  ZORBA_ASSERT(theCompilerCB == NULL);
+
   // Create and compile an internal query whose prolog is the given prolog and
   // its body is just the emtpy sequence expression: "()".
   XQueryImpl impl;
@@ -1023,7 +1033,9 @@ void StaticContextImpl::loadProlog(
   // Copy theSctxMap of the internal query into "this". When "this" is then passed
   // as an input to a user query Q, theSctxMap of Q will be initialized as a copy
   // of this->theSctxMap.
-  theSctxMap = impl.theCompilerCB->theSctxMap;
+  //theSctxMap = impl.theCompilerCB->theSctxMap;
+  theCompilerCB = impl.theCompilerCB;
+  impl.theCompilerCB = NULL;
 }
 
 
@@ -1486,7 +1498,7 @@ StaticContextImpl::invoke(
     // The same is true for this sctx
     Iterator_t lIter = impl->iterator();
     return new InvokeItemSequence(impl.release(), lIter, const_cast<StaticContextImpl*>(this));
-  } 
+  }
   catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);

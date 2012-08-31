@@ -179,7 +179,7 @@ public:
 public:
   VarInfo();
 
-  VarInfo(const var_expr_t& v);
+  VarInfo(var_expr* v);
 
   ~VarInfo();
 
@@ -570,7 +570,7 @@ protected:
 
   std::ostream                          * theTraceStream;
 
-  expr_t                                  theQueryExpr;
+  expr*                                  theQueryExpr;
 
   std::string                             theModuleNamespace;
 
@@ -691,9 +691,9 @@ public:
 
   bool is_global_root_sctx() const;
 
-  expr_t get_query_expr() const;
+  expr* get_query_expr() const;
 
-  void set_query_expr(expr_t expr);
+  void set_query_expr(expr* expr);
 
   void set_trace_stream(std::ostream&);
 
@@ -870,7 +870,7 @@ public:
   //
   // Variables
   //
-  void bind_var(const var_expr_t& expr, const QueryLoc& loc, const Error& err);
+  void bind_var(var_expr* expr, const QueryLoc& loc, const Error& err);
 
   VarInfo* lookup_var(const store::Item* qname) const;
 
