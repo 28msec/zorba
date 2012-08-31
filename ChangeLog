@@ -22,6 +22,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
   * Fixed bug #1042840 (qname pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
+  * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
 	
 version 2.6
 
