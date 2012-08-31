@@ -160,14 +160,14 @@ public:
   /** \brief Execute the query and write the result to the given output stream.
    *  The query only has a result if it's a non-updating query.
    *
-   * @stream The output stream on which the result is written.
+   * @param stream The output stream on which the result is written.
    */
   void execute( ZorbaIOStream & stream );
 
   /** \brief Execute the query and write the result to the given output stream.
    *  The query only has a result if it's a non-updating query.
    *
-   * @stream The output stream on which the result is written.
+   * @param stream The output stream on which the result is written.
    * @param serOptions The serialization options for this Query result
    */
   void execute( ZorbaIOStream & stream, SerializationOptions & serOptions );
