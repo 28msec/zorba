@@ -194,6 +194,36 @@ public:
 
 
 /*******************************************************************************
+  fn-zorba-ddl:probe-index-point-value-skip(
+      $indexName as xs:QName, 
+      $key1 as xs:anyAtomicItem?,
+      ....
+      $keyN as xs:anyAtomicItem?) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
+  function.
+********************************************************************************/
+class fn_zorba_ddl_probe_index_point_value_skip : public function
+{
+public:
+  fn_zorba_ddl_probe_index_point_value_skip(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+/*******************************************************************************
   fn-zorba-ddl:probe-index-point-general(
       $indexName as xs:QName,
       $keys      as xs:anyAtomicItem*) as node()*

@@ -113,6 +113,18 @@ PlanIter_t fn_zorba_ddl_probe_index_point_value::codegen(
 }
 
 
+PlanIter_t fn_zorba_ddl_probe_index_point_value_skip::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  assert(false);
+  //return new ProbeIndexPointValueIteratorSkip(sctx, loc, argv);
+}
+
+
 PlanIter_t fn_zorba_ddl_probe_index_point_general::codegen(
   CompilerCB*,
   static_context* sctx,
