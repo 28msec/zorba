@@ -58,7 +58,6 @@
 #include "tree_id_generator.h"
 
 #include "util/cxx_util.h"
-#include "util/uuid/uuid.h"
 #include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
