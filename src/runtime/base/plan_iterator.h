@@ -258,11 +258,11 @@ public:
   {
     stateOffset = offset;
     offset += StateTraitsImpl<T>::getStateSize();
-    /*
-    std::cerr << "--> createState() " << ((void*)(planState.theBlock + stateOffset)) 
+
+    std::cerr << "--> createState() " << ((void*)(planState.theBlock + stateOffset))
         << " (" << (void*)planState.theBlock << " + " << (void*)stateOffset << ")"
-        << " for " << typeid( T ).name() << std::endl; 
-    */
+        << " for " << typeid( T ).name() << std::endl;
+
     new (planState.theBlock + stateOffset)T();
   }
 
@@ -302,16 +302,16 @@ protected:
 public:
   QueryLoc           loc;
   static_context   * theSctx;
-  
-  
-// Stable IDs for debugging purposes. An individual ID is assigned to each iterator 
+
+
+// Stable IDs for debugging purposes. An individual ID is assigned to each iterator
 // and this can be used to identify it in the debug information.
-#ifndef NDEBUG  
+#ifndef NDEBUG
 public:
   int                theId;
   int getId() const  { return theId;}
   void setId(int id) { theId = id;}
-#endif  
+#endif
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator);
@@ -331,7 +331,7 @@ public:
     theSctx(it.theSctx)
 #ifndef NDEBUG
     , theId(it.theId)
-#endif                
+#endif
   {
   }
 
@@ -536,7 +536,7 @@ public:
 
   void open(PlanState& planState, uint32_t& offset)
   {
-    // std::cerr << "--> openImpl()    " << theId << " = " << typeid( IterType ).name() << std::endl; 
+    std::cerr << "--> openImpl() " << theId << " = " << typeid( IterType ).name() << std::endl;
     static_cast<IterType*>(this)->openImpl(planState, offset);
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
@@ -549,6 +549,9 @@ public:
 
   void reset(PlanState& planState) const
   {
+    std::cerr << "--> resetImpl() " << theId << " = " << typeid( IterType ).name()
+        << " on state: " << (void*)(planState.theBlock + theStateOffset)
+        << " (" << (void*)(planState.theBlock) << " + " << (void*)theStateOffset << ")" << std::endl;
 #ifndef NDEBUG
     PlanIteratorState* lState =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
@@ -559,7 +562,7 @@ public:
 
   void close(PlanState& planState)
   {
-    // std::cerr << "--> closeImpl()   " << this << " for " << typeid( IterType ).name() << std::endl; 
+    std::cerr << "--> closeImpl() " << theId << " = " << typeid( IterType ).name() << std::endl;
 #ifndef NDEBUG
     PlanIteratorState* lState =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);

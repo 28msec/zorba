@@ -34,9 +34,10 @@
 
 // TODO: debugging purposes
 #include "runtime/core/var_iterators.h"
+#include "runtime/core/item_iterator.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -47,7 +48,7 @@ SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFnCallIteratorState::DynamicFnCallIteratorState() 
+DynamicFnCallIteratorState::DynamicFnCallIteratorState()
 {
 }
 
@@ -57,7 +58,7 @@ DynamicFnCallIteratorState::DynamicFnCallIteratorState()
 ********************************************************************************/
 DynamicFnCallIteratorState::~DynamicFnCallIteratorState()
 {
-  if (theIsOpen) 
+  if (theIsOpen)
   {
     thePlan->close(*thePlanState);
   }
@@ -82,7 +83,7 @@ void DynamicFnCallIteratorState::init(PlanState& planState)
 void DynamicFnCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if (theIsOpen) 
+  if (theIsOpen)
   {
     thePlan->reset(planState);
   }
@@ -92,7 +93,7 @@ void DynamicFnCallIteratorState::reset(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFnCallIterator::~DynamicFnCallIterator() 
+DynamicFnCallIterator::~DynamicFnCallIterator()
 {
 }
 
@@ -127,7 +128,7 @@ void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   offset += sizeof(UDFunctionCallIteratorState);
 
-  std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+  std::vector<PlanIter_t>::iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
   for ( ; lIter != lEnd; ++lIter )
 	{
@@ -150,6 +151,7 @@ bool DynamicFnCallIterator::nextImpl(
   std::vector<PlanIter_t>::iterator ite;
   std::vector<PlanIter_t>::const_iterator ite2;
   std::vector<PlanIter_t>::const_iterator end2;
+  std::vector<store::Iterator_t>::const_iterator wrapperIter;
 
   DynamicFnCallIteratorState* state;
 
@@ -159,83 +161,95 @@ bool DynamicFnCallIterator::nextImpl(
   // otherwise XPTY0004 is raised
   if (!consumeNext(funcItem, theChildren[0], planState))
   {
-    RAISE_ERROR(err::XPTY0004, loc, 
+    RAISE_ERROR(err::XPTY0004, loc,
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
                  "empty-sequence()",
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
+  /*
   if (consumeNext(item, theChildren[0], planState))
   {
-    RAISE_ERROR(err::XPTY0004, loc, 
+    RAISE_ERROR(err::XPTY0004, loc,
     ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
+  */
 
-  if (!funcItem->isFunction())
+  // do
   {
-    const TypeManager* tm = theSctx->get_typemanager();
-    xqtref_t type = tm->create_value_type(funcItem);
+    if (!funcItem->isFunction())
+    {
+      const TypeManager* tm = theSctx->get_typemanager();
+      xqtref_t type = tm->create_value_type(funcItem);
 
-    RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
-                 type->toSchemaString(),
-                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
+                  type->toSchemaString(),
+                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+    }
+
+    fnItem = static_cast<FunctionItem*>(funcItem.getp());
+
+    std::cerr << "--> dynamic fncall nextImpl(): " << theId << " theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariables().size() << std::endl;
+
+    if (theChildren.size() - 1 != fnItem->getArity())
+    {
+      // TODO: customize error message and take into account partial application
+      RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
+    }
+
+    argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
+    ite = argIters.begin();
+
+    ite2 = fnItem->getVariables().begin();
+    end2 = fnItem->getVariables().end();
+    wrapperIter = fnItem->getVariableWrappers().begin();
+
+    for (; ite2 != end2; ++ite2, ++ite, ++wrapperIter)
+    {
+      std::cerr << "--> dynamic fncall: argIter: " << (*ite2)->getId() << " = " << typeid (ite2->getp()).name() << std::endl;
+      if (dynamic_cast<LetVarIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+      if (dynamic_cast<SingletonIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
+
+      // (*wrapperIter)->reset(); // TODO: do not reset on the first loop iteration
+      *ite = *ite2;
+    }
+
+    ite2 = theChildren.begin();
+    end2 = theChildren.end();
+    ++ite2;
+
+    for(; ite2 != end2; ++ite2, ++ite)
+    {
+      std::cerr << "--> dynamic fncall: argIter: " << (*ite2)->getId() << " = " << typeid (ite2->getp()).name() << std::endl;
+      if (dynamic_cast<LetVarIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+
+      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
+      *ite = *ite2;
+    }
+
+    state->thePlan = fnItem->getImplementation(argIters);
+
+    // must be opened after vars and params are set
+    state->thePlan->open(planState, state->theUDFStateOffset);
+    state->theIsOpen = true;
+
+    while(consumeNext(result, state->thePlan, planState))
+    {
+      STACK_PUSH(true, state);
+    }
+
+    // need to close here early in case the plan is completely
+    // consumed. Otherwise, the plan would still be opened
+    // if destroyed from the state's destructor.
+    state->thePlan->close(planState);
+    state->theIsOpen = false;
   }
-
-  fnItem = static_cast<FunctionItem*>(funcItem.getp());
-  
-  std::cerr << "--> dynamic fncall nextImpl(): " << this << " theChildren.size(): " << theChildren.size() << ", fnItem params count: " << fnItem->getArity() << std::endl;
-  
-  if (theChildren.size() - 1 != fnItem->getArity())
-  {
-    // TODO: customize error message and take into account partial application
-    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
-  }
-
-  argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
-
-  ite = argIters.begin();
-
-  ite2 = theChildren.begin();
-  end2 = theChildren.end();
-  ++ite2;
-
-  for (; ite2 != end2; ++ite2, ++ite)
-  {
-    *ite = *ite2;
-    std::cerr << "--> dynamic fncall: argIter: " << *ite << " = " << typeid (ite->getp()).name() << std::endl;
-    if (dynamic_cast<LetVarIterator*>(ite->getp()))
-      std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite->getp())->getVarName()->getStringValue() << std::endl;
-  }
-
-  ite2 = fnItem->getVariables().begin();
-  end2 = fnItem->getVariables().end();
-
-  for(; ite2 != end2; ++ite2, ++ite) 
-  {
-    *ite = *ite2;
-    std::cerr << "--> dynamic fncall: argIter: " << *ite << " = " << typeid (ite->getp()).name() << std::endl;
-    if (dynamic_cast<LetVarIterator*>(ite->getp()))
-      std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite->getp())->getVarName()->getStringValue() << std::endl;
-  }  
-
-  state->thePlan = fnItem->getImplementation(argIters);
-
-  // must be opened after vars and params are set
-  state->thePlan->open(planState, state->theUDFStateOffset);
-  state->theIsOpen = true;
-  
-  while(consumeNext(result, state->thePlan, planState)) 
-  {
-    STACK_PUSH(true, state);
-  }
-
-  // need to close here early in case the plan is completely
-  // consumed. Otherwise, the plan would still be opened
-  // if destroyed from the state's destructor.
-  state->thePlan->close(planState);
-  state->theIsOpen = false;
+  // while (consumeNext(funcItem, theChildren[0], planState));
 
   STACK_END(state);
 };

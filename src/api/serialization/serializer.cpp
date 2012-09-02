@@ -117,7 +117,7 @@ static void tokenize(
 
 ********************************************************************************/
 serializer::emitter::emitter(
-    serializer* the_serializer, 
+    serializer* the_serializer,
     std::ostream& the_stream,
     bool aEmitAttributes)
   :
@@ -202,7 +202,7 @@ int serializer::emitter::emit_expanded_string(
       const unsigned char* temp = chars;
       unicode::code_point cp = utf8::next_char(temp);
 
-      // raise an error iff (1) the serialization format is XML 1.0 and 
+      // raise an error iff (1) the serialization format is XML 1.0 and
       // (2) the given character is an invalid XML 1.0 character
       if (ser &&
           ser->method == PARAMETER_VALUE_XML &&
@@ -449,14 +449,14 @@ void serializer::emitter::emit_item(store::Item* item)
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (!theEmitAttributes 
-        && item->getNodeKind() == store::StoreConsts::attributeNode)
-  {
-    throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
-  }
   else if (item->isFunction()) // TODO: what about function items serialization?
   {
     throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->show(), "function item node"));
+  }
+  else if (!theEmitAttributes
+        && item->getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
   }
   else
   {
@@ -1245,9 +1245,9 @@ void serializer::jsoniq_emitter::emit_declaration()
 
 void serializer::jsoniq_emitter::emit_item(store::Item *item)
 {
-  
+
   bool isJson = item->isJSONItem();
-  
+
   if (ser->jsoniq_allow_mixed_xdm_jdm == PARAMETER_VALUE_NO)
   {
     if ((isJson && theEmitterState == JESTATE_XDM) ||
@@ -2294,7 +2294,7 @@ void serializer::binary_emitter::emit_item(store::Item* item)
   }
   else
   {
-    if (!item->isNode() && 
+    if (!item->isNode() &&
         item->getTypeCode() == store::XS_BASE64BINARY)
     {
       size_t len;

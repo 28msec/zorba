@@ -145,7 +145,7 @@ void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
 {
   //ar & theVarName;
   bool isFor;
-  
+
   if (ar.is_serializing_out())
   {
     isFor = (theType == FOR);
@@ -1255,7 +1255,7 @@ bool FLWORIterator::bindVariable(
 
     store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
 
-    std::cerr << "--> biding var: " << flc.theVarName << " to tempSequence: " << tmpSeq.getp() << " varNo: " << varNo;
+    std::cerr << "--> binding var: " << flc.theVarName << " to tempSequence: " << tmpSeq.getp() << " varNo: " << varNo;
     PlanIteratorWrapper* piw = dynamic_cast<PlanIteratorWrapper*>(iterState->theTempSeqIters[varNo].getp());
     if (piw != NULL)
       std::cerr << " iter: " << piw->theIterator << " = " << typeid(*piw->theIterator).name();
@@ -1435,7 +1435,7 @@ void FLWORIterator::materializeSortTupleAndResult(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        RAISE_ERROR(err::XPTY0004, theOrderByClause->theLocation, 
+        RAISE_ERROR(err::XPTY0004, theOrderByClause->theLocation,
         ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }

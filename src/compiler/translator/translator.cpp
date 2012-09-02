@@ -1409,7 +1409,7 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
 }
 
 
-// is_function_return is to true when doing coercion to a function's return type. In this particular case 
+// is_function_return is to true when doing coercion to a function's return type. In this particular case
 expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB, bool is_function_return = false)
 {
 //   std::cerr << "--> targetType: " << targetType->toString() << std::endl;
@@ -1430,10 +1430,10 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   function_item_expr* fiExpr = new function_item_expr(theRootSctx, loc);
 
   push_nodestack(fiExpr);
-  
+
   // Arguments to the dynamic function call
   std::vector<expr_t> arguments;
-  
+
   // handle the function item expression
   flwor_expr_t fnItem_flwor = new flwor_expr(theRootSctx, loc, false);
   let_clause_t fnItem_lc = wrap_in_letclause(theExpr);
@@ -1441,7 +1441,7 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   fnItem_flwor->add_clause(fnItem_lc);
   fiExpr->add_variable(fnItem_var);
   // arguments.push_back();
-  
+
   // bind the function item variable in the inner flwor
   flwor_expr_t inner_flwor = new flwor_expr(theRootSctx, loc, false);
   var_expr_t inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::arg_var);
@@ -1450,8 +1450,8 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   inner_arg_var->set_param_pos(inner_flwor->num_clauses());
   // inner_arg_var->set_type(fn_arg_var->get_return_type());
   inner_flwor->add_clause(inner_lc);
-  
-  
+
+
   // Handle parameters. For each parameter, a let binding is added to the inner flwor.
   for(unsigned i = 0; i<func_type->get_number_params(); i++)
   {
@@ -1466,12 +1466,12 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
     arg_var->set_type(param_type);
 
     inner_flwor->add_clause(lc);
-  
+
     arguments.push_back(new wrapper_expr(theRootSctx, loc, subst_var));
   }
-  
+
   // if (!is_function_return) {
-  
+
   /*
   wrapper_expr* theWrapperExpr = dynamic_cast<wrapper_expr*>(theExpr.getp());
   var_expr* theVarExpr = theWrapperExpr ? dynamic_cast<var_expr*>(theWrapperExpr->get_expr()) : NULL;
@@ -1491,25 +1491,25 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
     {
       continue;
     }
-    
+
     store::Item_t qname = varExpr->get_name();
 
     var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
     var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
 
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
-    
+
     arg_var->set_param_pos(flwor->num_clauses());
     arg_var->set_type(varExpr->get_return_type());
 
     // TODO: this could probably be done lazily in some cases
     //lc->setLazyEval(true);
     flwor->add_clause(lc);
-    
+
     fiExpr->add_variable(varExpr);
 
     // ???? What about inscope vars that are hidden by param vars ???
-    
+
     if (theFIExpr != NULL)
     {
       theFIExpr->replace_variable(subst_var);
@@ -1520,7 +1520,7 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
     }
   }
   */
-  
+
   // }
 
   expr_t body = new dynamic_function_invocation_expr(
@@ -1528,13 +1528,13 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
                 loc,
                 new wrapper_expr(theRootSctx, loc, inner_subst_var),
                 arguments);
-  
+
   // TODO: remove, there will always be a clause
   /*
   if (inner_flwor->num_clauses() == 0)
     inner_flwor = NULL;
   */
-  
+
   create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
 
   theExpr = pop_nodestack();
@@ -1543,7 +1543,7 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
   // pop the scope.
   pop_scope();
-  
+
   return theExpr;
 }
 
@@ -3881,7 +3881,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     {
       RAISE_ERROR(err::XUST0001, loc, ERROR_PARAMS(ZED(XUST0001_UDF_2), fname));
     }
-    
+
     // sequential udfs are implicitly declared as non-deterministic (even if
     // they are actuall deterministic). We do this to avoid having to declare
     // a udf as both sequential and non-deterministic. It is OK to do this,
@@ -3889,14 +3889,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // of those imposed by non-deterministic.
     if (udf->isSequential())
       udf->setDeterministic(false);
-    
+
     // Get the return type
     xqtref_t returnType = udf->getSignature().returnType();
-    
+
     // Wrap in coercion if the return type is a function item
     if (returnType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
-      body = wrap_in_coercion(returnType, body, loc, theCCB, true);
+      // body = wrap_in_coercion(returnType, body, loc, theCCB, true);
     }
 
     // If function has any params, they have been wraped in a flwor expr. Set the
@@ -11314,7 +11314,7 @@ void end_visit(const InlineFunction& v, void* aState)
       }
     }
   }
-  
+
   create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB);
 
   // pop the scope.

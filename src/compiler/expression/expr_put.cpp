@@ -323,7 +323,7 @@ ostream& orderby_clause::put(ostream& os) const
 
   csize numColumns = num_columns();
 
-  for (csize i = 0; i < numColumns; i++) 
+  for (csize i = 0; i < numColumns; i++)
   {
     theOrderingExprs[i]->put(os);
   }
@@ -356,7 +356,7 @@ ostream& flwor_expr::put(ostream& os) const
 {
   BEGIN_PUT(flwor_expr);
 
-  for (csize i = 0; i < num_clauses(); i++) 
+  for (csize i = 0; i < num_clauses(); i++)
   {
     const flwor_clause& c = *(get_clause(i));
 
@@ -367,7 +367,7 @@ ostream& flwor_expr::put(ostream& os) const
       PUT_SUB( "WHERE", static_cast<const where_clause *>(&c)->get_expr() );
       break;
     }
-    case flwor_clause::count_clause: 
+    case flwor_clause::count_clause:
     {
       os << indent << "COUNT $";
       put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
@@ -460,7 +460,7 @@ ostream& eval_expr::put(ostream& os) const
     os << endl << inc_indent;
     if (theArgs[i])
       theArgs[i]->put(os);
-    os << dec_indent << indent << "]" << endl; 
+    os << dec_indent << indent << "]" << endl;
   }
   theExpr->put (os);
   END_PUT();
@@ -531,7 +531,7 @@ ostream& fo_expr::put(ostream& os) const
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-ostream& ftcontains_expr::put( ostream &os ) const 
+ostream& ftcontains_expr::put( ostream &os ) const
 {
   BEGIN_PUT( ftcontains_expr );
   PUT_SUB( "RANGE", range_ );
@@ -557,13 +557,13 @@ std::ostream& function_item_expr::put(std::ostream& os) const
     os << " inline udf (" << theFunction.getp() << ") [\n";
     if (theFunction.getp() != NULL)
         reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
-    
+
     // TODO: remove
     os << indent << "scoped vars: \n" << inc_indent;
     for (ulong i = 0; i < theScopedVariables.size(); ++i)
       theScopedVariables[i]->put(os);
     os << dec_indent;
-    
+
     END_PUT();
   }
 }
@@ -768,7 +768,7 @@ ostream& const_expr::put(ostream& os) const
   BEGIN_PUT_NO_EOL( const_expr );
   if (theValue->isFunction())
   {
-    os << "functrion item [ " << theValue->show() << " ]";
+    os << "function item [ " << theValue->show() << " ]";
   }
   else
   {

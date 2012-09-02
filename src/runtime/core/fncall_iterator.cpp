@@ -138,10 +138,9 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
                                thePlanStateSize,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
-  
+
   std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
-      << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan.getp() 
-      << " " << typeid (thePlan.getp()).name() << std::endl;
+      << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << typeid (thePlan.getp()).name() << std::endl;
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -172,12 +171,12 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
 ********************************************************************************/
 UDFunctionCallIterator::UDFunctionCallIterator(
     static_context* sctx,
-    const QueryLoc& loc, 
-    std::vector<PlanIter_t>& args, 
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& args,
     const user_function* aUDF)
   :
   NaryBaseIterator<UDFunctionCallIterator,
-                   UDFunctionCallIteratorState>(sctx, loc, args), 
+                   UDFunctionCallIteratorState>(sctx, loc, args),
   theUDF(const_cast<user_function*>(aUDF)),
   theIsDynamic(false)
 {
@@ -282,7 +281,7 @@ bool UDFunctionCallIterator::probeCache(
     lCond->pushItem(lArg);
   }
 
-  store::IndexProbeIterator_t probeIte = 
+  store::IndexProbeIterator_t probeIte =
   GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
 
   probeIte->init(lCond);
@@ -319,16 +318,16 @@ void UDFunctionCallIterator::insertCacheEntry(
 void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UDFunctionCallIteratorState* state;
-  
+
   /*
   UDFunctionCallIteratorState* oldState = StateTraitsImpl<UDFunctionCallIteratorState>::
       getState(planState, theStateOffset);
-  
+
   std::cerr << "--> UDFunctionCallIterator::openImpl() oldState: " << oldState << std::endl;
   if (oldState->thePlanState != NULL)
     std::cerr << "    theBlock: " << (void*)oldState->thePlanState->theBlock << std::endl;
   */
-    
+
   if (!theIsDynamic)
   {
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
@@ -390,7 +389,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
       for (csize i=0; i<fnItemVariables.size(); i++)
         if ((*argsIte) == fnItemVariables[i].getp())
           (*argWrapsIte) = fnItemWrappers[i];
-          
+
       if ((*argWrapsIte) == NULL)
         (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
 
@@ -455,7 +454,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     // Open the plan, if not done already. This cannot be done in the openImpl
     // method because in the case of recursive functions, we will get into an
     // infinite loop.
-    if (!state->thePlanOpen) 
+    if (!state->thePlanOpen)
     {
       uint32_t planOffset = 0;
       state->thePlan->open(*state->thePlanState, planOffset);
@@ -542,7 +541,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     {
       GENV_ITEMFACTORY->createQName(inlineUdfName, "", "", "inline function");
     }
-    
+
     recordStackTrace(theUDF->getLoc(),
                      loc,
                      theUDF->getName() ? theUDF->getName() : inlineUdfName.getp(),
@@ -576,8 +575,8 @@ class ExtFuncArgItemSequence : public ItemSequence
     bool                     theFirstOpen;
 
   public:
-    InternalIterator(ExtFuncArgItemSequence* seq) 
-      : 
+    InternalIterator(ExtFuncArgItemSequence* seq)
+      :
       theItemSequence(seq),
       theIsOpen(false),
       theFirstOpen(true)
@@ -598,7 +597,7 @@ class ExtFuncArgItemSequence : public ItemSequence
 
     bool next(Item& item)
     {
-      if (!theIsOpen)  
+      if (!theIsOpen)
         throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
       store::Item_t result;
@@ -612,7 +611,7 @@ class ExtFuncArgItemSequence : public ItemSequence
 
     void close()
     {
-      if (!theIsOpen)  
+      if (!theIsOpen)
         throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
       theIsOpen = false;
@@ -635,7 +634,7 @@ public:
   {
   }
 
-  virtual Iterator_t getIterator() 
+  virtual Iterator_t getIterator()
   {
     if (theHasIterator)
       throw ZORBA_EXCEPTION(zerr::ZAPI0039_XQUERY_HAS_ITERATOR_ALREADY);

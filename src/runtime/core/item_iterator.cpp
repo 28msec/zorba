@@ -67,12 +67,38 @@ void SingletonIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<PlanIteratorState>::
   createState(planState, theStateOffset, offset);
-  
+
   if (theValue->isFunction())
   {
-    const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theValue.getp())->getVariables();
+    FunctionItem* fnItem = static_cast<FunctionItem*>(theValue.getp());
+    const std::vector<PlanIter_t> variableValues = fnItem->getVariables();
+    std::vector<store::Iterator_t> wrappers;
+    wrappers.resize(variableValues.size());
     for (unsigned int i=0; i<variableValues.size(); i++)
+    {
       variableValues[i]->open(planState, offset);
+
+      wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
+
+      SingletonIterator* singletonIter = dynamic_cast<SingletonIterator*>(variableValues[i].getp());
+      if (singletonIter != NULL)
+      {
+        wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
+        std::cerr << "--> SingletonIterator::nextImp() wrapping " << singletonIter->getId() << " = " << typeid (*singletonIter).name()
+            << " value: " << singletonIter->getValue()->show()
+            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
+      }
+
+      LetVarIterator* letVarIter = dynamic_cast<LetVarIterator*>(variableValues[i].getp());
+      if (letVarIter != NULL)
+      {
+        wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
+        std::cerr << "--> SingletonIterator::nextImp() wrapping " << letVarIter->getId() << " = " << typeid (*letVarIter).name()
+            << " varName: " << letVarIter->getVarName()->getStringValue()
+            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
+      }
+    }
+    fnItem->setVariableWrappers(wrappers);
   }
 }
 
@@ -80,14 +106,15 @@ void SingletonIterator::openImpl(PlanState& planState, uint32_t& offset)
 bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
-  
+
   // std::cerr << "--> SingletonIterator::nextImp() " << this << " value: " << theValue->show() << std::endl;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  
+
   if (theValue->isFunction())
   {
-    std::cerr << "--> SingletonIterator::nextImp() " << this << " value: " << theValue->show() << std::endl;
+    /*
+    std::cerr << "--> SingletonIterator::nextImp() " << theId << " value: " << theValue->show() << std::endl;
     FunctionItem* fnItem = static_cast<FunctionItem*>(theValue.getp());
     const std::vector<PlanIter_t> variableValues = fnItem->getVariables();
     std::vector<store::Iterator_t> wrappers;
@@ -98,12 +125,13 @@ bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       if (letVarIter != NULL)
       {
         wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
-        std::cerr << "--> SingletonIterator::nextImp() wrapping " << letVarIter << " = " << typeid (*letVarIter).name() 
+        std::cerr << "--> SingletonIterator::nextImp() wrapping " << letVarIter->getId() << " = " << typeid (*letVarIter).name()
             << " varName: " << letVarIter->getVarName()->getStringValue()
             << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
       }
     }
     fnItem->setVariableWrappers(wrappers);
+    */
   }
 
   result = theValue;
@@ -115,28 +143,28 @@ bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 void SingletonIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
-  
+
   if (theValue->isFunction())
   {
     const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theValue.getp())->getVariables();
     for (unsigned int i=0; i<variableValues.size(); i++)
-      variableValues[i]->accept(v);    
+      variableValues[i]->accept(v);
   }
-  
+
   v.endVisit(*this);
 }
 
 uint32_t SingletonIterator::getStateSizeOfSubtree() const
 {
   int32_t size = this->getStateSize();
-  
+
   if (theValue->isFunction())
   {
     const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theValue.getp())->getVariables();
     for (unsigned int i=0; i<variableValues.size(); i++)
       size += variableValues[i]->getStateSizeOfSubtree();
   }
-  
+
   return size;
 }
 
@@ -156,7 +184,7 @@ IfThenElseIterator::IfThenElseIterator(
   theThenIter(aThenIter),
   theElseIter(aElseIter),
   theIsBooleanIter(aIsBooleanIter)
-{ 
+{
 }
 
 

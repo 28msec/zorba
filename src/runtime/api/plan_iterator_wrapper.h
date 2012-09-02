@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ class PlanState;
   to the store. The wrapper wraps the plan iterator in order to provide a
   simpler interface that the store can use.
 
-  The wrapper does not allocate a new state block, but it points to the same 
+  The wrapper does not allocate a new state block, but it points to the same
   block that contains the state of the wrapped plan iterator.
 ********************************************************************************/
 class PlanIteratorWrapper : public store::Iterator
@@ -47,7 +47,7 @@ public:
 
   bool next(store::Item_t&);
 
-  void reset() {}
+  void reset();
 
   void close() {}
 };

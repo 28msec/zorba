@@ -1,12 +1,12 @@
-/*
+  /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,32 +19,39 @@
 
 #include "runtime/base/plan_iterator.h"
 
-namespace zorba 
+namespace zorba
 {
 
 /*******************************************************************************
   class PlanIteratorWrapper
 ********************************************************************************/
-PlanIteratorWrapper::PlanIteratorWrapper(const PlanIterator* iter, PlanState& state) 
+PlanIteratorWrapper::PlanIteratorWrapper(const PlanIterator* iter, PlanState& state)
   :
   theIterator(iter),
   theStateBlock(&state)
 {
-  std::cerr << "--> PlanIteratorWrapper() " << this << " for iter: " << iter << " = " << typeid (*iter).name()
+  /*
+  std::cerr << "--> PlanIteratorWrapper() " << this << " for iter: " << iter->getId() << " = " << typeid (*iter).name()
       << " state: " << (void*)&state << " theBlock: " << (void*)state.theBlock << std::endl;
+  */
 }
 
 
 PlanIteratorWrapper::~PlanIteratorWrapper()
 {
 }
-  
-  
+
+
 bool PlanIteratorWrapper::next(store::Item_t& result)
 {
   return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
 }
 
+
+void PlanIteratorWrapper::reset()
+{
+  theIterator->reset(*theStateBlock);
+}
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */
