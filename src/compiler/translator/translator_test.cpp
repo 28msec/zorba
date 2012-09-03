@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,12 +48,12 @@ int main(int argc, char* argv[])
 				parsenode* n_p = driver.get_expr();
 				cout << endl;
 				n_p->put(cout) << endl;
-	
+
 				translator nvs(zorp);
 				MainModule* mm_p;
 				QueryBody* qb_p;
 				Expr* ex_p;
-	
+
 				if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) {
 					cout << "Parse error: expecting MainModule\n";
 					return -1;
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 				}
 
 				ex_p->accept(nvs);
-				rchandle<expr> e_h = nvs.pop_nodestack();
+				expr* e_h = nvs.pop_nodestack();
 
 				cout << endl;
 

@@ -144,6 +144,8 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0098;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0099;
 
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0103;
+
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0106;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0111;

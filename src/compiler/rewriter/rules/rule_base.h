@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ class RewriterContext;
 /*******************************************************************************
 
 ********************************************************************************/
-class RewriteRule : public SimpleRCObject 
+class RewriteRule : public SimpleRCObject
 {
 public:
   typedef enum
@@ -76,7 +76,7 @@ public:
 
   const std::string& getRuleName() const { return theRuleName; }
 
-  virtual expr_t apply(RewriterContext& rCtx, expr* node, bool& modified) = 0;
+  virtual expr* apply(RewriterContext& rCtx, expr* node, bool& modified) = 0;
 };
 
 
@@ -94,12 +94,12 @@ public:
 
   virtual ~PrePostRewriteRule() { }
 
-  expr_t apply(RewriterContext& rCtx, expr* node, bool& modifed);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modifed);
 
 protected:
-  virtual expr_t rewritePre(expr* node, RewriterContext& rCtx) = 0;
+  virtual expr* rewritePre(expr* node, RewriterContext& rCtx) = 0;
 
-  virtual expr_t rewritePost(expr* node, RewriterContext& rCtx) = 0;
+  virtual expr* rewritePost(expr* node, RewriterContext& rCtx) = 0;
 };
 
 
@@ -116,15 +116,15 @@ class name : public PrePostRewriteRule                              \
   ~name() { }                                                       \
                                                                     \
  protected:                                                         \
-  expr_t rewritePre(expr* node, RewriterContext& rCtx);             \
+  expr* rewritePre(expr* node, RewriterContext& rCtx);             \
                                                                     \
-  expr_t rewritePost(expr* node, RewriterContext& rCtx);            \
+  expr* rewritePost(expr* node, RewriterContext& rCtx);            \
 }
 
 
-#define RULE_REWRITE_PRE(name) expr_t name::rewritePre(expr* node, RewriterContext& rCtx)
+#define RULE_REWRITE_PRE(name) expr* name::rewritePre(expr* node, RewriterContext& rCtx)
 
-#define RULE_REWRITE_POST(name) expr_t name::rewritePost(expr* node, RewriterContext& rCtx)
+#define RULE_REWRITE_POST(name) expr* name::rewritePost(expr* node, RewriterContext& rCtx)
 
 }
 

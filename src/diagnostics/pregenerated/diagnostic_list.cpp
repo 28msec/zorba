@@ -199,6 +199,9 @@ XQueryErrorCode XQST0098( "XQST0098" );
 XQueryErrorCode XQST0099( "XQST0099" );
 
 
+XQueryErrorCode XQST0103( "XQST0103" );
+
+
 XQueryErrorCode XQST0106( "XQST0106" );
 
 

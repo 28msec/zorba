@@ -92,12 +92,12 @@ void operator&(serialization::Archiver& ar, IntegerImpl& obj)
 
 void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj)
 {
-  ar & obj.get_value();
+  ar & obj.value();
 }
 
 void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj)
 {
-  ar & obj.get_value();
+  ar & obj.value();
 }
 
 #endif

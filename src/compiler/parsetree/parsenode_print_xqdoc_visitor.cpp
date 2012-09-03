@@ -900,10 +900,8 @@ void add_invoked_function (
   map<zstring, zstring>::iterator ite = theNamespaceMap.find(aPrefix);
   if (ite == theNamespaceMap.end())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZXQD0001_PREFIX_NOT_DECLARED,
-      ERROR_PARAMS( aPrefix, aLocalName, aLocation )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZXQD0001_PREFIX_NOT_DECLARED,
+    ERROR_PARAMS(aPrefix, aLocalName, aLocation ));
   }
 
   zstring lNS = ite->second;
@@ -936,13 +934,10 @@ void add_invoked_function (
 }
 
 
-XQDOC_NO_BEGIN_TAG (VarDecl)
+XQDOC_NO_BEGIN_TAG (GlobalVarDecl)
 
-void end_visit(const VarDecl& n, void*)
+void end_visit(const GlobalVarDecl& n, void*)
 {
-  if (!n.is_global())
-    return;
-
   store::Item_t lVariableQName, lUriQName;
   store::Item_t lVariableElem, lUriElem, lUriText;
 
@@ -1276,6 +1271,7 @@ XQDOC_NO_BEGIN_END_TAG (URILiteralList)
 XQDOC_NO_BEGIN_END_TAG (ValidateExpr)
 XQDOC_NO_BEGIN_END_TAG (ValueComp)
 XQDOC_NO_BEGIN_END_TAG (VarBinding)
+XQDOC_NO_BEGIN_END_TAG( LocalVarDecl )
 XQDOC_NO_BEGIN_END_TAG (VarGetsDecl)
 XQDOC_NO_BEGIN_END_TAG (VarGetsDeclList)
 XQDOC_NO_BEGIN_END_TAG (VarInDecl)
