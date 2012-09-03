@@ -28,6 +28,7 @@
 
 #include "atomic_items.h"
 #include "simple_collection.h"
+#include "structured_item.h"
 
 
 namespace zorba
@@ -134,7 +135,7 @@ public:
 
 *******************************************************************************/
 
-class JSONItem : public store::Item
+class JSONItem : public StructuredItem
 {
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -144,7 +145,7 @@ protected:
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : store::Item(JSONIQ), theTree(NULL) {}
+  JSONItem() : StructuredItem(store::Item::JSONIQ), theTree(NULL) {}
 
   virtual ~JSONItem();
   
@@ -161,12 +162,24 @@ public:
     return theTree;
   }
 
-  // These two functions are only to be called if in a collection.
+  // Only to be called if in a collection.
   const TreeId& getTreeId() const;
 
-  JSONItem* getRoot() const;
+  // Only to be called if in a collection.
+  virtual void setStructuredItemRoot(json::JSONItem* aRoot);
   
-  void attachToCollection(Collection* aCollection, const TreeId& aTreeId);
+  // Only to be called if in a collection.
+  virtual JSONItem* getStructuredItemRoot() const;
+  
+  // Only to be called if in a collection.
+  virtual bool isInSameTree(const StructuredItem* anotherItem) const;
+
+  virtual long getStructuredItemRefCount() const;
+  
+  void attachToCollection(
+      Collection* aCollection,
+      const TreeId& aTreeId,
+      const xs_integer& aPosition);
 
   void detachFromCollection();
   

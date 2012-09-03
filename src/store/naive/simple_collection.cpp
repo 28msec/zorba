@@ -150,7 +150,7 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
 
 #ifdef ZORBA_WITH_JSON
   if (lJSONItem)
-    lJSONItem->attachToCollection(this, createTreeId());
+    lJSONItem->attachToCollection(this, createTreeId(), xs_integer::zero());
   else
 #endif
     node->setCollection(this, pos);
@@ -237,7 +237,7 @@ xs_integer SimpleCollection::addNodes(
 
 #ifdef ZORBA_WITH_JSON
     if (lJSONItem)
-      lJSONItem->attachToCollection(this, createTreeId());
+      lJSONItem->attachToCollection(this, createTreeId(), xs_integer::zero());
     else
 #endif
       node->setCollection(this, pos);

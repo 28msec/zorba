@@ -133,17 +133,51 @@ const TreeId& JSONItem::getTreeId() const
 /******************************************************************************
   Should only to be called if item is in a collection.
 *******************************************************************************/
-JSONItem* JSONItem::getRoot() const
+JSONItem* JSONItem::getStructuredItemRoot() const
 {
   ZORBA_ASSERT(theTree);
   return theTree->getRoot();
 }
 
+/******************************************************************************
+  Should only to be called if item is in a collection.
+*******************************************************************************/
+void JSONItem::setStructuredItemRoot(json::JSONItem* aRoot)
+{
+  ZORBA_ASSERT(theTree);
+  theTree->setRoot(aRoot);
+}
+
+/******************************************************************************
+  Should only to be called if item is in a collection.
+*******************************************************************************/
+bool JSONItem::isInSameTree(const StructuredItem* anotherItem) const
+{
+  ZORBA_ASSERT(theTree);
+  if (!anotherItem->isJSONItem())
+  {
+    return false;
+  }
+  assert(dynamic_cast<const JSONItem*>(anotherItem));
+  const JSONItem* aJSONItem = static_cast<const JSONItem*>(anotherItem);
+  return theTree == aJSONItem->theTree;
+}
 
 /*******************************************************************************
 
 ********************************************************************************/
-void JSONItem::attachToCollection(Collection* aCollection, const TreeId& aTreeId)
+long JSONItem::getStructuredItemRefCount() const
+{
+  return getRefCount();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void JSONItem::attachToCollection(
+    Collection* aCollection,
+    const TreeId& aTreeId,
+    const xs_integer& aPosition)
 {
   ASSERT_INVARIANT();
   

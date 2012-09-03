@@ -16,50 +16,97 @@
 # Source Files
 #
 SET(ZORBA_STORE_IMPL_SRCS
-    item.cpp
-    item_vector.cpp
-    node_items.cpp
-    node_factory.cpp
-    node_updates.cpp
-    simple_pul.cpp
-    pul_primitives.cpp
-    pul_primitive_factory.cpp
+    atomic_items.h
     atomic_items.cpp
-    item_iterator.cpp
-    node_iterators.cpp
-    simple_item_factory.cpp
-    simple_store.cpp
-    simple_iterator_factory.cpp
-    simple_collection.cpp
-    simple_collection_set.cpp
-    simple_index.cpp
-    simple_index_value.cpp
-    simple_index_general.cpp
-    simple_temp_seq.cpp
-    simple_lazy_temp_seq.cpp
-    loader_fast.cpp
-    loader_dtd.cpp
-    qname_pool.cpp
-    string_pool.cpp
-    ordpath.cpp
-    nsbindings.cpp
-    properties.cpp
+    collection.h
+    collection.cpp
+    collection_set.h
+    dataguide.h
+    dataguide.cpp
+    document_name_iterator.h
+    hashmap_nodep.h
     inmemorystore.cpp
     inmemorystorec.cpp
-    dataguide.cpp
-    tree_id_generator.cpp
-    collection.cpp
+    item.cpp
+    item_iterator.h
+    item_iterator.cpp
+    item_vector.h
+    item_vector.cpp
+    loader.h
+    loader_fast.cpp
+    loader_dtd.cpp
+    name_iterator.h
+    node_factory.h
+    node_factory.cpp
+    node_items.h
+    node_items.cpp
+    node_iterators.h
+    node_iterators.cpp
+    node_updates.h
+    node_updates.cpp
+    nsbindings.h
+    nsbindings.cpp
+    ordpath.h
+    ordpath.cpp
+    properties.h
+    properties.cpp
+    pul_primitive_factory.h
+    pul_primitive_factory.cpp
+    pul_primitives.h
+    pul_primitives.cpp
+    qname_pool.h
+    qname_pool.cpp
+    shared_types.h
+    simple_collection.h
+    simple_collection.cpp
+    simple_collection_set.h
+    simple_collection_set.cpp
+    simple_ic.h
+    simple_index.h
+    simple_index.cpp
+    simple_index_general.h
+    simple_index_general.cpp
+    simple_index_value.h
+    simple_index_value.cpp
+    simple_item_factory.h
+    simple_item_factory.cpp
+    simple_iterator_factory.h
+    simple_iterator_factory.cpp
+    simple_lazy_temp_seq.h
+    simple_lazy_temp_seq.cpp
+    simple_pul.h
+    simple_pul.cpp
+    simple_store.h
+    simple_store.cpp
+    simple_temp_seq.h
+    simple_temp_seq.cpp
     store.cpp
+    store_defs.h
+    store_manager_impl.h
+    store_properties.h
+    string_pool.h
+    string_pool.cpp
+    structured_item.h
+    structured_item.cpp
+    text_node_content.h
+    tree_id.h
+    tree_id_generator.h
+    tree_id_generator.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND ZORBA_STORE_IMPL_SRCS
-    ft_token_store.cpp naive_ft_token_iterator.cpp)
+    ft_token_store.h
+    ft_token_store.cpp
+    naive_ft_token_iterator.h
+    naive_ft_token_iterator.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
 IF (ZORBA_WITH_JSON)
   LIST(APPEND ZORBA_STORE_IMPL_SRCS
+    json_items.h
     json_items.cpp
+    json_loader.h
     json_loader.cpp
   )
 ENDIF (ZORBA_WITH_JSON)

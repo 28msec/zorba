@@ -2360,7 +2360,8 @@ void PULImpl::getIndicesToRefresh(
       {
         json::JSONItem* lJSONItem = dynamic_cast<json::JSONItem*>(lItem);
         ZORBA_ASSERT(lJSONItem != NULL);
-        pul->theModifiedDocs.insert(const_cast<json::JSONItem*>(lJSONItem->getRoot()));
+        pul->theModifiedDocs.insert(const_cast<json::JSONItem*>(
+            lJSONItem->getStructuredItemRoot()));
         continue;
       }
 #endif
