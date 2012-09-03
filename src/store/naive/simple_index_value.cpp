@@ -796,6 +796,8 @@ bool ValueTreeIndex::remove(
 void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond,
                                        const xs_integer& aSkip)
 {
+  theSkip = aSkip;
+
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
@@ -981,6 +983,15 @@ void ProbeValueTreeIndexIterator::open()
     theResultSet = theMapBegin->second;
     theIte = theResultSet->begin();
     theEnd = theResultSet->end();
+
+    if (theSkip > theResultSet->size())
+    {
+      theIte = theEnd;
+    }
+    else
+    {
+      theIte += to_xs_long(theSkip);
+    }
   }
 }
 

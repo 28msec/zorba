@@ -957,12 +957,14 @@ ProbeIndexRangeValueIterator::ProbeIndexRangeValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly)
+    bool aCountOnly,
+    bool aSkip)
   : 
   NaryBaseIterator<ProbeIndexRangeValueIterator,
                    ProbeIndexRangeValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly)
+  theCountOnly(aCountOnly),
+  theSkip(aSkip)
 {
 }
 
@@ -980,6 +982,7 @@ void ProbeIndexRangeValueIterator::serialize(::zorba::serialization::Archiver& a
 
   ar & theCheckKeyType;
   ar & theCountOnly;
+  ar & theSkip;
 }
 
 
@@ -994,6 +997,8 @@ bool ProbeIndexRangeValueIterator::nextImpl(
   bool status;
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  xs_integer lSkip = xs_integer::zero();
+  ulong lAmountNonKeyParams = (theSctx ? 2 : 1);
 
   try
   {
@@ -1019,21 +1024,22 @@ bool ProbeIndexRangeValueIterator::nextImpl(
         ERROR_PARAMS(qname->getStringValue()));
       }
 
-      if (numChildren < 7 || (numChildren-1) % 6 != 0)
+      if (numChildren < (6 + lAmountNonKeyParams) 
+       || (numChildren-lAmountNonKeyParams) % 6 != 0)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qname->getStringValue(),
                      "index",
-                     numChildren-1,
+                     numChildren-lAmountNonKeyParams,
                      "multiple of 6"));
       }
 
-      if (indexDecl->getNumKeyExprs() * 6 < numChildren-1)
+      if (indexDecl->getNumKeyExprs() * 6 < numChildren-lAmountNonKeyParams)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qname->getStringValue(),
                      "index",
-                     numChildren-1,
+                     numChildren-lAmountNonKeyParams,
                      indexDecl->getNumKeyExprs() * 6));
       }
 
@@ -1053,9 +1059,18 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     cond = state->theIndex->createCondition(store::IndexCondition::BOX_VALUE);
 
+    // read skip
+    if (theSkip)
+    {
+      store::Item_t lSkipItem;
+      status = consumeNext(lSkipItem, theChildren[1], planState);
+      ZORBA_ASSERT(status);
+      lSkip = lSkipItem->getIntegerValue();
+    }
+
     ulong keyNo;
     ulong i;
-    for (i = 1, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
+    for (i = lAmountNonKeyParams, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
     {
       store::Item_t tempLeft;
       store::Item_t tempRight;
@@ -1141,7 +1156,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
     }
 
-    state->theIterator->init(cond);
+    state->theIterator->init(cond, lSkip);
     if (!theCountOnly)
     {
       state->theIterator->open();

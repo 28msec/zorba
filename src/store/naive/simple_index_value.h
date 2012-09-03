@@ -274,6 +274,8 @@ protected:
   ValueIndexValue::const_iterator           theIte;
   ValueIndexValue::const_iterator           theEnd;
 
+  xs_integer                                theSkip; 
+
 protected:
   void initExact();
 

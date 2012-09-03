@@ -142,7 +142,18 @@ PlanIter_t fn_zorba_ddl_probe_index_range_value::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexRangeValueIterator(sctx, loc, argv);
+  return new ProbeIndexRangeValueIterator(sctx, loc, argv, false, false);
+}
+
+
+PlanIter_t fn_zorba_ddl_probe_index_range_value_skip::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new ProbeIndexRangeValueIterator(sctx, loc, argv, false, true);
 }
 
 
@@ -231,6 +242,15 @@ void populate_context_index_ddl(static_context* sctx)
                     "",
                     "probe-index-range-value"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        true,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, fn_zorba_ddl_probe_index_range_value_skip,
+       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+                    "",
+                    "probe-index-range-value-skip"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 

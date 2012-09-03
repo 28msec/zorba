@@ -471,6 +471,7 @@ public NaryBaseIterator<ProbeIndexRangeValueIterator,
 protected:
   bool theCheckKeyType;
   bool theCountOnly;
+  bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeValueIterator);
@@ -485,7 +486,8 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      bool aCountOnly = false);
+      bool aCountOnly,
+      bool aSkip);
 
   ~ProbeIndexRangeValueIterator();
 

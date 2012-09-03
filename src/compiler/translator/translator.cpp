@@ -1402,6 +1402,15 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
     }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+    {
+      if (i <= 1)
+        paramType = sign[i];
+      else if (i % 6 == 2 || i % 6 == 3)
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+      else
+        paramType = theRTM.BOOLEAN_TYPE_ONE;
+    }
     else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
              func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
              func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
@@ -10517,6 +10526,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     switch (lKind)
     {
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N:
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N:
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N:
       {
