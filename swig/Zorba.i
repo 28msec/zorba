@@ -120,14 +120,14 @@
   XQuery Zorba::compileQuery(ZorbaIOStream & aStream)
   {
     ZorbaStreamBuffer streamBuffer(aStream);
-    std::istream stream = std::istream(&streamBuffer);
+    std::istream stream(&streamBuffer);
     return XQuery(theZorba->compileQuery(stream));
   }
 
   XQuery Zorba::compileQuery(ZorbaIOStream & aStream, StaticContext &aStaticContext )
   { 
     ZorbaStreamBuffer streamBuffer(aStream);
-    std::istream stream = std::istream(&streamBuffer);
+    std::istream stream(&streamBuffer);
     return XQuery(theZorba->compileQuery(stream, aStaticContext.theStaticContext));
   }
 
