@@ -11,7 +11,11 @@
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
-    
+
+<zorba:source>
+    <zorba:include form="Quoted">api/serialization/serializer.h</zorba:include>
+</zorba:source>
+
 <!--
 /*******************************************************************************
  * 3.1.1 fn:error
@@ -88,9 +92,8 @@
       <zorba:member type="store::Item_t" name="theTagItem" defaultValue="NULL" brief=""/>
       <zorba:member type="uint32_t" name="theIndex" defaultValue="0" brief=""/>
       <zorba:member type="std::ostream*" name="theOS" defaultValue="0" brief=""/>
-      <zorba:member type="std::auto_ptr&lt;serializer&gt;"
-                    name="theSerializer"
-                    defaultValue="std::auto_ptr&lt;serializer&gt;(0)"
+      <zorba:member type="rchandle&lt;serializer&gt;" name="theSerializer"
+                    defaultValue="NULL"
                     brief=""/>
     </zorba:state>
     

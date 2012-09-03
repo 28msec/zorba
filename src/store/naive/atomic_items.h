@@ -82,6 +82,8 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
+  virtual AnyUriTypeCode getAnyUriTypeCode() const;
+
   bool castToLong(store::Item_t& result) const;
 
   void coerceToDouble(store::Item_t& result, bool force, bool& lossy) const;
@@ -338,8 +340,8 @@ public:
 
 /*******************************************************************************
   Instances of this class can be classified into two categories:
-  - QNames in the pool. They are owned by the pool. There can be only one QName
-    in the pool with a given namespace, prefix and local name.
+  - QNames in the pool. There can be only one QName in the pool with a given
+    namespace, prefix and local name.
   - QNames that are not in the pool. The user owns them and is responsible
     for their destruction (which can be realized with reference-counting
     pointers). The ternary constructors construct such QNames.
@@ -348,7 +350,7 @@ public:
   is only one normalized QName with a given namespace and local name, so that
   direct pointer comparison can be used to compare them.
   
-  Each QName points to the equivalent normalized QName (same namespace and 
+  Each QName points to its associated normalized QName (same namespace and 
   prefix) which provides an efficient way of comparing two QNames.
 
   Pointer comparison on normalized QNames is equivalent to using the equals() 
@@ -366,29 +368,37 @@ class QNameItem : public AtomicItem
   friend class QNamePool;
 
 private:
-  zstring          theNamespace;
-  zstring          thePrefix;
-  zstring          theLocal;
+  zstring           theNamespace;
+  zstring           thePrefix;
+  zstring           theLocal;
 
   // Points to the corresponding normalized QName in the pool (pool owns this
   // pointer).
-  const QNameItem* theNormalizedQName;
+  const QNameItem * theNormalizedQName;
   
-  bool             theIsInPool;
+  bool              theIsInPool;
 
   // Used by the pool for managing the cache.
-  uint16_t         thePosition;
-  uint16_t         theNextFree;
-  uint16_t         thePrevFree;
+  uint16_t          thePosition;
+  uint16_t          theNextFree;
+  uint16_t          thePrevFree;
 
 public:
   virtual ~QNameItem() {}
 
   // zorba::store::Item interface.
-  bool equals(const store::Item* item,
-              long timezone = 0,
-              const XQPCollator* aCollation = 0) const;
+
+  bool equals(
+      const store::Item* item,
+      long timezone = 0,
+      const XQPCollator* aCollation = 0) const;
+
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  store::Item* getType() const;
     
+  store::SchemaTypeCode getTypeCode() const { return store::XS_QNAME; }
+
   bool getEBV() const;
     
   const zstring& getLocalName() const { return theLocal; }
@@ -403,11 +413,6 @@ public:
   
   void appendStringValue(zstring& buf) const;
 
-  store::Item* getType() const;
-    
-  store::SchemaTypeCode getTypeCode() const { return store::XS_QNAME; }
-
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
   
   // Class-specific extensions.
 
@@ -422,6 +427,7 @@ public:
 protected:
   QNameItem() 
     :
+    AtomicItem(),
     theNormalizedQName(NULL),
     theIsInPool(true),
     thePosition(0),
@@ -433,15 +439,9 @@ protected:
   // These two constructors are for building QName items outside
   // of the pool (they point back to the normalized QName in the pool).
   // Zorba does not use them, but extensions to the simple store may.
-  QNameItem(
-      const char* aNamespace,
-      const char* aPrefix,
-      const char* aLocalName);
+  QNameItem(const char* ns, const char* prefix, const char* local);
 
-  QNameItem(
-      const zstring& aNamespace,
-      const zstring& aPrefix,
-      const zstring& aLocalName);
+  QNameItem(const zstring& ns, const zstring& prefix, const zstring& local);
 
   void free();
 
@@ -467,31 +467,29 @@ protected:
     return theNormalizedQName == this;
   }
 
-  void initializeAsNormalizedQName(
-      const zstring& aNamespace,
-      const zstring& aLocalName)
+  void initializeAsNormalizedQName(const zstring& ns, const zstring& local)
   {
     assert(!isValid());
 
     theNormalizedQName = this;
-    theNamespace = aNamespace;
+    theNamespace = ns;
     thePrefix.clear();
-    theLocal = aLocalName;
+    theLocal = local;
 
     assert(isNormalized());
     assert(isValid());
   }
   
   void initializeAsUnnormalizedQName(
-      const QNameItem* aNormalizedQName,
-      const zstring& aPrefix)
+      const QNameItem* normalizedQName,
+      const zstring& prefix)
   {
     assert(!isValid());
 
-    theNormalizedQName = aNormalizedQName;
+    theNormalizedQName = normalizedQName;
     theNormalizedQName->addReference();
     theNamespace = theNormalizedQName->theNamespace;
-    thePrefix = aPrefix;
+    thePrefix = prefix;
     theLocal = theNormalizedQName->theLocal;
 
     assert(!isNormalized());
@@ -499,9 +497,9 @@ protected:
   }
 
   void initializeAsQNameNotInPool(
-      const zstring& aNamespace,
-      const zstring& aPrefix,
-      const zstring& aLocalName);
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& local);
   
   void invalidate(bool asynchronous, QNameItem** aNormalizationVictim)
   {
@@ -580,7 +578,6 @@ public:
 class AnyUriItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class StructuralAnyUriItem;
 
 protected:
   zstring theValue;
@@ -704,34 +701,63 @@ public:
 /*******************************************************************************
   class StructuralAnyUriItem
 ********************************************************************************/
-class StructuralAnyUriItem : public AnyUriItem
+class StructuralAnyUriItem : public AtomicItem
 {
-  friend class BasicItemFactory;
-
 protected:
   ulong                        theCollectionId;
   TreeId                       theTreeId;
   store::StoreConsts::NodeKind theNodeKind;
   OrdPath                      theOrdPath;
+   
+  // The value is computed lazily when needed.
+  // The empty string is used if it has not been computed yet.
+  mutable zstring              theEncodedValue;
 
-protected:
+public:
   virtual AnyUriTypeCode getAnyUriTypeCode() const 
   {
     return STRUCTURAL_INFORMATION_ANY_URI;
   }
+  
+  store::SchemaTypeCode getTypeCode() const
+  {
+    return store::XS_ANY_URI;
+  }
 
-  StructuralAnyUriItem(zstring& value);
+  store::Item* getType() const;
 
-  StructuralAnyUriItem(
-      zstring& value,
-      ulong collectionId,
-      const TreeId& treeId,
-      store::StoreConsts::NodeKind nodeKind,
-      const OrdPath& ordPath);
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
-  StructuralAnyUriItem() {}
+  bool equals(
+        const store::Item* item,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
 
-public:
+  long compare(
+        const Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const;
+
+  // A structural URI is never empty.
+  bool getEBV() const { return true; }
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  const zstring& getString() const
+  {
+    if (theEncodedValue == "")
+    {
+      encode();
+    }
+    return theEncodedValue;
+  }
+
+  zstring show() const;
+
   bool
   isAncestor(const store::Item_t&) const;
 
@@ -800,6 +826,23 @@ public:
 
   bool
   inSameCollection(const store::Item_t&) const;
+  
+private:
+  // Forces computation of the value.
+  void encode() const;
+ 
+protected:
+  friend class BasicItemFactory;
+
+  StructuralAnyUriItem(zstring& value);
+
+  StructuralAnyUriItem(
+      ulong collectionId,
+      const TreeId& treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
+
+  StructuralAnyUriItem() : theEncodedValue("") {}
 };
 
 

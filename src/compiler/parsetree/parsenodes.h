@@ -3602,9 +3602,9 @@ public:
 
   enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 
-  rchandle<exprnode> get_step_expr() const { return step_expr_h; }
+  exprnode* get_step_expr() const { return step_expr_h.getp(); }
 
-  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
+  exprnode* get_relpath_expr() const { return relpath_expr_h.getp(); }
 
   bool is_implicit() const { return is_implicit_b; }
 
@@ -3638,11 +3638,11 @@ public:
     rchandle<ReverseStep>,
     rchandle<PredicateList>);
 
-  rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
+  ForwardStep* get_forward_step() const { return forward_step_h.getp(); }
 
-  rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
+  ReverseStep* get_reverse_step() const { return reverse_step_h.getp(); }
 
-  rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
+  PredicateList* get_predicate_list() const { return predicate_list_h.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -3670,11 +3670,11 @@ public:
     const QueryLoc&,
     rchandle<AbbrevForwardStep>);
 
-  rchandle<ForwardAxis> get_forward_axis() const { return theForwardAxis; }
+  ForwardAxis* get_forward_axis() const { return theForwardAxis.getp(); }
 
-  rchandle<parsenode> get_node_test() const { return node_test_h; }
+  parsenode* get_node_test() const { return node_test_h.getp(); }
 
-  rchandle<AbbrevForwardStep> get_abbrev_step() const { return theAbbrevStep; }
+  AbbrevForwardStep* get_abbrev_step() const { return theAbbrevStep.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 

@@ -73,7 +73,7 @@ public:
   store::Item_t theTagItem; //
   uint32_t theIndex; //
   std::ostream* theOS; //
-  std::auto_ptr<serializer> theSerializer; //
+  rchandle<serializer> theSerializer; //
 
   TraceIteratorState();
 

@@ -125,9 +125,9 @@ public:
 private:
   void importOuterEnv(
       PlanState& planState,
+      CompilerCB* evalCCB,
       static_context* importSctx,
       dynamic_context* evalDctx,
-      std::vector<var_expr_t>& outerVars,
       ulong& maxOuterVarId) const;
 
   void setExternalVariables(
