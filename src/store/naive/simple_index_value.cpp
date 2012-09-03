@@ -562,6 +562,15 @@ void ProbeValueHashIndexIterator::count(store::Item_t& result)
   while (next(lTmp)) ++lRes;
   close();
 
+  if (theSkip < lRes)
+  {
+    lRes -= theSkip;
+  }
+  else
+  {
+    lRes = 0;
+  }
+
   GET_FACTORY().createInteger(result, lRes);
 }
 
@@ -1071,6 +1080,15 @@ void ProbeValueTreeIndexIterator::count(store::Item_t& result)
   store::Item_t lTmp;
   while (next(lTmp)) ++lRes;
   close();
+
+  if (theSkip < lRes)
+  {
+    lRes -= theSkip;
+  }
+  else
+  {
+    lRes = 0;
+  }
 
   GET_FACTORY().createInteger(result, lRes);
 }
