@@ -566,11 +566,13 @@ ProbeIndexPointValueIterator::ProbeIndexPointValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
+    bool aSkip,
     bool aCountOnly)
   : 
   NaryBaseIterator<ProbeIndexPointValueIterator,
                    ProbeIndexPointValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
+  theSkip(aSkip),
   theCountOnly(aCountOnly)
 {
 }
@@ -588,6 +590,7 @@ void ProbeIndexPointValueIterator::serialize(::zorba::serialization::Archiver& a
 
   ar & theCheckKeyType;
   ar & theCountOnly;
+  ar & theSkip;
 }
 
 
@@ -603,6 +606,8 @@ bool ProbeIndexPointValueIterator::nextImpl(
   bool status;
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  xs_integer lSkip = xs_integer::zero();
+  ulong lAmountNonKeyParams = (theSctx ? 2 : 1);
 
   try
   {
@@ -622,13 +627,14 @@ bool ProbeIndexPointValueIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if (state->theIndexDecl->getNumKeyExprs() != numChildren-1)
+      if ( state->theIndexDecl->getNumKeyExprs() 
+        != numChildren-lAmountNonKeyParams )
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(
           qnameItem->getStringValue(),
           "index",
-          numChildren-1,
+          numChildren - lAmountNonKeyParams,
           state->theIndexDecl->getNumKeyExprs())
         );
       }
@@ -649,7 +655,15 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
     cond = state->theIndex->createCondition(store::IndexCondition::POINT_VALUE);
 
-    for (i = 1; i < numChildren; ++i) 
+    // read skip
+    if (theSkip)
+    {
+      store::Item_t lSkipItem;
+      status = consumeNext(lSkipItem, theChildren[1], planState);
+      ZORBA_ASSERT(status);
+    }
+
+    for (i = lAmountNonKeyParams; i < numChildren; ++i) 
     {
       if (!consumeNext(keyItem, theChildren[i], planState)) 
       {
@@ -659,11 +673,11 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if (theCheckKeyType)
       {
-        checkKeyType(loc, tm, state->theIndexDecl, i-1, keyItem);
+        checkKeyType(loc, tm, state->theIndexDecl, i-lAmountNonKeyParams, keyItem);
       }
 
       if (state->theIndexDecl->isGeneral() &&
-          (state->theIndexDecl->getKeyTypes())[i-1] == NULL)
+          (state->theIndexDecl->getKeyTypes())[i-lAmountNonKeyParams] == NULL)
       {
         xqtref_t searchKeyType = tm->create_value_type(keyItem);
         
@@ -679,7 +693,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
     
     if (i == numChildren)
     {
-      state->theIterator->init(cond);
+      state->theIterator->init(cond, lSkip);
 
       if (!theCountOnly)
       {

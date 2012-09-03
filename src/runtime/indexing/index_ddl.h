@@ -346,6 +346,7 @@ class ProbeIndexPointValueIterator
 protected:
   bool theCheckKeyType;
   bool theCountOnly;
+  bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointValueIterator);
@@ -359,7 +360,8 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children,
-        bool aCountOnly = false);
+        bool aSkip,
+        bool aCountOnly);
 
   ~ProbeIndexPointValueIterator();
 

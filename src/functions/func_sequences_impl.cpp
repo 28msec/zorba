@@ -573,7 +573,7 @@ PlanIter_t fn_count::codegen(
       = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
 
     return new ProbeIndexPointValueIterator(
-        sctx, loc, lIter.getChildren(), true);
+        sctx, loc, lIter.getChildren(), false, true);
   }
   else if (typeid(ProbeIndexRangeValueIterator) == counted_type)
   {

@@ -471,7 +471,8 @@ bool ValueHashIndex::remove(
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond,
+                                       const xs_integer& aSkip)
 {
   theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
 
@@ -780,7 +781,8 @@ bool ValueTreeIndex::remove(
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond,
+                                       const xs_integer& aSkip)
 {
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)

@@ -196,6 +196,7 @@ public:
 /*******************************************************************************
   fn-zorba-ddl:probe-index-point-value-skip(
       $indexName as xs:QName, 
+      $skip as xs:integer,
       $key1 as xs:anyAtomicItem?,
       ....
       $keyN as xs:anyAtomicItem?) as node()*

@@ -109,7 +109,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_value::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexPointValueIterator(sctx, loc, argv);
+  return new ProbeIndexPointValueIterator(sctx, loc, argv, false, false);
 }
 
 
@@ -120,8 +120,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_value_skip::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  assert(false);
-  //return new ProbeIndexPointValueIteratorSkip(sctx, loc, argv);
+  return new ProbeIndexPointValueIterator(sctx, loc, argv, true, false);
 }
 
 
@@ -206,6 +205,15 @@ void populate_context_index_ddl(static_context* sctx)
                     "",
                     "probe-index-point-value"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        true,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, fn_zorba_ddl_probe_index_point_value_skip,
+       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+                    "",
+                    "probe-index-point-value-skip"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 

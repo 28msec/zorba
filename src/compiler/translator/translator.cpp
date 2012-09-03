@@ -1386,6 +1386,13 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
+    {
+      if (i <= 1)
+        paramType = sign[i];
+      else
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+    }
     else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
     {
       if (i == 0)
@@ -10511,6 +10518,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N:
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N:
       {
         FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
 
