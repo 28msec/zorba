@@ -19,6 +19,8 @@ New Features:
   * New function in the http://www.zorba-xquery.com/modules/store/static/indexes/dml module which returns
     the value of all keys contained in an index
   * Incremental maintenance for general indexes
+  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq functions. jn:object is
+    also supported.
 	
 Optimizations:
   * Optimization of comparison operations
