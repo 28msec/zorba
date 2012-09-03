@@ -24,7 +24,6 @@ TSRMLS_FETCH();
 %include "std_pair.i"
 %include "exception.i"
 %include "carrays.i"
-%array_class(int, intArray);
 %apply (char *STRING, size_t LENGTH) { (const char aStream[], size_t aLen) }
 %rename(opEquals) operator=;
 

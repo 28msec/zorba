@@ -18,7 +18,6 @@ package org.zorbaxquery.api;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.zorbaxquery.api.intArray;
 
 public class ZorbaInputWrapper extends org.zorbaxquery.api.ZorbaIOStream {
 
