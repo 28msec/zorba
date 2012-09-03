@@ -572,8 +572,8 @@ ProbeIndexPointValueIterator::ProbeIndexPointValueIterator(
   NaryBaseIterator<ProbeIndexPointValueIterator,
                    ProbeIndexPointValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theSkip(aSkip),
-  theCountOnly(aCountOnly)
+  theCountOnly(aCountOnly),
+  theSkip(aSkip)
 {
 }
 
@@ -662,6 +662,10 @@ bool ProbeIndexPointValueIterator::nextImpl(
       status = consumeNext(lSkipItem, theChildren[1], planState);
       ZORBA_ASSERT(status);
       lSkip = lSkipItem->getIntegerValue();
+      if (lSkip < xs_integer::zero())
+      {
+        lSkip = xs_integer::zero();
+      }
     }
 
     for (i = lAmountNonKeyParams; i < numChildren; ++i) 
@@ -761,12 +765,14 @@ ProbeIndexPointGeneralIterator::ProbeIndexPointGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly)
+    bool aCountOnly,
+    bool aSkip)
   : 
   NaryBaseIterator<ProbeIndexPointGeneralIterator,
                    ProbeIndexPointGeneralIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly)
+  theCountOnly(aCountOnly),
+  theSkip(aSkip)
 {
 }
 
@@ -783,6 +789,7 @@ void ProbeIndexPointGeneralIterator::serialize(::zorba::serialization::Archiver&
                     ProbeIndexPointGeneralIteratorState>*)this);
 	ar & theCheckKeyType;
   ar & theCountOnly;
+  ar & theSkip;
 }
 
 
@@ -1066,6 +1073,10 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       status = consumeNext(lSkipItem, theChildren[1], planState);
       ZORBA_ASSERT(status);
       lSkip = lSkipItem->getIntegerValue();
+      if (lSkip < xs_integer::zero())
+      {
+        lSkip = xs_integer::zero();
+      }
     }
 
     ulong keyNo;
@@ -1246,12 +1257,14 @@ ProbeIndexRangeGeneralIterator::ProbeIndexRangeGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly)
+    bool aCountOnly,
+    bool aSkip)
   : 
   NaryBaseIterator<ProbeIndexRangeGeneralIterator,
                    ProbeIndexRangeGeneralIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly)
+  theCountOnly(aCountOnly),
+  theSkip(aSkip)
 {
 }
 
@@ -1269,6 +1282,7 @@ void ProbeIndexRangeGeneralIterator::serialize(::zorba::serialization::Archiver&
 
   ar & theCheckKeyType;
   ar & theCountOnly;
+  ar & theSkip;
 }
 
 

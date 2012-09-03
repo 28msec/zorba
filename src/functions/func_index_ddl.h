@@ -248,6 +248,30 @@ public:
 
 
 /*******************************************************************************
+  fn-zorba-ddl:probe-index-point-general-skip(
+      $indexName as xs:QName,
+      $skip as xs:integer,
+      $keys      as xs:anyAtomicItem*) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
+  function.
+********************************************************************************/
+class fn_zorba_ddl_probe_index_point_general_skip : public function
+{
+public:
+  fn_zorba_ddl_probe_index_point_general_skip(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_SKIP_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+/*******************************************************************************
   fn-zorba-ddl:probe-index-range-value(
       $indexName as xs:QName, ....) as node()*
 
@@ -322,6 +346,35 @@ public:
   fn_zorba_ddl_probe_index_range_general(const signature& sig)
     :
     function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+/*******************************************************************************
+  fn-zorba-ddl:probe-index-range-general-skip(
+      $indexName           as xs:QName, 
+      $skip                as xs:integer,
+      $lowerBoundKeys      as xs:anyAtomicType*,
+      $upperBoundKeys      as xs:anyAtomicType*,
+      $haveLowerBound      as xs:boolean,
+      $haveUpperBound      as xs:boolean,
+      $lowerBoundIncluded  as xs:boolean,
+      $upperBoundIncluded  as xs:boolean) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
+  function.
+********************************************************************************/
+class fn_zorba_ddl_probe_index_range_general_skip : public function
+{
+public:
+  fn_zorba_ddl_probe_index_range_general_skip(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_SKIP_N)
   {
   }
 
