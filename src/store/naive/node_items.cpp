@@ -446,7 +446,8 @@ XmlNode::XmlNode(
     store::StoreConsts::NodeKind nodeKind)
   :
   theParent(parent),
-  theFlags(0)
+  theFlags(0),
+  theStructuredItemRoot(NULL)
 {
   assert(tree || parent);
   assert(parent == NULL || parent->getTree() != NULL);
@@ -903,6 +904,19 @@ void XmlNode::unregisterReferencesToDeletedSubtree()
     GET_STORE().unregisterReferenceToDeletedNode(this);
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool XmlNode::isInSameTree(const StructuredItem* anotherItem) const
+{
+  if (!anotherItem->isNode())
+  {
+    return false;
+  }
+  assert(dynamic_cast<const XmlNode*>(anotherItem));
+  const XmlNode* aNode = static_cast<const XmlNode*>(anotherItem);
+  return getTree() == aNode->getTree();
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////

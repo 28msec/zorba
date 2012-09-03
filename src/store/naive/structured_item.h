@@ -23,6 +23,8 @@ namespace zorba
 namespace simplestore
 {
 
+class Collection;
+
 namespace json
 {
   class JSONItem;
@@ -34,8 +36,11 @@ public:
   StructuredItem(ItemKind k)
   : Item(k)
   {}
+  StructuredItem()
+  : Item()
+  {}
   virtual void attachToCollection(
-      Collection* aCollection,
+      simplestore::Collection* aCollection,
       const TreeId& aTreeId,
       const xs_integer& aPosition) = 0;
 

@@ -31,6 +31,7 @@
 #include "nsbindings.h" // TODO remove by introducing explicit destructors
 #include "tree_id.h"
 #include "simple_store.h"
+#include "structured_item.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -63,6 +64,10 @@ namespace store
 
 namespace simplestore
 {
+
+namespace json {
+  class JSONItem;
+}
 
 class AttributeNode;
 class CommentNode;
@@ -262,7 +267,7 @@ public:
 
  ******************************************************************************/
 
-class XmlNode : public store::Item
+class XmlNode : public StructuredItem
 {
   friend class XmlTree;
   friend class NodeFactory;
@@ -350,6 +355,7 @@ public:
 protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
+  json::JSONItem*   theStructuredItemRoot;
 
 private:
 #ifndef TEXT_ORDPATH
@@ -357,11 +363,15 @@ private:
 #endif
 
 protected:
-  XmlNode() : theParent(NULL)
+  XmlNode() : theParent(NULL),
+              theStructuredItemRoot(NULL)
   {
   }
 
-  XmlNode(store::StoreConsts::NodeKind k) : Item(), theParent(NULL)
+  XmlNode(store::StoreConsts::NodeKind k) :
+      StructuredItem(),
+      theParent(NULL),
+      theStructuredItemRoot(NULL)
   {
     theFlags = (uint32_t)k;
   }
@@ -496,6 +506,7 @@ public:
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
+
   void setCollection(Collection* coll, xs_integer pos)
   {
     assert(!isConnectorNode());
@@ -556,6 +567,41 @@ public:
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+
+/************* StructuredItem API ******************/
+
+  virtual void attachToCollection(
+      simplestore::Collection* aCollection,
+      const TreeId& aTreeId,
+      const xs_integer& aPosition)
+  {
+    getTree()->claimedByCollection(aCollection);
+    getTree()->setPosition(aPosition);
+    getTree()->setId(aTreeId);
+  }
+  
+  virtual void detachFromCollection()
+  {
+    setCollection(NULL, xs_integer::zero());
+  }
+
+  virtual void setStructuredItemRoot(json::JSONItem* aRoot)
+  {
+    theStructuredItemRoot = aRoot;
+  }
+
+  virtual json::JSONItem* getStructuredItemRoot() const
+  {
+    return theStructuredItemRoot;
+  }
+
+  virtual long getStructuredItemRefCount() const
+  {
+    return getTree()->getRefCount();
+  }
+  
+  virtual bool isInSameTree(const StructuredItem* anotherItem) const;
+
 };
 
 
