@@ -171,6 +171,7 @@ protected:
   ValueIndexValue                      * theResultSet;
   ValueIndexValue::const_iterator        theIte;
   ValueIndexValue::const_iterator        theEnd;
+  xs_integer                             theSkip;
 
 public:
   ProbeValueHashIndexIterator(const store::Index_t& index) : theResultSet(NULL)

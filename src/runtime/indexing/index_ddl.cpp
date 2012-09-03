@@ -661,6 +661,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       store::Item_t lSkipItem;
       status = consumeNext(lSkipItem, theChildren[1], planState);
       ZORBA_ASSERT(status);
+      lSkip = lSkipItem->getIntegerValue();
     }
 
     for (i = lAmountNonKeyParams; i < numChildren; ++i) 

@@ -474,6 +474,8 @@ bool ValueHashIndex::remove(
 void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond,
                                        const xs_integer& aSkip)
 {
+  theSkip = aSkip;
+
   theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
 
   store::IndexKey* key = &(theCondition->theKey);
@@ -496,7 +498,17 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond,
 void ProbeValueHashIndexIterator::open()
 {
   if (theResultSet)
+  {
     theIte = theResultSet->begin();
+    if (theSkip >= theResultSet->size())
+    {
+      theIte = theEnd;
+    }
+    else
+    {
+      theIte += to_xs_long(theSkip);
+    }
+  }
 }
 
 
