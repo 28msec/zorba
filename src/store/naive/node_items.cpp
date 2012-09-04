@@ -71,6 +71,7 @@ XmlTree::XmlTree()
   thePos(0),
   theCollection(NULL),
   theRootNode(NULL),
+  theStructuredItemRoot(NULL),
 #ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
 #endif
@@ -91,6 +92,7 @@ XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   thePos(0),
   theCollection(NULL),
   theRootNode(root),
+  theStructuredItemRoot(NULL),
 #ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
 #endif
@@ -446,8 +448,7 @@ XmlNode::XmlNode(
     store::StoreConsts::NodeKind nodeKind)
   :
   theParent(parent),
-  theFlags(0),
-  theStructuredItemRoot(NULL)
+  theFlags(0)
 {
   assert(tree || parent);
   assert(parent == NULL || parent->getTree() != NULL);
@@ -904,6 +905,50 @@ void XmlNode::unregisterReferencesToDeletedSubtree()
     GET_STORE().unregisterReferenceToDeletedNode(this);
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::attachToCollection(
+    simplestore::Collection* aCollection,
+    const TreeId& aTreeId,
+    const xs_integer& aPosition)
+{
+  getTree()->claimedByCollection(aCollection);
+  getTree()->setPosition(aPosition);
+  getTree()->setId(aTreeId);
+}
+  
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::detachFromCollection()
+{
+  setCollection(NULL, xs_integer::zero());
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setStructuredItemRoot(json::JSONItem* aRoot)
+{
+  getTree()->setStructuredItemRoot(aRoot);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+json::JSONItem* XmlNode::getStructuredItemRoot() const
+{
+  return getTree()->getStructuredItemRoot();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+long XmlNode::getStructuredItemRefCount() const
+{
+  return getTree()->getRefCount();
+}
 /*******************************************************************************
 
 ********************************************************************************/
