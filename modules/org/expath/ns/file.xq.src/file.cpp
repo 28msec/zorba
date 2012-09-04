@@ -603,11 +603,19 @@ LastModifiedFunction::evaluate(
   // actual last modified
   try {
     time_t lTime = lFile->lastModified();
-    struct tm *lT = localtime(&lTime);
+    // result of localtime needs to be copied.
+    // Otherwise, nasty side effecs do happen
+    struct tm lT = *localtime(&lTime); 
     int gmtOffset = LastModifiedFunction::getGmtOffset();
 
     return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createDateTime(1900 + lT->tm_year, lT->tm_mon, lT->tm_mday, lT->tm_hour, lT->tm_min, lT->tm_sec, gmtOffset)));
+      theModule->getItemFactory()->createDateTime(1900 + lT.tm_year,
+                                                  lT.tm_mon,
+                                                  lT.tm_mday,
+                                                  lT.tm_hour,
+                                                  lT.tm_min, 
+                                                  lT.tm_sec,
+                                                  gmtOffset)));
   } catch (ZorbaException& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not retrieve the last modification timestamp of";
