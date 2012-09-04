@@ -166,10 +166,10 @@ public:
   const TreeId& getTreeId() const;
 
   // Only to be called if in a collection.
-  virtual void setStructuredItemRoot(json::JSONItem* aRoot);
+  virtual void setStructuredItemRoot(StructuredItem* aRoot);
   
   // Only to be called if in a collection.
-  virtual JSONItem* getStructuredItemRoot() const;
+  virtual StructuredItem* getStructuredItemRoot() const;
   
   // Only to be called if in a collection.
   virtual bool isInSameTree(const StructuredItem* anotherItem) const;

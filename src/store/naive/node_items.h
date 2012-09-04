@@ -169,9 +169,8 @@ protected:
 
   // Topmost XML ancestor (root of the XML tree).
   XmlNode                 * theRootNode;
-  // Optional topmost JSON ancestor
-  // (to which this XML tree is indirectly attached).
-  json::JSONItem          * theStructuredItemRoot;
+  // Topmost ancestor (XML = theRootNode, or JSON)
+  StructuredItem          * theStructuredItemRoot;
 
 #ifdef DATAGUIDE
   GuideNode               * theDataGuideRootNode;
@@ -231,11 +230,13 @@ public:
 
   void setRoot(XmlNode* root) { theRootNode = root; }
 
-  json::JSONItem* getStructuredItemRoot() const
+  StructuredItem* getStructuredItemRoot() const
   { return theStructuredItemRoot; }
 
-  void setStructuredItemRoot(json::JSONItem* root)
-  { theStructuredItemRoot = root; }
+  void setStructuredItemRoot(StructuredItem* root)
+  {
+    theStructuredItemRoot = root;
+  }
 
   bool isValidated() const { return theIsValidated; }
 
@@ -586,9 +587,9 @@ public:
 
   virtual void detachFromCollection();
 
-  virtual void setStructuredItemRoot(json::JSONItem* aRoot);
+  virtual void setStructuredItemRoot(StructuredItem* aRoot);
 
-  virtual json::JSONItem* getStructuredItemRoot() const;
+  virtual StructuredItem* getStructuredItemRoot() const;
 
   virtual long getStructuredItemRefCount() const;
 

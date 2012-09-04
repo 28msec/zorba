@@ -170,32 +170,20 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 
 #ifdef ZORBA_WITH_JSON
   assert(target->isNode()
-      || target->isJSONObject()
-      || target->isJSONArray());
+      || target->isJSONItem());
 #else
   assert(target->isNode());
 #endif
 
-  const store::Collection* lCollection;
-  
-  if (target->isNode())
-  {
-    assert(dynamic_cast<const XmlNode*>(target));
-    const XmlNode* lNode = static_cast<const XmlNode*>(target);
-    lCollection = lNode->getCollection();
-#ifdef ZORBA_WITH_JSON
-  }
-  else if (target->isJSONItem())
-  {
-    assert(dynamic_cast<const json::JSONItem*>(target));
-    const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(target);
-    lCollection = lJSONItem->getCollection();
-#endif
-  }
+  assert(dynamic_cast<const StructuredItem*>(target));
+  const StructuredItem* lStructuredItem =
+      static_cast<const StructuredItem*>(target);
+  const store::Collection* lCollection = lStructuredItem->getCollection();
 
   if (lCollection != NULL)
   {
-    collName = static_cast<const QNameItem*>(lCollection->getName())->getNormalized();
+    collName = static_cast<const QNameItem*>(
+        lCollection->getName())->getNormalized();
 
     if (collName == theLastCollection)
       return theLastPul;
@@ -2252,45 +2240,21 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
     for (; it != end; ++it)
     {
       zorba::store::Item* lItem = (*it).first;
-      if (lItem->isNode())
+      assert(dynamic_cast<const StructuredItem*>(lItem));
+      const StructuredItem* lStructuredItem =
+          static_cast<const StructuredItem*>(lItem);
+
+      for (csize i = 0; i < numRoots; i++)
       {
-        assert(dynamic_cast<const XmlNode*>(lItem));
-        const XmlNode* lNode = static_cast<const XmlNode*>(lItem);
-        for (csize i = 0; i < numRoots; i++)
+        assert(dynamic_cast<const StructuredItem*>(rootNodes[i]));
+        StructuredItem* lRootStructuredItem =
+            static_cast<StructuredItem*>(rootNodes[i]);
+        
+        if (lStructuredItem->isInSameTree(lRootStructuredItem))
         {
-          if (rootNodes[i]->isNode())
-          {
-            assert(dynamic_cast<const XmlNode*>(rootNodes[i]));
-            XmlNode* lRootNode = static_cast<XmlNode*>(rootNodes[i]);
-            
-            if (lNode->getTree() == lRootNode->getTree())
-            {
-              found = true;
-              break;
-            }
-          }
+          found = true;
+          break;
         }
-#ifdef ZORBA_WITH_JSON
-      }
-      else if (lItem->isJSONItem())
-      {
-        assert(dynamic_cast<const json::JSONItem*>(lItem));
-        const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(lItem);
-        for (csize i = 0; i < numRoots; i++)
-        {
-          if (rootNodes[i]->isJSONItem())
-          {
-            assert(dynamic_cast<const json::JSONItem*>(rootNodes[i]));
-            json::JSONItem* lRootJSONItem = static_cast<json::JSONItem*>(rootNodes[i]);
-            
-            if (lJSONItem->getTree() == lRootJSONItem->getTree())
-            {
-              found = true;
-              break;
-            }
-          }
-        }
-#endif
       }
         
       if (!found)
@@ -2353,22 +2317,12 @@ void PULImpl::getIndicesToRefresh(
     for (; ite != end; ++ite)
     {
       store::Item* lItem = (*ite).first;
-#ifdef ZORBA_WITH_JSON
       ZORBA_ASSERT(lItem->isNode() || lItem->isJSONItem());
 
-      if (lItem->isJSONItem())
-      {
-        json::JSONItem* lJSONItem = dynamic_cast<json::JSONItem*>(lItem);
-        ZORBA_ASSERT(lJSONItem != NULL);
-        pul->theModifiedDocs.insert(const_cast<json::JSONItem*>(
-            lJSONItem->getStructuredItemRoot()));
-        continue;
-      }
-#endif
-      ZORBA_ASSERT(lItem->isNode());
-      XmlNode* node = dynamic_cast<XmlNode*>((*ite).first);
-      ZORBA_ASSERT(node != NULL);
-      pul->theModifiedDocs.insert(node->getRoot());
+      assert(dynamic_cast<StructuredItem*>(lItem));
+      StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lItem);
+      pul->theModifiedDocs.insert(const_cast<StructuredItem*>(
+          lStructuredItem->getStructuredItemRoot()));
       continue;
     }
 

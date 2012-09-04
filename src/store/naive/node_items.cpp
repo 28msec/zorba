@@ -916,6 +916,7 @@ void XmlNode::attachToCollection(
   getTree()->claimedByCollection(aCollection);
   getTree()->setPosition(aPosition);
   getTree()->setId(aTreeId);
+  getTree()->setStructuredItemRoot(this);
 }
   
 /*******************************************************************************
@@ -929,7 +930,7 @@ void XmlNode::detachFromCollection()
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::setStructuredItemRoot(json::JSONItem* aRoot)
+void XmlNode::setStructuredItemRoot(StructuredItem* aRoot)
 {
   getTree()->setStructuredItemRoot(aRoot);
 }
@@ -937,7 +938,7 @@ void XmlNode::setStructuredItemRoot(json::JSONItem* aRoot)
 /*******************************************************************************
 
 ********************************************************************************/
-json::JSONItem* XmlNode::getStructuredItemRoot() const
+StructuredItem* XmlNode::getStructuredItemRoot() const
 {
   return getTree()->getStructuredItemRoot();
 }
@@ -1341,6 +1342,7 @@ OrdPathNode::getDescendantNodeByOrdPath(
 ********************************************************************************/
 bool OrdPathNode::isAncestor(const store::Item_t& aOther) const
 {
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
 
   const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
@@ -1367,6 +1369,7 @@ bool OrdPathNode::isFollowingSibling(const store::Item_t& aOther) const
 ********************************************************************************/
 bool OrdPathNode::isFollowing(const store::Item_t& aOther) const
 { 
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
 
   const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
@@ -1384,6 +1387,7 @@ bool OrdPathNode::isFollowing(const store::Item_t& aOther) const
 ********************************************************************************/
 bool OrdPathNode::isDescendant(const store::Item_t& aOther) const
 { 
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
 
   const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
@@ -1401,6 +1405,7 @@ bool OrdPathNode::isDescendant(const store::Item_t& aOther) const
 ********************************************************************************/
 bool OrdPathNode::isPrecedingSibling(const store::Item_t& aOther) const
 {
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
  
   return isPreceding(aOther) && getParent() == aOther->getParent();
@@ -1412,6 +1417,7 @@ bool OrdPathNode::isPrecedingSibling(const store::Item_t& aOther) const
 ********************************************************************************/
 bool OrdPathNode::isPreceding(const store::Item_t& aOther) const
 {
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
  
   const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
@@ -1429,6 +1435,7 @@ bool OrdPathNode::isPreceding(const store::Item_t& aOther) const
 ********************************************************************************/
 bool OrdPathNode::isChild(const store::Item_t& aOther) const
 {
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
  
   return aOther->getParent() == this;
@@ -1440,6 +1447,7 @@ bool OrdPathNode::isChild(const store::Item_t& aOther) const
 ********************************************************************************/
 bool OrdPathNode::isParent(const store::Item_t& aOther) const
 {
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
  
   return this->getParent() == aOther;
@@ -1469,6 +1477,7 @@ store::Item_t OrdPathNode::getLevel() const
 ********************************************************************************/
 store::Item_t OrdPathNode::leastCommonAncestor(const store::Item_t& aOther) const
 {
+  assert(dynamic_cast<XmlNode*>(aOther.getp()));
   assert(!static_cast<XmlNode*>(aOther.getp())->isConnectorNode());
 
   const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);

@@ -133,7 +133,7 @@ const TreeId& JSONItem::getTreeId() const
 /******************************************************************************
   Should only to be called if item is in a collection.
 *******************************************************************************/
-JSONItem* JSONItem::getStructuredItemRoot() const
+StructuredItem* JSONItem::getStructuredItemRoot() const
 {
   ZORBA_ASSERT(theTree);
   return theTree->getRoot();
@@ -142,10 +142,13 @@ JSONItem* JSONItem::getStructuredItemRoot() const
 /******************************************************************************
   Should only to be called if item is in a collection.
 *******************************************************************************/
-void JSONItem::setStructuredItemRoot(json::JSONItem* aRoot)
+void JSONItem::setStructuredItemRoot(StructuredItem* aRoot)
 {
   ZORBA_ASSERT(theTree);
-  theTree->setRoot(aRoot);
+  assert(aRoot->isJSONItem());
+  assert(dynamic_cast<JSONItem*>(aRoot));
+  JSONItem* lRoot = static_cast<JSONItem*>(aRoot);
+  theTree->setRoot(lRoot);
 }
 
 /******************************************************************************

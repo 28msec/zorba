@@ -94,43 +94,31 @@ store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip)
 ********************************************************************************/
 void SimpleCollection::addNode(store::Item* item, xs_integer position)
 {
-  XmlNode* node = NULL;
-#ifdef ZORBA_WITH_JSON
-  json::JSONItem* lJSONItem = NULL;
-#endif
-
-  if (item->isNode())
-  {
-    node = static_cast<XmlNode*>(item);
-    
-    if (node->getParent() != NULL)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
-      ERROR_PARAMS(getName()->getStringValue()));
-    }
-  }
-#ifdef ZORBA_WITH_JSON
-  else if (item->isJSONItem())
-  {
-    lJSONItem = static_cast<json::JSONItem*>(item);
-  }
-  else
+  if (!(item->isNode() || item->isJSONItem()))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
     ERROR_PARAMS(getName()->getStringValue()));
   }
-#else
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#endif
+
   if (item->getCollection() != NULL)
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
     ERROR_PARAMS(getName()->getStringValue(),
                  item->getCollection()->getName()->getStringValue()));
+  }
+
+  assert(dynamic_cast<StructuredItem*>(item));
+  StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
+  
+  if (lStructuredItem->isNode())
+  {
+    assert(dynamic_cast<XmlNode*>(item));
+    XmlNode* lNode = static_cast<XmlNode*>(item);
+    if (lNode->getTree()->getRoot() != lNode)
+    {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
+      ERROR_PARAMS(getName()->getStringValue()));
+    }
   }
 
   xs_long lPosition = to_xs_long(position);
@@ -148,12 +136,7 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
     theXmlTrees.insert(theXmlTrees.begin() + lPosition, item);
   }
 
-#ifdef ZORBA_WITH_JSON
-  if (lJSONItem)
-    lJSONItem->attachToCollection(this, createTreeId(), xs_integer::zero());
-  else
-#endif
-    node->setCollection(this, pos);
+  lStructuredItem->attachToCollection(this, createTreeId(), pos);
 }
 
 
@@ -193,54 +176,36 @@ xs_integer SimpleCollection::addNodes(
   {
     store::Item* item = items[i].getp();
 
-    XmlNode* node = NULL;
-#ifdef ZORBA_WITH_JSON
-    json::JSONItem* lJSONItem = NULL;
-#endif
-
-    if (item->isNode())
-    {
-      node = static_cast<XmlNode*>(item);
-      
-      if (node->getParent() != NULL)
-      {
-        throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
-        ERROR_PARAMS(getName()->getStringValue()));
-      }
-    }
-#ifdef ZORBA_WITH_JSON
-    else if (item->isJSONItem())
-    {
-      lJSONItem = static_cast<json::JSONItem*>(item);
-    }
-    else
+    if (!(item->isNode() || item->isJSONItem()))
     {
       throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
       ERROR_PARAMS(getName()->getStringValue()));
     }
-#else
-    else
-    {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-      ERROR_PARAMS(getName()->getStringValue()));
-    }
-#endif
 
     if (item->getCollection() != NULL)
     {
       throw ZORBA_EXCEPTION(zerr::ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
       ERROR_PARAMS(getName()->getStringValue(),
-                   node->getCollection()->getName()->getStringValue()));
+                   item->getCollection()->getName()->getStringValue()));
+    }
+
+    assert(dynamic_cast<StructuredItem*>(item));
+    StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
+  
+    if (lStructuredItem->isNode())
+    {
+      assert(dynamic_cast<XmlNode*>(item));
+      XmlNode* lNode = static_cast<XmlNode*>(item);
+      if (lNode->getTree()->getRoot() != lNode)
+      {
+        throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
+        ERROR_PARAMS(getName()->getStringValue()));
+      }
     }
 
     pos = targetPos + i;
 
-#ifdef ZORBA_WITH_JSON
-    if (lJSONItem)
-      lJSONItem->attachToCollection(this, createTreeId(), xs_integer::zero());
-    else
-#endif
-      node->setCollection(this, pos);
+    lStructuredItem->attachToCollection(this, createTreeId(), pos);
   } // for each new node
 
   theXmlTrees.resize(numNodes + numNewNodes);
@@ -273,33 +238,15 @@ xs_integer SimpleCollection::addNodes(
 ********************************************************************************/
 bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
 {
-  XmlNode* node = NULL;
-#ifdef ZORBA_WITH_JSON
-  json::JSONItem* lJSONItem = NULL;
-#endif
-
-  if (item->isNode())
-  {
-    node = static_cast<XmlNode*>(item);
-  }
-#ifdef ZORBA_WITH_JSON
-  else if (item->isJSONItem())
-  {
-    lJSONItem = static_cast<json::JSONItem*>(item);
-  }
-  else
+  if (!(item->isNode() || item->isJSONItem()))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
     ERROR_PARAMS(getName()->getStringValue()));
   }
-#else
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#endif
 
+  assert(dynamic_cast<StructuredItem*>(item));
+  StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
+  
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   bool found = findNode(item, position);
@@ -308,14 +255,7 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
   {
     ZORBA_ASSERT(item->getCollection() == this);
 
-    xs_integer const &zero = xs_integer::zero();
-
-#ifdef ZORBA_WITH_JSON
-    if (lJSONItem)
-      lJSONItem->detachFromCollection();
-    else
-#endif
-      node->setCollection(NULL, zero);
+    lStructuredItem->detachFromCollection();
 
     csize pos = to_xs_unsignedInt(position);
     theXmlTrees.erase(theXmlTrees.begin() + pos);
@@ -349,24 +289,10 @@ bool SimpleCollection::removeNode(xs_integer position)
 
     ZORBA_ASSERT(item->getCollection() == this);
 
-    xs_integer const &zero = xs_integer::zero();
-
-    if (item->isNode())
-    {
-      XmlNode* node = static_cast<XmlNode*>(item);
-      node->setCollection(NULL, zero);
-    }
-#ifdef ZORBA_WITH_JSON
-    else if (item->isJSONItem())
-    {
-      json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(item);
-      lJSONItem->detachFromCollection();
-    }
-#endif
-    else
-    {
-      ZORBA_ASSERT(false);
-    }
+    ZORBA_ASSERT(item->isNode() || item->isJSONItem());
+    ZORBA_ASSERT(dynamic_cast<StructuredItem*>(item));
+    StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
+    lStructuredItem->detachFromCollection();
 
     theXmlTrees.erase(theXmlTrees.begin() + pos);
     return true;
@@ -407,22 +333,9 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 
       ZORBA_ASSERT(item->getCollection() == this);
 
-      if (item->isNode())
-      {
-        XmlNode* node = static_cast<XmlNode*>(item);
-        node->setCollection(NULL, zero);
-      }
-#ifdef ZORBA_WITH_JSON
-      else if (item->isJSONItem())
-      {
-        json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(item);
-        lJSONItem->detachFromCollection();
-      }
-#endif
-      else
-      {
-        ZORBA_ASSERT(false);
-      }
+      ZORBA_ASSERT(item->isNode() || item->isJSONItem());
+      StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
+      lStructuredItem->detachFromCollection();
 
       theXmlTrees.erase(theXmlTrees.begin() + pos);
     }
@@ -466,37 +379,25 @@ store::Item_t SimpleCollection::nodeAt(xs_integer position)
 ********************************************************************************/
 bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) const
 {
-  const XmlNode* node = NULL;
-
-  if (item->isNode())
+  if (!(item->isNode() || item->isJSONItem()))
   {
-    node = static_cast<const XmlNode*>(item);
-    
-    if (node->getParent() != NULL)
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+
+  assert(dynamic_cast<const StructuredItem*>(item));
+  const StructuredItem* lStructuredItem = static_cast<const StructuredItem*>(item);
+  
+  if (lStructuredItem->isNode())
+  {
+    assert(dynamic_cast<const XmlNode*>(item));
+    const XmlNode* lNode = static_cast<const XmlNode*>(item);
+    if (lNode->getTree()->getRoot() != lNode)
     {
       throw ZORBA_EXCEPTION(zerr::ZSTR0011_COLLECTION_NON_ROOT_NODE,
       ERROR_PARAMS(getName()->getStringValue()));
     }
   }
-#ifdef ZORBA_WITH_JSON
-  else if (item->isJSONObject())
-  {
-  }
-  else if (item->isJSONArray())
-  {
-  }
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#else
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#endif
 
   if (theXmlTrees.empty())
     return false;
@@ -504,15 +405,18 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
   if (item->getCollection() != this)
     return false;
 
-  if (node)
+  if (item->isNode())
   {
-    position = node->getTree()->getPosition();
+    assert(dynamic_cast<const XmlNode*>(item));
+    const XmlNode* lNode = static_cast<const XmlNode*>(item);
+  
+    position = lNode->getTree()->getPosition();
 
     csize pos = to_xs_unsignedInt(position);
 
     if (pos < theXmlTrees.size() &&
         theXmlTrees[pos]->isNode() &&
-        BASE_NODE(theXmlTrees[pos])->getTreeId() == node->getTreeId())
+        BASE_NODE(theXmlTrees[pos])->getTreeId() == lNode->getTreeId())
     {
       return true;
     }

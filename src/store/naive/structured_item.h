@@ -25,11 +25,6 @@ namespace simplestore
 
 class Collection;
 
-namespace json
-{
-  class JSONItem;
-}
-
 class StructuredItem : public store::Item
 {
 public:
@@ -46,9 +41,9 @@ public:
 
   virtual void detachFromCollection() = 0;
 
-  virtual void setStructuredItemRoot(json::JSONItem* aRoot) = 0;
+  virtual void setStructuredItemRoot(StructuredItem* aRoot) = 0;
 
-  virtual json::JSONItem* getStructuredItemRoot() const = 0;
+  virtual StructuredItem* getStructuredItemRoot() const = 0;
 
   virtual long getStructuredItemRefCount() const = 0;
   
