@@ -171,9 +171,6 @@ public:
   // Only to be called if in a collection.
   virtual StructuredItem* getStructuredItemRoot() const;
   
-  // Only to be called if in a collection.
-  virtual bool isInSameTree(const StructuredItem* anotherItem) const;
-
   virtual long getStructuredItemRefCount() const;
   
   void attachToCollection(
@@ -199,7 +196,7 @@ public:
 
   virtual bool isThisTreeOfAllDescendants(const JSONTree* aTree) const = 0;
 
-  virtual bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const = 0;
+  virtual bool isInSubTree(const StructuredItem* aJSONItem) const = 0;
 #endif
 };
 
@@ -337,7 +334,7 @@ public:
   
   bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
 
-  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+  bool isInSubTree(const StructuredItem* aJSONItem) const;
 #endif
 };
 
@@ -496,7 +493,7 @@ public:
 #ifndef NDEBUG
   bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
 
-  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+  bool isInSubTree(const StructuredItem* aJSONItem) const;
 #endif
 };
 

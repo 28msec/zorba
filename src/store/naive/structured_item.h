@@ -47,7 +47,7 @@ public:
 
   virtual long getStructuredItemRefCount() const = 0;
   
-  virtual bool isInSameTree(const StructuredItem* anotherItem) const = 0;
+  virtual bool isInSubTree(const StructuredItem* anotherItem) const = 0;
   
 };
 

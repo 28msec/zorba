@@ -151,21 +151,6 @@ void JSONItem::setStructuredItemRoot(StructuredItem* aRoot)
   theTree->setRoot(lRoot);
 }
 
-/******************************************************************************
-  Should only to be called if item is in a collection.
-*******************************************************************************/
-bool JSONItem::isInSameTree(const StructuredItem* anotherItem) const
-{
-  ZORBA_ASSERT(theTree);
-  if (!anotherItem->isJSONItem())
-  {
-    return false;
-  }
-  assert(dynamic_cast<const JSONItem*>(anotherItem));
-  const JSONItem* aJSONItem = static_cast<const JSONItem*>(anotherItem);
-  return theTree == aJSONItem->theTree;
-}
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -223,7 +208,7 @@ void JSONItem::assertInvariant() const
     assert(theTree->getCollection() != NULL);
     assert(theTree->getRoot() != NULL);
     assert(isThisTreeOfAllDescendants(theTree));
-    assert(theTree->getRoot()->isThisJSONItemInDescendance(this));
+    assert(theTree->getRoot()->isInSubTree(this));
   }
 }
 #endif
@@ -672,7 +657,7 @@ bool SimpleJSONObject::isThisTreeOfAllDescendants(const JSONTree* aTree) const
 /******************************************************************************
 
 *******************************************************************************/
-bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) const
+bool SimpleJSONObject::isInSubTree(const StructuredItem* anItem) const
 {
   if (this == anItem)
   {
@@ -684,18 +669,14 @@ bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) co
        ++lIter)
   {
     store::Item* lValue = lIter->second;
-    const SimpleJSONObject* lObject =
-      dynamic_cast<const SimpleJSONObject*>(lValue);
-    const SimpleJSONArray* lArray =
-      dynamic_cast<const SimpleJSONArray*>(lValue);
- 
-    if (lObject != NULL && lObject->isThisJSONItemInDescendance(anItem))
+    if (lValue->isJSONItem() || lValue->isNode())
     {
-      return true;
-    }
-    else if (lArray != NULL && lArray->isThisJSONItemInDescendance(anItem))
-    {
-      return true;
+      const StructuredItem* lStructuredItem =
+        dynamic_cast<const StructuredItem*>(lValue);
+      if (lStructuredItem->isInSubTree(anItem))
+      {
+        return true;
+      }
     }
   }
   return false;
@@ -1176,7 +1157,7 @@ bool SimpleJSONArray::isThisTreeOfAllDescendants(const JSONTree* aTree) const
 /******************************************************************************
 
 *******************************************************************************/
-bool SimpleJSONArray::isThisJSONItemInDescendance(const store::Item* anItem) const
+bool SimpleJSONArray::isInSubTree(const StructuredItem* anItem) const
 {
   if(this == anItem)
   {
@@ -1186,17 +1167,15 @@ bool SimpleJSONArray::isThisJSONItemInDescendance(const store::Item* anItem) con
        lIter != theContent.end();
        ++lIter)
   {
-    const SimpleJSONObject* lObject =
-        dynamic_cast<const SimpleJSONObject*>(*lIter);
-    const SimpleJSONArray* lArray =
-        dynamic_cast<const SimpleJSONArray*>(*lIter);
-    if (lObject != NULL && lObject->isThisJSONItemInDescendance(anItem))
+    store::Item* lValue = *lIter;
+    if (lValue->isJSONItem() || lValue->isNode())
     {
-      return true;
-    }
-    else if (lArray != NULL && lArray->isThisJSONItemInDescendance(anItem))
-    {
-      return true;
+      const StructuredItem* lStructuredItem =
+        dynamic_cast<const StructuredItem*>(lValue);
+      if (lStructuredItem->isInSubTree(anItem))
+      {
+        return true;
+      }
     }
   }
   return false;

@@ -953,12 +953,13 @@ long XmlNode::getStructuredItemRefCount() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool XmlNode::isInSameTree(const StructuredItem* anotherItem) const
+bool XmlNode::isInSubTree(const StructuredItem* anotherItem) const
 {
   if (!anotherItem->isNode())
   {
     return false;
   }
+  assert(this == getTree()->getRoot());
   assert(dynamic_cast<const XmlNode*>(anotherItem));
   const XmlNode* aNode = static_cast<const XmlNode*>(anotherItem);
   return getTree() == aNode->getTree();
