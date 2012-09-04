@@ -20,9 +20,9 @@ declare collection foaf:network as object()*;
   The person index maps each person name with its information.
 :)
 
-declare %ann:unique %ann:automatic index foaf:person
+declare %ann:automatic index foaf:person
 on nodes dml:collection(xs:QName("foaf:network"))
-by .("name")/string(first) as xs:string;
+by .("name")/string(first) as xs:string?;
 
 (:
   Create and populate the collection, and then create the indexes

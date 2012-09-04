@@ -8,15 +8,18 @@ declare namespace err = "http://www.w3.org/2005/xqt-errors";
 foaf:create-db();
 
 dml:insert($foaf:network, {
-    "name" : <name>William Riker</name>,
-(:    "name" : "William Riker", :)
+    "first-name" : "William",
+    "last-name" : "Riker",
     "age" : 30,
     "gender" : "male"
   });
 
-let $riker := dml:collection($foaf:network)[ .("name") eq "William Riker" ]
-return
-  replace json value of $riker("name") with <name><first>William</first><last>Riker</last></name>;
+let $riker := dml:collection($foaf:network)[ .("last-name") eq "Riker" ]
+return {
+  insert json { "name" : <name><first>William</first><last>Riker</last></name> } into $riker;
+  delete json $riker("first-name");
+  delete json $riker("last-name");
+}
 
 for $x in foaf:probe-point-id($foaf:person, "William")
 return $x
