@@ -87,7 +87,6 @@ SET(ZORBA_STORE_IMPL_SRCS
     string_pool.h
     string_pool.cpp
     structured_item.h
-    structured_item.cpp
     text_node_content.h
     tree_id.h
     tree_id_generator.h

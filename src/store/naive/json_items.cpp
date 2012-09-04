@@ -168,7 +168,7 @@ void JSONItem::attachToCollection(
     const xs_integer& aPosition)
 {
   ASSERT_INVARIANT();
-  
+
   assert(aCollection);
 
   // Attach
@@ -178,7 +178,7 @@ void JSONItem::attachToCollection(
   lTree->setCollection(aCollection);
   lTree->setTreeId(aTreeId);
   setTree(lTree);
-  
+
   ASSERT_INVARIANT();
 }
 
@@ -188,7 +188,7 @@ void JSONItem::attachToCollection(
 void JSONItem::detachFromCollection()
 {
   ASSERT_INVARIANT();
-  
+
   JSONTree* lTree = getTree();
   // Detach
   assert(lTree);
@@ -532,7 +532,8 @@ void SimpleJSONObject::setTree(JSONTree* aTree)
       assert(dynamic_cast<JSONItem*>(lValue));
       JSONItem* lJSONItem = static_cast<JSONItem*>(lValue);
       lJSONItem->setTree(aTree);
-    } else if (lValue->isNode())
+    }
+    else if (lValue->isNode())
     {
       assert(dynamic_cast<StructuredItem*>(lValue));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lValue);
@@ -542,7 +543,9 @@ void SimpleJSONObject::setTree(JSONTree* aTree)
             aTree->getTreeId(),
             xs_integer::zero());
         lStructuredItem->setStructuredItemRoot(aTree->getRoot());
-      } else {
+      }
+      else
+      {
         lStructuredItem->detachFromCollection();
         lStructuredItem->setStructuredItemRoot(NULL);
       }
@@ -688,7 +691,7 @@ bool SimpleJSONObject::isInSubTree(const StructuredItem* anItem) const
     if (lValue->isJSONItem() || lValue->isNode())
     {
       const StructuredItem* lStructuredItem =
-        dynamic_cast<const StructuredItem*>(lValue);
+        static_cast<const StructuredItem*>(lValue);
       if (lStructuredItem->isInSubTree(anItem))
       {
         return true;
@@ -973,7 +976,7 @@ store::Item_t SimpleJSONArray::replace(
   theContent[pos]->removeReference();
   value->addReference();
   theContent[pos] = value.getp();
-  
+
   ASSERT_INVARIANT();
   return lItem;
 }
@@ -996,7 +999,8 @@ void SimpleJSONArray::setTree(JSONTree* aTree)
       assert(dynamic_cast<JSONItem*>(lValue));
       JSONItem* lJSONItem = static_cast<JSONItem*>(lValue);
       lJSONItem->setTree(aTree);
-    } else if (lValue->isNode())
+    }
+    else if (lValue->isNode())
     {
       assert(dynamic_cast<StructuredItem*>(lValue));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lValue);
@@ -1006,7 +1010,9 @@ void SimpleJSONArray::setTree(JSONTree* aTree)
             aTree->getTreeId(),
             xs_integer::zero());
         lStructuredItem->setStructuredItemRoot(aTree->getRoot());
-      } else {
+      }
+      else
+      {
         lStructuredItem->detachFromCollection();
         lStructuredItem->setStructuredItemRoot(NULL);
       }
@@ -1202,7 +1208,7 @@ bool SimpleJSONArray::isInSubTree(const StructuredItem* anItem) const
     if (lValue->isJSONItem() || lValue->isNode())
     {
       const StructuredItem* lStructuredItem =
-        dynamic_cast<const StructuredItem*>(lValue);
+        static_cast<const StructuredItem*>(lValue);
       if (lStructuredItem->isInSubTree(anItem))
       {
         return true;
