@@ -801,6 +801,8 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
   store::Item_t keyItem;
   ulong numChildren = (ulong)theChildren.size();
   bool status;
+  xs_integer lSkip = xs_integer::zero();
+  ulong lAmountNonKeyParams = (theSctx ? 2 : 1);
 
   try
   {
@@ -826,13 +828,13 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if (state->theIndexDecl->getNumKeyExprs() != numChildren-1 ||
-          numChildren != 2)
+      if (state->theIndexDecl->getNumKeyExprs() != numChildren-lAmountNonKeyParams ||
+          numChildren != (1+lAmountNonKeyParams))
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qnameItem->getStringValue(),
                      "index",
-                     numChildren-1,
+                     numChildren-lAmountNonKeyParams,
                      state->theIndexDecl->getNumKeyExprs()));
       }
 
@@ -856,7 +858,20 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       state->theIndex->createCondition(store::IndexCondition::POINT_GENERAL);
     }
 
-    while (consumeNext(keyItem, theChildren[1], planState)) 
+    // read skip
+    if (theSkip)
+    {
+      store::Item_t lSkipItem;
+      status = consumeNext(lSkipItem, theChildren[lAmountNonKeyParams], planState);
+      ZORBA_ASSERT(status);
+      lSkip = lSkipItem->getIntegerValue();
+      if (lSkip < xs_integer::zero())
+      {
+        lSkip = xs_integer::zero();
+      }
+    }
+
+    while (consumeNext(keyItem, theChildren[lAmountNonKeyParams], planState)) 
     {
       if (keyItem == NULL)
         // We may reach here in the case of internally-generated hashjoins
