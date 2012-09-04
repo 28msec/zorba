@@ -566,14 +566,14 @@ ProbeIndexPointValueIterator::ProbeIndexPointValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aSkip,
-    bool aCountOnly)
+    bool aCountOnly,
+    bool aSkip)
   : 
   NaryBaseIterator<ProbeIndexPointValueIterator,
                    ProbeIndexPointValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theSkip(aSkip),
-  theCountOnly(aCountOnly)
+  theCountOnly(aCountOnly),
+  theSkip(aSkip)
 {
 }
 
@@ -607,7 +607,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   xs_integer lSkip = xs_integer::zero();
-  ulong lAmountNonKeyParams = (theSctx ? 2 : 1);
+  ulong lAmountNonKeyParams = (theSkip ? 2 : 1);
 
   try
   {
@@ -998,7 +998,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   xs_integer lSkip = xs_integer::zero();
-  ulong lAmountNonKeyParams = (theSctx ? 2 : 1);
+  ulong lAmountNonKeyParams = (theSkip ? 2 : 1);
 
   try
   {

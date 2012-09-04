@@ -120,7 +120,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_value_skip::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexPointValueIterator(sctx, loc, argv, true, false);
+  return new ProbeIndexPointValueIterator(sctx, loc, argv, false, true);
 }
 
 

@@ -360,10 +360,12 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children,
-        bool aSkip,
-        bool aCountOnly);
+        bool aCountOnly,
+        bool aSkip);
 
   ~ProbeIndexPointValueIterator();
+
+  bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -490,6 +492,8 @@ public:
       bool aSkip);
 
   ~ProbeIndexRangeValueIterator();
+
+  bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 
