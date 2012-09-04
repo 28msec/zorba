@@ -662,6 +662,8 @@ bool ProbeIndexPointValueIterator::nextImpl(
       status = consumeNext(lSkipItem, theChildren[1], planState);
       ZORBA_ASSERT(status);
       lSkip = lSkipItem->getIntegerValue();
+      if (lSkip < xs_integer::zero())
+        lSkip = xs_integer::zero();
     }
 
     for (i = lAmountNonKeyParams; i < numChildren; ++i) 
@@ -1066,6 +1068,8 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       status = consumeNext(lSkipItem, theChildren[1], planState);
       ZORBA_ASSERT(status);
       lSkip = lSkipItem->getIntegerValue();
+      if (lSkip < xs_integer::zero())
+        lSkip = xs_integer::zero();
     }
 
     ulong keyNo;
