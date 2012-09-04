@@ -572,8 +572,8 @@ ProbeIndexPointValueIterator::ProbeIndexPointValueIterator(
   NaryBaseIterator<ProbeIndexPointValueIterator,
                    ProbeIndexPointValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly),
-  theSkip(aSkip)
+  theSkip(aSkip),
+  theCountOnly(aCountOnly)
 {
 }
 
@@ -662,10 +662,6 @@ bool ProbeIndexPointValueIterator::nextImpl(
       status = consumeNext(lSkipItem, theChildren[1], planState);
       ZORBA_ASSERT(status);
       lSkip = lSkipItem->getIntegerValue();
-      if (lSkip < xs_integer::zero())
-      {
-        lSkip = xs_integer::zero();
-      }
     }
 
     for (i = lAmountNonKeyParams; i < numChildren; ++i) 
@@ -765,14 +761,12 @@ ProbeIndexPointGeneralIterator::ProbeIndexPointGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly,
-    bool aSkip)
+    bool aCountOnly)
   : 
   NaryBaseIterator<ProbeIndexPointGeneralIterator,
                    ProbeIndexPointGeneralIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly),
-  theSkip(aSkip)
+  theCountOnly(aCountOnly)
 {
 }
 
@@ -789,7 +783,6 @@ void ProbeIndexPointGeneralIterator::serialize(::zorba::serialization::Archiver&
                     ProbeIndexPointGeneralIteratorState>*)this);
 	ar & theCheckKeyType;
   ar & theCountOnly;
-  ar & theSkip;
 }
 
 
@@ -801,8 +794,6 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
   store::Item_t keyItem;
   ulong numChildren = (ulong)theChildren.size();
   bool status;
-  xs_integer lSkip = xs_integer::zero();
-  ulong lAmountNonKeyParams = (theSctx ? 2 : 1);
 
   try
   {
@@ -828,13 +819,13 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if (state->theIndexDecl->getNumKeyExprs() != numChildren-lAmountNonKeyParams ||
-          numChildren != (1+lAmountNonKeyParams))
+      if (state->theIndexDecl->getNumKeyExprs() != numChildren-1 ||
+          numChildren != 2)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qnameItem->getStringValue(),
                      "index",
-                     numChildren-lAmountNonKeyParams,
+                     numChildren-1,
                      state->theIndexDecl->getNumKeyExprs()));
       }
 
@@ -858,20 +849,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       state->theIndex->createCondition(store::IndexCondition::POINT_GENERAL);
     }
 
-    // read skip
-    if (theSkip)
-    {
-      store::Item_t lSkipItem;
-      status = consumeNext(lSkipItem, theChildren[lAmountNonKeyParams], planState);
-      ZORBA_ASSERT(status);
-      lSkip = lSkipItem->getIntegerValue();
-      if (lSkip < xs_integer::zero())
-      {
-        lSkip = xs_integer::zero();
-      }
-    }
-
-    while (consumeNext(keyItem, theChildren[lAmountNonKeyParams], planState)) 
+    while (consumeNext(keyItem, theChildren[1], planState)) 
     {
       if (keyItem == NULL)
         // We may reach here in the case of internally-generated hashjoins
@@ -1088,10 +1066,6 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       status = consumeNext(lSkipItem, theChildren[1], planState);
       ZORBA_ASSERT(status);
       lSkip = lSkipItem->getIntegerValue();
-      if (lSkip < xs_integer::zero())
-      {
-        lSkip = xs_integer::zero();
-      }
     }
 
     ulong keyNo;
@@ -1272,14 +1246,12 @@ ProbeIndexRangeGeneralIterator::ProbeIndexRangeGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly,
-    bool aSkip)
+    bool aCountOnly)
   : 
   NaryBaseIterator<ProbeIndexRangeGeneralIterator,
                    ProbeIndexRangeGeneralIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly),
-  theSkip(aSkip)
+  theCountOnly(aCountOnly)
 {
 }
 
@@ -1297,7 +1269,6 @@ void ProbeIndexRangeGeneralIterator::serialize(::zorba::serialization::Archiver&
 
   ar & theCheckKeyType;
   ar & theCountOnly;
-  ar & theSkip;
 }
 
 

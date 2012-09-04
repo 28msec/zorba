@@ -589,7 +589,7 @@ PlanIter_t fn_count::codegen(
       = static_cast<ProbeIndexPointGeneralIterator&>(*argv[0]);
 
     return new ProbeIndexPointGeneralIterator(
-        sctx, loc, lIter.getChildren(), true, false);
+        sctx, loc, lIter.getChildren(), true);
   }
   else if (typeid(ProbeIndexRangeGeneralIterator) == counted_type)
   {
@@ -597,7 +597,7 @@ PlanIter_t fn_count::codegen(
       = static_cast<ProbeIndexRangeGeneralIterator&>(*argv[0]);
 
     return new ProbeIndexRangeGeneralIterator(
-        sctx, loc, lIter.getChildren(), true, false);
+        sctx, loc, lIter.getChildren(), true);
   }
   
   // fallback

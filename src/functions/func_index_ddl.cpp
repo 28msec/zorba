@@ -131,18 +131,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_general::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexPointGeneralIterator(sctx, loc, argv, false, false);
-}
-
-
-PlanIter_t fn_zorba_ddl_probe_index_point_general_skip::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new ProbeIndexPointGeneralIterator(sctx, loc, argv, false, true);
+  return new ProbeIndexPointGeneralIterator(sctx, loc, argv);
 }
 
 
@@ -175,18 +164,7 @@ PlanIter_t fn_zorba_ddl_probe_index_range_general::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexRangeGeneralIterator(sctx, loc, argv, false, false);
-}
-
-
-PlanIter_t fn_zorba_ddl_probe_index_range_general_skip::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new ProbeIndexRangeGeneralIterator(sctx, loc, argv, false, true);
+  return new ProbeIndexRangeGeneralIterator(sctx, loc, argv);
 }
 
 
@@ -259,16 +237,6 @@ void populate_context_index_ddl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 
-  DECL(sctx, fn_zorba_ddl_probe_index_point_general_skip,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
-                    "",
-                    "probe-index-point-general-skip"),
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-
   DECL(sctx, fn_zorba_ddl_probe_index_range_value,
        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
                     "",
@@ -291,20 +259,6 @@ void populate_context_index_ddl(static_context* sctx)
                     "",
                     "probe-index-range-general"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-  DECL(sctx, fn_zorba_ddl_probe_index_range_general_skip,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
-                    "",
-                    "probe-index-range-general-skip"),
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
