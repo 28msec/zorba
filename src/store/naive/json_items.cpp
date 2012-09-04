@@ -173,10 +173,11 @@ void JSONItem::attachToCollection(
 
   // Attach
   assert(getTree() == NULL);
-  setTree(new JSONTree());
-  getTree()->setRoot(this);
-  getTree()->setCollection(aCollection);
-  getTree()->setTreeId(aTreeId);
+  JSONTree* lTree = new JSONTree();
+  lTree->setRoot(this);
+  lTree->setCollection(aCollection);
+  lTree->setTreeId(aTreeId);
+  setTree(lTree);
   
   ASSERT_INVARIANT();
 }
@@ -531,6 +532,20 @@ void SimpleJSONObject::setTree(JSONTree* aTree)
       assert(dynamic_cast<JSONItem*>(lValue));
       JSONItem* lJSONItem = static_cast<JSONItem*>(lValue);
       lJSONItem->setTree(aTree);
+    } else if (lValue->isNode())
+    {
+      assert(dynamic_cast<StructuredItem*>(lValue));
+      StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lValue);
+      if (aTree != NULL)
+      {
+        lStructuredItem->attachToCollection(aTree->getCollection(),
+            aTree->getTreeId(),
+            xs_integer::zero());
+        lStructuredItem->setStructuredItemRoot(aTree->getRoot());
+      } else {
+        lStructuredItem->detachFromCollection();
+        lStructuredItem->setStructuredItemRoot(NULL);
+      }
     }
   }
 }
@@ -981,6 +996,20 @@ void SimpleJSONArray::setTree(JSONTree* aTree)
       assert(dynamic_cast<JSONItem*>(lValue));
       JSONItem* lJSONItem = static_cast<JSONItem*>(lValue);
       lJSONItem->setTree(aTree);
+    } else if (lValue->isNode())
+    {
+      assert(dynamic_cast<StructuredItem*>(lValue));
+      StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lValue);
+      if (aTree != NULL)
+      {
+        lStructuredItem->attachToCollection(aTree->getCollection(),
+            aTree->getTreeId(),
+            xs_integer::zero());
+        lStructuredItem->setStructuredItemRoot(aTree->getRoot());
+      } else {
+        lStructuredItem->detachFromCollection();
+        lStructuredItem->setStructuredItemRoot(NULL);
+      }
     }
   }
 }
