@@ -628,7 +628,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       }
 
       if ( state->theIndexDecl->getNumKeyExprs() 
-        != numChildren-lAmountNonKeyParams )
+        != numChildren - lAmountNonKeyParams )
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(
@@ -676,11 +676,12 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if (theCheckKeyType)
       {
-        checkKeyType(loc, tm, state->theIndexDecl, i-lAmountNonKeyParams, keyItem);
+        checkKeyType(loc, tm, state->theIndexDecl, 
+                     i - lAmountNonKeyParams, keyItem);
       }
 
       if (state->theIndexDecl->isGeneral() &&
-          (state->theIndexDecl->getKeyTypes())[i-lAmountNonKeyParams] == NULL)
+          (state->theIndexDecl->getKeyTypes())[i - lAmountNonKeyParams] == NULL)
       {
         xqtref_t searchKeyType = tm->create_value_type(keyItem);
         
@@ -1027,12 +1028,12 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       }
 
       if (numChildren < (6 + lAmountNonKeyParams) 
-       || (numChildren-lAmountNonKeyParams) % 6 != 0)
+       || (numChildren - lAmountNonKeyParams) % 6 != 0)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qname->getStringValue(),
                      "index",
-                     numChildren-lAmountNonKeyParams,
+                     numChildren - lAmountNonKeyParams,
                      "multiple of 6"));
       }
 

@@ -273,7 +273,7 @@ declare %an:variadic function idml:probe-index-range-value(
  : or the intersection of all the rangespec results.</p>
  :
  : @param $name The QName of the index to probe
- : @param $skip The number of collection items to skip.
+ : @param $skip The number of index items to skip.
  : @param $lowerBound-i The lower bound in a range of key values.
  : @param $upperBound-i The upper bound in a range of key values.
  : @param $haveLowerBound-i If false, then there is no lower bound, or 
