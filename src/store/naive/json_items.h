@@ -195,8 +195,6 @@ public:
   virtual void assertInvariant() const;
 
   virtual bool isThisTreeOfAllDescendants(const JSONTree* aTree) const = 0;
-
-  virtual bool isInSubTree(const StructuredItem* aJSONItem) const = 0;
 #endif
 };
 
@@ -323,18 +321,17 @@ public:
       const store::Item_t& aNewName);
 
   // root management
-  
-protected:
   void setTree(JSONTree* aTree);
 
+  // StructuredItem API
+
+  bool isInSubTree(const StructuredItem* aJSONItem) const;
+
   // Invariant handling
-public:
 #ifndef NDEBUG
   void assertInvariant() const;
   
   bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
-
-  bool isInSubTree(const StructuredItem* aJSONItem) const;
 #endif
 };
 
@@ -432,7 +429,7 @@ public:
   {}
 
   virtual ~SimpleJSONArray();
-  
+
   // store API
 
   xs_integer getArraySize() const;
@@ -480,8 +477,11 @@ public:
   replace(const xs_integer& aPos, const store::Item_t& value);
 
   // root management
-public:
   void setTree(JSONTree* aTree);
+
+  // StructuredItem API
+  
+  bool isInSubTree(const StructuredItem* aJSONItem) const;
 
 protected:
   void add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
@@ -492,8 +492,6 @@ protected:
 public:
 #ifndef NDEBUG
   bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
-
-  bool isInSubTree(const StructuredItem* aJSONItem) const;
 #endif
 };
 
