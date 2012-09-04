@@ -3896,7 +3896,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // Wrap in coercion if the return type is a function item
     if (returnType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
-      // body = wrap_in_coercion(returnType, body, loc, theCCB, true);
+      body = wrap_in_coercion(returnType, body, loc, theCCB, true);
     }
 
     // If function has any params, they have been wraped in a flwor expr. Set the

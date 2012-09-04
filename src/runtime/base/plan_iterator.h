@@ -536,7 +536,7 @@ public:
 
   void open(PlanState& planState, uint32_t& offset)
   {
-    std::cerr << "--> openImpl() " << theId << " = " << typeid( IterType ).name() << std::endl;
+    std::cerr << "--> openImpl() " << theId << " = " << getClassName() << " typeid: " << typeid( IterType ).name() << std::endl;
     static_cast<IterType*>(this)->openImpl(planState, offset);
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
@@ -549,7 +549,7 @@ public:
 
   void reset(PlanState& planState) const
   {
-    std::cerr << "--> resetImpl() " << theId << " = " << typeid( IterType ).name()
+    std::cerr << "--> resetImpl() " << theId << " = " << getClassName() << " typeid: " << typeid( IterType ).name()
         << " on state: " << (void*)(planState.theBlock + theStateOffset)
         << " (" << (void*)(planState.theBlock) << " + " << (void*)theStateOffset << ")" << std::endl;
 #ifndef NDEBUG
@@ -562,7 +562,7 @@ public:
 
   void close(PlanState& planState)
   {
-    std::cerr << "--> closeImpl() " << theId << " = " << typeid( IterType ).name() << std::endl;
+    std::cerr << "--> closeImpl() " << theId << " = " << getClassName() << " typeid: " << typeid( IterType ).name() << std::endl;
 #ifndef NDEBUG
     PlanIteratorState* lState =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);

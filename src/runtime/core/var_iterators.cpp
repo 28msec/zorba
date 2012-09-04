@@ -677,7 +677,6 @@ NOARY_ACCEPT(ForVarIterator);
 
 LetVarState::LetVarState()
 {
-  // std::cerr << "--> created LetVarState: " << this << std::endl;
   theWindowStart = 0;
   theWindowEnd = 0;
 }
@@ -787,6 +786,8 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
   std::cerr << "--> LetVarIterator::bind() " << theId << " name: " << theVarName->show() << " theSourceIter: " ;
   if (dynamic_cast<PlanIterator*>(it.getp()) != NULL)
     std::cerr << dynamic_cast<PlanIterator*>(it.getp())->getId();
+  else if (dynamic_cast<PlanIteratorWrapper*>(it.getp()) != NULL)
+    std::cerr << dynamic_cast<PlanIteratorWrapper*>(it.getp())->theIterator->getId();
   else
     std::cerr << it.getp();
   std::cerr << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
@@ -932,8 +933,6 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xs_integer startPos;
   xs_integer len;
   xs_integer seqSize;
-
-  // std::cerr << "--> LetVarIterator::nextImp() " << this << " on var: " << this->theVarName->show() << std::endl;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);

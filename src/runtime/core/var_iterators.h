@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@
 
 #include "common/shared_types.h"
 
-#include "runtime/base/noarybase.h" 
+#include "runtime/base/noarybase.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
 
@@ -34,12 +34,12 @@ namespace zorba
   a block-local or prolog var (including the context item, if it is declared in
   the prolog) and to initialize its value, if an init expr is provided.
 
-  Specifically, for each prolog and block-local variable, the dynamic context 
-  maps a numeric variable id (assigned to the varExpr during codegen) to an 
+  Specifically, for each prolog and block-local variable, the dynamic context
+  maps a numeric variable id (assigned to the varExpr during codegen) to an
   entry that stores the current value of the variable, either as a single item
   or as an iterator that produces an item sequence. Each such entry has a
   state as well, which can be one of undeclared, declared, having a single-item
-  value, or having an iterator value. 
+  value, or having an iterator value.
 
   The iterator adds such an entry for the variable in the dynamic context and
   initializes its state to "declared". It is possible that an entry for the
@@ -103,7 +103,7 @@ public:
   For the context item var, the iterator creates a binding in the dynamic ctx
   between the varName (".") and the actual context item returned by the initExpr.
   For a regular prolog var, the iterator creates a binding in the dynamic ctx
-  between the varName and an iterator plan that computes the initExpr. 
+  between the varName and an iterator plan that computes the initExpr.
 ********************************************************************************/
 class CtxVarAssignIterator : public UnaryBaseIterator<CtxVarAssignIterator,
                                                       PlanIteratorState>
@@ -130,7 +130,7 @@ public:
         ulong varid,
         const store::Item_t& varName,
         bool isLocal,
-        PlanIter_t& arg) 
+        PlanIter_t& arg)
     :
     UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>(sctx, loc, arg),
     theVarId(varid),
@@ -180,7 +180,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         ulong varid,
-        const store::Item_t& varName) 
+        const store::Item_t& varName)
     :
     NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>(sctx, loc),
     theVarId(varid),
@@ -220,7 +220,7 @@ public:
   (b) Through the user API provided by DynamicContextImpl class (see methods
       setVariable, setContextItem, etc).
 ********************************************************************************/
-class CtxVarState : public  PlanIteratorState 
+class CtxVarState : public  PlanIteratorState
 {
 public:
   store::TempSeq_t         theTempSeq;
@@ -233,7 +233,7 @@ public:
 
 public:
   CtxVarState();
-  
+
   ~CtxVarState();
 
   void reset(PlanState& planState);
@@ -256,7 +256,7 @@ public:
   SERIALIZABLE_CLASS(CtxVarIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  CtxVarIterator, 
+  CtxVarIterator,
   NoaryBaseIterator<CtxVarIterator, CtxVarState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
@@ -310,19 +310,19 @@ public:
   theValue stores the current value of V.
 
 ********************************************************************************/
-class ForVarState : public PlanIteratorState 
+class ForVarState : public PlanIteratorState
 {
 public:
   store::Item_t theValue;
 
-  void init(PlanState& planState)  
+  void init(PlanState& planState)
   {
-    PlanIteratorState::init(planState); 
+    PlanIteratorState::init(planState);
   }
 
-  void reset(PlanState& planState) 
+  void reset(PlanState& planState)
   {
-    PlanIteratorState::reset(planState); 
+    PlanIteratorState::reset(planState);
   }
 };
 
@@ -331,12 +331,12 @@ class ForVarIterator : public NoaryBaseIterator<ForVarIterator, ForVarState>
 {
 protected:
   store::Item_t  theVarName;
-  
+
 public:
   SERIALIZABLE_CLASS(ForVarIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  ForVarIterator, 
+  ForVarIterator,
   NoaryBaseIterator<ForVarIterator, ForVarState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
@@ -348,7 +348,7 @@ public:
         store::Item* name);
 
   ~ForVarIterator() { }
-  
+
   store::Item* getVarName() const { return theVarName.getp(); }
 
   void accept(PlanIterVisitor& v) const;
@@ -362,10 +362,10 @@ public:
 /*******************************************************************************
 
   LET variables. A LetVarIterator represents a reference to a let variable V.
-  
+
   If the var is materialized, then its value is stored in a temp sequence, and a
   (smart) pointer to that temp seq is stored in the state of the LetVarIterator.
-  Otherwise, it's value is a PlanIteratorWraper that may wrap the actual domain 
+  Otherwise, it's value is a PlanIteratorWraper that may wrap the actual domain
   expression that defines the var.
 
   theSourceIter:
@@ -375,13 +375,13 @@ public:
   theTempSeq:
   -----------
   The temp seq storing the value of tha variable.
- 
+
   theTempSeqIter:
   ---------------
   A pre-allocated iterator over the temp seq.
 
 ********************************************************************************/
-class LetVarState : public PlanIteratorState 
+class LetVarState : public PlanIteratorState
 {
 public:
   store::Iterator_t        theSourceIter;
@@ -417,7 +417,7 @@ public:
   SERIALIZABLE_CLASS(LetVarIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  LetVarIterator, 
+  LetVarIterator,
   NoaryBaseIterator<LetVarIterator, LetVarState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
@@ -425,7 +425,7 @@ public:
 public:
   LetVarIterator(
       static_context* sctx,
-      const QueryLoc& loc, 
+      const QueryLoc& loc,
       store::Item* name);
 
   ~LetVarIterator() {}
@@ -468,7 +468,7 @@ public:
 };
 
 
-} 
+}
 #endif
 
 /*

@@ -734,9 +734,9 @@ void PrinterVisitor::beginVisitFlworLetVariable(
   {
 #ifndef NDEBUG
     str << varRefs[i]->getId();
-#else        
+#else
     str << varRefs[i].getp();
-#endif    
+#endif
     if (i < numRefs-1)
       str << " ";
   }
@@ -769,7 +769,11 @@ void PrinterVisitor::beginVisitFlworForVariable(
   ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
+#ifndef NDEBUG
+    str << varRefs[i]->getId();
+#else
     str << varRefs[i].getp();
+#endif
     if (i < numRefs-1)
       str << " ";
   }
@@ -1149,13 +1153,13 @@ void PrinterVisitor::beginVisit(const CastIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const CastIterator&) 
+void PrinterVisitor::endVisit(const CastIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const PromoteIterator& a) 
+void PrinterVisitor::beginVisit(const PromoteIterator& a)
 {
   thePrinter.startBeginVisit("PromoteIterator", ++theId);
   std::ostringstream lStream;
@@ -1165,13 +1169,13 @@ void PrinterVisitor::beginVisit(const PromoteIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const PromoteIterator&) 
+void PrinterVisitor::endVisit(const PromoteIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const CastableIterator& a) 
+void PrinterVisitor::beginVisit(const CastableIterator& a)
 {
   thePrinter.startBeginVisit("CastableIterator", ++theId);
   std::ostringstream lStream;
@@ -1272,9 +1276,9 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   }
 
   void PrinterVisitor::endVisit(const DocumentIterator&)
-  {                            
+  {
     thePrinter.startEndVisit();
-    thePrinter.endEndVisit(); 
+    thePrinter.endEndVisit();
   }
 
   void PrinterVisitor::beginVisit(const ElementIterator& a)
@@ -1289,9 +1293,9 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   }
 
   void PrinterVisitor::endVisit(const ElementIterator&)
-  {                            
+  {
     thePrinter.startEndVisit();
-    thePrinter.endEndVisit(); 
+    thePrinter.endEndVisit();
   }
 
   void PrinterVisitor::beginVisit(const AttributeIterator& a)

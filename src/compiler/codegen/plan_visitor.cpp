@@ -733,7 +733,7 @@ void general_var_codegen(const var_expr& var)
   static_context* sctx = var.get_sctx();
 
   bool isForVar = false;
-  
+
   std::cerr << "--> general_var_codegen() on var: " << var.toString();
 
   switch (var.get_kind())
@@ -1460,10 +1460,10 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     ZORBA_ASSERT(clauseVarMap->theClause == &c);
   }
-  
-  
+
+
   std::cerr << "--> gflwor_codegen() on clause nr: " << currentClause << std::endl;
-  
+
   //
   // WHERE
   //
@@ -1480,7 +1480,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   else if (c.get_kind() == flwor_clause::for_clause)
   {
     const for_clause* fc = static_cast<const for_clause *>(&c);
-    
+
     ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() >= 1);
 
     var_expr* var = fc->get_var();
@@ -1712,9 +1712,9 @@ void flwor_codegen(const flwor_expr& flworExpr)
   for (int it = numClauses - 1; it >= 0; --it)
   {
     const flwor_clause& c = *flworExpr.get_clause(it);
-  
+
     std::cerr << "--> flwor_codegen() on clause nr: " << it << std::endl;
-  
+
     FlworClauseVarMap_t clauseVarMap;
 
     if (c.get_kind() != flwor_clause::where_clause)
@@ -2113,7 +2113,7 @@ void end_visit(eval_expr& v)
                                 args,
                                 varNames,
                                 varTypes,
-                                isGlobalVar, 
+                                isGlobalVar,
                                 v.get_inner_scripting_kind(),
                                 localBindings,
                                 v.getNodeCopy(),
@@ -2224,7 +2224,7 @@ void end_visit(if_expr& v)
   PlanIter_t iterThen = pop_itstack();
   PlanIter_t iterCond = pop_itstack();
 
-  PlanIter_t iterIfThenElse = 
+  PlanIter_t iterIfThenElse =
   new IfThenElseIterator(sctx, qloc, iterCond, iterThen, iterElse);
 
   push_itstack(&*iterIfThenElse);
@@ -2407,7 +2407,7 @@ void end_visit(treat_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t arg;
   arg = pop_itstack();
-  push_itstack(new TreatIterator(sctx, qloc, arg, 
+  push_itstack(new TreatIterator(sctx, qloc, arg,
                                  v.get_target_type(),
                                  v.get_check_prime(),
                                  v.get_err(),
@@ -2826,7 +2826,7 @@ bool begin_visit(match_expr& v)
     axisItep->setNodeKind(v.getNodeKind());
     axisItep->setQName(v.getQName());
     store::Item* typeName = v.getTypeName();
-    if (typeName != NULL) 
+    if (typeName != NULL)
     {
       axisItep->setType(sctx->get_typemanager()->
                         create_named_type(typeName,
@@ -3163,10 +3163,10 @@ void end_visit(json_object_expr& v)
 
   bool copyInput = true;
 
-  push_itstack(new JSONObjectIterator(sctx, 
-                                      qloc, 
-                                      inputs, 
-                                      copyInput, 
+  push_itstack(new JSONObjectIterator(sctx,
+                                      qloc,
+                                      inputs,
+                                      copyInput,
                                       v.is_accumulating()));
 }
 
@@ -3630,15 +3630,8 @@ PlanIter_t codegen(
 
   std::cerr << "------------------- codegen: -------------------\n";
   if (dynamic_cast<function_item_expr*>(root) != NULL)
-  {
-    // dynamic_cast<function_item_expr*>(root)->
     std::cerr << "--> function_item_expr " << root->get_loc() << std::endl;
-  }
-  std::cerr << "--> arg_var_map: " << arg_var_map << " size: " << (arg_var_map==NULL?0 : arg_var_map->size()) << " iterators: ";
-  if (arg_var_map != NULL)
-    for (checked_vector<hash64map<std::vector<LetVarIter_t> *>::entry>::const_iterator it = arg_var_map->begin(); it != arg_var_map->end(); ++it)
-      for (csize i=0; i < it->val->size(); i++)
-        std::cerr << " " << it->val->operator[](i).getp();
+
   std::cerr << std::endl;
   std::cerr << root->toString() << std::endl;
   std::cerr << "------------------------------------------------\n";
@@ -3646,6 +3639,21 @@ PlanIter_t codegen(
 
   root->accept(c);
   PlanIter_t result = c.result();
+
+  std::cerr << "--> arg_var_map: " << arg_var_map << " size: " << (arg_var_map==NULL?0 : arg_var_map->size()) << " iterators: ";
+  if (arg_var_map != NULL)
+  {
+    csize i = 0;
+    for (checked_vector<hash64map<std::vector<LetVarIter_t> *>::entry>::const_iterator it = arg_var_map->begin(); it != arg_var_map->end(); ++it, ++i)
+    {
+      var_expr* var = (var_expr*)it->key;
+      std::cerr << std::endl << "--> [" << i << "] " << var->toString() << "--> [" << i << "] referenced by:";
+      for (csize j=0; j < it->val->size(); j++)
+        std::cerr << " " << (*it->val)[j]->getId() << " = LetVarIterator";
+    }
+  }
+  std::cerr << std::endl << "------------------------------------------------\n";
+
 
   if (result != NULL &&
       descr != NULL &&

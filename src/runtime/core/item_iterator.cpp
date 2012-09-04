@@ -80,24 +80,27 @@ void SingletonIterator::openImpl(PlanState& planState, uint32_t& offset)
 
       wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
 
+      std::cerr << "--> SingletonIterator::nextImp() " << theId <<" wrapping " << variableValues[i]->getId() << " = " << variableValues[i]->getClassName();
+
       SingletonIterator* singletonIter = dynamic_cast<SingletonIterator*>(variableValues[i].getp());
+      LetVarIterator* letVarIter = dynamic_cast<LetVarIterator*>(variableValues[i].getp());
       if (singletonIter != NULL)
       {
-        wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
-        std::cerr << "--> SingletonIterator::nextImp() wrapping " << singletonIter->getId() << " = " << typeid (*singletonIter).name()
-            << " value: " << singletonIter->getValue()->show()
+        std::cerr << " value: " << singletonIter->getValue()->show()
             << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
       }
-
-      LetVarIterator* letVarIter = dynamic_cast<LetVarIterator*>(variableValues[i].getp());
-      if (letVarIter != NULL)
+      else if (letVarIter != NULL)
       {
-        wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
-        std::cerr << "--> SingletonIterator::nextImp() wrapping " << letVarIter->getId() << " = " << typeid (*letVarIter).name()
-            << " varName: " << letVarIter->getVarName()->getStringValue()
+        std::cerr << " varName: " << letVarIter->getVarName()->getStringValue()
+            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
+      }
+      else
+      {
+        std::cerr
             << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
       }
     }
+
     fnItem->setVariableWrappers(wrappers);
   }
 }
@@ -107,32 +110,7 @@ bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 {
   PlanIteratorState* state;
 
-  // std::cerr << "--> SingletonIterator::nextImp() " << this << " value: " << theValue->show() << std::endl;
-
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (theValue->isFunction())
-  {
-    /*
-    std::cerr << "--> SingletonIterator::nextImp() " << theId << " value: " << theValue->show() << std::endl;
-    FunctionItem* fnItem = static_cast<FunctionItem*>(theValue.getp());
-    const std::vector<PlanIter_t> variableValues = fnItem->getVariables();
-    std::vector<store::Iterator_t> wrappers;
-    wrappers.resize(variableValues.size());
-    for (csize i=0; i<variableValues.size(); i++)
-    {
-      LetVarIterator* letVarIter = dynamic_cast<LetVarIterator*>(variableValues[i].getp());
-      if (letVarIter != NULL)
-      {
-        wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
-        std::cerr << "--> SingletonIterator::nextImp() wrapping " << letVarIter->getId() << " = " << typeid (*letVarIter).name()
-            << " varName: " << letVarIter->getVarName()->getStringValue()
-            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
-      }
-    }
-    fnItem->setVariableWrappers(wrappers);
-    */
-  }
 
   result = theValue;
   STACK_PUSH ( result != NULL, state );

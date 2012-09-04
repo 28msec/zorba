@@ -208,13 +208,15 @@ bool DynamicFnCallIterator::nextImpl(
 
     for (; ite2 != end2; ++ite2, ++ite, ++wrapperIter)
     {
-      std::cerr << "--> dynamic fncall: argIter: " << (*ite2)->getId() << " = " << typeid (ite2->getp()).name() << std::endl;
+      std::cerr << "--> dynamic fncall: argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
       if (dynamic_cast<LetVarIterator*>(ite2->getp()))
         std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+      if (dynamic_cast<ForVarIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is ForVarIterator with varName: " << dynamic_cast<ForVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
       if (dynamic_cast<SingletonIterator*>(ite2->getp()))
         std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
 
-      // (*wrapperIter)->reset(); // TODO: do not reset on the first loop iteration
+      (*wrapperIter)->reset(); // TODO: do not reset on the first loop iteration
       *ite = *ite2;
     }
 
@@ -224,11 +226,11 @@ bool DynamicFnCallIterator::nextImpl(
 
     for(; ite2 != end2; ++ite2, ++ite)
     {
-      std::cerr << "--> dynamic fncall: argIter: " << (*ite2)->getId() << " = " << typeid (ite2->getp()).name() << std::endl;
+      std::cerr << "--> dynamic fncall: argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
       if (dynamic_cast<LetVarIterator*>(ite2->getp()))
         std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
 
-      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
+      (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
       *ite = *ite2;
     }
 

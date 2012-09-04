@@ -1258,7 +1258,7 @@ bool FLWORIterator::bindVariable(
     std::cerr << "--> binding var: " << flc.theVarName << " to tempSequence: " << tmpSeq.getp() << " varNo: " << varNo;
     PlanIteratorWrapper* piw = dynamic_cast<PlanIteratorWrapper*>(iterState->theTempSeqIters[varNo].getp());
     if (piw != NULL)
-      std::cerr << " iter: " << piw->theIterator << " = " << typeid(*piw->theIterator).name();
+      std::cerr << " iter: " << piw->theIterator->getId() << " = " << piw->theIterator->getClassName();
     else
       std::cerr << " iter: " << iterState->theTempSeqIters[varNo].getp();
     std::cerr << std::endl;

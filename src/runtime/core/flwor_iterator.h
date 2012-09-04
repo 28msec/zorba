@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,7 +55,7 @@ namespace flwor
   theForVarRefs : Vector of ForVarIters representing all references to this FOR
                   var. Each ForVarIter holds the current value of the var (as an
                   Item_t) and its next() method simply returns that value. The
-                  value is computed and stored in the ForVarIter by the 
+                  value is computed and stored in the ForVarIter by the
                   bindValiable() method of the FLWORIterator.
 
   thePosVarRefs : Vector of ForVarIters representing all references to the positional
@@ -66,7 +66,7 @@ namespace flwor
                   "value" of a LET var is acually an iterator I; if the var is
                   materialized, I is an iterator over a temp sequence; otherwise,
                   I is an iterator wrapper over theInput iterator.
-               
+
   theInput      : The iterator producing the domain (if FOR var) or the value (if
                   LET var) of this var.
 
@@ -89,7 +89,7 @@ protected:
   std::vector<PlanIter_t>    theVarRefs;
   std::vector<PlanIter_t>    thePosVarRefs;
   bool                       theDoLazyEval;
-    
+
 public:
   SERIALIZABLE_CLASS(ForLetClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(ForLetClause)
@@ -117,7 +117,7 @@ public:
         bool needsMaterialization);
 
   virtual ~ForLetClause() {}
-          
+
   void accept (PlanIterVisitor&) const;
 
   zstring getVarName() const;
@@ -150,12 +150,12 @@ public:
 class OrderByClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
-  
+
 public:
   QueryLoc               theLocation;
   std::vector<OrderSpec> theOrderSpecs;
   bool                   theStable;
-  
+
 public:
   SERIALIZABLE_CLASS(OrderByClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(OrderByClause)
@@ -177,7 +177,7 @@ public:
 
   void open(const static_context* sctx, PlanState& planState, uint32_t& offset);
 
-  void close(PlanState& planState); 
+  void close(PlanState& planState);
 
   void reset(PlanState& planState);
 };
@@ -227,7 +227,7 @@ public:
 
   void open(const static_context* sctx, PlanState& planState, uint32_t& offset);
 
-  void close(PlanState& planState); 
+  void close(PlanState& planState);
 
   void reset(PlanState& planState);
 };
@@ -253,12 +253,12 @@ class GroupByClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
   friend class PrinterVisitor;
-  
+
 private:
   QueryLoc                     theLocation;
   std::vector<GroupingSpec>    theGroupingSpecs;
   std::vector<NonGroupingSpec> theNonGroupingSpecs;
-    
+
 public:
   SERIALIZABLE_CLASS(GroupByClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(GroupByClause)
@@ -267,7 +267,7 @@ public:
 public:
   GroupByClause(
       const QueryLoc& loc,
-      std::vector<GroupingSpec> aGroupingSpecs, 
+      std::vector<GroupingSpec> aGroupingSpecs,
       std::vector<NonGroupingSpec> aNonGroupingSpecs);
 
   ~GroupByClause() {}
@@ -278,7 +278,7 @@ public:
 
   void open(static_context* sctx, PlanState& planState, uint32_t& offset);
   void reset(PlanState& planState);
-  void close(PlanState& planState); 
+  void close(PlanState& planState);
 };
 
 
@@ -289,53 +289,53 @@ public:
   A vector that stores, for each LET var, if the var is already bound or not,
   and for for each FOR var its positional integer value.
 
-  - theTempSeqs : 
+  - theTempSeqs :
   ---------------
-  For each LET var, this vector stores a handle to a temp seq that will store 
-  the "current" value of the LET var. Note: The size of the vector is equal to 
+  For each LET var, this vector stores a handle to a temp seq that will store
+  the "current" value of the LET var. Note: The size of the vector is equal to
   the total number of FOR/LET variables. The entry at position "pos" corresponds
-  to the variable that, suntactically, appears at position "pos" within the 
-  flwor expr. The entries corresponding to FOR vars are left empty. 
+  to the variable that, suntactically, appears at position "pos" within the
+  flwor expr. The entries corresponding to FOR vars are left empty.
 
-  - theTempSeqIters : 
+  - theTempSeqIters :
   -------------------
-  For each LET var, this vector stores a handle to a PlanIteratorWrapper over 
-  the subplan that computes the domain expr of the LET var. This 
-  PlanIteratorWrapper is given as input to the init() method of the temp seq 
+  For each LET var, this vector stores a handle to a PlanIteratorWrapper over
+  the subplan that computes the domain expr of the LET var. This
+  PlanIteratorWrapper is given as input to the init() method of the temp seq
   corresponding to the same LET var (and stored in theTempSeqs).
 
   - theTuplesTable :
-  ------------------ 
-  The table that materializes the tuple stream before computing the return 
-  clause. This is needed only if  the return expr is a sequential one. 
+  ------------------
+  The table that materializes the tuple stream before computing the return
+  clause. This is needed only if  the return expr is a sequential one.
 
   - theSortTable :
-  ---------------- 
+  ----------------
   The table that materializes the sort tuples in order to sort them. The entries
   of this table are instances of SortTuple (see gflwor/orderby_iterator.h).
 
-  - theResultTable : 
+  - theResultTable :
   ------------------
   If the flwor expr is non-sequential and contains orderby, then for each stream
   tuple, both the sort tuple and the return expr are evaluated and stored before
   the next stream tuple is evaluated. The sort tuple is stored in theSortTable,
-  and the result of the return expr is stored in theResultTable. The result is 
+  and the result of the return expr is stored in theResultTable. The result is
   stored in the form of an iterator over a temp seq that stores the actual result.
 
   - theNumTuples :
-  ---------------- 
+  ----------------
   The number of tuples in theTuplesTable or theSortTable.
 
   - theCurTuplePos :
-  ---------------- 
+  ----------------
   The "current" position inside theTuplesTable or theSortTable. It is used after
-  theTuplesTable or theSortTable has been fully materialized, to iterate over 
+  theTuplesTable or theSortTable has been fully materialized, to iterate over
   the tuples and evaluate and return the results of the return clause for each
-  tuple. 
+  tuple.
 
-  - theOrderResultIter : 
+  - theOrderResultIter :
   ----------------------
-  The iterator I over a temp sequence that stores the result of return clause 
+  The iterator I over a temp sequence that stores the result of return clause
   for the tuple pointed to by theCurTuplePos.
 
   - theGroupMap :
@@ -379,9 +379,9 @@ protected:
 
   ulong                          theCurTuplePos;
 
-  store::Iterator_t              theOrderResultIter; 
+  store::Iterator_t              theOrderResultIter;
 
-  GroupHashMap                 * theGroupMap; 
+  GroupHashMap                 * theGroupMap;
 
   GroupHashMap::iterator         theGroupMapIter;
 
@@ -395,7 +395,7 @@ public:
   ~FlworState();
 
   void init(PlanState& state, const std::vector<ForLetClause>& forletClauses);
-          
+
   void init(
       PlanState& state,
       TypeManager* tm,
@@ -403,13 +403,13 @@ public:
       std::vector<OrderSpec>* orderSpecs,
       const QueryLoc& groupbyLoc,
       std::vector<GroupingSpec>* groupingSpecs);
-  
+
   void reset(PlanState&);
 
 private:
   void clearSortTable();
   void clearGroupMap();
-};  
+};
 
 
 /***************************************************************************//**
@@ -437,8 +437,8 @@ private:
   GroupByClause           * theGroupByClause;
   OrderByClause           * theOrderByClause;
   MaterializeClause       * theMaterializeClause;
-  PlanIter_t                theReturnClause; 
-         
+  PlanIter_t                theReturnClause;
+
 public:
   SERIALIZABLE_CLASS(FLWORIterator);
   SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>);
@@ -454,7 +454,7 @@ public:
       OrderByClause*              orderByClause,
       MaterializeClause*          materializeClause,
       PlanIter_t&                 returnClause);
-    
+
   ~FLWORIterator();
 
   void openImpl(PlanState& planState, uint32_t& offset);
@@ -465,7 +465,7 @@ public:
   uint32_t getStateSize() const;
 
   uint32_t getStateSizeOfSubtree() const;
-  
+
   void accept(PlanIterVisitor&) const;
 
 private:
@@ -477,28 +477,28 @@ private:
   bool evalToBool(
       const PlanIter_t& checkIter,
       PlanState& planState) const;
-    
+
   void materializeStreamTuple(
-      FlworState* flworState, 
+      FlworState* flworState,
       PlanState& planState) const;
 
   void materializeSortTupleAndResult(
       FlworState* flworState,
       PlanState& planState) const;
-  
+
   void materializeGroupTuple(
       FlworState* flworState,
       PlanState& planState) const;
 
   void rebindStreamTuple(
-      ulong tuplePos, 
+      ulong tuplePos,
       FlworState* iterState,
       PlanState& planState) const;
 
   void rebindGroupTuple(
       GroupHashMap::iterator groupMapIter,
       FlworState* flworState,
-      PlanState& planState) const; 
+      PlanState& planState) const;
 
   void rebindGroupTuplesForMaterialize(
       FlworState* iterState,

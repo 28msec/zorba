@@ -25,12 +25,12 @@
 
 namespace zorba
 {
-  
+
 /*******************************************************************************
   Global iterator ID counter, used for debugging purposes. Not really thread safe.
 ********************************************************************************/
-#ifndef NDEBUG    
-static int global_iterator_id_counter = 1000;  
+#ifndef NDEBUG
+static int global_iterator_id_counter = 1000;
 #endif
 
 
@@ -103,9 +103,9 @@ PlanIterator::PlanIterator(zorba::serialization::Archiver& ar)
     theSctx(NULL)
 {
 // Used for debugging purposes
-#ifndef NDEBUG  
-  theId = global_iterator_id_counter++; 
-#endif  
+#ifndef NDEBUG
+  theId = global_iterator_id_counter++;
+#endif
 
 }
 
@@ -116,9 +116,9 @@ PlanIterator::PlanIterator(static_context* aContext, const QueryLoc& aLoc)
     theSctx(aContext)
 {
 // Used for debugging purposes
-#ifndef NDEBUG  
-  theId = global_iterator_id_counter++; 
-#endif  
+#ifndef NDEBUG
+  theId = global_iterator_id_counter++;
+#endif
 }
 
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
@@ -148,27 +148,27 @@ bool PlanIterator::consumeNext(
     const PlanIterator* iter,
     PlanState& planState)
 {
-  if (planState.theHasToQuit) 
+  if (planState.theHasToQuit)
   {
     // std::cout << "Plan interupted" << std::endl;
 
     throw FlowCtlException(FlowCtlException::INTERRUPT);
   }
-  
+
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    std::cout << "next (" << iter->theId << " = " << typeid (*iter).name() << ") -> ?"  
+    std::cout << "next (" << iter->theId << " = " << iter->getClassName() << ") -> ?"
         << " on state: " << (void*)(planState.theBlock + iter->theStateOffset)
         << " (" << (void*)(planState.theBlock) << " + " << (void*)iter->theStateOffset << ")"
         << std::endl;
   }
-  
+
   bool status = iter->produceNext(result, planState);
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
     // std::cout << "next (" << iter << " = " << typeid (*iter).name()
-    std::cout << "next (" << iter->theId << " = " << typeid (*iter).name()
+    std::cout << "next (" << iter->theId << " = " << iter->getClassName()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")

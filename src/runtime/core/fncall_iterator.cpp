@@ -54,6 +54,10 @@
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 
+
+// TODO: decide if it is really needed
+#include "compiler/expression/var_expr.h"
+
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
 
@@ -140,7 +144,7 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
                                planState.theMaxStackDepth);
 
   std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
-      << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << typeid (thePlan.getp()).name() << std::endl;
+      << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << thePlan->getClassName() << std::endl;
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -371,24 +375,50 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
 
   const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
+  std::vector<var_expr_t>::const_iterator argVarsIte = theUDF->getArgVars().begin();
   std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
   std::vector<store::Iterator_t> fnItemWrappers;
   std::vector<PlanIter_t> fnItemVariables;
   if (theIsDynamic)
   {
-    fnItemWrappers = theFunctionItem->getVariableWrappers();
     fnItemVariables = theFunctionItem->getVariables();
+    fnItemWrappers = theFunctionItem->getVariableWrappers();
   }
 
-  for (csize i=0; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte, ++i)
+  for (csize i=0; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte, ++i, ++argVarsIte)
   {
     const ArgVarRefs& argVarRefs = (*argsRefsIte);
 
     if (!argVarRefs.empty())
     {
-      for (csize i=0; i<fnItemVariables.size(); i++)
-        if ((*argsIte) == fnItemVariables[i].getp())
-          (*argWrapsIte) = fnItemWrappers[i];
+      // for (csize j=0; j<fnItemVariables.size(); j++)
+        // if ((*argVarRefs) == fnItemVariables[j].getp())
+        // if (theUDF->getArgVar(i)->get_name == static_cast<LetVarIterator*>(fnItemVariables[j].getp())->)
+      if (theIsDynamic)
+      {
+        std::cerr << "--> UDFunctionCallIterator::openImpl() argsIte: " << (*argsIte)->getId() << " = " << (*argsIte)->getClassName()
+            << " var: " << fnItemVariables[i]->getId() << " = " << fnItemVariables[i]->getClassName()
+            << " wrapper: " << fnItemWrappers[i].getp()->getClassName()
+            << " var: " << theUDF->getArgVars()[i]->toString()
+            << std::endl;
+        // (*argWrapsIte) = fnItemWrappers[i];
+
+        for (csize j=0; j<fnItemVariables.size(); j++)
+        {
+          store::Item* var_qname = NULL;
+          PlanIterator* var_iter = fnItemVariables[j].getp();
+          if (dynamic_cast<LetVarIterator*>(var_iter) != NULL)
+            var_qname = dynamic_cast<LetVarIterator*>(var_iter)->getVarName();
+          else if (dynamic_cast<ForVarIterator*>(var_iter) != NULL)
+            var_qname = dynamic_cast<ForVarIterator*>(var_iter)->getVarName();
+
+          if (theUDF->getArgVars()[i]->get_name()->equals(var_qname))
+          {
+            (*argWrapsIte) = fnItemWrappers[j];
+            // std::cerr << "-->                                    assigned wrapper: " <<
+          }
+        }
+      }
 
       if ((*argWrapsIte) == NULL)
         (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
@@ -468,7 +498,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     if (!lCacheHit)
     {
       const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
-      const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
+      const std::vector<store::Iterator_t>& argWrappers = state->theArgWrappers;
 
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
@@ -483,7 +513,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         }
         else
         {
-          argWrapper = argWraps[i];
+          argWrapper = argWrappers[i];
         }
 
         ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();

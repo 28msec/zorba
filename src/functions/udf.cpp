@@ -115,7 +115,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
     ZORBA_ASSERT(thePlan != NULL);
 
     computeResultCaching(ar.get_ccb()->theXQueryDiagnostics);
-    
+
     if (ar.get_ccb()->theHasEval)
     {
       SourceFinder sourceFinder;
@@ -129,7 +129,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         for (; ite != end; ++ite)
         {
           expr* source = (*ite);
-    
+
           if (source->get_expr_kind() == doc_expr_kind)
           {
             doc_expr* e = static_cast<doc_expr*>(source);
@@ -208,7 +208,7 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-unsigned short user_function::getScriptingKind() const 
+unsigned short user_function::getScriptingKind() const
 {
   // Return the declared scripting kind. If the declared kind is updating/sequential,
   // but the function body is not really updating/sequential, an error/warning is
@@ -302,7 +302,7 @@ bool user_function::isMutuallyRecursiveWith(const user_function* udf)
   assert(isOptimized());
   assert(theBodyExpr != NULL);
 
-  if (std::find(theMutuallyRecursiveUDFs.begin(), 
+  if (std::find(theMutuallyRecursiveUDFs.begin(),
                 theMutuallyRecursiveUDFs.end(),
                 udf) != theMutuallyRecursiveUDFs.end())
     return true;
@@ -396,7 +396,7 @@ void user_function::optimize(CompilerCB* ccb)
 {
   ZORBA_ASSERT(theBodyExpr);
 
-  if (!theIsOptimized && 
+  if (!theIsOptimized &&
       ccb->theConfig.opt_level > CompilerCB::config::O0)
   {
     // Set the Optimized flag in advance to prevent an infinte loop (for
@@ -453,7 +453,7 @@ void user_function::optimize(CompilerCB* ccb)
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::invalidatePlan() 
+void user_function::invalidatePlan()
 {
   thePlan = NULL;
   theArgVarsRefs.clear();
@@ -477,12 +477,13 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
 
     for (csize i = 0; i < numArgs; ++i)
     {
-      std::cerr << "--> argVars: " << theArgVars[i]->toString() 
-                << "    argVarsRefs: " << theArgVarsRefs[i].size();
+      argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
+
+      std::cerr << "--> argVars: " << theArgVars[i]->toString()
+          << "    argVarsRefs: " << theArgVarsRefs[i].size();
       for (csize j=0; j<theArgVarsRefs[i].size(); j++)
         std::cerr << " " << theArgVarsRefs[i][j].getp();
       std::cerr << std::endl;
-      argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
     }
 
     ulong nextVarId = 1;
@@ -495,6 +496,15 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
                              ccb,
                              nextVarId,
                              &argVarToRefsMap);
+
+    for (csize i=0; i<numArgs; ++i)
+    {
+      std::cerr << "--> argVars: " << theArgVars[i]->toString()
+          << "    argVarsRefs: " << theArgVarsRefs[i].size();
+      for (csize j=0; j<theArgVarsRefs[i].size(); j++)
+        std::cerr << " " << theArgVarsRefs[i][j]->getId() << " = " << theArgVarsRefs[i][j]->getClassName() ;
+      std::cerr << std::endl;
+    }
   }
 
   planStateSize = thePlanStateSize;
@@ -561,10 +571,10 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
 {
   if (theCacheComputed)
   {
-    return; 
+    return;
   }
 
-  struct OnExit 
+  struct OnExit
   {
   private:
     bool& theResult;
@@ -597,7 +607,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
   }
 
   // was the %ann:cache annotation given explicitly by the user
-  bool lExplicitCacheRequest = 
+  bool lExplicitCacheRequest =
     (theAnnotationList ?
      theAnnotationList->contains(AnnotationInternal::zann_cache) :
      false);
@@ -685,7 +695,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
     }
     return;
   }
-  
+
 
   // optimization is prerequisite before invoking isRecursive
   if (!lExplicitCacheRequest && isOptimized() && !isRecursive())
