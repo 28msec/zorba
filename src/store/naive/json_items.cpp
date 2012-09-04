@@ -667,6 +667,7 @@ bool SimpleJSONObject::isThisTreeOfAllDescendants(const JSONTree* aTree) const
   }
   return true;
 }
+#endif // NDEBUG
 
 
 /******************************************************************************
@@ -696,7 +697,6 @@ bool SimpleJSONObject::isInSubTree(const StructuredItem* anItem) const
   }
   return false;
 }
-#endif // NDEBUG
 
 
 /******************************************************************************
@@ -1183,6 +1183,8 @@ bool SimpleJSONArray::isThisTreeOfAllDescendants(const JSONTree* aTree) const
 }
 
 
+#endif // NDEBUG
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -1209,8 +1211,6 @@ bool SimpleJSONArray::isInSubTree(const StructuredItem* anItem) const
   }
   return false;
 }
-
-#endif // NDEBUG
 
 
 /******************************************************************************
