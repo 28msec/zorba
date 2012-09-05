@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@ namespace zorba {
  * section "4.1.2. Layout and Byte Order" due to possible padding.
  */
 struct uuid {
-  typedef uint8_t value_type;
+  typedef unsigned char value_type;
   typedef value_type& reference;
   typedef value_type const& const_reference;
   typedef value_type* pointer;
