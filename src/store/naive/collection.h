@@ -103,10 +103,6 @@ public:
 
   void getActiveICs(std::vector<store::IC*>& ics);
 
-  /**************************** Claim of ownership ****************************/
-protected:
-  virtual void claimOwnership(simplestore::XmlTree* aTree);
-  
 }; /* class Collection */
 
 

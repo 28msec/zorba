@@ -26,11 +26,6 @@
 namespace zorba {
 namespace simplestore {
 
-void Collection::claimOwnership(zorba::simplestore::XmlTree* aTree)
-{
-  aTree->claimedByCollection(this);
-}
-
 void Collection::getIndexes(
     const store::Item* name,
     std::vector<store::Index*>& indexes)

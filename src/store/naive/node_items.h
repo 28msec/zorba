@@ -210,15 +210,7 @@ public:
   // Returns 0 if not in a collection.
   ulong getCollectionId() const;
 
-private:
-friend class zorba::simplestore::Collection;
-  // Allows a collection to claim ownership of a node it already owns, but
-  // which does not have the backpointer yet.
-  void claimedByCollection(Collection* coll);
-  
 public:
-  void setCollection(Collection* coll, xs_integer pos);
-
   XmlNode* getRoot() const { return theRootNode; }
 
   void setRoot(XmlNode* root) { theRootNode = root; }
@@ -522,13 +514,7 @@ public:
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
 
-  void setCollection(Collection* coll, xs_integer pos)
-  {
-    assert(!isConnectorNode());
-    getTree()->setCollection(coll, pos);
-  }
-
-  ulong getCollectionId() const 
+  ulong getCollectionId() const
   {
     assert(!isConnectorNode());
     return getTree()->getCollectionId(); 

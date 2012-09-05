@@ -104,31 +104,6 @@ XmlTree::XmlTree(XmlNode* root, const TreeId& id)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::claimedByCollection(Collection* collection)
-{
-  ZORBA_ASSERT(collection != NULL);
-  theTreeInfo->setCollection(collection);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlTree::setCollection(Collection* collection, xs_integer pos)
-{
-  ZORBA_ASSERT(collection == NULL || theTreeInfo->getCollection() == NULL);
-
-  theTreeInfo->setCollection(collection);
-  theTreeInfo->setPosition(pos);
-
-  if (collection != NULL)
-    theTreeInfo->setTreeId(collection->createTreeId());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 ulong XmlTree::getCollectionId() const
 {
   Collection *lCollection = theTreeInfo->getCollection();
@@ -938,7 +913,7 @@ void XmlNode::attachToCollection(
     const TreeId& aTreeId,
     const xs_integer& aPosition)
 {
-  getTree()->claimedByCollection(aCollection);
+  getTree()->getCollectionTreeInfo()->setCollection(aCollection);
   getTree()->getCollectionTreeInfo()->setPosition(aPosition);
   getTree()->getCollectionTreeInfo()->setTreeId(aTreeId);
   getTree()->getCollectionTreeInfo()->setRoot(this);
@@ -949,7 +924,11 @@ void XmlNode::attachToCollection(
 ********************************************************************************/
 void XmlNode::detachFromCollection()
 {
-  setCollection(NULL, xs_integer::zero());
+  TreeId lTreeId;
+  getTree()->getCollectionTreeInfo()->setCollection(NULL);
+  getTree()->getCollectionTreeInfo()->setPosition(xs_integer::zero());
+  getTree()->getCollectionTreeInfo()->setTreeId(lTreeId);
+  getTree()->getCollectionTreeInfo()->setRoot(NULL);
 }
 
 /*******************************************************************************
