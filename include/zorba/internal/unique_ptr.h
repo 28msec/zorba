@@ -26,6 +26,7 @@
 
 #include <algorithm>                    /* for swap() */
 #include "type_traits.h"
+#include "ztd.h"
 
 namespace std {
 
@@ -205,9 +206,7 @@ class unique_ptr {
   typedef typename ZORBA_TR1_NS::add_reference<D const>::type
           deleter_const_reference;
 
-  // see http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html
-  struct pointer_conversion { int valid; };
-  typedef int pointer_conversion::*explicit_bool;
+  typedef zorba::internal::ztd::explicit_bool explicit_bool;
 
 public:
   typedef T element_type;
@@ -408,8 +407,8 @@ public:
    * @return Returns \c true only if the pointer is not null; \c false only if
    * the pointer is null.
    */
-  operator explicit_bool() const throw() {
-    return get() ? &pointer_conversion::valid : 0;
+  operator explicit_bool::type() const throw() {
+    return explicit_bool::value_of( get() );
   }
 
 private:

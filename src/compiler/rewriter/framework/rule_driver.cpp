@@ -58,7 +58,7 @@ bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
     for (rules_t::iterator i = m_rules.begin(); i != end; ++i)
     {
       bool rule_modified = false;
-      expr_t newRoot = (*i)->apply(rCtx, &*rCtx.getRoot(), rule_modified);
+      expr* newRoot = (*i)->apply(rCtx, &*rCtx.getRoot(), rule_modified);
 
       if (newRoot != NULL)
       {
@@ -94,7 +94,7 @@ bool RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
 {
   bool modified = false;
 
-  expr_t newRoot = theRule->apply(rCtx, &*rCtx.getRoot(), modified);
+  expr* newRoot = theRule->apply(rCtx, &*rCtx.getRoot(), modified);
 
   if (newRoot != NULL)
   {

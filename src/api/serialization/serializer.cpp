@@ -1220,11 +1220,12 @@ void serializer::json_emitter::emit_json_string(zstring const &string)
 
 serializer::jsoniq_emitter::jsoniq_emitter(
   serializer* the_serializer,
-  std::ostream& the_stream)
+  std::ostream& the_stream,
+  bool aEmitAttributes)
   :
     emitter(the_serializer, the_stream),
     theEmitterState(JESTATE_UNDETERMINED),
-    theXMLEmitter(new xml_emitter(the_serializer, the_stream)),
+    theXMLEmitter(new xml_emitter(the_serializer, the_stream, aEmitAttributes)),
     theJSONEmitter(new json_emitter(the_serializer, the_stream))
 {
 }
@@ -1360,28 +1361,6 @@ static bool is_html_empty_content_model_element(const store::Item* item)
       ztd::equals(nodename, "link", 4) ||
       ztd::equals(nodename, "meta", 4) ||
       ztd::equals(nodename, "param", 5))
-    return true;
-  else
-    return false;
-}
-
-
-/*******************************************************************************
-  Returns true for those elements which are not allowed under HTML to have
-  empty tags (more exactly they are required to have both opening and closing
-  tags).
-********************************************************************************/
-static bool is_html_no_empty_tags_element(const store::Item* item)
-{
-  if (item == NULL)
-    return false;
-
-  zstring nodename;
-  utf8::to_lower(item->getNodeName()->getStringValue(), &nodename);
-
-  if (ztd::equals(nodename, "script", 6) ||
-      ztd::equals(nodename, "textarea", 8) ||
-      ztd::equals(nodename, "div", 3))
     return true;
   else
     return false;
@@ -1568,27 +1547,17 @@ void serializer::html_emitter::emit_node(
     }
     else
     {
-      // The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
-      // for script, textarea and div tags.
-      if (is_html_no_empty_tags_element(item) ||
-          (ser->include_content_type == PARAMETER_VALUE_YES &&
-           strcasecmp(qname.c_str(), "head") == 0))
+      // The HTML 4.01 and XQuery Serialization specs strongly imply that
+      // ALL empty elements must be serialized as either a matched open-
+      // close tag, or (only for elements with an empty content model) as
+      // an unclosed open tag.
+      if (is_html_empty_content_model_element(item))
       {
         tr << ">";
-        tr << "</" << qname << ">";
       }
       else
       {
-        // The HTML output method MUST NOT output an end-tag for empty elements.
-        // For HTML 4.0, the empty elements are area, base, basefont, br, col,
-        // frame, hr, img, input, isindex, link, meta and param. For example,
-        // an element written as <br/> or <br></br> in an XSLT stylesheet MUST
-        // be output as <br>.
-        if (is_html_empty_content_model_element(item) &&
-            ser->version == PARAMETER_VALUE_VERSION_4_0)
-          tr << ">";
-        else
-          tr << "/>";
+        tr << "></" << qname << ">";
       }
     }
 
@@ -2668,7 +2637,7 @@ bool serializer::setup(std::ostream& os, bool aEmitAttributes)
   else if (method == PARAMETER_VALUE_JSON)
     e = new json_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_JSONIQ)
-    e = new jsoniq_emitter(this, *tr);
+    e = new jsoniq_emitter(this, *tr, aEmitAttributes);
 #endif
   else
   {

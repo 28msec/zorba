@@ -236,17 +236,17 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   IF (NOT ZORBA_WITH_BIG_INTEGER)
     # These test will never pass without big integers beause the integers used
     # in the queries exceed a 63-bit signed integer.
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
   ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
 
   IF(ZORBA_WITH_JSON)
     # These tests fail because of the JSONiq extension which has array constructors.
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 3141592)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 3141592)
+    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 3141592)
+    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 3141592)
   ENDIF(ZORBA_WITH_JSON)
 
   IF (ZORBA_TEST_XQUERYX)
@@ -555,26 +555,9 @@ ENDIF(ZORBA_NO_ICU)
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
 # external variable default expected failures
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-010 900688) # forward references not implemented
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-011 900688) # forward references not implemented -> cycles cannot be detected
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-022 900688) # forward references not implemented
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
-
-# Failing windowing tests.
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling22 899363)
-
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling44 899366)
-
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling14 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling16 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling15 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling18 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
 
 # Failing due to flworfound.org hosting changes.
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)

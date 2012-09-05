@@ -1,11 +1,11 @@
 <html>
   <head>
     <title>Documentation for http://www.w3.org/2005/xpath-functions/math</title>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
     <meta content="public" http-equiv="CACHE-CONTROL" />
     <meta content="-1" http-equiv="Expires" />
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/jquery.treeview.css" />
+    <link rel="stylesheet" href="styles/jquery.treeview.css" type="text/css" />
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="lib/jquery.treeview.js"></script>
@@ -17,23 +17,35 @@
     <link type="text/css" rel="stylesheet" href="styles/shThemeDefault.css" />
     <link type="text/css" rel="stylesheet" href="styles/shThemeXQuery.css" />
     <script type="text/javascript">
-      SyntaxHighlighter.all()
-    </script>
+//
+SyntaxHighlighter.all()
+//
+</script>
     <script type="text/javascript">
-      jQuery(document).ready(function() {
-          $("#documentation").treeview({
-              control: "#treecontrol",
-              animated: "fast",
-              collapsed: true,
-              unique: false,
-              persist: "cookie"
-          });
-        });
-    </script>
-    <script src="http://www.google.com/js/gweb/analytics/autotrack.js"></script>
-    <script>//
-        new gweb.analytics.AutoTrack({profile: 'UA-4281090-1'});
-    //</script>
+//
+jQuery(document).ready(function() {
+$("#documentation").treeview({
+control: "#treecontrol",
+animated: "fast",
+collapsed: true,
+unique: false,
+persist: "cookie"
+});
+});
+//
+</script>
+    <script type="text/javascript" src="http://www.google.com/js/gweb/analytics/autotrack.js"></script>
+    <script type="text/javascript">
+//
+new gweb.analytics.AutoTrack({profile: 'UA-4281090-1'});
+//
+</script>
+    <style type="text/css">
+/**/
+ div.c2 {clear:both;}
+ li.c1 {width:102px !important;}
+/**/
+</style>
   </head>
   <body>
     <div id="header">
@@ -80,10 +92,755 @@
       <div id="leftMenu">
         <div id="treecontrol">
           <a title="Collapse the entire tree below" href="#">
-            <img src="images/minus.gif" /> Collapse All</a>
+            <img src="images/minus.gif" alt="minus" /> Collapse All</a>
           <a title="Expand the entire tree below" href="#">
-            <img src="images/plus.gif" /> Expand All</a>
+            <img src="images/plus.gif" alt="plus" /> Expand All</a>
         </div>
+        <ul id="documentation" class="treeview">
+          <ul>
+            <li>
+              <a href="index.html">All Modules</a>
+            </li>
+            <li>
+              <a href="function_index.html">All Functions</a>
+            </li>
+            <li>
+              <span>www.w3.org</span>
+              <ul>
+                <li>
+                  <span>2005</span>
+                  <ul>
+                    <li>
+                      <a href="www.w3.org_2005_xpath-functions_math.html" title="http://www.w3.org/2005/xpath-functions/math">math</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.w3.org_2005_xpath-functions.html" title="http://www.w3.org/2005/xpath-functions">xpath-functions</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>XDM</span>
+              <ul>
+                <li>
+                  <span>atomic</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_datetime.html" title="http://www.zorba-xquery.com/modules/datetime">datetime</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_math.html" title="http://www.zorba-xquery.com/modules/math">math</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_random.html" title="http://www.zorba-xquery.com/modules/random">random</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_string.html" title="http://www.zorba-xquery.com/modules/string">string</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_uri.html" title="http://www.zorba-xquery.com/modules/uri">uri</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>item</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_schema.html" title="http://www.zorba-xquery.com/modules/schema">schema</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>node</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_node.html" title="http://www.zorba-xquery.com/modules/node">node</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_node-position.html" title="http://www.zorba-xquery.com/modules/node-position">node-position</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_node-reference.html" title="http://www.zorba-xquery.com/modules/node-reference">node-reference</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>store</span>
+              <ul>
+                <li>
+                  <span>collections</span>
+                  <ul>
+                    <li>
+                      <span>dynamic</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_dml.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span>static</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_collections_ddl.html" title="http://www.zorba-xquery.com/modules/store/static/collections/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_collections_dml.html" title="http://www.zorba-xquery.com/modules/store/static/collections/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span>w3c</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml">dml</a>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl">ddl</a>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>data structures</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_store_data-structures_stack.html" title="http://www.zorba-xquery.com/modules/store/data-structures/stack">stack</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_store_data-structures_unordered-map.html" title="http://www.zorba-xquery.com/modules/store/data-structures/unordered-map">unordered-map</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_store_data-structures_queue.html" title="http://www.zorba-xquery.com/modules/store/data-structures/queue">queue</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>documents</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_store_dynamic_documents.html" title="http://www.zorba-xquery.com/modules/store/dynamic/documents">documents</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>indexes</span>
+                  <ul>
+                    <li>
+                      <span>static</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_indexes_ddl.html" title="http://www.zorba-xquery.com/modules/store/static/indexes/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_indexes_dml.html" title="http://www.zorba-xquery.com/modules/store/static/indexes/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>integrity constraints</span>
+                  <ul>
+                    <li>
+                      <span>static</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html" title="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html" title="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>introspection</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_introspection_sctx.html" title="http://www.zorba-xquery.com/modules/introspection/sctx">sctx</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>reflection</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_reflection.html" title="http://www.zorba-xquery.com/modules/reflection">reflection</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>external</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_fetch.html" title="http://www.zorba-xquery.com/modules/fetch">fetch</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_http-client.html" title="http://www.zorba-xquery.com/modules/http-client">http-client</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_process.html" title="http://www.zorba-xquery.com/modules/process">process</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_system.html" title="http://www.zorba-xquery.com/modules/system">system</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>xqdoc</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_xqdoc.html" title="http://www.zorba-xquery.com/modules/xqdoc">xqdoc</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_project_xqdoc.html" title="http://www.zorba-xquery.com/modules/project_xqdoc">project_xqdoc</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <span>xqdoc2xhtml</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xqdoc2xhtml_index.html" title="http://www.zorba-xquery.com/modules/xqdoc2xhtml/">xqdoc2xhtml</a>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xqdoc2xhtml_error.html" title="http://www.zorba-xquery.com/modules/xqdoc2xhtml/error">error</a>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>data processing</span>
+              <ul>
+                <li>
+                  <span>data cleaning</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_character-based-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/character-based-string-similarity">character-based-string-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_consolidation.html" title="http://www.zorba-xquery.com/modules/data-cleaning/consolidation">consolidation</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_conversion.html" title="http://www.zorba-xquery.com/modules/data-cleaning/conversion">conversion</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_hybrid-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/hybrid-string-similarity">hybrid-string-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_normalization.html" title="http://www.zorba-xquery.com/modules/data-cleaning/normalization">normalization</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_phonetic-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/phonetic-string-similarity">phonetic-string-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_set-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/set-similarity">set-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_token-based-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/token-based-string-similarity">token-based-string-similarity</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>data converters</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_base64.html" title="http://www.zorba-xquery.com/modules/converters/base64">base64</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_json.html" title="http://www.zorba-xquery.com/modules/converters/json">json</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xml.html" title="http://www.zorba-xquery.com/modules/xml">xml</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_csv.html" title="http://www.zorba-xquery.com/modules/converters/csv">csv</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_html.html" title="http://www.zorba-xquery.com/modules/converters/html">html</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>programming languages</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_languages_xslt.html" title="http://www.zorba-xquery.com/modules/languages/xslt">xslt</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <span>xquery</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xqxq.html" title="http://www.zorba-xquery.com/modules/xqxq">xqxq</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>excel</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_information.html" title="http://www.zorba-xquery.com/modules/excel/information">information</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_text.html" title="http://www.zorba-xquery.com/modules/excel/text">text</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_statistical-zorba.html" title="http://www.zorba-xquery.com/modules/excel/statistical-zorba">statistical-zorba</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_statistical.html" title="http://www.zorba-xquery.com/modules/excel/statistical">statistical</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_math-sumproduct.html" title="http://www.zorba-xquery.com/modules/excel/math-sumproduct">math-sumproduct</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_math.html" title="http://www.zorba-xquery.com/modules/excel/math">math</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_lookup.html" title="http://www.zorba-xquery.com/modules/excel/lookup">lookup</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_logical.html" title="http://www.zorba-xquery.com/modules/excel/logical">logical</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_engineering.html" title="http://www.zorba-xquery.com/modules/excel/engineering">engineering</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_datetime.html" title="http://www.zorba-xquery.com/modules/excel/datetime">datetime</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>cryptography</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_cryptography_hash.html" title="http://www.zorba-xquery.com/modules/cryptography/hash">hash</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_cryptography_hmac.html" title="http://www.zorba-xquery.com/modules/cryptography/hmac">hmac</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>geo</span>
+              <ul>
+                <li>
+                  <a href="expath.org_ns_geo.html" title="http://expath.org/ns/geo">geo</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_geoproj.html" title="http://www.zorba-xquery.com/modules/geoproj">geoproj</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>image</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_paint.html" title="http://www.zorba-xquery.com/modules/image/paint">paint</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_manipulation.html" title="http://www.zorba-xquery.com/modules/image/manipulation">manipulation</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_graphviz.html" title="http://www.zorba-xquery.com/modules/image/graphviz">graphviz</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_basic.html" title="http://www.zorba-xquery.com/modules/image/basic">basic</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_animation.html" title="http://www.zorba-xquery.com/modules/image/animation">animation</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>OAuth</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_oauth_error.html" title="http://www.zorba-xquery.com/modules/oauth/error">error</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_oauth_client.html" title="http://www.zorba-xquery.com/modules/oauth/client">client</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>expath.org</span>
+              <ul>
+                <li>
+                  <a href="expath.org_ns_http-client.html" title="http://expath.org/ns/http-client">http-client</a>
+                </li>
+                <li>
+                  <a href="expath.org_ns_error.html" title="http://expath.org/ns/error">error</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <span>ns</span>
+                  <ul>
+                    <li>
+                      <a href="expath.org_ns_file.html" title="http://expath.org/ns/file">file</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>www.functx.com</span>
+              <ul>
+                <li>
+                  <a href="www.functx.com_index.html" title="http://www.functx.com/">www.functx.com</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>debugger</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_debugger_dbgp-message-handler.html" title="http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler">dbgp-message-handler</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>error</span>
+              <ul>
+                <li>
+                  <a href="www.jsoniq.org_errors.html" title="http://www.jsoniq.org/errors">errors</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.w3.org_2005_xqt-errors.html" title="http://www.w3.org/2005/xqt-errors">xqt-errors</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_errors.html" title="http://www.zorba-xquery.com/errors">errors</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_warnings.html" title="http://www.zorba-xquery.com/warnings">warnings</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>utils</span>
+              <ul>
+                <li>
+                  <span>util jvm</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_util-jvm.html" title="http://www.zorba-xquery.com/modules/util-jvm">util-jvm</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>www.jsoniq.org</span>
+              <ul>
+                <li>
+                  <a href="www.jsoniq.org_functions.html" title="http://www.jsoniq.org/functions">functions</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>www.zorba-xquery.com</span>
+              <ul>
+                <li>
+                  <span>modules</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_archive.html" title="http://www.zorba-xquery.com/modules/archive">archive</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_full-text.html" title="http://www.zorba-xquery.com/modules/full-text">full-text</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </ul>
       </div>
       <div id="rightcontent">
         <h1>http://www.w3.org/2005/xpath-functions/math<sup>
@@ -134,19 +891,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#acos-1" title="">acos</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#acos-1" title=".">acos</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -154,19 +910,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#asin-1" title="">asin</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#asin-1" title=".">asin</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -174,19 +929,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#atan-1" title="">atan</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#atan-1" title=".">atan</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -194,20 +948,19 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#atan2-2" title="">atan2</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $y</span> as xs:double, 
-<span class="funcParam">            $x</span> as xs:double 
- ) as xs:double external<br />
-                <span class="padding"></span>
+                  <a href="#atan2-2" title=".">atan2</a>
+                </span> (
+            $y as xs:double,
+            $x as xs:double
+) as xs:double<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -215,19 +968,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#cos-1" title="">cos</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $theta</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#cos-1" title=".">cos</a>
+                </span> (
+            $theta as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -235,19 +987,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#exp-1" title="">exp</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#exp-1" title=".">exp</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -255,19 +1006,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#exp10-1" title="">exp10</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#exp10-1" title=".">exp10</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -275,19 +1025,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#log-1" title="">log</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#log-1" title=".">log</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -295,19 +1044,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#log10-1" title="">log10</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#log10-1" title=".">log10</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -315,18 +1063,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#pi-0" title="">pi</a>
-                </span>
-                <span class="functName"></span> (
- ) as xs:double external<br />
-                <span class="padding"></span>
+                  <a href="#pi-0" title=".">pi</a>
+                </span> (
+
+) as xs:double<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -334,20 +1082,19 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#pow-2" title="">pow</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $x</span> as xs:double?, 
-<span class="funcParam">            $y</span> as numeric 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#pow-2" title=".">pow</a>
+                </span> (
+            $x as xs:double?,
+            $y as numeric
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -355,19 +1102,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#sin-1" title="">sin</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $theta</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#sin-1" title=".">sin</a>
+                </span> (
+            $theta as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -375,19 +1121,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#sqrt-1" title="">sqrt</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#sqrt-1" title=".">sqrt</a>
+                </span> (
+            $arg as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -395,19 +1140,18 @@
             <td class="type">
               <span class="no_underline">
                 <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-                  <img src="images/External.gif" />
+                  <img src="images/External.gif" alt="External" />
                 </a>
               </span>
             </td>
             <td>
               <tt>
                 <span class="functName">
-                  <a href="#tan-1" title="">tan</a>
-                </span>
-                <span class="functName"></span> (
-<span class="funcParam">            $theta</span> as xs:double? 
- ) as xs:double? external<br />
-                <span class="padding"></span>
+                  <a href="#tan-1" title=".">tan</a>
+                </span> (
+            $theta as xs:double?
+) as xs:double?<br />
+                <span class="padding">.</span>
               </tt>
             </td>
           </tr>
@@ -418,15 +1162,15 @@
         <div class="subsection" id="acos-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>acos<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:acos<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:acos (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -437,15 +1181,15 @@
         <div class="subsection" id="asin-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>asin<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:asin<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:asin (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -456,15 +1200,15 @@
         <div class="subsection" id="atan-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>atan<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:atan<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:atan (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -475,16 +1219,16 @@
         <div class="subsection" id="atan2-2">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>atan2<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:atan2<span class="functName"></span> (
-<span class="funcParam">            $y</span> as xs:double, 
-<span class="funcParam">            $x</span> as xs:double 
- ) as xs:double external</pre>
+        <pre class="signature">declare function math:atan2 (
+            $y as xs:double,
+            $x as xs:double
+) as xs:double</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -495,15 +1239,15 @@
         <div class="subsection" id="cos-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>cos<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:cos<span class="functName"></span> (
-<span class="funcParam">            $theta</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:cos (
+            $theta as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -514,15 +1258,15 @@
         <div class="subsection" id="exp-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>exp<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:exp<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:exp (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -533,15 +1277,15 @@
         <div class="subsection" id="exp10-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>exp10<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:exp10<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:exp10 (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -552,15 +1296,15 @@
         <div class="subsection" id="log-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>log<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:log<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:log (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -571,15 +1315,15 @@
         <div class="subsection" id="log10-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>log10<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:log10<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:log10 (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -590,14 +1334,15 @@
         <div class="subsection" id="pi-0">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>pi<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:pi<span class="functName"></span> (
- ) as xs:double external</pre>
+        <pre class="signature">declare function math:pi (
+
+) as xs:double</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -608,16 +1353,16 @@
         <div class="subsection" id="pow-2">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>pow<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:pow<span class="functName"></span> (
-<span class="funcParam">            $x</span> as xs:double?, 
-<span class="funcParam">            $y</span> as numeric 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:pow (
+            $x as xs:double?,
+            $y as numeric
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -628,15 +1373,15 @@
         <div class="subsection" id="sin-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>sin<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:sin<span class="functName"></span> (
-<span class="funcParam">            $theta</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:sin (
+            $theta as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -647,15 +1392,15 @@
         <div class="subsection" id="sqrt-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>sqrt<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:sqrt<span class="functName"></span> (
-<span class="funcParam">            $arg</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:sqrt (
+            $arg as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -666,15 +1411,15 @@
         <div class="subsection" id="tan-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
-              <img src="images/External.gif" />
+              <img src="images/External.gif" alt="External" />
             </a>
           </span>tan<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
-        <pre class="signature">declare function math:tan<span class="functName"></span> (
-<span class="funcParam">            $theta</span> as xs:double? 
- ) as xs:double? external</pre>
+        <pre class="signature">declare function math:tan (
+            $theta as xs:double?
+) as xs:double?</pre>
         <p>No description available.</p>
         <div class="subsubsection">See:</div>
         <ul>
@@ -703,7 +1448,9 @@
                 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
             })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        <noscript>
+          <p>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+          </p>
         </noscript>
         <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span>
         </a>

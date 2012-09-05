@@ -38,7 +38,6 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/api/compilercb.h"
-#include "compiler/expression/var_expr.h"
 
 #include "runtime/util/item_iterator.h"
 
@@ -98,9 +97,9 @@ DynamicContextImpl::~DynamicContextImpl()
   tree. The var_expr can be found within the static context that the variable
   belongs to. In the case of a lexical QName, this method will only attempt to
   look up the namespace prefix in the main module's static context. For a clark
-  name, it will call to the other form of get_var_expr().
+  name, it will call to the other form of get_var_info().
 ********************************************************************************/
-var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
+VarInfo* DynamicContextImpl::get_var_info(const zstring& inVarName)
 {
   // First check for universal name.
   zstring nsUri;
@@ -109,7 +108,7 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
     // Looks like it is a universal name; jump over to other form.
     zstring localname;
     xml::clark_localname(inVarName, &localname);
-    return get_var_expr(nsUri, localname);
+    return get_var_info(nsUri, localname);
   }
 
   ZORBA_ASSERT(theStaticContext);
@@ -125,11 +124,9 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
                                  QueryLoc::null);
 
   // Note: lookup_var will return NULL if the variable is not known.
-  var_expr* var = theStaticContext->lookup_var(qnameItem,
-                                               QueryLoc::null,
-                                               zerr::ZXQP0000_NO_ERROR);
+  VarInfo* var = theStaticContext->lookup_var(qnameItem);
 
-  if (var == NULL)
+  if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
     ERROR_PARAMS(BUILD_STRING('{',
@@ -150,33 +147,34 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
   the variable  belongs to. This method will search through all static contexts,
   including library modules, for a matching variable declaration.
 ********************************************************************************/
-var_expr* DynamicContextImpl::get_var_expr(
+VarInfo* DynamicContextImpl::get_var_info(
     const zstring& inVarUri,
     const zstring& inVarLocalName) const
 {
-  var_expr* var = NULL;
-
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, inVarUri, zstring(), inVarLocalName);
+
+  VarInfo* var = NULL;
 
   if (theQuery != NULL)
   {
     CompilerCB::SctxMap& lMap = theQuery->theCompilerCB->theSctxMap;
     CompilerCB::SctxMap::const_iterator ite;
+
     for (ite = lMap.begin(); ite != lMap.end(); ++ite)
     {
-      var = ite->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
+      var = ite->second->lookup_var(qname);
 
       if (var)
-        break;
+        return var;
     }
   }
   else
   {
-    var = theStaticContext->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
+    var = theStaticContext->lookup_var(qname);
   }
 
-  if (var == NULL)
+  if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
     ERROR_PARAMS(BUILD_STRING('{', inVarUri, '}', inVarLocalName ), ZED(Variable)));
@@ -200,13 +198,14 @@ bool DynamicContextImpl::getVariable(
     const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
     const zstring& localName = Unmarshaller::getInternalString(inLocalname);
 
-    var_expr* var = get_var_expr(nameSpace, localName);
-    ulong varId = var->get_unique_id();
+    VarInfo* var = get_var_info(nameSpace, localName);
+
+    ulong varId = var->getId();
 
     store::Item_t item;
     store::TempSeq_t tempseq;
 
-    theCtx->get_variable(varId, var->get_name(), QueryLoc::null, item, tempseq);
+    theCtx->get_variable(varId, var->getName(), QueryLoc::null, item, tempseq);
 
     if (! item.isNull())
     {
@@ -248,11 +247,11 @@ bool DynamicContextImpl::setVariable(
     const zstring& localName = Unmarshaller::getInternalString(inLocalname);
     store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
 
-    var_expr* var;
+    VarInfo* var = NULL;
 
     try
     {
-      var = get_var_expr(nameSpace, localName);
+      var = get_var_info(nameSpace, localName);
     }
     catch (ZorbaException const& e)
     {
@@ -266,7 +265,7 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
-    ulong varId = var->get_unique_id();
+    ulong varId = var->getId();
 
     theCtx->add_variable(varId, value);
 
@@ -292,7 +291,6 @@ bool DynamicContextImpl::setVariable(
     const zstring& varName = Unmarshaller::getInternalString(inVarName);
     store::Item_t value(Unmarshaller::getInternalItem(inValue));
     ZorbaImpl::checkItem(value);
-    var_expr* var;
 
     // For string items, check that the value is a valid Unicode codepoint sequence
     const char* invalid_char;
@@ -305,15 +303,17 @@ bool DynamicContextImpl::setVariable(
         TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
         (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001, 
-      ERROR_PARAMS(zstring("#x") + 
+      throw XQUERY_EXCEPTION(err::FOCH0001,
+      ERROR_PARAMS(zstring("#x") +
       BUILD_STRING(std::uppercase << std::hex
                    << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
     }
 
+    VarInfo* var = NULL;
+
     try
     {
-      var = get_var_expr(varName);
+      var = get_var_info(varName);
     }
     catch (ZorbaException const& e)
     {
@@ -327,7 +327,7 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
-    ulong varId = var->get_unique_id();
+    ulong varId = var->getId();
 
     // add it to the internal context
     theCtx->add_variable(varId, value);
@@ -358,11 +358,12 @@ bool DynamicContextImpl::setVariable(
 
     const zstring& varName = Unmarshaller::getInternalString(inVarName);
     store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
-    var_expr* var;
+
+    VarInfo* var = NULL;
 
     try
     {
-      var = get_var_expr(varName);
+      var = get_var_info(varName);
     }
     catch (ZorbaException const& e)
     {
@@ -376,7 +377,7 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
-    ulong varId = var->get_unique_id();
+    ulong varId = var->getId();
 
     theCtx->add_variable(varId, value);
 
@@ -617,7 +618,7 @@ DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
 /****************************************************************************//**
 
 ********************************************************************************/
-bool 
+bool
 DynamicContextImpl::isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const
 {
   ZORBA_DCTX_TRY
