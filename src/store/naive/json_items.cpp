@@ -212,11 +212,11 @@ SimpleJSONObject::~SimpleJSONObject()
   {
     store::Item* lName = lIter->first;
     store::Item* lChild = lIter->second;
-    if (getCollection() != NULL && lChild->isJSONItem())
+    if (getCollection() != NULL && lChild->isStructuredItem())
     {
-      assert(dynamic_cast<JSONItem*>(lChild));
-      JSONItem* lJSONItem = static_cast<JSONItem*>(lChild);
-      lJSONItem->setCollectionTreeInfo(NULL);
+      assert(dynamic_cast<StructuredItem*>(lChild));
+      StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lChild);
+      lStructuredItem->setCollectionTreeInfo(NULL);
     }
     lName->removeReference();
     lChild->removeReference();
@@ -292,7 +292,7 @@ bool SimpleJSONObject::add(
   {
     store::Item* lValue = aValue.getp();
 
-    if (getCollection() != NULL && (aValue->isJSONItem() || aValue->isNode()))
+    if (getCollection() != NULL && (aValue->isStructuredItem()))
     {
       assert(dynamic_cast<StructuredItem*>(aValue.getp()));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(aValue.getp());
@@ -366,7 +366,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   lKey = thePairs[lPosition].first;
   lValue = thePairs[lPosition].second;
 
-  if (getCollection() != NULL && (lValue->isJSONItem() || lValue->isNode()))
+  if (getCollection() != NULL && (lValue->isStructuredItem()))
   {
     assert(dynamic_cast<StructuredItem*>(lValue.getp()));
     StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lValue.getp());
@@ -421,7 +421,7 @@ store::Item_t SimpleJSONObject::setValue(
 
   if (getCollection() != NULL)
   {
-    if (lOldValue->isJSONItem() || lOldValue->isNode())
+    if (lOldValue->isStructuredItem())
     {
       assert(dynamic_cast<StructuredItem*>(lOldValue.getp()));
       StructuredItem* lStructuredItem =
@@ -429,7 +429,7 @@ store::Item_t SimpleJSONObject::setValue(
       lStructuredItem->setCollectionTreeInfo(NULL);
     }
 
-    if (aValue->isJSONItem() || aValue->isNode())
+    if (aValue->isStructuredItem())
     {
       assert(dynamic_cast<StructuredItem*>(aValue.getp()));
       StructuredItem* lStructuredItem =
@@ -498,7 +498,7 @@ void SimpleJSONObject::setCollectionTreeInfo(CollectionTreeInfo* aTree)
        ++lIter)
   {
     store::Item* lValue = lIter->second;
-    if (lValue->isJSONItem() || lValue->isNode())
+    if (lValue->isStructuredItem())
     {
       assert(dynamic_cast<StructuredItem*>(lValue));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lValue);
@@ -642,7 +642,7 @@ bool SimpleJSONObject::isInSubTree(const StructuredItem* anItem) const
        ++lIter)
   {
     store::Item* lValue = lIter->second;
-    if (lValue->isJSONItem() || lValue->isNode())
+    if (lValue->isStructuredItem())
     {
       const StructuredItem* lStructuredItem =
         dynamic_cast<const StructuredItem*>(lValue);
@@ -737,7 +737,7 @@ SimpleJSONArray::~SimpleJSONArray()
        ++lIter)
   {
     if (getCollection() != NULL &&
-        ((*lIter)->isJSONItem() || (*lIter)->isNode()))
+        ((*lIter)->isStructuredItem()))
     {
       assert(dynamic_cast<StructuredItem*>(*lIter));
       StructuredItem* lStructuredItem =
@@ -756,7 +756,7 @@ void SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
   ASSERT_INVARIANT();
 
-  if (getCollection() != NULL && (aValue->isJSONItem() || aValue->isNode()))
+  if (getCollection() != NULL && (aValue->isStructuredItem()))
   {
     assert(dynamic_cast<StructuredItem*>(aValue.getp()));
     StructuredItem* lStructuredItem =
@@ -805,7 +805,7 @@ void SimpleJSONArray::insert_before(
   ASSERT_INVARIANT();
 
   if (getCollection() != NULL &&
-      (member->isJSONItem() || member->isNode()))
+      (member->isStructuredItem()))
   {
     assert(dynamic_cast<StructuredItem*>(member.getp()));
     StructuredItem* lStructuredItem =
@@ -868,7 +868,7 @@ void SimpleJSONArray::add(
     store::Item* lItem = aNewMembers[i].getp();
 
     if (getCollection() != NULL &&
-        (lItem->isJSONItem() || lItem->isNode()))
+        (lItem->isStructuredItem()))
     {
       assert(dynamic_cast<StructuredItem*>(lItem));
       StructuredItem* lStructuredItem =
@@ -893,7 +893,7 @@ store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
   store::Item_t lItem = getArrayValue(aPos);
 
   if (getCollection() != NULL &&
-      (lItem->isJSONItem() || lItem->isNode()))
+      (lItem->isStructuredItem()))
   {
     assert(dynamic_cast<StructuredItem*>(lItem.getp()));
     StructuredItem* lStructuredItem =
@@ -921,7 +921,7 @@ store::Item_t SimpleJSONArray::replace(
   store::Item_t lItem = getArrayValue(aPos);
 
   if (getCollection() != NULL &&
-      (lItem->isJSONItem() || lItem->isNode()))
+      (lItem->isStructuredItem()))
   {
       assert(dynamic_cast<StructuredItem*>(lItem.getp()));
       StructuredItem* lStructuredItem =
@@ -932,7 +932,7 @@ store::Item_t SimpleJSONArray::replace(
   uint64_t pos = cast(aPos) - 1;
 
   if (getCollection() != NULL &&
-      (value->isJSONItem() || value->isNode()))
+      (value->isStructuredItem()))
   {
     assert(dynamic_cast<StructuredItem*>(value.getp()));
     StructuredItem* lStructuredItem =
@@ -961,7 +961,7 @@ void SimpleJSONArray::setCollectionTreeInfo(CollectionTreeInfo* aTree)
        ++lIter)
   {
     store::Item* lValue = *lIter;
-    if (lValue->isJSONItem() || lValue->isNode())
+    if (lValue->isStructuredItem())
     {
       assert(dynamic_cast<StructuredItem*>(lValue));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lValue);
@@ -1155,7 +1155,7 @@ bool SimpleJSONArray::isInSubTree(const StructuredItem* anItem) const
        ++lIter)
   {
     store::Item* lValue = *lIter;
-    if (lValue->isJSONItem() || lValue->isNode())
+    if (lValue->isStructuredItem())
     {
       const StructuredItem* lStructuredItem =
         dynamic_cast<const StructuredItem*>(lValue);

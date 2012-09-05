@@ -2317,7 +2317,7 @@ void PULImpl::getIndicesToRefresh(
     for (; ite != end; ++ite)
     {
       store::Item* lItem = (*ite).first;
-      ZORBA_ASSERT(lItem->isNode() || lItem->isJSONItem());
+      ZORBA_ASSERT(lItem->isStructuredItem());
 
       assert(dynamic_cast<StructuredItem*>(lItem));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lItem);

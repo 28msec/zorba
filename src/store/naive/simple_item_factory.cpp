@@ -2108,7 +2108,7 @@ bool BasicItemFactory::createJSONArray(
 
     while (source->next(item))
     {
-      if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      if (copymode.theDoCopy && (item->isStructuredItem()))
         item = item->copy(NULL, copymode);
       
       array->push_back(item);

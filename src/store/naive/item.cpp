@@ -273,6 +273,10 @@ bool Item::isFunction() const
   return (theUnion.itemKind == FUNCTION);
 }
 
+bool Item::isStructuredItem() const
+{
+  return this->isNode() || this->isJSONItem();
+}
 
 #ifdef ZORBA_WITH_JSON
 

@@ -206,7 +206,7 @@ JSONObjectProjectIterator::nextImpl(
     {
       value = obj->getObjectValue(key);
 
-      if (value->isNode() || value->isJSONItem())
+      if (value->isStructuredItem())
         value = value->copy(NULL, copymode);
 
       newValues.push_back(value);
@@ -519,7 +519,7 @@ bool JSONObjectInsertIterator::nextImpl(
 
     names[i].transfer(name);
 
-    if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
+    if (theCopyInputs[i] && (value->isStructuredItem()))
       value = value->copy(NULL, copymode);
 
     values[i].transfer(value);
@@ -572,7 +572,7 @@ bool JSONArrayInsertIterator::nextImpl(
 
   while (consumeNext(member, theChildren[2].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -620,7 +620,7 @@ bool JSONArrayAppendIterator::nextImpl(
 
   while (consumeNext(member, theChildren[1].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -745,7 +745,7 @@ bool JSONReplaceValueIterator::nextImpl(
   consumeNext(selector, theChildren[1].getp(), planState);
   consumeNext(newValue, theChildren[2].getp(), planState);
 
-  if (theCopyInput && (newValue->isNode() || newValue->isJSONItem()))
+  if (theCopyInput && (newValue->isStructuredItem()))
   {
     copymode.set(true, 
       theSctx->construction_mode() == StaticContextConsts::cons_preserve,

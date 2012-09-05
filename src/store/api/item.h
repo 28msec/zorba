@@ -176,6 +176,12 @@ public:
 #endif
 
   /**
+   *  @return  "true" if the item is a JSON item or a node
+   */
+  virtual bool 
+  isStructuredItem() const;
+
+  /**
    *  @return  (dynamic) XQuery type of the item
    */
   virtual Item*

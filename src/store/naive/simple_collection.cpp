@@ -94,7 +94,7 @@ store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip)
 ********************************************************************************/
 void SimpleCollection::addNode(store::Item* item, xs_integer position)
 {
-  if (!(item->isNode() || item->isJSONItem()))
+  if (!(item->isStructuredItem()))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
     ERROR_PARAMS(getName()->getStringValue()));
@@ -176,7 +176,7 @@ xs_integer SimpleCollection::addNodes(
   {
     store::Item* item = items[i].getp();
 
-    if (!(item->isNode() || item->isJSONItem()))
+    if (!(item->isStructuredItem()))
     {
       throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
       ERROR_PARAMS(getName()->getStringValue()));
@@ -238,7 +238,7 @@ xs_integer SimpleCollection::addNodes(
 ********************************************************************************/
 bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
 {
-  if (!(item->isNode() || item->isJSONItem()))
+  if (!(item->isStructuredItem()))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
     ERROR_PARAMS(getName()->getStringValue()));
@@ -289,7 +289,7 @@ bool SimpleCollection::removeNode(xs_integer position)
 
     ZORBA_ASSERT(item->getCollection() == this);
 
-    ZORBA_ASSERT(item->isNode() || item->isJSONItem());
+    ZORBA_ASSERT(item->isStructuredItem());
     ZORBA_ASSERT(dynamic_cast<StructuredItem*>(item));
     StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
     lStructuredItem->detachFromCollection();
@@ -333,7 +333,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 
       ZORBA_ASSERT(item->getCollection() == this);
 
-      ZORBA_ASSERT(item->isNode() || item->isJSONItem());
+      ZORBA_ASSERT(item->isStructuredItem());
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
       lStructuredItem->detachFromCollection();
 
@@ -379,7 +379,7 @@ store::Item_t SimpleCollection::nodeAt(xs_integer position)
 ********************************************************************************/
 bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) const
 {
-  if (!(item->isNode() || item->isJSONItem()))
+  if (!(item->isStructuredItem()))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
     ERROR_PARAMS(getName()->getStringValue()));

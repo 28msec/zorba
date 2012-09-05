@@ -998,7 +998,7 @@ void UpdDeleteCollection::apply()
   for (uint64_t i = 0; i < size; ++i)
   {
     store::Item* lItem = collection->nodeAt(xs_integer(i)).getp();
-    assert(lItem->isNode() || lItem->isJSONItem());
+    assert(lItem->isStructuredItem());
     assert(dynamic_cast<StructuredItem*>(lItem));
     StructuredItem* lNode = static_cast<StructuredItem*>(lItem);
     long lRefCount = lNode->getCollectionTreeRefCount();
