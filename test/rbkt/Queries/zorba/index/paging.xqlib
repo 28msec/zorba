@@ -20,17 +20,11 @@ on nodes dml:collection(xs:QName("data:people"))
 by xs:integer(./age/text()) as xs:integer;
 declare variable $data:idx-age-range-val := xs:QName("data:idx-age-range-val");
 
-declare %an:nonunique %an:general-equality %an:automatic index data:idx-age-point-gen
-on nodes dml:collection(xs:QName("data:people"))
-by xs:integer(./age/text()) as xs:integer;
-declare variable $data:idx-age-point-gen := xs:QName("data:idx-age-point-gen");
-
 declare %an:sequential function data:init()
 {
   ddl:create($data:people);
   iddl:create($data:idx-age-point-val);
   iddl:create($data:idx-age-range-val);
-  iddl:create($data:idx-age-point-gen);
   dml:insert($data:people,
     (
       <person><name>Alf</name><age>2</age></person>,
