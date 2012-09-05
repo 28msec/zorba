@@ -20,9 +20,9 @@ declare collection foaf:network as object()*;
   The person index maps each person name with its information.
 :)
 
-declare %ann:unique %ann:automatic index foaf:person
+declare %ann:automatic index foaf:person
 on nodes dml:collection(xs:QName("foaf:network"))
-by .("name")/string(first) as xs:string;
+by .("name")/string(first) as xs:string?;
 
 (:
   Create and populate the collection, and then create the indexes
@@ -39,21 +39,21 @@ declare %ann:sequential function foaf:create-db()
       "gender" : "male",
       "friends" : [ "Mister Spock", "Scotty", "Jean-Luc Picard"]
     },
-    
+
     {
       "name" : <name><first>Jean-Luc</first><last>Picard</last></name>,
       "age" : 40,
       "gender" : "male",
       "friends" : [ "James T. Kirk", "Lieutenant Commander Data", "Beverly Crusher" ]
     },
-    
+
     {
       "name" : <name><first>Beverly</first><last>Crusher</last></name>,
       "age" : 38,
       "gender" : "female",
       "friends" : [ "Jean-Luc Picard", "Ensign Crusher" ]
     },
-    
+
     {
       "name" : <name><grade>Lieutenant Commander</grade><first>Data</first></name>,
       "age" : 100,
@@ -80,4 +80,3 @@ declare function foaf:probe-point-general-id($indexName as xs:QName, $names as x
 {
   index_dml:probe-index-point-general($indexName, $names)
 };
-

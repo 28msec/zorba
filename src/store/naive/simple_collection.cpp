@@ -325,10 +325,8 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       last = theXmlTrees.size();
     }
 
-    xs_integer const &zero = xs_integer::zero();
-
     for (csize i = pos; i < last; ++i)
-    { 
+    {
       store::Item* item = theXmlTrees[pos].getp();
 
       ZORBA_ASSERT(item->getCollection() == this);

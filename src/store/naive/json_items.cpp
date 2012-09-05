@@ -136,7 +136,7 @@ void JSONItem::attachToCollection(
     const xs_integer& aPosition)
 {
   ASSERT_INVARIANT();
-  
+
   assert(aCollection);
 
   // Attach
@@ -645,7 +645,7 @@ bool SimpleJSONObject::isInSubTree(const StructuredItem* anItem) const
     if (lValue->isStructuredItem())
     {
       const StructuredItem* lStructuredItem =
-        dynamic_cast<const StructuredItem*>(lValue);
+        static_cast<const StructuredItem*>(lValue);
       if (lStructuredItem->isInSubTree(anItem))
       {
         return true;
@@ -943,7 +943,7 @@ store::Item_t SimpleJSONArray::replace(
   theContent[pos]->removeReference();
   value->addReference();
   theContent[pos] = value.getp();
-  
+
   ASSERT_INVARIANT();
   return lItem;
 }
@@ -1158,7 +1158,7 @@ bool SimpleJSONArray::isInSubTree(const StructuredItem* anItem) const
     if (lValue->isStructuredItem())
     {
       const StructuredItem* lStructuredItem =
-        dynamic_cast<const StructuredItem*>(lValue);
+        static_cast<const StructuredItem*>(lValue);
       if (lStructuredItem->isInSubTree(anItem))
       {
         return true;
