@@ -6,6 +6,8 @@ New Features:
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the 
     beginning of the XML document (requested in bug #1016606).
+  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq functions. jn:object is
+    also supported.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
