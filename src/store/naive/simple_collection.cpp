@@ -410,7 +410,7 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
     assert(dynamic_cast<const XmlNode*>(item));
     const XmlNode* lNode = static_cast<const XmlNode*>(item);
   
-    position = lNode->getTree()->getPosition();
+    position = lNode->getCollectionTreeInfo()->getPosition();
 
     csize pos = to_xs_unsignedInt(position);
 
@@ -460,9 +460,9 @@ void SimpleCollection::adjustTreePositions()
   {
 #ifdef ZORBA_WITH_JSON
     if (theXmlTrees[i]->isNode())
-      BASE_NODE(theXmlTrees[i])->getTree()->setPosition(xs_integer(i));
+      BASE_NODE(theXmlTrees[i])->getCollectionTreeInfo()->setPosition(xs_integer(i));
 #else
-    BASE_NODE(theXmlTrees[i])->getTree()->setPosition(xs_integer(i));
+    BASE_NODE(theXmlTrees[i])->getCollectionTreeInfo()->setPosition(xs_integer(i));
 #endif
   }
 }

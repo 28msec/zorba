@@ -196,7 +196,8 @@ store::Item_t FragmentXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    uristream << "zorba://internalDocumentURI-"
+              << theTree->getCollectionTreeInfo()->getTreeId();
     theDocUri = uristream.str();
   }
   else
@@ -773,8 +774,8 @@ store::Item_t DtdXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
-
+    uristream << "zorba://internalDocumentURI-"
+              << theTree->getCollectionTreeInfo()->getTreeId();
     theDocUri = uristream.str();
   }
   else

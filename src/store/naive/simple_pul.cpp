@@ -2322,7 +2322,7 @@ void PULImpl::getIndicesToRefresh(
       assert(dynamic_cast<StructuredItem*>(lItem));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lItem);
       pul->theModifiedDocs.insert(const_cast<StructuredItem*>(
-          lStructuredItem->getStructuredItemRoot()));
+          lStructuredItem->getCollectionTreeInfo()->getRoot()));
       continue;
     }
 

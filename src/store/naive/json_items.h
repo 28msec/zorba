@@ -27,6 +27,7 @@
 #include "store/api/iterator.h"
 
 #include "atomic_items.h"
+#include "collection_tree_info.h"
 #include "simple_collection.h"
 #include "structured_item.h"
 
@@ -88,64 +89,17 @@ public:
 
 *******************************************************************************/
 
-class JSONTree
-{
-private:
-  simplestore::Collection * theCollection;
-  TreeId                    theId;
-  JSONItem                * theRoot;
-
-public:
-  JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
-  {}
-
-  simplestore::Collection* getCollection() const
-  {
-    return theCollection;
-  }
-
-  void setCollection(simplestore::Collection* aCollection)
-  {
-    theCollection = aCollection;
-  }
-
-  const TreeId& getTreeId() const
-  {
-    return theId;
-  }
-
-  void setTreeId(const TreeId& aId)
-  {
-    theId = aId;
-  }
-
-  JSONItem* getRoot() const
-  {
-    return theRoot;
-  }
-
-  void setRoot(JSONItem* aRoot)
-  {
-    theRoot = aRoot;
-  }
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-
 class JSONItem : public StructuredItem
 {
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  JSONTree  * theTree;
+  CollectionTreeInfo * theTreeInfo;
 
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : StructuredItem(store::Item::JSONIQ), theTree(NULL) {}
+  JSONItem() : StructuredItem(store::Item::JSONIQ), theTreeInfo(NULL) {}
 
   virtual ~JSONItem();
   
@@ -154,31 +108,24 @@ public:
   virtual void destroy();
 
   const simplestore::Collection* getCollection() const;
-
-  virtual void setTree(JSONTree* aTree) = 0;
-
-  JSONTree* getTree() const
-  {
-    return theTree;
-  }
-
-  // Only to be called if in a collection.
-  const TreeId& getTreeId() const;
-
-  // Only to be called if in a collection.
-  virtual void setStructuredItemRoot(StructuredItem* aRoot);
   
-  // Only to be called if in a collection.
-  virtual StructuredItem* getStructuredItemRoot() const;
-  
-  virtual long getStructuredItemRefCount() const;
-  
+  // StructuredItem API
+
   void attachToCollection(
       Collection* aCollection,
       const TreeId& aTreeId,
       const xs_integer& aPosition);
 
   void detachFromCollection();
+  
+  CollectionTreeInfo* getCollectionTreeInfo() const
+  {
+    return theTreeInfo;
+  }
+
+  virtual void setCollectionTreeInfo(CollectionTreeInfo* aTree) = 0;
+
+  virtual long getCollectionTreeRefCount() const;
   
   // store API
 
@@ -194,7 +141,8 @@ public:
 #ifndef NDEBUG
   virtual void assertInvariant() const;
 
-  virtual bool isThisTreeOfAllDescendants(const JSONTree* aTree) const = 0;
+  virtual bool isThisTreeOfAllDescendants(
+      const CollectionTreeInfo* aTree) const = 0;
 #endif
 };
 
@@ -320,10 +268,9 @@ public:
       const store::Item_t& aName,
       const store::Item_t& aNewName);
 
-  // root management
-  void setTree(JSONTree* aTree);
-
   // StructuredItem API
+
+  void setCollectionTreeInfo(CollectionTreeInfo* aTree);
 
   bool isInSubTree(const StructuredItem* aJSONItem) const;
 
@@ -331,7 +278,7 @@ public:
 #ifndef NDEBUG
   void assertInvariant() const;
   
-  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
+  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* aTree) const;
 #endif
 };
 
@@ -476,11 +423,10 @@ public:
   virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
 
-  // root management
-  void setTree(JSONTree* aTree);
-
   // StructuredItem API
   
+  void setCollectionTreeInfo(CollectionTreeInfo* aTree);
+
   bool isInSubTree(const StructuredItem* aJSONItem) const;
 
 protected:
@@ -491,7 +437,7 @@ protected:
   // Invariant handling
 public:
 #ifndef NDEBUG
-  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
+  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* aTree) const;
 #endif
 };
 

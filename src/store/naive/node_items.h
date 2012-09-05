@@ -32,6 +32,7 @@
 #include "tree_id.h"
 #include "simple_store.h"
 #include "structured_item.h"
+#include "collection_tree_info.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -162,15 +163,12 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  TreeId                    theId;
-  xs_integer                thePos;
-
-  Collection              * theCollection;
+  // Contains pointer to collection, tree ID, position,
+  // pointer to absolute root.
+  CollectionTreeInfo*       theTreeInfo;
 
   // Topmost XML ancestor (root of the XML tree).
   XmlNode                 * theRootNode;
-  // Topmost ancestor (XML = theRootNode, or JSON)
-  StructuredItem          * theStructuredItemRoot;
 
 #ifdef DATAGUIDE
   GuideNode               * theDataGuideRootNode;
@@ -204,14 +202,22 @@ public:
   long& getRefCount()      { return theRefCount; }
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+  
+  CollectionTreeInfo* getCollectionTreeInfo() { return theTreeInfo; }
 
-  void setId(const TreeId& id) { theId = id; }
+  void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
+  {
+    delete theTreeInfo;
+    if (lTreeInfo != NULL)
+    {
+      theTreeInfo = lTreeInfo;
+    } else {
+      theTreeInfo = new CollectionTreeInfo();
+    }
+  }
 
-  const TreeId& getId() const { return theId; }
-
+  // Returns 0 if not in a collection.
   ulong getCollectionId() const;
-
-  const Collection* getCollection() const { return theCollection; }
 
 private:
 friend class zorba::simplestore::Collection;
@@ -222,21 +228,9 @@ friend class zorba::simplestore::Collection;
 public:
   void setCollection(Collection* coll, xs_integer pos);
 
-  void setPosition(xs_integer pos) { thePos = pos; }
-
-  xs_integer getPosition() const { return thePos; }
-
   XmlNode* getRoot() const { return theRootNode; }
 
   void setRoot(XmlNode* root) { theRootNode = root; }
-
-  StructuredItem* getStructuredItemRoot() const
-  { return theStructuredItemRoot; }
-
-  void setStructuredItemRoot(StructuredItem* root)
-  {
-    theStructuredItemRoot = root;
-  }
 
   bool isValidated() const { return theIsValidated; }
 
@@ -440,7 +434,12 @@ public:
   const store::Collection* getCollection() const
   {
     assert(!isConnectorNode());
-    return reinterpret_cast<const store::Collection*>(getTree()->getCollection());
+    CollectionTreeInfo* lInfo = getTree()->getCollectionTreeInfo();
+    if (lInfo == NULL)
+    {
+      return NULL;
+    }
+    return reinterpret_cast<const store::Collection*>(lInfo->getCollection());
   }
 
   virtual void getDocumentURI(zstring& uri) const
@@ -510,7 +509,24 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  const TreeId& getTreeId() const { return getTree()->getId(); }
+  const TreeId& getTreeId() const {
+    static TreeId lId;
+    CollectionTreeInfo* lInfo = getTree()->getCollectionTreeInfo();
+    if (lInfo == NULL)
+    {
+      return lId;
+    }
+    return lInfo->getTreeId();
+  }
+  
+  const xs_integer& getPosition() const {
+    CollectionTreeInfo* lInfo = getTree()->getCollectionTreeInfo();
+    if (lInfo == NULL)
+    {
+      return xs_integer::zero();
+    }
+    return lInfo->getPosition();
+  }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
@@ -587,11 +603,11 @@ public:
 
   virtual void detachFromCollection();
 
-  virtual void setStructuredItemRoot(StructuredItem* aRoot);
+  virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
 
-  virtual StructuredItem* getStructuredItemRoot() const;
+  virtual CollectionTreeInfo* getCollectionTreeInfo() const;
 
-  virtual long getStructuredItemRefCount() const;
+  virtual long getCollectionTreeRefCount() const;
 
   virtual bool isInSubTree(const StructuredItem* anotherItem) const;
 };
@@ -1655,8 +1671,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      xs_integer pos1 = this->getTree()->getPosition();
-      xs_integer pos2 = other->getTree()->getPosition();
+      xs_integer pos1 = this->getPosition();
+      xs_integer pos2 = other->getPosition();
 
       if (pos1 < pos2)
         return -1;

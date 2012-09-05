@@ -1001,7 +1001,7 @@ void UpdDeleteCollection::apply()
     assert(lItem->isNode() || lItem->isJSONItem());
     assert(dynamic_cast<StructuredItem*>(lItem));
     StructuredItem* lNode = static_cast<StructuredItem*>(lItem);
-    long lRefCount = lNode->getStructuredItemRefCount();
+    long lRefCount = lNode->getCollectionTreeRefCount();
 
     if (lRefCount > 1)
     {

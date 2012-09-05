@@ -18,6 +18,9 @@
 #define ZORBA_SIMPLE_STORE_STRUCTURED_ITEMS
 
 #include "store/api/item.h"
+
+#include "collection_tree_info.h"
+
 namespace zorba
 {
 namespace simplestore
@@ -34,19 +37,28 @@ public:
   StructuredItem()
   : Item()
   {}
+  
+  // Attaches a root to a collection (populates collection info).
   virtual void attachToCollection(
       simplestore::Collection* aCollection,
       const TreeId& aTreeId,
       const xs_integer& aPosition) = 0;
 
+  // Detaches a root from a collection (populates collection info).
   virtual void detachFromCollection() = 0;
-
-  virtual void setStructuredItemRoot(StructuredItem* aRoot) = 0;
-
-  virtual StructuredItem* getStructuredItemRoot() const = 0;
-
-  virtual long getStructuredItemRefCount() const = 0;
   
+  // Propagates collection tree info to descendants
+  // (not to be called on a root - use functions above if root).
+  virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo) = 0;
+
+  // Accesses collection tree info for any structured item in a tree.
+  virtual CollectionTreeInfo* getCollectionTreeInfo() const = 0;
+
+  // Returns total number of outstanding pointers to the tree (for garbage
+  // collection purposes).
+  virtual long getCollectionTreeRefCount() const = 0;
+  
+  // Tells if supplied item is in the subtree starting at this item.
   virtual bool isInSubTree(const StructuredItem* anotherItem) const = 0;
   
 };
