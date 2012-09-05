@@ -205,16 +205,7 @@ public:
   
   CollectionTreeInfo* getCollectionTreeInfo() { return theTreeInfo; }
 
-  void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
-  {
-    delete theTreeInfo;
-    if (lTreeInfo != NULL)
-    {
-      theTreeInfo = lTreeInfo;
-    } else {
-      theTreeInfo = new CollectionTreeInfo();
-    }
-  }
+  void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
 
   // Returns 0 if not in a collection.
   ulong getCollectionId() const;

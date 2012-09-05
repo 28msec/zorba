@@ -146,7 +146,13 @@ void XmlTree::destroy() throw()
 {
   // std::cout << "Deleting Xml Tree: " << this << std::endl;
 
-  delete theTreeInfo;
+  // Only delete if not in a collection, or if it is the overall root.
+  if (theTreeInfo != NULL &&
+      (theTreeInfo->getCollection() == NULL ||
+       theTreeInfo->getRoot() == static_cast<StructuredItem*>(getRoot())))
+  {
+    delete theTreeInfo;
+  }
 
   if (theRootNode != 0)
   {
@@ -280,6 +286,27 @@ void XmlTree::copyTypesMap(const XmlTree* source)
     theTypesMap->insert(ite.getKey(), type);
   }
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
+{
+  // Only delete if not in a collection, or if it is the overall root.
+  if (theTreeInfo != NULL &&
+      (theTreeInfo->getCollection() == NULL ||
+       theTreeInfo->getRoot() == static_cast<StructuredItem*>(getRoot())))
+  {
+    delete theTreeInfo;
+  }
+  if (lTreeInfo != NULL)
+  {
+    theTreeInfo = lTreeInfo;
+  } else {
+    theTreeInfo = new CollectionTreeInfo();
+  }
+}
+
 
 
 #endif // #ifndef EMBEDED_TYPE
