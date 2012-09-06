@@ -21,4 +21,3 @@ declare %ann:sequential function local:test()
 };
 
 local:test()
-

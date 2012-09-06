@@ -634,20 +634,24 @@ dml:collection($name as xs:QName, $skip as xs:integer) as item()* external;
 (:~
  : The collection function returns the sequence of nodes and/or json items
  : that belong to the collection identified by the given name.
+ : The parameters $start and $skip can be used to skip over some items at
+ : the beginning of the collection. If both are given, both are applied:
+ : first $start to skip to the referenced item and then $skip to skip an
+ : additional number of items.
  :
  : @param $name The name of the collection.
- : @param $start The reference to first node to return. All nodes before
-                 are skipped (order is implementation dependent).
- : @param $skip The number of collection items to skip. Might be negative to
-                navigate relative from $start (order is
-                implementation dependent).
+ : @param $start A reference to the first item to return. All items before
+                 are skipped.
+ : @param $skip The number of collection items to skip.
  :
  : @return The sequence contained in the given collection.
  :
+ : @error zerr:ZAPI0028 If the given URI is not a valid node
+ :        position computed by the <tt>np:node-position</tt> function. 
  : @error zerr:ZDDY0003 If available collections does not provide a mapping
  :        for the expanded QName $name.
- : @error zerr:ZSTR0066 if the passed reference $start doesn't reference
- :                      a not from the collection identified by $name.
+ : @error zerr:ZSTR0066 If the passed reference $start does not reference
+ :        a node from the collection identified by $name.
  :
  :)
 declare function

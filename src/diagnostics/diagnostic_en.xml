@@ -2427,7 +2427,7 @@
     </diagnostic>
 
     <diagnostic code="ZSTR0066" name="REFERENCED_NODE_NOT_IN_COLLECTION">
-      <value>Node reference $1 doesn't reference a node in collection $2.</value>
+      <value>$1: does not reference a node in collection $2.</value>
     </diagnostic>
 
     <!--////////// XQuery Scripting ////////////////////////////////////////-->
