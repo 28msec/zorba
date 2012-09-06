@@ -61,8 +61,8 @@ static bool is_subseq_pred(
     const flwor_expr*,
     csize whereClausePos,
     const expr*,
-    var_expr**,
-    expr**);
+    var_expr*&,
+    expr*&);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
@@ -1233,15 +1233,13 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     }
   }
 
-  expr* posExpr = NULL;
-  var_expr* posVar = NULL;
-
   // '... for $x at $p in E ... where $p = posExpr ... return ...' -->
   // '... for $x in fn:subsequence(E, posExpr, 1) ... return ...
   // TODO ??: we should be able to apply the rule, even if the pos var is
   // referenced more than once?
   // TODO: we should be able to apply the rule if all the sequential clauses
   // are before the clause that defines the pos var.
+  // TODO: apply the rule if where expr consists of multiple preds in CNF.
   // TODO: It should also consider cases for inequalites, so in the case of
   // where $p < posExpr -> for $x in fn:subsequence(E, 1, posExpr - 1) and
   // where $p > posExpr -> for $x in fn:subsequence(E, posExpr + 1) in the
@@ -1259,7 +1257,10 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
       expr* whereExpr = clause->get_expr();
 
-      if (is_subseq_pred(rCtx, flwor, clausePos, whereExpr, &posVar, &posExpr) &&
+      expr* posExpr = NULL;
+      var_expr* posVar = NULL;
+
+      if (is_subseq_pred(rCtx, flwor, clausePos, whereExpr, posVar, posExpr) &&
           expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
       {
         for_clause* forClause = posVar->get_for_clause();
@@ -1274,7 +1275,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
         expr_tools::fix_annotations(result);
 
-        forClause->set_expr(&*result);
+        forClause->set_expr(result);
         forClause->set_pos_var(NULL);
 
         flwor->remove_clause(clausePos);
@@ -1316,29 +1317,28 @@ static bool is_subseq_pred(
     RewriterContext& rCtx,
     const flwor_expr* flworExpr,
     const csize whereClausePos,
-    const expr* condExpr,
-    var_expr** posVar,
-    expr** posExpr)
+    const expr* predExpr,
+    var_expr*& posVar,
+    expr*& posExpr)
 {
-  static_context* sctx = condExpr->get_sctx();
+  static_context* sctx = predExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
-  const QueryLoc& posLoc = (*posExpr)->get_loc();
 
-  const fo_expr* foCondExpr = NULL;
+  const fo_expr* foPredExpr = NULL;
   const function* f;
 
   while (true)
   {
-    if (condExpr->get_expr_kind() != fo_expr_kind)
+    if (predExpr->get_expr_kind() != fo_expr_kind)
       return false;
 
-    foCondExpr = static_cast<const fo_expr*>(condExpr);
-    f = foCondExpr->get_func();
+    foPredExpr = static_cast<const fo_expr*>(predExpr);
+    f = foPredExpr->get_func();
 
     if (f->getKind() == FunctionConsts::FN_BOOLEAN_1)
     {
-      condExpr = foCondExpr->get_arg(0);
+      predExpr = foPredExpr->get_arg(0);
       continue;
     }
 
@@ -1351,76 +1351,73 @@ static bool is_subseq_pred(
 
   for (csize i = 0; i < 2; ++i)
   {
-    *posVar = const_cast<var_expr*>(foCondExpr->get_arg(i)->get_var());
-    *posExpr = foCondExpr->get_arg(1 - i);
+    posVar = const_cast<var_expr*>(foPredExpr->get_arg(i)->get_var());
+    posExpr = foPredExpr->get_arg(1 - i);
 
-    if (*posVar != NULL && (*posVar)->get_kind() == var_expr::pos_var)
+    if (posVar == NULL || posVar->get_kind() != var_expr::pos_var)
+      continue;
+
+    for_clause* forClause = posVar->get_for_clause();
+
+    if (forClause->is_allowing_empty())
+      return false;
+
+    // We check that there isn't any clause that breaks the optimization
+    const flwor_clause* checkClause;
+    csize checkClausePos = whereClausePos - 1;
+    do
     {
-      for_clause* forClause = (*posVar)->get_for_clause();
+      checkClause = flworExpr->get_clause(checkClausePos);
 
-      if (forClause->is_allowing_empty())
+      if (checkClause->get_kind() == flwor_clause::group_clause ||
+          checkClause->get_kind() == flwor_clause::count_clause)
         return false;
 
-      // We check that there isn't any clause that breaks the optimization
-      const flwor_clause* checkClause;
-      csize checkClausePos = whereClausePos;
-      do
+      --checkClausePos;
+    }
+    while (checkClause != forClause);
+
+    if (posExpr->get_expr_kind() == const_expr_kind)
+    {
+      const_expr* posConstExpr = static_cast<const_expr*>(posExpr);
+      const store::Item* val = posConstExpr->get_val();
+
+      store::SchemaTypeCode valType = val->getTypeCode();
+
+      if (TypeOps::is_subtype(valType, store::XS_INTEGER))
+        return true;
+     }
+    else
+    {
+      xqtref_t posExprType = posExpr->get_return_type();
+      
+      if (TypeOps::is_subtype(tm,
+                              *posExprType,
+                              *rtm.INTEGER_TYPE_QUESTION,
+                              posExpr->get_loc()))
       {
-        checkClause = flworExpr->get_clause(checkClausePos);
+        VarIdMap varidMap;
+        ulong numFlworVars = 0;
+        expr_tools::index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
+        
+        DynamicBitset varset(numFlworVars);
+        ExprVarsMap exprVarMap;
+        expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
+        
+        var_expr* forVar = forClause->get_var();
+        ulong forVarId = varidMap[forVar];
 
-        if (checkClause->get_kind() == flwor_clause::group_clause ||
-            checkClause->get_kind() == flwor_clause::count_clause)
-          return false;
+        std::vector<ulong> posExprVarIds;
+        exprVarMap[posExpr].getSet(posExprVarIds);
 
-        --checkClausePos;
-      }
-      while (checkClause != forClause);
-
-      if ((*posExpr)->get_expr_kind() == const_expr_kind)
-      {
-        const_expr* posConstExpr = static_cast<const_expr*>(*posExpr);
-        const store::Item* val = posConstExpr->get_val();
-
-        xqtref_t valType = tm->create_named_type(val->getType(),
-                                                 TypeConstants::QUANT_ONE,
-                                                 posLoc,
-                                                 err::XPTY0004);
-
-        if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
-            val->getIntegerValue() >= 1)
+        csize numPosExprVars = posExprVarIds.size();
+        for (csize i = 0; i < numPosExprVars; ++i)
         {
-          return true;
+          if (posExprVarIds[i] >= forVarId)
+            return false;
         }
-      }
-      else if (!flworExpr->has_sequential_clauses())
-      {
-        xqtref_t posExprType = (*posExpr)->get_return_type();
-
-        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION, posLoc))
-        {
-          VarIdMap varidMap;
-          ulong numFlworVars = 0;
-          expr_tools::index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
-
-          DynamicBitset varset(numFlworVars);
-          ExprVarsMap exprVarMap;
-          expr_tools::build_expr_to_vars_map(*posExpr, varidMap, varset, exprVarMap);
-
-          var_expr* forVar = forClause->get_var();
-          ulong forVarId = varidMap[forVar];
-
-          std::vector<ulong> posExprVarIds;
-          exprVarMap[*posExpr].getSet(posExprVarIds);
-
-          csize numPosExprVars = posExprVarIds.size();
-          for (csize i = 0; i < numPosExprVars; ++i)
-          {
-            if (posExprVarIds[i] >= forVarId)
-              return false;
-          }
-
-          return true;
-        }
+        
+        return true;
       }
     }
   }
