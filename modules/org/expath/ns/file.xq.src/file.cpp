@@ -605,7 +605,7 @@ LastModifiedFunction::evaluate(
     time_t lTime = lFile->lastModified();
     // result of localtime needs to be copied.
     // Otherwise, nasty side effecs do happen
-    struct tm lT = *localtime(&lTime); 
+    struct tm lT(*localtime(&lTime));
     int gmtOffset = LastModifiedFunction::getGmtOffset();
 
     return ItemSequence_t(new SingletonItemSequence(
