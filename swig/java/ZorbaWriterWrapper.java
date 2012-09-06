@@ -38,7 +38,7 @@ public class ZorbaWriterWrapper extends org.zorbaxquery.api.ZorbaIOStream {
   }
 
   @Override
-  public void write(byte[] stream){
+  public void write(byte[] stream, long aLen){
         try {
             int offset = 0;
             int bufferLength = 0;

@@ -49,7 +49,7 @@ public:
 
   // OUTPUT
   // Write sequence of characters <Inherited>
-  virtual std::streamsize xsputn ( const char * str, std::streamsize len );
+  virtual std::streamsize xsputn ( const char * BYTE, std::streamsize len );
   // Write character in the case of overflow
   virtual int overflow ( int c = EOF );
   

@@ -31,11 +31,11 @@ void ZorbaIOStream::fillStreamCallback()
   char* p=buffer;
   for (int i=0; i<(len); i++, *p++ = 'Z')
     ;
-  setStream(buffer, len, len);
+  setStream(buffer, len);
   return;
 }
 
-void ZorbaIOStream::setStream(const char aStream[], size_t aLen, int aBufferLength)
+void ZorbaIOStream::setStream(const char *aStream, size_t aLen, int aBufferLength)
 {
   if (aBufferLength<0) aBufferLength=0;
   if (aBufferLength > 0)
@@ -44,11 +44,11 @@ void ZorbaIOStream::setStream(const char aStream[], size_t aLen, int aBufferLeng
   return;
 }
 
-void ZorbaIOStream::setStream(const char * aStream, size_t aLen)
+void ZorbaIOStream::setStream(const char *BYTE, size_t aLen)
 {
   if (aLen<0) aLen=0;
   if (aLen > 0)
-    memcpy(buffer, aStream, aLen*sizeof(char));
+    memcpy(buffer, BYTE, aLen*sizeof(char));
   len = aLen;
   return;
 }
@@ -63,7 +63,7 @@ int ZorbaIOStream::getLen()
   return len;
 }
 
-void ZorbaIOStream::write(const char aStream[], size_t aLen)
+void ZorbaIOStream::write(const char *BYTE, size_t aLen)
 {
   return;
 }

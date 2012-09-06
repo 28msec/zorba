@@ -32,13 +32,13 @@ public:
 
   //STREAM TO ZORBA
   virtual void fillStreamCallback();
-  void setStream(const char aStream[], size_t aLen, int aBufferLength);
-  void setStream(const char * aStream, size_t aLen);
+  void setStream(const char *BYTE, size_t aLen);
+  void setStream(const char *aStream, size_t aLen, int aBufferLength);
   char * getStream();
   int getLen();
   
   //STREAM FROM ZORBA
-  virtual void write(const char aStream[], size_t aLen);
+  virtual void write(const char *BYTE, size_t aLen);
   
 private:
   //FOR STREAM TO ZORBA

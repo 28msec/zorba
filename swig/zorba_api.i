@@ -20,7 +20,7 @@
 
 TSRMLS_FETCH();
 
-%include "std_string.i"
+//%include "std_string.i"
 %include "std_pair.i"
 %include "exception.i"
 %include "carrays.i"

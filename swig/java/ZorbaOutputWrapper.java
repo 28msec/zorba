@@ -26,7 +26,7 @@ public class ZorbaOutputWrapper extends ZorbaIOStream {
   }
   
   @Override
-  public void write(byte[] stream){
+  public void write(byte[] stream, long aLen){
         try {
             output.write(stream);
         } catch (IOException ex) {
