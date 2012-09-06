@@ -197,6 +197,8 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
     if (result->isStreamable())
     {
       state->theFragmentStream.theStream = &result->getStream();
+      state->theFragmentStream.setStreamReleaser(result->getStreamReleaser());
+      result->setStreamReleaser(nullptr);
     }
     else
     {
