@@ -2,9 +2,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/testGetExtVarA"
   FILE "testGetExtVarA.xq" TEST_ONLY)  
 DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/testGetExtVarB"
   FILE "testGetExtVarB.xq" TEST_ONLY)
-  
+
 #belongs to test external_function.cpp
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod2.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod2.xq)
@@ -97,7 +97,7 @@ SET(UNIT_TESTS_SRCS
   xquery_functions.cpp
   xmldatamanager.cpp
   staticcollectionmanager.cpp
-  static_context.cpp
+  test_static_context.cpp
 )
 
 # multithread_simple.cpp
@@ -144,7 +144,10 @@ ENDIF (NOT WIN32)
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
 ZORBA_ADD_TEST("test/libunit/json_parser" LibUnitTest json_parser)
-ZORBA_ADD_TEST("test/libunit/unique_ptr" LibUnitTest unique_ptr)
+#ZORBA_ADD_TEST("test/libunit/memory_manager" LibUnitTest memory_manager)
+IF (NOT ZORBA_HAVE_UNIQUE_PTR)
+  ZORBA_ADD_TEST("test/libunit/unique_ptr" LibUnitTest unique_ptr)
+ENDIF (NOT ZORBA_HAVE_UNIQUE_PTR)
 IF (NOT ZORBA_NO_FULL_TEXT)
   ZORBA_ADD_TEST("test/libunit/stemmer" LibUnitTest stemmer)
   ZORBA_ADD_TEST("test/libunit/thesaurus" LibUnitTest thesaurus)

@@ -36,7 +36,12 @@ class CountCollectionIterator : public NaryBaseIterator<CountCollectionIterator,
                                                         PlanIteratorState>
 {
 public:
-  enum CollectionType { W3C = 0, ZORBASTATIC = 1, ZORBADYNAMIC = 2 };
+  enum CollectionType 
+  { 
+    W3C = 0,
+    ZORBASTATIC = 1,
+    ZORBADYNAMIC = 2 
+  };
 
 protected:
   CollectionType theCollectionType;
@@ -60,7 +65,7 @@ public:
 
   bool isZorbaCollection() const { return W3C != theCollectionType; }
 
-  bool isDynamicCollection() const { return ZORBADYNAMIC == theCollectionType; }
+  bool isDynamic() const { return ZORBADYNAMIC == theCollectionType; }
 
   void accept(PlanIterVisitor& v) const;
 

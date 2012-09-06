@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,18 +26,16 @@
 
 #include "system/properties.h"
 
-#include "functions/udf.h"
-
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
 
-SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
+SERIALIZABLE_CLASS_VERSIONS_2(CompilerCB::config, TYPE_CompilerCB_config)
 
 
 #define DEF_PRINT_EXPR_TREE( phase )                                    \
@@ -82,7 +80,7 @@ CompilerCB::config::config()
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::config::config(::zorba::serialization::Archiver& ar) 
+CompilerCB::config::config(::zorba::serialization::Archiver& ar)
   :
   parse_cb(NULL),
   translate_cb(NULL),
@@ -114,20 +112,25 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(0),
 #endif
+  theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
   theIsSequential(false),
+  theHaveTimeout(false),
   theTimeout(timeout),
   theTempIndexCounter(0)
 {
-  theLocalUdfs = new rclist<user_function*>;
+  theEM = new ExprManager(this);
+
+  if (timeout >= 0)
+    theHaveTimeout = true;
 }
 
 
 /*******************************************************************************
   Used by the eval iterator to create a new ccb as a copy of the ccb of the
-  enclosing query. 
+  enclosing query.
 *******************************************************************************/
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
@@ -137,15 +140,17 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(cb.theDebuggerCommons),
 #endif
+  theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
   theIsUpdating(false),
   theIsSequential(false),
+  theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
   theConfig(cb.theConfig)
 {
-  theLocalUdfs = new rclist<user_function*>;
+  theEM = new ExprManager(this);
 }
 
 
@@ -160,40 +165,20 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(NULL),
 #endif
+  theHasEval(false),
   theIsEval(false)
 {
+  theEM = new ExprManager(this);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::~CompilerCB() 
+CompilerCB::~CompilerCB()
 {
-}
-
-
-/*******************************************************************************
-  Compile all the user_functions so the expr tree is stable at serialize.
-
-  Called from XQueryImpl::serialize(), if serializing out.
-********************************************************************************/
-void CompilerCB::prepare_for_serialize()
-{
-  rclist<user_function*>::iterator udf_it;
-  for (udf_it = theLocalUdfs->begin(); udf_it != theLocalUdfs->end(); udf_it++)
-  {
-    (*udf_it)->prepare_for_serialize(this);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
-{
-  return theLocalUdfs;
+  delete theEM;
+  theSctxMap.clear();
 }
 
 
@@ -202,6 +187,9 @@ rchandle<rclist<user_function*> >  CompilerCB::get_local_udfs()
 ********************************************************************************/
 void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
+  ar.set_ccb(this);
+
+  ar & theHasEval;
   ar & theIsEval;
   ar & theIsLoadProlog;
   ar & theIsUpdating;
@@ -210,12 +198,13 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   ar & theDebuggerCommons;
 #endif
-  if (!ar.is_serializing_out()) 
+  if (!ar.is_serializing_out())
   {
     //don't serialize this
     theXQueryDiagnostics = NULL;
   }
   ar & theConfig;
+  ar & theHaveTimeout;
   ar & theTimeout;
   ar & theTempIndexCounter;
 }
@@ -233,6 +222,6 @@ static_context* CompilerCB::getStaticContext(int c)
   return lIter->second.getp();
 }
 
-  
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

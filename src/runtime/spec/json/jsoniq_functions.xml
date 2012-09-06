@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONParseIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true" generateCodegen="false">
+    <zorba:signature localname="parse-json" prefix="fn-jsoniq">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>json-item()?</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="QueryLoc" name="aRelativeLocation" />
+  </zorba:constructor>
+
+  <zorba:member type="QueryLoc" name="theRelativeLocation" />
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONObjectNamesIterator" arity="unary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="keys" prefix="fn-jsoniq">
+      <zorba:param>object()</zorba:param>
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes value="false"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
+  </zorba:state>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONObjectValueIterator" arity="binary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="value" prefix="fn-jsoniq">
+      <zorba:param>object()</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>item()?</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONObjectProjectIterator" arity="binary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="project" prefix="fn-jsoniq">
+      <zorba:param>object()</zorba:param>
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>object()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONArraySizeIterator" arity="unary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+    <zorba:signature localname="size" prefix="fn-jsoniq">
+      <zorba:param>array()</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes value="false"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONArrayMemberIterator" arity="binary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="member" prefix="fn-jsoniq">
+      <zorba:param>array()</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>item()?</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONArrayMembersIterator" arity="unary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="members" prefix="fn-jsoniq">
+      <zorba:param>array()</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="theMembers" brief=""/>
+  </zorba:state>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONArrayFlattenIterator" arity="unary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:description author="Zorba Team">
+    jsoniq:flatten function
+  </zorba:description>
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="flatten" prefix="fn-jsoniq">
+      <zorba:param>array()</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes value="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state generateReset="false">
+    <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack" brief=""/>
+  </zorba:state>
+    
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONItemAccessorIterator" arity="binary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="json-item-accessor" prefix="op-zorba">
+      <zorba:param>json-item()</zorba:param>
+      <zorba:param>xs:anyAtomicType</zorba:param>
+      <zorba:output>item()?</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONNullIterator" arity="noary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:function isDeterministic="true">
+    <zorba:signature localname="null" prefix="fn-jsoniq">
+      <zorba:output>jdm:null</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+<zorba:iterator name="JSONObjectInsertIterator" arity="nary"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+  <zorba:description author="Zorba Team">
+      internal function
+  </zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="object-insert" prefix="op-zorba" variadic="true">
+      <zorba:param>object()</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="copyInput" />
+  </zorba:constructor>
+
+  <zorba:member type="std::vector&lt;bool&gt;" name="theCopyInputs" />
+
+</zorba:iterator>
+-->
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONArrayInsertIterator"
+                arity="nary"
+                preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+    <zorba:description author="Zorba Team">
+      internal function 
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="json-array-insert" prefix="op-zorba">
+        <zorba:param>array()</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONDeleteIterator"
+                arity="nary"
+                preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+    <zorba:description author="Zorba Team">
+      json:delete-member
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="json-delete" prefix="op-zorba">
+        <zorba:param>json-item()</zorba:param>
+        <zorba:param>xs:anyAtomicType</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONReplaceValueIterator" arity="nary"
+                preprocessorGuard="#ifdef ZORBA_WITH_JSON"
+                generateConstructor="false">
+
+    <zorba:description author="Zorba Team">
+      internal function
+    </zorba:description>
+
+    <zorba:function generateCodegen="false">
+
+      <zorba:signature localname="json-replace-value" prefix="op-zorba">
+        <zorba:param>json-item()</zorba:param>
+        <zorba:param>xs:anyAtomicType</zorba:param>
+        <zorba:param>item()</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes/>
+      </zorba:methods>
+
+    </zorba:function>
+
+  <zorba:constructor generate="false">
+    <zorba:parameter type="bool" name="copyInput" />
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theCopyInput" />
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONRenameIterator" 
+                arity="nary"
+                preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+    <zorba:description author="Zorba Team">
+      
+    </zorba:description>
+      internal function
+    <zorba:function>
+
+      <zorba:signature localname="json-rename" prefix="op-zorba">
+        <zorba:param>object()</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="JSONArrayAppendIterator"
+                  arity="nary"
+                  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+    
+    <zorba:description author="Zorba Team">
+      internal function 
+    </zorba:description>
+    
+    <zorba:function>
+      
+      <zorba:signature localname="json-array-append" prefix="op-zorba">
+        <zorba:param>array()</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+      
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes/>
+      </zorba:methods>
+      
+    </zorba:function>
+    
+  </zorba:iterator>
+
+</zorba:iterators>

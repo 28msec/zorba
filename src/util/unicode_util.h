@@ -93,7 +93,7 @@ typedef zstring string;
 ////////// code-point checking ////////////////////////////////////////////////
 
 /**
- * Test whether the given character is invalid in an IRI.
+ * Checks whether the given character is invalid in an IRI.
  *
  * @param c The character.
  * @return Returns \c true only if the character is invalid in an IRI.
@@ -102,7 +102,7 @@ typedef zstring string;
 bool is_invalid_in_iri( code_point c );
 
 /**
- * Test whether the given character is a "iprivate".
+ * Checks whether the given character is a "iprivate".
  *
  * @param c The character.
  * @return Returns \c true only if the character is a "iprivate".
@@ -111,7 +111,7 @@ bool is_invalid_in_iri( code_point c );
 bool is_iprivate( code_point c );
 
 /**
- * Unicode version is isspace(3).
+ * Unicode version of isspace(3).
  *
  * @param c The code-point to check.
  * @return Returns \c true only if \a c is a whitespace character.
@@ -127,7 +127,7 @@ inline bool is_space( code_point c ) {
 }
 
 /**
- * Test whether the given character is a "ucschar".
+ * Checks whether the given character is a "ucschar".
  *
  * @param c The character.
  * @return Returns \c true only if the character is a "ucschar".
@@ -302,6 +302,71 @@ inline bool to_string( wchar_t const *in, string *out ) {
 template<class StringType>
 inline bool to_string( StringType const &in, string *out ) {
   return to_string( in.data(), static_cast<size_type>( in.size() ), out );
+}
+
+////////// UTF-16 surrogate pairs /////////////////////////////////////////////
+
+/**
+ * Converts the given high and low surrogate values into the code-point they
+ * represent.  Note that no checking is done on the parameters.
+ *
+ * @param high The high surrogate value.
+ * @param low The low surrogate value.
+ * @return Returns the represented code-point.
+ * @see is_high_surrogate()
+ * @see is_low_surrogate()
+ */
+inline code_point convert_surrogate( unsigned high, unsigned low ) {
+  return 0x10000 + ((high - 0xD800) << 10) + (low - 0xDC00);
+}
+
+/**
+ * Converts the given code-point into the high and low surrogate values that
+ * represent it.  Note that no checking is done on the parameters.
+ *
+ * @tparam ResultType The integer type for the results.
+ * @param c The code-point to convert.
+ * @param high A pointer to where to put the high surrogate.
+ * @param low A pointer to where to put the low surrogate.
+ */
+template<typename ResultType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<ResultType>::value,
+                        void>::type
+convert_surrogate( code_point c, ResultType *high, ResultType *low ) {
+  code_point const n = c - 0x10000;
+  *high = 0xD800 + (static_cast<unsigned>(n) >> 10);
+  *low  = 0xDC00 + (n & 0x3FF);
+}
+
+/**
+ * Checks whether the given value is a "high surrogate."
+ *
+ * @param n The value to check.
+ * @return Returns \c true only if \a n is a high surrogate.
+ */
+inline bool is_high_surrogate( unsigned long n ) {
+  return n >= 0xD800 && n <= 0xDBFF;
+}
+
+/**
+ * Checks whether the given value is a "low surrogate."
+ *
+ * @param n The value to check.
+ * @return Returns \c true only if \a n is a low surrogate.
+ */
+inline bool is_low_surrogate( unsigned long n ) {
+  return n >= 0xDC00 && n <= 0xDFFF;
+}
+
+/**
+ * Checks whether the given code-point is in the "supplementary plane" and
+ * therefore would need a surrogate pair to be encoded in UTF-16.
+ *
+ * @param c The code-point to check.
+ * @return Returns \c true only if \a c is within the supplementary plane.
+ */
+inline bool is_supplementary_plane( code_point c ) {
+  return c >= 0x10000 && c <= 0x10FFFF;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

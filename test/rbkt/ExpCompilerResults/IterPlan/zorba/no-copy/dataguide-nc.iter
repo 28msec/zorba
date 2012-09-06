@@ -35,9 +35,6 @@ Iterator tree for main query:
   <CtxVarDeclareIterator varid="2" varname="co">
     <SingletonIterator value="xs:integer(0)"/>
   </CtxVarDeclareIterator>
-  <TreatIterator type="xs:integer" quant="">
-    <CtxVarIterator varid="2" varname="co" varkind="global"/>
-  </TreatIterator>
   <CtxVarDeclareIterator varid="3" varname="map1">
     <SingletonIterator value="xs:QName(,,map-co)"/>
   </CtxVarDeclareIterator>
@@ -53,9 +50,6 @@ Iterator tree for main query:
       </ChildAxisIterator>
     </ChildAxisIterator>
   </CtxVarDeclareIterator>
-  <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-    <CtxVarIterator varid="5" varname="input" varkind="global"/>
-  </TreatIterator>
   <SequentialIterator>
     <ApplyIterator>
       <MapCreateIterator>

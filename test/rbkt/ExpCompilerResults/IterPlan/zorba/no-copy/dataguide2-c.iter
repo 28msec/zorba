@@ -16,9 +16,6 @@ Iterator tree for main query:
       </ChildAxisIterator>
     </ChildAxisIterator>
   </CtxVarDeclareIterator>
-  <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-    <CtxVarIterator varid="2" varname="input" varkind="global"/>
-  </TreatIterator>
   <UDFunctionCallIterator>
     <TreatIterator quant="+">
       <CtxVarIterator varid="2" varname="input" varkind="global"/>

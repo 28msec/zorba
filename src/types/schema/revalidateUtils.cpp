@@ -200,7 +200,7 @@ void SchemaValidatorImpl::processElement(
   if ( !typeQName->equals(element->getType()) )
   {
     isNewType = true;
-    newType = typeManager->create_named_type(typeQName);
+    newType = typeManager->create_named_type(typeQName, TypeConstants::QUANT_ONE, loc);
 
     elm = element;
   }
@@ -496,7 +496,8 @@ void SchemaValidatorImpl::processTextValue (
     const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_atomic_type(typeQName,
-                                                        TypeConstants::QUANT_ONE);
+                                                        TypeConstants::QUANT_ONE,
+                                                        loc);
   //cout << " vup        - processTextValue: '" << textValue->c_str() << "'\n";
   //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
   // << ":" << typeQName->getLocalName()->str() << "@"
@@ -579,7 +580,7 @@ store::Item_t SchemaValidatorImpl::findAttributeItem(const store::Item *parent,
 }
   
 bool SchemaValidatorImpl::isPossibleSimpleContentRevalidation(
-    store::Item *typeQName)
+    store::Item* typeQName)
 {
   TypeManager* typeManager = theSctx->get_typemanager();
   
@@ -603,7 +604,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
 {
   if ( schemaType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
   {
-    if (schemaType->is_builtin())
+    if (schemaType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
       store::SchemaTypeCode schemaTypeCode = 
           TypeOps::get_atomic_type_code(*schemaType);

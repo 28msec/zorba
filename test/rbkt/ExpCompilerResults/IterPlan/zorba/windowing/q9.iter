@@ -1,3 +1,10 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="2" varname="seq">
@@ -12,64 +19,70 @@ Iterator tree for main query:
         <flwor::GroupByIterator>
           <flwor::LetIterator>
             <LetVariable name="workingTime" materialize="true"/>
-            <flwor::WindowIterator>
-              <WindowVariable name="w">
-                <NodeSortIterator distinct="true" ascending="true">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
-                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
-                      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                        <CtxVarIterator varid="2" varname="seq" varkind="global"/>
-                      </TreatIterator>
+            <flwor::LetIterator>
+              <LetVariable name="person" materialize="true"/>
+              <flwor::WindowIterator>
+                <WindowVariable name="w">
+                  <NodeSortIterator distinct="true" ascending="true">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
+                        <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                          <CtxVarIterator varid="2" varname="seq" varkind="global"/>
+                        </TreatIterator>
+                      </ChildAxisIterator>
                     </ChildAxisIterator>
-                  </ChildAxisIterator>
-                </NodeSortIterator>
-              </WindowVariable>
-              <WinCondVariable name="start-CurrentIn"/>
-              <WinCondVariable name="start-CurrentInCurrentOut"/>
-              <FnBooleanIterator>
-                <CompareIterator>
-                  <PromoteIterator type="xs:anyAtomicType">
-                    <FnDataIterator>
-                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="s"/>
-                      </ChildAxisIterator>
-                    </FnDataIterator>
-                  </PromoteIterator>
-                  <SingletonIterator value="xs:string(in)"/>
-                </CompareIterator>
-              </FnBooleanIterator>
-              <WinCondVariable name="end-CurrentIn"/>
-              <WinCondVariable name="end-CurrentInCurrentOut"/>
-              <AndIterator>
-                <CompareIterator>
-                  <PromoteIterator type="xs:anyAtomicType">
-                    <FnDataIterator>
-                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="s"/>
-                      </ChildAxisIterator>
-                    </FnDataIterator>
-                  </PromoteIterator>
-                  <PromoteIterator type="xs:anyAtomicType">
-                    <FnDataIterator>
-                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="e"/>
-                      </ChildAxisIterator>
-                    </FnDataIterator>
-                  </PromoteIterator>
-                </CompareIterator>
-                <CompareIterator>
-                  <PromoteIterator type="xs:anyAtomicType">
-                    <FnDataIterator>
-                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="e"/>
-                      </ChildAxisIterator>
-                    </FnDataIterator>
-                  </PromoteIterator>
-                  <SingletonIterator value="xs:string(out)"/>
-                </CompareIterator>
-              </AndIterator>
-              <flwor::TupleSourceIterator/>
-            </flwor::WindowIterator>
+                  </NodeSortIterator>
+                </WindowVariable>
+                <WinCondVariable name="start-CurrentIn"/>
+                <WinCondVariable name="start-CurrentInCurrentOut"/>
+                <FnBooleanIterator>
+                  <CompareIterator>
+                    <PromoteIterator type="xs:anyAtomicType">
+                      <FnDataIterator>
+                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="s"/>
+                        </ChildAxisIterator>
+                      </FnDataIterator>
+                    </PromoteIterator>
+                    <SingletonIterator value="xs:string(in)"/>
+                  </CompareIterator>
+                </FnBooleanIterator>
+                <WinCondVariable name="end-CurrentIn"/>
+                <WinCondVariable name="end-CurrentInCurrentOut"/>
+                <AndIterator>
+                  <CompareIterator>
+                    <PromoteIterator type="xs:anyAtomicType">
+                      <FnDataIterator>
+                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="s"/>
+                        </ChildAxisIterator>
+                      </FnDataIterator>
+                    </PromoteIterator>
+                    <PromoteIterator type="xs:anyAtomicType">
+                      <FnDataIterator>
+                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="e"/>
+                        </ChildAxisIterator>
+                      </FnDataIterator>
+                    </PromoteIterator>
+                  </CompareIterator>
+                  <CompareIterator>
+                    <PromoteIterator type="xs:anyAtomicType">
+                      <FnDataIterator>
+                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="e"/>
+                        </ChildAxisIterator>
+                      </FnDataIterator>
+                    </PromoteIterator>
+                    <SingletonIterator value="xs:string(out)"/>
+                  </CompareIterator>
+                </AndIterator>
+                <flwor::TupleSourceIterator/>
+              </flwor::WindowIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                <ForVarIterator varname="s"/>
+              </ChildAxisIterator>
+            </flwor::LetIterator>
             <GenericArithIterator_SubtractOperation>
               <CastIterator type="xs:dateTime">
                 <FnDataIterator>
@@ -88,25 +101,17 @@ Iterator tree for main query:
             </GenericArithIterator_SubtractOperation>
           </flwor::LetIterator>
           <Spec>
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-              <ForVarIterator varname="s"/>
-            </ChildAxisIterator>
+            <FnDataIterator>
+              <LetVarIterator varname="person"/>
+            </FnDataIterator>
             <GroupVariable/>
           </Spec>
           <Spec>
-            <ForVarIterator varname="e"/>
-            <NonGroupVariable/>
-          </Spec>
-          <Spec>
-            <ForVarIterator varname="s"/>
+            <LetVarIterator varname="person"/>
             <NonGroupVariable/>
           </Spec>
           <Spec>
             <LetVarIterator varname="workingTime"/>
-            <NonGroupVariable/>
-          </Spec>
-          <Spec>
-            <LetVarIterator varname="w"/>
             <NonGroupVariable/>
           </Spec>
         </flwor::GroupByIterator>
@@ -114,7 +119,7 @@ Iterator tree for main query:
           <SingletonIterator value="xs:QName(,,working-time)"/>
           <FnConcatIterator>
             <EnclosedIterator attr_cont="false">
-              <ForVarIterator varname="person"/>
+              <LetVarIterator varname="person" targetPos="1"/>
             </EnclosedIterator>
             <ElementIterator>
               <SingletonIterator value="xs:QName(,,time)"/>

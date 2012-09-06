@@ -313,36 +313,36 @@ void GroupByIterator::resetImpl(PlanState& planState) const
 ********************************************************************************/
 bool GroupByIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
-  GroupByState* lState;
-  DEFAULT_STACK_INIT(GroupByState, lState, aPlanState);
+  GroupByState* state;
+  DEFAULT_STACK_INIT(GroupByState, state, aPlanState);
 
   while (consumeNext(aResult, theTupleIter, aPlanState)) 
   {
     try 
     {
-      matVarsAndGroupBy(lState, aPlanState);
+      matVarsAndGroupBy(state, aPlanState);
     }
-    catch (XQueryException& lError)
+    catch (XQueryException& error)
     {
-      set_source( lError, loc );
+      set_source(error, loc);
       throw;
     }
   }
 
-  if (!lState->theGroupMap->empty()) 
+  if (!state->theGroupMap->empty()) 
   {
-    lState->theGroupMapIter = lState->theGroupMap->begin();
-    while(lState->theGroupMapIter != lState->theGroupMap->end())
+    state->theGroupMapIter = state->theGroupMap->begin();
+    while(state->theGroupMapIter != state->theGroupMap->end())
     {
-      bindGroupBy(lState->theGroupMapIter, lState, aPlanState);
+      bindGroupBy(state->theGroupMapIter, state, aPlanState);
 
-      ++lState->theGroupMapIter;
+      ++state->theGroupMapIter;
 
-      STACK_PUSH(true, lState);
+      STACK_PUSH(true, state);
     }
   }
 
-  STACK_END(lState);
+  STACK_END(state);
 }
   
 

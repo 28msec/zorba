@@ -2,7 +2,84 @@ Zorba - The XQuery Processor
 
 version 2.7
 
-  * Implemented latest W3C soec for group by clause
+New Features:
+  * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
+  * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the 
+    beginning of the XML document (requested in bug #1016606).
+
+Optimizations:
+  * New memory management for compiler expressions (no more ref counting)
+
+Bug Fixes/Other Changes:
+  * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
+  * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
+  * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
+    variables)
+  * Fixed bug #899366 (enforce the type declaration of a window variable)
+  * Now using native UUID libraries.
+  * Fixed bug #1024892 (index declaration references udf declared after the index)
+  * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
+  * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
+  * Fixed bug #1042840 (qname pool free-list corruption)
+  * Fixed bug #866984 (better error message for an eval error)
+  * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
+	
+version 2.6
+
+New Features:
+  * Include first-class support for JSON data by implementing the JSONiq spec
+  - see http://www.jsoniq.org/ for more information. This feature is enabled by default.
+  * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local)
+  * New function Item::isSeekable for streamable content (xs:string and xs:base64Binary)
+  * Implemented the latest W3C specification for the group by clause (backwards incompatible)
+  * New ft:tokenize-nodes() function to full-text module
+  * New XQuery 3.0 function fn:parse-xml-fragment#1
+  * New ItemFactory function that allows creating dateTime items without timezone
+  * Added support for transient maps to the
+    http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
+  * Added support for fragments to fn:path
+  * Positional pagination support for collections
+  * http://www.zorba-xquery.com/modules/archive module for creating,
+    reading, and updating various (compressed) archives (e.g. zip, tar.gz,
+    or tar.bz2)
+  * Incremental maintenance for general indexes
+  * New function in the http://www.zorba-xquery.com/modules/store/static/indexes/dml
+    module which returns the value of all keys contained in an index
+
+Optimizations:
+  * Optimization of comparison operations
+  * Tighter hoisting of expressions (also fixes bug #967428)
+  * Optimized hash sets used by fn:distinct-values and nodes-distinct
+  * Optimized hash function used for nodes (also fixes bug #1010051)
+  * Rewrite of plan serializer internals, resulting in big performance improvement
+  * Avoid treat expr for checking that the value of a non-external
+    global variable conforms to the type declaration of the variable
+  * Streaming execution for tumbling windows (also fixes bug #1010051)
+
+Bug Fixes/Other Changes:
+  * Fixed bug #1025622 (Incorrect JSON serialization of supplementary plane code points)
+  * Fixed bug #1016606 (DOCTYPE in the input of the parse-fragment function)
+  * Fixed bug #1002993 (bug during revalidation after update; improper condition
+    for calling TypeOps::get_atomic_type_code() from
+    SchemaValidatorImpl::isPossibleSimpleContentRevalImpl())
+  * Fixed bug #867357 (Improved parser error messages)
+  * Fixed bug #1026379 ("q" flag for fn:replace() is ignored)
+  * Fixed bug #932314 (non-comparable values must be treated as distinct by
+    fn:distinct-values)
+  * Fixed bug #1015580 (Add base64_streambuf / replace inefficient base64 code)
+  * Fixed bug #1022557 (subsequence function applied on window variable)
+  * Fixed bug #9910884 (raise XUST0001 in trycatch with mixed updating and simple clauses)
+  * Fixed bug #854506 (ugly type error messages) and partial fix for bug #867008
+  * Fixed bug #1008082 (bug in transform expr when a copy var is not used anywhere)
+  * Fixed bug #898066 (Stringstream & fn:trace)
+  * Fixed numbering of items in fn:trace starts with one
+  * Fixed bug #1003023$ (optimizer problems due to common subexpression after
+    var folding into if-then-else)
+  * Fixed bug #1006166 (disabling 2 functions with the same qname)
+  * Fixed bug #960083 (improper error handling of NaN comparisons)
+  * Fixed bug #878508 (JsonML serialization not escaping characters)
+  * The XML plan serialization format is not supported anymore
+
 
 version 2.5
 
@@ -151,6 +228,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #951772 (Comment node crashes serialization)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
 
+	
 version 2.1
 
 New Features:

@@ -36,17 +36,19 @@ Iterator tree for main query:
         </FnConcatIterator>
       </flwor::ForIterator>
       <Spec>
-        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill allowed="0">
-          <ForVarIterator varname="x"/>
-        </AttributeAxisIterator>
+        <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill allowed="0">
+            <ForVarIterator varname="x"/>
+          </AttributeAxisIterator>
+        </FnDataIterator>
         <GroupVariable/>
       </Spec>
       <Spec>
-        <ForVarIterator varname="p"/>
+        <ForVarIterator varname="x"/>
         <NonGroupVariable/>
       </Spec>
       <Spec>
-        <ForVarIterator varname="x"/>
+        <ForVarIterator varname="p"/>
         <NonGroupVariable/>
       </Spec>
     </flwor::GroupByIterator>

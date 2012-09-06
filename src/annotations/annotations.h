@@ -22,7 +22,7 @@
 
 #include "common/shared_types.h"
 
-#include "compiler/parsetree/parsenodes.h"
+//#include "compiler/parsetree/parsenodes.h"
 
 #include "zorbautils/hashmap_itemh.h"
 
@@ -107,11 +107,11 @@ public:
   static store::Item* lookup(AnnotationId id);
 
 public:
-  AnnotationInternal(const store::Item_t& qname); 
+  AnnotationInternal(const store::Item_t& qname);
 
   AnnotationInternal(
     const store::Item_t& qname,
-    std::vector<store::Item_t>& literals); 
+    std::vector<store::Item_t>& literals);
 
 public:
   SERIALIZABLE_CLASS(AnnotationInternal);
@@ -158,7 +158,7 @@ public:
 public:
   AnnotationList();
 
-	~AnnotationList();
+  ~AnnotationList();
 
   csize size() const { return theAnnotationList.size(); }
 
@@ -170,7 +170,7 @@ public:
 
   void push_back(
       const store::Item_t& qname,
-      const std::vector<rchandle<const_expr> >& literals);
+      const std::vector<const_expr*>& literals);
 
   void checkConflictingDeclarations(const QueryLoc& loc) const;
 };

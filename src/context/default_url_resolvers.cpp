@@ -128,7 +128,11 @@ ZorbaCollectionURLResolver::resolveURL
   if (aEntityData->getKind() != EntityData::COLLECTION)
     return NULL;
   store::Item_t lName;
-  GENV_STORE.getItemFactory()->createQName(lName, aUrl.c_str(), "", "zorba-internal-name-for-w3c-collections");
+  GENV_STORE.getItemFactory()->createQName(lName,
+                                           aUrl.c_str(),
+                                           "",
+                                           "zorba-internal-name-for-w3c-collections");
+
   store::Collection_t lColl = GENV_STORE.getCollection(lName.getp(), true);
   if ( lColl == NULL ) {
     return NULL;

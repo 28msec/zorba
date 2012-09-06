@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,32 +21,15 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "functions/function.h"
 
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
 
-
-namespace zorba 
+namespace zorba
 {
-
-SERIALIZABLE_CLASS_VERSIONS(block_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(apply_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(var_set_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(exit_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(exit_catcher_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(while_expr)
 
 DEF_EXPR_ACCEPT(block_expr)
 DEF_EXPR_ACCEPT(apply_expr)
@@ -62,13 +45,14 @@ DEF_EXPR_ACCEPT(while_expr)
 
 ********************************************************************************/
 block_expr::block_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     bool allowLastUpdating,
-    std::vector<expr_t>& seq,
+    std::vector<expr*>& seq,
     std::vector<var_expr*>* assignedVars)
   :
-  expr(sctx, loc, block_expr_kind),
+  expr(ccb, sctx, loc, block_expr_kind),
   theArgs(seq)
 {
   compute_scripting_kind2(assignedVars, allowLastUpdating);
@@ -80,14 +64,7 @@ block_expr::~block_expr()
 }
 
 
-void block_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theArgs;
-}
-
-
-void block_expr::add_at(csize pos, const expr_t& arg)
+void block_expr::add_at(csize pos, expr* arg)
 {
   assert(arg->get_expr_kind() != var_set_expr_kind);
 
@@ -96,7 +73,7 @@ void block_expr::add_at(csize pos, const expr_t& arg)
 }
 
 
-void block_expr::compute_scripting_kind() 
+void block_expr::compute_scripting_kind()
 {
   ZORBA_ASSERT(false);
 }
@@ -104,7 +81,7 @@ void block_expr::compute_scripting_kind()
 
 void block_expr::compute_scripting_kind2(
     std::vector<var_expr*>* assignedVars,
-    bool allowLastUpdating) 
+    bool allowLastUpdating)
 {
   bool vacuous = true;
 
@@ -120,7 +97,7 @@ void block_expr::compute_scripting_kind2(
 
     if (theArgs[i]->get_expr_kind() == var_decl_expr_kind)
     {
-      var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i].getp());
+      var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i]);
 
       var_expr* varExpr = varDeclExpr->get_var_expr();
 
@@ -132,7 +109,7 @@ void block_expr::compute_scripting_kind2(
 
         if (kind != VACUOUS_EXPR)
           vacuous = false;
-        
+
         theScriptingKind |= kind;
       }
 
@@ -142,9 +119,9 @@ void block_expr::compute_scripting_kind2(
         {
           std::vector<var_expr*>::iterator ite = (*assignedVars).begin();
           std::vector<var_expr*>::iterator end = (*assignedVars).end();
-          
+
           ite = std::find(ite, end, varExpr);
-          
+
           if (ite != end)
             ite = (*assignedVars).erase(ite);
           else
@@ -189,13 +166,13 @@ void block_expr::compute_scripting_kind2(
 }
 
 
-expr_t block_expr::clone(substitution_t& subst) const
+expr* block_expr::clone(substitution_t& subst) const
 {
-  checked_vector<expr_t> seq2;
+  checked_vector<expr*> seq2;
   for (csize i = 0; i < theArgs.size(); ++i)
     seq2.push_back(theArgs[i]->clone(subst));
 
-  return new block_expr(theSctx, get_loc(), true, seq2, NULL);
+  return theCCB->theEM->create_block_expr(theSctx, get_loc(), true, seq2, NULL);
 }
 
 
@@ -203,26 +180,19 @@ expr_t block_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 apply_expr::apply_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr,
+    expr* inExpr,
     bool discardXDM)
   :
-  expr(sctx, loc, apply_expr_kind),
+  expr(ccb, sctx, loc, apply_expr_kind),
   theExpr(inExpr),
   theDiscardXDM(discardXDM)
 {
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
-}
-
-
-void apply_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theDiscardXDM;
 }
 
 
@@ -235,9 +205,9 @@ void apply_expr::compute_scripting_kind()
 }
 
 
-expr_t apply_expr::clone(substitution_t& subst) const
+expr* apply_expr::clone(substitution_t& subst) const
 {
-  return new apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
+  return theCCB->theEM->create_apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
 }
 
 
@@ -245,12 +215,13 @@ expr_t apply_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 var_decl_expr::var_decl_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const var_expr_t& varExpr,
-    const expr_t& initExpr)
+    var_expr* varExpr,
+    expr* initExpr)
   :
-  expr(sctx, loc, var_decl_expr_kind),
+  expr(ccb, sctx, loc, var_decl_expr_kind),
   theVarExpr(varExpr),
   theInitExpr(initExpr)
 {
@@ -268,16 +239,8 @@ var_decl_expr::~var_decl_expr()
 {
   // Note: var_expr objs for global vars live longer than their associated
   // var_decl_expr, because such var_expr objs are also registered in the sctx.
-  if (theInitExpr)
-    theVarExpr->remove_set_expr(this);
-}
-
-
-void var_decl_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theVarExpr;
-  ar & theInitExpr;
+  //if (theInitExpr)
+  //  theVarExpr->remove_set_expr(this);
 }
 
 
@@ -299,12 +262,12 @@ void var_decl_expr::compute_scripting_kind()
 }
 
 
-expr_t var_decl_expr::clone(substitution_t& s) const
+expr* var_decl_expr::clone(substitution_t& s) const
 {
-  var_expr_t varCopy(new var_expr(*theVarExpr));
-  s[theVarExpr.getp()] = varCopy.getp();
+  var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
+  s[theVarExpr] = varCopy;
 
-  return new var_decl_expr(theSctx,
+  return theCCB->theEM->create_var_decl_expr(theSctx,
                            get_loc(),
                            varCopy,
                            (theInitExpr ? theInitExpr->clone(s) : NULL));
@@ -315,16 +278,17 @@ expr_t var_decl_expr::clone(substitution_t& s) const
 
 ********************************************************************************/
 var_set_expr::var_set_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const var_expr_t& varExpr,
-    const expr_t& setExpr)
+    var_expr* varExpr,
+    expr* setExpr)
   :
-  expr(sctx, loc, var_set_expr_kind),
+  expr(ccb, sctx, loc, var_set_expr_kind),
   theVarExpr(varExpr),
   theExpr(setExpr)
 {
-  assert(varExpr->get_kind() == var_expr::prolog_var || 
+  assert(varExpr->get_kind() == var_expr::prolog_var ||
          varExpr->get_kind() == var_expr::local_var);
 
   compute_scripting_kind();
@@ -338,15 +302,7 @@ var_set_expr::var_set_expr(
 
 var_set_expr::~var_set_expr()
 {
-  theVarExpr->remove_set_expr(this);
-}
-
-
-void var_set_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theVarExpr;
-  ar & theExpr;
+  //theVarExpr->remove_set_expr(this);
 }
 
 
@@ -363,15 +319,15 @@ void var_set_expr::compute_scripting_kind()
 }
 
 
-expr_t var_set_expr::clone(substitution_t& s) const
+expr* var_set_expr::clone(substitution_t& s) const
 {
-  expr_t varClone = theVarExpr->clone(s);
+  expr* varClone = theVarExpr->clone(s);
 
   ZORBA_ASSERT(varClone->get_expr_kind() == var_expr_kind);
 
-  return new var_set_expr(theSctx,
+  return theCCB->theEM->create_var_set_expr(theSctx,
                           get_loc(),
-                          static_cast<var_expr*>(varClone.getp()),
+                          static_cast<var_expr*>(varClone),
                           theExpr->clone(s));
 }
 
@@ -380,11 +336,12 @@ expr_t var_set_expr::clone(substitution_t& s) const
 
 ********************************************************************************/
 exit_expr::exit_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr)
+    expr* inExpr)
   :
-  expr(sctx, loc, exit_expr_kind),
+  expr(ccb, sctx, loc, exit_expr_kind),
   theExpr(inExpr),
   theCatcherExpr(NULL)
 {
@@ -405,23 +362,15 @@ exit_expr::~exit_expr()
 }
 
 
-void exit_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theCatcherExpr;
-}
-
-
 void exit_expr::compute_scripting_kind()
 {
   theScriptingKind = EXITING_EXPR;
 }
 
 
-expr_t exit_expr::clone(substitution_t& subst) const
+expr* exit_expr::clone(substitution_t& subst) const
 {
-  expr* clone = new exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
+  expr* clone = theCCB->theEM->create_exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
 
   subst[this] = clone;
 
@@ -433,12 +382,13 @@ expr_t exit_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 exit_catcher_expr::exit_catcher_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    const expr_t& inExpr,
+    expr* inExpr,
     std::vector<expr*>& exitExprs)
   :
-  expr(sctx, loc, exit_catcher_expr_kind),
+  expr(ccb, sctx, loc, exit_catcher_expr_kind),
   theExpr(inExpr)
 {
   theExitExprs.swap(exitExprs);
@@ -467,14 +417,6 @@ exit_catcher_expr::~exit_catcher_expr()
 }
 
 
-void exit_catcher_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theExitExprs;
-}
-
-
 void exit_catcher_expr::compute_scripting_kind()
 {
   theScriptingKind = theExpr->get_scripting_detail();
@@ -496,9 +438,9 @@ void exit_catcher_expr::removeExitExpr(const expr* exitExpr)
 }
 
 
-expr_t exit_catcher_expr::clone(substitution_t& subst) const
+expr* exit_catcher_expr::clone(substitution_t& subst) const
 {
-  expr_t clonedInput = get_expr()->clone(subst);
+  expr* clonedInput = get_expr()->clone(subst);
 
   std::vector<expr*> clonedExits;
   std::vector<expr*>::const_iterator ite = theExitExprs.begin();
@@ -510,7 +452,7 @@ expr_t exit_catcher_expr::clone(substitution_t& subst) const
     clonedExits.push_back(subst[*ite]);
   }
 
-  return new exit_catcher_expr(theSctx, get_loc(), clonedInput, clonedExits);
+  return theCCB->theEM->create_exit_catcher_expr(theSctx, get_loc(), clonedInput, clonedExits);
 }
 
 
@@ -518,9 +460,9 @@ expr_t exit_catcher_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-flowctl_expr::flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action)
+flowctl_expr::flowctl_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, enum action action)
   :
-  expr(sctx, loc, flowctl_expr_kind),
+  expr(ccb, sctx, loc, flowctl_expr_kind),
   theAction(action)
 {
   compute_scripting_kind();
@@ -531,47 +473,33 @@ flowctl_expr::flowctl_expr(static_context* sctx, const QueryLoc& loc, enum actio
 }
 
 
-void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(enum action, theAction);
-}
-
-
 void flowctl_expr::compute_scripting_kind()
 {
   theScriptingKind = BREAKING_EXPR;
 }
 
 
-expr_t flowctl_expr::clone(substitution_t& subst) const
+expr* flowctl_expr::clone(substitution_t& subst) const
 {
-  return new flowctl_expr(theSctx, get_loc(), get_action());
+  return theCCB->theEM->create_flowctl_expr(theSctx, get_loc(), get_action());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-while_expr::while_expr(static_context* sctx, const QueryLoc& loc, expr_t body)
-  : 
-  expr(sctx, loc, while_expr_kind),
+while_expr::while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* body)
+  :
+  expr(ccb, sctx, loc, while_expr_kind),
   theBody(body)
 {
   compute_scripting_kind();
 }
 
 
-void while_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theBody;
-}
-
-
 void while_expr::compute_scripting_kind()
 {
-  block_expr* seqExpr = static_cast<block_expr*>(theBody.getp());
+  block_expr* seqExpr = static_cast<block_expr*>(theBody);
 
   expr* condExpr = (*seqExpr)[0];
 
@@ -596,11 +524,10 @@ void while_expr::compute_scripting_kind()
 }
 
 
-expr_t while_expr::clone(substitution_t& subst) const
+expr* while_expr::clone(substitution_t& subst) const
 {
-  return new while_expr(theSctx, get_loc(), get_body()->clone(subst));
+  return theCCB->theEM->create_while_expr(theSctx, get_loc(), get_body()->clone(subst));
 }
-
 
 
 }
