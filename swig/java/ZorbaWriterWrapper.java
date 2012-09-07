@@ -25,16 +25,16 @@ import java.nio.charset.CharsetDecoder;
 public class ZorbaWriterWrapper extends org.zorbaxquery.api.ZorbaIOStream {
 
   private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
+  private static CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
   private Writer writer;
   CharBuffer charBuffer;
   ByteBuffer byteBuffer;
-  CharsetDecoder decoder;
+  
   
   public ZorbaWriterWrapper(Writer aWriter) {
       writer = aWriter;
       charBuffer = CharBuffer.allocate(BUFFER_SIZE);
       byteBuffer = ByteBuffer.allocate(BUFFER_SIZE*2);
-      decoder = Charset.forName("UTF-8").newDecoder();
   }
 
   @Override
