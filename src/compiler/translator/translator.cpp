@@ -5857,11 +5857,11 @@ void end_visit(const WhileExpr& v, void* visit_state)
   expr* bodyExpr = pop_nodestack();
   expr* condExpr = pop_nodestack();
 
-  condExpr = theExprManager->create_if_expr(theRootSctx,
-                         loc,
-                         condExpr,
-                         create_empty_seq(loc),
-                         theExprManager->create_flowctl_expr(theRootSctx, loc, flowctl_expr::BREAK));
+  expr* breakExpr = theExprManager->
+  create_flowctl_expr(theRootSctx, loc, flowctl_expr::BREAK);
+
+  condExpr = theExprManager->
+  create_if_expr(theRootSctx, loc, condExpr, create_empty_seq(loc), breakExpr);
 
   block_expr* seqBody = NULL;
 
@@ -5870,7 +5870,8 @@ void end_visit(const WhileExpr& v, void* visit_state)
   stmts.push_back(condExpr);
   stmts.push_back(bodyExpr);
 
-  seqBody = theExprManager->create_block_expr(bodyExpr->get_sctx(), loc, false, stmts, NULL);
+  seqBody = theExprManager->
+  create_block_expr(bodyExpr->get_sctx(), loc, false, stmts, NULL);
 
   push_nodestack(theExprManager->create_while_expr(theRootSctx, loc, seqBody));
 
@@ -6604,6 +6605,14 @@ void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
 
 /*******************************************************************************
   GroupByClause ::= "group" "by" GroupingSpecList
+
+  GroupSpecList ::= 	GroupingSpec ("," GroupingSpec)*
+
+  GroupSpec ::= "$" VarName (TypeDeclaration? ":=" ExprSingle)?
+                ("collation" URILiteral)?
+
+  NOTE: For every group spec that has a binding expression, a let variable will
+  be created and placed before the groupby clause. 
 ********************************************************************************/
 void* begin_visit(const GroupByClause& v)
 {
@@ -6616,16 +6625,25 @@ void* begin_visit(const GroupByClause& v)
   std::set<const var_expr *> group_vars;
   std::set<const var_expr *> non_group_vars;
 
-  // Collect the var_exprs for all the vars that have been defined by all
-  // clauses before this GroupByClause.
+  // Compute the set of non-grouping var_exprs. To do this, we first collect
+  // the var_exprs for all the vars that have been defined by all clauses
+  // before this GroupByClause. Then we collect the var_exprs for the var
+  // names specified in the GroupByClause. The non-grouping vars are the vars
+  // in the difference of the 2 sets above.
+  //
+  // NOTE: If a group spec does not have a binding expression, then a var
+  // for the name appearing in the spec should exist already (i.e., be in
+  // scope and have a var_expr). Otherwise, the var may or may not exist
+  // already. In this case, if a var V exists already, it will be hidden
+  // by the new var of the same name defined by the group spec, and so V
+  // should not be included in the set of non-grouping vars. 
   collect_flwor_vars(flwor, all_vars, &*clauses[0], &v, loc);
 
-  // Collect the var_exprs for all the grouping vars specified in this GroupByClause.
-  GroupSpecList* lList = v.get_spec_list();
+  GroupSpecList* speclist = v.get_spec_list();
 
-  for (csize i = 0; i < lList->size(); ++i)
+  for (csize i = 0; i < speclist->size(); ++i)
   {
-    GroupSpec* spec = (*lList)[i];
+    GroupSpec* spec = (*speclist)[i];
 
     const QName* varname = spec->get_var_name();
 
@@ -6637,8 +6655,6 @@ void* begin_visit(const GroupByClause& v)
     }
     else
     {
-      // variables can be explicitly shadowed, if we don't check for that
-      // we might have them become non-group variables incorrectly.
       ve = lookup_var(varname, loc, zerr::ZXQP0000_NO_ERROR);
     }
 
@@ -6646,7 +6662,6 @@ void* begin_visit(const GroupByClause& v)
       group_vars.insert(ve);
   }
 
-  // The non-grouping vars are the vars in the difference of the 2 sets above.
   set_difference(all_vars.begin(), all_vars.end(),
                  group_vars.begin(), group_vars.end(),
                  inserter(non_group_vars, non_group_vars.begin()));
@@ -6673,13 +6688,6 @@ void* begin_visit(const GroupByClause& v)
 void end_visit(const GroupByClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
-  // At this point, the nodestack contains a pair of var_exprs for each var X
-  // defined by any clauses appearing before this GroupByClause. The 1st
-  // var_expr in the pair corresponds to the input-stream var X, and the 2nd
-  // var_expr corresponds to the associated output-stream var. The pairs for
-  // the grouping vars appear first (i.e., at the top of the nodestack),
-  // followed by the pairs for the non-grouping vars.
 
   const GroupSpecList& groupSpecs = *v.get_spec_list();
   csize numGroupSpecs = groupSpecs.size();
@@ -6738,14 +6746,16 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
       inputExpr = wrap_in_atomization(inputExpr);
 
+      // We need to do this to handle grouping vars with same names but
+      // different collations.
       push_scope();
 
-      var_expr* gvar = bind_var(loc,
+      var_expr* gVar = bind_var(loc,
                                 groupSpec.get_var_name(),
                                 var_expr::groupby_var,
                                 inputExpr->get_return_type());
 
-      grouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, gvar));
+      grouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, gVar));
 
       if (groupSpec.get_collation_spec() != NULL)
       {
@@ -6763,20 +6773,25 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     }
   }
 
+  // At this point, the nodestack contains a pair of var_exprs for each 
+  // non-grouping var. The 1stvar_expr in the pair corresponds to the 
+  // input-stream var X, and the 2nd var_expr corresponds to the associated
+  // output-stream var.
+
   push_scope();
 
-  var_expr* ngvar = NULL;
+  var_expr* ngVar = NULL;
 
-  while (NULL != (ngvar = pop_nodestack_var()))
+  while (NULL != (ngVar = pop_nodestack_var()))
   {
     var_expr* inputVar = pop_nodestack_var();
 
-    bind_var(ngvar, theSctx);
+    bind_var(ngVar, theSctx);
 
     expr* inputExpr =
     theExprManager->create_wrapper_expr(theRootSctx, loc, inputVar);
 
-    nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngvar));
+    nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
 
   group_clause* clause = new group_clause(theRootSctx,
@@ -6799,12 +6814,13 @@ void* begin_visit(const GroupSpecList& v)
 
 void end_visit(const GroupSpecList& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
-  GroupSpec ::= "$" VarName (TypeDeclaration? ":=" ExprSingle)? ("collation" URILiteral)?
+  GroupSpec ::= "$" VarName (TypeDeclaration? ":=" ExprSingle)?
+                ("collation" URILiteral)?
 ********************************************************************************/
 void* begin_visit(const GroupSpec& v)
 {

@@ -24,3 +24,4 @@ Iterator tree for main query:
     <CtxVarIterator varid="2" varname="g" varkind="global"/>
   </SequencePointAccessIterator>
 </SequentialIterator>
+
