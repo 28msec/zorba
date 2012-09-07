@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,12 +32,12 @@ namespace serialization
   ARCHIVE_FIELD_NORMAL:
   ---------------------
   A field of kind NORMAL or PTR acts as the root of a tree of fields representing
-  the serialization of a concrete obj. If the kind is PTR, then the obj was 
-  serialized when a pointer to it was encountered. In this case, during 
+  the serialization of a concrete obj. If the kind is PTR, then the obj was
+  serialized when a pointer to it was encountered. In this case, during
   deserialization, the archiver will allocate the obj on the heap and fill-in
-  its data members. If the kind is NORMAL, then the obj was serialized when the 
-  objitself was encountered (e.g., the object was an embedded data member of 
-  another obj, or was residing on the program stack). In this case, during 
+  its data members. If the kind is NORMAL, then the obj was serialized when the
+  objitself was encountered (e.g., the object was an embedded data member of
+  another obj, or was residing on the program stack). In this case, during
   deserialization, the object exists already (in an uninitialized state) and a
   reference to it is given to the archiver, which will fill-in the obj's data.
 
@@ -48,14 +48,14 @@ namespace serialization
   ARCHIVE_FIELD_REFERENCING:
   --------------------------
   A field A that references another field B (of kind NORMAL or PTR), where both
-  A and B represent the "same" object. 
+  A and B represent the "same" object.
 
   ARCHIVE_FIELD_BASECLASS:
   ------------------------
-  A field representing a "partial" class object: If an obj O belongs to a 
-  concrete class C and C is a subclass of a base class B, then a field of 
+  A field representing a "partial" class object: If an obj O belongs to a
+  concrete class C and C is a subclass of a base class B, then a field of
   BASECLASS kind is created to represent the serialization of the data members
-  of B. This field is placed as the 1st child of the NORMAL or PTR field that 
+  of B. This field is placed as the 1st child of the NORMAL or PTR field that
   represents the serialization of O, and the children of the BASECALSS field
   represent the serializations of B's data members. If B itself is a subclass
   of another class A, then the 1st child of the B BASECLASS field is another
@@ -79,7 +79,7 @@ enum ArchiveFieldKind
 /*******************************************************************************
 
 ********************************************************************************/
-enum ENUM_ALLOW_DELAY  
+enum ENUM_ALLOW_DELAY
 {
   ALLOW_DELAY,
   DONT_ALLOW_DELAY,
@@ -97,6 +97,8 @@ enum TypeCode
   TYPE_static_context,
 
   TYPE_SingletonIterator,
+
+  TYPE_DynamicFunctionIterator,
 
   TYPE_CtxVarDeclareIterator,
   TYPE_CtxVarIterator,
@@ -413,14 +415,14 @@ typedef union
   int64_t         int64v;
   uint64_t        uint64v;
   int32_t         int32v;
-  uint32_t        uint32v;  
+  uint32_t        uint32v;
   int16_t         int16v;
   uint16_t        uint16v;
   char            charv;
   unsigned char   ucharv;
   bool            boolv;
 } SimpleValue;
-  
+
 
 }
 }

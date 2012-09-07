@@ -482,7 +482,7 @@ void end_visit(function_item_expr& v)
     lFItem = new FunctionItem(theCCB, sctx, &v, lVariableValues);
   }
 
-  push_itstack(new SingletonIterator (sctx, qloc, lFItem));
+  push_itstack(new DynamicFunctionIterator(sctx, qloc, lFItem));
 }
 
 

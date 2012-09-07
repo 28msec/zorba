@@ -76,6 +76,47 @@ public:
 
 
 /*******************************************************************************
+  An iterator that creates and returns dynamic function items
+********************************************************************************/
+class DynamicFunctionIterator : public NoaryBaseIterator<DynamicFunctionIterator,
+                                                   PlanIteratorState>
+{
+protected:
+  store::Item_t theFunctionItem;
+
+public:
+  SERIALIZABLE_CLASS(DynamicFunctionIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFunctionIterator,
+                                   NoaryBaseIterator<DynamicFunctionIterator,
+                                                     PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  DynamicFunctionIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const store::Item* value)
+    :
+    NoaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>(sctx, loc),
+    theFunctionItem(const_cast<store::Item*>(value))
+  {
+  }
+
+  virtual ~DynamicFunctionIterator() {}
+  
+  const store::Item_t& getValue() const { return theFunctionItem; }
+
+  void accept(PlanIterVisitor& v) const;
+  
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  
+  uint32_t getStateSizeOfSubtree() const;
+};
+
+
+/*******************************************************************************
 
   
 ********************************************************************************/

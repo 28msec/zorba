@@ -394,14 +394,15 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
       // for (csize j=0; j<fnItemVariables.size(); j++)
         // if ((*argVarRefs) == fnItemVariables[j].getp())
         // if (theUDF->getArgVar(i)->get_name == static_cast<LetVarIterator*>(fnItemVariables[j].getp())->)
+
       if (theIsDynamic)
       {
         std::cerr << "--> UDFunctionCallIterator::openImpl() argsIte: " << (*argsIte)->getId() << " = " << (*argsIte)->getClassName()
-            << " var: " << fnItemVariables[i]->getId() << " = " << fnItemVariables[i]->getClassName()
-            << " wrapper: " << fnItemWrappers[i].getp()->getClassName()
-            << " var: " << theUDF->getArgVars()[i]->toString()
-            << std::endl;
-        // (*argWrapsIte) = fnItemWrappers[i];
+            << " var: " << theUDF->getArgVars()[i]->toString();
+        if (fnItemVariables.size() > 0)
+              std::cerr << " fnItem var: " << fnItemVariables[i]->getId() << " = " << fnItemVariables[i]->getClassName()
+              << " wrapper: " << fnItemWrappers[i].getp()->getClassName();
+        std::cerr << std::endl;
 
         for (csize j=0; j<fnItemVariables.size(); j++)
         {
@@ -412,7 +413,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
           else if (dynamic_cast<ForVarIterator*>(var_iter) != NULL)
             var_qname = dynamic_cast<ForVarIterator*>(var_iter)->getVarName();
 
-          if (theUDF->getArgVars()[i]->get_name()->equals(var_qname))
+          if (var_qname != NULL && theUDF->getArgVars()[i]->get_name()->equals(var_qname))
           {
             (*argWrapsIte) = fnItemWrappers[j];
             // std::cerr << "-->                                    assigned wrapper: " <<

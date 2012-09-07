@@ -51,6 +51,8 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (SingletonIterator);
 
+  PLAN_ITER_VISITOR (DynamicFunctionIterator);
+
   PLAN_ITER_VISITOR (EmptyIterator);
 
   PLAN_ITER_VISITOR (ForVarIterator);
