@@ -23,7 +23,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1042840 (qname pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
-	
+  * Fixed bug #1046415 (pair name cast to string)
+
 version 2.6
 
 New Features:
