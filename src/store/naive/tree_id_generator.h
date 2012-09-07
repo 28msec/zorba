@@ -64,7 +64,7 @@ class TreeIdGeneratorFactory
 public:
   virtual ~TreeIdGeneratorFactory() {}
   
-  virtual TreeIdGenerator* createTreeGenerator() = 0;
+  virtual TreeIdGenerator* createTreeGenerator(ulong aCollectionId) = 0;
 
   virtual TreeIdGenerator& getDefaultTreeIdGenerator() = 0;
 };
@@ -79,7 +79,7 @@ protected:
   SimpleTreeIdGenerator theDefaultGenerator;
 
 public:
-  virtual TreeIdGenerator* createTreeGenerator();
+  virtual TreeIdGenerator* createTreeGenerator(ulong aCollectionId);
 
   virtual TreeIdGenerator& getDefaultTreeIdGenerator();
 };
