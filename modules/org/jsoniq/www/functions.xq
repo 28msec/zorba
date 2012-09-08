@@ -58,7 +58,7 @@ declare option ver:module-version "1.0";
  :
  : @error jerr:JSDY0040 if the given string is not valid JSON.
  :)
-declare function jn:parse-json($j as xs:string) as json-item()* external;
+declare function jn:parse-json($j as xs:string?) as json-item()* external;
 
 (:~
  : This function parses a given string as JSON and returns a sequence
@@ -80,7 +80,7 @@ declare function jn:parse-json($j as xs:string) as json-item()* external;
  : @return a sequence of JSON Object or Array item.
  :)
 declare function jn:parse-json(
-  $j as xs:string,
+  $j as xs:string?,
   $o as object()) as json-item()* external;
 
 

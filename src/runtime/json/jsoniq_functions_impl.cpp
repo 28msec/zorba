@@ -91,85 +91,87 @@ JSONParseIterator::nextImpl(
   JSONParseIteratorState* state;
   DEFAULT_STACK_INIT(JSONParseIteratorState, state, planState);
 
-  consumeNext(lInput, theChildren[0].getp(), planState);
-  if (theChildren.size() == 2)
+  if (consumeNext(lInput, theChildren[0].getp(), planState))
   {
-    consumeNext(lOptions, theChildren[1].getp(), planState);
-
-    store::Item_t lOptionName, lOptionValue;
-
-    zstring s("jsoniq-multiple-top-level-items");
-    GENV_ITEMFACTORY->createString(lOptionName, s);
-    lOptionValue = lOptions->getObjectValue(lOptionName);
-    if (lOptionValue != NULL)
+    if (theChildren.size() == 2)
     {
-      store::SchemaTypeCode lType = lOptionValue->getTypeCode();
-      if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
+      consumeNext(lOptions, theChildren[1].getp(), planState);
+
+      store::Item_t lOptionName, lOptionValue;
+
+      zstring s("jsoniq-multiple-top-level-items");
+      GENV_ITEMFACTORY->createString(lOptionName, s);
+      lOptionValue = lOptions->getObjectValue(lOptionName);
+      if (lOptionValue != NULL)
       {
-        const TypeManager* tm = theSctx->get_typemanager();
-        xqtref_t lType = tm->create_value_type(lOptionValue, loc);
-        RAISE_ERROR(jerr::JSDY0041, loc, 
-        ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
+        store::SchemaTypeCode lType = lOptionValue->getTypeCode();
+        if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
+        {
+          const TypeManager* tm = theSctx->get_typemanager();
+          xqtref_t lType = tm->create_value_type(lOptionValue, loc);
+          RAISE_ERROR(jerr::JSDY0041, loc, 
+          ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
+        }
+        state->theAllowMultiple = lOptionValue->getBooleanValue();
       }
-      state->theAllowMultiple = lOptionValue->getBooleanValue();
     }
-  }
 
-  if (lInput->isStreamable())
-  {
-    state->theInput = lInput;
-    state->theInputStream = &lInput->getStream();
-  }
-  else
-  {
-    state->theInputStream = new std::stringstream(
-        lInput->getStringValue().c_str());
-  }
-
-  while (true)
-  {
-    if (state->theInput != NULL)
+    if (lInput->isStreamable())
     {
-      result = GENV_STORE.parseJSON(*state->theInputStream, 0);
+      state->theInput = lInput;
+      state->theInputStream = &lInput->getStream();
     }
     else
     {
-      if (theRelativeLocation == QueryLoc::null)
+      state->theInputStream = new std::stringstream(
+          lInput->getStringValue().c_str());
+    }
+
+    while (true)
+    {
+      if (state->theInput != NULL)
       {
-        try
-        {
-          result = GENV_STORE.parseJSON(*state->theInputStream, 0);
-        }
-        catch (zorba::ZorbaException& e)
-        {
-          set_source(e, theChildren[0]->getLocation());
-          throw;
-        }
+        result = GENV_STORE.parseJSON(*state->theInputStream, 0);
       }
       else
       {
-        // pass the query location of the StringLiteral to the JSON
-        // parser such that it can give better error locations.
-        // Also, parseJSON already raises an XQueryException with the
-        // location. Hence, no need to catch and rethrow the exception here
-        zorba::internal::diagnostic::location lLoc;
-        lLoc = ERROR_LOC(theRelativeLocation);
-        result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
+        if (theRelativeLocation == QueryLoc::null)
+        {
+          try
+          {
+            result = GENV_STORE.parseJSON(*state->theInputStream, 0);
+          }
+          catch (zorba::ZorbaException& e)
+          {
+            set_source(e, theChildren[0]->getLocation());
+            throw;
+          }
+        }
+        else
+        {
+          // pass the query location of the StringLiteral to the JSON
+          // parser such that it can give better error locations.
+          // Also, parseJSON already raises an XQueryException with the
+          // location. Hence, no need to catch and rethrow the exception here
+          zorba::internal::diagnostic::location lLoc;
+          lLoc = ERROR_LOC(theRelativeLocation);
+          result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
+        }
       }
-    }
-    if (result != NULL)
-    {
-      if (!state->theAllowMultiple && state->theGotOne)
+      if (result != NULL)
       {
-        RAISE_ERROR(jerr::JSDY0040, loc, 
-        ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
+        if (!state->theAllowMultiple && state->theGotOne)
+        {
+          RAISE_ERROR(jerr::JSDY0040, loc, 
+          ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
+        }
+        state->theGotOne = true;
+        STACK_PUSH(true, state);
       }
-      state->theGotOne = true;
-      STACK_PUSH(true, state);
-    }
-    else
-    {
-      break;
+      else
+      {
+        break;
+      }
     }
   }
 
