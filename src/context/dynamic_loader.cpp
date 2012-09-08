@@ -153,7 +153,7 @@ DynamicLoader::loadModule(const zstring& aFile) const
                       0, aFile.c_str(), -1,
                       wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
   }
-
+  SetErrorMode(SEM_NOOPENFILEERRORBOX);
   handle = LoadLibraryW(wpath_str);
   if (!handle)
     throw ZORBA_EXCEPTION(
