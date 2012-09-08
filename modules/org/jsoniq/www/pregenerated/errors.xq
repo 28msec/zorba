@@ -142,3 +142,8 @@ declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003
  :parser errors raised by the JSONIQLoader
 :)
 declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
+
+(:~
+ :parser error for invalid option type
+:)
+declare variable $jerr:JSDY0041 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0041");

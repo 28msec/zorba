@@ -18,8 +18,14 @@
 
   <zorba:function isDeterministic="true" generateCodegen="false">
     <zorba:signature localname="parse-json" prefix="fn-jsoniq">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:output>json-item()?</zorba:output>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>json-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="parse-json" prefix="fn-jsoniq">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>json-item()*</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
@@ -28,6 +34,13 @@
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="bool" name="theAllowMultiple" brief=""/>
+    <zorba:member type="store::Item_t" name="theInput" brief=""/>
+    <zorba:member type="std::istream*" name="theInputStream" brief=""/>
+    <zorba:member type="bool" name="theGotOne"/>
+  </zorba:state>
 
   <zorba:constructor>
     <zorba:parameter type="QueryLoc" name="aRelativeLocation" />

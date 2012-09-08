@@ -53,52 +53,125 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
+void
+JSONParseIteratorState::init(PlanState& aState)
+{
+  PlanIteratorState::init(aState);
+  theAllowMultiple = true; // default
+  theInputStream = 0;
+  theGotOne = false;
+}
+
+void
+JSONParseIteratorState::reset(PlanState& aState)
+{
+  PlanIteratorState::reset(aState);
+  if (theInput == NULL && theInputStream)
+  {
+    delete theInputStream;
+  }
+}
+
+JSONParseIteratorState::~JSONParseIteratorState()
+{
+  if (theInput == NULL && theInputStream)
+  {
+    delete theInputStream;
+  }
+}
+
 bool
 JSONParseIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
   store::Item_t lInput;
+  store::Item_t lOptions;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  JSONParseIteratorState* state;
+  DEFAULT_STACK_INIT(JSONParseIteratorState, state, planState);
 
   consumeNext(lInput, theChildren[0].getp(), planState);
+  if (theChildren.size() == 2)
+  {
+    consumeNext(lOptions, theChildren[1].getp(), planState);
+
+    store::Item_t lOptionName, lOptionValue;
+
+    zstring s("jsoniq-multiple-top-level-items");
+    GENV_ITEMFACTORY->createString(lOptionName, s);
+    lOptionValue = lOptions->getObjectValue(lOptionName);
+    if (lOptionValue != NULL)
+    {
+      store::SchemaTypeCode lType = lOptionValue->getTypeCode();
+      if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
+      {
+        const TypeManager* tm = theSctx->get_typemanager();
+        xqtref_t lType = tm->create_value_type(lOptionValue, loc);
+        RAISE_ERROR(jerr::JSDY0041, loc, 
+        ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
+      }
+      state->theAllowMultiple = lOptionValue->getBooleanValue();
+    }
+  }
 
   if (lInput->isStreamable())
   {
-    result = GENV_STORE.parseJSON(lInput->getStream(), 0);
+    state->theInput = lInput;
+    state->theInputStream = &lInput->getStream();
   }
   else
   {
-    std::stringstream lStr;
-    lStr << lInput->getStringValue();
+    state->theInputStream = new std::stringstream(
+        lInput->getStringValue().c_str());
+  }
 
-    if (theRelativeLocation == QueryLoc::null)
+  while (true)
+  {
+    if (state->theInput != NULL)
     {
-      try
-      {
-        result = GENV_STORE.parseJSON(lStr, 0);
-      }
-      catch (zorba::ZorbaException& e)
-      {
-        set_source(e, theChildren[0]->getLocation());
-        throw;
-      }
+      result = GENV_STORE.parseJSON(*state->theInputStream, 0);
     }
     else
     {
-      // pass the query location of the StringLiteral to the JSON
-      // parser such that it can give better error locations.
-      // Also, parseJSON already raises an XQueryException with the
-      // location. Hence, no need to catch and rethrow the exception here
-      zorba::internal::diagnostic::location lLoc;
-      lLoc = ERROR_LOC(theRelativeLocation);
-      result = GENV_STORE.parseJSON(lStr, &lLoc);
+      if (theRelativeLocation == QueryLoc::null)
+      {
+        try
+        {
+          result = GENV_STORE.parseJSON(*state->theInputStream, 0);
+        }
+        catch (zorba::ZorbaException& e)
+        {
+          set_source(e, theChildren[0]->getLocation());
+          throw;
+        }
+      }
+      else
+      {
+        // pass the query location of the StringLiteral to the JSON
+        // parser such that it can give better error locations.
+        // Also, parseJSON already raises an XQueryException with the
+        // location. Hence, no need to catch and rethrow the exception here
+        zorba::internal::diagnostic::location lLoc;
+        lLoc = ERROR_LOC(theRelativeLocation);
+        result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
+      }
+    }
+    if (result != NULL)
+    {
+      if (!state->theAllowMultiple && state->theGotOne)
+      {
+        RAISE_ERROR(jerr::JSDY0040, loc, 
+        ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
+      }
+      state->theGotOne = true;
+      STACK_PUSH(true, state);
+    }
+    else
+    {
+      break;
     }
   }
-
-  STACK_PUSH(true, state);
 
   STACK_END(state);
 }

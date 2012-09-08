@@ -38,7 +38,23 @@ namespace zorba {
  * 
  * Author: 
  */
-class JSONParseIterator : public NaryBaseIterator<JSONParseIterator, PlanIteratorState>
+class JSONParseIteratorState : public PlanIteratorState
+{
+public:
+  bool theAllowMultiple; //
+  store::Item_t theInput; //
+  std::istream* theInputStream; //
+  bool theGotOne; //
+
+  JSONParseIteratorState();
+
+  ~JSONParseIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONParseIterator : public NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>
 { 
 protected:
   QueryLoc theRelativeLocation; //
@@ -46,7 +62,7 @@ public:
   SERIALIZABLE_CLASS(JSONParseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONParseIterator,
-    NaryBaseIterator<JSONParseIterator, PlanIteratorState>);
+    NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -56,7 +72,7 @@ public:
     std::vector<PlanIter_t>& children,
     QueryLoc aRelativeLocation)
     : 
-    NaryBaseIterator<JSONParseIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>(sctx, loc, children),
     theRelativeLocation(aRelativeLocation)
   {}
 

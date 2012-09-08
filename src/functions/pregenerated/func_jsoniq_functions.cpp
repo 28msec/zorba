@@ -202,9 +202,26 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_jsoniq_parse_json,
         (createQName("http://www.jsoniq.org/functions","","parse-json"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_QUESTION),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_PARSE_JSON_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_parse_json,
+        (createQName("http://www.jsoniq.org/functions","","parse-json"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_PARSE_JSON_2);
 
   }
 
