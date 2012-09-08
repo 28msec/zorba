@@ -190,7 +190,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   flwor_expr& flwor = *flworp;
 
   csize numClauses = flwor.num_clauses();
-  csize numForLetWinClauses = 0;
 
   // numClauses may be 0 in the case this flwor became a common sub-expression
   // due to var-inlining inside an if-then-else expr (see test
@@ -264,7 +263,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   bool modified = false;
-  group_clause* gc = NULL;
 
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
@@ -276,41 +274,31 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   {
     bool substitute = false;
 
-    flwor_clause& c = *flwor.get_clause(i);
+    flwor_clause* c = flwor.get_clause(i);
 
-    if (c.get_kind() == flwor_clause::group_clause)
+    if (c->get_kind() == flwor_clause::group_clause)
     {
-      gc = static_cast<group_clause *>(&c);
+      group_clause* gc = static_cast<group_clause *>(c);
 
-      flwor_clause::rebind_list_t filtered_ngVars = flwor_clause::rebind_list_t();
-      filtered_ngVars.reserve(gc->getNumNonGroupingVars());
+      flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
+      flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
 
-      bool modified_ngVar = false;
-
-      for(flwor_clause::rebind_list_t::iterator ngVar = gc->beginNonGroupVars();
-        ngVar != gc->endNonGroupVars();
-        ngVar++)
+      for(; ite != end; ++ite)
       {
-        var_expr* var = ngVar->second;
+        var_expr* var = ite->second;
         int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
 
-        if(uses > 0 || var->isNonDiscardable())
-          filtered_ngVars.push_back(*ngVar);
-        else
-          modified_ngVar = true;
+        if (uses == 0 && !ite->first->isNonDiscardable())
+        {
+          gc->removeNonGroupingVar(ite);
+          --ite;
+          end = gc->endNonGroupVars();
+        }
       }
-
-      if (modified_ngVar)
-        MODIFY(gc->set_nongrouping_vars(filtered_ngVars));
     }
-    else if (c.get_kind() == flwor_clause::window_clause)
+    else if (c->get_kind() == flwor_clause::for_clause)
     {
-      numForLetWinClauses++;
-    }
-    else if (c.get_kind() == flwor_clause::for_clause)
-    {
-      numForLetWinClauses++;
-      for_clause* forClause = static_cast<for_clause *>(&c);
+      for_clause* forClause = static_cast<for_clause *>(c);
 
       expr* domainExpr = forClause->get_expr();
       xqtref_t domainType = domainExpr->get_return_type();
@@ -379,16 +367,14 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         MODIFY(flwor.remove_clause(i));
         --numClauses;
-        --numForLetWinClauses;
         --i;
 
         flwor.compute_return_type(true, NULL);
       }
     }
-    else if (c.get_kind() == flwor_clause::let_clause)
+    else if (c->get_kind() == flwor_clause::let_clause)
     {
-      let_clause* lc = static_cast<let_clause *>(&c);
-      numForLetWinClauses++;
+      let_clause* lc = static_cast<let_clause *>(c);
 
       expr* domainExpr = lc->get_expr();
       xqtref_t domainType = domainExpr->get_return_type();
@@ -417,10 +403,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         substitute = true;
 #if 0
         rCtx.getCompilerCB()->theXQueryDiagnostics->add_warning(
-          NEW_XQUERY_WARNING(
-            zwarn::ZWST0001_UNUSED_VARIABLE,
-            WARN_PARAMS(var->get_name()->getStringValue()),
-            WARN_LOC(var->get_loc())));
+          NEW_XQUERY_WARNING(zwarn::ZWST0001_UNUSED_VARIABLE,
+          WARN_PARAMS(var->get_name()->getStringValue()),
+          WARN_LOC(var->get_loc())));
 #endif
       }
 
@@ -428,7 +413,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         MODIFY(flwor.remove_clause(i));
         --numClauses;
-        --numForLetWinClauses;
         --i;
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
@@ -457,7 +441,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     if (clause->get_kind() == flwor_clause::group_clause)
     {
-      gc = static_cast<group_clause*>(clause);
+      group_clause* gc = static_cast<group_clause*>(clause);
       const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
       flwor_clause::rebind_list_t::const_iterator gVarsIte = gVars.begin();
       flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
@@ -682,7 +666,7 @@ static bool is_trivial_expr(const expr* e)
 {
   switch (e->get_expr_kind())
   {
-  case const_expr_kind: // ????
+  case const_expr_kind:
   {
     return true;
   }
@@ -691,6 +675,10 @@ static bool is_trivial_expr(const expr* e)
     const var_expr* ve = static_cast<const var_expr*>(e);
     enum var_expr::var_kind k = ve->get_kind();
 
+    // NOTE: An arg var is not materialized, and as a result, it cannot be
+    // referenced more than once or be refeneced inside a loop or try block.
+    // Therefore, an arg var that appears as the domain expr of a LET var
+    // cannot trivially substitute the LET var.
     if (k == var_expr::arg_var ||
         k == var_expr::local_var ||
         (k == var_expr::prolog_var && ve->is_mutable()))
@@ -788,8 +776,8 @@ static bool safe_to_fold_single_use(
         return false;
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-      if (hasNodeConstr && fc.get_expr()->contains_node_construction())
-        return false;
+      //if (hasNodeConstr && fc.get_expr()->contains_node_construction())
+      //  return false;
     }
     else if (kind == flwor_clause::let_clause)
     {
@@ -822,8 +810,8 @@ static bool safe_to_fold_single_use(
       }
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-      if (hasNodeConstr && clause.get_expr()->contains_node_construction())
-        return false;
+      //if (hasNodeConstr && clause.get_expr()->contains_node_construction())
+      //  return false;
     }
     else if (kind == flwor_clause::where_clause)
     {
@@ -966,16 +954,20 @@ static bool safe_to_fold_single_use(
 
 
 /*******************************************************************************
-  Given a variable V and an expression E that references V at most once, return
-  true if E does indeed reference V and the reference occurs inside a
+  Given a variable V and an expression E that references V exactly once, return
+  true if the reference occurs inside a
   (a) for-loop within E, or
   (b) try expr within E, or
-  (c) 
+  (c) while expr within E
 
   The method traverses recursively the subtree of E looking for variable V and
   checking whether it crosses a loop or try expr. If it finds V and there is a
   loop or try expr in the path from E to V, it returns true; otherwise it returns
   false.
+
+  Note: On the 1st (non-recursive) call, we know that E references V exactly
+  once. But during a recursive call on a subexpr, the subexpr may or may not
+  reference V.
 ********************************************************************************/
 static bool var_in_try_or_loop(
     const var_expr* v,
@@ -1064,10 +1056,10 @@ static bool var_in_try_or_loop(
         }
 
         // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-        if (hasNodeConstr && domExpr->contains_node_construction())
-        {
-          return true;
-        }
+        //if (hasNodeConstr && domExpr->contains_node_construction())
+        //{
+        //  return true;
+        //}
 
         break;
       }
