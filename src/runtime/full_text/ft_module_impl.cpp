@@ -958,7 +958,7 @@ bool TokenizeStringIterator::nextImpl( store::Item_t &result,
     tokenizer->tokenize_string(
       value_string.data(), value_string.size(), lang, false, callback
     );
-    state->string_tokens_.take( callback.tokens_ );
+    state->string_tokens_.swap( callback.tokens_ );
     } // local scope
 
     while ( state->string_tokens_.hasNext() ) {

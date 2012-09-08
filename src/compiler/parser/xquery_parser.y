@@ -559,6 +559,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* --------------------------------- */
 %token BYTE_ORDER_MARK_UTF8             "'BOM_UTF8'"
 
+/* Unix Shebang -- ignored by Zorba  */
+/* --------------------------------- */
+%token SHEBANG                          "'#!/shebang"
+
 /* Leading slash handling expression */
 /* --------------------------------- */
 %type <expr> LeadingSlash
@@ -1036,6 +1040,16 @@ Module :
       {
         $$ = $2;
       }
+  |   SHEBANG  ModuleWithoutBOM
+      {
+        $$ = $2;
+      }
+  |   BYTE_ORDER_MARK_UTF8  SHEBANG  ModuleWithoutBOM
+      {
+        $$ = $3;
+      }
+  
+
 ;
 
 ERROR :
@@ -6492,9 +6506,9 @@ JSONInsertExpr :
                                         static_cast<JSONPairList*>($4),
                                         $7);
         }
-    |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
+    |   INSERT JSON LBRACK Expr RBRACK INTO ExprSingle AT POSITION ExprSingle
         {
-          $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
+          $$ = new JSONArrayInsertExpr(LOC(@$), $4, $7, $10);
         }
     ;
 

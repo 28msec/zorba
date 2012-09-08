@@ -265,17 +265,10 @@ void IndexDecl::analyze(CompilerCB* ccb)
   expr* dotVar = NULL;
 
   // Get the var_expr representing the context item, if it is defined
-  try
-  {
-    dotVar = theSctx->lookup_var(dotQName, QueryLoc::null, err::XPST0008);
-  }
-  catch (ZorbaException const& e)
-  {
-    if (e.diagnostic() != err::XPST0008)
-    {
-      throw;
-    }
-  }
+  VarInfo* var = theSctx->lookup_var(dotQName);
+
+  if (var)
+    dotVar = var->getVar();
 
   std::vector<var_expr*> varExprs;
 

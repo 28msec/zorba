@@ -331,13 +331,11 @@ bool iterator::next() {
 #ifndef WIN32
     if ( (ent_ = ::readdir( dir_ )) ) {
       switch ( ent_->d_type ) {
-        case DT_DIR: {
-          char const *const name = ent_->d_name;
-          if ( is_dots( name ) )
+        case DT_DIR:
+          if ( is_dots( ent_->d_name ) )
             continue;                   // skip "." and ".." entries
           ent_type_ = directory;
           break;
-        }
         case DT_LNK:
           ent_type_ = link;
           break;
@@ -353,7 +351,7 @@ bool iterator::next() {
           // This check fixes bug #1023862.
           //
           zstring ent_path( dir_path_ );
-          fs::append( ent_path, static_cast<char const*>( ent_->d_name ) );
+          fs::append( ent_path, ent_->d_name );
           ent_type_ = get_type( ent_path );
           if ( ent_type_ == directory && is_dots( ent_->d_name ) )
             continue;                   // skip "." and ".." entries

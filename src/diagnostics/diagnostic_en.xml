@@ -605,6 +605,13 @@
       <value>module contains more than one context item declaration</value>
     </diagnostic>
 
+    <diagnostic code="XQST0103">
+      <comment>
+      All variables in a window clause must have distinct names.
+      </comment>
+      <value>$1: non-distinct variable in window clause</value>
+    </diagnostic>
+
     <diagnostic code="XQST0106">
       <comment>
        It is a static error if a function's annotations contain more than one
@@ -2254,7 +2261,7 @@
     </diagnostic>
 
     <diagnostic code="ZDST0035" name="INDEX_GENERAL_MULTIKEY">
-      <value>"$1": index general multikey</value>
+      <value>"$1": number of key expressions for general indexes is restricted to one expression</value>
     </diagnostic>
 
     <diagnostic code="ZDST0036" name="INDEX_DECL_IN_FOREIGN_MODULE">
@@ -2672,6 +2679,12 @@
     <diagnostic code="JNUP0017" if="defined(ZORBA_WITH_JSON)">
       <comment> It is a dynamic error if the value in a replace expression is not exactly a single item.</comment>
       <value>Cannot replace with less or more than an item.</value>
+    </diagnostic>
+    
+    <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
+
+      <value>Object or array selection needs exactly one parameter.</value>
     </diagnostic>
     
     <!--////////// JSONIQ ///////////////////////////////////////////-->
@@ -3834,7 +3847,15 @@
     </entry>
     
     <entry key="ParseFragmentInvalidOptions">
-      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
+      <value>invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowed">
+      <value>a DOCTYPE declaration is not allowed</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowedHere">
+      <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
     
     <entry key="FormatNumberDuplicates">

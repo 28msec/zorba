@@ -41,6 +41,7 @@
 #include "functions/func_fnput.h"
 #include "functions/func_hoist.h"
 #include "functions/func_index_ddl.h"
+#include "functions/func_index_func.h"
 #include "functions/func_ic_ddl.h"
 #include "functions/func_maths.h"
 #include "functions/func_nodes.h"
@@ -122,6 +123,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_errors_and_diagnostics(sctx);
   populate_context_fnput(sctx);
   populate_context_index_ddl(sctx);
+  populate_context_index_func(sctx);
   populate_context_ic_ddl(sctx);
   populate_context_json(sctx);
   populate_context_maths(sctx);

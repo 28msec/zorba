@@ -77,8 +77,32 @@ void forletwin_clause::set_expr(expr_t v)
 void forletwin_clause::set_var(var_expr_t v)
 {
   theVarExpr = v;
+
   if (theVarExpr != NULL)
+  {
     theVarExpr->set_flwor_clause(this);
+
+    if (theKind == window_clause && theVarExpr->get_type() != NULL)
+    {
+      RootTypeManager& rtm = GENV_TYPESYSTEM;
+      TypeManager* tm = theVarExpr->get_type_manager();
+
+      const QueryLoc& loc = theVarExpr->get_loc();
+
+      xqtref_t varType = theVarExpr->get_type();
+      xqtref_t domainType = theDomainExpr->get_return_type();
+
+      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
+          !TypeOps::is_subtype(tm, *domainType, *varType, loc))
+      {
+        theDomainExpr = new treat_expr(theDomainExpr->get_sctx(),
+                                       theDomainExpr->get_loc(),
+                                       theDomainExpr,
+                                       varType,
+                                       TreatIterator::TYPE_MATCH);
+      }
+    }
+  }
 }
 
 
@@ -245,6 +269,7 @@ let_clause::let_clause(
     TypeManager* tm = sctx->get_typemanager();
 
     xqtref_t declaredType = varExpr->get_type();
+
     if (declaredType != NULL)
     {
       xqtref_t domainType = domainExpr->get_return_type();
@@ -253,6 +278,7 @@ let_clause::let_clause(
           !TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
       {
         xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
+
         if (TypeOps::is_equal(tm, *varType, *rtm.NONE_TYPE, loc))
         {
           RAISE_ERROR(err::XPTY0004, loc,
@@ -349,6 +375,7 @@ window_clause::window_clause(
     TypeManager* tm = sctx->get_typemanager();
 
     xqtref_t varType = varExpr->get_type();
+
     if (varType != NULL)
     {
       xqtref_t domainType = domainExpr->get_return_type();
