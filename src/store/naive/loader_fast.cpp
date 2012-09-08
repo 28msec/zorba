@@ -668,16 +668,6 @@ void FastXmlLoader::startElement(
                   << std::endl << " ordpath = " << elemNode->getOrdPath().show()
                   << std::endl);
     
-    // Add the base-uri if the parent document node is not being created, which happens when xml fragments are parsed
-    FragmentXmlLoader* fragmentLoader = dynamic_cast<FragmentXmlLoader*>(&loader);
-    if (fragmentLoader != NULL && 
-        fragmentLoader->theLoadProperties.getCreateDocParentLink() == false &&
-        fragmentLoader->getFragmentStream()->current_element_depth == 1)
-    {
-      zstring emptyStr;
-      elemNode->addBaseUriProperty(loader.theBaseUri, emptyStr);
-    }
-
     // Process namespace bindings
     if (numBindings > 0)
     {
@@ -766,6 +756,16 @@ void FastXmlLoader::startElement(
                       << std::endl << " ordpath = "
                       << attrNode->getOrdPath().show() << std::endl);
       }
+    }
+    
+    // Add the base-uri if the parent document node is not being created, which happens when xml fragments are parsed
+    FragmentXmlLoader* fragmentLoader = dynamic_cast<FragmentXmlLoader*>(&loader);
+    if (fragmentLoader != NULL && 
+        fragmentLoader->theLoadProperties.getCreateDocParentLink() == false &&
+        fragmentLoader->getFragmentStream()->current_element_depth == 1)
+    {
+      zstring emptyStr;
+      elemNode->addBaseUriProperty(loader.theBaseUri, emptyStr);
     }
 
     nodeStack.push((XmlNode*)elemNode);

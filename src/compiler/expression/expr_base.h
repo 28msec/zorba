@@ -193,8 +193,6 @@ public:
 
   static void checkNonUpdating(const expr* e);
 
-  virtual void free() {}
-
 protected:
   expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
 

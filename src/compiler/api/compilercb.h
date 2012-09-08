@@ -148,7 +148,7 @@ public:
     bool           print_item_flow;  // TODO: move to RuntimeCB
 
    public:
-    SERIALIZABLE_CLASS(config)
+    SERIALIZABLE_CLASS(config);
     config(::zorba::serialization::Archiver& ar);
 
     config();
@@ -161,8 +161,6 @@ public:
   typedef std::map<csize, static_context_t> SctxMap;
 
 public:
-  ExprManager        *const theEM;
-
   XQueryDiagnostics       * theXQueryDiagnostics;
 
   SctxMap                   theSctxMap;
@@ -190,6 +188,8 @@ public:
   uint32_t                  theTempIndexCounter;
 
   config                    theConfig;
+
+  ExprManager       * const theEM;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);

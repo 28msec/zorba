@@ -394,11 +394,12 @@ window_clause::window_clause(
       if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
           !TypeOps::is_subtype(tm, *domainType, *varType, loc))
       {
-        domainExpr = theCCB->theEM->create_treat_expr(sctx,
-                                    loc,
-                                    domainExpr,
-                                    varType,
-                                    TreatIterator::TYPE_MATCH);
+        domainExpr = theCCB->theEM->
+        create_treat_expr(sctx,
+                          loc,
+                          domainExpr,
+                          varType,
+                          TreatIterator::TYPE_MATCH);
 
         set_expr(domainExpr);
       }
@@ -440,8 +441,8 @@ flwor_clause* window_clause::clone(expr::substitution_t& subst) const
   var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
   subst[theVarExpr] = varCopy;
 
-  flwor_wincond* cloneStartCond;
-  flwor_wincond* cloneStopCond;
+  flwor_wincond* cloneStartCond = NULL;
+  flwor_wincond* cloneStopCond = NULL;
 
   if (theWinStartCond != NULL)
     cloneStartCond = theWinStartCond->clone(subst);
@@ -450,13 +451,13 @@ flwor_clause* window_clause::clone(expr::substitution_t& subst) const
     cloneStopCond = theWinStopCond->clone(subst);
 
   return theCCB->theEM->create_window_clause(theContext,
-                           get_loc(),
-                           theWindowKind,
-                           varCopy,
-                           domainCopy,
-                           cloneStartCond,
-                           cloneStopCond,
-                           theLazyEval);
+                                             get_loc(),
+                                             theWindowKind,
+                                             varCopy,
+                                             domainCopy,
+                                             cloneStartCond,
+                                             cloneStopCond,
+                                             theLazyEval);
 }
 
 
@@ -765,7 +766,11 @@ flwor_clause* materialize_clause::clone(expr::substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-count_clause::count_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, var_expr* var)
+count_clause::count_clause(
+    static_context* sctx,
+    CompilerCB* ccb,
+    const QueryLoc& loc,
+    var_expr* var)
   :
   flwor_clause(sctx, ccb, loc, flwor_clause::count_clause),
   theVarExpr(var)
@@ -794,7 +799,11 @@ flwor_clause* count_clause::clone(expr::substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-where_clause::where_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, expr* where)
+where_clause::where_clause(
+    static_context* sctx,
+    CompilerCB* ccb,
+    const QueryLoc& loc,
+    expr* where)
   :
   flwor_clause(sctx, ccb, loc, flwor_clause::where_clause),
   theWhereExpr(where)
@@ -820,7 +829,11 @@ flwor_clause* where_clause::clone(expr::substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-flwor_expr::flwor_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, bool general)
+flwor_expr::flwor_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    bool general)
   :
   expr(ccb, sctx, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
   theIsGeneral(general),
@@ -872,7 +885,7 @@ void flwor_expr::add_clause(flwor_clause* c, bool computeScriptingKind)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::add_clause(ulong pos, flwor_clause* c)
+void flwor_expr::add_clause(csize pos, flwor_clause* c)
 {
   theClauses.insert(theClauses.begin() + pos, c);
   c->theFlworExpr = this;
@@ -886,7 +899,8 @@ void flwor_expr::add_clause(ulong pos, flwor_clause* c)
 ********************************************************************************/
 void flwor_expr::add_where(expr* e)
 {
-  where_clause* whereClause = theCCB->theEM->create_where_clause(theSctx, e->get_loc(), e);
+  where_clause* whereClause = theCCB->theEM->
+  create_where_clause(theSctx, e->get_loc(), e);
 
   add_clause(whereClause);
 }
@@ -1000,11 +1014,11 @@ orderby_clause* flwor_expr::get_order_clause() const
 /*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
-ulong flwor_expr::num_forlet_clauses()
+csize flwor_expr::num_forlet_clauses()
 {
-  ulong num = 0;
-  ulong numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize num = 0;
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = theClauses[i];
 
@@ -1029,9 +1043,9 @@ long flwor_expr::defines_variable(const var_expr* v) const
   if (varClause == NULL)
     return -1;
 
-  ulong numClauses = (ulong)theClauses.size();
+  csize numClauses = theClauses.size();
 
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i] == varClause)
       return i;
@@ -1047,9 +1061,9 @@ long flwor_expr::defines_variable(const var_expr* v) const
 ********************************************************************************/
 void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
 {
-  ulong numClauses = (ulong)theClauses.size();
+  csize numClauses = theClauses.size();
 
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = theClauses[i];
 

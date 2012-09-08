@@ -71,16 +71,20 @@ protected:
   ClauseKind                theKind;
   flwor_expr              * theFlworExpr;
 
-  CompilerCB         *const theCCB;
+  CompilerCB        * const theCCB;
 
-  flwor_clause(static_context* sctx, CompilerCB* ccb,
-               const QueryLoc& loc, ClauseKind kind)
+protected:
+  flwor_clause(
+      static_context* sctx,
+      CompilerCB* ccb,
+      const QueryLoc& loc,
+      ClauseKind kind)
     :
     theContext(sctx),
     theLocation(loc),
     theKind(kind),
-    theCCB(ccb),
-    theFlworExpr(NULL)
+    theFlworExpr(NULL),
+    theCCB(ccb)
   {
   }
 
@@ -139,6 +143,7 @@ protected:
   var_expr   * theVarExpr;
   expr       * theDomainExpr;
 
+protected:
   forletwin_clause(
         static_context* sctx,
         CompilerCB* ccb,
@@ -174,6 +179,7 @@ protected:
   var_expr    * theScoreVarExpr;
   bool          theAllowingEmpty;
 
+protected:
   for_clause(
         static_context* sctx,
         CompilerCB* ccb,
@@ -187,7 +193,6 @@ protected:
 public:
   ~for_clause();
 
-public:
   bool is_allowing_empty() const { return theAllowingEmpty; }
 
   void set_allowing_empty(bool allowing_empty) { theAllowingEmpty = allowing_empty; }
@@ -220,6 +225,7 @@ protected:
   var_expr  * theScoreVarExpr;
   bool        theLazyEval;
 
+protected:
   let_clause(
         static_context* sctx,
         CompilerCB* ccb,
@@ -231,7 +237,6 @@ protected:
 public:
   ~let_clause();
 
-public:
   var_expr* get_score_var() const;
 
   void set_score_var(var_expr* v);
@@ -262,11 +267,12 @@ public:
   typedef enum { tumbling_window, sliding_window } window_t;
 
 protected:
-  window_t          theWindowKind;
-  flwor_wincond*    theWinStartCond;
-  flwor_wincond*    theWinStopCond;
-  bool              theLazyEval;
+  window_t         theWindowKind;
+  flwor_wincond  * theWinStartCond;
+  flwor_wincond  * theWinStopCond;
+  bool             theLazyEval;
 
+protected:
   window_clause(
         static_context* sctx,
         CompilerCB* ccb,
@@ -281,7 +287,6 @@ protected:
 public:
   ~window_clause();
 
-public:
   window_t get_winkind() const { return theWindowKind; }
 
   flwor_wincond* get_win_start() const { return theWinStartCond; }
@@ -356,13 +361,14 @@ public:
   };
 
 protected:
-  bool    theIsOnly;
-  vars    theInputVars;
-  vars    theOutputVars;
-  expr  * theCondExpr;
+  bool         theIsOnly;
+  vars         theInputVars;
+  vars         theOutputVars;
+  expr       * theCondExpr;
 
-  CompilerCB *const theCCB;
+  CompilerCB * const theCCB;
 
+protected:
   flwor_wincond(
       CompilerCB* ccb,
       static_context* sctx,
@@ -554,7 +560,7 @@ class count_clause : public flwor_clause
   friend class ExprManager;
 
 protected:
-  var_expr* theVarExpr;
+  var_expr * theVarExpr;
 
   count_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, var_expr* var);
 
@@ -576,7 +582,7 @@ class where_clause : public flwor_clause
   friend class ExprManager;
   friend class flwor_expr;
 
-  expr* theWhereExpr;
+  expr * theWhereExpr;
 
   where_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc, expr* where);
 
@@ -625,10 +631,10 @@ public:
   typedef std::vector<flwor_clause*> clause_list_t;
 
 protected:
-  bool          theIsGeneral;
-  bool          theHasSequentialClauses;
-  clause_list_t theClauses;
-  expr*        theReturnExpr;
+  bool            theIsGeneral;
+  bool            theHasSequentialClauses;
+  clause_list_t   theClauses;
+  expr          * theReturnExpr;
 
 protected:
   flwor_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, bool general);
@@ -650,11 +656,11 @@ public:
 
   void compute_scripting_kind();
 
-  ulong num_clauses() const { return (ulong)theClauses.size(); }
+  csize num_clauses() const { return theClauses.size(); }
 
   void add_clause(flwor_clause* c, bool computeScriptingKind = true);
 
-  void add_clause(ulong pos, flwor_clause* c);
+  void add_clause(csize pos, flwor_clause* c);
 
   void add_where(expr* e);
 
@@ -679,7 +685,7 @@ public:
   void remove_where_clause();
   group_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
-  ulong num_forlet_clauses();
+  csize num_forlet_clauses();
 
   void accept(expr_visitor&);
 

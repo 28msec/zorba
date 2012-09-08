@@ -47,15 +47,15 @@ public:
 
   ~ExprManager();
 
-  expr* reg(expr*);
+  void reg(expr*);
 
-  flwor_clause* reg(flwor_clause*);
+  void reg(flwor_clause*);
 
-  flwor_wincond* reg(flwor_wincond*);
+  void reg(flwor_wincond*);
 
-  catch_clause* reg(catch_clause*);
+  void reg(catch_clause*);
 
-  copy_clause* reg(copy_clause*);
+  void reg(copy_clause*);
 
 private:
   //An ExprManager is the only object to handle a collection of Exprs and
