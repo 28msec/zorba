@@ -4,6 +4,7 @@ local:collapse-nodes($x as node()*, $id as xs:integer) as node()*
   for $y in $x
   let $n := node-name($y)
   group by $n
+  order by xs:string($n)
   count $i
   return local:collapse-nodes-same-name($y, $id+1)
 };
