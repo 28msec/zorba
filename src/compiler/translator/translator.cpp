@@ -13143,12 +13143,6 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                                       theRTM.STRING_TYPE_ONE,
                                       PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
 
-    valueExpr = wrap_in_type_match(valueExpr,
-                                   rtm.ITEM_TYPE_ONE,
-                                   loc,
-                                   TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
-                                   NULL);
-
     args[2 * (numPairs - 1 - i) + 1] = nameExpr;
     args[2 * (numPairs - 1 - i) + 2] = valueExpr;
   }
