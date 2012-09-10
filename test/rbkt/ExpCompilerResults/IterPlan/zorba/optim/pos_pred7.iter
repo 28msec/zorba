@@ -1,0 +1,22 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="g">
+    <SingletonIterator value="xs:integer(4)"/>
+  </CtxVarDeclareIterator>
+  <SequencePointAccessIterator>
+    <FnConcatIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(2)"/>
+      <SingletonIterator value="xs:integer(3)"/>
+      <SingletonIterator value="xs:integer(4)"/>
+      <SingletonIterator value="xs:integer(5)"/>
+      <SingletonIterator value="xs:integer(6)"/>
+      <SingletonIterator value="xs:integer(7)"/>
+      <SingletonIterator value="xs:integer(8)"/>
+      <SingletonIterator value="xs:integer(9)"/>
+      <SingletonIterator value="xs:integer(0)"/>
+    </FnConcatIterator>
+    <CtxVarIterator varid="2" varname="g" varkind="global"/>
+  </SequencePointAccessIterator>
+</SequentialIterator>
+

@@ -6,8 +6,7 @@ let $polozky := for $p in doc("5890.xml")//hospodarka/inventar/*
                        }
         
 let $artikeln := for $a in doc("5890.xml")//artikel
-                 return element polozka 
-                        {     <polozka>{$a}</polozka> }
+                 return element polozka { <polozka>{$a}</polozka> }
         
 return <inventar>{$polozky union $artikeln}</inventar>
 

@@ -125,7 +125,8 @@ static inline string expr_loc(const expr* e)
   if (Properties::instance()->printLocations())
   {
     ostringstream os;
-    os << " (loc: " << e->get_loc().getLineBegin() << ", " << e->get_loc().getColumnBegin() << ")";
+    os << " (loc: " << e->get_loc().getLineBegin() << ", "
+       << e->get_loc().getColumnBegin() << ")";
     return os.str ();
   }
   else
@@ -291,24 +292,33 @@ ostream& flwor_wincond::put(ostream& os) const
 
 ostream& group_clause::put(ostream& os) const
 {
-  BEGIN_PUT(group_clause);
+  os << indent << "GROUP-BY" << expr_addr(this) << " ";
 
-  os << indent << "GROUP BY EXPRS";
+  os << endl << indent << "[\n" << inc_indent;
 
-  for (unsigned i = 0; i < theGroupVars.size(); i++)
+  os << indent << "GROUPING SPECS";
+
+  for (csize i = 0; i < theGroupVars.size(); ++i)
   {
     PUT_SUB("", theGroupVars[i].first);
     os << inc_indent << indent << "-->" << dec_indent;
     theGroupVars[i].second->put(os) << endl;
   }
 
-  os << indent << "NON GROUP BY VARS ";
+  os << indent << "NON GROUPING SPECS ";
 
-  for (unsigned i = 0; i < theNonGroupVars.size(); i++)
+  if (theNonGroupVars.empty())
   {
-    PUT_SUB("", theNonGroupVars[i].first);
-    os << inc_indent << indent << "-->" << dec_indent;
-    theNonGroupVars[i].second->put(os) << endl;
+    os << endl;
+  }
+  else
+  {
+    for (csize i = 0; i < theNonGroupVars.size(); ++i)
+    {
+      PUT_SUB("", theNonGroupVars[i].first);
+      os << inc_indent << indent << "-->" << dec_indent;
+      theNonGroupVars[i].second->put(os) << endl;
+    }
   }
 
   END_PUT();

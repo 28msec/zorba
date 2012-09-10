@@ -40,23 +40,33 @@
 namespace zorba
 {
 
-static void collect_flw_vars(const flwor_expr&, expr::FreeVars&);
+static void 
+collect_flw_vars(const flwor_expr&, expr::FreeVars&);
 
 static bool is_trivial_expr(const expr*);
 
-static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr&);
+static bool 
+safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr&);
 
-static bool var_in_try_block_or_in_loop(const var_expr*, const expr*, bool, bool, bool&);
+static bool 
+var_in_try_or_loop(const var_expr*, const expr*, bool, bool, bool&);
 
-static bool is_subseq_pred(RewriterContext&, flwor_expr*, expr*, var_expr**, expr**);
+static bool 
+is_subseq_pred(
+    RewriterContext&,
+    const flwor_expr*,
+    csize whereClausePos,
+    const expr*,
+    var_expr*&,
+    expr*&);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 static void fix_if_annotations(if_expr* ifExpr)
 {
   expr_tools::fix_annotations(ifExpr, ifExpr->get_cond_expr());
@@ -65,9 +75,9 @@ static void fix_if_annotations(if_expr* ifExpr)
 }
 
 
-/*******************************************************************************
+/*****************************************************************************
 
-********************************************************************************/
+******************************************************************************/
 class SubstVars : public PrePostRewriteRule
 {
 protected:
@@ -122,7 +132,7 @@ RULE_REWRITE_POST(SubstVars)
 }
 
 
-/*******************************************************************************
+/******************************************************************************
   Replace all references to var "var" inside the expr "root" with expr "subst"
 ********************************************************************************/
 expr* subst_vars(
@@ -153,25 +163,29 @@ expr* subst_vars(
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  EliminateUnusedLetVars                                                    //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
-  const QueryLoc& loc = LOC(node);
-  static_context* sctx = node->get_sctx();
-
-  if (node->get_expr_kind() != flwor_expr_kind)
+  if (node->get_expr_kind() != flwor_expr_kind &&
+      node->get_expr_kind() != gflwor_expr_kind)
     return NULL;
+
+  const QueryLoc& loc = node->get_loc();
+  static_context* sctx = node->get_sctx();
 
   flwor_expr* flworp = static_cast<flwor_expr *>(node);
   flwor_expr& flwor = *flworp;
 
-  expr::FreeVars myVars;
-  collect_flw_vars(flwor, myVars);
-
   csize numClauses = flwor.num_clauses();
-  csize numForLetClauses = 0;
 
   // numClauses may be 0 in the case this flwor became a common sub-expression
   // due to var-inlining inside an if-then-else expr (see test
@@ -181,73 +195,106 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     return flwor.get_return_expr();
   }
 
-  const forletwin_clause& flwc =
-  *static_cast<const forletwin_clause *>(flwor.get_clause(0));
-
   // "for $x in E return $x"  --> "E"
   // "let $x := E return $x"  --> "E"
+  // Single windowing clauses are left alone
   if (numClauses == 1 &&
-      myVars.size() == 1 &&
-      flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
+      flwor.get_clause(0)->get_kind() != flwor_clause::window_clause)
   {
-    const wrapper_expr* w = static_cast<const wrapper_expr*>(flwor.get_return_expr());
-    if (w->get_expr() == flwc.get_var())
-      return flwc.get_expr();
+    assert(flwor.get_clause(0)->get_kind() == flwor_clause::for_clause ||
+           flwor.get_clause(0)->get_kind() == flwor_clause::let_clause);
+
+    const forletwin_clause* flwc =
+    static_cast<const forletwin_clause *>(flwor.get_clause(0));
+
+    if (flwor.get_return_expr()->get_var() == flwc->get_var())
+    {
+      return flwc->get_expr();
+    }
   }
 
-  // "for $x in ... where E ... return ...", and E doesn't depend on FLWOR vars -->
-  // "if E then flwor else ()", where flwor is the original flwor expr without the
-  // where clause.
-  expr* whereExpr = NULL;
-  if ((whereExpr = flwor.get_where()) != NULL && !flwor.has_sequential_clauses())
+  // "for $x in ... where E ... return ...", and E doesn't depend on FLWOR vars
+  // --> "if E then flwor else ()", where flwor is the original flwor expr
+  // without the where clause.
+  if (!flwor.has_sequential_clauses())
   {
-    const expr::FreeVars& whereVars = whereExpr->getFreeVars();
+    expr::FreeVars myVars;
+    expr* whereExpr = NULL;
 
-    expr::FreeVars diff;
-    std::set_intersection(myVars.begin(),
-                          myVars.end(),
-                          whereVars.begin(),
-                          whereVars.end(),
-                          std::inserter(diff, diff.begin()));
-    if (diff.empty())
+    for (csize i = 0; i < numClauses; ++i)
     {
-      expr* oldWhere = whereExpr;
-      flwor.remove_where_clause();
+      flwor_clause* clause = flwor.get_clause(i);
 
-      if_expr* ifExpr = rCtx.theEM->create_if_expr(sctx,
-                                             loc,
-                                             oldWhere,
-                                             &flwor,
-                                             rCtx.theEM->create_seq(sctx, loc));
+      if (clause->get_kind() == flwor_clause::where_clause)
+      {
+        whereExpr = clause->get_expr();
+        const expr::FreeVars& whereVars = whereExpr->getFreeVars();
 
-      fix_if_annotations(ifExpr);
+        if (myVars.empty())
+          collect_flw_vars(flwor, myVars);
 
-      return ifExpr;
+        expr::FreeVars diff;
+        std::set_intersection(myVars.begin(),
+                              myVars.end(),
+                              whereVars.begin(),
+                              whereVars.end(),
+                              std::inserter(diff, diff.begin()));
+        if (diff.empty())
+        {
+          flwor.remove_where_clause();
+
+          if_expr* ifExpr = rCtx.theEM->
+          create_if_expr(sctx,
+                         loc,
+                         whereExpr,
+                         flworp,
+                         rCtx.theEM->create_seq(sctx, loc));
+          
+          fix_if_annotations(ifExpr);
+          
+          return ifExpr;
+        }
+      }
     }
   }
 
   bool modified = false;
-  group_clause* gc = NULL;
 
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
   //     their domain expr.
   // (c) Change a LET var into a FOR var, if its domain expr consists of
   //     exactly one item.
+  // (d) Remove any unused non-group variables from GROUP BY clauses.
   for (csize i = 0; i < numClauses; ++i)
   {
     bool substitute = false;
 
-    flwor_clause& c = *flwor.get_clause(i);
+    flwor_clause* c = flwor.get_clause(i);
 
-    if (c.get_kind() == flwor_clause::group_clause)
+    if (c->get_kind() == flwor_clause::group_clause)
     {
-      gc = static_cast<group_clause *>(&c);
+      group_clause* gc = static_cast<group_clause *>(c);
+
+      flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
+      flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
+
+      for(; ite != end; ++ite)
+      {
+        var_expr* var = ite->second;
+        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+
+        if (uses == 0 && !ite->first->isNonDiscardable())
+        {
+          gc->removeNonGroupingVar(ite);
+          --ite;
+          end = gc->endNonGroupVars();
+        }
+      }
     }
-    else if (c.get_kind() == flwor_clause::for_clause)
+    else if (c->get_kind() == flwor_clause::for_clause)
     {
-      numForLetClauses++;
-      for_clause* fc = static_cast<for_clause *>(&c);
+      for_clause* fc = static_cast<for_clause *>(c);
 
       expr* domainExpr = fc->get_expr();
       xqtref_t domainType = domainExpr->get_return_type();
@@ -259,70 +306,95 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (pvar != NULL &&
           expr_tools::count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
       {
-        MODIFY(fc->set_pos_var(NULL));
+        fc->set_pos_var(NULL);
         pvar = NULL;
       }
 
-      // Cannot substitute a FOR var whose domain is a sequential expr or
+      // Cannot inline a FOR var whose domain is a sequential expr or
       // might contain more than 1 items.
-      if (domainExpr->is_sequential() || domainCount >= 2)
+      if (domainExpr->is_sequential() || domainCount > 1)
         continue;
 
       // FOR clause with 0 cardinality
       if (domainCount == 0)
-        return rCtx.theEM->create_seq(sctx, LOC(node));
+      {
+        if (! fc->is_allowing_empty())
+        {
+          return rCtx.theEM->create_seq(sctx, LOC(node));
+        }
+        else
+        {
+          if (pvar != NULL)
+          {
+            expr* constExpr = rCtx.theEM->
+            create_const_expr(sctx, loc, xs_integer::zero());
+
+            MODIFY(subst_vars(rCtx, node, pvar, constExpr));
+            fc->set_pos_var(NULL);
+          }
+
+          expr* emptyExpr = rCtx.theEM->create_seq(sctx, LOC(node));
+          MODIFY(subst_vars(rCtx, node, var, emptyExpr));
+          substitute = true;
+        }
+      }
 
       // FOR clause with cardinality 0 or 1
+      else
+      {
+        if (pvar != NULL)
+        {
+          if (domainQuant == TypeConstants::QUANT_ONE || 
+              ! fc->is_allowing_empty())
+          {
+            expr* constExpr = rCtx.theEM->
+            create_const_expr(sctx, loc, xs_integer::one());
 
-      if (pvar != NULL)
-      {
-        MODIFY(subst_vars(rCtx,
-                          node,
-                          pvar,
-                          rCtx.theEM->create_const_expr(sctx,
-                                                   loc,
-                                                   xs_integer::one())
-        ));
-      }
+            MODIFY(subst_vars(rCtx, node, pvar, constExpr));
+            fc->set_pos_var(NULL);
+          }
+        }
 
-      int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
 
-      if (uses > 1 &&
-          is_trivial_expr(domainExpr) &&
-          domainQuant == TypeConstants::QUANT_ONE)
-      {
-        subst_vars(rCtx, node, var, domainExpr);
-        substitute = true;
-      }
-      else if (uses == 1 &&
-               ((is_trivial_expr(domainExpr) &&
-                 domainQuant == TypeConstants::QUANT_ONE) ||
-                safe_to_fold_single_use(var, domainQuant, flwor)))
-      {
-        subst_vars(rCtx, node, var, domainExpr);
-        substitute = true;
-      }
-      else if (uses == 0 &&
-               !domainExpr->isNonDiscardable() &&
-               domainQuant == TypeConstants::QUANT_ONE)
-      {
-        substitute = true;
+        if (uses > 1 &&
+            is_trivial_expr(domainExpr) &&
+            (domainQuant == TypeConstants::QUANT_ONE ||
+             fc->is_allowing_empty()))
+        {
+          subst_vars(rCtx, node, var, domainExpr);
+          substitute = true;
+        }
+        else if (uses == 1 &&
+                 (domainQuant == TypeConstants::QUANT_ONE || i == numClauses -1) &&
+                 ((is_trivial_expr(domainExpr) &&
+                   domainQuant == TypeConstants::QUANT_ONE) ||
+                  safe_to_fold_single_use(var, domainQuant, flwor)))
+        {
+          subst_vars(rCtx, node, var, domainExpr);
+          substitute = true;
+        }
+        else if (uses == 0 &&
+                 !domainExpr->isNonDiscardable() &&
+                 (domainQuant == TypeConstants::QUANT_ONE ||
+                  fc->is_allowing_empty()))
+        {
+          substitute = true;
+        }
       }
 
       if (substitute)
       {
         MODIFY(flwor.remove_clause(i));
         --numClauses;
-        --numForLetClauses;
         --i;
 
         flwor.compute_return_type(true, NULL);
       }
     }
-    else if (c.get_kind() == flwor_clause::let_clause)
+    else if (c->get_kind() == flwor_clause::let_clause)
     {
-      let_clause* lc = static_cast<let_clause *>(&c);
-      numForLetClauses++;
+      let_clause* lc = static_cast<let_clause *>(c);
 
       expr* domainExpr = lc->get_expr();
       xqtref_t domainType = domainExpr->get_return_type();
@@ -350,11 +422,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         substitute = true;
 #if 0
-				rCtx.getCompilerCB()->theXQueryDiagnostics->add_warning(
-					NEW_XQUERY_WARNING(
-						zwarn::ZWST0001_UNUSED_VARIABLE,
-						WARN_PARAMS(var->get_name()->getStringValue()),
-						WARN_LOC(var->get_loc())));
+        rCtx.getCompilerCB()->theXQueryDiagnostics->add_warning(
+          NEW_XQUERY_WARNING(zwarn::ZWST0001_UNUSED_VARIABLE,
+          WARN_PARAMS(var->get_name()->getStringValue()),
+          WARN_LOC(var->get_loc())));
 #endif
       }
 
@@ -362,23 +433,20 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         MODIFY(flwor.remove_clause(i));
         --numClauses;
-        --numForLetClauses;
         --i;
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
       {
-        let_clause* save = lc;
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
-        var_expr* fvar = rCtx.theEM->create_var_expr(sctx,
-                                                 loc,
-                                                 var_expr::for_var,
-                                                 var->get_name());
+        var_expr* fvar = rCtx.theEM->
+        create_var_expr(sctx, loc, var_expr::for_var, var->get_name());
+
         fvar->getFreeVars().insert(fvar);
-        for_clause* fc = rCtx.theEM->create_for_clause(sctx,
-                                                        loc,
-                                                        fvar,
-                                                        domainExpr);
+
+        for_clause* fc = rCtx.theEM->
+        create_for_clause(sctx, loc, fvar, domainExpr);
+
         flwor.add_clause(i, fc);
 
         subst_vars(rCtx, node, var, fvar);
@@ -386,47 +454,128 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     }
   }
 
-  // FLWOR with no remaining clauses
-  if (numForLetClauses == 0)
+  expr* whereCond = NULL;
+
+  while (flwor.num_clauses() > 0)
   {
-    if (gc != NULL)
+    flwor_clause* clause = flwor.get_clause(0);
+
+    if (clause->get_kind() == flwor_clause::for_clause ||
+        clause->get_kind() == flwor_clause::let_clause ||
+        clause->get_kind() == flwor_clause::window_clause)
     {
+      break;
+    }
+    else if (clause->get_kind() == flwor_clause::group_clause)
+    {
+      group_clause* gc = static_cast<group_clause*>(clause);
+
       const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
-      flwor_clause::rebind_list_t::const_iterator gVarsIte = gVars.begin();
-      flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
-      for (; gVarsIte != gVarsEnd; ++gVarsIte)
+
+      flwor_clause::rebind_list_t::const_iterator ite = gVars.begin();
+      flwor_clause::rebind_list_t::const_iterator end = gVars.end();
+
+      for (; ite != end; ++ite)
       {
-        subst_vars(rCtx, flworp, gVarsIte->second, gVarsIte->first);
+        var_expr* gVar = ite->second;
+        expr* inputExpr = ite->first;
+
+        let_clause* letClause = rCtx.theEM->
+        create_let_clause(sctx, gVar->get_loc(), gVar, inputExpr);
+
+        flwor.add_clause(1, letClause);
       }
 
       const flwor_clause::rebind_list_t& ngVars = gc->get_nongrouping_vars();
-      flwor_clause::rebind_list_t::const_iterator ngVarsIte = ngVars.begin();
-      flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
-      for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
+
+      ite = ngVars.begin();
+      end = ngVars.end();
+
+      for (; ite != end; ++ite)
       {
-        subst_vars(rCtx, flworp, ngVarsIte->second, ngVarsIte->first);
+        var_expr* ngVar = ite->second;
+        expr* inputExpr = ite->first;
+
+        let_clause* letClause = rCtx.theEM->
+        create_let_clause(sctx, ngVar->get_loc(), ngVar, inputExpr);
+
+        flwor.add_clause(1, letClause);
       }
+
+      flwor.remove_clause(0);
+      continue;
     }
-
-    expr* result = flwor.get_return_expr();
-    expr* whereExpr = NULL;
-
-    if ((whereExpr = flwor.get_where()) != NULL)
+    else if (clause->get_kind() == flwor_clause::where_clause)
     {
-      if_expr* ifExpr =
-      rCtx.theEM->create_if_expr(whereExpr->get_sctx(),
-                  LOC(whereExpr),
-                  whereExpr,
-                  result,
-                  rCtx.theEM->create_seq(whereExpr->get_sctx(),
-                                      LOC(whereExpr)));
-      fix_if_annotations(ifExpr);
+      expr* whereExpr = clause->get_expr();
 
-      return ifExpr;
+      //TODO: Consider case where both whereExpr and whereCond ar AND ops
+      if (whereCond == NULL)
+      {
+        whereCond = whereExpr;
+      }
+      else if (whereCond->get_function_kind() == FunctionConsts::OP_AND_N)
+      {
+        static_cast<fo_expr*>(whereCond)->add_arg(whereExpr);
+      }
+      else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+      {
+        static_cast<fo_expr*>(whereExpr)->add_arg(whereCond);
+      }
+      else
+      {
+        whereCond = rCtx.theEM->
+        create_fo_expr(sctx,
+                       whereCond->get_loc(),
+                       GET_BUILTIN_FUNCTION(OP_AND_N),
+                       whereExpr,
+                       whereCond);
+      }
+
+      //as soon as whereCond is not NULL we don't need to mark as modified
+      flwor.remove_clause(0);
+      continue;
     }
+    else if (clause->get_kind() == flwor_clause::count_clause)
+    {
+      // since one value is still returned, count variables are changed to 1
+      subst_vars(rCtx,
+                 flworp,
+                 static_cast<count_clause*>(clause)->get_var(),
+                 rCtx.theEM->create_const_expr(sctx, loc, xs_integer::one()));
 
-    return result;
+      flwor.remove_clause(0);
+      continue;
+    }
+    else if (clause->get_kind() == flwor_clause::order_clause)
+    {
+      flwor.remove_clause(0);
+      continue;
+    }
+    else
+    {
+      ZORBA_ASSERT(false);
+    }
   }
+
+  if (whereCond != NULL)
+  {
+    expr* result = (flwor.num_clauses() > 0 ? flworp : flwor.get_return_expr());
+
+    if_expr* ifExpr = rCtx.theEM->
+    create_if_expr(sctx,
+                   whereCond->get_loc(),
+                   whereCond,
+                   result,
+                   rCtx.theEM->create_seq(sctx, whereCond->get_loc()));
+
+    fix_if_annotations(ifExpr);
+
+    return ifExpr;
+  }
+
+  if (flwor.num_clauses() == 0)
+    return flwor.get_return_expr();
 
   return modified ? node : NULL;
 }
@@ -438,19 +587,19 @@ RULE_REWRITE_POST(EliminateUnusedLetVars)
 }
 
 
-/*******************************************************************************
-  Returns a set containing all variables (including positional) defined by the
-  FOR, LET, or WINDOW clauses of a flwor expr.
-********************************************************************************/
-static void collect_flw_vars(
-    const flwor_expr& flwor,
-    expr::FreeVars& vars)
+/*****************************************************************************
+  Returns a set containing all the variables defined by the clauses of a flwor
+  expr.
+******************************************************************************/
+static void collect_flw_vars(const flwor_expr& flwor, expr::FreeVars& vars)
 {
   for (csize i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor.get_clause(i);
 
-    if (c.get_kind() == flwor_clause::for_clause)
+    switch (c.get_kind())
+    {
+    case flwor_clause::for_clause:
     {
       const for_clause* fc = static_cast<const for_clause *>(&c);
 
@@ -458,16 +607,16 @@ static void collect_flw_vars(
 
       if (fc->get_pos_var() != NULL)
         vars.insert(fc->get_pos_var());
-    }
 
-    else if (c.get_kind() == flwor_clause::let_clause)
+      break;
+    }
+    case flwor_clause::let_clause:
     {
       const let_clause* lc = static_cast<const let_clause *>(&c);
-
       vars.insert(lc->get_var());
+      break;
     }
-
-    else if (c.get_kind() == flwor_clause::window_clause)
+    case flwor_clause::window_clause:
     {
       const window_clause* wc = static_cast<const window_clause *>(&c);
 
@@ -494,19 +643,52 @@ static void collect_flw_vars(
         if (condvars.prev != NULL) vars.insert(condvars.prev);
         if (condvars.next != NULL) vars.insert(condvars.next);
       }
+
+      break;
+    }
+    case flwor_clause::group_clause:
+    {
+      const group_clause* gc = static_cast<const group_clause *>(&c);
+
+      flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
+      flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
+
+      for (; ite != end; ++ite)
+      {
+        vars.insert((*ite).second);
+      }
+
+      ite = gc->beginNonGroupVars();
+      end = gc->endNonGroupVars();
+
+      for (; ite != end; ++ite)
+      {
+        vars.insert((*ite).second);
+      }
+
+      break;
+    }
+    case flwor_clause::count_clause:
+    {
+      const count_clause* cc = static_cast<const count_clause *>(&c);
+      vars.insert(cc->get_var());
+      break;
+    }
+    default:
+      break;
     }
   }
 }
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+******************************************************************************/
 static bool is_trivial_expr(const expr* e)
 {
   switch (e->get_expr_kind())
   {
-  case const_expr_kind: // ????
+  case const_expr_kind:
   {
     return true;
   }
@@ -515,6 +697,10 @@ static bool is_trivial_expr(const expr* e)
     const var_expr* ve = static_cast<const var_expr*>(e);
     enum var_expr::var_kind k = ve->get_kind();
 
+    // NOTE: An arg var is not materialized, and as a result, it cannot be
+    // referenced more than once or be refeneced inside a loop or try block.
+    // Therefore, an arg var that appears as the domain expr of a LET var
+    // cannot trivially substitute the LET var.
     if (k == var_expr::arg_var ||
         k == var_expr::local_var ||
         (k == var_expr::prolog_var && ve->is_mutable()))
@@ -532,38 +718,42 @@ static bool is_trivial_expr(const expr* e)
 }
 
 
-/*******************************************************************************
+/*****************************************************************************
   Check if it is OK to fold (inline) a FOR/LET var X that we know is referenced
   only once withing its flwor expr.
 
-  For a LET var, varQuant is always QUNAT_ONE.
+  For a LET var, varQuant is always QUANT_ONE.
 
   For a FOR var, varQuant is the quantifier of the type of the domain expr.
   It can be either QUANT_ONE or QUANT_QUESTION.
-********************************************************************************/
+******************************************************************************/
 static bool safe_to_fold_single_use(
     var_expr* var,
     TypeConstants::quantifier_t varQuant,
     const flwor_expr& flwor)
 {
+  TypeManager* tm = var->get_type_manager();
+
   bool declared = false;
   expr* referencingExpr = NULL;
 
-  TypeManager* tm = var->get_type_manager();
+  bool hasNodeConstr = var->get_domain_expr()->contains_node_construction();
 
-  expr* domainExpr = var->get_domain_expr();
+  csize numClauses = flwor.num_clauses();
 
-  bool hasNodeConstr = domainExpr->contains_node_construction();
-
-  for (ulong i = 0; i < flwor.num_clauses(); ++i)
+  for (csize i = 0; i < numClauses && referencingExpr == NULL; ++i)
   {
-    const flwor_clause& c = *flwor.get_clause(i);
-    flwor_clause::ClauseKind kind = c.get_kind();
+    const flwor_clause* clause = flwor.get_clause(i);
+    flwor_clause::ClauseKind kind = clause->get_kind();
 
-    if (kind == flwor_clause::for_clause)
+    switch (kind)
     {
-      const for_clause& fc = *static_cast<const for_clause *>(&c);
-      var_expr* varExpr = fc.get_var();
+    case flwor_clause::for_clause:
+    case flwor_clause::let_clause:
+    {
+      const forletwin_clause* flc = static_cast<const forletwin_clause *>(clause);
+      var_expr* varExpr = flc->get_var();
+      expr* domExpr = flc->get_expr();
 
       if (! declared)
       {
@@ -571,152 +761,224 @@ static bool safe_to_fold_single_use(
         continue;
       }
 
-      if (fc.get_expr()->is_sequential())
+      assert(varQuant == TypeConstants::QUANT_ONE);
+
+      if (domExpr->is_sequential())
         return false;
 
-      // If X is referenced in the current FOR cluase .....
-      if (expr_tools::count_variable_uses(fc.get_expr(), var, NULL, 1) == 1)
+      // If X is referenced in the current FOR clause .....
+      if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
       {
-        if (varQuant != TypeConstants::QUANT_ONE)
-        {
-          // We are considering folding a FOR var whose domain expr may be the
-          // empty sequence. We can fold only if doing so will cause the result
-          // of the flwor expr to be the empty sequence in the case where the
-          // domain expr will indeed be equal to the empty sequence.
-          xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(var);
+        referencingExpr = domExpr;
+        break;
+      }
 
-          if (TypeOps::is_equal(tm,
-                                *type,
-                                *GENV_TYPESYSTEM.EMPTY_TYPE,
-                                fc.get_expr()->get_loc()))
-          {
-            referencingExpr = fc.get_expr();
-            break;
-          }
-          else
-          {
-            return false;
-          }
-        }
-        else
+      // If X is referenced after this FOR clause. In this case, we don't want
+      // to inline X because its domain expr will be computed once per iteration
+      // instead of just once.
+      if (kind == flwor_clause::for_clause &&
+          domExpr->get_return_type()->max_card() >= 2)
+        return false;
+
+      // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
+      //if (hasNodeConstr && fc.get_expr()->contains_node_construction())
+      //  return false;
+
+      break;
+    }
+    case flwor_clause::where_clause:
+    {
+      if (!declared)
+        continue;
+
+      assert(varQuant == TypeConstants::QUANT_ONE);
+
+      if (expr_tools::count_variable_uses(clause->get_expr(), var, NULL, 1) == 1)
+      {
+        referencingExpr = clause->get_expr();
+        break;
+      }
+
+      break;
+    }
+    case flwor_clause::order_clause:
+    {
+      if (!declared)
+        continue;
+
+      assert(varQuant == TypeConstants::QUANT_ONE);
+
+      const orderby_clause* oc = static_cast<const orderby_clause*>(clause);
+
+      std::vector<expr*>::const_iterator ite = oc->begin();
+      std::vector<expr*>::const_iterator end = oc->end();
+
+      for (; ite != end; ++ite)
+      {
+        if (expr_tools::count_variable_uses(*ite, var, NULL, 1) == 1)
         {
-          referencingExpr = fc.get_expr();
+          referencingExpr = *ite;
           break;
         }
       }
 
-      // If X is referenced inside a for loop with more than 1 iterations,
-      // then we don't replace the var with its domain expr because the domain
-      // expr will be computed once per iteration instead of just once.
-      if (fc.get_expr()->get_return_type()->max_card() >= 2)
-        return false;
-
-      // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-      if (hasNodeConstr && fc.get_expr()->contains_node_construction())
-        return false;
+      break;
     }
-    else if (kind == flwor_clause::let_clause)
+    case flwor_clause::group_clause:
     {
-      const forletwin_clause& flc = *static_cast<const forletwin_clause *>(&c);
-      var_expr* varExpr = flc.get_var();
-
-      if (! declared)
-      {
-        declared = (var == varExpr);
+      if (!declared)
         continue;
-      }
 
-      if (flc.get_expr()->is_sequential())
-        return false;
+      assert(varQuant == TypeConstants::QUANT_ONE);
 
-      if (expr_tools::count_variable_uses(flc.get_expr(), var, NULL, 1) == 1)
+      const group_clause* gc = static_cast<const group_clause*>(clause);
+
+      flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
+      flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
+
+      for (; ite != end; ++ite)
       {
-        if (varQuant != TypeConstants::QUANT_ONE)
+        expr* inputExpr = ite->first;
+        if (expr_tools::count_variable_uses(inputExpr, var, NULL, 1) == 1)
         {
-          // X is a FOR var which is referenced in the current LET clause, and
-          // whose domain may be the empty sequence. We cannot inline in this
-          // case.
-          return false;
+          referencingExpr = inputExpr;
+          break;
         }
-
-        referencingExpr = flc.get_expr();
-        break;
       }
 
-      // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-      if (hasNodeConstr && c.get_expr()->contains_node_construction())
-        return false;
-    }
-    else if (kind == flwor_clause::where_clause)
-    {
-      if (varQuant == TypeConstants::QUANT_ONE &&
-          expr_tools::count_variable_uses(c.get_expr(), var, NULL, 1) == 1)
+      ite = gc->beginNonGroupVars();
+      end = gc->endNonGroupVars();
+
+      for (; ite != end; ++ite)
       {
-        referencingExpr = c.get_expr();
+        expr* inputExpr = ite->first;
+        if (expr_tools::count_variable_uses(inputExpr, var, NULL, 1) == 1)
+        {
+          referencingExpr = inputExpr;
+          break;
+        }
+      }
+
+      break;
+    }
+    case flwor_clause::window_clause:
+    {
+      if (!declared)
+        continue;
+
+      assert(varQuant == TypeConstants::QUANT_ONE);
+
+      const window_clause* wc = static_cast<const window_clause*>(clause);
+      expr* domExpr = wc->get_expr();
+      flwor_wincond* startCond = wc->get_win_start();
+      flwor_wincond* stopCond = wc->get_win_stop();
+      expr* startExpr = (startCond == NULL ? NULL : startCond->get_cond());
+      expr* stopExpr = (stopCond == NULL ? NULL : stopCond->get_cond());
+
+      if (domExpr->is_sequential())
+        return false;
+
+      if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
+      {
+        referencingExpr = domExpr;
         break;
       }
+
+      if (domExpr->get_return_type()->max_card() > 1)
+        return false;
+
+      if (expr_tools::count_variable_uses(startExpr, var, NULL, 1) == 1)
+      {
+        referencingExpr = domExpr;
+        break;
+      }
+
+      if (expr_tools::count_variable_uses(stopExpr, var, NULL, 1) == 1)
+      {
+        referencingExpr = domExpr;
+        break;
+      }
+
+      break;
     }
-    else if (kind == flwor_clause::order_clause)
+    case flwor_clause::materialize_clause:
     {
-      // TODO
+      return false;
     }
-    else if (kind == flwor_clause::group_clause)
+    case flwor_clause::count_clause:
     {
-      // TODO
+      break;
     }
-    else if (kind == flwor_clause::materialize_clause)
-    {
-      // TODO
-    }
-    else
+    default:
     {
       ZORBA_ASSERT(false);
     }
+    }
   }
 
-  if (referencingExpr == NULL &&
-      !flwor.get_return_expr()->is_sequential() &&
-      expr_tools::count_variable_uses(flwor.get_return_expr(), var, NULL, 1) == 1)
+  if (referencingExpr == NULL)
   {
-    if (varQuant != TypeConstants::QUANT_ONE)
-    {
-      xqtref_t type =
-      flwor.get_return_expr()->get_return_type_with_empty_input(var);
+    expr* retExpr = flwor.get_return_expr();
 
-      if (TypeOps::is_equal(tm,
-                            *type,
-                            *GENV_TYPESYSTEM.EMPTY_TYPE,
-                            flwor.get_return_expr()->get_loc()))
-        referencingExpr = flwor.get_return_expr();
-    }
-    else
+    if (retExpr->is_sequential())
+      return false;
+
+    if (expr_tools::count_variable_uses(retExpr, var, NULL, 1) == 1)
     {
-      referencingExpr = flwor.get_return_expr();
+      if (varQuant != TypeConstants::QUANT_ONE)
+      {
+        // We are considering folding a FOR var whose domain expr may be the
+        // empty sequence. We can fold only if doing so will cause the result
+        // of the flwor expr to be the empty sequence in the case where the
+        // domain expr will indeed be equal to the empty sequence.
+        xqtref_t type = retExpr->get_return_type_with_empty_input(var);
+
+        if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE, retExpr->get_loc()))
+        {
+          referencingExpr = retExpr;
+        }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        referencingExpr = retExpr;
+      }
     }
   }
+
+  assert(referencingExpr != NULL);
 
   if (referencingExpr == NULL)
     return false;
 
   bool found = false;
-  return !var_in_try_block_or_in_loop(var,
-                                      referencingExpr,
-                                      false,
-                                      hasNodeConstr,
-                                      found);
+  return !var_in_try_or_loop(var, referencingExpr, false, hasNodeConstr, found);
 }
 
 
 /*******************************************************************************
-  Given a variable V and an expression E that references V at most once, return
-  true if E does indeed reference V and
-  (a) the reference occurs inside a for-loop within E, or
-  (b)
+  Given a variable V and an expression E that references V exactly once, return
+  true if the reference occurs inside a
+  (a) for-loop within E, or
+  (b) try expr within E, or
+  (c) while expr within E
+
+  The method traverses recursively the subtree of E looking for variable V and
+  checking whether it crosses a loop or try expr. If it finds V and there is a
+  loop or try expr in the path from E to V, it returns true; otherwise it returns
+  false.
+
+  Note: On the 1st (non-recursive) call, we know that E references V exactly
+  once. But during a recursive call on a subexpr, the subexpr may or may not
+  reference V.
 ********************************************************************************/
-static bool var_in_try_block_or_in_loop(
+static bool var_in_try_or_loop(
     const var_expr* v,
     const expr* e,
-    bool in_try_block_or_in_loop,
+    bool inTryOrLoop,
     bool hasNodeConstr,
     bool& found)
 {
@@ -727,135 +989,260 @@ static bool var_in_try_block_or_in_loop(
 
   if (kind == trycatch_expr_kind)
   {
-    const trycatch_expr* tce = dynamic_cast<const trycatch_expr *>(e);
+    const trycatch_expr* tce = static_cast<const trycatch_expr *>(e);
 
-    if (var_in_try_block_or_in_loop(v,
-                                    tce->get_try_expr(),
-                                    true,
-                                    hasNodeConstr,
-                                    found))
+    if (var_in_try_or_loop(v, tce->get_try_expr(), true, hasNodeConstr, found))
     {
+      assert(found);
       return true;
     }
 
-    ulong numClauses = tce->clause_count();
+    ZORBA_ASSERT(!found);
 
-    for (ulong i = 0; i < numClauses; ++i)
+    csize numClauses = tce->clause_count();
+
+    for (csize i = 0; i < numClauses; ++i)
     {
-      if (var_in_try_block_or_in_loop(v,
-                                      tce->get_catch_expr(i),
-                                      in_try_block_or_in_loop,
-                                      hasNodeConstr,
-                                      found))
+      if (var_in_try_or_loop(v,
+                             tce->get_catch_expr(i),
+                             inTryOrLoop, 
+                             hasNodeConstr,
+                             found))
       {
+        assert(found);
         return true;
       }
     }
+
     return false;
   }
   else if (kind == while_expr_kind)
   {
-    ExprConstIterator ei(e);
-    while(!ei.done())
+    const while_expr* we = static_cast<const while_expr *>(e);
+
+    if (var_in_try_or_loop(v, we->get_body(), true, hasNodeConstr, found))
     {
-      if (var_in_try_block_or_in_loop(v,
-                                      ei.get_expr(),
-                                      true,
-                                      hasNodeConstr,
-                                      found))
-        return true;
-
-      ZORBA_ASSERT(!found);
-
-      ei.next();
+      assert(found);
+      return true;
     }
+
+    ZORBA_ASSERT(!found);
 
     return false;
   }
-  else if (kind == flwor_expr_kind)
+  else if (kind == flwor_expr_kind || kind == gflwor_expr_kind)
   {
     const flwor_expr& flwor = *static_cast<const flwor_expr *>(e);
 
-		expr* referencingExpr = NULL;
-
-    for (ulong i = 0; i < flwor.num_clauses(); ++i)
+    for (csize i = 0; i < flwor.num_clauses(); ++i)
     {
-      const flwor_clause& c = *flwor.get_clause(i);
+      const flwor_clause* c = flwor.get_clause(i);
 
-      if (c.get_kind() == flwor_clause::for_clause ||
-          c.get_kind() == flwor_clause::let_clause)
+      switch (c->get_kind())
       {
-        const forletwin_clause& flc = *static_cast<const forletwin_clause *>(&c);;
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
+      {
+        const forletwin_clause* flc = static_cast<const forletwin_clause*>(c);
+        expr* domExpr = flc->get_expr();
 
-        if (expr_tools::count_variable_uses(flc.get_expr(), v, NULL, 1) == 1)
+        if (var_in_try_or_loop(v, domExpr, inTryOrLoop, hasNodeConstr, found))
         {
-          referencingExpr = flc.get_expr();
-          break;
+          assert(found);
+          return true;
         }
 
-        if (c.get_kind() == flwor_clause::for_clause &&
-            flc.get_expr()->get_return_type()->max_card() >= 2)
+        if (found)
+          return false;
+
+        if (c->get_kind() == flwor_clause::for_clause &&
+            domExpr->get_return_type()->max_card() >= 2)
         {
-          // we assume here that the var will be referenced somewhere in the
-          // remainder of the flwor expr, but this is not necessarily true
-          // ???? TODO
-          return true;
+          inTryOrLoop = true;
         }
 
         // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-        if (hasNodeConstr && c.get_expr()->contains_node_construction())
+        //if (hasNodeConstr && domExpr->contains_node_construction())
+        //{
+        //  return true;
+        //}
+
+        break;
+      }
+      case flwor_clause::window_clause:
+      {
+        const window_clause* wc = static_cast<const window_clause*>(c);
+        expr* domExpr = wc->get_expr();
+
+        if (var_in_try_or_loop(v, domExpr, inTryOrLoop, hasNodeConstr, found))
         {
+          assert(found);
           return true;
         }
+
+        if (found)
+          return false;
+
+        inTryOrLoop = true;
+
+        flwor_wincond* startCond = wc->get_win_start();
+        flwor_wincond* stopCond = wc->get_win_stop();
+        expr* startExpr = startCond == NULL ? NULL : startCond->get_cond();
+        expr* stopExpr = stopCond == NULL ? NULL : stopCond->get_cond();
+
+        if (startExpr &&
+            var_in_try_or_loop(v, startExpr, inTryOrLoop, hasNodeConstr, found))
+        {
+          assert(found);
+          return true;
+        }
+
+        if (found)
+          return false;
+
+        if (stopExpr &&
+            var_in_try_or_loop(v, stopExpr, inTryOrLoop, hasNodeConstr, found))
+        {
+          assert(found);
+          return true;
+        }
+
+        if (found)
+          return false;
+
+        break;
+      }
+      case flwor_clause::group_clause:
+      {
+        const group_clause* gc = static_cast<const group_clause*>(c);
+
+        flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
+        flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
+
+        for (; ite != end; ++ite)
+        {
+          expr* gExpr = (*ite).first;
+
+          if (var_in_try_or_loop(v, gExpr, inTryOrLoop, hasNodeConstr, found))
+          {
+            assert(found);
+            return true;
+          }
+
+          if (found)
+            return false;
+        }
+
+        ite = gc->beginNonGroupVars();
+        end = gc->endNonGroupVars();
+
+        for (; ite != end; ++ite)
+        {
+          expr* ngExpr = (*ite).first;
+
+          if (var_in_try_or_loop(v, ngExpr, inTryOrLoop, hasNodeConstr, found))
+          {
+            assert(found);
+            return true;
+          }
+
+          if (found)
+            return false;
+        }
+
+        break; // TODO
+      }
+      case flwor_clause::where_clause:
+      {
+        const where_clause* wc = static_cast<const where_clause*>(c);
+
+        if (var_in_try_or_loop(v, wc->get_expr(), inTryOrLoop, hasNodeConstr, found))
+        {
+          assert(found);
+          return true;
+        }
+
+        if (found)
+          return false;
+
+        break;
+      }
+      case flwor_clause::order_clause:
+      {
+        const orderby_clause* oc = static_cast<const orderby_clause*>(c);
+
+        std::vector<expr*>::const_iterator ite = oc->begin();
+        std::vector<expr*>::const_iterator end = oc->end();
+
+        for (; ite != end; ++ite)
+        {
+          if (var_in_try_or_loop(v, *ite, inTryOrLoop, hasNodeConstr, found))
+          {
+            assert(found);
+            return true;
+          }
+          
+          if (found)
+            return false;
+        }
+
+        break;
+      }
+      case flwor_clause::count_clause:
+      {
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
 
-		if (referencingExpr == NULL)
-    {
-			referencingExpr = flwor.get_return_expr();
-		}
-
-		return var_in_try_block_or_in_loop(v,
-                                       &*referencingExpr,
-                                       in_try_block_or_in_loop,
-                                       hasNodeConstr,
-                                       found);
+    return var_in_try_or_loop(v,
+                              flwor.get_return_expr(),
+                              inTryOrLoop,
+                              hasNodeConstr,
+                              found);
   }
   else if (e == v)
   {
     found = true;
-    return in_try_block_or_in_loop;
+    return inTryOrLoop;
   }
   else if (kind == if_expr_kind)
   {
     const if_expr* ifExpr = static_cast<const if_expr*>(e);
+    const expr* condExpr = ifExpr->get_cond_expr();
 
-    if (var_in_try_block_or_in_loop(v,
-                                    ifExpr->get_cond_expr(),
-                                    in_try_block_or_in_loop,
-                                    hasNodeConstr,
-                                    found))
+    if (var_in_try_or_loop(v, condExpr, inTryOrLoop, hasNodeConstr, found))
       return true;
 
     if (found)
       return false;
 
+    // The var may actually be referenced in both the then and the else branches.
+    // So, if we find it in the then branch and is not in try-or-loop in there,
+    // we must still check the else branch.
+
     bool thenFound = false;
     bool elseFound = false;
+    const expr* thenExpr = ifExpr->get_then_expr();
+    const expr* elseExpr = ifExpr->get_else_expr();
 
-    if (var_in_try_block_or_in_loop(v,
-                                    ifExpr->get_then_expr(),
-                                    in_try_block_or_in_loop,
-                                    hasNodeConstr,
-                                    thenFound))
+    if (var_in_try_or_loop(v, thenExpr, inTryOrLoop, hasNodeConstr, thenFound))
+    {
+      assert(thenFound);
+      found = true;
       return true;
+    }
 
-    if (var_in_try_block_or_in_loop(v,
-                                    ifExpr->get_else_expr(),
-                                    in_try_block_or_in_loop,
-                                    hasNodeConstr,
-                                    elseFound))
+    if (var_in_try_or_loop(v, elseExpr, inTryOrLoop, hasNodeConstr, elseFound))
+    {
+      assert(elseFound);
+      found = true;
       return true;
+    }
 
     found = (thenFound || elseFound);
     return false;
@@ -875,13 +1262,9 @@ static bool var_in_try_block_or_in_loop(
 
   // Or else navigate down all children
   ExprConstIterator ei(e);
-  while(!ei.done())
+  while (!ei.done())
   {
-    if (var_in_try_block_or_in_loop(v,
-                                    ei.get_expr(),
-                                    in_try_block_or_in_loop,
-                                    hasNodeConstr,
-                                    found))
+    if (var_in_try_or_loop(v, ei.get_expr(), inTryOrLoop, hasNodeConstr, found))
     {
       return true;
     }
@@ -896,50 +1279,93 @@ static bool var_in_try_block_or_in_loop(
 }
 
 
-/*******************************************************************************
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  RefactorPredFLWOR                                                         //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
-********************************************************************************/
+
+/******************************************************************************
+  This is a rule that is being applied by the FoldRules driver (see class
+  FoldRules in default_optimizer.cpp).
+******************************************************************************/
 RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
-  flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
-
-  if (flwor == NULL || flwor->is_general())
-    return NULL;
-
-  bool modified = false;
-
-  if_expr* ifReturnExpr = NULL;
-  expr* elseExpr = NULL;
-  expr* condExpr = NULL;
-  expr* thenExpr = NULL;
-
-  if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
+  if (node->get_expr_kind() != flwor_expr_kind &&
+      node->get_expr_kind() != gflwor_expr_kind)
   {
-    ifReturnExpr = static_cast<if_expr*>(flwor->get_return_expr());
-    condExpr = ifReturnExpr->get_cond_expr();
-    thenExpr = ifReturnExpr->get_then_expr();
-    elseExpr = ifReturnExpr->get_else_expr();
+    return NULL;
   }
 
-  expr* whereExpr = flwor->get_where();
+  bool modified = false;
+  flwor_expr* flwor = static_cast<flwor_expr*>(node);
 
   // "for $x in ... return if (ce) then te else ()" -->
   // "for $x in ... where ce return te"
-  if (ifReturnExpr != NULL &&
-      whereExpr == NULL &&
-      !condExpr->is_sequential() &&
-      !thenExpr->is_sequential() &&
-      (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
-      !elseExpr->isNonDiscardable() &&
-      elseExpr->get_return_type()->is_empty())
+  if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
   {
-    flwor->set_where(condExpr);
-    flwor->set_return_expr(thenExpr);
-    modified = true;
-  }
+    if_expr* ifReturnExpr = static_cast<if_expr*>(flwor->get_return_expr());
 
-  expr* posExpr = NULL;
-  var_expr* posVar = NULL;
+    expr* condExpr = ifReturnExpr->get_cond_expr();
+    expr* thenExpr = ifReturnExpr->get_then_expr();
+    expr* elseExpr = ifReturnExpr->get_else_expr();
+
+    if (!condExpr->is_sequential() &&
+        !thenExpr->is_sequential() &&
+        (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
+        !elseExpr->isNonDiscardable() &&
+        elseExpr->get_return_type()->is_empty())
+    {
+      if (flwor->is_general())
+      {
+        flwor->add_where(condExpr);
+      }
+      else
+      {
+        expr* whereExpr = flwor->get_where();
+
+        if (whereExpr == NULL)
+        {
+          flwor->set_where(condExpr);
+        }
+        else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+        {
+          fo_expr* foWhereExpr = static_cast<fo_expr*>(whereExpr);
+
+          if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+          {
+            fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr);
+            foWhereExpr->add_args(foCondExpr->get_args());
+          }
+          else
+          {
+            foWhereExpr->add_arg(condExpr);
+          }
+        }
+        else if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+        {
+          fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr);
+          foCondExpr->add_arg(whereExpr);
+          flwor->set_where(condExpr);
+        }
+        else
+        {
+          expr* newWhereExpr = rCtx.theEM->
+          create_fo_expr(whereExpr->get_sctx(),
+                         whereExpr->get_loc(),
+                         GET_BUILTIN_FUNCTION(OP_AND_N),
+                         whereExpr,
+                         condExpr);
+
+          flwor->set_where(newWhereExpr);
+        }
+      }
+
+      flwor->set_return_expr(thenExpr);
+      modified = true;
+    }
+  }
 
   // '... for $x at $p in E ... where $p = posExpr ... return ...' -->
   // '... for $x in fn:subsequence(E, posExpr, 1) ... return ...
@@ -947,42 +1373,68 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // referenced more than once?
   // TODO: we should be able to apply the rule if all the sequential clauses
   // are before the clause that defines the pos var.
-  if (whereExpr != NULL &&
-      ! flwor->has_sequential_clauses() &&
-      is_subseq_pred(rCtx, flwor, whereExpr, &posVar, &posExpr) &&
-      expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+  // TODO: apply the rule if where expr consists of multiple preds in CNF.
+  // TODO: It should also consider cases for inequalites, so in the case of
+  // where $p < posExpr -> for $x in fn:subsequence(E, 1, posExpr - 1) and
+  // where $p > posExpr -> for $x in fn:subsequence(E, posExpr + 1) in the
+  // case of >= and <= the -1 and +1 are removed for the previous examples.
+  if (! flwor->has_sequential_clauses())
   {
-    function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
-    expr* domainExpr = posVar->get_for_clause()->get_expr();
+    csize numClauses = flwor->num_clauses();
 
-    std::vector<expr*> args(2);
-    args[0] = domainExpr;
-    args[1] = posExpr;
+    for (csize clausePos = 0; clausePos < numClauses; ++clausePos)
+    {
+      flwor_clause* clause = flwor->get_clause(clausePos);
 
-    fo_expr* result = rCtx.theEM->create_fo_expr(whereExpr->get_sctx(),
-                                           LOC(whereExpr),
-                                           seq_point,
-                                           args);
-    expr_tools::fix_annotations(result);
-    for_clause* clause = posVar->get_for_clause();
-    clause->set_expr(result);
-    clause->set_pos_var(NULL);
-    flwor->remove_where_clause();
+      if (clause->get_kind() != flwor_clause::where_clause)
+        continue;
 
-    modified = true;
+      expr* whereExpr = clause->get_expr();
+
+      expr* posExpr = NULL;
+      var_expr* posVar = NULL;
+
+      if (is_subseq_pred(rCtx, flwor, clausePos, whereExpr, posVar, posExpr) &&
+          expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+      {
+        for_clause* forClause = posVar->get_for_clause();
+        expr* domainExpr = forClause->get_expr();
+
+        fo_expr* result = rCtx.theEM->
+        create_fo_expr(whereExpr->get_sctx(),
+                       domainExpr->get_loc(),
+                       GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                       domainExpr,
+                       posExpr);
+
+        expr_tools::fix_annotations(result);
+
+        forClause->set_expr(result);
+        forClause->set_pos_var(NULL);
+
+        flwor->remove_clause(clausePos);
+        --clausePos;
+        --numClauses;
+
+        modified = true;
+      }
+    }
   }
 
   return (modified ? flwor : NULL);
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
 RULE_REWRITE_POST(RefactorPredFLWOR)
 {
   return NULL;
 }
 
 
-/*******************************************************************************
+/******************************************************************************
   Checks whether "condExpr" has the form '$posVar op posExpr', where
 
   (a)  op is eq or =, and
@@ -990,37 +1442,40 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
   (b2) the flwor expr has no sequential clauses and posExpr is an expression
        whose type is xs:integer? and which does not reference the for var
        associated with posVar nor any other vars that are defined after that
-       for var.
+       for var and
+  (c)  there is no count or groupby clause between the for and the where clause
+       containing the condExpr and
+  (d)  the for clause doesn't allow empty.
 
-  TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses are
-  before the clause that defines the pos var.
-********************************************************************************/
+  TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses
+        are before the clause that defines the pos var.
+******************************************************************************/
 static bool is_subseq_pred(
     RewriterContext& rCtx,
-    flwor_expr* flworExpr,
-    expr* condExpr,
-    var_expr** posVar,
-    expr** posExpr)
+    const flwor_expr* flworExpr,
+    const csize whereClausePos,
+    const expr* predExpr,
+    var_expr*& posVar,
+    expr*& posExpr)
 {
-  static_context* sctx = condExpr->get_sctx();
+  static_context* sctx = predExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
-  const QueryLoc& posLoc = (*posExpr)->get_loc();
 
-  const fo_expr* fo = NULL;
+  const fo_expr* foPredExpr = NULL;
   const function* f;
 
   while (true)
   {
-    if (condExpr->get_expr_kind() != fo_expr_kind)
+    if (predExpr->get_expr_kind() != fo_expr_kind)
       return false;
 
-    fo = static_cast<const fo_expr*>(condExpr);
-    f = fo->get_func();
+    foPredExpr = static_cast<const fo_expr*>(predExpr);
+    f = foPredExpr->get_func();
 
     if (f->getKind() == FunctionConsts::FN_BOOLEAN_1)
     {
-      condExpr = fo->get_arg(0);
+      predExpr = foPredExpr->get_arg(0);
       continue;
     }
 
@@ -1031,59 +1486,75 @@ static bool is_subseq_pred(
       f->comparisonKind() != CompareConsts::VALUE_EQUAL)
     return false;
 
-  for (ulong i = 0; i < 2; ++i)
+  for (csize i = 0; i < 2; ++i)
   {
-    *posVar = const_cast<var_expr*>(fo->get_arg(i)->get_var());
-    *posExpr = fo->get_arg(1 - i);
-    const const_expr* posConstExpr = dynamic_cast<const const_expr*>(*posExpr);
+    posVar = const_cast<var_expr*>(foPredExpr->get_arg(i)->get_var());
+    posExpr = foPredExpr->get_arg(1 - i);
 
-    if (*posVar != NULL &&
-        (*posVar)->get_kind() == var_expr::pos_var &&
-        flworExpr->defines_variable(*posVar) >= 0)
+    if (posVar == NULL || posVar->get_kind() != var_expr::pos_var)
+      continue;
+
+    for_clause* forClause = posVar->get_for_clause();
+
+    if (forClause->is_allowing_empty())
+      return false;
+
+    // We check that there isn't any clause that breaks the optimization
+    const flwor_clause* checkClause;
+    csize checkClausePos = whereClausePos - 1;
+    do
     {
-      if (posConstExpr != NULL)
+      checkClause = flworExpr->get_clause(checkClausePos);
+
+      if (checkClause->get_kind() == flwor_clause::group_clause ||
+          checkClause->get_kind() == flwor_clause::count_clause)
+        return false;
+
+      --checkClausePos;
+    }
+    while (checkClause != forClause);
+
+    if (posExpr->get_expr_kind() == const_expr_kind)
+    {
+      const_expr* posConstExpr = static_cast<const_expr*>(posExpr);
+      const store::Item* val = posConstExpr->get_val();
+
+      store::SchemaTypeCode valType = val->getTypeCode();
+
+      if (TypeOps::is_subtype(valType, store::XS_INTEGER))
+        return true;
+     }
+    else
+    {
+      xqtref_t posExprType = posExpr->get_return_type();
+      
+      if (TypeOps::is_subtype(tm,
+                              *posExprType,
+                              *rtm.INTEGER_TYPE_QUESTION,
+                              posExpr->get_loc()))
       {
-        const store::Item* val = posConstExpr->get_val();
-        xqtref_t valType = tm->create_named_type(val->getType(),
-                                                 TypeConstants::QUANT_ONE,
-                                                 posLoc,
-                                                 err::XPTY0004);
+        VarIdMap varidMap;
+        ulong numFlworVars = 0;
+        expr_tools::index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
+        
+        DynamicBitset varset(numFlworVars);
+        ExprVarsMap exprVarMap;
+        expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
+        
+        var_expr* forVar = forClause->get_var();
+        ulong forVarId = varidMap[forVar];
 
-        if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
-            val->getIntegerValue() >= 1)
+        std::vector<ulong> posExprVarIds;
+        exprVarMap[posExpr].getSet(posExprVarIds);
+
+        csize numPosExprVars = posExprVarIds.size();
+        for (csize i = 0; i < numPosExprVars; ++i)
         {
-          return true;
+          if (posExprVarIds[i] >= forVarId)
+            return false;
         }
-      }
-      else if (!flworExpr->has_sequential_clauses())
-      {
-        xqtref_t posExprType = (*posExpr)->get_return_type();
-
-        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION, posLoc))
-        {
-          VarIdMap varidMap;
-          ulong numFlworVars = 0;
-          expr_tools::index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
-
-          DynamicBitset varset(numFlworVars);
-          ExprVarsMap exprVarMap;
-          expr_tools::build_expr_to_vars_map(*posExpr, varidMap, varset, exprVarMap);
-
-          var_expr* forVar = (*posVar)->get_for_clause()->get_var();
-          ulong forVarId = varidMap[forVar];
-
-          std::vector<ulong> posExprVarIds;
-          exprVarMap[*posExpr].getSet(posExprVarIds);
-
-          ulong numPosExprVars = (ulong)posExprVarIds.size();
-          for (ulong i = 0; i < numPosExprVars; ++i)
-          {
-            if (posExprVarIds[i] >= forVarId)
-              return false;
-          }
-
-          return true;
-        }
+        
+        return true;
       }
     }
   }
@@ -1092,9 +1563,16 @@ static bool is_subseq_pred(
 }
 
 
-/*******************************************************************************
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  MergeFLWOR                                                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
-********************************************************************************/
+
+/******************************************************************************
+
+*******************************************************************************/
 RULE_REWRITE_PRE(MergeFLWOR)
 {
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
@@ -1104,7 +1582,8 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
   bool modified = false;
 
-  // Try to merge an inner flwor that appears in the return clause of the outer flwor.
+  // Try to merge an inner flwor that appears in the return clause of the
+  // outer flwor.
   if (flwor->get_return_expr()->get_expr_kind() == flwor_expr_kind &&
       !flwor->get_return_expr()->is_sequential())
   {
@@ -1146,7 +1625,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
       }
     }
 
-    for (ulong i = 0; i < numClauses; ++i)
+    for (csize i = 0; i < numClauses; ++i)
     {
       flwor->add_clause(returnFlwor->get_clause(i));
     }
@@ -1158,10 +1637,11 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
  next1:
 
-  ulong numClauses = flwor->num_clauses();
+  csize numClauses = flwor->num_clauses();
 
-  // Try to merge an inner flwor that appears in a for/let clause of the outer flwor.
-  for (ulong i = 0; i < numClauses; ++i)
+  // Try to merge an inner flwor that appears in a for/let clause of the outer
+  // flwor.
+  for (csize i = 0; i < numClauses; ++i)
   {
     bool merge = false;
     flwor_expr* nestedFlwor = NULL;
@@ -1189,7 +1669,8 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
           if (nestedClauseKind == flwor_clause::for_clause)
           {
-            xqtref_t nestedDomainType = nestedClause->get_expr()->get_return_type();
+            xqtref_t nestedDomainType =
+              nestedClause->get_expr()->get_return_type();
 
             if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
             {
@@ -1260,6 +1741,9 @@ RULE_REWRITE_PRE(MergeFLWOR)
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
 RULE_REWRITE_POST(MergeFLWOR)
 {
   return NULL;

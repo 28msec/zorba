@@ -65,12 +65,12 @@ IndexDecl::IndexDecl(
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH),
+  theDomainClause(NULL),
   theDomainExpr(NULL),
   theDomainVar(NULL),
   theDomainPosVar(NULL),
   theBuildExpr(NULL),
-  theDocIndexerExpr(NULL),
-  theDomainClause(NULL)
+  theDocIndexerExpr(NULL)
 {
 }
 

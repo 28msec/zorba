@@ -403,9 +403,10 @@ public:
 
   GroupByClause ::= "group" "by" GroupingSpecList
 
-  GroupSpecList ::= 	GroupingSpec ("," GroupingSpec)*
+  GroupSpecList ::= GroupingSpec ("," GroupingSpec)*
 
-  GroupSpec ::= "$" VarName ("collation" URILiteral)?
+  GroupSpec ::= "$" VarName (TypeDeclaration? ":=" ExprSingle)?
+                ("collation" URILiteral)?
 
   - Data Members:
 
@@ -455,13 +456,27 @@ public:
 
   const rebind_list_t& get_nongrouping_vars() const { return theNonGroupVars; }
 
+  void set_grouping_vars(rebind_list_t& v) { theGroupVars = v; }
+
+  void set_nongrouping_ars(rebind_list_t& v) { theNonGroupVars = v; }
+
+  void removeNonGroupingVar(rebind_list_t::iterator ite) { theNonGroupVars.erase(ite); }
+
   rebind_list_t::iterator beginGroupVars() { return theGroupVars.begin(); }
+
+  rebind_list_t::const_iterator beginGroupVars() const { return theGroupVars.begin(); }
 
   rebind_list_t::iterator endGroupVars() { return theGroupVars.end(); }
 
+  rebind_list_t::const_iterator endGroupVars() const { return theGroupVars.end(); }
+
   rebind_list_t::iterator beginNonGroupVars() { return theNonGroupVars.begin(); }
 
+  rebind_list_t::const_iterator beginNonGroupVars() const { return theNonGroupVars.begin(); }
+
   rebind_list_t::iterator endNonGroupVars() { return theNonGroupVars.end(); }
+
+  rebind_list_t::const_iterator endNonGroupVars() const { return theNonGroupVars.end(); }
 
   expr* get_input_for_group_var(const var_expr* var);
 
@@ -478,9 +493,9 @@ public:
 
   OrderByClause ::= (("order" "by") | ("stable" "order" "by")) OrderSpecList
 
-  OrderSpecList ::= 	OrderSpec ("," OrderSpec)*
+  OrderSpecList ::= OrderSpec ("," OrderSpec)*
 
-  OrderSpec ::= 	ExprSingle OrderModifier
+  OrderSpec ::= ExprSingle OrderModifier
 
   OrderModifier ::= ("ascending" | "descending")?
                     ("empty" ("greatest" | "least"))?
@@ -499,7 +514,8 @@ protected:
   std::vector<OrderModifier>  theModifiers;
   std::vector<expr*>          theOrderingExprs;
 
-  orderby_clause (
+protected:
+  orderby_clause(
       static_context* sctx,
       CompilerCB* ccb,
       const QueryLoc& loc,
@@ -517,6 +533,16 @@ public:
   std::vector<expr*>::iterator begin() { return theOrderingExprs.begin(); }
 
   std::vector<expr*>::iterator end() { return theOrderingExprs.end(); }
+
+  std::vector<expr*>::const_iterator begin() const
+  {
+    return theOrderingExprs.begin();
+  }
+
+  std::vector<expr*>::const_iterator end() const
+  {
+    return theOrderingExprs.end();
+  }
 
   csize num_columns() const { return theOrderingExprs.size(); }
 

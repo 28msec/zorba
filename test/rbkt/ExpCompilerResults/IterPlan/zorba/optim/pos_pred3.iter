@@ -1,0 +1,78 @@
+Iterator tree for main query:
+<flwor::TupleStreamIterator>
+  <flwor::WhereIterator>
+    <flwor::GroupByIterator>
+      <flwor::ForIterator>
+        <ForVariable name="x"/>
+        <flwor::TupleSourceIterator/>
+        <FnConcatIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,a)"/>
+            <AttributeIterator qname="xs:QName(,,grp)">
+              <SingletonIterator value="xs:string(2)"/>
+            </AttributeIterator>
+            <TextIterator>
+              <SingletonIterator value="xs:string(1)"/>
+            </TextIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,a)"/>
+            <AttributeIterator qname="xs:QName(,,grp)">
+              <SingletonIterator value="xs:string(1)"/>
+            </AttributeIterator>
+            <TextIterator>
+              <SingletonIterator value="xs:string(2)"/>
+            </TextIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,a)"/>
+            <AttributeIterator qname="xs:QName(,,grp)">
+              <SingletonIterator value="xs:string(2)"/>
+            </AttributeIterator>
+            <TextIterator>
+              <SingletonIterator value="xs:string(3)"/>
+            </TextIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </flwor::ForIterator>
+      <Spec>
+        <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill allowed="0">
+            <ForVarIterator varname="x"/>
+          </AttributeAxisIterator>
+        </FnDataIterator>
+        <GroupVariable/>
+      </Spec>
+      <Spec>
+        <ForVarIterator varname="x"/>
+        <NonGroupVariable/>
+      </Spec>
+      <Spec>
+        <ForVarIterator varname="p"/>
+        <NonGroupVariable/>
+      </Spec>
+    </flwor::GroupByIterator>
+    <CompareIterator>
+      <LetVarIterator varname="p"/>
+      <SingletonIterator value="xs:integer(1)"/>
+    </CompareIterator>
+  </flwor::WhereIterator>
+  <ElementIterator>
+    <SingletonIterator value="xs:QName(,,grp)"/>
+    <EnclosedIterator attr_cont="false">
+      <flwor::FLWORIterator>
+        <ForVariable name="$$dot">
+          <NodeSortIterator distinct="true" ascending="true">
+            <LetVarIterator varname="x"/>
+          </NodeSortIterator>
+        </ForVariable>
+        <ReturnClause>
+          <FnDataIterator>
+            <ForVarIterator varname="$$dot"/>
+          </FnDataIterator>
+        </ReturnClause>
+      </flwor::FLWORIterator>
+    </EnclosedIterator>
+  </ElementIterator>
+</flwor::TupleStreamIterator>
+
