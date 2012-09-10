@@ -287,7 +287,7 @@ PLAN_ITER_VISITOR (AndIterator);
   virtual void endVisitWindowVariable() = 0;
 
   virtual void beginVisitWinCondVariable(
-        const std::string& varName,
+        const zstring& varName,
         const std::vector<PlanIter_t>& varRefs) = 0;
 
   virtual void endVisitWinCondVariable() = 0;

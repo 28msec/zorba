@@ -721,11 +721,11 @@ orderby_clause::orderby_clause(
 
 flwor_clause* orderby_clause::clone(expr::substitution_t& subst) const
 {
-  ulong numColumns = num_columns();
+  csize numColumns = num_columns();
 
   std::vector<expr*> cloneExprs(numColumns);
 
-  for (ulong i = 0; i < numColumns; ++i)
+  for (csize i = 0; i < numColumns; ++i)
   {
     cloneExprs[i] = theOrderingExprs[i]->clone(subst);
   }
@@ -914,8 +914,8 @@ void flwor_expr::set_where(expr* e)
 {
   ZORBA_ASSERT(e != NULL);
 
-  unsigned numClauses = num_clauses();
-  unsigned i;
+  csize numClauses = num_clauses();
+  csize i;
 
   for (i = 0; i < numClauses; ++i)
   {
@@ -950,8 +950,8 @@ void flwor_expr::set_where(expr* e)
 ********************************************************************************/
 void flwor_expr::remove_where_clause()
 {
-  unsigned numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::where_clause)
     {
@@ -968,8 +968,8 @@ void flwor_expr::remove_where_clause()
 ********************************************************************************/
 expr* flwor_expr::get_where() const
 {
-  unsigned numClauses = num_clauses();
-  for (unsigned i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::where_clause)
       return reinterpret_cast<where_clause*>(theClauses[i])->get_expr();
@@ -984,8 +984,8 @@ expr* flwor_expr::get_where() const
 ********************************************************************************/
 group_clause* flwor_expr::get_group_clause() const
 {
-  ulong numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::group_clause)
       return reinterpret_cast<group_clause*>(theClauses[i]);
@@ -1000,8 +1000,8 @@ group_clause* flwor_expr::get_group_clause() const
 ********************************************************************************/
 orderby_clause* flwor_expr::get_order_clause() const
 {
-  ulong numClauses = num_clauses();
-  for (ulong i = 0; i < numClauses; ++i)
+  csize numClauses = num_clauses();
+  for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::order_clause)
       return reinterpret_cast<orderby_clause*>(theClauses[i]);

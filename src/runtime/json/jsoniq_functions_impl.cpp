@@ -26,6 +26,7 @@
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/json/jsoniq_functions_impl.h"
 #include "runtime/visitors/planiter_visitor.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -490,6 +491,8 @@ bool JSONObjectInsertIterator::nextImpl(
 {
   store::Item_t object;
   store::Item_t name;
+  store::Item_t value1;
+  store::Item_t value2;
   store::Item_t value;
   std::vector<store::Item_t> names;
   std::vector<store::Item_t> values;
@@ -514,10 +517,30 @@ bool JSONObjectInsertIterator::nextImpl(
 
   for (csize i = 0; i < numPairs; ++i)
   {
+    bool copy = theCopyInputs[i];
+
     consumeNext(name, theChildren[2 * i + 1].getp(), planState);
-    consumeNext(value, theChildren[2 * i + 2].getp(), planState);
 
     names[i].transfer(name);
+
+    if (!consumeNext(value1, theChildren[2 * i + 2].getp(), planState))
+    {
+      GENV_STORE.getItemFactory()->createJSONNull(value);
+    }
+    else if (!consumeNext(value2, theChildren[2 * i + 2].getp(), planState))
+    {
+      value.transfer(value1);
+    }
+    else
+    {
+      copy = false;
+
+      store::Iterator_t wrapper = 
+      new PlanIteratorWrapper(theChildren[2 * i + 2], planState);
+
+      GENV_STORE.getItemFactory()->
+      createJSONArray(value, value1, value2, wrapper, copymode);
+    }
 
     if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
       value = value->copy(NULL, copymode);

@@ -472,7 +472,7 @@ expr* MarkConsumerNodeProps::apply(
       if (rCtx.theIsInOrderedMode)
         (**iter)->setIgnoresSortedNodes(ANNOTATION_FALSE);
 
-      (**iter)->setIgnoresDuplicateNodes(ANNOTATION_TRUE);
+      (**iter)->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
 
       iter.next();
     }
