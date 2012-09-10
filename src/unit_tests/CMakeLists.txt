@@ -21,6 +21,7 @@ SET(UNIT_TEST_SRCS
   test_mem_sizeof.cpp
   test_string.cpp
   test_uri.cpp
+  test_uuid.cpp
   unit_tests.cpp
   test_uri.cpp
   test_json_parser.cpp

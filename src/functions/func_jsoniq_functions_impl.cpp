@@ -18,6 +18,7 @@
 #include "functions/func_jsoniq_functions.h"
 #include "functions/func_jsoniq_functions_impl.h"
 
+#include "runtime/json/json_constructors.h"
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/json/jsoniq_functions_impl.h"
 #include "runtime/core/item_iterator.h"
@@ -149,6 +150,20 @@ PlanIter_t fn_jsoniq_parse_json::codegen(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t jn_object::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+ return new JSONObjectIterator(sctx, loc, argv, true, false);
+}
+
+
 void populate_context_jsoniq_functions_impl(static_context* sctx)
 {
   DECL(sctx, op_zorba_object_insert,
@@ -158,6 +173,13 @@ void populate_context_jsoniq_functions_impl(static_context* sctx)
          GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE,
          true,
          GENV_TYPESYSTEM.EMPTY_TYPE));
+
+  DECL(sctx, jn_object,
+        (createQName("http://www.jsoniq.org/functions",
+                     "",
+                     "object"),
+         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
+         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE));
 }
 
 

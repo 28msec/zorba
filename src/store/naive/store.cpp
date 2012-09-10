@@ -58,7 +58,6 @@
 #include "tree_id_generator.h"
 
 #include "util/cxx_util.h"
-#include "util/uuid/uuid.h"
 #include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -105,7 +104,6 @@ Store::Store()
   theNodeFactory(NULL),
   thePULFactory(NULL),
   theTreeIdGeneratorFactory(NULL),
-  theTreeIdGenerator(NULL),
   theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
   theIndices(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
@@ -165,8 +163,6 @@ void Store::init()
     thePULFactory = createPULFactory();
     
     theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
-
-    theTreeIdGenerator = theTreeIdGeneratorFactory->createTreeGenerator();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -316,12 +312,6 @@ void Store::shutdown(bool soft)
       destroyTreeIdGeneratorFactory(theTreeIdGeneratorFactory);
     }
 
-    if (theTreeIdGenerator)
-    {
-      delete theTreeIdGenerator;
-      theTreeIdGenerator = NULL;
-    }
-
     if (theQNamePool != NULL)
     {
       csize numTypes = theSchemaTypeNames.size();
@@ -407,7 +397,7 @@ XmlLoader* Store::getXmlLoader(
 ********************************************************************************/
 TreeId Store::createTreeId()
 {
-  return theTreeIdGenerator->create();
+  return theTreeIdGeneratorFactory->getDefaultTreeIdGenerator().create();
 }
 
 

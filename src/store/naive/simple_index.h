@@ -20,7 +20,7 @@
 #include "store/api/index.h"
 #include "store/api/iterator.h"
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "zorbautils/hashmap.h"
 

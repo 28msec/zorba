@@ -434,9 +434,15 @@ void serializer::emitter::emit_item(store::Item* item)
 #ifdef ZORBA_WITH_JSON
   if (item->isJSONItem())
   {
-    throw XQUERY_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
+    zstring lMethod;
+    ser->getSerializationMethod(lMethod);
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS(lMethod, item->getType()->getStringValue())
+      );
   }
 #endif
+
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -1368,28 +1374,6 @@ static bool is_html_empty_content_model_element(const store::Item* item)
 
 
 /*******************************************************************************
-  Returns true for those elements which are not allowed under HTML to have
-  empty tags (more exactly they are required to have both opening and closing
-  tags).
-********************************************************************************/
-static bool is_html_no_empty_tags_element(const store::Item* item)
-{
-  if (item == NULL)
-    return false;
-
-  zstring nodename;
-  utf8::to_lower(item->getNodeName()->getStringValue(), &nodename);
-
-  if (ztd::equals(nodename, "script", 6) ||
-      ztd::equals(nodename, "textarea", 8) ||
-      ztd::equals(nodename, "div", 3))
-    return true;
-  else
-    return false;
-}
-
-
-/*******************************************************************************
 
 ********************************************************************************/
 static bool is_html_boolean_attribute(const zstring& attribute)
@@ -1569,27 +1553,17 @@ void serializer::html_emitter::emit_node(
     }
     else
     {
-      // The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
-      // for script, textarea and div tags.
-      if (is_html_no_empty_tags_element(item) ||
-          (ser->include_content_type == PARAMETER_VALUE_YES &&
-           strcasecmp(qname.c_str(), "head") == 0))
+      // The HTML 4.01 and XQuery Serialization specs strongly imply that
+      // ALL empty elements must be serialized as either a matched open-
+      // close tag, or (only for elements with an empty content model) as
+      // an unclosed open tag.
+      if (is_html_empty_content_model_element(item))
       {
         tr << ">";
-        tr << "</" << qname << ">";
       }
       else
       {
-        // The HTML output method MUST NOT output an end-tag for empty elements.
-        // For HTML 4.0, the empty elements are area, base, basefont, br, col,
-        // frame, hr, img, input, isindex, link, meta and param. For example,
-        // an element written as <br/> or <br></br> in an XSLT stylesheet MUST
-        // be output as <br>.
-        if (is_html_empty_content_model_element(item) &&
-            ser->version == PARAMETER_VALUE_VERSION_4_0)
-          tr << ">";
-        else
-          tr << "/>";
+        tr << "></" << qname << ">";
       }
     }
 
@@ -2151,6 +2125,16 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::text_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS("text", item->getType()->getStringValue())
+      );
+  }
+#endif
+
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -2270,6 +2254,15 @@ serializer::binary_emitter::binary_emitter(
 ********************************************************************************/
 void serializer::binary_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS("binary", item->getType()->getStringValue())
+      );
+  }
+#endif
   if (item->isStreamable())
   {
     std::istream& stream = item->getStream();
@@ -2578,6 +2571,25 @@ void serializer::setParameter(const char* aName, const char* aValue)
   else
   {
     throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::getSerializationMethod(zstring& m) const
+{
+  switch (getSerializationMethod())
+  {
+    case PARAMETER_VALUE_XML: m = "xml"; break;
+    case PARAMETER_VALUE_HTML: m = "html"; break;
+    case PARAMETER_VALUE_XHTML: m = "xhtml"; break;
+    case PARAMETER_VALUE_TEXT: m = "text"; break;
+    case PARAMETER_VALUE_BINARY: m = "binary"; break;
+    case PARAMETER_VALUE_JSON: m = "json"; break;
+    case PARAMETER_VALUE_JSONIQ: m = "jsoniq"; break;
+    default: ZORBA_ASSERT(false);
   }
 }
 

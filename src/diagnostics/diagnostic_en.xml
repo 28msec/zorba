@@ -2662,6 +2662,13 @@
       <value>Cannot serialize a function item as JSON</value>
     </diagnostic>
 
+    <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a sequence that does
+        not exist of exactly one document node with XML, HTML, XHTML, Text.
+      </comment>
+      <value>$1: invalid serialization method for item type ($2)</value>
+    </diagnostic>
+
     <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
 
@@ -3697,7 +3704,43 @@
     <entry key="JSONiq error">
       <value>JSONIQ error</value>
     </entry>
-
+    
+    <entry key="JSONiq type error">
+      <value>JSONIQ type error</value>
+    </entry>
+    
+    <entry key="JSONiq static error">
+      <value>JSONIQ static error</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic error">
+      <value>JSONIQ dynamic error</value>
+    </entry>
+    
+    <entry key="JSONiq serialization error">
+      <value>JSONIQ serialization error</value>
+    </entry>
+    
+    <entry key="JSONiq warning">
+      <value>JSONIQ warning</value>
+    </entry>
+    
+    <entry key="JSONiq type warning">
+      <value>JSONIQ type warning</value>
+    </entry>
+    
+    <entry key="JSONiq static warning">
+      <value>JSONIQ static warning</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic warning">
+      <value>JSONIQ dynamic warning</value>
+    </entry>
+    
+    <entry key="JSONiq serialization warning">
+      <value>JSONIQ serialization warning</value>
+    </entry>
+    
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>

@@ -110,6 +110,9 @@ extern entry const dict_en[] = {
   { "JNSE0014", "Cannot serialize a function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNTY0001", "Cannot atomize and/or cast value of type $1 to a string." },
 #endif
 #if defined(ZORBA_WITH_JSON)
@@ -609,7 +612,16 @@ extern entry const dict_en[] = {
   { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
   { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
   { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
+  { "~JSONiq dynamic error", "JSONIQ dynamic error" },
+  { "~JSONiq dynamic warning", "JSONIQ dynamic warning" },
   { "~JSONiq error", "JSONIQ error" },
+  { "~JSONiq serialization error", "JSONIQ serialization error" },
+  { "~JSONiq serialization warning", "JSONIQ serialization warning" },
+  { "~JSONiq static error", "JSONIQ static error" },
+  { "~JSONiq static warning", "JSONIQ static warning" },
+  { "~JSONiq type error", "JSONIQ type error" },
+  { "~JSONiq type warning", "JSONIQ type warning" },
+  { "~JSONiq warning", "JSONIQ warning" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },

@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <sstream>
+
 #include "simple_store.h"
 #include "store_defs.h"
 
@@ -30,11 +32,11 @@
 #include "diagnostics/diagnostic.h"
 #include <zorba/diagnostic_list.h>
 
-#include "util/uuid/uuid.h"
+#include "util/uuid.h"
 #include "zorbautils/string_util.h"
 
 #ifdef ZORBA_WITH_JSON
-#include "store/naive/json_loader.h"
+#include "json_loader.h"
 #endif
 
 
@@ -288,9 +290,11 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
     return theItemFactory->createAnyURI(result, id);
   }
 
-  uuid_t uuid;
-  uuid_create(&uuid);
-  zstring uuidStr = uuidToURI(uuid);
+  uuid u;
+  uuid::create(&u);
+  std::ostringstream oss;
+  oss << "urn:uuid:" << u;
+  zstring uuidStr = oss.str();
 
   assignReference(xmlNode, uuidStr);
 
