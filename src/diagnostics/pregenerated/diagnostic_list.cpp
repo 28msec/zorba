@@ -1249,7 +1249,10 @@ JSONiqErrorCode JNTY0003( "JNTY0003" );
 JSONiqErrorCode JSDY0040( "JSDY0040" );
 
 
-JSONiqErrorCode JSDY0041( "JSDY0041" );
+JSONiqErrorCode JSDY0020( "JSDY0020" );
+
+
+JSONiqErrorCode JSDY0021( "JSDY0021" );
 #endif
 
 

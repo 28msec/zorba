@@ -48,6 +48,11 @@
 
   <zorba:member type="QueryLoc" name="theRelativeLocation" />
 
+  <zorba:method return="void" name="processOptions" const="true">
+    <zorba:param type="const store::Item_t&amp;" name="aOptions"/>
+    <zorba:param type="bool&amp;" name="aAllowMultiple"/>
+  </zorba:method>
+
 </zorba:iterator>
 
 

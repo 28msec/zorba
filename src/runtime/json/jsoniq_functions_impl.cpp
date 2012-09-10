@@ -80,13 +80,37 @@ JSONParseIteratorState::~JSONParseIteratorState()
   }
 }
 
+void
+JSONParseIterator::processOptions(
+    const store::Item_t& aOptions,
+    bool& aAllowMultiple) const
+{
+  store::Item_t lOptionName, lOptionValue;
+
+  zstring s("jsoniq-multiple-top-level-items");
+  GENV_ITEMFACTORY->createString(lOptionName, s);
+  lOptionValue = aOptions->getObjectValue(lOptionName);
+
+  if (lOptionValue != NULL)
+  {
+    store::SchemaTypeCode lType = lOptionValue->getTypeCode();
+    if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
+    {
+      const TypeManager* tm = theSctx->get_typemanager();
+      xqtref_t lType = tm->create_value_type(lOptionValue, loc);
+      RAISE_ERROR(jerr::JSDY0020, loc, 
+      ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
+    }
+    aAllowMultiple = lOptionValue->getBooleanValue();
+  }
+}
+
 bool
 JSONParseIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
   store::Item_t lInput;
-  store::Item_t lOptions;
 
   JSONParseIteratorState* state;
   DEFAULT_STACK_INIT(JSONParseIteratorState, state, planState);
@@ -95,25 +119,9 @@ JSONParseIterator::nextImpl(
   {
     if (theChildren.size() == 2)
     {
+      store::Item_t lOptions;
       consumeNext(lOptions, theChildren[1].getp(), planState);
-
-      store::Item_t lOptionName, lOptionValue;
-
-      zstring s("jsoniq-multiple-top-level-items");
-      GENV_ITEMFACTORY->createString(lOptionName, s);
-      lOptionValue = lOptions->getObjectValue(lOptionName);
-      if (lOptionValue != NULL)
-      {
-        store::SchemaTypeCode lType = lOptionValue->getTypeCode();
-        if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
-        {
-          const TypeManager* tm = theSctx->get_typemanager();
-          xqtref_t lType = tm->create_value_type(lOptionValue, loc);
-          RAISE_ERROR(jerr::JSDY0041, loc, 
-          ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
-        }
-        state->theAllowMultiple = lOptionValue->getBooleanValue();
-      }
+      processOptions(lOptions, state->theAllowMultiple);
     }
 
     if (lInput->isStreamable())
@@ -123,50 +131,52 @@ JSONParseIterator::nextImpl(
     }
     else
     {
+      // will be deleted in the state
       state->theInputStream = new std::stringstream(
           lInput->getStringValue().c_str());
     }
 
     while (true)
     {
-      if (state->theInput != NULL)
+      try
       {
-        result = GENV_STORE.parseJSON(*state->theInputStream, 0);
-      }
-      else
-      {
-        if (theRelativeLocation == QueryLoc::null)
+        // streamable string or non-literal string
+        if (state->theInput != NULL || theRelativeLocation == QueryLoc::null)
         {
-          try
-          {
-            result = GENV_STORE.parseJSON(*state->theInputStream, 0);
-          }
-          catch (zorba::ZorbaException& e)
-          {
-            set_source(e, theChildren[0]->getLocation());
-            throw;
-          }
+          result = GENV_STORE.parseJSON(*state->theInputStream, 0);
         }
         else
         {
           // pass the query location of the StringLiteral to the JSON
           // parser such that it can give better error locations.
-          // Also, parseJSON already raises an XQueryException with the
-          // location. Hence, no need to catch and rethrow the exception here
           zorba::internal::diagnostic::location lLoc;
           lLoc = ERROR_LOC(theRelativeLocation);
           result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
         }
       }
+      catch (zorba::XQueryException& e)
+      {
+        // rethrow with JSDY0021
+        XQueryException xq = XQUERY_EXCEPTION(
+            jerr::JSDY0021,
+            ERROR_PARAMS(e.what()),
+            ERROR_LOC(loc));
+
+        // use location of e in case of literal string
+        if (!(theRelativeLocation == QueryLoc::null)) set_source(xq, e);
+        throw xq;
+      }
+
       if (result != NULL)
       {
         if (!state->theAllowMultiple && state->theGotOne)
         {
-          RAISE_ERROR(jerr::JSDY0040, loc, 
+          RAISE_ERROR(jerr::JSDY0021, loc, 
           ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
         }
         state->theGotOne = true;
         STACK_PUSH(true, state);
+        continue;
       }
       else
       {

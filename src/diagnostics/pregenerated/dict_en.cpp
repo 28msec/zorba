@@ -152,10 +152,13 @@ extern entry const dict_en[] = {
   { "JNUP0017", "Cannot replace with less or more than an item." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0040", "$1" },
+  { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0041", "$1: invalid option type for option $2 (expected $3)" },
+  { "JSDY0021", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0040", "$1" },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },

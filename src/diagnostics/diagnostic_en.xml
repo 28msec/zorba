@@ -2700,11 +2700,16 @@
       <value>$1</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0041" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error for invalid option type</comment>
       <value>$1: invalid option type for option $2 (expected $3)</value>
     </diagnostic>
 
+
+    <diagnostic code="JSDY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error raised by jn:parse-json</comment>
+      <value>$1</value>
+    </diagnostic>
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->

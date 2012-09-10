@@ -78,6 +78,8 @@ public:
 
   virtual ~JSONParseIterator();
 
+public:
+  void processOptions(const store::Item_t& aOptions, bool& aAllowMultiple) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
