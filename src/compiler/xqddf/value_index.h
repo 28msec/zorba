@@ -264,7 +264,7 @@ private:
   MaintenanceMode                 theMaintenanceMode;
   ContainerKind                   theContainerKind;
 
-  for_clause_t                    theDomainClause;
+  for_clause                    * theDomainClause;
   expr                          * theDomainExpr;
   var_expr                      * theDomainVar;
   var_expr                      * theDomainPosVar;
