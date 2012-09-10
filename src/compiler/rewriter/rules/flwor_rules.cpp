@@ -294,69 +294,93 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     }
     else if (c->get_kind() == flwor_clause::for_clause)
     {
-      for_clause* forClause = static_cast<for_clause *>(c);
+      for_clause* fc = static_cast<for_clause *>(c);
 
-      expr* domainExpr = forClause->get_expr();
+      expr* domainExpr = fc->get_expr();
       xqtref_t domainType = domainExpr->get_return_type();
-      var_expr* var = forClause->get_var();
+      var_expr* var = fc->get_var();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
       ulong domainCount = domainType->max_card();
-      const var_expr* pvar = forClause->get_pos_var();
+      const var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL &&
           expr_tools::count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
       {
-        MODIFY(forClause->set_pos_var(NULL));
+        fc->set_pos_var(NULL);
         pvar = NULL;
       }
 
       // Cannot inline a FOR var whose domain is a sequential expr or
       // might contain more than 1 items.
-      if (domainExpr->is_sequential() || domainCount >= 2)
+      if (domainExpr->is_sequential() || domainCount > 1)
         continue;
 
       // FOR clause with 0 cardinality
-      if (domainCount == 0 && ! forClause->is_allowing_empty())
-        return rCtx.theEM->create_seq(sctx, LOC(node));
-
-      // FOR clause with cardinality 0 or 1
-
-      if (pvar != NULL)
+      if (domainCount == 0)
       {
-        if (forClause->is_allowing_empty() && domainCount == 0)
+        if (! fc->is_allowing_empty())
         {
-          expr* constExpr = rCtx.theEM->create_const_expr(sctx, loc, xs_integer::zero());
-          MODIFY(subst_vars(rCtx, node, pvar, constExpr));
+          return rCtx.theEM->create_seq(sctx, LOC(node));
         }
         else
         {
-          expr* constExpr = rCtx.theEM->create_const_expr(sctx, loc, xs_integer::one());
-          MODIFY(subst_vars(rCtx, node, pvar, constExpr));
+          if (pvar != NULL)
+          {
+            expr* constExpr = rCtx.theEM->
+            create_const_expr(sctx, loc, xs_integer::zero());
+
+            MODIFY(subst_vars(rCtx, node, pvar, constExpr));
+            fc->set_pos_var(NULL);
+          }
+
+          expr* emptyExpr = rCtx.theEM->create_seq(sctx, LOC(node));
+          MODIFY(subst_vars(rCtx, node, var, emptyExpr));
+          substitute = true;
         }
       }
 
-      int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+      // FOR clause with cardinality 0 or 1
+      else
+      {
+        if (pvar != NULL)
+        {
+          if (domainQuant == TypeConstants::QUANT_ONE || 
+              ! fc->is_allowing_empty())
+          {
+            expr* constExpr = rCtx.theEM->
+            create_const_expr(sctx, loc, xs_integer::one());
 
-      if (uses > 1 &&
-          is_trivial_expr(domainExpr) &&
-          domainQuant == TypeConstants::QUANT_ONE)
-      {
-        subst_vars(rCtx, node, var, domainExpr);
-        substitute = true;
-      }
-      else if (uses == 1 &&
-               ((is_trivial_expr(domainExpr) &&
-                 domainQuant == TypeConstants::QUANT_ONE) ||
-                safe_to_fold_single_use(var, domainQuant, flwor)))
-      {
-        subst_vars(rCtx, node, var, domainExpr);
-        substitute = true;
-      }
-      else if (uses == 0 &&
-               !domainExpr->isNonDiscardable() &&
-               domainQuant == TypeConstants::QUANT_ONE)
-      {
-        substitute = true;
+            MODIFY(subst_vars(rCtx, node, pvar, constExpr));
+            fc->set_pos_var(NULL);
+          }
+        }
+
+        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+
+        if (uses > 1 &&
+            is_trivial_expr(domainExpr) &&
+            (domainQuant == TypeConstants::QUANT_ONE ||
+             fc->is_allowing_empty()))
+        {
+          subst_vars(rCtx, node, var, domainExpr);
+          substitute = true;
+        }
+        else if (uses == 1 &&
+                 (domainQuant == TypeConstants::QUANT_ONE || i == numClauses -1) &&
+                 ((is_trivial_expr(domainExpr) &&
+                   domainQuant == TypeConstants::QUANT_ONE) ||
+                  safe_to_fold_single_use(var, domainQuant, flwor)))
+        {
+          subst_vars(rCtx, node, var, domainExpr);
+          substitute = true;
+        }
+        else if (uses == 0 &&
+                 !domainExpr->isNonDiscardable() &&
+                 (domainQuant == TypeConstants::QUANT_ONE ||
+                  fc->is_allowing_empty()))
+        {
+          substitute = true;
+        }
       }
 
       if (substitute)
@@ -435,54 +459,63 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   {
     flwor_clause* clause = flwor.get_clause(0);
 
-    if (clause->get_kind() == flwor_clause::group_clause)
+    if (clause->get_kind() == flwor_clause::for_clause ||
+        clause->get_kind() == flwor_clause::let_clause ||
+        clause->get_kind() == flwor_clause::window_clause)
+    {
+      break;
+    }
+    else if (clause->get_kind() == flwor_clause::group_clause)
     {
       group_clause* gc = static_cast<group_clause*>(clause);
+
       const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
-      flwor_clause::rebind_list_t::const_iterator gVarsIte = gVars.begin();
-      flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
-      for (; gVarsIte != gVarsEnd; ++gVarsIte)
+
+      flwor_clause::rebind_list_t::const_iterator ite = gVars.begin();
+      flwor_clause::rebind_list_t::const_iterator end = gVars.end();
+
+      for (; ite != end; ++ite)
       {
-        var_expr* gVar_name = gVarsIte->second;
-        expr* gVar_value = gVarsIte->first;
+        var_expr* gVar = ite->second;
+        expr* inputExpr = ite->first;
 
         let_clause* letClause = new let_clause(sctx,
                                                rCtx.theCCB,
-                                               gVar_name->get_loc(),
-                                               gVar_name,
-                                               gVar_value);
+                                               gVar->get_loc(),
+                                               gVar,
+                                               inputExpr);
 
         flwor.add_clause(1, letClause);
       }
 
       const flwor_clause::rebind_list_t& ngVars = gc->get_nongrouping_vars();
-      flwor_clause::rebind_list_t::const_iterator ngVarsIte = ngVars.begin();
-      flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
-      for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
+
+      ite = ngVars.begin();
+      end = ngVars.end();
+
+      for (; ite != end; ++ite)
       {
-        var_expr* ngVar_name = ngVarsIte->second;
-        expr* ngVar_value = ngVarsIte->first;
+        var_expr* ngVar = ite->second;
+        expr* inputExpr = ite->first;
 
         let_clause* letClause = new let_clause(sctx,
                                                rCtx.theCCB,
-                                               ngVar_name->get_loc(),
-                                               ngVar_name,
-                                               ngVar_value);
+                                               ngVar->get_loc(),
+                                               ngVar,
+                                               inputExpr);
 
         flwor.add_clause(1, letClause);
       }
 
-      MODIFY(flwor.remove_clause(0));
-
+      flwor.remove_clause(0);
       continue;
     }
-
-    if (clause->get_kind() == flwor_clause::where_clause)
+    else if (clause->get_kind() == flwor_clause::where_clause)
     {
       expr* whereExpr = clause->get_expr();
 
-      //TODO: Consider cases where whereExpr is an And operation as well
-      if(whereCond == NULL)
+      //TODO: Consider case where both whereExpr and whereCond ar AND ops
+      if (whereCond == NULL)
       {
         whereCond = whereExpr;
       }
@@ -490,11 +523,15 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         static_cast<fo_expr*>(whereCond)->add_arg(whereExpr);
       }
+      else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+      {
+        static_cast<fo_expr*>(whereExpr)->add_arg(whereCond);
+      }
       else
       {
         whereCond = rCtx.theEM->
         create_fo_expr(sctx,
-                       whereExpr->get_loc(),
+                       whereCond->get_loc(),
                        GET_BUILTIN_FUNCTION(OP_AND_N),
                        whereExpr,
                        whereCond);
@@ -504,32 +541,26 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor.remove_clause(0);
       continue;
     }
-
-    //since one value is still returned, count variables are changed to 1
-    if (clause->get_kind() == flwor_clause::count_clause)
+    else if (clause->get_kind() == flwor_clause::count_clause)
     {
+      // since one value is still returned, count variables are changed to 1
       subst_vars(rCtx,
                  flworp,
                  static_cast<count_clause*>(clause)->get_var(),
                  rCtx.theEM->create_const_expr(sctx, loc, xs_integer::one()));
 
       flwor.remove_clause(0);
-
-      modified = true;
       continue;
     }
-
-    if (clause->get_kind() == flwor_clause::order_clause)
+    else if (clause->get_kind() == flwor_clause::order_clause)
     {
       flwor.remove_clause(0);
-      modified = 0;
       continue;
     }
-
-    if (clause->get_kind() == flwor_clause::for_clause ||
-        clause->get_kind() == flwor_clause::let_clause ||
-        clause->get_kind() == flwor_clause::window_clause)
-      break;
+    else
+    {
+      ZORBA_ASSERT(false);
+    }
   }
 
   if (whereCond != NULL)
@@ -548,7 +579,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     return ifExpr;
   }
 
-  if (flwor.num_clauses() < 1)
+  if (flwor.num_clauses() == 0)
     return flwor.get_return_expr();
 
   return modified ? node : NULL;
@@ -723,10 +754,11 @@ static bool safe_to_fold_single_use(
     switch (kind)
     {
     case flwor_clause::for_clause:
+    case flwor_clause::let_clause:
     {
-      const for_clause* fc = static_cast<const for_clause *>(clause);
-      var_expr* varExpr = fc->get_var();
-      expr* domExpr = fc->get_expr();
+      const forletwin_clause* flc = static_cast<const forletwin_clause *>(clause);
+      var_expr* varExpr = flc->get_var();
+      expr* domExpr = flc->get_expr();
 
       if (! declared)
       {
@@ -734,83 +766,27 @@ static bool safe_to_fold_single_use(
         continue;
       }
 
+      assert(varQuant == TypeConstants::QUANT_ONE);
+
       if (domExpr->is_sequential())
         return false;
 
       // If X is referenced in the current FOR clause .....
       if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
       {
-        if (varQuant != TypeConstants::QUANT_ONE)
-        {
-          // We are considering folding a FOR var whose domain expr may be the
-          // empty sequence. We can fold only if doing so will cause the result
-          // of the flwor expr to be the empty sequence in the case where the
-          // domain expr will indeed be equal to the empty sequence.
-          xqtref_t type = domExpr->get_return_type_with_empty_input(var);
-
-          if (TypeOps::is_equal(tm,
-                                *type,
-                                *GENV_TYPESYSTEM.EMPTY_TYPE,
-                                domExpr->get_loc()))
-          {
-            referencingExpr = domExpr;
-            break;
-          }
-          else
-          {
-            return false;
-          }
-        }
-        else
-        {
-          referencingExpr = domExpr;
-          break;
-        }
+        referencingExpr = domExpr;
+        break;
       }
 
       // If X is referenced after this FOR clause. In this case, we don't want
       // to inline X because its domain expr will be computed once per iteration
       // instead of just once.
-      if (domExpr->get_return_type()->max_card() >= 2)
+      if (kind == flwor_clause::for_clause &&
+          domExpr->get_return_type()->max_card() >= 2)
         return false;
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
       //if (hasNodeConstr && fc.get_expr()->contains_node_construction())
-      //  return false;
-
-      break;
-    }
-    case flwor_clause::let_clause:
-    {
-      const let_clause* lc = static_cast<const let_clause *>(clause);
-      var_expr* varExpr = lc->get_var();
-      expr* domExpr = lc->get_expr();
-
-      if (! declared)
-      {
-        declared = (var == varExpr);
-        continue;
-      }
-
-      if (domExpr->is_sequential())
-        return false;
-
-      if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
-      {
-        if (varQuant != TypeConstants::QUANT_ONE)
-        {
-          // X is a FOR var which is referenced in the current LET clause, and
-          // whose domain may be the empty sequence. We cannot inline in this
-          // case.
-          return false;
-        }
-
-        referencingExpr = domExpr;
-        break;
-      }
-
-      // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-      //if (hasNodeConstr && clause.get_expr()->contains_node_construction())
       //  return false;
 
       break;
@@ -820,8 +796,9 @@ static bool safe_to_fold_single_use(
       if (!declared)
         continue;
 
-      if (varQuant == TypeConstants::QUANT_ONE &&
-          expr_tools::count_variable_uses(clause->get_expr(), var, NULL, 1) == 1)
+      assert(varQuant == TypeConstants::QUANT_ONE);
+
+      if (expr_tools::count_variable_uses(clause->get_expr(), var, NULL, 1) == 1)
       {
         referencingExpr = clause->get_expr();
         break;
@@ -831,8 +808,10 @@ static bool safe_to_fold_single_use(
     }
     case flwor_clause::order_clause:
     {
-      if (!declared || varQuant != TypeConstants::QUANT_ONE)
+      if (!declared)
         continue;
+
+      assert(varQuant == TypeConstants::QUANT_ONE);
 
       const orderby_clause* oc = static_cast<const orderby_clause*>(clause);
 
@@ -852,8 +831,10 @@ static bool safe_to_fold_single_use(
     }
     case flwor_clause::group_clause:
     {
-      if (!declared || varQuant != TypeConstants::QUANT_ONE)
+      if (!declared)
         continue;
+
+      assert(varQuant == TypeConstants::QUANT_ONE);
 
       const group_clause* gc = static_cast<const group_clause*>(clause);
 
@@ -887,8 +868,10 @@ static bool safe_to_fold_single_use(
     }
     case flwor_clause::window_clause:
     {
-      if (!declared || varQuant != TypeConstants::QUANT_ONE)
+      if (!declared)
         continue;
+
+      assert(varQuant == TypeConstants::QUANT_ONE);
 
       const window_clause* wc = static_cast<const window_clause*>(clause);
       expr* domExpr = wc->get_expr();
@@ -938,26 +921,40 @@ static bool safe_to_fold_single_use(
     }
   }
 
-  if (referencingExpr == NULL &&
-      !flwor.get_return_expr()->is_sequential() &&
-      expr_tools::count_variable_uses(flwor.get_return_expr(), var, NULL, 1) == 1)
+  if (referencingExpr == NULL)
   {
-    if (varQuant != TypeConstants::QUANT_ONE)
-    {
-      xqtref_t type =
-      flwor.get_return_expr()->get_return_type_with_empty_input(var);
+    expr* retExpr = flwor.get_return_expr();
 
-      if (TypeOps::is_equal(tm,
-                            *type,
-                            *GENV_TYPESYSTEM.EMPTY_TYPE,
-                            flwor.get_return_expr()->get_loc()))
-        referencingExpr = flwor.get_return_expr();
-    }
-    else
+    if (retExpr->is_sequential())
+      return false;
+
+    if (expr_tools::count_variable_uses(retExpr, var, NULL, 1) == 1)
     {
-      referencingExpr = flwor.get_return_expr();
+      if (varQuant != TypeConstants::QUANT_ONE)
+      {
+        // We are considering folding a FOR var whose domain expr may be the
+        // empty sequence. We can fold only if doing so will cause the result
+        // of the flwor expr to be the empty sequence in the case where the
+        // domain expr will indeed be equal to the empty sequence.
+        xqtref_t type = retExpr->get_return_type_with_empty_input(var);
+
+        if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE, retExpr->get_loc()))
+        {
+          referencingExpr = retExpr;
+        }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        referencingExpr = retExpr;
+      }
     }
   }
+
+  assert(referencingExpr != NULL);
 
   if (referencingExpr == NULL)
     return false;
