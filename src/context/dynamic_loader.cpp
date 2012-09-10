@@ -153,8 +153,9 @@ DynamicLoader::loadModule(const zstring& aFile) const
                       0, aFile.c_str(), -1,
                       wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
   }
-  SetErrorMode(SEM_NOOPENFILEERRORBOX);
+  SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   handle = LoadLibraryW(wpath_str);
+  SetErrorMode(0);
   if (!handle)
     throw ZORBA_EXCEPTION(
       zerr::ZOSE0005_DLL_LOAD_FAILED,
