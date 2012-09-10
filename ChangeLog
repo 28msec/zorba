@@ -16,6 +16,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #867227 (Improved error message for missing commas)
   * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
+  * Fixed bug #1034990 (text serialization with jsoniq fails)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
