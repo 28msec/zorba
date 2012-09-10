@@ -231,9 +231,9 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
       
   theTupleIter->open(planState, aOffset);
 
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
+  csize numSpecs = theGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     GroupingSpec& spec = theGroupingSpecs[i];
 
@@ -249,9 +249,9 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
     }
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
+  numSpecs = theNonGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].open(planState, aOffset);
   }
@@ -263,16 +263,16 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 ********************************************************************************/
 void GroupByIterator::closeImpl(PlanState& planState) 
 {
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
+  csize numSpecs = theGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].close(planState);
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
+  numSpecs = theNonGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].close(planState);
   }
@@ -288,16 +288,16 @@ void GroupByIterator::closeImpl(PlanState& planState)
 ********************************************************************************/
 void GroupByIterator::resetImpl(PlanState& planState) const 
 {
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
+  csize numSpecs = theGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].reset(planState);
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
+  numSpecs = theNonGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].reset(planState);
   }
@@ -313,36 +313,37 @@ void GroupByIterator::resetImpl(PlanState& planState) const
 ********************************************************************************/
 bool GroupByIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
-  GroupByState* state;
-  DEFAULT_STACK_INIT(GroupByState, state, aPlanState);
+  GroupByState* lState;
+  DEFAULT_STACK_INIT(GroupByState, lState, aPlanState);
 
   while (consumeNext(aResult, theTupleIter, aPlanState)) 
   {
     try 
     {
-      matVarsAndGroupBy(state, aPlanState);
+      matVarsAndGroupBy(lState, aPlanState);
     }
-    catch (XQueryException& error)
+    catch (XQueryException& lError)
     {
-      set_source(error, loc);
+      set_source( lError, loc );
       throw;
     }
   }
 
-  if (!state->theGroupMap->empty()) 
+  if (!lState->theGroupMap->empty()) 
   {
-    state->theGroupMapIter = state->theGroupMap->begin();
-    while(state->theGroupMapIter != state->theGroupMap->end())
+    lState->theGroupMapIter = lState->theGroupMap->begin();
+
+    while(lState->theGroupMapIter != lState->theGroupMap->end())
     {
-      bindGroupBy(state->theGroupMapIter, state, aPlanState);
+      bindGroupBy(lState->theGroupMapIter, lState, aPlanState);
 
-      ++state->theGroupMapIter;
+      ++lState->theGroupMapIter;
 
-      STACK_PUSH(true, state);
+      STACK_PUSH(true, lState);
     }
   }
 
-  STACK_END(state);
+  STACK_END(lState);
 }
   
 
