@@ -50,8 +50,8 @@ protected:
   flwor_clause::rebind_list_t::iterator  theNonGroupVarsEnd;
   int                                    theWincondIter;
 
-  std::vector<copy_clause_t>::iterator   theCopyClauseIter;
-  std::vector<copy_clause_t>::iterator   theCopyClauseEnd;
+  std::vector<copy_clause*>::iterator   theCopyClauseIter;
+  std::vector<copy_clause*>::iterator   theCopyClauseEnd;
 
 #ifndef ZORBA_NO_FULL_TEXT
   std::vector<expr**>                   theFTSelectionExprs;

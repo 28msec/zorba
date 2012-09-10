@@ -1058,7 +1058,7 @@ Module :
       {
         $$ = $3;
       }
-  
+
 
 ;
 
@@ -1375,7 +1375,7 @@ Import :
     SchemaImport
   |
     ModuleImport
-    //  ============================ Improved error messages ============================
+  //  ============================ Improved error messages ============================
   |
     IMPORT QNAME_SVAL error
     {
@@ -1523,7 +1523,7 @@ VFO_DeclList :
       ((VFO_DeclList*)$1)->push_back( $3 );
       $$ = $1;
     }
-//  ============================ Improved error messages ============================
+  //  ============================ Improved error messages ============================
   |
     VFO_DeclList ERROR VFO_Decl    //error catching
     {
@@ -2486,6 +2486,23 @@ Expr :
       }
       expr->push_back( $3 );
       $$ = expr;
+    }
+  //  ============================ Improved error messages ============================
+  | Expr error ExprSingle error
+    {
+      $$ = $1; // to prevent the Bison warning
+      $$ = $3; // to prevent the Bison warning
+      error(@2, "syntax error, unexpected ExprSingle (missing comma \",\" between expressions?)");
+      YYERROR;
+    }
+  | Expr ERROR ExprSingle
+    {
+      // This rule will never be reached, as the ERROR rule will stop the parser,
+      // but it is nevertheless needed to fix a testcase with an unterminated comment which
+      // would otherwise cycle indefinitely
+      $$ = $1; // to prevent the Bison warning
+      $$ = $3; // to prevent the Bison warning
+      YYERROR;
     }
 ;
 
@@ -6531,7 +6548,7 @@ JSONAppendExpr :
 JSONDeleteExpr :
         _DELETE JSON FilterExpr
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($3);
 
           if (lDynamicFunctionInvocation == NULL)
@@ -6560,10 +6577,10 @@ JSONDeleteExpr :
 JSONRenameExpr :
         RENAME JSON FilterExpr AS ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($3);
 
-          if(lDynamicFunctionInvocation == NULL) 
+          if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
@@ -6589,10 +6606,10 @@ JSONRenameExpr :
 JSONReplaceExpr :
         REPLACE JSON VALUE OF FilterExpr WITH ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($5);
 
-          if(lDynamicFunctionInvocation == NULL) 
+          if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;

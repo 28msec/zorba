@@ -367,7 +367,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
       {
-        let_clause_t save = lc;
+        let_clause* save = lc;
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
         var_expr* fvar = rCtx.theEM->create_var_expr(sctx,
@@ -375,7 +375,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                                                  var_expr::for_var,
                                                  var->get_name());
         fvar->getFreeVars().insert(fvar);
-        for_clause_t fc = new for_clause(sctx, rCtx.theCCB, loc, fvar, domainExpr);
+        for_clause* fc = rCtx.theEM->create_for_clause(sctx,
+                                                        loc,
+                                                        fvar,
+                                                        domainExpr);
         flwor.add_clause(i, fc);
 
         subst_vars(rCtx, node, var, fvar);

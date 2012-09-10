@@ -308,9 +308,10 @@ void index_flwor_vars(
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const catch_clause_t& clause = (*trycatch)[i];
+      const catch_clause* clause = (*trycatch)[i];
 
-      catch_clause::var_map_t& trycatchVars = clause->get_vars();
+      catch_clause::var_map_t& trycatchVars =
+        const_cast<catch_clause*>(clause)->get_vars();
 
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();
@@ -499,9 +500,10 @@ void build_expr_to_vars_map(
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const catch_clause_t& clause = (*trycatch)[i];
+      const catch_clause* clause = (*trycatch)[i];
 
-      catch_clause::var_map_t& trycatchVars = clause->get_vars();
+      catch_clause::var_map_t& trycatchVars =
+        const_cast<catch_clause*>(clause)->get_vars();
 
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();
