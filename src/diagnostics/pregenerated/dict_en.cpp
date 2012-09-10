@@ -110,6 +110,9 @@ extern entry const dict_en[] = {
   { "JNSE0014", "Cannot serialize a function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNTY0001", "Cannot atomize and/or cast value of type $1 to a string." },
 #endif
 #if defined(ZORBA_WITH_JSON)
