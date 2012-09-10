@@ -11381,15 +11381,6 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
                       PromoteIterator::JSONIQ_PAIR_NAME, // JNTY0001
                       NULL);
 
-  valueExpr = theExprManager->
-  create_treat_expr(theRootSctx,
-                    valueExpr->get_loc(),
-                    valueExpr,
-                    GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-                    TreatIterator::JSONIQ_VALUE, // JNTY0002
-                    false,
-                    NULL);
-
   push_nodestack(valueExpr);
   push_nodestack(nameExpr);
 #endif

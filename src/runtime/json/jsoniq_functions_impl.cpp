@@ -830,4 +830,5 @@ bool JSONRenameIterator::nextImpl(
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */
+
 #endif /* ZORBA_WITH_JSON */

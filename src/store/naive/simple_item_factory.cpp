@@ -2121,6 +2121,32 @@ bool BasicItemFactory::createJSONArray(
 
 bool BasicItemFactory::createJSONArray(
     store::Item_t& result,
+    store::Item_t& item1,
+    store::Item_t& item2,
+    const store::Iterator_t& source,
+    const store::CopyMode& copymode)
+{
+  result = new json::SimpleJSONArray();
+
+  json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(result.getp());
+
+  array->push_back(item1);
+  array->push_back(item2);
+  
+  store::Item_t item;
+
+  while (source->next(item))
+  {
+    if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      item = item->copy(NULL, copymode);
+      
+    array->push_back(item);
+  }
+}
+
+
+bool BasicItemFactory::createJSONArray(
+    store::Item_t& result,
     const std::vector<store::Item_t>& items)
 {
   result = new json::SimpleJSONArray();

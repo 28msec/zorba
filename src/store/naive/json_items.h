@@ -395,23 +395,22 @@ protected:
 
   class ValuesIterator : public store::Iterator
   {
-    protected:
-      SimpleJSONArray_t theArray;
-      Members::iterator theIter;
+  protected:
+    SimpleJSONArray_t theArray;
+    Members::iterator theIter;
 
-    public:
-      ValuesIterator(const SimpleJSONArray_t& anArray)
-        : theArray(anArray) {}
+  public:
+    ValuesIterator(const SimpleJSONArray_t& anArray) : theArray(anArray) {}
 
-      virtual ~ValuesIterator();
+    virtual ~ValuesIterator();
+    
+    virtual void open();
 
-      virtual void open();
+    virtual bool next(store::Item_t&);
 
-      virtual bool next(store::Item_t&);
+    virtual void reset();
 
-      virtual void reset();
-
-      virtual void close();
+    virtual void close();
   };
 
 private:
