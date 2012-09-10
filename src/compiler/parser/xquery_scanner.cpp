@@ -3751,7 +3751,7 @@ YY_DECL
    |
    |  Accepts the "#!/path/interpreter" unix script shebang string
    |______________________________________________________________________*/
-   
+
 #line 3756 "xquery_scanner.yy.cpp"
 
 	if ( !(yy_init) )
@@ -6982,6 +6982,7 @@ std::string start_state(int state)
   switch (state)
   {
     case INITIAL: return "INITIAL";
+    case MODE_SHEBANG: return "MODE_SHEBANG";
     case INITIAL_ACCUMULATOR: return "INITIAL_ACCUMULATOR";
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
     case MODE_ELEM_COMP_CONSTR: return "MODE_ELEM_COMP_CONSTR";

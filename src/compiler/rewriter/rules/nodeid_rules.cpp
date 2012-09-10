@@ -858,8 +858,8 @@ void MarkNodeCopyProps::applyInternal(
 
     if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
     {
-      std::vector<copy_clause_t>::const_iterator ite = e->begin();
-      std::vector<copy_clause_t>::const_iterator end = e->end();
+      std::vector<copy_clause*>::const_iterator ite = e->begin();
+      std::vector<copy_clause*>::const_iterator end = e->end();
 
       for (; ite != end; ++ite)
       {
@@ -1323,7 +1323,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 #if 1
     std::vector<VarInfo*> globalVars;
     e->get_sctx()->getVariables(globalVars, true, true);
-  
+
     FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
     {
       var_expr* globalVar = (*ite)->getVar();

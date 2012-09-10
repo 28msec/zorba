@@ -4,8 +4,10 @@ version 2.7
 
 New Features:
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
-  * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the 
+  * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
+  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq
+    functions. jn:object is also supported.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
@@ -13,6 +15,7 @@ Optimizations:
     predicate rewrite) to general flwor expressions.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #867227 (Improved error message for missing commas)
   * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
@@ -26,6 +29,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1042840 (qname pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
+  * Fixed bug #1045902 (file:last-modified returns current date time)
 
 
 version 2.6

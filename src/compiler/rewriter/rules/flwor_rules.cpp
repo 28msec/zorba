@@ -437,7 +437,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
       {
-        let_clause_t save = lc;
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
         var_expr* fvar = rCtx.theEM->
@@ -445,8 +444,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
         fvar->getFreeVars().insert(fvar);
 
-        for_clause_t forClause = new for_clause(sctx, rCtx.theCCB, loc, fvar, domainExpr);
-        flwor.add_clause(i, forClause);
+        for_clause* fc = rCtx.theEM->
+        create_for_clause(sctx, loc, fvar, domainExpr);
+
+        flwor.add_clause(i, fc);
 
         subst_vars(rCtx, node, var, fvar);
       }
@@ -479,11 +480,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         var_expr* gVar = ite->second;
         expr* inputExpr = ite->first;
 
-        let_clause* letClause = new let_clause(sctx,
-                                               rCtx.theCCB,
-                                               gVar->get_loc(),
-                                               gVar,
-                                               inputExpr);
+        let_clause* letClause = rCtx.theEM->
+        create_let_clause(sctx, gVar->get_loc(), gVar, inputExpr);
 
         flwor.add_clause(1, letClause);
       }
@@ -498,11 +496,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         var_expr* ngVar = ite->second;
         expr* inputExpr = ite->first;
 
-        let_clause* letClause = new let_clause(sctx,
-                                               rCtx.theCCB,
-                                               ngVar->get_loc(),
-                                               ngVar,
-                                               inputExpr);
+        let_clause* letClause = rCtx.theEM->
+        create_let_clause(sctx, ngVar->get_loc(), ngVar, inputExpr);
 
         flwor.add_clause(1, letClause);
       }

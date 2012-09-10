@@ -230,6 +230,7 @@ typedef enum
 
 #ifdef ZORBA_WITH_JSON
   OP_OBJECT_INSERT_N,
+  JN_OBJECT_1,
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
