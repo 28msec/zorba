@@ -39,7 +39,7 @@ SERIALIZABLE_CLASS_VERSIONS(JSONParseIterator)
 void JSONParseIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<JSONParseIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>*)this);
 
     ar & theRelativeLocation;
 }
@@ -59,6 +59,8 @@ void JSONParseIterator::accept(PlanIterVisitor& v) const
 }
 
 JSONParseIterator::~JSONParseIterator() {}
+
+JSONParseIteratorState::JSONParseIteratorState() {}
 
 // </JSONParseIterator>
 
