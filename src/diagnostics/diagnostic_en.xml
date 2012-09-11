@@ -2547,11 +2547,6 @@
 
     <!--////////// JSONiq ///////////////////////////////////////////-->
 
-    <diagnostic code="JNTY0001" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.</comment>
-      <value>Cannot atomize and/or cast value of type $1 to a string.</value>
-    </diagnostic>
-
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
       <value>Pair value returns no, or more than one, item.</value>
@@ -2564,7 +2559,7 @@
     
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
-      <value>$1 items do not have typed value</value>
+      <value>Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item).</value>
     </diagnostic>
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">

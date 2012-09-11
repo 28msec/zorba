@@ -110,16 +110,13 @@ extern entry const dict_en[] = {
   { "JNSE0014", "Cannot serialize a function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0001", "Cannot atomize and/or cast value of type $1 to a string." },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0002", "Pair value returns no, or more than one, item." },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0003", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0004", "$1 items do not have typed value" },
+  { "JNTY0004", "Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)." },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
