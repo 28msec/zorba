@@ -1106,31 +1106,12 @@ void PULImpl::addRemoveFromHashMap(
 void PULImpl::addJSONObjectInsert(
      const QueryLoc* loc,
      store::Item_t& target,
-     std::vector<store::Item_t>& names,
-     std::vector<store::Item_t>& values)
+     store::Item_t& content)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
-  csize numPairs = names.size();
-
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    if (obj->getObjectValue(names[i]) != NULL)
-    {
-      RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(names[i]->getStringValue()));
-    }
-
-    for (csize j = 0; j < i; ++j)
-    {
-      if (names[j]->equals(names[i]))
-      {
-        RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
-      }
-    }
-  }
-  
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(obj, updates);
 
@@ -1146,31 +1127,12 @@ void PULImpl::addJSONObjectInsert(
         continue;
 
       UpdJSONObjectInsert* upd = static_cast<UpdJSONObjectInsert*>(*ite);
-
-      csize numPairs1 = upd->theNames.size();
-      csize numPairs2 = names.size();
-      csize numPairs = numPairs1;
-
-      upd->theNames.resize(numPairs1 + numPairs2);
-      upd->theValues.resize(numPairs1 + numPairs2);
-
-      for (csize i = 0; i < numPairs2; ++i, ++numPairs)
-      {
-        for (csize j = 0; j < numPairs1; ++j)
-        {
-          if (names[i]->equals(upd->theNames[j]))
-            RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
-        }
-        
-        upd->theNames[numPairs].transfer(names[i]);
-        upd->theValues[numPairs].transfer(values[i]);
-      }
-      
+      upd->theContent.transfer(content);
       return;
     }
 
     UpdatePrimitive* upd =  GET_PUL_FACTORY().
-    createUpdJSONObjectInsert(pul, loc, target, names, values);
+    createUpdJSONObjectInsert(pul, loc, target, content);
 
     pul->theJSONObjectInsertList.push_back(upd);
 
@@ -1179,7 +1141,7 @@ void PULImpl::addJSONObjectInsert(
   else
   {
     UpdatePrimitive* upd =  GET_PUL_FACTORY().
-    createUpdJSONObjectInsert(pul, loc, target, names, values);
+    createUpdJSONObjectInsert(pul, loc, target, content);
 
     pul->theJSONObjectInsertList.push_back(upd);
 
@@ -1999,24 +1961,27 @@ void PULImpl::mergeTargetedUpdateLists(
           
           UpdJSONObjectInsert* myUpd = static_cast<UpdJSONObjectInsert*>(*ite);
 
-          csize numMyPairs = myUpd->theNames.size();
-          csize numOtherPairs = otherUpd2->theNames.size();
-          csize numPairs = numMyPairs;
+          zorba::store::Iterator_t lKeyIterator = myUpd->theContent->getObjectKeys();
+          zorba::store::Iterator_t lKeyIterator2 = otherUpd2->theContent->getObjectKeys();
 
-          myUpd->theNames.resize(numMyPairs + numOtherPairs);
-          myUpd->theValues.resize(numMyPairs + numOtherPairs);
-
-          for (csize i = 0; i < numOtherPairs; ++i, ++numPairs)
+          lKeyIterator->open();
+          lKeyIterator2->open();
+          zorba::store::Item_t lKey;
+          zorba::store::Item_t lKey2;
+          while(lKeyIterator2->next(lKey2))
           {
-            for (csize j = 0; j < numMyPairs; ++j)
+            while(lKeyIterator->next(lKey))
             {
-              if (otherUpd2->theNames[i]->equals(myUpd->theNames[j]))
+              if (lKey2->equals(lKey))
                 RAISE_ERROR(jerr::JNUP0005, otherUpd->theLoc,
-                ERROR_PARAMS(myUpd->theNames[j]->getStringValue()));
+                ERROR_PARAMS(lKey->getStringValue()));
             }
-        
-            myUpd->theNames[numPairs].transfer(otherUpd2->theNames[i]);
-            myUpd->theValues[numPairs].transfer(otherUpd2->theValues[i]);
+            zorba::store::Item_t lValue = 
+                otherUpd2->theContent->getObjectValue(lKey);
+            zorba::simplestore::json::JSONObject* lObject =
+                static_cast<zorba::simplestore::json::JSONObject*>(
+                    myUpd->theContent.getp());
+            lObject->add(lKey, lValue, false);
           }
 
           merged = true;

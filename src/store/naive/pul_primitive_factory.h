@@ -376,8 +376,7 @@ public:
       CollectionPul* pul,
       const QueryLoc* loc,
       store::Item_t& target,
-      std::vector<store::Item_t>& names,
-      std::vector<store::Item_t>& values);
+      store::Item_t& content);
 
   virtual UpdJSONObjectDelete*
   createUpdJSONObjectDelete(

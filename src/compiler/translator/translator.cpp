@@ -13106,37 +13106,23 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  csize numPairs = v.numPairs();
-  std::vector<expr*> args(1 + 2 * numPairs);
-
   expr* targetExpr = pop_nodestack();
-
   targetExpr = wrap_in_type_match(targetExpr,
                                   rtm.JSON_OBJECT_TYPE_ONE,
                                   loc,
                                   TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  args[0] = targetExpr;
+  expr* contentExpr = pop_nodestack();
+  contentExpr = wrap_in_type_match(targetExpr,
+                                  rtm.JSON_OBJECT_TYPE_ONE,
+                                  loc,
+                                  TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
+                                  NULL);
 
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    expr* nameExpr = pop_nodestack();
-    expr* valueExpr = pop_nodestack();
-
-    nameExpr = wrap_in_type_promotion(nameExpr,
-                                      theRTM.STRING_TYPE_ONE,
-                                      PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
-
-    valueExpr = wrap_in_type_match(valueExpr,
-                                   rtm.ITEM_TYPE_ONE,
-                                   loc,
-                                   TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
-                                   NULL);
-
-    args[2 * (numPairs - 1 - i) + 1] = nameExpr;
-    args[2 * (numPairs - 1 - i) + 2] = valueExpr;
-  }
+  std::vector<expr*> args;
+  args.push_back(targetExpr);
+  args.push_back(contentExpr);
 
   expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,

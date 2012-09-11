@@ -6621,18 +6621,16 @@ public:
 class JSONObjectInsertExpr : public exprnode
 {
 protected:
-  const JSONPairList * thePairs;
+  const exprnode     * theContentExpr;
   const exprnode     * theTargetExpr;
 
 public:
   JSONObjectInsertExpr(
     const QueryLoc& loc,
-    const JSONPairList* pairs,
+    const exprnode* contentExpr,
     const exprnode* targetExpr);
 
   ~JSONObjectInsertExpr();
-
-  csize numPairs() const { return thePairs->size(); }
 
   void accept(parsenode_visitor&) const;
 };

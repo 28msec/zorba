@@ -6487,15 +6487,15 @@ JSONPairList :
     ;
 
 JSONInsertExpr :
-        INSERT JSON LBRACE JSONPairList RBRACE INTO ExprSingle
+        INSERT JSON ExprSingle INTO ExprSingle
         {
           $$ = new JSONObjectInsertExpr(LOC(@$),
-                                        static_cast<JSONPairList*>($4),
-                                        $7);
+                                        $3,
+                                        $5);
         }
-    |   INSERT JSON LBRACK Expr RBRACK INTO ExprSingle AT POSITION ExprSingle
+    |   INSERT JSON ExprSingle INTO ExprSingle INTO POSITION ExprSingle
         {
-          $$ = new JSONArrayInsertExpr(LOC(@$), $4, $7, $10);
+          $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
     ;
 

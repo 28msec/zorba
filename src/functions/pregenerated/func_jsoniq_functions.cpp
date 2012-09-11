@@ -142,6 +142,18 @@ PlanIter_t fn_jsoniq_null::codegen(
 
 #endif
 #ifdef ZORBA_WITH_JSON
+PlanIter_t op_zorba_json_object_insert::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONObjectInsertIterator(sctx, loc, argv);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
 PlanIter_t op_zorba_json_array_insert::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -352,6 +364,23 @@ void populate_context_jsoniq_functions(static_context* sctx)
         (createQName("http://www.jsoniq.org/functions","","null"), 
         GENV_TYPESYSTEM.JDM_NULL_TYPE_ONE),
         FunctionConsts::FN_JSONIQ_NULL_0);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_json_object_insert,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-object-insert"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::OP_ZORBA_JSON_OBJECT_INSERT_2);
 
   }
 

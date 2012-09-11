@@ -266,7 +266,6 @@
 </zorba:iterator>
 
 
-<!--
 /*******************************************************************************
 ********************************************************************************/
 <zorba:iterator name="JSONObjectInsertIterator" arity="nary"
@@ -278,7 +277,8 @@
 
   <zorba:function>
 
-    <zorba:signature localname="object-insert" prefix="op-zorba" variadic="true">
+    <zorba:signature localname="json-object-insert" prefix="op-zorba">
+      <zorba:param>object()</zorba:param>
       <zorba:param>object()</zorba:param>
       <zorba:output>empty-sequence()</zorba:output>
     </zorba:signature>
@@ -291,14 +291,7 @@
 
   </zorba:function>
 
-  <zorba:constructor>
-    <zorba:parameter type="bool" name="copyInput" />
-  </zorba:constructor>
-
-  <zorba:member type="std::vector&lt;bool&gt;" name="theCopyInputs" />
-
 </zorba:iterator>
--->
 
 
 <!--

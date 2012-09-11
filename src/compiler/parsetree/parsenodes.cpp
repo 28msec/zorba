@@ -5853,11 +5853,11 @@ void JSON_Test::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONObjectInsertExpr::JSONObjectInsertExpr(
     const QueryLoc& loc,
-    const JSONPairList* pairs,
+    const exprnode* contentExpr,
     const exprnode* targetExpr)
   :
   exprnode(loc),
-  thePairs(pairs),
+  theContentExpr(contentExpr),
   theTargetExpr(targetExpr)
 {
 }
@@ -5865,7 +5865,7 @@ JSONObjectInsertExpr::JSONObjectInsertExpr(
 
 JSONObjectInsertExpr::~JSONObjectInsertExpr()
 {
-  delete thePairs;
+  delete theContentExpr;
   delete theTargetExpr;
 }
 
@@ -5873,7 +5873,7 @@ JSONObjectInsertExpr::~JSONObjectInsertExpr()
 void JSONObjectInsertExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(thePairs);
+  ACCEPT(theContentExpr);
   ACCEPT(theTargetExpr);
   END_VISITOR();
 }
