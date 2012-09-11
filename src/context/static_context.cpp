@@ -538,7 +538,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
-#ifndef ZORBA_WITH_JSON
+#ifdef ZORBA_WITH_JSON
             ns == JSONIQ_FN_NS ||
 #endif /* ZORBA_WITH_JSON */
             ns == ZORBA_XML_FN_NS);
