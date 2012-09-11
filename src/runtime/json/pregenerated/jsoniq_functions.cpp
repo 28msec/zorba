@@ -473,6 +473,31 @@ JSONArrayAppendIterator::~JSONArrayAppendIterator() {}
 // </JSONArrayAppendIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONBoxIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONBoxIterator)
+
+void JSONBoxIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>*)this);
+}
+
+
+void JSONBoxIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONBoxIterator::~JSONBoxIterator() {}
+
+// </JSONBoxIterator>
+
+#endif
 
 }
 

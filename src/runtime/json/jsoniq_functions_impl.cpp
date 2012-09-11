@@ -26,6 +26,7 @@
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/json/jsoniq_functions_impl.h"
 #include "runtime/visitors/planiter_visitor.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -913,6 +914,45 @@ bool JSONRenameIterator::nextImpl(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+bool JSONBoxIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t value1;
+  store::Item_t value2;
+  store::Item_t value;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (!consumeNext(value1, theChild, planState))
+  {
+    GENV_STORE.getItemFactory()->createJSONNull(result);
+  }
+  else if (!consumeNext(value2, theChild, planState))
+  {
+    result.transfer(value1);
+  }
+  else
+  {
+    store::CopyMode copymode;
+    copymode.set(false, true, true, true);
+
+    store::Iterator_t wrapper = new PlanIteratorWrapper(theChild, planState);
+
+    GENV_STORE.getItemFactory()->
+    createJSONArray(result, value1, value2, wrapper, copymode);
+  }
+
+  STACK_PUSH(true, state);
+  STACK_END(state);
+}
+
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */
+
 #endif /* ZORBA_WITH_JSON */

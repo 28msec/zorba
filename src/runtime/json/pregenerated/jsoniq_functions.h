@@ -586,6 +586,40 @@ public:
 
 #endif
 
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ *      
+ *    
+ * Author: Zorba Team
+ */
+class JSONBoxIterator : public UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONBoxIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONBoxIterator,
+    UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONBoxIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~JSONBoxIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
 }
 #endif
 /*

@@ -192,6 +192,18 @@ PlanIter_t op_zorba_json_array_append::codegen(
 }
 
 #endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t op_zorba_json_box::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONBoxIterator(sctx, loc, argv[0]);
+}
+
+#endif
 
 void populate_context_jsoniq_functions(static_context* sctx)
 {
@@ -457,6 +469,22 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::OP_ZORBA_JSON_ARRAY_APPEND_2);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_json_box,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-box"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+        FunctionConsts::OP_ZORBA_JSON_BOX_1);
 
   }
 

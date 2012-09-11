@@ -27,6 +27,10 @@ Bug Fixes/Other Changes:
   * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
+  * Fixed bug #1046411 (automatic boxing of mutli-item sequence appearing as the
+    value of an object pair)
+  * Fixed bug #1046410 (automatic conversion to null of empty sequence appearing
+    as the value of an object pair)
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
   * Fixed bug #1042840 (qname pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
