@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-%include "std_string.i"
-%include ../zorba_api.i
+#ifndef API_CONFIG_H
+#define API_CONFIG_H
 
-%runtime %{
-#ifdef WIN32
-#ifdef shutdown
-  #undef shutdown
-#endif
-#endif
-%}
+#define ZORBA_STREAM_BUFFER_SIZE @ZORBA_STREAM_BUFFER_SIZE@
 
+
+#endif

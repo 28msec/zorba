@@ -18,6 +18,7 @@
 SET JAVA_LOAD_PATH=@JAVA_LOAD_PATH@
 SET XQJ_LOAD_PATH=@XQJ_LOAD_PATH@
 SET PATH=%PATH%;@XQJ_LOAD_PATH@;@JAVA_DLL_PATH@;@ZORBA_SIMPLE_STORE@;
+SET JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 ECHO "xqj_test.bat: Deleting old Java API if found..."
 RD /S /Q "%XQJ_LOAD_PATH%\tck\org"
@@ -42,7 +43,7 @@ cd..
 RD /S /Q "%XQJ_LOAD_PATH%\tck\org"
 
 ECHO "xqj_test.bat: Compiling Managers Tests..."
-"@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck\xqjapi.jar;tck\zorba_api.jar;tck\zorba_xqj.jar -d managers "managers\Api_test.java"
+"@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck\xqjapi.jar;tck\zorba_api.jar;tck\zorba_xqj.jar -d managers "managers\*.java"
 
 ECHO "xqj_test.bat: Executing XQJ TCK ..."
 "@Java_JAVA_EXECUTABLE@" -cp tck\xqjapi.jar;tck\xqjtck.jar;tck\junit-4.9.jar;tck\zorba_api.jar;tck\zorba_xqj.jar -Dcom.oracle.xqj.tck.datasource=tck\zorba.properties com.oracle.xqj.tck.AllTests
