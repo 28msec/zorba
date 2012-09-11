@@ -39,6 +39,8 @@
 
 #include "diagnostics/assert.h"
 
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 namespace zorba
 {
@@ -50,7 +52,10 @@ static expr* wrap_in_num_promotion(
     const xqtref_t& t,
     RewriterContext& rCtx);
 
-static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx, RewriterContext& rCtx);
+static xqtref_t specialize_numeric(
+    fo_expr* fo,
+    static_context* sctx,
+    RewriterContext& rCtx);
 
 static function* flip_value_cmp(FunctionConsts::FunctionKind kind);
 
@@ -120,6 +125,25 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return arg;
       else
         return NULL;
+    }
+
+    if (fo->get_func()->getKind() == FunctionConsts::OP_ZORBA_JSON_BOX_1)
+    {
+      expr* arg = fo->get_arg(0);
+      xqtref_t arg_type = arg->get_return_type();
+
+      if (arg_type->get_quantifier() == TypeConstants::QUANT_ONE)
+        return arg;
+
+      if (arg_type->max_card() == 0)
+      {
+        store::Item_t null;
+        GENV_STORE.getItemFactory()->createJSONNull(null);
+
+        return rCtx.theEM->create_const_expr(sctx, fo->get_loc(), null);
+      }
+
+      return NULL;
     }
   }
 
@@ -425,16 +449,16 @@ RULE_REWRITE_POST(SpecializeOperations)
 
     bool modified = false;
 
-    ulong numClauses = flworExpr->num_clauses();
-    for (ulong i = 0; i < numClauses; ++i)
+    csize numClauses = flworExpr->num_clauses();
+    for (csize i = 0; i < numClauses; ++i)
     {
       if (flworExpr->get_clause(i)->get_kind() == flwor_clause::order_clause)
       {
         orderby_clause* obc = reinterpret_cast<orderby_clause*>
                               (flworExpr->get_clause(i));
 
-        ulong numColumns = obc->num_columns();
-        for (ulong j = 0; j < numColumns; ++j)
+        csize numColumns = obc->num_columns();
+        for (csize j = 0; j < numColumns; ++j)
         {
           expr* colExpr = obc->get_column_expr(j);
           xqtref_t colType = colExpr->get_return_type();
@@ -443,10 +467,11 @@ RULE_REWRITE_POST(SpecializeOperations)
           if (!TypeOps::is_equal(tm, *colType, *rtm.EMPTY_TYPE, colLoc) &&
               TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, colLoc))
           {
-            expr* castExpr = rCtx.theEM->create_cast_expr(colExpr->get_sctx(),
-                                            colExpr->get_loc(),
-                                            colExpr,
-                                            rtm.STRING_TYPE_QUESTION);
+            expr* castExpr = rCtx.theEM->
+            create_cast_expr(colExpr->get_sctx(),
+                             colExpr->get_loc(),
+                             colExpr,
+                             rtm.STRING_TYPE_QUESTION);
 
             obc->set_column_expr(j, castExpr);
             modified = true;
@@ -463,7 +488,10 @@ RULE_REWRITE_POST(SpecializeOperations)
 }
 
 
-static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx, RewriterContext& rCtx)
+static xqtref_t specialize_numeric(
+    fo_expr* fo,
+    static_context* sctx,
+    RewriterContext& rCtx)
 {
   TypeManager* tm = fo->get_type_manager();
 

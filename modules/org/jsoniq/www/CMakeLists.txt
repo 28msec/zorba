@@ -15,6 +15,8 @@
 IF(ZORBA_WITH_JSON)
   DECLARE_ZORBA_MODULE(FILE functions.xq VERSION 1.0
     URI "http://www.jsoniq.org/functions")
+  DECLARE_ZORBA_MODULE(FILE function-library.xq VERSION 1.0
+    URI "http://www.jsoniq.org/function-library")
   DECLARE_ZORBA_MODULE (FILE pregenerated/errors.xq
     URI "http://www.jsoniq.org/errors")
 ENDIF(ZORBA_WITH_JSON)
