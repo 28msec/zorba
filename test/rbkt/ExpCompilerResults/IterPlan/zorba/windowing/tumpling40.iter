@@ -1,0 +1,397 @@
+Iterator tree for main query:
+<flwor::TupleStreamIterator>
+  <flwor::WindowIterator>
+    <WindowVariable name="w">
+      <LetVarIterator varname="closings"/>
+    </WindowVariable>
+    <WinCondVariable name="start-CurrentIn"/>
+    <WinCondVariable name="start-CurrentInNextIn"/>
+    <WinCondVariable name="start-CurrentInNextInCurrentOut"/>
+    <CompareIterator>
+      <FnDataIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+          <ForVarIterator varname="first"/>
+        </ChildAxisIterator>
+      </FnDataIterator>
+      <FnDataIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+          <ForVarIterator varname="second"/>
+        </ChildAxisIterator>
+      </FnDataIterator>
+    </CompareIterator>
+    <WinCondVariable name="end-CurrentIn"/>
+    <WinCondVariable name="end-CurrentInNextIn"/>
+    <WinCondVariable name="end-CurrentInNextInCurrentOut"/>
+    <CompareIterator>
+      <FnDataIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+          <ForVarIterator varname="last"/>
+        </ChildAxisIterator>
+      </FnDataIterator>
+      <FnDataIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+          <ForVarIterator varname="beyond"/>
+        </ChildAxisIterator>
+      </FnDataIterator>
+    </CompareIterator>
+    <flwor::GroupByIterator>
+      <flwor::ForIterator>
+        <ForVariable name="closings"/>
+        <flwor::ForIterator>
+          <ForVariable name="s"/>
+          <flwor::TupleSourceIterator/>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,stocks)"/>
+            <FnConcatIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(ABC)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-01)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(105)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(DEF)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-01)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(057)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(ABC)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-02)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(101)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(DEF)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-02)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(054)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(ABC)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-03)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(102)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(DEF)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-03)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(056)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(ABC)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-04)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(103)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(DEF)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-04)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(052)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(ABC)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-05)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(101)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(DEF)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-05)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(055)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(ABC)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-06)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(104)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,closing)"/>
+                <FnConcatIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,symbol)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(DEF)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,date)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(2008-01-06)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(059)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+        </flwor::ForIterator>
+        <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,closing)" typename="*" nill allowed="0">
+          <ForVarIterator varname="s"/>
+        </DescendantAxisIterator>
+      </flwor::ForIterator>
+      <Spec>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,symbol)" typename="*" nill allowed="0">
+          <ForVarIterator varname="closings"/>
+        </ChildAxisIterator>
+        <GroupVariable/>
+      </Spec>
+      <Spec>
+        <ForVarIterator varname="s"/>
+        <NonGroupVariable/>
+      </Spec>
+      <Spec>
+        <ForVarIterator varname="closings"/>
+        <NonGroupVariable/>
+      </Spec>
+    </flwor::GroupByIterator>
+  </flwor::WindowIterator>
+  <ElementIterator>
+    <SingletonIterator value="xs:QName(,,run-up)"/>
+    <AttributeIterator qname="xs:QName(,,symbol)">
+      <EnclosedIterator attr_cont="true">
+        <FnDataIterator>
+          <ForVarIterator varname="symbol"/>
+        </FnDataIterator>
+      </EnclosedIterator>
+    </AttributeIterator>
+    <FnConcatIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,start-date)"/>
+        <EnclosedIterator attr_cont="false">
+          <FnDataIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,date)" typename="*" nill allowed="0">
+              <ForVarIterator varname="first"/>
+            </ChildAxisIterator>
+          </FnDataIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,start-price)"/>
+        <EnclosedIterator attr_cont="false">
+          <FnDataIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+              <ForVarIterator varname="first"/>
+            </ChildAxisIterator>
+          </FnDataIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,end-date)"/>
+        <EnclosedIterator attr_cont="false">
+          <FnDataIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,date)" typename="*" nill allowed="0">
+              <ForVarIterator varname="last"/>
+            </ChildAxisIterator>
+          </FnDataIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,end-price)"/>
+        <EnclosedIterator attr_cont="false">
+          <FnDataIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+              <ForVarIterator varname="last"/>
+            </ChildAxisIterator>
+          </FnDataIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+    </FnConcatIterator>
+  </ElementIterator>
+</flwor::TupleStreamIterator>

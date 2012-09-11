@@ -152,6 +152,12 @@ extern entry const dict_en[] = {
   { "JNUP0017", "Cannot replace with less or more than an item." },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0021", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JSDY0040", "$1" },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },
@@ -607,6 +613,7 @@ extern entry const dict_en[] = {
   { "~JSON_ILLEGAL_ESCAPE", "'\\$2': illegal JSON character escape${ at 3}" },
   { "~JSON_ILLEGAL_LITERAL", "illegal JSON literal${ at 2}" },
   { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
+  { "~JSON_UNEXPECTED_EXTRA_CONTENT", "unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)" },
   { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
   { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
   { "~JSONiq dynamic error", "JSONIQ dynamic error" },

@@ -42,14 +42,14 @@ SERIALIZABLE_CLASS_VERSIONS(CountIterator)
 void CountState::init(PlanState& planState) 
 {
   PlanIteratorState::init(planState);
-  theCount=0;
+  theCount = 0;
 }
 
 
-  void CountState::reset(PlanState& planState) 
+void CountState::reset(PlanState& planState) 
 {
   PlanIteratorState::reset(planState);
-  theCount=0;
+  theCount = 0;
 }
   
   

@@ -943,7 +943,7 @@ const_expr::const_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    store::Item_t v)
+    const store::Item_t& v)
   :
   expr(ccb, sctx, loc, const_expr_kind),
   theValue(v)
