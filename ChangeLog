@@ -17,6 +17,7 @@ Optimizations:
     predicate rewrite) to general flwor expressions.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #950621 (Removed two-arg version of fn:parse-xml(); use XML module function xml:parse() instead)
   * Fixed bug #867227 (Improved error message for missing commas)
   * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
