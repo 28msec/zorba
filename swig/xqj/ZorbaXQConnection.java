@@ -333,26 +333,11 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         isNullXQException(reader);
         
-        StringBuffer string = new StringBuffer();
-        CharBuffer buffer = CharBuffer.allocate(1024);
-        Writer writer = new StringWriter();
-        
-        try {
-            while( reader.read(buffer) >= 0 ) {
-                buffer.flip();
-                writer.append(buffer);
-                buffer.clear();
-            }
-            reader.close();
-        } catch (Exception ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
-        }
-        
         XQPreparedExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, writer.toString());
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, reader);
         } else {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, writer.toString(), lStaticContext);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, reader, lStaticContext);
         }
         cPreparedExpression.add(expression);
         return expression;
@@ -372,21 +357,8 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         isNullXQException(reader);
         isNullXQException(xqsc);
-        StringBuffer string = new StringBuffer();
-        CharBuffer buffer = CharBuffer.allocate(1024);
-        Writer writer = new StringWriter();
-        try {
-            while( reader.read(buffer) >= 0 ) {
-                buffer.flip();
-                writer.append(buffer);
-                buffer.clear();
-            }
-            reader.close();
-        } catch (Exception ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
-        }
-        
-        XQPreparedExpression expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, writer.toString(), xqsc);
+
+        XQPreparedExpression expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, reader, xqsc);
         
         cPreparedExpression.add(expression);
         return expression;
@@ -404,21 +376,12 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQPreparedExpression prepareExpression(InputStream in) throws XQException {
         isClosedXQException();
         isNullXQException(in);
-        StringBuffer  out = new StringBuffer ();
-        try {
-            byte[] b = new byte[4096];
-            for (int n; (n = in.read(b)) != -1;) {
-                out.append(new String(b, 0, n));
-            }
-        } catch (Exception ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
-        }
-        
+
         XQPreparedExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, out.toString());
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, in);
         } else {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, out.toString(), lStaticContext);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, in, lStaticContext);
         }
         try {
             cPreparedExpression.add(expression);
@@ -443,19 +406,10 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         isNullXQException(in);
         isNullXQException(xqsc);
-        StringBuffer  out = new StringBuffer ();
-        try {
-            byte[] b = new byte[4096];
-            for (int n; (n = in.read(b)) != -1;) {
-                out.append(new String(b, 0, n));
-            }
-        } catch (IOException ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
-        }
         
         XQPreparedExpression expression = null;
         try {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, out.toString(), xqsc);
+            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, in, xqsc);
             cPreparedExpression.add(expression);
         } catch (Exception ex) {
             throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
@@ -726,11 +680,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         try {
             dm = zorba.getXmlDataManager();
             doc = new Item();
-            org.zorbaxquery.api.Iterator iterator =  dm.parseXML(value);
-            iterator.open();
-            iterator.next(doc);
-            iterator.close();
-            iterator.delete();
+            doc =  dm.parseXMLtoItem(value);
             item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
         } catch (Exception e) {
             throw new XQException("Error creating Item" + e.getLocalizedMessage());
@@ -756,23 +706,26 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromDocument(Reader value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(value);
-        
-        StringBuffer string = new StringBuffer();
-        CharBuffer buffer = CharBuffer.allocate(1024);
-        Writer writer = new StringWriter();
-        
-        try {
-            while( value.read(buffer) >= 0 ) {
-                buffer.flip();
-                writer.append(buffer);
-                buffer.clear();
+        if (type!=null) {
+            if ( ! ((type.getItemKind()== XQItemType.XQITEMKIND_DOCUMENT_ELEMENT)||(type.getItemKind()== XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT)) ) {
+                throw new XQException("Invalid type");
             }
-            value.close();
-        } catch (Exception ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
+        } else {
+            type =  this.createElementType(null, XQItemType.XQBASETYPE_UNTYPED);
         }
         
-        XQItem item = createItemFromDocument(writer.toString(), baseURI, type);
+        XmlDataManager dm = null;
+        Item doc = null;
+        XQItem item = null;
+        try {
+            dm = zorba.getXmlDataManager();
+            doc = new Item();
+            ZorbaReaderWrapper stream = new ZorbaReaderWrapper(value);
+            doc =  dm.parseXMLtoItem(stream);
+            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
+        } catch (Exception e) {
+            throw new XQException("Error creating Item" + e.getLocalizedMessage());
+        }
         return item;
     }
 
@@ -794,17 +747,26 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromDocument(InputStream value, String baseURI, XQItemType type) throws XQException {
         isClosedXQException();
         isNullXQException(value);
-        // TODO: Rodolfo: optimize this, not good to have a string
-        StringBuffer out = new StringBuffer ();
-        try {
-            byte[] b = new byte[4096];
-            for (int n; (n = value.read(b)) != -1;) {
-                out.append(new String(b, 0, n));
+        if (type!=null) {
+            if ( ! ((type.getItemKind()== XQItemType.XQITEMKIND_DOCUMENT_ELEMENT)||(type.getItemKind()== XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT)) ) {
+                throw new XQException("Invalid type");
             }
-        } catch (Exception ex) {
-            throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
+        } else {
+            type =  this.createElementType(null, XQItemType.XQBASETYPE_UNTYPED);
         }
-        XQItem item = createItemFromDocument(out.toString(), baseURI, type);
+        
+        XmlDataManager dm = null;
+        Item doc = null;
+        XQItem item = null;
+        try {
+            dm = zorba.getXmlDataManager();
+            doc = new Item();
+            ZorbaInputWrapper stream = new ZorbaInputWrapper(value);
+            doc =  dm.parseXMLtoItem(stream);
+            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
+        } catch (Exception e) {
+            throw new XQException("Error creating Item" + e.getLocalizedMessage());
+        }
         return item;
     }
 
@@ -1203,11 +1165,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         Item tmpItem = new Item();
                         if (xmlString.length()>0) {
                             XmlDataManager dataManager = zorba.getXmlDataManager();
-                            org.zorbaxquery.api.Iterator iter = dataManager.parseXML(xmlString);
-                            iter.open();
-                            iter.next(tmpItem);
-                            iter.close();
-                            iter.delete();
+                            tmpItem = dataManager.parseXMLtoItem(xmlString);
                         } else {
                             tmpItem = itemFactory.createDocumentNode("", "");
                         }

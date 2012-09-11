@@ -1,4 +1,5 @@
-declare function local:window() {
+declare function local:window() 
+{
  let $x := 1 to 1000
  for tumbling window $w in $x
  start at $s when fn:true()

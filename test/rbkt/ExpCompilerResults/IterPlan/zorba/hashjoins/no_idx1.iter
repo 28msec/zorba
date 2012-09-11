@@ -33,10 +33,13 @@ Iterator tree for main query:
         </FnStringIterator>
         <flwor::FLWORIterator>
           <ForVariable name="$$dot">
+            <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+              <ForVarIterator varname="ancestor"/>
+            </ParentAxisIterator>
+          </ForVariable>
+          <ForVariable name="$$dot">
             <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-              <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-                <ForVarIterator varname="ancestor"/>
-              </ParentAxisIterator>
+              <ForVarIterator varname="$$dot"/>
             </ChildAxisIterator>
           </ForVariable>
           <WhereClause>

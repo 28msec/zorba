@@ -381,9 +381,10 @@ static expr* try_hoisting(
 
       for (csize i = 0; i < numClauses; ++i)
       {
-        const catch_clause_t& clause = (*trycatch)[i];
+        const catch_clause* clause = (*trycatch)[i];
 
-        catch_clause::var_map_t& trycatchVars = clause->get_vars();
+        catch_clause::var_map_t& trycatchVars =
+          const_cast<catch_clause*>(clause)->get_vars();
 
         catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
         catch_clause::var_map_t::const_iterator end = trycatchVars.end();
@@ -482,9 +483,10 @@ static expr* try_hoisting(
   hoisted->setFlags(e->getFlags());
   letvar->setFlags(e->getFlags());
 
-  let_clause_t flref(new let_clause(e->get_sctx(), rCtx.theCCB, e->get_loc(), letvar, hoisted));
+  let_clause* flref(
+    rCtx.theEM->create_let_clause(e->get_sctx(), e->get_loc(), letvar, hoisted));
 
-  letvar->set_flwor_clause(flref.getp());
+  letvar->set_flwor_clause(flref);
 
   if (step->prev == NULL)
   {
