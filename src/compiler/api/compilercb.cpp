@@ -119,9 +119,9 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsSequential(false),
   theHaveTimeout(false),
   theTimeout(timeout),
-  theTempIndexCounter(0)
+  theTempIndexCounter(0),
+  theEM(new ExprManager(this))
 {
-  theEM = new ExprManager(this);
 
   if (timeout >= 0)
     theHaveTimeout = true;
@@ -148,9 +148,9 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
-  theConfig(cb.theConfig)
+  theConfig(cb.theConfig),
+  theEM(new ExprManager(this))
 {
-  theEM = new ExprManager(this);
 }
 
 
@@ -166,9 +166,9 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   theDebuggerCommons(NULL),
 #endif
   theHasEval(false),
-  theIsEval(false)
+  theIsEval(false),
+  theEM(new ExprManager(this))
 {
-  theEM = new ExprManager(this);
 }
 
 
