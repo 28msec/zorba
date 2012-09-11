@@ -2142,6 +2142,8 @@ bool BasicItemFactory::createJSONArray(
       
     array->push_back(item);
   }
+
+  return true;
 }
 
 

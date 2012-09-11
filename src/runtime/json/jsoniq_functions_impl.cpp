@@ -491,8 +491,6 @@ bool JSONObjectInsertIterator::nextImpl(
 {
   store::Item_t object;
   store::Item_t name;
-  store::Item_t value1;
-  store::Item_t value2;
   store::Item_t value;
   std::vector<store::Item_t> names;
   std::vector<store::Item_t> values;
@@ -517,30 +515,10 @@ bool JSONObjectInsertIterator::nextImpl(
 
   for (csize i = 0; i < numPairs; ++i)
   {
-    bool copy = theCopyInputs[i];
-
     consumeNext(name, theChildren[2 * i + 1].getp(), planState);
+    consumeNext(value, theChildren[2 * i + 2].getp(), planState);
 
     names[i].transfer(name);
-
-    if (!consumeNext(value1, theChildren[2 * i + 2].getp(), planState))
-    {
-      GENV_STORE.getItemFactory()->createJSONNull(value);
-    }
-    else if (!consumeNext(value2, theChildren[2 * i + 2].getp(), planState))
-    {
-      value.transfer(value1);
-    }
-    else
-    {
-      copy = false;
-
-      store::Iterator_t wrapper = 
-      new PlanIteratorWrapper(theChildren[2 * i + 2], planState);
-
-      GENV_STORE.getItemFactory()->
-      createJSONArray(value, value1, value2, wrapper, copymode);
-    }
 
     if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
       value = value->copy(NULL, copymode);
@@ -847,6 +825,44 @@ bool JSONRenameIterator::nextImpl(
 
   STACK_PUSH(true, state);
 
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool JSONBoxIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t value1;
+  store::Item_t value2;
+  store::Item_t value;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (!consumeNext(value1, theChild, planState))
+  {
+    GENV_STORE.getItemFactory()->createJSONNull(result);
+  }
+  else if (!consumeNext(value2, theChild, planState))
+  {
+    result.transfer(value1);
+  }
+  else
+  {
+    store::CopyMode copymode;
+    copymode.set(false, true, true, true);
+
+    store::Iterator_t wrapper = new PlanIteratorWrapper(theChild, planState);
+
+    GENV_STORE.getItemFactory()->
+    createJSONArray(result, value1, value2, wrapper, copymode);
+  }
+
+  STACK_PUSH(true, state);
   STACK_END(state);
 }
 

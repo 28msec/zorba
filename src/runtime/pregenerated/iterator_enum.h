@@ -166,6 +166,7 @@
   TYPE_JSONReplaceValueIterator,
   TYPE_JSONRenameIterator,
   TYPE_JSONArrayAppendIterator,
+  TYPE_JSONBoxIterator,
   TYPE_SqrtIterator,
   TYPE_ExpIterator,
   TYPE_Exp10Iterator,

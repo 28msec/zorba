@@ -134,7 +134,7 @@ bool op_zorba_json_array_append::mustCopyInputNodes(expr* fo, csize producer) co
 }
 
 
-#if 0
+#if 1
 /*******************************************************************************
 
 ********************************************************************************/
@@ -157,7 +157,7 @@ bool op_zorba_json_box::mustCopyInputNodes(expr* fo, csize producer) const
 ********************************************************************************/
 xqtref_t op_zorba_json_box::getReturnType(const fo_expr* fo) const
 {
-  xqtref_t type = const_cast<fo_expr*>(fo)->get_return_type();
+  xqtref_t type = fo->get_arg(0)->get_return_type();
 
   if (type->get_quantifier() == TypeConstants::QUANT_ONE)
     return type;

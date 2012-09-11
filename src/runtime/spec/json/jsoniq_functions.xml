@@ -465,6 +465,7 @@
 <!--
 /*******************************************************************************
 ********************************************************************************/
+-->
 <zorba:iterator name="JSONBoxIterator" 
                 arity="unary"
                 preprocessorGuard="#ifdef ZORBA_WITH_JSON">
@@ -490,6 +491,5 @@
     </zorba:function>
 
 </zorba:iterator>
--->
 
 </zorba:iterators>

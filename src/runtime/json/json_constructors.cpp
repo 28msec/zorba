@@ -279,9 +279,7 @@ void JSONDirectObjectIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool JSONDirectObjectIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
+bool JSONDirectObjectIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -293,8 +291,6 @@ bool JSONDirectObjectIterator::nextImpl(
     std::vector<store::Item_t> names(numPairs);
     std::vector<store::Item_t> values(numPairs);
     store::Item_t name;
-    store::Item_t value1;
-    store::Item_t value2;
     store::Item_t value;
 
     store::CopyMode copymode;
@@ -305,30 +301,10 @@ bool JSONDirectObjectIterator::nextImpl(
 
     for (csize i = 0; i < numPairs; ++i)
     {
-      bool copy = theCopyInputs[i];
-
       consumeNext(name, theChildren[i], planState);
+      consumeNext(value, theChildren[numPairs + i], planState);
 
-      if (!consumeNext(value1, theChildren[numPairs + i], planState))
-      {
-        GENV_STORE.getItemFactory()->createJSONNull(value);
-      }
-      else if (!consumeNext(value2, theChildren[numPairs + i], planState))
-      {
-        value.transfer(value1);
-      }
-      else
-      {
-        copy = false;
-
-        store::Iterator_t wrapper = 
-        new PlanIteratorWrapper(theChildren[numPairs + i], planState);
-
-        GENV_STORE.getItemFactory()->
-        createJSONArray(value, value1, value2, wrapper, copymode);
-      }
-
-      if (copy && (value->isNode() || value->isJSONItem()))
+      if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
         value = value->copy(NULL, copymode);
 
       names[i].transfer(name);
