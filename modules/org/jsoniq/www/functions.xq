@@ -39,19 +39,49 @@ declare namespace jdm = "http://www.jsoniq.org/";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
+declare namespace jerr = "http://www.jsoniq.org/errors";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
 
 (:~
- : This function has the same semantics as fn:parse-xml(), except that
- : it parses the string as JSON (not XML), and returns an Object or
- : Array rather than an XML document.
+ : This function parses a given string as JSON and returns a sequence
+ : of Objects or Arrays.
+ :
+ : Please note that this function allows to parse sequences of whitespace
+ : separated objects and arrays.
  :
  : @param $j A string containing a valid JSON text.
- : @return a JSON Object or Array item.
+ :
+ : @return A sequence of JSON Object or Array item.
+ :
+ : @error jerr:JSDY0040 if the given string is not valid JSON.
  :)
-declare function jn:parse-json($j as xs:string) as json-item()? external;
+declare function jn:parse-json($j as xs:string?) as json-item()* external;
+
+(:~
+ : This function parses a given string as JSON and returns a sequence
+ : of Objects or Arrays.
+ :
+ : @param $j A string containing a valid JSON text.
+ : @param $o A JSON object defining options to configure the parser.
+ : Allowed options are
+ : <ul>
+ :   <li>jsoniq-multiple-top-level-items: allow parsing of sequences of JSON Objects and Arrays (boolean; default: true)</li>
+ : </ul>
+ :
+ : @error jerr:JSDY0040 if the given string is not valid JSON or 
+ :   if jsoniq-multiple-top-level-items is false and there is additionalx
+ :   content after the first JSON Object or Array.
+ : @error jerr:JSDY0041 if the value for the option
+ :   jsoniq-multiple-top-level-items is not of type xs:boolean.
+ :
+ : @return a sequence of JSON Object or Array item.
+ :)
+declare function jn:parse-json(
+  $j as xs:string?,
+  $o as object()) as json-item()* external;
 
 
 (:~
@@ -135,3 +165,18 @@ declare function jn:members($o as array()) as item()* external;
  :)
 declare function jn:flatten($a as array()) as item()* external;
 
+(:~
+ : This function allows dynamic object construction by merging all
+ : its object parameters into a single object with a so-called "simple
+ : object union". A simple object union creates a new object, the pairs
+ : property of which is obtained by accumulating the pairs of all operand
+ : objects. An error jerr:JNDY0003 is raised if two pairs with the same
+ : name are encountered.
+ :
+ : @param $o A sequence of objects.
+ :
+ : @return The simple object union.
+ :
+ : @error jerr:JNDY0003 if there is a pair collision.
+ :)
+declare function jn:object($o as object()*) as object() external;

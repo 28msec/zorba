@@ -760,8 +760,8 @@ void PrinterVisitor::beginVisitFlworForVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1032,8 +1032,8 @@ void PrinterVisitor::beginVisitNonGroupVariable(const std::vector<LetVarIter_t>&
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1064,8 +1064,8 @@ void PrinterVisitor::beginVisitWindowVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1087,17 +1087,17 @@ void PrinterVisitor::endVisitWindowVariable()
 
 
 void PrinterVisitor::beginVisitWinCondVariable(
-    const std::string& varName,
+    const zstring& varName,
     const std::vector<PlanIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("WinCondVariable", theId);
 
-  thePrinter.addAttribute("name", varName);
+  thePrinter.addAttribute("name", varName.str());
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)

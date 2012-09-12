@@ -65,6 +65,7 @@ IndexDecl::IndexDecl(
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH),
+  theDomainClause(NULL),
   theDomainExpr(NULL),
   theDomainVar(NULL),
   theDomainPosVar(NULL),
@@ -144,8 +145,7 @@ void IndexDecl::setDomainExpr(expr* domainExpr)
   theDomainExpr = domainExpr;
 
   if (theDomainClause == NULL)
-    theDomainClause = new for_clause(domainExpr->get_sctx(),
-                                     theCCB,
+    theDomainClause = theCCB->theEM->create_for_clause(domainExpr->get_sctx(),
                                      domainExpr->get_loc(),
                                      NULL,
                                      NULL);
@@ -171,8 +171,7 @@ void IndexDecl::setDomainVariable(var_expr* domainVar)
   theDomainVar = domainVar;
 
   if (theDomainClause == NULL)
-    theDomainClause = new for_clause(domainVar->get_sctx(),
-                                     theCCB,
+    theDomainClause = theCCB->theEM->create_for_clause(domainVar->get_sctx(),
                                      domainVar->get_loc(),
                                      NULL,
                                      NULL);
@@ -497,7 +496,8 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause_t fc = new for_clause(sctx, theCCB, dotloc, newdot, newdom, newpos);
+  for_clause* fc =
+    theCCB->theEM->create_for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables
@@ -647,7 +647,8 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause_t fc = new for_clause(sctx, theCCB, dotloc, newdot, newdom, newpos);
+  for_clause* fc =
+    theCCB->theEM->create_for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables

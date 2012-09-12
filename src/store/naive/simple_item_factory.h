@@ -413,6 +413,13 @@ public:
 
   bool createJSONArray(
       store::Item_t& result,
+      store::Item_t& item1,
+      store::Item_t& item2,
+      const store::Iterator_t& source,
+      const store::CopyMode& copyMode);
+
+  bool createJSONArray(
+      store::Item_t& result,
       const std::vector<store::Item_t>& items);
 
   bool createJSONObject(

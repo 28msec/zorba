@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/markos/zorba/repo/expr-memman2/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/markos/zorba/repo/gen-flwor-opt/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -86,7 +86,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 90 "/home/markos/zorba/repo/expr-memman2/build/src/compiler/parser/xquery_parser.hpp"
+#line 90 "/home/markos/zorba/repo/gen-flwor-opt/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -100,7 +100,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 104 "/home/markos/zorba/repo/expr-memman2/build/src/compiler/parser/xquery_parser.hpp"
+#line 104 "/home/markos/zorba/repo/gen-flwor-opt/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -110,7 +110,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 114 "/home/markos/zorba/repo/expr-memman2/build/src/compiler/parser/xquery_parser.hpp"
+#line 114 "/home/markos/zorba/repo/gen-flwor-opt/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -158,7 +158,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 162 "/home/markos/zorba/repo/expr-memman2/build/src/compiler/parser/xquery_parser.hpp"
+#line 162 "/home/markos/zorba/repo/gen-flwor-opt/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -170,7 +170,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/expr-memman2/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/markos/zorba/repo/gen-flwor-opt/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -194,7 +194,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 198 "/home/markos/zorba/repo/expr-memman2/build/src/compiler/parser/xquery_parser.hpp"
+#line 198 "/home/markos/zorba/repo/gen-flwor-opt/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -709,7 +709,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 713 "/home/markos/zorba/repo/expr-memman2/build/src/compiler/parser/xquery_parser.hpp"
+#line 713 "/home/markos/zorba/repo/gen-flwor-opt/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

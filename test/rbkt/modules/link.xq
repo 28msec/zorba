@@ -1,5 +1,5 @@
 (: Test module with external functions implemented in C++, with link libs :)
-module namespace link = "http://www.zorba-xquery.com/modules/link";
+module namespace link = "http://zorba-tests.28msec.us/modules/link";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
