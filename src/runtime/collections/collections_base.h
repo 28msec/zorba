@@ -105,7 +105,7 @@ protected:
     getCopyMode(lCopyMode, this->theSctx);
 
     lCopyMode.theDoCopy =
-      this->theChildren[this->theChildren.size()-1]->isConstructor() ||
+      !this->theChildren[this->theChildren.size()-1]->isConstructor() ||
       theMustCopyInput;
 
     while (this->consumeNext(node,
