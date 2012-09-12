@@ -141,7 +141,10 @@ bool DynamicFnCallIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t item;
-  store::Item_t funcItem;
+  store::Item_t targetItem;
+  store::Item_t selectorItem;
+  xs_integer pos;
+  bool selectorError;
   FunctionItem* fnItem;
   std::vector<PlanIter_t> argIters;
   std::vector<PlanIter_t>::iterator ite;
@@ -154,7 +157,7 @@ bool DynamicFnCallIterator::nextImpl(
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
-  if (!consumeNext(funcItem, theChildren[0], planState))
+  if (!consumeNext(targetItem, theChildren[0], planState))
   {
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
@@ -162,63 +165,134 @@ bool DynamicFnCallIterator::nextImpl(
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
-  if (consumeNext(item, theChildren[0], planState))
+  if (targetItem->isFunction())
   {
-    RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
-                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
-  }
+    if (consumeNext(item, theChildren[0], planState))
+    {
+      RAISE_ERROR(err::XPTY0004, loc, 
+      ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
+                   GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+    }
 
-  if (!funcItem->isFunction())
+    fnItem = static_cast<FunctionItem*>(targetItem.getp());
+
+    argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
+
+    ite = argIters.begin();
+
+    ite2 = theChildren.begin();
+    end2 = theChildren.end();
+    ++ite2;
+
+    for (; ite2 != end2; ++ite2, ++ite)
+    {
+      *ite = *ite2;
+    }
+
+    ite2 = fnItem->getVariables().begin();
+    end2 = fnItem->getVariables().end();
+
+    for(; ite2 != end2; ++ite2, ++ite) 
+    {
+      *ite = *ite2;
+    }
+    
+    state->thePlan = fnItem->getImplementation(argIters);
+    
+    // must be opened after vars and params are set
+    state->thePlan->open(planState, state->theUDFStateOffset);
+    state->theIsOpen = true;
+    
+    while(consumeNext(result, state->thePlan, planState)) 
+    {
+      STACK_PUSH(true, state);
+    }
+
+    // need to close here early in case the plan is completely
+    // consumed. Otherwise, the plan would still be opened
+    // if destroyed from the state's destructor.
+    state->thePlan->close(planState);
+    state->theIsOpen = false;
+  }
+#ifdef ZORBA_WITH_JSON
+  else if (targetItem->isJSONObject() || targetItem->isJSONArray())
+  {
+    if (theChildren.size() != 2)
+    {
+      RAISE_ERROR_NO_PARAMS(err::JNTY0018, loc);
+    }
+
+    selectorError = false;
+
+    consumeNext(item, theChildren[1], planState);
+
+    if (item->isNode())
+    {
+      store::Iterator_t iter;
+
+      item->getTypedValue(item, iter);
+
+      if (iter != NULL)
+      {
+        if iter->next(item);
+      }
+    }
+
+    if (!item->isAtomic())
+    {
+      selectorError = true;
+    }
+    else if (targetItem->isJSONObject())
+    {
+      try
+      {
+        selectorError = ! GenericCast::castToAtomic(selectorItem,
+                                                    item,
+                                                    store::XS_STRING,
+                                                    tm,
+                                                    NULL,
+                                                    loc);
+      }
+      catch (...)
+      {
+        selectorError = true;
+      }
+    }
+    else
+    {
+      try
+      {
+        pos = selectorItem->getIntegerValue();
+      }
+      catch (...)
+      {
+        selectorError = true;
+      }
+    }
+
+    if (selectorError)
+    {
+      RAISE_ERROR_NO_PARAMS(err::XPTY0004, loc);
+    }
+
+    if (targetItem->isJSONObject())
+      result = targetItem->getObjectValue(selectorItem);
+    else
+      result = getArrayValue(pos);
+
+    STACK_PUSH(true, state);
+  }
+#endif
+  else
   {
     const TypeManager* tm = theSctx->get_typemanager();
-    xqtref_t type = tm->create_value_type(funcItem);
+    xqtref_t type = tm->create_value_type(targetItem);
 
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
                  type->toSchemaString(),
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
-
-  fnItem = static_cast<FunctionItem*>(funcItem.getp());
-
-  argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
-
-  ite = argIters.begin();
-
-  ite2 = theChildren.begin();
-  end2 = theChildren.end();
-  ++ite2;
-
-  for (; ite2 != end2; ++ite2, ++ite)
-  {
-    *ite = *ite2;
-  }
-
-  ite2 = fnItem->getVariables().begin();
-  end2 = fnItem->getVariables().end();
-
-  for(; ite2 != end2; ++ite2, ++ite) 
-  {
-    *ite = *ite2;
-  }
-
-  state->thePlan = fnItem->getImplementation(argIters);
-
-  // must be opened after vars and params are set
-  state->thePlan->open(planState, state->theUDFStateOffset);
-  state->theIsOpen = true;
-  
-  while(consumeNext(result, state->thePlan, planState)) 
-  {
-    STACK_PUSH(true, state);
-  }
-
-  // need to close here early in case the plan is completely
-  // consumed. Otherwise, the plan would still be opened
-  // if destroyed from the state's destructor.
-  state->thePlan->close(planState);
-  state->theIsOpen = false;
 
   STACK_END(state);
 };

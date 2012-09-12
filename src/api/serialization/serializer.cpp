@@ -581,8 +581,8 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   }
   default:
   {
-    ZORBA_ASSERT(false);
-    tr << "node of type: " << item->getNodeKind();
+    int k = static_cast<int>(item->getNodeKind());
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
   }
   }
 }
@@ -1469,11 +1469,16 @@ void serializer::html_emitter::emit_node(
 {
   const store::Item* element_parent = item->getParent();
 
-  if( item->getNodeKind() == store::StoreConsts::documentNode)
+  store::NodeKind kind = item->getNodeKind();
+
+  switch (kind)
+  {
+  case store::StoreConsts::documentNode:
   {
     emit_node_children(item, depth);
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::elementNode)
+  case store::StoreConsts::elementNode:
   {
     store::Item* qnameItem = item->getNodeName();
 
@@ -1562,8 +1567,10 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  case store::StoreConsts::attributeNode:
   {
     // The HTML output method MUST output boolean attributes (that is attributes
     // with only a single allowed value that is equal to the name of the
@@ -1587,8 +1594,10 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::textNode)
+  case store::StoreConsts::textNode:
   {
     bool expand = true;
 
@@ -1617,23 +1626,27 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  case store::StoreConsts::piNode:
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else
+  default:
   {
-    tr << "node of type: " << item->getNodeKind();
-    assert(0);
+    int k = static_cast<int>(kind);
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
+  }
   }
 }
 

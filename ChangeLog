@@ -34,8 +34,11 @@ Bug Fixes/Other Changes:
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
   * Fixed bug #1042840 (qname pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
+  * Fixed bug #1047538 (jsoniq: SourceFinder::findLocalNodeSources missing
+    json expressions)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
   * Fixed bug #1045902 (file:last-modified returns current date time)
+  * Fixed bug #1043976 (compiler warning in serialiser code)
 
 
 version 2.6
