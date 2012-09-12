@@ -29,6 +29,7 @@
 #include "script_exprs.h"
 #include "update_exprs.h"
 #include "json_exprs.h"
+#include "pragma.h"
 
 namespace zorba
 {

@@ -33,7 +33,7 @@ bool
 mustCopyNodes(expr& e)
 {
   pragma* p;
-  return e.get_ccb()->lookup_pragma(&e, "no-copy", p);
+  return !e.get_ccb()->lookup_pragma(&e, "no-copy", p);
 }
 
 

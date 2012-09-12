@@ -53,17 +53,17 @@ protected:
       const std::vector<expr*>& args);
 
 public:
-	const expr* get_function() const { return theExpr; }
+  const expr* get_function() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
 
-	void compute_scripting_kind();
+  void compute_scripting_kind();
 
   expr* cloneImpl(substitution_t& s) const;
 
-	void accept(expr_visitor&);
+  void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream& os) const;
+  std::ostream& put(std::ostream& os) const;
 };
 
 
@@ -141,13 +141,13 @@ public:
 
   const std::vector<expr*>& get_vars() const;
 
-	void compute_scripting_kind();
+  void compute_scripting_kind();
 
   expr* cloneImpl(substitution_t& s) const;
 
-	void accept(expr_visitor&);
+  void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream& os) const;
+  std::ostream& put(std::ostream& os) const;
 };
 
 } //end of namespace

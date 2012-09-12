@@ -106,7 +106,7 @@ protected:
 
     lCopyMode.theDoCopy =
       this->theChildren[this->theChildren.size()-1]->isConstructor() ||
-      !theMustCopyInput;
+      theMustCopyInput;
 
     while (this->consumeNext(node,
                              this->theChildren[this->theChildren.size()-1].getp(),

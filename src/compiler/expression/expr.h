@@ -29,7 +29,6 @@
 #include "functions/signature.h"
 
 #include "compiler/expression/var_expr.h"
-#include "compiler/expression/pragma.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -47,6 +46,7 @@ class ExprManager;
 class expr_visitor;
 class NodeNameTest;
 class signature;
+class pragma;
 
 /*******************************************************************************
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
@@ -827,7 +827,7 @@ class extension_expr : public expr
 
 protected:
   std::vector<pragma*> thePragmas;
-  expr*                         theExpr;
+  expr*                theExpr;
 
 protected:
   extension_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
