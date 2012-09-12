@@ -39,7 +39,7 @@ public:
   getExternalFunction(const zorba::String& aLocalname);
 
   virtual zorba::String
-  getURI() const { return "http://www.zorba-xquery.com/modules/link"; }
+  getURI() const { return "http://zorba-tests.28msec.us/modules/link"; }
   
 private:
   XercesFuncFunction* theXercesFunc;
