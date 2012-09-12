@@ -38,6 +38,7 @@
 #include "common/shared_types.h"
 
 #include "diagnostics/util_macros.h"
+#include "zorba/internal/system_diagnostic.h"
 
 
 namespace zorba 
@@ -232,24 +233,15 @@ void apply_updates(
   }
   catch (XQueryException& e)
   {
-    if (e.has_source() &&
-        (e.diagnostic() == err::XUDY0021 ||
-         e.diagnostic() == err::XUDY0015 ||
-         e.diagnostic() == err::XUDY0016 ||
-         e.diagnostic() == err::XUDY0017 ||
-         e.diagnostic() == err::XUDY0014)) 
+    if (e.has_source() && (e.diagnostic() == err::XUDY0021))
     {
-      XQueryException lNewE = 
-      XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc));
-
-      QueryLoc lLoc;
-      lLoc.setFilename(e.source_uri());
-      lLoc.setLineBegin(e.source_line());
-      lLoc.setColumnBegin(e.source_column());
-      set_source(lNewE, lLoc);
-      lNewE.set_diagnostic(e.diagnostic());
-
-      throw lNewE;
+#if 0
+    XQueryException x = XQUERY_EXCEPTION(
+        err::XUDY0021,
+       ERROR_PARAMS(ZED(XUDY0021_AppliedAt), "foo", loc));
+      e.set_diagnostic(x.diagnostic());
+#endif
+      throw;
     }
     else
     {

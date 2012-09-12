@@ -314,7 +314,14 @@ UpdInsertAttributes::UpdInsertAttributes(
 void UpdInsertAttributes::apply()
 {
   theIsApplied = true;
-  ELEM_NODE(theTarget)->insertAttributes(*this);
+  try
+  {
+    ELEM_NODE(theTarget)->insertAttributes(*this);
+  } catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -364,8 +371,15 @@ UpdReplaceAttribute::UpdReplaceAttribute(
 
 void UpdReplaceAttribute::apply()
 {
-  theIsApplied = true;
-  ELEM_NODE(theTarget)->replaceAttribute(*this);
+  try
+  {
+    ELEM_NODE(theTarget)->replaceAttribute(*this);
+    theIsApplied = true;
+  } catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -463,8 +477,15 @@ void UpdReplaceElemContent::undo()
 ********************************************************************************/
 void UpdRenameElem::apply()
 {
-  ELEM_NODE(theTarget)->replaceName(*this);
-  theIsApplied = true;
+  try
+  {
+    ELEM_NODE(theTarget)->replaceName(*this);
+    theIsApplied = true;
+  } catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -612,8 +633,15 @@ void UpdReplaceAttrValue::undo()
 ********************************************************************************/
 void UpdRenameAttr::apply()
 {
-  ATTR_NODE(theTarget)->replaceName(*this);
-  theIsApplied = true;
+  try
+  {
+    ATTR_NODE(theTarget)->replaceName(*this);
+    theIsApplied = true;
+  } catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
