@@ -15,11 +15,11 @@
 # Build and install any test modules.  (Parameters are scrambled about
 # as a test for DECLARE_ZORBA_MODULE parsing them.)
 DECLARE_ZORBA_MODULE(FILE "ver2.xq"
-  URI "http://www.flworfound.org/modules/ver" VERSION 2.3 TEST_ONLY)
-DECLARE_ZORBA_MODULE(URI "http://www.flworfound.org/modules/ver" VERSION 1.4
+  URI "http://zorba-tests.28msec.us/modules/ver" VERSION 2.3 TEST_ONLY)
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/ver" VERSION 1.4
   FILE "${CMAKE_CURRENT_SOURCE_DIR}/ver.xq" TEST_ONLY)
 
-DECLARE_ZORBA_MODULE(URI "http://www.flworfound.org/modules/bad-ver"
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/bad-ver"
   FILE "bad-ver.xq" VERSION 1.4 TEST_ONLY)
 
 DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/A" VERSION 1.0

@@ -572,7 +572,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
 EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
-
-# Failing due to flworfound.org hosting changes.
-EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)
-EXPECTED_FAILURE(test/rbkt/zorba/fetch/fetch_bogus2 1022494)
