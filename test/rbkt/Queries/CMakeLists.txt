@@ -558,7 +558,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
-
-# Failing due to flworfound.org hosting changes.
-EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)
-EXPECTED_FAILURE(test/rbkt/zorba/fetch/fetch_bogus2 1022494)
