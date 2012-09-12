@@ -1127,7 +1127,16 @@ void PULImpl::addJSONObjectInsert(
         continue;
 
       UpdJSONObjectInsert* upd = static_cast<UpdJSONObjectInsert*>(*ite);
-      upd->theContent.transfer(content);
+      json::JSONObject* lCurrentContent = static_cast<json::JSONObject*>(
+          upd->theContent.getp());
+      store::Iterator_t lIterator = content->getObjectKeys();
+      lIterator->open();
+      store::Item_t lItem;
+      while(lIterator->next(lItem))
+      {
+        lCurrentContent->add(lItem, content->getObjectValue(lItem), false);
+      }
+      content = NULL;
       return;
     }
 
@@ -1962,26 +1971,26 @@ void PULImpl::mergeTargetedUpdateLists(
           UpdJSONObjectInsert* myUpd = static_cast<UpdJSONObjectInsert*>(*ite);
 
           zorba::store::Iterator_t lKeyIterator = myUpd->theContent->getObjectKeys();
-          zorba::store::Iterator_t lKeyIterator2 = otherUpd2->theContent->getObjectKeys();
+          zorba::store::Iterator_t lOtherKeyIterator = otherUpd2->theContent->getObjectKeys();
 
           lKeyIterator->open();
-          lKeyIterator2->open();
+          lOtherKeyIterator->open();
           zorba::store::Item_t lKey;
-          zorba::store::Item_t lKey2;
-          while(lKeyIterator2->next(lKey2))
+          zorba::store::Item_t lOtherKey;
+          while(lOtherKeyIterator->next(lOtherKey))
           {
             while(lKeyIterator->next(lKey))
             {
-              if (lKey2->equals(lKey))
+              if (lOtherKey->equals(lKey))
                 RAISE_ERROR(jerr::JNUP0005, otherUpd->theLoc,
                 ERROR_PARAMS(lKey->getStringValue()));
             }
-            zorba::store::Item_t lValue = 
-                otherUpd2->theContent->getObjectValue(lKey);
+            zorba::store::Item_t lValueOfOtherKey =
+                otherUpd2->theContent->getObjectValue(lOtherKey);
             zorba::simplestore::json::JSONObject* lObject =
                 static_cast<zorba::simplestore::json::JSONObject*>(
                     myUpd->theContent.getp());
-            lObject->add(lKey, lValue, false);
+            lObject->add(lOtherKey, lValueOfOtherKey, false);
           }
 
           merged = true;

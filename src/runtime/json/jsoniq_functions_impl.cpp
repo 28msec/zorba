@@ -453,13 +453,23 @@ bool JSONObjectInsertIterator::nextImpl(
   store::Item_t target;
   store::Item_t content;
   store::PUL_t pul;
-
+  store::CopyMode copymode;
   PlanIteratorState* state;
+
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(target, theChildren[0].getp(), planState);
 
   consumeNext(content, theChildren[1].getp(), planState);
+
+  copymode.set(true,
+               theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+  if (content->isNode() || content->isJSONItem())
+  {
+    content = content->copy(NULL, copymode);
+  }
 
   pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
