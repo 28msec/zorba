@@ -2,85 +2,82 @@ xquery version "3.0";
 
 import module namespace file = "http://expath.org/ns/file";
 import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
+declare namespace zm = "http://www.zorba-xquery.com/manifest";
 
 declare copy-namespaces preserve, inherit;
 
 
 (:~
- : This variable contains the path to Zorba directory
+ : This variable contains the path to ZorbaManifestPath.xml
  :)
-declare variable $ZorbaPath as xs:string external;
+declare variable $ZorbaManifestPath as xs:string external;
 
-(:~
- : This variable contains the path to Zorba directory
- :)
-declare variable $ZorbaBuildPath as xs:string external;
-
-(: 
- : This function returns a sequence of valid PATHS where modules can be found:
- : this includes the Zorba core modules path and also all the paths to the external modules that are checked out
- :)
-declare %ann:nondeterministic function local:get-src-dirs() as xs:string*
+declare %private %ann:nondeterministic function local:load-manifest()
 {
-  (: set the path to the Zorba core modules :)
-  let $ZorbaCoreModules := fn:resolve-uri(concat($ZorbaPath,"modules"))
-  
-  (: read from CMakeCache.txt the path where the external modules are checked out (if any) :)
-  let $ZorbaCMakeCache := fn:resolve-uri(concat($ZorbaBuildPath, file:directory-separator(), "CMakeCache.txt"))
-  let $ZorbaModulesDir := substring-before(tokenize(file:read-text($ZorbaCMakeCache),"ZORBA_MODULES_DIR:PATH=")[2],"
-")
-  let $resolved := fn:resolve-uri($ZorbaModulesDir)
-  return
-    if (file:exists($resolved))
-    then
-      let $dirs := file:list(fn:resolve-uri($ZorbaModulesDir))
-      return( $ZorbaCoreModules,
-              for $dir in $dirs
-              let $file := fn:resolve-uri(concat($ZorbaModulesDir,file:directory-separator(),$dir,file:directory-separator(),"CMakeLists.txt"))
-              let $text := file:read-text($file)
-              let $as := fn:analyze-string($text, "ADD_SUBDIRECTORY\((.*?)\)")
-              let $match := replace($as/fn:match/fn:group[@nr eq 1],'"',"")
-              return fn:resolve-uri(concat($ZorbaModulesDir,file:directory-separator(),$dir,file:directory-separator(),$match)))
-    else ()
+  try 
+  {
+    fn:parse-xml(file:read-text($ZorbaManifestPath)) 
+  }
+  catch *
+  {
+    fn:error(fn:concat("The file <",$ZorbaManifestPath,"> does not have the correct structure."))
+  }
 };
 
 (:~
- : This function generates the XQDoc XML for all the modules found in
- : <pre>$modulesPath</pre> and tests it for validity.
+ : This function generates the XQDoc XML for all correctly configured in Zorba 
+ : (in other words all modules present in ZorbaManifest.xml) and checks if the modules are correctly documented.
  :
- : @param $modulePath where to search for modules recursively.
  :)
-declare %ann:nondeterministic function local:testXQDoc($modulesPath as xs:string) as xs:string?
+declare %ann:sequential function local:testXQDoc() as xs:string?
 {
-  variable $res := 
-  for $file in file:list(fn:resolve-uri($modulesPath), fn:true(), "*.xq")
-  let $filePath := fn:concat($modulesPath, file:directory-separator(), $file)
-  return
-    try {
-      let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))/self::xqdoc:xqdoc
-      let $moduleUri := data($xqdoc/xqdoc:module/xqdoc:uri)
-      return string-join(
-         if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
-            ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
-            ($moduleUri = "http://www.functx.com/") or
-            ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
-            ($moduleUri = "http://www.zorba-xquery.com/errors") or
-            ($moduleUri = "http://www.zorba-xquery.com/warnings")) then ()
-        else(
-        local:test-module($xqdoc),
-        local:test-functions($xqdoc),
-        local:test-variables($xqdoc)
-      ),"")
-    } catch * {
+  if(not(file:is-file($ZorbaManifestPath))) then
+  {
+    variable $message := fn:concat("The file <ZorbaManifest.xml> was not found: <", $ZorbaManifestPath, ">. Suggestion: run 'cmake' in your build folder such that ZorbaManifest.xml is regenerated.");
+    fn:error($message)
+  }
+  else
+  {
+    variable $manifestXML := local:load-manifest();
+    variable $moduleManifests := $manifestXML/zm:manifest/zm:module;
+    variable $res :=
+    if(count($moduleManifests) eq xs:integer(0)) then ()
+    else
+    {
+      for $module in $moduleManifests
+      let $moduleURI := if(ends-with(data($module/zm:uri),".xq")) then substring-before(data($module/zm:uri),".xq") else data($module/zm:uri)
+      let $moduleFetched := fetch:content($moduleURI, "MODULE")
+      return
+      try {
+          let $xqdoc := xqd:xqdoc-content($moduleFetched)/self::xqdoc:xqdoc
+          let $moduleUri := data($xqdoc/xqdoc:module/xqdoc:uri)
+          return string-join(
+             if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
+                ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
+                ($moduleUri = "http://www.functx.com/") or
+                ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
+                ($moduleUri = "http://www.zorba-xquery.com/errors") or
+                ($moduleUri = "http://www.jsoniq.org/errors") or
+                ($moduleUri = "http://www.zorba-xquery.com/warnings")) then ()
+            else(
+            local:test-module($xqdoc),
+            local:test-functions($xqdoc),
+            local:test-variables($xqdoc)
+          ),"")
+      } catch * {
     fn:concat("ERROR: ", $err:code, " Message: ", $err:description, "
-processing file: ", $filePath)
-    };
-    string-join($res,"")
+processing module: ", $moduleURI)
+      }
+     };
+     
+   fn:string-join($res,"")
+   }
 };
 
 declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
@@ -142,7 +139,9 @@ declare function local:test-function(
     let $docParamCount := count($params)
     let $missing := $paramCount - $docParamCount  
     let $hasDescr := exists($function/xqdoc:comment/xqdoc:description)
-    let $hasReturn := exists($function/xqdoc:comment/xqdoc:return)
+    let $hasReturn := exists($function/xqdoc:return)
+    let $isUpdating := contains($signature, "updating")
+    let $isReturnDocumented := exists($function/xqdoc:comment/xqdoc:return)
     return string-join((
         (: Test for function description :)
         if (not($hasDescr)) then
@@ -162,8 +161,17 @@ declare function local:test-function(
     Arity: ", $paramCount)
         else
             (),
+        (: Test for existing return value in function signature:)
+        if (not($hasReturn) and not($isUpdating)) then
+            concat("
+    ERROR: Return value for the function not stated explicitly in the function signature;
+    Module: ", $module/xqdoc:uri, "
+    Function: ", $function/xqdoc:name, "
+    Arity: ", $paramCount)
+        else
+            (),
         (: Test for documented return value :)
-        if (not($hasReturn)) then
+        if (not($isReturnDocumented)) then
             concat("
     ERROR: Return value not documented;
     Module: ", $module/xqdoc:uri, "
@@ -201,8 +209,7 @@ declare function local:test-variable(
 };
 
 
-variable $errors as xs:string :=  string-join(for $complete-dir in local:get-src-dirs()
-                                              return local:testXQDoc($complete-dir),"");
+variable $errors as xs:string := local:testXQDoc();
 
 variable $errorsCount := count(fn:analyze-string($errors,"ERROR:")//fn:match);
 

@@ -52,6 +52,7 @@
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
 #cmakedefine ZORBA_HAVE_USTRING_H
 #cmakedefine ZORBA_HAVE_UTYPES_H
+#cmakedefine ZORBA_HAVE_UUID_H
 
 // Platform functions
 #cmakedefine ZORBA_HAVE_CLOCKGETTIME_FUNCTION
@@ -68,6 +69,15 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_SIZEOF_DOUBLE        @ZORBA_SIZEOF_DOUBLE@
+#cmakedefine ZORBA_SIZEOF_FLOAT         @ZORBA_SIZEOF_FLOAT@
+#cmakedefine ZORBA_SIZEOF_INT           @ZORBA_SIZEOF_INT@
+#cmakedefine ZORBA_SIZEOF_LONG          @ZORBA_SIZEOF_LONG@
+#cmakedefine ZORBA_SIZEOF_LONG_LONG     @ZORBA_SIZEOF_LONG_LONG@
+#cmakedefine ZORBA_SIZEOF_POINTER       @ZORBA_SIZEOF_POINTER@
+#cmakedefine ZORBA_SIZEOF_SHORT         @ZORBA_SIZEOF_SHORT@
+#cmakedefine ZORBA_SIZEOF_SIZE_T        @ZORBA_SIZEOF_SIZE_T@
+#cmakedefine ZORBA_SIZEOF_WCHAR_T       @ZORBA_SIZEOF_WCHAR_T@
 
 // Platform libraries
 #cmakedefine ZORBA_HAVE_CURL
@@ -104,11 +114,15 @@ typedef __int64 int64_t;
 #cmakedefine MSVC71
 #cmakedefine MSVC80
 
-// C++ language features
-#cmakedefine ZORBA_CXX_ENABLE_IF
+// C++11 language features
 #cmakedefine ZORBA_CXX_NULLPTR
 #cmakedefine ZORBA_CXX_STATIC_ASSERT
-#cmakedefine ZORBA_CXX_UNIQUE_PTR
+
+// C++11 types
+#cmakedefine ZORBA_HAVE_ENABLE_IF
+#cmakedefine ZORBA_HAVE_UNORDERED_MAP
+#cmakedefine ZORBA_HAVE_UNORDERED_SET
+#cmakedefine ZORBA_HAVE_UNIQUE_PTR
 
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 
@@ -134,6 +148,16 @@ typedef __int64 int64_t;
 # define ZORBA_TR1_NS std
 #endif
 
+////////// GCC diagnostics ////////////////////////////////////////////////////
+
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
+# define GCC_GREATER_EQUAL_460 1
+#endif
+
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
+# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
+#endif
+
 ////////// Zorba //////////////////////////////////////////////////////////////
 
 // Version
@@ -148,13 +172,14 @@ typedef __int64 int64_t;
 
 // Zorba features
 #cmakedefine ZORBA_NO_FULL_TEXT
-#cmakedefine ZORBA_NO_UNICODE
+#cmakedefine ZORBA_NO_ICU
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NUMERIC_OPTIMIZATION
 #cmakedefine ZORBA_VERIFY_PEER_SSL_CERTIFICATE
 #cmakedefine ZORBA_WITH_BIG_INTEGER
 #cmakedefine ZORBA_WITH_DEBUGGER
 #cmakedefine ZORBA_WITH_FILE_ACCESS
+#cmakedefine ZORBA_WITH_JSON
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 
 // Zorba parser configuration

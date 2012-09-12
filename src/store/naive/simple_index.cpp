@@ -47,6 +47,13 @@ namespace simplestore
 /******************************************************************************
 
 ********************************************************************************/
+IndexImpl::IndexImpl()
+{
+}
+
+/******************************************************************************
+
+********************************************************************************/
 IndexImpl::IndexImpl(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
@@ -129,6 +136,8 @@ std::string IndexConditionImpl::getKindString(store::IndexCondition::Kind k)
     return "BOX_VALUE";
   case BOX_GENERAL:
     return "BOX_GENERAL";
+  default:
+    return "";
   }
 }
 
@@ -585,7 +594,60 @@ std::string IndexBoxValueCondition::toString() const
 }
 
 
+} // namespace simplestore
+
+
+namespace store 
+{
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  IndexDelta                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexDelta::addValuePair(store::Item_t& node, store::IndexKey* key)
+{
+  theValueDelta.resize(theValueDelta.size() + 1);
+  theValueDelta.back().first.transfer(node);
+  theValueDelta.back().second = key;
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexDelta::addGeneralPair(store::Item_t& node, store::Item_t& key)
+{
+  assert(node->isNode() && key->isAtomic());
+
+  theGeneralDelta.resize(theGeneralDelta.size() + 1);
+  theGeneralDelta.back().first.transfer(node);
+  theGeneralDelta.back().second.transfer(key);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexDelta::clear()
+{
+  for (csize i = 0; i < theValueDelta.size(); ++i)
+  {
+    delete theValueDelta[i].second;
+  }
+
+  theValueDelta.clear();
+  theGeneralDelta.clear();
+}
+
+
+} // namespace store
+
+
 }
 
 /* vim:set et sw=2 ts=2: */

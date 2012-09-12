@@ -37,21 +37,23 @@
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
-END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator::CatchClause)
+  SERIALIZABLE_CLASS_VERSIONS_2(TryCatchIterator::CatchClause, TYPE_CatchClause)
 
 SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(TryCatchIterator)
 
 
 TryCatchIteratorState::TryCatchIteratorState()
-  : theTempIterator(NULL),
+  : 
+  theTempIterator(NULL),
   theCatchIterator(NULL)
-{}
+{
+}
+
 
 TryCatchIteratorState::~TryCatchIteratorState()
 {
-  if (theTempIterator != NULL) {
+  if (theTempIterator != NULL) 
+  {
     theTempIterator->close();
     theTempIterator = NULL;
   }
@@ -61,28 +63,36 @@ TryCatchIteratorState::~TryCatchIteratorState()
   for (; lIters != lItersEnd; ++lIters) {
     (*lIters)->close();
   }
-
 }
 
+
 void
-TryCatchIteratorState::init(PlanState& planState) {
+TryCatchIteratorState::init(PlanState& planState) 
+{
   PlanIteratorState::init(planState);
 }
 
+
 void
-TryCatchIteratorState::reset(PlanState& planState) {
+TryCatchIteratorState::reset(PlanState& planState) 
+{
   PlanIteratorState::reset(planState);
+
   if ( theTargetSequence )
     theTargetSequence->purge(); // release the target sequence
-  if (theTempIterator != NULL) {
+
+  if (theTempIterator != NULL)
+  {
     theTempIterator->close();
     theTempIterator = NULL;
   }
+
   theCatchIterator = NULL;
 
   std::vector<store::Iterator_t>::iterator lIters = theErrorIters.begin();
   std::vector<store::Iterator_t>::iterator lItersEnd = theErrorIters.end();
-  for (; lIters != lItersEnd; ++lIters) {
+  for (; lIters != lItersEnd; ++lIters)
+  {
     (*lIters)->close();
   }
 
@@ -269,7 +279,8 @@ TryCatchIterator::getStackTrace(const XQueryStackTrace& s) const
 
     // function arity
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getFnArity() );
+    GENV_ITEMFACTORY->createInteger(
+        lTmpValue, xs_integer(lIter->getFnArity()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lFunction.getp(), lArityQName, lTypeName,
         lTmpValue);
@@ -284,28 +295,31 @@ TryCatchIterator::getStackTrace(const XQueryStackTrace& s) const
 
     // location line begin
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLine() );
+    GENV_ITEMFACTORY->createInteger( lTmpValue, xs_integer(lIter->getLine()) );
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lLineBeginQName, lTypeName,
         lTmpValue);
 
     // location line end
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLineEnd() );
+    GENV_ITEMFACTORY->createInteger(
+        lTmpValue, xs_integer(lIter->getLineEnd()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lLineEndQName, lTypeName,
         lTmpValue);
 
     // location column begin
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumn() );
+    GENV_ITEMFACTORY->createInteger(
+      lTmpValue, xs_integer(lIter->getColumn()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lColumnBeginQName, lTypeName,
         lTmpValue);
 
     // location column end
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumnEnd() );
+    GENV_ITEMFACTORY->createInteger(
+      lTmpValue, xs_integer(lIter->getColumnEnd()));
     GENV_ITEMFACTORY->createAttributeNode(
         lTmpAttr, lLocation.getp(), lColumnEndQName, lTypeName,
         lTmpValue);
@@ -325,8 +339,8 @@ TryCatchIterator::bindErrorVars(
 
   typedef std::vector<LetVarIter_t>::const_iterator LetVarConstIter;
 
-  for (CatchClause::VarMap_t::const_iterator lIter = clause->vars.begin();
-       lIter != clause->vars.end();
+  for (CatchClause::VarMap_t::const_iterator lIter = clause->theVars.begin();
+       lIter != clause->theVars.end();
        ++lIter)
   {
     switch (lIter->first)
@@ -337,12 +351,12 @@ TryCatchIterator::bindErrorVars(
         LetVarConstIter lErrorCodeVarIterEnd = lIter->second.end();
         // bind the error code (always)
         store::Item_t lErrorCodeItem;
-	      diagnostic::QName const &err_name = e.diagnostic().qname();
-        GENV_ITEMFACTORY->createQName(
-            lErrorCodeItem,
-            err_name.ns(),
-            err_name.prefix(),
-            err_name.localname());
+	      const diagnostic::QName& err_name = e.diagnostic().qname();
+
+        GENV_ITEMFACTORY->createQName(lErrorCodeItem,
+                                      err_name.ns(),
+                                      err_name.prefix(),
+                                      err_name.localname());
 
         for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ )
         {
@@ -361,7 +375,7 @@ TryCatchIterator::bindErrorVars(
         {
           // bind the description or the empty sequence
           store::Iterator_t lErrorDescIter;
-	      	char const *const what = e.what();
+	      	const char* const what = e.what();
           if (what && *what)
           {
             zstring errDescr = what;
@@ -441,7 +455,8 @@ TryCatchIterator::bindErrorVars(
 	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
                ue->has_source() ) {
             store::Item_t lErrorLineItem;
-            GENV_ITEMFACTORY->createInteger(lErrorLineItem, ue->source_line());
+            GENV_ITEMFACTORY->createInteger(
+                lErrorLineItem, xs_integer(ue->source_line()));
             lErrorLineIter = new ItemIterator(lErrorLineItem);
 	        }
           else
@@ -467,7 +482,8 @@ TryCatchIterator::bindErrorVars(
 	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
                ue->has_source() ) {
             store::Item_t lErrorColumnItem;
-            GENV_ITEMFACTORY->createInteger(lErrorColumnItem, ue->source_column());
+            GENV_ITEMFACTORY->createInteger(
+                lErrorColumnItem, xs_integer(ue->source_column()));
             lErrorColumnIter = new ItemIterator(lErrorColumnItem);
 	        }
           else
@@ -509,6 +525,7 @@ TryCatchIterator::bindErrorVars(
     }
   }
 }
+
 
 bool
 TryCatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -568,14 +585,19 @@ TryCatchIterator::resetImpl(PlanState& planState) const
 
   theChild->reset(planState);
 
-  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();
-  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd = theCatchClauses.end();
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter =
+  theCatchClauses.begin();
 
-  for ( ; lIter != lEnd; ++lIter ) {
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd =
+  theCatchClauses.end();
+
+  for ( ; lIter != lEnd; ++lIter )
+  {
     ( *lIter ).catch_expr->reset(planState);
   }
 
 }
+
 
 void
 TryCatchIterator::closeImpl(PlanState& planState)
@@ -592,7 +614,9 @@ TryCatchIterator::closeImpl(PlanState& planState)
   StateTraitsImpl<TryCatchIteratorState>::destroyState(planState, theStateOffset);
 }
 
-void TryCatchIterator::accept(PlanIterVisitor &v) const {
+
+void TryCatchIterator::accept(PlanIterVisitor &v) const
+{
   v.beginVisit(*this);
   theChild->accept ( v );
   std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();

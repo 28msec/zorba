@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <ResolveUriIterator>
-const char* ResolveUriIterator::class_name_str = "ResolveUriIterator";
-ResolveUriIterator::class_factory<ResolveUriIterator>
-ResolveUriIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ResolveUriIterator)
 
-const serialization::ClassVersion 
-ResolveUriIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ResolveUriIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ResolveUriIterator, PlanIteratorState>*)this);
+}
 
-const int ResolveUriIterator::class_versions_count =
-sizeof(ResolveUriIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ResolveUriIterator::accept(PlanIterVisitor& v) const {
+void ResolveUriIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

@@ -26,6 +26,7 @@
 #include <zorba/user_exception.h>
 #include <zorba/util/path.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/singleton_item_sequence.h>
 #include <zorba/zorba.h>
 
 #include "file_module.h"
@@ -141,11 +142,6 @@ FileFunction::getEncodingArg(
     arg_iter->close();
   }
 
-  if (!(lEncoding == "UTF-8" || lEncoding == "UTF8")) {
-    // the rest are not supported encodings
-    raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
-  }
-
   return lEncoding;
 }
 
@@ -245,62 +241,79 @@ WriterFileFunction::evaluate(
   File_t lFile = File::createFile(lFileStr.c_str());
 
   // precondition
-  if (lFile->isDirectory()) {
-    raiseFileError("FOFL0004", "The given path points to a directory", lFile->getFilePath());
+  if (lFile->isDirectory())
+  {
+    raiseFileError("FOFL0004",
+        "The given path points to a directory", lFile->getFilePath());
   }
 
   bool lBinary = isBinary();
+  // open the output stream in the desired write mode
+  std::ofstream lOutStream;
 
   // actual write
-  try {
-
-    // open the output stream in the desired write mode
-    std::ofstream lOutStream;
+  try
+  {
     lFile->openOutputStream(lOutStream, lBinary, isAppend());
+  }
+  catch (ZorbaException& ze)
+  {
+    std::stringstream lSs;
+    lSs << "Can not open file for writing: " << ze.what();
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  }
 
-    // if this is a binary write
-    if (lBinary) {
-      Zorba_SerializerOptions lOptions;
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
-      Serializer_t lSerializer = Serializer::createSerializer(lOptions);
-      lSerializer->serialize(aArgs[1], lOutStream);
+  // if this is a binary write
+  if (lBinary)
+  {
+    Item lBinaryItem;
+    Iterator_t lContentSeq = aArgs[1]->getIterator();
+    lContentSeq->open();
+    while (lContentSeq->next(lBinaryItem))
+    {
+      if (lBinaryItem.isStreamable() && !lBinaryItem.isEncoded())
+      {
+        lOutStream << lBinaryItem.getStream().rdbuf();
+      }
+      else
+      {
+        Zorba_SerializerOptions lOptions;
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
+        Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+        SingletonItemSequence lSeq(lBinaryItem);
+        lSerializer->serialize(&lSeq, lOutStream);
+      }
+
     }
-    // if we only write text
-    else {
-      Item lStringItem;
-      Iterator_t lContentSeq = aArgs[1]->getIterator();
-      lContentSeq->open();
-      // for each item (string or base64Binary) in the content sequence
-      while (lContentSeq->next(lStringItem)) {
-        // if the item is streamable make use of the stream
-        if (lStringItem.isStreamable()) {
-          std::istream& lInStream = lStringItem.getStream();
-          char lBuf[1024];
-          while (!lInStream.eof()) {
-            lInStream.read(lBuf, 1024);
-            lOutStream.write(lBuf, lInStream.gcount());
-          }
-        }
-        // else write the string value
-        else {
-          zorba::String lString = lStringItem.getStringValue();
-          lOutStream.write(lString.data(), lString.size());
+  }
+  // if we only write text
+  else
+  {
+    Item lStringItem;
+    Iterator_t lContentSeq = aArgs[1]->getIterator();
+    lContentSeq->open();
+    // for each item (string or base64Binary) in the content sequence
+    while (lContentSeq->next(lStringItem)) {
+      // if the item is streamable make use of the stream
+      if (lStringItem.isStreamable()) {
+        std::istream& lInStream = lStringItem.getStream();
+        char lBuf[1024];
+        while (!lInStream.eof()) {
+          lInStream.read(lBuf, 1024);
+          lOutStream.write(lBuf, lInStream.gcount());
         }
       }
-      lContentSeq->close();
+      // else write the string value
+      else {
+        zorba::String lString = lStringItem.getStringValue();
+        lOutStream.write(lString.data(), lString.size());
+      }
     }
-
-    // close the file stream
-    lOutStream.close();
-
-  } catch (ZorbaException& ze) {
-    std::stringstream lSs;
-    lSs << "An unknown error occured: " << ze.what() << "Can not read file";
-    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
-  } catch (...) {
-    //assert(false); if this happens errors are not proprly thrown
-    raiseFileError("FOFL9999", "Can not read file", lFile->getFilePath());
+    lContentSeq->close();
   }
+
+  // close the file stream
+  lOutStream.close();
 
   return ItemSequence_t(new EmptySequence());
 }

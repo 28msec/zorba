@@ -29,7 +29,6 @@ namespace zorba
 
 /*******************************************************************************
   theLoc           : The location of the declaration of this external function.
-  theModuleContext : The root sctx of the module containing the declaration.
   theNamespace     : The namespace of the module containing the declaration.
   theScriptingKind : Whether the external function is simple, updating, or
                      sequential (this property is part of the declaration).
@@ -40,9 +39,8 @@ class external_function : public function
 {
 protected:
   QueryLoc           theLoc;
-  static_context   * theModuleSctx;
   zstring            theNamespace;
-  short              theScriptingKind;
+  unsigned short     theScriptingKind;
   ExternalFunction * theImpl;
 
 public:
@@ -56,12 +54,12 @@ public:
         static_context* modSctx,
         const zstring& ns,
         const signature& sig,
-        short scriptingType,
+        unsigned short scriptingType,
         ExternalFunction* internal);
 
   ~external_function() { }
 
-  short getScriptingKind() const { return theScriptingKind; }
+  unsigned short getScriptingKind() const { return theScriptingKind; }
 
   bool accessesDynCtx() const;
 
@@ -74,7 +72,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const;
+        expr& ann) const;
 };
 
 

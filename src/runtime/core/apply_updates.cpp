@@ -37,12 +37,13 @@
 
 #include "common/shared_types.h"
 
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
 
 
 /*******************************************************************************
@@ -93,19 +94,24 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   store::Item_t item;
   ulong numItems = 0;
-  std::auto_ptr<store::PUL> pul;
+  store::PUL_t pul;
 
   ApplyIteratorState* state;
   DEFAULT_STACK_INIT(ApplyIteratorState, state, planState);
-
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   // Note: updating expr might not return a pul because of vacuous exprs
   while (consumeNext(item, theChild, planState))
   {
     if (item->isPul())
     {
-      pul->mergeUpdates(item);
+      if (pul)
+      {
+        pul->mergeUpdates(item);
+      }
+      else
+      {
+        pul.transfer(item);
+      }
     }
     else if (!theDiscardXDM)
     {
@@ -114,7 +120,8 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  apply_updates(ccb, gdctx, theSctx, pul.get(), loc);
+  if(pul)
+    apply_updates(ccb, gdctx, theSctx, pul, loc);
 
   state->theXDMIte = state->theXDMItems.begin();
   state->theXDMEnd = state->theXDMItems.end();
@@ -141,28 +148,26 @@ void apply_updates(
   SchemaValidatorImpl validator(loc, sctx);
   ICCheckerImpl icChecker(sctx, gdctx);
   std::vector<store::Index*> indexes;
+  std::vector<store::Index*> truncate_indexes;
   store::ItemHandle<store::PUL> indexPul;
 
   // Get all the indexes that are associated with any of the collections that
   // are going to be updated by this pul. Check which of those indices can be
   // maintained incrementally, and pass this info back to the pul.
-  pul->getIndicesToRefresh(indexes);
+  pul->getIndicesToRefresh(indexes, truncate_indexes);
 
-  ulong numIndices = (ulong)indexes.size();
+  csize numIndices = indexes.size();
 
   std::vector<IndexDecl*> zorbaIndexes(numIndices); 
 
-  for (ulong i = 0; i < numIndices; ++i)
+  for (csize i = 0; i < numIndices; ++i)
   {
     IndexDecl* indexDecl = sctx->lookup_index(indexes[i]->getName());
     
     if (indexDecl == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0021_INDEX_NOT_DECLARED,
-        ERROR_PARAMS( indexes[i]->getName()->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(indexes[i]->getName()->getStringValue()));
     }
 
     if (indexDecl->getMaintenanceMode() == IndexDecl::DOC_MAP)
@@ -176,6 +181,17 @@ void apply_updates(
     }
 
     zorbaIndexes[i] = indexDecl;
+  }
+
+  numIndices = truncate_indexes.size();
+  for (csize i = 0; i < numIndices; ++i)
+  {
+    IndexDecl* indexDecl = sctx->lookup_index(indexes[i]->getName());
+
+    if (indexDecl->getMaintenanceMode() == IndexDecl::DOC_MAP)
+    {
+      pul->addIndexTruncator(indexDecl->getSourceName(0), indexes[i]);
+    }
   }
 
   try 
@@ -199,7 +215,13 @@ void apply_updates(
         {
           PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
 
-          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL);
+          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan,
+                                                      ccb,
+                                                      NULL,
+                                                      NULL,
+                                                      0,
+                                                      false,
+                                                      0);
 
           indexPul->addRefreshIndex(&loc, zorbaIndex->getName(), planWrapper);
         }
@@ -210,17 +232,15 @@ void apply_updates(
   }
   catch (XQueryException& e)
   {
-    if ( e.has_source() &&
-         ( e.diagnostic() == err::XUDY0021 ||
-           e.diagnostic() == err::XUDY0015 ||
-           e.diagnostic() == err::XUDY0016 ||
-           e.diagnostic() == err::XUDY0017 ||
-           e.diagnostic() == err::XUDY0014 ) ) 
+    if (e.has_source() &&
+        (e.diagnostic() == err::XUDY0021 ||
+         e.diagnostic() == err::XUDY0015 ||
+         e.diagnostic() == err::XUDY0016 ||
+         e.diagnostic() == err::XUDY0017 ||
+         e.diagnostic() == err::XUDY0014)) 
     {
-      XQueryException lNewE = XQUERY_EXCEPTION(
-        err::XUDY0021,
-        ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc)
-      );
+      XQueryException lNewE = 
+      XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc));
 
       QueryLoc lLoc;
       lLoc.setFilename(e.source_uri());

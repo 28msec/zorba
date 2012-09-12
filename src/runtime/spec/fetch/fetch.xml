@@ -16,7 +16,8 @@
   <zorba:function>
     <zorba:signature localname="content" prefix="fn-zorba-fetch">
       <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param> <!-- entityKind -->
+      <zorba:param>xs:string</zorba:param> <!-- encoding -->
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
 
@@ -25,8 +26,33 @@
     </zorba:methods>
   </zorba:function>
 
-  <zorba:method static="true" name="destroyStream"
-    return="void">
+  <zorba:method static="true" name="destroyStream" return="void">
+    <zorba:param type="std::istream&amp;" name="aStream"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+<!--
+/*********************************************************************
+*********************************************************************/
+-->
+<zorba:iterator name="FetchContentBinaryIterator">
+
+  <zorba:description author="Matthias Brantner"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="content-binary" prefix="fn-zorba-fetch">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:base64Binary</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
+
+  <zorba:method static="true" name="destroyStream" return="void">
     <zorba:param type="std::istream&amp;" name="aStream"/>
   </zorba:method>
 

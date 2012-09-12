@@ -25,6 +25,8 @@
 #include <typeinfo>
 #include <vector>
 
+#include <zorba/store_consts.h>
+
 #include "compiler/parser/ft_types.h"
 #include "compiler/parsetree/parsenode_base.h"
 
@@ -223,6 +225,7 @@ class SequenceType;
 class SignList;
 class SingleType;
 class StringLiteral;
+class StringConcatExpr;
 class SwitchCaseClause;
 class SwitchCaseClauseList;
 class SwitchCaseOperandList;
@@ -245,6 +248,11 @@ class CopyVarList;
 class Wildcard;
 class DecimalFormatNode;
 
+class JSONArrayConstructor;
+class JSONObjectConstructor;
+class JSONPairConstructor;
+class JSONPairList;
+class JSON_Test;
 
 
 /*******************************************************************************
@@ -805,30 +813,27 @@ public:
 class VFO_DeclList : public parsenode
 {
 protected:
-  std::vector<rchandle<parsenode> > vfo_hv;
+  std::vector<rchandle<parsenode> > theDecls;
+  std::vector<bool>                 theIndexDeclFlags;
 
 public:
   VFO_DeclList(const QueryLoc&);
 
-  ulong size () const { return (ulong)vfo_hv.size (); }
+  csize size() const { return theDecls.size(); }
 
-  void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin(), vfo_h); }
+  void push_back(const rchandle<parsenode>& vfo);
 
-  void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
+  rchandle<parsenode> operator[](int k) const { return theDecls[k]; }
 
-  void push_back (const VFO_DeclList &other) { vfo_hv.insert(vfo_hv.end(), other.vfo_hv.begin(), other.vfo_hv.end()); }
+  std::vector<rchandle<parsenode> >::const_iterator begin() const 
+  {
+    return theDecls.begin();
+  }
 
-  rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
-
-  std::vector<rchandle<parsenode> >::iterator begin() { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::iterator end() { return vfo_hv.end(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator begin() const { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator end() const { return vfo_hv.end(); }
-
-  const VarDecl* findVarDecl(const QName& varname);
+  std::vector<rchandle<parsenode> >::const_iterator end() const
+  {
+    return theDecls.end();
+  }
 
   void accept(parsenode_visitor&) const;
 };
@@ -887,6 +892,10 @@ public:
 
 
 /*******************************************************************************
+  VarDeclWithInit is used as a base class for parse nodes that represent various
+  kinds of variable declarations: global vars, local vars, let vars, for vars,
+  window vars, and grouping vars.
+
   Global declarations:
   --------------------
 
@@ -914,58 +923,55 @@ class VarDeclWithInit : public XQDocumentable
 protected:
   rchandle<QName>        theName;
   rchandle<SequenceType> theType;
-  rchandle<exprnode>     theInitExpr;
+  rchandle<exprnode>     theExpr;
 
 public:
   VarDeclWithInit(
       const QueryLoc& loc,
       rchandle<QName> name,
       rchandle<SequenceType> type,
-      rchandle<exprnode> initexpr)
+      rchandle<exprnode> expr)
     :
     XQDocumentable(loc),
     theName(name),
     theType(type),
-    theInitExpr(initexpr)
+    theExpr(expr)
   {
   }
 
-  const QName* get_name() const { return theName; }
+  const QName* get_var_name() const { return theName; }
 
-  rchandle<SequenceType> get_typedecl() const { return theType; }
+  rchandle<SequenceType> get_var_type() const { return theType; }
 
-  rchandle<exprnode> get_initexpr() const { return theInitExpr; }
+  rchandle<exprnode> get_binding_expr() const { return theExpr; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class VarDecl : public VarDeclWithInit
+class GlobalVarDecl : public VarDeclWithInit
 {
 protected:
   bool theIsExternal;
-  bool theIsGlobal;
 
   rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
-  VarDecl(
+  GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
     SequenceType* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
-    bool global,
     bool external);
 
   bool is_extern() const { return theIsExternal; }
 
-  bool is_global() const { return theIsGlobal; }
-
-  void set_global(bool global) { theIsGlobal = global; }
-
-  void set_annotations(rchandle<AnnotationListParsenode> annotations) { theAnnotations = annotations; }
+  void set_annotations(rchandle<AnnotationListParsenode> annotations)
+  {
+    theAnnotations = annotations;
+  }
 
   AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
@@ -1046,7 +1052,7 @@ public:
 
   rchandle<ParamList> get_paramlist() const { return theParams; }
 
-  ulong get_param_count() const;
+  csize get_param_count() const;
 
   rchandle<SequenceType> get_return_type() const { return theReturnType; }
 
@@ -1615,7 +1621,7 @@ public:
 
   parsenode* operator[](ulong k) { return theStatements[k].getp(); }
 
-  ulong size() const { return (ulong)theStatements.size(); }
+  csize size() const { return theStatements.size(); }
 
   bool isTopLevel() const { return theIsTopLevel; }
 
@@ -1628,7 +1634,9 @@ public:
 
 
 /*******************************************************************************
-
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
 class VarDeclStmt : public exprnode
 {
@@ -1641,9 +1649,36 @@ public:
 
   void add(parsenode* decl);
 
-  ulong size() const { return (ulong)theDecls.size(); }
+  csize size() const { return theDecls.size(); }
 
-  parsenode* getDecl(ulong i) const { return theDecls[i].getp(); }
+  parsenode* getDecl(csize i) const { return theDecls[i].getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class LocalVarDecl : public VarDeclWithInit
+{
+protected:
+  rchandle<AnnotationListParsenode> theAnnotations;
+
+public:
+  LocalVarDecl(
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceType* type_decl,
+    exprnode* init_expr,
+    AnnotationListParsenode* annotations);
+
+  void set_annotations(rchandle<AnnotationListParsenode> annotations)
+  {
+    theAnnotations = annotations;
+  }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1798,7 +1833,7 @@ public:
 /*******************************************************************************
   [39] ExprSingle ::=
 
-  ** XQuery 1.1 exprs
+  ** XQuery 3.0 exprs
                       FLWORExpr |
                       QuantifiedExpr |
                       TypeswitchExpr |
@@ -1912,7 +1947,7 @@ public:
 
   rchandle<FLWORClause> operator[](int i) const { return theClauses[i]; }
 
-  size_t size() const { return theClauses.size(); }
+  csize size() const { return theClauses.size(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1989,7 +2024,7 @@ public:
 
   rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
 
-  size_t size () const { return vardecl_hv.size ();}
+  csize size() const { return vardecl_hv.size ();}
 
   void accept(parsenode_visitor&) const;
 };
@@ -2104,12 +2139,12 @@ protected:
 
 public:
   VarGetsDecl(
-    const QueryLoc& loc,
-    rchandle<QName> varname,
-    rchandle<SequenceType> typedecl_h,
-    rchandle<FTScoreVar> ftscorevar_h,
-    rchandle<exprnode> valexpr_h,
-    enum var_kind kind_ = let_var)
+      const QueryLoc& loc,
+      rchandle<QName> varname,
+      rchandle<SequenceType> typedecl_h,
+      rchandle<FTScoreVar> ftscorevar_h,
+      rchandle<exprnode> valexpr_h,
+      enum var_kind kind_ = let_var)
     :
     VarDeclWithInit(loc, varname, typedecl_h, valexpr_h),
     ftscorevar_h(ftscorevar_h),
@@ -2119,8 +2154,8 @@ public:
 
   rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
 
-
   enum var_kind get_kind () const { return kind; }
+
   void set_kind (enum var_kind kind_) { kind = kind_; }
 
   void accept(parsenode_visitor&) const;
@@ -2199,30 +2234,31 @@ public:
 
   GroupSpec* operator[](int i) const { return theSpecs[i].getp(); }
 
-  size_t size() const { return theSpecs.size(); }
+  csize size() const { return theSpecs.size(); }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-  GroupSpec ::= "$" VarName ("collation" URILiteral)?
+  GroupSpec ::= "$" VarName 
+                (TypeDeclaration? ":=" ExprSingle)?
+                ("collation" URILiteral)?
 ********************************************************************************/
-class GroupSpec : public parsenode
+class GroupSpec : public VarDeclWithInit
 {
 protected:
-  rchandle<QName>              var_name_h;
-  rchandle<GroupCollationSpec> group_coll_spec_h;
+  rchandle<GroupCollationSpec> theCollationSpec;
 
 public:
   GroupSpec(
-    const QueryLoc&,
-    rchandle<QName>,
-    rchandle<GroupCollationSpec>);
+      const QueryLoc& loc,
+      rchandle<QName> name,
+      rchandle<SequenceType> type,
+      rchandle<exprnode> expr,
+      rchandle<GroupCollationSpec> collation);
 
-  const QName* get_var_name() const { return var_name_h.getp(); }
-
-  rchandle<GroupCollationSpec> group_coll_spec() const { return group_coll_spec_h; }
+  const GroupCollationSpec* get_collation_spec() const { return theCollationSpec.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2234,12 +2270,12 @@ public:
 class GroupCollationSpec : public parsenode
 {
 protected:
-  zstring const uri;
+  const zstring theUri;
 
 public:
-  GroupCollationSpec(const QueryLoc&, zstring const& uri);
+  GroupCollationSpec(const QueryLoc&, const zstring& uri);
 
-  zstring const& get_uri() const { return uri; }
+  const zstring& get_uri() const { return theUri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3097,6 +3133,26 @@ private:
   FTIgnoreOption const *const ftignore_;
 };
 
+/******************************************************************************
+ * StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+ *****************************************************************************/
+class StringConcatExpr: public exprnode
+{
+  protected:
+    rchandle<exprnode> left;
+    rchandle<exprnode> right;
+
+  public:
+    StringConcatExpr(
+      const QueryLoc& aLoc,
+      rchandle<exprnode> aLeft,
+      rchandle<exprnode> aRight): exprnode(aLoc), left(aLeft), right(aRight) {}
+
+    rchandle<exprnode> get_left_expr() const { return left; }
+    rchandle<exprnode> get_right_expr() const { return right; }
+
+    virtual void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [72] RangeExpr ::= AdditiveExpr ( "to" AdditiveExpr )?
@@ -3534,19 +3590,23 @@ protected:
   enum ParseConstants::steptype_t step_type;
   rchandle<exprnode> step_expr_h;
   rchandle<exprnode> relpath_expr_h;
+  bool is_implicit_b;
 
 public:
   RelativePathExpr(
     const QueryLoc&,
     ParseConstants::steptype_t,
     rchandle<exprnode>,
-    rchandle<exprnode>);
+    rchandle<exprnode>,
+    bool implicit);
 
   enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 
-  rchandle<exprnode> get_step_expr() const { return step_expr_h; }
+  exprnode* get_step_expr() const { return step_expr_h.getp(); }
 
-  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
+  exprnode* get_relpath_expr() const { return relpath_expr_h.getp(); }
+
+  bool is_implicit() const { return is_implicit_b; }
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -3578,11 +3638,11 @@ public:
     rchandle<ReverseStep>,
     rchandle<PredicateList>);
 
-  rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
+  ForwardStep* get_forward_step() const { return forward_step_h.getp(); }
 
-  rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
+  ReverseStep* get_reverse_step() const { return reverse_step_h.getp(); }
 
-  rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
+  PredicateList* get_predicate_list() const { return predicate_list_h.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -3610,11 +3670,11 @@ public:
     const QueryLoc&,
     rchandle<AbbrevForwardStep>);
 
-  rchandle<ForwardAxis> get_forward_axis() const { return theForwardAxis; }
+  ForwardAxis* get_forward_axis() const { return theForwardAxis.getp(); }
 
-  rchandle<parsenode> get_node_test() const { return node_test_h; }
+  parsenode* get_node_test() const { return node_test_h.getp(); }
 
-  rchandle<AbbrevForwardStep> get_abbrev_step() const { return theAbbrevStep; }
+  AbbrevForwardStep* get_abbrev_step() const { return theAbbrevStep.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -3854,7 +3914,7 @@ public:
 
 /*******************************************************************************
   [108] Literal ::= NumericLiteral | StringLiteral
-  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 1.1)
+  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 3.0)
 
 ********************************************************************************/
 // Used by Annotations classes
@@ -4944,6 +5004,20 @@ public:
 
 
 /*******************************************************************************
+
+********************************************************************************/
+class StructuredItemType : public parsenode
+{
+public:
+  StructuredItemType(const QueryLoc& loc) : parsenode(loc)
+  {
+  }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
   [148] AtomicType ::= QName
 ********************************************************************************/
 class AtomicType : public parsenode
@@ -4952,9 +5026,7 @@ protected:
   rchandle<QName> qname_h;
 
 public:
-  AtomicType(
-    const QueryLoc&,
-    rchandle<QName>);
+  AtomicType(const QueryLoc&, rchandle<QName>);
 
   rchandle<QName> get_qname() const { return qname_h; }
 
@@ -5519,20 +5591,20 @@ class TransformExpr : public exprnode
 {
 protected:
   rchandle<CopyVarList> var_list;
-  rchandle<exprnode> source_expr;
-  rchandle<exprnode> target_expr;
+  rchandle<exprnode>    theModifyExpr;
+  rchandle<exprnode>    theReturnExpr;
 
 public:
   TransformExpr(
     const QueryLoc& loc,
     rchandle<CopyVarList> var_list,
-    rchandle<exprnode> source_expr,
-    rchandle<exprnode> target_expr);
+    rchandle<exprnode> modifyExpr,
+    rchandle<exprnode> returnExpr);
 
 
   rchandle<CopyVarList> get_var_list() const { return var_list; }
-  rchandle<exprnode> get_source_expr() const { return source_expr; }
-  rchandle<exprnode> get_target_expr() const { return target_expr; }
+  rchandle<exprnode> get_modify_expr() const { return theModifyExpr; }
+  rchandle<exprnode> get_return_expr() const { return theReturnExpr; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -6331,13 +6403,15 @@ private:
 
 ////////// FTPosFilter & derived classes //////////////////////////////////////
 
-class FTPosFilter : public parsenode {
+class FTPosFilter : public parsenode 
+{
 protected:
   FTPosFilter( QueryLoc const &loc ) : parsenode( loc ) { }
 };
 
 
-class FTContent : public FTPosFilter {
+class FTContent : public FTPosFilter 
+{
 public:
   FTContent(
     QueryLoc const&,
@@ -6353,7 +6427,8 @@ private:
 };
 
 
-class FTDistance : public FTPosFilter {
+class FTDistance : public FTPosFilter 
+{
 public:
   FTDistance(
     QueryLoc const&,
@@ -6373,7 +6448,8 @@ private:
 };
 
 
-class FTOrder : public FTPosFilter {
+class FTOrder : public FTPosFilter 
+{
 public:
   FTOrder( QueryLoc const& );
 
@@ -6381,7 +6457,8 @@ public:
 };
 
 
-class FTScope : public FTPosFilter {
+class FTScope : public FTPosFilter 
+{
 public:
   FTScope(
     QueryLoc const&,
@@ -6401,7 +6478,8 @@ private:
 };
 
 
-class FTWindow : public FTPosFilter {
+class FTWindow : public FTPosFilter 
+{
 public:
   FTWindow(
     QueryLoc const&,
@@ -6421,8 +6499,260 @@ private:
 };
 
 
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//  JSON productions                                                         //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+
+class JSONArrayConstructor : public exprnode
+{
+private:
+  const exprnode* expr_;
+
+public:
+  JSONArrayConstructor(const QueryLoc&, const exprnode*);
+
+  ~JSONArrayConstructor();
+
+  const exprnode* get_expr() const { return expr_; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSONObjectConstructor : public exprnode
+{
+private:
+  const exprnode* expr_;
+  bool            theAccumulate;
+
+public:
+  JSONObjectConstructor(
+      const QueryLoc& loc,
+      const exprnode* input,
+      bool accumulate);
+
+  ~JSONObjectConstructor();
+
+  const exprnode* get_expr() const { return expr_; }
+
+  bool get_accumulate() const { return theAccumulate; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSONDirectObjectConstructor : public exprnode
+{
+private:
+  const JSONPairList  * thePairs;
+
+public:
+  JSONDirectObjectConstructor(const QueryLoc& loc, const JSONPairList* pairs);
+
+  ~JSONDirectObjectConstructor();
+
+  csize numPairs() const;
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSONPairList : public parsenode
+{
+protected:
+  std::vector<rchandle<JSONPairConstructor> > thePairs;
+
+public:
+  JSONPairList(const QueryLoc& loc) : parsenode(loc) { };
+
+  void push_back(JSONPairConstructor* pair) { thePairs.push_back(pair); }
+
+  const JSONPairConstructor* operator[] (csize i) const { return thePairs[i]; }
+
+  csize size() const { return thePairs.size(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSONPairConstructor : public parsenode
+{
+private:
+  const exprnode * expr1_;
+  const exprnode * expr2_;
+
+public:
+  JSONPairConstructor(const QueryLoc&, const exprnode*, const exprnode*);
+
+  ~JSONPairConstructor();
+
+  const exprnode* get_expr1() const { return expr1_; }
+  const exprnode* get_expr2() const { return expr2_; }
+
+  void accept( parsenode_visitor& ) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSON_Test : public parsenode
+{
+private:
+  store::StoreConsts::JSONItemKind jt_;
+
+public:
+  JSON_Test(
+      const QueryLoc& loc, 
+      store::StoreConsts::JSONItemKind jt);
+
+  store::StoreConsts::JSONItemKind get_kind() const { return jt_; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONObjectInsertExpr : public exprnode
+{
+protected:
+  const JSONPairList * thePairs;
+  const exprnode     * theTargetExpr;
+
+public:
+  JSONObjectInsertExpr(
+    const QueryLoc& loc,
+    const JSONPairList* pairs,
+    const exprnode* targetExpr);
+
+  ~JSONObjectInsertExpr();
+
+  csize numPairs() const { return thePairs->size(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONArrayInsertExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* thePositionExpr;
+  const exprnode* theValueExpr;
+
+public:
+  JSONArrayInsertExpr(
+    const QueryLoc& loc,
+    exprnode* valueExpr,
+    exprnode* targetExpr,
+    exprnode* posExpr);
+
+  ~JSONArrayInsertExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONArrayAppendExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theValueExpr;
+
+public:
+  JSONArrayAppendExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* valueExpr);
+
+  ~JSONArrayAppendExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONDeleteExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theSelectorExpr;
+
+public:
+  JSONDeleteExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* selectorExpr);
+
+  ~JSONDeleteExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONReplaceExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theSelectorExpr;
+  const exprnode* theValueExpr;
+
+public:
+  JSONReplaceExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* nameExpr,
+    exprnode* newNameExpr);
+
+  ~JSONReplaceExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class JSONRenameExpr : public exprnode
+{
+protected:
+  const exprnode* theTargetExpr;
+  const exprnode* theNameExpr;
+  const exprnode* theNewNameExpr;
+
+public:
+  JSONRenameExpr(
+    const QueryLoc& loc,
+    exprnode* targetExpr,
+    exprnode* nameExpr,
+    exprnode* newNameExpr);
+
+  ~JSONRenameExpr();
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
-#endif  /*  ZORBA_PARSENODES_H */
+#endif  /* ZORBA_PARSENODES_H */
 
 /*
  * Local variables:

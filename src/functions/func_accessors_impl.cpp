@@ -43,7 +43,7 @@ PlanIter_t fn_string::codegen(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
+      expr& ann) const
 {
   return new FnStringIterator(sctx, loc, argv, true);
 }
@@ -84,7 +84,7 @@ xqtref_t fn_data::getReturnType(const fo_expr* caller) const
   if (TypeOps::is_subtype(tm, *argType, *RTM.ANY_ATOMIC_TYPE_STAR, loc))
     return argType; // includes () case
 
-  TypeConstants::quantifier_t q = TypeOps::quantifier(*argType);
+  TypeConstants::quantifier_t q = argType->get_quantifier();
 
   if (argType->type_kind() == XQType::NODE_TYPE_KIND)
   {
@@ -150,7 +150,7 @@ PlanIter_t fn_data_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
 }
@@ -164,7 +164,7 @@ PlanIter_t fn_name_func::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   PlanIter_t nnIter = new NodeNameIterator(sctx, loc, argv);
   std::vector<PlanIter_t> lVec;

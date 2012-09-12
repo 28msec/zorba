@@ -36,7 +36,7 @@ PlanIter_t fn_function_name_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FunctionNameIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_function_arity_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FunctionArityIterator(sctx, loc, argv);
 }
@@ -56,16 +56,16 @@ PlanIter_t fn_partial_apply_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new PartialApplyIterator(sctx, loc, argv);
 }
 
 void populate_context_function_item_iter(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_function_name_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","function-name"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 
@@ -75,9 +75,9 @@ void populate_context_function_item_iter(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_function_arity_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","function-arity"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 
@@ -87,9 +87,9 @@ void populate_context_function_item_iter(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_partial_apply_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","partial-apply"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 
@@ -100,9 +100,9 @@ void populate_context_function_item_iter(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_partial_apply_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","partial-apply"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 

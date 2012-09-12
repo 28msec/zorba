@@ -29,13 +29,22 @@
 #include "schema_types.h"
 #include "zorbatypes_decl.h"
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+# define TEMPLATE_DECL(I) /* nothing */
+# define INTEGER_IMPL(I)  IntegerImpl
+#else
+# define TEMPLATE_DECL(I) template<typename I> /* spacer */
+# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 namespace zorba {
 
 template<typename FloatType>
 class FloatImpl;
-namespace serialization{
+
+namespace serialization {
   template<typename FloatType>
-  void operator&(Archiver &ar, FloatImpl<FloatType> &obj);
+  void operator&( Archiver&, FloatImpl<FloatType>& );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,21 +56,23 @@ public:
 
   ////////// constructors /////////////////////////////////////////////////////
 
-  FloatImpl( char );
-  FloatImpl( signed char c );
-  FloatImpl( short n );
-  FloatImpl( int n = 0 );
-  FloatImpl( long n );
-  FloatImpl( long long n );
-  FloatImpl( unsigned char c );
-  FloatImpl( unsigned short n );
-  FloatImpl( unsigned int n );
-  FloatImpl( unsigned long n );
-  FloatImpl( unsigned long long n );
-  FloatImpl( float n );
-  FloatImpl( double n );
-  FloatImpl( Decimal const &d );
-  FloatImpl( Integer const &i );
+  explicit FloatImpl( char );
+  explicit FloatImpl( signed char c );
+  explicit FloatImpl( short n );
+  explicit FloatImpl( int n = 0 );
+  explicit FloatImpl( long n );
+  explicit FloatImpl( long long n );
+  explicit FloatImpl( unsigned char c );
+  explicit FloatImpl( unsigned short n );
+  explicit FloatImpl( unsigned int n );
+  explicit FloatImpl( unsigned long n );
+  explicit FloatImpl( unsigned long long n );
+  explicit FloatImpl( float n );
+  explicit FloatImpl( double n );
+  explicit FloatImpl( Decimal const &d );
+
+  TEMPLATE_DECL(IntType)
+  explicit FloatImpl( INTEGER_IMPL(IntType) const &i );
 
   /**
    * Constructs a %FloatImpl from a C string.
@@ -73,62 +84,133 @@ public:
    * @throw std::range_error if \a s contains a number that either underflows
    * or overflows the smallest or largest representable floating point number.
    */
-  FloatImpl( char const *s );
+  explicit FloatImpl( char const *s );
 
+  /**
+   * Constructs from another %FloatImpl even if its \c FloatType is different.
+   * (This subsumes the conventional copy constructor.)
+   *
+   * @tparam FloatType2 the floating-point type of \a f.
+   * @param f The %FloatImpl to copy from.
+   */
   template<typename FloatType2>
   FloatImpl( FloatImpl<FloatType2> const &f );
 
   ////////// assignment operators /////////////////////////////////////////////
 
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          FloatImpl&>::type
-  operator=( A n );
-
+  /**
+   * Assign from a %FloatImpl even if its \c FloatType is different.
+   * (This subsumes the conventional assignment operator.)
+   *
+   * @tparam FloatType2 the floating-point type of \a f.
+   * @param f The %FloatImpl to assign from.
+   * @return Returns \c *this.
+   */
   template<typename FloatType2>
   FloatImpl& operator=( FloatImpl<FloatType2> const &f );
 
+  FloatImpl& operator=( char c );
+  FloatImpl& operator=( signed char c );
+  FloatImpl& operator=( short n );
+  FloatImpl& operator=( int n );
+  FloatImpl& operator=( long n );
+  FloatImpl& operator=( long long n );
+  FloatImpl& operator=( unsigned char c );
+  FloatImpl& operator=( unsigned short n );
+  FloatImpl& operator=( unsigned int n );
+  FloatImpl& operator=( unsigned long n );
+  FloatImpl& operator=( unsigned long long n );
+  FloatImpl& operator=( float n );
+  FloatImpl& operator=( double n );
+
+  FloatImpl& operator=( char const *s );
+  FloatImpl& operator=( Decimal const &d );
+
+  TEMPLATE_DECL(I)
+  FloatImpl& operator=( INTEGER_IMPL(I) const &i );
+
   ////////// arithmetic operators /////////////////////////////////////////////
 
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          FloatImpl&>::type
-  operator+=( A n );
+#define ZORBA_FLOAT_OP(OP,T)    \
+  FloatImpl& operator OP( T n )
 
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          FloatImpl&>::type
-  operator-=( A n );
+  ZORBA_FLOAT_OP(+=,char);
+  ZORBA_FLOAT_OP(-=,char);
+  ZORBA_FLOAT_OP(*=,char);
+  ZORBA_FLOAT_OP(/=,char);
+  ZORBA_FLOAT_OP(%=,char);
+  ZORBA_FLOAT_OP(+=,signed char);
+  ZORBA_FLOAT_OP(-=,signed char);
+  ZORBA_FLOAT_OP(*=,signed char);
+  ZORBA_FLOAT_OP(/=,signed char);
+  ZORBA_FLOAT_OP(%=,signed char);
+  ZORBA_FLOAT_OP(+=,short);
+  ZORBA_FLOAT_OP(-=,short);
+  ZORBA_FLOAT_OP(*=,short);
+  ZORBA_FLOAT_OP(/=,short);
+  ZORBA_FLOAT_OP(%=,short);
+  ZORBA_FLOAT_OP(+=,int);
+  ZORBA_FLOAT_OP(-=,int);
+  ZORBA_FLOAT_OP(*=,int);
+  ZORBA_FLOAT_OP(/=,int);
+  ZORBA_FLOAT_OP(%=,int);
+  ZORBA_FLOAT_OP(+=,long);
+  ZORBA_FLOAT_OP(-=,long);
+  ZORBA_FLOAT_OP(*=,long);
+  ZORBA_FLOAT_OP(/=,long);
+  ZORBA_FLOAT_OP(%=,long);
+  ZORBA_FLOAT_OP(+=,long long);
+  ZORBA_FLOAT_OP(-=,long long);
+  ZORBA_FLOAT_OP(*=,long long);
+  ZORBA_FLOAT_OP(/=,long long);
+  ZORBA_FLOAT_OP(%=,long long);
+  ZORBA_FLOAT_OP(+=,unsigned char);
+  ZORBA_FLOAT_OP(-=,unsigned char);
+  ZORBA_FLOAT_OP(*=,unsigned char);
+  ZORBA_FLOAT_OP(/=,unsigned char);
+  ZORBA_FLOAT_OP(%=,unsigned char);
+  ZORBA_FLOAT_OP(+=,unsigned short);
+  ZORBA_FLOAT_OP(-=,unsigned short);
+  ZORBA_FLOAT_OP(*=,unsigned short);
+  ZORBA_FLOAT_OP(/=,unsigned short);
+  ZORBA_FLOAT_OP(%=,unsigned short);
+  ZORBA_FLOAT_OP(+=,unsigned int);
+  ZORBA_FLOAT_OP(-=,unsigned int);
+  ZORBA_FLOAT_OP(*=,unsigned int);
+  ZORBA_FLOAT_OP(/=,unsigned int);
+  ZORBA_FLOAT_OP(%=,unsigned int);
+  ZORBA_FLOAT_OP(+=,unsigned long);
+  ZORBA_FLOAT_OP(-=,unsigned long);
+  ZORBA_FLOAT_OP(*=,unsigned long);
+  ZORBA_FLOAT_OP(/=,unsigned long);
+  ZORBA_FLOAT_OP(%=,unsigned long);
+  ZORBA_FLOAT_OP(+=,unsigned long long);
+  ZORBA_FLOAT_OP(-=,unsigned long long);
+  ZORBA_FLOAT_OP(*=,unsigned long long);
+  ZORBA_FLOAT_OP(/=,unsigned long long);
+  ZORBA_FLOAT_OP(%=,unsigned long long);
+  ZORBA_FLOAT_OP(+=,float);
+  ZORBA_FLOAT_OP(-=,float);
+  ZORBA_FLOAT_OP(*=,float);
+  ZORBA_FLOAT_OP(/=,float);
+  ZORBA_FLOAT_OP(%=,float);
+  ZORBA_FLOAT_OP(+=,double);
+  ZORBA_FLOAT_OP(-=,double);
+  ZORBA_FLOAT_OP(*=,double);
+  ZORBA_FLOAT_OP(/=,double);
+  ZORBA_FLOAT_OP(%=,double);
+#undef ZORBA_FLOAT_OP
 
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          FloatImpl&>::type
-  operator*=( A n );
+#define ZORBA_FLOAT_OP(OP)                                \
+  template<typename FloatType2>                           \
+  FloatImpl& operator OP( FloatImpl<FloatType2> const &f )
 
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          FloatImpl&>::type
-  operator/=( A n );
-
-  template<typename A>
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                          FloatImpl&>::type
-  operator%=( A n );
-
-  template<typename FloatType2>
-  FloatImpl& operator+=( FloatImpl<FloatType2> const &f );
-
-  template<typename FloatType2>
-  FloatImpl& operator-=( FloatImpl<FloatType2> const &f );
-
-  template<typename FloatType2>
-  FloatImpl& operator*=( FloatImpl<FloatType2> const &f );
-
-  template<typename FloatType2>
-  FloatImpl& operator/=( FloatImpl<FloatType2> const &f );
-
-  template<typename FloatType2>
-  FloatImpl& operator%=( FloatImpl<FloatType2> const &f );
+  ZORBA_FLOAT_OP(+=);
+  ZORBA_FLOAT_OP(-=);
+  ZORBA_FLOAT_OP(*=);
+  ZORBA_FLOAT_OP(/=);
+  ZORBA_FLOAT_OP(%=);
+#undef ZORBA_FLOAT_OP
 
   FloatImpl operator-() const;
 
@@ -220,7 +302,7 @@ private:
   void parse( char const* );
   bool parse_etc( char const* );
 
-  friend class Integer;
+  TEMPLATE_DECL(I) friend class IntegerImpl;
   friend class Decimal;
 
   friend class FloatImpl<float>;
@@ -244,534 +326,671 @@ inline FloatImpl<double>::precision_type FloatImpl<double>::max_precision() {
 
 ////////// constructors ///////////////////////////////////////////////////////
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( char c ) :
-  value_( static_cast<value_type>( c ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( char c ) :
+  value_( static_cast<F>( c ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( signed char c ) :
-  value_( static_cast<value_type>( c ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( signed char c ) :
+  value_( static_cast<F>( c ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( short n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( short n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( int n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( int n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( long n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( long n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( long long n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( long long n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( unsigned char c ) :
-  value_( static_cast<value_type>( c ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( unsigned char c ) :
+  value_( static_cast<F>( c ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( unsigned short n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( unsigned short n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( unsigned int n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( unsigned int n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( unsigned long n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( unsigned long n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( unsigned long long n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( unsigned long long n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( float n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( float n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( double n ) :
-  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+template<typename F>
+inline FloatImpl<F>::FloatImpl( double n ) :
+  value_( static_cast<F>( n ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType> inline
-FloatImpl<FloatType>::FloatImpl( char const *s ) {
+template<typename F>
+inline FloatImpl<F>::FloatImpl( char const *s ) {
   parse( s );
 }
 
-template<typename FloatType>
-template<typename FloatType2>
-inline FloatImpl<FloatType>::FloatImpl( FloatImpl<FloatType2> const &f ) :
-  value_( static_cast<value_type>( f.value_ ) ), precision_( max_precision() )
+template<typename F> template<typename G>
+inline FloatImpl<F>::FloatImpl( FloatImpl<G> const &f ) :
+  value_( static_cast<F>( f.value_ ) ), precision_( max_precision() )
 {
 }
 
-template<typename FloatType>
-inline FloatImpl<FloatType>::FloatImpl( value_type v, precision_type p ) :
+template<typename F>
+inline FloatImpl<F>::FloatImpl( value_type v, precision_type p ) :
   value_( v ), precision_( p )
 {
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-template<typename T>
-template<typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        FloatImpl<T>&>::type
-FloatImpl<T>::operator=( A n ) {
-  value_ = static_cast<value_type>( n );
+template<typename F> template<typename G>
+inline FloatImpl<F>& FloatImpl<F>::operator=( FloatImpl<G> const &f ) {
+  value_ = static_cast<F>( f.value_ );
   precision_ = max_precision();
   return *this;
 }
 
-template<typename T>
-template<typename U>
-inline FloatImpl<T>& FloatImpl<T>::operator=( FloatImpl<U> const &f ) {
-  value_ = static_cast<value_type>( f.value_ );
-  precision_ = max_precision();
+#define ZORBA_FLOAT_OP(T)                               \
+  template<typename F>                                  \
+  inline FloatImpl<F>& FloatImpl<F>::operator=( T n ) { \
+    value_ = static_cast<F>( n );                       \
+    precision_ = max_precision();                       \
+    return *this;                                       \
+  }
+
+ZORBA_FLOAT_OP(char)
+ZORBA_FLOAT_OP(signed char)
+ZORBA_FLOAT_OP(short)
+ZORBA_FLOAT_OP(int)
+ZORBA_FLOAT_OP(long)
+ZORBA_FLOAT_OP(long long)
+ZORBA_FLOAT_OP(unsigned char)
+ZORBA_FLOAT_OP(unsigned short)
+ZORBA_FLOAT_OP(unsigned int)
+ZORBA_FLOAT_OP(unsigned long)
+ZORBA_FLOAT_OP(unsigned long long)
+ZORBA_FLOAT_OP(float)
+ZORBA_FLOAT_OP(double)
+#undef ZORBA_FLOAT_OP
+
+template<typename F>
+inline FloatImpl<F>& FloatImpl<F>::operator=( char const *s ) {
+  parse( s );
   return *this;
 }
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#define ZORBA_DEF_FLOATIMPL_OP(OP)                                \
-  template<typename T,typename A> inline                          \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          FloatImpl<T> >::type                    \
-  operator OP( FloatImpl<T> const &f, A n ) {                     \
-    return FloatImpl<T>( f.getNumber() OP static_cast<T>( n ) );  \
+#define ZORBA_FLOAT_OP(OP,T)                                      \
+  template<typename F>                                            \
+  inline FloatImpl<F> operator OP( FloatImpl<F> const &f, T n ) { \
+    return FloatImpl<F>( f.getNumber() OP static_cast<F>( n ) );  \
   }                                                               \
-  template<typename T,typename A> inline                          \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          FloatImpl<T> >::type                    \
-  operator OP( A n, FloatImpl<T> const &f ) {                     \
-    return FloatImpl<T>( static_cast<T>( n ) OP f.getNumber() );  \
+                                                                  \
+  template<typename F>                                            \
+  inline FloatImpl<F> operator OP( T n, FloatImpl<F> const &f ) { \
+    return FloatImpl<F>( static_cast<F>( n ) OP f.getNumber() );  \
   }
 
-ZORBA_DEF_FLOATIMPL_OP( + )
-ZORBA_DEF_FLOATIMPL_OP( - )
-ZORBA_DEF_FLOATIMPL_OP( * )
-ZORBA_DEF_FLOATIMPL_OP( / )
+ZORBA_FLOAT_OP(+,char)
+ZORBA_FLOAT_OP(-,char)
+ZORBA_FLOAT_OP(*,char)
+ZORBA_FLOAT_OP(/,char)
+ZORBA_FLOAT_OP(+,signed char)
+ZORBA_FLOAT_OP(-,signed char)
+ZORBA_FLOAT_OP(*,signed char)
+ZORBA_FLOAT_OP(/,signed char)
+ZORBA_FLOAT_OP(+,short)
+ZORBA_FLOAT_OP(-,short)
+ZORBA_FLOAT_OP(*,short)
+ZORBA_FLOAT_OP(/,short)
+ZORBA_FLOAT_OP(+,int)
+ZORBA_FLOAT_OP(-,int)
+ZORBA_FLOAT_OP(*,int)
+ZORBA_FLOAT_OP(/,int)
+ZORBA_FLOAT_OP(+,long)
+ZORBA_FLOAT_OP(-,long)
+ZORBA_FLOAT_OP(*,long)
+ZORBA_FLOAT_OP(/,long)
+ZORBA_FLOAT_OP(+,long long)
+ZORBA_FLOAT_OP(-,long long)
+ZORBA_FLOAT_OP(*,long long)
+ZORBA_FLOAT_OP(/,long long)
+ZORBA_FLOAT_OP(+,unsigned char)
+ZORBA_FLOAT_OP(-,unsigned char)
+ZORBA_FLOAT_OP(*,unsigned char)
+ZORBA_FLOAT_OP(/,unsigned char)
+ZORBA_FLOAT_OP(+,unsigned short)
+ZORBA_FLOAT_OP(-,unsigned short)
+ZORBA_FLOAT_OP(*,unsigned short)
+ZORBA_FLOAT_OP(/,unsigned short)
+ZORBA_FLOAT_OP(+,unsigned int)
+ZORBA_FLOAT_OP(-,unsigned int)
+ZORBA_FLOAT_OP(*,unsigned int)
+ZORBA_FLOAT_OP(/,unsigned int)
+ZORBA_FLOAT_OP(+,unsigned long)
+ZORBA_FLOAT_OP(-,unsigned long)
+ZORBA_FLOAT_OP(*,unsigned long)
+ZORBA_FLOAT_OP(/,unsigned long)
+ZORBA_FLOAT_OP(+,unsigned long long)
+ZORBA_FLOAT_OP(-,unsigned long long)
+ZORBA_FLOAT_OP(*,unsigned long long)
+ZORBA_FLOAT_OP(/,unsigned long long)
+ZORBA_FLOAT_OP(+,float)
+ZORBA_FLOAT_OP(-,float)
+ZORBA_FLOAT_OP(*,float)
+ZORBA_FLOAT_OP(/,float)
+ZORBA_FLOAT_OP(+,double)
+ZORBA_FLOAT_OP(-,double)
+ZORBA_FLOAT_OP(*,double)
+ZORBA_FLOAT_OP(/,double)
+#undef ZORBA_FLOAT_OP
 
-#undef ZORBA_DEF_FLOATIMPL_OP
-
-template<typename T,typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        FloatImpl<T> >::type
-operator%( FloatImpl<T> const &f, A n ) {
-  return FloatImpl<T>( std::fmod( f.getNumber(), static_cast<T>( n ) ) );
-}
-
-template<typename T,typename A> inline
-typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
-                        FloatImpl<T> >::type
-operator%( A n, FloatImpl<T> const &f ) {
-  return FloatImpl<T>( std::fmod( static_cast<T>( n ), f.getNumber() ) );
-}
-
-#define ZORBA_DEF_FLOATIMPL_OP(OP)                                            \
-  template<typename T> inline                                                 \
-  FloatImpl<T> operator OP( FloatImpl<T> const &f, FloatImpl<T> const &g ) {  \
-    return FloatImpl<T>( f.getNumber() OP g.getNumber() );                    \
+#define ZORBA_FLOAT_OP(T)                                                   \
+  template<typename F>                                                      \
+  inline FloatImpl<F> operator%( FloatImpl<F> const &f, T n ) {             \
+    return FloatImpl<F>( std::fmod( f.getNumber(), static_cast<F>( n ) ) ); \
+  }                                                                         \
+                                                                            \
+  template<typename F>                                                      \
+  inline FloatImpl<F> operator%( T n, FloatImpl<F> const &f ) {             \
+    return FloatImpl<F>( std::fmod( static_cast<F>( n ), f.getNumber() ) ); \
   }
 
-ZORBA_DEF_FLOATIMPL_OP( + )
-ZORBA_DEF_FLOATIMPL_OP( - )
-ZORBA_DEF_FLOATIMPL_OP( * )
-ZORBA_DEF_FLOATIMPL_OP( / )
+ZORBA_FLOAT_OP(signed char)
+ZORBA_FLOAT_OP(char)
+ZORBA_FLOAT_OP(short)
+ZORBA_FLOAT_OP(int)
+ZORBA_FLOAT_OP(long)
+ZORBA_FLOAT_OP(long long)
+ZORBA_FLOAT_OP(unsigned char)
+ZORBA_FLOAT_OP(unsigned short)
+ZORBA_FLOAT_OP(unsigned int)
+ZORBA_FLOAT_OP(unsigned long)
+ZORBA_FLOAT_OP(unsigned long long)
+ZORBA_FLOAT_OP(float)
+ZORBA_FLOAT_OP(double)
+#undef ZORBA_FLOAT_OP
 
-#undef ZORBA_DEF_FLOATIMPL_OP
-
-template<typename T> inline
-FloatImpl<T> operator%( FloatImpl<T> const &f, FloatImpl<T> const &g ) {
-  return FloatImpl<T>( std::fmod( f.getNumber(), g.getNumber() ) );
-}
-
-#define ZORBA_DEF_FLOATIMPL_OP(OP)                                \
-  template<typename T>                                            \
-  template<typename A> inline                                     \
-  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
-                          FloatImpl<T>&>::type                    \
-  FloatImpl<T>::operator OP( A n ) {                              \
-    value_ OP static_cast<value_type>( n );                       \
-    return *this;                                                 \
+#define ZORBA_FLOAT_OP(OP)                                                    \
+  template<typename F> inline                                                 \
+  FloatImpl<F> operator OP( FloatImpl<F> const &f, FloatImpl<F> const &g ) {  \
+    return FloatImpl<F>( f.getNumber() OP g.getNumber() );                    \
   }
 
-ZORBA_DEF_FLOATIMPL_OP( += )
-ZORBA_DEF_FLOATIMPL_OP( -= )
-ZORBA_DEF_FLOATIMPL_OP( *= )
-ZORBA_DEF_FLOATIMPL_OP( /= )
-ZORBA_DEF_FLOATIMPL_OP( %= )
+ZORBA_FLOAT_OP(+)
+ZORBA_FLOAT_OP(-)
+ZORBA_FLOAT_OP(*)
+ZORBA_FLOAT_OP(/)
+#undef ZORBA_FLOAT_OP
 
-#undef ZORBA_DEF_FLOATIMPL_OP
+template<typename F>
+inline FloatImpl<F> operator%( FloatImpl<F> const &f, FloatImpl<F> const &g ) {
+  return FloatImpl<F>( std::fmod( f.getNumber(), g.getNumber() ) );
+}
 
-#define ZORBA_DEF_FLOATIMPL_OP(OP)                                          \
-  template<typename T>                                                      \
-  template<typename U>                                                      \
-  inline FloatImpl<T>& FloatImpl<T>::operator OP( FloatImpl<U> const &f ) { \
-    value_ OP static_cast<value_type>( f.value_ );                          \
+#define ZORBA_FLOAT_OP(OP,T)                              \
+  template<typename F>                                    \
+  inline FloatImpl<F>& FloatImpl<F>::operator OP( T n ) { \
+    value_ OP static_cast<F>( n );                        \
+    return *this;                                         \
+  }
+
+ZORBA_FLOAT_OP(+=,char)
+ZORBA_FLOAT_OP(-=,char)
+ZORBA_FLOAT_OP(*=,char)
+ZORBA_FLOAT_OP(/=,char)
+ZORBA_FLOAT_OP(+=,signed char)
+ZORBA_FLOAT_OP(-=,signed char)
+ZORBA_FLOAT_OP(*=,signed char)
+ZORBA_FLOAT_OP(/=,signed char)
+ZORBA_FLOAT_OP(+=,short)
+ZORBA_FLOAT_OP(-=,short)
+ZORBA_FLOAT_OP(*=,short)
+ZORBA_FLOAT_OP(/=,short)
+ZORBA_FLOAT_OP(+=,int)
+ZORBA_FLOAT_OP(-=,int)
+ZORBA_FLOAT_OP(*=,int)
+ZORBA_FLOAT_OP(/=,int)
+ZORBA_FLOAT_OP(+=,long)
+ZORBA_FLOAT_OP(-=,long)
+ZORBA_FLOAT_OP(*=,long)
+ZORBA_FLOAT_OP(/=,long)
+ZORBA_FLOAT_OP(+=,long long)
+ZORBA_FLOAT_OP(-=,long long)
+ZORBA_FLOAT_OP(*=,long long)
+ZORBA_FLOAT_OP(/=,long long)
+ZORBA_FLOAT_OP(+=,unsigned char)
+ZORBA_FLOAT_OP(-=,unsigned char)
+ZORBA_FLOAT_OP(*=,unsigned char)
+ZORBA_FLOAT_OP(/=,unsigned char)
+ZORBA_FLOAT_OP(+=,unsigned short)
+ZORBA_FLOAT_OP(-=,unsigned short)
+ZORBA_FLOAT_OP(*=,unsigned short)
+ZORBA_FLOAT_OP(/=,unsigned short)
+ZORBA_FLOAT_OP(+=,unsigned int)
+ZORBA_FLOAT_OP(-=,unsigned int)
+ZORBA_FLOAT_OP(*=,unsigned int)
+ZORBA_FLOAT_OP(/=,unsigned int)
+ZORBA_FLOAT_OP(+=,unsigned long)
+ZORBA_FLOAT_OP(-=,unsigned long)
+ZORBA_FLOAT_OP(*=,unsigned long)
+ZORBA_FLOAT_OP(/=,unsigned long)
+ZORBA_FLOAT_OP(+=,unsigned long long)
+ZORBA_FLOAT_OP(-=,unsigned long long)
+ZORBA_FLOAT_OP(*=,unsigned long long)
+ZORBA_FLOAT_OP(/=,unsigned long long)
+ZORBA_FLOAT_OP(+=,float)
+ZORBA_FLOAT_OP(-=,float)
+ZORBA_FLOAT_OP(*=,float)
+ZORBA_FLOAT_OP(/=,float)
+ZORBA_FLOAT_OP(+=,double)
+ZORBA_FLOAT_OP(-=,double)
+ZORBA_FLOAT_OP(*=,double)
+ZORBA_FLOAT_OP(/=,double)
+#undef ZORBA_FLOAT_OP
+
+#define ZORBA_FLOAT_OP(T) \
+  template<typename F>                                      \
+  inline FloatImpl<F>& FloatImpl<F>::operator%=( T n ) {    \
+    value_ = std::fmod( getNumber(), static_cast<F>( n ) ); \
+    return *this;                                           \
+  }
+
+ZORBA_FLOAT_OP(signed char)
+ZORBA_FLOAT_OP(char)
+ZORBA_FLOAT_OP(short)
+ZORBA_FLOAT_OP(int)
+ZORBA_FLOAT_OP(long)
+ZORBA_FLOAT_OP(long long)
+ZORBA_FLOAT_OP(unsigned char)
+ZORBA_FLOAT_OP(unsigned short)
+ZORBA_FLOAT_OP(unsigned int)
+ZORBA_FLOAT_OP(unsigned long)
+ZORBA_FLOAT_OP(unsigned long long)
+ZORBA_FLOAT_OP(float)
+ZORBA_FLOAT_OP(double)
+#undef ZORBA_FLOAT_OP
+
+#define ZORBA_FLOAT_OP(OP)                                                  \
+  template<typename F> template<typename G>                                 \
+  inline FloatImpl<F>& FloatImpl<F>::operator OP( FloatImpl<G> const &f ) { \
+    value_ OP static_cast<F>( f.value_ );                                   \
     return *this;                                                           \
   }
 
-ZORBA_DEF_FLOATIMPL_OP( += )
-ZORBA_DEF_FLOATIMPL_OP( -= )
-ZORBA_DEF_FLOATIMPL_OP( *= )
-ZORBA_DEF_FLOATIMPL_OP( /= )
-ZORBA_DEF_FLOATIMPL_OP( %= )
+ZORBA_FLOAT_OP(+=)
+ZORBA_FLOAT_OP(-=)
+ZORBA_FLOAT_OP(*=)
+ZORBA_FLOAT_OP(/=)
+#undef ZORBA_FLOAT_OP
 
-#undef ZORBA_DEF_FLOATIMPL_OP
-
-template<typename FloatType>
-inline FloatImpl<FloatType> FloatImpl<FloatType>::operator-() const {
-  return FloatImpl<FloatType>( -value_, precision_ );
+template<typename F> template<typename G>
+inline FloatImpl<F>& FloatImpl<F>::operator%=( FloatImpl<G> const &f ) {
+  value_ = std::fmod( value_, static_cast<F>( f.value_ ) );
+  return *this;
 }
 
-inline Double operator+( Double const &d, Float const &f ) {
-  return d.getNumber() + f.getNumber();
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::operator-() const {
+  return FloatImpl<F>( -value_, precision_ );
 }
 
-inline Double operator+( Float const &f, Double const &d ) {
-  return f.getNumber() + d.getNumber();
-}
+#define ZORBA_FLOAT_OP(OP) \
+  inline Double operator OP( Double const &d, Float const &f ) {  \
+    return Double( d.getNumber() OP f.getNumber() );              \
+  }                                                               \
+  inline Double operator OP( Float const &f, Double const &d ) {  \
+    return Double( f.getNumber() OP d.getNumber() );              \
+  }
 
-inline Double operator-( Double const &d, Float const &f ) {
-  return d.getNumber() - f.getNumber();
-}
-
-inline Double operator-( Float const &f, Double const &d ) {
-  return f.getNumber() - d.getNumber();
-}
-
-inline Double operator*( Double const &d, Float const &f ) {
-  return d.getNumber() * f.getNumber();
-}
-
-inline Double operator*( Float const &f, Double const &d ) {
-  return f.getNumber() * d.getNumber();
-}
-
-inline Double operator/( Double const &d, Float const &f ) {
-  return d.getNumber() / f.getNumber();
-}
-
-inline Double operator/( Float const &f, Double const &d ) {
-  return f.getNumber() / d.getNumber();
-}
+ZORBA_FLOAT_OP(+)
+ZORBA_FLOAT_OP(-)
+ZORBA_FLOAT_OP(*)
+ZORBA_FLOAT_OP(/)
+#undef ZORBA_FLOAT_OP
 
 inline Double operator%( Double const &d, Float const &f ) {
-  return std::fmod( d.getNumber(), static_cast<double>( f.getNumber() ) );
+  return Double(
+    std::fmod( d.getNumber(), static_cast<double>( f.getNumber() ) )
+  );
 }
 
 inline Double operator%( Float const &f, Double const &d ) {
-  return std::fmod( static_cast<double>( f.getNumber() ), d.getNumber() );
+  return Double(
+    std::fmod( static_cast<double>( f.getNumber() ), d.getNumber() )
+  );
 }
 
 ////////// relational operators ///////////////////////////////////////////////
 
-template<typename T,typename U>
-inline bool operator==( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+template<typename F,typename G>
+inline bool operator==( FloatImpl<F> const &f, FloatImpl<G> const &g ) {
   return f.getNumber() == g.getNumber();
 }
 
-template<typename T,typename U>
-inline bool operator!=( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+template<typename F,typename G>
+inline bool operator!=( FloatImpl<F> const &f, FloatImpl<G> const &g ) {
   return f.getNumber() != g.getNumber();
 }
 
-template<typename T,typename U>
-inline bool operator<( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+template<typename F,typename G>
+inline bool operator<( FloatImpl<F> const &f, FloatImpl<G> const &g ) {
   return f.getNumber() < g.getNumber();
 }
 
-template<typename T,typename U>
-inline bool operator<=( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+template<typename F,typename G>
+inline bool operator<=( FloatImpl<F> const &f, FloatImpl<G> const &g ) {
   return !f.isNaN() && !g.isNaN() && f.getNumber() <= g.getNumber();
 }
 
-template<typename T,typename U>
-inline bool operator>( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+template<typename F,typename G>
+inline bool operator>( FloatImpl<F> const &f, FloatImpl<G> const &g ) {
   return f.getNumber() > g.getNumber();
 }
 
-template<typename T,typename U>
-inline bool operator>=( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+template<typename F,typename G>
+inline bool operator>=( FloatImpl<F> const &f, FloatImpl<G> const &g ) {
   return !f.isNaN() && !g.isNaN() && f.getNumber() >= g.getNumber();
 }
 
-template<typename T>
-inline bool operator==( FloatImpl<T> const &f, double d ) {
+template<typename F>
+inline bool operator==( FloatImpl<F> const &f, double d ) {
   return f.getNumber() == d;
 }
 
-template<typename T>
-inline bool operator==( double d, FloatImpl<T> const &f ) {
+template<typename F>
+inline bool operator==( double d, FloatImpl<F> const &f ) {
   return d = f.getNumber();
 }
 
-template<typename T>
-inline bool operator!=( FloatImpl<T> const &f, double d ) {
+template<typename F>
+inline bool operator!=( FloatImpl<F> const &f, double d ) {
   return f.getNumber() != d;
 }
 
-template<typename T>
-inline bool operator!=( double d, FloatImpl<T> const &f ) {
+template<typename F>
+inline bool operator!=( double d, FloatImpl<F> const &f ) {
   return f.getNumber() != d;
 }
 
-template<typename T>
-inline bool operator<( FloatImpl<T> const &f, double d ) {
+template<typename F>
+inline bool operator<( FloatImpl<F> const &f, double d ) {
   return f.getNumber() < d;
 }
 
-template<typename T>
-inline bool operator<( double d, FloatImpl<T> const &f ) {
+template<typename F>
+inline bool operator<( double d, FloatImpl<F> const &f ) {
   return d < f.getNumber();
 }
 
-template<typename T>
-inline bool operator<=( FloatImpl<T> const &f, double d ) {
+template<typename F>
+inline bool operator<=( FloatImpl<F> const &f, double d ) {
   return !f.isNaN() && d == d && f.getNumber() <= d;
 }
 
-template<typename T>
-inline bool operator<=( double d, FloatImpl<T> const &f ) {
+template<typename F>
+inline bool operator<=( double d, FloatImpl<F> const &f ) {
   return d == d && !f.isNaN() && d <= f.getNumber();
 }
 
-template<typename T>
-inline bool operator>( FloatImpl<T> const &f, double d ) {
+template<typename F>
+inline bool operator>( FloatImpl<F> const &f, double d ) {
   return f.getNumber() > d;
 }
 
-template<typename T>
-inline bool operator>( double d, FloatImpl<T> const &f ) {
+template<typename F>
+inline bool operator>( double d, FloatImpl<F> const &f ) {
   return d > f.getNumber();
 }
 
-template<typename T>
-inline bool operator>=( FloatImpl<T> const &f, double d ) {
+template<typename F>
+inline bool operator>=( FloatImpl<F> const &f, double d ) {
   return !f.isNaN() && d == d && f.getNumber() >= d;
 }
 
-template<typename T>
-inline bool operator>=( double d, FloatImpl<T> const &f ) {
+template<typename F>
+inline bool operator>=( double d, FloatImpl<F> const &f ) {
   return d == d && !f.isNaN() && d >= f.getNumber();
 }
 
 ////////// math functions /////////////////////////////////////////////////////
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::acosh() const {
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::acosh() const {
   // formula from www.mathworks.com
-  return std::log( value_ + std::sqrt( value_ * value_ - 1 ) );
+  return FloatImpl<F>(
+    std::log( value_ + std::sqrt( value_ * value_ - 1 ) )
+  );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::asinh() const {
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::asinh() const {
   // formula from www.mathworks.com
-  return std::log( value_ + std::sqrt( value_ * value_ + 1 ) );
+  return FloatImpl<F>(
+    std::log( value_ + std::sqrt( value_ * value_ + 1 ) )
+  );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::atan() const {
-  return std::atan( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::atan() const {
+  return FloatImpl<F>( std::atan( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::atanh() const {
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::atanh() const {
   // formula from www.mathworks.com
-  return 0.5 * std::log( (1 + value_) / (1 - value_) );
+  return FloatImpl<F>( 0.5 * std::log( (1 + value_) / (1 - value_) ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::atan2( double x ) const {
-  return std::atan2( value_, static_cast<value_type>( x ) );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::atan2( double x ) const {
+  return FloatImpl<F>( std::atan2( value_, static_cast<F>( x ) ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::atan2( FloatImpl<FloatType> const &x ) const {
-  return atan2( x.value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::atan2( FloatImpl<F> const &x ) const {
+  return FloatImpl<F>( atan2( x.value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::ceil() const {
-  return std::ceil( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::ceil() const {
+  return FloatImpl<F>( std::ceil( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::cos() const {
-  return std::cos( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::cos() const {
+  return FloatImpl<F>( std::cos( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::cosh() const {
-  return std::cosh( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::cosh() const {
+  return FloatImpl<F>( std::cosh( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::exp() const {
-  return std::exp( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::exp() const {
+  return FloatImpl<F>( std::exp( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::exp10() const {
-  return std::pow( 10, value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::exp10() const {
+  return FloatImpl<F>( std::pow( 10, value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::floor() const {
-  return std::floor( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::floor() const {
+  return FloatImpl<F>( std::floor( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::fmod( double d ) const {
-  return std::fmod( value_, static_cast<value_type>( d ) );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::fmod( double d ) const {
+  return FloatImpl<F>( std::fmod( value_, static_cast<F>( d ) ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::fmod( FloatImpl<FloatType> const &f ) const {
-  return fmod( f.value_ );
+template<typename F>
+inline FloatImpl<F>
+FloatImpl<F>::fmod( FloatImpl<F> const &f ) const {
+  return FloatImpl<F>( fmod( f.value_ ) );
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::log() const {
-  return value_ < 0 ? nan() : FloatImpl<FloatType>( std::log( value_ ) );
+template<typename F>
+FloatImpl<F> FloatImpl<F>::log() const {
+  return value_ < 0 ? nan() : FloatImpl<F>( std::log( value_ ) );
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::log10() const {
-  return value_ < 0 ? nan() : FloatImpl<FloatType>( std::log10( value_ ) );
+template<typename F>
+FloatImpl<F> FloatImpl<F>::log10() const {
+  return value_ < 0 ? nan() : FloatImpl<F>( std::log10( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::pow( int p ) const {
-  return std::pow( value_, p );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::pow( int p ) const {
+  return FloatImpl<F>( std::pow( value_, p ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::pow( FloatImpl<FloatType> const &p ) const {
-  return p.isNaN() ? value_ : std::pow( value_, p.value_ );
+template<typename F>
+inline FloatImpl<F>
+FloatImpl<F>::pow( FloatImpl<F> const &p ) const {
+  return FloatImpl<F>(
+    p.isNaN() ? value_ : std::pow( value_, p.value_ )
+  );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::sin() const {
-  return std::sin( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::sin() const {
+  return FloatImpl<F>( std::sin( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::sinh() const {
-  return std::sinh( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::sinh() const {
+  return FloatImpl<F>( std::sinh( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::sqrt() const {
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::sqrt() const {
   return value_ < 0 ? nan() : FloatImpl( std::sqrt( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::tan() const {
-  return std::tan( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::tan() const {
+  return FloatImpl<F>( std::tan( value_ ) );
 }
 
-template<typename FloatType> inline FloatImpl<FloatType>
-FloatImpl<FloatType>::tanh() const {
-  return std::tanh( value_ );
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::tanh() const {
+  return FloatImpl<F>( std::tanh( value_ ) );
 }
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
-template<typename T>
-template<typename U>
-inline int FloatImpl<T>::compare( FloatImpl<U> const &f ) const {
+template<typename F> template<typename G>
+inline int FloatImpl<F>::compare( FloatImpl<G> const &f ) const {
   return value_ < f.value_ ? -1 : value_ > f.value_ ? 1 : 0;
 }
 
-template<typename FloatType>
-inline uint32_t FloatImpl<FloatType>::hash() const {
+template<typename F>
+inline uint32_t FloatImpl<F>::hash() const {
   return static_cast<uint32_t>( value_ );
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isNeg() const {
+template<typename F>
+inline bool FloatImpl<F>::isNeg() const {
   return value_ < 0;
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isPos() const {
+template<typename F>
+inline bool FloatImpl<F>::isPos() const {
   return value_ > 0;
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isPosZero() const {
+template<typename F>
+inline bool FloatImpl<F>::isPosZero() const {
   return value_ == 0 && !isNegZero();
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isNaN() const {
+template<typename F>
+inline bool FloatImpl<F>::isNaN() const {
   return value_ != value_;
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isNegInf() const {
- return value_ == -std::numeric_limits<FloatType>::infinity();
+template<typename F>
+inline bool FloatImpl<F>::isNegInf() const {
+ return value_ == -std::numeric_limits<F>::infinity();
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isPosInf() const {
-  return value_ == std::numeric_limits<FloatType>::infinity();
+template<typename F>
+inline bool FloatImpl<F>::isPosInf() const {
+  return value_ == std::numeric_limits<F>::infinity();
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isFinite() const {
+template<typename F>
+inline bool FloatImpl<F>::isFinite() const {
   return !isNaN() && !isPosInf() && !isNegInf();
 }
 
-template<typename FloatType>
-inline bool FloatImpl<FloatType>::isInteger() const {
+template<typename F>
+inline bool FloatImpl<F>::isInteger() const {
   return isFinite() && ::floor( value_ ) == value_;
 }
 
-template <typename FloatType>
-inline bool FloatImpl<FloatType>::isZero() const {
+template <typename F>
+inline bool FloatImpl<F>::isZero() const {
   return value_ == 0;
 }
 
-template<typename FloatType> inline
-std::ostream& operator<<( std::ostream &os, FloatImpl<FloatType> const &f ) {
+template<typename F>
+inline std::ostream& operator<<( std::ostream &os, FloatImpl<F> const &f ) {
   return os << f.toString();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
+
+#undef TEMPLATE_DECL
+#undef INTEGER_IMPL
+
 #endif // ZORBA_FLOATIMPL_H
 /*
  * Local variables:

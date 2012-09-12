@@ -21,46 +21,56 @@
 #include <string>
 
 #include "zorbatypes/binary.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "util/ascii_util.h"
+#include "util/base64_util.h"
 #include "util/stl_util.h"
-#include "zorbaserialization/template_serializer.h"
+
+#define CATCH_BASE64_EXCEPTION()                                            \
+  catch ( base64::exception const &e ) {                                    \
+    throw XQUERY_EXCEPTION(                                                 \
+      err::FORG0001, ERROR_PARAMS( e.invalid_char(), ZED( Base64BadChar ) ) \
+    );                                                                      \
+  }                                                                         \
+  catch ( std::invalid_argument const& ) {                                  \
+    throw XQUERY_EXCEPTION(                                                 \
+      err::FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )             \
+    );                                                                      \
+  }
 
 using namespace std;
 
-namespace zorba 
-{
+namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(Base64)
-END_SERIALIZABLE_CLASS_VERSIONS(Base64)
-
-SERIALIZABLE_CLASS_VERSIONS(Base16)
-END_SERIALIZABLE_CLASS_VERSIONS(Base16)
-
-
-static const string base64_chars = 
-             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-             "abcdefghijklmnopqrstuvwxyz"
-             "0123456789+/";
-
-
-inline bool is_base64(char c) 
-{
-  return (isalnum(c) || (c == '+') || (c == '/'));
+static size_t copy_without_ws( char const *from, size_t len, char *to ) {
+  char const *const end = from + len;
+  char const *const to_orig = to;
+  for ( ; from < end; ++from )
+    if ( !ascii::is_space( *from ) )
+      *to++ = *from;
+  return to - to_orig;
 }
 
 
 bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
 {
-  aBase64.theData.clear();
-  try 
-  {
-    aBase64.insertData(aString, aLength);
-  }
-  catch (...) 
-  {
-    return false;
-  }
+  if ( aLength ) {
+    try 
+    {
+      base64::validate( aString, aLength, base64::dopt_ignore_ws );
+      aBase64.theData.resize( aLength );
+      aBase64.theData.resize(
+        copy_without_ws( aString, aLength, &aBase64.theData[0] )
+      );
+    }
+    catch (...) 
+    {
+      return false;
+    }
+  } else
+    aBase64.theData.clear();
   return true;
 }
 
@@ -71,118 +81,50 @@ bool Base64::parseString(
     Base64& aBase64, 
     string& lErrorMessage)
 {
-  aBase64.theData.clear();
-  try 
-  {
-    aBase64.insertData(aString, aLength);
-  }
-  catch (ZorbaException const& e) 
-  {
-    lErrorMessage = e.what();
-    return false;
-  }
+  if ( aLength ) {
+    try 
+    {
+      base64::validate( aString, aLength, base64::dopt_ignore_ws );
+      aBase64.theData.resize( aLength );
+      aBase64.theData.resize(
+        copy_without_ws( aString, aLength, &aBase64.theData[0] )
+      );
+    }
+    catch (ZorbaException const& e) 
+    {
+      lErrorMessage = e.what();
+      return false;
+    }
+  } else
+    aBase64.theData.clear();
   return true;
 }
 
 
 void Base64::encode(const zstring& aString, Base64& aResult)
 {
-  vector<char> source;
-  source.reserve(aString.size());
-  
-  FOR_EACH( zstring, i, aString )
-    source.push_back( *i );
-
-  aResult.theData.clear();
-  encode(source, aResult.theData);
+  base64::encode( aString.data(), aString.size(), &aResult.theData );
 }
 
 
 void Base64::encode(istream& aStream, Base64& aResult)
 {
-  vector<char> source;
-
-  char lC;
-  while (aStream.good()) 
-  {
-    aStream.get(lC);
-    if (!aStream.good()) 
-    {
-      break;
-    }
-    source.push_back(lC);
-  }
-
-  encode(source, aResult.theData);
+  base64::encode( aStream, &aResult.theData );
 }
 
 
 zstring Base64::encode(istream& aStream)
 {
-  vector<char> source;
-  vector<char> dest;
-
-  char buf[1024];
-  while (!aStream.eof()) 
-  {
-    aStream.read(buf, 1024);
-    source.insert(source.end(), buf, buf + aStream.gcount());
-  }
-
-  encode(source, dest);
-
   zstring result;
-  result.reserve(dest.size());
-
-  FOR_EACH( vector<char>, i, dest )
-    result.push_back( *i );
-
+  base64::encode( aStream, &result );
   return result;
 }
 
 
 void Base64::encode(const vector<char>& aSource, vector<char>& aResult)
 {
-  size_t in_len = aSource.size();
-  size_t lCurPos = 0;
-  int i = 0;
-  int j = 0;
-  char char_array_3[3] = {'\0','\0','\0'};
-  char char_array_4[4] = {'\0','\0','\0','\0'};
-
-  while (in_len--) 
-  {
-    char_array_3[i++] = aSource[lCurPos++];
-    if (i == 3) 
-    {
-      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-      char_array_4[3] = char_array_3[2] & 0x3f;
-
-      for(i = 0; (i <4) ; i++)
-        aResult.push_back(base64_chars[char_array_4[i]]);
-      i = 0;
-    }
-  }
-
-  if (i)
-  {
-    for(j = i; j < 3; j++)
-      char_array_3[j] = '\0';
-
-    char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-    char_array_4[3] = char_array_3[2] & 0x3f;
-
-    for (j = 0; (j < i + 1); j++)
-      aResult.push_back(base64_chars[char_array_4[j]]);
-
-    while((i++ < 3))
-      aResult.push_back('=');
-
-  }  
+  if ( !aSource.empty() )
+    base64::encode( &aSource[0], aSource.size(), &aResult );
 }
 
 
@@ -191,110 +133,40 @@ void Base64::encode(
     unsigned int in_len,
     Base64& aResult)
 {
-  size_t lCurPos = 0;
-  int i = 0;
-  int j = 0;
-  char char_array_3[3] = {'\0','\0','\0'};
-  char char_array_4[4] = {'\0','\0','\0','\0'};
-
-  aResult.theData.reserve(in_len * 8 / 6  + 10);
-  while (in_len--) 
-  {
-    char_array_3[i++] = aSource[lCurPos++];
-    if (i == 3) 
-    {
-      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-      char_array_4[3] = char_array_3[2] & 0x3f;
-
-      for(i = 0; (i <4) ; i++)
-        aResult.theData.push_back(base64_chars[char_array_4[i]]);
-      i = 0;
-    }
-  }
-
-  if (i)
-  {
-    for(j = i; j < 3; j++)
-      char_array_3[j] = '\0';
-
-    char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-    char_array_4[3] = char_array_3[2] & 0x3f;
-
-    for (j = 0; (j < i + 1); j++)
-      aResult.theData.push_back(base64_chars[char_array_4[j]]);
-
-    while((i++ < 3))
-      aResult.theData.push_back('=');
-
-  }  
+  base64::encode( (char*)aSource, in_len, &aResult.theData );
 }
 
 
-zstring Base64::decode(istream& aStream)
+void Base64::decode(istream& aStream, zstring *result)
 {
-  vector<char> source;
-  vector<char> dest;
-
-  char buf[1024];
-  while (!aStream.eof()) 
-  {
-    aStream.read(buf, 1024);
-    source.insert(source.end(), buf, buf + aStream.gcount());
+  try {
+    base64::decode(
+      aStream, result, base64::dopt_any_len | base64::dopt_ignore_ws
+    );
   }
-
-  decode(source, dest);
-
-  zstring result;
-  result.reserve(dest.size());
-
-  FOR_EACH( vector<char>, i, dest )
-    result.push_back( *i );
-
-  return result;
+  CATCH_BASE64_EXCEPTION()
 }
-
 
 void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
 {
-  size_t in_len = aSource.size();
-  int i = 0;
-  int j = 0;
-  int in_ = 0;
-  char char_array_4[4], char_array_3[3];
-
-  while (in_len-- && ( aSource[in_] != '=') && is_base64(aSource[in_])) {
-    char_array_4[i++] = aSource[in_]; in_++;
-    if (i ==4) {
-      for (i = 0; i <4; i++)
-        char_array_4[i] = (char)base64_chars.find(char_array_4[i]);
-
-      char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-      char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-      char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-      for (i = 0; (i < 3); i++)
-        aResult.push_back(char_array_3[i]);
-      i = 0;
+  if ( !aSource.empty() ) {
+    try {
+      base64::decode(
+        &aSource[0], aSource.size(), &aResult,
+        base64::dopt_any_len | base64::dopt_ignore_ws
+      );
     }
+    CATCH_BASE64_EXCEPTION()
   }
+}
 
-  if (i) {
-    for (j = i; j <4; j++)
-      char_array_4[j] = 0;
-
-    for (j = 0; j <4; j++)
-      char_array_4[j] = (char)base64_chars.find(char_array_4[j]);
-
-    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-    char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-    for (j = 0; (j < i - 1); j++) aResult.push_back(char_array_3[j]);
+void Base64::decode( char const *from, size_t from_len, zstring *to ) {
+  try {
+    base64::decode(
+      from, from_len, to, base64::dopt_any_len | base64::dopt_ignore_ws
+    );
   }
+  CATCH_BASE64_EXCEPTION()
 }
 
 
@@ -306,86 +178,14 @@ Base64::Base64(const Base16& aBase16)
 }
 
 
-void Base64::serialize(::zorba::serialization::Archiver& ar)
+Base64::Base64(const unsigned char *bin_data, size_t len)
 {
-  ar & theData;
+  try {
+    base64::encode( (char const*)bin_data, len, &theData );
+  }
+  CATCH_BASE64_EXCEPTION()
 }
 
-
-void Base64::insertData(const char* str, size_t len)
-{
-  ascii::size_type pos = 0;
-
-  ascii::skip_whitespace(str, len, &pos);
-
-  for (size_t i = pos; i < len; ++i)
-  {
-    char lChar = str[i];
-
-    if (lChar == ' ')
-    {
-      // do nothing
-    }
-    else if ((lChar >= 65 && lChar <= 90)  // A-Z
-         || (lChar >= 97 && lChar <= 122) // a-z
-         || (lChar >= 48 && lChar <= 57)  // 0-9
-         || (lChar == 43)                 // +
-         || (lChar == 47))                // /
-    {
-      theData.push_back(lChar);
-    }
-    else if (lChar == '=' && i > 0 && i == (len-2) && str[i+1] == '=' )
-    {
-      if (str[i-1] == 'A' ||
-          str[i-1] == 'Q' ||
-          str[i-1] == 'g' ||
-          str[i-1] == 'w')
-      {
-        theData.push_back('=');
-        theData.push_back('=');
-        ++i;
-      }
-      else
-      {
-        throw XQUERY_EXCEPTION(
-          err::FORG0001, ERROR_PARAMS( "==", ZED( Base64EqualsEquals ) )
-        );
-      }
-    }
-    else if (lChar == '=' && i > 0 && i == (len-1))
-    {
-      switch(str[i-1]) 
-      {
-      case 'A': case 'E': case 'I': case 'M': case 'Q': case 'U': case 'Y':
-      case 'c': case 'g': case 'k': case 'o': case 's': case 'w': case '0':
-      case '4': case '8':
-        theData.push_back('=');
-        break;
-      default:
-        throw XQUERY_EXCEPTION(
-          err::FORG0001, ERROR_PARAMS( '=', ZED( Base64Equals ) )
-        );
-      }
-    }
-    else if ( ascii::is_space(lChar) ) 
-    {
-      // ignore it
-    }
-    else
-    {
-      throw XQUERY_EXCEPTION(
-        err::FORG0001, ERROR_PARAMS( str[i], ZED( Base64BadChar ) )
-      );
-    }
-  }
-
-  if (theData.size() % 4 != 0) 
-  {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )
-    );
-  }
-}
 
 
 bool Base64::equal(const Base64& aBase64) const
@@ -397,7 +197,7 @@ bool Base64::equal(const Base64& aBase64) const
   vector<char>::const_iterator lEnd0 = theData.end();
   vector<char>::const_iterator lIter1 = aBase64.theData.begin();
 
-  for (; lIter0 != lEnd0 ; )
+  while ( lIter0 != lEnd0 )
   {
     if (*lIter0 != *lIter1)
       return false;
@@ -409,31 +209,30 @@ bool Base64::equal(const Base64& aBase64) const
 
 zstring Base64::str() const 
 {
-  stringstream lStream;
-  lStream << *this;
-  return zstring(lStream.str());
+  zstring result;
+  vector<char>::const_iterator lIter = theData.begin();
+  vector<char>::const_iterator lEnd = theData.end();
+  for( ; lIter != lEnd ; ++lIter)
+  {
+    result.push_back( *lIter );
+  }
+  return result;
 }
 
 
 zstring Base64::decode() const
 {
-  vector<char> lDecodedData;
-
-  Base64::decode(theData, lDecodedData);
-
   zstring result;
-  result.reserve( lDecodedData.size() );
-
-  FOR_EACH( vector<char>, i, lDecodedData )
-    result.push_back( *i );
-
+  if ( !theData.empty() )
+    base64::decode( &theData[0], theData.size(), &result );
   return result;
 }
 
 
 void Base64::decode(vector<char>& aResult)
 {
-  Base64::decode(theData, aResult);
+  if ( !theData.empty() )
+    base64::decode( &theData[0], theData.size(), &aResult );
 }
 
 
@@ -467,6 +266,7 @@ ostream& operator<<(ostream& os, const Base64& aBase64)
   return os;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 const char* Base16::ENCODE_TABLE = "0123456789ABCDEF";
 
@@ -495,17 +295,11 @@ size_t Base16::DECODE_INPUT = 2;
 size_t Base16::DECODE_OUTPUT = 1;
 
 
-Base16::Base16(const Base64& aBase64) : ::zorba::serialization::SerializeBaseClass()
+Base16::Base16(const Base64& aBase64)
 {
   vector<char> lOrig;
   Base64::decode(aBase64.getData(), lOrig);
   Base16::encode(lOrig, theData);
-}
-
-
-void Base16::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theData;
 }
 
 
@@ -669,6 +463,7 @@ ostream& operator<<(ostream& os, const Base16& aBase16)
   return os;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

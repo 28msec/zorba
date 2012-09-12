@@ -20,7 +20,9 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <functional>
 #include <iterator>
+#include <limits>
 #include <set>
 #include <stack>
 
@@ -91,12 +93,76 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A less-verbose way to determine whether the given set<T> contains a
+ * Implementation of SGI's %identity extension.
+ * See: http://www.sgi.com/tech/stl/identity.html
+ */
+template<typename T>
+struct identity : std::unary_function<T,T> {
+  T const& operator()( T const &a ) const {
+    return a;
+  }
+};
+
+/**
+ * Implementation of SGI's %select1st extension.
+ * See: http://www.sgi.com/tech/stl/select1st.html
+ */
+template<typename PairType>
+struct select1st : std::unary_function<PairType,typename PairType::first_type> {
+  typename PairType::first_type const& operator()( PairType const &a ) const {
+    return a.first;
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Determines whether the given type \c T is efficiently passed by value.
+ */
+template<typename T>
+struct is_passable_by_value {
+  static bool const value =
+        ZORBA_TR1_NS::is_arithmetic<T>::value
+    ||  ZORBA_TR1_NS::is_enum<T>::value
+    ||  ZORBA_TR1_NS::is_pointer<T>::value
+    ||  ZORBA_TR1_NS::is_reference<T>::value
+    ||  ZORBA_TR1_NS::is_member_function_pointer<T>::value;
+};
+
+/**
+ * Useful traits when declaring functions.
+ * This class is similar to boost::call_traits.
+ *
+ * @tparam T A type that is used for a function formal argument or return type.
+ */
+template<typename T,bool = is_passable_by_value<T>::value>
+struct call_traits {
+  /**
+   * A type that is guaranteed to be the most efficient to use as a formal
+   * argument.
+   */
+  typedef T const arg_type;
+};
+
+/**
+ * Partial specialization for when \c T is not efficiently passed by value.
+ */
+template<typename T>
+struct call_traits<T,false> {
+  typedef T const& arg_type;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A less-verbose way to determine whether the given map or set contains a
  * particular element.
  */
-template<typename T> inline
-bool contains( std::set<T> const &s, T const &t ) {
-  return s.find( t ) != s.end();
+template<class ContainerType> inline
+bool contains(
+    ContainerType const &s,
+    typename call_traits<typename ContainerType::key_type>::arg_type v ) {
+  return s.find( v ) != s.end();
 }
 
 /**
@@ -136,8 +202,32 @@ void delete_ptr_seq( SequenceType &seq ) {
 }
 
 /**
- * Erases the first element in the given sequence for which the given predicate
- * is \c true.
+ * Erases all elements in the given container for which the given predicate is
+ * \c true.
+ *
+ * @tparam SequenceType The sequence type.
+ * @tparam PredicateType The predicate type.
+ * @param seq The sequence to modify.
+ * @param pred The predicate to use.
+ * @return Returns the number of elements erased.
+ */
+template<class SequenceType,class PredicateType> inline
+typename SequenceType::size_type erase_if( SequenceType &seq,
+                                           PredicateType pred ) {
+  typename SequenceType::size_type erased = 0;
+  for ( typename SequenceType::iterator i = seq.begin(); i != seq.end(); ) {
+    if ( pred( *i ) ) {
+      i = seq.erase( i );
+      ++erased;
+    } else
+      ++i;
+  }
+  return erased;
+}
+
+/**
+ * Erases only the first element in the given sequence for which the given
+ * predicate is \c true.
  *
  * @tparam SequenceType The sequence type.
  * @tparam PredicateType The predicate type.
@@ -181,6 +271,7 @@ inline char* new_strdup( char const *s ) {
  */
 template<class SequenceType> inline
 typename SequenceType::value_type pop_front( SequenceType &seq ) {
+  assert( !seq.empty() );
   typename SequenceType::value_type const value( seq.front() );
   seq.pop_front();
   return value;
@@ -191,12 +282,31 @@ typename SequenceType::value_type pop_front( SequenceType &seq ) {
  */
 template<class StackType> inline
 typename StackType::value_type pop_stack( StackType &s ) {
+  assert( !s.empty() );
   typename StackType::value_type const value( s.top() );
   s.pop();
   return value;
 }
 
+/**
+ * A less verbose way to compare the top value of a stack for equality with a
+ * given value.
+ */
+template<class StackType> inline
+bool top_stack_equals(
+    StackType const &s,
+    typename call_traits<typename StackType::value_type>::arg_type v ) {
+  return !s.empty() && s.top() == v;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
+
+template<typename NumericType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<NumericType>::value,
+                        bool>::type
+gt0( NumericType n ) {                  // for completeness
+  return n > 0;
+}
 
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
@@ -209,6 +319,107 @@ typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
 ge0( IntType ) {
   return true;
 }
+
+template<typename NumericType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
+lt0( NumericType n ) {
+  return n < 0;
+}
+
+template<typename IntType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
+lt0( IntType ) {
+  return false;
+}
+
+template<typename NumericType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
+le0( NumericType n ) {
+  return n <= 0;
+}
+
+template<typename IntType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
+le0( IntType n ) {
+  return n == 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+//
+// These functions are used to test whether a value of numeric type N1 is
+// within the range of another numeric type N2.  It correctly handles the
+// cases where the "signed-ness" of N1 and N2 differ such that the code is
+// warning-free.
+//
+// Note: the use of "!!" is to work around a compiler problem on Windows;
+// see: http://stackoverflow.com/questions/9285657/sfinae-differentiation-between-signed-and-unsigned
+//
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+ge_min( N1 n1, N2 ) {
+  return n1 >= std::numeric_limits<N2>::min();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+ge_min( N1 n1, N2 ) {
+  return n1 >= 0;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+ge_min( N1, N2 ) {
+  return true;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+ge_min( N1, N2 ) {
+  return true;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= std::numeric_limits<N2>::max();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= 0 || static_cast<N2>( n1 ) <= std::numeric_limits<N2>::max();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= static_cast<N1>( std::numeric_limits<N2>::max() );
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= std::numeric_limits<N2>::max();
+}
+
+#define ZORBA_GE_MIN(N,T) \
+  ::zorba::ztd::ge_min( N, static_cast<T>(0) )
+
+#define ZORBA_LE_MAX(N,T) \
+  ::zorba::ztd::le_max( N, static_cast<T>(0) )
+
+#define ZORBA_IN_RANGE(N,T) \
+  ( ZORBA_GE_MIN(N,T) && ZORBA_LE_MAX(N,T) )
 
 ///////////////////////////////////////////////////////////////////////////////
 

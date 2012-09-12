@@ -17,97 +17,74 @@
 #define ZORBA_SIMPLE_STORE_COLLECTION_SET_H
 
 #include "store/api/shared_types.h"
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 #include "zorbautils/hashmap_itemp.h"
 #include "store/api/collection.h"
 
 namespace zorba {
   
-  namespace simplestore {
+namespace simplestore {
 
-    class CollectionIterator;
-    
-    /*******************************************************************************
-      Collections container to ease the implementation of stores which contain 
-      a different kind of memory management. For the simplestore, the Collections
-      is only a wrapper class around an ItemPointerHashMap.
-    ********************************************************************************/
-    class CollectionSet
-    {
-    public:
-      typedef ItemPointerHashMap<store::Collection_t> Set;
-      static const ulong DEFAULT_COLLECTION_MAP_SIZE;
-    
-    protected:
-      Set  theCollections;
-    
-    public:
-      CollectionSet();
-    
-      // needs to be virtual to allow implementation of additional stores
-      virtual void
-      clear();
-    
-      // needs to be virtual to allow implementation of additional stores
-      virtual bool
-      insert(
-          const store::Item* aName,
-          store::Collection_t& aCollection);
-    
-      // needs to be virtual to allow implementation of additional stores
-      virtual bool
-      get(
-          const store::Item* aName,
-          store::Collection_t& aCollection,
-          bool aDynamicCollection = false);
-    
-      // needs to be virtual to allow implementation of additional stores
-      virtual bool
-      remove(const store::Item* aName, bool aDynamicCollection = false);
-    
-      // needs to be virtual to allow implementation of additional stores
-      virtual store::Iterator_t
-      names(bool aDynamicCollection = false);
-    
-      // needs to be virtual to allow implementation of additional stores
-      virtual CollectionIterator_t
-      collections(bool aDynamicCollection = false);
-    
-    }; /* class CollectionSet */
-    
-    /*******************************************************************************
-      Collection iterator
-      Returned by the CollectionSet::collections function
-    ********************************************************************************/
-    class CollectionIterator : public SimpleRCObject
-    {
-    protected:
-      CollectionSet::Set*          theCollections;
-      CollectionSet::Set::iterator theIterator;
-      bool                         theOpened;
-      bool                         theDynamicCollections;
-    
-    public:
-      CollectionIterator(
-          CollectionSet::Set* aCollections,
-          bool aDynamicCollections);
-    
-      virtual ~CollectionIterator();
-    
-      virtual void
-      open();
-    
-      virtual bool
-      next(store::Collection_t&);
-    
-      virtual void
-      reset();
-    
-      virtual void
-      close();
-    };
+class CollectionIterator;
 
-  } /* namespace simplestore */
+
+/*******************************************************************************
+  Collections container to ease the implementation of stores which contain 
+  a different kind of memory management.
+********************************************************************************/
+class CollectionSet
+{
+public:
+  virtual ~CollectionSet() {}
+
+  virtual void
+  clear() = 0;
+    
+  virtual bool
+  insert(const store::Item* name, store::Collection_t& collection) = 0;
+    
+  virtual bool
+  get(
+      const store::Item* name,
+      store::Collection_t& collection,
+      bool isDynamic) = 0;
+    
+  virtual bool
+  remove(const store::Item* name, bool isDynamic) = 0;
+  
+  virtual store::Iterator_t
+  names(bool dynamic) = 0;
+    
+  virtual CollectionSetIterator_t
+  
+  collections(bool dynamic) = 0;
+};
+    
+
+/*******************************************************************************
+  Collection set iterator
+  Returned by the CollectionSet::collections function
+********************************************************************************/
+class CollectionSetIterator : public SimpleRCObject
+{
+public:
+  virtual ~CollectionSetIterator() {}
+
+  virtual void
+  open() = 0;
+    
+  virtual bool
+  next(store::Collection_t&) = 0;
+    
+  virtual void
+  reset() = 0;
+    
+  virtual void
+  close() throw() = 0;
+};
+
+
+} /* namespace simplestore */
 } /* namespace zorba */
 
 #endif

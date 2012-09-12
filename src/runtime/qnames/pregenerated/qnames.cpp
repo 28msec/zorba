@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <ResolveQNameIterator>
-const char* ResolveQNameIterator::class_name_str = "ResolveQNameIterator";
-ResolveQNameIterator::class_factory<ResolveQNameIterator>
-ResolveQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ResolveQNameIterator)
 
-const serialization::ClassVersion 
-ResolveQNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ResolveQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>*)this);
+}
 
-const int ResolveQNameIterator::class_versions_count =
-sizeof(ResolveQNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ResolveQNameIterator::accept(PlanIterVisitor& v) const {
+void ResolveQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -58,17 +58,17 @@ ResolveQNameIterator::~ResolveQNameIterator() {}
 
 
 // <QNameIterator>
-const char* QNameIterator::class_name_str = "QNameIterator";
-QNameIterator::class_factory<QNameIterator>
-QNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(QNameIterator)
 
-const serialization::ClassVersion 
-QNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+void QNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<QNameIterator, PlanIteratorState>*)this);
+}
 
-const int QNameIterator::class_versions_count =
-sizeof(QNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void QNameIterator::accept(PlanIterVisitor& v) const {
+void QNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -83,17 +83,17 @@ QNameIterator::~QNameIterator() {}
 
 
 // <QNameEqualIterator>
-const char* QNameEqualIterator::class_name_str = "QNameEqualIterator";
-QNameEqualIterator::class_factory<QNameEqualIterator>
-QNameEqualIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(QNameEqualIterator)
 
-const serialization::ClassVersion 
-QNameEqualIterator::class_versions[] ={{ 1, 0x000905, false}};
+void QNameEqualIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>*)this);
+}
 
-const int QNameEqualIterator::class_versions_count =
-sizeof(QNameEqualIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void QNameEqualIterator::accept(PlanIterVisitor& v) const {
+void QNameEqualIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -108,17 +108,17 @@ QNameEqualIterator::~QNameEqualIterator() {}
 
 
 // <PrefixFromQNameIterator>
-const char* PrefixFromQNameIterator::class_name_str = "PrefixFromQNameIterator";
-PrefixFromQNameIterator::class_factory<PrefixFromQNameIterator>
-PrefixFromQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PrefixFromQNameIterator)
 
-const serialization::ClassVersion 
-PrefixFromQNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+void PrefixFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>*)this);
+}
 
-const int PrefixFromQNameIterator::class_versions_count =
-sizeof(PrefixFromQNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void PrefixFromQNameIterator::accept(PlanIterVisitor& v) const {
+void PrefixFromQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -132,17 +132,17 @@ PrefixFromQNameIterator::~PrefixFromQNameIterator() {}
 
 
 // <LocalNameFromQNameIterator>
-const char* LocalNameFromQNameIterator::class_name_str = "LocalNameFromQNameIterator";
-LocalNameFromQNameIterator::class_factory<LocalNameFromQNameIterator>
-LocalNameFromQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(LocalNameFromQNameIterator)
 
-const serialization::ClassVersion 
-LocalNameFromQNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+void LocalNameFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>*)this);
+}
 
-const int LocalNameFromQNameIterator::class_versions_count =
-sizeof(LocalNameFromQNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void LocalNameFromQNameIterator::accept(PlanIterVisitor& v) const {
+void LocalNameFromQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -156,17 +156,17 @@ LocalNameFromQNameIterator::~LocalNameFromQNameIterator() {}
 
 
 // <NamespaceUriFromQNameIterator>
-const char* NamespaceUriFromQNameIterator::class_name_str = "NamespaceUriFromQNameIterator";
-NamespaceUriFromQNameIterator::class_factory<NamespaceUriFromQNameIterator>
-NamespaceUriFromQNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NamespaceUriFromQNameIterator)
 
-const serialization::ClassVersion 
-NamespaceUriFromQNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+void NamespaceUriFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>*)this);
+}
 
-const int NamespaceUriFromQNameIterator::class_versions_count =
-sizeof(NamespaceUriFromQNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void NamespaceUriFromQNameIterator::accept(PlanIterVisitor& v) const {
+void NamespaceUriFromQNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -180,17 +180,17 @@ NamespaceUriFromQNameIterator::~NamespaceUriFromQNameIterator() {}
 
 
 // <NamespaceUriForPrefixIterator>
-const char* NamespaceUriForPrefixIterator::class_name_str = "NamespaceUriForPrefixIterator";
-NamespaceUriForPrefixIterator::class_factory<NamespaceUriForPrefixIterator>
-NamespaceUriForPrefixIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NamespaceUriForPrefixIterator)
 
-const serialization::ClassVersion 
-NamespaceUriForPrefixIterator::class_versions[] ={{ 1, 0x000905, false}};
+void NamespaceUriForPrefixIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>*)this);
+}
 
-const int NamespaceUriForPrefixIterator::class_versions_count =
-sizeof(NamespaceUriForPrefixIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void NamespaceUriForPrefixIterator::accept(PlanIterVisitor& v) const {
+void NamespaceUriForPrefixIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -208,17 +208,17 @@ NamespaceUriForPrefixIterator::~NamespaceUriForPrefixIterator() {}
 
 
 // <InScopePrefixesIterator>
-const char* InScopePrefixesIterator::class_name_str = "InScopePrefixesIterator";
-InScopePrefixesIterator::class_factory<InScopePrefixesIterator>
-InScopePrefixesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(InScopePrefixesIterator)
 
-const serialization::ClassVersion 
-InScopePrefixesIterator::class_versions[] ={{ 1, 0x000905, false}};
+void InScopePrefixesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesIteratorState>*)this);
+}
 
-const int InScopePrefixesIterator::class_versions_count =
-sizeof(InScopePrefixesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void InScopePrefixesIterator::accept(PlanIterVisitor& v) const {
+void InScopePrefixesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);

@@ -16,6 +16,8 @@ SET(RUNTIME_SRCS)
 SET(RUNTIME_HEADER_GENERATOR          "${SPEC_DIR}/iterator_h.xq")
 SET(RUNTIME_CPP_GENERATOR             "${SPEC_DIR}/iterator_cpp.xq")
 
+SET(ITERATOR_ENUM_GENERATOR           "${SPEC_DIR}/iterator-enum.xq")
+
 SET(PRINTER_VISITOR_HEADER_GENERATOR  "${SPEC_DIR}/printer_visitor_h.xq")
 SET(PRINTER_VISITOR_CPP_GENERATOR     "${SPEC_DIR}/printer_visitor_cpp.xq")
 SET(PLANITER_VISITOR_HEADER_GENERATOR "${SPEC_DIR}/plan_iter_visitor_h.xq")
@@ -28,6 +30,16 @@ SET(PRINTER_VISITOR_CPP_FILE
 SET(PLANITER_VISITOR_HEADER_FILE
   "${SPEC_BINARY_DIR}/visitors/planiter_visitor.h")
 
+# Generate iterator_enum.h, and mark plan_iterator.h as depending on the
+# generated file so it will be built at appropriate times
+ZORBA_RUNTIME_GENERATOR(
+  "${ITERATOR_ENUM_GENERATOR}"
+  "" # No external variables for query
+  "${SPEC_FILES}"
+  "${CODEGEN_UTILS_FILE}"
+  "${CMAKE_BINARY_DIR}/src/runtime/iterator_enum.h")
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/runtime/base/plan_iterator.h
+  PROPERTIES OBJECT_DEPENDS "${CMAKE_BINARY_DIR}/src/runtime/iterator_enum.h")
 
 FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
@@ -115,6 +127,9 @@ LIST(APPEND RUNTIME_SRCS
   durations_dates_times/DurationsDatesTimesImpl.cpp
   indexing/doc_indexer.cpp
   indexing/index_ddl.cpp
+  json/common.cpp
+  json/jsonml_array.cpp
+  json/snelson.cpp
   numerics/NumericsImpl.cpp
   numerics/format_integer_impl.cpp
   sequences/SequencesImpl.cpp
@@ -155,3 +170,10 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS scripting)
+
+IF (ZORBA_WITH_JSON)
+  LIST(APPEND RUNTIME_SRCS
+    json/json_constructors.cpp
+  )
+  HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)
+ENDIF (ZORBA_WITH_JSON)

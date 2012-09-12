@@ -34,17 +34,17 @@
 namespace zorba {
 
 // <ActivateICIterator>
-const char* ActivateICIterator::class_name_str = "ActivateICIterator";
-ActivateICIterator::class_factory<ActivateICIterator>
-ActivateICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ActivateICIterator)
 
-const serialization::ClassVersion 
-ActivateICIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ActivateICIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ActivateICIterator, PlanIteratorState>*)this);
+}
 
-const int ActivateICIterator::class_versions_count =
-sizeof(ActivateICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ActivateICIterator::accept(PlanIterVisitor& v) const {
+void ActivateICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -58,17 +58,17 @@ ActivateICIterator::~ActivateICIterator() {}
 
 
 // <DeactivateICIterator>
-const char* DeactivateICIterator::class_name_str = "DeactivateICIterator";
-DeactivateICIterator::class_factory<DeactivateICIterator>
-DeactivateICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeactivateICIterator)
 
-const serialization::ClassVersion 
-DeactivateICIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DeactivateICIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>*)this);
+}
 
-const int DeactivateICIterator::class_versions_count =
-sizeof(DeactivateICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DeactivateICIterator::accept(PlanIterVisitor& v) const {
+void DeactivateICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -82,17 +82,17 @@ DeactivateICIterator::~DeactivateICIterator() {}
 
 
 // <CheckICIterator>
-const char* CheckICIterator::class_name_str = "CheckICIterator";
-CheckICIterator::class_factory<CheckICIterator>
-CheckICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(CheckICIterator)
 
-const serialization::ClassVersion 
-CheckICIterator::class_versions[] ={{ 1, 0x000905, false}};
+void CheckICIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<CheckICIterator, PlanIteratorState>*)this);
+}
 
-const int CheckICIterator::class_versions_count =
-sizeof(CheckICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void CheckICIterator::accept(PlanIterVisitor& v) const {
+void CheckICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   theChild->accept(v);

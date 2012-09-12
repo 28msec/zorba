@@ -38,15 +38,32 @@ void populate_context_parse_fragment(static_context* sctx);
 
 
 
-//fn-zorba-xml:parse-xml-fragment
-class fn_zorba_xml_parse_xml_fragment : public function
+//fn-zorba-xml:parse
+class fn_zorba_xml_parse : public function
 {
 public:
-  fn_zorba_xml_parse_xml_fragment(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xml_parse(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:parse-xml-fragment
+class fn_parse_xml_fragment_3_0 : public function
+{
+public:
+  fn_parse_xml_fragment_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool accessesDynCtx() const { return true; }

@@ -24,7 +24,7 @@
 #include "common/shared_types.h"
 #include "common/common.h"
 
-#include "store/naive/atomic_items.h"
+#include "atomic_items.h"
 
 namespace zorba { namespace simplestore {
 
@@ -32,22 +32,31 @@ class StringPool;
 
 /*******************************************************************************
 
-  theCache       : An array of QName slots that is managed as a cache. This
-                   means that slots that are not used are placed in a free list.
-                   When a new qname is inserted in the cache, a slot is taken
-                   from the free list and the qname currently in that slot is
-                   replaced with the new slot.
-  theCacheSize   : The size of theCache (number of slots). This size is given
-                   as a param to the QNamePool constructor, and it never changes
-                   afterwards. 
-  theFirstFree   : The position in theCache of the 1st free slot. NOTE: the 1st
-                   slot of theCache (at position 0) is reserved (i.e., never
-                   used) so that position 0 can be used to indicate the end of
-                   the free list.
-  theNumFree     : Number of free slots in theCache.
+  theCache :
+  ----------
+  An array of QName slots that is managed as a cache. This means that slots that
+  are not used are placed in a free list. When a new qname is inserted in the
+  cache, a slot is taken from the free list and the qname currently in that slot
+  is replaced with the new slot.
 
-  theHashSet     : A hash set mapping qnames (i.e. triplets of strings) to
-                   QName slots.
+  theCacheSize :
+  --------------
+  The size of theCache (number of slots). This size is given as a param to the
+  QNamePool constructor, and it never changes afterwards.
+ 
+  theFirstFree :
+  --------------
+  The position in theCache of the 1st free slot. NOTE: the 1st slot of theCache
+  (at position 0) is reserved (i.e., never used) so that position 0 can be used
+  to indicate the end of the free list.
+
+  theNumFree :
+  ------------
+  Number of free slots in theCache.
+
+  theHashSet :
+  ------------
+  A hash set mapping qnames (i.e. triplets of strings) to QName slots.
 
 ********************************************************************************/
 class QNamePool
@@ -106,18 +115,10 @@ public:
 
   ~QNamePool();
 
-  store::Item_t insert(
-        const char* ns,
-        const char* pre,
-        const char* ln,
-        bool        sync = true);
-
-  store::Item_t insert(
-        const zstring& ns,
-        const zstring& pre,
-        const zstring& ln,
-        bool sync = true);
-
+  store::Item_t insert(const char* ns, const char* pre, const char* ln);
+  
+  store::Item_t insert(const zstring& ns, const zstring& pre, const zstring& ln);
+  
   void remove(QNameItem* qn);
 
 protected:
@@ -126,13 +127,19 @@ protected:
   void cachePin(QNameItem* qn);
 
   QNHashEntry* hashFind(
-        const char* ns,
-        const char* pre,
-        const char* ln,
-        ulong       nslen,
-        ulong       prelen,
-        ulong       lnlen,
-        ulong       hval);
+      const char* ns,
+      const char* pre,
+      const char* ln,
+      csize       nslen,
+      csize       prelen,
+      csize       lnlen,
+      csize       hval);
+
+  void addInFreeList(QNameItem* qn);
+
+  void removeFromFreeList(QNameItem* qn);
+
+  QNameItem* popFreeList();
 };
 
 

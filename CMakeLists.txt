@@ -65,6 +65,7 @@ ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 # Enable RPaths in installed binaries
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # turn on the folder grouping used by IDEs (VS or XCode)
 SET(ZORBA_USE_TARGET_FOLDERS ON CACHE BOOL "Activate use of target grouping into folders")
@@ -100,6 +101,7 @@ IF (NOT APPLE OR ${CMAKE_SYSTEM_VERSION} VERSION_GREATER "10.4")
   CHECK_INCLUDE_FILES ("execinfo.h"                   ZORBA_HAVE_EXECINFO_H)
 ENDIF (NOT APPLE OR ${CMAKE_SYSTEM_VERSION} VERSION_GREATER "10.4")
 CHECK_INCLUDE_FILE_CXX ("FlexLexer.h"               ZORBA_HAVE_FLEXLEXER_H)
+CHECK_INCLUDE_FILES ("uuid/uuid.h"                  ZORBA_HAVE_UUID_H)
 
 CHECK_FUNCTION_EXISTS (strtof                     ZORBA_HAVE_STRTOF_FUNCTION)
 CHECK_FUNCTION_EXISTS (strtoll                    ZORBA_HAVE_STRTOLL_FUNCTION)
@@ -122,10 +124,38 @@ CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32)
 CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
 CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
 
-CHECK_CXX_SOURCE_COMPILES ("#include <type_traits>\nint main() { std::enable_if<true,int> x; }" ZORBA_CXX_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES ("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
-CHECK_CXX_SOURCE_COMPILES ("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
-CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_CXX_UNIQUE_PTR)
+# C++ built-in type sizes
+CHECK_TYPE_SIZE("double" ZORBA_SIZEOF_DOUBLE BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("float" ZORBA_SIZEOF_FLOAT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("int" ZORBA_SIZEOF_INT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("long" ZORBA_SIZEOF_LONG BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("long long" ZORBA_SIZEOF_LONG_LONG BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("void*" ZORBA_SIZEOF_POINTER BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("short" ZORBA_SIZEOF_SHORT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("size_t" ZORBA_SIZEOF_SIZE_T) 
+SET(CMAKE_EXTRA_INCLUDE_FILES wchar.h)
+CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
+SET(CMAKE_EXTRA_INCLUDE_FILES)
+
+# C++11 langauge features
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+
+# C++11 standard library types
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <type_traits>
+  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES ("
+  #include <memory>
+  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <unordered_map>
+  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES (
+  "#include <unordered_set>
+  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 # Various cmake macros
@@ -143,12 +173,13 @@ IF (WIN32)
 ENDIF (WIN32)
 
 ################################################################################
-# This section is used for batch script generation. Each executable
-# on Windows needs a bat script in order to set the PATH to the required DLLs.
+# This section is used for batch script and Visual Studio Project file generation. 
+# Each executable on Windows needs a bat script and in the Visual Studio build a \
+# pre-generated Visual Studio Project file in order to set the PATH to the required DLLs.
 # For this we use CACHE variables to gather all the information generated
 # throughout the cmake execution (required DLLs, list of scripts to generate).
 # The generation occurs only at the end of CMake execution (through the macro
-# ZORBA_GENERATE_EXE_SCRIPTS_WIN32) when ALL the requirements have been found.
+# ZORBA_GENERATE_EXE_HELPERS_WIN32) when ALL the requirements have been found.
 # E.g. zorba.exe needs in PATH all the DLLs of all external modules, etc.
 IF (WIN32)
   # Clear all the variables because they are used only for this build.
@@ -161,10 +192,19 @@ IF (WIN32)
   SET (ZORBA_EXE_SCRIPT_LIST ""
     CACHE STRING "List of Windows batch scripts to be generated, one for each executable" FORCE
   )
+  IF (MSVC_IDE)
+    SET (ZORBA_VC_PROJECT_FILE_LIST ""
+      CACHE STRING "List of Visual Studio project files to be generated, one for each executable" FORCE
+    )
+  ENDIF(MSVC_IDE)
+
   # Moreover, mark it as advanced since the CMake GUI user should not see this.
   MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLLS)
   MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLL_PATHS)
   MARK_AS_ADVANCED (FORCE ZORBA_EXE_SCRIPT_LIST)
+  IF (MSVC_IDE)
+    MARK_AS_ADVANCED (FORCE ZORBA_VC_PROJECT_FILE_LIST)
+  ENDIF(MSVC_IDE)
 ENDIF (WIN32)
 ################################################################################
 
@@ -237,11 +277,21 @@ ENDIF(ZORBA_WITH_CPU_PROFILE)
 MESSAGE(STATUS "Looking for LibXml2")
 FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
-  MESSAGE(STATUS "Found LIBXML2 library -- " ${LIBXML2_LIBRARIES})
-    
-  INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-  SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
-  SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+  # Now check LibXml2's version
+  FILE(STRINGS ${LIBXML2_INCLUDE_DIR}/libxml/xmlversion.h LIBXML2_VERSION_TMP REGEX 
+       "^#define[ \t]+LIBXML_DOTTED_VERSION[ \t]+\".*\"")
+  STRING(REGEX REPLACE "^#define[ \t]+LIBXML_DOTTED_VERSION[ \t]+\"(.*)\"" "\\1" 
+         LIBXML2_VERSION ${LIBXML2_VERSION_TMP})
+         
+  IF(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+    MESSAGE(STATUS "Found LIBXML2 library -- " ${LIBXML2_LIBRARIES})
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+    SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+  ELSE(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+    MESSAGE(FATAL_ERROR "The libxml2 library version 2.7.0 or higher is required in order to build Zorba.")
+  ENDIF(LIBXML2_VERSION VERSION_EQUAL "2.7.0" OR LIBXML2_VERSION VERSION_GREATER "2.7.0")
+
 ELSE(LIBXML2_FOUND)
   MESSAGE(FATAL_ERROR "The libxml2 library and headers are required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
@@ -293,6 +343,13 @@ MESSAGE(STATUS "")
 MESSAGE (STATUS "Looking for Xerces-C")
 FIND_PACKAGE (XercesC)
 MESSAGE (STATUS "")
+
+#
+# shlwapi
+#
+IF(WIN32)
+    SET(requiredlibs ${requiredlibs} "shlwapi")
+ENDIF(WIN32)
 
 #
 # SWIG
@@ -387,16 +444,14 @@ ELSE (NOT ZORBA_NO_XMLSCHEMA)
     " - build without XMLSchema support")
 ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
-LIST(APPEND requiredlibs ${requiredlibs-store})
-
-
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
   
-  # Clear this variable because this is used only for this build.
+  # Clear those variables because this is used only for this build.
   # A cache variable is needed since this must be modified by subdirectories
-  # and be visible at this level when ZORBA_GENERATE_EXE_SCRIPTS_WIN32 is called
+  # and be visible at this level when ZORBA_GENERATE_EXE_HELPERS_WIN32 is called
   SET(ZORBA_EXE_SCRIPT_LIST "" CACHE STRING "List of bat scripts" FORCE)
+  SET(ZORBA_VC_PROJECT_FILE_LIST "" CACHE STRING "List of VC project files" FORCE)
 ENDIF(WIN32)
 
 ################################################################################
@@ -417,7 +472,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "1")
+SET(ZORBA_MINOR_NUMBER "6")
 SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
@@ -499,13 +554,14 @@ ADD_SUBDIRECTORY(cmake_modules)
 # ZorbaConfig knows about testdriver. We need to include "config"
 # before "modules" so external modules will be able to find
 # ZorbaConfig.cmake. We need to include "modules" before "include" so
-# config.h can know eg. whether we found CURL.
+# config.h can know eg. whether we found CURL. We need to include "modules"
+# before "doc" so xqdoc can know what non-core modules are available.
 
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
-ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(schemas)
 ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(include)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)
@@ -545,7 +601,7 @@ IF (APPLE AND UNIVERSAL)
 ENDIF (APPLE AND UNIVERSAL)
 
 IF (WIN32)
-  ZORBA_GENERATE_EXE_SCRIPTS_WIN32 ()
+  ZORBA_GENERATE_EXE_HELPERS_WIN32 ()
 ENDIF (WIN32)
 
 # This must be done last! Create the one top-level target which

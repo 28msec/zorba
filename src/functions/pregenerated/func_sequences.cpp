@@ -39,7 +39,7 @@ PlanIter_t op_concatenate::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnConcatIterator(sctx, loc, argv);
 }
@@ -49,7 +49,7 @@ PlanIter_t fn_index_of::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnIndexOfIterator(sctx, loc, argv);
 }
@@ -59,7 +59,7 @@ PlanIter_t fn_empty::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnEmptyIterator(sctx, loc, argv);
 }
@@ -69,7 +69,7 @@ PlanIter_t fn_exists::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnExistsIterator(sctx, loc, argv);
 }
@@ -79,7 +79,7 @@ PlanIter_t fn_distinct_values::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDistinctValuesIterator(sctx, loc, argv);
 }
@@ -89,7 +89,7 @@ PlanIter_t fn_insert_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnInsertBeforeIterator(sctx, loc, argv);
 }
@@ -99,7 +99,7 @@ PlanIter_t fn_remove::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnRemoveIterator(sctx, loc, argv);
 }
@@ -109,7 +109,7 @@ PlanIter_t fn_reverse::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnReverseIterator(sctx, loc, argv);
 }
@@ -123,7 +123,7 @@ PlanIter_t fn_one_or_more::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnOneOrMoreIterator(sctx, loc, argv);
 }
@@ -133,7 +133,7 @@ PlanIter_t fn_deep_equal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDeepEqualIterator(sctx, loc, argv);
 }
@@ -144,7 +144,7 @@ PlanIter_t fn_avg::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnAvgIterator(sctx, loc, argv);
 }
@@ -154,7 +154,7 @@ PlanIter_t fn_sum::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumIterator(sctx, loc, argv);
 }
@@ -164,7 +164,7 @@ PlanIter_t op_sum_double::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumDoubleIterator(sctx, loc, argv);
 }
@@ -174,7 +174,7 @@ PlanIter_t op_sum_float::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumFloatIterator(sctx, loc, argv);
 }
@@ -184,7 +184,7 @@ PlanIter_t op_sum_decimal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumDecimalIterator(sctx, loc, argv);
 }
@@ -194,7 +194,7 @@ PlanIter_t op_sum_integer::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnSumIntegerIterator(sctx, loc, argv);
 }
@@ -204,7 +204,7 @@ PlanIter_t op_to::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new OpToIterator(sctx, loc, argv);
 }
@@ -214,7 +214,7 @@ PlanIter_t fn_id::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnIdIterator(sctx, loc, argv);
 }
@@ -224,7 +224,7 @@ PlanIter_t fn_element_with_id::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnElementWithIdIterator(sctx, loc, argv);
 }
@@ -234,7 +234,7 @@ PlanIter_t fn_idref::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnIdRefIterator(sctx, loc, argv);
 }
@@ -244,7 +244,7 @@ PlanIter_t fn_doc::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDocIterator(sctx, loc, argv);
 }
@@ -254,18 +254,68 @@ PlanIter_t fn_doc_available::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDocAvailableIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_available_environment_variables_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnAvailableEnvironmentVariablesIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_environment_variable_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnEnvironmentVariableIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_unparsed_text_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnUnparsedTextIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_unparsed_text_available_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnUnparsedTextAvailableIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_unparsed_text_lines_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnUnparsedTextLinesIterator(sctx, loc, argv);
+}
+
 void populate_context_sequences(static_context* sctx)
 {
-  {
-    std::vector<xqtref_t> lParamTypes;
-    lParamTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
-    DECL_WITH_KIND(sctx, op_concatenate,
+
+      {
+    std::vector<xqtref_t> lParamTypes;
+    lParamTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);DECL_WITH_KIND(sctx, op_concatenate,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","concatenate"), 
         lParamTypes, GENV_TYPESYSTEM.ITEM_TYPE_STAR, true),
         FunctionConsts::OP_CONCATENATE_N);
@@ -273,9 +323,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_index_of,
         (createQName("http://www.w3.org/2005/xpath-functions","","index-of"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -286,9 +336,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_index_of,
         (createQName("http://www.w3.org/2005/xpath-functions","","index-of"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -300,9 +350,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_empty,
         (createQName("http://www.w3.org/2005/xpath-functions","","empty"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -312,9 +362,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_exists,
         (createQName("http://www.w3.org/2005/xpath-functions","","exists"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -324,9 +374,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_distinct_values,
         (createQName("http://www.w3.org/2005/xpath-functions","","distinct-values"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -337,9 +387,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_distinct_values,
         (createQName("http://www.w3.org/2005/xpath-functions","","distinct-values"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -349,9 +399,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_insert_before,
         (createQName("http://www.w3.org/2005/xpath-functions","","insert-before"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -363,9 +413,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_remove,
         (createQName("http://www.w3.org/2005/xpath-functions","","remove"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -376,9 +426,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_reverse,
         (createQName("http://www.w3.org/2005/xpath-functions","","reverse"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -388,9 +438,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_subsequence,
         (createQName("http://www.w3.org/2005/xpath-functions","","subsequence"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -401,9 +451,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_subsequence,
         (createQName("http://www.w3.org/2005/xpath-functions","","subsequence"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -415,9 +465,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_subsequence_int,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","subsequence-int"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -428,9 +478,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_subsequence_int,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","subsequence-int"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -442,9 +492,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_sequence_point_access,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","sequence-point-access"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -455,9 +505,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zero_or_one,
         (createQName("http://www.w3.org/2005/xpath-functions","","zero-or-one"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -467,9 +517,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_one_or_more,
         (createQName("http://www.w3.org/2005/xpath-functions","","one-or-more"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -479,9 +529,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_deep_equal,
         (createQName("http://www.w3.org/2005/xpath-functions","","deep-equal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -492,9 +542,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_deep_equal,
         (createQName("http://www.w3.org/2005/xpath-functions","","deep-equal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -506,9 +556,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_count,
         (createQName("http://www.w3.org/2005/xpath-functions","","count"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -518,9 +568,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_avg,
         (createQName("http://www.w3.org/2005/xpath-functions","","avg"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -530,9 +580,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_sum,
         (createQName("http://www.w3.org/2005/xpath-functions","","sum"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -542,9 +592,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_sum,
         (createQName("http://www.w3.org/2005/xpath-functions","","sum"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
@@ -555,9 +605,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_double,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_double"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
@@ -567,9 +617,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_double,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_double"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
@@ -580,9 +630,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_float,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_float"), 
         GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
@@ -592,9 +642,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_float,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_float"), 
         GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
@@ -605,9 +655,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_decimal,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_decimal"), 
         GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
@@ -617,9 +667,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_decimal,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_decimal"), 
         GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
@@ -630,9 +680,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_integer,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
@@ -642,9 +692,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_sum_integer,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
@@ -655,9 +705,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_to,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","to"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
@@ -668,9 +718,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -680,9 +730,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -693,9 +743,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_element_with_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","element-with-id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -705,9 +755,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_element_with_id,
         (createQName("http://www.w3.org/2005/xpath-functions","","element-with-id"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -718,9 +768,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_idref,
         (createQName("http://www.w3.org/2005/xpath-functions","","idref"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -730,9 +780,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_idref,
         (createQName("http://www.w3.org/2005/xpath-functions","","idref"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
@@ -743,9 +793,9 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_doc,
         (createQName("http://www.w3.org/2005/xpath-functions","","doc"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -755,14 +805,112 @@ void populate_context_sequences(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_doc_available,
         (createQName("http://www.w3.org/2005/xpath-functions","","doc-available"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_DOC_AVAILABLE_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_available_environment_variables_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","available-environment-variables"), 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_AVAILABLE_ENVIRONMENT_VARIABLES_0);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_environment_variable_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","environment-variable"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_ENVIRONMENT_VARIABLE_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_unparsed_text_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_unparsed_text_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_unparsed_text_available_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_unparsed_text_available_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-available"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_UNPARSED_TEXT_AVAILABLE_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_unparsed_text_lines_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-lines"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_UNPARSED_TEXT_LINES_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_unparsed_text_lines_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","unparsed-text-lines"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_UNPARSED_TEXT_LINES_2);
 
   }
 

@@ -55,7 +55,6 @@
 
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
-#include "compiler/expression/var_expr.h"
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/plan_wrapper.h"
@@ -68,9 +67,9 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#include "zorbaserialization/xml_archiver.h"
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/serialize_zorba_types.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_server.h"
@@ -102,17 +101,17 @@ namespace zorba
   notifyAllWarnings();
 
 
-SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
-END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
+SERIALIZABLE_CLASS_VERSIONS_2(XQueryImpl::PlanProxy, TYPE_PLAN_PROXY)
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
-END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
-XQueryImpl::XQueryImpl(::zorba::serialization::Archiver &ar)
-  : ::zorba::serialization::SerializeBaseClass(),
-    theCollMgr(0)
+XQueryImpl::XQueryImpl(::zorba::serialization::Archiver& ar)
+  :
+  ::zorba::serialization::SerializeBaseClass(),
+  theCollMgr(0)
 {
 }
+
 
 /*******************************************************************************
 
@@ -178,7 +177,6 @@ XQueryImpl::~XQueryImpl()
   close();
 }
 
-
 /*******************************************************************************
   Always called while holding theMutex
 ********************************************************************************/
@@ -186,20 +184,19 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 {
   // static stuff
   ar & theFileName;
+
   if (!ar.is_serializing_out())
   {
     delete theCompilerCB;
     theCompilerCB = NULL;
   }
-  else
-  {
-    //ar.compiler_cb = theCompilerCB;
-    theCompilerCB->prepare_for_serialize();
-  }
 
   ar & theCompilerCB;
+
   ar & thePlanProxy;
+
   ar & theStaticContext;
+
   if (!ar.is_serializing_out())
   {
     theDynamicContextWrapper = NULL;
@@ -211,7 +208,6 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     theIsClosed = false;
 
     theCompilerCB->theXQueryDiagnostics = theXQueryDiagnostics;
-
   }
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -338,7 +334,7 @@ void XQueryImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler
     theDiagnosticHandler = aDiagnosticHandler;
     theUserDiagnosticHandler = true;
 
-    if (theCollMgr) 
+    if (theCollMgr)
     {
       theCollMgr->registerDiagnosticHandler(theDiagnosticHandler);
     }
@@ -435,7 +431,11 @@ void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHin
 
     std::istringstream lQueryStream(aQuery.c_str());
 
-    doCompile(lQueryStream, aHints);
+    // 0 is reserved as an invalid var id, and 1 is taken by the context item
+    // in the main module.
+    ulong nextVarId = 2;
+
+    doCompile(lQueryStream, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -455,7 +455,11 @@ void XQueryImpl::compile(
     checkNotClosed();
     checkNotCompiled();
 
-    doCompile(aQuery, aHints);
+    // 0 is reserved as an invalid var id, and 1 is taken by the context item
+    // in the main module.
+    ulong nextVarId = 2;
+
+    doCompile(aQuery, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -482,12 +486,25 @@ void XQueryImpl::compile(
 
     // If the static context results from loadProlog, we need all the contexts
     // that were created when compiling the load-prolog query
-    theCompilerCB->theSctxMap =
-    static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
+    StaticContextImpl* externalSctx =
+    static_cast<StaticContextImpl*>(aStaticContext.get());
+
+    if (externalSctx->theCompilerCB)
+      theCompilerCB->theSctxMap = externalSctx->theCompilerCB->theSctxMap;
+
+    ulong nextVarId = externalSctx->getMaxVarId();
 
     std::istringstream lQueryStream(aQuery.c_str());
 
-    doCompile(lQueryStream, aHints);
+    /*
+    std::cout << "Query    : " << std::hex << (ulong)this << std::endl
+              << "ccb      : " << (ulong)theCompilerCB << std::endl
+              << "em       : " << (ulong)theCompilerCB->theEM << std::endl
+              << "app SCTX : " << (ulong)externalSctx << std::endl
+              << "app sctx : " << (ulong)externalSctx->theCtx.getp() << std::endl;
+    */
+
+    doCompile(lQueryStream, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -512,10 +529,15 @@ void XQueryImpl::compile(
 
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the load-prolog query
-    theCompilerCB->theSctxMap =
-    static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
+    StaticContextImpl* externalSctx =
+    static_cast<StaticContextImpl*>(aStaticContext.get());
 
-    doCompile(aQuery, aHints);
+    if (externalSctx->theCompilerCB)
+      theCompilerCB->theSctxMap = externalSctx->theCompilerCB->theSctxMap;
+
+    ulong nextVarId = externalSctx->getMaxVarId();
+
+    doCompile(aQuery, aHints, true, nextVarId);
   }
   QUERY_CATCH
 }
@@ -527,7 +549,8 @@ void XQueryImpl::compile(
 void XQueryImpl::doCompile(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints,
-    bool fork_sctx)
+    bool fork_sctx,
+    ulong& nextDynamicVarId)
 {
   if ( ! theStaticContext )
   {
@@ -544,8 +567,12 @@ void XQueryImpl::doCompile(
     // otherwise, unless this is a load-prolog query, create a child and we have
     // ownership over that one
     if (fork_sctx)
+    {
       theStaticContext = theStaticContext->create_child_context();
+    }
   }
+
+  //std::cout << "sctx     : " << theStaticContext << std::endl << std::endl;
 
   zstring url;
   URI::encode_file_URI(theFileName, url);
@@ -553,7 +580,7 @@ void XQueryImpl::doCompile(
   theStaticContext->set_entity_retrieval_uri(url);
 
   theCompilerCB->theRootSctx = theStaticContext;
-  const short sctxid = (short)theCompilerCB->theSctxMap.size() + 1;
+  int sctxid = (int)theCompilerCB->theSctxMap.size() + 1;
   (theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
 
   // Set the compiler config.
@@ -573,17 +600,13 @@ void XQueryImpl::doCompile(
 
 #ifdef ZORBA_WITH_DEBUGGER
   // if the debug mode is set, we force the gflwor, we set the query input stream
-  if (theIsDebugMode) 
+  if (theIsDebugMode)
   {
     theCompilerCB->theConfig.force_gflwor = true;
     theCompilerCB->theDebuggerCommons = new DebuggerCommons(theCompilerCB->theRootSctx);
     theCompilerCB->theConfig.opt_level = CompilerCB::config::O0;
   }
 #endif
-
-  // 0 is reserved as an invalid var id, and 1 is taken by the context item
-  // in the main module.
-  ulong nextDynamicVarId = 2;
 
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
 
@@ -616,7 +639,13 @@ void XQueryImpl::loadProlog(
 
     theCompilerCB->setLoadPrologQuery();
 
-    doCompile(lQueryStream, aHints, false);
+    StaticContextImpl* sctx = static_cast<StaticContextImpl*>(aStaticContext.get());
+
+    ulong nextVarId = sctx->getMaxVarId();
+
+    doCompile(lQueryStream, aHints, false, nextVarId);
+
+    sctx->setMaxVarId(nextVarId);
   }
   QUERY_CATCH
 }
@@ -686,11 +715,18 @@ XQuery_t XQueryImpl::clone() const
     clone->theCompilerCB->theRootSctx = clone->theStaticContext;
     clone->theCompilerCB->theSctxMap = theCompilerCB->theSctxMap;
 
-    const short sctxid = (short)clone->theCompilerCB->theSctxMap.size() + 1;
-    (clone->theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
+    int sctxid = (int)clone->theCompilerCB->theSctxMap.size() + 1;
+    (clone->theCompilerCB->theSctxMap)[sctxid] = clone->theStaticContext;
 
     clone->thePlanProxy = thePlanProxy;
 
+    /*
+    std::cout << "Clone Query : " << std::hex << (ulong)clone << std::endl
+              << "Clone ccb   : " << (ulong)clone->theCompilerCB << std::endl
+              << "Clone sctx  : " << (ulong)clone->theStaticContext.getp() << std::endl
+              << "Clone em    : " << (ulong)clone->theCompilerCB->theEM << std::endl
+              << std::endl << std::endl;
+    */
     return lXQuery;
   }
   QUERY_CATCH
@@ -707,7 +743,7 @@ XQueryImpl::getStaticCollectionManager() const
   checkNotClosed();
   checkCompiled();
 
-  if (!theCollMgr) 
+  if (!theCollMgr)
   {
     std::vector<StaticCollectionManagerImpl*> lMgrs;
 
@@ -716,7 +752,7 @@ XQueryImpl::getStaticCollectionManager() const
 
     for (CompilerCB::SctxMap::iterator lIter = theCompilerCB->theSctxMap.begin();
         lIter != theCompilerCB->theSctxMap.end();
-         ++lIter) 
+         ++lIter)
     {
       // this object is only need to construct the StaticCollectionManagerImpl
       // but it's not used after the construction anymore
@@ -744,32 +780,29 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
     checkNotClosed();
     checkCompiled();
 
-    std::vector<var_expr_t> lVars;
+    std::vector<VarInfo*> vars;
 
-    std::map<short, static_context_t>::const_iterator lIte = 
-    theCompilerCB->theSctxMap.begin();
+    CompilerCB::SctxMap::const_iterator ite = theCompilerCB->theSctxMap.begin();
+    CompilerCB::SctxMap::const_iterator end = theCompilerCB->theSctxMap.end();
 
-    std::map<short, static_context_t>::const_iterator lEnd = 
-    theCompilerCB->theSctxMap.end();
-
-    for(; lIte != lEnd; ++lIte)
+    for(; ite != end; ++ite)
     {
-      lIte->second.getp()->getVariables(lVars, false, false, true);
+      ite->second.getp()->getVariables(vars, false, false, true);
     }
     
-    std::vector<var_expr_t>::const_iterator lVarIte = lVars.begin();
-    std::vector<var_expr_t>::const_iterator lVarEnd = lVars.end();
-    std::vector<store::Item_t> lExVars;
+    std::vector<VarInfo*>::const_iterator lVarIte = vars.begin();
+    std::vector<VarInfo*>::const_iterator lVarEnd = vars.end();
+    std::vector<store::Item_t> extVars;
    
     for(; lVarIte != lVarEnd; ++lVarIte)
     { 
-      lExVars.push_back((*lVarIte)->get_name());
+      extVars.push_back((*lVarIte)->getName());
     } 
 
-   Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+   Iterator_t vIter = new VectorIterator(extVars, theDiagnosticHandler);
 
-    aVarsIter = vIter; 
-    
+   aVarsIter = vIter;
+
   }
   QUERY_CATCH
 }
@@ -786,34 +819,40 @@ bool XQueryImpl::isBoundVariable(
     checkNotClosed();
     checkCompiled();
 
-    var_expr* var = NULL;
-
     zstring& nameSpace = Unmarshaller::getInternalString(aNamespace);
     zstring& localName = Unmarshaller::getInternalString(aLocalname);
-    
+
     store::Item_t qname;
     GENV_ITEMFACTORY->createQName(qname, nameSpace, zstring(), localName);
     
-    std::map<short, static_context_t>& lMap = theCompilerCB->theSctxMap;
-    std::map<short, static_context_t>::const_iterator lIte = lMap.begin();
-    std::map<short, static_context_t>::const_iterator lEnd = lMap.end();
+    VarInfo* var = NULL;
 
-    for (; lIte != lEnd; ++lIte)
+    CompilerCB::SctxMap& lMap = theCompilerCB->theSctxMap;
+    CompilerCB::SctxMap::const_iterator ite = lMap.begin();
+    CompilerCB::SctxMap::const_iterator end = lMap.end();
+
+    for (; ite != end; ++ite)
     {
-      var = lIte->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
+      var = ite->second->lookup_var(qname);
       
-      if(var)
+      if (var)
         break;
     }
     
-    if(var == NULL)
+    if (!var)
+    {
       throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
-      ERROR_PARAMS(BUILD_STRING('{', qname->getNamespace(), '}', qname->getLocalName()), ZED(Variable)));
+      ERROR_PARAMS(BUILD_STRING('{',
+                                qname->getNamespace(),
+                                '}',
+                                qname->getLocalName()),
+                   ZED(Variable)));
+    }
 
     if (var->hasInitializer())
       return true;
     
-    ulong varId = var->get_unique_id();
+    ulong varId = var->getId();
 
     if (theDynamicContext->is_set_variable(varId))
       return true;
@@ -887,7 +926,7 @@ bool XQueryImpl::isSequential() const
 
 
 /*******************************************************************************
-  Serialize the execution plan inot the given output stream.
+  Serialize the execution plan into the given output stream.
 ********************************************************************************/
 bool XQueryImpl::saveExecutionPlan(
     std::ostream& os,
@@ -903,19 +942,14 @@ bool XQueryImpl::saveExecutionPlan(
 
     if (archive_format == ZORBA_USE_XML_ARCHIVE)
     {
-      zorba::serialization::XmlArchiver   xmlar(&os);
-
-      if((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        xmlar.set_serialize_everything();
-
-      serialize(xmlar);
-      xmlar.serialize_out();
+      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
+      ERROR_PARAMS("XML-format plan serialization", ""));
     }
     else//ZORBA_USE_BINARY_ARCHIVE
     {
-      zorba::serialization::BinArchiver   bin_ar(&os);
+      zorba::serialization::BinArchiver bin_ar(&os);
 
-      if((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
+      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
         bin_ar.set_serialize_everything();
 
       serialize(bin_ar);
@@ -960,7 +994,7 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
     try
     {
       // try the binary format first
-      zorba::serialization::BinArchiver   bin_ar(&is);
+      zorba::serialization::BinArchiver bin_ar(&is);
       bin_ar.setUserCallback(aCallback);
       serialize(bin_ar);
       bin_ar.finalize_input_serialization();
@@ -972,12 +1006,16 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
         throw;
       //else go try xml archive reader
     }
+
+#if 0
     is.seekg(0);
-    zorba::serialization::XmlArchiver   xmlar(&is);
+
+    zorba::serialization::XmlArchiver xmlar(&is);
     xmlar.setUserCallback(aCallback);
     serialize(xmlar);
     xmlar.finalize_input_serialization();
     return true;
+#endif
   }
   QUERY_CATCH
   return false;
@@ -1328,6 +1366,7 @@ PlanWrapper_t XQueryImpl::generateWrapper()
       theDynamicContext,
       this,
       0, // stack depth
+      theCompilerCB->theHaveTimeout,
       theCompilerCB->theTimeout);
 
   return lPlan;
@@ -1338,10 +1377,7 @@ PlanWrapper_t XQueryImpl::generateWrapper()
 /*******************************************************************************
 
 ********************************************************************************/
-void
-XQueryImpl::debug(
-  const std::string& aHost,
-  unsigned short aPort)
+void XQueryImpl::debug(const std::string& aHost, unsigned short aPort)
 {
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
@@ -1389,10 +1425,15 @@ void XQueryImpl::debug(
 
     theExecuting = true;
 
-    DebuggerServer aDebuggerServer(
-      this, aSerOptions, aOutStream, aCallbackFunction,
-      aCallbackData, aHost, aPort);
-    if (!aDebuggerServer.run()) {
+    DebuggerServer aDebuggerServer(this,
+                                   aSerOptions,
+                                   aOutStream,
+                                   aCallbackFunction,
+                                   aCallbackData,
+                                   aHost,
+                                   aPort);
+    if (!aDebuggerServer.run())
+    {
       aDebuggerServer.throwError();
     }
 
@@ -1410,14 +1451,14 @@ void XQueryImpl::close()
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
-  try 
+  try
   {
-    if (theIsClosed) 
+    if (theIsClosed)
     {
       return;
     }
 
-    if (theResultIterator != NULL) 
+    if (theResultIterator != NULL)
     {
       theResultIterator->closeInternal();
       theResultIterator = NULL;
@@ -1425,7 +1466,7 @@ void XQueryImpl::close()
 
     theExecuting = false;
 
-    if (thePlanProxy) 
+    if (thePlanProxy)
     {
       thePlanProxy = NULL;
     }
@@ -1434,7 +1475,7 @@ void XQueryImpl::close()
     theXQueryDiagnostics = NULL;
 
     // see registerDiagnosticHandler
-    if (!theUserDiagnosticHandler) 
+    if (!theUserDiagnosticHandler)
     {
       delete theDiagnosticHandler;
       theDiagnosticHandler = NULL;
@@ -1449,7 +1490,7 @@ void XQueryImpl::close()
     theStaticContext = NULL;
 
     // theCompilerCB may be NULL if an error occured while serializing "this" in.
-    if (theCompilerCB) 
+    if (theCompilerCB)
     {
 #ifdef ZORBA_WITH_DEBUGGER
       delete theCompilerCB->theDebuggerCommons;
@@ -1471,7 +1512,7 @@ void XQueryImpl::close()
 ********************************************************************************/
 void XQueryImpl::checkIsDebugMode() const
 {
-  if (!theIsDebugMode) 
+  if (!theIsDebugMode)
   {
     throw ZORBA_EXCEPTION( zerr::ZAPI0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE );
   }

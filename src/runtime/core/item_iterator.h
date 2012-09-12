@@ -48,18 +48,13 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingletonIterator,
                                    NoaryBaseIterator<SingletonIterator,
                                                      PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NoaryBaseIterator<SingletonIterator,
-                                               PlanIteratorState>*)this);
-    ar & theValue;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   SingletonIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        const store::Item* value)
+      static_context* sctx,
+      const QueryLoc& loc,
+      const store::Item* value)
     :
     NoaryBaseIterator<SingletonIterator, PlanIteratorState>(sctx, loc),
     theValue(const_cast<store::Item*>(value))
@@ -93,21 +88,13 @@ private:
   PlanIter_t theCondIter;
   PlanIter_t theThenIter;
   PlanIter_t theElseIter;
-  bool theIsUpdating;
   bool theIsBooleanIter;
     
 public:
   SERIALIZABLE_CLASS(IfThenElseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(IfThenElseIterator, Batcher<IfThenElseIterator>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (Batcher<IfThenElseIterator>*)this);
-    ar & theCondIter;
-    ar & theThenIter;
-    ar & theElseIter;
-    ar & theIsUpdating;
-    ar & theIsBooleanIter;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
   /**
    * Constructor
@@ -126,10 +113,7 @@ public:
         PlanIter_t& aCondIter,
         PlanIter_t& aThenIter,
         PlanIter_t& aElseIter,
-        bool aIsUpdating,
         bool aIsBooleanIter = false);
-
-  virtual bool isUpdating() const { return theIsUpdating; }
 
   virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
 

@@ -35,18 +35,13 @@
 #include <zorbatypes/zstring.h>
 
 #include "zorbatypes/datetime/parse.h"
-#include "util/ascii_util.h"
-#include "zorbaserialization/template_serializer.h"
 
+#include "util/ascii_util.h"
 
 
 namespace zorba
 {
 
-SERIALIZABLE_CLASS_VERSIONS(DateTime)
-END_SERIALIZABLE_CLASS_VERSIONS(DateTime)
-
-  
 static const char separators[] = { '-', '-', 'T', ':', ':', '.'};
 
 static const char min_length[] = { 4, 2, 2, 2, 2, 2, 0};
@@ -1332,20 +1327,6 @@ void DateTime::setFacet(FACET_TYPE a_facet)
 {
   facet = a_facet;
   adjustToFacet();
-}
-
-
-void DateTime::serialize(serialization::Archiver& ar)
-{
-  SERIALIZE_ENUM(FACET_TYPE, facet);
-  ar & data[0];
-  ar & data[1];
-  ar & data[2];
-  ar & data[3];
-  ar & data[4];
-  ar & data[5];
-  ar & data[6];
-  ar & the_time_zone;
 }
 
 

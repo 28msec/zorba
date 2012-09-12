@@ -18,13 +18,14 @@
 
 #include <iostream>
 
-#include "store/naive/shared_types.h"
+#include "shared_types.h"
 
 #include "store/api/item_factory.h"
 //#include "store/api/tuples.h"
 
 #include "zorbatypes/schema_types.h"
 
+#include "tree_id.h"
 
 namespace zorba
 {
@@ -56,6 +57,9 @@ protected:
   // returns one of them
   store::Item_t theTrueItem;
   store::Item_t theFalseItem;
+#ifdef ZORBA_WITH_JSON
+  store::Item_t theNullItem;
+#endif
 
 public:
   BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
@@ -91,7 +95,7 @@ public:
   bool createStructuralAnyURI(
       store::Item_t& result,
       ulong collectionId,
-      ulong treeId,
+      const TreeId& treeId,
       store::StoreConsts::NodeKind nodeKind,
       const OrdPath& ordPath);
 
@@ -105,7 +109,24 @@ public:
       StreamReleaser,
       bool seekable = false);
 
+  bool createSharedStreamableString(
+      store::Item_t& result,
+      store::Item_t& streamable_dependent);
+
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
+
+  bool createBase64Binary(
+      store::Item_t& result,
+      const char* value,
+      size_t size,
+      bool encoded);
+
+  bool createStreamableBase64Binary(
+      store::Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      bool seekable = false,
+      bool encoded = false);
 
   bool createBoolean(store::Item_t& result, xs_boolean value);
 
@@ -118,9 +139,9 @@ public:
 
   bool createInteger(store::Item_t& result, const xs_integer& value);
 
-  bool createNonNegativeInteger(store::Item_t& result, const xs_uinteger& value);
+  bool createNonNegativeInteger(store::Item_t& result, const xs_nonNegativeInteger& value);
 
-  bool createPositiveInteger(store::Item_t& result,  const xs_uinteger& value );
+  bool createPositiveInteger(store::Item_t& result,  const xs_positiveInteger& value );
 
   bool createNonPositiveInteger(store::Item_t& result, const xs_integer& value);
 
@@ -373,6 +394,45 @@ public:
           const std::vector<store::Iterator_t>&,
           const signature&,
           const store::Iterator_t&);
+
+#ifdef ZORBA_WITH_JSON
+  bool createJSONNull(store::Item_t& result);
+
+  bool createJSONNumber(
+      store::Item_t& result,
+      store::Item_t& string);
+
+  bool createJSONNumber(
+      store::Item_t& result,
+      zstring& string);
+
+  bool createJSONArray(
+      store::Item_t& result,
+      const std::vector<store::Iterator_t>& sources,
+      const std::vector<store::CopyMode>& copyModes);
+
+  bool createJSONArray(
+      store::Item_t& result,
+      store::Item_t& item1,
+      store::Item_t& item2,
+      const store::Iterator_t& source,
+      const store::CopyMode& copyMode);
+
+  bool createJSONArray(
+      store::Item_t& result,
+      const std::vector<store::Item_t>& items);
+
+  bool createJSONObject(
+      store::Item_t& result,
+      const std::vector<store::Iterator_t>& sources,
+      const std::vector<store::CopyMode>& copyModes,
+      bool accumulate);
+
+  bool createJSONObject(
+      store::Item_t& result,
+      const std::vector<store::Item_t>& names,
+      const std::vector<store::Item_t>& values);
+#endif
 
 private:
   void splitToAtomicTextValues(

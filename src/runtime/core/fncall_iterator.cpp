@@ -82,10 +82,8 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
 
 
 
@@ -125,7 +123,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 ********************************************************************************/
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
-  thePlan = udf->getPlan(planState.theCompilerCB, thePlanStateSize).getp();
+  thePlan = udf->getPlan(thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
@@ -257,33 +255,34 @@ bool UDFunctionCallIterator::probeCache(
     PlanState& planState,
     UDFunctionCallIteratorState* state,
     store::Item_t& result,
-    std::vector<store::Item_t>& aKey) const
+    std::vector<store::Item_t>& argValues) const
 {
   if (!state->theCache)
     return false;
 
-  store::IndexCondition_t lCond =
+  store::IndexCondition_t cond =
   state->theCache->createCondition(store::IndexCondition::POINT_VALUE);
 
-  std::vector<store::Iterator_t>::iterator lIter = state->theArgWrappers.begin();
+  std::vector<store::Iterator_t>::iterator ite = state->theArgWrappers.begin();
 
-  for (; lIter != state->theArgWrappers.end(); ++lIter)
+  for (; ite != state->theArgWrappers.end(); ++ite)
   {
-    store::Iterator_t& argWrapper = (*lIter);
-    store::Item_t lArg;
+    store::Iterator_t& argWrapper = (*ite);
+    store::Item_t argValue;
     if (argWrapper) // might be 0 if argument is not used
     {
-      argWrapper->next(lArg); // guaranteed to have exactly one result
+      argWrapper->next(argValue); // guaranteed to have exactly one result
     }
-    aKey.push_back(lArg);
-    lCond->pushItem(lArg);
+    argValues.push_back(argValue);
+    cond->pushItem(argValue);
   }
 
   store::IndexProbeIterator_t probeIte = 
   GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
 
-  probeIte->init(lCond);
+  probeIte->init(cond);
   probeIte->open();
+
   return probeIte->next(result);
 }
 
@@ -293,15 +292,15 @@ bool UDFunctionCallIterator::probeCache(
 ********************************************************************************/
 void UDFunctionCallIterator::insertCacheEntry(
   UDFunctionCallIteratorState* state,
-  std::vector<store::Item_t>& aKey,
-  store::Item_t& aValue) const
+  std::vector<store::Item_t>& argValues,
+  store::Item_t& udfValue) const
 {
   if (state->theCache)
   {
     std::auto_ptr<store::IndexKey> k(new store::IndexKey());
     store::IndexKey* k2 = k.get();
-    k->theItems = aKey;
-    store::Item_t lTmp = aValue; // insert will eventually transfer the Item_t
+    k->theItems = argValues;
+    store::Item_t lTmp = udfValue; // insert will eventually transfer the Item_t
     if (!state->theCache->insert(k2, lTmp))
     {
       k.release();
@@ -358,6 +357,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   std::vector<PlanIter_t>::const_iterator argsIte = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator argsEnd = theChildren.end();
   std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
+
   const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
   std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
 

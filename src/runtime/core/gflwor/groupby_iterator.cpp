@@ -39,7 +39,7 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(GroupByIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(GroupByIterator)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -231,9 +231,9 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
       
   theTupleIter->open(planState, aOffset);
 
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
+  csize numSpecs = theGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     GroupingSpec& spec = theGroupingSpecs[i];
 
@@ -249,9 +249,9 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
     }
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
+  numSpecs = theNonGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].open(planState, aOffset);
   }
@@ -263,16 +263,16 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 ********************************************************************************/
 void GroupByIterator::closeImpl(PlanState& planState) 
 {
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
+  csize numSpecs = theGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].close(planState);
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
+  numSpecs = theNonGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].close(planState);
   }
@@ -288,16 +288,16 @@ void GroupByIterator::closeImpl(PlanState& planState)
 ********************************************************************************/
 void GroupByIterator::resetImpl(PlanState& planState) const 
 {
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
+  csize numSpecs = theGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].reset(planState);
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
+  numSpecs = theNonGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].reset(planState);
   }
@@ -332,6 +332,7 @@ bool GroupByIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) co
   if (!lState->theGroupMap->empty()) 
   {
     lState->theGroupMapIter = lState->theGroupMap->begin();
+
     while(lState->theGroupMapIter != lState->theGroupMap->end())
     {
       bindGroupBy(lState->theGroupMapIter, lState, aPlanState);

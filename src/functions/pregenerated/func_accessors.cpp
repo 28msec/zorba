@@ -36,7 +36,7 @@ PlanIter_t fn_node_name_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeNameIterator(sctx, loc, argv);
 }
@@ -45,17 +45,26 @@ PlanIter_t fn_node_name::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeNameIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_nilled_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new NilledIterator(sctx, loc, argv);
+}
 PlanIter_t fn_nilled::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NilledIterator(sctx, loc, argv);
 }
@@ -66,7 +75,7 @@ PlanIter_t fn_data::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FnDataIterator(sctx, loc, argv);
 }
@@ -76,7 +85,7 @@ PlanIter_t fn_base_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new BaseUriIterator(sctx, loc, argv);
 }
@@ -86,7 +95,7 @@ PlanIter_t fn_document_uri_3_0::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DocumentUriIterator(sctx, loc, argv);
 }
@@ -95,7 +104,7 @@ PlanIter_t fn_document_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DocumentUriIterator(sctx, loc, argv);
 }
@@ -105,16 +114,16 @@ PlanIter_t fn_root::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RootIterator(sctx, loc, argv);
 }
 
 void populate_context_accessors(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_node_name_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","node-name"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION),
@@ -123,9 +132,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_node_name,
         (createQName("http://www.w3.org/2005/xpath-functions","","node-name"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -135,9 +144,20 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
+    DECL_WITH_KIND(sctx, fn_nilled_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","nilled"), 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FN_NILLED_0);
+
+  }
+
+
+
+
+      {
     DECL_WITH_KIND(sctx, fn_nilled,
         (createQName("http://www.w3.org/2005/xpath-functions","","nilled"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -147,9 +167,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_string,
         (createQName("http://www.w3.org/2005/xpath-functions","","string"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -158,9 +178,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_string,
         (createQName("http://www.w3.org/2005/xpath-functions","","string"), 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
@@ -170,9 +190,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_data,
         (createQName("http://www.w3.org/2005/xpath-functions","","data"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -182,9 +202,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_base_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","base-uri"), 
         GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
@@ -193,9 +213,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_base_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","base-uri"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -205,9 +225,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_document_uri_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","document-uri"), 
         GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
@@ -216,9 +236,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_document_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","document-uri"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -228,9 +248,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_root,
         (createQName("http://www.w3.org/2005/xpath-functions","","root"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
@@ -239,9 +259,9 @@ void populate_context_accessors(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_root,
         (createQName("http://www.w3.org/2005/xpath-functions","","root"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 

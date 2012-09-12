@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <NodeReferenceIterator>
-const char* NodeReferenceIterator::class_name_str = "NodeReferenceIterator";
-NodeReferenceIterator::class_factory<NodeReferenceIterator>
-NodeReferenceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodeReferenceIterator)
 
-const serialization::ClassVersion 
-NodeReferenceIterator::class_versions[] ={{ 1, 0x000905, false}};
+void NodeReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NodeReferenceIterator, PlanIteratorState>*)this);
+}
 
-const int NodeReferenceIterator::class_versions_count =
-sizeof(NodeReferenceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void NodeReferenceIterator::accept(PlanIterVisitor& v) const {
+void NodeReferenceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -60,18 +60,74 @@ NodeReferenceIterator::~NodeReferenceIterator() {}
 // </NodeReferenceIterator>
 
 
+// <HasNodeReferenceIterator>
+SERIALIZABLE_CLASS_VERSIONS(HasNodeReferenceIterator)
+
+void HasNodeReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>*)this);
+}
+
+
+void HasNodeReferenceIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+HasNodeReferenceIterator::~HasNodeReferenceIterator() {}
+
+// </HasNodeReferenceIterator>
+
+
+// <AssignNodeReferenceIterator>
+SERIALIZABLE_CLASS_VERSIONS(AssignNodeReferenceIterator)
+
+void AssignNodeReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>*)this);
+}
+
+
+void AssignNodeReferenceIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AssignNodeReferenceIterator::~AssignNodeReferenceIterator() {}
+
+// </AssignNodeReferenceIterator>
+
+
 // <NodeByReferenceIterator>
-const char* NodeByReferenceIterator::class_name_str = "NodeByReferenceIterator";
-NodeByReferenceIterator::class_factory<NodeByReferenceIterator>
-NodeByReferenceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodeByReferenceIterator)
 
-const serialization::ClassVersion 
-NodeByReferenceIterator::class_versions[] ={{ 1, 0x000905, false}};
+void NodeByReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NodeByReferenceIterator, PlanIteratorState>*)this);
+}
 
-const int NodeByReferenceIterator::class_versions_count =
-sizeof(NodeByReferenceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void NodeByReferenceIterator::accept(PlanIterVisitor& v) const {
+void NodeByReferenceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -89,17 +145,17 @@ NodeByReferenceIterator::~NodeByReferenceIterator() {}
 
 
 // <FnLocalNameIterator>
-const char* FnLocalNameIterator::class_name_str = "FnLocalNameIterator";
-FnLocalNameIterator::class_factory<FnLocalNameIterator>
-FnLocalNameIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnLocalNameIterator)
 
-const serialization::ClassVersion 
-FnLocalNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnLocalNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnLocalNameIterator, PlanIteratorState>*)this);
+}
 
-const int FnLocalNameIterator::class_versions_count =
-sizeof(FnLocalNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnLocalNameIterator::accept(PlanIterVisitor& v) const {
+void FnLocalNameIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -117,17 +173,17 @@ FnLocalNameIterator::~FnLocalNameIterator() {}
 
 
 // <FnNamespaceUriIterator>
-const char* FnNamespaceUriIterator::class_name_str = "FnNamespaceUriIterator";
-FnNamespaceUriIterator::class_factory<FnNamespaceUriIterator>
-FnNamespaceUriIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnNamespaceUriIterator)
 
-const serialization::ClassVersion 
-FnNamespaceUriIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnNamespaceUriIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnNamespaceUriIterator, PlanIteratorState>*)this);
+}
 
-const int FnNamespaceUriIterator::class_versions_count =
-sizeof(FnNamespaceUriIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnNamespaceUriIterator::accept(PlanIterVisitor& v) const {
+void FnNamespaceUriIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -145,17 +201,17 @@ FnNamespaceUriIterator::~FnNamespaceUriIterator() {}
 
 
 // <FnLangIterator>
-const char* FnLangIterator::class_name_str = "FnLangIterator";
-FnLangIterator::class_factory<FnLangIterator>
-FnLangIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnLangIterator)
 
-const serialization::ClassVersion 
-FnLangIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnLangIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnLangIterator, PlanIteratorState>*)this);
+}
 
-const int FnLangIterator::class_versions_count =
-sizeof(FnLangIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnLangIterator::accept(PlanIterVisitor& v) const {
+void FnLangIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -173,17 +229,17 @@ FnLangIterator::~FnLangIterator() {}
 
 
 // <FnHasChildrenIterator>
-const char* FnHasChildrenIterator::class_name_str = "FnHasChildrenIterator";
-FnHasChildrenIterator::class_factory<FnHasChildrenIterator>
-FnHasChildrenIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnHasChildrenIterator)
 
-const serialization::ClassVersion 
-FnHasChildrenIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnHasChildrenIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnHasChildrenIterator, PlanIteratorState>*)this);
+}
 
-const int FnHasChildrenIterator::class_versions_count =
-sizeof(FnHasChildrenIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnHasChildrenIterator::accept(PlanIterVisitor& v) const {
+void FnHasChildrenIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -201,17 +257,17 @@ FnHasChildrenIterator::~FnHasChildrenIterator() {}
 
 
 // <FnInnermostIterator>
-const char* FnInnermostIterator::class_name_str = "FnInnermostIterator";
-FnInnermostIterator::class_factory<FnInnermostIterator>
-FnInnermostIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnInnermostIterator)
 
-const serialization::ClassVersion 
-FnInnermostIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnInnermostIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnInnermostIterator, FnInnermostIteratorState>*)this);
+}
 
-const int FnInnermostIterator::class_versions_count =
-sizeof(FnInnermostIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnInnermostIterator::accept(PlanIterVisitor& v) const {
+void FnInnermostIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -241,17 +297,17 @@ void FnInnermostIteratorState::reset(PlanState& planState) {
 
 
 // <FnOutermostIterator>
-const char* FnOutermostIterator::class_name_str = "FnOutermostIterator";
-FnOutermostIterator::class_factory<FnOutermostIterator>
-FnOutermostIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnOutermostIterator)
 
-const serialization::ClassVersion 
-FnOutermostIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnOutermostIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnOutermostIterator, FnOutermostIteratorState>*)this);
+}
 
-const int FnOutermostIterator::class_versions_count =
-sizeof(FnOutermostIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnOutermostIterator::accept(PlanIterVisitor& v) const {
+void FnOutermostIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -281,17 +337,17 @@ void FnOutermostIteratorState::reset(PlanState& planState) {
 
 
 // <FnGenerateIdIterator>
-const char* FnGenerateIdIterator::class_name_str = "FnGenerateIdIterator";
-FnGenerateIdIterator::class_factory<FnGenerateIdIterator>
-FnGenerateIdIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnGenerateIdIterator)
 
-const serialization::ClassVersion 
-FnGenerateIdIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnGenerateIdIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnGenerateIdIterator, PlanIteratorState>*)this);
+}
 
-const int FnGenerateIdIterator::class_versions_count =
-sizeof(FnGenerateIdIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnGenerateIdIterator::accept(PlanIterVisitor& v) const {
+void FnGenerateIdIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -309,17 +365,17 @@ FnGenerateIdIterator::~FnGenerateIdIterator() {}
 
 
 // <IsAncestorIterator>
-const char* IsAncestorIterator::class_name_str = "IsAncestorIterator";
-IsAncestorIterator::class_factory<IsAncestorIterator>
-IsAncestorIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAncestorIterator)
 
-const serialization::ClassVersion 
-IsAncestorIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsAncestorIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAncestorIterator, PlanIteratorState>*)this);
+}
 
-const int IsAncestorIterator::class_versions_count =
-sizeof(IsAncestorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsAncestorIterator::accept(PlanIterVisitor& v) const {
+void IsAncestorIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -337,17 +393,17 @@ IsAncestorIterator::~IsAncestorIterator() {}
 
 
 // <IsDescendantIterator>
-const char* IsDescendantIterator::class_name_str = "IsDescendantIterator";
-IsDescendantIterator::class_factory<IsDescendantIterator>
-IsDescendantIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDescendantIterator)
 
-const serialization::ClassVersion 
-IsDescendantIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsDescendantIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsDescendantIterator, PlanIteratorState>*)this);
+}
 
-const int IsDescendantIterator::class_versions_count =
-sizeof(IsDescendantIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsDescendantIterator::accept(PlanIterVisitor& v) const {
+void IsDescendantIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -365,17 +421,17 @@ IsDescendantIterator::~IsDescendantIterator() {}
 
 
 // <IsParentIterator>
-const char* IsParentIterator::class_name_str = "IsParentIterator";
-IsParentIterator::class_factory<IsParentIterator>
-IsParentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsParentIterator)
 
-const serialization::ClassVersion 
-IsParentIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsParentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsParentIterator, PlanIteratorState>*)this);
+}
 
-const int IsParentIterator::class_versions_count =
-sizeof(IsParentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsParentIterator::accept(PlanIterVisitor& v) const {
+void IsParentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -393,17 +449,17 @@ IsParentIterator::~IsParentIterator() {}
 
 
 // <IsChildIterator>
-const char* IsChildIterator::class_name_str = "IsChildIterator";
-IsChildIterator::class_factory<IsChildIterator>
-IsChildIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsChildIterator)
 
-const serialization::ClassVersion 
-IsChildIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsChildIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsChildIterator, PlanIteratorState>*)this);
+}
 
-const int IsChildIterator::class_versions_count =
-sizeof(IsChildIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsChildIterator::accept(PlanIterVisitor& v) const {
+void IsChildIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -421,17 +477,17 @@ IsChildIterator::~IsChildIterator() {}
 
 
 // <IsFollowingIterator>
-const char* IsFollowingIterator::class_name_str = "IsFollowingIterator";
-IsFollowingIterator::class_factory<IsFollowingIterator>
-IsFollowingIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsFollowingIterator)
 
-const serialization::ClassVersion 
-IsFollowingIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsFollowingIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsFollowingIterator, PlanIteratorState>*)this);
+}
 
-const int IsFollowingIterator::class_versions_count =
-sizeof(IsFollowingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsFollowingIterator::accept(PlanIterVisitor& v) const {
+void IsFollowingIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -449,17 +505,17 @@ IsFollowingIterator::~IsFollowingIterator() {}
 
 
 // <IsPrecedingIterator>
-const char* IsPrecedingIterator::class_name_str = "IsPrecedingIterator";
-IsPrecedingIterator::class_factory<IsPrecedingIterator>
-IsPrecedingIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsPrecedingIterator)
 
-const serialization::ClassVersion 
-IsPrecedingIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsPrecedingIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsPrecedingIterator, PlanIteratorState>*)this);
+}
 
-const int IsPrecedingIterator::class_versions_count =
-sizeof(IsPrecedingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsPrecedingIterator::accept(PlanIterVisitor& v) const {
+void IsPrecedingIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -477,17 +533,17 @@ IsPrecedingIterator::~IsPrecedingIterator() {}
 
 
 // <IsFollowingSiblingIterator>
-const char* IsFollowingSiblingIterator::class_name_str = "IsFollowingSiblingIterator";
-IsFollowingSiblingIterator::class_factory<IsFollowingSiblingIterator>
-IsFollowingSiblingIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsFollowingSiblingIterator)
 
-const serialization::ClassVersion 
-IsFollowingSiblingIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsFollowingSiblingIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsFollowingSiblingIterator, PlanIteratorState>*)this);
+}
 
-const int IsFollowingSiblingIterator::class_versions_count =
-sizeof(IsFollowingSiblingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsFollowingSiblingIterator::accept(PlanIterVisitor& v) const {
+void IsFollowingSiblingIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -505,17 +561,17 @@ IsFollowingSiblingIterator::~IsFollowingSiblingIterator() {}
 
 
 // <IsPrecedingSiblingIterator>
-const char* IsPrecedingSiblingIterator::class_name_str = "IsPrecedingSiblingIterator";
-IsPrecedingSiblingIterator::class_factory<IsPrecedingSiblingIterator>
-IsPrecedingSiblingIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsPrecedingSiblingIterator)
 
-const serialization::ClassVersion 
-IsPrecedingSiblingIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsPrecedingSiblingIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsPrecedingSiblingIterator, PlanIteratorState>*)this);
+}
 
-const int IsPrecedingSiblingIterator::class_versions_count =
-sizeof(IsPrecedingSiblingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsPrecedingSiblingIterator::accept(PlanIterVisitor& v) const {
+void IsPrecedingSiblingIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -533,17 +589,17 @@ IsPrecedingSiblingIterator::~IsPrecedingSiblingIterator() {}
 
 
 // <LevelIterator>
-const char* LevelIterator::class_name_str = "LevelIterator";
-LevelIterator::class_factory<LevelIterator>
-LevelIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(LevelIterator)
 
-const serialization::ClassVersion 
-LevelIterator::class_versions[] ={{ 1, 0x000905, false}};
+void LevelIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<LevelIterator, PlanIteratorState>*)this);
+}
 
-const int LevelIterator::class_versions_count =
-sizeof(LevelIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void LevelIterator::accept(PlanIterVisitor& v) const {
+void LevelIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -561,17 +617,17 @@ LevelIterator::~LevelIterator() {}
 
 
 // <LeastCommonAncestor>
-const char* LeastCommonAncestor::class_name_str = "LeastCommonAncestor";
-LeastCommonAncestor::class_factory<LeastCommonAncestor>
-LeastCommonAncestor::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(LeastCommonAncestor)
 
-const serialization::ClassVersion 
-LeastCommonAncestor::class_versions[] ={{ 1, 0x000905, false}};
+void LeastCommonAncestor::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<LeastCommonAncestor, PlanIteratorState>*)this);
+}
 
-const int LeastCommonAncestor::class_versions_count =
-sizeof(LeastCommonAncestor::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void LeastCommonAncestor::accept(PlanIterVisitor& v) const {
+void LeastCommonAncestor::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -586,6 +642,34 @@ void LeastCommonAncestor::accept(PlanIterVisitor& v) const {
 LeastCommonAncestor::~LeastCommonAncestor() {}
 
 // </LeastCommonAncestor>
+
+
+// <FnPathIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnPathIterator)
+
+void FnPathIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnPathIterator, PlanIteratorState>*)this);
+}
+
+
+void FnPathIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnPathIterator::~FnPathIterator() {}
+
+// </FnPathIterator>
 
 
 

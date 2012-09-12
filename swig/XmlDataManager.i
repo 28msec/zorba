@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,54 +16,20 @@
 
 %{  // start Implementation
 
-
-class DocumentManager
-{
-private:
-  zorba::DocumentManager* theManager;
-
-public:
-  DocumentManager() : theManager(0) {}
-  DocumentManager(const DocumentManager& aMgr) : theManager(aMgr.theManager) {}
-  DocumentManager(zorba::DocumentManager* aMgr) : theManager(aMgr) {}
-
-  void put(const std::string& aName, Item aDoc)
-  {
-    theManager->put(aName, aDoc.theItem);
-  }
-
-  void remove(const std::string& aName)
-  {
-    theManager->remove(aName);
-  }
-
-  Item document(const std::string& aName)
-  {
-    return theManager->document(aName);
-  }
-
-  bool isAvailableDocument(const std::string& aName)
-  {
-    return theManager->isAvailableDocument(aName);
-  }
-};
-
-class XmlDataManager
-{
-private:
-  zorba::XmlDataManager* theManager;
-
-public:
-  XmlDataManager() : theManager(0) {}
-  XmlDataManager(const XmlDataManager& aMgr) : theManager(aMgr.theManager) {}
-  XmlDataManager(zorba::XmlDataManager* aMgr) : theManager(aMgr) {}
-
-  DocumentManager getDocumentManager()
+  DocumentManager XmlDataManager::getDocumentManager()
   {
     return DocumentManager(theManager->getDocumentManager()); 
   }
+  CollectionManager XmlDataManager::getCollectionManager()
+  {
+    return CollectionManager(theManager->getCollectionManager()); 
+  }
+  CollectionManager XmlDataManager::getW3CCollectionManager()
+  {
+    return CollectionManager(theManager->getW3CCollectionManager()); 
+  }
 
-  Iterator parseXML(const std::string& aDoc)
+  Iterator XmlDataManager::parseXML(const std::string& aDoc)
   {
     std::stringstream lDoc;
     lDoc << aDoc;
@@ -71,28 +37,22 @@ public:
     return Iterator(lItem);
   }
 
-};
+  Item XmlDataManager::parseXMLtoItem(const std::string& aDoc)
+  {
+    std::stringstream lDoc;
+    lDoc << aDoc;
+    zorba::Item lItem = theManager->parseXML(lDoc);
+    return Item(lItem);
+  }
+
+  Item XmlDataManager::parseXMLtoItem(ZorbaIOStream & aStream)
+  {
+    ZorbaStreamBuffer streamBuffer(aStream);
+    std::istream stream(&streamBuffer);
+    zorba::Item lItem = theManager->parseXML(stream);
+    return Item(lItem);
+  }
 
 %}  // end   Implementation
 
-class DocumentManager
-{
-public:
-  void put(const std::string& aName, Item aDoc);
-
-  void remove(const std::string& aName);
-
-  Item document(const std::string& aName);
-
-  bool isAvailableDocument(const std::string& aName);
-};
-
-
-class XmlDataManager 
-{
-public:
-  DocumentManager getDocumentManager();
-
-  Iterator parseXML(const std::string& aDoc);
-   
-}; // class XmlDataManager
+%include "XmlDataManager.h"

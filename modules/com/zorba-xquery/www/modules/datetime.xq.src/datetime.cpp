@@ -32,21 +32,23 @@ compute_date_time(
     long&           timezone,
     unsigned short& millitm)
 {
+  int lSummerTimeShift = 0;
 #if defined (WIN32)
   struct _timeb timebuffer;
   _ftime_s( &timebuffer );
   localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
+  lSummerTimeShift = -timebuffer.timezone * 60;
+  if (gmtm.tm_isdst != 0)
+    lSummerTimeShift += 3600;
 #else
   struct timeb timebuffer;
   ftime( &timebuffer );
   localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
+  localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
+  lSummerTimeShift = gmtm.tm_gmtoff;
 #endif
 
-  int lSummerTimeShift = 0;
-  if (gmtm.tm_isdst != 0)
-    lSummerTimeShift = 3600;
-
-  timezone = -timebuffer.timezone * 60 + lSummerTimeShift; // in seconds
+  timezone = lSummerTimeShift; // in seconds
   millitm = timebuffer.millitm;
 }
 

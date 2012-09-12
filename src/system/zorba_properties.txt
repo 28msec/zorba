@@ -29,7 +29,7 @@
       ("loop-hoisting", po::value<bool>()->default_value (true), "hoist expressions out of loops (1=enabled (default), 0=off)")
       ("infer-joins", po::value<bool>()->default_value (true), "infer joins (1=enabled (default), 0=off)")
       ("no-copy-optim", po::value<bool>()->default_value(true), "no copy optim (1=enabled (default), 0=off)")
-      ("serialize-only-query", po::value<bool>()->default_value(false), "serialize-only query (1=true, 0=false (default))")
+      ("serialize-only-query", po::value<int>()->default_value(-1), "serialize-only query (1=true, 0=false, -1 unknown (default))")
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
@@ -43,3 +43,4 @@
       ("iter-plan-test", "run as iterator plan test")
       ("dot-plan-file", po::value<std::string>(), "generate the dot iterator plan")
       ("max-udf-call-depth", po::value<uint32_t>()->default_value(1024), "maximum stack depth of udf function calls")
+      ("CLASSPATH", po::value<std::string>(), "JVM classpath to be used by modules using Java implementations")

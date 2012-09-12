@@ -17,14 +17,15 @@ ENDIF(APPLE)
 FIND_PACKAGE(Ruby)
 
 IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
-  MESSAGE(STATUS "SWIG Ruby: generating Ruby API")
+  MESSAGE(STATUS "SWIG: Generating Ruby API")
   SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
   INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
   IF (WIN32)
     SWIG_ADD_MODULE(zorba_api_ruby ruby zorba_api.i)
     SWIG_LINK_LIBRARIES(zorba_api_ruby zorba_simplestore ${RUBY_LIBRARY})
-    SET_TARGET_PROPERTIES (zorba_api_ruby PROPERTIES OUTPUT_NAME "zorba_api")
-    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES PROJECT_LABEL "Api_Ruby" )
+    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES OUTPUT_NAME "zorba_api")
+    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES PROJECT_LABEL "Ruby" FOLDER "APIs")
+    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES SUFFIX ".so" )
   ELSE (WIN32)
     SWIG_ADD_MODULE(zorba_api ruby zorba_api.i)
     SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${RUBY_LIBRARY})
@@ -43,16 +44,18 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
 
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
-  IF ( LINUX OR CYGWIN )
+  IF ( LINUX OR CYGWIN OR APPLE )
     SET_TARGET_PROPERTIES( ${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PREFIX "" )
-  ENDIF ( LINUX OR CYGWIN )
+  ENDIF ( LINUX OR CYGWIN OR APPLE )
 
   EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
     OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
-  #STRING(REPLACE "/usr/" "" RUBY_SITEARCH_DIR "${RUBY_SITEARCH_DIR}" )
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../StaticContext.h" "${CMAKE_CURRENT_BINARY_DIR}/StaticContext.h")
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../ItemFactory.h" "${CMAKE_CURRENT_BINARY_DIR}/ItemFactory.h")
-  
+
+  FILE(GLOB ZORBA_API_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../" "${CMAKE_CURRENT_SOURCE_DIR}/../*.h")
+  FOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../${ZORBA_API_HEADER}"  "${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_API_HEADER}")
+  ENDFOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})
+
   SET (RUBY_SITEARCH_DIR "${CMAKE_INSTALL_PREFIX}/share/ruby")
   
   IF ( APPLE )
@@ -65,11 +68,11 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
       COMPONENT ruby_swig )
     ELSE ( LINUX )
       IF (MSVC_IDE)
-        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.so
         DESTINATION share/ruby
         COMPONENT ruby_swig )
       ELSE (MSVC_IDE)
-        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
         DESTINATION share/ruby
         COMPONENT ruby_swig )
       ENDIF (MSVC_IDE)
@@ -77,6 +80,8 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
     ENDIF ( LINUX )
   ENDIF ( APPLE )
 
+  ADD_SUBDIRECTORY (tests)
+
 ELSE (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
-  MESSAGE(STATUS "SWIG Ruby: binding not generated because library and include files are not installed.")
+  MESSAGE(STATUS "SWIG: Ruby binding not generated because library and include files are not installed.")
 ENDIF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)

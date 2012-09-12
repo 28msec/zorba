@@ -15,9 +15,10 @@
  */
 #include "stdafx.h"
 
-#include "zorbautils/fatal.h"
 #include "util/string_util.h"
 #include "string_pool.h"
+#include "zorba/zorba_exception.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba { namespace simplestore {
 
@@ -26,20 +27,23 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-  ulong count = 0;
-  ulong n = (ulong)theHashTab.size();
-  for (ulong i = 0; i < n; i++)
+  csize count = 0;
+  csize n = theHashTab.size();
+
+  for (csize i = 0; i < n; ++i)
   {
     if (theHashTab[i].theItem.is_shared())
     {
-      std::cerr << "i = " << i << " String " << theHashTab[i].theItem
-                << " is still in the pool" << std::endl;
+      std::cerr << "ID: " << i << " Referenced URI: " << theHashTab[i].theItem << std::endl;
       //delete theHashTab[i].theString.getp();
       count++;
     }
   }
 
-  ZORBA_FATAL(count == 0, count << " strings remain in the string pool");
+  if (count > 0)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0065_STRINGS_IN_POOL, ERROR_PARAMS(count));
+  }
 }
 
 

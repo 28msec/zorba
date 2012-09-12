@@ -20,21 +20,15 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "zorbaserialization/template_serializer.h"
-
-
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
-END_SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
 
 QueryLoc QueryLoc::null;
 
 
 QueryLoc::QueryLoc()
  :
- theFilename(""),
+  theFilename(""),
   theLineBegin (0),
   theColumnBegin (0),
   theLineEnd (0),
@@ -43,26 +37,15 @@ QueryLoc::QueryLoc()
 }
 
 
-QueryLoc::QueryLoc(const QueryLoc& aQueryLoc) 
- :
-  ::zorba::serialization::SerializeBaseClass(),
-  theFilename(aQueryLoc.theFilename),
-  theLineBegin (aQueryLoc.theLineBegin),
-  theColumnBegin (aQueryLoc.theColumnBegin),
-  theLineEnd (aQueryLoc.theLineEnd),
-  theColumnEnd (aQueryLoc.theColumnEnd)
-  //theFunctionName(aQueryLoc.theFunctionName)
+QueryLoc::QueryLoc( zstring const &filename, unsigned lineBegin,
+                    unsigned lineEnd, unsigned columnBegin,
+                    unsigned columnEnd ) :
+  theFilename(filename),
+  theLineBegin(lineBegin),
+  theColumnBegin(lineEnd),
+  theLineEnd(columnBegin),
+  theColumnEnd(columnEnd)
 {
-}
-
-
-void QueryLoc::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theFilename;
-  ar & theLineBegin;
-  ar & theColumnBegin;
-  ar & theLineEnd;
-  ar & theColumnEnd;
 }
 
 
@@ -79,6 +62,7 @@ std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc)
 
   return aOstr;
 }
+
 
 bool QueryLoc::equals(const QueryLoc& loc) const
 {

@@ -15,13 +15,6 @@
  */
 /* vim:set et sw=2 ts=2: */
 
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .txt FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
 #include <string>
 #include <sstream>
 #include <zorba/config.h>
@@ -33,13 +26,25 @@
 namespace zorba 
 { 
 
-class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase 
+class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesGlobal 
 {
 protected:
   const char** get_all_options() const 
   {
-    static const char* result [] = 
-      { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--no-copy-optim", "--serialize-only-query", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth", NULL };
+    static const char* result [] = {
+      "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer",
+      "--result-file", "--debug-file", "--abort", "--query", "--print-query",
+      "--print-time", "--print-ast", "--print-xqdoc", "--print-translated",
+      "--print-normalized", "--print-optimized", "--print-iterator-tree",
+      "--print-item-flow", "--print-static-types", "--dump-lib",
+      "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt",
+      "--print-locations", "--force-gflwor", "--reorder-globals",
+      "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting",
+      "--infer-joins", "--no-copy-optim", "--serialize-only-query",
+      "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug",
+      "--compile-only", "--tz", "--external-var", "--serializer-param",
+      "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth",
+      "--CLASSPATH", NULL };
 
     return result;
   }
@@ -87,6 +92,7 @@ protected:
   bool theIterPlanTest;
   std::string theDotPlanFile;
   uint32_t theMaxUdfCallDepth;
+  std::string theCLASSPATH;
 
   void initialize() 
   {
@@ -172,6 +178,7 @@ public:
   const bool &iterPlanTest () const { return theIterPlanTest; }
   const std::string &dotPlanFile () const { return theDotPlanFile; }
   const uint32_t &maxUdfCallDepth () const { return theMaxUdfCallDepth; }
+  const std::string &CLASSPATH () const { return theCLASSPATH; }
 
   std::string load_argv (int argc, const char **argv) 
   {
@@ -207,7 +214,9 @@ public:
       else if (strcmp (*argv, "--debug-file") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --debug-file option"; break; }        init_val (*argv, theDebugFile, d);
+        if (*argv == NULL) { result = "No value given for --debug-file option"; break; }
+
+        init_val (*argv, theDebugFile, d);
       }
       else if (strcmp (*argv, "--abort") == 0) {
         theAbort = true;
@@ -215,7 +224,9 @@ public:
       else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-e", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --query option"; break; }        init_val (*argv, theQuery, d);
+        if (*argv == NULL) { result = "No value given for --query option"; break; }
+
+        init_val (*argv, theQuery, d);
       }
       else if (strcmp (*argv, "--print-query") == 0 || strncmp (*argv, "-q", 2) == 0) {
         thePrintQuery = true;
@@ -247,7 +258,9 @@ public:
       else if (strcmp (*argv, "--print-static-types") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --print-static-types option"; break; }        init_val (*argv, thePrintStaticTypes, d);
+        if (*argv == NULL) { result = "No value given for --print-static-types option"; break; }
+
+        init_val (*argv, thePrintStaticTypes, d);
       }
       else if (strcmp (*argv, "--dump-lib") == 0) {
         theDumpLib = true;
@@ -270,32 +283,44 @@ public:
       else if (strcmp (*argv, "--reorder-globals") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --reorder-globals option"; break; }        init_val (*argv, theReorderGlobals, d);
+        if (*argv == NULL) { result = "No value given for --reorder-globals option"; break; }
+
+        init_val (*argv, theReorderGlobals, d);
       }
       else if (strcmp (*argv, "--specialize-num") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --specialize-num option"; break; }        init_val (*argv, theSpecializeNum, d);
+        if (*argv == NULL) { result = "No value given for --specialize-num option"; break; }
+
+        init_val (*argv, theSpecializeNum, d);
       }
       else if (strcmp (*argv, "--specialize-cmp") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --specialize-cmp option"; break; }        init_val (*argv, theSpecializeCmp, d);
+        if (*argv == NULL) { result = "No value given for --specialize-cmp option"; break; }
+
+        init_val (*argv, theSpecializeCmp, d);
       }
       else if (strcmp (*argv, "--inline-udf") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --inline-udf option"; break; }        init_val (*argv, theInlineUdf, d);
+        if (*argv == NULL) { result = "No value given for --inline-udf option"; break; }
+
+        init_val (*argv, theInlineUdf, d);
       }
       else if (strcmp (*argv, "--loop-hoisting") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --loop-hoisting option"; break; }        init_val (*argv, theLoopHoisting, d);
+        if (*argv == NULL) { result = "No value given for --loop-hoisting option"; break; }
+
+        init_val (*argv, theLoopHoisting, d);
       }
       else if (strcmp (*argv, "--infer-joins") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --infer-joins option"; break; }        init_val (*argv, theInferJoins, d);
+        if (*argv == NULL) { result = "No value given for --infer-joins option"; break; }
+
+        init_val (*argv, theInferJoins, d);
       }
       else if (strcmp (*argv, "--no-copy-optim") == 0)
       {
@@ -332,17 +357,23 @@ public:
       else if (strcmp (*argv, "--tz") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --tz option"; break; }        init_val (*argv, theTz, d);
+        if (*argv == NULL) { result = "No value given for --tz option"; break; }
+
+        init_val (*argv, theTz, d);
       }
       else if (strcmp (*argv, "--external-var") == 0 || strncmp (*argv, "-x", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --external-var option"; break; }        init_val (*argv, theExternalVar, d);
+        if (*argv == NULL) { result = "No value given for --external-var option"; break; }
+
+        init_val (*argv, theExternalVar, d);
       }
       else if (strcmp (*argv, "--serializer-param") == 0 || strncmp (*argv, "-z", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --serializer-param option"; break; }        init_val (*argv, theSerializerParam, d);
+        if (*argv == NULL) { result = "No value given for --serializer-param option"; break; }
+
+        init_val (*argv, theSerializerParam, d);
       }
       else if (strcmp (*argv, "--iter-plan-test") == 0) {
         theIterPlanTest = true;
@@ -350,12 +381,23 @@ public:
       else if (strcmp (*argv, "--dot-plan-file") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --dot-plan-file option"; break; }        init_val (*argv, theDotPlanFile, d);
+        if (*argv == NULL) { result = "No value given for --dot-plan-file option"; break; }
+
+        init_val (*argv, theDotPlanFile, d);
       }
       else if (strcmp (*argv, "--max-udf-call-depth") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --max-udf-call-depth option"; break; }        init_val (*argv, theMaxUdfCallDepth, d);
+        if (*argv == NULL) { result = "No value given for --max-udf-call-depth option"; break; }
+
+        init_val (*argv, theMaxUdfCallDepth, d);
+      }
+      else if (strcmp (*argv, "--CLASSPATH") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --CLASSPATH option"; break; }
+
+        init_val (*argv, theCLASSPATH, d);
       }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
@@ -420,6 +462,7 @@ public:
 "--iter-plan-test\nrun as iterator plan test\n\n"
 "--dot-plan-file\ngenerate the dot iterator plan\n\n"
 "--max-udf-call-depth\nmaximum stack depth of udf function calls\n\n"
+"--CLASSPATH\nJVM classpath to be used by modules using Java implementations\n\n"
 ;
   }
 

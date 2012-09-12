@@ -19,12 +19,18 @@
 
 #include <zorba/config.h>
 
-#ifndef ZORBA_NO_UNICODE
-
 #include <cctype>
 #include <cstring>
 #include <cwchar>
-#include <unicode/unistr.h>
+
+#include <zorba/internal/ztd.h>
+
+#ifdef ZORBA_NO_ICU
+# include "zorbamisc/config/stdint.h"
+# include "zorbatypes/zstring.h"
+#else
+# include <unicode/unistr.h>
+#endif /* ZORBA_NO_ICU */
 
 #include "stl_util.h"
 
@@ -37,13 +43,21 @@ namespace unicode {
  * The character type that can hold a Unicode character encoded in UTF-16.  Do
  * not assume that this is an unsigned type.
  */
-typedef UChar char_type;
+#ifdef ZORBA_NO_ICU
+  typedef char char_type;
+#else
+  typedef /* ICU's */ UChar char_type;
+#endif /* ZORBA_NO_ICU */
 
 /**
  * The type type that can hold a Unicode code-point.  Do not assume that this
  * is an unsigned type.
  */
-typedef UChar32 code_point;
+#ifdef ZORBA_NO_ICU
+typedef uint32_t code_point;
+#else
+typedef /* ICU's */ UChar32 code_point;
+#endif /* ZORBA_NO_ICU */
 
 /**
  * The type that represents the size of a string.  Do not assume that this is
@@ -64,15 +78,22 @@ namespace normalization {
   };
 }
 
+#ifndef ZORBA_NO_ICU
 /**
  * A Unicode string.
  */
 typedef U_NAMESPACE_QUALIFIER UnicodeString string;
+#else
+/**
+ * Since there is no ICU, just use a zstring as a "Unicode" string.
+ */
+typedef zstring string;
+#endif /* ZORBA_NO_ICU */
 
 ////////// code-point checking ////////////////////////////////////////////////
 
 /**
- * Test whether the given character is invalid in an IRI.
+ * Checks whether the given character is invalid in an IRI.
  *
  * @param c The character.
  * @return Returns \c true only if the character is invalid in an IRI.
@@ -81,7 +102,7 @@ typedef U_NAMESPACE_QUALIFIER UnicodeString string;
 bool is_invalid_in_iri( code_point c );
 
 /**
- * Test whether the given character is a "iprivate".
+ * Checks whether the given character is a "iprivate".
  *
  * @param c The character.
  * @return Returns \c true only if the character is a "iprivate".
@@ -90,7 +111,7 @@ bool is_invalid_in_iri( code_point c );
 bool is_iprivate( code_point c );
 
 /**
- * Unicode version is isspace(3).
+ * Unicode version of isspace(3).
  *
  * @param c The code-point to check.
  * @return Returns \c true only if \a c is a whitespace character.
@@ -102,11 +123,11 @@ inline bool is_space( code_point c ) {
   return ascii_c == c && isspace( ascii_c );
 #else
   return isspace( c );
-#endif
+#endif /* WIN32 */
 }
 
 /**
- * Test whether the given character is a "ucschar".
+ * Checks whether the given character is a "ucschar".
  *
  * @param c The character.
  * @return Returns \c true only if the character is a "ucschar".
@@ -120,8 +141,10 @@ bool is_ucschar( code_point c );
  * @param c The code-point to check.
  * @return Returns \c true only if the code-point is valid.
  */
-template<class CodePointType>
-inline bool is_valid( CodePointType c ) {
+template<typename CodePointType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<CodePointType>::value,
+                        bool>::type
+is_valid( CodePointType c ) {
   return  (ztd::ge0( c ) && c <= 0x00D7FF)
       ||  (c >= 0x00E000 && c <= 0x00FFFD)
       ||  (c >= 0x010000 && c <= 0x10FFFF);
@@ -165,6 +188,8 @@ code_point to_upper( code_point c );
 
 ////////// normalization //////////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_ICU
+
 /**
  * Normalizes the given string.
  *
@@ -174,8 +199,21 @@ code_point to_upper( code_point c );
  */
 bool normalize( string const &in, normalization::type n, string *out );
 
+/**
+ * Strips all diacritical marks from all characters converting them to their
+ * closest non-diacritical equivalents.
+ *
+ * @param in The input string.
+ * @param out The output string.
+ * @return Returns \c true only if the strip succeeded.
+ */
+bool strip_diacritics( string const &in, string *out );
+
+#endif /* ZORBA_NO_ICU */
+
 ////////// string conversion //////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_ICU
 /**
  * Converts a single UTF-8 encoded character into a single Unicode character.
  *
@@ -184,6 +222,7 @@ bool normalize( string const &in, normalization::type n, string *out );
  * @return Returns \c true only if the conversion succeeded.
  */
 bool to_char( char const *in, char_type *out );
+#endif /* ZORBA_NO_ICU */
 
 /**
  * Converts a UTF-8 encoded string into a sequence of Unicode characters.
@@ -206,7 +245,15 @@ bool to_string( char const *in, size_type in_len, char_type **out,
  * @param out The Unicode string result.
  * @return Returns \c true only if the conversion succeeded.
  */
+#ifndef ZORBA_NO_ICU
+ZORBA_DLL_PUBLIC
 bool to_string( char const *in, size_type in_len, string *out );
+#else
+inline bool to_string( char const *in, size_type in_len, string *out ) {
+  out->assign( in, in_len );
+  return true;
+}
+#endif /* ZORBA_NO_ICU */
 
 /**
  * Converts a C string to a Unicode string.
@@ -218,6 +265,8 @@ bool to_string( char const *in, size_type in_len, string *out );
 inline bool to_string( char const *in, string *out ) {
   return to_string( in, (size_type)std::strlen( in ), out );
 }
+
+#ifndef ZORBA_NO_ICU
 
 /**
  * Converts a wide-character string to a Unicode string.
@@ -240,6 +289,8 @@ inline bool to_string( wchar_t const *in, string *out ) {
   return to_string( in, static_cast<size_type>( std::wcslen( in ) ), out );
 }
 
+#endif /* ZORBA_NO_ICU */
+
 /**
  * Converts a string to a Unicode string.
  *
@@ -253,18 +304,76 @@ inline bool to_string( StringType const &in, string *out ) {
   return to_string( in.data(), static_cast<size_type>( in.size() ), out );
 }
 
+////////// UTF-16 surrogate pairs /////////////////////////////////////////////
+
+/**
+ * Converts the given high and low surrogate values into the code-point they
+ * represent.  Note that no checking is done on the parameters.
+ *
+ * @param high The high surrogate value.
+ * @param low The low surrogate value.
+ * @return Returns the represented code-point.
+ * @see is_high_surrogate()
+ * @see is_low_surrogate()
+ */
+inline code_point convert_surrogate( unsigned high, unsigned low ) {
+  return 0x10000 + ((high - 0xD800) << 10) + (low - 0xDC00);
+}
+
+/**
+ * Converts the given code-point into the high and low surrogate values that
+ * represent it.  Note that no checking is done on the parameters.
+ *
+ * @tparam ResultType The integer type for the results.
+ * @param c The code-point to convert.
+ * @param high A pointer to where to put the high surrogate.
+ * @param low A pointer to where to put the low surrogate.
+ */
+template<typename ResultType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<ResultType>::value,
+                        void>::type
+convert_surrogate( code_point c, ResultType *high, ResultType *low ) {
+  code_point const n = c - 0x10000;
+  *high = 0xD800 + (static_cast<unsigned>(n) >> 10);
+  *low  = 0xDC00 + (n & 0x3FF);
+}
+
+/**
+ * Checks whether the given value is a "high surrogate."
+ *
+ * @param n The value to check.
+ * @return Returns \c true only if \a n is a high surrogate.
+ */
+inline bool is_high_surrogate( unsigned long n ) {
+  return n >= 0xD800 && n <= 0xDBFF;
+}
+
+/**
+ * Checks whether the given value is a "low surrogate."
+ *
+ * @param n The value to check.
+ * @return Returns \c true only if \a n is a low surrogate.
+ */
+inline bool is_low_surrogate( unsigned long n ) {
+  return n >= 0xDC00 && n <= 0xDFFF;
+}
+
+/**
+ * Checks whether the given code-point is in the "supplementary plane" and
+ * therefore would need a surrogate pair to be encoded in UTF-16.
+ *
+ * @param c The code-point to check.
+ * @return Returns \c true only if \a c is within the supplementary plane.
+ */
+inline bool is_supplementary_plane( code_point c ) {
+  return c >= 0x10000 && c <= 0x10FFFF;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace unicode
 } // namespace zorba
 
-#else
-#endif /* ZORBA_NO_UNICODE */
-namespace zorba{
-namespace unicode{
-typedef int32_t size_type;
-} // namespace unicode
-} // namespace zorba
 #endif /* ZORBA_UNICODE_UTIL_H */
 /*
  * Local variables:

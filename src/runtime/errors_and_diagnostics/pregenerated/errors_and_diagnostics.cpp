@@ -29,21 +29,22 @@
 #include "system/globalenv.h"
 
 
+#include "api/serialization/serializer.h"
 
 namespace zorba {
 
 // <ErrorIterator>
-const char* ErrorIterator::class_name_str = "ErrorIterator";
-ErrorIterator::class_factory<ErrorIterator>
-ErrorIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ErrorIterator)
 
-const serialization::ClassVersion 
-ErrorIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ErrorIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
+}
 
-const int ErrorIterator::class_versions_count =
-sizeof(ErrorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ErrorIterator::accept(PlanIterVisitor& v) const {
+void ErrorIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -61,17 +62,17 @@ ErrorIterator::~ErrorIterator() {}
 
 
 // <TraceIterator>
-const char* TraceIterator::class_name_str = "TraceIterator";
-TraceIterator::class_factory<TraceIterator>
-TraceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(TraceIterator)
 
-const serialization::ClassVersion 
-TraceIterator::class_versions[] ={{ 1, 0x000905, false}};
+void TraceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
+}
 
-const int TraceIterator::class_versions_count =
-sizeof(TraceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void TraceIterator::accept(PlanIterVisitor& v) const {
+void TraceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -95,6 +96,7 @@ void TraceIteratorState::init(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
+  theSerializer = NULL;
 }
 
 void TraceIteratorState::reset(PlanState& planState) {
@@ -102,6 +104,7 @@ void TraceIteratorState::reset(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
+  theSerializer = NULL;
 }
 // </TraceIterator>
 

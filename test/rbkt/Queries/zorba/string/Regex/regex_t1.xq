@@ -1,0 +1,1 @@
+fn:tokenize("abracadabra", "(ab)|(a)")

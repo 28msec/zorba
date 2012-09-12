@@ -15,8 +15,6 @@
  */
 #include "stdafx.h"
 
-#include "regex.h"
-
 #include <cstring>
 #include <vector>
 
@@ -28,13 +26,13 @@
 
 #include "ascii_util.h"
 #include "cxx_util.h"
+#include "regex.h"
 #include "stl_util.h"
 
 #define INVALID_RE_EXCEPTION(...) \
   XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
 
-
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 # include <unicode/uversion.h>
 U_NAMESPACE_USE
 
@@ -103,6 +101,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
   bool got_backslash = false;
   bool in_char_class = false;           // within [...]
+  bool is_first_char = true;            // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
@@ -124,19 +123,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         continue;
       }
       got_backslash = false;
+
       switch ( *xq_c ) {
-        case 'c': // NameChar
-          *icu_re += "[" bs_c "]";
-          continue;
-        case 'C': // [^\c]
-          *icu_re += "[^" bs_c "]";
-          continue;
-        case 'i': // initial NameChar
-          *icu_re += "[" bs_i "]";
-          continue;
-        case 'I': // [^\i]
-          *icu_re += "[^" bs_i "]";
-          continue;
+
+        ////////// Back-References ////////////////////////////////////////////
+
         case '0':
         case '1':
         case '2':
@@ -161,7 +152,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
           in_backref = true;
           // no break;
-        case '$':
+
+        ////////// Single Character Escapes ///////////////////////////////////
+
+        case '$': // added in XQuery 3.0 F&O 5.6.1
         case '(':
         case ')':
         case '*':
@@ -169,26 +163,43 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '-':
         case '.':
         case '?':
-        case 'd': // [0-9]
-        case 'D': // [^\d]
-        case 'n': // newline
-        case 'p': // category escape
-        case 'P': // [^\p]
-        case 'r': // carriage return
-        case 's': // whitespace
-        case 'S': // [^\s]
-        case 't': // tab
-        case 'w': // word char
-        case 'W': // [^\w]
         case '[':
         case '\\':
         case ']':
         case '^':
+        case 'n': // newline
+        case 'r': // carriage return
+        case 't': // tab
         case '{':
         case '|':
         case '}':
+          // no break;
+
+        ////////// Multi-Character & Category Escapes /////////////////////////
+
+        case 'd': // [0-9]
+        case 'D': // [^\d]
+        case 'p': // category escape
+        case 'P': // [^\p]
+        case 's': // whitespace
+        case 'S': // [^\s]
+        case 'w': // word char
+        case 'W': // [^\w]
           *icu_re += '\\';
           break;
+        case 'c': // NameChar
+          *icu_re += "[" bs_c "]";
+          continue;
+        case 'C': // [^\c]
+          *icu_re += "[^" bs_c "]";
+          continue;
+        case 'i': // initial NameChar
+          *icu_re += "[" bs_i "]";
+          continue;
+        case 'I': // [^\i]
+          *icu_re += "[^" bs_i "]";
+          continue;
+
         default:
           throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
       }
@@ -231,13 +242,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             ++open_cap_subs;
             cap_sub.push_back( true );
             cur_cap_sub = cap_sub.size();
+            is_first_char = true;
+            goto append;
           }
           break;
         case ')':
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( !open_cap_subs )
+            if ( !open_cap_subs || cur_cap_sub == 0 )
               throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ')' );
             cap_sub[ --cur_cap_sub ] = false;
           }
@@ -245,14 +258,30 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '[':
           if ( q_flag )
             *icu_re += '\\';
-          else
+          else {
             in_char_class = true;
+            goto append;
+          }
           break;
         case ']':
           if ( q_flag )
             *icu_re += '\\';
           else
             in_char_class = false;
+          break;
+        case '^':
+          if ( q_flag )
+            *icu_re += '\\';
+          else if ( !is_first_char && !in_char_class )
+            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), *xq_c );
+          break;
+        case '|':
+          if ( q_flag )
+            *icu_re += '\\';
+          else {
+            is_first_char = true;
+            goto append;
+          }
           break;
         default:
           if ( x_flag && ascii::is_space( *xq_c ) ) {
@@ -265,37 +294,42 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             //
             *icu_re += '\\';
           }
-      }
-    }
+      } // switch
+    } // else
+    is_first_char = false;
+append:
     *icu_re += *xq_c;
   } // FOR_EACH
 
-  if ( i_flag ) {
-    //
-    // XQuery 3.0 F&O 5.6.1.1: All other constructs are unaffected by the "i"
-    // flag.  For example, "\p{Lu}" continues to match upper-case letters only.
-    //
-    // However, ICU lower-cases everything for the 'i' flag; hence we have to
-    // turn off the 'i' flag for just the \p{Lu}.
-    //
-    // Note that the "6" and "12" below are correct since "\\" represents a
-    // single '\'.
-    //
-    ascii::replace_all( *icu_re, "\\p{Lu}", 6, "(?-i:\\p{Lu})", 12 );
-  }
+  if ( !q_flag ) {
+    if ( i_flag ) {
+      //
+      // XQuery 3.0 F&O 5.6.1.1: All other constructs are unaffected by the "i"
+      // flag.  For example, "\p{Lu}" continues to match upper-case letters
+      // only.
+      //
+      // However, ICU lower-cases everything for the 'i' flag; hence we have to
+      // turn off the 'i' flag for just the \p{Lu}.
+      //
+      // Note that the "6" and "12" below are correct since "\\" represents a
+      // single '\'.
+      //
+      ascii::replace_all( *icu_re, "\\p{Lu}", 6, "(?-i:\\p{Lu})", 12 );
+    }
 
-  //
-  // XML Schema Part 2 F.1.1: [Unicode Database] groups code points into a
-  // number of blocks such as Basic Latin (i.e., ASCII), Latin-1 Supplement,
-  // Hangul Jamo, CJK Compatibility, etc. The set containing all characters
-  // that have block name X (with all white space stripped out), can be
-  // identified with a block escape \p{IsX}.
-  //
-  // However, ICU uses \p{InX} rather than \p{IsX}.
-  //
-  // Note that the "5" below is correct since "\\" represents a single '\'.
-  //
-  ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
+    //
+    // XML Schema Part 2 F.1.1: [Unicode Database] groups code points into a
+    // number of blocks such as Basic Latin (i.e., ASCII), Latin-1 Supplement,
+    // Hangul Jamo, CJK Compatibility, etc. The set containing all characters
+    // that have block name X (with all white space stripped out), can be
+    // identified with a block escape \p{IsX}.
+    //
+    // However, ICU uses \p{InX} rather than \p{IsX}.
+    //
+    // Note that the "5" below is correct since "\\" represents a single '\'.
+    //
+    ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
+  } // q_flag
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -442,11 +476,11 @@ int regex::get_match_end( int groupId ) {
 }
 
 } // namespace unicode
+} // namespace zorba
 
-}//namespace zorba
+///////////////////////////////////////////////////////////////////////////////
 
-
-#else /* ZORBA_NO_UNICODE */
+#else /* ZORBA_NO_ICU */
 
 #include "zorbatypes/zstring.h"
 
@@ -470,7 +504,7 @@ uint32_t regex::parse_regex_flags(const char* flag_cstr)
     case 'i': flags |= REGEX_ASCII_CASE_INSENSITIVE; break;
     case 's': flags |= REGEX_ASCII_DOTALL; break;
     case 'm': flags |= REGEX_ASCII_MULTILINE; break;
-    case 'x': flags |= REGEX_ASCII_COMMENTS; break;
+    case 'x': flags |= REGEX_ASCII_NO_WHITESPACE; break;
     case 'q': flags |= REGEX_ASCII_LITERAL; break;
     default:
       throw XQUERY_EXCEPTION( err::FORX0001, ERROR_PARAMS( *p ) );
@@ -483,6 +517,7 @@ uint32_t regex::parse_regex_flags(const char* flag_cstr)
 void regex::compile( char const *pattern, char const *flags)
 {
   parsed_flags = parse_regex_flags(flags);
+  regex_xquery::CRegexXQuery_parser regex_parser;
   regex_matcher = regex_parser.parse(pattern, parsed_flags);
   if(!regex_matcher)
     throw INVALID_RE_EXCEPTION(pattern);
@@ -517,6 +552,8 @@ bool regex::next_match( char const *s, size_type *pos, zstring *match )
 bool regex::next_token( char const *s, size_type *pos, zstring *token,
                   bool *matched)
 {
+  if(!s[*pos])
+    return false;
   bool  retval;
   int   match_pos;
   int   matched_len;
@@ -528,14 +565,8 @@ bool regex::next_token( char const *s, size_type *pos, zstring *token,
       token->assign(s+*pos, match_pos);
     *pos += match_pos + matched_len;
     if(matched)
-      if(match_pos)
-        *matched = true;
-      else
-        *matched = false;
-    if(match_pos)
-      return true;
-    else
-      return false;
+      *matched = true;
+    return true;
   }
   else
   {
@@ -544,7 +575,7 @@ bool regex::next_token( char const *s, size_type *pos, zstring *token,
     *pos += strlen(s+*pos);
     if(matched)
       *matched = false;
-    return s[*pos] != 0;
+    return true;
   }
 }
 
@@ -554,12 +585,8 @@ bool regex::match_whole( char const *s )
   int   matched_pos;
   int   matched_len;
 
-  bool prev_align = regex_matcher->set_align_begin(true);
-  retval = regex_matcher->match_from(s, parsed_flags, &matched_pos, &matched_len);
-  regex_matcher->set_align_begin(prev_align);
+  retval = regex_matcher->match_anywhere(s, parsed_flags|REGEX_ASCII_WHOLE_MATCH, &matched_pos, &matched_len);
   if(!retval)
-    return false;
-  if(matched_len != strlen(s))
     return false;
   return true;
 }
@@ -587,14 +614,19 @@ bool regex::replace_all( char const *in, char const *replacement, zstring *resul
       //look for dollars
       if(*temprepl == '\\')
       {
-        temprepl++;
-        if(!*temprepl || (*temprepl != '\\') || (*temprepl != '$'))//Invalid replacement string.
-          throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
+        if(!(parsed_flags & REGEX_ASCII_LITERAL))
+        {
+          temprepl++;
+          if(!*temprepl) 
+            temprepl--;
+          else if((*temprepl != '\\') && (*temprepl != '$'))//Invalid replacement string.
+            throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
+        }
         result->append(1, *temprepl);
         temprepl++;
         continue;
       }
-      if(*temprepl == '$')
+      if((*temprepl == '$') && !(parsed_flags & REGEX_ASCII_LITERAL))
       {
         temprepl++;
         index = 0;
@@ -648,7 +680,7 @@ bool regex::find_next_match( bool *reachedEnd )
   if(retval)
   {
     m_match_pos += m_pos;
-    m_pos = m_match_pos = m_matched_len;
+    m_pos = m_match_pos + m_matched_len;
   }
   else
   {
@@ -666,35 +698,30 @@ int regex::get_pattern_group_count()
   return (int)regex_matcher->get_indexed_regex_count();
 }
 
-int regex::get_match_start( int groupId )
+bool regex::get_match_start_end_bytes( int groupId, int *start, int *end )
 {
+  *start = -1;
+  *end = -1;
   if(groupId == 0)
-    return m_match_pos;
+  {
+    *start = m_match_pos;
+    *end = m_match_pos + m_matched_len;
+    return true;
+  }
   if(groupId > (int)regex_matcher->get_indexed_regex_count())
-    return -1;
+    return false;
   const char *submatched_source;
   int   submatched_len;
   if(!regex_matcher->get_indexed_match(groupId, &submatched_source, &submatched_len))
-    return -1;
-  return submatched_source - s_in_.c_str();
-}
-
-int regex::get_match_end( int groupId )
-{
-  if(groupId == 0)
-    return m_match_pos + m_matched_len;
-  if(groupId > (int)regex_matcher->get_indexed_regex_count())
-    return -1;
-  const char *submatched_source;
-  int   submatched_len;
-  if(!regex_matcher->get_indexed_match(groupId, &submatched_source, &submatched_len))
-    return -1;
-  return submatched_source - s_in_.c_str() + submatched_len;
+    return false;
+  *start = submatched_source - s_in_.c_str();
+  *end = *start + submatched_len;
+  return true;
 }
 
 } // namespace unicode
 } // namespace zorba
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -23,6 +23,7 @@ class MyDiagnosticHandler(zorba_api.DiagnosticHandler):
 def test(zorba):
   diagnosticHandler = MyDiagnosticHandler()
   try:
+    print "Compiling 1 div 0"
     xquery = zorba.compileQuery("1 div 0", diagnosticHandler)
     print xquery.execute()
   except Exception, e:

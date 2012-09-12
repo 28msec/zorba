@@ -36,7 +36,7 @@ PlanIter_t fn_current_dateTime::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CurrentDateTimeIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_current_date::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CurrentDateIterator(sctx, loc, argv);
 }
@@ -56,7 +56,7 @@ PlanIter_t fn_current_time::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CurrentTimeIterator(sctx, loc, argv);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_implicit_timezone::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ImplicitTimezoneIterator(sctx, loc, argv);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_default_collation::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DefaultCollationIterator(sctx, loc, argv);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_position::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return NULL;
 }
@@ -96,7 +96,7 @@ PlanIter_t fn_last::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return NULL;
 }
@@ -106,16 +106,16 @@ PlanIter_t fn_static_base_uri::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return NULL;
 }
 
 void populate_context_context(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_current_dateTime,
         (createQName("http://www.w3.org/2005/xpath-functions","","current-dateTime"), 
         GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
@@ -124,9 +124,9 @@ void populate_context_context(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_current_date,
         (createQName("http://www.w3.org/2005/xpath-functions","","current-date"), 
         GENV_TYPESYSTEM.DATE_TYPE_ONE),
@@ -135,9 +135,9 @@ void populate_context_context(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_current_time,
         (createQName("http://www.w3.org/2005/xpath-functions","","current-time"), 
         GENV_TYPESYSTEM.TIME_TYPE_ONE),
@@ -146,9 +146,9 @@ void populate_context_context(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_implicit_timezone,
         (createQName("http://www.w3.org/2005/xpath-functions","","implicit-timezone"), 
         GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE),
@@ -157,9 +157,9 @@ void populate_context_context(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_default_collation,
         (createQName("http://www.w3.org/2005/xpath-functions","","default-collation"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -168,9 +168,9 @@ void populate_context_context(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_position,
         (createQName("http://www.w3.org/2005/xpath-functions","","position"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
@@ -179,9 +179,9 @@ void populate_context_context(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_last,
         (createQName("http://www.w3.org/2005/xpath-functions","","last"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
@@ -190,9 +190,9 @@ void populate_context_context(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_static_base_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","static-base-uri"), 
         GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),

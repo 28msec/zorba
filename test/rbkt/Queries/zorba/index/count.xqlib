@@ -1,0 +1,82 @@
+xquery version "3.0";
+
+module namespace def = "http://www.example.com/";
+
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare collection def:user as node()*;
+
+
+declare variable $def:user := xs:QName("def:user");
+ 
+declare %ann:automatic %ann:unique %ann:value-equality index def:user-by-uid
+  on nodes dml:collection(xs:QName("def:user"))
+  by xs:string(@uid) as xs:string;
+
+
+declare variable $def:user-by-uid := xs:QName("def:user-by-uid");
+ 
+declare %ann:automatic %ann:value-range index def:user-by-uid-range
+  on nodes dml:collection(xs:QName("def:user"))
+  by xs:string(@uid) as xs:string;
+
+
+declare variable $def:user-by-uid-range := xs:QName("def:user-by-uid-range");
+
+declare %ann:manual %ann:general-range index def:user-by-uid-general-range
+  on nodes dml:collection(xs:QName("def:user"))
+  by xs:string(@uid) as xs:string;
+
+declare variable $def:user-by-uid-general-range := xs:QName("def:user-by-uid-general-range");
+
+
+declare %ann:sequential function def:init()
+{
+  ddl:create($def:user);
+
+  index_ddl:create($def:user-by-uid);
+  index_ddl:create($def:user-by-uid-range);
+  index_ddl:create($def:user-by-uid-general-range);
+
+  dml:insert-nodes($def:user,
+    (
+      <user uid='1'>Matthias</user>,
+      <user uid='2'>David</user>,
+      <user uid='3'>Gabriel</user>,
+      <user uid='4'>William</user>
+    )
+  );
+
+  index_dml:refresh-index($def:user-by-uid-general-range);
+};
+
+
+declare function def:count-user()
+{
+  count(index_dml:probe-index-point-value(xs:QName("def:user-by-uid"), "1"))
+};
+
+
+declare function def:count-user-range()
+{
+  count(
+   index_dml:probe-index-range-value(
+    xs:QName("def:user-by-uid-range"),
+    "1", "4", fn:true(), fn:true(), fn:true(), fn:true())
+  )
+};
+
+
+declare function def:count-user-general-range()
+{
+  count(
+   index_dml:probe-index-range-general(
+    xs:QName("def:user-by-uid-general-range"),
+    "1", "4", fn:true(), fn:true(), fn:true(), fn:true())
+  )
+};

@@ -65,6 +65,41 @@ zorba::diagnostic::kind XQueryErrQName::kind() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_JSON
+
+char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
+char const JSONiqErrQName::PREFIX[] = "jerr";
+
+zorba::diagnostic::category JSONiqErrQName::category() const {
+  using namespace zorba::diagnostic;
+
+  char const *const name = localname();
+
+  if ( ascii::begins_with( name, "JU", 2 ) )
+    return JSONIQ_UPDATE;
+
+  return JSONIQ_CORE;
+}
+
+zorba::diagnostic::kind JSONiqErrQName::kind() const {
+  using namespace zorba::diagnostic;
+
+  char const *const name = localname();
+
+  if ( ::strncmp( name + 2, "DY", 2 ) == 0 )
+    return XQUERY_DYNAMIC;
+  if ( ::strncmp( name + 2, "ST", 2 ) == 0 )
+    return XQUERY_STATIC;
+  if ( ::strncmp( name + 2, "TY", 2 ) == 0 )
+    return XQUERY_TYPE;
+
+  return UNKNOWN_KIND;
+}
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+
 char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
 char const ZorbaErrQName::PREFIX[] = "zerr";
 
@@ -79,9 +114,15 @@ zorba::diagnostic::category ZorbaErrQName::category() const {
     case 'C': return ZORBA_SERIALIZATION;
     case 'D': return ZORBA_DDF;
     case 'G': return ZORBA_DEBUGGER;
+    case 'J': switch ( name[2] ) {
+                case 'P': return JSON_PARSER;
+                case 'S': return JSON_SERIALIZATION;
+                default : ZORBA_ASSERT( false );
+              }
     case 'O': return ZORBA_OS;
     case 'S': return ZORBA_STORE;
     case 'X': return ZORBA_XQP;
+
     default : ZORBA_ASSERT( false );
   }
 }

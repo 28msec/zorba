@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
+%feature("director") DiagnosticHandler;
 
 %{   // start Implementations
 
-class DiagnosticHandler : public zorba::DiagnosticHandler 
-{
- private:
-  void error (const zorba::ZorbaException &ze) 
-  { 
+  void DiagnosticHandler::error (const zorba::ZorbaException &ze) 
+  {
     if ( zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>( &ze ) ) {
       const XQueryException xe2(xe);
       error(xe2); 
@@ -31,28 +29,16 @@ class DiagnosticHandler : public zorba::DiagnosticHandler
       error(ue2); 
     }
   }
-  void warning (const zorba::XQueryException &xw)
+  void DiagnosticHandler::warning (const zorba::XQueryException &xw)
   {
     // TODO: do something with warning
   }
 
- public:
-  virtual ~DiagnosticHandler() {}
-  virtual void error(const ZorbaException &ze) {}
-  //virtual void warning(const XQueryWarning &xw) {}
- }; // class DiagnosticHandler
+  DiagnosticHandler::~DiagnosticHandler() {}
+  void DiagnosticHandler::error(const ZorbaException &ze) {
+  }
 
 
 %}  // end Implementations
 
-    // Interface
-
-class DiagnosticHandler 
-{
- public:
-  virtual ~DiagnosticHandler();
-  virtual void error(const ZorbaException &ze); 
-  //virtual void warning(const XQueryWarning &xw); 
-}; // class DiagnosticHandler
-
-/* vim:set et sw=2 ts=2: */
+%include "DiagnosticHandler.h"

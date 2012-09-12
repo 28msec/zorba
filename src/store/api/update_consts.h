@@ -81,6 +81,7 @@ public:
     UP_INSERT_AT_INTO_COLLECTION,
     UP_REMOVE_FROM_COLLECTION,
     UP_REMOVE_AT_FROM_COLLECTION,
+    UP_TRUNCATE_COLLECTION,
 
     // index primitives
     UP_CREATE_INDEX,
@@ -101,6 +102,18 @@ public:
     UP_DESTROY_HASHMAP,
     UP_INSERT_INTO_HASHMAP,
     UP_REMOVE_FROM_HASHMAP
+
+#ifdef ZORBA_WITH_JSON
+    ,
+    UP_JSON_OBJECT_INSERT,
+    UP_JSON_OBJECT_DELETE,
+    UP_JSON_OBJECT_REPLACE_VALUE,
+    UP_JSON_OBJECT_RENAME,
+    UP_JSON_ARRAY_INSERT,
+    UP_JSON_ARRAY_APPEND,
+    UP_JSON_ARRAY_DELETE,
+    UP_JSON_ARRAY_REPLACE_VALUE,
+#endif
   };
 
   static bool isRename(UpdPrimKind k)
@@ -111,15 +124,14 @@ public:
   static bool isReplaceValue(UpdPrimKind k)
   {
     return (k == UP_REPLACE_ATTR_VALUE ||
-          k == UP_REPLACE_TEXT_VALUE ||
-          k == UP_REPLACE_PI_VALUE ||
-          k == UP_REPLACE_COMMENT_VALUE);
+            k == UP_REPLACE_TEXT_VALUE ||
+            k == UP_REPLACE_PI_VALUE ||
+            k == UP_REPLACE_COMMENT_VALUE);
   }
 
   static bool isReplaceNode(UpdPrimKind k)
   {
-    return (k == UP_REPLACE_CHILD ||
-          k == UP_REPLACE_ATTRIBUTE);
+    return (k == UP_REPLACE_CHILD || k == UP_REPLACE_ATTRIBUTE);
   }
 
 
@@ -177,6 +189,8 @@ static std::string toString(UpdPrimKind k)
       return "insertAtIntoCollection";
     case UP_REMOVE_FROM_COLLECTION:
       return "removeFromCollection";
+    case UP_TRUNCATE_COLLECTION:
+      return "truncateCollection";
     case UP_REMOVE_AT_FROM_COLLECTION:
       return "removeAtFromCollection";
     case UP_CREATE_INDEX:
@@ -209,6 +223,22 @@ static std::string toString(UpdPrimKind k)
       return "setElementType";
     case UP_REVALIDATE:
       return "revalidate";
+#ifdef ZORBA_WITH_JSON
+  case UP_JSON_OBJECT_INSERT:
+    return "jsonObjectInsert";
+  case UP_JSON_OBJECT_DELETE:
+    return "jsonObjectDelete";
+  case UP_JSON_OBJECT_REPLACE_VALUE:
+    return "jsonObjectReplaceValue";
+  case UP_JSON_OBJECT_RENAME:
+    return "jsonObjectRename";
+  case UP_JSON_ARRAY_INSERT:
+    return "jsonArrayInsert";
+  case UP_JSON_ARRAY_DELETE:
+    return "jsonArrayDelete";
+  case UP_JSON_ARRAY_REPLACE_VALUE:
+    return "jsonArrayReplaceValue";
+#endif
     default:
       return "unknownUpdatePrimitive";
   }

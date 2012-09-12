@@ -21,7 +21,6 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/fo_expr.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
 #include "functions/function.h"
@@ -47,13 +46,17 @@ namespace zorba
 namespace expr_tools
 {
 
-int count_variable_uses(const expr* root, const var_expr* var, RewriterContext* rCtx, int limit);
+int count_variable_uses(
+    const expr* root,
+    const var_expr* var,
+    RewriterContext* rCtx,
+    int limit);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t fix_annotations(expr* new_expr, const expr* old_expr = NULL);
+expr* fix_annotations(expr* new_expr, const expr* old_expr = NULL);
 
 
 /*******************************************************************************
@@ -65,32 +68,6 @@ void index_flwor_vars(const expr*, ulong&, VarIdMap&, IdVarMap*);
 void build_expr_to_vars_map(expr*, const VarIdMap&, DynamicBitset&, ExprVarsMap&);
 
 void replace_var(expr*, const var_expr* oldVar, var_expr* newVar);
-
-
-/*******************************************************************************
-
-********************************************************************************/
-typedef std::set<const var_expr *> var_ptr_set;
-
-
-class VarSetAnnVal : public AnnotationValue
-{
-public:
-  var_ptr_set theVarset;
-
-public:
-  VarSetAnnVal() {}
-
-  VarSetAnnVal(var_ptr_set& varset) 
-  {
-    theVarset.swap(varset);
-  }
-
-  void add(const var_expr* v) { theVarset.insert(theVarset.begin(), v); }
-};
-
-
-const var_ptr_set& get_varset_annotation(const expr* e);
 
 
 /*******************************************************************************

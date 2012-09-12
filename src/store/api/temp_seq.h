@@ -36,6 +36,18 @@ class  TempSeq : public SimpleRCObject
 public:
   virtual ~TempSeq(){}
 
+  virtual bool isLazy() const = 0;
+
+  /**
+   * @return Does this TempSeq save an empty sequence? 
+   */
+  virtual bool empty() = 0;
+
+  /**
+   *
+   */
+  virtual xs_integer getSize() const = 0;
+
   /**
    * Initializes a temp sequence with the given input iterator
    */
@@ -63,12 +75,7 @@ public:
    * 
    * @param upTo boundary for garbage collector
    */
-  virtual void purgeUpTo(xs_integer upTo) = 0;
-
-  /**
-   * @return Does this TempSeq save an empty sequence? 
-   */
-  virtual bool empty() = 0;
+  virtual void purgeUpTo(xs_integer pos) = 0;
 
   /**
    * Gets an item at a certain position.
@@ -78,7 +85,7 @@ public:
    * @param position (first position in XQuery is 1 and not 0!)
    * @return item
    */
-  virtual void getItem(xs_integer position, Item_t& result) = 0;
+  virtual void getItem(xs_integer pos, Item_t& result) = 0;
 		
   /**
    * Returns true if the item at the passed position is available.
@@ -88,12 +95,7 @@ public:
    * @param position 
    * @return 
    */
-  virtual bool containsItem(xs_integer position) = 0;
-
-  /**
-   *
-   */
-  virtual xs_integer getSize() const = 0;
+  virtual bool containsItem(xs_integer pos) = 0;
 
   /**
    * Reads the whole Sequence from beginning to end; it is allowed to have several 
@@ -104,18 +106,6 @@ public:
    */
   virtual Iterator_t getIterator() const = 0;
 	
-  /**
-   * Returns an iterator which reads just a part of the underlying TempSeq
-   * Starts counting with 1.
-   *
-   * @param startPos The first item which the iterator returns. Starts counting with 1.
-   * @param endPos The last item which the iterator returns 
-   * @return Iterator
-   */
-  virtual Iterator_t getIterator(
-      xs_integer startPos,
-      xs_integer endPos,
-      bool streaming = false) const = 0;
 };
 
 } // namespace store

@@ -22,10 +22,12 @@
 
 #include "types/typeimpl.h"
 
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
-END_SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 
 
 /*******************************************************************************
@@ -65,7 +67,7 @@ StaticallyKnownCollection::~StaticallyKnownCollection()
 ********************************************************************************/
 void StaticallyKnownCollection::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (SimpleRCObject*)this);
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
     
   ar & theName;
   ar & theAnnotations;

@@ -20,6 +20,7 @@
 #include <zorba/api_shared_types.h>
 #include <zorba/identtypes.h>
 #include <zorba/zorba_string.h>
+#include <iostream>
 
 namespace zorba {
 
@@ -61,53 +62,75 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
     createAttributeType(
         const String& uri,
         bool uriWildcard,
-        const String& localNameName,
+        const String& localName,
         bool localNameWildcard,
         TypeIdentifier_t contentType,
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
+        IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
     static
     TypeIdentifier_t
     createDocumentType(
         TypeIdentifier_t contentType,
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
+        IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
     static
     TypeIdentifier_t
-    createPIType(
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
+    createPIType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
     static
     TypeIdentifier_t
-    createTextType(
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
+    createTextType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
     static
     TypeIdentifier_t
-    createCommentType(
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
+    createCommentType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
     static
     TypeIdentifier_t
-    createAnyNodeType(
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
+    createAnyNodeType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
     static
     TypeIdentifier_t
-    createItemType(
-        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
-        );
+    createStructuredItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+
+#ifdef ZORBA_WITH_JSON
+    static
+    TypeIdentifier_t
+    createJSONItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+
+    static
+    TypeIdentifier_t
+    createJSONObjectType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+
+    static
+    TypeIdentifier_t
+    createJSONArrayType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+#endif
+
+    static
+    TypeIdentifier_t
+    createItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
     static
     TypeIdentifier_t
     createEmptyType();
 
+    static
+    TypeIdentifier_t
+    createSchemaElementType(
+        const String& uri,
+        const String& localName,
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+  
+    static
+    TypeIdentifier_t
+    createSchemaAttributeType(
+        const String& uri,
+        const String& localName,
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
+  
     IdentTypes::kind_t
     getKind() const;
 
@@ -129,8 +152,17 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
     TypeIdentifier_t
     getContentType() const;
 
+    std::ostream&
+    emit(std::ostream&) const;
+
   private:
     TypeIdentifier();
+
+    std::ostream&
+    emitItemType(std::ostream&) const;
+
+    std::ostream&
+    emitName(std::ostream&) const;
 
     IdentTypes::kind_t m_kind;
     IdentTypes::quantifier_t m_quantifier;
@@ -147,6 +179,13 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
 
 
 } /* namespace zorba */
+
+namespace std {
+
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti);
+
+}
 
 #endif /* ZORBA_TYPES_TYPEIDENT_H */
 /* vim:set et sw=2 ts=2: */

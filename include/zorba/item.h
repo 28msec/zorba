@@ -131,6 +131,11 @@ public:
   bool
   isAtomic() const;
 
+  /**
+   * @return the type of this item based on the enum values in store_const.h
+   */
+  store::SchemaTypeCode getTypeCode() const;
+
   /** \brief Get the type of the Item.
    *
    * See http://www.w3.org/TR/xpath-datamodel/#types.
@@ -141,6 +146,21 @@ public:
    */
   Item
   getType() const;
+
+#ifdef ZORBA_WITH_JSON
+
+  /**
+   * \brief Check if the Item is a JSON Item, that is, part of the JSONiq
+   * data model.
+   *
+   * Note that this function is available for all types of Items.
+   *
+   * @return true if the Item is a JSON Item, false otherwise.
+   */
+  bool
+  isJSONItem() const;
+
+#endif /* ZORBA_WITH_JSON */
 
   /** \brief Get the atomization value of the Item.
    *
@@ -303,7 +323,7 @@ public:
     * @param aBindings An STL list to receive the namespace bindings of this node (each
     * represented as a std::pair<zorba::String,zorba::String> where the
     * first string is the namespace prefix and the second is the namespace URI).
-    * @param aScope An instance of NsScoping to declare which bindings to return:
+    * @param aNsScoping An instance of NsScoping to declare which bindings to return:
     * those local to the element; those local to all parent elements; or all bindings
     * (the default).
     * @throw ZorbaException if an error occured, e.g. the Item is not of type element.
@@ -346,6 +366,63 @@ public:
   int
   getNodeKind() const;
 
+#ifdef ZORBA_WITH_JSON
+
+  /** \brief Get the kind of this (JSON) Item.
+   *
+   * Note that this function is only available for JSON Items, that is, Items
+   * which return true from isJSONItem().
+   *
+   * @return the kind of this JSON item
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON).
+   */
+  store::StoreConsts::JSONItemKind
+  getJSONItemKind() const;
+
+  /** \brief Get the size of a JSON Array.
+   *
+   * Note that this function is only available for JSON Arrays.
+   *
+   * @return Item the size of the array.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
+   */
+  uint64_t
+  getArraySize() const;
+
+  /** \brief Returns the item in the JSON array at the specified index.
+   *
+   * Note that this function is only available for JSON Arrays.
+   *
+   * @param aIndex the index in the array.
+   * @return Item the indexed Item.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
+   */
+  Item
+  getArrayValue(uint32_t aIndex) const;
+
+  /** \brief Get the keys of a JSON Object.
+   *
+   * Note that this function is only available for JSON Objects.
+   *
+   * @return Iterator_t an iterator on the keys of the object.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
+   */
+  Iterator_t
+  getObjectKeys() const;
+
+  /** \brief Returns the value with the given name from a JSON Object.
+   *
+   * Note that this function is only available for JSON Objects.
+   *
+   * @param aName the name of the value in the Object to return.
+   * @return Item the named value from the Object.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
+   */
+  Item
+  getObjectValue(String aName) const;
+
+#endif /* ZORBA_WITH_JSON */
+
   /**
    * Checks whether the item's content is streamable.
    *
@@ -355,6 +432,15 @@ public:
   isStreamable() const;
 
   /**
+   * Checks whether the item's streamable content is arbitrarily
+   * (forward anb backward) seekable.
+   *
+   * @return true only if it is.
+   */
+  bool
+  isSeekable() const;
+
+  /**
    * Gets an istream for the item's content.
    *
    * @return the stream.
@@ -362,6 +448,29 @@ public:
    */
   std::istream&
   getStream();
+
+  /**
+   * Returns true if the contents of a binary item is already encoded
+   * 
+   * @return true if the content is already encoded, false otherwise
+   */
+  bool
+  isEncoded() const;
+
+  /**
+   * Returns the value and size of the given base64Binary item
+   *
+   * The value is a string which is base64 encoded if isEncoded()
+   * returns true. Otherwise, it is the original unencoded binary
+   * data.
+   *
+   * If the given item is streamable (i.e. isStreamable() returns true),
+   * the stream returned by getStream() should to be used to retrieve
+   * the value. Otherwise, the contents of the stream will be materialized
+   * in main memory.
+   */
+  const char*
+  getBase64BinaryValue(size_t& s) const;
 
   /** \brief Returns the name of the collection this node is stored in.
    *

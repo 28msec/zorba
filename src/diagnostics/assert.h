@@ -20,6 +20,10 @@
 #ifndef ZORBA_ASSERT_H
 #define ZORBA_ASSERT_H
 
+#include <sstream>
+
+#include "util/cxx_util.h"
+
 namespace zorba {
 
 /**
@@ -29,12 +33,18 @@ namespace zorba {
  * @param condition The string representation of the condition that failed.
  * @param file The C++ source-code file name where the assertion failed.
  * @param line The C++ source-code line number where the assertion failed.
+ * @param msg An optional message that is output if the assertion fails.
  * @throws ZXQP0002_ASSERT_FAILED
  */
-void assertion_failed( char const *condition, char const *file, int line );
+void assertion_failed( char const *condition,
+                       char const *file, 
+                       int line, 
+                       char const *msg = nullptr );
 
 /**
  * Zorba version of the standard assert(3) macro.
+ * Is checked in RELEASE mode as well. And outputs a special
+ * error code with the failing condition.
  */
 #define ZORBA_ASSERT(COND)                                  \
   do {                                                      \
@@ -42,6 +52,22 @@ void assertion_failed( char const *condition, char const *file, int line );
       zorba::assertion_failed( #COND, __FILE__, __LINE__ ); \
       throw 0; /* never gets here but suppresses warning */ \
     }                                                       \
+  } while (0)
+
+/**
+ * Zorba version of the standard assert(3) macro.
+ * Is checked in RELEASE mode as well. And outputs a special
+ * error code with the failing condition as well as potentially
+ * useful information for further debugging.
+ */
+#define ZORBA_ASSERT_WITH_MSG(COND,MSG)                                        \
+  do {                                                                         \
+    if ( !(COND) ) {                                                           \
+      std::ostringstream oss;                                                  \
+      oss << MSG;                                                              \
+      zorba::assertion_failed( #COND, __FILE__, __LINE__, oss.str().c_str() ); \
+      throw 0; /* never gets here but suppresses warning */                    \
+    }                                                                          \
   } while (0)
 
 } // namespace zorba

@@ -26,6 +26,8 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/function.h>
+#include <zorba/error.h>
+#include <zorba/diagnostic_list.h>
 
 #ifdef WIN32
 #include "store/api/item.h"
@@ -39,8 +41,10 @@
 #include "context/features.h"
 
 #include "zorbautils/hashmap_zstring.h"
+#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
+
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
 
@@ -134,9 +138,7 @@ struct FunctionInfo : public ::zorba::serialization::SerializeBaseClass
 
 public:
   SERIALIZABLE_CLASS(FunctionInfo)
-
   FunctionInfo(::zorba::serialization::Archiver& ar);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -148,13 +150,75 @@ public:
 };
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+class VarInfo : public SimpleRCObject
+{
+protected:
+  store::Item_t  theName;
+
+  ulong          theId;
+
+  int            theKind;
+
+  xqtref_t       theType;
+
+  bool           theIsExternal;
+
+  bool           theHasInitializer;
+
+  var_expr     * theVarExpr;
+
+public:
+  SERIALIZABLE_CLASS(VarInfo)
+  VarInfo(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  VarInfo();
+
+  VarInfo(var_expr* v);
+
+  ~VarInfo();
+
+  const store::Item_t& getName() const { return theName; }
+
+  ulong getId() const { return theId; }
+
+  void setId(ulong id) { theId = id; }
+
+  int getKind() const { return theKind; }
+
+  const XQType* getType() const { return theType.getp(); }
+
+  void setType(const xqtref_t& t);
+
+  bool isExternal() const { return theIsExternal; }
+
+  void setIsExternal(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
+
+  var_expr* getVar() const { return theVarExpr; }
+
+  void clearVar() { theVarExpr = NULL; }
+};
+
+
+typedef rchandle<VarInfo> VarInfo_t;
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 struct PrologOption : public ::zorba::serialization::SerializeBaseClass
 {
-  store::Item_t    theName;
-  zstring theValue;
+  store::Item_t  theName;
+  zstring        theValue;
 
 public:
   SERIALIZABLE_CLASS(PrologOption)
@@ -273,7 +337,7 @@ public:
   theExternalModulesMap :
   -----------------------
 
-  theTypeMnager :
+  theTypeManager :
   ---------------
   If non NULL, then "this" is the root sctx of a module, and theTypeManager stores
   the schemas that are imported by the associated module (in-scope element
@@ -296,7 +360,7 @@ public:
 
   theVariablesMap :
   -----------------
-  
+
   theImportedPrivateVariablesMap :
   --------------------------------
 
@@ -380,25 +444,25 @@ public:
 
 class static_context : public SimpleRCObject
 {
-  typedef serializable_ItemPointerHashMap<StaticallyKnownCollection_t> CollectionMap;
+  ITEM_PTR_HASH_MAP(StaticallyKnownCollection_t, CollectionMap);
 
-  typedef serializable_ItemPointerHashMap<IndexDecl_t> IndexMap;
+  ITEM_PTR_HASH_MAP(IndexDecl_t, IndexMap);
 
-  typedef serializable_ItemPointerHashMap<ValueIC_t> ICMap;
+  ITEM_PTR_HASH_MAP(ValueIC_t, ICMap);
 
-  typedef serializable_ItemPointerHashMap<var_expr_t> VariableMap;
+  ITEM_PTR_HASH_MAP(VarInfo_t, VariableMap);
 
-  typedef serializable_ItemPointerHashMap<FunctionInfo> FunctionMap;
+  ITEM_PTR_HASH_MAP(FunctionInfo, FunctionMap);
 
-  typedef serializable_ItemPointerHashMap<std::vector<FunctionInfo>* > FunctionArityMap;
+  ITEM_PTR_HASH_MAP(std::vector<FunctionInfo>*, FunctionArityMap);
 
-  typedef serializable_ItemPointerHashMap<PrologOption> OptionMap;
+  ITEM_PTR_HASH_MAP(PrologOption, OptionMap);
 
-  typedef serializable_HashMapZString<zstring> NamespaceBindings;
+  ZSTRING_HASH_MAP(zstring, NamespaceBindings);
 
-  typedef serializable_HashMapZString<xqtref_t> DocumentMap;
+  ZSTRING_HASH_MAP(xqtref_t, DocumentMap);
 
-  typedef serializable_HashMapZString<xqtref_t> W3CCollectionMap;
+  ZSTRING_HASH_MAP(xqtref_t, W3CCollectionMap);
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
@@ -420,7 +484,7 @@ public:
     virtual ~ctx_module_t() {}
   };
 
-  typedef serializable_HashMapZString<ctx_module_t> ExternalModuleMap;
+  ZSTRING_HASH_MAP(ctx_module_t, ExternalModuleMap);
 
 public:
   static const zstring DOT_VAR_NAME;
@@ -446,6 +510,9 @@ public:
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
   static const char* ZORBA_BASE64_FN_NS;
+
+  static const char* ZORBA_JSON_FN_NS;
+
   static const char* ZORBA_NODEREF_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
@@ -458,15 +525,28 @@ public:
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+
+#ifdef ZORBA_WITH_JSON
+  static const char* JSONIQ_NS;
+  static const char* JSONIQ_FN_NS;
+#endif
+
   static const char* ZORBA_SCHEMA_FN_NS;
   static const char* ZORBA_XQDOC_FN_NS;
   static const char* ZORBA_RANDOM_FN_NS;
   static const char* ZORBA_INTROSP_SCTX_FN_NS;
   static const char* ZORBA_REFLECTION_FN_NS;
   static const char* ZORBA_STRING_FN_NS;
+
+  static const char* ZORBA_URI_FN_NS;
+
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
   static const char* ZORBA_XML_FN_NS;
+#ifndef ZORBA_NO_FULL_TEXT
+  static const char* ZORBA_FULL_TEXT_FN_NS;
+#endif /* ZORBA_NO_FULL_TEXT */
+  static const char* ZORBA_XML_FN_OPTIONS_NS;
 
   // Namespaces of virtual modules declaring zorba builtin functions
   static const char* ZORBA_UTIL_FN_NS;
@@ -489,11 +569,11 @@ protected:
 
   std::ostream                          * theTraceStream;
 
-  expr_t                                  theQueryExpr;
+  expr*                                  theQueryExpr;
 
   std::string                             theModuleNamespace;
 
-  std::vector<zstring>                  * theImportedBuiltinModules;
+  std::vector<zstring>                    theImportedBuiltinModules;
 
   BaseUriInfo                           * theBaseUriInfo;
 
@@ -520,7 +600,7 @@ protected:
   xqtref_t                                theContextItemType;
 
   VariableMap                           * theVariablesMap;
-  
+
   VariableMap                           * theImportedPrivateVariablesMap;
 
   FunctionMap                           * theFunctionMap;
@@ -567,7 +647,7 @@ protected:
 
   StaticContextConsts::validation_mode_t     theValidationMode;
 
-  std::vector<DecimalFormat_t>             * theDecimalFormats;
+  std::vector<DecimalFormat_t>               theDecimalFormats;
 
   bool                                       theAllWarningsDisabled;
 
@@ -599,8 +679,6 @@ public:
 
   void serialize(serialization::Archiver& ar);
 
-  void prepare_for_serialize(CompilerCB *compiler_cb);
-
 public:
   static_context(::zorba::serialization::Archiver& ar);
 
@@ -612,9 +690,9 @@ public:
 
   bool is_global_root_sctx() const;
 
-  expr_t get_query_expr() const;
+  expr* get_query_expr() const;
 
-  void set_query_expr(expr_t expr);
+  void set_query_expr(expr* expr);
 
   void set_trace_stream(std::ostream&);
 
@@ -642,6 +720,8 @@ public:
   void set_entity_retrieval_uri(const zstring& uri);
 
   zstring get_base_uri() const;
+
+  void clear_base_uri();
 
   void set_base_uri(const zstring& uri, bool from_prolog = true);
 
@@ -694,6 +774,15 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const;
+
+  /**
+   * Given a URI, populate a vector with a list of candidate URIs.  If
+   * no candidate URIs are available, the vector will be populated
+   * with (only) the input URI.
+   */
+  void get_candidate_uris
   (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
@@ -780,23 +869,17 @@ public:
   //
   // Variables
   //
-  void bind_var(
-        var_expr_t& expr,
-        const QueryLoc& loc,
-        const Error& err);
+  void bind_var(var_expr* expr, const QueryLoc& loc, const Error& err);
 
-  var_expr* lookup_var(
-        const store::Item* qname,
-        const QueryLoc& loc,
-        const Error& err) const;
+  VarInfo* lookup_var(const store::Item* qname) const;
 
   void getVariables(
-    std::vector<var_expr_t>& variableList,
-    bool localsOnly = false,
-    bool returnPrivateVars = false,
-    bool externalVarsOnly = false) const;
+      std::vector<VarInfo*>& variableList,
+      bool localsOnly = false,
+      bool returnPrivateVars = false,
+      bool externalVarsOnly = false) const;
 
-  void set_context_item_type(const xqtref_t& t);
+  void set_context_item_type(const xqtref_t& t, const QueryLoc& loc);
 
   const XQType* get_context_item_type() const;
 
@@ -807,9 +890,15 @@ public:
 
   void unbind_fn(const store::Item* qname, ulong arity);
 
-  function* lookup_fn(const store::Item* qname, ulong arity);
+  function* lookup_fn(
+      const store::Item* qname,
+      ulong arity,
+      bool skipDisabled = true);
 
-  function* lookup_local_fn(const store::Item* qname, ulong arity);
+  function* lookup_local_fn(
+      const store::Item* qname,
+      ulong arity,
+      bool skipDisabled = true);
 
   void get_functions(std::vector<function*>& functions) const;
 

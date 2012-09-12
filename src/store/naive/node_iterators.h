@@ -16,12 +16,18 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
+#include <set>
+#include <vector>
+
 #include "store/api/iterator.h"
-#include "store/naive/shared_types.h"
-#include "store/naive/node_items.h"
+#include "shared_types.h"
+#include "node_items.h"
+#ifdef ZORBA_WITH_JSON
+#include "json_items.h"
+#endif
 
 #include "zorbautils/hashfun.h"
-#include "zorbautils/hashset_itemh.h"
+#include "zorbautils/hashset_node_itemh.h"
 
 
 namespace zorba { namespace simplestore {
@@ -69,7 +75,7 @@ public:
                           static_cast<ConnectorNode*>(*theStart)->getNode() :
                           (*theStart));
 
-      while ((*theStart) != child)
+      while (myChild != child)
       {
         ++theStart;
 
@@ -183,7 +189,7 @@ public:
                           static_cast<ConnectorNode*>(*theStart)->getNode() :
                           (*theStart));
 
-      while ((*theStart) != child)
+      while (myChild != child)
       {
         ++theStart;
 
@@ -211,7 +217,7 @@ public:
                           static_cast<ConnectorNode*>(*theStart)->getNode() :
                           (*theStart));
 
-      while ((*theStart) != child)
+      while (myChild != child)
       {
         ++theStart;
 
@@ -366,7 +372,7 @@ class StoreNodeDistinctIterator : public store::Iterator
 {
 protected:
   store::Iterator_t   theInput;
-  ItemHandleHashSet   theNodeSet;
+  NodeHandleHashSet   theNodeSet;
   bool                theCheckOnly;
 
 public:
@@ -458,13 +464,17 @@ protected:
   bool                    theDistinct;
 
   std::vector<XmlNode*>   theNodes;
-  long                    theCurrentNode;
+  csize                   theCurrentNode;
+  
+#ifdef ZORBA_WITH_JSON
+  std::set<json::JSONItem*>  theJSONItems;
+#endif
 
 public:
   StoreNodeSortIterator(
-        const store::Iterator_t& input,
-        bool                     ascendant,
-        bool                     distinct)
+      const store::Iterator_t& input,
+      bool                     ascendant,
+      bool                     distinct)
     :
     theInput(input),
     theAscending(ascendant),

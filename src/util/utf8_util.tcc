@@ -99,7 +99,7 @@ unicode::code_point prev_char( OctetIterator &oi ) {
   return next_char( temp );
 }
 
-#ifndef ZORBA_NO_UNICODE
+#ifndef ZORBA_NO_ICU
 
 template<class InputStringType,class OutputStringType>
 bool normalize( InputStringType const &in, unicode::normalization::type n,
@@ -120,17 +120,32 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
   return true;
 }
 
+#endif /* ZORBA_NO_ICU */
+
 template<class InputStringType,class OutputStringType>
-void strip_diacritics( InputStringType const &in, OutputStringType *out ) {
-  InputStringType in_normalized;
-  normalize( in, unicode::normalization::NFKD, &in_normalized );
+bool strip_diacritics( InputStringType const &in, OutputStringType *out ) {
+#ifndef ZORBA_NO_ICU
+  unicode::string u_in;
+  if ( !unicode::to_string( in, &u_in ) )
+    return false;
+  unicode::string u_out;
+  unicode::strip_diacritics( u_in, &u_out );
+  storage_type *temp;
+  size_type temp_len;
+  if ( !utf8::to_string( u_out.getBuffer(), u_out.length(), &temp, &temp_len ) )
+    return false;
+  out->assign( temp, temp_len );
+  if ( !string_traits<OutputStringType>::takes_pointer_ownership )
+    delete[] temp;
+#else
   out->clear();
-  out->reserve( in_normalized.size() );
-  std::copy(
-    in_normalized.begin(), in_normalized.end(),
-    ascii::back_ascii_inserter( *out )
-  );
+  out->reserve( in.size() );
+  std::copy( in.begin(), in.end(), ascii::back_ascii_inserter( *out ) );
+#endif /* ZORBA_NO_ICU */
+  return true;
 }
+
+#ifndef ZORBA_NO_ICU
 
 template<class StringType>
 bool to_string( unicode::char_type const *in, size_type in_len,
@@ -161,7 +176,7 @@ bool to_string( wchar_t const *in, size_type in_len, StringType *out ) {
 }
 #endif /* WIN32 */
 
-#endif /* ZORBA_NO_UNICODE */
+#endif /* ZORBA_NO_ICU */
 
 template<class InputStringType,class OutputStringType>
 void to_lower( InputStringType const &in, OutputStringType *out ) {

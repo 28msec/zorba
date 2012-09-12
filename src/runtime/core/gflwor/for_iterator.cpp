@@ -26,7 +26,7 @@ namespace zorba
 namespace flwor 
 {
 SERIALIZABLE_CLASS_VERSIONS(ForIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ForIterator)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -126,7 +126,7 @@ bool ForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
       {
         store::Item_t lPosItem;
         GENV_ITEMFACTORY->createInteger(lPosItem,
-                                        Integer(lState->incReturnPosition()));
+                                        xs_integer(lState->incReturnPosition()));
         bindVariables(lPosItem, thePosVarRefs, aPlanState);
       }
       STACK_PUSH(true, lState);

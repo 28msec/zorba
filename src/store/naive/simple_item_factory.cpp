@@ -19,8 +19,9 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
-//#include "zorbatypes/datetime.h"
+#include "store/api/copymode.h"
 
 #include "store_defs.h"
 #include "simple_store.h"
@@ -33,6 +34,11 @@
 #include "qname_pool.h"
 #include "string_pool.h"
 #include "node_factory.h"
+#include "tree_id.h"
+
+#ifdef ZORBA_WITH_JSON
+#  include "json_items.h"
+#endif
 
 #include "util/ascii_util.h"
 
@@ -44,8 +50,11 @@ BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
   theUriPool(uriPool),
   theQNamePool(qnPool),
-  theTrueItem(NULL),
-  theFalseItem(NULL)
+  theTrueItem(new BooleanItem(true)),
+  theFalseItem(new BooleanItem(false))
+#ifdef ZORBA_WITH_JSON
+  ,theNullItem(new json::JSONNull())
+#endif
 {
 }
 
@@ -110,7 +119,9 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 }
 
 
-bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& value)
+bool BasicItemFactory::createStructuralAnyURI(
+    store::Item_t& result,
+    zstring& value)
 {
   result =  new StructuralAnyUriItem(value);
   return true;
@@ -120,21 +131,12 @@ bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& va
 bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     ulong collectionId,
-    ulong treeId,
+    const TreeId& treeId,
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
 {
   ZORBA_FATAL(nodeKind,"Unexpected node kind");
-  std::ostringstream stream;
-  stream   << "zorba:"
-           << collectionId << "."
-           << treeId << "."
-           << static_cast<int>(nodeKind) << "."
-           << ordPath.serialize();
-  zstring uri = stream.str();
-
-  theUriPool->insert(uri);
-  result = new StructuralAnyUriItem(uri, collectionId, treeId, nodeKind, ordPath);
+  result = new StructuralAnyUriItem(collectionId, treeId, nodeKind, ordPath);
   return true;
 }
 
@@ -153,6 +155,14 @@ bool BasicItemFactory::createStreamableString(
     bool seekable) 
 {
   result = new StreamableStringItem( stream, streamReleaser, seekable );
+  return true;
+}
+
+bool BasicItemFactory::createSharedStreamableString(
+    store::Item_t &result,
+    store::Item_t &streamable_dependent)
+{
+  result = new StreamableStringItem( streamable_dependent );
   return true;
 }
 
@@ -318,7 +328,7 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& va
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItem( value );
+  result = new IntegerItemImpl( value );
   return true;
 }
 
@@ -327,7 +337,7 @@ bool BasicItemFactory::createNonPositiveInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value <= Integer::zero());
+  ZORBA_ASSERT(value.sign() <= 0);
   result = new NonPositiveIntegerItem( value );
   return true;
 }
@@ -337,7 +347,7 @@ bool BasicItemFactory::createNegativeInteger(
     store::Item_t& result,
     const xs_integer& value)
 {
-  ZORBA_ASSERT(value < xs_integer::zero());
+  ZORBA_ASSERT(value.sign() < 0);
   result = new NegativeIntegerItem(value);
   return true;
 }
@@ -345,7 +355,7 @@ bool BasicItemFactory::createNegativeInteger(
 
 bool BasicItemFactory::createNonNegativeInteger(
     store::Item_t& result,
-    const xs_uinteger& value )
+    const xs_nonNegativeInteger& value )
 {
   result = new NonNegativeIntegerItem( value );
   return true;
@@ -355,9 +365,9 @@ bool BasicItemFactory::createNonNegativeInteger(
 
 bool BasicItemFactory::createPositiveInteger(
     store::Item_t& result,
-    const xs_uinteger& value)
+    const xs_positiveInteger& value)
 {
-  ZORBA_ASSERT(value > Integer::zero());
+  ZORBA_ASSERT(value.sign() > 0);
   result = new PositiveIntegerItem( value );
   return true;
 }
@@ -425,22 +435,7 @@ bool BasicItemFactory::createUnsignedByte(store::Item_t& result,
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xs_boolean value)
 {
-  if (value)
-  {
-    if (!theTrueItem)
-    {
-      theTrueItem = new BooleanItem(true);
-    }
-    result = theTrueItem;
-  }
-  else
-  {
-    if (!theFalseItem)
-    {
-      theFalseItem = new BooleanItem(false);
-    }
-    result = theFalseItem;
-  }
+  result = value?theTrueItem:theFalseItem;
   return true;
 }
 
@@ -997,9 +992,36 @@ bool BasicItemFactory::createDayTimeDuration(
 }
 
 
-bool BasicItemFactory::createBase64Binary(store::Item_t& result, xs_base64Binary value)
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    xs_base64Binary value)
 {
-  result = new Base64BinaryItem(value);
+  const std::vector<char>& data = value.getData();
+  result = new Base64BinaryItem(data.size()!=0?&data[0]:0, data.size(), true);
+  return true;
+}
+
+bool BasicItemFactory::createBase64Binary(
+    store::Item_t& result,
+    const char* value,
+    size_t size,
+    bool encoded)
+{
+  result = new Base64BinaryItem(value, size, encoded);
+  return true;
+}
+
+
+bool BasicItemFactory::createStreamableBase64Binary(
+    store::Item_t& result,
+    std::istream& aStream,
+    StreamReleaser aReleaser,
+    bool seekable,
+    bool encoded)
+{
+  result = new StreamableBase64BinaryItem(
+      aStream, aReleaser, seekable, encoded
+    );
   return true;
 }
 
@@ -1136,10 +1158,8 @@ bool BasicItemFactory::createElementNode(
   ElementNode* n = NULL;
 
   if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED( NotAllowedForTypeName)));
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
@@ -2001,6 +2021,235 @@ void BasicItemFactory::splitToAtomicTextValues(
   if ( start < (i-1) )
     atomicTextValues.push_back(textValue.substr(start, i-start));
 }
+
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONNull(store::Item_t& result)
+{
+  result = theNullItem;
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONNumber(
+    store::Item_t& result,
+    store::Item_t& string)
+{
+  zstring s = string->getStringValue();
+  return createJSONNumber(result, s);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONNumber(
+    store::Item_t& result,
+    zstring& string)
+{
+  try
+  {
+    bool dot = (strchr(string.c_str(), 46) != NULL);
+    bool e   = (strpbrk(string.c_str(), "eE") != NULL);
+    if (!e)
+    {
+      if (!dot)
+      {
+        // xs:integer
+        xs_integer i = Integer(string.c_str());
+        return createInteger(result, i);
+      }
+      else
+      {
+        // xs:decimal
+        xs_decimal d = Decimal(string.c_str());
+        return createDecimal(result, d);
+      }
+    }
+    else
+    {
+      // xs:double
+      xs_double d = FloatImpl<double>(string.c_str());
+      return createDouble(result, d);
+    }
+  }
+  catch (std::exception& e)
+  {
+    return false;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONArray(
+    store::Item_t& result,
+    const std::vector<store::Iterator_t>& sources,
+    const std::vector<store::CopyMode>& copyModes)
+{
+  result = new json::SimpleJSONArray();
+
+  json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
+
+  store::Item_t item;
+
+  csize numSources = sources.size();
+  for (csize i = 0; i < numSources; ++i)
+  {
+    store::Iterator* source = sources[i].getp();
+    const store::CopyMode& copymode = copyModes[i];
+
+    while (source->next(item))
+    {
+      if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+        item = item->copy(NULL, copymode);
+      
+      array->push_back(item);
+    }
+  }
+
+  return true;
+}
+
+
+bool BasicItemFactory::createJSONArray(
+    store::Item_t& result,
+    store::Item_t& item1,
+    store::Item_t& item2,
+    const store::Iterator_t& source,
+    const store::CopyMode& copymode)
+{
+  result = new json::SimpleJSONArray();
+
+  json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(result.getp());
+
+  array->push_back(item1);
+  array->push_back(item2);
+  
+  store::Item_t item;
+
+  while (source->next(item))
+  {
+    if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      item = item->copy(NULL, copymode);
+      
+    array->push_back(item);
+  }
+
+  return true;
+}
+
+
+bool BasicItemFactory::createJSONArray(
+    store::Item_t& result,
+    const std::vector<store::Item_t>& items)
+{
+  result = new json::SimpleJSONArray();
+
+  json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
+
+  std::vector<store::Item_t>::const_iterator ite = items.begin();
+  std::vector<store::Item_t>::const_iterator end = items.end();
+  for (; ite != end; ++ite)
+  {
+    array->push_back(*ite);
+  }
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createJSONObject(
+    store::Item_t& result, 
+    const std::vector<store::Iterator_t>& sources,
+    const std::vector<store::CopyMode>& copyModes,
+    bool accumulate)
+{
+  result = new json::SimpleJSONObject();
+
+  json::JSONObject* obj = static_cast<json::JSONObject*>(result.getp());
+
+  store::Item_t objItem;
+  store::Item_t keyItem;
+  store::Item_t valueItem;
+
+  csize numSources = sources.size();
+  for (csize i = 0; i < numSources; ++i)
+  {
+    store::Iterator* source = sources[i].getp();
+    const store::CopyMode& copymode = copyModes[i];
+
+    while (source->next(objItem))
+    {
+      assert(objItem->isJSONObject());
+
+      json::SimpleJSONObject* sourceObj = 
+      static_cast<json::SimpleJSONObject*>(objItem.getp());
+
+      store::Iterator_t sourceKeys = sourceObj->getObjectKeys();
+
+      sourceKeys->open();
+
+      while (sourceKeys->next(keyItem))
+      {
+        valueItem = objItem->getObjectValue(keyItem);
+        if (copymode.theDoCopy &&
+            (valueItem->isJSONArray() ||
+             valueItem->isJSONObject() ||
+             valueItem->isNode()))
+        {
+          valueItem = valueItem->copy(NULL, copymode);
+        }
+        
+        if (!obj->add(keyItem, valueItem, accumulate))
+        {
+          RAISE_ERROR_NO_LOC(jerr::JNDY0003,
+          ERROR_PARAMS(keyItem->getStringValue()));
+        }
+      }
+
+      sourceKeys->close();
+    }
+  }
+
+  return true;
+}
+
+
+bool BasicItemFactory::createJSONObject(
+    store::Item_t& result,
+    const std::vector<store::Item_t>& names,
+    const std::vector<store::Item_t>& values)
+{
+  result = new json::SimpleJSONObject();
+
+  json::JSONObject* obj = static_cast<json::JSONObject*>(result.getp());
+
+  assert(names.size() == values.size());
+
+  csize numPairs = names.size();
+  for (csize i = 0; i < numPairs; ++i)
+  {
+    if (!obj->add(names[i], values[i], false))
+    {
+      RAISE_ERROR_NO_LOC(jerr::JNDY0003, ERROR_PARAMS(names[i]->getStringValue()));
+    }
+  }
+
+  return true;
+}
+
+
+#endif
 
 } // namespace simplestore
 } // namespace zorba

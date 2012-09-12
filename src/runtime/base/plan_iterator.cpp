@@ -26,25 +26,6 @@
 namespace zorba
 {
 
-SERIALIZABLE_TEMPLATE_VERSIONS(Batcher)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(Batcher)
-
-SERIALIZABLE_TEMPLATE_VERSIONS(BinaryBaseIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(BinaryBaseIterator)
-
-SERIALIZABLE_TEMPLATE_VERSIONS(NaryBaseIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(NaryBaseIterator)
-
-SERIALIZABLE_TEMPLATE_VERSIONS(NoaryBaseIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(NoaryBaseIterator)
-
-SERIALIZABLE_TEMPLATE_VERSIONS(UnaryBaseIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(UnaryBaseIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(PlanIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PlanIterator)
-
-
 /*******************************************************************************
   class PlanState
 ********************************************************************************/
@@ -92,12 +73,16 @@ PlanState::~PlanState()
   class PlanIterator
 ********************************************************************************/
 
-void PlanIterator::serialize(::zorba::serialization::Archiver &ar)
+SERIALIZE_INTERNAL_METHOD(PlanIterator)
+
+
+void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  ar & theStateOffset;
   ar & loc;
-  if(ar.dont_allow_delay_for_plan_sctx)
+
+  if (ar.dont_allow_delay_for_plan_sctx)
     ar.dont_allow_delay();
+
   ar & theSctx;
 }
 

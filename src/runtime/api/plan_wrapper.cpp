@@ -37,12 +37,13 @@ PlanWrapper::PlanWrapper(
     dynamic_context* aDynamicContext,
     XQueryImpl* query,
     uint32_t aStackDepth,
-    long aTimeout)
+    bool haveTimeout,
+    unsigned long timeout)
   :
   theIterator(aIter),
   theDynamicContext(NULL),
   theIsOpen(false),
-  theTimeout(0),
+  theTimeout(NULL),
   theExitValue(0)
 {
   assert (aCompilerCB);
@@ -70,10 +71,10 @@ PlanWrapper::PlanWrapper(
   thePlanState->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
 #endif
 
-  if (aTimeout != -1) 
+  if (haveTimeout) 
   {
     StateWrapper lWrapper(*thePlanState);
-    theTimeout = new Timeout(aTimeout, lWrapper);
+    theTimeout = new Timeout(timeout, lWrapper);
   }
 }
 
@@ -143,7 +144,8 @@ bool PlanWrapper::next(store::Item_t& result)
   // However, for reasons of lazy evaluation, we also return the result
   // that was computed before the exit expression was evaluated
   // (see test scripting/exit4.xq)
-  if (!theExitValue) {
+  if (!theExitValue) 
+  {
     try
     {
       return PlanIterator::consumeNext(result, theIterator, *thePlanState);

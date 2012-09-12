@@ -97,6 +97,19 @@ public:
       bool seekable = false) = 0;
 
   /**
+   * Create a StreamableStringItem which re-uses the stream from another
+   * Streamable*Item. This will maintain a reference to the original
+   * item to ensure the stream is not cleaned up before we are done with it.
+   *
+   * It only makes sense to use this method if either (a) the dependent item's
+   * stream is seekable and hence re-usable, or (b) you are sure that the
+   * dependent item will not be utilized after this new item is created.
+   */
+  virtual bool createSharedStreamableString(
+      Item_t& result,
+      Item_t& streamble_dependent) = 0;
+
+  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
    * @param value string representation of the value
    */
@@ -205,6 +218,31 @@ public:
   virtual bool createBase64Binary(Item_t& result, xs_base64Binary value) = 0;
 
   /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   * creates a base64Binary item with the given content
+   * the encoded flag specifies whether the given content is already
+   * base64 encoded or not.
+   */
+  virtual bool createBase64Binary(
+      Item_t& result,
+      const char* value,
+      size_t size,
+      bool encoded) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+   * the encoded flag specifies whether the given content is already
+   * base64 encoded or not.
+   */
+  virtual bool createStreamableBase64Binary(
+      Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      bool seekable = false,
+      bool encoded = false) = 0;
+
+
+  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]
    * @param value
    */
@@ -236,13 +274,13 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
    * @param value
    */
-  virtual bool createNonNegativeInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createNonNegativeInteger(Item_t& result, const xs_nonNegativeInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
    * @param value
    */
-  virtual bool createPositiveInteger(Item_t& result, const xs_uinteger& value) = 0;
+  virtual bool createPositiveInteger(Item_t& result, const xs_positiveInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
@@ -598,8 +636,9 @@ public:
         zstring& content) = 0;
 
   /**
-   * Create a new text node N to store the typed value of an element node P.
-   * In this case, N can be the only child of P. 
+   * Create a new text node N to store the typed value of an element node P, and
+   * place N as the last child of P. Notice that in this case, P cannot have any
+   * subelements. 
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may NOT be NULL.
@@ -645,7 +684,7 @@ public:
    * @param content The content of the new node.
    * @return        Always true (if any errors occur, the method throws exceptions)
    */
-  virtual bool createCommentNode (
+  virtual bool createCommentNode(
         Item_t&  result,
         Item*    parent,
         zstring& content) = 0;
@@ -660,9 +699,58 @@ public:
    * subclasses of ZorbaException). The new ErrorItem assumes ownership of the
    * ZorbaException obj
    */
-  virtual bool createError(
-          store::Item_t& result,
-          ZorbaException* ze) = 0;
+  virtual bool createError(Item_t& result, ZorbaException* ze) = 0;
+
+#ifdef ZORBA_WITH_JSON
+  virtual bool createJSONNull(Item_t& result) = 0;
+
+  virtual bool createJSONNumber(Item_t& result, Item_t& string) = 0;
+
+  virtual bool createJSONNumber(Item_t& result, zstring& string) = 0;
+
+  /**
+   *
+   */
+  virtual bool createJSONArray(
+      Item_t& result,
+      const std::vector<Iterator_t>& sources,
+      const std::vector<CopyMode>& copyModes) = 0;
+
+  /**
+   * This method is used when we want to box a sequence of item into an array,
+   * but only if the sequence has more than 1 items.
+   */
+  virtual bool createJSONArray(
+      Item_t& result,
+      Item_t& item1,
+      Item_t& item2,
+      const Iterator_t& source,
+      const CopyMode& copyMode) = 0;
+
+  /**
+   * This method is used by the public API only
+   */
+  virtual bool createJSONArray(
+      Item_t& result,
+      const std::vector<Item_t>& items) = 0;
+
+  /**
+   *
+   */
+  virtual bool createJSONObject(
+      Item_t& result,
+      const std::vector<Iterator_t>& sources,
+      const std::vector<CopyMode>& copyModes,
+      bool accumulate) = 0;
+
+  /**
+   * 
+   */
+  virtual bool createJSONObject(
+      Item_t& result,
+      const std::vector<Item_t>& names,
+      const std::vector<Item_t>& values) = 0;
+#endif
 };
 
 } // namespace store

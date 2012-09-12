@@ -36,9 +36,19 @@ PlanIter_t fn_zorba_fetch_content::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FetchContentIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_fetch_content_binary::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FetchContentBinaryIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_fetch_content_type::codegen(
@@ -46,29 +56,43 @@ PlanIter_t fn_zorba_fetch_content_type::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new FetchContentTypeIterator(sctx, loc, argv);
 }
 
 void populate_context_fetch(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_FETCH_CONTENT_2);
+        FunctionConsts::FN_ZORBA_FETCH_CONTENT_3);
 
   }
 
 
-  {
-    
 
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_fetch_content_binary,
+        (createQName("http://www.zorba-xquery.com/modules/fetch","","content-binary"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_FETCH_CONTENT_BINARY_2);
+
+  }
+
+
+
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content_type,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content-type"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 

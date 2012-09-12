@@ -1,3 +1,8 @@
+Iterator tree for const-folded expr:
+<FunctionTraceIterator>
+  <SingletonIterator value="xs:integer(2)"/>
+</FunctionTraceIterator>
+
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="2" varname="d1">
@@ -45,14 +50,22 @@ Iterator tree for local:foo:
       </ChildAxisIterator>
     </ForVariable>
     <ReturnClause>
-      <FunctionTraceIterator>
-        <TreatIterator quant="">
-          <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-            <ForVarIterator varname="child"/>
-          </ParentAxisIterator>
-        </TreatIterator>
-      </FunctionTraceIterator>
+      <UDFunctionCallIterator>
+        <ForVarIterator varname="child"/>
+      </UDFunctionCallIterator>
     </ReturnClause>
   </flwor::FLWORIterator>
+</TreatIterator>
+
+Iterator tree for local:parent:
+<TreatIterator quant="">
+  <SequentialIterator>
+    <ApplyIterator>
+      <SingletonIterator value="xs:integer(2)"/>
+    </ApplyIterator>
+    <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+      <LetVarIterator varname="n"/>
+    </ParentAxisIterator>
+  </SequentialIterator>
 </TreatIterator>
 

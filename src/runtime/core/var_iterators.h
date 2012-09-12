@@ -339,11 +339,7 @@ public:
   ForVarIterator, 
   NoaryBaseIterator<ForVarIterator, ForVarState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
-    ar & theVarName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ForVarIterator(
@@ -393,6 +389,9 @@ public:
   store::TempSeq_t         theTempSeq;
   store::TempSeqIterator_t theTempSeqIter;
   store::Item_t            theItem;
+  xs_integer               theWindowStart;
+  xs_integer               theWindowEnd;
+
   xs_integer               thePos;
   xs_integer               theLastPos;
 

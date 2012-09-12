@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <IsSameNodeIterator>
-const char* IsSameNodeIterator::class_name_str = "IsSameNodeIterator";
-IsSameNodeIterator::class_factory<IsSameNodeIterator>
-IsSameNodeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsSameNodeIterator)
 
-const serialization::ClassVersion 
-IsSameNodeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsSameNodeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>*)this);
+}
 
-const int IsSameNodeIterator::class_versions_count =
-sizeof(IsSameNodeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsSameNodeIterator::accept(PlanIterVisitor& v) const {
+void IsSameNodeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -61,17 +61,17 @@ IsSameNodeIterator::~IsSameNodeIterator() {}
 
 
 // <NodeBeforeIterator>
-const char* NodeBeforeIterator::class_name_str = "NodeBeforeIterator";
-NodeBeforeIterator::class_factory<NodeBeforeIterator>
-NodeBeforeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodeBeforeIterator)
 
-const serialization::ClassVersion 
-NodeBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void NodeBeforeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>*)this);
+}
 
-const int NodeBeforeIterator::class_versions_count =
-sizeof(NodeBeforeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void NodeBeforeIterator::accept(PlanIterVisitor& v) const {
+void NodeBeforeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -89,17 +89,17 @@ NodeBeforeIterator::~NodeBeforeIterator() {}
 
 
 // <NodeAfterIterator>
-const char* NodeAfterIterator::class_name_str = "NodeAfterIterator";
-NodeAfterIterator::class_factory<NodeAfterIterator>
-NodeAfterIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(NodeAfterIterator)
 
-const serialization::ClassVersion 
-NodeAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
+void NodeAfterIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NodeAfterIterator, PlanIteratorState>*)this);
+}
 
-const int NodeAfterIterator::class_versions_count =
-sizeof(NodeAfterIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void NodeAfterIterator::accept(PlanIterVisitor& v) const {
+void NodeAfterIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

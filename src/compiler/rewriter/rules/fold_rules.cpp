@@ -53,19 +53,19 @@ using namespace std;
 
 namespace zorba {
 
-static void remove_wincond_vars(const flwor_wincond*, expr_tools::VarSetAnnVal*);
+static void remove_wincond_vars(const flwor_wincond*, expr::FreeVars&);
 
-static bool standalone_expr(expr_t);
+static bool standalone_expr(expr*);
 
-static bool already_folded(expr_t, RewriterContext&);
+static bool already_folded(expr*, RewriterContext&);
 
-static expr_t partial_eval_fo (RewriterContext&, fo_expr*);
+static expr* partial_eval_fo (RewriterContext&, fo_expr*);
 
-static expr_t partial_eval_logic(fo_expr*, bool, RewriterContext&);
+static expr* partial_eval_logic(fo_expr*, bool, RewriterContext&);
 
-static expr_t partial_eval_eq(RewriterContext&, fo_expr&);
+static expr* partial_eval_eq(RewriterContext&, fo_expr&);
 
-static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified);
+static expr* partial_eval_return_clause(flwor_expr* flworExpr, bool& modified, RewriterContext& rCtx);
 
 static bool maybe_needs_implicit_timezone(const fo_expr* fo);
 
@@ -73,9 +73,9 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo);
 /*******************************************************************************
 
 ********************************************************************************/
-static expr_t execute (
+static expr* execute (
     CompilerCB* compilercb,
-    expr_t node,
+    expr* node,
     vector<store::Item_t>& result)
 {
   ulong nextVarId = 1;
@@ -90,12 +90,13 @@ static expr_t execute (
     //std::cout << "Const folding expr : " << std::endl;
     //node->put(std::cout);
     //std::cout << std::endl;
-    
+
     PlanWrapperHolder pw(new PlanWrapper(plan,
                                          &expr_ccb,
                                          0,      // dynamic ctx
                                          NULL,   // xquery
                                          0,      // stack depth
+                                         expr_ccb.theHaveTimeout,
                                          expr_ccb.theTimeout));
     for (;;)
     {
@@ -134,11 +135,11 @@ static expr_t execute (
                               "http://www.w3.org/2005/xqt-errors",
                               "err",
                               error::ZorbaError::toString(lErrorCode).c_str());
-    expr_t err_expr = new fo_expr(node->get_sctx_id(),
+    expr* err_expr = rCtx.theEM->create_fo_expr(node->get_sctx_id(),
                                   loc,
                                   GET_BUILTIN_FUNCTION(FN_ERROR_2),
-                                  new const_expr(node->get_sctx_id(), loc, qname),
-                                  new const_expr(node->get_sctx_id(), loc, e.theDescription));
+                                  rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, qname),
+                                  rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, e.theDescription));
     err_expr->setUnfoldable(ANNOTATION_TRUE_FIXED);
     err_expr->setNonDiscardable(ANNOTATION_TRUE_FIXED);
     return err_expr;
@@ -164,7 +165,7 @@ static expr_t execute (
   The NON_DISCARDABLE property is used during the application of the PartialEval
   rule below.
 ********************************************************************************/
-expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
+expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
   BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
   BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
@@ -190,31 +191,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       if (!udf->isOptimized())
       {
-        // Set the Optimized flag in advance to prevent an infinte loop (for
-        // recursive functions, an optimization could be attempted again)
-        udf->setOptimized(true);
-
-        RewriterContext rctx(rCtx.theCCB,
-                             udf->getBody(),
-                             udf,
-                             "",
-                             udf->getBody()->get_sctx()->is_in_ordered_mode());
-
-        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
-        udf->setBody(rctx.getRoot());
-
-        if (rCtx.theCCB->theConfig.optimize_cb != NULL)
-        {
-          if (udf->getName())
-          {
-            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(),
-                                               udf->getName()->getStringValue().c_str());
-          }
-          else
-          {
-            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(), "inline function");
-          }
-        }
+        udf->optimize();
       }
 
       if (rCtx.theUDF != NULL &&
@@ -225,7 +202,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     }
   }
 
-  // Process the subexprs of the current expr. If any of the children is 
+  // Process the subexprs of the current expr. If any of the children is
   // nondiscardable, unfoldable, or contains recursive calls, then the current
   // expr is also nondiscardable, unfoldable, or contains recursive calls.
   ExprConstIterator iter(node);
@@ -252,7 +229,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   {
     if (node->is_sequential())
     {
-      curNonDiscardable = ANNOTATION_TRUE_FIXED; 
+      curNonDiscardable = ANNOTATION_TRUE_FIXED;
     }
     else
     {
@@ -262,18 +239,18 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         fo_expr* fo = static_cast<fo_expr *>(node);
         function* f = fo->get_func();
-          
+
         bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-          
+
         if (f->getKind() == FunctionConsts::FN_TRACE_2 ||
             isErrorFunc)
         {
           curNonDiscardable = ANNOTATION_TRUE_FIXED;
         }
-        
+
         break;
       }
-        
+
       case cast_expr_kind:
       case treat_expr_kind:
       case promote_expr_kind:
@@ -281,7 +258,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         break;
       }
-        
+
       default:
       {
         break;
@@ -295,7 +272,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   {
     if (node->is_sequential())
     {
-      curUnfoldable = ANNOTATION_TRUE_FIXED; 
+      curUnfoldable = ANNOTATION_TRUE_FIXED;
     }
     else
     {
@@ -318,17 +295,17 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         {
           curUnfoldable = ANNOTATION_TRUE_FIXED;
         }
-      
+
         break;
       }
-      
+
       case var_expr_kind:
       {
         var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
 
         if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
           curUnfoldable = ANNOTATION_TRUE_FIXED;
-        
+
         break;
       }
 
@@ -345,7 +322,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curUnfoldable = ANNOTATION_TRUE_FIXED;
         break;
       }
-  
+
       case delete_expr_kind:
       case insert_expr_kind:
       case rename_expr_kind:
@@ -424,13 +401,14 @@ RULE_REWRITE_PRE(MarkFreeVars)
 
 RULE_REWRITE_POST(MarkFreeVars)
 {
-  expr_tools::VarSetAnnVal* freevars = new expr_tools::VarSetAnnVal;
-  AnnotationValue_t new_ann = AnnotationValue_t(freevars);
+  expr::FreeVars& freevars = node->getFreeVars();
 
-  if (node->get_expr_kind () == var_expr_kind)
+  freevars.clear();
+
+  if (node->get_expr_kind() == var_expr_kind)
   {
-    var_expr_t v = dynamic_cast<var_expr *> (node);
-    freevars->add(v);
+    var_expr* v = static_cast<var_expr *>(node);
+    freevars.insert(v);
   }
   else
   {
@@ -439,12 +417,12 @@ RULE_REWRITE_POST(MarkFreeVars)
     ExprIterator iter(node);
     while (!iter.done())
     {
-      expr* e = *iter;
+      expr* e = **iter;
 
-      const expr_tools::var_ptr_set& kfv = expr_tools::get_varset_annotation(e);
+      const expr::FreeVars& kfv = e->getFreeVars();
       std::copy(kfv.begin(),
                 kfv.end(),
-                inserter(freevars->theVarset, freevars->theVarset.begin()));
+                inserter(freevars, freevars.begin()));
 
       iter.next();
     }
@@ -465,21 +443,21 @@ RULE_REWRITE_POST(MarkFreeVars)
         {
           const for_clause* fc = static_cast<const for_clause *>(c);
 
-          freevars->theVarset.erase(fc->get_var());
+          freevars.erase(fc->get_var());
           if (fc->get_pos_var() != NULL)
-            freevars->theVarset.erase(fc->get_pos_var());
+            freevars.erase(fc->get_pos_var());
         }
         else if (c->get_kind() == flwor_clause::let_clause)
         {
           const let_clause* lc = static_cast<const let_clause *>(c);
 
-          freevars->theVarset.erase(lc->get_var());
+          freevars.erase(lc->get_var());
         }
         else if (c->get_kind() == flwor_clause::window_clause)
         {
           const window_clause* wc = static_cast<const window_clause *>(c);
 
-          freevars->theVarset.erase(wc->get_var());
+          freevars.erase(wc->get_var());
 
           flwor_wincond* startCond = wc->get_win_start();
           flwor_wincond* stopCond = wc->get_win_stop();
@@ -495,32 +473,30 @@ RULE_REWRITE_POST(MarkFreeVars)
           const group_clause* gc = static_cast<const group_clause *>(c);
 
           const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-          unsigned numGroupVars = (unsigned)gvars.size();
+          csize numGroupVars = gvars.size();
 
-          for (unsigned i = 0; i < numGroupVars; ++i)
+          for (csize i = 0; i < numGroupVars; ++i)
           {
-            freevars->theVarset.erase(gvars[i].second.getp());
+            freevars.erase(gvars[i].second);
           }
 
           const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-          unsigned numNonGroupVars = (unsigned)ngvars.size();
+          csize numNonGroupVars = ngvars.size();
 
-          for (unsigned i = 0; i < numNonGroupVars; ++i)
+          for (csize i = 0; i < numNonGroupVars; ++i)
           {
-            freevars->theVarset.erase(ngvars[i].second.getp());
+            freevars.erase(ngvars[i].second);
           }
         }
         else if (c->get_kind() == flwor_clause::count_clause)
         {
           const count_clause* cc = static_cast<const count_clause *>(c);
 
-          freevars->theVarset.erase(cc->get_var());
+          freevars.erase(cc->get_var());
         }
       }
     }
   }
-
-  node->put_annotation(Annotations::FREE_VARS, new_ann);
 
   return NULL;
 }
@@ -528,20 +504,20 @@ RULE_REWRITE_POST(MarkFreeVars)
 
 static void remove_wincond_vars(
     const flwor_wincond* cond,
-    expr_tools::VarSetAnnVal* freevars)
+    expr::FreeVars& freevars)
 {
   const flwor_wincond::vars& inVars = cond->get_in_vars();
   const flwor_wincond::vars& outVars = cond->get_out_vars();
 
-  freevars->theVarset.erase(inVars.posvar.getp());
-  freevars->theVarset.erase(inVars.curr.getp());
-  freevars->theVarset.erase(inVars.prev.getp());
-  freevars->theVarset.erase(inVars.next.getp());
+  freevars.erase(inVars.posvar);
+  freevars.erase(inVars.curr);
+  freevars.erase(inVars.prev);
+  freevars.erase(inVars.next);
 
-  freevars->theVarset.erase(outVars.posvar.getp());
-  freevars->theVarset.erase(outVars.curr.getp());
-  freevars->theVarset.erase(outVars.prev.getp());
-  freevars->theVarset.erase(outVars.next.getp());
+  freevars.erase(outVars.posvar);
+  freevars.erase(outVars.curr);
+  freevars.erase(outVars.prev);
+  freevars.erase(outVars.next);
 }
 
 
@@ -554,24 +530,22 @@ static void remove_wincond_vars(
 
 RULE_REWRITE_PRE(FoldConst)
 {
-  TypeManager* tm = node->get_type_manager();
-
   xqtref_t rtype = node->get_return_type();
 
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
-      expr_tools::get_varset_annotation(node).empty() &&
+      node->getFreeVars().empty() &&
       ! node->isUnfoldable() &&
-      TypeOps::type_max_cnt(tm, *rtype) <= 1)
+      rtype->max_card() <= 1)
   {
     vector<store::Item_t> result;
-    expr_t folded = execute (rCtx.getCompilerCB(), node, result);
+    expr* folded = execute(rCtx.getCompilerCB(), node, result);
     if (folded == NULL)
     {
       ZORBA_ASSERT (result.size () <= 1);
       folded = (result.size () == 1 ?
-                ((expr *) (new const_expr (node->get_sctx(), LOC (node), result [0]))) :
-                ((expr *) (fo_expr::create_seq (node->get_sctx(), LOC (node)))));
+                ((expr*) (rCtx.theEM->create_const_expr(node->get_sctx(), LOC(node), result[0]))) :
+                ((expr*) (rCtx.theEM->create_seq(node->get_sctx(), LOC(node)))));
     }
     return folded;
   }
@@ -584,21 +558,21 @@ RULE_REWRITE_POST(FoldConst)
 }
 
 
-static bool standalone_expr(expr_t e)
+static bool standalone_expr(expr* e)
 {
   expr_kind_t k = e->get_expr_kind ();
   return k != match_expr_kind && k != axis_step_expr_kind;
 }
 
 
-static bool already_folded(expr_t e, RewriterContext& rCtx)
+static bool already_folded(expr* e, RewriterContext& rCtx)
 {
   if (e->get_expr_kind () == const_expr_kind)
     return true;
   if (e->get_expr_kind () != fo_expr_kind)
     return false;
 
-  const fo_expr* fo = e.dyn_cast<fo_expr>().getp ();
+  const fo_expr* fo = dynamic_cast<fo_expr*>(e);
 
   return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&
           fo->num_args() == 0);
@@ -649,7 +623,7 @@ RULE_REWRITE_PRE(PartialEval)
   TypeManager* tm = node->get_type_manager();
 
   // if node is a castable or instance-of expr
-  const castable_base_expr* cbe;
+  const castable_base_expr* cbe = NULL;
   if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
   {
     expr* arg = cbe->get_input();
@@ -662,7 +636,7 @@ RULE_REWRITE_PRE(PartialEval)
 
     if (TypeOps::is_subtype(tm, *argType, *targetType, node->get_loc()))
     {
-      return new const_expr(node->get_sctx(), LOC(node), true);
+      return rCtx.theEM->create_const_expr(node->get_sctx(), LOC(node), true);
     }
     else if (node->get_expr_kind() == instanceof_expr_kind)
     {
@@ -676,7 +650,7 @@ RULE_REWRITE_PRE(PartialEval)
 
       return (TypeOps::intersect_type(*argType, *targetType, tm) ==
               GENV_TYPESYSTEM.NONE_TYPE ?
-              new const_expr(node->get_sctx(), LOC(node), false) :
+              rCtx.theEM->create_const_expr(node->get_sctx(), LOC(node), false) :
               NULL);
     }
     else
@@ -718,7 +692,7 @@ RULE_REWRITE_POST(PartialEval)
 }
 
 
-static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
+static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
 {
   TypeManager* tm = fo->get_type_manager();
 
@@ -747,37 +721,37 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     if (!arg->isNonDiscardable())
     {
       xqtref_t argType = arg->get_return_type();
-      TypeConstants::quantifier_t argQuant = TypeOps::quantifier(*argType);
-      int type_cnt = TypeOps::type_cnt(tm, *argType);
+      TypeConstants::quantifier_t argQuant = argType->get_quantifier();
+      int type_cnt = argType->card();
 
       if (fkind == FunctionConsts::FN_COUNT_1 && type_cnt != -1)
       {
-        return new const_expr(fo->get_sctx(),
+        return rCtx.theEM->create_const_expr(fo->get_sctx(),
                               fo->get_loc(),
-                              Integer(type_cnt));
+                              xs_integer(type_cnt));
       }
       else if (fkind == FunctionConsts::FN_EMPTY_1)
       {
         if (type_cnt == 0)
         {
-          return new const_expr(fo->get_sctx(), fo->get_loc(), true);
+          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), true);
         }
-        else if (argQuant == TypeConstants::QUANT_ONE || 
+        else if (argQuant == TypeConstants::QUANT_ONE ||
                  argQuant == TypeConstants::QUANT_PLUS)
         {
-          return new const_expr(fo->get_sctx(), fo->get_loc(), false);
+          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), false);
         }
       }
       else if (fkind == FunctionConsts::FN_EXISTS_1)
       {
         if (type_cnt == 0)
         {
-          return new const_expr(fo->get_sctx(), fo->get_loc(), false);
+          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), false);
         }
-        else if (argQuant == TypeConstants::QUANT_ONE || 
+        else if (argQuant == TypeConstants::QUANT_ONE ||
                  argQuant == TypeConstants::QUANT_PLUS)
         {
-          return new const_expr(fo->get_sctx(), fo->get_loc(), true);
+          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), true);
         }
       }
     }
@@ -785,10 +759,11 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     if (arg->get_expr_kind() == flwor_expr_kind)
     {
       bool modified = false;
-      expr_t newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
-                                                 modified);
+      expr* newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
+                                                 modified,
+                                                 rCtx);
 
-      if (newArg.getp() != arg)
+      if (newArg != arg)
         fo->set_arg(0, newArg);
 
       if (modified)
@@ -799,7 +774,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   }
   else if (fkind == FunctionConsts::FN_BOOLEAN_1)
   {
-    expr_t arg = fo->get_arg(0);
+    expr* arg = fo->get_arg(0);
     if (!arg->isNonDiscardable())
     {
       xqtref_t argType = arg->get_return_type();
@@ -808,7 +783,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
                               *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
                               arg->get_loc()))
       {
-        return new const_expr(fo->get_sctx(), fo->get_loc(), true);
+        return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), true);
       }
     }
   }
@@ -821,7 +796,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   fo is a logical "and" or "or" expr. If "and" then the shortcircuit_val is
   false, otherwise, shortcircuit_val is true.
 ********************************************************************************/
-static expr_t partial_eval_logic(
+static expr* partial_eval_logic(
     fo_expr* fo,
     bool shortcircuit_val,
     RewriterContext& rCtx)
@@ -836,12 +811,12 @@ static expr_t partial_eval_logic(
   for (ulong i = 0; i < numArgs; ++i)
   {
     const expr* arg = fo->get_arg(i);
-    const const_expr* constArg;
+    const const_expr* constArg = NULL;
 
     if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
     {
       if (constArg->get_val()->getEBV() == shortcircuit_val)
-        return new const_expr(fo->get_sctx(), LOC(fo), (xs_boolean)shortcircuit_val);
+        return rCtx.theEM->create_const_expr(fo->get_sctx(), LOC(fo), (xs_boolean)shortcircuit_val);
     }
     else
     {
@@ -860,7 +835,7 @@ static expr_t partial_eval_logic(
   if (nonConst1 < 0)
   {
     // All args are constant exprs
-    return new const_expr(fo->get_sctx(), LOC(fo), (xs_boolean) ! shortcircuit_val);
+    return rCtx.theEM->create_const_expr(fo->get_sctx(), LOC(fo), (xs_boolean) ! shortcircuit_val);
   }
 
   if (nonConst2 < 0)
@@ -868,14 +843,14 @@ static expr_t partial_eval_logic(
     // Only one of the args is a constant expr. The non-const arg is pointed
     // to by nonConst1.
 
-    expr_t arg = fo->get_arg(nonConst1);
+    expr* arg = fo->get_arg(nonConst1);
 
     if (! TypeOps::is_subtype(tm,
                               *arg->get_return_type(),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
                               arg->get_loc()))
     {
-      arg = expr_tools::fix_annotations(new fo_expr(fo->get_sctx(),
+      arg = expr_tools::fix_annotations(rCtx.theEM->create_fo_expr(fo->get_sctx(),
                                                     LOC(fo),
                                                     GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                                                     arg));
@@ -896,7 +871,7 @@ static expr_t partial_eval_logic(
   3. if int_const == 1 --> fn:exactly-one-noraise(expr)
   4. if int_const > 1  --> fn:exactly-one-noraise(fn:subsequence(expr, int_const, 2))
 ********************************************************************************/
-static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
+static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 {
   int i;
   fo_expr* count_expr = NULL;
@@ -929,41 +904,41 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   {
     xs_integer ival = val->getIntegerValue();
 
-    if (ival < xs_integer::zero())
+    if (ival < 0)
     {
       if (!count_expr->isNonDiscardable())
-        return new const_expr(val_expr->get_sctx(), LOC(val_expr), false);
+        return rCtx.theEM->create_const_expr(val_expr->get_sctx(), LOC(val_expr), false);
     }
-    else if (ival == xs_integer::zero())
+    else if (ival == 0)
     {
       return expr_tools::fix_annotations(
-             new fo_expr(fo.get_sctx(), fo.get_loc(),
+             rCtx.theEM->create_fo_expr(fo.get_sctx(), fo.get_loc(),
                          GET_BUILTIN_FUNCTION(FN_EMPTY_1),
                          count_expr->get_arg(0)));
     }
-    else if (ival == xs_integer::one())
+    else if (ival == 1)
     {
       return expr_tools::fix_annotations(
-             new fo_expr(fo.get_sctx(),
+             rCtx.theEM->create_fo_expr(fo.get_sctx(),
                          fo.get_loc(),
                          GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
                          count_expr->get_arg(0)));
     }
     else
     {
-      std::vector<expr_t> args(3);
+      std::vector<expr*> args(3);
       args[0] = count_expr->get_arg(0);
       args[1] = val_expr;
-      args[2] = new const_expr(val_expr->get_sctx(), LOC(val_expr), xs_integer(2));
+      args[2] = rCtx.theEM->create_const_expr(val_expr->get_sctx(), LOC(val_expr), xs_integer(2));
 
-      expr_t subseq_expr = expr_tools::fix_annotations(
-      new fo_expr(count_expr->get_sctx(),
+      expr* subseq_expr = expr_tools::fix_annotations(
+      rCtx.theEM->create_fo_expr(count_expr->get_sctx(),
                   LOC(count_expr),
                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
                   args));
 
       return expr_tools::fix_annotations(
-             new fo_expr(fo.get_sctx(),
+             rCtx.theEM->create_fo_expr(fo.get_sctx(),
                          fo.get_loc(),
                          GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
                          subseq_expr));
@@ -977,15 +952,15 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 /*******************************************************************************
 
 ********************************************************************************/
-static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
+static expr* partial_eval_return_clause(flwor_expr* flworExpr,
+                                        bool& modified,
+                                        RewriterContext& rCtx)
 {
-  TypeManager* tm = flworExpr->get_type_manager();
-
   expr* returnExpr = flworExpr->get_return_expr();
 
   if (returnExpr->get_expr_kind() == const_expr_kind ||
       (!returnExpr->isNonDiscardable() &&
-       TypeOps::type_cnt(tm, *(returnExpr->get_return_type())) == 1))
+       returnExpr->get_return_type()->card() == 1))
   {
     if (flworExpr->num_clauses() == 1)
     {
@@ -1001,15 +976,15 @@ static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
       {
         assert(c->get_kind() == flwor_clause::let_clause);
 
-        return new const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
+        return rCtx.theEM->create_const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
       }
     }
     else if (returnExpr->get_expr_kind() != const_expr_kind)
     {
       modified = true;
 
-      expr_t newRet = 
-      new const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
+      expr* newRet =
+      rCtx.theEM->create_const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
 
       flworExpr->set_return_expr(newRet);
 
@@ -1019,10 +994,10 @@ static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
 
   if (returnExpr->get_expr_kind() == flwor_expr_kind)
   {
-    expr_t newRet = 
-    partial_eval_return_clause(static_cast<flwor_expr*>(returnExpr),  modified);
+    expr* newRet =
+    partial_eval_return_clause(static_cast<flwor_expr*>(returnExpr),  modified, rCtx);
 
-    if (newRet.getp() != returnExpr)
+    if (newRet != returnExpr)
     {
       flworExpr->set_return_expr(newRet);
       assert(modified);
@@ -1049,21 +1024,21 @@ RULE_REWRITE_POST(InlineFunctions)
     const fo_expr* fo = static_cast<const fo_expr *> (node);
 
     const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
-    expr_t body;
+    expr* body = NULL;
 
-    if (NULL != udf && 
-        //!udf->isSequential() && 
+    if (NULL != udf &&
+        //!udf->isSequential() &&
+        (NULL != (body = udf->getBody())) &&
         !udf->isExiting() &&
-        udf->isLeaf() &&
-        (NULL != (body = udf->getBody())))
+        udf->isLeaf())
     {
-      const std::vector<var_expr_t>& udfArgs = udf->getArgVars();
+      const std::vector<var_expr*>& udfArgs = udf->getArgVars();
 
       expr::substitution_t subst;
 
       for (ulong i = 0; i < udfArgs.size(); ++i)
       {
-        var_expr_t p = udfArgs[i];
+        var_expr* p = udfArgs[i];
         subst[p] = fo->get_arg(i);
 
         if (fo->get_arg(i)->is_sequential())
@@ -1072,19 +1047,19 @@ RULE_REWRITE_POST(InlineFunctions)
 
       try
       {
-        expr_t body = udf->getBody();
+        expr* body = udf->getBody();
         body = body->clone(subst);
         body->clear_annotations();
         if (rCtx.getCompilerCB()->theConfig.opt_level <= CompilerCB::config::O1)
         {
-          function_trace_expr* dummy = new function_trace_expr(body);
+          function_trace_expr* dummy = rCtx.theEM->create_function_trace_expr(body);
           dummy->setFunctionName(udf->getName());
           dummy->setFunctionArity((unsigned int)udf->getArgVars().size());
           dummy->setFunctionCallLocation(node->get_loc());
           dummy->setFunctionLocation(udf->getLoc());
           return dummy;
         }
-        else 
+        else
         {
           return body;
         }

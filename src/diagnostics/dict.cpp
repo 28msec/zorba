@@ -18,6 +18,7 @@
 #include <cstring>
 #include <functional>
 #include <utility>                      /* for pair */
+#include <cassert>
 
 #include "zorbautils/locale.h"
 
@@ -75,6 +76,8 @@ char const* lookup( char const *key ) {
 
   range_type const result =
     ::equal_range( begin, end, entry_to_find, less_entry() );
+
+  assert(result.first != result.second);
 
   return result.first == result.second ? key : result.first->value;
 }

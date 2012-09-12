@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.zorba-xquery.org/schema" xmlns="http://www.zorba-xquery.org/schema"
+    elementFormDefault="qualified">
+    
+    <xs:element name="root" type="xs:anySimpleType"/>
+    
+    
+</xs:schema>

@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_STORE_H
 #define ZORBA_STORE_STORE_H
 
-#include <zorba/config.h>
+#include "zorba/config.h"
 #include "zorbatypes/schema_types.h"
 
 #include "store/api/shared_types.h"
@@ -29,7 +29,17 @@
 namespace zorba 
 { 
 
+namespace internal 
+{
+namespace diagnostic 
+{
+  class location;
+}
+}
+
 SYNC_CODE(class Lock;)
+
+class TokenizerProvider;
 
 
 namespace store 
@@ -48,7 +58,7 @@ public:
   virtual ~Store() { }
 
 
-  /*---------------------------- Zorba Engine Internal ----------------------------*/
+  /*-------------------------- Zorba Engine Internal -------------------------*/
 
   /**
    *  Get the item factory used by this store.
@@ -61,6 +71,8 @@ public:
   virtual IteratorFactory* getIteratorFactory() const = 0;
 
   SYNC_CODE(virtual Lock& getGlobalLock() = 0;)
+
+  /*----------------------------- Temp Sequences -----------------------------*/
 
   /**
    * Creates a new TempSeq. The instance can be used, e.g. for variable bindings.
@@ -89,7 +101,7 @@ public:
    */
   virtual TempSeq_t createTempSeq(bool lazy) = 0;
 
-  /* ----------------------- Node Reference Management -------------------------*/
+  /* ---------------------- Node Reference Management ------------------------*/
 
   /**
    * Computes the reference of the given node.
@@ -97,7 +109,7 @@ public:
    * @param node XDM node
    * @return the identifier as an item of type xs:anyURI
    */
-  virtual bool getNodeReference(Item_t& result, Item* node) = 0;
+  virtual bool getNodeReference(Item_t& result, const Item* node) = 0;
 
   /**
    * Returns whether a reference has already been generated for the given node.
@@ -106,6 +118,14 @@ public:
    * @return whether a reference has already been generated for the given node.
    */
   virtual bool hasReference(const Item* node) = 0;
+
+  /**
+   * Assigns a specific reference for the given node.
+   *
+   * @param item XDM node
+   * @param reference an xs:anyURI item
+   */
+  virtual bool assignReference(const Item* node, const zstring& reference) = 0;
 
   /**
    * Returns the node which is identified by the given reference.
@@ -250,14 +270,12 @@ public:
    * @return handle object of the collection. Returns NULL if the collection
    *         does not exist
    */
-  virtual Collection_t getCollection(
-      const Item* name,
-      bool aDynamicCollection = false) = 0;
+  virtual Collection_t getCollection(const Item* name, bool isDynamic) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.
    */
-  virtual Iterator_t listCollectionNames(bool aDynamicCollections = false) = 0;
+  virtual Iterator_t listCollectionNames(bool dynamic) = 0;
 
 
   /* ------------------------ Index Management ---------------------------*/
@@ -296,7 +314,7 @@ public:
   virtual Iterator_t listIndexNames() = 0;
 
 
-  /* ------------------ Integrity Constraints Management ------------------- */
+  /* ------------------- Integrity Constraints Management ------------------- */
 
   /**
    * Lists all active integrity constraints.
@@ -308,7 +326,11 @@ public:
    */
   virtual IC* getIC(const Item* icQName)  = 0;
 
-  /* ------------------------ Map Management ---------------------------*/
+  /* --------------------------- Map Management ------------------------------*/
+
+  virtual Index_t createMap(
+      const Item_t& qname,
+      const IndexSpecification& spec) = 0;
 
   virtual Index* getMap(const Item* aQName) const = 0;
 
@@ -336,7 +358,7 @@ public:
    *
    * @param provider The TokenizerProvider to use or NULL to use the default.
    */
-  virtual void setTokenizerProvider(TokenizerProvider const *provider) = 0;
+  virtual void setTokenizerProvider(const TokenizerProvider* provider) = 0;
 
   /**
    * Gets the TokenizerProvider in use.
@@ -346,6 +368,13 @@ public:
   virtual TokenizerProvider const* getTokenizerProvider() const = 0;
 
 #endif /* ZORBA_NO_FULL_TEXT */
+
+#ifdef ZORBA_WITH_JSON
+  virtual Item_t parseJSON(
+      std::istream& stream,
+      internal::diagnostic::location* relative_error_loc
+    ) = 0;
+#endif
 };
 
 } // namespace store

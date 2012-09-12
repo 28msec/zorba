@@ -36,7 +36,7 @@ PlanIter_t fn_resolve_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ResolveQNameIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -46,7 +46,7 @@ PlanIter_t fn_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new QNameIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -56,7 +56,7 @@ PlanIter_t op_QName_equal::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new QNameEqualIterator(sctx, loc, argv[0], argv[1]);
 }
@@ -66,7 +66,7 @@ PlanIter_t fn_prefix_from_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new PrefixFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -76,7 +76,7 @@ PlanIter_t fn_local_name_from_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new LocalNameFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -86,7 +86,7 @@ PlanIter_t fn_namespace_uri_from_QName::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NamespaceUriFromQNameIterator(sctx, loc, argv[0]);
 }
@@ -96,7 +96,7 @@ PlanIter_t fn_namespace_uri_for_prefix::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NamespaceUriForPrefixIterator(sctx, loc, argv);
 }
@@ -106,16 +106,16 @@ PlanIter_t fn_in_scope_prefixes::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new InScopePrefixesIterator(sctx, loc, argv[0]);
 }
 
 void populate_context_qnames(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_resolve_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","resolve-QName"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -126,9 +126,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","QName"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -139,9 +139,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_QName_equal,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","QName-equal"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -152,9 +152,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_prefix_from_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","prefix-from-QName"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -164,9 +164,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_local_name_from_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","local-name-from-QName"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -176,9 +176,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_namespace_uri_from_QName,
         (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-from-QName"), 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
@@ -188,9 +188,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_namespace_uri_for_prefix,
         (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-for-prefix"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -201,9 +201,9 @@ void populate_context_qnames(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_in_scope_prefixes,
         (createQName("http://www.w3.org/2005/xpath-functions","","in-scope-prefixes"), 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 

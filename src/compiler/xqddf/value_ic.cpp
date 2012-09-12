@@ -33,7 +33,6 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ValueIC)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIC)
 
 
 /*******************************************************************************
@@ -67,7 +66,13 @@ void ValueIC::serialize(::zorba::serialization::Archiver& ar)
 
 store::Iterator_t ValueIC::getIterator() const
 {
-  return new PlanWrapper(thePlan.getp(), theCcb, NULL /*dctx*/, NULL);;
+  return new PlanWrapper(thePlan.getp(),
+                         theCcb,
+                         NULL, // dctx*
+                         NULL,
+                         0,
+                         theCcb->theHaveTimeout,
+                         theCcb->theTimeout);
 }
 
 

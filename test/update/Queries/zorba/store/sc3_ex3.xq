@@ -5,6 +5,6 @@ import module namespace j = "http://www.zorba-xquery.com/modules/converters/json
 j:serialize(
   doc:document("meat_poultry.xml")/root/row,
   <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options" >
-    <json-param name="mapping" value="json-ml" />
+    <json-format value="JsonML-array" />
   </options>
 )

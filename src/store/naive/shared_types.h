@@ -33,10 +33,6 @@ namespace simplestore
 class AtomicItem;
 typedef store::ItemHandle<AtomicItem> AtomicItem_t;
 
-class CollectionSet;
-class CollectionIterator;
-typedef rchandle<CollectionIterator> CollectionIterator_t;
-
 class XmlTree;
 typedef rchandle<XmlTree> XmlTree_t;
 
@@ -46,9 +42,34 @@ typedef store::ItemHandle<class XmlNode> XmlNode_t;
 class IndexImpl;
 typedef rchandle<IndexImpl> IndexImpl_t;
 
-
 typedef rchandle<store::IndexEntryCreator> IndexEntryCreator_t;
 
+#ifdef ZORBA_WITH_JSON
+namespace json {
+
+class JSONItem;
+class JSONObject;
+class SimpleJSONObject;
+class JSONArray;
+class SimpleJSONArray;
+class JSONObjectPair;
+class JSONTree;
+
+typedef store::ItemHandle<JSONItem>         JSONItem_t;
+typedef store::ItemHandle<JSONObject>       JSONObject_t;
+typedef store::ItemHandle<SimpleJSONObject> SimpleJSONObject_t;
+typedef store::ItemHandle<JSONArray>        JSONArray_t;
+typedef store::ItemHandle<SimpleJSONArray>  SimpleJSONArray_t;
+typedef store::ItemHandle<JSONObjectPair>   JSONObjectPair_t;
+typedef store::ItemHandle<JSONTree>         JSONTree_t;
+
+} /* namespace json */
+#endif
+
+class CollectionSet;
+
+class CollectionSetIterator;
+typedef rchandle<CollectionSetIterator> CollectionSetIterator_t;
 
 }
 

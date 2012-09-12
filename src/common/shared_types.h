@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,14 +22,14 @@
 
 #include "store/api/shared_types.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class XQueryDiagnostics;
-  
-namespace types 
+
+namespace types
 {
-  class TypeIdentifier; 
+  class TypeIdentifier;
 };
 
 
@@ -82,7 +82,7 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
 
 // Parsenodes
-class parsenode; 
+class parsenode;
 class exprnode;
 typedef rchandle<parsenode> parsenode_t;
 
@@ -91,19 +91,13 @@ class AnnotationList;
 typedef rchandle<AnnotationList> AnnotationList_t;
 
 // Expression nodes
-class expr; 
+class expr;
 class fo_expr;
 class var_expr;
 class flwor_clause;
 class forletwin_clause;
 class for_clause;
 class let_clause;
-typedef rchandle<expr> expr_t;
-typedef rchandle<var_expr> var_expr_t;
-typedef rchandle<fo_expr> fo_expr_t;
-typedef rchandle<flwor_clause> flwor_clause_t;
-typedef rchandle<for_clause> for_clause_t;
-typedef rchandle<let_clause> let_clause_t;
 
 class ItemVariableIterator;
 typedef rchandle<ItemVariableIterator> ItemVariableIterator_t;
@@ -140,12 +134,18 @@ typedef rchandle<GDay> GDay_t;
 typedef rchandle<GMonth> GMonth_t;
 
 /* numerics */
-template <class Object> class FloatImpl;
-class Integer;
-
-/* numerics */
+template<typename FloatType> class FloatImpl;
 typedef FloatImpl<double> Double;
 typedef FloatImpl<float>  Float;
+#ifdef ZORBA_WITH_BIG_INTEGER
+class IntegerImpl;
+typedef IntegerImpl Integer;
+typedef IntegerImpl UInteger;
+#else
+template<typename IntType> class IntegerImpl;
+typedef IntegerImpl<long long> Integer;
+typedef IntegerImpl<unsigned long long> UInteger;
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 /* api */
 class serializer;

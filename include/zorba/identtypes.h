@@ -17,11 +17,16 @@
 #define ZORBA_TYPEIDENT_TYPES_API_H
 
 #include <zorba/config.h>
+#include <iostream>
 
-namespace zorba {
-class ZORBA_DLL_PUBLIC IdentTypes {
+namespace zorba 
+{
+
+class ZORBA_DLL_PUBLIC IdentTypes 
+{
 public:
-  typedef enum {
+  typedef enum 
+  {
     NAMED_TYPE,     // builtin atomic type
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
@@ -30,18 +35,38 @@ public:
     TEXT_TYPE,
     COMMENT_TYPE,
     ANY_NODE_TYPE, // node()
+    STRUCTURED_ITEM_TYPE,
+#ifdef ZORBA_WITH_JSON
+    JSON_ITEM_TYPE,
+    JSON_OBJECT_TYPE,
+    JSON_ARRAY_TYPE,
+#endif
     ITEM_TYPE,     // item()
     EMPTY_TYPE,    // empty-sequence()
-    INVALID_TYPE,
+    SCHEMA_ELEMENT_TYPE,
+    SCHEMA_ATTRIBUTE_TYPE,
+    INVALID_TYPE
   } kind_t;
+  
+  static char const *const kind_string_of[];
 
-  typedef enum {
+  typedef enum 
+  {
     QUANT_ONE,
     QUANT_QUESTION,
     QUANT_PLUS,
-    QUANT_STAR,
+    QUANT_STAR
   } quantifier_t;
+  
+  static char const *const quantifier_string_of[];
 };
+}
+
+namespace std {
+
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::IdentTypes::kind_t ik);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::IdentTypes::quantifier_t iq);
+
 }
 
 #endif

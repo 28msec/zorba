@@ -67,7 +67,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   CODEGEN_DECL();
 };
@@ -84,7 +84,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   CODEGEN_DECL();
 };
@@ -95,7 +95,7 @@ PlanIter_t fn_zorba_invoke::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -107,7 +107,7 @@ PlanIter_t fn_zorba_invoke_n::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -119,7 +119,7 @@ PlanIter_t fn_zorba_invoke_u::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -131,7 +131,7 @@ PlanIter_t fn_zorba_invoke_s::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   ZORBA_ASSERT(false);
   return NULL;

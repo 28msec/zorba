@@ -70,17 +70,18 @@ void root_static_context::init()
   set_xpath_compatibility(StaticContextConsts::xpath2_0);
 
   const char* const default_ns_initializers[] = 
-    {
-      //"err", XQUERY_ERR_NS,
-      "fn", static_context::W3C_FN_NS,
-      "local", XQUERY_LOCAL_FN_NS,
-      //"math", XQUERY_MATH_FN_NS,
-      "xml", XML_NS,
-      "xs", XML_SCHEMA_NS,
-      "xsi", XSI_NS,
-      //"zerr", ZORBA_ERR_NS,
-      NULL, NULL
-    };
+  {
+    //"err", XQUERY_ERR_NS,
+    "fn", static_context::W3C_FN_NS,
+#ifdef ZORBA_WITH_JSON
+    "jn", static_context::JSONIQ_FN_NS,
+#endif
+    "local", XQUERY_LOCAL_FN_NS,
+    "xml", XML_NS,
+    "xs", XML_SCHEMA_NS,
+    "xsi", XSI_NS,
+    NULL, NULL
+  };
 
   for (const char* const* p = default_ns_initializers; *p != NULL; p += 2)
   {
@@ -93,10 +94,9 @@ void root_static_context::init()
 
   set_default_function_ns(W3C_FN_NS, true, loc);
 
-  set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-
   add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
   add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
+  add_collation("http://www.zorba-xquery.com/collations/SECONDARY/en/EN", QueryLoc::null);
   set_default_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
 
   set_construction_mode(StaticContextConsts::cons_preserve);
@@ -111,6 +111,7 @@ void root_static_context::init()
 
   set_default_w3c_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
+  set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE, QueryLoc::null);
 
   // TODO move into globalenv? memory leaks?
   add_url_resolver(new internal::FileURLResolver());

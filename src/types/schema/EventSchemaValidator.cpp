@@ -163,7 +163,7 @@ store::Item_t EventSchemaValidator::getTypeQName()
   StrX typeName(theSchemaValidatorFilter->getTypeName());
   StrX typeUri(theSchemaValidatorFilter->getTypeUri());
 
-  //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<" ";
+  //cout << "  - getTypeQName:  " << typeName << " @ " << typeUri <<" ";
 
   store::Item_t typeQName;
   GENV_ITEMFACTORY->createQName(typeQName,
@@ -172,7 +172,7 @@ store::Item_t EventSchemaValidator::getTypeQName()
                                 typeName.localFormOrDefault ("untyped"));
 
   //cout << " : " << typeQName->getLocalName() << " @ "
-  //     << typeQName->getNamespace() <<"\n";
+  //     << typeQName->getNamespace() <<"\n"; std::cout.flush();
 
   return typeQName;
 }
@@ -191,7 +191,9 @@ xqtref_t EventSchemaValidator::getType()
                                 "",
                                 typeName.localFormOrDefault ("untyped"));
 
-  xqtref_t type = theTypeManager->create_named_type(typeQName);
+  xqtref_t type = theTypeManager->create_named_type(typeQName, 
+                                                    TypeConstants::QUANT_ONE,
+                                                    QueryLoc::null);
   return type;
 }
 

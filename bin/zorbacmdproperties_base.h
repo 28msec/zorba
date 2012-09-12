@@ -15,13 +15,6 @@
  */
 /* vim:set et sw=2 ts=2: */
 
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .txt FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
 #include <string>
 #include <sstream>
 #include <zorba/config.h>
@@ -30,13 +23,29 @@
 
 #ifndef ZORBACMD_ZORBACMDPROPERTIESBASE
 #define ZORBACMD_ZORBACMDPROPERTIESBASE
-namespace zorbacmd { 
-class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
+namespace zorbacmd
+{
+
+class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase
+{
 protected:
-  const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--uri-path", "--lib-path", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
+  const char** get_all_options () const
+  {
+    static const char* result [] = {
+      "--timing", "--output-file", "--serialization-parameter",
+      "--serialize-html", "--serialize-text", "--indent", "--print-query",
+      "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration",
+      "--base-uri", "--boundary-space", "--default-collation",
+      "--construction-mode", "--ordering-mode", "--multiple", "--query",
+      "--as-files", "--external-variable", "--context-item",
+      "--optimization-level", "--lib-module", "--parse-only", "--compile-only",
+      "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo",
+      "--timeout", "--uri-path", "--lib-path", "--module-path", "--classpath",
+      "--option", "--trailing-nl", "--stop-words", "--thesaurus",
+      "--compile-plan", "--execute-plan --serialize-plan", NULL };
     return result;
   }
+
   bool theTiming;
   std::string theOutputFile;
   std::vector<std::string> theSerializationParameter;
@@ -70,12 +79,17 @@ protected:
   std::string theUriPath;
   std::string theLibPath;
   std::string theModulePath;
+  std::string theClasspath;
   std::vector<std::string> theOption;
   bool theTrailingNl;
   std::vector<std::string> theStopWords;
   std::vector<std::string> theThesaurus;
+  bool theSerializePlan;
+  bool theSavePlan;
+  bool theLoadPlan;
 
-  void initialize () {
+  void initialize () 
+  {
     theTiming = false;
     theSerializeHtml = false;
     theSerializeText = false;
@@ -97,7 +111,11 @@ protected:
     theNoLogo = false;
     theTimeout = -1;
     theTrailingNl = false;
+    theSerializePlan = false;
+    theSavePlan = false;
+    theLoadPlan = false;
   }
+
 public:
   const bool &timing () const { return theTiming; }
   const std::string &outputFile () const { return theOutputFile; }
@@ -132,179 +150,293 @@ public:
   const std::string &uriPath () const { return theUriPath; }
   const std::string &libPath () const { return theLibPath; }
   const std::string &modulePath () const { return theModulePath; }
+  const std::string &classpath () const { return theClasspath; }
   const std::vector<std::string> &option () const { return theOption; }
   const bool &trailingNl () const { return theTrailingNl; }
   const std::vector<std::string> &stopWords () const { return theStopWords; }
   const std::vector<std::string> &thesaurus () const { return theThesaurus; }
+  const bool& serializePlan () const { return theSerializePlan; }
+  const bool& loadPlan () const { return theLoadPlan; }
+  const bool& savePlan () const { return theSavePlan; }
 
-  std::string load_argv (int argc, const char **argv) {
+  std::string load_argv (int argc, const char **argv) 
+  {
     if (argv == NULL) return "";
 
     std::string result;
-    for (++argv; *argv != NULL; ++argv) {
+    for (++argv; *argv != NULL; ++argv) 
+    {
       if (strcmp (*argv, "--help") == 0 || strcmp (*argv, "-h") == 0)
         return "!HELP";
+
       else if (strcmp (*argv, "--version") == 0)
         return "!VER";
-      else if (strcmp (*argv, "--timing") == 0 || strncmp (*argv, "-t", 2) == 0) {
+
+      else if (strcmp (*argv, "--timing") == 0 || strncmp (*argv, "-t", 2) == 0) 
+      {
         theTiming = true;
       }
-      else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
+      else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --output-file option"; break; }        init_val (*argv, theOutputFile, d);
+        if (*argv == NULL) { result = "No value given for --output-file option"; break; }
+        init_val (*argv, theOutputFile, d);
       }
-      else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) {
+      else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --serialization-parameter option"; break; }        init_val (*argv, theSerializationParameter, d);
+        if (*argv == NULL) { result = "No value given for --serialization-parameter option"; break; }
+
+        init_val (*argv, theSerializationParameter, d);
       }
-      else if (strcmp (*argv, "--serialize-html") == 0) {
+      else if (strcmp (*argv, "--serialize-html") == 0) 
+      {
         theSerializeHtml = true;
       }
-      else if (strcmp (*argv, "--serialize-text") == 0) {
+      else if (strcmp (*argv, "--serialize-text") == 0) 
+      {
         theSerializeText = true;
       }
-      else if (strcmp (*argv, "--indent") == 0 || strncmp (*argv, "-i", 2) == 0) {
+      else if (strcmp (*argv, "--indent") == 0 || strncmp (*argv, "-i", 2) == 0) 
+      {
         theIndent = true;
       }
-      else if (strcmp (*argv, "--print-query") == 0) {
+      else if (strcmp (*argv, "--print-query") == 0) 
+      {
         thePrintQuery = true;
       }
-      else if (strcmp (*argv, "--print-errors-as-xml") == 0 || strncmp (*argv, "-x", 2) == 0) {
+      else if (strcmp (*argv, "--print-errors-as-xml") == 0 || strncmp (*argv, "-x", 2) == 0)
+      {
         thePrintErrorsAsXml = true;
       }
-      else if (strcmp (*argv, "--byte-order-mark") == 0) {
+      else if (strcmp (*argv, "--byte-order-mark") == 0) 
+      {
         theByteOrderMark = true;
       }
-      else if (strcmp (*argv, "--omit-xml-declaration") == 0 || strncmp (*argv, "-r", 2) == 0) {
+      else if (strcmp (*argv, "--omit-xml-declaration") == 0 || strncmp (*argv, "-r", 2) == 0) 
+      {
         theOmitXmlDeclaration = true;
       }
-      else if (strcmp (*argv, "--base-uri") == 0) {
+      else if (strcmp (*argv, "--base-uri") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --base-uri option"; break; }        init_val (*argv, theBaseUri, d);
+        if (*argv == NULL) { result = "No value given for --base-uri option"; break; }
+        init_val (*argv, theBaseUri, d);
       }
-      else if (strcmp (*argv, "--boundary-space") == 0) {
+      else if (strcmp (*argv, "--boundary-space") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --boundary-space option"; break; }        init_val (*argv, theBoundarySpace, d);
+        if (*argv == NULL) { result = "No value given for --boundary-space option"; break; }
+        init_val (*argv, theBoundarySpace, d);
       }
-      else if (strcmp (*argv, "--default-collation") == 0) {
+      else if (strcmp (*argv, "--default-collation") == 0)
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --default-collation option"; break; }        init_val (*argv, theDefaultCollation, d);
+        if (*argv == NULL) { result = "No value given for --default-collation option"; break; }
+        init_val (*argv, theDefaultCollation, d);
       }
-      else if (strcmp (*argv, "--construction-mode") == 0) {
+      else if (strcmp (*argv, "--construction-mode") == 0)
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --construction-mode option"; break; }        init_val (*argv, theConstructionMode, d);
+        if (*argv == NULL) { result = "No value given for --construction-mode option"; break; }
+
+        init_val (*argv, theConstructionMode, d);
       }
       else if (strcmp (*argv, "--ordering-mode") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --ordering-mode option"; break; }        init_val (*argv, theOrderingMode, d);
+        if (*argv == NULL) { result = "No value given for --ordering-mode option"; break; }
+
+        init_val (*argv, theOrderingMode, d);
       }
-      else if (strcmp (*argv, "--multiple") == 0 || strncmp (*argv, "-m", 2) == 0) {
+      else if (strcmp (*argv, "--multiple") == 0 || strncmp (*argv, "-m", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --multiple option"; break; }        init_val (*argv, theMultiple, d);
+        if (*argv == NULL)
+        {
+          result = "No value given for --multiple option"; break;
+        }
+        init_val(*argv, theMultiple, d);
       }
-      else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-q", 2) == 0) {
+      else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-q", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --query option"; break; }        init_val (*argv, theQueriesOrFiles, d);
+        if (*argv == NULL)
+        {
+          result = "No value given for --query option"; break;
+        }
+        init_val (*argv, theQueriesOrFiles, d);
       }
-      else if (strcmp (*argv, "--as-files") == 0 || strncmp (*argv, "-f", 2) == 0) {
+      else if (strcmp (*argv, "--as-files") == 0 || strncmp (*argv, "-f", 2) == 0) 
+      {
         theAsFiles = true;
       }
-      else if (strcmp (*argv, "--external-variable") == 0 || strncmp (*argv, "-e", 2) == 0) {
+      else if (strcmp (*argv, "--external-variable") == 0 || strncmp (*argv, "-e", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --external-variable option"; break; }        init_val (*argv, theExternalVariable, d);
+        if (*argv == NULL) 
+        {
+          result = "No value given for --external-variable option"; break;
+        }
+        init_val(*argv, theExternalVariable, d);
       }
-      else if (strcmp (*argv, "--context-item") == 0) {
+      else if (strcmp (*argv, "--context-item") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --context-item option"; break; }        init_val (*argv, theContextItem, d);
+        if (*argv == NULL) 
+        {
+          result = "No value given for --context-item option"; break;
+        }
+        init_val (*argv, theContextItem, d);
       }
-      else if (strcmp (*argv, "--optimization-level") == 0) {
+      else if (strcmp (*argv, "--optimization-level") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --optimization-level option"; break; }        init_val (*argv, theOptimizationLevel, d);
+        if (*argv == NULL)
+        {
+          result = "No value given for --optimization-level option"; break;
+        }
+        init_val(*argv, theOptimizationLevel, d);
       }
-      else if (strcmp (*argv, "--lib-module") == 0 || strncmp (*argv, "-l", 2) == 0) {
+      else if (strcmp (*argv, "--lib-module") == 0 || strncmp (*argv, "-l", 2) == 0) 
+      {
         theLibModule = true;
       }
-      else if (strcmp (*argv, "--parse-only") == 0) {
+      else if (strcmp (*argv, "--parse-only") == 0) 
+      {
         theParseOnly = true;
       }
-      else if (strcmp (*argv, "--compile-only") == 0) {
+      else if (strcmp (*argv, "--compile-only") == 0) 
+      {
         theCompileOnly = true;
       }
-      else if (strcmp (*argv, "--no-serializer") == 0) {
+      else if (strcmp (*argv, "--no-serializer") == 0) 
+      {
         theNoSerializer = true;
       }
-      else if (strcmp (*argv, "--debug") == 0 || strncmp (*argv, "-d", 2) == 0) {
+      else if (strcmp (*argv, "--debug") == 0 || strncmp (*argv, "-d", 2) == 0) 
+      {
         theDebug = true;
       }
-      else if (strcmp (*argv, "--debug-host") == 0 || strncmp (*argv, "-h", 2) == 0) {
+      else if (strcmp (*argv, "--debug-host") == 0 || strncmp (*argv, "-h", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --debug-host option"; break; }        init_val (*argv, theDebugHost, d);
+        if (*argv == NULL) 
+        {
+          result = "No value given for --debug-host option"; break;
+        }
+        init_val (*argv, theDebugHost, d);
       }
-      else if (strcmp (*argv, "--debug-port") == 0 || strncmp (*argv, "-p", 2) == 0) {
+      else if (strcmp (*argv, "--debug-port") == 0 || strncmp (*argv, "-p", 2) == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --debug-port option"; break; }        init_val (*argv, theDebugPort, d);
+        if (*argv == NULL) 
+        {
+          result = "No value given for --debug-port option"; break;
+        }
+        init_val (*argv, theDebugPort, d);
       }
-      else if (strcmp (*argv, "--no-logo") == 0) {
+      else if (strcmp (*argv, "--no-logo") == 0) 
+      {
         theNoLogo = true;
       }
-      else if (strcmp (*argv, "--timeout") == 0) {
+      else if (strcmp (*argv, "--timeout") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --timeout option"; break; }        init_val (*argv, theTimeout, d);
+        if (*argv == NULL) { result = "No value given for --timeout option"; break; }
+        init_val (*argv, theTimeout, d);
       }
-      else if (strcmp (*argv, "--uri-path") == 0) {
+      else if (strcmp (*argv, "--uri-path") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --uri-path option"; break; }        init_val (*argv, theUriPath, d);
+        if (*argv == NULL) { result = "No value given for --uri-path option"; break; }
+        init_val (*argv, theUriPath, d);
       }
-      else if (strcmp (*argv, "--lib-path") == 0) {
+      else if (strcmp (*argv, "--lib-path") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --lib-path option"; break; }        init_val (*argv, theLibPath, d);
+        if (*argv == NULL) { result = "No value given for --lib-path option"; break; }
+        init_val (*argv, theLibPath, d);
       }
-      else if (strcmp (*argv, "--module-path") == 0) {
+      else if (strcmp (*argv, "--module-path") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --module-path option"; break; }        init_val (*argv, theModulePath, d);
+        if (*argv == NULL) { result = "No value given for --module-path option"; break; }
+        init_val (*argv, theModulePath, d);
       }
-      else if (strcmp (*argv, "--option") == 0) {
+      else if (strcmp (*argv, "--classpath") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --option option"; break; }        init_val (*argv, theOption, d);
+        if (*argv == NULL) { result = "No value given for --classpath option"; break; }
+
+        init_val (*argv, theClasspath, d);
       }
-      else if (strcmp (*argv, "--trailing-nl") == 0) {
+      else if (strcmp (*argv, "--option") == 0) 
+      {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --option option"; break; }
+        init_val (*argv, theOption, d);
+      }
+      else if (strcmp (*argv, "--trailing-nl") == 0) 
+      {
         theTrailingNl = true;
       }
-      else if (strcmp (*argv, "--stop-words") == 0) {
+      else if (strcmp (*argv, "--stop-words") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --stop-words option"; break; }        init_val (*argv, theStopWords, d);
+        if (*argv == NULL) { result = "No value given for --stop-words option"; break; }
+        init_val (*argv, theStopWords, d);
       }
-      else if (strcmp (*argv, "--thesaurus") == 0) {
+      else if (strcmp (*argv, "--thesaurus") == 0) 
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --thesaurus option"; break; }        init_val (*argv, theThesaurus, d);
+        if (*argv == NULL) { result = "No value given for --thesaurus option"; break; }
+        init_val (*argv, theThesaurus, d);
       }
-      else if (strcmp (*argv, "--") == 0) {
+      else if (strcmp (*argv, "--serialize-plan") == 0 || strncmp (*argv, "-s", 2) == 0)
+      {
+        theSerializePlan = true;
+      }
+      else if (strcmp (*argv, "--compile-plan") == 0)
+      {
+        theSavePlan = true;
+      }
+      else if (strcmp (*argv, "--execute-plan") == 0)
+      {
+        theLoadPlan = true;
+      }
+      else if (strcmp (*argv, "--") == 0)
+      {
         copy_args (++argv);
         break;
-      } else if ((*argv) [0] == '-') {
+      }
+      else if ((*argv) [0] == '-')
+      {
         result = "unknown command line option "; result += *argv; break; 
-      } else {
+      }
+      else
+      {
         copy_args (argv);
         break;
       }
@@ -313,49 +445,55 @@ public:
     return result;
   }
 
-  const char *get_help_msg () const {
+  const char *get_help_msg () const 
+  {
     return
-"--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
-"--output-file, -o\nWrite the result to the given file.\n\n"
-"--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
-"--serialize-html\nSerialize the result as HTML.\n\n"
-"--serialize-text\nSerialize the result as Text.\n\n"
-"--indent, -i\nIndent output.\n\n"
-"--print-query\nPrint the queries.\n\n"
-"--print-errors-as-xml, -x\nPrint the errors as XML.\n\n"
-"--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
-"--omit-xml-declaration, -r\nOmit the XML declaration from the result.\n\n"
-"--base-uri\nSet the base URI property of the static context.\n\n"
-"--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
-"--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"
-"--construction-mode\nSet the construction mode ('strip' or 'preserve') in the static context.\n\n"
-"--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
-"--multiple, -m\nExecute the given queries multiple times.\n\n"
-"--query, -q\nQuery test or file URI (file://...)\n\n"
-"--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries.\n\n"
-"--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
-"--context-item\nSet the context item to the XML document in a given file.\n\n"
-"--optimization-level\nOptimization level for the query compiler (O0, O1 or O2 - default: O1)\n\n"
-"--lib-module, -l\nQuery compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.\n\n"
-"--parse-only\nStop after parsing the query.\n\n"
-"--compile-only\nOnly compile (don't execute)\n\n"
-"--no-serializer\nDo not serialize (discard) result.\n\n"
-"--debug, -d\nLaunch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
-"--debug-host, -h\nThe host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
-"--debug-port, -p\nThe port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
-"--no-logo\nPrint no logo when starting.\n\n"
-"--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
-"--uri-path\nURI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
-"--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
-"--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
-"--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
-"--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
-"--stop-words\nMapping specifying a stop-words URI to another.\n\n"
-"--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
-;
+        "--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
+        "--output-file, -o\nWrite the result to the given file.\n\n"
+        "--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
+        "--serialize-html\nSerialize the result as HTML.\n\n"
+        "--serialize-text\nSerialize the result as Text.\n\n"
+        "--indent, -i\nIndent output.\n\n"
+        "--print-query\nPrint the queries.\n\n"
+        "--print-errors-as-xml, -x\nPrint the errors as XML.\n\n"
+        "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
+        "--omit-xml-declaration, -r\nOmit the XML declaration from the result.\n\n"
+        "--base-uri\nSet the base URI property of the static context.\n\n"
+        "--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
+        "--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"
+        "--construction-mode\nSet the construction mode ('strip' or 'preserve') in the static context.\n\n"
+        "--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
+        "--multiple, -m\nExecute the given queries multiple times.\n\n"
+        "--query, -q\nQuery test or file URI (file://...)\n\n"
+        "--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries.\n\n"
+        "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
+        "--context-item\nSet the context item to the XML document in a given file.\n\n"
+        "--optimization-level\nOptimization level for the query compiler (O0, O1 or O2 - default: O1)\n\n"
+        "--lib-module, -l\nQuery compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.\n\n"
+        "--parse-only\nStop after parsing the query.\n\n"
+        "--compile-only\nOnly compile (don't execute)\n\n"
+        "--no-serializer\nDo not serialize (discard) result.\n\n"
+        "--debug, -d\nLaunch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
+        "--debug-host, -h\nThe host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
+        "--debug-port, -p\nThe port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
+        "--no-logo\nPrint no logo when starting.\n\n"
+        "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
+        "--uri-path\nURI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
+        "--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
+        "--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
+        "--classpath\nJVM classpath to be used by modules using Java implementations\n\n"
+        "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
+        "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
+        "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
+        "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
+        "--serialize-plan, -s\nSerialize and then load the query execution plan.\n\n"
+        "--compile-plan,\nDo not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
+        "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options, and execute the loaded plan.\n\n"
+        ;
   }
 
-  static const ZorbaCMDPropertiesBase *instance () {
+  static const ZorbaCMDPropertiesBase *instance () 
+  {
     static ZorbaCMDPropertiesBase result;
     return &result;
   }

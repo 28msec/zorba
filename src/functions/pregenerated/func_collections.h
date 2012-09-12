@@ -38,6 +38,82 @@ void populate_context_collections(static_context* sctx);
 
 
 
+//static-collections-ddl:create
+class static_collections_ddl_create : public function
+{
+public:
+  static_collections_ddl_create(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-ddl:delete
+class static_collections_ddl_delete : public function
+{
+public:
+  static_collections_ddl_delete(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-ddl:is-available-collection
+class static_collections_ddl_is_available_collection : public function
+{
+public:
+  static_collections_ddl_is_available_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-ddl:available-collections
+class static_collections_ddl_available_collections : public function
+{
+public:
+  static_collections_ddl_available_collections(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:collection
 class fn_collection : public function
 {
@@ -57,11 +133,11 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:collection
-class zorba_store_collections_static_dml_collection : public function
+//static-collections-dml:collection
+class static_collections_dml_collection : public function
 {
 public:
-  zorba_store_collections_static_dml_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_collection(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -86,11 +162,11 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:index-of
-class zorba_store_collections_static_dml_index_of : public function
+//static-collections-dml:collection-name
+class static_collections_dml_collection_name : public function
 {
 public:
-  zorba_store_collections_static_dml_index_of(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_collection_name(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -105,39 +181,16 @@ public:
 };
 
 
-//zorba-store-collections-static-ddl:create
-class zorba_store_collections_static_ddl_create : public function
+//static-collections-dml:index-of
+class static_collections_dml_index_of : public function
 {
 public:
-  zorba_store_collections_static_ddl_create(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_index_of(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-store-collections-static-ddl:delete
-class zorba_store_collections_static_ddl_delete : public function
-{
-public:
-  zorba_store_collections_static_ddl_delete(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -147,18 +200,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:insert-nodes
-class zorba_store_collections_static_dml_insert_nodes : public function
+//static-collections-dml:insert-nodes
+class static_collections_dml_insert_nodes : public function
 {
 public:
-  zorba_store_collections_static_dml_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -168,18 +221,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:insert-nodes-first
-class zorba_store_collections_static_dml_insert_nodes_first : public function
+//static-collections-dml:insert-nodes-first
+class static_collections_dml_insert_nodes_first : public function
 {
 public:
-  zorba_store_collections_static_dml_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -189,18 +242,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:insert-nodes-last
-class zorba_store_collections_static_dml_insert_nodes_last : public function
+//static-collections-dml:insert-nodes-last
+class static_collections_dml_insert_nodes_last : public function
 {
 public:
-  zorba_store_collections_static_dml_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -210,18 +263,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:insert-nodes-before
-class zorba_store_collections_static_dml_insert_nodes_before : public function
+//static-collections-dml:insert-nodes-before
+class static_collections_dml_insert_nodes_before : public function
 {
 public:
-  zorba_store_collections_static_dml_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -231,18 +284,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:insert-nodes-after
-class zorba_store_collections_static_dml_insert_nodes_after : public function
+//static-collections-dml:insert-nodes-after
+class static_collections_dml_insert_nodes_after : public function
 {
 public:
-  zorba_store_collections_static_dml_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -252,18 +305,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:apply-insert-nodes
-class zorba_store_collections_static_dml_apply_insert_nodes : public function
+//static-collections-dml:apply-insert-nodes
+class static_collections_dml_apply_insert_nodes : public function
 {
 public:
-  zorba_store_collections_static_dml_apply_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return APPLYING_EXPR; }
+  unsigned short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -275,18 +328,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:apply-insert-nodes-first
-class zorba_store_collections_static_dml_apply_insert_nodes_first : public function
+//static-collections-dml:apply-insert-nodes-first
+class static_collections_dml_apply_insert_nodes_first : public function
 {
 public:
-  zorba_store_collections_static_dml_apply_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return APPLYING_EXPR; }
+  unsigned short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -298,18 +351,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:apply-insert-nodes-last
-class zorba_store_collections_static_dml_apply_insert_nodes_last : public function
+//static-collections-dml:apply-insert-nodes-last
+class static_collections_dml_apply_insert_nodes_last : public function
 {
 public:
-  zorba_store_collections_static_dml_apply_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return APPLYING_EXPR; }
+  unsigned short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -321,41 +374,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:apply-insert-nodes-before
-class zorba_store_collections_static_dml_apply_insert_nodes_before : public function
+//static-collections-dml:apply-insert-nodes-before
+class static_collections_dml_apply_insert_nodes_before : public function
 {
 public:
-  zorba_store_collections_static_dml_apply_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return APPLYING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const;
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-store-collections-static-dml:apply-insert-nodes-after
-class zorba_store_collections_static_dml_apply_insert_nodes_after : public function
-{
-public:
-  zorba_store_collections_static_dml_apply_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  short getScriptingKind() const { return APPLYING_EXPR; }
+  unsigned short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -367,18 +397,41 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:delete-nodes
-class zorba_store_collections_static_dml_delete_nodes : public function
+//static-collections-dml:apply-insert-nodes-after
+class static_collections_dml_apply_insert_nodes_after : public function
 {
 public:
-  zorba_store_collections_static_dml_delete_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return APPLYING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-dml:delete-nodes
+class static_collections_dml_delete_nodes : public function
+{
+public:
+  static_collections_dml_delete_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -392,18 +445,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:delete-node-first
-class zorba_store_collections_static_dml_delete_node_first : public function
+//static-collections-dml:delete-node-first
+class static_collections_dml_delete_node_first : public function
 {
 public:
-  zorba_store_collections_static_dml_delete_node_first(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_delete_node_first(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -413,18 +466,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:delete-node-last
-class zorba_store_collections_static_dml_delete_node_last : public function
+//static-collections-dml:delete-node-last
+class static_collections_dml_delete_node_last : public function
 {
 public:
-  zorba_store_collections_static_dml_delete_node_last(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_delete_node_last(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -434,52 +487,18 @@ public:
 };
 
 
-//zorba-store-collections-static-dml:collection-name
-class zorba_store_collections_static_dml_collection_name : public function
+//static-collections-dml:truncate
+class static_collections_dml_truncate : public function
 {
 public:
-  zorba_store_collections_static_dml_collection_name(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_truncate(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-store-collections-static-ddl:is-available-collection
-class zorba_store_collections_static_ddl_is_available_collection : public function
-{
-public:
-  zorba_store_collections_static_ddl_is_available_collection(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-store-collections-static-ddl:available-collections
-class zorba_store_collections_static_ddl_available_collections : public function
-{
-public:
-  zorba_store_collections_static_ddl_available_collections(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -555,11 +574,11 @@ public:
 };
 
 
-//zorba-store-collections-static-ddl:is-declared-collection
-class zorba_store_collections_static_ddl_is_declared_collection : public function
+//static-collections-ddl:is-declared-collection
+class static_collections_ddl_is_declared_collection : public function
 {
 public:
-  zorba_store_collections_static_ddl_is_declared_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_ddl_is_declared_collection(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -570,11 +589,11 @@ public:
 };
 
 
-//zorba-store-collections-static-ddl:declared-collections
-class zorba_store_collections_static_ddl_declared_collections : public function
+//static-collections-ddl:declared-collections
+class static_collections_ddl_declared_collections : public function
 {
 public:
-  zorba_store_collections_static_ddl_declared_collections(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_ddl_declared_collections(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -639,6 +658,21 @@ public:
     function(sig, kind)
   {
 
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:uri-collection
+class fn_uri_collection_3_0 : public function
+{
+public:
+  fn_uri_collection_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();

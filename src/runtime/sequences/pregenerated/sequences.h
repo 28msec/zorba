@@ -34,10 +34,8 @@
 
 
 namespace zorba {
-namespace store{
-  class NodeHashSet;
-}
-class ItemValueCollHandleHashSet;
+class NodeHandleHashSet;
+class AtomicItemHandleHashSet;
 /**
  * 
  *    op:concatenate
@@ -64,11 +62,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnConcatIterator,
     NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnConcatIterator(
     static_context* sctx,
@@ -136,11 +130,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIndexOfIterator,
     NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnIndexOfIterator(
     static_context* sctx,
@@ -173,11 +163,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnEmptyIterator,
     NaryBaseIterator<FnEmptyIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnEmptyIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnEmptyIterator(
     static_context* sctx,
@@ -210,11 +196,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExistsIterator,
     NaryBaseIterator<FnExistsIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnExistsIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnExistsIterator(
     static_context* sctx,
@@ -248,7 +230,7 @@ class FnDistinctValuesIteratorState : public PlanIteratorState
 {
 public:
   bool theHasNaN; //indicates whether NaN was found in the sequence
-  std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
+  std::auto_ptr<AtomicItemHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
 
   FnDistinctValuesIteratorState();
 
@@ -266,11 +248,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDistinctValuesIterator,
     NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnDistinctValuesIterator(
     static_context* sctx,
@@ -319,11 +297,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnInsertBeforeIterator,
     NaryBaseIterator<FnInsertBeforeIterator, FnInsertBeforeIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnInsertBeforeIterator, FnInsertBeforeIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnInsertBeforeIterator(
     static_context* sctx,
@@ -371,11 +345,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnRemoveIterator,
     NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnRemoveIterator(
     static_context* sctx,
@@ -420,11 +390,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnReverseIterator,
     NaryBaseIterator<FnReverseIterator, FnReverseIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnReverseIterator, FnReverseIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnReverseIterator(
     static_context* sctx,
@@ -470,11 +436,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSubsequenceIterator,
     NaryBaseIterator<FnSubsequenceIterator, FnSubsequenceIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSubsequenceIterator, FnSubsequenceIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSubsequenceIterator(
     static_context* sctx,
@@ -522,11 +484,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SubsequenceIntIterator,
     NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SubsequenceIntIterator(
     static_context* sctx,
@@ -573,11 +531,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SequencePointAccessIterator,
     NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SequencePointAccessIterator(
     static_context* sctx,
@@ -613,13 +567,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZeroOrOneIterator,
     NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState>*)this);
-
-    ar & theDoDistinct;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnZeroOrOneIterator(
     static_context* sctx,
@@ -653,11 +601,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnOneOrMoreIterator,
     NaryBaseIterator<FnOneOrMoreIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnOneOrMoreIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnOneOrMoreIterator(
     static_context* sctx,
@@ -692,14 +636,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExactlyOneIterator,
     NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>*)this);
-
-    ar & theRaiseError;
-    ar & theDoDistinct;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnExactlyOneIterator(
     static_context* sctx,
@@ -738,11 +675,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDeepEqualIterator,
     NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnDeepEqualIterator(
     static_context* sctx,
@@ -773,7 +706,7 @@ public:
 class HashSemiJoinIteratorState : public PlanIteratorState
 {
 public:
-  store::NodeHashSet* theRightInput; //
+  NodeHandleHashSet* theRightInput; //
 
   HashSemiJoinIteratorState();
 
@@ -793,13 +726,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HashSemiJoinIterator,
     NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState>*)this);
-
-    ar & theAntijoin;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   HashSemiJoinIterator(
     static_context* sctx,
@@ -840,11 +767,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SortSemiJoinIterator,
     NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SortSemiJoinIterator(
     static_context* sctx,
@@ -874,11 +797,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnCountIterator,
     NaryBaseIterator<FnCountIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnCountIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnCountIterator(
     static_context* sctx,
@@ -910,11 +829,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAvgIterator,
     NaryBaseIterator<FnAvgIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnAvgIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnAvgIterator(
     static_context* sctx,
@@ -949,11 +864,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumIterator,
     NaryBaseIterator<FnSumIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSumIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSumIterator(
     static_context* sctx,
@@ -985,11 +896,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumDoubleIterator,
     NaryBaseIterator<FnSumDoubleIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSumDoubleIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSumDoubleIterator(
     static_context* sctx,
@@ -1021,11 +928,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumFloatIterator,
     NaryBaseIterator<FnSumFloatIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSumFloatIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSumFloatIterator(
     static_context* sctx,
@@ -1057,11 +960,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumDecimalIterator,
     NaryBaseIterator<FnSumDecimalIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSumDecimalIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSumDecimalIterator(
     static_context* sctx,
@@ -1093,11 +992,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumIntegerIterator,
     NaryBaseIterator<FnSumIntegerIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSumIntegerIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSumIntegerIterator(
     static_context* sctx,
@@ -1142,11 +1037,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(OpToIterator,
     NaryBaseIterator<OpToIterator, OpToIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<OpToIterator, OpToIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   OpToIterator(
     static_context* sctx,
@@ -1197,11 +1088,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdIterator,
     NaryBaseIterator<FnIdIterator, FnIdIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnIdIterator, FnIdIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnIdIterator(
     static_context* sctx,
@@ -1254,11 +1141,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnElementWithIdIterator,
     NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnElementWithIdIterator(
     static_context* sctx,
@@ -1304,11 +1187,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdRefIterator,
     NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnIdRefIterator(
     static_context* sctx,
@@ -1338,11 +1217,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocIterator,
     NaryBaseIterator<FnDocIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnDocIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnDocIterator(
     static_context* sctx,
@@ -1372,11 +1247,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocAvailableIterator,
     NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnDocAvailableIterator(
     static_context* sctx,
@@ -1387,6 +1258,205 @@ public:
   {}
 
   virtual ~FnDocAvailableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Summary: returns a list of environment variable names that are suitable for
+ *    passing to fn:environment-variable, as a (possible empty) sequence of
+ *    strings.
+ *
+ *    The function returns a sequence of strings, being the names of the environment
+ *    variables in the dynamic context in some implementation-defined order.
+ *  
+ * Author: Zorba Team
+ */
+class FnAvailableEnvironmentVariablesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theIterator; //the current iterator
+
+  FnAvailableEnvironmentVariablesIteratorState();
+
+  ~FnAvailableEnvironmentVariablesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnAvailableEnvironmentVariablesIterator : public NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnAvailableEnvironmentVariablesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAvailableEnvironmentVariablesIterator,
+    NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnAvailableEnvironmentVariablesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnAvailableEnvironmentVariablesIterator, FnAvailableEnvironmentVariablesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnAvailableEnvironmentVariablesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Summary: Returns the value of a system environment variable, if it exists.
+ *
+ *    If there is no environment variable with a matching name, the function returns
+ *    the empty sequence.
+ *  
+ * Author: Zorba Team
+ */
+class FnEnvironmentVariableIterator : public NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnEnvironmentVariableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnEnvironmentVariableIterator,
+    NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnEnvironmentVariableIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnEnvironmentVariableIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnEnvironmentVariableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Summary: The fn:unparsed-text function reads an external resource (for
+ *    example, a file) and returns its contents as a string.
+ *  
+ * Author: Zorba Team
+ */
+class FnUnparsedTextIterator : public NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextIterator,
+    NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnUnparsedTextIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Because errors in evaluating the fn:unparsed-text function are
+ *    non-recoverable, these two functions are provided to allow an application
+ *    to determine whether a call with particular arguments would succeed.
+ *  
+ * Author: Zorba Team
+ */
+class FnUnparsedTextAvailableIterator : public NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextAvailableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextAvailableIterator,
+    NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnUnparsedTextAvailableIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextAvailableIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextAvailableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      Reads an external resource and returns its contents as a sequence of strings,
+ *      separated at newline boundaries.
+ *    
+ * Author: Zorba Team
+ */
+class FnUnparsedTextLinesIteratorState : public PlanIteratorState
+{
+public:
+  std::unique_ptr<std::istream, StreamReleaser>* theStream; //the current stream
+   internal::StreamResource* theStreamResource; //the current iterator
+
+  FnUnparsedTextLinesIteratorState();
+
+  ~FnUnparsedTextLinesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnUnparsedTextLinesIterator : public NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnUnparsedTextLinesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnUnparsedTextLinesIterator,
+    NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnUnparsedTextLinesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnUnparsedTextLinesIterator, FnUnparsedTextLinesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnUnparsedTextLinesIterator();
 
   void accept(PlanIterVisitor& v) const;
 

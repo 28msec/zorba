@@ -32,7 +32,7 @@ PlanIter_t op_create_internal_index::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+    expr& ann) const
 {
   fo_expr* fo = static_cast<fo_expr*>(&ann);
 
@@ -51,7 +51,7 @@ PlanIter_t fn_zorba_ddl_create_index::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CreateIndexIterator(sctx, loc, argv[0]);
 }
@@ -62,7 +62,7 @@ PlanIter_t fn_zorba_ddl_delete_index::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeleteIndexIterator(sctx, loc, argv[0]);
 }
@@ -73,7 +73,7 @@ PlanIter_t fn_zorba_ddl_refresh_index::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new RefreshIndexIterator(sctx, loc, argv[0]);
 }
@@ -84,7 +84,7 @@ PlanIter_t op_value_index_entry_builder::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ValueIndexEntryBuilderIterator(sctx, loc, argv);
 }
@@ -95,9 +95,10 @@ PlanIter_t op_general_index_entry_builder::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
-  return new GeneralIndexEntryBuilderIterator(sctx, loc, argv);
+  assert(argv.size() == 2);
+  return new GeneralIndexEntryBuilderIterator(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -106,7 +107,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_value::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ProbeIndexPointValueIterator(sctx, loc, argv);
 }
@@ -117,7 +118,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_general::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ProbeIndexPointGeneralIterator(sctx, loc, argv);
 }
@@ -128,7 +129,7 @@ PlanIter_t fn_zorba_ddl_probe_index_range_value::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ProbeIndexRangeValueIterator(sctx, loc, argv);
 }
@@ -139,7 +140,7 @@ PlanIter_t fn_zorba_ddl_probe_index_range_general::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ProbeIndexRangeGeneralIterator(sctx, loc, argv);
 }
@@ -158,7 +159,7 @@ void populate_context_index_ddl(static_context* sctx)
   DECL(sctx, op_general_index_entry_builder,
        (createQName(zorba_op_ns, "", "general-index-entry-builder"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-        true,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_create_internal_index,

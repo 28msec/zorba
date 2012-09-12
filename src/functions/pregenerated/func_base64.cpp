@@ -36,7 +36,7 @@ PlanIter_t fn_zorba_base64_decode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new Base64DecodeIterator(sctx, loc, argv);
 }
@@ -46,16 +46,16 @@ PlanIter_t fn_zorba_base64_encode::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new Base64EncodeIterator(sctx, loc, argv);
 }
 
 void populate_context_base64(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_base64_decode,
         (createQName("http://www.zorba-xquery.com/modules/converters/base64","","decode"), 
         GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE, 
@@ -65,9 +65,22 @@ void populate_context_base64(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_base64_decode,
+        (createQName("http://www.zorba-xquery.com/modules/converters/base64","","decode"), 
+        GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_BASE64_DECODE_2);
+
+  }
+
+
+
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_base64_encode,
         (createQName("http://www.zorba-xquery.com/modules/converters/base64","","encode"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 

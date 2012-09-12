@@ -76,7 +76,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const
+        expr &ann) const
   {
     return createIterator(sctx, loc, argv);
   }
@@ -150,7 +150,7 @@ xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
       return empty;
 
     TypeConstants::quantifier_t aq = 
-    TypeOps::quantifier(*caller->get_arg(i)->get_return_type());
+    caller->get_arg(i)->get_return_type()->get_quantifier();
 
     if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
     {
@@ -583,7 +583,7 @@ public:
                     static_context* sctx,
                     const QueryLoc& loc,
                     std::vector<PlanIter_t>& argv,
-                    AnnotationHolder& ann) const
+                    expr& ann) const
   {
     return new AtomicValuesEquivalenceIterator(sctx, loc, argv[0], argv[1]);
   }
@@ -623,7 +623,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     assert(argv.size() > 0);
     return new AndIterator(sctx, loc, argv);
@@ -660,7 +660,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     assert(argv.size() > 0);
     return new OrIterator(sctx, loc, argv);
@@ -686,7 +686,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, true);
@@ -708,7 +708,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, false);
@@ -745,7 +745,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0], true);
   }
@@ -783,7 +783,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
+        expr& ann) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0]);
   }

@@ -28,6 +28,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/util/path.h>
 #include <zorba/user_exception.h>
+#include <zorba/transcode_stream.h>
 
 #include "file_module.h"
 
@@ -143,19 +144,14 @@ ReadBinaryFunction::evaluate(
   // actual read
   Item lItem;
   try {
-    std::ifstream lInStream;
-    lFile->openInputStream(lInStream, true, false);
+    std::unique_ptr<std::ifstream> lInStream;
+    lInStream.reset( new std::ifstream() );
+    lFile->openInputStream(*lInStream.get(), true, false);
 
-    std::stringstream lStrStream;
-    char lBuf[1024];
-    while (!lInStream.eof()) {
-      lInStream.read(lBuf, 1024);
-      lStrStream.write(lBuf, lInStream.gcount());
-    }  
+    lItem = theModule->getItemFactory()->createStreamableBase64Binary(
+        *lInStream.release(), &FileModule::streamReleaser, true
+      );
 
-    String lContent(lStrStream.str());
-    String lEncodedContent = encoding::Base64::encode(lContent);
-    lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.data(), lEncodedContent.size());
   } catch (ZorbaException& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not read file";
@@ -188,6 +184,7 @@ ReadTextFunction::evaluate(
 {
   String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
+  String lEncoding("UTF-8");
 
   // preconditions
   if (!lFile->exists()) {
@@ -198,18 +195,148 @@ ReadTextFunction::evaluate(
   }
 
   if (aArgs.size() == 2) {
-    // since Zorba currently only supports UTF-8 we only call this function
-    // to reject any other encoding requested bu the user
-    getEncodingArg(aArgs, 1);
+    lEncoding = getEncodingArg(aArgs, 1);
   }
   
-  std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence());
-  lFile->openInputStream(*lSeq->theStream, false, true);
+  zorba::Item lResult;
+  std::unique_ptr<std::ifstream> lInStream;
+  if ( transcode::is_necessary( lEncoding.c_str() ) )
+  {
+    try {
+      lInStream.reset( new transcode::stream<std::ifstream>(lEncoding.c_str()) );
+    } catch (std::invalid_argument const& e)
+    {
+      raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
+    }
+  }
+  else
+  {
+    lInStream.reset( new std::ifstream() );
+  }
+  lFile->openInputStream(*lInStream.get(), false, true);
+  lResult = theModule->getItemFactory()->createStreamableString(
+      *lInStream.release(), &FileModule::streamReleaser, true
+    );
+  return ItemSequence_t(new SingletonItemSequence(lResult));
 
-  lSeq->theItem = theModule->getItemFactory()->createStreamableString(
-      *lSeq->theStream, &StreamableItemSequence::streamReleaser);
+}
 
-  return ItemSequence_t(lSeq.release());
+//*****************************************************************************
+
+ReadTextLinesFunction::ReadTextLinesFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+ReadTextLinesFunction::evaluate(
+  const ExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = getFilePathString(aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+  String lEncoding("UTF-8");
+
+  // preconditions
+  if (!lFile->exists()) {
+    raiseFileError("FOFL0001", "A file does not exist at this path", lFile->getFilePath());
+  }
+  if (lFile->isDirectory()) {
+    raiseFileError("FOFL0004", "The given path points to a directory", lFile->getFilePath());
+  }
+
+  lEncoding = getEncodingArg(aArgs, 1);
+
+  return ItemSequence_t(new LinesItemSequence(lFile, lEncoding, this));
+}
+
+ReadTextLinesFunction::LinesItemSequence::LinesItemSequence(
+    const File_t& aFile,
+    const String& aEncoding,
+    const ReadTextLinesFunction* aFunc)
+  : theFile(aFile),
+    theEncoding(aEncoding),
+    theFunc(aFunc)
+{
+}
+
+Iterator_t
+ReadTextLinesFunction::LinesItemSequence::getIterator()
+{
+  return new ReadTextLinesFunction::LinesItemSequence::LinesIterator(
+      theFile, theEncoding, theFunc
+    );
+}
+
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::LinesIterator(
+    const File_t& aFile,
+    const String& aEncoding,
+    const ReadTextLinesFunction* aFunc)
+  : theFile(aFile),
+    theEncoding(aEncoding),
+    theFunc(aFunc),
+    theStream(0)
+{
+}
+
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::~LinesIterator()
+{
+  delete theStream;
+}
+
+void
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::open()
+{
+  if ( transcode::is_necessary( theEncoding.c_str() ) )
+  {
+    try
+    {
+      theStream = new transcode::stream<std::ifstream>(theEncoding.c_str());
+    }
+    catch (std::invalid_argument const& e)
+    {
+      theFunc->raiseFileError("FOFL0006", "Unsupported encoding", theEncoding.c_str());
+    }
+  }
+  else
+  {
+    theStream = new std::ifstream();
+  }
+  theFile->openInputStream(*theStream, false, true);
+}
+
+bool
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::next(Item& aRes)
+{
+  if (!theStream || !theStream->good())
+    return false;
+
+  std::string lStr;
+  getline(*theStream, lStr);
+  
+  if (theStream->bad())
+  {
+    return false;
+  }
+  else
+  {
+    aRes = theFunc->theModule->getItemFactory()->createString(lStr);
+    return true;
+  }
+}
+
+void
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::close()
+{
+  delete theStream;
+  theStream = 0;
+}
+
+bool
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::isOpen() const
+{
+  return theStream != 0;
 }
 
 //*****************************************************************************
@@ -476,11 +603,19 @@ LastModifiedFunction::evaluate(
   // actual last modified
   try {
     time_t lTime = lFile->lastModified();
-    struct tm *lT = localtime(&lTime);
+    // result of localtime needs to be copied.
+    // Otherwise, nasty side effecs do happen
+    struct tm lT(*localtime(&lTime));
     int gmtOffset = LastModifiedFunction::getGmtOffset();
 
     return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createDateTime(1900 + lT->tm_year, lT->tm_mon, lT->tm_mday, lT->tm_hour, lT->tm_min, lT->tm_sec, gmtOffset)));
+      theModule->getItemFactory()->createDateTime(1900 + lT.tm_year,
+                                                  lT.tm_mon,
+                                                  lT.tm_mday,
+                                                  lT.tm_hour,
+                                                  lT.tm_min, 
+                                                  lT.tm_sec,
+                                                  gmtOffset)));
   } catch (ZorbaException& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not retrieve the last modification timestamp of";
@@ -722,3 +857,4 @@ AppendBinaryFunction::isBinary() const {
 extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::filemodule::FileModule();
 }
+/* vim:set et sw=2 ts=2: */

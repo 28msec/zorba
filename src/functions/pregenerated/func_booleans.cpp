@@ -36,7 +36,7 @@ PlanIter_t op_is_same_node::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new IsSameNodeIterator(sctx, loc, argv);
 }
@@ -46,7 +46,7 @@ PlanIter_t op_node_before::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeBeforeIterator(sctx, loc, argv);
 }
@@ -56,16 +56,16 @@ PlanIter_t op_node_after::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new NodeAfterIterator(sctx, loc, argv);
 }
 
 void populate_context_booleans(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_is_same_node,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","is-same-node"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -76,9 +76,9 @@ void populate_context_booleans(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_node_before,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","node-before"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
@@ -89,9 +89,9 @@ void populate_context_booleans(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_node_after,
         (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","node-after"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 

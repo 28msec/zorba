@@ -21,8 +21,9 @@
 #include <libxml/xmlstring.h>
 
 #include "store/api/item.h"
+#include "store/api/load_properties.h"
 
-#include "store/naive/ordpath.h"
+#include "ordpath.h"
 
 #include "zorbautils/stack.h"
 #include "runtime/parsing_and_serializing/fragment_istream.h"
@@ -74,6 +75,8 @@ protected:
   static const ulong INPUT_CHUNK_SIZE = 8192;
 
 protected:
+  const store::LoadProperties    & theLoadProperties;
+
   xmlParserCtxtPtr                 ctxt;
 
   xmlSAXHandler                    theSaxHandler;
@@ -89,26 +92,24 @@ protected:
 
   bool                             theBuildDataGuide;
 
+
+protected:
+  void applyLoadOptions(const store::LoadProperties& props, xmlParserCtxtPtr ctxt);
+
+
 public:
   XmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide)
-    :
-    ctxt(NULL),
-    theFactory(factory),
-    theXQueryDiagnostics(xqueryDiagnostics),
-    theTraceLevel(0),
-    theBuildDataGuide(dataguide)
-  {
-  }
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      const store::LoadProperties& loadProperties,
+      bool dataguide);
 
-  virtual ~XmlLoader() {}
+  virtual ~XmlLoader();
 
   virtual store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& docUri,
-        std::istream& xmlStream) = 0;
+      const zstring& baseUri,
+      const zstring& docUri,
+      std::istream& xmlStream) = 0;
 };
 
 
@@ -154,16 +155,17 @@ protected:
 
 public:
   FastXmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide);
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      const store::LoadProperties& loadProperties,
+      bool dataguide);
 
   ~FastXmlLoader();
 
   store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& uri,
-        std::istream& xmlStream);
+      const zstring& baseUri,
+      const zstring& uri,
+      std::istream& xmlStream);
 
 protected:
   void abortload();
@@ -180,31 +182,31 @@ public:
   static void endDocument(void * ctx);
 
   static void startElement(
-        void * ctx,
-        const xmlChar * localname,
-        const xmlChar * prefix,
-        const xmlChar * URI,
-        int nb_namespaces,
-        const xmlChar ** namespaces,
-        int nb_attributes,
-        int nb_defaulted,
-        const xmlChar ** attributes);
+      void * ctx,
+      const xmlChar * localname,
+      const xmlChar * prefix,
+      const xmlChar * URI,
+      int nb_namespaces,
+      const xmlChar ** namespaces,
+      int nb_attributes,
+      int nb_defaulted,
+      const xmlChar ** attributes);
 
   static void endElement(
-        void * ctx,
-        const xmlChar * localname,
-        const xmlChar * prefix,
-        const xmlChar * URI);
+      void * ctx,
+      const xmlChar * localname,
+      const xmlChar * prefix,
+      const xmlChar * URI);
 
   static void characters(
-        void * ctx,
-        const xmlChar * ch,
-        int len);
+      void * ctx,
+      const xmlChar * ch,
+      int len);
 
   static void	cdataBlock(
-        void * ctx,
-        const xmlChar * value,
-        int len);
+      void * ctx,
+      const xmlChar * value,
+      int len);
 
   static void comment(
         void * ctx,
@@ -236,6 +238,7 @@ public:
         xmlChar *content);
 };
 
+
 /*******************************************************************************
   FragmentXmlLoader
 *******************************************************************************/
@@ -243,19 +246,30 @@ class FragmentXmlLoader : public FastXmlLoader
 {
 public:
   FragmentXmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide);
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      const store::LoadProperties& loadProperties,
+      bool dataguide);
 
   ~FragmentXmlLoader();
 
   store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& uri,
-        std::istream& xmlStream);
-
+      const zstring& baseUri,
+      const zstring& uri,
+      std::istream& xmlStream);
+  
+  const FragmentIStream* getFragmentStream() const { return theFragmentStream; };
+  
 protected:
-  static void checkStopParsing(void* ctx);
+  bool fillBuffer(FragmentIStream* theFragmentStream);
+
+  unsigned long getCurrentInputOffset() const;
+
+  static void checkStopParsing(void* ctx, bool force = false);
+
+  static void startDocument(void * ctx);
+
+  static void endDocument(void * ctx);
 
   static void startElement(
         void * ctx,
@@ -292,10 +306,15 @@ protected:
         void * ctx,
         const xmlChar * target,
         const xmlChar * data);
+  
+  static void internalSubset(
+        void *ctx,
+        const xmlChar *name,
+        const xmlChar *ExternalID,
+        const xmlChar *SystemID);
 
 protected:
   FragmentIStream* theFragmentStream;
-  int element_depth;
 };
 
 /*******************************************************************************
@@ -331,25 +350,23 @@ protected:
   zorba::Stack<PathStepInfo>       thePathStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
-  bool                             theParseExtParsedEntity;
-
 #ifdef DATAGUIDE
   zorba::Stack<ElementGuideNode*>  theGuideStack;
 #endif
 
 public:
   DtdXmlLoader(
-        BasicItemFactory* factory,
-        XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide,
-        bool parseExtParsedEntity);
+      store::ItemFactory* factory,
+      XQueryDiagnostics* xqueryDiagnostics,
+      const store::LoadProperties& loadProperties,
+      bool dataguide);
 
   ~DtdXmlLoader();
 
   store::Item_t loadXml(
-        const zstring& baseUri,
-        const zstring& uri,
-        std::istream& xmlStream);
+      const zstring& baseUri,
+      const zstring& uri,
+      std::istream& xmlStream);
 
 protected:
   void abortload();

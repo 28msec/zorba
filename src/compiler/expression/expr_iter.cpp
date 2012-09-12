@@ -22,6 +22,7 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
@@ -45,7 +46,7 @@ namespace zorba
 do                                                                  \
 {                                                                   \
   theState = __LINE__;                                              \
-  theCurrentChild = reinterpret_cast<expr_t*>(&(subExprHandle));    \
+  theCurrentChild = reinterpret_cast<expr**>(&(subExprHandle));    \
                                                                     \
   if ((subExprHandle) != NULL)                                      \
   {                                                                 \
@@ -98,11 +99,11 @@ ExprIterator::ExprIterator(expr* e)
 
 void ExprIterator::next()
 {
-  flwor_clause* c;
-  window_clause* wc;
-  orderby_clause* oc;
-  group_clause* gc;
-  flwor_wincond* wincond;
+  flwor_clause* c = NULL;
+  window_clause* wc = NULL;
+  orderby_clause* oc = NULL;
+  group_clause* gc = NULL;
+  flwor_wincond* wincond = NULL;
 
   switch (theExpr->get_expr_kind())
   {
@@ -119,7 +120,7 @@ void ExprIterator::next()
 
     for (; theClausesIter != theClausesEnd; ++(theClausesIter))
     {
-      c = (theClausesIter)->getp();
+      c = *theClausesIter;
 
       if (c->get_kind() == flwor_clause::for_clause)
       {
@@ -135,17 +136,17 @@ void ExprIterator::next()
       {
         for (theWincondIter = 0; theWincondIter < 2; ++theWincondIter)
         {
-          wc = static_cast<window_clause *>(theClausesIter->getp());
+          wc = static_cast<window_clause *>(*theClausesIter);
 
           wincond = (theWincondIter == 0 ?
-                     wc->theWinStartCond.getp() :
-                     wc->theWinStopCond.getp());
+                     wc->theWinStartCond :
+                     wc->theWinStopCond );
 
           if (wincond != 0)
             EXPR_ITER_NEXT(wincond->theCondExpr);
         }
 
-        wc = static_cast<window_clause *>(theClausesIter->getp());
+        wc = static_cast<window_clause *>(*theClausesIter);
 
         EXPR_ITER_NEXT(wc->theDomainExpr);
       }
@@ -379,6 +380,57 @@ void ExprIterator::next()
     EXPR_ITER_END();
     break;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_array_expr_kind:
+  {
+    json_array_expr* e = static_cast<json_array_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(e->theContentExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case json_object_expr_kind:
+  {
+    json_object_expr* e = static_cast<json_object_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(e->theContentExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case json_direct_object_expr_kind:
+  {
+    json_direct_object_expr* e = static_cast<json_direct_object_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    theArgsIter = e->theNames.begin();
+    theArgsEnd = e->theNames.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    theArgsIter = e->theValues.begin();
+    theArgsEnd = e->theValues.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    EXPR_ITER_END();
+    break;
+  }
+
+#endif
 
   case if_expr_kind:
   {

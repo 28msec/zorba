@@ -36,7 +36,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_activate::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new ActivateICIterator(sctx, loc, argv[0]);
 }
@@ -46,7 +46,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_deactivate::codegen(
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new DeactivateICIterator(sctx, loc, argv[0]);
 }
@@ -56,16 +56,16 @@ PlanIter_t zorba_store_integrity_constraints_static_dml_check_integrity_constrai
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+  expr& ann) const
 {
   return new CheckICIterator(sctx, loc, argv[0]);
 }
 
 void populate_context_ic_ddl(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_activate,
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","activate"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -75,9 +75,9 @@ void populate_context_ic_ddl(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_deactivate,
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","deactivate"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -87,9 +87,9 @@ void populate_context_ic_ddl(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_dml_check_integrity_constraint,
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml","","check-integrity-constraint"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 

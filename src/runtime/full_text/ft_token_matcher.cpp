@@ -43,15 +43,20 @@ inline bool get_diacritics_insensitive( ftmatch_options const &options ) {
 
 inline bool get_stemming( ftmatch_options const &options ) {
   if ( ftstem_option const *const s = options.get_stem_option() )
-    return s->get_mode() == ft_stem_mode::with;
+    return s->get_mode() == ft_stem_mode::stemming;
   return false;
 }
 
-inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
-                                                iso639_1::type lang,
-                                                static_context const& sctx ) {
+//
+// This returns a raw pointer to work around a bug where ~ft_stop_words_set()
+// is being called when it shouldn't be due to ~unique_ptr() being called
+// without transferring ownership properly.
+//
+inline ft_stop_words_set const*
+get_stop_words( ftmatch_options const &options, iso639_1::type lang,
+                static_context const& sctx ) {
   if ( ftstop_word_option const *const sw = options.get_stop_word_option() )
-    return ft_stop_words_set::construct( *sw, lang, sctx );
+    return ft_stop_words_set::construct( *sw, lang, sctx ).release();
   return nullptr;
 }
 
@@ -69,7 +74,7 @@ ft_token_matcher::ft_token_matcher( ftmatch_options const &options,
 }
 
 ft_token_matcher::~ft_token_matcher() {
-  delete stop_words_;
+  // out-of-line since it's virtual
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,8 +88,8 @@ ft_token_matcher::match_stemmer::match_stemmer() :
 void ft_token_matcher::match_stemmer::
 operator()( string_t const &word, iso639_1::type lang,
             string_t *result ) const {
-  internal::Stemmer::ptr stemmer( provider_->get_stemmer( lang ) );
-  if ( stemmer )
+  internal::Stemmer::ptr stemmer;
+  if ( provider_->getStemmer( lang, &stemmer ) )
     stemmer->stem( word, lang, result );
   else
     *result = word;
