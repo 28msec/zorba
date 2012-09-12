@@ -1925,16 +1925,18 @@ void UpdJSONObjectInsert::apply()
   ZORBA_ASSERT(theTarget->isJSONObject());
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
-
+  store::CopyMode lCopyMode;
+  lCopyMode.set(true, true, true, true);
+  store::Item_t lCopy = theContent->copy(NULL, lCopyMode);
   theIsApplied = true;
 
-  zorba::store::Iterator_t lKeyIterator = theContent->getObjectKeys();
+  zorba::store::Iterator_t lKeyIterator = lCopy->getObjectKeys();
   lKeyIterator->open();
   zorba::store::Item_t lKey;
   zorba::store::Item_t lValue;
   while(lKeyIterator->next(lKey))
   {
-    lValue = theContent->getObjectValue(lKey);
+    lValue = lCopy->getObjectValue(lKey);
     if (!obj->add(lKey, lValue, false))
     {
       RAISE_ERROR(jerr::JNUP0006, theLoc, 

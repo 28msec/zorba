@@ -13107,27 +13107,28 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   expr* targetExpr = pop_nodestack();
+  expr* contentExpr = pop_nodestack();
+
   targetExpr = wrap_in_type_match(targetExpr,
                                   rtm.JSON_OBJECT_TYPE_ONE,
                                   loc,
                                   TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  expr* contentExpr = pop_nodestack();
-  contentExpr = wrap_in_type_match(targetExpr,
+  contentExpr = wrap_in_type_match(contentExpr,
                                   rtm.JSON_OBJECT_TYPE_ONE,
                                   loc,
                                   TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
-  std::vector<expr*> args;
-  args.push_back(targetExpr);
-  args.push_back(contentExpr);
+  std::vector<expr*> args(2);
+  args[0] = targetExpr;
+  args[1] = contentExpr;
 
   expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_OBJECT_INSERT_2),
                  args);
 
   push_nodestack(updExpr);
