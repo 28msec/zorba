@@ -1,0 +1,1 @@
+fn:matches("aaac", "(aaa|a){2,3}c")

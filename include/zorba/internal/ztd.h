@@ -370,6 +370,56 @@ inline std::string to_string( char const *s ) {
   return s ? s : "<null>";
 }
 
+////////// misc ///////////////////////////////////////////////////////////////
+
+/**
+ * Helper class for implementing a solution to the "explicit bool conversion"
+ * problem.  The canonical use is of the form:
+ * \code
+ *  class your_class {
+ *    // ...
+ *    operator explicit_bool::type() const {
+ *      return explicit_bool::value_of( some_expression );
+ *    }
+ *  };
+ * \endcode
+ *
+ * See: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html
+ */
+class explicit_bool {
+  struct pointer_conversion { int valid; };
+public:
+  typedef int pointer_conversion::*type;
+
+  /**
+   * Gets the explicit \c bool value for \c false.
+   *
+   * @return Returns said value.
+   */
+  static type false_value() {
+    return 0;
+  }
+
+  /**
+   * Gets the explicit \c bool value for \c true.
+   *
+   * @return Returns said value.
+   */
+  static type true_value() {
+    return &pointer_conversion::valid;
+  }
+
+  /**
+   * Converts the the built-in \c bool value to an explicit \c bool value.
+   *
+   * @param value The \c bool value to convert.
+   * @return Return said value.
+   */
+  static type value_of( bool value ) {
+    return value ? true_value() : false_value();
+  }
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace ztd

@@ -1,0 +1,39 @@
+module namespace testlib = "http://www.test.ch";
+
+import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+declare variable $testlib:user := xs:QName("testlib:user");
+
+
+declare collection testlib:user;
+
+declare collection testlib:groupmember;
+
+
+declare function testlib:users() 
+{
+  db:collection($testlib:user)[not(@deleted eq true())]
+};
+
+
+declare function testlib:searchUser($query)
+{
+  let $searchbase := testlib:users()
+
+  let $filtered1 :=
+      let $country := ()
+      for $user in $searchbase
+      where ((if ($country) then () else ()))
+      return $user
+
+  let $filtered := 
+      if ($query) 
+      then $filtered1
+      else 
+        let $loginBefore := $query eq "before"
+        for $user in $filtered1
+        return $user  
+
+  return
+  ()
+};

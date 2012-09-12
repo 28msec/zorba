@@ -35,17 +35,17 @@
 namespace zorba {
 
 // <MapCreateIterator>
-const char* MapCreateIterator::class_name_str = "MapCreateIterator";
-MapCreateIterator::class_factory<MapCreateIterator>
-MapCreateIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MapCreateIterator)
 
-const serialization::ClassVersion 
-MapCreateIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MapCreateIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapCreateIterator, PlanIteratorState>*)this);
+}
 
-const int MapCreateIterator::class_versions_count =
-sizeof(MapCreateIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MapCreateIterator::accept(PlanIterVisitor& v) const {
+void MapCreateIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -62,18 +62,46 @@ MapCreateIterator::~MapCreateIterator() {}
 // </MapCreateIterator>
 
 
+// <MapCreateTransientIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapCreateTransientIterator)
+
+void MapCreateTransientIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>*)this);
+}
+
+
+void MapCreateTransientIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+MapCreateTransientIterator::~MapCreateTransientIterator() {}
+
+// </MapCreateTransientIterator>
+
+
 // <MapDestroyIterator>
-const char* MapDestroyIterator::class_name_str = "MapDestroyIterator";
-MapDestroyIterator::class_factory<MapDestroyIterator>
-MapDestroyIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MapDestroyIterator)
 
-const serialization::ClassVersion 
-MapDestroyIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MapDestroyIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapDestroyIterator, PlanIteratorState>*)this);
+}
 
-const int MapDestroyIterator::class_versions_count =
-sizeof(MapDestroyIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MapDestroyIterator::accept(PlanIterVisitor& v) const {
+void MapDestroyIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -91,17 +119,17 @@ MapDestroyIterator::~MapDestroyIterator() {}
 
 
 // <MapGetIterator>
-const char* MapGetIterator::class_name_str = "MapGetIterator";
-MapGetIterator::class_factory<MapGetIterator>
-MapGetIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MapGetIterator)
 
-const serialization::ClassVersion 
-MapGetIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MapGetIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapGetIterator, MapGetIteratorState>*)this);
+}
 
-const int MapGetIterator::class_versions_count =
-sizeof(MapGetIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MapGetIterator::accept(PlanIterVisitor& v) const {
+void MapGetIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -131,17 +159,17 @@ void MapGetIteratorState::reset(PlanState& planState) {
 
 
 // <MapInsertIterator>
-const char* MapInsertIterator::class_name_str = "MapInsertIterator";
-MapInsertIterator::class_factory<MapInsertIterator>
-MapInsertIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MapInsertIterator)
 
-const serialization::ClassVersion 
-MapInsertIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MapInsertIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapInsertIterator, PlanIteratorState>*)this);
+}
 
-const int MapInsertIterator::class_versions_count =
-sizeof(MapInsertIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MapInsertIterator::accept(PlanIterVisitor& v) const {
+void MapInsertIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -159,17 +187,17 @@ MapInsertIterator::~MapInsertIterator() {}
 
 
 // <MapRemoveIterator>
-const char* MapRemoveIterator::class_name_str = "MapRemoveIterator";
-MapRemoveIterator::class_factory<MapRemoveIterator>
-MapRemoveIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MapRemoveIterator)
 
-const serialization::ClassVersion 
-MapRemoveIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MapRemoveIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapRemoveIterator, PlanIteratorState>*)this);
+}
 
-const int MapRemoveIterator::class_versions_count =
-sizeof(MapRemoveIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MapRemoveIterator::accept(PlanIterVisitor& v) const {
+void MapRemoveIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -187,17 +215,19 @@ MapRemoveIterator::~MapRemoveIterator() {}
 
 
 // <MapKeysIterator>
-const char* MapKeysIterator::class_name_str = "MapKeysIterator";
-MapKeysIterator::class_factory<MapKeysIterator>
-MapKeysIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MapKeysIterator)
 
-const serialization::ClassVersion 
-MapKeysIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MapKeysIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>*)this);
 
-const int MapKeysIterator::class_versions_count =
-sizeof(MapKeysIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theNSBindings;
+}
 
-void MapKeysIterator::accept(PlanIterVisitor& v) const {
+
+void MapKeysIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -227,17 +257,17 @@ void MapKeysIteratorState::reset(PlanState& planState) {
 
 
 // <MapSizeIterator>
-const char* MapSizeIterator::class_name_str = "MapSizeIterator";
-MapSizeIterator::class_factory<MapSizeIterator>
-MapSizeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MapSizeIterator)
 
-const serialization::ClassVersion 
-MapSizeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MapSizeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapSizeIterator, PlanIteratorState>*)this);
+}
 
-const int MapSizeIterator::class_versions_count =
-sizeof(MapSizeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MapSizeIterator::accept(PlanIterVisitor& v) const {
+void MapSizeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -255,17 +285,17 @@ MapSizeIterator::~MapSizeIterator() {}
 
 
 // <AvailableMapsIterator>
-const char* AvailableMapsIterator::class_name_str = "AvailableMapsIterator";
-AvailableMapsIterator::class_factory<AvailableMapsIterator>
-AvailableMapsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(AvailableMapsIterator)
 
-const serialization::ClassVersion 
-AvailableMapsIterator::class_versions[] ={{ 1, 0x000905, false}};
+void AvailableMapsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AvailableMapsIterator, AvailableMapsIteratorState>*)this);
+}
 
-const int AvailableMapsIterator::class_versions_count =
-sizeof(AvailableMapsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void AvailableMapsIterator::accept(PlanIterVisitor& v) const {
+void AvailableMapsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -282,6 +312,34 @@ AvailableMapsIterator::~AvailableMapsIterator() {}
 AvailableMapsIteratorState::AvailableMapsIteratorState() {}
 
 // </AvailableMapsIterator>
+
+
+// <MapIsTransientIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapIsTransientIterator)
+
+void MapIsTransientIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>*)this);
+}
+
+
+void MapIsTransientIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+MapIsTransientIterator::~MapIsTransientIterator() {}
+
+// </MapIsTransientIterator>
 
 
 

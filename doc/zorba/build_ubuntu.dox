@@ -1,32 +1,86 @@
 /**
 
-\page build_ubuntu Build Zorba on Ubuntu Linux
+\page build_ubuntu Zorba Build Notes for Ubuntu/Debian Linux Users
 
-\section bu_instructions Instructions
+\section ubuntu_packages Ubuntu Packages
 
-For building Zorba on Ubuntu 11.04 (gcc version 4.5.2) folow the next steps:
+Most of the tools and libraries you might need to build Zorba are
+available in the standard Ubuntu/Debian repositories.  Here we list
+the packages that you should install to meet the requirements
+specified at \ref build_prerequisites.
 
-Install tools
+\subsection ubuntu_tools Tools
+To install the gcc compiler and CMake:
 \code
+sudo apt-get install build-essential cmake
+\endcode
+
+To install Bazaar (for building the latest Zorba source, or for
+building non-core modules):
+\code
+sudo apt-get install bzr
+\endcode
+
+\subsection ubuntu_libs Core Zorba Library Dependencies
+Required libraries for core Zorba:
+\code
+sudo apt-get install libxml2-dev uuid-dev
+\endcode
+
+Recommended libraries for core Zorba:
+\code
+sudo apt-get install libicu-dev libxerces-c-dev
+\endcode
+
+Optional libraries for core Zorba:
+\code
+sudo apt-get install libxslt-dev libcurl4-openssl-dev libxerces-c-dev
+\endcode
+
+SWIG and development requirements for Zorba language bindings:
+\code
+sudo apt-get install swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni
+\endcode
+
+\subsection ubuntu_noncore_libs Non-Core Module Library Dependencies
+
+\subsubsection ubuntu_html HTML Module (data-converters package)
+\code
+sudo apt-get install libtidy-dev
+\endcode
+
+\subsubsection ubuntu_geos Geo Module
+
+To install libgeos for the Geo Module, first ensure that the version
+available for your distribution is at least 3.2.2:
+
+\code
+apt-cache show libgeos-dev | grep Version:
+\endcode
+
+If it is lower than 3.2.2, then you may add our PPA to your list of
+repositories to get a later version:
+
+\code
+sudo add-apt-repository ppa:juan457/zorba
 sudo apt-get update
-sudo apt-get install subversion bzr build-essential cmake
 \endcode
 
-Optional
+In either case, install libgeos with:
 \code
-sudo apt-get install valgrind
+sudo apt-get install libgeos-dev
 \endcode
 
-Required libraries
+\subsubsection ubuntu_imagemagick ImageMagick (for image modules)
+
 \code
-sudo apt-get install libxml2-dev libxslt-dev libicu-dev libcurl4-openssl-dev libtidy-dev libxerces-c-dev libz-dev
+sudo apt-get install imagemagick libmagick++-dev libmagickwand-dev
 \endcode
 
+\subsubsection ubuntu_cclient Email Module
 
-\section bu_cclient Build C-Client library
-
-One option is to install the c-client lib from
-<a href=" http://launchpad.net/~juan457/+archive/zorba/+packages">ppa:juan457/zorba</a>.
+We recommend using our PPA to install the C-Client module, as the
+Ubuntu packages are not built correctly at least on 64-bit platforms.
 
 \code
 sudo add-apt-repository ppa:juan457/zorba
@@ -34,8 +88,8 @@ sudo apt-get update
 sudo sudo apt-get install libc-client2007e libc-client2007e-dev
 \endcode
 
-
-Or build it localy using the -I/usr/include/openssl -fPIC options:
+Or, you may build it yourself from source, so long as you force the
+-fPIC option:
 
 \code
 wget ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
@@ -45,96 +99,14 @@ cd imap-2007e
 make lnp EXTRACFLAGS="-I/usr/include/openssl -fPIC"
 \endcode
 
-Note: To try again in case of errors, delete all, untar and make again, don't trust make clean.
+Note: In case of errors, delete all, untar and make again, don't trust
+make clean.
 
-
-\section bu_imagemagick Install ImageMagick (for image modules)
-
+If you do this, be sure to pass the path to the \"\c c-client\"
+subdirectory of your build to CMake when configuring Zorba, e.g.:
 \code
-sudo apt-get install imagemagick libmagick++-dev
-\endcode
-
-
-
-\section bu_geos Install GEOS (for geo module)
-
-\code
-sudo apt-get install libgeos-dev
-\endcode
-
-If the version is older than 3.2.2 then there are two options:
-
-a. install it from <a href=" http://launchpad.net/~juan457/+archive/zorba/+packages">ppa:juan457/zorba</a>.
-
-\code
-sudo add-apt-repository ppa:juan457/zorba
-sudo apt-get update
-sudo apt-get install libgeos libgeos-dev
-\endcode 
-
-b. or compile it manually:
-
-\code
-sudo apt-get remove libgeos-dev
-svn checkout http://svn.osgeo.org/geos/trunk geos-svn
-cd geos-svn
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-\endcode
-
-
-
-\section bu_jansson Install Jansson (for JSON module)  from ppa:petri/ppa
-
-\code
-sudo add-apt-repository ppa:petri/ppa
-sudo apt-get update
-sudo apt-get install libjansson4 libjansson-dev
-\endcode
-
-
-
-\section bu_build_zorba Get and build Zorba
-
-\code
-bzr branch lp:zorba
-cd zorba
-cmake -Doutdir=../zm -Dallmodules=1 -P modules/DownloadModules.cmake
-mkdir build
-cd build
-\endcode
-
-If all libraries were installed from ppa-s:
-\code
-cmake ..
+cmake -DCMAKE_PREFIX_PATH="~/imap-2007e/c-client" ../
 make
 \endcode
 
-Otherwise specify the location of c-client library:
-\code
-cmake -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_PREFIX_PATH="~/imap-2007e/c-client" ../
-make
-\endcode
-
-
-
-\section bu_running_tests Run tests
-
-To run all Zorba tests:
-\code
-ctest
-\endcode
-
-
-
-\section bu_install Installation
-
-To install this version of Zorba:
-\code
-make install
-\endcode
-
-**/
+*/

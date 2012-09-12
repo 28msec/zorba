@@ -1,0 +1,1 @@
+fn:replace("acabacab", "ab", "1")

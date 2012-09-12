@@ -18,55 +18,121 @@
 #define ZORBA_RUNTIME_PARSING_AND_SERIALIZING_FRAGMENT_ISTREAM_H
 
 #include <iostream>
+#include <libxml/parser.h>
+#include <store/api/iterator.h>
 
 namespace zorba {
 
 /**
- * A class to hold an input stream for the parse-xml-fragment function
- * Author: Zorba Team
+ * A class to hold an input stream for the parse-xml:parse() function
+ * Author: Nicolae Brinza
  */
 class FragmentIStream : public std::istream
 {
+public:
+  static const unsigned int DEFAULT_BUFFER_SIZE = 4096;
+  static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
+  
+  // names of these states are orientative
+  enum FRAGMENT_PARSER_STATE {
+    FRAGMENT_FIRST_START_DOC = 0,
+    FRAGMENT_PROLOG,
+    FRAGMENT_CONTENT                   // this state is set once an element is encountered
+  };
+
+public:
+  std::istringstream* theIss;
+  std::istream* theStream;
+  StreamReleaser theStreamReleaser;
+  std::vector<char> theBuffer;
+  unsigned long bytes_in_buffer;
+  unsigned long current_offset;
+  int current_element_depth;
+  int root_elements_to_skip;
+  xmlParserCtxtPtr ctxt;
+  FRAGMENT_PARSER_STATE state;
+  bool forced_parser_stop;
+  bool reached_eof;
+  unsigned int parsed_nodes_count;
+  store::Iterator_t children;
+  bool only_one_doc_node;           // If set to true, all parsed fragments will be added to one
+                                    // single document node, instead of having one for each fragment.
+  
 public:
   FragmentIStream()
     :
     std::istream(NULL),
     theIss(NULL),
     theStream(NULL),
-    theBuffer(NULL),
-    buffer_size(0),
-    current_offset(0)
+    theStreamReleaser(nullptr),
+    bytes_in_buffer(0),
+    current_offset(0),
+    current_element_depth(0),
+    root_elements_to_skip(0),
+    ctxt(NULL),
+    state(FRAGMENT_FIRST_START_DOC),
+    forced_parser_stop(false),
+    reached_eof(false),
+    parsed_nodes_count(0),
+    children(NULL),
+    only_one_doc_node(false)
   {
   };
 
+  bool stream_is_consumed()
+  {
+    return reached_eof && current_offset >= bytes_in_buffer;
+  }
+  
+  StreamReleaser getStreamReleaser()
+  {
+    return theStreamReleaser;
+  }
+  
+  void setStreamReleaser(StreamReleaser aReleaser)
+  {
+    theStreamReleaser = aReleaser;
+  }
+
   void reset()
   {
-    if (theBuffer)
-      delete[] theBuffer;
+    theBuffer.clear();
+
     if (theIss)
+    {
       delete theIss;
+    }
+    
+    if (theStreamReleaser)
+    {
+      theStreamReleaser(theStream);
+    }
+
+    if (ctxt)
+    {
+      xmlCtxtReset(ctxt);
+      xmlFreeParserCtxt(ctxt);
+    }
 
     theIss = NULL;
     theStream = NULL;
-    theBuffer = NULL;
-    buffer_size = 0;
+    bytes_in_buffer = 0;
     current_offset = 0;
+    current_element_depth = 0;
+    root_elements_to_skip = 0;
+    ctxt = NULL;
+    state = FRAGMENT_FIRST_START_DOC;
+    forced_parser_stop = false;
+    reached_eof = false;
+    parsed_nodes_count = 0;
+    children = NULL;
+    only_one_doc_node = false;
   }
-
+  
   virtual ~FragmentIStream()
   {
-    if (theBuffer)
-      delete[] theBuffer;
-    if (theIss)
-      delete theIss;
+    reset();
   }
-
-public:
-  std::istringstream* theIss;
-  std::istream* theStream;
-  char* theBuffer;
-  unsigned long buffer_size;
-  unsigned long current_offset;
 };
 
 }

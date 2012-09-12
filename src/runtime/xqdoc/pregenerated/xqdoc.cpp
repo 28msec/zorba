@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <XQDocIterator>
-const char* XQDocIterator::class_name_str = "XQDocIterator";
-XQDocIterator::class_factory<XQDocIterator>
-XQDocIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
 
-const serialization::ClassVersion 
-XQDocIterator::class_versions[] ={{ 1, 0x000905, false}};
+void XQDocIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<XQDocIterator, PlanIteratorState>*)this);
+}
 
-const int XQDocIterator::class_versions_count =
-sizeof(XQDocIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void XQDocIterator::accept(PlanIterVisitor& v) const {
+void XQDocIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -61,17 +61,17 @@ XQDocIterator::~XQDocIterator() {}
 
 
 // <XQDocContentIterator>
-const char* XQDocContentIterator::class_name_str = "XQDocContentIterator";
-XQDocContentIterator::class_factory<XQDocContentIterator>
-XQDocContentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(XQDocContentIterator)
 
-const serialization::ClassVersion 
-XQDocContentIterator::class_versions[] ={{ 1, 0x000905, false}};
+void XQDocContentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<XQDocContentIterator, PlanIteratorState>*)this);
+}
 
-const int XQDocContentIterator::class_versions_count =
-sizeof(XQDocContentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void XQDocContentIterator::accept(PlanIterVisitor& v) const {
+void XQDocContentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

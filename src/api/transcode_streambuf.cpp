@@ -81,8 +81,7 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   return proxy_buf_->sgetn( to, size );
 }
 
-streamsize streambuf::xsputn( char_type const *from,
-                                       streamsize size ) {
+streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
   return proxy_buf_->sputn( from, size );
 }
 
@@ -99,5 +98,40 @@ bool is_supported( char const *charset ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace transcode
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace internal {
+namespace transcode {
+
+// Both new & delete are done here inside Zorba rather than in the header to
+// guarantee that they're cross-DLL-boundary safe on Windows.
+
+std::streambuf* alloc_streambuf( char const *charset, std::streambuf *orig ) {
+  return new zorba::transcode::streambuf( charset, orig );
+}
+
+int get_streambuf_index() {
+  //
+  // This function is out-of-line because it has a static constant within it.
+  // It has a static constant within it to guarantee (1) initialization before
+  // use and (2) initialization happens exactly once.
+  //
+  // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
+  // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
+  // 3.3.1.1: "Initializing and Maintaining the iword/pword Index."
+  //
+  // See: "The C++ Programming Language," Bjarne Stroustrup, Addison-Wesley,
+  // 2000, section 10.4.8: "Local Static Store."
+  //
+  static int const index = ios_base::xalloc();
+  return index;
+}
+
+} // namespace transcode
+} // namespace internal
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

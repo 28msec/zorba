@@ -25,12 +25,11 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "store/api/xs_type_codes.h"
+#include <zorba/store_consts.h>
 #include "store/api/item.h"
 
 namespace zorba 
 {
-
 
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC TypeOps 
@@ -60,35 +59,6 @@ public:
         TypeConstants::quantifier_t,
         TypeConstants::quantifier_t);
 
-  /**
-   * @return the maximum number of items that can appear in an instance of a
-   * the given type. Returned value may be 0, 1 or 2, with 2 meaning "infinity".
-   */
-  static int type_max_cnt(const TypeManager* tm, const XQType& type);
-  
-  /**
-   * @return the minimum number of items that can appear in an instance of a
-   * the given type. Returned value may be 0 or 1.
-   */
-  static int type_min_cnt(const TypeManager* tm, const XQType& type);
-  
-  /**
-   * @return 0 if all instances of the given type consist of exactly 0 items,  
-   * 1 if all instances of the given type consist of exactly 1 item, or -1 
-   * otherwise.
-   */
-  static int type_cnt(const TypeManager* tm, const XQType& type);
-
-  /**
-   * Returns the quantifier of the argument.
-   */
-  static TypeConstants::quantifier_t quantifier(const XQType& type);
-
-  /**
-   * @return QName of the type if the type is named.
-   */
-  static store::Item_t getQName(const XQType& type);
-
   /*
    * Returns the atomic_type_code_t for a given type, which is assumed to be
    * a quantified builtin atomic type.
@@ -99,16 +69,6 @@ public:
    * Return true is the given type is among the known types of the given type mgr
    */
   static bool is_in_scope(const TypeManager* tm, const XQType& type);
-
-  /*
-   * Returns true if the given sequence type is the empty sequence.
-   */
-  static bool is_empty(const TypeManager* tm, const XQType& type);
-
-  /*
-   * Returns true if the given sequence type is the none type.
-   */
-  static bool is_none(const TypeManager* tm, const XQType& type);
 
   /**
    * Returns true if the quantifier of the given sequence type is QUANT_ONE and

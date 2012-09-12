@@ -42,7 +42,10 @@ class expr;
 
 
 /*******************************************************************************
-
+  theModuleContext:
+  -----------------
+  The root sctx of the module containing the declaration. It is NULL for 
+  functions that must be executed in the static context of the caller.
 ********************************************************************************/
 class function : public SimpleRCObject
 {
@@ -51,12 +54,17 @@ protected:
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
   AnnotationList_t             theAnnotationList;
+  static_context             * theModuleSctx;
 
   StaticContextConsts::xquery_version_t theXQueryVersion;
 
 
 public:
+#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   SERIALIZABLE_ABSTRACT_CLASS(function);
+#else
+  SERIALIZABLE_CLASS(function);
+#endif
   SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature);
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -88,6 +96,10 @@ public:
   size_t getArity() const { return theSignature.paramCount(); }
 
   bool isVariadic() const { return theSignature.isVariadic(); }
+
+  static_context* getStaticContext() const { return theModuleSctx; }
+
+  void setStaticContext(static_context* sctx) { theModuleSctx = sctx; }
 
   void setFlag(FunctionConsts::AnnotationFlags flag)
   {
@@ -157,13 +169,13 @@ public:
 
   bool isSequential() const;
 
-  virtual short getScriptingKind() const { return SIMPLE_EXPR; }
+  virtual unsigned short getScriptingKind() const;
 
   virtual xqtref_t getReturnType(const fo_expr* caller) const;
 
-  virtual bool accessesDynCtx() const { return false; }
+  virtual bool accessesDynCtx() const;
 
-  virtual bool isMap(ulong input) const;
+  virtual bool isMap(csize input) const;
 
   virtual bool propagatesInputNodes(expr* fo, csize input) const;
 
@@ -206,18 +218,18 @@ public:
   virtual bool specializable() const { return false; }
 
   virtual function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const
+      static_context* sctx,
+      const std::vector<xqtref_t>& argTypes) const
   {
     return NULL;
   }
 
   virtual PlanIter_t codegen(
-        CompilerCB* cb,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        expr& ann) const = 0;
+      CompilerCB* cb,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      expr& ann) const;
 };
 
 

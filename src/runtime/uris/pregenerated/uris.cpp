@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <DecodeURIIterator>
-const char* DecodeURIIterator::class_name_str = "DecodeURIIterator";
-DecodeURIIterator::class_factory<DecodeURIIterator>
-DecodeURIIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DecodeURIIterator)
 
-const serialization::ClassVersion 
-DecodeURIIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DecodeURIIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DecodeURIIterator, PlanIteratorState>*)this);
+}
 
-const int DecodeURIIterator::class_versions_count =
-sizeof(DecodeURIIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DecodeURIIterator::accept(PlanIterVisitor& v) const {
+void DecodeURIIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

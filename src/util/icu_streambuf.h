@@ -17,6 +17,7 @@
 #ifndef ZORBA_ICU_STREAMBUF_H
 #define ZORBA_ICU_STREAMBUF_H
 
+#include <unicode/ucnv.h>
 #include <zorba/transcode_stream.h>
 
 #include "util/utf8_util.h"
@@ -50,6 +51,7 @@ namespace zorba {
  *      os.ios::rdbuf( xbuf.original() );
  *      throw;
  *    }
+ *    os.ios::rdbuf( xbuf.original() );
  *  }
  * \endcode
  *
@@ -63,6 +65,8 @@ public:
    *
    * @param charset The name of the character encoding to convert from/to.
    * @param orig The original streambuf to read/write from/to.
+   * @throws std::invalid_argument if either \a charset is invalid
+   * or \a orig is \c null.
    */
   icu_streambuf( char const *charset, std::streambuf *orig );
 
@@ -78,6 +82,7 @@ public:
    * @param charset The name of the character encoding to check.
    * @return \c true only if t would be necessary to transcode from the given
    * character encoding to UTF-8.
+   * @throws std::invalid_argument if \a charset is invalid.
    */
   static bool is_necessary( char const *charset );
 

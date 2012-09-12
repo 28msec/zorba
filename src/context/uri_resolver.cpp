@@ -46,11 +46,13 @@ namespace internal {
 
   StreamResource::StreamResource
   (std::istream* aStream, StreamReleaser aStreamReleaser,
-   zstring aStreamUrl /* = "" */)
+   zstring aStreamUrl /* = "" */,
+   bool aIsStreamSeekable)
     : Resource(),
       theStream(aStream),
       theStreamReleaser(aStreamReleaser),
-      theStreamUrl(aStreamUrl)
+      theStreamUrl(aStreamUrl),
+      theIsStreamSeekable(aIsStreamSeekable)
   {}
   
   StreamResource::~StreamResource()
@@ -116,19 +118,6 @@ namespace internal {
   EntityData::~EntityData()
   {
   }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  ThesaurusEntityData::ThesaurusEntityData(locale::iso639_1::type aLang)
-    : EntityData(EntityData::THESAURUS),
-      theLang(aLang)
-  {
-  }
-
-  locale::iso639_1::type ThesaurusEntityData::getLanguage() const
-  {
-    return theLang;
-  }
-#endif /* ZORBA_NO_FULL_TEXT */
 
 /*************
  * URIMapper is an abstract class, but we have to define its vtbl and

@@ -15,12 +15,12 @@
 <zorba:header>
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
-    <zorba:fwd-decl ns="store">NodeHashSet</zorba:fwd-decl>
-    <zorba:fwd-decl ns="zorba">ItemValueCollHandleHashSet</zorba:fwd-decl>
+    <zorba:fwd-decl ns="zorba">NodeHandleHashSet</zorba:fwd-decl>
+    <zorba:fwd-decl ns="zorba">AtomicItemHandleHashSet</zorba:fwd-decl>
 </zorba:header>
 
 <zorba:source>
-    <zorba:include form="Quoted">runtime/util/handle_hashset_item_value.h</zorba:include>
+    <zorba:include form="Quoted">zorbautils/hashset_atomic_itemh.h</zorba:include>
 </zorba:source>
 
 <zorba:codegen>
@@ -235,7 +235,7 @@
                   brief="indicates whether NaN was found in the sequence"/>
 
     <zorba:member name="theAlreadySeenMap"
-                  type="std::auto_ptr&lt;ItemValueCollHandleHashSet>"
+                  type="std::auto_ptr&lt;AtomicItemHandleHashSet>"
                   brief="hashmap for doing the duplicate elimination"/>
 
   </zorba:state>
@@ -680,7 +680,7 @@
 
   <zorba:state generateInit="false" generateReset="false"
                generateConstructor="false" generateDestructor="false">
-    <zorba:member type="store::NodeHashSet*" name="theRightInput" brief=""/>
+    <zorba:member type="NodeHandleHashSet*" name="theRightInput" brief=""/>
   </zorba:state>
 
   <zorba:constructor>
@@ -1143,5 +1143,176 @@
   </zorba:function>
 
 </zorba:iterator>
+
+<!--
+/*******************************************************************************
+  14.8.9 fn:available-environment-variables
+********************************************************************************/
+-->
+
+<zorba:iterator name="FnAvailableEnvironmentVariablesIterator">
+  <zorba:description author="Zorba Team">
+    Summary: returns a list of environment variable names that are suitable for
+    passing to fn:environment-variable, as a (possible empty) sequence of
+    strings.
+
+    The function returns a sequence of strings, being the names of the environment
+    variables in the dynamic context in some implementation-defined order.
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="available-environment-variables" prefix="fn" version="3.0">
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+
+  <zorba:state generateInit="false" generateReset="false">
+    <zorba:member type="store::Iterator_t" name="theIterator"
+                  brief="the current iterator"/>
+  </zorba:state>
+
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+  </zorba:methods>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+14.8.8 fn:environment-variable
+********************************************************************************/
+-->
+
+<zorba:iterator name="FnEnvironmentVariableIterator">
+  <zorba:description author="Zorba Team">
+    Summary: Returns the value of a system environment variable, if it exists.
+
+    If there is no environment variable with a matching name, the function returns
+    the empty sequence.
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="environment-variable" prefix="fn" version="3.0">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+  </zorba:methods>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+14.8.5 fn:unparsed-text
+********************************************************************************/
+-->
+
+<zorba:iterator name="FnUnparsedTextIterator">
+  <zorba:description author="Zorba Team">
+    Summary: The fn:unparsed-text function reads an external resource (for
+    example, a file) and returns its contents as a string.
+  </zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="unparsed-text" prefix="fn" version="3.0">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="unparsed-text" prefix="fn" version="3.0">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+    <zorba:isSource returnValue="true"/>
+  </zorba:methods>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+14.8.5 fn:unparsed-text
+********************************************************************************/
+-->
+
+<zorba:iterator name="FnUnparsedTextAvailableIterator">
+  <zorba:description author="Zorba Team">
+    Because errors in evaluating the fn:unparsed-text function are
+    non-recoverable, these two functions are provided to allow an application
+    to determine whether a call with particular arguments would succeed.
+  </zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="unparsed-text-available" prefix="fn" version="3.0">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="unparsed-text-available" prefix="fn" version="3.0">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+
+  </zorba:function>
+
+  <zorba:methods>
+    <zorba:accessesDynCtx returnValue="true"/>
+    <zorba:isSource returnValue="true"/>
+  </zorba:methods>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+14.8.6 fn:unparsed-text-lines
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnUnparsedTextLinesIterator">
+    <zorba:description author="Zorba Team">
+      Reads an external resource and returns its contents as a sequence of strings,
+      separated at newline boundaries.
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="unparsed-text-lines" prefix="fn" version="3.0">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="unparsed-text-lines" prefix="fn" version="3.0">
+        <zorba:param>xs:string?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+    
+    <zorba:state generateInit="false" generateReset="false"
+                 generateDestructor="false">
+      <zorba:member type="std::unique_ptr&lt;std::istream, StreamReleaser&gt;*" name="theStream"
+                    brief="the current stream"/>
+      <zorba:member type=" internal::StreamResource*" name="theStreamResource"
+                  brief="the current iterator"/>
+    </zorba:state> 
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+
+  </zorba:iterator>
 
 </zorba:iterators>

@@ -23,6 +23,9 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -35,8 +38,6 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
-
-#include "zorbaserialization/serialization_engine.h"
 
 
 namespace zorba
@@ -74,20 +75,20 @@ typedef std::set<const var_expr *> var_ptr_set;
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t expr::iter_end_expr = NULL;
+expr* expr::iter_end_expr = NULL;
 
-expr_t* expr::iter_done = &expr::iter_end_expr;
+expr** expr::iter_done = &expr::iter_end_expr;
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool expr::is_sequential(short theScriptingKind)
+bool expr::is_sequential(unsigned short theScriptingKind)
 {
   return (theScriptingKind & (VAR_SETTING_EXPR |
                               APPLYING_EXPR |
                               EXITING_EXPR |
-                              BREAKING_EXPR | 
+                              BREAKING_EXPR |
                               SEQUENTIAL_FUNC_EXPR)) != 0;
 }
 
@@ -96,7 +97,7 @@ void expr::checkNonUpdating(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(err::XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001,
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
@@ -107,7 +108,7 @@ void expr::checkSimpleExpr(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(err::XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001,
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
@@ -122,12 +123,13 @@ void expr::checkSimpleExpr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
+expr::expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_kind_t k)
   :
   theSctx(sctx),
   theLoc(loc),
   theKind(k),
-  theFlags1(0)
+  theFlags1(0),
+  theCCB(ccb)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
@@ -148,23 +150,9 @@ expr::~expr()
 /*******************************************************************************
 
 ********************************************************************************/
-void expr::serialize(::zorba::serialization::Archiver& ar)
+TypeManager* expr::get_type_manager() const
 {
-  ar & theSctx;
-  ar & theLoc;
-  ar & theType;
-  SERIALIZE_ENUM(expr_kind_t, theKind);
-  ar & theScriptingKind;
-  ar & theFlags1;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-TypeManager* expr::get_type_manager() const 
-{
-  return theSctx->get_typemanager(); 
+  return theSctx->get_typemanager();
 }
 
 
@@ -251,14 +239,14 @@ void expr::checkScriptingKind() const
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t expr::clone() const
+expr* expr::clone() const
 {
   substitution_t subst;
   return clone(subst);
 }
 
 
-expr_t expr::clone(substitution_t& subst) const
+expr* expr::clone(substitution_t& subst) const
 {
   throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
@@ -272,8 +260,8 @@ void expr::accept_children(expr_visitor& v)
   ExprIterator iter(this);
   while (!iter.done())
   {
-    if (*iter != NULL)
-      (*iter)->accept(v);
+    if (**iter != NULL)
+      (**iter)->accept(v);
 
     iter.next();
   }
@@ -332,7 +320,7 @@ void expr::clear_annotations()
   ExprIterator iter(this);
   while (!iter.done())
   {
-    (*iter)->clear_annotations();
+    (**iter)->clear_annotations();
     iter.next();
   }
 }
@@ -557,11 +545,11 @@ bool expr::willBeSerialized() const
 
 
 /*******************************************************************************
-  This annotation tells whether the expr must produce nodes that belong to 
-  "standalone" trees or not. A tree is standalone if it does not contain 
-  references to other trees. Such references are created when the optimizer 
+  This annotation tells whether the expr must produce nodes that belong to
+  "standalone" trees or not. A tree is standalone if it does not contain
+  references to other trees. Such references are created when the optimizer
   decides that it is ok to avoid copying the referenced subtree (as would be
-  required by required by a strict implementation of the spec, eg., during 
+  required by required by a strict implementation of the spec, eg., during
   node construction).
 ********************************************************************************/
 BoolAnnotationValue expr::getMustCopyNodes() const
@@ -606,18 +594,18 @@ bool expr::is_constant() const
 /*******************************************************************************
   Replace all references to "oldExpr" inside "e" with references to "newExpr".
 ********************************************************************************/
-void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
+void expr::replace_expr(expr* oldExpr, expr* newExpr)
 {
   ExprIterator iter(this);
   while (!iter.done())
   {
-    if ((*iter).getp() == oldExpr)
+    if ((**iter) == oldExpr)
     {
-      (*iter) = newExpr;
+      (**iter) = newExpr;
     }
     else
     {
-      (*iter)->replace_expr(oldExpr, newExpr);
+      (**iter)->replace_expr(oldExpr, newExpr);
     }
 
     iter.next();
@@ -807,13 +795,13 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   if (found)
     return true;
 
-  if (this == e) 
+  if (this == e)
   {
     found = true;
     return true;
   }
 
-  switch(get_expr_kind()) 
+  switch(get_expr_kind())
   {
 #ifdef ZORBA_WITH_DEBUGGER
   case debugger_expr_kind:
@@ -845,13 +833,13 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     const function* func = foExpr->get_func();
     csize numArgs = foExpr->num_args();
 
-    for (csize i = 0; i < numArgs; ++i) 
+    for (csize i = 0; i < numArgs; ++i)
     {
       const expr* argExpr = foExpr->get_arg(i);
 
-      if (func->isMap(i)) 
+      if (func->isMap(i))
       {
-        if (argExpr->is_map_internal(e, found) && found) 
+        if (argExpr->is_map_internal(e, found) && found)
         {
           return true;
         }
@@ -878,7 +866,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const flwor_clause* clause = (*flworExpr)[i];
+      const flwor_clause* clause = flworExpr->get_clause(i);
 
       switch (clause->get_kind())
       {
@@ -1046,6 +1034,11 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case attr_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  case json_array_expr_kind:
+#endif
   {
     return !contains_expr(e);
   }
@@ -1177,13 +1170,13 @@ const store::Item* expr::getQName(static_context* sctx) const
 ********************************************************************************/
 xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 {
-  expr_t emptyExpr = new fo_expr(input->get_sctx(),
+  expr* emptyExpr = theCCB->theEM->create_fo_expr(input->get_sctx(),
                                  QueryLoc::null,
                                  GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
   expr::substitution_t subst;
   subst[input] = emptyExpr;
 
-  expr_t cloneExpr = clone(subst);
+  expr* cloneExpr = clone(subst);
 
   return cloneExpr->get_return_type();
 }

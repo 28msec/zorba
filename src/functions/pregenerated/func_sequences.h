@@ -319,7 +319,7 @@ public:
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
-  bool isMap(ulong producer) const { return producer == 0; }
+  bool isMap(csize producer) const { return producer == 0; }
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 
@@ -616,6 +616,81 @@ public:
     function(sig, kind)
   {
 
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:available-environment-variables
+class fn_available_environment_variables_3_0 : public function
+{
+public:
+  fn_available_environment_variables_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:environment-variable
+class fn_environment_variable_3_0 : public function
+{
+public:
+  fn_environment_variable_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:unparsed-text
+class fn_unparsed_text_3_0 : public function
+{
+public:
+  fn_unparsed_text_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:unparsed-text-available
+class fn_unparsed_text_available_3_0 : public function
+{
+public:
+  fn_unparsed_text_available_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:unparsed-text-lines
+class fn_unparsed_text_lines_3_0 : public function
+{
+public:
+  fn_unparsed_text_lines_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();

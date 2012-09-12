@@ -43,7 +43,7 @@ xquery version "3.0";
 module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 
@@ -80,7 +80,7 @@ declare option ver:module-version "2.0";
  :        the sequence type specified in the corresponding keyspec.
  :
  :)
-declare %ann:variadic function idml:probe-index-point-value(
+declare %an:variadic function idml:probe-index-point-value(
   $name as xs:QName, 
   $key_i as xs:anyAtomicType?) as node()*  external; 
 
@@ -187,7 +187,7 @@ declare function idml:probe-index-point-general(
  :        lower and upper bound, neither T1 is a subtype of T2 nor T2 is a 
  :        subtype of T1.   
  :)
-declare %ann:variadic function idml:probe-index-range-value(
+declare %an:variadic function idml:probe-index-range-value(
   $name                 as xs:QName, 
   $lowerBound-i         as xs:anyAtomicType?,
   $upperBound-i         as xs:anyAtomicType?,
@@ -268,3 +268,27 @@ declare function idml:probe-index-range-general(
  :)
 declare updating function idml:refresh-index($name as xs:QName) external;
 
+(:~
+ : The keys function returns a sequence of all keys contained in the
+ : index with the given name. Each element has the following structure:
+ :   <pre class="brush: xml;">
+ :   &lt;key xmlns="http://www.zorba-xquery.com/modules/store/static/indexes/dml"&gt;
+ :     &lt;attribute value="key1_value"/&gt;
+ :     &lt;attribute value="key2_value"/&gt;
+ :     &lt;attribute value="key3_value"/&gt;
+ :   &lt;/key&gt;
+ :   </pre>
+ :
+ : @param $name The QName of the index
+ : @return The result of the function is sequence of elements each representing
+ :         one key contained in the index.
+ : 
+ : Note that the order of the attribute elements reflects the order of
+ : the keys in the index specification. Also note that the values in
+ : these attributes have the type that is declared in the corresponding
+ : index specification. 
+ :
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
+ :)
+declare function idml:keys($name as xs:QName) as node()* external;

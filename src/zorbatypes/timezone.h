@@ -26,8 +26,19 @@
 namespace zorba
 {
 
-class ZORBA_DLL_PUBLIC TimeZone : protected Duration
+class TimeZone;
+
+namespace serialization 
 {
+  class Archiver;
+  void operator&(Archiver& ar, TimeZone& obj);
+}
+
+
+class TimeZone : protected Duration
+{
+  friend void serialization::operator&(serialization::Archiver& ar, TimeZone& obj);
+
 protected:
   bool timezone_not_set;
 
@@ -48,10 +59,6 @@ public:
   TimeZone() : timezone_not_set(true) { };
   
   TimeZone(short hours);
-
-  SERIALIZABLE_CLASS(TimeZone)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(TimeZone, Duration)
-  void serialize(::zorba::serialization::Archiver& ar);
 
   bool operator<(const TimeZone& t) const;
       

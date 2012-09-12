@@ -47,10 +47,20 @@ SET(ZORBA_STORE_IMPL_SRCS
     inmemorystore.cpp
     inmemorystorec.cpp
     dataguide.cpp
+    tree_id_generator.cpp
     collection.cpp
+    store.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND ZORBA_STORE_IMPL_SRCS
     ft_token_store.cpp naive_ft_token_iterator.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
+IF (ZORBA_WITH_JSON)
+  LIST(APPEND ZORBA_STORE_IMPL_SRCS
+    json_items.cpp
+    json_loader.cpp
+  )
+ENDIF (ZORBA_WITH_JSON)
+

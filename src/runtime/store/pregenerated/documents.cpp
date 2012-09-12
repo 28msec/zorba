@@ -34,17 +34,17 @@
 namespace zorba {
 
 // <PutDocumentIterator>
-const char* PutDocumentIterator::class_name_str = "PutDocumentIterator";
-PutDocumentIterator::class_factory<PutDocumentIterator>
-PutDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PutDocumentIterator)
 
-const serialization::ClassVersion 
-PutDocumentIterator::class_versions[] ={{ 1, 0x000905, false}};
+void PutDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<PutDocumentIterator, PlanIteratorState>*)this);
+}
 
-const int PutDocumentIterator::class_versions_count =
-sizeof(PutDocumentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void PutDocumentIterator::accept(PlanIterVisitor& v) const {
+void PutDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -62,17 +62,17 @@ PutDocumentIterator::~PutDocumentIterator() {}
 
 
 // <RemoveDocumentIterator>
-const char* RemoveDocumentIterator::class_name_str = "RemoveDocumentIterator";
-RemoveDocumentIterator::class_factory<RemoveDocumentIterator>
-RemoveDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RemoveDocumentIterator)
 
-const serialization::ClassVersion 
-RemoveDocumentIterator::class_versions[] ={{ 1, 0x000905, false}};
+void RemoveDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<RemoveDocumentIterator, PlanIteratorState>*)this);
+}
 
-const int RemoveDocumentIterator::class_versions_count =
-sizeof(RemoveDocumentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void RemoveDocumentIterator::accept(PlanIterVisitor& v) const {
+void RemoveDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -90,17 +90,17 @@ RemoveDocumentIterator::~RemoveDocumentIterator() {}
 
 
 // <RetrieveDocumentIterator>
-const char* RetrieveDocumentIterator::class_name_str = "RetrieveDocumentIterator";
-RetrieveDocumentIterator::class_factory<RetrieveDocumentIterator>
-RetrieveDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RetrieveDocumentIterator)
 
-const serialization::ClassVersion 
-RetrieveDocumentIterator::class_versions[] ={{ 1, 0x000905, false}};
+void RetrieveDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<RetrieveDocumentIterator, PlanIteratorState>*)this);
+}
 
-const int RetrieveDocumentIterator::class_versions_count =
-sizeof(RetrieveDocumentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const {
+void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -118,17 +118,17 @@ RetrieveDocumentIterator::~RetrieveDocumentIterator() {}
 
 
 // <AvailableDocumentsIterator>
-const char* AvailableDocumentsIterator::class_name_str = "AvailableDocumentsIterator";
-AvailableDocumentsIterator::class_factory<AvailableDocumentsIterator>
-AvailableDocumentsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(AvailableDocumentsIterator)
 
-const serialization::ClassVersion 
-AvailableDocumentsIterator::class_versions[] ={{ 1, 0x000905, false}};
+void AvailableDocumentsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>*)this);
+}
 
-const int AvailableDocumentsIterator::class_versions_count =
-sizeof(AvailableDocumentsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const {
+void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -148,17 +148,17 @@ AvailableDocumentsIteratorState::AvailableDocumentsIteratorState() {}
 
 
 // <IsAvailableDocumentIterator>
-const char* IsAvailableDocumentIterator::class_name_str = "IsAvailableDocumentIterator";
-IsAvailableDocumentIterator::class_factory<IsAvailableDocumentIterator>
-IsAvailableDocumentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableDocumentIterator)
 
-const serialization::ClassVersion 
-IsAvailableDocumentIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsAvailableDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>*)this);
+}
 
-const int IsAvailableDocumentIterator::class_versions_count =
-sizeof(IsAvailableDocumentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const {
+void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

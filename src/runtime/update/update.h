@@ -159,24 +159,16 @@ class CopyClause : public ::zorba::serialization::SerializeBaseClass
 
 public:
   SERIALIZABLE_CLASS(CopyClause);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR(CopyClause);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theCopyVars;
-    ar & theInput;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   CopyClause() {}
 
-  CopyClause(
-        std::vector<ForVarIter_t>& aCopyVars,
-        PlanIter_t                 aInput)
+  CopyClause(std::vector<ForVarIter_t>& copyVars, PlanIter_t input)
     :
-    theCopyVars(aCopyVars),
-    theInput(aInput)
+    theCopyVars(copyVars),
+    theInput(input)
   {}
 
   ~CopyClause() {}
@@ -195,25 +187,17 @@ private:
 public:
   SERIALIZABLE_CLASS(TransformIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(TransformIterator, Batcher<TransformIterator>)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (Batcher<TransformIterator>*)this);
-    ar & theCopyClauses;
-    ar & theModifyIter;
-    ar & thePulHolderIter;
-    ar & theApplyIter;
-    ar & theReturnIter;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   TransformIterator (
-    static_context* sctx,
-    const QueryLoc& aLoc,
-    std::vector<CopyClause>& aCopyClauses,
-    PlanIter_t aModifyIter,
-    PlanIter_t aPulHolderIter,
-    PlanIter_t aApplyIter,
-    PlanIter_t aReturnIter);
+      static_context* sctx,
+      const QueryLoc& aLoc,
+      std::vector<CopyClause>& aCopyClauses,
+      PlanIter_t aModifyIter,
+      PlanIter_t aPulHolderIter,
+      PlanIter_t aApplyIter,
+      PlanIter_t aReturnIter);
 
   ~TransformIterator();
 

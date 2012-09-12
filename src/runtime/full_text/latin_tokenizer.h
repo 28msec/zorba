@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_WESTERN_TOKENIZER_H
-#define ZORBA_WESTERN_TOKENIZER_H
+#ifndef ZORBA_LATIN_TOKENIZER_H
+#define ZORBA_LATIN_TOKENIZER_H
 
 #include <zorba/config.h>
 
-#ifdef ZORBA_NO_FULL_TEXT
+#ifdef ZORBA_NO_ICU
 
 #include <zorba/tokenizer.h>
 #include "zorbatypes/zstring.h"
@@ -34,12 +34,13 @@ namespace zorba {
  */
 class LatinTokenizer : public Tokenizer {
 public:
-  LatinTokenizer( Numbers &num ) : Tokenizer( num ) { }
+  LatinTokenizer( State &state ) : Tokenizer( state ) { }
 
   // inherited
   void destroy() const;
-  void tokenize( char const*, size_type, iso639_1::type, bool, Callback&,
-                 void* );
+  void properties( Properties* ) const;
+  void tokenize_string( char const*, size_type, iso639_1::type, bool, Callback&,
+                        Item const* );
 
 private:
   typedef zstring string_type;
@@ -56,7 +57,8 @@ private:
   static bool is_word_begin_char( char );
   bool is_word_char( char );
   static char peek( char const *s, char const *end );
-  bool send_token( string_type const &token, Callback&, void* );
+  bool send_token( string_type const &token, locale::iso639_1::type, Callback&,
+                   Item const* );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,13 +66,14 @@ private:
 class LatinTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  Tokenizer::ptr getTokenizer( iso639_1::type, Tokenizer::Numbers& ) const;
+  bool getTokenizer( locale::iso639_1::type, Tokenizer::State* = 0,
+                     Tokenizer::ptr* = 0 ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 
-#endif /* ZORBA_NO_FULL_TEXT */
-#endif /* ZORBA_WESTERN_TOKENIZER_H */
+#endif /* ZORBA_NO_ICU */
+#endif /* ZORBA_LATIN_TOKENIZER_H */
 /* vim:set et sw=2 ts=2: */

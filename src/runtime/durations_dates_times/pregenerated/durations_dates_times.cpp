@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <YearsFromDurationIterator>
-const char* YearsFromDurationIterator::class_name_str = "YearsFromDurationIterator";
-YearsFromDurationIterator::class_factory<YearsFromDurationIterator>
-YearsFromDurationIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(YearsFromDurationIterator)
 
-const serialization::ClassVersion 
-YearsFromDurationIterator::class_versions[] ={{ 1, 0x000905, false}};
+void YearsFromDurationIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<YearsFromDurationIterator, PlanIteratorState>*)this);
+}
 
-const int YearsFromDurationIterator::class_versions_count =
-sizeof(YearsFromDurationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void YearsFromDurationIterator::accept(PlanIterVisitor& v) const {
+void YearsFromDurationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -61,17 +61,17 @@ YearsFromDurationIterator::~YearsFromDurationIterator() {}
 
 
 // <MonthsFromDurationIterator>
-const char* MonthsFromDurationIterator::class_name_str = "MonthsFromDurationIterator";
-MonthsFromDurationIterator::class_factory<MonthsFromDurationIterator>
-MonthsFromDurationIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MonthsFromDurationIterator)
 
-const serialization::ClassVersion 
-MonthsFromDurationIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MonthsFromDurationIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MonthsFromDurationIterator, PlanIteratorState>*)this);
+}
 
-const int MonthsFromDurationIterator::class_versions_count =
-sizeof(MonthsFromDurationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MonthsFromDurationIterator::accept(PlanIterVisitor& v) const {
+void MonthsFromDurationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -89,17 +89,17 @@ MonthsFromDurationIterator::~MonthsFromDurationIterator() {}
 
 
 // <DaysFromDurationIterator>
-const char* DaysFromDurationIterator::class_name_str = "DaysFromDurationIterator";
-DaysFromDurationIterator::class_factory<DaysFromDurationIterator>
-DaysFromDurationIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DaysFromDurationIterator)
 
-const serialization::ClassVersion 
-DaysFromDurationIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DaysFromDurationIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DaysFromDurationIterator, PlanIteratorState>*)this);
+}
 
-const int DaysFromDurationIterator::class_versions_count =
-sizeof(DaysFromDurationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DaysFromDurationIterator::accept(PlanIterVisitor& v) const {
+void DaysFromDurationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -117,17 +117,17 @@ DaysFromDurationIterator::~DaysFromDurationIterator() {}
 
 
 // <HoursFromDurationIterator>
-const char* HoursFromDurationIterator::class_name_str = "HoursFromDurationIterator";
-HoursFromDurationIterator::class_factory<HoursFromDurationIterator>
-HoursFromDurationIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(HoursFromDurationIterator)
 
-const serialization::ClassVersion 
-HoursFromDurationIterator::class_versions[] ={{ 1, 0x000905, false}};
+void HoursFromDurationIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<HoursFromDurationIterator, PlanIteratorState>*)this);
+}
 
-const int HoursFromDurationIterator::class_versions_count =
-sizeof(HoursFromDurationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void HoursFromDurationIterator::accept(PlanIterVisitor& v) const {
+void HoursFromDurationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -145,17 +145,17 @@ HoursFromDurationIterator::~HoursFromDurationIterator() {}
 
 
 // <MinutesFromDurationIterator>
-const char* MinutesFromDurationIterator::class_name_str = "MinutesFromDurationIterator";
-MinutesFromDurationIterator::class_factory<MinutesFromDurationIterator>
-MinutesFromDurationIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MinutesFromDurationIterator)
 
-const serialization::ClassVersion 
-MinutesFromDurationIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MinutesFromDurationIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MinutesFromDurationIterator, PlanIteratorState>*)this);
+}
 
-const int MinutesFromDurationIterator::class_versions_count =
-sizeof(MinutesFromDurationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MinutesFromDurationIterator::accept(PlanIterVisitor& v) const {
+void MinutesFromDurationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -173,17 +173,17 @@ MinutesFromDurationIterator::~MinutesFromDurationIterator() {}
 
 
 // <SecondsFromDurationIterator>
-const char* SecondsFromDurationIterator::class_name_str = "SecondsFromDurationIterator";
-SecondsFromDurationIterator::class_factory<SecondsFromDurationIterator>
-SecondsFromDurationIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SecondsFromDurationIterator)
 
-const serialization::ClassVersion 
-SecondsFromDurationIterator::class_versions[] ={{ 1, 0x000905, false}};
+void SecondsFromDurationIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SecondsFromDurationIterator, PlanIteratorState>*)this);
+}
 
-const int SecondsFromDurationIterator::class_versions_count =
-sizeof(SecondsFromDurationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void SecondsFromDurationIterator::accept(PlanIterVisitor& v) const {
+void SecondsFromDurationIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -201,17 +201,17 @@ SecondsFromDurationIterator::~SecondsFromDurationIterator() {}
 
 
 // <YearFromDatetimeIterator>
-const char* YearFromDatetimeIterator::class_name_str = "YearFromDatetimeIterator";
-YearFromDatetimeIterator::class_factory<YearFromDatetimeIterator>
-YearFromDatetimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(YearFromDatetimeIterator)
 
-const serialization::ClassVersion 
-YearFromDatetimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void YearFromDatetimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<YearFromDatetimeIterator, PlanIteratorState>*)this);
+}
 
-const int YearFromDatetimeIterator::class_versions_count =
-sizeof(YearFromDatetimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void YearFromDatetimeIterator::accept(PlanIterVisitor& v) const {
+void YearFromDatetimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -229,17 +229,17 @@ YearFromDatetimeIterator::~YearFromDatetimeIterator() {}
 
 
 // <MonthFromDatetimeIterator>
-const char* MonthFromDatetimeIterator::class_name_str = "MonthFromDatetimeIterator";
-MonthFromDatetimeIterator::class_factory<MonthFromDatetimeIterator>
-MonthFromDatetimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MonthFromDatetimeIterator)
 
-const serialization::ClassVersion 
-MonthFromDatetimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MonthFromDatetimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MonthFromDatetimeIterator, PlanIteratorState>*)this);
+}
 
-const int MonthFromDatetimeIterator::class_versions_count =
-sizeof(MonthFromDatetimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MonthFromDatetimeIterator::accept(PlanIterVisitor& v) const {
+void MonthFromDatetimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -257,17 +257,17 @@ MonthFromDatetimeIterator::~MonthFromDatetimeIterator() {}
 
 
 // <DayFromDatetimeIterator>
-const char* DayFromDatetimeIterator::class_name_str = "DayFromDatetimeIterator";
-DayFromDatetimeIterator::class_factory<DayFromDatetimeIterator>
-DayFromDatetimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DayFromDatetimeIterator)
 
-const serialization::ClassVersion 
-DayFromDatetimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DayFromDatetimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DayFromDatetimeIterator, PlanIteratorState>*)this);
+}
 
-const int DayFromDatetimeIterator::class_versions_count =
-sizeof(DayFromDatetimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DayFromDatetimeIterator::accept(PlanIterVisitor& v) const {
+void DayFromDatetimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -285,17 +285,17 @@ DayFromDatetimeIterator::~DayFromDatetimeIterator() {}
 
 
 // <HoursFromDatetimeIterator>
-const char* HoursFromDatetimeIterator::class_name_str = "HoursFromDatetimeIterator";
-HoursFromDatetimeIterator::class_factory<HoursFromDatetimeIterator>
-HoursFromDatetimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(HoursFromDatetimeIterator)
 
-const serialization::ClassVersion 
-HoursFromDatetimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void HoursFromDatetimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<HoursFromDatetimeIterator, PlanIteratorState>*)this);
+}
 
-const int HoursFromDatetimeIterator::class_versions_count =
-sizeof(HoursFromDatetimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void HoursFromDatetimeIterator::accept(PlanIterVisitor& v) const {
+void HoursFromDatetimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -313,17 +313,17 @@ HoursFromDatetimeIterator::~HoursFromDatetimeIterator() {}
 
 
 // <MinutesFromDatetimeIterator>
-const char* MinutesFromDatetimeIterator::class_name_str = "MinutesFromDatetimeIterator";
-MinutesFromDatetimeIterator::class_factory<MinutesFromDatetimeIterator>
-MinutesFromDatetimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MinutesFromDatetimeIterator)
 
-const serialization::ClassVersion 
-MinutesFromDatetimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MinutesFromDatetimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MinutesFromDatetimeIterator, PlanIteratorState>*)this);
+}
 
-const int MinutesFromDatetimeIterator::class_versions_count =
-sizeof(MinutesFromDatetimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MinutesFromDatetimeIterator::accept(PlanIterVisitor& v) const {
+void MinutesFromDatetimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -341,17 +341,17 @@ MinutesFromDatetimeIterator::~MinutesFromDatetimeIterator() {}
 
 
 // <SecondsFromDatetimeIterator>
-const char* SecondsFromDatetimeIterator::class_name_str = "SecondsFromDatetimeIterator";
-SecondsFromDatetimeIterator::class_factory<SecondsFromDatetimeIterator>
-SecondsFromDatetimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SecondsFromDatetimeIterator)
 
-const serialization::ClassVersion 
-SecondsFromDatetimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void SecondsFromDatetimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SecondsFromDatetimeIterator, PlanIteratorState>*)this);
+}
 
-const int SecondsFromDatetimeIterator::class_versions_count =
-sizeof(SecondsFromDatetimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void SecondsFromDatetimeIterator::accept(PlanIterVisitor& v) const {
+void SecondsFromDatetimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -369,17 +369,17 @@ SecondsFromDatetimeIterator::~SecondsFromDatetimeIterator() {}
 
 
 // <TimezoneFromDatetimeIterator>
-const char* TimezoneFromDatetimeIterator::class_name_str = "TimezoneFromDatetimeIterator";
-TimezoneFromDatetimeIterator::class_factory<TimezoneFromDatetimeIterator>
-TimezoneFromDatetimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(TimezoneFromDatetimeIterator)
 
-const serialization::ClassVersion 
-TimezoneFromDatetimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void TimezoneFromDatetimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TimezoneFromDatetimeIterator, PlanIteratorState>*)this);
+}
 
-const int TimezoneFromDatetimeIterator::class_versions_count =
-sizeof(TimezoneFromDatetimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void TimezoneFromDatetimeIterator::accept(PlanIterVisitor& v) const {
+void TimezoneFromDatetimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -397,17 +397,17 @@ TimezoneFromDatetimeIterator::~TimezoneFromDatetimeIterator() {}
 
 
 // <YearFromDateIterator>
-const char* YearFromDateIterator::class_name_str = "YearFromDateIterator";
-YearFromDateIterator::class_factory<YearFromDateIterator>
-YearFromDateIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(YearFromDateIterator)
 
-const serialization::ClassVersion 
-YearFromDateIterator::class_versions[] ={{ 1, 0x000905, false}};
+void YearFromDateIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<YearFromDateIterator, PlanIteratorState>*)this);
+}
 
-const int YearFromDateIterator::class_versions_count =
-sizeof(YearFromDateIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void YearFromDateIterator::accept(PlanIterVisitor& v) const {
+void YearFromDateIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -425,17 +425,17 @@ YearFromDateIterator::~YearFromDateIterator() {}
 
 
 // <MonthFromDateIterator>
-const char* MonthFromDateIterator::class_name_str = "MonthFromDateIterator";
-MonthFromDateIterator::class_factory<MonthFromDateIterator>
-MonthFromDateIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MonthFromDateIterator)
 
-const serialization::ClassVersion 
-MonthFromDateIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MonthFromDateIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MonthFromDateIterator, PlanIteratorState>*)this);
+}
 
-const int MonthFromDateIterator::class_versions_count =
-sizeof(MonthFromDateIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MonthFromDateIterator::accept(PlanIterVisitor& v) const {
+void MonthFromDateIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -453,17 +453,17 @@ MonthFromDateIterator::~MonthFromDateIterator() {}
 
 
 // <DayFromDateIterator>
-const char* DayFromDateIterator::class_name_str = "DayFromDateIterator";
-DayFromDateIterator::class_factory<DayFromDateIterator>
-DayFromDateIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DayFromDateIterator)
 
-const serialization::ClassVersion 
-DayFromDateIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DayFromDateIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DayFromDateIterator, PlanIteratorState>*)this);
+}
 
-const int DayFromDateIterator::class_versions_count =
-sizeof(DayFromDateIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DayFromDateIterator::accept(PlanIterVisitor& v) const {
+void DayFromDateIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -481,17 +481,17 @@ DayFromDateIterator::~DayFromDateIterator() {}
 
 
 // <TimezoneFromDateIterator>
-const char* TimezoneFromDateIterator::class_name_str = "TimezoneFromDateIterator";
-TimezoneFromDateIterator::class_factory<TimezoneFromDateIterator>
-TimezoneFromDateIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(TimezoneFromDateIterator)
 
-const serialization::ClassVersion 
-TimezoneFromDateIterator::class_versions[] ={{ 1, 0x000905, false}};
+void TimezoneFromDateIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TimezoneFromDateIterator, PlanIteratorState>*)this);
+}
 
-const int TimezoneFromDateIterator::class_versions_count =
-sizeof(TimezoneFromDateIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void TimezoneFromDateIterator::accept(PlanIterVisitor& v) const {
+void TimezoneFromDateIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -509,17 +509,17 @@ TimezoneFromDateIterator::~TimezoneFromDateIterator() {}
 
 
 // <HoursFromTimeIterator>
-const char* HoursFromTimeIterator::class_name_str = "HoursFromTimeIterator";
-HoursFromTimeIterator::class_factory<HoursFromTimeIterator>
-HoursFromTimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(HoursFromTimeIterator)
 
-const serialization::ClassVersion 
-HoursFromTimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void HoursFromTimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<HoursFromTimeIterator, PlanIteratorState>*)this);
+}
 
-const int HoursFromTimeIterator::class_versions_count =
-sizeof(HoursFromTimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void HoursFromTimeIterator::accept(PlanIterVisitor& v) const {
+void HoursFromTimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -537,17 +537,17 @@ HoursFromTimeIterator::~HoursFromTimeIterator() {}
 
 
 // <MinutesFromTimeIterator>
-const char* MinutesFromTimeIterator::class_name_str = "MinutesFromTimeIterator";
-MinutesFromTimeIterator::class_factory<MinutesFromTimeIterator>
-MinutesFromTimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(MinutesFromTimeIterator)
 
-const serialization::ClassVersion 
-MinutesFromTimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void MinutesFromTimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MinutesFromTimeIterator, PlanIteratorState>*)this);
+}
 
-const int MinutesFromTimeIterator::class_versions_count =
-sizeof(MinutesFromTimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void MinutesFromTimeIterator::accept(PlanIterVisitor& v) const {
+void MinutesFromTimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -565,17 +565,17 @@ MinutesFromTimeIterator::~MinutesFromTimeIterator() {}
 
 
 // <SecondsFromTimeIterator>
-const char* SecondsFromTimeIterator::class_name_str = "SecondsFromTimeIterator";
-SecondsFromTimeIterator::class_factory<SecondsFromTimeIterator>
-SecondsFromTimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SecondsFromTimeIterator)
 
-const serialization::ClassVersion 
-SecondsFromTimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void SecondsFromTimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SecondsFromTimeIterator, PlanIteratorState>*)this);
+}
 
-const int SecondsFromTimeIterator::class_versions_count =
-sizeof(SecondsFromTimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void SecondsFromTimeIterator::accept(PlanIterVisitor& v) const {
+void SecondsFromTimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -593,17 +593,17 @@ SecondsFromTimeIterator::~SecondsFromTimeIterator() {}
 
 
 // <TimezoneFromTimeIterator>
-const char* TimezoneFromTimeIterator::class_name_str = "TimezoneFromTimeIterator";
-TimezoneFromTimeIterator::class_factory<TimezoneFromTimeIterator>
-TimezoneFromTimeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(TimezoneFromTimeIterator)
 
-const serialization::ClassVersion 
-TimezoneFromTimeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void TimezoneFromTimeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<TimezoneFromTimeIterator, PlanIteratorState>*)this);
+}
 
-const int TimezoneFromTimeIterator::class_versions_count =
-sizeof(TimezoneFromTimeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void TimezoneFromTimeIterator::accept(PlanIterVisitor& v) const {
+void TimezoneFromTimeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

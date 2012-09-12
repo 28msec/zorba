@@ -34,17 +34,17 @@
 namespace zorba {
 
 // <ReadLineIterator>
-const char* ReadLineIterator::class_name_str = "ReadLineIterator";
-ReadLineIterator::class_factory<ReadLineIterator>
-ReadLineIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ReadLineIterator)
 
-const serialization::ClassVersion 
-ReadLineIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ReadLineIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
+}
 
-const int ReadLineIterator::class_versions_count =
-sizeof(ReadLineIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ReadLineIterator::accept(PlanIterVisitor& v) const {
+void ReadLineIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -62,17 +62,19 @@ ReadLineIterator::~ReadLineIterator() {}
 
 
 // <PrintIterator>
-const char* PrintIterator::class_name_str = "PrintIterator";
-PrintIterator::class_factory<PrintIterator>
-PrintIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PrintIterator)
 
-const serialization::ClassVersion 
-PrintIterator::class_versions[] ={{ 1, 0x000905, false}};
+void PrintIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);
 
-const int PrintIterator::class_versions_count =
-sizeof(PrintIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & thePrintToConsole;
+}
 
-void PrintIterator::accept(PlanIterVisitor& v) const {
+
+void PrintIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -90,17 +92,22 @@ PrintIterator::~PrintIterator() {}
 
 
 // <FunctionTraceIterator>
-const char* FunctionTraceIterator::class_name_str = "FunctionTraceIterator";
-FunctionTraceIterator::class_factory<FunctionTraceIterator>
-FunctionTraceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionTraceIterator)
 
-const serialization::ClassVersion 
-FunctionTraceIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FunctionTraceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>*)this);
 
-const int FunctionTraceIterator::class_versions_count =
-sizeof(FunctionTraceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theFunctionName;
+    ar & theFunctionLocation;
+    ar & theFunctionCallLocation;
+    ar & theFunctionArity;
+}
 
-void FunctionTraceIterator::accept(PlanIterVisitor& v) const {
+
+void FunctionTraceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

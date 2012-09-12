@@ -43,44 +43,136 @@
 
 namespace zorba
 {
-SERIALIZABLE_TEMPLATE_VERSIONS(NumArithIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(NumArithIterator)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<AddOperation>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<SubtractOperation>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<MultiplyOperation>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<DivideOperation>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<IntegerDivideOperation>, 5)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NumArithIterator, NumArithIterator<ModOperation>, 6)
 
-SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(SpecificNumArithIterator)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>, 1);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_FLOAT>, 2);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>, 3);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<AddOperation, store::XS_INTEGER>, 4);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_DOUBLE>, 5);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_FLOAT>, 6);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_DECIMAL>, 7);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<SubtractOperation, store::XS_INTEGER>, 8);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_DOUBLE>, 9);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_FLOAT>, 10);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_DECIMAL>, 11);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<MultiplyOperation, store::XS_INTEGER>, 12);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_DOUBLE>, 13);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_FLOAT>, 14);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_DECIMAL>, 15);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<DivideOperation, store::XS_INTEGER>, 16);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_DOUBLE>, 17);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_FLOAT>, 18);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_DECIMAL>, 19);
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumArithIterator<ModOperation, store::XS_INTEGER>, 20);
+SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
+                               NumArithIterator<AddOperation>,
+                               1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
+                               NumArithIterator<SubtractOperation>,
+                               2)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
+                               NumArithIterator<MultiplyOperation>,
+                               3)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
+                               NumArithIterator<DivideOperation>,
+                               4)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
+                               NumArithIterator<IntegerDivideOperation>,
+                               5)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
+                               NumArithIterator<ModOperation>,
+                               6)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>,
+1);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<AddOperation, store::XS_FLOAT>,
+2);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>,
+3);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<AddOperation, store::XS_INTEGER>,
+4);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<SubtractOperation, store::XS_DOUBLE>,
+5);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<SubtractOperation, store::XS_FLOAT>,
+6);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<SubtractOperation, store::XS_DECIMAL>,
+7);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<SubtractOperation, store::XS_INTEGER>,
+8);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<MultiplyOperation, store::XS_DOUBLE>,
+9);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<MultiplyOperation, store::XS_FLOAT>,
+10);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<MultiplyOperation, store::XS_DECIMAL>,
+11);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<MultiplyOperation, store::XS_INTEGER>,
+12);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<DivideOperation, store::XS_DOUBLE>,
+13);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<DivideOperation, store::XS_FLOAT>,
+14);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<DivideOperation, store::XS_DECIMAL>,
+15);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<DivideOperation, store::XS_INTEGER>,
+16);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<ModOperation, store::XS_DOUBLE>,
+17);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<ModOperation, store::XS_FLOAT>,
+18);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<ModOperation, store::XS_DECIMAL>,
+19);
+
+SERIALIZABLE_TEMPLATE_INSTANCE_2(
+SpecificNumArithIterator,
+SpecificNumArithIterator<ModOperation, store::XS_INTEGER>,
+20);
 
 
 SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
+
 
 /*******************************************************************************
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)

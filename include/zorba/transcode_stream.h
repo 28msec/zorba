@@ -19,10 +19,10 @@
 
 #include <stdexcept>
 #include <streambuf>
-#include <string>
 
 #include <zorba/config.h>
 #include <zorba/internal/proxy.h>
+#include <zorba/internal/streambuf.h>
 #include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
@@ -58,8 +58,11 @@ namespace transcode {
  *      os.ios::rdbuf( tbuf.orig_streambuf() );
  *      throw;
  *    }
+ *    os.ios::rdbuf( tbuf.orig_streambuf() );
  *  }
  * \endcode
+ * Alternatively, you may wish to use either \c attach(), \c auto_attach, or
+ * \c transcode::stream instead.
  *
  * While %transcode::streambuf does support seeking, the positions are relative
  * to the original byte stream.
@@ -114,10 +117,140 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace transcode
+
+namespace internal {
+namespace transcode {
+
+ZORBA_DLL_PUBLIC
+std::streambuf* alloc_streambuf( char const *charset, std::streambuf *orig );
+
+ZORBA_DLL_PUBLIC
+int get_streambuf_index();
+
+} // transcode
+} // namespace internal
+
+namespace transcode {
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Attaches a transcode::streambuf to a stream.  Unlike using a
+ * transcode::streambuf directly, this function will create the streambuf,
+ * attach it to the stream, and manage it for the lifetime of the stream
+ * automatically.
+ *
+ * @param ios The stream to attach the transcode::streambuf to.  If the stream
+ * already has a transcode::streambuf attached to it, this function does
+ * nothing.
+ * @param charset The name of the character encoding to convert from/to.
+ */
+template<typename charT,typename Traits> inline
+void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
+  int const index = internal::transcode::get_streambuf_index();
+  void *&pword = ios.pword( index );
+  if ( !pword ) {
+    std::streambuf *const buf =
+      internal::transcode::alloc_streambuf( charset, ios.rdbuf() );
+    ios.rdbuf( buf );
+    pword = buf;
+    ios.register_callback( internal::stream_callback, index );
+  }
+}
+
+/**
+ * Detaches a previously attached transcode::streambuf from a stream.  The
+ * streambuf is destroyed and the stream's original streambuf is restored.
+ *
+ * @param ios The stream to detach the transcode::streambuf from.  If the
+ * stream doesn't have a transcode::streambuf attached to it, this function
+ * does nothing.
+ */
+template<typename charT,typename Traits> inline
+void detach( std::basic_ios<charT,Traits> &ios ) {
+  int const index = internal::transcode::get_streambuf_index();
+  if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
+    ios.pword( index ) = 0;
+    ios.rdbuf( buf->orig_streambuf() );
+    internal::dealloc_streambuf( buf );
+  }
+}
+
+/**
+ * Checks whether the given stream has a transcode::streambuf attached.
+ *
+ * @param ios The stream to check.
+ * @return \c true only if a transcode::streambuf is attached.
+ */
+template<typename charT,typename Traits> inline
+bool is_attached( std::basic_ios<charT,Traits> &ios ) {
+  return !!ios.pword( internal::transcode::get_streambuf_index() );
+}
+
+/**
+ * Gets the original streambuf of the given iostream.
+ *
+ * @param ios The stream to get the original streambuf of.
+ * @return the original streambuf.
+ */
+template<typename charT,typename Traits> inline
+std::streambuf* orig_streambuf( std::basic_ios<charT,Traits> &ios ) {
+  std::streambuf *const buf = ios.rdbuf();
+  if ( streambuf *const tbuf = dynamic_cast<streambuf*>( buf ) )
+    return tbuf->orig_streambuf();
+  return buf;
+}
+
+/**
+ * A %transcode::auto_attach is a class that attaches a transcode::streambuf to
+ * a stream and automatically detaches it when the %auto_attach object is
+ * destroyed.
+ * \code
+ *  void f( ostream &os ) {
+ *    transcode::auto_attach<ostream> const raii( os, "ISO-8859-1" );
+ *    // ...
+ *  }
+ * \endcode
+ * A %transcode::auto_attach is useful for streams not created by you.
+ *
+ * @see http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization
+ */
+template<class StreamType>
+class auto_attach {
+public:
+  /**
+   * Constructs an %auto_attach object calling attach() on the given stream.
+   *
+   * @param stream The stream to attach the transcode::streambuf to.  If the
+   * stream already has a transcode::streambuf attached to it, this contructor
+   * does nothing.
+   * @param charset The name of the character encoding to convert from/to.
+   */
+  auto_attach( StreamType &stream, char const *charset ) : stream_( stream ) {
+    attach( stream, charset );
+  }
+
+  /**
+   * Destroys this %auto_attach object calling detach() on the previously
+   * attached stream.
+   */
+  ~auto_attach() {
+    detach( stream_ );
+  }
+
+private:
+  StreamType &stream_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 /**
  * A %transcode::stream is used to wrap a C++ standard I/O stream with a
  * transcode::streambuf so that transcoding and the management of the streambuf
  * happens automatically.
+ *
+ * A %transcode::stream is useful for streams created by you.
  *
  * @tparam StreamType The I/O stream class type to wrap. It must be a concrete
  * stream class.
@@ -132,7 +265,14 @@ public:
    * @throws std::invalid_argument if \a charset is not supported.
    */
   stream( char const *charset ) :
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }
@@ -150,7 +290,14 @@ public:
   template<typename StreamArgType>
   stream( char const *charset, StreamArgType stream_arg ) :
     StreamType( stream_arg ),
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }
@@ -170,7 +317,14 @@ public:
   stream( char const *charset, StreamArgType stream_arg,
           std::ios_base::openmode mode ) :
     StreamType( stream_arg, mode ),
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }

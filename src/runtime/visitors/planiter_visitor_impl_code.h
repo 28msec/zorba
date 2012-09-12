@@ -27,9 +27,19 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (ElementIterator);
 
-  PLAN_ITER_VISITOR (AttributeIterator );
+  PLAN_ITER_VISITOR (AttributeIterator);
 
   PLAN_ITER_VISITOR (DocumentIterator);
+
+#ifdef ZORBA_WITH_JSON
+  PLAN_ITER_VISITOR (JSONArrayIterator);
+
+  PLAN_ITER_VISITOR (JSONObjectIterator);
+
+  PLAN_ITER_VISITOR (JSONDirectObjectIterator);
+
+  PLAN_ITER_VISITOR (JSONObjectInsertIterator);
+#endif
 
   PLAN_ITER_VISITOR (UDFunctionCallIterator);
 
@@ -277,7 +287,7 @@ PLAN_ITER_VISITOR (AndIterator);
   virtual void endVisitWindowVariable() = 0;
 
   virtual void beginVisitWinCondVariable(
-        const std::string& varName,
+        const zstring& varName,
         const std::vector<PlanIter_t>& varRefs) = 0;
 
   virtual void endVisitWinCondVariable() = 0;

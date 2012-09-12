@@ -46,12 +46,18 @@ IF (DOXYGEN_FOUND)
                   ${CMAKE_CURRENT_BINARY_DIR}/html/noisepattern.png COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/scripting_spec.html
                   ${CMAKE_CURRENT_BINARY_DIR}/html/scripting_spec.html COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/XQueryforJSON.html
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/XQueryforJSON.html COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/JSONforXQuery.html
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/JSONforXQuery.html COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/W3C-WD.css
                   ${CMAKE_CURRENT_BINARY_DIR}/html/W3C-WD.css COPYONLY)
 
   FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/known_issues.dox "/** \\page known_issues Known Issues
 ")
   FILE(READ  ${CMAKE_SOURCE_DIR}/KNOWN_ISSUES.txt KNWON_ISSUES_CONTENS)
+  STRING (REPLACE "\\s" "\\code \\s \\endcode" KNWON_ISSUES_CONTENS ${KNWON_ISSUES_CONTENS})
+  STRING (REPLACE "#others" "\\code #others \\endcode" KNWON_ISSUES_CONTENS ${KNWON_ISSUES_CONTENS})
   FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/known_issues.dox "${KNWON_ISSUES_CONTENS}
 */")
 

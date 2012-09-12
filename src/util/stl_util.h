@@ -20,7 +20,9 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <functional>
 #include <iterator>
+#include <limits>
 #include <set>
 #include <stack>
 
@@ -91,6 +93,30 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Implementation of SGI's %identity extension.
+ * See: http://www.sgi.com/tech/stl/identity.html
+ */
+template<typename T>
+struct identity : std::unary_function<T,T> {
+  T const& operator()( T const &a ) const {
+    return a;
+  }
+};
+
+/**
+ * Implementation of SGI's %select1st extension.
+ * See: http://www.sgi.com/tech/stl/select1st.html
+ */
+template<typename PairType>
+struct select1st : std::unary_function<PairType,typename PairType::first_type> {
+  typename PairType::first_type const& operator()( PairType const &a ) const {
+    return a.first;
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
  * Determines whether the given type \c T is efficiently passed by value.
  */
 template<typename T>
@@ -129,11 +155,13 @@ struct call_traits<T,false> {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A less-verbose way to determine whether the given set<T> contains a
+ * A less-verbose way to determine whether the given map or set contains a
  * particular element.
  */
-template<typename T> inline
-bool contains( std::set<T> const &s, typename call_traits<T>::arg_type v ) {
+template<class ContainerType> inline
+bool contains(
+    ContainerType const &s,
+    typename call_traits<typename ContainerType::key_type>::arg_type v ) {
   return s.find( v ) != s.end();
 }
 
@@ -174,8 +202,32 @@ void delete_ptr_seq( SequenceType &seq ) {
 }
 
 /**
- * Erases the first element in the given sequence for which the given predicate
- * is \c true.
+ * Erases all elements in the given container for which the given predicate is
+ * \c true.
+ *
+ * @tparam SequenceType The sequence type.
+ * @tparam PredicateType The predicate type.
+ * @param seq The sequence to modify.
+ * @param pred The predicate to use.
+ * @return Returns the number of elements erased.
+ */
+template<class SequenceType,class PredicateType> inline
+typename SequenceType::size_type erase_if( SequenceType &seq,
+                                           PredicateType pred ) {
+  typename SequenceType::size_type erased = 0;
+  for ( typename SequenceType::iterator i = seq.begin(); i != seq.end(); ) {
+    if ( pred( *i ) ) {
+      i = seq.erase( i );
+      ++erased;
+    } else
+      ++i;
+  }
+  return erased;
+}
+
+/**
+ * Erases only the first element in the given sequence for which the given
+ * predicate is \c true.
  *
  * @tparam SequenceType The sequence type.
  * @tparam PredicateType The predicate type.
@@ -219,6 +271,7 @@ inline char* new_strdup( char const *s ) {
  */
 template<class SequenceType> inline
 typename SequenceType::value_type pop_front( SequenceType &seq ) {
+  assert( !seq.empty() );
   typename SequenceType::value_type const value( seq.front() );
   seq.pop_front();
   return value;
@@ -229,6 +282,7 @@ typename SequenceType::value_type pop_front( SequenceType &seq ) {
  */
 template<class StackType> inline
 typename StackType::value_type pop_stack( StackType &s ) {
+  assert( !s.empty() );
   typename StackType::value_type const value( s.top() );
   s.pop();
   return value;
@@ -289,6 +343,83 @@ typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
 le0( IntType n ) {
   return n == 0;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+//
+// These functions are used to test whether a value of numeric type N1 is
+// within the range of another numeric type N2.  It correctly handles the
+// cases where the "signed-ness" of N1 and N2 differ such that the code is
+// warning-free.
+//
+// Note: the use of "!!" is to work around a compiler problem on Windows;
+// see: http://stackoverflow.com/questions/9285657/sfinae-differentiation-between-signed-and-unsigned
+//
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+ge_min( N1 n1, N2 ) {
+  return n1 >= std::numeric_limits<N2>::min();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+ge_min( N1 n1, N2 ) {
+  return n1 >= 0;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+ge_min( N1, N2 ) {
+  return true;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+ge_min( N1, N2 ) {
+  return true;
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= std::numeric_limits<N2>::max();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= 0 || static_cast<N2>( n1 ) <= std::numeric_limits<N2>::max();
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= static_cast<N1>( std::numeric_limits<N2>::max() );
+}
+
+template<typename N1,typename N2> inline
+typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+le_max( N1 n1, N2 ) {
+  return n1 <= std::numeric_limits<N2>::max();
+}
+
+#define ZORBA_GE_MIN(N,T) \
+  ::zorba::ztd::ge_min( N, static_cast<T>(0) )
+
+#define ZORBA_LE_MAX(N,T) \
+  ::zorba::ztd::le_max( N, static_cast<T>(0) )
+
+#define ZORBA_IN_RANGE(N,T) \
+  ( ZORBA_GE_MIN(N,T) && ZORBA_LE_MAX(N,T) )
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,102 +35,72 @@ using namespace zorba::locale;
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
-  
+
+
+SERIALIZE_INTERNAL_METHOD(ftnode)
+
+SERIALIZE_INTERNAL_METHOD(ftmatch_option)
+
+SERIALIZE_INTERNAL_METHOD(ftprimary)
+
+SERIALIZE_INTERNAL_METHOD(ftpos_filter)
+
+SERIALIZE_INTERNAL_METHOD(ftnode_list)
+
 SERIALIZABLE_CLASS_VERSIONS(ftand)
-END_SERIALIZABLE_CLASS_VERSIONS(ftand)
 
 SERIALIZABLE_CLASS_VERSIONS(ftcontent_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftcontent_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftcase_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftcase_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftdiacritics_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftdiacritics_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftdistance_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftdistance_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftextension_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftextension_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftextension_selection)
-END_SERIALIZABLE_CLASS_VERSIONS(ftextension_selection)
 
 SERIALIZABLE_CLASS_VERSIONS(ftlanguage_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftlanguage_option)
-
-SERIALIZABLE_CLASS_VERSIONS(ftmatch_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftmatch_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftmatch_options)
-END_SERIALIZABLE_CLASS_VERSIONS(ftmatch_options)
 
 SERIALIZABLE_CLASS_VERSIONS(ftmild_not)
-END_SERIALIZABLE_CLASS_VERSIONS(ftmild_not)
-
-SERIALIZABLE_CLASS_VERSIONS(ftnode)
-END_SERIALIZABLE_CLASS_VERSIONS(ftnode)
-
-SERIALIZABLE_CLASS_VERSIONS(ftnode_list)
-END_SERIALIZABLE_CLASS_VERSIONS(ftnode_list)
 
 SERIALIZABLE_CLASS_VERSIONS(ftor)
-END_SERIALIZABLE_CLASS_VERSIONS(ftor)
 
 SERIALIZABLE_CLASS_VERSIONS(ftorder_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftorder_filter)
-
-SERIALIZABLE_CLASS_VERSIONS(ftpos_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftpos_filter)
-
-SERIALIZABLE_CLASS_VERSIONS(ftprimary)
-END_SERIALIZABLE_CLASS_VERSIONS(ftprimary)
 
 SERIALIZABLE_CLASS_VERSIONS(ftprimary_with_options)
-END_SERIALIZABLE_CLASS_VERSIONS(ftprimary_with_options)
 
 SERIALIZABLE_CLASS_VERSIONS(ftrange)
-END_SERIALIZABLE_CLASS_VERSIONS(ftrange)
 
 SERIALIZABLE_CLASS_VERSIONS(ftscope_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftscope_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftselection)
-END_SERIALIZABLE_CLASS_VERSIONS(ftselection)
 
 SERIALIZABLE_CLASS_VERSIONS(ftstem_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftstem_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftstop_words)
-END_SERIALIZABLE_CLASS_VERSIONS(ftstop_words)
 
 SERIALIZABLE_CLASS_VERSIONS(ftstop_word_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftstop_word_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_id)
-END_SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_id)
 
 SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftunary_not)
-END_SERIALIZABLE_CLASS_VERSIONS(ftunary_not)
 
 SERIALIZABLE_CLASS_VERSIONS(ftweight)
-END_SERIALIZABLE_CLASS_VERSIONS(ftweight)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwindow_filter)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwindow_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwords)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwords)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
+
 
 ////////// Visit macros ///////////////////////////////////////////////////////
 
@@ -203,6 +173,11 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
 template<typename PointerType>
 inline PointerType clone_ptr( PointerType p, expr::substitution_t &s ) {
   return static_cast<PointerType>( p->clone( s ).release() );
+}
+
+template<>
+inline expr* clone_ptr( expr* p, expr::substitution_t &s ) {
+  return static_cast<expr*>( p->clone( s ) );
 }
 
 template<class RCHandleValueType>
@@ -745,6 +720,15 @@ ostream& ftprimary_with_options::put( ostream &o ) const {
   OUTDENT_END_PUT( o );
 }
 
+ftprimary_with_options::ftprimary_with_options(serialization::Archiver& ar)
+  :
+  ftnode(ar),
+  primary_(NULL),
+  match_options_(NULL),
+  weight_(NULL)
+{
+}
+
 void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & primary_;
@@ -755,8 +739,8 @@ void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
 ftrange::ftrange(
   QueryLoc const &loc,
   ft_range_mode::type mode,
-  expr_t const &expr1,
-  expr_t expr2
+  expr* const &expr1,
+  expr* expr2
 ) :
   ftnode( loc ),
   mode_( mode ),
@@ -792,8 +776,8 @@ ostream& ftrange::put( ostream &o ) const {
 void ftrange::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   SERIALIZE_ENUM(ft_range_mode::type,mode_);
-  ar & expr1_;
-  ar & expr2_;
+  //ar & expr1_;
+  //ar & expr2_;
   ar & iter1_;
   ar & iter2_;
 }
@@ -1135,7 +1119,7 @@ void ftunary_not::serialize( serialization::Archiver &ar ) {
   ar & subnode_;
 }
 
-ftweight::ftweight( QueryLoc const &loc, expr_t const &weight_expr ) :
+ftweight::ftweight( QueryLoc const &loc, expr* const &weight_expr ) :
   ftnode( loc ), weight_expr_( weight_expr )
 {
 }
@@ -1147,7 +1131,7 @@ ft_visit_result::type ftweight::accept( ftnode_visitor &v ) {
 }
 
 ftnode_t ftweight::clone( expr::substitution_t &s ) const {
-  return new ftweight( get_loc(), weight_expr_->clone( s ).release() );
+  return new ftweight( get_loc(), weight_expr_->clone( s ) );
 }
 
 ostream& ftweight::put( ostream &o ) const {
@@ -1158,7 +1142,7 @@ ostream& ftweight::put( ostream &o ) const {
 
 void ftweight::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
-  ar & weight_expr_;
+  //ar & weight_expr_;
   ar & weight_iter_;
 }
 
@@ -1193,7 +1177,7 @@ void ftwild_card_option::serialize( serialization::Archiver &ar ) {
 
 ftwindow_filter::ftwindow_filter(
   QueryLoc const &loc,
-  expr_t const &window_expr,
+  expr* const &window_expr,
   ft_unit::type unit )
 :
   ftpos_filter( loc ),
@@ -1211,7 +1195,7 @@ ft_visit_result::type ftwindow_filter::accept( ftnode_visitor &v ) {
 
 ftnode_t ftwindow_filter::clone( expr::substitution_t &s ) const {
   return new ftwindow_filter(
-    get_loc(), window_expr_->clone( s ).release(), unit_
+    get_loc(), window_expr_->clone( s ), unit_
   );
 }
 
@@ -1225,14 +1209,14 @@ ostream& ftwindow_filter::put( ostream &o ) const {
 
 void ftwindow_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftpos_filter*)this );
-  ar & window_expr_;
+  //ar & window_expr_;
   SERIALIZE_ENUM(ft_unit::type,unit_);
   ar & window_iter_;
 }
 
 ftwords::ftwords(
   QueryLoc const &loc,
-  expr_t const &value_expr,
+  expr* const &value_expr,
   ft_anyall_mode::type mode
 ) :
   ftnode( loc ),
@@ -1248,7 +1232,7 @@ ft_visit_result::type ftwords::accept( ftnode_visitor &v ) {
 }
 
 ftnode_t ftwords::clone( expr::substitution_t &s ) const {
-  return new ftwords( get_loc(), value_expr_->clone( s ).release(), mode_ );
+  return new ftwords( get_loc(), value_expr_->clone( s ), mode_ );
 }
 
 ostream& ftwords::put( ostream &o ) const {
@@ -1262,7 +1246,7 @@ ostream& ftwords::put( ostream &o ) const {
 void ftwords::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   SERIALIZE_ENUM( ft_anyall_mode::type, mode_ );
-  ar & value_expr_;
+  //ar & value_expr_;
   ar & value_iter_;
 }
 

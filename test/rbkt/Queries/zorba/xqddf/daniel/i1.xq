@@ -6,12 +6,14 @@ import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/s
 
 
 ddl:create($xqddf-test:white-collection);
+
 for $i in fn:doc("auction.xml")//item
 return 
     dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
 
 
 index_ddl:create($xqddf-test:index1);
-(:xqddf:collection($xqddf-test:white-collection);:)
 
-index_dml:probe-index-point-value($xqddf-test:index1, "United States")[1]
+(: dml:collection($xqddf-test:white-collection)[location eq "United States"] :)
+
+index_dml:probe-index-point-value($xqddf-test:index1, "United States")[@id="item0"]

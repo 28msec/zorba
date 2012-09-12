@@ -248,7 +248,7 @@ import module namespace error = "http://expath.org/ns/error";
 
 import schema namespace http-schema = "http://expath.org/ns/http-client";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
@@ -286,11 +286,12 @@ declare option ver:module-version "2.0";
  : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
  : @error error:HC005 The input request element is not valid.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a POST, PUT, or DELETE request
  :
  : @example test/rbkt/Queries/zorba/http-client/send-request/send-request_href.xq
  : @example test/rbkt/Queries/zorba/http-client/send-request/http3-post.xq
  :)
-declare %ann:sequential function http:send-request(
+declare %an:sequential function http:send-request(
   $request as element(http-schema:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ 
@@ -333,7 +334,7 @@ declare %ann:sequential function http:send-request(
  :
  : @example test/rbkt/Queries/zorba/http-client/get/get_text.xq
  :)
-declare %ann:nondeterministic function http:get($href as xs:string) as item()+
+declare %an:nondeterministic function http:get($href as xs:string) as item()+
 {
   http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true"/>}, (), ())
 };
@@ -352,7 +353,7 @@ declare %ann:nondeterministic function http:get($href as xs:string) as item()+
  :
  : @example test/rbkt/Queries/zorba/http-client/get-node/get-node_xml_query.xq
  :)
-declare %ann:nondeterministic function http:get-node($href as xs:string) as item()+
+declare %an:nondeterministic function http:get-node($href as xs:string) as item()+
 {
   http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/xml; charset=utf-8"/>}, (), ())
 };
@@ -372,7 +373,7 @@ declare %ann:nondeterministic function http:get-node($href as xs:string) as item
  :
  : @example test/rbkt/Queries/zorba/http-client/get-text/get-text_xml_query.xq 
  :)
-declare %ann:nondeterministic function http:get-text($href as xs:string) as item()+
+declare %an:nondeterministic function http:get-text($href as xs:string) as item()+
 {
   http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="text/plain; charset=utf-8"/>}, (), ())
 };
@@ -392,7 +393,7 @@ declare %ann:nondeterministic function http:get-text($href as xs:string) as item
  :
  : @example test/rbkt/Queries/zorba/http-client/get-binary/get-binary_xml_query.xq
  :)
-declare %ann:nondeterministic function http:get-binary($href as xs:string) as item()+
+declare %an:nondeterministic function http:get-binary($href as xs:string) as item()+
 {
   http:http-nondeterministic-impl(validate {<http-schema:request method="GET" href="{$href}" follow-redirect="true" override-media-type="binary"/>}, (), ())
 };
@@ -410,7 +411,7 @@ declare %ann:nondeterministic function http:get-binary($href as xs:string) as it
  :
  : @example test/rbkt/Queries/zorba/http-client/head/head_status.xq
  :)
-declare %ann:nondeterministic function http:head($href as xs:string) as item() {
+declare %an:nondeterministic function http:head($href as xs:string) as item() {
   http:http-nondeterministic-impl(
     validate {
       <http-schema:request method="HEAD" href="{$href}">
@@ -430,7 +431,7 @@ declare %ann:nondeterministic function http:head($href as xs:string) as item() {
  :
  : @example test/rbkt/Queries/zorba/http-client/options/options.xq
  :)
-declare %ann:nondeterministic function http:options($href as xs:string) as xs:string* {
+declare %an:nondeterministic function http:options($href as xs:string) as xs:string* {
   let $resp := http:http-nondeterministic-impl(
     validate {
       <http-schema:request method="OPTIONS" href="{$href}">
@@ -455,10 +456,11 @@ declare %ann:nondeterministic function http:options($href as xs:string) as xs:st
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a PUT request.
  :
  : @example test/rbkt/Queries/zorba/http-client/put/put2_element.xq
  :)
-declare %ann:sequential function http:put($href as xs:string, $body as item()) as item()+
+declare %an:sequential function http:put($href as xs:string, $body as item()) as item()+
 {
   variable $media-type as xs:string+ :=
     typeswitch($body)
@@ -498,10 +500,11 @@ declare %ann:sequential function http:put($href as xs:string, $body as item()) a
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a PUT request.
  :
  : @example test/rbkt/Queries/zorba/http-client/put/put3_html_br.xq
  :)
-declare %ann:sequential function http:put($href as xs:string, $body as item(), $content-type as xs:string) as item()+
+declare %an:sequential function http:put($href as xs:string, $body as item(), $content-type as xs:string) as item()+
 {
   variable $method :=
     typeswitch ($body)
@@ -538,10 +541,11 @@ declare %ann:sequential function http:put($href as xs:string, $body as item(), $
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a DELETE request.
  :
  : @example test/rbkt/Queries/zorba/http-client/delete/delete.xq
  :)
-declare %ann:sequential function http:delete($href as xs:string) as item()+
+declare %an:sequential function http:delete($href as xs:string) as item()+
 {
   http:http-sequential-impl(
     validate {
@@ -564,10 +568,11 @@ declare %ann:sequential function http:delete($href as xs:string) as item()+
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a POST request.
  :
  : @example test/rbkt/Queries/zorba/http-client/post/post2_comment.xq
  :)
-declare %ann:sequential function http:post($href as xs:string, $body as item()) as item()+
+declare %an:sequential function http:post($href as xs:string, $body as item()) as item()+
 {
   variable $media-type as xs:string :=
     typeswitch($body)
@@ -608,10 +613,11 @@ declare %ann:sequential function http:post($href as xs:string, $body as item()) 
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ : @error error:HCV02 Trying to follow a redirect of a POST request.
  :
  : @example test/rbkt/Queries/zorba/http-client/post/post3_xml.xq
  :)
-declare %ann:sequential function http:post($href as xs:string, $body as item(), $content-type as xs:string) as item()+
+declare %an:sequential function http:post($href as xs:string, $body as item(), $content-type as xs:string) as item()+
 {
   variable $method :=
     typeswitch ($body)
@@ -639,13 +645,13 @@ declare %ann:sequential function http:post($href as xs:string, $body as item(), 
   $result
 };
 
-declare %private %ann:sequential function http:http-sequential-impl(
+declare %private %an:sequential function http:http-sequential-impl(
   $request as schema-element(http-schema:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ external;
 
 
-declare %private %ann:nondeterministic function http:http-nondeterministic-impl(
+declare %private %an:nondeterministic function http:http-nondeterministic-impl(
   $request as schema-element(http-schema:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ external;

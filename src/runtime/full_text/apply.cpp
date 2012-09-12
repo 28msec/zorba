@@ -26,13 +26,14 @@
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "store/api/item.h"
-#include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
 #include "system/globalenv.h"
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbautils/locale.h"
 
 #ifndef NDEBUG
 # include "system/properties.h"
@@ -1184,11 +1185,10 @@ public:
   {
   }
 
-  void operator()( char const *utf8_s, size_type utf8_len, size_type,
-                   size_type, size_type, void* ) {
-    FTToken const t( utf8_s, (int)utf8_len, token_no_, lang_ );
-    tokens_.push_back( t );
-  }
+  // inherited
+  void item( Item const&, bool );
+  void token( char const*, size_type, iso639_1::type, size_type, size_type,
+               size_type, Item const* );
 
 private:
   FTTokenSeqIterator::FTTokens &tokens_;
@@ -1196,51 +1196,75 @@ private:
   iso639_1::type const lang_;
 };
 
+void thesaurus_callback::item( Item const&, bool ) {
+  // out-of-line since it's virtual
+}
+
+void thesaurus_callback::token( char const *utf8_s, size_type utf8_len,
+                                iso639_1::type, size_type, size_type,
+                                size_type, Item const* ) {
+  FTToken const t( utf8_s, (int)utf8_len, token_no_, lang_ );
+  tokens_.push_back( t );
+}
+
 } // anonymous namespace
 
 void ftcontains_visitor::
-lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
+lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
                   FTToken const &qt0, query_item_star_t &result ) {
   ft_int at_least, at_most;
-  if ( ftrange const *const levels = tid.get_levels() )
+  if ( ftrange const *const levels = t_id.get_levels() )
     eval_ftrange( *levels, &at_least, &at_most );
   else
     at_least = 0, at_most = numeric_limits<ft_int>::max();
 
-  zstring const &uri = tid.get_uri();
+  zstring const &uri = t_id.get_uri();
 
   zstring error_msg;
   auto_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
-    uri, internal::ThesaurusEntityData( qt0.lang() ), error_msg
+    uri, internal::EntityData::THESAURUS, error_msg
   );
-  if ( !rsrc.get() )
-    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
+  ZORBA_ASSERT( rsrc.get() );
 
-  internal::Thesaurus::ptr thesaurus(
-    dynamic_cast<internal::Thesaurus*>( rsrc.release() )
-  );
-  if ( !thesaurus )
-    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
+  internal::ThesaurusProvider const *const t_provider =
+    dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
+  ZORBA_ASSERT( t_provider );
 
-  internal::Thesaurus::iterator::ptr tresult(
+  internal::Thesaurus::ptr thesaurus;
+  if ( !t_provider->getThesaurus( qt0.lang(), &thesaurus ) )
+    throw XQUERY_EXCEPTION(
+      err::FTST0009,
+      ERROR_PARAMS(
+        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadThesaurusLang )
+      )
+    );
+
+  internal::Thesaurus::iterator::ptr t_synonyms(
     thesaurus->lookup(
-      query_phrase, tid.get_relationship(), at_least, at_most
+      query_phrase, t_id.get_relationship(), at_least, at_most
     )
   );
-  if ( !tresult )
+  if ( !t_synonyms )
     return;
 
   FTTokenSeqIterator::FTTokens synonyms;
   thesaurus_callback cb( qt0.pos(), qt0.lang(), synonyms );
 
-  Tokenizer::Numbers tno;
-  Tokenizer::ptr tokenizer(
-    GENV_STORE.getTokenizerProvider()->getTokenizer( qt0.lang(), tno )
-  );
+  Tokenizer::State t_state;
+  TokenizerProvider const *const provider = GENV_STORE.getTokenizerProvider();
+  ZORBA_ASSERT( provider );
+  Tokenizer::ptr tokenizer;
+  if ( !provider->getTokenizer( qt0.lang(), &t_state, &tokenizer ) )
+    throw XQUERY_EXCEPTION(
+      err::FTST0009,
+      ERROR_PARAMS(
+        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadTokenizerLang )
+      )
+    );
 
-  for ( zstring synonym; tresult->next( &synonym ); ) {
+  for ( zstring synonym; t_synonyms->next( &synonym ); ) {
     synonyms.clear();
-    tokenizer->tokenize(
+    tokenizer->tokenize_string(
       synonym.data(), synonym.size(), qt0.lang(), false, cb
     );
     query_item_t const query_item( new FTTokenSeqIterator( synonyms ) );

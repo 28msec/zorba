@@ -18,13 +18,17 @@ SET(EXPRESSION_SRCS
     expr_type.cpp
     expr.cpp
     expr_put.cpp
+    expr_utils.cpp
+    json_exprs.cpp
     var_expr.cpp
     path_expr.cpp
     flwor_expr.cpp
     fo_expr.cpp
     script_exprs.cpp
     update_exprs.cpp
-    function_item_expr.cpp)
+    function_item_expr.cpp
+    mem_manager.cpp
+    expr_manager.cpp)
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND EXPRESSION_SRCS

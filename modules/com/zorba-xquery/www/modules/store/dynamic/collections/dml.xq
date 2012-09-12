@@ -17,7 +17,7 @@ xquery version "3.0";
 :)
 
 (:~
- : This modules provides a set of functions to modify a collection and retrieve the nodes
+ : This modules provides a set of functions to modify a collection and retrieve the items
  : contained in a particular collection.
  :
  : <p>Please refer to our documentation for <a href="../../html/data_lifecycle.html">
@@ -35,10 +35,11 @@ xquery version "3.0";
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
+
 
 (:~
  : The insert-nodes-first function is an updating function that inserts copies of the
@@ -52,10 +53,29 @@ declare option ver:module-version "2.0";
  :
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
+ : @deprecated please use the cdml:insert-first#2 function
+ :
  :)
-declare updating function dml:insert-nodes-first(
-  $name as xs:QName,
-  $content as node()*) external;
+declare updating function 
+dml:insert-nodes-first($name as xs:QName, $content as node()*) external;
+
+
+(:~
+ : The insert-first function is an updating function that inserts copies of the
+ : given items (nodes or json items) at the beginning of the collection.
+ :
+ : @param $name The name of the collection to which the items should be added.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is an empty XDM instance and a pending update
+ :         list which, once applied, inserts the items into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ :)
+declare updating function 
+dml:insert-first($name as xs:QName, $content as item()*) external;
+
 
 (:~
  : The insert-nodes-last function is an updating function that inserts copies of the
@@ -69,10 +89,29 @@ declare updating function dml:insert-nodes-first(
  :
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
+ : @deprecated please use the cdml:insert-last#2 function
+ :
  :)
-declare updating function dml:insert-nodes-last(
-  $name as xs:QName,
-  $content as node()*) external;
+declare updating function 
+dml:insert-nodes-last($name as xs:QName, $content as node()*) external;
+
+
+(:~
+ : The insert-last function is an updating function that inserts copies of the
+ : given items (nodes or json items) at the end of the collection.
+ :
+ : @param $name The name of the collection to which the items should  be added.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is an empty XDM instance and a pending update list
+ :         which, once applied, inserts the items into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ :)
+declare updating function 
+dml:insert-last($name as xs:QName, $content as item()*) external;
+
 
 (:~
  : The insert-nodes-before function is an updating function that inserts
@@ -90,11 +129,35 @@ declare updating function dml:insert-nodes-last(
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  : @error zerr:ZDDY0011 if the target node is not contained in the collection.
  :
+ : @deprecated please use the cdml:insert-before#3 function
+ :
  :)
-declare updating function dml:insert-nodes-before(
+declare updating function 
+dml:insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) external;
+
+(:~
+ : The insert-before function is an updating function that inserts copies of
+ : the given items (nodes or json items) into a collection at the position 
+ : directly preceding the given target item.
+ :
+ : @param $name The name of the collection to which the items should  be added.
+ : @param $target The item in the collection before which the $content
+ :        sequence should be inserted.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is an empty XDM instance and a pending update list
+ :         which, once applied, inserts the items into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0011 if the target item is not contained in the collection.
+ :
+ :)
+declare updating function 
+dml:insert-before($name as xs:QName, $target as item(), $content as item()*) external;
+
 
 (:~
  : The insert-nodes-after function is an updating function that inserts
@@ -112,14 +175,39 @@ declare updating function dml:insert-nodes-before(
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  : @error zerr:ZDDY0011 if the target node is not contained in the collection.
  :
+ : @deprecated please use the cdml:insert-after#3 function
+ :
  :)
-declare updating function dml:insert-nodes-after(
+declare updating function 
+dml:insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) external;
 
+
 (:~
- : This function does the same as the insert-nodes function except
+ : The insert-after function is an updating function that inserts copies of
+ : the given items (nodes and/or json items) into a collection at the position
+ : directly following the given target item.
+ :
+ : @param $name The name of the collection to which the items should be added.
+ : @param $target The item in the collection after which the $content
+ :        sequence should be inserted.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is an empty XDM instance and a pending update list
+ :         which, once applied, inserts the items into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0011 if the target node is not contained in the collection.
+ :
+ :)
+declare updating function 
+dml:insert-after($name as xs:QName, $pos as item(), $content as item()*) external;
+
+
+(:~
+ : This function does the same as the insert-nodes-first function except
  : it immediately applies the resulting pending updates and returns the
  : nodes that have been inserted.
  :
@@ -133,10 +221,33 @@ declare updating function dml:insert-nodes-after(
  :
  : @see dml:insert-nodes-first
  :
+ : @deprecated please use the cdml:apply-insert-first#2 function
+ :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-first(
+declare %an:sequential function 
+dml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()* external;
+
+
+(:~
+ : This function does the same as the insert-first function except it immediately
+ : applies the resulting pending updates and returns the items that have been inserted.
+ :
+ : @param $name The name of the collection to which the items should be added.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is the sequence of items that have been
+ :         inserted into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ : @see dml:insert-first
+ :
+ :)
+declare %an:sequential function 
+dml:apply-insert-first($name as xs:QName, $content as item()*) as item()* external;
+
 
 (:~
  : This function does the same as the insert-nodes-last function except
@@ -153,10 +264,34 @@ declare %ann:sequential function dml:apply-insert-nodes-first(
  :
  : @see dml:insert-nodes-last
  :
+ : @deprecated please use the cdml:apply-insert-last#2 function
+ :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-last(
+declare %an:sequential function dml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()* external;
+
+
+(:~
+ : This function does the same as the insert-last function except it immediately
+ : applies the resulting pending updates and returns the items that have been 
+ : inserted.
+ :
+ : @param $name The name of the collection to which the items should be added.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is the sequence of items that have been
+ :         inserted into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ : @see dml:insert-last
+ :
+ :)
+declare %an:sequential function dml:apply-insert-last(
+  $name as xs:QName,
+  $content as item()*) as item()* external;
+
 
 (:~
  : This function does the same as the insert-nodes-before function except
@@ -175,11 +310,40 @@ declare %ann:sequential function dml:apply-insert-nodes-last(
  :
  : @see dml:insert-nodes-before
  :
+ : @deprecated please use the cdml:apply-insert-before#3 function
+ :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-before(
+declare %an:sequential function 
+dml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()* external;
+
+
+(:~
+ : This function does the same as the insert-before function except it immediately
+ : applies the resulting pending updates and returns the items that have been 
+ : inserted.
+ :
+ : @param $name The name of the collection to which the items should be added.
+ : @param $target The item in the collection before which the $content
+ :        sequence should be inserted.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is the sequence of items that have been
+ :         inserted into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ : @see dml:insert-before
+ :
+ :)
+declare %an:sequential function 
+dml:apply-insert-before(
+  $name as xs:QName,
+  $target as item(),
+  $content as item()*) as item()* external;
+
 
 (:~
  : This function does the same as the insert-nodes-after function except
@@ -198,11 +362,40 @@ declare %ann:sequential function dml:apply-insert-nodes-before(
  :
  : @see dml:insert-nodes-after
  :
+ : @deprecated please use the cdml:apply-insert-after#3 function
+ :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-after(
+declare %an:sequential function 
+dml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()* external;
+
+
+(:~
+ : This function does the same as the insert-after function except it immediately
+ : applies the resulting pending updates and returns the items that have been 
+ : inserted.
+ :
+ : @param $name The name of the collection to which the items should be added.
+ : @param $target The item in the collection after which the $content
+ :        sequence should be inserted.
+ : @param $content The sequences of items whose copies should be added to the collection.
+ :
+ : @return The result of the function is the sequence of items that have been
+ :         inserted into the collection.
+ :
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ :
+ : @see dml:insert-after
+ :
+ :)
+declare %an:sequential function 
+dml:apply-insert-after(
+  $name as xs:QName,
+  $pos as item(),
+  $content as item()*) as item()* external;
+
 
 (:~
  : The delete-nodes function is an updating function that deletes zero of more
@@ -213,11 +406,34 @@ declare %ann:sequential function dml:apply-insert-nodes-after(
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the nodes from their collections.
  :
- : @error zerr:ZDDY0011 if any nodes in the $target sequence is not a member of a collection
- :        or not all nodes of the $target sequence belong to the same collection.
+ : @error zerr:ZDDY0011 if any nodes in the $target sequence is not a member of
+ :        a collection or not all nodes of the $target sequence belong to the same
+ :        collection.
+ :
+ : @deprecated please use the cdml:delete#1 function
  :
  :)
-declare updating function dml:delete-nodes($target as node()*) external;
+declare updating function 
+dml:delete-nodes($target as node()*) external;
+
+
+(:~
+ : The delete function is an updating function that deletes zero of more items
+ : (nodes and/or json items) from a collection. 
+ :
+ : @param $target the items in the collection that should be deleted.
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the items from their collections.
+ :
+ : @error zerr:ZDDY0011 if any item in the $target sequence is not a member of
+ :        a collection or not all items of the $target sequence belong to the
+ :        same collection.
+ :
+ :)
+declare updating function 
+dml:delete($target as item()*) external;
+
 
 (:~
  : The delete-node-first function is an updating function that deletes the
@@ -230,8 +446,28 @@ declare updating function dml:delete-nodes($target as node()*) external;
  :
  : @error zerr:ZDDY0011 if the collection doesn't contain any node.
  :
+ : @deprecated please use the cdml:delete-first#1 function
+ :
  :)
-declare updating function dml:delete-node-first($name as xs:QName) external;
+declare updating function 
+dml:delete-node-first($name as xs:QName) external;
+
+
+(:~
+ : The delete-first function is an updating function that deletes the first item
+ : from a collection.
+ :
+ : @param $name The name of the collection from which the first item should be deleted.
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the first item from the collection.
+ :
+ : @error zerr:ZDDY0011 if the collection doesn't contain any item.
+ :
+ :)
+declare updating function 
+dml:delete-first($name as xs:QName) external;
+
 
 (:~
  : The delete-nodes-first function is an updating function that deletes the
@@ -246,16 +482,36 @@ declare updating function dml:delete-node-first($name as xs:QName) external;
  :
  : @error zerr:ZDDY0011 if the collection doesn't contain the given number of nodes.
  :
+ : @deprecated please use the cdml:delete-first#2 function
+ :
  :)
-declare updating function dml:delete-nodes-first(
-  $name as xs:QName,
-  $number as xs:integer) external;
+declare updating function 
+dml:delete-nodes-first($name as xs:QName, $number as xs:integer) external;
+
+
+(:~
+ : The delete-first function is an updating function that deletes the first N
+ : items from a collection.
+ :
+ : @param $name The name of the collection from which the first N items should be deleted.
+ : @param $number The number N of items that should be removed from the beginning of
+ :        the collection.
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the items from the collection.
+ :
+ : @error zerr:ZDDY0011 if the collection doesn't contain the given number of items.
+ :
+ :)
+declare updating function 
+dml:delete-first($name as xs:QName, $number as xs:integer) external;
+
 
 (:~
  : The delete-node-last function is an updating function that deletes the
  : last node from a collection.
  :
- : @param $name The name of the collection from which the first node should be deleted.
+ : @param $name The name of the collection from which the last node should be deleted.
  :
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the last node from the collection.
@@ -264,8 +520,29 @@ declare updating function dml:delete-nodes-first(
  :        for the expanded QName $name.
  : @error zerr:ZDDY0011 if the collection doesn't contain any node.
  :
+ : @deprecated please use the cdml:delete-last#1 function
+ :
  :)
-declare updating function dml:delete-node-last($name as xs:QName) external;
+declare updating function 
+dml:delete-node-last($name as xs:QName) external;
+
+
+(:~
+ : The delete-last function is an updating function that deletes the last item
+ : from a collection.
+ :
+ : @param $name The name of the collection from which the last item should be deleted.
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the last item from the collection.
+ :
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
+ :        for the expanded QName $name.
+ : @error zerr:ZDDY0011 if the collection doesn't contain any item.
+ :
+ :)
+declare updating function 
+dml:delete-last($name as xs:QName) external;
 
 
 (:~
@@ -282,10 +559,31 @@ declare updating function dml:delete-node-last($name as xs:QName) external;
  :        for the expanded QName $name.
  : @error zerr:ZDDY0011 if the collection doesn't contain the given number of nodes.
  :
+ : @deprecated please use the cdml:delete-last#2 function
+ :
  :)
-declare updating function dml:delete-nodes-last(
-  $name as xs:QName,
-  $number as xs:integer) external;
+declare updating function 
+dml:delete-nodes-last($name as xs:QName, $number as xs:integer) external;
+
+
+(:~
+ : The delete-last function is an updating function that deletes the last N 
+ : items from an ordered collection.
+ :
+ : @param $name The name of the collection from which the lsat N items should be deleted.
+ : @param $number The number N of items to delete.
+ :
+ : @return The result of this function is an empty XDM instance and a pending update
+ :         list which, once applied, deletes the last N items.
+ :
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
+ :        for the expanded QName $name.
+ : @error zerr:ZDDY0011 if the collection doesn't contain the given number of items.
+ :
+ :)
+declare updating function 
+dml:delete-last($name as xs:QName, $number as xs:integer) external;
+
 
 (:~
  : The truncate function is an updating function that deletes the
@@ -300,21 +598,10 @@ declare updating function dml:delete-nodes-last(
  :)
 declare updating function dml:truncate($name as xs:QName) external;
 
-(:~
- : The index-of function return the index of the given node in the collection.
- :
- : @param $node The node to retrieve the index from.
- :
- : @return Returns the position as xs:integer of the given node in the collection.
- :
- : @error zerr:ZDDY0011 if node is not contained in any collection.
- :
- :)
-declare function dml:index-of($node as node()) as xs:integer external;
 
 (:~
- : The collection function returns the sequence of nodes of the collection
- : identified by the given name.
+ : The collection function returns the sequence of nodes and/or json items
+ : that belong to the collection identified by the given name.
  :
  : @param $name The name of the collection.
  :
@@ -324,17 +611,78 @@ declare function dml:index-of($node as node()) as xs:integer external;
  :        for the expanded QName $name.
  :
  :)
-declare function dml:collection($name as xs:QName) as node()* external;
+declare function dml:collection($name as xs:QName) as item()* external;
+
 
 (:~
- : This function returns the name of the collection the given node belongs
- : to.
+ : The collection function returns the sequence of nodes and/or json items
+ : that belong to the collection identified by the given name.
  :
- : @param $node The node for which to get the name of the collection
- : @return The result of this function is a QName which identifies the collection
- :         to which the given node belongs to.
+ : @param $name The name of the collection.
+ : @param $skip The number of collection items to skip.
  :
- : @error zerr:ZDDY0011 if the given node does not belong to a collection.
+ : @return The sequence contained in the given collection.
+ :
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
+ :        for the expanded QName $name.
  :
  :)
-declare function dml:collection-name($node as node()) as xs:QName external;
+declare function
+dml:collection($name as xs:QName, $skip as xs:integer) as item()* external;
+
+
+(:~
+ : The collection function returns the sequence of nodes and/or json items
+ : that belong to the collection identified by the given name.
+ : The parameters $start and $skip can be used to skip over some items at
+ : the beginning of the collection. If both are given, both are applied:
+ : first $start to skip to the referenced item and then $skip to skip an
+ : additional number of items.
+ :
+ : @param $name The name of the collection.
+ : @param $start A reference to the first item to return. All items before
+                 are skipped.
+ : @param $skip The number of collection items to skip.
+ :
+ : @return The sequence contained in the given collection.
+ :
+ : @error zerr:ZAPI0028 If the given URI is not a valid node
+ :        position computed by the <tt>np:node-position</tt> function. 
+ : @error zerr:ZDDY0003 If available collections does not provide a mapping
+ :        for the expanded QName $name.
+ : @error zerr:ZSTR0066 If the passed reference $start does not reference
+ :        a node from the collection identified by $name.
+ :
+ :)
+declare function
+dml:collection($name as xs:QName, 
+               $start as xs:anyURI,
+               $skip as xs:integer) as item()* external;
+
+
+(:~
+ : The collection-name function returns the name of the collection the given
+ : item (node or json item) belongs to.
+ :
+ : @param $item The item for which to get the name of the collection
+ : @return The result of this function is a QName which identifies the collection
+ :         to which the given item belongs to.
+ :
+ : @error zerr:ZDDY0011 if the given item does not belong to a collection.
+ :
+ :)
+declare function dml:collection-name($item as item()) as xs:QName external;
+
+
+(:~
+ : The index-of function returns the position of the given item (node or 
+ : json item) within its containing the collection.
+ :
+ : @param $item The item to retrieve the index from.
+ :
+ : @return Returns the position as xs:integer of the given item in the collection.
+ :
+ : @error zerr:ZDDY0011 if the item is not contained in any collection.
+ :
+ :)
+declare function dml:index-of($item as item()) as xs:integer external;

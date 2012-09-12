@@ -25,9 +25,6 @@
 namespace zorba
 {
 
-extern const ::zorba::serialization::ClassVersion g_UnaryBaseIterator_class_versions[];
-extern const int g_UnaryBaseIterator_class_versions_count;
-
 
 /*******************************************************************************
   Superclass for all iterators which have one child iterator and no additional
@@ -40,7 +37,7 @@ protected:
   PlanIter_t theChild;
 
 public:
-  SERIALIZABLE_CLASS_NO_FACTORY(UnaryBaseIterator)
+  SERIALIZABLE_ABSTRACT_CLASS(UnaryBaseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(UnaryBaseIterator, Batcher<IterType>)
   void serialize(::zorba::serialization::Archiver& ar)
   {
@@ -85,6 +82,17 @@ public:
 
   void closeImpl(PlanState& planState);
 };
+
+
+template <class IterType, class StateType>
+void UnaryBaseIterator<IterType, StateType>::serialize_internal(
+    ::zorba::serialization::Archiver& ar)
+{
+  if (ar.is_serialize_base_class()) 
+    ar.set_serialize_base_class(false);
+
+  UnaryBaseIterator<IterType, StateType>::serialize(ar);
+}
 
 
 template <class IterType, class StateType>

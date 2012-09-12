@@ -22,27 +22,25 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/flowctl_exception.h"
+#include "store/api/item_factory.h"
+#include "store/api/copymode.h"
 
 #include "system/globalenv.h"
+#include "diagnostics/util_macros.h"
 
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(FlowCtlIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FlowCtlIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(SequentialIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(SequentialIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(LoopIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LoopIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ExitIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ExitIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ExitCatcherIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ExitCatcherIterator)
 
 
 

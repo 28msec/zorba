@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <JSONParseInternal>
-const char* JSONParseInternal::class_name_str = "JSONParseInternal";
-JSONParseInternal::class_factory<JSONParseInternal>
-JSONParseInternal::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONParseInternal)
 
-const serialization::ClassVersion 
-JSONParseInternal::class_versions[] ={{ 1, 0x000905, false}};
+void JSONParseInternal::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONParseInternal, PlanIteratorState>*)this);
+}
 
-const int JSONParseInternal::class_versions_count =
-sizeof(JSONParseInternal::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void JSONParseInternal::accept(PlanIterVisitor& v) const {
+void JSONParseInternal::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -61,17 +61,17 @@ JSONParseInternal::~JSONParseInternal() {}
 
 
 // <JSONSerializeInternal>
-const char* JSONSerializeInternal::class_name_str = "JSONSerializeInternal";
-JSONSerializeInternal::class_factory<JSONSerializeInternal>
-JSONSerializeInternal::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONSerializeInternal)
 
-const serialization::ClassVersion 
-JSONSerializeInternal::class_versions[] ={{ 1, 0x000905, false}};
+void JSONSerializeInternal::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONSerializeInternal, PlanIteratorState>*)this);
+}
 
-const int JSONSerializeInternal::class_versions_count =
-sizeof(JSONSerializeInternal::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void JSONSerializeInternal::accept(PlanIterVisitor& v) const {
+void JSONSerializeInternal::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

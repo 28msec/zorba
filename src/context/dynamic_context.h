@@ -18,7 +18,9 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorba/external_function_parameter.h>
-#include "zorbautils/hashmap_zstring_nonserializable.h"
+
+#include "zorbautils/hashmap_zstring.h"
+#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 
@@ -101,9 +103,11 @@ protected:
     void*       func_param;
   };
 
-  typedef HashMapZString<dctx_value_t> ValueMap;
+  ZSTRING_HASH_MAP(dctx_value_t, ValueMap);
 
-  typedef ItemPointerHashMap<store::Index_t> IndexMap;
+  ITEM_PTR_HASH_MAP(store::Index_t, IndexMap);
+
+  typedef std::map<const zstring,const zstring> EnvVarMap;
 
 protected:
   dynamic_context            * theParent;
@@ -118,6 +122,11 @@ protected:
   ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
+
+  IndexMap                   * theAvailableMaps;
+
+    //MODIFY
+  EnvVarMap                  * theEnvironmentVariables;
 
 public:
   double                       theDocLoadingUserTime;
@@ -141,6 +150,12 @@ public:
   store::Item_t get_current_date_time() const;
 
   store::Item_t get_current_time_millis() const;
+
+  void set_environment_variables();
+
+  store::Item_t get_environment_variable(const zstring& varname);
+
+  store::Iterator_t available_environment_variables();
 
   void set_implicit_timezone(long tzone_seconds);
 
@@ -190,6 +205,14 @@ public:
   void bindIndex(store::Item* qname, store::Index_t& index);
 
   void unbindIndex(store::Item* qname);
+
+  store::Index* getMap(store::Item* qname) const;
+
+  void bindMap(store::Item* qname, store::Index_t& index);
+
+  void unbindMap(store::Item* qname);
+
+  void getMapNames(std::vector<store::Item_t>& names) const;
 
   /**
    * Lists all active integrity constraints.

@@ -16,9 +16,39 @@
 // Generate Java 1.5 proper enums
 //include "enums.swg"
 %include "enumtypeunsafe.swg"
+%include "std_string.i"
 
 // don't do a JNI call for constants and enums.
 %javaconst(1);
 
-%include ../zorba_api.i
+%typemap(jni)     char *BYTE "jbyteArray"
+%typemap(jtype)   char *BYTE "byte[]"
+%typemap(jstype)  char *BYTE "byte[]"
+%typemap(javain)  char *BYTE "$javainput"
+%typemap(freearg) char *BYTE ""
+%typemap(in)      char *BYTE {
+    $1 = (char *) JCALL2(GetByteArrayElements, jenv, $input, 0);
+}
+%typemap(argout)  char *BYTE {
+    JCALL3(ReleaseByteArrayElements, jenv, $input, (jbyte *)$1, 0);
+}
 
+%typemap(directorin, descriptor="[B") char *BYTE {
+    jbyteArray jb = (jenv)->NewByteArray(strlen($1));
+    (jenv)->SetByteArrayRegion(jb, 0, strlen($1), (jbyte*)$1);
+    $input = jb;
+}
+%typemap(directorout) char *BYTE {
+    $1 = 0;
+    if($input){
+        $result = (char *) jenv->GetByteArrayElements($input, 0); 
+        if(!$1) 
+            return $null;
+        jenv->ReleaseByteArrayElements($input, $result, 0);
+    }
+}
+
+%typemap(javadirectorin) char *BYTE "$jniinput"
+%typemap(javadirectorout) char *BYTE "$javacall"
+
+%include ../zorba_api.i

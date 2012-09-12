@@ -522,6 +522,12 @@ declare function fn:parse-xml($arg as xs:string?) as document-node(element(*, xs
 declare function fn:parse-xml( $arg as xs:string?, $baseURI as xs:string) as document-node(element(*, xs:untyped)) external;
 
 (:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-parse-xml-fragment">fn:parse-xml-fragment</a>
+ :)
+declare function fn:parse-xml-fragment( $arg as xs:string?) as document-node(element(*, xs:untyped)) external;
+
+
+(:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-prefix-from-QName">fn:prefix-from-QName</a>
  :)
 declare function fn:prefix-from-QName($arg as xs:QName?) as xs:NCName? external;
@@ -864,6 +870,11 @@ declare function fn:escape-html-uri($uri as xs:string?) as xs:string external;
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-has-children">fn:has-children</a>
  :)
+declare function fn:has-children() as xs:boolean external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-has-children">fn:has-children</a>
+ :)
 declare function fn:has-children($node as node()?) as xs:boolean external;
 
 (:~
@@ -923,8 +934,13 @@ declare function fn:namespace-uri() as xs:anyURI external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-namespace-uri">fn:namespace-uri</a>
- :)
+ :)       
 declare function fn:namespace-uri($arg as node()?) as xs:anyURI external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-nilled">fn:nilled</a>
+ :)
+declare function fn:nilled() as xs:boolean external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-nilled">fn:nilled</a>
@@ -995,3 +1011,48 @@ declare function fn:string() as xs:string external;
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-string">fn:string</a>
  :)
 declare function fn:string($arg as item()?) as xs:string external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-available-environment-variables">fn:available-environment-variables</a>
+ :)
+declare function fn:available-environment-variables() as xs:string* external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-environment-variable">fn:environment-variable</a>
+ :)
+declare function fn:environment-variable($arg as xs:string) as xs:string? external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text">fn:unparsed-text</a>
+ :)
+declare function fn:unparsed-text($href as xs:string?) as xs:string? external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text">fn:unparsed-text</a>
+ :)
+declare function fn:unparsed-text($href as xs:string?, $encoding as xs:string) as xs:string? external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available">fn:unparsed-text-available</a>
+ :)
+declare function fn:unparsed-text-available($href as xs:string?) as xs:boolean external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-lines">fn:unparsed-text-lines</a>
+ :)
+declare function fn:unparsed-text-lines(	$href	 as xs:string?, $encoding	 as xs:string) as xs:string* external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available">fn:unparsed-text-available</a>
+ :)
+declare function fn:unparsed-text-available(	$href	 as xs:string?, $encoding	 as xs:string) as xs:boolean external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-uri-collection">fn:uri-collection</a>
+ :)
+declare function fn:uri-collection() as xs:anyURI* external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-uri-collection">fn:uri-collection</a>
+ :)
+declare function fn:uri-collection($arg as xs:string?) as xs:anyURI* external;

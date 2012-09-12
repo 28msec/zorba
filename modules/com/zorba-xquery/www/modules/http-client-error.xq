@@ -67,3 +67,10 @@ declare variable $err:HC006 as xs:QName := fn:QName($err:errNS, "err:HC006");
  : but make no sense (for example: http:send-request((), ())).
  :)
 declare variable $err:HCV01 as xs:QName := fn:QName($err:errNS, "err:HCV01");
+
+(:~
+ : Zorba specific error
+ : This error is raised if trying to follow a redirect for a POST, PUT, or
+ : DELETE request
+ :)
+declare variable $err:HCV02 as xs:QName := fn:QName($err:errNS, "err:HCV02");

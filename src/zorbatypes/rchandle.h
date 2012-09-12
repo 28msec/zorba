@@ -29,11 +29,16 @@
 #include "zorbatypes/rclock.h"
 
 #include "zorbaserialization/class_serializer.h"
-#include "zorbaserialization/archiver.h"
 
 
 namespace zorba
 {
+
+namespace serialization
+{
+  class archiver;
+}
+
 
 /*******************************************************************************
   
@@ -48,13 +53,13 @@ namespace zorba
   reference count becomes 0.
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC RCObject : public ::zorba::serialization::SerializeBaseClass
+class ZORBA_DLL_PUBLIC RCObject : public serialization::SerializeBaseClass
 {
 protected:
   mutable long  theRefCount;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(RCObject);
+  SERIALIZABLE_CLASS(RCObject);
 
   RCObject(::zorba::serialization::Archiver& ar)  
     :
@@ -63,11 +68,7 @@ public:
   {
   }
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    if(!ar.is_serializing_out())
-      theRefCount = 0;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   RCObject()
@@ -92,44 +93,68 @@ public:
 
   long getRefCount() const { return theRefCount; }
 
-  //long* getSharedRefCounter() const { ZORBA_FATAL(0, ""); return NULL; } 
- 
-  //SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; });
+  void addReference(SYNC_CODE(RCLock* lock)) const;
 
-  void addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const;
-
-  void removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock));
+  void removeReference(SYNC_CODE(RCLock* lock));
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC SimpleRCObject : public RCObject
+class ZORBA_DLL_PUBLIC SimpleRCObject : public serialization::SerializeBaseClass
 {
+protected:
+  mutable long  theRefCount;
+
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(SimpleRCObject)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(SimpleRCObject, RCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(SimpleRCObject);
+
+  SimpleRCObject(serialization::Archiver& ar)  
+    :
+    serialization::SerializeBaseClass(),
+    theRefCount(0)
   {
-    if(!ar.is_serializing_out())
-      theRefCount = 0;
   }
 
+  void serialize(serialization::Archiver& ar);
+
 public:
-  SimpleRCObject() : RCObject() { }
+  SimpleRCObject()
+    :
+    serialization::SerializeBaseClass(),
+    theRefCount(0)
+  {
+  }
 
-  SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
+  SimpleRCObject(const SimpleRCObject&) 
+    :
+    serialization::SerializeBaseClass(),
+    theRefCount(0) 
+  {
+  }
 
-  void free() { delete this; }
-
-  long* getSharedRefCounter() const  { return NULL; } 
-
-  SYNC_CODE(RCLock* getRCLock() const { return NULL; })
+  virtual ~SimpleRCObject() { }
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
-};
 
+  virtual void free() { delete this; }
+
+  long getRefCount() const { return theRefCount; }
+
+  void addReference(SYNC_CODE(RCLock* lock)) const { ++theRefCount; }
+
+  void removeReference(SYNC_CODE(RCLock* lock))
+  {
+    if (--theRefCount == 0)
+    {
+      free();
+      return; 
+    }
+  }
+
+  SYNC_CODE(RCLock* getRCLock() const { return NULL; })
+};
 
 
 /*******************************************************************************
@@ -173,7 +198,7 @@ public:
   ~rchandle()
   {
     if (p)
-      p->removeReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
+      p->removeReference(SYNC_CODE(p->getRCLock()));
     p = 0;
   }
 
@@ -228,8 +253,7 @@ public:
   {
     if (p != rhs)
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = const_cast<T*>(rhs);
       init();
     }
@@ -240,8 +264,7 @@ public:
   {
     if (p != rhs)
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = static_cast<T*>(const_cast<otherT*>(rhs));
       init();
     }
@@ -262,8 +285,7 @@ public:
   {
     if (p != rhs.getp())
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = static_cast<T*>(rhs.getp());
       rhs.setNull();
     }
@@ -274,8 +296,7 @@ public:
   {
     if (p != rhs.p)
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = rhs.p;
       rhs.p = NULL;
     }
@@ -301,7 +322,7 @@ protected:
   void init()
   {
     if (p == 0) return;
-    p->addReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
+    p->addReference(SYNC_CODE(p->getRCLock()));
   }
 
 
@@ -309,8 +330,7 @@ protected:
   {
     if (p != rhs.getp())
     {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
+      if (p) p->removeReference(SYNC_CODE(p->getRCLock()));
       p = static_cast<T*>(rhs.getp());
       init();
     }
@@ -319,15 +339,20 @@ protected:
 
 };
 
-namespace ztd {
+
+namespace ztd 
+{
 
 template<typename T> inline
-std::string to_string( rchandle<T> const &r ) {
+std::string to_string(const rchandle<T>& r)
+{
   return !r ? "<null>" : to_string( *r );
 }
 
+
 template<typename T,class OutputStringType> inline
-void to_string( rchandle<T> const &r, OutputStringType *out ) {
+void to_string(const rchandle<T>& r, OutputStringType* out )
+{
   if ( !r )
     *out = "<null>";
   else
@@ -356,11 +381,14 @@ public:
   }
 
 public:
-  bool isNull () const        { return rchandle<T>::isNull(); }
-  void setNull()              { rchandle<T>::setNull();}
+  bool isNull () const { return rchandle<T>::isNull(); }
+
+  void setNull() { rchandle<T>::setNull();}
 
   const T* getp () const { return rchandle<T>::getp (); }
-  typename rchandle<T>::union_T getp_ref()             { return rchandle<T>::getp_ref(); }
+
+  typename rchandle<T>::union_T getp_ref() { return rchandle<T>::getp_ref(); }
+
   operator const T * () const { return rchandle<T>::getp (); }
 
   const T* operator->() const { return getp(); } 
@@ -383,15 +411,13 @@ namespace RCHelper
   template<class T> 
   static void addReference(T *t)
   {
-    t->addReference(t->getSharedRefCounter()
-                    SYNC_PARAM2(t->getRCLock()));
+    t->addReference(SYNC_CODE(t->getRCLock()));
   }
 
   template<class T> 
   static void removeReference(T *t)
   {
-    t->removeReference(t->getSharedRefCounter()
-                       SYNC_PARAM2(t->getRCLock()));
+    t->removeReference(SYNC_CODE(t->getRCLock()));
   }
 
   template<class T> 

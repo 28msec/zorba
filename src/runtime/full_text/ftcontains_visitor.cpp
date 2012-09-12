@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,6 @@
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
-#include "zorbatypes/numconversions.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"
@@ -75,15 +74,6 @@ static void replace_match_options( ftmatch_options const &older,
 
 inline double to_double( xs_double const &d ) {
   return d.getNumber();
-}
-
-inline ft_int to_ft_int( xs_integer const &i ) {
-  try {
-    return to_xs_unsignedInt( i );
-  }
-  catch ( std::range_error const& ) {
-    throw XQUERY_EXCEPTION( err::FOCA0003, ERROR_PARAMS( i.toString() ) );
-  }
 }
 
 ////////// PUSH/POP ///////////////////////////////////////////////////////////
@@ -387,7 +377,7 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
       if ( ::fabs( weight ) > 1000.0 )
         throw XQUERY_EXCEPTION(
           err::FTDY0016, ERROR_PARAMS( weight ),
-          ERROR_LOC( w->get_weight_expr()->get_loc() )
+          ERROR_LOC( (*w->get_weight_expr())->get_loc() )
         );
     } else {
       weight = 1.0;
@@ -436,9 +426,9 @@ void V::end_visit( ftwords &w ) {
     // actual query.
     //
     while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
-      Tokenizer::Numbers no;
+      Tokenizer::State t_state;
       query_item_t const qi(
-        item->getTokens( tokenizer_provider, no, lang, wildcards )
+        item->getTokens( tokenizer_provider, t_state, lang, wildcards )
       );
       if ( qi->hasNext() )
         query_items.push_back( qi );
@@ -456,7 +446,7 @@ void V::end_visit( ftwords &w ) {
     }
   }
   catch ( XQueryException &e ) {
-    set_source( e, w.get_value_expr()->get_loc() );
+    set_source( e, w.get_value_iter()->loc );
     throw;
   }
   END_VISIT( ftwords );

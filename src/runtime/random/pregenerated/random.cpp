@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <SeededRandomIterator>
-const char* SeededRandomIterator::class_name_str = "SeededRandomIterator";
-SeededRandomIterator::class_factory<SeededRandomIterator>
-SeededRandomIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(SeededRandomIterator)
 
-const serialization::ClassVersion 
-SeededRandomIterator::class_versions[] ={{ 1, 0x000905, false}};
+void SeededRandomIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>*)this);
+}
 
-const int SeededRandomIterator::class_versions_count =
-sizeof(SeededRandomIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void SeededRandomIterator::accept(PlanIterVisitor& v) const {
+void SeededRandomIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -73,17 +73,17 @@ void SeededRandomIteratorState::reset(PlanState& planState) {
 
 
 // <RandomIterator>
-const char* RandomIterator::class_name_str = "RandomIterator";
-RandomIterator::class_factory<RandomIterator>
-RandomIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(RandomIterator)
 
-const serialization::ClassVersion 
-RandomIterator::class_versions[] ={{ 1, 0x000905, false}};
+void RandomIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<RandomIterator, RandomIteratorState>*)this);
+}
 
-const int RandomIterator::class_versions_count =
-sizeof(RandomIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void RandomIterator::accept(PlanIterVisitor& v) const {
+void RandomIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -113,17 +113,17 @@ void RandomIteratorState::reset(PlanState& planState) {
 
 
 // <UuidIterator>
-const char* UuidIterator::class_name_str = "UuidIterator";
-UuidIterator::class_factory<UuidIterator>
-UuidIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(UuidIterator)
 
-const serialization::ClassVersion 
-UuidIterator::class_versions[] ={{ 1, 0x000905, false}};
+void UuidIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<UuidIterator, PlanIteratorState>*)this);
+}
 
-const int UuidIterator::class_versions_count =
-sizeof(UuidIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void UuidIterator::accept(PlanIterVisitor& v) const {
+void UuidIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

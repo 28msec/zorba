@@ -17,6 +17,8 @@
 #ifndef ZORBA_COMPILER_EXPR_UTILS
 #define ZORBA_COMPILER_EXPR_UTILS
 
+#include "zorbatypes/rchandle.h"
+
 namespace zorba 
 {
 
@@ -31,14 +33,9 @@ public:
   bool         theEmptyLeast;
   std::string  theCollation;
 
-  SERIALIZABLE_ABSTRACT_CLASS(OrderModifier)
+  SERIALIZABLE_CLASS(OrderModifier)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(OrderModifier, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theAscending;
-    ar & theEmptyLeast;
-    ar & theCollation;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   OrderModifier() 

@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <Base64DecodeIterator>
-const char* Base64DecodeIterator::class_name_str = "Base64DecodeIterator";
-Base64DecodeIterator::class_factory<Base64DecodeIterator>
-Base64DecodeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(Base64DecodeIterator)
 
-const serialization::ClassVersion 
-Base64DecodeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void Base64DecodeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>*)this);
+}
 
-const int Base64DecodeIterator::class_versions_count =
-sizeof(Base64DecodeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void Base64DecodeIterator::accept(PlanIterVisitor& v) const {
+void Base64DecodeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -61,17 +61,17 @@ Base64DecodeIterator::~Base64DecodeIterator() {}
 
 
 // <Base64EncodeIterator>
-const char* Base64EncodeIterator::class_name_str = "Base64EncodeIterator";
-Base64EncodeIterator::class_factory<Base64EncodeIterator>
-Base64EncodeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(Base64EncodeIterator)
 
-const serialization::ClassVersion 
-Base64EncodeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void Base64EncodeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>*)this);
+}
 
-const int Base64EncodeIterator::class_versions_count =
-sizeof(Base64EncodeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void Base64EncodeIterator::accept(PlanIterVisitor& v) const {
+void Base64EncodeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

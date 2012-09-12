@@ -47,7 +47,7 @@ extern entry const dict_en[] = {
   { "FODC0006", "invalid content passed to $1: $2" },
   { "FODC0007", "\"$1\": base URI passed to fn:parse() is not a valid absolute URI" },
   { "FODF1280", "\"$1\": invalid decimal format name for fn:format-number()" },
-  { "FODF1310", "\"$1\": invalid fn:format-number() picture string" },
+  { "FODF1310", "\"$1\": invalid fn:format-number() picture string$2" },
   { "FODT0001", "overflow/underflow in date/time operation" },
   { "FODT0002", "overflow/underflow in duration operation" },
   { "FODT0003", "\"$1\": invalid timezone value" },
@@ -74,6 +74,8 @@ extern entry const dict_en[] = {
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
+  { "FOUT1170", "\"$1\": error retrieving resource containing text" },
+  { "FOUT1190", "\"$1\": can not decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -87,13 +89,79 @@ extern entry const dict_en[] = {
   { "FTST0008", "\"$1\": unknown stop-word list" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
-  { "FTST0009", "\"$1\": unsupported language" },
+  { "FTST0009", "\"$1\": unsupported language${ 2}" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0018", "\"$1\": unknown thesaurus" },
 #endif
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0013", "Cannot serialize value as JSON: $1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0014", "Cannot serialize a function item as JSON" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0001", "Cannot atomize and/or cast value of type $1 to a string." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0002", "Pair value returns no, or more than one, item." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0003", "$1 items do not have string value" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0004", "$1 items do not have typed value" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0005", "\"$1\": duplicate pair to insert" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0006", "\"$1\": pair to insert already exists in object." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0007", "$1 - wrong type for object/array selector in update expression." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0008", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0009", "\"$1\": duplicate pair to replace" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0010", "\"$1\": duplicate pair to rename" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0016", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0017", "Cannot replace with less or more than an item." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0021", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0040", "$1" },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
@@ -111,7 +179,7 @@ extern entry const dict_en[] = {
   { "SESU0011", "\"$1\": unsupported normalization form" },
   { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
   { "XPDY0002", "\"$1\": $2" },
-  { "XPDY0050", "invalid treat expression type" },
+  { "XPDY0050", "\"$1\" cannot be treated as type $2" },
   { "XPST0001", "${\"1\": }undefined value${: 2}" },
   { "XPST0003", "invalid expression${: 1}" },
   { "XPST0005", "static type must not be empty-sequence()" },
@@ -123,8 +191,8 @@ extern entry const dict_en[] = {
   { "XPST0083", "\"$1\": not a string literal" },
   { "XPTY0004", "$1" },
   { "XPTY0018", "path expression last step must not have nodes and atomic values" },
-  { "XPTY0019", "path expression non-last step must not be an atomic value" },
-  { "XPTY0020", "axis step context item is not a node" },
+  { "XPTY0019", "a non-last axis step produces non-node items" },
+  { "XPTY0020", "context item in axis step is not a node" },
   { "XQDY0025", "\"$1\": duplicate attribute name" },
   { "XQDY0026", "computed processing instrucion must not contain \"?>\"" },
   { "XQDY0027", "\"$1\": unexpected validity property${: 2}" },
@@ -178,6 +246,8 @@ extern entry const dict_en[] = {
   { "XQST0090", "\"$1\": invalid character reference in XML $2" },
   { "XQST0093", "\"$1\": module must not depend on itself" },
   { "XQST0098", "properties \"$1\" and \"$2\", representing characters used in picture string, do not have distinct values" },
+  { "XQST0099", "module contains more than one context item declaration" },
+  { "XQST0103", "$1: non-distinct variable in window clause" },
   { "XQST0106", "$1: multiple annotations with $2 names" },
   { "XQST0111", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
@@ -222,7 +292,7 @@ extern entry const dict_en[] = {
   { "XUTY0010", "replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes" },
   { "XUTY0011", "replacement sequence does not consist of zero or more attribute nodes" },
   { "XUTY0012", "multiple elements, attributes, or processing-instruction nodes returned" },
-  { "XUTY0013", "source expression of \"copy\" clause must return a single node" },
+  { "XUTY0013", "source expression of \"copy\" clause must return a single node or json-item" },
   { "XUTY0022", "insertion of attribute node into document node" },
   { "ZAPI0002", "XQuery compilation failed${: 1}" },
   { "ZAPI0003", "XQuery not compiled" },
@@ -246,6 +316,8 @@ extern entry const dict_en[] = {
   { "ZAPI0040", "iterator is not open" },
   { "ZAPI0041", "iterator is already open" },
   { "ZAPI0042", "iterator is closed" },
+  { "ZAPI0043", "cannot serialize JSON item using current output method" },
+  { "ZAPI0045", "cannot serialize sequence containing both JSON and XML items" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
   { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },
   { "ZAPI0090", "a non root element cannot be validated in place." },
@@ -284,7 +356,6 @@ extern entry const dict_en[] = {
   { "ZDDY0016", "\"$1\": multiple attemps to create a collection in the same snapshot" },
   { "ZDDY0017", "node does not belong to any collection" },
   { "ZDDY0018", "all nodes must be in same collection" },
-  { "ZDDY0019", "\"$1\": collection $2 cannot be undone" },
   { "ZDDY0020", "\"$1\": index domain expression yields nodes that are not in collection" },
   { "ZDDY0021", "\"$1\": undeclared index" },
   { "ZDDY0022", "\"$1\": index already exists" },
@@ -301,11 +372,12 @@ extern entry const dict_en[] = {
   { "ZDDY0033", "\"$1\": integrity constraint not met for collection \"$2\"" },
   { "ZDDY0034", "\"$1\": index range-value probe has search keys with incompatible types" },
   { "ZDDY0035", "\"$1\": index inserting more than one key not allowed for general index" },
+  { "ZDDY0036", "attempt to delete non-root node from collection \"$1\"" },
   { "ZDST0001", "\"$1\": collection already declared" },
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },
   { "ZDST0004", "collection multiple property values" },
-  { "ZDST0006", "collection invalid property value" },
+  { "ZDST0006", "\"$1\": invalid annotation for collection \"$2\"" },
   { "ZDST0007", "\"$1\": collection declaration in foreign module" },
   { "ZDST0021", "\"$1\": index already declared" },
   { "ZDST0022", "\"$1\": index already imported into module \"$2\"" },
@@ -321,15 +393,15 @@ extern entry const dict_en[] = {
   { "ZDST0032", "\"$1\": index references context item" },
   { "ZDST0033", "\"$1\": index non-simple expression" },
   { "ZDST0034", "\"$1\": index can not do automatic maintenance" },
-  { "ZDST0035", "\"$1\": index general multikey" },
+  { "ZDST0035", "\"$1\": number of key expressions for general indexes is restricted to one expression" },
   { "ZDST0036", "\"$1\": index declaration in foreign module" },
   { "ZDST0041", "\"$1\": integrity constraint already declared" },
   { "ZDST0044", "\"$1\": integrity constraint declaration not allowed in main module" },
   { "ZDST0048", "\"$1\": integrity constraint declaration in foreign module" },
   { "ZDST0060", "\"$1\": feature not supported; $2" },
-  { "ZDTY0001", "\"$1\": invalid node type in collection \"$2\"" },
-  { "ZDTY0010", "\"$1\": index domain expression yields a non-node item" },
-  { "ZDTY0011", "result of some key expression of index $1 does not match its declared type" },
+  { "ZDTY0001", "\"$1\": invalid item type in collection \"$2\"" },
+  { "ZDTY0010", "non-node item in domain expression of index $1" },
+  { "ZDTY0011", "item type \"$1\" does not match declared type \"$2\" for key expression of index $3" },
   { "ZDTY0012", "\"$1\": general range index key item has type for which no ordering relationship exists" },
 #if defined(ZORBA_WITH_DEBUGGER)
   { "ZGDB0001", "" },
@@ -343,6 +415,7 @@ extern entry const dict_en[] = {
   { "ZJPE0007", "unterminated JSON string" },
   { "ZJPE0008", "\"$1\": illegal QName" },
   { "ZJPE0009", "illegal empty string" },
+  { "ZJPE0010", "JsonML (array form) must start with '['" },
   { "ZJSE0001", "JSON serialization requires document or element node" },
   { "ZJSE0002", "\"$1\" element missing required \"$2\" attribute" },
   { "ZJSE0003", "\"$1\": illegal value for attribute \"$2\"" },
@@ -367,6 +440,7 @@ extern entry const dict_en[] = {
   { "ZSTR0010", "can not insert node into colletion \"$1\" because it already belongs to collection \"$2\"" },
   { "ZSTR0011", "non-root node can not be inserted into collection \"$1\"" },
   { "ZSTR0012", "non-node item used with collection \"$1\"" },
+  { "ZSTR0013", "an item that is not a node, object, or array is used with collection \"$1\"" },
   { "ZSTR0015", "\"$1\": integrity constraint already exists" },
   { "ZSTR0016", "\"$1\": integrity constraint does not exist" },
   { "ZSTR0020", "loader I/O error${: 1}" },
@@ -379,6 +453,7 @@ extern entry const dict_en[] = {
   { "ZSTR0055", "streamable string has already been consumed" },
   { "ZSTR0060", "out of range: $1" },
   { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
+  { "ZSTR0066", "$1: does not reference a node in collection $2." },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
@@ -386,13 +461,13 @@ extern entry const dict_en[] = {
   { "ZWST0006", "\"$1\": function caching might not give the intended result because the function is declared as $2" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
-  { "ZXQD0003", "inconsistent options to the parse-xml-fragment() function: $1" },
+  { "ZXQD0003", "inconsistent options to the parse-xml() function: $1" },
   { "ZXQD0004", "invalid parameter: $1" },
   { "ZXQD0005", "key with type $1 not subtype or castable to target type $2 of map ($3)" },
   { "ZXQD0006", "\"$1\": invalid UTF-8 byte sequence" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
-  { "ZXQP0002", "\"$1\": assertion failed" },
+  { "ZXQP0002", "\"$1\": assertion failed.${ The following information might help: 2}" },
   { "ZXQP0003", "internal error${: 1}" },
   { "ZXQP0004", "not yet implemented: $1" },
   { "ZXQP0005", "\"$1\": feature not enabled" },
@@ -407,10 +482,10 @@ extern entry const dict_en[] = {
   { "ZXQP0020", "\"$1\": invalid URI${: 2}" },
   { "ZXQP0021", "user error" },
   { "ZXQP0024", "XML does not match schema${: \"1\"}${ 2}" },
-  { "ZXQP0025", "item creation failed" },
+  { "ZXQP0025", "\"$1\": could not fetch resource${; reason: 2}" },
   { "ZXQP0026", "\"$1\": invalid enumerated value for $2" },
   { "ZXQP0028", "\"$1\": target namespace not provided by module from $2" },
-  { "ZXQP0029", "\"$1\": module import not allowed" },
+  { "ZXQP0029", "\"$1\": URI access not allowed" },
   { "ZXQP0030", "deadlock" },
   { "ZXQP0031", "malformed XQueryX XML input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
@@ -437,8 +512,12 @@ extern entry const dict_en[] = {
   { "~AtomizationOfGroupByMakesMoreThanOneItem", "atomization of groupby variable produces more than one item" },
   { "~AttributeName", "attribute name" },
   { "~AttributeNode", "attribute node" },
+#if !defined(ZORBA_NO_ICU)
   { "~BackRef0Illegal", "\"0\": illegal backreference" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
+#endif
   { "~BadAnyURI", "invalid xs:anyURI" },
   { "~BadArgTypeForFn_2o34o", "${\"2\": }invalid argument type for function $3()${: 4}" },
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
@@ -451,7 +530,9 @@ extern entry const dict_en[] = {
   { "~BadIterator", "invalid iterator" },
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
+#endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },
@@ -464,10 +545,9 @@ extern entry const dict_en[] = {
   { "~BadWordNetPtr_2", "\"$2\": invalid pointer type" },
   { "~BadXMLDocument_2o", "malformed XML document${ at \"2\"}" },
   { "~BadXMLForXQDoc_3", "can not parse as XML for xqdoc: $3" },
+  { "~BadXMLNoOpeningTag", "closing tag without matching opening tag" },
   { "~BadXQueryVersion", "unsupported XQuery version" },
   { "~Base64BadChar", "invalid Base64 character" },
-  { "~Base64Equals", "in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]" },
-  { "~Base64EqualsEquals", "in Base64, \"==\" must be at the end and followed by one of [AQgw]" },
   { "~Base64Multiple4", "Base64 data must be a multiple of 4 characters" },
   { "~BaseURI", "base URI" },
   { "~BoxCondTooManyColumns", "box condition has more columns than index" },
@@ -487,12 +567,9 @@ extern entry const dict_en[] = {
   { "~EmptySeqNoCastToQName", "empty sequence can not be cast to QName" },
   { "~EmptySeqNoCastToTypeWithQuantOne", "empty sequence can not be cast to type with quantifier '1'" },
   { "~EmptySeqNoFnRemoveArg", "empty sequence not allowed as 2nd argument of fn:remove()" },
-  { "~EmptySeqNoPromoteTo", "empty sequence can not be promoted to type \"$2\"" },
   { "~EmptySeqNoSearchItem", "empty sequence not allowed as search item of fn:index-of()" },
-  { "~EmptySeqNotAsFunctionResult_23", "empty sequence not allowed as result of function $2() that returns \"$3\"" },
   { "~EmptySequence", "empty sequence" },
   { "~ErrorCodeMessage_12", "error $2: $3" },
-  { "~Eval11", "\"eval\" only available in XQuery 1.1 or later" },
   { "~ExpectedNumericOrDurationType", "expected numeric or duration type" },
   { "~ExpectedNumericType", "expected numeric type" },
   { "~ExpectedType_5", "expected type \"$5\"" },
@@ -500,25 +577,60 @@ extern entry const dict_en[] = {
   { "~ExprReturnsTooManyUpdateLists", "expression does not return a pending update list" },
   { "~ExternFnDeterministic", "only external functions may be declared deterministic" },
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
+  { "~FTST0009_BadStemmerLang", "for current stemmer" },
+  { "~FTST0009_BadStopWordsLang", "for current stop words" },
+  { "~FTST0009_BadThesaurusLang", "for given thesaurus" },
+  { "~FTST0009_BadTokenizerLang", "for current tokenizer" },
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },
+  { "~FormatNumberAtLeastOneOptionalOrDecimal", ": a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family" },
+  { "~FormatNumberDuplicates", ": a sub-picture must not contain more than one of the \"$3\" sign" },
+  { "~FormatNumberFractionalPart", ": the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family" },
+  { "~FormatNumberGroupingAdjacentToDecimal", ": a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign" },
+  { "~FormatNumberIntegerPart", ": the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign" },
+  { "~FormatNumberPercentPermille", ": a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
   { "~FunctionFailedErrorCodeMessage_123", "$2 failed (error $3): $4" },
   { "~FunctionFailed_12o", "$2 failed${: 3}" },
   { "~FunctionUndeclared_3", "function with arity $3 not declared" },
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
-  { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary" },
+  { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
   { "~GroupByVarHasMoreThanOneItem_2", "\"$2\": value of groupby variable has more than one item" },
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
+  { "~JNUP0007_Array", "\"$2\": can not be promoted to type xs:integer" },
+  { "~JNUP0007_Object", "\"$2\": can not be promoted to type xs:string" },
+  { "~JNUP0007_ObjectArray", "\"$2\": can not be promoted to type xs:anyAtomicType" },
+  { "~JNUP0008_Array", "\"$2\": target of an appending expression or of a position-inserting expression is not an array" },
+  { "~JNUP0008_Object", "\"$2\": target of a renaming expression or of a non-position-inserting expression is not an object." },
+  { "~JNUP0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item." },
+  { "~JNUP0016_Array", "\"$2\": selector cannot be resolved against supplied array." },
+  { "~JNUP0016_Object", "\"$2\": selector cannot be resolved against supplied object." },
   { "~JSON parser error", "JSON parser error" },
   { "~JSON serialization error", "JSON serialization error" },
+  { "~JSON_ILLEGAL_CHARACTER", "'$2': illegal JSON character${ at 3}" },
+  { "~JSON_ILLEGAL_CODEPOINT", "\"$2\": illegal Unicode code-point${ at 3}" },
+  { "~JSON_ILLEGAL_ESCAPE", "'\\$2': illegal JSON character escape${ at 3}" },
+  { "~JSON_ILLEGAL_LITERAL", "illegal JSON literal${ at 2}" },
+  { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
+  { "~JSON_UNEXPECTED_EXTRA_CONTENT", "unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)" },
+  { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
+  { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
+  { "~JSONiq dynamic error", "JSONIQ dynamic error" },
+  { "~JSONiq dynamic warning", "JSONIQ dynamic warning" },
+  { "~JSONiq error", "JSONIQ error" },
+  { "~JSONiq serialization error", "JSONIQ serialization error" },
+  { "~JSONiq serialization warning", "JSONIQ serialization warning" },
+  { "~JSONiq static error", "JSONIQ static error" },
+  { "~JSONiq static warning", "JSONIQ static warning" },
+  { "~JSONiq type error", "JSONIQ type error" },
+  { "~JSONiq type warning", "JSONIQ type warning" },
+  { "~JSONiq warning", "JSONIQ warning" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
-  { "~ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
   { "~MustBeNCName", "must be an xs:NCName" },
@@ -548,8 +660,6 @@ extern entry const dict_en[] = {
   { "~NoSeqForFnOp_2", "sequence of more than one item can not be operand for function \"$2()\"" },
   { "~NoSeqInValueComp", "sequnce of more than one item can not be in value comparisons" },
   { "~NoSeqTestedForAtomicEquiv", "sequence of more than one item can not be tested for atomic value equivalence" },
-  { "~NoSeqTypePromotion", "type promotion not possible on sequence of more than one item" },
-  { "~NoSeqTypePromotion_23", "sequence of more than one item can not be promoted to the return type \"$2\" of function $3()" },
   { "~NoSerializationCallbackForDocColMod", "document, collection, or module resolver required but no SerializationCallback given" },
   { "~NoSerializationCallbackForModule", "no SerializationCallback for required external module \"$2\"" },
   { "~NoSerializationCallbackForTraceStream", "no SerializationCallback for required trace stream" },
@@ -558,18 +668,20 @@ extern entry const dict_en[] = {
   { "~NoTypeInCtx", "undefined type in current context" },
   { "~NoTypeInMainModule_4", "type of variable \"$4\" is not among the in-scope types of the main module" },
   { "~NoTypeInModule_45", "type of variable \"$4\" is not among the in-scope types module \"$5\"" },
-  { "~NoTypePromotion_23", "\"$2\": can not promote to type \"$3\"" },
-  { "~NoTypePromotion_234", "\"$2\": can not promote to return type \"$3\" of function $4()" },
   { "~NoURIAuthority", "no authority" },
   { "~NoURIInStore", "URI for document not found in store" },
   { "~NoURIScheme", "no URI scheme" },
   { "~NoUntypedKeyNodeValue_2", "node with untyped key value found during probe on index \"$2\"" },
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+#endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
+#if !defined(ZORBA_NO_ICU)
   { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+#endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
   { "~NotDefInDynamicCtx", "not defined in dynamic context" },
@@ -582,12 +694,77 @@ extern entry const dict_en[] = {
   { "~OpNodeBeforeMustHaveNodes", "op:node-before() must have nodes as parameters" },
   { "~OperationNotDef_23", "$2 not defined for type \"$3\"" },
   { "~OperationNotPossibleWithTypes_234", "\"$2\": operation not possible with parameters of type \"$3\" and \"$4\"" },
-  { "~ParseFragmentOptionCombinationNotAllowed", "specifying both $2 and $3 is an error" },
-  { "~ParseFragmentOptionDSLNotAllowed", "if the e option is specified, none of the options d, s, or l may be enabled" },
+  { "~ParseFragmentDoctypeNotAllowed", "a DOCTYPE declaration is not allowed" },
+  { "~ParseFragmentDoctypeNotAllowedHere", "a DOCTYPE declaration must appear before any element or text node, and at most once" },
+  { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace" },
+  { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schema-validate/>, <DTD-validate/> or <parse-external-parsed-entity/> options can be specified" },
   { "~ParserInitFailed", "parser initialization failed" },
   { "~ParserNoCreateTree", "XML tree creation failed" },
   { "~PromotionImpossible", "promotion not possible" },
   { "~QuotedColon_23", "\"$2\": $3" },
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\p construct" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_ATOM_CHAR", "'$3': invalid character for an atom; forbidden characters are: [{}?*+|^]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_BACK_REF", "\\$3 backreference to a non-existent capture group ($4 groups so far)" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_SUBCLASS", "malformed class subtraction" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_UNICODE_CODEPOINT_u", "invalid unicode hex, should be in form \\uXXXX or \\UXXXXXXXX" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction: it must be the last construct in a class group [xxx-[yyy]]" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MISSING_CLOSE_BRACKET", "missing ']' in character group" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_MULTICHAR_IN_CHAR_RANGE", "multichars or char categories cannot be part of a char range" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char; supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category; supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "unknown \\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\p{L?} category; supported categories: L, Lu, Ll, Lt, Lm, Lo" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\p{M?} category; supported categories: M, Mn, Mc, Me" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\p{N?} category; supported categories: N, Nd, Nl, No" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\p{P?} category; supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\p{S?} category; supported categories: S, Sm, Sc, Sk, So" },
+#endif
+#if defined(ZORBA_NO_ICU)
+  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
+#endif
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SchemaAttributeName", "schema-attribute name" },
@@ -601,7 +778,6 @@ extern entry const dict_en[] = {
   { "~SeqNoCastToQName", "sequence of more than one item can not be cast to QName" },
   { "~SingletonExpected_2o", "singleton expected${ (2)}" },
   { "~StackOverflow", "stack overflow" },
-  { "~StartEndTagMismatch_23", "start tag \"$2\" does not match end tag \"$3\"" },
   { "~StingLiteral", "string literal" },
   { "~StringValue", "string value" },
   { "~SumImpossibleWithTypes_23", "sum not possible with parameters of type \"$2\" and \"$3\"" },
@@ -609,68 +785,73 @@ extern entry const dict_en[] = {
   { "~TwoDecimalFormatsSameName_2", "\"$2\": two decimal formats with this name" },
   { "~TwoDefaultDecimalFormats", "two default decimal formats" },
   { "~TypeIsNotSubtype", "item type is not a subtype of \"$3\"" },
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_BACK_REF", "backreference to a non-existent capture group" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_FLAG", "invalid value for match mode flags" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_RANGE", "in character range [x-y], x is greater than y" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_INVALID_STATE", "RegexMatcher in invalid state for requested operation" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_LOOK_BEHIND_LIMIT", "look-behind pattern matches must have a bounded maximum length" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_MISSING_CLOSE_BRACKET", "missing ']'" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_NUMBER_TOO_BIG", "decimal number is too large" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_OCTAL_TOO_BIG", "octal character constants must be <= 0377" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_PROPERTY_SYNTAX", "incorrect Unicode property" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_RULE_SYNTAX", "syntax error" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_SET_CONTAINS_STRING", "can not have UnicodeSets containing strings" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_STACK_OVERFLOW", "backtrack stack overflow" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_STOPPED_BY_CALLER", "matching operation aborted by user callback fn" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_TIME_OUT", "maximum allowed match time exceeded" },
 #endif
-#if !defined(ZORBA_NO_UNICODE)
+#if !defined(ZORBA_NO_ICU)
   { "~U_REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
 #endif
   { "~UnaryArithOp", "unary arithmetic operator" },
-  { "~UnbalancedChar_3", "missing '$3'" },
+#if !defined(ZORBA_NO_ICU)
+  { "~UnbalancedChar_3", "unbalanced '$3'" },
+#endif
+#if !defined(ZORBA_NO_ICU)
+  { "~UnescapedChar_3", "character '$3' must be escaped here" },
+#endif
   { "~UnexpectedElement", "unexpected element" },
   { "~VarValMustBeSingleItem_2", "\"$2\": variable value must be single item" },
   { "~Variable", "variable" },
@@ -679,19 +860,27 @@ extern entry const dict_en[] = {
   { "~XMLSchema", "XML schema" },
   { "~XPST0003_Anotations", "function and variable annotations only available in XQuery 3.0 or later" },
   { "~XPST0003_CountClause11", "\"count\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~XPST0003_OuterForClause11", "\"outer-for\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_PiTarget", "\"XML\" not allowed as target of a direct processing-instruction constructor" },
   { "~XPST0003_Scripting", "scripting feature not available" },
+  { "~XPST0003_StartEndTagMismatch_23", "start tag \"$2\" does not match end tag \"$3\"" },
   { "~XPST0003_SwitchExpr11", "\"switch\" expressions only available in XQuery 3.0 or later" },
   { "~XPST0003_TryCatchExpr11", "\"try/catch\" expressions only available in XQuery 3.0 or later" },
   { "~XPST0003_WindowClause11", "\"window\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_XQueryVersionAtLeast30_2", "\"$2\": XQuery version must be at least 3.0" },
-  { "~XPTY0004_FormatNumber_2", "\"the first parameter to the format-number() function is of type $2, which is not allowed" },
+  { "~XPTY0004_FormatNumber_2", "the first parameter to the format-number() function is of type $2, which is not allowed" },
+  { "~XPTY0004_FuncParam", "$2 can not be promoted to parameter type $3 of function $4()" },
+  { "~XPTY0004_FuncReturn", "$2 can not be promoted to return type $3 of function $4()" },
+  { "~XPTY0004_NoMultiSeqTypePromotion", "sequence of more than one item can not be promoted to type $2" },
+  { "~XPTY0004_TypeMatch", "$2 can not be treated as type $3" },
+  { "~XPTY0004_TypePromotion", "$2 can not be promoted to type $3" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },
   { "~XUST0001_IF", "conditional expression with updating and non-updating branch" },
+  { "~XUST0001_TRYCATCH", "try-catch expression with updating and non-updating clauses" },
   { "~XUST0001_UDF_2", "\"$2\": function declared simple but body is updating" },
   { "~XUST0002_Transform", "transform expression witn non-updating or vacuous modify clause" },
   { "~XUST0002_UDF_2", "\"$2\": function declared updating but body is not updating or vacuous" },
@@ -704,6 +893,7 @@ extern entry const dict_en[] = {
   { "~ZXQD0004_NON_NEGATIVE", "given value must be non-negative ($2)" },
   { "~ZXQD0004_NOT_WITHIN_RANGE", "not within allowed range ($2)" },
   { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },
+  { "~ZXQP0025_RESOURCE_NOT_FOUND", "resource not found" },
   { "~ZeroLenURI", "zero-length URI (and no base URI given)" },
   { "~Zorba API error", "Zorba API error" },
   { "~Zorba data-definition error", "Zorba data-definition error" },

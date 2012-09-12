@@ -51,19 +51,15 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
-END_SERIALIZABLE_CLASS_VERSIONS(OrderByClause)
 
 SERIALIZABLE_CLASS_VERSIONS(MaterializeClause)
-END_SERIALIZABLE_CLASS_VERSIONS(MaterializeClause)
 
 SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
-END_SERIALIZABLE_CLASS_VERSIONS(GroupByClause)
 
 SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
-END_SERIALIZABLE_CLASS_VERSIONS(ForLetClause)
 
 SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -147,8 +143,20 @@ ForLetClause::ForLetClause(
 ********************************************************************************/
 void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
 {
-  ar & theVarName;
-  SERIALIZE_ENUM(ForLetType, theType)
+  //ar & theVarName;
+  bool isFor;
+  
+  if (ar.is_serializing_out())
+  {
+    isFor = (theType == FOR);
+    ar & isFor;
+  }
+  else
+  {
+    ar & isFor;
+    theType = (isFor ? FOR : LET);
+  }
+
   ar & theVarRefs;
   ar & thePosVarRefs;
   ar & theInput;
@@ -553,6 +561,14 @@ GroupByClause::GroupByClause(
 }
 
 
+void GroupByClause::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theLocation;
+  ar & theGroupingSpecs;
+  ar & theNonGroupingSpecs;
+}
+
+
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -863,7 +879,7 @@ FLWORIterator::FLWORIterator(
   :
   Batcher<FLWORIterator>(sctx, loc),
   theForLetClauses(aForLetClauses),
-  theNumBindings((ulong)aForLetClauses.size()),
+  theNumBindings(aForLetClauses.size()),
   theWhereClause(aWhereClause),
   theGroupByClause(aGroupByClauses),
   theOrderByClause(orderByClause),
@@ -916,7 +932,7 @@ void FLWORIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
   ar & theForLetClauses;
-  ar & theNumBindings;
+  theNumBindings = theForLetClauses.size();
   ar & theWhereClause; //can be null
   ar & theGroupByClause;
   ar & theOrderByClause;  //can be null

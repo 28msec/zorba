@@ -21,6 +21,7 @@
 #include <sys/timeb.h>
 #ifdef UNIX
 #include <sys/time.h>
+#include <unistd.h>
 #endif
 
 #include "store/api/iterator.h"
@@ -29,6 +30,7 @@
 #include "store/api/store.h"
 #include "store/api/index.h"
 #include "store/api/ic.h"
+#include "store/api/iterator_factory.h"
 
 #include "system/globalenv.h"
 
@@ -54,10 +56,16 @@
 
 using namespace std;
 
+#ifdef UNIX
+extern char **environ;
+#  ifdef APPLE
+#    include <crt_externs.h>
+#    define environ (*_NSGetEnviron())
+#  endif
+#endif
+
 namespace zorba
 {
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -122,6 +130,8 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   theParent(NULL),
   keymap(NULL),
   theAvailableIndices(NULL),
+  theAvailableMaps(NULL),
+  theEnvironmentVariables(NULL),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
 {
@@ -161,8 +171,14 @@ dynamic_context::~dynamic_context()
     delete keymap;
   }
 
+  if(theEnvironmentVariables)
+    delete theEnvironmentVariables;
+
   if (theAvailableIndices)
     delete theAvailableIndices;
+
+  if (theAvailableMaps)
+    delete theAvailableMaps;
 }
 
 
@@ -255,6 +271,145 @@ store::Item_t dynamic_context::get_current_date_time() const
   return theCurrentDateTime;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::set_environment_variables()
+{
+  if (!theEnvironmentVariables)
+    theEnvironmentVariables = new EnvVarMap();
+
+#if defined (WIN32)
+    LPTCH envVarsCH = GetEnvironmentStrings();
+    LPTSTR envVarsSTR = (LPTSTR) envVarsCH;
+
+    while (*envVarsSTR)
+    {
+      int size = lstrlen(envVarsSTR);
+
+      char * envVar = new char[size+1];
+      
+      
+      WideCharToMultiByte( CP_ACP, 
+                           WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR, 
+                           envVarsSTR, 
+                           size+1, 
+                           envVar, 
+                           size+1,
+                           NULL,
+                           NULL);
+      
+
+      zstring envVarZS(envVar);
+      
+      int eqPos = envVarZS.find_first_of("=");
+
+      if (eqPos > 0)
+      {
+        zstring varname(envVarZS.substr(0, eqPos));
+        zstring varvalue(envVarZS.substr(eqPos+1, size));
+
+        if (!varname.empty() || !varvalue.empty())
+          theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
+      }
+      
+      delete envVar;
+      envVarsSTR += lstrlen(envVarsSTR) + 1;
+    }
+    
+    FreeEnvironmentStrings(envVarsCH);
+#else    
+    const char* invalid_char;
+    for (char **env = environ; *env; ++env)
+    {
+      zstring envVarZS(*env);
+      
+      if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
+        throw XQUERY_EXCEPTION(err::FOCH0001,
+          ERROR_PARAMS(zstring("#x") + 
+          BUILD_STRING(std::uppercase << std::hex 
+            << (static_cast<unsigned int>(*invalid_char)&0xFF))));
+
+      if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
+      {
+        throw XQUERY_EXCEPTION(err::FOCH0001, 
+        ERROR_PARAMS(zstring("#x") + 
+        BUILD_STRING(std::uppercase << std::hex
+                     << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+      }
+
+      int size = envVarZS.size();
+            
+      int eqPos = envVarZS.find_first_of("=");
+            
+      if (eqPos > 0)
+      {
+        zstring varname(envVarZS.substr(0, eqPos));
+        zstring varvalue(envVarZS.substr(eqPos+1, size));
+                                                  
+        if (!varname.empty() || !varvalue.empty())
+          theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
+      }                                                                   
+    }
+     
+#endif
+    
+}
+/*******************************************************************************
+
+********************************************************************************/
+store::Iterator_t dynamic_context::available_environment_variables()
+{
+  if (!theEnvironmentVariables)
+  {
+    set_environment_variables();
+  }
+
+  EnvVarMap::iterator lIte = theEnvironmentVariables->begin();
+  EnvVarMap::iterator lEnd = theEnvironmentVariables->end();
+
+  std::vector<store::Item_t> lVarNames;
+
+  for (;lIte != lEnd; ++lIte)
+  {
+    store::Item_t varname;
+    zstring zsvarname = lIte->first;
+    GENV_ITEMFACTORY->createString(varname, zsvarname);
+    lVarNames.push_back(varname);
+  }
+
+  if (lVarNames.empty())
+  {
+    return NULL;
+  }
+
+  return GENV_STORE.createTempSeq(lVarNames)->getIterator(); 
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
+{
+
+  if (!theEnvironmentVariables)
+  {
+    set_environment_variables();
+  }
+
+  EnvVarMap::iterator lIter = theEnvironmentVariables->find(varname);
+
+  if (lIter == theEnvironmentVariables->end())
+  {
+    return NULL;
+  }
+
+  store::Item_t value; 
+  zstring varvalue = lIter->second;
+  GENV_ITEMFACTORY->createString(value, varvalue);
+  return value;
+}
 
 /*******************************************************************************
 
@@ -555,7 +710,7 @@ void dynamic_context::bindIndex(
     store::Index_t& index)
 {
   if (theAvailableIndices == NULL)
-    theAvailableIndices = new IndexMap(0, NULL, 8, false);
+    theAvailableIndices = new IndexMap(HashMapItemPointerCmp(0, NULL), 8, false);
 
   if (!theAvailableIndices->insert(qname, index))
   {
@@ -571,6 +726,71 @@ void dynamic_context::unbindIndex(store::Item* qname)
 {
   if (theAvailableIndices != NULL)
     theAvailableIndices->erase(qname);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Index* dynamic_context::getMap(store::Item* qname) const
+{
+  if (theAvailableMaps == NULL)
+    return NULL;
+
+  store::Index_t map;
+
+  if (theAvailableMaps->get(qname, map))
+  {
+    return map.getp();
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::bindMap(
+    store::Item* qname,
+    store::Index_t& map)
+{
+  if (theAvailableMaps == NULL)
+    theAvailableMaps = new IndexMap(HashMapItemPointerCmp(0, NULL), 8, false);
+
+  if (!theAvailableMaps->insert(qname, map))
+  {
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::unbindMap(store::Item* qname)
+{
+  if (theAvailableMaps != NULL)
+    theAvailableMaps->erase(qname);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::getMapNames(std::vector<store::Item_t>& names) const
+{
+  if (theAvailableMaps == NULL)
+    return;
+
+  for (IndexMap::iterator lIter = theAvailableMaps->begin();
+       lIter != theAvailableMaps->end();
+       ++lIter)
+  {
+    names.push_back(lIter.getKey());
+  }
 }
 
 
@@ -607,7 +827,6 @@ bool dynamic_context::addExternalFunctionParam(
   {
     keymap = new ValueMap(8, false);
   }
-
   if (!keymap->insert(aName, val))
   {
     keymap->update(aName, val);

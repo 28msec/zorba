@@ -54,12 +54,13 @@
 #endif /* ZORBA_NO_XMLSCHEMA */
 
 
-//using namespace std;
+#include "zorbaserialization/serialize_template_types.h"
+#include "zorbaserialization/serialize_zorba_types.h"
+
 
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(Schema)
-END_SERIALIZABLE_CLASS_VERSIONS(Schema)
 
 //#define DO_TRACE
 //#define DO_PRINT_SCHEMA_INFO
@@ -90,6 +91,7 @@ static void transcode(const XMLCh* const str, zstring& res)
   XMLString::release(&trStr);
 }
 
+
 /**
  * A Xerces BinInputStream that returns bytes from a std::istream.
  */
@@ -97,7 +99,8 @@ class IstreamBinInputStream : public XERCES_CPP_NAMESPACE::BinInputStream
 {
 public:
   IstreamBinInputStream(std::istream* aStream)
-    : theStream(aStream)
+    : 
+    theStream(aStream)
   {
   }
 
@@ -112,19 +115,21 @@ public:
     // QQQ Is this reinterpret_cast necessary? Is it safe? Can I just
     // pump the chars from read() to the XMLBytes Xerces wants?
     char* const lToFill = reinterpret_cast<char*>(toFill);
+    TRACE("lToFill: " << lToFill );
     theStream->read(lToFill, maxToRead);
     return static_cast<unsigned int>(theStream->gcount());
   }
 
   virtual const XMLCh* getContentType() const
   {
-    // Unless we know it, do what Xerces' implemtation does: return 0
+    // Unless we know it, do what Xerces' implementation does: return 0
     return 0;
   }
 
 private:
   std::istream* theStream;
 };
+
 
 /**
  * A Xerces InputSource that returns a IstreamBinInputStream.
@@ -140,7 +145,8 @@ public:
 
   ~IstreamInputSource()
   {
-    if (theStreamReleaser) {
+    if (theStreamReleaser) 
+    {
       theStreamReleaser(theStream);
     }
   }
@@ -154,6 +160,7 @@ private:
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
 };
+
 
 /**
  * A Xerces EntityResolver that looks for a specific URL and returns
@@ -226,7 +233,7 @@ public:
       
       try
       {
-        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved);
+        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved << " thePhysURI: " << StrX(thePhysicalURI));
         zstring lErrorMessage;
         lResource = theSctx->resolve_uri(lResolved, internal::EntityData::SCHEMA, lErrorMessage);
         internal::StreamResource* lStream =
@@ -238,26 +245,32 @@ public:
               (lStream->getStream(), lStream->getStreamReleaser());
           lStream->setStreamReleaser(nullptr);
           
+          XMLCh * lResolvedXMLCh = XMLString::transcode(lResolved.c_str());
           if (isSystemId)
-            lRetval->setSystemId(thePhysicalURI);
+            lRetval->setSystemId(lResolvedXMLCh);
           
           if (isPublicId)
-            lRetval->setPublicId(thePhysicalURI);
+            lRetval->setPublicId(lResolvedXMLCh);
+
+          // release lResolvedXMLCh since setSystemId and setPublicId are makeing their own copies
+          XMLString::release(&lResolvedXMLCh);
             
           return lRetval;
         }
         else
           return NULL;          
       }
-// avoiding the warning that e is not used
-#ifdef DO_TRACE
       catch (ZorbaException const& e) {
         TRACE("!!! ZorbaException: " << e );
-#else
-      catch (ZorbaException const& ) {
-#endif
-        //don't throw let Xerces resolve it
-        return NULL;
+        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED )
+        {
+          throw;
+        }
+        else
+        {
+          //don't throw let Xerces resolve it
+          return NULL;
+        }
       }
     }
   }
@@ -345,7 +358,8 @@ Schema::Schema(TypeManager* tm)
 #ifndef ZORBA_NO_XMLSCHEMA
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
   // QQQ should be zstring
-  theUdTypesCache = new serializable_hashmap<std::string, xqtref_t>;
+  theUdTypesCache = 
+  new HashMap<zstring, xqtref_t, HashMapZStringCmp>(64, false);
 #endif
 }
 
@@ -628,7 +642,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   key += " ";
   key += TypeOps::decode_quantifier(TypeConstants::QUANT_ONE);
 
-  if( theUdTypesCache->get(key.str(), res))
+  if( theUdTypesCache->get(key, res))
     return res;
 
     // not found in cache, make a new one
@@ -651,9 +665,8 @@ xqtref_t Schema::createXQTypeFromTypeName(
     TRACE("lookingFor: key:'" << key);
     checkForAnonymousTypes(typeManager);
 
-    if( theUdTypesCache->get(key.str(), res))
+    if( theUdTypesCache->get(key, res))
       return res;
-
 
     res = NULL;
     TRACE("No type definition for " << xml_local << "@" << xml_uri);
@@ -661,7 +674,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
           << ( res==NULL ? "NULL" :
                TypeOps::decode_quantifier(res->get_quantifier())) );
     // stick it in the cache even if it's NULL
-    theUdTypesCache->put(key.str(), res);
+    theUdTypesCache->insert(key, res);
   }
   else
   {
@@ -1539,10 +1552,10 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   key += TypeOps::decode_quantifier(itemXQType->get_quantifier());
 
   xqtref_t res;
-  if( !theUdTypesCache->get(key.str(), res) )
+  if( !theUdTypesCache->get(key, res) )
   {
     TRACE("key: '" << key << "'");
-    theUdTypesCache->put(key.str(), itemXQType);
+    theUdTypesCache->insert(key, itemXQType);
   }
 }
 
@@ -2028,7 +2041,7 @@ bool Schema::isCastableUserUnionTypes(
     return false;
 }
 
-void Schema::serialize(::zorba::serialization::Archiver &ar)
+void Schema::serialize(::zorba::serialization::Archiver& ar)
 {
   SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
 
@@ -2036,63 +2049,68 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
    ar & theUdTypesCache;
 
    bool is_grammar_NULL = (theGrammarPool == NULL);
-   ar.set_is_temp_field_one_level(true, true);
+
+   ar.set_is_temp_field(true);
+
    ar & is_grammar_NULL;
-   unsigned long size_of_size_t = sizeof(size_t);
+
+   csize size_of_size_t = sizeof(size_t);
+
    union
    {
      unsigned long lvalue;
      unsigned char cvalue[4];
-   }le_be_value;
+   } le_be_value;
+
    le_be_value.lvalue = 0x11223344;
-   if(ar.is_serializing_out())
+
+   if (ar.is_serializing_out())
    {
      ar & size_of_size_t;
      ar & le_be_value.cvalue[0];
-     if(!is_grammar_NULL)
+
+     if (!is_grammar_NULL)
      {
-       BinMemOutputStream    binmemoutputstream;
-       unsigned int  size = 0;
-       unsigned char *binchars = NULL;
+       BinMemOutputStream binmemoutputstream;
+       zstring binstr;
+
        try
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
-         size = (unsigned int)binmemoutputstream.getSize();
-         binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
+         binstr.assign((char*)binmemoutputstream.getRawBuffer(),
+                       binmemoutputstream.getSize());
        }
        catch (...)
        {
        }
 
-       ar & size;
-       if(size)
-         serialize_array(ar, binchars, size);
+       ar & binstr;
      }
    }
    else
    {
-     unsigned long size_of_size_t2;
+     csize size_of_size_t2;
      unsigned char le_be_value_first_char;
+
      ar & size_of_size_t2;
      ar & le_be_value_first_char;
-     if((size_of_size_t2 != size_of_size_t) || (le_be_value_first_char != le_be_value.cvalue[0]))
+
+     if (size_of_size_t2 != size_of_size_t ||
+         le_be_value_first_char != le_be_value.cvalue[0])
      {
        throw ZORBA_EXCEPTION(zerr::ZCSE0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
      }
-     if(!is_grammar_NULL)
+
+     if (!is_grammar_NULL)
      {
-       unsigned int  size;
-       unsigned char *binchars;
+       zstring binstr;
 
-       ar & size;
-       if(size)
+       ar & binstr;
+
+       if (!binstr.empty())
        {
-         binchars = (unsigned char*)malloc(size+8);
-         serialize_array(ar, binchars, size);
-         BinMemInputStream   binmeminputstream((XMLByte*)binchars, size);
+         BinMemInputStream binmeminputstream((XMLByte*)binstr.c_str(), binstr.size());
          theGrammarPool->deserializeGrammars(&binmeminputstream);
-
-         free(binchars);
        }
      }
      else
@@ -2100,7 +2118,8 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        theGrammarPool = NULL;
      }
    }
-   ar.set_is_temp_field_one_level(false);
+
+   ar.set_is_temp_field(false);
 #endif
 }
 

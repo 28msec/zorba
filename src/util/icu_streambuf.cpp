@@ -15,15 +15,17 @@
  */
 
 #include "stdafx.h"
-#define ZORBA_DEBUG_ICU_STREAMBUF 0
 
+// #define ZORBA_DEBUG_ICU_STREAMBUF
 #ifdef ZORBA_DEBUG_ICU_STREAMBUF
 # include <stdio.h>
 #endif
 
 #include <algorithm>
 #include <cassert>
+#include <stdexcept>
 
+#include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 
 #include "diagnostics/assert.h"
@@ -95,12 +97,14 @@ UConverter* icu_streambuf::create_conv( char const *charset ) {
   if ( !conv || U_FAILURE( err ) ) {
     if ( conv )
       ucnv_close( conv );
-    throw invalid_argument( charset );
+    throw invalid_argument( u_errorName( err ) );
   }
   return conv;
 }
 
 bool icu_streambuf::is_necessary( char const *cc_charset ) {
+  if ( !*cc_charset )
+    throw invalid_argument( "empty charset" );
   //
   // Apparently, ucnv_compareNames() doesn't consider "US-ASCII" an alias for
   // "ASCII", so check for "US-ASCII" ourselves.
@@ -160,8 +164,12 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
   char_type const *from = &utf8_byte;
   char ebuf[ Small_External_Buf_Size ], *to = ebuf;
 
+#ifdef NDEBUG
+  to_external( &from, from + 1, &to, to + sizeof ebuf );
+#else
   bool const ok = to_external( &from, from + 1, &to, to + sizeof ebuf );
   assert( ok );
+#endif /* NDEBUG */
   if ( streamsize const n = to - ebuf ) {
     original()->sputn( ebuf, n );
     p_.reset();
@@ -169,6 +177,16 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
 
   return c;
 }
+
+#ifdef __GNUC__
+# ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+#   pragma GCC diagnostic push
+# endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+//
+// Disables warnings about p.pivot_buf_ + sizeof p.pivot_buf_.
+//
+# pragma GCC diagnostic ignored "-Warray-bounds"
+#endif /* __GNUC__ */
 
 bool icu_streambuf::to_external( char_type const **from,
                                  char_type const *from_end, char **to,
@@ -207,6 +225,12 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
     );
   return true;
 }
+
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+# pragma GCC diagnostic pop
+#else
+# pragma GCC diagnostic warning "-Warray-bounds"
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 icu_streambuf::int_type icu_streambuf::underflow() {
 #if ZORBA_DEBUG_ICU_STREAMBUF

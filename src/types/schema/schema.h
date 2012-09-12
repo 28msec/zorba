@@ -34,10 +34,10 @@
 
 
 #define ZORBA_HASHMAP_WITH_SERIALIZATION
-#include "util/hashmap.h"
+#include "zorbautils/hashmap_zstring.h"
 #undef ZORBA_HASHMAP_WITH_SERIALIZATION
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 
 namespace XERCES_CPP_NAMESPACE {
@@ -61,18 +61,20 @@ namespace internal
 *******************************************************************************/
 class Schema : public ::zorba::serialization::SerializeBaseClass
 {
+  ZSTRING_HASH_MAP(xqtref_t, UdTypesCache);
+
 public:
   static const char* XSD_NAMESPACE;
 
 private:
-  static bool                            theIsInitialized;
+  static bool                                theIsInitialized;
 
-  TypeManager                          * theTypeManager;
+  TypeManager                              * theTypeManager;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  XERCES_CPP_NAMESPACE::XMLGrammarPool * theGrammarPool;
+  XERCES_CPP_NAMESPACE::XMLGrammarPool     * theGrammarPool;
   // QQQ use zstring?
-  serializable_hashmap<std::string,xqtref_t>       * theUdTypesCache;
+  UdTypesCache                             * theUdTypesCache;
 #endif // ZORBA_NO_XMLSCHEMA
 
 public:

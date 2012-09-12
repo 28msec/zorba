@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,21 @@
  */
 
 %module zorba_api
-%include "std_string.i"
+%module(directors="1") zorba_api
+
+
+TSRMLS_FETCH();
+
+//%include "std_string.i"
+%include "std_pair.i"
 %include "exception.i"
+%include "carrays.i"
+%apply (char *STRING, size_t LENGTH) { (const char aStream[], size_t aLen) }
+%rename(opEquals) operator=;
+
+#ifndef SWIGRUBY
+%include "std_vector.i"
+#endif
 
 %exception {
   try {
@@ -34,8 +47,17 @@
   }
 }
 
+#ifndef SWIGRUBY
+namespace std {
+  %template(StringPairVector) vector< pair<string, string> >;
+  %template(StringPair) pair<string, string>;
+  %template(StringVector) vector< string >;
+}
+#endif
+
 %{  // Implementations
 
+#include "Config.h"
 
 #include <string>
 #include <sstream>
@@ -46,16 +68,16 @@
 #include <zorba/options.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
+#include <zorba/static_collection_manager.h>
 
   class CompilerHints;
-  //class DiagnosticHandler;
-  class Item;
-  class Iterator;
-  class XQuery;
+  class DiagnosticHandler;
   class Store;
   class Zorba;
+  class Iterator;
 
   class DynamicException;
+  class DocumentManager;
   class XQueryException;
   class SerializationException;
   class StaticException;
@@ -63,22 +85,59 @@
   class TypeException;
   class UserException;
   class ZorbaException;
+  class XmlDataManager;
+  class StaticCollectionManager;
+  class Store;
+  class InMemoryStore;
 
+  #include "ZorbaIOStream.h"
+  #include "ZorbaStreamBuffer.h"
+  #include "SerializationOptions.h"
+  #include "TypeIdentifier.h"
+  #include "Item.h"
+  #include "Iterator.h"
+  #include "DynamicContext.h"
   #include "StaticContext.h"
+  #include "XQuery.h"
   #include "ItemFactory.h"
-
+  #include "Zorba.h"
+  #include "ItemSequence.h"
+  #include "Collection.h"
+  #include "CollectionManager.h"
+  #include "StaticCollectionManager.h"
+  #include "DocumentManager.h"
+  #include "XmlDataManager.h"
+  #include "DiagnosticHandler.h"
+  #include "Store.h"
+  
 %}
 
+#ifndef SWIGRUBY
+namespace std {
+  %template(ItemVector) vector<Item>; 
+}
+#endif
 
+/* %include "various.i" required for mapping to Java byte[]*/
 
-%include "XQuery.i"
-%include "Store.i"
-%include "XmlDataManager.i"
-%include "Exceptions.i"
-//%include "DiagnosticHandler.i"
+%include "ZorbaIOStream.i"
+%include "ZorbaStreamBuffer.i"
+%include "SerializationOptions.i"
+%include "TypeIdentifier.i"
+%include "Item.i"
+%include "Iterator.i"
+%include "DynamicContext.i"
 %include "CompilerHints.i"
 %include "StaticContext.i"
+%include "XQuery.i"
+%include "Store.i"
+%include "Exceptions.i"
+%include "DiagnosticHandler.i"
 %include "Zorba.i"
 %include "ItemFactory.i"
-
-
+%include "ItemSequence.i"
+%include "Collection.i"
+%include "CollectionManager.i"
+%include "StaticCollectionManager.i"
+%include "DocumentManager.i"
+%include "XmlDataManager.i"

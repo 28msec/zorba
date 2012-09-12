@@ -24,13 +24,22 @@
 #include <compiler/parsetree/parsenode_visitor.h>
 
 #include <compiler/parser/xqdoc_comment.h>
+
+#include "diagnostics/zorba_exception.h"
+#include "diagnostics/xquery_exception.h"
+#include "diagnostics/dict.h"
+
 #include "types/root_typemanager.h"
+
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 #include "store/api/iterator.h"
+
 #include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
+
 
 using namespace std;
 
@@ -133,7 +142,10 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       store::Item_t lAttrValueItem;
       theFactory->createString(lAttrValueItem, lTmp);
 
-      store::Item_t lAttrNamespaceItem, lAttrLocalnameItem;
+      store::Item_t lAttrPrefixItem, lAttrNamespaceItem, lAttrLocalnameItem;
+
+      zstring lPrefix = lAnn->get_qname()->get_prefix();
+      theFactory->createString(lAttrPrefixItem, lPrefix);
 
       lTmp = lAnn->get_qname()->get_prefix();
       lTmp = theNamespaceMap[lTmp];
@@ -142,12 +154,19 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       lTmp = lAnn->get_qname()->get_localname();
       theFactory->createString(lAttrLocalnameItem, lTmp);
 
+      store::Item_t lPrefixQName;
+      theFactory->createQName(lPrefixQName, "", "", "prefix");
       store::Item_t lNamespaceQName;
       theFactory->createQName(lNamespaceQName, "", "", "namespace");
       store::Item_t lLocalnameQName;
       theFactory->createQName(lLocalnameQName, "", "", "localname");
       store::Item_t lValueQName;
       theFactory->createQName(lValueQName, "", "", "value");
+
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lPrefixQName, lAnnotationElem, lPrefixQName,
+        lTypeName, lAttrPrefixItem);
      
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
@@ -167,11 +186,21 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
   }
 }
 
+bool is_namespace_schema(zstring aPrefix, zstring aNamespace )
+{
+  map<zstring, zstring>::iterator ite = theNamespaceSchemaMap.find(aPrefix);
+  if(ite != theNamespaceSchemaMap.end())
+  {
+    return (ite->second == aNamespace);
+  }
+  return false;
+}
+
 void print_namespaces()
 {
-  store::Item_t lTypeName; 
+  store::Item_t lTypeName;
   store::Item_t lNamespaceQName, lCustomElem;
-  store::Item_t lPrefixQName, lURIQName;
+  store::Item_t lPrefixQName, lURIQName, lIsSchemaQName;
   store::Item_t lNamespace, lAttrValue;
   bool lFirst = true;
 
@@ -214,6 +243,9 @@ void print_namespaces()
         lPrefixQName, "", "", "prefix");
     theFactory->createQName(
         lURIQName, "", "", "uri");
+    theFactory->createQName(
+        lIsSchemaQName, "", "", "isSchema");
+
 
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(
@@ -232,6 +264,12 @@ void print_namespaces()
     theFactory->createAttributeNode(
       lURIQName, lNamespace, lURIQName, lTypeName, lAttrValue);
 
+    bool lIsSchema = is_namespace_schema(lIter->first, lIter->second);
+    lTmp = lIsSchema?"true":"false";
+    theFactory->createString(lAttrValue, lTmp);
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createAttributeNode(
+      lIsSchemaQName, lNamespace, lIsSchemaQName, lTypeName, lAttrValue);
   }
 }
 
@@ -434,6 +472,9 @@ protected:
   // prefix -> uri
   map<zstring, zstring> theNamespaceMap;
 
+  // prefix -> uri for the schema imports
+  map<zstring, zstring> theNamespaceSchemaMap;
+
   const char*          theXQDocNS;
   const char*          theXQDocPrefix;
 
@@ -460,10 +501,10 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theVersion("1.0"),
   theFactory(GENV_ITEMFACTORY)
 {
-  theNamespaceMap["fn"] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaceMap[""] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaceMap["xs"] = "http://www.w3.org/2001/XMLSchema";
-  theNamespaceMap["local"] = "http://www.w3.org/2005/xquery-local-functions";
+  theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
+  theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
+  theNamespaceMap[XML_SCHEMA_PREFIX] = XML_SCHEMA_NS;
+  theNamespaceMap["local"] = XQUERY_LOCAL_FN_NS;
 }
 
 
@@ -859,10 +900,8 @@ void add_invoked_function (
   map<zstring, zstring>::iterator ite = theNamespaceMap.find(aPrefix);
   if (ite == theNamespaceMap.end())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZXQD0001_PREFIX_NOT_DECLARED,
-      ERROR_PARAMS( aPrefix, aLocalName, aLocation )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZXQD0001_PREFIX_NOT_DECLARED,
+    ERROR_PARAMS(aPrefix, aLocalName, aLocation ));
   }
 
   zstring lNS = ite->second;
@@ -895,13 +934,10 @@ void add_invoked_function (
 }
 
 
-XQDOC_NO_BEGIN_TAG (VarDecl)
+XQDOC_NO_BEGIN_TAG (GlobalVarDecl)
 
-void end_visit(const VarDecl& n, void*)
+void end_visit(const GlobalVarDecl& n, void*)
 {
-  if (!n.is_global())
-    return;
-
   store::Item_t lVariableQName, lUriQName;
   store::Item_t lVariableElem, lUriElem, lUriText;
 
@@ -918,20 +954,20 @@ void end_visit(const VarDecl& n, void*)
       lUriElem, lVariableElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  zstring lUriString(n.get_name()->get_qname());
+  zstring lUriString(n.get_var_name()->get_qname());
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
   store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
 
-  if(n.get_typedecl())
+  if (n.get_var_type())
   {
     std::stringstream os;
-    print_parsetree_xquery(os , &*n.get_typedecl());
+    print_parsetree_xquery(os , &*n.get_var_type());
     print_custom(lCommentElem, "type", os.str());
   }
 
-  if(n.is_extern())
+  if (n.is_extern())
     print_custom(lCommentElem, "isExternal", "true");
 
   // add all invoked function elements as children to the end of the current
@@ -1034,6 +1070,7 @@ void end_visit(const SchemaImport& n, void*)
     lPrefix = n.get_prefix()->get_prefix();
   }
   theNamespaceMap[lPrefix] = n.get_uri();
+  theNamespaceSchemaMap[lPrefix] = n.get_uri();
 }
 
 XQDOC_NO_BEGIN_TAG (NamespaceDecl)
@@ -1161,6 +1198,7 @@ XQDOC_NO_BEGIN_END_TAG (InstanceofExpr)
 XQDOC_NO_BEGIN_END_TAG (IntegrityConstraintDecl)
 XQDOC_NO_BEGIN_END_TAG (IntersectExceptExpr)
 XQDOC_NO_BEGIN_END_TAG (ItemType)
+XQDOC_NO_BEGIN_END_TAG (StructuredItemType)
 XQDOC_NO_BEGIN_END_TAG (LetClause)
 XQDOC_NO_BEGIN_END_TAG (LibraryModule)
 XQDOC_NO_BEGIN_END_TAG (Literal)
@@ -1233,6 +1271,7 @@ XQDOC_NO_BEGIN_END_TAG (URILiteralList)
 XQDOC_NO_BEGIN_END_TAG (ValidateExpr)
 XQDOC_NO_BEGIN_END_TAG (ValueComp)
 XQDOC_NO_BEGIN_END_TAG (VarBinding)
+XQDOC_NO_BEGIN_END_TAG( LocalVarDecl )
 XQDOC_NO_BEGIN_END_TAG (VarGetsDecl)
 XQDOC_NO_BEGIN_END_TAG (VarGetsDeclList)
 XQDOC_NO_BEGIN_END_TAG (VarInDecl)
@@ -1245,6 +1284,19 @@ XQDOC_NO_BEGIN_END_TAG (Wildcard)
 XQDOC_NO_BEGIN_END_TAG (WindowClause)
 XQDOC_NO_BEGIN_END_TAG (WindowVarDecl)
 XQDOC_NO_BEGIN_END_TAG (WindowVars)
+
+XQDOC_NO_BEGIN_END_TAG (JSONArrayConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONDirectObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONPairConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONPairList)
+XQDOC_NO_BEGIN_END_TAG (JSON_Test)
+XQDOC_NO_BEGIN_END_TAG (JSONObjectInsertExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayInsertExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayAppendExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONDeleteExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONReplaceExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONRenameExpr)
 
 XQDOC_NO_BEGIN_END_TAG (LiteralFunctionItem)
 XQDOC_NO_BEGIN_END_TAG (InlineFunction)

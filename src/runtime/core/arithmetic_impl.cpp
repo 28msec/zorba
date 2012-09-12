@@ -43,14 +43,29 @@
 
 namespace zorba {
 
-SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(GenericArithIterator)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<AddOperation>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<SubtractOperation>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<MultiplyOperation>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<DivideOperation>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<IntegerDivideOperation>, 5)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<ModOperation>, 6)
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<AddOperation>,
+                               1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<SubtractOperation>,
+                               2)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<MultiplyOperation>,
+                               3)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<DivideOperation>,
+                               4)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<IntegerDivideOperation>,
+                               5)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<ModOperation>,
+                               6)
 
 void ArithOperationsCommons::createError(
     const TypeManager* tm,
@@ -61,11 +76,9 @@ void ArithOperationsCommons::createError(
 {
   xqtref_t t0 = tm->create_builtin_atomic_type(aType0,TypeConstants::QUANT_ONE);
   xqtref_t t1 = tm->create_builtin_atomic_type(aType1,TypeConstants::QUANT_ONE);
-  throw XQUERY_EXCEPTION(
-    err::XPTY0004,
-    ERROR_PARAMS( ZED( OperationNotPossibleWithTypes_234 ), aOp, *t0, *t1 ),
-    ERROR_LOC( aLoc )
-  );
+
+  RAISE_ERROR(err::XPTY0004, aLoc,
+  ERROR_PARAMS(ZED(OperationNotPossibleWithTypes_234), aOp, *t0, *t1 ));
 }
 
 

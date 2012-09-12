@@ -35,12 +35,83 @@ class LoadProperties
 {
 private:
   bool theStoreDocument;
-  bool theEnableDtdLoader;
-  bool theEnableExtParsedEntityLoader;
+  zstring theBaseUri;
+  bool theNoError;
+  bool theStripWhitespace;
+  bool theSchemaLaxValidate;
+  bool theSchemaStrictValidate;
+  bool theDTDValidate;
+  bool theDTDLoad;
+  bool theDefaultDTDAttributes;
+  bool theParseExternalParsedEntity;
+  unsigned int theSkipRootNodes;
+  bool theSkipTopLevelTextNodes;
+  bool theErrorOnDoctype;       // Used by the fragment parser. By default it will allow Doctype 
+                                // declarations. But if a Doctype declaration is
+                                // present, and the flag is set to true, an error will be generated.
+  
+  bool theSubstituteEntities;
+  bool theXincludeSubstitutions;
+  bool theRemoveRedundantNS;
+  bool theNoCDATA;
+  bool theNoXIncludeNodes;
+  
+  bool theCreateDocParentLink;  // Default true. If set to false, the parsed input
+                                // nodes will not have their parent link set to the 
+                                // the document node. This is used by the parse-fragment
+                                // functions.
+                               
 
 public:
-  LoadProperties() : theStoreDocument(true), theEnableDtdLoader(false), theEnableExtParsedEntityLoader(false) {}
-  virtual ~LoadProperties() {}
+  LoadProperties()
+    :
+    theStoreDocument(true),
+    theBaseUri(""),
+    theNoError(false),
+    theStripWhitespace(false),
+    theSchemaLaxValidate(false),
+    theSchemaStrictValidate(false),
+    theDTDValidate(false),
+    theDTDLoad(false),
+    theDefaultDTDAttributes(false),
+    theParseExternalParsedEntity(false),
+    theSkipRootNodes(0),
+    theSkipTopLevelTextNodes(false),
+    theErrorOnDoctype(false),
+    theSubstituteEntities(false),
+    theXincludeSubstitutions(false),
+    theRemoveRedundantNS(false),
+    theNoCDATA(false),
+    theNoXIncludeNodes(false),
+    theCreateDocParentLink(true)
+  {
+  }
+
+  virtual ~LoadProperties()
+  {
+  }
+
+  void reset()
+  {
+    theStoreDocument = true;
+    theBaseUri = "";
+    theNoError = false;
+    theStripWhitespace = false;
+    theSchemaLaxValidate = false;
+    theSchemaStrictValidate = false;
+    theDTDValidate = false;
+    theDTDLoad = false;
+    theDefaultDTDAttributes = false;
+    theParseExternalParsedEntity = false;
+    theSkipRootNodes = 0;
+    theSkipTopLevelTextNodes = false;
+    theErrorOnDoctype = false;
+    theSubstituteEntities = false;
+    theXincludeSubstitutions = false;
+    theRemoveRedundantNS = false;
+    theNoCDATA = false;
+    theNoXIncludeNodes = false;
+  }
 
   /**
    * Set the property storeDocument, it specifies whether the document
@@ -60,40 +131,188 @@ public:
     return theStoreDocument;
   }
 
-  /**
-   * Set the property enableDtd, it specifies whether the document's
-   * dtd should be enabled when loading
-   */
-  void setEnableDtd(bool aEnableDtdLoader)
+  // theBaseUri
+  void setBaseUri(const zstring& aBaseUri)
   {
-    theEnableDtdLoader = aEnableDtdLoader;
+    theBaseUri = aBaseUri;
+  }
+  zstring getBaseUri() const
+  {
+    return theBaseUri;
   }
 
-  /**
-   * Get the property enableDtd, it specifies whether the document's
-   * dtd should be enabled when loading
-   */
-  bool getEnableDtd() const
+  // theNoError
+  void setNoError(bool aNoError)
   {
-    return theEnableDtdLoader;
+    theNoError = aNoError;
+  }
+  bool getNoError() const
+  {
+    return theNoError;
   }
 
-  /**
-   * Set the property enableExtParsedEntity, it specifies whether the document
-   * should be parsed as an enxternal general parsed entity
-   */
-  void setEnableExtParsedEntity(bool aEnableExtParsedEntityLoader)
+  // theStripWhitespace
+  void setStripWhitespace(bool aStripWhitespace)
   {
-    theEnableExtParsedEntityLoader = aEnableExtParsedEntityLoader;
+    theStripWhitespace = aStripWhitespace;
+  }
+  bool getStripWhitespace() const
+  {
+    return theStripWhitespace;
   }
 
-  /**
-   * Get the property enableDtd, it specifies whether the document
-   * should be parsed as an enxternal general parsed entity
-   */
-  bool getEnableExtParsedEntity() const
+  // theSchemaLaxValidate
+  void setSchemaLaxValidate(bool aSchemaLaxValidate)
   {
-    return theEnableExtParsedEntityLoader;
+    theSchemaLaxValidate = aSchemaLaxValidate;
+    if (theSchemaLaxValidate)
+      theSchemaStrictValidate = false;
+  }
+  bool getSchemaLaxValidate() const
+  {
+    return theSchemaLaxValidate;
+  }
+
+  // theSchemaStrictValidate
+  void setSchemaStrictValidate(bool aSchemaStrictValidate)
+  {
+    theSchemaStrictValidate = aSchemaStrictValidate;
+    if (theSchemaStrictValidate)
+      theSchemaLaxValidate = false;
+  }
+  bool getSchemaStrictValidate() const
+  {
+    return theSchemaStrictValidate;
+  }
+
+  // theDTDValidate
+  void setDTDValidate(bool aDTDValidate)
+  {
+    theDTDValidate = aDTDValidate;
+  }
+  bool getDTDValidate() const
+  {
+    return theDTDValidate;
+  }
+
+  // theDTDLoad
+  void setDTDLoad(bool aDTDLoad)
+  {
+    theDTDLoad = aDTDLoad;
+  }
+  bool getDTDLoad() const
+  {
+    return theDTDLoad;
+  }
+
+  // theDefaultDTDAttributes
+  void setDefaultDTDAttributes(bool aDefaultDTDAttributes)
+  {
+    theDefaultDTDAttributes = aDefaultDTDAttributes;
+  }
+  bool getDefaultDTDAttributes() const
+  {
+    return theDefaultDTDAttributes;
+  }
+
+  // theParseExternalParsedEntity
+  void setParseExternalParsedEntity(bool aParseExternalParsedEntity)
+  {
+    theParseExternalParsedEntity = aParseExternalParsedEntity;
+  }
+  bool getParseExternalParsedEntity() const
+  {
+    return theParseExternalParsedEntity;
+  }
+
+  // theSkipRootNodes
+  void setSkipRootNodes(unsigned int aSkipRootNodes)
+  {
+    theSkipRootNodes = aSkipRootNodes;
+  }
+  unsigned int getSkipRootNodes() const
+  {
+    return theSkipRootNodes;
+  }
+
+  // theSkipTopLevelTextNodes
+  void setSkipTopLevelTextNodes(bool aSkipTopLevelTextNodes)
+  {
+    theSkipTopLevelTextNodes = aSkipTopLevelTextNodes;
+  }
+  bool getSkipTopLevelTextNodes() const
+  {
+    return theSkipTopLevelTextNodes;
+  }
+  
+  // theSkipTopLevelTextNodes
+  void setErrorOnDoctype(bool aErrorOnDoctype)
+  {
+    theErrorOnDoctype = aErrorOnDoctype;
+  }
+  bool getErrorOnDoctype() const
+  {
+    return theErrorOnDoctype;
+  }
+
+  // theSubstituteEntities
+  void setSubstituteEntities(bool aSubstituteEntities)
+  {
+    theSubstituteEntities = aSubstituteEntities;
+  }
+  bool getSubstituteEntities() const
+  {
+    return theSubstituteEntities;
+  }
+
+  // theXincludeSubstitutions
+  void setXincludeSubstitutions(bool aXincludeSubstitutions)
+  {
+    theXincludeSubstitutions = aXincludeSubstitutions;
+  }
+  bool getXincludeSubstitutions() const
+  {
+    return theXincludeSubstitutions;
+  }
+
+  // theRemoveRedundantNS
+  void setRemoveRedundantNS(bool aRemoveRedundantNS)
+  {
+    theRemoveRedundantNS = aRemoveRedundantNS;
+  }
+  bool getRemoveRedundantNS() const
+  {
+    return theRemoveRedundantNS;
+  }
+
+  // theNoCDATA
+  void setNoCDATA(bool aNoCDATA)
+  {
+    theNoCDATA = aNoCDATA;
+  }
+  bool getNoCDATA() const
+  {
+    return theNoCDATA;
+  }
+
+  // theNoXIncludeNodes
+  void setNoXIncludeNodes(bool aNoXIncludeNodes)
+  {
+    theNoXIncludeNodes = aNoXIncludeNodes;
+  }
+  bool getNoXIncludeNodes() const
+  {
+    return theNoXIncludeNodes;
+  }
+  
+  // theNoXIncludeNodes
+  void setCreateDocParentLink(bool aCreateDocParentLink)
+  {
+    theCreateDocParentLink = aCreateDocParentLink;
+  }
+  bool getCreateDocParentLink() const
+  {
+    return theCreateDocParentLink;
   }
 };
 

@@ -54,8 +54,8 @@ inline std::ostream& operator<<( std::ostream &o, scheme s ) {
  * @param uri The URI to get the scheme of.
  * @param colon If not \c nullptr, this pointer is set to the position of the
  * ':' (if any) that follows the scheme name.
- * @return Returns the URI's scheme, or scheme::none if none, or
- * scheme::unknown if unknown.
+ * @return Returns the URI's scheme (if known), scheme::unknown (if unknown),
+ * or scheme::none (if none).
  */
 scheme get_scheme( char const *uri, char const **colon = nullptr );
 
@@ -64,10 +64,10 @@ scheme get_scheme( char const *uri, char const **colon = nullptr );
  *
  * @tparam StringType The string type.
  * @param uri The URI to get the scheme of.
- * @param sname If not \c nullptr and the scheme is known, this is set to the
- * scheme's name.
- * @return Returns the URI's scheme, or scheme::none if none, or
- * scheme::unknown if unknown.
+ * @param sname If not \c nullptr and the scheme is not \c none, this is set to
+ * the scheme's name.
+ * @return Returns the URI's scheme (if known), scheme::unknown (if unknown),
+ * or scheme::none (if none).
  */
 template<class StringType> inline
 scheme get_scheme( StringType const &uri, StringType *sname = nullptr ) {

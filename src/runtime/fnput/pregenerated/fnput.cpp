@@ -33,17 +33,17 @@
 namespace zorba {
 
 // <FnPutIterator>
-const char* FnPutIterator::class_name_str = "FnPutIterator";
-FnPutIterator::class_factory<FnPutIterator>
-FnPutIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnPutIterator)
 
-const serialization::ClassVersion 
-FnPutIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnPutIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnPutIterator, PlanIteratorState>*)this);
+}
 
-const int FnPutIterator::class_versions_count =
-sizeof(FnPutIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnPutIterator::accept(PlanIterVisitor& v) const {
+void FnPutIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

@@ -33,18 +33,140 @@
 
 namespace zorba {
 
+// <ZorbaCreateCollectionIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCreateCollectionIterator)
+
+void ZorbaCreateCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
+
+// </ZorbaCreateCollectionIterator>
+
+
+// <ZorbaDeleteCollectionIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteCollectionIterator)
+
+void ZorbaDeleteCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
+
+// </ZorbaDeleteCollectionIterator>
+
+
+// <IsAvailableCollectionIterator>
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableCollectionIterator)
+
+void IsAvailableCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
+
+// </IsAvailableCollectionIterator>
+
+
+// <AvailableCollectionsIterator>
+SERIALIZABLE_CLASS_VERSIONS(AvailableCollectionsIterator)
+
+void AvailableCollectionsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
+
+AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
+
+// </AvailableCollectionsIterator>
+
+
 // <FnCollectionIterator>
-const char* FnCollectionIterator::class_name_str = "FnCollectionIterator";
-FnCollectionIterator::class_factory<FnCollectionIterator>
-FnCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
 
-const serialization::ClassVersion 
-FnCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+void FnCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>*)this);
+}
 
-const int FnCollectionIterator::class_versions_count =
-sizeof(FnCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void FnCollectionIterator::accept(PlanIterVisitor& v) const {
+void FnCollectionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -64,17 +186,19 @@ FnCollectionIteratorState::FnCollectionIteratorState() {}
 
 
 // <ZorbaCollectionIterator>
-const char* ZorbaCollectionIterator::class_name_str = "ZorbaCollectionIterator";
-ZorbaCollectionIterator::class_factory<ZorbaCollectionIterator>
-ZorbaCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionIterator)
 
-const serialization::ClassVersion 
-ZorbaCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
 
-const int ZorbaCollectionIterator::class_versions_count =
-sizeof(ZorbaCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theIsDynamic;
+}
 
-void ZorbaCollectionIterator::accept(PlanIterVisitor& v) const {
+
+void ZorbaCollectionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -93,18 +217,48 @@ ZorbaCollectionIteratorState::ZorbaCollectionIteratorState() {}
 // </ZorbaCollectionIterator>
 
 
+// <ZorbaCollectionNameIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionNameIterator)
+
+void ZorbaCollectionNameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
+}
+
+
+void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
+
+// </ZorbaCollectionNameIterator>
+
+
 // <ZorbaIndexOfIterator>
-const char* ZorbaIndexOfIterator::class_name_str = "ZorbaIndexOfIterator";
-ZorbaIndexOfIterator::class_factory<ZorbaIndexOfIterator>
-ZorbaIndexOfIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaIndexOfIterator)
 
-const serialization::ClassVersion 
-ZorbaIndexOfIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaIndexOfIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>*)this);
 
-const int ZorbaIndexOfIterator::class_versions_count =
-sizeof(ZorbaIndexOfIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theIsDynamic;
+}
 
-void ZorbaIndexOfIterator::accept(PlanIterVisitor& v) const {
+
+void ZorbaIndexOfIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -121,74 +275,18 @@ ZorbaIndexOfIterator::~ZorbaIndexOfIterator() {}
 // </ZorbaIndexOfIterator>
 
 
-// <ZorbaCreateCollectionIterator>
-const char* ZorbaCreateCollectionIterator::class_name_str = "ZorbaCreateCollectionIterator";
-ZorbaCreateCollectionIterator::class_factory<ZorbaCreateCollectionIterator>
-ZorbaCreateCollectionIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ZorbaCreateCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaCreateCollectionIterator::class_versions_count =
-sizeof(ZorbaCreateCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
-
-// </ZorbaCreateCollectionIterator>
-
-
-// <ZorbaDeleteCollectionIterator>
-const char* ZorbaDeleteCollectionIterator::class_name_str = "ZorbaDeleteCollectionIterator";
-ZorbaDeleteCollectionIterator::class_factory<ZorbaDeleteCollectionIterator>
-ZorbaDeleteCollectionIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ZorbaDeleteCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaDeleteCollectionIterator::class_versions_count =
-sizeof(ZorbaDeleteCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
-
-// </ZorbaDeleteCollectionIterator>
-
-
 // <ZorbaInsertNodesIterator>
-const char* ZorbaInsertNodesIterator::class_name_str = "ZorbaInsertNodesIterator";
-ZorbaInsertNodesIterator::class_factory<ZorbaInsertNodesIterator>
-ZorbaInsertNodesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesIterator)
 
-const serialization::ClassVersion 
-ZorbaInsertNodesIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaInsertNodesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>*)this);
+}
 
-const int ZorbaInsertNodesIterator::class_versions_count =
-sizeof(ZorbaInsertNodesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaInsertNodesIterator::accept(PlanIterVisitor& v) const {
+void ZorbaInsertNodesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -206,17 +304,17 @@ ZorbaInsertNodesIterator::~ZorbaInsertNodesIterator() {}
 
 
 // <ZorbaInsertNodesFirstIterator>
-const char* ZorbaInsertNodesFirstIterator::class_name_str = "ZorbaInsertNodesFirstIterator";
-ZorbaInsertNodesFirstIterator::class_factory<ZorbaInsertNodesFirstIterator>
-ZorbaInsertNodesFirstIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesFirstIterator)
 
-const serialization::ClassVersion 
-ZorbaInsertNodesFirstIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaInsertNodesFirstIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>*)this);
+}
 
-const int ZorbaInsertNodesFirstIterator::class_versions_count =
-sizeof(ZorbaInsertNodesFirstIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaInsertNodesFirstIterator::accept(PlanIterVisitor& v) const {
+void ZorbaInsertNodesFirstIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -234,17 +332,17 @@ ZorbaInsertNodesFirstIterator::~ZorbaInsertNodesFirstIterator() {}
 
 
 // <ZorbaInsertNodesLastIterator>
-const char* ZorbaInsertNodesLastIterator::class_name_str = "ZorbaInsertNodesLastIterator";
-ZorbaInsertNodesLastIterator::class_factory<ZorbaInsertNodesLastIterator>
-ZorbaInsertNodesLastIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesLastIterator)
 
-const serialization::ClassVersion 
-ZorbaInsertNodesLastIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaInsertNodesLastIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>*)this);
+}
 
-const int ZorbaInsertNodesLastIterator::class_versions_count =
-sizeof(ZorbaInsertNodesLastIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaInsertNodesLastIterator::accept(PlanIterVisitor& v) const {
+void ZorbaInsertNodesLastIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -262,17 +360,17 @@ ZorbaInsertNodesLastIterator::~ZorbaInsertNodesLastIterator() {}
 
 
 // <ZorbaInsertNodesBeforeIterator>
-const char* ZorbaInsertNodesBeforeIterator::class_name_str = "ZorbaInsertNodesBeforeIterator";
-ZorbaInsertNodesBeforeIterator::class_factory<ZorbaInsertNodesBeforeIterator>
-ZorbaInsertNodesBeforeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesBeforeIterator)
 
-const serialization::ClassVersion 
-ZorbaInsertNodesBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaInsertNodesBeforeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>*)this);
+}
 
-const int ZorbaInsertNodesBeforeIterator::class_versions_count =
-sizeof(ZorbaInsertNodesBeforeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaInsertNodesBeforeIterator::accept(PlanIterVisitor& v) const {
+void ZorbaInsertNodesBeforeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -290,17 +388,19 @@ ZorbaInsertNodesBeforeIterator::~ZorbaInsertNodesBeforeIterator() {}
 
 
 // <ZorbaInsertNodesAfterIterator>
-const char* ZorbaInsertNodesAfterIterator::class_name_str = "ZorbaInsertNodesAfterIterator";
-ZorbaInsertNodesAfterIterator::class_factory<ZorbaInsertNodesAfterIterator>
-ZorbaInsertNodesAfterIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesAfterIterator)
 
-const serialization::ClassVersion 
-ZorbaInsertNodesAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaInsertNodesAfterIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
 
-const int ZorbaInsertNodesAfterIterator::class_versions_count =
-sizeof(ZorbaInsertNodesAfterIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theIsDynamic;
+}
 
-void ZorbaInsertNodesAfterIterator::accept(PlanIterVisitor& v) const {
+
+void ZorbaInsertNodesAfterIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -318,17 +418,17 @@ ZorbaInsertNodesAfterIterator::~ZorbaInsertNodesAfterIterator() {}
 
 
 // <ZorbaApplyInsertNodesIterator>
-const char* ZorbaApplyInsertNodesIterator::class_name_str = "ZorbaApplyInsertNodesIterator";
-ZorbaApplyInsertNodesIterator::class_factory<ZorbaApplyInsertNodesIterator>
-ZorbaApplyInsertNodesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesIterator)
 
-const serialization::ClassVersion 
-ZorbaApplyInsertNodesIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaApplyInsertNodesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>*)this);
+}
 
-const int ZorbaApplyInsertNodesIterator::class_versions_count =
-sizeof(ZorbaApplyInsertNodesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaApplyInsertNodesIterator::accept(PlanIterVisitor& v) const {
+void ZorbaApplyInsertNodesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -348,17 +448,17 @@ ZorbaApplyInsertNodesIteratorState::ZorbaApplyInsertNodesIteratorState() {}
 
 
 // <ZorbaApplyInsertNodesFirstIterator>
-const char* ZorbaApplyInsertNodesFirstIterator::class_name_str = "ZorbaApplyInsertNodesFirstIterator";
-ZorbaApplyInsertNodesFirstIterator::class_factory<ZorbaApplyInsertNodesFirstIterator>
-ZorbaApplyInsertNodesFirstIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesFirstIterator)
 
-const serialization::ClassVersion 
-ZorbaApplyInsertNodesFirstIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaApplyInsertNodesFirstIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>*)this);
+}
 
-const int ZorbaApplyInsertNodesFirstIterator::class_versions_count =
-sizeof(ZorbaApplyInsertNodesFirstIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaApplyInsertNodesFirstIterator::accept(PlanIterVisitor& v) const {
+void ZorbaApplyInsertNodesFirstIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -378,17 +478,17 @@ ZorbaApplyInsertNodesFirstIteratorState::ZorbaApplyInsertNodesFirstIteratorState
 
 
 // <ZorbaApplyInsertNodesLastIterator>
-const char* ZorbaApplyInsertNodesLastIterator::class_name_str = "ZorbaApplyInsertNodesLastIterator";
-ZorbaApplyInsertNodesLastIterator::class_factory<ZorbaApplyInsertNodesLastIterator>
-ZorbaApplyInsertNodesLastIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesLastIterator)
 
-const serialization::ClassVersion 
-ZorbaApplyInsertNodesLastIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaApplyInsertNodesLastIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>*)this);
+}
 
-const int ZorbaApplyInsertNodesLastIterator::class_versions_count =
-sizeof(ZorbaApplyInsertNodesLastIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaApplyInsertNodesLastIterator::accept(PlanIterVisitor& v) const {
+void ZorbaApplyInsertNodesLastIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -408,17 +508,17 @@ ZorbaApplyInsertNodesLastIteratorState::ZorbaApplyInsertNodesLastIteratorState()
 
 
 // <ZorbaApplyInsertNodesBeforeIterator>
-const char* ZorbaApplyInsertNodesBeforeIterator::class_name_str = "ZorbaApplyInsertNodesBeforeIterator";
-ZorbaApplyInsertNodesBeforeIterator::class_factory<ZorbaApplyInsertNodesBeforeIterator>
-ZorbaApplyInsertNodesBeforeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesBeforeIterator)
 
-const serialization::ClassVersion 
-ZorbaApplyInsertNodesBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaApplyInsertNodesBeforeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>*)this);
+}
 
-const int ZorbaApplyInsertNodesBeforeIterator::class_versions_count =
-sizeof(ZorbaApplyInsertNodesBeforeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaApplyInsertNodesBeforeIterator::accept(PlanIterVisitor& v) const {
+void ZorbaApplyInsertNodesBeforeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -438,17 +538,17 @@ ZorbaApplyInsertNodesBeforeIteratorState::ZorbaApplyInsertNodesBeforeIteratorSta
 
 
 // <ZorbaApplyInsertNodesAfterIterator>
-const char* ZorbaApplyInsertNodesAfterIterator::class_name_str = "ZorbaApplyInsertNodesAfterIterator";
-ZorbaApplyInsertNodesAfterIterator::class_factory<ZorbaApplyInsertNodesAfterIterator>
-ZorbaApplyInsertNodesAfterIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaApplyInsertNodesAfterIterator)
 
-const serialization::ClassVersion 
-ZorbaApplyInsertNodesAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaApplyInsertNodesAfterIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>*)this);
+}
 
-const int ZorbaApplyInsertNodesAfterIterator::class_versions_count =
-sizeof(ZorbaApplyInsertNodesAfterIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaApplyInsertNodesAfterIterator::accept(PlanIterVisitor& v) const {
+void ZorbaApplyInsertNodesAfterIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -468,17 +568,19 @@ ZorbaApplyInsertNodesAfterIteratorState::ZorbaApplyInsertNodesAfterIteratorState
 
 
 // <ZorbaDeleteNodesIterator>
-const char* ZorbaDeleteNodesIterator::class_name_str = "ZorbaDeleteNodesIterator";
-ZorbaDeleteNodesIterator::class_factory<ZorbaDeleteNodesIterator>
-ZorbaDeleteNodesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteNodesIterator)
 
-const serialization::ClassVersion 
-ZorbaDeleteNodesIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaDeleteNodesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
 
-const int ZorbaDeleteNodesIterator::class_versions_count =
-sizeof(ZorbaDeleteNodesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theIsDynamic;
+}
 
-void ZorbaDeleteNodesIterator::accept(PlanIterVisitor& v) const {
+
+void ZorbaDeleteNodesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -496,17 +598,19 @@ ZorbaDeleteNodesIterator::~ZorbaDeleteNodesIterator() {}
 
 
 // <ZorbaDeleteNodesFirstIterator>
-const char* ZorbaDeleteNodesFirstIterator::class_name_str = "ZorbaDeleteNodesFirstIterator";
-ZorbaDeleteNodesFirstIterator::class_factory<ZorbaDeleteNodesFirstIterator>
-ZorbaDeleteNodesFirstIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteNodesFirstIterator)
 
-const serialization::ClassVersion 
-ZorbaDeleteNodesFirstIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaDeleteNodesFirstIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>*)this);
 
-const int ZorbaDeleteNodesFirstIterator::class_versions_count =
-sizeof(ZorbaDeleteNodesFirstIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theIsDynamic;
+}
 
-void ZorbaDeleteNodesFirstIterator::accept(PlanIterVisitor& v) const {
+
+void ZorbaDeleteNodesFirstIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -524,17 +628,19 @@ ZorbaDeleteNodesFirstIterator::~ZorbaDeleteNodesFirstIterator() {}
 
 
 // <ZorbaDeleteNodesLastIterator>
-const char* ZorbaDeleteNodesLastIterator::class_name_str = "ZorbaDeleteNodesLastIterator";
-ZorbaDeleteNodesLastIterator::class_factory<ZorbaDeleteNodesLastIterator>
-ZorbaDeleteNodesLastIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDeleteNodesLastIterator)
 
-const serialization::ClassVersion 
-ZorbaDeleteNodesLastIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaDeleteNodesLastIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>*)this);
 
-const int ZorbaDeleteNodesLastIterator::class_versions_count =
-sizeof(ZorbaDeleteNodesLastIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theIsDynamic;
+}
 
-void ZorbaDeleteNodesLastIterator::accept(PlanIterVisitor& v) const {
+
+void ZorbaDeleteNodesLastIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -552,17 +658,19 @@ ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 
 
 // <ZorbaTruncateCollectionIterator>
-const char* ZorbaTruncateCollectionIterator::class_name_str = "ZorbaTruncateCollectionIterator";
-ZorbaTruncateCollectionIterator::class_factory<ZorbaTruncateCollectionIterator>
-ZorbaTruncateCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ZorbaTruncateCollectionIterator)
 
-const serialization::ClassVersion 
-ZorbaTruncateCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ZorbaTruncateCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>*)this);
 
-const int ZorbaTruncateCollectionIterator::class_versions_count =
-sizeof(ZorbaTruncateCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+    ar & theIsDynamic;
+}
 
-void ZorbaTruncateCollectionIterator::accept(PlanIterVisitor& v) const {
+
+void ZorbaTruncateCollectionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -579,104 +687,18 @@ ZorbaTruncateCollectionIterator::~ZorbaTruncateCollectionIterator() {}
 // </ZorbaTruncateCollectionIterator>
 
 
-// <ZorbaCollectionNameIterator>
-const char* ZorbaCollectionNameIterator::class_name_str = "ZorbaCollectionNameIterator";
-ZorbaCollectionNameIterator::class_factory<ZorbaCollectionNameIterator>
-ZorbaCollectionNameIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ZorbaCollectionNameIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaCollectionNameIterator::class_versions_count =
-sizeof(ZorbaCollectionNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
-
-// </ZorbaCollectionNameIterator>
-
-
-// <IsAvailableCollectionIterator>
-const char* IsAvailableCollectionIterator::class_name_str = "IsAvailableCollectionIterator";
-IsAvailableCollectionIterator::class_factory<IsAvailableCollectionIterator>
-IsAvailableCollectionIterator::g_class_factory;
-
-const serialization::ClassVersion 
-IsAvailableCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IsAvailableCollectionIterator::class_versions_count =
-sizeof(IsAvailableCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
-
-// </IsAvailableCollectionIterator>
-
-
-// <AvailableCollectionsIterator>
-const char* AvailableCollectionsIterator::class_name_str = "AvailableCollectionsIterator";
-AvailableCollectionsIterator::class_factory<AvailableCollectionsIterator>
-AvailableCollectionsIterator::g_class_factory;
-
-const serialization::ClassVersion 
-AvailableCollectionsIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int AvailableCollectionsIterator::class_versions_count =
-sizeof(AvailableCollectionsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
-
-AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
-
-// </AvailableCollectionsIterator>
-
-
 // <IsAvailableIndexIterator>
-const char* IsAvailableIndexIterator::class_name_str = "IsAvailableIndexIterator";
-IsAvailableIndexIterator::class_factory<IsAvailableIndexIterator>
-IsAvailableIndexIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableIndexIterator)
 
-const serialization::ClassVersion 
-IsAvailableIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsAvailableIndexIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>*)this);
+}
 
-const int IsAvailableIndexIterator::class_versions_count =
-sizeof(IsAvailableIndexIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsAvailableIndexIterator::accept(PlanIterVisitor& v) const {
+void IsAvailableIndexIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -694,17 +716,17 @@ IsAvailableIndexIterator::~IsAvailableIndexIterator() {}
 
 
 // <AvailableIndexesIterator>
-const char* AvailableIndexesIterator::class_name_str = "AvailableIndexesIterator";
-AvailableIndexesIterator::class_factory<AvailableIndexesIterator>
-AvailableIndexesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(AvailableIndexesIterator)
 
-const serialization::ClassVersion 
-AvailableIndexesIterator::class_versions[] ={{ 1, 0x000905, false}};
+void AvailableIndexesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>*)this);
+}
 
-const int AvailableIndexesIterator::class_versions_count =
-sizeof(AvailableIndexesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void AvailableIndexesIterator::accept(PlanIterVisitor& v) const {
+void AvailableIndexesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -724,17 +746,17 @@ AvailableIndexesIteratorState::AvailableIndexesIteratorState() {}
 
 
 // <IsActivatedICIterator>
-const char* IsActivatedICIterator::class_name_str = "IsActivatedICIterator";
-IsActivatedICIterator::class_factory<IsActivatedICIterator>
-IsActivatedICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsActivatedICIterator)
 
-const serialization::ClassVersion 
-IsActivatedICIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsActivatedICIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>*)this);
+}
 
-const int IsActivatedICIterator::class_versions_count =
-sizeof(IsActivatedICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsActivatedICIterator::accept(PlanIterVisitor& v) const {
+void IsActivatedICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -752,17 +774,17 @@ IsActivatedICIterator::~IsActivatedICIterator() {}
 
 
 // <ActivatedICsIterator>
-const char* ActivatedICsIterator::class_name_str = "ActivatedICsIterator";
-ActivatedICsIterator::class_factory<ActivatedICsIterator>
-ActivatedICsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ActivatedICsIterator)
 
-const serialization::ClassVersion 
-ActivatedICsIterator::class_versions[] ={{ 1, 0x000905, false}};
+void ActivatedICsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>*)this);
+}
 
-const int ActivatedICsIterator::class_versions_count =
-sizeof(ActivatedICsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ActivatedICsIterator::accept(PlanIterVisitor& v) const {
+void ActivatedICsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -782,17 +804,17 @@ ActivatedICsIteratorState::ActivatedICsIteratorState() {}
 
 
 // <IsDeclaredCollectionIterator>
-const char* IsDeclaredCollectionIterator::class_name_str = "IsDeclaredCollectionIterator";
-IsDeclaredCollectionIterator::class_factory<IsDeclaredCollectionIterator>
-IsDeclaredCollectionIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDeclaredCollectionIterator)
 
-const serialization::ClassVersion 
-IsDeclaredCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsDeclaredCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>*)this);
+}
 
-const int IsDeclaredCollectionIterator::class_versions_count =
-sizeof(IsDeclaredCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsDeclaredCollectionIterator::accept(PlanIterVisitor& v) const {
+void IsDeclaredCollectionIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -810,17 +832,17 @@ IsDeclaredCollectionIterator::~IsDeclaredCollectionIterator() {}
 
 
 // <DeclaredCollectionsIterator>
-const char* DeclaredCollectionsIterator::class_name_str = "DeclaredCollectionsIterator";
-DeclaredCollectionsIterator::class_factory<DeclaredCollectionsIterator>
-DeclaredCollectionsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeclaredCollectionsIterator)
 
-const serialization::ClassVersion 
-DeclaredCollectionsIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DeclaredCollectionsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DeclaredCollectionsIterator, DeclaredCollectionsIteratorState>*)this);
+}
 
-const int DeclaredCollectionsIterator::class_versions_count =
-sizeof(DeclaredCollectionsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DeclaredCollectionsIterator::accept(PlanIterVisitor& v) const {
+void DeclaredCollectionsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -840,17 +862,17 @@ DeclaredCollectionsIteratorState::DeclaredCollectionsIteratorState() {}
 
 
 // <IsDeclaredIndexIterator>
-const char* IsDeclaredIndexIterator::class_name_str = "IsDeclaredIndexIterator";
-IsDeclaredIndexIterator::class_factory<IsDeclaredIndexIterator>
-IsDeclaredIndexIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDeclaredIndexIterator)
 
-const serialization::ClassVersion 
-IsDeclaredIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsDeclaredIndexIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>*)this);
+}
 
-const int IsDeclaredIndexIterator::class_versions_count =
-sizeof(IsDeclaredIndexIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsDeclaredIndexIterator::accept(PlanIterVisitor& v) const {
+void IsDeclaredIndexIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -868,17 +890,17 @@ IsDeclaredIndexIterator::~IsDeclaredIndexIterator() {}
 
 
 // <DeclaredIndexesIterator>
-const char* DeclaredIndexesIterator::class_name_str = "DeclaredIndexesIterator";
-DeclaredIndexesIterator::class_factory<DeclaredIndexesIterator>
-DeclaredIndexesIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeclaredIndexesIterator)
 
-const serialization::ClassVersion 
-DeclaredIndexesIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DeclaredIndexesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DeclaredIndexesIterator, DeclaredIndexesIteratorState>*)this);
+}
 
-const int DeclaredIndexesIterator::class_versions_count =
-sizeof(DeclaredIndexesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DeclaredIndexesIterator::accept(PlanIterVisitor& v) const {
+void DeclaredIndexesIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -903,17 +925,17 @@ void DeclaredIndexesIteratorState::init(PlanState& planState) {
 
 
 // <IsDeclaredICIterator>
-const char* IsDeclaredICIterator::class_name_str = "IsDeclaredICIterator";
-IsDeclaredICIterator::class_factory<IsDeclaredICIterator>
-IsDeclaredICIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(IsDeclaredICIterator)
 
-const serialization::ClassVersion 
-IsDeclaredICIterator::class_versions[] ={{ 1, 0x000905, false}};
+void IsDeclaredICIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>*)this);
+}
 
-const int IsDeclaredICIterator::class_versions_count =
-sizeof(IsDeclaredICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IsDeclaredICIterator::accept(PlanIterVisitor& v) const {
+void IsDeclaredICIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -931,17 +953,17 @@ IsDeclaredICIterator::~IsDeclaredICIterator() {}
 
 
 // <DeclaredICsIterator>
-const char* DeclaredICsIterator::class_name_str = "DeclaredICsIterator";
-DeclaredICsIterator::class_factory<DeclaredICsIterator>
-DeclaredICsIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(DeclaredICsIterator)
 
-const serialization::ClassVersion 
-DeclaredICsIterator::class_versions[] ={{ 1, 0x000905, false}};
+void DeclaredICsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>*)this);
+}
 
-const int DeclaredICsIterator::class_versions_count =
-sizeof(DeclaredICsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void DeclaredICsIterator::accept(PlanIterVisitor& v) const {
+void DeclaredICsIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -963,6 +985,36 @@ void DeclaredICsIteratorState::init(PlanState& planState) {
   nameItState = NULL;
 }
 // </DeclaredICsIterator>
+
+
+// <FnURICollectionIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnURICollectionIterator)
+
+void FnURICollectionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnURICollectionIterator, FnURICollectionIteratorState>*)this);
+}
+
+
+void FnURICollectionIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnURICollectionIterator::~FnURICollectionIterator() {}
+
+FnURICollectionIteratorState::FnURICollectionIteratorState() {}
+
+// </FnURICollectionIterator>
 
 
 
