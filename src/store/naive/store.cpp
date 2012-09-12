@@ -58,7 +58,6 @@
 #include "tree_id_generator.h"
 
 #include "util/cxx_util.h"
-#include "util/uuid/uuid.h"
 #include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -105,7 +104,6 @@ Store::Store()
   theNodeFactory(NULL),
   thePULFactory(NULL),
   theTreeIdGeneratorFactory(NULL),
-  theTreeIdGenerator(NULL),
   theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
   theIndices(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
@@ -165,8 +163,6 @@ void Store::init()
     thePULFactory = createPULFactory();
     
     theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
-
-    theTreeIdGenerator = theTreeIdGeneratorFactory->createTreeGenerator();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -316,12 +312,6 @@ void Store::shutdown(bool soft)
       destroyTreeIdGeneratorFactory(theTreeIdGeneratorFactory);
     }
 
-    if (theTreeIdGenerator)
-    {
-      delete theTreeIdGenerator;
-      theTreeIdGenerator = NULL;
-    }
-
     if (theQNamePool != NULL)
     {
       csize numTypes = theSchemaTypeNames.size();
@@ -407,7 +397,7 @@ XmlLoader* Store::getXmlLoader(
 ********************************************************************************/
 TreeId Store::createTreeId()
 {
-  return theTreeIdGenerator->create();
+  return theTreeIdGeneratorFactory->getDefaultTreeIdGenerator().create();
 }
 
 
@@ -672,7 +662,7 @@ void Store::populateGeneralIndex(
         // Current domain node has at least 2 keys. So insert them in the index.
         // Note: we have to copy the domainNode rchandle because index->insert()
         // will transfer the given node.
-        index->setMultiKey();
+        index->addMultiKey();
 
         store::Item_t node = domainNode;
         index->insert(firstKeyItem, node);
@@ -724,10 +714,8 @@ store::Index_t Store::refreshIndex(
 
   if (!theIndices.get(non_const_items, index))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   deleteIndex(qname);

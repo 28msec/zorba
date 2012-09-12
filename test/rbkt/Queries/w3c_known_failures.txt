@@ -41,6 +41,8 @@ test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-009
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
+test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4
+test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-001
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-002
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-007

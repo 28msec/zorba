@@ -50,6 +50,7 @@
 #include "runtime/full_text/ft_module.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
+#include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
@@ -1571,6 +1572,20 @@ void PrinterVisitor::endVisit ( const CheckICIterator& ) {
 // </CheckICIterator>
 
 
+// <IndexKeysIterator>
+void PrinterVisitor::beginVisit ( const IndexKeysIterator& a) {
+  thePrinter.startBeginVisit("IndexKeysIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IndexKeysIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IndexKeysIterator>
+
+
 // <StaticNamespacesIterator>
 void PrinterVisitor::beginVisit ( const StaticNamespacesIterator& a) {
   thePrinter.startBeginVisit("StaticNamespacesIterator", ++theId);
@@ -2171,6 +2186,21 @@ void PrinterVisitor::endVisit ( const JSONArrayAppendIterator& ) {
   thePrinter.endEndVisit();
 }
 // </JSONArrayAppendIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONBoxIterator>
+void PrinterVisitor::beginVisit ( const JSONBoxIterator& a) {
+  thePrinter.startBeginVisit("JSONBoxIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONBoxIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONBoxIterator>
 
 #endif
 

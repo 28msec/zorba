@@ -605,6 +605,13 @@
       <value>module contains more than one context item declaration</value>
     </diagnostic>
 
+    <diagnostic code="XQST0103">
+      <comment>
+      All variables in a window clause must have distinct names.
+      </comment>
+      <value>$1: non-distinct variable in window clause</value>
+    </diagnostic>
+
     <diagnostic code="XQST0106">
       <comment>
        It is a static error if a function's annotations contain more than one
@@ -2190,7 +2197,7 @@
     </diagnostic>
 
     <diagnostic code="ZDST0006" name="COLLECTION_INVALID_PROPERTY_VALUE">
-      <value>collection invalid property value</value>
+      <value>"$1": invalid annotation for collection "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZDST0007" name="COLLECTION_DECL_IN_FOREIGN_MODULE">
@@ -2254,7 +2261,7 @@
     </diagnostic>
 
     <diagnostic code="ZDST0035" name="INDEX_GENERAL_MULTIKEY">
-      <value>"$1": index general multikey</value>
+      <value>"$1": number of key expressions for general indexes is restricted to one expression</value>
     </diagnostic>
 
     <diagnostic code="ZDST0036" name="INDEX_DECL_IN_FOREIGN_MODULE">
@@ -2674,6 +2681,12 @@
       <value>Cannot replace with less or more than an item.</value>
     </diagnostic>
     
+    <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
+
+      <value>Object or array selection needs exactly one parameter.</value>
+    </diagnostic>
+    
     <!--////////// JSONIQ ///////////////////////////////////////////-->
 
     <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
@@ -2687,6 +2700,16 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error for invalid option type</comment>
+      <value>$1: invalid option type for option $2 (expected $3)</value>
+    </diagnostic>
+
+
+    <diagnostic code="JSDY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error raised by jn:parse-json</comment>
+      <value>$1</value>
+    </diagnostic>
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -3684,7 +3707,43 @@
     <entry key="JSONiq error">
       <value>JSONIQ error</value>
     </entry>
-
+    
+    <entry key="JSONiq type error">
+      <value>JSONIQ type error</value>
+    </entry>
+    
+    <entry key="JSONiq static error">
+      <value>JSONIQ static error</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic error">
+      <value>JSONIQ dynamic error</value>
+    </entry>
+    
+    <entry key="JSONiq serialization error">
+      <value>JSONIQ serialization error</value>
+    </entry>
+    
+    <entry key="JSONiq warning">
+      <value>JSONIQ warning</value>
+    </entry>
+    
+    <entry key="JSONiq type warning">
+      <value>JSONIQ type warning</value>
+    </entry>
+    
+    <entry key="JSONiq static warning">
+      <value>JSONIQ static warning</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic warning">
+      <value>JSONIQ dynamic warning</value>
+    </entry>
+    
+    <entry key="JSONiq serialization warning">
+      <value>JSONIQ serialization warning</value>
+    </entry>
+    
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
@@ -3834,7 +3893,15 @@
     </entry>
     
     <entry key="ParseFragmentInvalidOptions">
-      <value>invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace</value>
+      <value>invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowed">
+      <value>a DOCTYPE declaration is not allowed</value>
+    </entry>
+    
+    <entry key="ParseFragmentDoctypeNotAllowedHere">
+      <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
     
     <entry key="FormatNumberDuplicates">
@@ -3888,6 +3955,10 @@
 
     <entry key="JSON_UNTERMINATED_STRING">
       <value>unterminated JSON string${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_UNEXPECTED_EXTRA_CONTENT">
+      <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
     </entry>
 
   </subvalues>

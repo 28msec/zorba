@@ -62,7 +62,7 @@ public:
    * Create an iterator to iterate over the items of a temp sequence.
    */
   virtual TempSeqIterator*
-  createTempSeqIterator() = 0;
+  createTempSeqIterator(bool lazy) = 0;
 };
 
 

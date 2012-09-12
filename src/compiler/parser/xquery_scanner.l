@@ -281,21 +281,7 @@ NCName                ({NCNameStartChar}{NCNameChar}*)
    |
    |  QName definition
    |______________________________________________________________________*/
-QName       ({NCName}":")?{NCName}
-
-  /*_____________________________________________________________________
-   |
-   |  QName definition
-   |______________________________________________________________________*/
-EQName       ({StringLiteral}":"){NCName}
-
-  /*_____________________________________________________________________
-   |
-   |  Annotation QName definition
-   |______________________________________________________________________*/
-AnnotationQName  "%"({NCName}":")?{NCName}
-
-AnnotationEQName "%"{StringLiteral}":"{NCName}
+QName                 ({NCName}":")?{NCName}
 
   /*_____________________________________________________________________
    |
@@ -304,6 +290,20 @@ AnnotationEQName "%"{StringLiteral}":"{NCName}
 CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
 PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
+
+  /*_____________________________________________________________________
+   |
+   |  EQName definition
+   |______________________________________________________________________*/
+BracedURILiteral      "Q{"({PredefinedEntityRef}|{CharRef}|[^&{}])*"}"
+EQName                {BracedURILiteral}{NCName}
+
+  /*_____________________________________________________________________
+   |
+   |  Annotation QName definition
+   |______________________________________________________________________*/
+AnnotationQName       "%"({NCName}":")?{NCName}
+AnnotationEQName      "%"{EQName}
 
   /*_____________________________________________________________________
    |
@@ -361,6 +361,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  Exclusive start states
    |______________________________________________________________________*/
 
+%x MODE_SHEBANG
 %x INITIAL_ACCUMULATOR
 %x MODE_APOS_ATTRIBUTE_CONTENT
 %x MODE_QUOTE_ATTRIBUTE_CONTENT
@@ -386,7 +387,33 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 %}
 
 
+  /*______________________________________________________________________
+   |
+   |  Override Flex's starting state here.
+   |______________________________________________________________________*/
+%{
+#define YY_USER_INIT      \
+{                         \
+  BEGIN MODE_SHEBANG;     \
+}
+%}
+
+
 %%
+
+
+  /*______________________________________________________________________
+   |
+   |  MODE_SHEBANG state
+   |
+   |  Accepts the "#!/path/interpreter" unix script shebang string
+   |______________________________________________________________________*/
+
+<MODE_SHEBANG>{
+"#!".*[\n]  { return token::SHEBANG; }
+.|[\n]      { BEGIN INITIAL; yyless(0); }
+}
+
 
   /*______________________________________________________________________
    |
@@ -767,7 +794,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 {NCName}":*"                  { TRY_SVAL_TOKEN(ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext); }
 
-{StringLiteral}":*"           { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+1, yyleng-4), yytext+1); }
+{BracedURILiteral}"*"         { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+2, yyleng-4), yytext+2); }
 
 {QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 
@@ -894,7 +921,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |______________________________________________________________________*/
 
 <MODE_PRAGMA>{QName}{WSplus}                         { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
-<MODE_PRAGMA>{StringLiteral}":"{NCName}{WSplus}      { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{EQName}{WSplus}                        { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
 <MODE_PRAGMA>{QName}"#)"                             { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA,  put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{StringLiteral}":"{NCName}"#)"          { BEGIN INITIAL; TRY_SVAL_TOKEN(EQNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{WSplus}                                { /* continue lexing */ }
@@ -1121,6 +1148,7 @@ std::string start_state(int state)
   switch (state)
   {
     case INITIAL: return "INITIAL";
+    case MODE_SHEBANG: return "MODE_SHEBANG";
     case INITIAL_ACCUMULATOR: return "INITIAL_ACCUMULATOR";
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
     case MODE_ELEM_COMP_CONSTR: return "MODE_ELEM_COMP_CONSTR";

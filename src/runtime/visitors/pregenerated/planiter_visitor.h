@@ -252,6 +252,8 @@ namespace zorba{
 
     class CheckICIterator;
 
+    class IndexKeysIterator;
+
     class StaticNamespacesIterator;
 
     class DefaultFunctionNamespaceIterator;
@@ -350,6 +352,9 @@ namespace zorba{
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONArrayAppendIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONBoxIterator;
 #endif
     class SqrtIterator;
 
@@ -1047,6 +1052,9 @@ public:
     virtual void beginVisit ( const CheckICIterator& ) = 0;
     virtual void endVisit   ( const CheckICIterator& ) = 0;
 
+    virtual void beginVisit ( const IndexKeysIterator& ) = 0;
+    virtual void endVisit   ( const IndexKeysIterator& ) = 0;
+
     virtual void beginVisit ( const StaticNamespacesIterator& ) = 0;
     virtual void endVisit   ( const StaticNamespacesIterator& ) = 0;
 
@@ -1187,6 +1195,10 @@ public:
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONArrayAppendIterator& ) = 0;
     virtual void endVisit   ( const JSONArrayAppendIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONBoxIterator& ) = 0;
+    virtual void endVisit   ( const JSONBoxIterator& ) = 0;
 #endif
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
 #include "store/api/item_factory.h"

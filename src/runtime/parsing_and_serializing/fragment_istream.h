@@ -30,20 +30,27 @@ namespace zorba {
 class FragmentIStream : public std::istream
 {
 public:
-  static const unsigned int BUFFER_SIZE = 4096;
-  static const unsigned int LOOKAHEAD_BYTES = 3; // lookahead fetching is implemented, but currently not used
+  static const unsigned int DEFAULT_BUFFER_SIZE = 4096;
   static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
+  
+  // names of these states are orientative
+  enum FRAGMENT_PARSER_STATE {
+    FRAGMENT_FIRST_START_DOC = 0,
+    FRAGMENT_PROLOG,
+    FRAGMENT_CONTENT                   // this state is set once an element is encountered
+  };
 
 public:
   std::istringstream* theIss;
   std::istream* theStream;
-  char* theBuffer;
+  StreamReleaser theStreamReleaser;
+  std::vector<char> theBuffer;
   unsigned long bytes_in_buffer;
   unsigned long current_offset;
   int current_element_depth;
   int root_elements_to_skip;
   xmlParserCtxtPtr ctxt;
-  bool first_start_doc;
+  FRAGMENT_PARSER_STATE state;
   bool forced_parser_stop;
   bool reached_eof;
   unsigned int parsed_nodes_count;
@@ -57,13 +64,13 @@ public:
     std::istream(NULL),
     theIss(NULL),
     theStream(NULL),
-    theBuffer(NULL),
+    theStreamReleaser(nullptr),
     bytes_in_buffer(0),
     current_offset(0),
     current_element_depth(0),
     root_elements_to_skip(0),
     ctxt(NULL),
-    first_start_doc(true),
+    state(FRAGMENT_FIRST_START_DOC),
     forced_parser_stop(false),
     reached_eof(false),
     parsed_nodes_count(0),
@@ -76,17 +83,29 @@ public:
   {
     return reached_eof && current_offset >= bytes_in_buffer;
   }
+  
+  StreamReleaser getStreamReleaser()
+  {
+    return theStreamReleaser;
+  }
+  
+  void setStreamReleaser(StreamReleaser aReleaser)
+  {
+    theStreamReleaser = aReleaser;
+  }
 
   void reset()
   {
-    if (theBuffer)
-    {
-      delete[] theBuffer;
-    }
+    theBuffer.clear();
 
     if (theIss)
     {
       delete theIss;
+    }
+    
+    if (theStreamReleaser)
+    {
+      theStreamReleaser(theStream);
     }
 
     if (ctxt)
@@ -97,20 +116,19 @@ public:
 
     theIss = NULL;
     theStream = NULL;
-    theBuffer = NULL;
     bytes_in_buffer = 0;
     current_offset = 0;
     current_element_depth = 0;
     root_elements_to_skip = 0;
     ctxt = NULL;
-    first_start_doc = true;
+    state = FRAGMENT_FIRST_START_DOC;
     forced_parser_stop = false;
     reached_eof = false;
     parsed_nodes_count = 0;
     children = NULL;
     only_one_doc_node = false;
   }
-
+  
   virtual ~FragmentIStream()
   {
     reset();

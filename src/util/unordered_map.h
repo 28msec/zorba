@@ -46,7 +46,7 @@ namespace std {
  * As such, it lacks member functions that use r-value references.
  *
  * @tparam KeyType They map's key type.
- * @tparam MappedType The type the keys are mapped to.
+ * @tparam ValueType The type the keys are mapped to.
  * @tparam KeyHash The unary_function to use for generating hash codes.
  * @tparam KeyEqual The binary_function to use to test for key equality.
  * @tparam Allocator The allocator to use.
