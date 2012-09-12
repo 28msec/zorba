@@ -11,12 +11,10 @@ declare %ann:sequential function local:test()
   dml:insert-nodes-last(xs:QName("ns:test2"), <a/>);
   dml:insert-nodes-last(xs:QName("ns:test2"), <b/>);
   dml:insert-nodes-last(xs:QName("ns:test2"), (<c/>, <d/>, <e/>));
-  (
-    dml:collection(xs:QName("ns:test2"), 3), <delim/>,
-    dml:collection(xs:QName("ns:test2"), -1), <delim/>,
-    let $ref := ref:node-reference(dml:collection(xs:QName("ns:test2"))[3])
-    return dml:collection(xs:QName("ns:test2"), $ref, 0)
-  )
+
+  dml:collection(
+    xs:QName("ns:test2"),
+    xs:anyURI("urn:uuid:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), 0)
 };
 
 local:test()
