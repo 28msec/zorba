@@ -357,7 +357,7 @@ public:
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const;
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
