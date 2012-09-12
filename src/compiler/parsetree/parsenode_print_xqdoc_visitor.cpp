@@ -464,6 +464,8 @@ protected:
   store::Item_t        theImports;
   store::Item_t        theVariables;
   store::Item_t        theFunctions;
+  store::Item_t        theCollections;
+  store::Item_t        theIndexes;
 
   // set of functions being invoked in the function
   // whoes declaration is currently being processed
@@ -511,8 +513,8 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
 void print(const parsenode* p, const store::Item_t& aDateTime)
 {
   store::Item_t lXQDocQName, lControlQName, lDateQName, lVersionQName,
-                lImportsQName, lVariablesQName, lFunctionsQName,
-                lModuleQName, lNamespacesQName;
+                lImportsQName, lVariablesQName, lCollectionsQName,
+                lIndexesQName, lFunctionsQName, lModuleQName, lNamespacesQName;
 
   store::Item_t lControlElem, lDateElem, lVersionElem,
                 lDateText, lVersionText;
@@ -523,6 +525,8 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
   theFactory->createQName(lVersionQName, theXQDocNS, theXQDocPrefix, "version");
   theFactory->createQName(lImportsQName, theXQDocNS, theXQDocPrefix, "imports");
   theFactory->createQName(lVariablesQName, theXQDocNS, theXQDocPrefix, "variables");
+  theFactory->createQName(lCollectionsQName, theXQDocNS, theXQDocPrefix, "collections");
+  theFactory->createQName(lIndexesQName, theXQDocNS, theXQDocPrefix, "indexes");
   theFactory->createQName(lFunctionsQName, theXQDocNS, theXQDocPrefix, "functions");
   theFactory->createQName(lNamespacesQName, theXQDocNS, theXQDocPrefix, "namespaces");
   theFactory->createQName(lModuleQName, theXQDocNS, theXQDocPrefix, "module");
@@ -554,6 +558,16 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(theVariables, theResult,
                                 lVariablesQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(theCollections, theResult,
+                                lCollectionsQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(theIndexes, theResult,
+                                lIndexesQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -1082,6 +1096,73 @@ void end_visit(const NamespaceDecl& n, void*)
   theNamespaceMap[n.get_prefix()] = n.get_uri();
 }
 
+XQDOC_NO_BEGIN_TAG (CollectionDecl)
+
+void end_visit(const CollectionDecl& n, void*)
+{
+  store::Item_t lCollectionQName, lUriQName;
+  store::Item_t lCollectionElem, lUriElem, lUriText;
+
+  theFactory->createQName(lCollectionQName, theXQDocNS, theXQDocPrefix, "collection");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lCollectionElem, theCollections, lCollectionQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lUriElem, lCollectionElem, lUriQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  zstring lUriString(n.getName()->get_qname());
+
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
+
+  store::Item_t lCommentElem = print_comment(lCollectionElem, n.getComment());
+
+  if (n.getType())
+  {
+    std::stringstream os;
+    print_parsetree_xquery(os , &*n.getType());
+    print_custom(lCommentElem, "type", os.str());
+  }
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lCollectionElem);
+}
+
+XQDOC_NO_BEGIN_TAG (AST_IndexDecl)
+
+void end_visit(const AST_IndexDecl& n, void*)
+{
+  store::Item_t lIndexQName, lUriQName;
+  store::Item_t lIndexElem, lUriElem, lUriText;
+
+  theFactory->createQName(lIndexQName, theXQDocNS, theXQDocPrefix, "index");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lIndexElem, theIndexes, lIndexQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lUriElem, lIndexElem, lUriQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  zstring lUriString(n.getName()->get_qname());
+
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
+
+  store::Item_t lCommentElem = print_comment(lIndexElem, n.getComment());
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lIndexElem);
+}
+
 
 
 XQDOC_NO_BEGIN_END_TAG (AdditiveExpr)
@@ -1107,7 +1188,6 @@ XQDOC_NO_BEGIN_END_TAG (CastExpr)
 XQDOC_NO_BEGIN_END_TAG (CatchExpr)
 XQDOC_NO_BEGIN_END_TAG (CatchListExpr)
 XQDOC_NO_BEGIN_END_TAG (CDataSection)
-XQDOC_NO_BEGIN_END_TAG (CollectionDecl)
 XQDOC_NO_BEGIN_END_TAG (CommentTest)
 XQDOC_NO_BEGIN_END_TAG (CommonContent)
 XQDOC_NO_BEGIN_END_TAG (ComparisonExpr)
@@ -1190,7 +1270,6 @@ XQDOC_NO_BEGIN_END_TAG (GroupCollationSpec)
 XQDOC_NO_BEGIN_END_TAG (GroupSpec)
 XQDOC_NO_BEGIN_END_TAG (GroupSpecList)
 XQDOC_NO_BEGIN_END_TAG (IfExpr)
-XQDOC_NO_BEGIN_END_TAG (AST_IndexDecl)
 XQDOC_NO_BEGIN_END_TAG (IndexKeyList)
 XQDOC_NO_BEGIN_END_TAG (IndexKeySpec)
 XQDOC_NO_BEGIN_END_TAG (InsertExpr)

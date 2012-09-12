@@ -1250,7 +1250,7 @@ public:
 
   [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
-class CollectionDecl : public parsenode
+class CollectionDecl : public XQDocumentable
 {
 protected:
   rchandle<QName>                             theName;
@@ -1295,7 +1295,7 @@ public:
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 *******************************************************************************/
-class AST_IndexDecl : public parsenode
+class AST_IndexDecl : public XQDocumentable
 {
 protected:
   rchandle<QName>                   theName;

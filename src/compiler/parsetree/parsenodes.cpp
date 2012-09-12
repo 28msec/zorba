@@ -913,7 +913,7 @@ CollectionDecl::CollectionDecl(
     rchandle<AnnotationListParsenode> aAnnotations,
     SequenceType* aTypeDecl)
   :
-  parsenode(aLoc),
+  XQDocumentable(aLoc),
   theName(aName),
   theTypeDecl(aTypeDecl),
   theAnnotations(aAnnotations)
@@ -953,7 +953,7 @@ AST_IndexDecl::AST_IndexDecl(
     IndexKeyList* key,
     rchandle<AnnotationListParsenode> aAnnotations)
   :
-  parsenode(loc),
+  XQDocumentable(loc),
   theName(name),
   theDomainExpr(domainExpr),
   theKey(key),
