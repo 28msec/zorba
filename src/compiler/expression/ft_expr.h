@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,34 +27,38 @@ namespace zorba {
 /**
  * An ftcontains_expr is-an expr for the FTContainsExpr.
  */
-class ftcontains_expr : public expr 
+class ftcontains_expr : public expr
 {
   friend class ExprIterator;
+  friend class ExprManager;
 
-public:
+protected:
   ftcontains_expr(
+    CompilerCB* ccb,
     static_context*,
     QueryLoc const&,
-    expr_t range,
+    expr* range,
     ftnode *ftselection,
-    expr_t ftignore
+    expr* ftignore
   );
 
-  expr_t cloneImpl( substitution_t& ) const;
+public:
+  expr* cloneImpl( substitution_t& ) const;
+
   void compute_scripting_kind();
 
-  expr_t get_range() const { return range_; }
+  expr* get_range() const { return range_; }
   ftnode_t get_ftselection() const { return ftselection_; }
-  expr_t get_ignore() const { return ftignore_; }
+  expr* get_ignore() const { return ftignore_; }
 
   void accept( expr_visitor& );
 
   std::ostream& put( std::ostream& ) const;
 
 private:
-  expr_t range_;
+  expr* range_;
   ftnode_t ftselection_;
-  expr_t ftignore_;
+  expr* ftignore_;
 };
 
 } // namespace zorba

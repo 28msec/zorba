@@ -59,14 +59,19 @@ Property::~Property() {
 //************************************************************************
 
 const PropertyImpl INVALID("");
+
 const PropertyImpl XQUERY_COMPILATION_FILENAME(
     XQUERY_COMPILATION, "filename", 0, Property::STRING);
+
 const PropertyImpl XQUERY_COMPILATION_PARSE_DURATION(
     XQUERY_COMPILATION, "parse-duration", 1, Property::INT);
+
 const PropertyImpl XQUERY_COMPILATION_TRANSLATION_DURATION(
     XQUERY_COMPILATION, "translation-duration", 2, Property::INT);
+
 const PropertyImpl XQUERY_COMPILATION_OPTIMIZATION_DURATION(
     XQUERY_COMPILATION, "optimization-duration", 3, Property::INT);
+
 const PropertyImpl XQUERY_COMPILATION_CODEGENERATION_DURATION(
     XQUERY_COMPILATION, "codegeneration-duration", 4, Property::INT);
 
@@ -116,7 +121,14 @@ Property::Type PropertyImpl::type() const {
 }
 
 //************************************************************************
-// ParameterImpl
+// Observation
+//************************************************************************
+
+Observation::~Observation() {
+}
+
+//************************************************************************
+// ObservationImpl
 //************************************************************************
 
 ObservationImpl::ObservationImpl(const Property& property, long long value)
@@ -145,6 +157,9 @@ long long ObservationImpl::longValue() const {
 //************************************************************************
 // Configuration
 //************************************************************************
+
+Configuration::~Configuration() {
+}
 
 void Configuration::getPropertyNames(std::vector<String>& names) {
   size_t len = getPropertyCount();
@@ -234,6 +249,13 @@ std::ostream& ConfigurationImpl::write(std::ostream& os) const {
     os << line;
   }
   return os;
+}
+
+//************************************************************************
+// Record
+//************************************************************************
+
+Record::~Record() {
 }
 
 //************************************************************************
@@ -398,9 +420,19 @@ NOPEventImpl NOP_EVENT_IMPL;
 // Event
 //************************************************************************
 
+Event::~Event() {
+}
+
 Event*
 Event::get() {
   return &NOP_EVENT_IMPL;
+}
+
+//************************************************************************
+// Provider
+//************************************************************************
+
+Provider::~Provider() {
 }
 
 //************************************************************************

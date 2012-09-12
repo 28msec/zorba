@@ -40,8 +40,6 @@ bool
 NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lNode;
-  store::Item_t lGenerateIdentifier;
-  zstring lNodeId;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -49,6 +47,58 @@ NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
   consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
   STACK_PUSH(GENV_STORE.getNodeReference(aResult, lNode), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+HasNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  xs_boolean lHasReference;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+
+  lHasReference = GENV_STORE.hasReference(lNode);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHasReference), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+AssignNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  store::Item_t lUUID;
+  xs_boolean lHaveResult;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+  consumeNext(lUUID, theChildren[1].getp(), aPlanState);
+  try
+  {
+    lHaveResult = GENV_STORE.assignReference(lNode, lUUID->getStringValue());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHaveResult), state);
 
   STACK_END (state);
 }
@@ -630,7 +680,7 @@ IsAncestorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 /*******************************************************************************
 ********************************************************************************/
-int getNodePosition(store::Item_t aNode)
+int getNodePosition(store::Item_t aNode, store::Item_t aNodeName)
 {
   int count = 1;
   store::Iterator_t lIterator = aNode->getParent()->getChildren();
@@ -642,7 +692,7 @@ int getNodePosition(store::Item_t aNode)
     {
       if(lItem->equals(aNode))
         break;
-      else
+      else if (aNodeName.isNull() || aNodeName->equals(lItem->getNodeName()))
         count++;
     }
   }
@@ -677,8 +727,8 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           nodeName = inNode->getNodeName();
           zNamespace = nodeName->getNamespace();
           zLocalName = nodeName->getLocalName();
-          zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "\""+zNamespace+"\":"+zLocalName+"["+zPosition+"]";
+          zPosition = ztd::to_string(getNodePosition(inNode, nodeName));
+          path += "Q{" + zNamespace + "}" + zLocalName + "[" + zPosition + "]";
           break;
         case store::StoreConsts::attributeNode:
           nodeName = inNode->getNodeName();
@@ -687,23 +737,23 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           path += "@";
           if(zNamespace != "")
           {
-            path += "\""+zNamespace+"\":";
+            path += "Q{" + zNamespace + "}";
           }
           path += zLocalName;
           break;
         case store::StoreConsts::textNode:
-          zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "text()["+zPosition+"]";
+          zPosition = ztd::to_string(getNodePosition(inNode, NULL));
+          path += "text()[" + zPosition + "]";
           break;
         case store::StoreConsts::commentNode:
-          zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "comment()["+zPosition+"]";
+          zPosition = ztd::to_string(getNodePosition(inNode, NULL));
+          path += "comment()[" + zPosition + "]";
           break;
         case store::StoreConsts::piNode:
           nodeName = inNode->getNodeName();
           zLocalName = nodeName->getLocalName();
-          zPosition = ztd::to_string(getNodePosition(inNode));
-          path += "processing-instruction("+zLocalName+")["+zPosition+"]";
+          zPosition = ztd::to_string(getNodePosition(inNode, nodeName));
+          path += "processing-instruction(" + zLocalName + ")[" + zPosition + "]";
           break;
         default:
           // this is either a documentNode which should always be a root
@@ -729,7 +779,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       temp = path;
-      path = "\"http://www.w3.org/2005/xpath-functions\":root()";
+      path = "Q{http://www.w3.org/2005/xpath-functions}root()";
       path += temp;
     }
 

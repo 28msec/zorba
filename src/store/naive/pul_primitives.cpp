@@ -163,6 +163,12 @@ void UpdDelete::apply()
   {
     theParent->deleteChild(*this);
   }
+  
+  if (theTarget->isNode())
+  {
+    static_cast<zorba::simplestore::XmlNode*>(theTarget.getp())
+        ->unregisterReferencesToDeletedSubtree();
+  }
 }
 
 
@@ -990,9 +996,24 @@ void UpdDeleteCollection::apply()
 
   for (uint64_t i = 0; i < size; ++i)
   {
-    XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(xs_integer(i)).getp());
-    XmlTree* tree = root->getTree();
-    if (tree->getRefCount() > 1)
+    long lRefCount = 0;
+    store::Item* lItem = collection->nodeAt(xs_integer(i)).getp();
+    if (lItem->isNode())
+    {
+      assert(dynamic_cast<XmlNode*>(lItem));
+      XmlNode* lNode = static_cast<XmlNode*>(lItem);
+      lRefCount = lNode->getTree()->getRefCount();
+#ifdef ZORBA_WITH_JSON
+    }
+    else if (lItem->isJSONItem())
+    {
+      assert(dynamic_cast<json::JSONItem*>(lItem));
+      json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(lItem);
+      lRefCount = lJSONItem->getRefCount();
+#endif
+    }
+
+    if (lRefCount > 1)
     {
       RAISE_ERROR(zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES, theLoc,
       ERROR_PARAMS(collection->getName()->getStringValue()));
@@ -1909,18 +1930,17 @@ void UpdJSONObjectInsert::apply()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
+  theIsApplied = true;
+
   csize numPairs = theNames.size();
   for (csize i = 0; i < numPairs; ++i, ++theNumApplied)
   {
-    JSONObjectPair_t pair =  new SimpleJSONObjectPair(theNames[i], theValues[i]);
-    if (!obj->add(pair, false))
+    if (!obj->add(theNames[i], theValues[i], false))
     {
       RAISE_ERROR(jerr::JNUP0006, theLoc, 
-      ERROR_PARAMS(pair->getName()->getStringValue()));
+      ERROR_PARAMS(theNames[i]->getStringValue()));
     }
   }
-
-  theIsApplied = true;
 }
 
 
@@ -1962,10 +1982,8 @@ void UpdJSONObjectDelete::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair_t pair = obj->remove(theName);
+  theOldValue = obj->remove(theName);
   
-  theOldValue = pair->getValue();
-
   theIsApplied = true;
 }
 
@@ -1979,9 +1997,7 @@ void UpdJSONObjectDelete::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair_t pair = new SimpleJSONObjectPair(theName, theOldValue);
-
-  bool inserted = obj->add(pair, false);
+  bool inserted = obj->add(theName, theOldValue, false);
 
   ZORBA_ASSERT(inserted);
 
@@ -1993,11 +2009,11 @@ void UpdJSONObjectDelete::undo()
 
 ********************************************************************************/
 UpdJSONObjectReplaceValue::UpdJSONObjectReplaceValue(
-      CollectionPul* pul,
-      const QueryLoc* loc,
-      store::Item_t& target,
-      store::Item_t& name,
-      store::Item_t& newValue)
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    store::Item_t& name,
+    store::Item_t& newValue)
   :
   UpdatePrimitive(pul, loc, target),
   theName(name),
@@ -2010,14 +2026,10 @@ void UpdJSONObjectReplaceValue::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
+  theOldValue = obj->setValue(theName, theNewValue);
 
-  if (pair)
+  if (theOldValue != NULL)
   {
-    theOldValue = pair->getValue();
-
-    pair->setValue(theNewValue);
-
     theIsApplied = true;
   }
 }
@@ -2030,11 +2042,9 @@ void UpdJSONObjectReplaceValue::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
+  ZORBA_ASSERT(obj);
 
-  ZORBA_ASSERT(pair);
-
-  pair->setValue(theOldValue);
+  obj->setValue(theName, theOldValue);
 
   theIsApplied = false;
 }
@@ -2061,17 +2071,13 @@ void UpdJSONObjectRename::apply()
 {
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  if (obj->getPair(theNewName))
+  if (obj->getObjectValue(theNewName) != NULL)
   {
-    RAISE_ERROR(jerr::JNUP0012, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
+    RAISE_ERROR(jerr::JNUP0006, theLoc, ERROR_PARAMS(theNewName->getStringValue()));
   }
-
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theName));
-
-  if (pair)
+  
+  if (obj->rename(theName, theNewName))
   {
-    pair->setName(theNewName);
-
     theIsApplied = true;
   }
 }
@@ -2084,11 +2090,9 @@ void UpdJSONObjectRename::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  JSONObjectPair* pair = static_cast<JSONObjectPair*>(obj->getPair(theNewName));
+  ZORBA_ASSERT(obj);
 
-  ZORBA_ASSERT(pair);
-
-  pair->setName(theName);
+  ZORBA_ASSERT(obj->rename(theNewName, theName));
 
   theIsApplied = false;
 }
@@ -2110,12 +2114,27 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
 }
 
 
+UpdJSONArrayUpdate::UpdJSONArrayUpdate(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target)
+  :
+  UpdatePrimitive(pul, loc, target),
+  thePosition(0)
+{
+  assert(theTarget->isJSONArray());
+}
+
+
 bool UpdJSONArrayUpdate::Comparator::operator() (
     const UpdatePrimitive* lhs,
     const UpdatePrimitive* rhs)
 {
   const UpdJSONArrayUpdate* l = static_cast<const UpdJSONArrayUpdate*>(lhs);
   const UpdJSONArrayUpdate* r = static_cast<const UpdJSONArrayUpdate*>(rhs);
+  
+  if (l->thePosition == 0) // lhs is an appending UP
+    return true;
 
   if (l->thePosition > r->thePosition)
     return true;
@@ -2178,6 +2197,52 @@ void UpdJSONArrayInsert::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdJSONArrayAppend::UpdJSONArrayAppend(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    std::vector<store::Item_t>& members)
+  :
+  UpdJSONArrayUpdate(pul, loc, target),
+  theNumApplied(0)
+{
+  theMembers.swap(members);
+}
+
+
+void UpdJSONArrayAppend::apply()
+{
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  array->push_back(theMembers);
+
+  theIsApplied = true;
+}
+
+
+void UpdJSONArrayAppend::undo()
+{
+  if (!theIsApplied)
+  {
+    return;
+  }
+
+  JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
+
+  csize numNewMembers = theMembers.size();
+  xs_integer numTotalMembers = theTarget->getArraySize();
+  xs_integer lPositionToDelete = numTotalMembers - numNewMembers;
+
+  for (csize i = 0; i < numNewMembers; ++i) 
+    array->remove(lPositionToDelete);
+
+  theIsApplied = false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 UpdJSONArrayDelete::UpdJSONArrayDelete(
       CollectionPul* pul,
       const QueryLoc* loc,
@@ -2192,12 +2257,13 @@ UpdJSONArrayDelete::UpdJSONArrayDelete(
 void UpdJSONArrayDelete::apply()
 {
   JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
-
-  theOldValue = const_cast<store::Item*>(array->operator[](thePosition));
-
-  array->remove(thePosition);
-
-  theIsApplied = true;
+  
+  theOldValue = array->remove(thePosition);
+  
+  if (theOldValue != NULL)
+  {
+    theIsApplied = true;
+  }
 }
 
 
@@ -2236,11 +2302,11 @@ void UpdJSONArrayReplaceValue::apply()
 {
   JSONArray* array = static_cast<JSONArray*>(theTarget.getp());
 
-  theOldValue = const_cast<store::Item*>(array->operator[](thePosition));
-
-  array->replace(thePosition, theNewValue);
-
-  theIsApplied = true;
+  theOldValue = array->replace(thePosition, theNewValue);
+  
+  if (theOldValue != NULL) {
+    theIsApplied = true;
+  }
 }
 
 

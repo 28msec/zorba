@@ -46,6 +46,10 @@ private:
   bool theParseExternalParsedEntity;
   unsigned int theSkipRootNodes;
   bool theSkipTopLevelTextNodes;
+  bool theErrorOnDoctype;       // Used by the fragment parser. By default it will allow Doctype 
+                                // declarations. But if a Doctype declaration is
+                                // present, and the flag is set to true, an error will be generated.
+  
   bool theSubstituteEntities;
   bool theXincludeSubstitutions;
   bool theRemoveRedundantNS;
@@ -73,6 +77,7 @@ public:
     theParseExternalParsedEntity(false),
     theSkipRootNodes(0),
     theSkipTopLevelTextNodes(false),
+    theErrorOnDoctype(false),
     theSubstituteEntities(false),
     theXincludeSubstitutions(false),
     theRemoveRedundantNS(false),
@@ -100,6 +105,7 @@ public:
     theParseExternalParsedEntity = false;
     theSkipRootNodes = 0;
     theSkipTopLevelTextNodes = false;
+    theErrorOnDoctype = false;
     theSubstituteEntities = false;
     theXincludeSubstitutions = false;
     theRemoveRedundantNS = false;
@@ -237,6 +243,16 @@ public:
   bool getSkipTopLevelTextNodes() const
   {
     return theSkipTopLevelTextNodes;
+  }
+  
+  // theSkipTopLevelTextNodes
+  void setErrorOnDoctype(bool aErrorOnDoctype)
+  {
+    theErrorOnDoctype = aErrorOnDoctype;
+  }
+  bool getErrorOnDoctype() const
+  {
+    return theErrorOnDoctype;
   }
 
   // theSubstituteEntities

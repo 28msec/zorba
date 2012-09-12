@@ -543,19 +543,18 @@ PlanIter_t fn_count::codegen(
     ZorbaCollectionIterator& collection =
     static_cast<ZorbaCollectionIterator&>(*argv[0]);
 
-    if (collection.isDynamic())
+    if (collection.isCountOptimizable())
     {
-      return new CountCollectionIterator(sctx,
-                                         loc,
-                                         collection.getChildren(),
-                                         CountCollectionIterator::ZORBADYNAMIC);
-    }
-    else
-    {
-      return new CountCollectionIterator(sctx,
-                                         loc,
-                                         collection.getChildren(),
-                                         CountCollectionIterator::ZORBASTATIC);
+      return new CountCollectionIterator(
+                   sctx,
+                   loc,
+                   collection.getChildren(),
+                   (
+                     collection.isDynamic()
+                       ? CountCollectionIterator::ZORBADYNAMIC
+                       : CountCollectionIterator::ZORBASTATIC
+                   )
+                 );
     }
   }
   else if (typeid(FnCollectionIterator) == counted_type)
@@ -600,10 +599,9 @@ PlanIter_t fn_count::codegen(
     return new ProbeIndexRangeGeneralIterator(
         sctx, loc, lIter.getChildren(), true);
   }
-  else
-  {
-    return new FnCountIterator(sctx, loc, argv);
-  }
+  
+  // fallback
+  return new FnCountIterator(sctx, loc, argv);
 }
 
 

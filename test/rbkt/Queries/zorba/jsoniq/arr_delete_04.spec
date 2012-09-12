@@ -1,1 +1,1 @@
-Error: http://www.jsoniq.org/errors:JNUP0020
+Error: http://www.jsoniq.org/errors:JNUP0016

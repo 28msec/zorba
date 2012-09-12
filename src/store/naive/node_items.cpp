@@ -144,7 +144,7 @@ ulong XmlTree::getCollectionId() const
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::free()
+void XmlTree::destroy() throw()
 {
   // std::cout << "Deleting Xml Tree: " << this << std::endl;
 
@@ -168,6 +168,15 @@ void XmlTree::free()
 #endif
 
   delete this;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::free()
+{
+  destroy();
 }
 
 
@@ -471,9 +480,29 @@ XmlNode::~XmlNode()
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::setTreeInternal(const XmlTree* aNewTree)
+bool XmlNode::equals(const store::Item* other, long, const XQPCollator*) const
 {
-  theUnion.treeRCPtr = (long*)aNewTree;
+  assert(!isConnectorNode());
+  return this == other;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t XmlNode::hash(long, const XQPCollator*) const
+{
+  assert(!isConnectorNode());
+  return reinterpret_cast<uintptr_t>(this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::setTreeInternal(const XmlTree* newTree)
+{
+  theUnion.treeRCPtr = (long*)newTree;
 }
 
 
@@ -860,10 +889,20 @@ void XmlNode::destroyInternal(bool removeType)
 #endif
 
   if (haveReference())
-    GET_STORE().unregisterNode(this);
+    GET_STORE().unregisterReferenceToUnusedNode(this);
 
   delete this;
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::unregisterReferencesToDeletedSubtree()
+{
+  if (haveReference())
+    GET_STORE().unregisterReferenceToDeletedNode(this);
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1700,6 +1739,23 @@ void InternalNode::finalizeNode()
     tmp = theNodes;
     theNodes.swap(tmp);
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void InternalNode::unregisterReferencesToDeletedSubtree()
+{
+  std::for_each(
+      childrenBegin(), childrenEnd(),
+      std::mem_fun(&XmlNode::unregisterReferencesToDeletedSubtree));
+
+  std::for_each(
+      attrsBegin(), attrsEnd(),
+      std::mem_fun(&XmlNode::unregisterReferencesToDeletedSubtree));
+
+  XmlNode::unregisterReferencesToDeletedSubtree();
 }
 
 

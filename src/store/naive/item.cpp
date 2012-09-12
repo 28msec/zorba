@@ -19,6 +19,8 @@
 
 #include <zorba/error.h>
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+
 #include "zorbatypes/datetime.h"
 
 #include "store/api/item.h"
@@ -71,6 +73,7 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -159,6 +162,7 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -278,12 +282,6 @@ bool Item::isJSONItem() const
 }
 
 
-bool Item::isJSONPair() const
-{
-  return false;
-}
-
-
 bool Item::isJSONObject() const
 {
   return false;
@@ -354,10 +352,8 @@ Item* Item::getType() const
 
 uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS( ZED( NoHashItemOfType_2 ), getType()->getStringValue() )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoHashItemOfType_2), getType()->getStringValue()));
 };
 
 
@@ -366,13 +362,10 @@ bool Item::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( NoCompareTypes_23 ),
-      getType()->getStringValue(), other->getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoCompareTypes_23),
+               getType()->getStringValue(),
+               other->getType()->getStringValue()));
 }
 
 
@@ -381,13 +374,10 @@ long Item::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( NoCompareTypes_23 ),
-      getType()->getStringValue(), other->getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoCompareTypes_23),
+               getType()->getStringValue(),
+               other->getType()->getStringValue()));
 }
 
 
@@ -1272,7 +1262,7 @@ Item::isSibling(const store::Item_t&) const
 }
 
 bool
-Item::isAttribute() const
+Item::isAttributeRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1281,7 +1271,7 @@ Item::isAttribute() const
 }
 
 bool
-Item::isComment() const
+Item::isCommentRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1290,7 +1280,7 @@ Item::isComment() const
 }
 
 bool
-Item::isDocument() const
+Item::isDocumentRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1300,7 +1290,7 @@ Item::isDocument() const
 
 
 bool
-Item::isElement() const
+Item::isElementRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1309,7 +1299,7 @@ Item::isElement() const
 }
 
 bool
-Item::isProcessingInstruction() const
+Item::isProcessingInstructionRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1318,7 +1308,7 @@ Item::isProcessingInstruction() const
 }
 
 bool
-Item::isText() const
+Item::isTextRef() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1398,62 +1388,44 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 }
 
 
-Iterator_t
-Item::getPairs() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-Iterator_t
-Item::getMembers() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getPair(const store::Item_t& name) const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getMember(const store::Item_t& index) const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getName() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
-store::Item*
-Item::getValue() const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-  );
-}
-
 xs_integer
-Item::getSize() const
+Item::getArraySize() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item_t
+Item::getArrayValue(const xs_integer&) const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Iterator_t
+Item::getArrayValues() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Iterator_t
+Item::getObjectKeys() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+store::Item_t
+Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

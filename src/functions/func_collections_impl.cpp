@@ -32,8 +32,8 @@ namespace zorba
 bool
 mustCopyNodes(expr& e)
 {
-  pragma_t p;
-  return e.get_sctx()->lookup_pragma(&e, "no-copy", p);
+  pragma* p;
+  return e.get_ccb()->lookup_pragma(&e, "no-copy", p);
 }
 
 

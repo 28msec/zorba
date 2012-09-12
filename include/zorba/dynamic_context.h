@@ -280,6 +280,7 @@ protected:
   /** \brief Destructor
    */
   virtual ~DynamicContext( ) {}
+ 
 };
 
 } /* namespace zorba */

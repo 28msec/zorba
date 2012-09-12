@@ -285,6 +285,8 @@ public:
 
   bool isDynamic() const { return theIsDynamic; }
 
+public:
+  bool isCountOptimizable() const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

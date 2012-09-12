@@ -17,14 +17,17 @@
 #ifndef ZORBA_STORE_JSON_ITEMS_H
 #define ZORBA_STORE_JSON_ITEMS_H
 
-#include <vector>
 #include <set>
+#include <vector>
 
 #include <zorba/config.h>
-#include "atomic_items.h"
-#include "simple_collection.h"
+#include <zorbautils/hashmap_zstring.h>
+
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
+
+#include "atomic_items.h"
+#include "simple_collection.h"
 
 
 namespace zorba
@@ -59,24 +62,71 @@ public:
 
   zstring getStringValue() const { return "null"; }
 
-  void
-  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  void getStringValue2(zstring& val) const { val = "null"; }
+
+  void appendStringValue(zstring& buf) const { buf += "null"; }
+
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   store::SchemaTypeCode getTypeCode() const { return store::JDM_NULL; }
 
   store::Item* getType() const; 
 
-  bool 
-  equals(
+  bool equals(
       const store::Item* other,
       long timezone = 0,
       const XQPCollator* collation = 0) const;
 
-  uint32_t 
-  hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
-  bool
-  getEBV() const { return false; }
+  bool getEBV() const { return false; }
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+
+class JSONTree
+{
+private:
+  simplestore::Collection * theCollection;
+  TreeId                    theId;
+  JSONItem                * theRoot;
+
+public:
+  JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
+  {}
+
+  simplestore::Collection* getCollection() const
+  {
+    return theCollection;
+  }
+
+  void setCollection(simplestore::Collection* aCollection)
+  {
+    theCollection = aCollection;
+  }
+
+  const TreeId& getTreeId() const
+  {
+    return theId;
+  }
+
+  void setTreeId(const TreeId& aId)
+  {
+    theId = aId;
+  }
+
+  JSONItem* getRoot() const
+  {
+    return theRoot;
+  }
+
+  void setRoot(JSONItem* aRoot)
+  {
+    theRoot = aRoot;
+  }
 };
 
 
@@ -88,21 +138,56 @@ class JSONItem : public store::Item
 {
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
+
+  JSONTree  * theTree;
+
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : store::Item(JSONIQ) {}
+  JSONItem() : store::Item(JSONIQ), theTree(NULL) {}
 
-  virtual ~JSONItem() {}
+  virtual ~JSONItem();
+  
+  virtual void free();
 
-  bool 
-  equals(
+  virtual void destroy();
+
+  const simplestore::Collection* getCollection() const;
+
+  virtual void setTree(JSONTree* aTree) = 0;
+
+  JSONTree* getTree() const
+  {
+    return theTree;
+  }
+
+  // These two functions are only to be called if in a collection.
+  const TreeId& getTreeId() const;
+
+  JSONItem* getRoot() const;
+  
+  void attachToCollection(Collection* aCollection, const TreeId& aTreeId);
+
+  void detachFromCollection();
+  
+  // store API
+
+  virtual bool equals(
       const store::Item* other,
       long timezone = 0,
       const XQPCollator* aCollation = 0) const
   {
     return this == other;
   }
+
+public:
+#ifndef NDEBUG
+  virtual void assertInvariant() const;
+
+  virtual bool isThisTreeOfAllDescendants(const JSONTree* aTree) const = 0;
+
+  virtual bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const = 0;
+#endif
 };
 
 
@@ -115,32 +200,37 @@ class JSONObject : public JSONItem
 public:
   virtual ~JSONObject() {}
 
-  store::StoreConsts::JSONItemKind getJSONItemKind() const 
+  // store API
+
+  virtual store::StoreConsts::JSONItemKind getJSONItemKind() const 
   {
     return store::StoreConsts::jsonObject;
   }
 
-  bool isJSONObject() const { return true; }
+  virtual bool isJSONObject() const { return true; }
 
-  virtual bool add(const JSONObjectPair_t& aPair, bool accumulate) = 0;
+  virtual store::Iterator_t getObjectKeys() const = 0;
 
-  virtual JSONObjectPair_t remove(const store::Item_t& aName) = 0;
-
-  virtual xs_integer getSize() const = 0;
-
-  bool getBooleanValue() const { return true; }
+  virtual store::Item_t getObjectValue(const store::Item_t& aKey) const = 0;
 
   virtual Item* getType() const;
 
-  virtual SimpleCollection* getCollection() const = 0;
+  // updates
+  
+  virtual bool add(
+      const store::Item_t& aName,
+      const store::Item_t& aValue,
+      bool accumulate) = 0;
 
-  virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
+  virtual store::Item_t remove(const store::Item_t& aName) = 0;
 
-#if 0
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  virtual store::Item* copy(store::Item* parent, const store::CopyMode&) const;
-#endif
+  virtual store::Item_t setValue(
+    const store::Item_t& aName,
+    const store::Item_t& aValue) = 0;
+    
+  virtual bool rename(
+    const store::Item_t& aName,
+    const store::Item_t& aNewName) = 0;
 };
 
 
@@ -151,34 +241,19 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  struct JSONObjectPairComparator
-  {
-    bool operator() (const store::Item* lhs, const store::Item* rhs) const;
-  };
+  ZSTRING_HASH_MAP(csize, Keys);
+  typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
-  typedef std::map<store::Item*, size_t, JSONObjectPairComparator> PairMap;
-  typedef PairMap::const_iterator PairMapConstIter;
-  typedef PairMap::iterator PairMapIter;
-
-  typedef std::vector<JSONObjectPair*>  Pairs;
-  typedef Pairs::const_iterator         PairsConstIter;
-  typedef Pairs::iterator               PairsIter;
-
-  PairMap thePairMap;
-  Pairs   thePairs;
-
-  SimpleCollection* theCollection;
-
-  class PairIterator : public store::Iterator
+  class KeyIterator : public store::Iterator
   {
     protected:
-      SimpleJSONObject_t theObject;
-      PairsConstIter     theIter;
+      SimpleJSONObject_t  theObject;
+      Pairs::iterator     theIter;
 
     public:
-      PairIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
+      KeyIterator(const SimpleJSONObject_t& aObject) : theObject(aObject) {}
 
-      virtual ~PairIterator();
+      virtual ~KeyIterator();
 
       virtual void open();
 
@@ -189,34 +264,68 @@ protected:
       virtual void close();
   };
 
+private:
+  Keys   theKeys;
+  Pairs  thePairs;
+
 public:
-  SimpleJSONObject() : theCollection(0) {}
+  SimpleJSONObject()
+    :
+    theKeys(64, false)
+  {
+  }
 
   virtual ~SimpleJSONObject();
 
-  bool add(const JSONObjectPair_t& aPair, bool accumulate);
+  // store API
 
-  JSONObjectPair_t remove(const store::Item_t& aName);
+  virtual store::Iterator_t getObjectKeys() const;
 
-  xs_integer getSize() const { return xs_integer(thePairs.size()); }
+  virtual store::Item_t getObjectValue(const store::Item_t& aKey) const;
 
-  store::Iterator_t getPairs() const;
+  virtual store::Item* copy(
+      store::Item* parent,
+      const store::CopyMode& copymode) const;
 
-  store::Item* getPair(const store::Item_t& name) const;
+  virtual zstring getStringValue() const;
 
-  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
+  virtual void getStringValue2(zstring& val) const;
 
-  zstring getStringValue() const;
+  virtual void appendStringValue(zstring& buf) const;
 
-  void getStringValue2(zstring& val) const;
+  virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  void appendStringValue(zstring& buf) const;
+  // updates
+  
+  virtual bool add(
+      const store::Item_t& aName,
+      const store::Item_t& aValue,
+      bool accumulate);
 
-  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  virtual store::Item_t remove(const store::Item_t& aName);
 
-  virtual SimpleCollection* getCollection() const { return theCollection; }
+  virtual store::Item_t setValue(
+      const store::Item_t& aName,
+      const store::Item_t& aValue);
+    
+  virtual bool rename(
+      const store::Item_t& aName,
+      const store::Item_t& aNewName);
 
-  void setCollection(SimpleCollection* collection, xs_integer pos);
+  // root management
+  
+protected:
+  void setTree(JSONTree* aTree);
+
+  // Invariant handling
+public:
+#ifndef NDEBUG
+  void assertInvariant() const;
+  
+  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
+
+  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+#endif
 };
 
 
@@ -231,6 +340,8 @@ public:
 
   virtual ~JSONArray() {}
 
+  // store API
+  
   bool isJSONArray() const { return true; }
 
   store::StoreConsts::JSONItemKind
@@ -238,6 +349,14 @@ public:
 
   virtual store::Item*
   getType() const;
+  
+  virtual xs_integer getArraySize() const = 0;
+
+  virtual store::Item_t getArrayValue(const xs_integer& position) const = 0;
+
+  virtual store::Iterator_t getArrayValues() const = 0;
+
+  // updates
 
   virtual void
   push_back(const store::Item_t& aValue) = 0;
@@ -257,21 +376,11 @@ public:
   virtual void
   insert_after(const xs_integer& pos, const std::vector<store::Item_t>& members) = 0;
 
-  virtual void
+  virtual store::Item_t
   remove(const xs_integer& pos) = 0;
 
-  virtual void
+  virtual store::Item_t
   replace(const xs_integer& pos, const store::Item_t& value) = 0;
-
-  virtual xs_integer
-  getSize() const = 0;
-
-  virtual const store::Item*
-  operator[](const xs_integer&) const = 0;
-
-  virtual SimpleCollection* getCollection() const = 0;
-
-  virtual void setCollection(SimpleCollection* collection, xs_integer pos) = 0;
 };
 
 
@@ -283,60 +392,58 @@ class SimpleJSONArray : public JSONArray
 {
 protected:
   typedef std::vector<store::Item*> Members;
-  typedef Members::const_iterator MembersConstIter;
-  typedef Members::iterator MembersIter;
-
-  Members            theContent;
-  SimpleCollection * theCollection;
 
   class ValuesIterator : public store::Iterator
   {
-    protected:
-      SimpleJSONArray_t theArray;
-      MembersConstIter    theIterator;
+  protected:
+    SimpleJSONArray_t theArray;
+    Members::iterator theIter;
 
-    public:
-      ValuesIterator(const SimpleJSONArray_t& aArray)
-        :
-        theArray(aArray)
-      {
-      }
+  public:
+    ValuesIterator(const SimpleJSONArray_t& anArray) : theArray(anArray) {}
 
-      virtual ~ValuesIterator()
-      {
-      }
+    virtual ~ValuesIterator();
+    
+    virtual void open();
 
-      virtual void open() { theIterator = theArray->theContent.begin(); }
+    virtual bool next(store::Item_t&);
 
-      virtual bool next(store::Item_t& res)
-      {
-        if (theIterator == theArray->theContent.end())
-        {
-          return false;
-        }
-        else
-        {
-          res = *(theIterator++);
-          return true;
-        }
-      }
+    virtual void reset();
 
-      virtual void reset() { open(); }
-
-      virtual void close() { theIterator = theArray->theContent.end(); }
+    virtual void close();
   };
 
-  friend class ValuesIterator;
+private:
+  Members theContent;
 
 public:
   SimpleJSONArray()
-    :
-    theCollection(0)
-  {
-  }
+  {}
 
   virtual ~SimpleJSONArray();
+  
+  // store API
 
+  xs_integer getArraySize() const;
+
+  store::Item_t getArrayValue(const xs_integer& position) const;
+  
+  store::Iterator_t getArrayValues() const;
+
+  store::Item* copy(
+      store::Item* parent,
+      const store::CopyMode& copymode) const;
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  // updates
+  
   virtual void
   push_back(const store::Item_t& aValue);
 
@@ -355,122 +462,36 @@ public:
   virtual void
   insert_after(const xs_integer& pos, const std::vector<store::Item_t>& members);
 
-  virtual void
+  virtual store::Item_t
   remove(const xs_integer& aPos);
 
-  virtual void
+  virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
 
-  virtual xs_integer
-  getSize() const { return xs_integer(theContent.size()); }
-
-  virtual const store::Item*
-  operator[](const xs_integer&) const;
-
-  virtual store::Iterator_t
-  getMembers() const;
-
-  virtual store::Item*
-  getMember(const store::Item_t& position) const;
-
-  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
-
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring& val) const;
-
-  void appendStringValue(zstring& buf) const;
-
-  void
-  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-
-  virtual SimpleCollection* getCollection() const { return theCollection; }
-
-  void setCollection(SimpleCollection* collection, xs_integer pos);
+  // root management
+public:
+  void setTree(JSONTree* aTree);
 
 protected:
-  void
-  add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
+  void add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
 
-  static uint64_t
-  cast(const xs_integer& i);
-};
+  static uint64_t cast(const xs_integer& i);
 
-
-/******************************************************************************
-
-*******************************************************************************/
-class JSONObjectPair : public JSONItem
-{
+  // Invariant handling
 public:
-  virtual ~JSONObjectPair() {}
+#ifndef NDEBUG
+  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
 
-  bool isJSONPair() const { return true; }
-
-  virtual void
-  setName(const store::Item_t& aName) = 0;
-
-  virtual void
-  setValue(const store::Item_t& aValue)  = 0;
-
-  virtual store::Item*
-  getName() const = 0;
-
-  virtual store::Item*
-  getValue() const = 0;
-
-  store::StoreConsts::JSONItemKind
-  getJSONItemKind() const { return store::StoreConsts::jsonPair; }
-
-  virtual Item*
-  getType() const;
+  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+#endif
 };
 
 
-/******************************************************************************
-
-*******************************************************************************/
-class SimpleJSONObjectPair : public JSONObjectPair
-{
-protected:
-  store::Item_t          theName;
-  store::Item_t          theValue;
-
-public:
-  SimpleJSONObjectPair() {}
-
-  SimpleJSONObjectPair(const store::Item_t& aName, const store::Item_t& aValue)
-    :
-    theName(aName),
-    theValue(aValue)
-  {
-  }
-
-  virtual ~SimpleJSONObjectPair() {}
-
-  zstring getStringValue() const { return theValue->getStringValue(); }
-
-  void getStringValue2(zstring& val) const { theValue->getStringValue2(val); }
-
-  void appendStringValue(zstring& buf) const { theValue->appendStringValue(buf); }
-  
-  void
-  setName(const store::Item_t& aName) { theName = aName; }
-
-  void
-  setValue(const store::Item_t& aValue) { theValue = aValue; }
-
-  store::Item*
-  getName() const { return theName.getp(); }
-
-  store::Item*
-  getValue() const { return theValue.getp(); }
-
-  store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
-
-  void
-  getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-};
+#ifndef NDEBUG
+#define ASSERT_INVARIANT() assertInvariant()
+#else
+#define ASSERT_INVARIANT()
+#endif
 
 } // namespace json
 } // namespace simplestore
@@ -483,3 +504,4 @@ public:
  * End:
  */
 /* vim:set et sw=2 ts=2: */
+

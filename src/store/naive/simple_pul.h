@@ -21,7 +21,7 @@
 #include "shared_types.h"
 
 #include "store/api/pul.h"
-#include "store/api/index.h"
+#include "simple_index.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
@@ -193,19 +193,19 @@ protected:
   std::vector<UpdatePrimitive*>      theRevalidateList;
 
   // Index Maintenance
-  std::set<XmlNode*>                 theModifiedDocs;
-  std::vector<XmlNode*>              theInsertedDocs;
-  std::vector<XmlNode*>              theDeletedDocs;
+  std::set<store::Item*>             theModifiedDocs;
+  std::vector<store::Item*>          theInsertedDocs;
+  std::vector<store::Item*>          theDeletedDocs;
 
   std::vector<IndexImpl*>            theIncrementalIndices;
   std::vector<IndexImpl*>            theTruncatedIndices;
 
   std::vector<IndexEntryCreator_t>   theIndexEntryCreators;
 
-  std::vector<store::IndexDelta>     theBeforeIndexDeltas;
-  std::vector<store::IndexDelta>     theAfterIndexDeltas;
-  std::vector<store::IndexDelta>     theInsertedDocsIndexDeltas;
-  std::vector<store::IndexDelta>     theDeletedDocsIndexDeltas;
+  std::vector<IndexDeltaImpl>        theBeforeIndexDeltas;
+  std::vector<IndexDeltaImpl>        theAfterIndexDeltas;
+  std::vector<IndexDeltaImpl>        theInsertedDocsIndexDeltas;
+  std::vector<IndexDeltaImpl>        theDeletedDocsIndexDeltas;
 
 #ifdef ZORBA_WITH_JSON
   // jsoniq primitives
@@ -215,6 +215,7 @@ protected:
   std::vector<UpdatePrimitive*>      theJSONObjectRenameList;
 
   std::vector<UpdatePrimitive*>      theJSONArrayInsertList;
+  std::vector<UpdatePrimitive*>      theJSONArrayAppendList;
   std::vector<UpdatePrimitive*>      theJSONArrayDeleteList;
   std::vector<UpdatePrimitive*>      theJSONArrayReplaceValueList;
 #endif
@@ -250,9 +251,17 @@ public:
 protected:
   void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);
 
-  void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
+  void computeIndexDeltas(std::vector<IndexDeltaImpl>& deltas);
 
   void cleanIndexDeltas();
+
+  void refreshValueIndex(csize idx);
+
+  void refreshGeneralIndex(csize idx);
+
+  void undoValueIndexRefresh(csize idx);
+
+  void undoGeneralIndexRefresh(csize idx);
 
   void truncateIndexes();
 
@@ -596,6 +605,11 @@ public:
       const QueryLoc* aQueryLoc,
       store::Item_t& target,
       store::Item_t& pos,
+      std::vector<store::Item_t>& members);
+
+  virtual void addJSONArrayAppend(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
       std::vector<store::Item_t>& members);
 
   virtual void addJSONArrayDelete(

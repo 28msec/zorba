@@ -77,7 +77,7 @@ void clear()
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool exists(const T& item)
+bool exists(const T& item) const
 {
   return HashMap<T, DummyHashValue, C>::exists(item);
 }

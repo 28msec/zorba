@@ -37,6 +37,8 @@
 
 #include "common/shared_types.h"
 
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba 
 {
@@ -154,21 +156,18 @@ void apply_updates(
   // maintained incrementally, and pass this info back to the pul.
   pul->getIndicesToRefresh(indexes, truncate_indexes);
 
-  ulong numIndices = (ulong)indexes.size();
+  csize numIndices = indexes.size();
 
   std::vector<IndexDecl*> zorbaIndexes(numIndices); 
 
-  for (ulong i = 0; i < numIndices; ++i)
+  for (csize i = 0; i < numIndices; ++i)
   {
     IndexDecl* indexDecl = sctx->lookup_index(indexes[i]->getName());
     
     if (indexDecl == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0021_INDEX_NOT_DECLARED,
-        ERROR_PARAMS( indexes[i]->getName()->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(indexes[i]->getName()->getStringValue()));
     }
 
     if (indexDecl->getMaintenanceMode() == IndexDecl::DOC_MAP)
@@ -184,8 +183,8 @@ void apply_updates(
     zorbaIndexes[i] = indexDecl;
   }
 
-  numIndices = (ulong)truncate_indexes.size();
-  for (ulong i = 0; i < numIndices; ++i)
+  numIndices = truncate_indexes.size();
+  for (csize i = 0; i < numIndices; ++i)
   {
     IndexDecl* indexDecl = sctx->lookup_index(indexes[i]->getName());
 
@@ -233,17 +232,15 @@ void apply_updates(
   }
   catch (XQueryException& e)
   {
-    if ( e.has_source() &&
-         ( e.diagnostic() == err::XUDY0021 ||
-           e.diagnostic() == err::XUDY0015 ||
-           e.diagnostic() == err::XUDY0016 ||
-           e.diagnostic() == err::XUDY0017 ||
-           e.diagnostic() == err::XUDY0014 ) ) 
+    if (e.has_source() &&
+        (e.diagnostic() == err::XUDY0021 ||
+         e.diagnostic() == err::XUDY0015 ||
+         e.diagnostic() == err::XUDY0016 ||
+         e.diagnostic() == err::XUDY0017 ||
+         e.diagnostic() == err::XUDY0014)) 
     {
-      XQueryException lNewE = XQUERY_EXCEPTION(
-        err::XUDY0021,
-        ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc)
-      );
+      XQueryException lNewE = 
+      XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc));
 
       QueryLoc lLoc;
       lLoc.setFilename(e.source_uri());

@@ -813,30 +813,27 @@ public:
 class VFO_DeclList : public parsenode
 {
 protected:
-  std::vector<rchandle<parsenode> > vfo_hv;
+  std::vector<rchandle<parsenode> > theDecls;
+  std::vector<bool>                 theIndexDeclFlags;
 
 public:
   VFO_DeclList(const QueryLoc&);
 
-  ulong size () const { return (ulong)vfo_hv.size (); }
+  csize size() const { return theDecls.size(); }
 
-  void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin(), vfo_h); }
+  void push_back(const rchandle<parsenode>& vfo);
 
-  void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
+  rchandle<parsenode> operator[](int k) const { return theDecls[k]; }
 
-  void push_back (const VFO_DeclList &other) { vfo_hv.insert(vfo_hv.end(), other.vfo_hv.begin(), other.vfo_hv.end()); }
+  std::vector<rchandle<parsenode> >::const_iterator begin() const 
+  {
+    return theDecls.begin();
+  }
 
-  rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
-
-  std::vector<rchandle<parsenode> >::iterator begin() { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::iterator end() { return vfo_hv.end(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator begin() const { return vfo_hv.begin(); }
-
-  std::vector<rchandle<parsenode> >::const_iterator end() const { return vfo_hv.end(); }
-
-  const VarDecl* findVarDecl(const QName& varname);
+  std::vector<rchandle<parsenode> >::const_iterator end() const
+  {
+    return theDecls.end();
+  }
 
   void accept(parsenode_visitor&) const;
 };
@@ -953,29 +950,23 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class VarDecl : public VarDeclWithInit
+class GlobalVarDecl : public VarDeclWithInit
 {
 protected:
   bool theIsExternal;
-  bool theIsGlobal;
 
   rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
-  VarDecl(
+  GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
     SequenceType* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
-    bool global,
     bool external);
 
   bool is_extern() const { return theIsExternal; }
-
-  bool is_global() const { return theIsGlobal; }
-
-  void set_global(bool global) { theIsGlobal = global; }
 
   void set_annotations(rchandle<AnnotationListParsenode> annotations)
   {
@@ -1061,7 +1052,7 @@ public:
 
   rchandle<ParamList> get_paramlist() const { return theParams; }
 
-  ulong get_param_count() const;
+  csize get_param_count() const;
 
   rchandle<SequenceType> get_return_type() const { return theReturnType; }
 
@@ -1643,7 +1634,9 @@ public:
 
 
 /*******************************************************************************
-
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
 class VarDeclStmt : public exprnode
 {
@@ -1659,6 +1652,33 @@ public:
   csize size() const { return theDecls.size(); }
 
   parsenode* getDecl(csize i) const { return theDecls[i].getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class LocalVarDecl : public VarDeclWithInit
+{
+protected:
+  rchandle<AnnotationListParsenode> theAnnotations;
+
+public:
+  LocalVarDecl(
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceType* type_decl,
+    exprnode* init_expr,
+    AnnotationListParsenode* annotations);
+
+  void set_annotations(rchandle<AnnotationListParsenode> annotations)
+  {
+    theAnnotations = annotations;
+  }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3582,9 +3602,9 @@ public:
 
   enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 
-  rchandle<exprnode> get_step_expr() const { return step_expr_h; }
+  exprnode* get_step_expr() const { return step_expr_h.getp(); }
 
-  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
+  exprnode* get_relpath_expr() const { return relpath_expr_h.getp(); }
 
   bool is_implicit() const { return is_implicit_b; }
 
@@ -3618,11 +3638,11 @@ public:
     rchandle<ReverseStep>,
     rchandle<PredicateList>);
 
-  rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
+  ForwardStep* get_forward_step() const { return forward_step_h.getp(); }
 
-  rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
+  ReverseStep* get_reverse_step() const { return reverse_step_h.getp(); }
 
-  rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
+  PredicateList* get_predicate_list() const { return predicate_list_h.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -3650,11 +3670,11 @@ public:
     const QueryLoc&,
     rchandle<AbbrevForwardStep>);
 
-  rchandle<ForwardAxis> get_forward_axis() const { return theForwardAxis; }
+  ForwardAxis* get_forward_axis() const { return theForwardAxis.getp(); }
 
-  rchandle<parsenode> get_node_test() const { return node_test_h; }
+  parsenode* get_node_test() const { return node_test_h.getp(); }
 
-  rchandle<AbbrevForwardStep> get_abbrev_step() const { return theAbbrevStep; }
+  AbbrevForwardStep* get_abbrev_step() const { return theAbbrevStep.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -5571,20 +5591,20 @@ class TransformExpr : public exprnode
 {
 protected:
   rchandle<CopyVarList> var_list;
-  rchandle<exprnode> source_expr;
-  rchandle<exprnode> target_expr;
+  rchandle<exprnode>    theModifyExpr;
+  rchandle<exprnode>    theReturnExpr;
 
 public:
   TransformExpr(
     const QueryLoc& loc,
     rchandle<CopyVarList> var_list,
-    rchandle<exprnode> source_expr,
-    rchandle<exprnode> target_expr);
+    rchandle<exprnode> modifyExpr,
+    rchandle<exprnode> returnExpr);
 
 
   rchandle<CopyVarList> get_var_list() const { return var_list; }
-  rchandle<exprnode> get_source_expr() const { return source_expr; }
-  rchandle<exprnode> get_target_expr() const { return target_expr; }
+  rchandle<exprnode> get_modify_expr() const { return theModifyExpr; }
+  rchandle<exprnode> get_return_expr() const { return theReturnExpr; }
 
   void accept(parsenode_visitor&) const;
 };

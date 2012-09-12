@@ -230,6 +230,7 @@ typedef enum
 
 #ifdef ZORBA_WITH_JSON
   OP_OBJECT_INSERT_N,
+  JN_OBJECT_1,
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -238,7 +239,9 @@ typedef enum
   FULL_TEXT_TOKENIZER_PROPERTIES_0,
   FULL_TEXT_TOKENIZE_NODE_2,
   FULL_TEXT_TOKENIZE_NODE_1,
-#endif
+  FULL_TEXT_TOKENIZE_NODES_3,
+  FULL_TEXT_TOKENIZE_NODES_2,
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "functions/function_enum.h"
 

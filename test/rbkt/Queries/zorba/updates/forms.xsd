@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.evaluescience.com/schemas/forms"
+           xmlns = "http://www.evaluescience.com/schemas/forms"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:complexType name="Form">
+     <xs:sequence>
+      <xs:any namespace="##targetNamespace" minOccurs="0"
+       maxOccurs="unbounded">
+      </xs:any>
+     </xs:sequence>
+    </xs:complexType>
+
+      <xs:element name="form" type="Form"></xs:element>
+
+    <xs:complexType name="Hidden">
+      <xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+      <xs:attribute name="value" type="xs:anySimpleType" use="optional" />
+    </xs:complexType>
+
+    <xs:element name="hidden" type="Hidden"></xs:element>
+
+</xs:schema>

@@ -34,7 +34,6 @@
 #include "compiler/expression/expr_base.h"
 #include "types/typemanager.h"
 #endif
-#include "compiler/expression/pragma.h"
 
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
@@ -45,6 +44,7 @@
 #include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
+
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
 
@@ -138,9 +138,7 @@ struct FunctionInfo : public ::zorba::serialization::SerializeBaseClass
 
 public:
   SERIALIZABLE_CLASS(FunctionInfo)
-
   FunctionInfo(::zorba::serialization::Archiver& ar);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -152,13 +150,75 @@ public:
 };
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+class VarInfo : public SimpleRCObject
+{
+protected:
+  store::Item_t  theName;
+
+  ulong          theId;
+
+  int            theKind;
+
+  xqtref_t       theType;
+
+  bool           theIsExternal;
+
+  bool           theHasInitializer;
+
+  var_expr     * theVarExpr;
+
+public:
+  SERIALIZABLE_CLASS(VarInfo)
+  VarInfo(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  VarInfo();
+
+  VarInfo(var_expr* v);
+
+  ~VarInfo();
+
+  const store::Item_t& getName() const { return theName; }
+
+  ulong getId() const { return theId; }
+
+  void setId(ulong id) { theId = id; }
+
+  int getKind() const { return theKind; }
+
+  const XQType* getType() const { return theType.getp(); }
+
+  void setType(const xqtref_t& t);
+
+  bool isExternal() const { return theIsExternal; }
+
+  void setIsExternal(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
+
+  var_expr* getVar() const { return theVarExpr; }
+
+  void clearVar() { theVarExpr = NULL; }
+};
+
+
+typedef rchandle<VarInfo> VarInfo_t;
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 struct PrologOption : public ::zorba::serialization::SerializeBaseClass
 {
-  store::Item_t    theName;
-  zstring theValue;
+  store::Item_t  theName;
+  zstring        theValue;
 
 public:
   SERIALIZABLE_CLASS(PrologOption)
@@ -379,13 +439,6 @@ public:
   Feature flags that are used when a particular feature (e.g. scripting
   or ddl) is enabled. The definition of the features is located in
   context/featueres.h.
-
-  thePragmas:
-  -------------
-  A multimap from expr* to pragma_t such that not every expression needs
-  to keep it's own list of pragmas. Since the expr* pointer is only valid
-  until codegen finished, the pragmas can only be used in the compiler.
-
 ********************************************************************************/
 
 class static_context : public SimpleRCObject
@@ -396,7 +449,7 @@ class static_context : public SimpleRCObject
 
   ITEM_PTR_HASH_MAP(ValueIC_t, ICMap);
 
-  ITEM_PTR_HASH_MAP(var_expr_t, VariableMap);
+  ITEM_PTR_HASH_MAP(VarInfo_t, VariableMap);
 
   ITEM_PTR_HASH_MAP(FunctionInfo, FunctionMap);
 
@@ -515,7 +568,7 @@ protected:
 
   std::ostream                          * theTraceStream;
 
-  expr_t                                  theQueryExpr;
+  expr*                                  theQueryExpr;
 
   std::string                             theModuleNamespace;
 
@@ -605,10 +658,6 @@ protected:
 
   uint32_t                                   theFeatures;
 
-  typedef std::multimap<const expr*, pragma_t> PragmaMap;
-  typedef PragmaMap::const_iterator      PragmaMapIter;
-  PragmaMap                                  thePragmas;
-
 public:
   static bool is_builtin_module(const zstring& ns);
 
@@ -629,8 +678,6 @@ public:
 
   void serialize(serialization::Archiver& ar);
 
-  void prepare_for_serialize(CompilerCB *compiler_cb);
-
 public:
   static_context(::zorba::serialization::Archiver& ar);
 
@@ -642,9 +689,9 @@ public:
 
   bool is_global_root_sctx() const;
 
-  expr_t get_query_expr() const;
+  expr* get_query_expr() const;
 
-  void set_query_expr(expr_t expr);
+  void set_query_expr(expr* expr);
 
   void set_trace_stream(std::ostream&);
 
@@ -821,21 +868,15 @@ public:
   //
   // Variables
   //
-  void bind_var(
-        var_expr_t& expr,
-        const QueryLoc& loc,
-        const Error& err);
+  void bind_var(var_expr* expr, const QueryLoc& loc, const Error& err);
 
-  var_expr* lookup_var(
-        const store::Item* qname,
-        const QueryLoc& loc,
-        const Error& err) const;
+  VarInfo* lookup_var(const store::Item* qname) const;
 
   void getVariables(
-    std::vector<var_expr_t>& variableList,
-    bool localsOnly = false,
-    bool returnPrivateVars = false,
-    bool externalVarsOnly = false) const;
+      std::vector<VarInfo*>& variableList,
+      bool localsOnly = false,
+      bool returnPrivateVars = false,
+      bool externalVarsOnly = false) const;
 
   void set_context_item_type(const xqtref_t& t, const QueryLoc& loc);
 
@@ -939,7 +980,6 @@ public:
 
   void get_collations(std::vector<std::string>& collations) const;
 
-
   //
   // Options
   //
@@ -949,22 +989,6 @@ public:
       const QueryLoc& loc);
 
   bool lookup_option(const store::Item* qname, zstring& option) const;
-
-  //
-  // Pragmas
-  //
-  void add_pragma(
-      const expr* e,
-      const pragma_t& p);
-
-  void
-  lookup_pragmas(const expr* e, std::vector<pragma_t>& pragmas) const;
-
-  bool
-  lookup_pragma(
-      const expr* e,
-      const zstring& localname,
-      pragma_t&) const;
 
 protected:
   void process_feature_option(

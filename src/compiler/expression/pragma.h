@@ -17,7 +17,6 @@
 #ifndef ZORBA_COMPILER_PRAGMA_H
 #define ZORBA_COMPILER_PRAGMA_H
 
-#include "zorbatypes/rchandle.h"
 #include "store/api/item.h"
 
 namespace zorba 
@@ -26,7 +25,7 @@ namespace zorba
 /***************************************************************************//**
 
 ********************************************************************************/
-class pragma : public SimpleRCObject
+class pragma
 {
   friend class expr;
 
@@ -39,8 +38,6 @@ public:
 
   ~pragma();
 };
-
-typedef rchandle<pragma> pragma_t;
 
 } /* namespace zorba */
 

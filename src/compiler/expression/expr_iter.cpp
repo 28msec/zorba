@@ -46,7 +46,7 @@ namespace zorba
 do                                                                  \
 {                                                                   \
   theState = __LINE__;                                              \
-  theCurrentChild = reinterpret_cast<expr_t*>(&(subExprHandle));    \
+  theCurrentChild = reinterpret_cast<expr**>(&(subExprHandle));    \
                                                                     \
   if ((subExprHandle) != NULL)                                      \
   {                                                                 \
@@ -99,11 +99,11 @@ ExprIterator::ExprIterator(expr* e)
 
 void ExprIterator::next()
 {
-  flwor_clause* c;
-  window_clause* wc;
-  orderby_clause* oc;
-  group_clause* gc;
-  flwor_wincond* wincond;
+  flwor_clause* c = NULL;
+  window_clause* wc = NULL;
+  orderby_clause* oc = NULL;
+  group_clause* gc = NULL;
+  flwor_wincond* wincond = NULL;
 
   switch (theExpr->get_expr_kind())
   {
@@ -120,7 +120,7 @@ void ExprIterator::next()
 
     for (; theClausesIter != theClausesEnd; ++(theClausesIter))
     {
-      c = (theClausesIter)->getp();
+      c = *theClausesIter;
 
       if (c->get_kind() == flwor_clause::for_clause)
       {
@@ -136,17 +136,17 @@ void ExprIterator::next()
       {
         for (theWincondIter = 0; theWincondIter < 2; ++theWincondIter)
         {
-          wc = static_cast<window_clause *>(theClausesIter->getp());
+          wc = static_cast<window_clause *>(*theClausesIter);
 
           wincond = (theWincondIter == 0 ?
-                     wc->theWinStartCond.getp() :
-                     wc->theWinStopCond.getp());
+                     wc->theWinStartCond :
+                     wc->theWinStopCond );
 
           if (wincond != 0)
             EXPR_ITER_NEXT(wincond->theCondExpr);
         }
 
-        wc = static_cast<window_clause *>(theClausesIter->getp());
+        wc = static_cast<window_clause *>(*theClausesIter);
 
         EXPR_ITER_NEXT(wc->theDomainExpr);
       }

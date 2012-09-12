@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,13 +22,13 @@
 #include "compiler/expression/expr_base.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//	Update expressions                                                 //
+//  Update expressions                                                 //
 //  [http://www.w3.org/TR/xqupdate/]                                   //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
@@ -40,20 +40,21 @@ namespace zorba
 class update_expr_base : public expr
 {
 protected:
-	expr_t  theTargetExpr;
-	expr_t  theSourceExpr;
+  expr * theTargetExpr;
+  expr * theSourceExpr;
 
 public:
-	update_expr_base(
+  update_expr_base(
+    CompilerCB* ccb,
     static_context* sctx,
-		const QueryLoc&,
+    const QueryLoc&,
     expr_kind_t kind,
-		const expr_t& targetExpr,
-    const expr_t& sourceExpr);
+    expr* targetExpr,
+    expr* sourceExpr);
 
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
+  expr* getTargetExpr() const { return theTargetExpr; }
 
-	expr* getSourceExpr() const { return theSourceExpr.getp(); }
+  expr* getSourceExpr() const { return theSourceExpr; }
 
   void compute_scripting_kind();
 };
@@ -66,25 +67,29 @@ class insert_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   store::UpdateConsts::InsertType theType;
 
-public:
-	insert_expr(
-    static_context* sctx,
-		const QueryLoc&,
-    store::UpdateConsts::InsertType,
-		const expr_t& aSourceExpr,
-		const expr_t& aTargetExpr);
 
+protected:
+  insert_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    const QueryLoc&,
+    store::UpdateConsts::InsertType,
+    expr* aSourceExpr,
+    expr* aTargetExpr);
+
+public:
   store::UpdateConsts::InsertType getType() const { return theType; }
   
-  expr_t cloneImpl(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -95,15 +100,18 @@ class delete_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
+
+
+protected:
+  delete_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr*);
 
 public:
-	delete_expr(static_context* sctx, const QueryLoc&, const expr_t&);
-
-  expr_t cloneImpl(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -114,27 +122,30 @@ class replace_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   store::UpdateConsts::ReplaceType theType;
 
-public:
-	replace_expr(
+protected:
+  replace_expr(
+    CompilerCB* ccb,
     static_context* sctx,
-		const QueryLoc&,
+    const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
-		const expr_t&,
-		const expr_t&);
+    expr*,
+    expr*);
 
+public:
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
-	expr* getReplaceExpr() const { return theSourceExpr.getp(); }
+  expr* getReplaceExpr() const { return theSourceExpr; }
 
-  expr_t cloneImpl(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -145,21 +156,24 @@ class rename_expr : public update_expr_base
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
-public:
-	rename_expr(
+protected:
+  rename_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc&,
-      const expr_t&,
-      const expr_t&);
+      expr*,
+      expr*);
 
-	expr* getNameExpr() const { return theSourceExpr.getp(); }
+public:
+	expr* getNameExpr() const { return theSourceExpr; }
 
-  expr_t cloneImpl(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -168,29 +182,31 @@ public:
                     ("," "$" VarName ":=" ExprSingle)*
                     "modify"  ExprSingle "return" ExprSingle
 ********************************************************************************/
-class copy_clause;
-typedef rchandle<copy_clause> copy_clause_t;
-
-class copy_clause : public SimpleRCObject
+class copy_clause
 {
   friend class expr;
   friend class transform_expr;
   friend class ExprIterator;
+  friend class ExprManager;
 
 private:
-  var_expr_t theVar;
-  expr_t     theExpr;
+  var_expr  *       theVar;
+  expr      *       theExpr;
+  CompilerCB *const theCCB;
+
+protected:
+  copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr);
 
 public:
-  copy_clause(var_expr_t aVar, expr_t aExpr);
-
   ~copy_clause();
 
-  var_expr* getVar()  const { return theVar.getp(); }
+  void free() {}
 
-  expr* getExpr() const { return theExpr.getp(); }
+  var_expr* getVar()  const { return theVar; }
 
-  copy_clause_t clone(expr::substitution_t& s) const;
+  expr* getExpr() const { return theExpr; }
+
+  copy_clause* clone(expr::substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -200,42 +216,44 @@ class transform_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
-	std::vector<copy_clause_t> theCopyClauses;
-	expr_t                     theModifyExpr;
-	expr_t                     theReturnExpr;
+  std::vector<copy_clause*> theCopyClauses;
+  expr                     * theModifyExpr;
+  expr                     * theReturnExpr;
+
+protected:
+  transform_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
 
 public:
-	transform_expr(static_context* sctx, const QueryLoc& loc);
+  expr* getModifyExpr() const { return theModifyExpr; }
 
-	expr_t getModifyExpr() const { return theModifyExpr; }
-
-	expr_t getReturnExpr() const { return theReturnExpr; }
+  expr* getReturnExpr() const { return theReturnExpr; }
 
   void setModifyExpr(expr* e);
 
   void setReturnExpr(expr* e);
 
-	void add_back(copy_clause_t c);
+  void add_back(copy_clause* c);
 
-	copy_clause_t const& operator[](int i) const { return theCopyClauses[i]; }
+  copy_clause* const& operator[](int i) const { return theCopyClauses[i]; }
 
-	std::vector<copy_clause_t>::const_iterator begin() const
+  std::vector<copy_clause*>::const_iterator begin() const
   { return theCopyClauses.begin(); }
 
-	std::vector<copy_clause_t>::const_iterator end() const
+  std::vector<copy_clause*>::const_iterator end() const
   { return theCopyClauses.end(); }
 
-	csize size() const { return theCopyClauses.size(); }
+  csize size() const { return theCopyClauses.size(); }
 
   void compute_scripting_kind();
 
-  expr_t cloneImpl(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 

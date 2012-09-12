@@ -652,6 +652,20 @@ PULPrimitiveFactory::createUpdJSONArrayInsert(
 /******************************************************************************
 
 *******************************************************************************/
+UpdJSONArrayAppend*
+PULPrimitiveFactory::createUpdJSONArrayAppend(
+    CollectionPul* pul,
+    const QueryLoc* loc,
+    store::Item_t& target,
+    std::vector<store::Item_t>& members)
+{
+  return new UpdJSONArrayAppend(pul, loc, target, members);
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 UpdJSONArrayDelete*
 PULPrimitiveFactory::createUpdJSONArrayDelete(
     CollectionPul* pul,

@@ -53,10 +53,10 @@
 #include <store/api/item_factory.h>
 #include "store/api/temp_seq.h"
 #include <store/api/pul.h>
-#include <store/util/hashset_node_handle.h>
 
 #include <context/static_context.h>
 
+#include "zorbautils/hashset_node_itemh.h"
 #include "zorbautils/hashset_atomic_itemh.h"
 
 namespace zorbatm = zorba::time;
@@ -1106,7 +1106,7 @@ bool FnDeepEqualIterator::nextImpl(
 ********************************************************************************/
 HashSemiJoinIteratorState::HashSemiJoinIteratorState()
 {
-  theRightInput = new store::NodeHashSet();
+  theRightInput = new NodeHandleHashSet(1024, false);
 }
 
 

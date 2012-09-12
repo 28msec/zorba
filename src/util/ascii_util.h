@@ -141,6 +141,25 @@ bool is_alnum( CharType c ) {
 }
 
 /**
+ * Checks whether the given character is a control character.  This function
+ * exists to make a proper function out of the standard iscntrl(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a control character.
+ */
+template<typename CharType> inline
+bool is_cntrl( CharType c ) {
+#ifdef WIN32
+  // Windows' iscntrl() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && iscntrl( c );
+#else
+  return iscntrl( c );
+#endif
+}
+
+/**
  * Checks whether the given character is a decimal digit.  This function exists
  * to make a proper function out of the standard isdigit(3) that may be
  * implemented as a macro.
@@ -156,6 +175,25 @@ bool is_digit( CharType c ) {
   return __isascii( c ) && isdigit( c );
 #else
   return isdigit( c );
+#endif
+}
+
+/**
+ * Checks whether the given character is a printing character.  This function
+ * exists to make a proper function out of the standard isprint(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a printing character.
+ */
+template<typename CharType> inline
+bool is_print( CharType c ) {
+#ifdef WIN32
+  // Windows' isprint() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isprint( c );
+#else
+  return isprint( c );
 #endif
 }
 
