@@ -23,6 +23,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
 %}
+%include "std_string.i"
 
 %{
 

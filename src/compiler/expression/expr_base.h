@@ -184,7 +184,7 @@ protected:
 
   FreeVars           theFreeVars;
 
-  CompilerCB       * theCCB;
+  CompilerCB  *const theCCB;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -192,8 +192,6 @@ public:
   static void checkSimpleExpr(const expr* e);
 
   static void checkNonUpdating(const expr* e);
-
-  virtual void free() {}
 
 protected:
   expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);

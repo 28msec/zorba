@@ -81,29 +81,29 @@ public:
   WindowVars();
 
   WindowVars(
-        const std::vector<PlanIter_t >& aCurVars,
-        const std::vector<PlanIter_t >& aPrevVars,
-        const std::vector<PlanIter_t >& aNextVars,
-        const std::vector<PlanIter_t >& aPosVars,
+      const std::vector<PlanIter_t >& aCurVars,
+      const std::vector<PlanIter_t >& aPrevVars,
+      const std::vector<PlanIter_t >& aNextVars,
+      const std::vector<PlanIter_t >& aPosVars,
 
-        const std::vector<PlanIter_t >& aCurOuterVars,
-        const std::vector<PlanIter_t >& aPrevOuterVars,
-        const std::vector<PlanIter_t >& aNextOuterVars,
-        const std::vector<PlanIter_t >& aPosOuterVars);
-
+      const std::vector<PlanIter_t >& aCurOuterVars,
+      const std::vector<PlanIter_t >& aPrevOuterVars,
+      const std::vector<PlanIter_t >& aNextOuterVars,
+      const std::vector<PlanIter_t >& aPosOuterVars);
+  
   virtual ~WindowVars();
 
-  void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor& v, bool start) const;
 
   void bindIntern(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindExtern(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 };
 
 
@@ -143,24 +143,24 @@ protected:
 
   void accept(PlanIterVisitor&) const;
 
-  void open(PlanState& aPlanState, uint32_t& offset) const;
-  void reset(PlanState& aPlanState) const;
-  void close(PlanState& aPlanState) const;
+  void open(PlanState& planState, uint32_t& offset) const;
+  void reset(PlanState& planState) const;
+  void close(PlanState& planState) const;
 
   bool evaluate(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindIntern(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindExtern(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 };
 
 
@@ -217,24 +217,24 @@ protected:
 
   void accept(PlanIterVisitor&) const;
 
-  void open(PlanState& aPlanState, uint32_t& offset) const;
-  void reset(PlanState& aPlanState) const;
-  void close(PlanState& aPlanState) const;
+  void open(PlanState& planState, uint32_t& offset) const;
+  void reset(PlanState& planState) const;
+  void close(PlanState& planState) const;
 
   bool evaluate(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindIntern(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition ) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindExtern(
-      PlanState& aPlanState,
-      const store::TempSeq_t& aInputSeq,
-      const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 };
 
 
@@ -370,14 +370,14 @@ public:
 
   void accept(PlanIterVisitor&) const;
 
-  void openImpl(PlanState& aPlanState, uint32_t& aOffset);
-  bool nextImpl(store::Item_t& aResult, PlanState& aPlanState) const;
-  void resetImpl(PlanState& aPlanState) const;
-  void closeImpl(PlanState& aPlanState);
+  void openImpl(PlanState& planState, uint32_t& aOffset);
+  bool nextImpl(store::Item_t& aResult, PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState);
 
 private:
   void bindVariable(
-        PlanState& aPlanState,
+        PlanState& planState,
         store::TempSeq_t& aInputSeq,
         ulong aStartPos,
         ulong aEndPos) const;

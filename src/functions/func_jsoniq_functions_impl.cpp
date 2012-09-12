@@ -16,7 +16,9 @@
 #include "stdafx.h"
 
 #include "functions/func_jsoniq_functions.h"
+#include "functions/func_jsoniq_functions_impl.h"
 
+#include "runtime/json/json_constructors.h"
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/core/item_iterator.h"
 
@@ -37,8 +39,11 @@ namespace zorba
 ********************************************************************************/
 bool op_zorba_json_array_insert::mustCopyInputNodes(expr* fo, csize producer) const
 {
+  static_context* sctx = fo->get_sctx();
+
   if (producer == 2 &&
-      fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)
+      (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
+       sctx->construction_mode() != StaticContextConsts::cons_preserve))
   {
     return true;
   }
@@ -67,31 +72,17 @@ bool op_zorba_json_object_insert::mustCopyInputNodes(expr* fo, csize producer) c
 ********************************************************************************/
 bool op_zorba_json_replace_value::mustCopyInputNodes(expr* fo, csize producer) const
 {
+  static_context* sctx = fo->get_sctx();
+
   if (producer == 2 &&
-      fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)
+      (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
+       sctx->construction_mode() != StaticContextConsts::cons_preserve))
   {
     return true;
   }
 
   return false;
 }
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool op_zorba_json_array_append::mustCopyInputNodes(expr* fo, csize producer) const
-{
-  if (producer == 2 &&
-      fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)
-  {
-    return true;
-  }
-
-  return false;
-}
-
 
 
 /*******************************************************************************
@@ -106,6 +97,60 @@ PlanIter_t op_zorba_json_replace_value::codegen(
 {
   return new JSONReplaceValueIterator(sctx, loc, argv, true);
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool op_zorba_json_array_append::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  static_context* sctx = fo->get_sctx();
+
+  if (producer == 2 &&
+      (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
+       sctx->construction_mode() != StaticContextConsts::cons_preserve))
+  {
+    return true;
+  }
+
+  return false;
+}
+
+
+#if 1
+/*******************************************************************************
+
+********************************************************************************/
+bool op_zorba_json_box::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  static_context* sctx = fo->get_sctx();
+
+  if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
+      sctx->construction_mode() != StaticContextConsts::cons_preserve)
+  {
+    return true;
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_json_box::getReturnType(const fo_expr* fo) const
+{
+  xqtref_t type = fo->get_arg(0)->get_return_type();
+
+  if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+    return type;
+
+  if (type->max_card() == 0)
+    return GENV_TYPESYSTEM.JDM_NULL_TYPE_ONE;
+
+  return theSignature.returnType();
+}
+#endif
 
 
 /*******************************************************************************
@@ -129,6 +174,29 @@ PlanIter_t fn_jsoniq_parse_json::codegen(
     QueryLoc lArgLoc = QueryLoc::null;
     return new JSONParseIterator(sctx, loc, argv, lArgLoc);
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t jn_object::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONObjectIterator(sctx, loc, argv, true, false);
+}
+
+
+void populate_context_jsoniq_functions_impl(static_context* sctx)
+{
+  DECL(sctx, jn_object,
+       (createQName("http://www.jsoniq.org/functions", "", "object"),
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE));
 }
 
 

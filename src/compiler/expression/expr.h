@@ -784,23 +784,23 @@ protected:
   store::Item_t theValue;
 
 protected:
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, zstring& sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, zstring& sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const std::string& sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const std::string& sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_integer);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_integer);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_decimal);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_decimal);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_double);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_double);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_boolean);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_boolean);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, store::Item_t);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const store::Item_t&);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* ns, const char* pre, const char* local);
 
 public:
   store::Item* get_val() const { return theValue.getp(); }
@@ -886,15 +886,12 @@ public:
   [173] CatchErrorList ::= NameTest ("|" NameTest)*
 
 ********************************************************************************/
-class catch_clause;
 
-typedef rchandle<catch_clause> catch_clause_t;
-
-
-class catch_clause : public SimpleRCObject
+class catch_clause
 {
   friend class expr;
   friend class trycatch_expr;
+  friend class ExprManager;
 
 public:
   enum var_type
@@ -914,11 +911,11 @@ public:
   typedef std::map<int, var_expr*> var_map_t;
 
 protected:
-  nt_list_t  theNameTests;
-  var_map_t  theVarMap;
+  nt_list_t         theNameTests;
+  var_map_t         theVarMap;
+  CompilerCB *const theCCB;
 
-public:
-  catch_clause();
+  catch_clause(CompilerCB* ccb);
 
 public:
   void set_nametests(nt_list_t& a) { theNameTests = a; }
@@ -933,7 +930,7 @@ public:
 
   void add_var(var_type v, var_expr* n) { theVarMap[v] = n; }
 
-  catch_clause_t clone(expr::substitution_t& subst) const;
+  catch_clause* clone(expr::substitution_t& subst) const;
 };
 
 
@@ -946,7 +943,7 @@ class trycatch_expr : public expr
 protected:
   expr*                      theTryExpr;
   std::vector<expr*>         theCatchExprs;
-  std::vector<catch_clause_t> theCatchClauses;
+  std::vector<catch_clause*> theCatchClauses;
 
 protected:
   trycatch_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr* tryExpr);
@@ -960,11 +957,11 @@ public:
 
   void add_catch_expr(expr* e);
 
-  void add_clause(catch_clause_t cc);
+  void add_clause(catch_clause* cc);
 
   csize clause_count() const { return theCatchClauses.size(); }
 
-  const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
+  const catch_clause* operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 

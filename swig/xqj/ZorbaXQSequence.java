@@ -359,7 +359,7 @@ public class ZorbaXQSequence implements javax.xml.xquery.XQSequence {
         isItemGetXQException();
         StringBuffer sb = new StringBuffer();
         for (XQItem item: content) {
-            sb.append(item.getItemAsString(null));
+            sb.append(item.getItemAsString(prprts));
         }
         return sb.toString();
     }

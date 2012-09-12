@@ -196,7 +196,7 @@ void beginVisitWindowVariable(
 void endVisitWindowVariable();
 
     void beginVisitWinCondVariable(
-        const std::string& varName,
+        const zstring& varName,
         const std::vector<PlanIter_t>& varRefs);
 
     void endVisitWinCondVariable();

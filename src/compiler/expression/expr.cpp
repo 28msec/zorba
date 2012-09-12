@@ -943,7 +943,7 @@ const_expr::const_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    store::Item_t v)
+    const store::Item_t& v)
   :
   expr(ccb, sctx, loc, const_expr_kind),
   theValue(v)
@@ -1053,7 +1053,8 @@ expr* extension_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-catch_clause::catch_clause()
+catch_clause::catch_clause(CompilerCB* ccb)
+:theCCB(ccb)
 {
 }
 
@@ -1079,7 +1080,7 @@ void trycatch_expr::add_catch_expr(expr* e)
 }
 
 
-void trycatch_expr::add_clause(catch_clause_t cc)
+void trycatch_expr::add_clause(catch_clause* cc)
 {
   theCatchClauses.insert(theCatchClauses.begin(), cc);
 }
@@ -1139,9 +1140,9 @@ void trycatch_expr::compute_scripting_kind()
 }
 
 
-catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
+catch_clause* catch_clause::clone(expr::substitution_t& subst) const
 {
-  catch_clause_t lClause(new catch_clause());
+  catch_clause* lClause = theCCB->theEM->create_catch_clause();
 
   for (nt_list_t::const_iterator lIter = theNameTests.begin();
        lIter != theNameTests.end();
@@ -1156,7 +1157,7 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
     lClause->add_var((catch_clause::var_type)lIter->first, lIter->second);
   }
 
-  return lClause.getp();
+  return lClause;
 }
 
 
