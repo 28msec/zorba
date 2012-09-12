@@ -683,6 +683,26 @@ IsAncestorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 /*******************************************************************************
 ********************************************************************************/
+int getNodePosition(store::Item_t aNode, store::Item_t aNodeName)
+{
+  int count = 1;
+  store::Iterator_t lIterator = aNode->getParent()->getChildren();
+  store::Item_t lItem;
+  lIterator->open();
+  while(lIterator->next(lItem))
+  {
+    if (lItem->getNodeKind() == aNode->getNodeKind())
+    {
+      if(lItem->equals(aNode))
+        break;
+      else if (aNodeName.isNull() || aNodeName->equals(lItem->getNodeName()))
+        count++;
+    }
+  }
+  lIterator->close();
+  return count;
+}
+
 bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;

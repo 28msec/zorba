@@ -239,6 +239,7 @@
   TYPE_LevelIterator,
   TYPE_LeastCommonAncestor,
   TYPE_FnPathIterator,
+  TYPE_NodeCopyIterator,
   TYPE_AbsIterator,
   TYPE_CeilingIterator,
   TYPE_FloorIterator,

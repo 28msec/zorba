@@ -567,46 +567,53 @@
 
 </zorba:iterator>
 
-<<<<<<< TREE
-  <!--
-=======
 <!--  
->>>>>>> MERGE-SOURCE
 /*******************************************************************************
 ********************************************************************************/
 -->
-<<<<<<< TREE
-<zorba:iterator name="NodeCopyIterator">
-=======
 <zorba:iterator name="FnPathIterator">
->>>>>>> MERGE-SOURCE
 
   <zorba:description author="Zorba Team"></zorba:description>
 
   <zorba:function>
-<<<<<<< TREE
-    <zorba:signature localname="copy" prefix="fn-zorba-node">
-      <zorba:param>node()*</zorba:param>
-      <zorba:output>node()*</zorba:output>
-=======
     <zorba:signature localname="path" prefix="fn" version="3.0">
       <zorba:output>xs:string?</zorba:output>
->>>>>>> MERGE-SOURCE
     </zorba:signature>
 
-<<<<<<< TREE
-    <zorba:methods>
-      <zorba:mustCopyInputNodes value="true"/>
-    </zorba:methods>
-=======
     <zorba:signature localname="path" prefix="fn" version="3.0">
       <zorba:param>node()?</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
->>>>>>> MERGE-SOURCE
 
   </zorba:function>
 
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="NodeCopyIterator">
+ 
+  <zorba:description author="Zorba Team"></zorba:description>
+ 
+  <zorba:function>
+    <zorba:signature localname="copy" prefix="fn-zorba-node">
+      <zorba:param>node()*</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
+ 
+    <zorba:methods>
+      <zorba:mustCopyInputNodes/>
+      <zorba:getReturnType/>
+      <zorba:isMap producer="0"/>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+      <zorba:propagatesInputNodes value="false"/>
+    </zorba:methods>
+ 
+  </zorba:function>
+ 
 </zorba:iterator>
 
 </zorba:iterators>

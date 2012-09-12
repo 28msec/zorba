@@ -3,6 +3,7 @@ Zorba - The XQuery Processor
 version 2.7
 
 New Features:
+  * New node copy function added to the node module
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
@@ -185,7 +186,6 @@ New Features:
   * http:send-request is able to handle arbitrary encodings
   * Added API method StaticContext::getNamespaceBindings() (see bug #905035)
   * New version of the JSON converter module in the core of Zorba (no external dependencies anymore)
-  * Added a node copy function to the node module
   * Added truncate function to the collection modules for efficient deletion of all nodes in a collection.
 
 
