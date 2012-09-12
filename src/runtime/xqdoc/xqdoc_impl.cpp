@@ -99,7 +99,8 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       lCompiler.xqdoc(*lFile,
                       lFileName,
                       result,
-                      planState.theLocalDynCtx->get_current_date_time());
+                      planState.theLocalDynCtx->get_current_date_time(),
+                      false);
     }
     catch (XQueryException& e)
     {
@@ -128,8 +129,9 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
+  store::Item_t lCodeItem, lIgnoreItem;
   zstring lFileName;
+  bool lIgnoreComments = true;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
@@ -143,18 +145,26 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // retrieve the URI of the module to generate xqdoc for
-  consumeNext(lItem, theChildren[0].getp(), planState);
+  // retrieve the module code to generate xqdoc for
+  consumeNext(lCodeItem, theChildren[0].getp(), planState);
+
+  // retrieve ignore comments flag if available
+  if (theChildren.size() > 1)
+  {
+    consumeNext(lIgnoreItem, theChildren[1].getp(), planState);
+    lIgnoreComments = lIgnoreItem->getBooleanValue();
+  }
 
   try 
   {
-    std::istringstream is(lItem->getStringValue().c_str());
+    std::istringstream is(lCodeItem->getStringValue().c_str());
 
     // retrieve the xqdoc elements
     lCompiler.xqdoc(is,
                     lFileName,
                     result,
-                    planState.theLocalDynCtx->get_current_date_time());
+                    planState.theLocalDynCtx->get_current_date_time(),
+                    lIgnoreComments);
   }
   catch (XQueryException& e) 
   {

@@ -69,6 +69,21 @@ public:
 };
 
 
+//fn-zorba-xqdoc:xqdoc-content-sub
+class fn_zorba_xqdoc_xqdoc_content_sub : public function
+{
+public:
+  fn_zorba_xqdoc_xqdoc_content_sub(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

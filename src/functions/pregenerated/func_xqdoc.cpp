@@ -51,6 +51,16 @@ PlanIter_t fn_zorba_xqdoc_xqdoc_content::codegen(
   return new XQDocContentIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_xqdoc_xqdoc_content_sub::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new XQDocContentIterator(sctx, loc, argv);
+}
+
 void populate_context_xqdoc(static_context* sctx)
 {
 
@@ -73,6 +83,19 @@ void populate_context_xqdoc(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
         FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc_content_sub,
+        (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc-content-sub"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE, 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_SUB_2);
 
   }
 

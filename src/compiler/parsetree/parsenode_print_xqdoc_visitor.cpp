@@ -275,7 +275,7 @@ void print_namespaces()
 
 store::Item_t print_comment(store::Item_t& result, const XQDocComment* aComment)
 {
-  if (aComment == 0) {
+  if (theIgnoreComments || aComment == 0) {
     return NULL;
   }
   list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
@@ -491,9 +491,13 @@ protected:
   zstring              theEncoding;
   zstring              theXQueryVersion;
 
+  bool                 theIgnoreComments;
+
 public:
 
-ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
+ParseNodePrintXQDocVisitor(store::Item_t& aResult,
+                           const string& aFileName,
+                           bool aIgnoreComments)
   :
   theResult(aResult),
   theXQDocNS("http://www.xqdoc.org/1.0"),
@@ -501,7 +505,8 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theFileName(getFileName(aFileName)),
   theBaseURI("http://www.xqdoc.org/1.0"),
   theVersion("1.0"),
-  theFactory(GENV_ITEMFACTORY)
+  theFactory(GENV_ITEMFACTORY),
+  theIgnoreComments(aIgnoreComments)
 {
   theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
   theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
@@ -1390,9 +1395,10 @@ void print_parsetree_xqdoc(
   store::Item_t&      result,
   const parsenode*    p,
   const string&       aFileName,
-  const store::Item_t& aDateTime)
+  const store::Item_t& aDateTime,
+  bool aIgnoreComments)
 {
-  ParseNodePrintXQDocVisitor v(result, aFileName);
+  ParseNodePrintXQDocVisitor v(result, aFileName, aIgnoreComments);
   v.print(p, aDateTime);
 }
 

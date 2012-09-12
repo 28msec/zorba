@@ -29,7 +29,8 @@ namespace zorba {
       store::Item_t&,
       const parsenode *p,
       const std::string&,
-      const store::Item_t& aDateTime);
+      const store::Item_t& aDateTime,
+      bool aIgnoreComments);
 
 } // namespace
 
