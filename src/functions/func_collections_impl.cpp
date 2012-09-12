@@ -30,10 +30,10 @@ namespace zorba
 
 ********************************************************************************/
 bool
-mustCopyNodes(expr& e)
+hasNoCopyPragma(expr& e)
 {
   pragma* p;
-  return !e.get_ccb()->lookup_pragma(&e, "no-copy", p);
+  return e.get_ccb()->lookup_pragma(&e, "no-copy", p);
 }
 
 
@@ -128,7 +128,7 @@ PlanIter_t static_collections_dml_insert_nodes::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaInsertNodesIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -149,7 +149,7 @@ PlanIter_t static_collections_dml_insert_nodes_first::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaInsertNodesFirstIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -170,7 +170,7 @@ PlanIter_t static_collections_dml_insert_nodes_last::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaInsertNodesLastIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -191,7 +191,7 @@ PlanIter_t static_collections_dml_insert_nodes_before::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -212,7 +212,7 @@ PlanIter_t static_collections_dml_insert_nodes_after::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaInsertNodesAfterIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -233,7 +233,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaApplyInsertNodesIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -262,7 +262,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -279,6 +279,27 @@ bool static_collections_dml_apply_insert_nodes_first::propagatesInputNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_apply_insert_nodes_last::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  for (std::vector<zorba::pragma*>::const_iterator lIter = p.begin();
+       lIter != p.end();
+       ++lIter)
+  {
+    pragma* p = *lIter;
+    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
+    {
+      if (p->theQName->getLocalName() == "no-copy")
+      {
+        e->get_ccb()->add_pragma(e, p);
+        e->setContainsPragma(ANNOTATION_TRUE);
+      }
+    }
+  }
+}
+
 PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -291,7 +312,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
   bool const dynamic = 
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaApplyInsertNodesLastIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -320,7 +341,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
   bool const dynamic = 
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaApplyInsertNodesBeforeIterator(sctx, loc, argv, dynamic, copy);
 }
@@ -350,7 +371,7 @@ PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  bool const copy = mustCopyNodes(ann);
+  bool const copy = !hasNoCopyPragma(ann);
 
   return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv, dynamic, copy);
 }

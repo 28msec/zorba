@@ -370,6 +370,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
   CODEGEN_DECL();
 };
 

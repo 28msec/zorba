@@ -641,6 +641,8 @@ protected:
 
   std::vector<var_expr*>              theScopedVars;
 
+  std::vector<pragma*>                theScopedPragmas;
+
   StaticContextConsts::xquery_version_t theMaxLibModuleVersion;
 
 public:
@@ -8452,14 +8454,24 @@ void end_visit(const ValidateExpr& v, void* /*visit_state*/)
 void* begin_visit(const ExtensionExpr& v)
 {
   TRACE_VISIT();
+
+  if (v.get_expr() == NULL)
+  {
+    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC(loc) );
+  }
+
   return no_state;
 }
 
 void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-  if (v.get_expr() == NULL)
-    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC(loc) );
+
+  size_t lNumPragmas = v.get_pragma_list()->get_pragmas().size();
+  for (size_t i = 0; i < lNumPragmas; ++i)
+  {
+    theScopedPragmas.erase(theScopedPragmas.end() - 1);
+  }
 }
 
 
@@ -8485,27 +8497,25 @@ void end_visit(const PragmaList& v, void* /*visit_state*/)
 void* begin_visit(const Pragma& v)
 {
   TRACE_VISIT();
+  store::Item_t lQName;
+  expand_no_default_qname(lQName, v.get_name(), v.get_name()->get_location());
+
+  if (lQName->getPrefix().empty() && lQName->getNamespace().empty())
+  {
+    RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(lQName->getStringValue()));
+  }
+
+  pragma* lPragma = theExprManager->create_pragma(lQName, v.get_pragma_lit());
+
+  // popped in end_visit(ExtensionExpr)
+  theScopedPragmas.push_back(lPragma);
+
   return no_state;
 }
 
 void end_visit(const Pragma& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
-  store::Item_t lQName;
-  expand_no_default_qname(lQName, v.get_name(), v.get_name()->get_location());
-
-  if (lQName->getPrefix().empty() && lQName->getNamespace().empty())
-    RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(lQName->getStringValue()));
-
-  if (lQName->getNamespace() == ZORBA_EXTENSIONS_NS)
-  {
-    pragma* lPragma = theExprManager->create_pragma(lQName, v.get_pragma_lit());
-    expr* lExpr = top_nodestack();
-
-    theCCB->add_pragma(lExpr, lPragma);
-    lExpr->setContainsPragma(ANNOTATION_TRUE);
-  }
 }
 
 
@@ -10838,6 +10848,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       default: {}
 
     } // switch
+
+    f->processPragma(resultExpr, theScopedPragmas);
 
     push_nodestack(resultExpr);
   }

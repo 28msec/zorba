@@ -59,7 +59,7 @@ class ZorbaCollectionIteratorHelper : public NaryBaseIterator<Iter, State>
 {
 protected:
   bool theIsDynamic;
-  bool theMustCopyInput;
+  bool theNeedToCopy;
 
 protected:
 
@@ -79,8 +79,6 @@ protected:
     store::Item_t                    node;
     store::Item_t                    copyNode;
     xs_integer                       targetPos;
-
-    store::CopyMode lCopyMode;
 
     this->consumeNext(collName, this->theChildren[0].getp(), planState);
 
@@ -102,11 +100,12 @@ protected:
       }
     }
 
+    store::CopyMode lCopyMode;
     getCopyMode(lCopyMode, this->theSctx);
 
     lCopyMode.theDoCopy =
-      !this->theChildren[this->theChildren.size()-1]->isConstructor() ||
-      theMustCopyInput;
+     !(this->theChildren[this->theChildren.size()-1]->isConstructor() ||
+      !theNeedToCopy);
 
     while (this->consumeNext(node,
                              this->theChildren[this->theChildren.size()-1].getp(),
@@ -147,11 +146,11 @@ public:
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
       bool isDynamic,
-      bool mustCopyNodes)
+      bool needToCopy)
     :
     NaryBaseIterator<Iter, State>(sctx, loc, children),
     theIsDynamic(isDynamic),
-    theMustCopyInput(mustCopyNodes)
+    theNeedToCopy(needToCopy)
   {
   }
 
@@ -161,6 +160,7 @@ public:
   {
     serialize_baseclass(ar, (NaryBaseIterator<Iter, State>*)this);
     ar & theIsDynamic;
+    ar & theNeedToCopy;
   }
 };
 
