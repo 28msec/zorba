@@ -185,6 +185,13 @@ public:
    */
   short getSerializationMethod() const;
 
+  /**
+   * Get the serialization method as a string
+   *
+   * @return the value of the serialization method as string
+   */
+  void getSerializationMethod(zstring&) const;
+
 protected:
   void reset();
 
