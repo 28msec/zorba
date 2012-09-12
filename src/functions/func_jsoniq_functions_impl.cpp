@@ -163,7 +163,7 @@ xqtref_t op_zorba_json_box::getReturnType(const fo_expr* fo) const
     return type;
 
   if (type->max_card() == 0)
-    return GENV_TYPESYSTEM.JDM_NULL_TYPE_ONE;
+    return GENV_TYPESYSTEM.JN_NULL_TYPE_ONE;
 
   return theSignature.returnType();
 }

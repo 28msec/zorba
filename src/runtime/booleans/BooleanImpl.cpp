@@ -142,7 +142,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
          TypeOps::is_subtype(type, store::XS_STRING) ||
          TypeOps::is_subtype(type, store::XS_ANY_URI) ||
          type == store::XS_UNTYPED_ATOMIC ||
-         type == store::JDM_NULL ||
+         type == store::JN_NULL ||
          TypeOps::is_numeric(type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic

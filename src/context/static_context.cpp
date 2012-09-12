@@ -397,8 +397,8 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 #ifdef ZORBA_WITH_JSON
 
 const char*
-static_context::JSONIQ_NS =
-"http://www.jsoniq.org/";
+static_context::JSONIQ_DM_NS =
+"http://www.jsoniq.org/data-model";
 
 const char*
 static_context::JSONIQ_FN_NS =

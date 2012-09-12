@@ -180,3 +180,13 @@ declare function jn:flatten($a as array()) as item()* external;
  : @error jerr:JNDY0003 if there is a pair collision.
  :)
 declare function jn:object($o as object()*) as object() external;
+
+(:~
+ : Returns the JSON null.
+ :
+ : @return The JSON null.
+ :)
+declare function jn:null() as jn:null-type external;
+
+
+
