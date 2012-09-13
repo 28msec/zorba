@@ -34,6 +34,9 @@ namespace UnitTests {
 #endif /* ZORBA_NO_ICU */
   int test_json_parser( int, char*[] );
   int test_string( int, char*[] );
+  int test_unique_ptr( int, char*[] );
+  int test_fs_iterator( int, char*[] );
+  //int test_mem_manager( int, char*[] );
 #ifndef ZORBA_NO_FULL_TEXT
   int test_stemmer( int, char*[] );
   int test_thesaurus( int, char*[] );
@@ -42,6 +45,7 @@ namespace UnitTests {
 #ifndef ZORBA_HAVE_UNIQUE_PTR
   int test_unique_ptr( int, char*[] );
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
+  int test_uuid( int, char*[] );
 #ifndef ZORBA_HAVE_UNORDERED_MAP
   int test_unordered_map( int, char*[] );
 #endif /* ZORBA_HAVE_UNORDERED_MAP */
@@ -50,6 +54,7 @@ namespace UnitTests {
 #endif /* ZORBA_HAVE_UNORDERED_SET */
 
   void initializeTestList();
+
 } // namespace UnitTests
 } // namespace zorba
 #endif /* ZORBA_UNIT_TEST_LIST_H */

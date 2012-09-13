@@ -37,13 +37,14 @@ QueryLoc::QueryLoc()
 }
 
 
-QueryLoc::QueryLoc(const QueryLoc& aQueryLoc) 
- :
-  theFilename(aQueryLoc.theFilename),
-  theLineBegin (aQueryLoc.theLineBegin),
-  theColumnBegin (aQueryLoc.theColumnBegin),
-  theLineEnd (aQueryLoc.theLineEnd),
-  theColumnEnd (aQueryLoc.theColumnEnd)
+QueryLoc::QueryLoc( zstring const &filename, unsigned lineBegin,
+                    unsigned lineEnd, unsigned columnBegin,
+                    unsigned columnEnd ) :
+  theFilename(filename),
+  theLineBegin(lineBegin),
+  theColumnBegin(lineEnd),
+  theLineEnd(columnBegin),
+  theColumnEnd(columnEnd)
 {
 }
 

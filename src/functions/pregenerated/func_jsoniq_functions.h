@@ -338,6 +338,30 @@ public:
   CODEGEN_DECL();
 };
 #endif
+#ifdef ZORBA_WITH_JSON
+
+//op-zorba:json-box
+class op_zorba_json_box : public function
+{
+public:
+  op_zorba_json_box(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
 
 
 } //namespace zorba

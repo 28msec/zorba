@@ -884,6 +884,33 @@ cdml:collection($name as xs:QName, $skip as xs:integer) as item()*  external;
 
 
 (:~
+ : The collection function returns the sequence of nodes and/or json items
+ : that belong to the collection identified by the given name.
+ : The parameters $start and $skip can be used to skip over some items at
+ : the beginning of the collection. If both are given, both are applied:
+ : first $start to skip to the referenced item and then $skip to skip an
+ : additional number of items.
+ :
+ : @param $name The name of the collection.
+ : @param $start The reference to the first item to return. All items before
+                 are skipped.
+ : @param $skip The number of collection items to skip.
+ :
+ : @return The sequence contained in the given collection.
+ :
+ : @error zerr:ZAPI0028 If the given URI is not a valid node
+ :        position computed by the <tt>np:node-position</tt> function. 
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZSTR0066 if the passed reference $start does not reference
+ :        a node from the collection identified by $name.
+ :
+ :)
+declare function 
+cdml:collection($name as xs:QName, 
+                $start as xs:anyURI,
+                $skip as xs:integer) as item()* external;
+(:~
  : The collection-name function returns the name of the collection the given
  : item (node or json item) belongs to.
  :

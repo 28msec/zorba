@@ -200,7 +200,7 @@ VarInfo::~VarInfo()
 /**************************************************************************//**
 
 *******************************************************************************/
-VarInfo::VarInfo(const var_expr_t& v)
+VarInfo::VarInfo(var_expr* v)
   :
   theName(v->get_name()),
   theId(v->get_unique_id()),
@@ -208,7 +208,7 @@ VarInfo::VarInfo(const var_expr_t& v)
   theType(v->get_type()),
   theIsExternal(v->is_external()),
   theHasInitializer(v->has_initializer()),
-  theVarExpr(v.getp())
+  theVarExpr(v)
 {
 }
 
@@ -538,8 +538,11 @@ bool static_context::is_builtin_module(const zstring& ns)
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
+#ifdef ZORBA_WITH_JSON
+            ns == JSONIQ_FN_NS ||
+#endif /* ZORBA_WITH_JSON */
             ns == ZORBA_XML_FN_NS);
-  } 
+  }
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
@@ -649,6 +652,7 @@ static_context::static_context()
   :
   theParent(NULL),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -695,6 +699,7 @@ static_context::static_context(static_context* parent)
   :
   theParent(parent),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -746,6 +751,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   SimpleRCObject(ar),
   theParent(NULL),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -918,12 +924,12 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       ERROR_PARAMS(ZED(NoSerializationCallbackForDocColMod)));
     }
 
-    if (lNumURIMappers) 
+    if (lNumURIMappers)
     {
-      for (size_t i = 0; i < lNumURIMappers; ++i) 
+      for (size_t i = 0; i < lNumURIMappers; ++i)
       {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
-        if (!lURIMapper) 
+        if (!lURIMapper)
         {
           throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(ZED(NoModuleURIResolver)));
@@ -933,12 +939,12 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       }
     }
 
-    if (lNumURLResolvers) 
+    if (lNumURLResolvers)
     {
-      for (size_t i = 0; i < lNumURLResolvers; ++i) 
+      for (size_t i = 0; i < lNumURLResolvers; ++i)
       {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
-        if (!lURLResolver) 
+        if (!lURLResolver)
         {
           throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(ZED(NoModuleURIResolver)));
@@ -1036,8 +1042,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     else
       ar & theParent;
 
-    if(theParent)
-      theParent->addReference(theParent->getSharedRefCounter() SYNC_PARAM2(theParent->getRCLock()));
+    if (theParent)
+      theParent->addReference(SYNC_CODE(theParent->getRCLock()));
   }
 
   ar & theModuleNamespace;
@@ -1154,7 +1160,7 @@ void static_context::set_parent_as_root()
 /***************************************************************************//**
 
 ********************************************************************************/
-expr_t static_context::get_query_expr() const
+expr* static_context::get_query_expr() const
 {
   return theQueryExpr;
 }
@@ -1163,7 +1169,7 @@ expr_t static_context::get_query_expr() const
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_query_expr(expr_t expr)
+void static_context::set_query_expr(expr* expr)
 {
   theQueryExpr = expr;
 }
@@ -1724,7 +1730,7 @@ void static_context::apply_url_resolvers(
         }
         catch (const std::exception& e)
         {
-          if (oErrorMessage.empty()) 
+          if (oErrorMessage.empty())
           {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();
@@ -2182,7 +2188,7 @@ void static_context::get_namespace_bindings(store::NsBindings& bindings) const
 
 ********************************************************************************/
 void static_context::bind_var(
-    const var_expr_t& varExpr,
+    var_expr* varExpr,
     const QueryLoc& loc,
     const Error& err)
 {
@@ -2412,7 +2418,7 @@ void static_context::bind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL), 16, false);
     }
 
@@ -2477,7 +2483,7 @@ void static_context::unbind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL), 16, false);
     }
 
@@ -2536,7 +2542,7 @@ function* static_context::lookup_fn(
       {
         if (fi.theIsDisabled && skipDisabled)
           return NULL;
-        
+
         return f;
       }
 
@@ -2587,7 +2593,7 @@ function* static_context::lookup_local_fn(
     {
       if (fi.theIsDisabled && skipDisabled)
         return NULL;
-        
+
       return f;
     }
 
@@ -4099,7 +4105,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       {
         if (theImportedPrivateVariablesMap == NULL)
         {
-          theImportedPrivateVariablesMap = 
+          theImportedPrivateVariablesMap =
           new VariableMap(HashMapItemPointerCmp(0, NULL), 8, false);
         }
 
@@ -4109,7 +4115,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
         if (!theImportedPrivateVariablesMap->insert(ve->get_name(), vi))
         {
-          RAISE_ERROR(err::XQST0049, loc, 
+          RAISE_ERROR(err::XQST0049, loc,
           ERROR_PARAMS(ve->get_name()->getStringValue()));
         }
       }
@@ -4139,7 +4145,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   {
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL),
                            (ulong)module->theFunctionArityMap->capacity(),
                            false);

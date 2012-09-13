@@ -37,13 +37,13 @@ SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
 SERIALIZABLE_CLASS_VERSIONS(AnnotationList)
 
 
-std::vector<store::Item_t> 
+std::vector<store::Item_t>
 AnnotationInternal::theAnnotId2NameMap;
 
-ItemHandleHashMap<AnnotationInternal::AnnotationId> 
+ItemHandleHashMap<AnnotationInternal::AnnotationId>
 AnnotationInternal::theAnnotName2IdMap(0, NULL, 64, false);
 
-std::vector<AnnotationInternal::RuleBitSet> 
+std::vector<AnnotationInternal::RuleBitSet>
 AnnotationInternal::theRuleSet;
 
 
@@ -380,11 +380,11 @@ bool AnnotationList::contains(AnnotationInternal::AnnotationId id) const
 ********************************************************************************/
 void AnnotationList::push_back(
     const store::Item_t& qname,
-    const std::vector<rchandle<const_expr> >& literals)
+    const std::vector<const_expr* >& literals)
 {
   std::vector<store::Item_t> lLiterals;
 
-  for (std::vector<rchandle<const_expr> >::const_iterator it = literals.begin();
+  for (std::vector<const_expr* >::const_iterator it = literals.begin();
        it != literals.end();
        ++it)
   {

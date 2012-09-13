@@ -486,6 +486,7 @@ Item::getJSONItemKind() const
   return store::StoreConsts::jsonItem;
 }
 
+
 uint64_t
 Item::getArraySize() const
 {
@@ -494,8 +495,9 @@ Item::getArraySize() const
 
     return to_xs_long(m_item->getArraySize());
   ITEM_CATCH
-  return NULL;
+  return 0;
 }
+
 
 Item
 Item::getArrayValue(uint32_t aIndex) const
@@ -508,6 +510,7 @@ Item::getArrayValue(uint32_t aIndex) const
   return Item();
 }
 
+
 Iterator_t
 Item::getObjectKeys() const
 {
@@ -519,6 +522,7 @@ Item::getObjectKeys() const
   ITEM_CATCH
   return NULL;
 }
+
 
 Item
 Item::getObjectValue(String aName) const

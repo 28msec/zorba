@@ -37,7 +37,7 @@ class ExtModule : public ExternalModule
     getExternalFunction(const zorba::String& aLocalname);
 
     virtual zorba::String
-    getURI() const { return "http://www.zorba-xquery.com/modules/ext"; }
+    getURI() const { return "http://zorba-tests.28msec.us/modules/ext"; }
 
   private:
     FuncFunction* theFunc;

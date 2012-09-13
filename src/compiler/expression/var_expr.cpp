@@ -21,6 +21,7 @@
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #include "types/typeops.h"
 
@@ -67,12 +68,13 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 
 ********************************************************************************/
 var_expr::var_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)
   :
-  expr(sctx, loc, var_expr_kind),
+  expr(ccb, sctx, loc, var_expr_kind),
   theUniqueId(0),
   theVarKind(k),
   theName(name),
@@ -292,7 +294,7 @@ for_clause* var_expr::get_for_clause() const
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::remove_set_expr(expr* e) 
+void var_expr::remove_set_expr(expr* e)
 {
   assert(theVarKind == local_var || theVarKind == prolog_var);
 
@@ -334,7 +336,7 @@ void var_expr::compute_scripting_kind()
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr_t var_expr::clone(expr::substitution_t& subst) const
+expr* var_expr::clone(expr::substitution_t& subst) const
 {
   expr::subst_iter_t i = subst.find(this);
 
