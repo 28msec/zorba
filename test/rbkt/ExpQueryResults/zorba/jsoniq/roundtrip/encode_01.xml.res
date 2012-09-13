@@ -1,0 +1,1 @@
+{ "nan" : { "Q{http://jsoniq.org/roundtrip}type" : "xs:double", "Q{http://jsoniq.org/roundtrip}value" : "NaN" }, "inf" : { "Q{http://jsoniq.org/roundtrip}type" : "xs:double", "Q{http://jsoniq.org/roundtrip}value" : "INF" }, "date" : { "Q{http://jsoniq.org/roundtrip}type" : "xs:date", "Q{http://jsoniq.org/roundtrip}value" : "1066-10-14" } }
