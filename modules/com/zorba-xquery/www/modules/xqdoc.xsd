@@ -213,6 +213,45 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <!-- Complex type used for defining the collection names defined within
+     the library module and any comments associated with the collections. -->
+  <xsd:complexType name="collections">
+    <xsd:sequence>
+      <xsd:element name="collection" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="uri" type="uri"/>
+            <xsd:element name="type" type="type" minOccurs="0"/>
+            <xsd:element name="comment" type="comment" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Complex type used for defining the index names defined within
+     the library module and any comments associated with the indexes. -->
+  <xsd:complexType name="indexes">
+    <xsd:sequence>
+      <xsd:element name="index" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="uri" type="uri"/>
+            <xsd:element name="sources">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="source" type="uri"
+                               minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="comment" type="comment" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <!-- Complex type used for defining the imported modules within the
      the library module and any comments associated with the imports. -->
   <xsd:complexType name="imports">
@@ -273,6 +312,8 @@
         <xsd:element name="module" type="module"/>
         <xsd:element name="imports" type="imports" minOccurs="0"/>
         <xsd:element name="variables" type="variables" minOccurs="0"/>
+        <xsd:element name="collections" type="collections" minOccurs="0"/>
+        <xsd:element name="indexes" type="indexes" minOccurs="0"/>
         <xsd:element name="functions" type="functions" minOccurs="0"/>
       </xsd:sequence>
     </xsd:complexType>

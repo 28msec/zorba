@@ -1235,11 +1235,6 @@ void end_visit(const AST_IndexDecl& n, void*)
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
-  store::Item_t lCommentElem = print_comment(lIndexElem, n.getComment());
-
-  AnnotationListParsenode* lAnns = n.get_annotations();
-  print_annotations(lAnns, lIndexElem);
-
   for (std::vector<zstring>::iterator lIter = theIndexSources.begin();
        lIter != theIndexSources.end();
        ++lIter)
@@ -1251,6 +1246,11 @@ void end_visit(const AST_IndexDecl& n, void*)
     theFactory->createTextNode(lSourceText, lSourceElem, *lIter);
   }
   theIndexSources.clear();
+
+  store::Item_t lCommentElem = print_comment(lIndexElem, n.getComment());
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lIndexElem);
 }
 
 
