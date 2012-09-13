@@ -784,23 +784,23 @@ protected:
   store::Item_t theValue;
 
 protected:
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, zstring& sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, zstring& sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const std::string& sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const std::string& sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_integer);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_integer);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_decimal);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_decimal);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_double);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_double);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_boolean);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_boolean);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, store::Item_t);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const store::Item_t&);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* ns, const char* pre, const char* local);
 
 public:
   store::Item* get_val() const { return theValue.getp(); }

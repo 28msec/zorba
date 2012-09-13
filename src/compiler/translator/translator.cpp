@@ -8500,6 +8500,43 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  SimpleMapExpr :: PathExpr |
+                   SimpleMapExpr "!" PathExpr
+
+  This creates a left-deep tree of SimpleMapExpr nodes: the right child of each
+  such node is a PathExpr, and the left child is another SimpleMapExpr except
+  from the left-most SimpleMapExpr node, whose left chils is a PathExpr.
+********************************************************************************/
+void* begin_visit(const SimpleMapExpr& v)
+{
+  TRACE_VISIT();
+
+  v.get_left_expr()->accept(*this); 
+
+  expr* left  = pop_nodestack();
+
+  flwor_expr* flworExpr = wrap_expr_in_flwor(left, true);
+
+  v.get_right_expr()->accept(*this); 
+
+  expr* right = pop_nodestack();
+
+  flworExpr->set_return_expr(right);
+
+  pop_scope();
+
+  push_nodestack(flworExpr);
+
+  return NULL;
+}
+
+void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  PathExpr                                                                   //
@@ -8836,7 +8873,7 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
 
 /*******************************************************************************
 
-  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+  RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
   Note: If a RelativePathExpr consists of a single StepExpr, a RelativePathExpr
   node is generated whose left child is a ContextItemExpr and its right child
@@ -10058,7 +10095,7 @@ void* begin_visit(const FunctionCall& v)
 
   rchandle<QName> qname = v.get_fname();
 
-  ulong numArgs = 0;
+  csize numArgs = 0;
   if (v.get_arg_list() != NULL)
     numArgs = v.get_arg_list()->size();
 
@@ -10113,9 +10150,9 @@ void* begin_visit(const FunctionCall& v)
       }
     }
 
-    size_t numParams = f->getArity();
+    csize numParams = f->getArity();
 
-    for (ulong i = 0; i < numParams; ++i)
+    for (csize i = 0; i < numParams; ++i)
     {
       xqtref_t type = sign[i];
       if (!TypeOps::is_in_scope(tm, *type))
@@ -10178,7 +10215,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     arguments.push_back(argExpr);
   }
 
-  ulong numArgs = (ulong)arguments.size();
+  csize numArgs = arguments.size();
 
   function* f = lookup_fn(qname, numArgs, loc);
 
@@ -10195,20 +10232,34 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(theExprManager->create_const_expr(theRootSctx, loc, xs_integer::one()));
-        arguments.push_back(theExprManager->create_const_expr(theRootSctx, loc, xs_integer::one()));
+        arguments.push_back(theExprManager->
+                            create_const_expr(theRootSctx, loc, xs_integer::one()));
+
+        arguments.push_back(theExprManager->
+                            create_const_expr(theRootSctx, loc, xs_integer::one()));
+
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
-        fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, loc, f, arguments);
+
+        fo_expr* foExpr = theExprManager->
+        create_fo_expr(theRootSctx, loc, f, arguments);
+
         normalize_fo(foExpr);
+
         push_nodestack(foExpr);
         return;
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(theExprManager->create_const_expr(theRootSctx, loc, xs_integer(2)));
+        arguments.push_back(theExprManager->
+                            create_const_expr(theRootSctx, loc, xs_integer(2)));
+
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
-        fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, loc, f, arguments);
+
+        fo_expr* foExpr = theExprManager->
+        create_fo_expr(theRootSctx, loc, f, arguments);
+
         normalize_fo(foExpr);
+
         push_nodestack(foExpr);
         return;
       }
@@ -10223,9 +10274,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         if (numArgs == 2)
         {
-          if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
+          if (TypeOps::is_subtype(tm, *posType, *theRTM.INTEGER_TYPE_STAR, loc))
           {
-            if(f->getKind() == FunctionConsts::FN_SUBSTRING_2)
+            if (f->getKind() == FunctionConsts::FN_SUBSTRING_2)
               f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
             else
               f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
@@ -10235,17 +10286,19 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           xqtref_t lenType = arguments[2]->get_return_type();
 
-          if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
-              TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
+          if (TypeOps::is_subtype(tm, *posType, *theRTM.INTEGER_TYPE_STAR, loc) &&
+              TypeOps::is_subtype(tm, *lenType, *theRTM.INTEGER_TYPE_STAR, loc))
           {
-            if(f->getKind() == FunctionConsts::FN_SUBSTRING_3)
+            if (f->getKind() == FunctionConsts::FN_SUBSTRING_3)
               f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
             else
               f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
           }
         }
 
-        fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, loc, f, arguments);
+        fo_expr* foExpr = theExprManager->
+        create_fo_expr(theRootSctx, loc, f, arguments);
+
         normalize_fo(foExpr);
         push_nodestack(foExpr);
         return;
@@ -10290,7 +10343,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         expr* data_expr = wrap_in_atomization(arguments[0]);
 
-        push_nodestack(&*wrap_in_let_flwor(theExprManager->create_treat_expr(theRootSctx,
+        push_nodestack(wrap_in_let_flwor(theExprManager->create_treat_expr(theRootSctx,
                                                           loc,
                                                           data_expr,
                                                           theRTM.ANY_ATOMIC_TYPE_QUESTION,
@@ -10314,7 +10367,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           push_nodestack(theExprManager->create_cast_expr(theRootSctx,
                                        loc,
                                        theExprManager->create_const_expr(theRootSctx, loc, baseuri),
-                                       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+                                       theRTM.ANY_URI_TYPE_ONE));
         return;
       }
       case FunctionConsts::FN_ID_1:
@@ -10421,7 +10474,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (f != NULL && f->getKind() ==  FunctionConsts::FN_APPLY_1)
   {
-    expr* applyExpr = theExprManager->create_apply_expr(theRootSctx, loc, arguments[0], false);
+    expr* applyExpr = theExprManager->
+    create_apply_expr(theRootSctx, loc, arguments[0], false);
+
     push_nodestack(applyExpr);
     return;
   }
@@ -10452,7 +10507,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
   }
 
-  numArgs = (ulong)arguments.size();  // recompute size
+  numArgs = arguments.size();  // recompute size
 
   // Check if this is a call to a type constructor function
   xqtref_t type = CTX_TM->create_named_type(qnameItem,
@@ -11361,7 +11416,8 @@ void end_visit(const JSONPairList& v, void* /*visit_state*/)
 /*******************************************************************************
   PairConstructor ::= ExprSingle ":" ExprSingle
 
-  The PairConstructor production can appear only on the RHS of a DirectObjectConstructor
+  The PairConstructor production can appear only on the RHS of a 
+  DirectObjectConstructor or in the source list of a JSONObjectInsertExpr
 
   The 1st ExprSingle must return exactly one string.
   The 2nd ExprSingle must contain exactly one item of any kind.
@@ -11394,13 +11450,10 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
                    GENV_TYPESYSTEM.STRING_TYPE_ONE);
 
   valueExpr = theExprManager->
-  create_treat_expr(theRootSctx,
-                    valueExpr->get_loc(),
-                    valueExpr,
-                    GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-                    TreatIterator::JSONIQ_VALUE, // JNTY0002
-                    false,
-                    NULL);
+  create_fo_expr(theRootSctx,
+                 valueExpr->get_loc(),
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_BOX_1),
+                 valueExpr);
 
   push_nodestack(valueExpr);
   push_nodestack(nameExpr);
@@ -11756,10 +11809,8 @@ void end_visit(const DirElemContentList& v, void* /*visit_state*/)
   }
   else
   {
-    fo_expr* expr_list = theExprManager->create_fo_expr(theRootSctx,
-                                      loc,
-                                      op_concatenate,
-                                      args);
+    fo_expr* expr_list = theExprManager->
+    create_fo_expr(theRootSctx, loc, op_concatenate, args);
 
     normalize_fo(expr_list);
 
@@ -11935,10 +11986,9 @@ void attr_content_list(const QueryLoc& loc, void* /*visit_state*/)
   }
   else if (args.size() > 1)
   {
-    fo_expr* expr_list = theExprManager->create_fo_expr(theRootSctx,
-                                      loc,
-                                      op_concatenate,
-                                      args);
+    fo_expr* expr_list = theExprManager->
+    create_fo_expr(theRootSctx, loc, op_concatenate, args);
+
     normalize_fo(expr_list);
 
     push_nodestack(expr_list);
@@ -13146,16 +13196,6 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
     expr* nameExpr = pop_nodestack();
     expr* valueExpr = pop_nodestack();
 
-    nameExpr = wrap_in_type_promotion(nameExpr,
-                                      theRTM.STRING_TYPE_ONE,
-                                      PromoteIterator::JSONIQ_OBJECT_SELECTOR); // JNUP0007
-
-    valueExpr = wrap_in_type_match(valueExpr,
-                                   rtm.ITEM_TYPE_ONE,
-                                   loc,
-                                   TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
-                                   NULL);
-
     args[2 * (numPairs - 1 - i) + 1] = nameExpr;
     args[2 * (numPairs - 1 - i) + 2] = valueExpr;
   }
@@ -13356,11 +13396,10 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
                                    PromoteIterator::JSONIQ_SELECTOR, // JNUP0007
                                    NULL);
 
-  args[2] = wrap_in_type_match(valueExpr,
-                               theRTM.ITEM_TYPE_ONE,
-                               loc,
-                               TreatIterator::JSONIQ_OBJECT_UPDATE_VALUE, // JNUP0017
-                               NULL);
+  args[2] = theExprManager->create_fo_expr(theRootSctx,
+                                           valueExpr->get_loc(),
+                                           GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_BOX_1),
+                                           valueExpr);
 
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,

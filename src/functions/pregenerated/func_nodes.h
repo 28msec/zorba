@@ -419,6 +419,39 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//fn-zorba-node:copy
+class fn_zorba_node_copy : public function
+{
+public:
+  fn_zorba_node_copy(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

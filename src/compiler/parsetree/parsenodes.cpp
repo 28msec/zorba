@@ -56,7 +56,7 @@ std::ostringstream __oss;
 #define OUTDENT     std::string(printdepth--, ' ')
 #define UNDENT      printdepth--
 
-#define BEGIN_VISITOR() void *visitor_state; if (NULL == (visitor_state = v.begin_visit (*this))) return
+#define BEGIN_VISITOR() void* visitor_state; if (NULL == (visitor_state = v.begin_visit(*this))) return
 #define END_VISITOR() v.end_visit (*this, visitor_state)
 #define ACCEPT( m ) do { if ((m) != NULL) (m)->accept (v); } while (0)
 #define ACCEPT_CHK( m ) do { ZORBA_ASSERT ((m) != NULL);  (m)->accept (v); } while (0)
@@ -2905,6 +2905,32 @@ void Pragma::accept( parsenode_visitor &v ) const
 // [67] PragmaContents
 // -------------------
 /* folded into [66] */
+
+
+/*******************************************************************************
+
+********************************************************************************/
+SimpleMapExpr::SimpleMapExpr(
+    const QueryLoc& loc,
+    rchandle<exprnode> left,
+    rchandle<exprnode> right)
+  :
+  exprnode(loc),
+  left_expr_h(left),
+  right_expr_h(right)
+{
+}
+
+
+void SimpleMapExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+
+  ACCEPT(left_expr_h);
+  ACCEPT(right_expr_h);
+
+  END_VISITOR();
+}
 
 
 /*******************************************************************************
