@@ -52,6 +52,68 @@ namespace zorba {
 
 
 /*******************************************************************************
+  json:decode-from-roundtrip($items as json-item()*,
+                             $options as object()) as structured-item()*
+********************************************************************************/
+bool
+JSONDecodeFromRoundtripIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t input;
+  //store::Item_t key;
+
+  JSONDecodeFromRoundtripIteratorState* state;
+  DEFAULT_STACK_INIT(JSONDecodeFromRoundtripIteratorState, state, planState);
+
+  consumeNext(input, theChildren.at(0).getp(), planState);
+
+  state->theNames = input->getObjectKeys();
+  state->theNames->open();
+
+  //while (state->theNames->next(key))
+  //{
+    result = input;
+    STACK_PUSH (true, state);
+  //}
+  //state->theNames = NULL;
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  jn:encode-for-roundtrip($items as structured-item()*,
+                          $options as object()) as json-item()*
+********************************************************************************/
+bool
+JSONEncodeForRoundtripIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t input;
+  //store::Item_t key;
+
+  JSONEncodeForRoundtripIteratorState* state;
+  DEFAULT_STACK_INIT(JSONEncodeForRoundtripIteratorState, state, planState);
+
+  consumeNext(input, theChildren.at(0).getp(), planState);
+
+  //state->theNames = input->getObjectKeys();
+  //state->theNames->open();
+
+  //while (state->theNames->next(key))
+  //{
+    result = input;
+    STACK_PUSH (true, state);
+  //}
+  //state->theNames = NULL;
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 void

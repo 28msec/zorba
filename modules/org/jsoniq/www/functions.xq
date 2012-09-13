@@ -46,6 +46,81 @@ declare option ver:module-version "1.0";
 
 
 (:~
+ : This function decodes non-JSON types previously encoded with
+ : jn:encode-for-roundtrip.
+ : Calling this version of the function is equivalent to calling the
+ : 2 argument version of the function with the second argument
+ :
+ :   { "prefix" : "Q{http://www.jsoniq.org/roundtrip}" }
+ :
+ : @param $items the items to be decoded.
+ : @return the decoded items.
+ :)
+declare function jn:decode-from-roundtrip(
+    $items as json-item()*) as structured-item()* external;
+
+
+(:~
+ : This function decodes non-JSON types previously encoded with
+ : jn:encode-for-roundtrip.
+ : The $options parameter contains options for the decoding process.
+ : Currently the only supported option is "prefix". It specifies the prefix
+ : that determines if this function decodes an item.
+ :
+ : TODO add example
+ : TODO add errors
+ :
+ : @param $items the items to be decoded.
+ : @param $options the decoding options.
+ : @return the decoded items.
+ :)
+declare function jn:decode-from-roundtrip(
+    $items as json-item()*,
+    $options as object()) as structured-item()* external;
+
+
+(:~
+ : This function recursively encodes non-JSON types in such a way that they
+ : can be serialized as JSON while keeping roundtrip capability.
+ : Calling this version of the function is equivalent to calling the
+ : 2 argument version of the function with the second argument
+ :
+ :  {
+ :    "prefix" : "Q{http://www.jsoniq.org/roundtrip}"
+ :    "serialization-parameters" : <serialization-parameters xmlns="http://www.w3.org/2010/xslt-xquery-serialization"/>
+ :  }
+ :
+ : Note: The computations are made with respect to the static context of the
+ : caller, so that the schema type definitions are available.
+ :
+ : @param $items the items to be encoded.
+ : @return the encoded items.
+ :)
+declare function jn:encode-for-roundtrip(
+    $items as structured-item()*) as json-item()* external;
+
+
+(:~
+ : This function recursively encodes non-JSON types in such a way that they
+ : can be serialized as JSON while keeping roundtrip capability.
+ :
+ : Note: The computations are made with respect to the static context of the
+ : caller, so that the schema type definitions are available.
+ :
+ : TODO more text
+ : TODO add example
+ : TODO add errors
+ :
+ : @param $items the items to be encoded.
+ : @param $options the encoding options.
+ : @return the encoded items.
+ :)
+declare function jn:encode-for-roundtrip(
+    $items as structured-item()*,
+    $options as object()) as json-item()* external;
+
+
+(:~
  : This function parses a given string as JSON and returns a sequence
  : of Objects or Arrays.
  :

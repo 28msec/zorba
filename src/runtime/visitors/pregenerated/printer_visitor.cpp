@@ -1964,6 +1964,36 @@ void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
 // </JSONSerializeInternal>
 
 #ifdef ZORBA_WITH_JSON
+// <JSONDecodeFromRoundtripIterator>
+void PrinterVisitor::beginVisit ( const JSONDecodeFromRoundtripIterator& a) {
+  thePrinter.startBeginVisit("JSONDecodeFromRoundtripIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONDecodeFromRoundtripIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONDecodeFromRoundtripIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONEncodeForRoundtripIterator>
+void PrinterVisitor::beginVisit ( const JSONEncodeForRoundtripIterator& a) {
+  thePrinter.startBeginVisit("JSONEncodeForRoundtripIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONEncodeForRoundtripIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONEncodeForRoundtripIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONParseIterator>
 void PrinterVisitor::beginVisit ( const JSONParseIterator& a) {
   thePrinter.startBeginVisit("JSONParseIterator", ++theId);
