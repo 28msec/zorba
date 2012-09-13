@@ -109,15 +109,9 @@ encodeObject(
   {
     newNames.push_back(key);
     value = obj->getObjectValue(key);
-    if (encodeItem(factory, value, newValue, prefix))
-    {
-      newValues.push_back(newValue);
-      modified = true;
-    }
-    else
-    {
-      newValues.push_back(value);
-    }
+    const bool gotNew = encodeItem(factory, value, newValue, prefix);
+    newValues.push_back(gotNew ? newValue : value);
+    modified = modified || gotNew;
   }
   it->close();
   if (modified)
@@ -143,15 +137,9 @@ encodeArray(
   it->open();
   while (it->next(item))
   {
-    if (encodeItem(factory, item, newItem, prefix))
-    {
-      newItems.push_back(newItem);
-      modified = true;
-    }
-    else
-    {
-      newItems.push_back(item);
-    }
+    const bool gotNew = encodeItem(factory, item, newItem, prefix);
+    newItems.push_back(gotNew ? newItem : item);
+    modified = modified || gotNew;
   }
   it->close();
   if (modified)
