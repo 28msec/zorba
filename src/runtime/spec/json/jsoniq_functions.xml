@@ -9,6 +9,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
+<zorba:header>
+    <zorba:fwd-decl ns="zorba">EncodingParameters</zorba:fwd-decl>
+</zorba:header>
+
 <!--
 /*******************************************************************************
 ********************************************************************************/
@@ -75,43 +79,33 @@
   </zorba:state>
 
   <zorba:method static="true" name="encodeObject" return="bool">
-    <zorba:param type="store::ItemFactory*" name="aFactory"/>
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="const zstring&amp;" name="aPrefix"/>
-    <zorba:param type="XQueryDiagnostics*" name="aDiag"/>
+    <zorba:param type="EncodingParameters&amp;" name="someParams"/>
   </zorba:method>
 
   <zorba:method static="true" name="encodeArray" return="bool">
-    <zorba:param type="store::ItemFactory*" name="aFactory"/>
     <zorba:param type="const store::Item_t&amp;" name="anArray"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="const zstring&amp;" name="aPrefix"/>
-    <zorba:param type="XQueryDiagnostics*" name="aDiag"/>
+    <zorba:param type="EncodingParameters&amp;" name="someParams"/>
   </zorba:method>
 
   <zorba:method static="true" name="encodeAtomic" return="bool">
-    <zorba:param type="store::ItemFactory*" name="aFactory"/>
     <zorba:param type="const store::Item_t&amp;" name="aValue"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="const zstring&amp;" name="aPrefix"/>
-    <zorba:param type="XQueryDiagnostics*" name="aDiag"/>
+    <zorba:param type="EncodingParameters&amp;" name="someParams"/>
   </zorba:method>
 
   <zorba:method static="true" name="encodeNode" return="bool">
-    <zorba:param type="store::ItemFactory*" name="aFactory"/>
     <zorba:param type="const store::Item_t&amp;" name="aNode"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="const zstring&amp;" name="aPrefix"/>
-    <zorba:param type="XQueryDiagnostics*" name="aDiag"/>
+    <zorba:param type="EncodingParameters&amp;" name="someParams"/>
   </zorba:method>
 
   <zorba:method static="true" name="encodeItem" return="bool">
-    <zorba:param type="store::ItemFactory*" name="aFactory"/>
     <zorba:param type="const store::Item_t&amp;" name="anItem"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="const zstring&amp;" name="aPrefix"/>
-    <zorba:param type="XQueryDiagnostics*" name="aDiag"/>
+    <zorba:param type="EncodingParameters&amp;" name="someParams"/>
   </zorba:method>
 
 </zorba:iterator>
