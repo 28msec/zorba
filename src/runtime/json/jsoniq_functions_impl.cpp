@@ -221,6 +221,19 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
     zstring valueValue;
     if (typeCode == store::XS_QNAME)
     {
+      // QNames are a special case, as the prefix should be maintained as well
+      // but it's not part of the EQName serialization
+      zstring prefixValue = aValue->getPrefix();
+      if (prefixValue.length() > 0)
+      {
+        zstring prefixKey = someParams.thePrefix + "prefix";
+        store::Item_t lItem;
+        someParams.theFactory->createString(lItem, prefixKey);
+        names.push_back(lItem);
+        someParams.theFactory->createString(lItem, prefixValue);
+        values.push_back(lItem);
+      }
+
       const zstring ns = aValue->getNamespace();
       const zstring local = aValue->getLocalName();
       valueValue = ns.empty() ? local : "Q{" + ns + "}" + local;
