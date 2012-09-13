@@ -23,10 +23,16 @@
 
 #include "system/globalenv.h"
 
+#include "api/serialization/serializer.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/json/jsoniq_functions_impl.h"
+#include "runtime/parsing_and_serializing/parsing_and_serializing.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/util/item_iterator.h"
 
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -87,14 +93,16 @@ JSONDecodeFromRoundtripIterator::nextImpl(
                           $options as object()) as json-item()*
 ********************************************************************************/
 bool
-encodeItem(store::ItemFactory*, store::Item*, store::Item_t&, zstring prefix);
+encodeItem(store::ItemFactory*, store::Item*, store::Item_t&, zstring prefix,
+  XQueryDiagnostics* diagnostics);
 
 bool
 encodeObject(
   store::ItemFactory* factory,
   store::Item* obj,
   store::Item_t& result,
-  zstring prefix)
+  zstring prefix,
+  XQueryDiagnostics* diagnostics)
 {
   std::vector<store::Item_t> newNames;
   std::vector<store::Item_t> newValues;
@@ -109,7 +117,7 @@ encodeObject(
   {
     newNames.push_back(key);
     value = obj->getObjectValue(key);
-    const bool gotNew = encodeItem(factory, value, newValue, prefix);
+    const bool gotNew = encodeItem(factory, value, newValue, prefix, diagnostics);
     newValues.push_back(gotNew ? newValue : value);
     modified = modified || gotNew;
   }
@@ -127,7 +135,8 @@ encodeArray(
   store::ItemFactory* factory,
   store::Item* array,
   store::Item_t& result,
-  zstring prefix)
+  zstring prefix,
+  XQueryDiagnostics* diagnostics)
 {
   std::vector<store::Item_t> newItems;
   bool modified = false;
@@ -137,7 +146,7 @@ encodeArray(
   it->open();
   while (it->next(item))
   {
-    const bool gotNew = encodeItem(factory, item, newItem, prefix);
+    const bool gotNew = encodeItem(factory, item, newItem, prefix, diagnostics);
     newItems.push_back(gotNew ? newItem : item);
     modified = modified || gotNew;
   }
@@ -155,7 +164,8 @@ encodeAtomic(
   store::ItemFactory* factory,
   store::Item* atomic,
   store::Item_t& result,
-  zstring prefix)
+  zstring prefix,
+  XQueryDiagnostics* diagnostics)
 {
   store::SchemaTypeCode typeCode = atomic->getTypeCode();
   switch (typeCode) {
@@ -189,7 +199,7 @@ encodeAtomic(
   {
     store::Item* typeName = atomic->getType();
 
-    zorba::zstring typeKey = prefix + "type";
+    zstring typeKey = prefix + "type";
     const zstring ns = typeName->getNamespace();
     const zstring local = typeName->getLocalName();
     zstring typeValue = ns.compare("http://www.w3.org/2001/XMLSchema")
@@ -225,10 +235,42 @@ encodeNode(
     store::ItemFactory* factory,
     store::Item* input,
     store::Item_t& result,
-    zstring prefix)
+    zstring prefix,
+    XQueryDiagnostics* diagnostics)
 {
-  assert(false);
-  return false;
+  std::vector<store::Item_t> names(2);
+  std::vector<store::Item_t> values(2);
+
+  {
+    zstring typeKey = prefix + "type";
+    zstring typeValue = "node()";
+    factory->createString(names.at(0), typeKey);
+    factory->createString(values.at(0), typeValue);
+  }
+
+  {
+    zstring valueKey = prefix + "value";
+
+    store::Iterator_t lItemIt = new ItemIterator(input);
+    zorba::serializer lSerializer(diagnostics);
+    // defaults
+    lSerializer.setParameter("omit-xml-declaration", "yes");
+
+    // TODO serialization parameters
+
+    // and now serialize
+    std::auto_ptr<std::stringstream> lResultStream(new std::stringstream());
+    lItemIt->open();
+    lSerializer.serialize(lItemIt, *lResultStream.get());
+    lItemIt->close();
+
+    factory->createString(names.at(1), valueKey);
+    factory->createStreamableString(values.at(1), *lResultStream.release(),
+                                    FnSerializeIterator::streamReleaser, true);
+  }
+
+  factory->createJSONObject(result, names, values);
+  return true;
 }
 
 bool
@@ -236,23 +278,24 @@ encodeItem(
   store::ItemFactory* factory,
   store::Item* item,
   store::Item_t& result,
-  zstring prefix)
+  zstring prefix,
+  XQueryDiagnostics* diagnostics)
 {
   if (item->isJSONObject())
   {
-    return encodeObject(factory, item, result, prefix);
+    return encodeObject(factory, item, result, prefix, diagnostics);
   }
   else if (item->isJSONArray())
   {
-    return encodeArray(factory, item, result, prefix);
+    return encodeArray(factory, item, result, prefix, diagnostics);
   }
   else if (item->isAtomic())
   {
-    return encodeAtomic(factory, item, result, prefix);
+    return encodeAtomic(factory, item, result, prefix, diagnostics);
   }
   else
   {
-    return encodeNode(factory, item, result, prefix);
+    return encodeNode(factory, item, result, prefix, diagnostics);
   }
 }
 
@@ -269,7 +312,8 @@ JSONEncodeForRoundtripIterator::nextImpl(
   consumeNext(input, theChildren.at(0).getp(), planState);
 
   if (! encodeItem(GENV_ITEMFACTORY, input.getp(), result,
-                   "Q{http://jsoniq.org/roundtrip}"))
+                   "Q{http://jsoniq.org/roundtrip}",
+                   planState.theCompilerCB->theXQueryDiagnostics))
   {
     result = input;
   }
