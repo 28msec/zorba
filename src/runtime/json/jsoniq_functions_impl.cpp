@@ -93,16 +93,12 @@ JSONDecodeFromRoundtripIterator::nextImpl(
                           $options as object()) as json-item()*
 ********************************************************************************/
 bool
-encodeItem(store::ItemFactory*, store::Item*, store::Item_t&, zstring prefix,
-  XQueryDiagnostics* diagnostics);
-
-bool
-encodeObject(
-  store::ItemFactory* factory,
-  store::Item* obj,
-  store::Item_t& result,
-  zstring prefix,
-  XQueryDiagnostics* diagnostics)
+JSONEncodeForRoundtripIterator::encodeObject(
+  store::ItemFactory* aFactory,
+  const store::Item_t& anObj,
+  store::Item_t& aResult,
+  const zstring& aPrefix,
+  XQueryDiagnostics* aDiag)
 {
   std::vector<store::Item_t> newNames;
   std::vector<store::Item_t> newValues;
@@ -111,68 +107,68 @@ encodeObject(
   store::Item_t key;
   store::Item_t value;
   store::Item_t newValue;
-  store::Iterator_t it = obj->getObjectKeys();
+  store::Iterator_t it = anObj->getObjectKeys();
   it->open();
   while (it->next(key))
   {
     newNames.push_back(key);
-    value = obj->getObjectValue(key);
-    const bool gotNew = encodeItem(factory, value, newValue, prefix, diagnostics);
+    value = anObj->getObjectValue(key);
+    const bool gotNew = encodeItem(aFactory, value, newValue, aPrefix, aDiag);
     newValues.push_back(gotNew ? newValue : value);
     modified = modified || gotNew;
   }
   it->close();
   if (modified)
   {
-    factory->createJSONObject(result, newNames, newValues);
+    aFactory->createJSONObject(aResult, newNames, newValues);
     return true;
   }
   return false;
 }
 
 bool
-encodeArray(
-  store::ItemFactory* factory,
-  store::Item* array,
-  store::Item_t& result,
-  zstring prefix,
-  XQueryDiagnostics* diagnostics)
+JSONEncodeForRoundtripIterator::encodeArray(
+  store::ItemFactory* aFactory,
+  const store::Item_t& anArray,
+  store::Item_t& aResult,
+  const zstring& aPrefix,
+  XQueryDiagnostics* aDiag)
 {
   std::vector<store::Item_t> newItems;
   bool modified = false;
 
   store::Item_t item, newItem;
-  store::Iterator_t it = array->getArrayValues();
+  store::Iterator_t it = anArray->getArrayValues();
   it->open();
   while (it->next(item))
   {
-    const bool gotNew = encodeItem(factory, item, newItem, prefix, diagnostics);
+    const bool gotNew = encodeItem(aFactory, item, newItem, aPrefix, aDiag);
     newItems.push_back(gotNew ? newItem : item);
     modified = modified || gotNew;
   }
   it->close();
   if (modified)
   {
-    factory->createJSONArray(result, newItems);
+    aFactory->createJSONArray(aResult, newItems);
     return true;
   }
   return false;
 }
 
 bool
-encodeAtomic(
-  store::ItemFactory* factory,
-  store::Item* atomic,
-  store::Item_t& result,
-  zstring prefix,
-  XQueryDiagnostics* diagnostics)
+JSONEncodeForRoundtripIterator::encodeAtomic(
+  store::ItemFactory* aFactory,
+  const store::Item_t& aValue,
+  store::Item_t& aResult,
+  const zstring& aPrefix,
+  XQueryDiagnostics* aDiag)
 {
-  store::SchemaTypeCode typeCode = atomic->getTypeCode();
+  store::SchemaTypeCode typeCode = aValue->getTypeCode();
   switch (typeCode) {
   case store::XS_DOUBLE:
   case store::XS_FLOAT:
-    if (atomic->getBaseItem() == NULL
-        && ! atomic->isNaN() && ! atomic->isPosOrNegInf())
+    if (aValue->getBaseItem() == NULL
+        && ! aValue->isNaN() && ! aValue->isPosOrNegInf())
     {
       // nothing to do - no modification necessary
       return false;
@@ -183,7 +179,7 @@ encodeAtomic(
   case store::XS_DECIMAL:
   case store::XS_BOOLEAN:
   case store::JDM_NULL:
-    if (atomic->getBaseItem() == NULL)
+    if (aValue->getBaseItem() == NULL)
     {
       // nothing to do - no modification necessary
       return false;
@@ -197,62 +193,62 @@ encodeAtomic(
   std::vector<store::Item_t> values(2);
 
   {
-    store::Item* typeName = atomic->getType();
+    const store::Item_t& typeName = aValue->getType();
 
-    zstring typeKey = prefix + "type";
+    zstring typeKey = aPrefix + "type";
     const zstring ns = typeName->getNamespace();
     const zstring local = typeName->getLocalName();
     zstring typeValue = ns.compare("http://www.w3.org/2001/XMLSchema")
         ? "Q{" + ns + "}" + local : "xs:" + local;
 
-    factory->createString(names.at(0), typeKey);
-    factory->createString(values.at(0), typeValue);
+    aFactory->createString(names.at(0), typeKey);
+    aFactory->createString(values.at(0), typeValue);
   }
 
   {
-    zstring valueKey = prefix + "value";
+    zstring valueKey = aPrefix + "value";
     zstring valueValue;
     if (typeCode == store::XS_QNAME)
     {
-      const zstring ns = atomic->getNamespace();
-      const zstring local = atomic->getLocalName();
+      const zstring ns = aValue->getNamespace();
+      const zstring local = aValue->getLocalName();
       valueValue = ns.empty() ? local : "Q{" + ns + "}" + local;
     }
     else
     {
-      atomic->getStringValue2(valueValue);
+      aValue->getStringValue2(valueValue);
     }
-    factory->createString(names.at(1), valueKey);
-    factory->createString(values.at(1), valueValue);
+    aFactory->createString(names.at(1), valueKey);
+    aFactory->createString(values.at(1), valueValue);
   }
 
-  factory->createJSONObject(result, names, values);
+  aFactory->createJSONObject(aResult, names, values);
   return true;
 }
 
 bool
-encodeNode(
-    store::ItemFactory* factory,
-    store::Item* input,
-    store::Item_t& result,
-    zstring prefix,
-    XQueryDiagnostics* diagnostics)
+JSONEncodeForRoundtripIterator::encodeNode(
+    store::ItemFactory* aFactory,
+    const store::Item_t& aNode,
+    store::Item_t& aResult,
+    const zstring& aPrefix,
+    XQueryDiagnostics* aDiag)
 {
   std::vector<store::Item_t> names(2);
   std::vector<store::Item_t> values(2);
 
   {
-    zstring typeKey = prefix + "type";
+    zstring typeKey = aPrefix + "type";
     zstring typeValue = "node()";
-    factory->createString(names.at(0), typeKey);
-    factory->createString(values.at(0), typeValue);
+    aFactory->createString(names.at(0), typeKey);
+    aFactory->createString(values.at(0), typeValue);
   }
 
   {
-    zstring valueKey = prefix + "value";
+    zstring valueKey = aPrefix + "value";
 
-    store::Iterator_t lItemIt = new ItemIterator(input);
-    zorba::serializer lSerializer(diagnostics);
+    store::Iterator_t lItemIt = new ItemIterator(aNode);
+    zorba::serializer lSerializer(aDiag);
     // defaults
     lSerializer.setParameter("omit-xml-declaration", "yes");
 
@@ -264,64 +260,64 @@ encodeNode(
     lSerializer.serialize(lItemIt, *lResultStream.get());
     lItemIt->close();
 
-    factory->createString(names.at(1), valueKey);
-    factory->createStreamableString(values.at(1), *lResultStream.release(),
+    aFactory->createString(names.at(1), valueKey);
+    aFactory->createStreamableString(values.at(1), *lResultStream.release(),
                                     FnSerializeIterator::streamReleaser, true);
   }
 
-  factory->createJSONObject(result, names, values);
+  aFactory->createJSONObject(aResult, names, values);
   return true;
 }
 
 bool
-encodeItem(
-  store::ItemFactory* factory,
-  store::Item* item,
-  store::Item_t& result,
-  zstring prefix,
-  XQueryDiagnostics* diagnostics)
+JSONEncodeForRoundtripIterator::encodeItem(
+  store::ItemFactory* aFactory,
+  const store::Item_t& anItem,
+  store::Item_t& aResult,
+  const zstring& aPrefix,
+  XQueryDiagnostics* aDiag)
 {
-  if (item->isJSONObject())
+  if (anItem->isJSONObject())
   {
-    return encodeObject(factory, item, result, prefix, diagnostics);
+    return encodeObject(aFactory, anItem, aResult, aPrefix, aDiag);
   }
-  else if (item->isJSONArray())
+  else if (anItem->isJSONArray())
   {
-    return encodeArray(factory, item, result, prefix, diagnostics);
+    return encodeArray(aFactory, anItem, aResult, aPrefix, aDiag);
   }
-  else if (item->isAtomic())
+  else if (anItem->isAtomic())
   {
-    return encodeAtomic(factory, item, result, prefix, diagnostics);
+    return encodeAtomic(aFactory, anItem, aResult, aPrefix, aDiag);
   }
   else
   {
-    return encodeNode(factory, item, result, prefix, diagnostics);
+    return encodeNode(aFactory, anItem, aResult, aPrefix, aDiag);
   }
 }
 
 bool
 JSONEncodeForRoundtripIterator::nextImpl(
-  store::Item_t& result,
+  store::Item_t& aResult,
   PlanState& planState) const
 {
-  store::Item_t input;
+  store::Item_t lInput;
 
   JSONEncodeForRoundtripIteratorState* state;
   DEFAULT_STACK_INIT(JSONEncodeForRoundtripIteratorState, state, planState);
 
-  consumeNext(input, theChildren.at(0).getp(), planState);
+  consumeNext(lInput, theChildren.at(0), planState);
 
-  if (! encodeItem(GENV_ITEMFACTORY, input.getp(), result,
+  if (! encodeItem(GENV_ITEMFACTORY, lInput, aResult,
                    "Q{http://jsoniq.org/roundtrip}",
                    planState.theCompilerCB->theXQueryDiagnostics))
   {
-    result = input;
+    aResult = lInput;
   }
 
   STACK_PUSH (true, state);
 
 
-  //state->theNames = input->getObjectKeys();
+  //state->theNames = lInput->getObjectKeys();
   //state->theNames->open();
 
   //while (state->theNames->next(key))

@@ -116,6 +116,12 @@ public:
 
   virtual ~JSONEncodeForRoundtripIterator();
 
+public:
+  static bool encodeObject(store::ItemFactory* aFactory, const store::Item_t& anObj, store::Item_t& aResult, const zstring& aPrefix, XQueryDiagnostics* aDiag);
+  static bool encodeArray(store::ItemFactory* aFactory, const store::Item_t& anArray, store::Item_t& aResult, const zstring& aPrefix, XQueryDiagnostics* aDiag);
+  static bool encodeAtomic(store::ItemFactory* aFactory, const store::Item_t& aValue, store::Item_t& aResult, const zstring& aPrefix, XQueryDiagnostics* aDiag);
+  static bool encodeNode(store::ItemFactory* aFactory, const store::Item_t& aNode, store::Item_t& aResult, const zstring& aPrefix, XQueryDiagnostics* aDiag);
+  static bool encodeItem(store::ItemFactory* aFactory, const store::Item_t& anItem, store::Item_t& aResult, const zstring& aPrefix, XQueryDiagnostics* aDiag);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
