@@ -493,6 +493,10 @@ protected:
 
   bool                 theIgnoreComments;
 
+  // helper vars to compute index sources
+  bool                 theIsIndexDecl;
+  std::vector<zstring> theIndexSources;
+
 public:
 
 ParseNodePrintXQDocVisitor(store::Item_t& aResult,
@@ -506,7 +510,8 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult,
   theBaseURI("http://www.xqdoc.org/1.0"),
   theVersion("1.0"),
   theFactory(GENV_ITEMFACTORY),
-  theIgnoreComments(aIgnoreComments)
+  theIgnoreComments(aIgnoreComments),
+  theIsIndexDecl(false)
 {
   theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
   theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
@@ -885,13 +890,58 @@ void end_visit(const FunctionCall& n, void*)
   rchandle<QName> lFuncName = n.get_fname();
 
   add_invoked_function(
+      n,
       lFuncName->get_localname(),
       lFuncName->get_prefix(),
       (n.get_arg_list()?n.get_arg_list()->size():0),
       n.get_location());
 }
 
+void collect_index_sources(
+    const FunctionCall& n,
+    const zstring& aNS,
+    const zstring& aLocalName)
+{
+  if (aLocalName != "collection")
+    return;
+
+  if (aNS != "http://www.zorba-xquery.com/modules/store/static/collections/dml"
+   && aNS != "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
+   && aNS != "http://www.w3.org/2005/xpath-functions"
+  )
+    return;
+
+  const ArgList& lCollCallArgList = *n.get_arg_list();
+  if (lCollCallArgList.size() != 1)
+    return;
+
+  const exprnode& lQNameCallExprNode = *(lCollCallArgList[0]);
+  if (typeid(lQNameCallExprNode) != typeid(FunctionCall))
+    return;
+
+  const FunctionCall& lQNameCast
+    = static_cast<const FunctionCall&>(lQNameCallExprNode);
+
+  if (lQNameCast.get_fname()->get_prefix() != "xs"
+   || lQNameCast.get_fname()->get_localname() != "QName")
+    return;
+
+  const ArgList& lQNameCastArgList = *lQNameCast.get_arg_list();
+  if (lQNameCastArgList.size() != 1)
+    return;
+
+  const exprnode& lStringLiteralExprNode = *(lQNameCastArgList[0]);
+  if (typeid(lStringLiteralExprNode) != typeid(StringLiteral))
+    return;
+
+  const StringLiteral& lStringLiteral
+    = static_cast<const StringLiteral&>(lStringLiteralExprNode);
+   
+  theIndexSources.push_back(lStringLiteral.get_strval());
+}
+
 void add_invoked_function (
+    const FunctionCall& n,
     const zstring& aLocalName,
     const zstring& aPrefix,
     size_t aArity,
@@ -924,11 +974,12 @@ void add_invoked_function (
   }
 
   zstring lNS = ite->second;
+  zstring lNS2 = lNS;
 
   ostringstream lKey;
-  lKey << lNS << aLocalName << "#" << aArity;
+  lKey << lNS2 << aLocalName << "#" << aArity;
 
-  theFactory->createTextNode(lUriText, lUriElem.getp(), lNS);
+  theFactory->createTextNode(lUriText, lUriElem.getp(), lNS2);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -950,6 +1001,12 @@ void add_invoked_function (
 
   // collect distinct invocation elements
   theInvokedFunc[lKey.str()] = lInvokedElem;
+
+  // compute index sources if necessary
+  if (theIsIndexDecl)
+  {
+    collect_index_sources(n, lNS, aLocalName);
+  }
 }
 
 
@@ -1138,15 +1195,26 @@ void end_visit(const CollectionDecl& n, void*)
   print_annotations(lAnns, lCollectionElem);
 }
 
-XQDOC_NO_BEGIN_TAG (AST_IndexDecl)
+XQDOC_NO_BEGIN_END_TAG (StringLiteral)
+
+void *begin_visit(const AST_IndexDecl& n) {
+  theIndexSources.clear();
+  theIsIndexDecl = true;
+  return no_state;
+}
 
 void end_visit(const AST_IndexDecl& n, void*)
 {
-  store::Item_t lIndexQName, lUriQName;
-  store::Item_t lIndexElem, lUriElem, lUriText;
+  theIsIndexDecl = false;
+
+  store::Item_t lIndexQName, lUriQName, lSourcesQName, lSourceQName;
+  store::Item_t lIndexElem, lUriElem, lUriText, lSourcesElem, lSourceElem,
+                lSourceText;
 
   theFactory->createQName(lIndexQName, theXQDocNS, theXQDocPrefix, "index");
   theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+  theFactory->createQName(lSourcesQName, theXQDocNS, theXQDocPrefix, "sources");
+  theFactory->createQName(lSourceQName, theXQDocNS, theXQDocPrefix, "source");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -1158,6 +1226,11 @@ void end_visit(const AST_IndexDecl& n, void*)
       lUriElem, lIndexElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lSourcesElem, lIndexElem, lSourcesQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
   zstring lUriString(n.getName()->get_qname());
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
@@ -1166,6 +1239,18 @@ void end_visit(const AST_IndexDecl& n, void*)
 
   AnnotationListParsenode* lAnns = n.get_annotations();
   print_annotations(lAnns, lIndexElem);
+
+  for (std::vector<zstring>::iterator lIter = theIndexSources.begin();
+       lIter != theIndexSources.end();
+       ++lIter)
+  {
+    store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(
+        lSourceElem, lSourcesElem, lSourceQName, lTypeName,
+        true, false, theNSBindings, theBaseURI);
+    theFactory->createTextNode(lSourceText, lSourceElem, *lIter);
+  }
+  theIndexSources.clear();
 }
 
 
@@ -1336,7 +1421,6 @@ XQDOC_NO_BEGIN_END_TAG (SequenceType)
 XQDOC_NO_BEGIN_END_TAG (SignList)
 XQDOC_NO_BEGIN_END_TAG (SIND_DeclList)
 XQDOC_NO_BEGIN_END_TAG (SingleType)
-XQDOC_NO_BEGIN_END_TAG (StringLiteral)
 XQDOC_NO_BEGIN_END_TAG (StringConcatExpr)
 XQDOC_NO_BEGIN_END_TAG (TextTest)
 XQDOC_NO_BEGIN_END_TAG (TransformExpr)
