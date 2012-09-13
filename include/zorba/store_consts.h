@@ -84,7 +84,7 @@ enum SchemaTypeCode
   XS_QNAME                 = 43,
   XS_NOTATION              = 44,
   
-  JN_NULL                  = 45,
+  JS_NULL                  = 45,
 
   XS_LAST
 };

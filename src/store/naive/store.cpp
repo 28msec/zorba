@@ -185,9 +185,9 @@ void Store::initTypeNames()
   theSchemaTypeNames.resize(store::XS_LAST);
 
 #ifdef ZORBA_WITH_JSON
-  JN_NULL_QNAME = theQNamePool->insert(JS_URI, "js", "null");
-  JN_OBJECT_QNAME = theQNamePool->insert(JS_URI, "js", "object");
-  JN_ARRAY_QNAME = theQNamePool->insert(JS_URI, "js", "array");
+  JS_NULL_QNAME = theQNamePool->insert(JS_URI, "js", "null");
+  JS_OBJECT_QNAME = theQNamePool->insert(JS_URI, "js", "object");
+  JS_ARRAY_QNAME = theQNamePool->insert(JS_URI, "js", "array");
 #endif
 
   XS_UNTYPED_QNAME = theQNamePool->insert(ns, "xs", "untyped");
@@ -323,9 +323,9 @@ void Store::shutdown(bool soft)
       XS_ANY_SIMPLE_QNAME = NULL;
 
 #ifdef ZORBA_WITH_JSON
-      JN_OBJECT_QNAME = NULL;
-      JN_ARRAY_QNAME = NULL;
-      JN_NULL_QNAME = NULL;
+      JS_OBJECT_QNAME = NULL;
+      JS_ARRAY_QNAME = NULL;
+      JS_NULL_QNAME = NULL;
 #endif
 
       delete theQNamePool;

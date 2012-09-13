@@ -281,7 +281,7 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
 
 #ifdef ZORBA_WITH_JSON
-  GENV_STORE.getItemFactory()->createQName(JN_NULL_QNAME,
+  GENV_STORE.getItemFactory()->createQName(JS_NULL_QNAME,
                                            static_context::JSONIQ_DM_NS,
                                            "jn",
                                            "null");
@@ -389,43 +389,43 @@ RootTypeManager::RootTypeManager()
   new StructuredItemXQType(this, TypeConstants::QUANT_PLUS, true);
 
 #ifdef ZORBA_WITH_JSON
-  JN_NULL_TYPE_ONE = new AtomicXQType(this,
-                                      store::JN_NULL,
+  JS_NULL_TYPE_ONE = new AtomicXQType(this,
+                                      store::JS_NULL,
                                       TypeConstants::QUANT_ONE,
                                       true);                   
                                                                
-  JN_NULL_TYPE_QUESTION = new AtomicXQType(this,              
-                                           store::JN_NULL,  
+  JS_NULL_TYPE_QUESTION = new AtomicXQType(this,              
+                                           store::JS_NULL,  
                                            TypeConstants::QUANT_QUESTION,
                                            true);              
                                                                
-  JN_NULL_TYPE_STAR = new AtomicXQType(this,              
-                                       store::JN_NULL,  
+  JS_NULL_TYPE_STAR = new AtomicXQType(this,              
+                                       store::JS_NULL,  
                                        TypeConstants::QUANT_STAR,
                                        true);                    
                                                                  
-  JN_NULL_TYPE_PLUS = new AtomicXQType(this,                    
-                                       store::JN_NULL,        
+  JS_NULL_TYPE_PLUS = new AtomicXQType(this,                    
+                                       store::JS_NULL,        
                                        TypeConstants::QUANT_PLUS,
                                        true);                    
                                                                  
-  m_atomic_typecode_qname_map[store::JN_NULL] = JN_NULL_QNAME;
+  m_atomic_typecode_qname_map[store::JS_NULL] = JS_NULL_QNAME;
                                                                       
-  tempQN = JN_NULL_QNAME.getp();                                 
-  tempCode = store::JN_NULL;                                       
+  tempQN = JS_NULL_QNAME.getp();                                 
+  tempCode = store::JS_NULL;                                       
   m_atomic_qnametype_map.insert(tempQN, tempCode);                    
                                                                       
-  m_atomic_typecode_map[store::JN_NULL][TypeConstants::QUANT_ONE] =
-    &JN_NULL_TYPE_ONE;                                                
+  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_ONE] =
+    &JS_NULL_TYPE_ONE;                                                
                                                                       
-  m_atomic_typecode_map[store::JN_NULL][TypeConstants::QUANT_QUESTION] =
-    &JN_NULL_TYPE_QUESTION;                                                
+  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_QUESTION] =
+    &JS_NULL_TYPE_QUESTION;                                                
                                                                            
-  m_atomic_typecode_map[store::JN_NULL][TypeConstants::QUANT_STAR] =    
-    &JN_NULL_TYPE_STAR;                                                    
+  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_STAR] =    
+    &JS_NULL_TYPE_STAR;                                                    
                                                                            
-  m_atomic_typecode_map[store::JN_NULL][TypeConstants::QUANT_PLUS] =    
-    &JN_NULL_TYPE_PLUS;
+  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_PLUS] =    
+    &JS_NULL_TYPE_PLUS;
 
 #define JSON_TYPE_DEFN(basename, kind)                                  \
   basename##_TYPE_ONE = new JSONXQType(this,                            \
@@ -558,7 +558,7 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(STRUCTURED_ITEM)
 
 #ifdef ZORBA_WITH_JSON
-  DELETE_TYPE(JN_NULL)
+  DELETE_TYPE(JS_NULL)
 
   DELETE_TYPE(JSON_ITEM)
   DELETE_TYPE(JSON_OBJECT)

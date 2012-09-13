@@ -391,7 +391,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_jsoniq_null,
         (createQName("http://www.jsoniq.org/functions","","null"), 
-        GENV_TYPESYSTEM.JN_NULL_TYPE_ONE),
+        GENV_TYPESYSTEM.JS_NULL_TYPE_ONE),
         FunctionConsts::FN_JSONIQ_NULL_0);
 
   }

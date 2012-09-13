@@ -770,7 +770,7 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
   }
  
  #ifdef ZORBA_WITH_JSON
-  case store::JN_NULL:
+  case store::JS_NULL:
   {
     break;
   }
@@ -1076,7 +1076,7 @@ void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
   }
 
  #ifdef ZORBA_WITH_JSON
-  case store::JN_NULL:
+  case store::JS_NULL:
   {
     store::Item_t lRes;
     GENV_ITEMFACTORY->createJSONNull(lRes);

@@ -544,7 +544,7 @@ JSONIsNullIterator::nextImpl(
 
   consumeNext(lItem, theChild.getp(), planState);
 
-  lIsNull = (lItem->getTypeCode() == store::JN_NULL);
+  lIsNull = (lItem->getTypeCode() == store::JS_NULL);
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lIsNull), state);
 

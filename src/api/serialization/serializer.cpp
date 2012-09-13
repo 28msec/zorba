@@ -1040,7 +1040,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       tr << (item->getBooleanValue() ? "true" : "false");
       break;
 
-    case store::JN_NULL:
+    case store::JS_NULL:
       tr << "null";
       break;
 
