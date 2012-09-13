@@ -56,11 +56,22 @@
 
 namespace zorba {
 
-class EncodingParameters {
+class CallParameters {
 public:
+  CallParameters(static_context* aSctx,
+                 store::ItemFactory* aFactory,
+                 const QueryLoc& aLoc)
+    : theSctx(aSctx),
+      theFactory(aFactory),
+      theLoc(aLoc)
+  {}
+
+  static_context* theSctx;
   store::ItemFactory* theFactory;
   zstring thePrefix;
+  store::Item_t theSerParams;
   XQueryDiagnostics* theDiag;
+  const QueryLoc& theLoc;
 };
 
 /*******************************************************************************
@@ -102,7 +113,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeObject(
   const store::Item_t& anObj,
   store::Item_t& aResult,
-  EncodingParameters& someParams)
+  CallParameters& someParams)
 {
   std::vector<store::Item_t> newNames;
   std::vector<store::Item_t> newValues;
@@ -134,7 +145,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeArray(
   const store::Item_t& anArray,
   store::Item_t& aResult,
-  EncodingParameters& someParams)
+  CallParameters& someParams)
 {
   std::vector<store::Item_t> newItems;
   bool modified = false;
@@ -161,7 +172,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeAtomic(
   const store::Item_t& aValue,
   store::Item_t& aResult,
-  EncodingParameters& someParams)
+  CallParameters& someParams)
 {
   store::SchemaTypeCode typeCode = aValue->getTypeCode();
   switch (typeCode) {
@@ -230,7 +241,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeNode(
     const store::Item_t& aNode,
     store::Item_t& aResult,
-    EncodingParameters& someParams)
+    CallParameters& someParams)
 {
   std::vector<store::Item_t> names(2);
   std::vector<store::Item_t> values(2);
@@ -250,7 +261,14 @@ JSONEncodeForRoundtripIterator::encodeNode(
     // defaults
     lSerializer.setParameter("omit-xml-declaration", "yes");
 
-    // TODO serialization parameters
+    if (! someParams.theSerParams.isNull())
+    {
+      FnSerializeIterator::setSerializationParams(
+          lSerializer,
+          someParams.theSerParams,
+          someParams.theSctx,
+          someParams.theLoc);
+    }
 
     // and now serialize
     std::auto_ptr<std::stringstream> lResultStream(new std::stringstream());
@@ -272,7 +290,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeItem(
   const store::Item_t& anItem,
   store::Item_t& aResult,
-  EncodingParameters& someParams)
+  CallParameters& someParams)
 {
   if (anItem->isJSONObject())
   {
@@ -295,19 +313,55 @@ JSONEncodeForRoundtripIterator::encodeItem(
 bool
 JSONEncodeForRoundtripIterator::nextImpl(
   store::Item_t& aResult,
-  PlanState& planState) const
+  PlanState& aPlanState) const
 {
   store::Item_t lInput;
-  EncodingParameters lParams;
+  CallParameters lParams(theSctx, GENV_ITEMFACTORY, loc);
+  store::Item_t lEncParams;
 
   JSONEncodeForRoundtripIteratorState* state;
-  DEFAULT_STACK_INIT(JSONEncodeForRoundtripIteratorState, state, planState);
+  DEFAULT_STACK_INIT(JSONEncodeForRoundtripIteratorState, state, aPlanState);
 
-  consumeNext(lInput, theChildren.at(0), planState);
-
-  lParams.theFactory = GENV_ITEMFACTORY;
   lParams.thePrefix = "Q{http://jsoniq.org/roundtrip}";
-  lParams.theDiag = planState.theCompilerCB->theXQueryDiagnostics;
+  lParams.theDiag = aPlanState.theCompilerCB->theXQueryDiagnostics;
+
+  consumeNext(lInput, theChildren.at(0), aPlanState);
+
+  // get encoding parameters
+  if (theChildren.size() == 2
+      && consumeNext(lEncParams, theChildren.at(1), aPlanState))
+  {
+    // the signature says that the second parameter has to be exactly one object
+    store::Item_t lPrefixKey;
+    zstring lPrefixName = "prefix";
+    lParams.theFactory->createString(lPrefixKey, lPrefixName);
+    store::Item_t lPrefixValue = lEncParams->getObjectValue(lPrefixKey);
+    if (! lPrefixValue.isNull())
+    {
+      if (lPrefixValue->getTypeCode() != store::XS_STRING)
+      {
+        // TODO exception
+        throw lPrefixValue;
+      }
+      lPrefixValue->getStringValue2(lParams.thePrefix);
+    }
+
+
+    store::Item_t lSerParamKey;
+    zstring lSerParamName = "serialization-parameters";
+    lParams.theFactory->createString(lSerParamKey, lSerParamName);
+    store::Item_t lSerParamValue = lEncParams->getObjectValue(lSerParamKey);
+    if (! lSerParamValue.isNull())
+    {
+      if (! lSerParamValue->isNode())
+      {
+        // TODO exception
+        throw lSerParamValue; 
+      }
+      lParams.theSerParams = lSerParamValue;
+    }
+  }
+
   if (! encodeItem(lInput, aResult, lParams))
   {
     aResult = lInput;

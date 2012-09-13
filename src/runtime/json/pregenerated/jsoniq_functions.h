@@ -32,7 +32,7 @@
 
 
 namespace zorba {
-class EncodingParameters;
+class CallParameters;
 #ifdef ZORBA_WITH_JSON
 /**
  * 
@@ -117,11 +117,11 @@ public:
   virtual ~JSONEncodeForRoundtripIterator();
 
 public:
-  static bool encodeObject(const store::Item_t& anObj, store::Item_t& aResult, EncodingParameters& someParams);
-  static bool encodeArray(const store::Item_t& anArray, store::Item_t& aResult, EncodingParameters& someParams);
-  static bool encodeAtomic(const store::Item_t& aValue, store::Item_t& aResult, EncodingParameters& someParams);
-  static bool encodeNode(const store::Item_t& aNode, store::Item_t& aResult, EncodingParameters& someParams);
-  static bool encodeItem(const store::Item_t& anItem, store::Item_t& aResult, EncodingParameters& someParams);
+  static bool encodeObject(const store::Item_t& anObj, store::Item_t& aResult, CallParameters& someParams);
+  static bool encodeArray(const store::Item_t& anArray, store::Item_t& aResult, CallParameters& someParams);
+  static bool encodeAtomic(const store::Item_t& aValue, store::Item_t& aResult, CallParameters& someParams);
+  static bool encodeNode(const store::Item_t& aNode, store::Item_t& aResult, CallParameters& someParams);
+  static bool encodeItem(const store::Item_t& anItem, store::Item_t& aResult, CallParameters& someParams);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
