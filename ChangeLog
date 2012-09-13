@@ -3,6 +3,7 @@ Zorba - The XQuery Processor
 version 2.7
 
 New Features:
+  * New node copy function added to the node module
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
