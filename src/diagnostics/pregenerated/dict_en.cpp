@@ -875,6 +875,7 @@ extern entry const dict_en[] = {
   { "~XPTY0004_FormatNumber_2", "the first parameter to the format-number() function is of type $2, which is not allowed" },
   { "~XPTY0004_FuncParam", "$2 can not be promoted to parameter type $3 of function $4()" },
   { "~XPTY0004_FuncReturn", "$2 can not be promoted to return type $3 of function $4()" },
+  { "~XPTY0004_JSONIQ_SELECTOR", "Cannot atomize and/or cast value of type $2 to a string." },
   { "~XPTY0004_NoMultiSeqTypePromotion", "sequence of more than one item can not be promoted to type $2" },
   { "~XPTY0004_TypeMatch", "$2 can not be treated as type $3" },
   { "~XPTY0004_TypePromotion", "$2 can not be promoted to type $3" },

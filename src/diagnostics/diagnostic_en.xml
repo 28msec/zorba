@@ -180,6 +180,10 @@
         <value>the first parameter to the format-number() function is of type $2, which is not allowed</value>
       </entry>
 
+      <entry key="JSONIQ_SELECTOR">
+        <value>Cannot atomize and/or cast value of type $2 to a string.</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPTY0018">

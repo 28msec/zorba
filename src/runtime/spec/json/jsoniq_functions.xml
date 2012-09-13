@@ -496,7 +496,7 @@
         <zorba:getReturnType/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes value="true"/>
-        <zorba:mustCopyInputNodes/>
+        <zorba:mustCopyInputNodes value="false"/>
       </zorba:methods>
 
     </zorba:function>

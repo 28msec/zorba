@@ -75,6 +75,7 @@ LIST(APPEND FUNCTIONS_SRCS
     func_hoist.cpp
     func_index_ddl.cpp
     func_node_sort_distinct.cpp
+    func_nodes_impl.cpp
     func_numerics_impl.cpp
     func_sequences_impl.cpp
     func_strings_impl.cpp

@@ -503,6 +503,8 @@ namespace zorba{
 
     class FnPathIterator;
 
+    class NodeCopyIterator;
+
     class AbsIterator;
 
     class CeilingIterator;
@@ -1422,6 +1424,9 @@ public:
 
     virtual void beginVisit ( const FnPathIterator& ) = 0;
     virtual void endVisit   ( const FnPathIterator& ) = 0;
+
+    virtual void beginVisit ( const NodeCopyIterator& ) = 0;
+    virtual void endVisit   ( const NodeCopyIterator& ) = 0;
 
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;
