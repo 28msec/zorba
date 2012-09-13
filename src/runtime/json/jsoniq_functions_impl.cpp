@@ -258,7 +258,7 @@ JSONEncodeForRoundtripIterator::encodeNode(
 
     store::Iterator_t lItemIt = new ItemIterator(aNode);
     zorba::serializer lSerializer(someParams.theDiag);
-    // defaults
+    // TODO what do we set, if nothing is passed?
     lSerializer.setParameter("omit-xml-declaration", "yes");
 
     if (! someParams.theSerParams.isNull())
@@ -319,8 +319,8 @@ JSONEncodeForRoundtripIterator::nextImpl(
   CallParameters lParams(theSctx, GENV_ITEMFACTORY, loc);
   store::Item_t lEncParams;
 
-  JSONEncodeForRoundtripIteratorState* state;
-  DEFAULT_STACK_INIT(JSONEncodeForRoundtripIteratorState, state, aPlanState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   lParams.thePrefix = "Q{http://jsoniq.org/roundtrip}";
   lParams.theDiag = aPlanState.theCompilerCB->theXQueryDiagnostics;
@@ -368,15 +368,6 @@ JSONEncodeForRoundtripIterator::nextImpl(
   }
 
   STACK_PUSH (true, state);
-
-
-  //state->theNames = lInput->getObjectKeys();
-  //state->theNames->open();
-
-  //while (state->theNames->next(key))
-  //{
-  //}
-  //state->theNames = NULL;
 
   STACK_END(state);
 }

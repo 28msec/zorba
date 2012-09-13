@@ -74,10 +74,6 @@
 
   </zorba:function>
 
-  <zorba:state>
-    <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
-  </zorba:state>
-
   <zorba:method static="true" name="encodeObject" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>

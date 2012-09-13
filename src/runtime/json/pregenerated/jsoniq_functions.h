@@ -83,26 +83,13 @@ public:
  * 
  * Author: 
  */
-class JSONEncodeForRoundtripIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t theNames; //
-
-  JSONEncodeForRoundtripIteratorState();
-
-  ~JSONEncodeForRoundtripIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class JSONEncodeForRoundtripIterator : public NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>
+class JSONEncodeForRoundtripIterator : public NaryBaseIterator<JSONEncodeForRoundtripIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONEncodeForRoundtripIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONEncodeForRoundtripIterator,
-    NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>);
+    NaryBaseIterator<JSONEncodeForRoundtripIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -111,7 +98,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONEncodeForRoundtripIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~JSONEncodeForRoundtripIterator();
