@@ -13153,14 +13153,18 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                                   NULL);
 
   contentExpr = wrap_in_type_match(contentExpr,
-                                  rtm.JSON_OBJECT_TYPE_ONE,
+                                  rtm.JSON_OBJECT_TYPE_STAR,
                                   loc,
-                                  TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
+                                  TreatIterator::JSONIQ_OBJECT_UPDATE_CONTENT, // JNUP0019
                                   NULL);
 
   std::vector<expr*> args(2);
   args[0] = targetExpr;
-  args[1] = contentExpr;
+  args[1] = theExprManager->create_json_object_expr(
+      theRootSctx,
+      loc,
+      contentExpr,
+      false);
 
   expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,

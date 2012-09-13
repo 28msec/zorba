@@ -6511,6 +6511,16 @@ JSONInsertExpr :
                                         $3,
                                         $5);
         }
+    |   INSERT JSON JSONPairList INTO ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($3);
+          $$ = new JSONObjectInsertExpr(
+              LOC(@$),
+              new JSONDirectObjectConstructor(
+                  LOC(@$),
+                  jpl),
+              $5);
+        }
     |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
         {
           $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
