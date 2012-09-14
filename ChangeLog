@@ -3,11 +3,13 @@ Zorba - The XQuery Processor
 version 2.7
 
 New Features:
+  * New XQuery 3.0 simple map operator http://www.w3.org/TR/xquery-30/#id-map-operator
+  * New node copy function added to the node module
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
-  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq functions. jn:object is
-    also supported.
+  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq
+    functions. jn:object is also supported.
   * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
     takes options to parameterize the parsing process (see bug #1047547)
 
@@ -16,6 +18,7 @@ Optimizations:
   * Exteneded some optimization rules (variable inlining/elimination and positional
     predicate rewrite) to general flwor expressions.
   * Use char* instead of zstring as the hashmap key in json objects
+  * Removed document-order sorting after the index value probe functions.
 
 Bug Fixes/Other Changes:
   * Fixed bug #867227 (Improved error message for missing commas)
