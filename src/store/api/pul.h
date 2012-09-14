@@ -283,6 +283,12 @@ public:
   virtual void addJSONObjectInsert(
         const QueryLoc* aQueryLoc,
         Item_t& target,
+        std::vector<Item_t>& names,
+        std::vector<store::Item_t>& values) = 0;
+
+  virtual void addJSONObjectInsert(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
         Item_t& content) = 0;
 
   virtual void addJSONObjectDelete(

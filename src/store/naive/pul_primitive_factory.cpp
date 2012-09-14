@@ -582,10 +582,11 @@ UpdJSONObjectInsert*
 PULPrimitiveFactory::createUpdJSONObjectInsert(
     CollectionPul* pul,
     const QueryLoc* loc,
-    store::Item_t& target,
-    store::Item_t& content)
+    store::Item_t& object,
+    std::vector<store::Item_t>& names,
+    std::vector<store::Item_t>& values)
 {
-  return new UpdJSONObjectInsert(pul, loc, target, content);
+  return new UpdJSONObjectInsert(pul, loc, object, names, values);
 }
 
 

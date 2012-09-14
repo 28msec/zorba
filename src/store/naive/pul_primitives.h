@@ -1641,8 +1641,9 @@ class UpdJSONObjectInsert: public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  store::Item_t               theContent;
-  
+  std::vector<store::Item_t>  theNames;
+  std::vector<store::Item_t>  theValues;
+
   csize                       theNumApplied;
 
 protected:
@@ -1650,7 +1651,8 @@ protected:
       CollectionPul* pul,
       const QueryLoc* loc,
       store::Item_t& target,
-      store::Item_t& content);
+      std::vector<store::Item_t>& names,
+      std::vector<store::Item_t>& values);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const

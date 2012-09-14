@@ -1108,10 +1108,54 @@ void PULImpl::addJSONObjectInsert(
      store::Item_t& target,
      store::Item_t& content)
 {
+  assert(content->isJSONObject());
+  assert(dynamic_cast<json::JSONObject*>(content.getp()));
+  json::JSONObject* lObject = static_cast<json::JSONObject*>(content.getp());
+  store::Iterator_t lIterator = lObject->getObjectKeys();
+  lIterator->open();
+  store::Item_t lKey;
+  std::vector<store::Item_t> lKeys;
+  std::vector<store::Item_t> lValues;
+  while(lIterator->next(lKey))
+  {
+    lKeys.push_back(lKey);
+    lValues.push_back(lObject->getObjectValue(lKey));
+  }
+  lIterator->close();
+  this->addJSONObjectInsert(loc, target, lKeys, lValues);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectInsert(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     std::vector<store::Item_t>& names,
+     std::vector<store::Item_t>& values)
+{
   CollectionPul* pul = getCollectionPul(target.getp());
 
   json::JSONObject* obj = static_cast<json::JSONObject*>(target.getp());
 
+  csize numPairs = names.size();
+
+  for (csize i = 0; i < numPairs; ++i)
+  {
+    if (obj->getObjectValue(names[i]) != NULL)
+    {
+      RAISE_ERROR(jerr::JNUP0006, loc, ERROR_PARAMS(names[i]->getStringValue()));
+    }
+
+    for (csize j = 0; j < i; ++j)
+    {
+      if (names[j]->equals(names[i]))
+      {
+        RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
+      }
+    }
+  }
+  
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(obj, updates);
 
@@ -1127,21 +1171,31 @@ void PULImpl::addJSONObjectInsert(
         continue;
 
       UpdJSONObjectInsert* upd = static_cast<UpdJSONObjectInsert*>(*ite);
-      json::JSONObject* lCurrentContent = static_cast<json::JSONObject*>(
-          upd->theContent.getp());
-      store::Iterator_t lIterator = content->getObjectKeys();
-      lIterator->open();
-      store::Item_t lItem;
-      while(lIterator->next(lItem))
+
+      csize numPairs1 = upd->theNames.size();
+      csize numPairs2 = names.size();
+      csize numPairs = numPairs1;
+
+      upd->theNames.resize(numPairs1 + numPairs2);
+      upd->theValues.resize(numPairs1 + numPairs2);
+
+      for (csize i = 0; i < numPairs2; ++i, ++numPairs)
       {
-        lCurrentContent->add(lItem, content->getObjectValue(lItem), false);
+        for (csize j = 0; j < numPairs1; ++j)
+        {
+          if (names[i]->equals(upd->theNames[j]))
+            RAISE_ERROR(jerr::JNUP0005, loc, ERROR_PARAMS(names[i]->getStringValue()));
+        }
+        
+        upd->theNames[numPairs].transfer(names[i]);
+        upd->theValues[numPairs].transfer(values[i]);
       }
-      content = NULL;
+      
       return;
     }
 
     UpdatePrimitive* upd =  GET_PUL_FACTORY().
-    createUpdJSONObjectInsert(pul, loc, target, content);
+    createUpdJSONObjectInsert(pul, loc, target, names, values);
 
     pul->theJSONObjectInsertList.push_back(upd);
 
@@ -1150,7 +1204,7 @@ void PULImpl::addJSONObjectInsert(
   else
   {
     UpdatePrimitive* upd =  GET_PUL_FACTORY().
-    createUpdJSONObjectInsert(pul, loc, target, content);
+    createUpdJSONObjectInsert(pul, loc, target, names, values);
 
     pul->theJSONObjectInsertList.push_back(upd);
 
@@ -1970,27 +2024,24 @@ void PULImpl::mergeTargetedUpdateLists(
           
           UpdJSONObjectInsert* myUpd = static_cast<UpdJSONObjectInsert*>(*ite);
 
-          zorba::store::Iterator_t lKeyIterator = myUpd->theContent->getObjectKeys();
-          zorba::store::Iterator_t lOtherKeyIterator = otherUpd2->theContent->getObjectKeys();
+          csize numMyPairs = myUpd->theNames.size();
+          csize numOtherPairs = otherUpd2->theNames.size();
+          csize numPairs = numMyPairs;
 
-          lKeyIterator->open();
-          lOtherKeyIterator->open();
-          zorba::store::Item_t lKey;
-          zorba::store::Item_t lOtherKey;
-          while(lOtherKeyIterator->next(lOtherKey))
+          myUpd->theNames.resize(numMyPairs + numOtherPairs);
+          myUpd->theValues.resize(numMyPairs + numOtherPairs);
+
+          for (csize i = 0; i < numOtherPairs; ++i, ++numPairs)
           {
-            while(lKeyIterator->next(lKey))
+            for (csize j = 0; j < numMyPairs; ++j)
             {
-              if (lOtherKey->equals(lKey))
+              if (otherUpd2->theNames[i]->equals(myUpd->theNames[j]))
                 RAISE_ERROR(jerr::JNUP0005, otherUpd->theLoc,
-                ERROR_PARAMS(lKey->getStringValue()));
+                ERROR_PARAMS(myUpd->theNames[j]->getStringValue()));
             }
-            zorba::store::Item_t lValueOfOtherKey =
-                otherUpd2->theContent->getObjectValue(lOtherKey);
-            zorba::simplestore::json::JSONObject* lObject =
-                static_cast<zorba::simplestore::json::JSONObject*>(
-                    myUpd->theContent.getp());
-            lObject->add(lOtherKey, lValueOfOtherKey, false);
+        
+            myUpd->theNames[numPairs].transfer(otherUpd2->theNames[i]);
+            myUpd->theValues[numPairs].transfer(otherUpd2->theValues[i]);
           }
 
           merged = true;

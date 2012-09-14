@@ -1911,12 +1911,16 @@ UpdJSONObjectInsert::UpdJSONObjectInsert(
     CollectionPul* pul,
     const QueryLoc* loc,
     store::Item_t& target,
-    store::Item_t& content)
+    std::vector<store::Item_t>& names,
+    std::vector<store::Item_t>& values)
   :
   UpdatePrimitive(pul, loc, target),
   theNumApplied(0)
 {
-  theContent.transfer(content);
+  assert(names.size() == values.size());
+
+  theNames.swap(names);
+  theValues.swap(values);
 }
 
 
@@ -1925,20 +1929,18 @@ void UpdJSONObjectInsert::apply()
   ZORBA_ASSERT(theTarget->isJSONObject());
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
+
   theIsApplied = true;
 
-  zorba::store::Iterator_t lKeyIterator = theContent->getObjectKeys();
-  lKeyIterator->open();
-  zorba::store::Item_t lKey;
-  while(lKeyIterator->next(lKey))
+  csize numPairs = theNames.size();
+  for (csize i = 0; i < numPairs; ++i, ++theNumApplied)
   {
-    if (!obj->add(lKey, theContent->getObjectValue(lKey), false))
+    if (!obj->add(theNames[i], theValues[i], false))
     {
       RAISE_ERROR(jerr::JNUP0006, theLoc, 
-      ERROR_PARAMS(lKey->getStringValue()));
+      ERROR_PARAMS(theNames[i]->getStringValue()));
     }
   }
-  lKeyIterator->close();
 }
 
 
@@ -1951,14 +1953,10 @@ void UpdJSONObjectInsert::undo()
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
-  zorba::store::Iterator_t lKeyIterator = theContent->getObjectKeys();
-  lKeyIterator->open();
-  zorba::store::Item_t lKey;
-  while(lKeyIterator->next(lKey))
+  for (csize i = theNumApplied; i > 0; --i)
   {
-    obj->remove(lKey);
+    obj->remove(theNames[i-1]);
   }
-  lKeyIterator->close();
 
   theIsApplied = false;
 }
