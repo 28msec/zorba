@@ -17,6 +17,7 @@ Optimizations:
   * New memory management for compiler expressions (no more ref counting)
   * Exteneded some optimization rules (variable inlining/elimination and positional
     predicate rewrite) to general flwor expressions.
+  * Removed document-order sorting after the index value probe functions.
 
 Bug Fixes/Other Changes:
   * Fixed bug #867227 (Improved error message for missing commas)

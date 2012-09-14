@@ -10588,17 +10588,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     FunctionConsts::FunctionKind lKind = f->getKind();
     switch (lKind)
     {
-      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N:
-      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
-      {
-        FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
-
-        resultExpr = theExprManager->create_fo_expr(theRootSctx,
-                                 foExpr->get_loc(),
-                                 BuiltinFunctionLibrary::getFunction(fkind),
-                                 foExpr);
-        break;
-      }
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N:
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N:
       {
