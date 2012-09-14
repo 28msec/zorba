@@ -42,6 +42,7 @@
 
 #include "context/static_context.h"
 
+#include "types/casting.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
@@ -74,32 +75,214 @@ public:
   const QueryLoc& theLoc;
 };
 
+const zstring XS_URI("http://www.w3.org/2001/XMLSchema");
+
 /*******************************************************************************
   json:decode-from-roundtrip($items as json-item()*,
                              $options as object()) as structured-item()*
 ********************************************************************************/
+
+void
+parseQName(store::Item_t& aResult,
+           const zstring& aQNameString,
+           const zstring& aPrefix,
+           store::ItemFactory* aFactory)
+{
+  // TODO there probably is a better solution somewhere
+  if (aQNameString.substr(0, 3) == "xs:")
+  {
+    aFactory->createQName(aResult, XS_URI, "xs", aQNameString.substr(3));
+  }
+  else if (aQNameString.substr(0, 2) == "Q{")
+  {
+    zstring::size_type lPos = aQNameString.find('}');
+    aFactory->createQName(aResult,
+                          aQNameString.substr(2, lPos - 2),
+                          aPrefix,
+                          aQNameString.substr(lPos));
+  }
+  else
+  {
+    throw "illegal type identifier"; // TODO error
+  }
+}
+
+bool
+JSONDecodeFromRoundtripIterator::decodeObject(
+  const store::Item_t& anObj,
+  store::Item_t& aResult,
+  CallParameters& someParams)
+{
+  zstring lTypeKey = someParams.thePrefix + "type";
+  store::Item_t lItem;
+  someParams.theFactory->createString(lItem, lTypeKey);
+  store::Item_t lTypeValueItem = anObj->getObjectValue(lItem);
+  if (! lTypeValueItem.isNull())
+  {
+    zstring lValueKey = someParams.thePrefix + "value";
+    someParams.theFactory->createString(lItem, lValueKey);
+    store::Item_t lValueValueItem = anObj->getObjectValue(lItem);
+    if (! lValueValueItem.isNull())
+    {
+      zstring lTypeNameString;
+      lTypeValueItem->getStringValue2(lTypeNameString);
+      if (lTypeNameString == "node()")
+      {
+        // TODO parse XML
+        throw "No angle brackets! (yet)";
+      }
+      else
+      {
+        store::Item_t lTypeQName;
+        parseQName(lTypeQName, lTypeNameString, "", someParams.theFactory);
+        if (lTypeQName->getLocalName() == "QName"
+            && lTypeQName->getNamespace() == XS_URI)
+        {
+          zstring lPrefixKey = someParams.thePrefix + "prefix";
+          someParams.theFactory->createString(lItem, lPrefixKey);
+          store::Item_t lPrefixValue = anObj->getObjectValue(lItem);
+          zstring lPrefixString;
+          if (! lPrefixValue.isNull())
+          {
+            lPrefixValue->getStringValue2(lPrefixString);
+          }
+          zstring lValueValue;
+          lValueValueItem->getStringValue2(lValueValue);
+          parseQName(aResult, lValueValue, lPrefixString, someParams.theFactory);
+        }
+        else
+        {
+          TypeManager* lTypeMgr = someParams.theSctx->get_typemanager();
+          xqtref_t lTargetType = lTypeMgr->create_named_type(
+                lTypeQName.getp(), TypeConstants::QUANT_ONE, someParams.theLoc);
+          namespace_context lTmpNsCtx(someParams.theSctx);
+          GenericCast::castToAtomic(aResult,
+                                    lValueValueItem,
+                                    lTargetType.getp(),
+                                    lTypeMgr,
+                                    &lTmpNsCtx,
+                                    someParams.theLoc);
+        }
+      }
+      return true;
+    }
+  }
+  std::vector<store::Item_t> newNames;
+  std::vector<store::Item_t> newValues;
+  bool modified = false;
+
+  store::Item_t key;
+  store::Item_t value;
+  store::Item_t newValue;
+  store::Iterator_t it = anObj->getObjectKeys();
+  it->open();
+  while (it->next(key))
+  {
+    newNames.push_back(key);
+    value = anObj->getObjectValue(key);
+    const bool gotNew = decodeItem(value, newValue, someParams);
+    newValues.push_back(gotNew ? newValue : value);
+    modified = modified || gotNew;
+  }
+  it->close();
+  if (modified)
+  {
+    someParams.theFactory->createJSONObject(aResult, newNames, newValues);
+    return true;
+  }
+  return false;
+}
+
+bool
+JSONDecodeFromRoundtripIterator::decodeArray(
+  const store::Item_t& anArray,
+  store::Item_t& aResult,
+  CallParameters& someParams)
+{
+  std::vector<store::Item_t> newItems;
+  bool modified = false;
+
+  store::Item_t item, newItem;
+  store::Iterator_t it = anArray->getArrayValues();
+  it->open();
+  while (it->next(item))
+  {
+    const bool gotNew = decodeItem(item, newItem, someParams);
+    newItems.push_back(gotNew ? newItem : item);
+    modified = modified || gotNew;
+  }
+  it->close();
+  if (modified)
+  {
+    someParams.theFactory->createJSONArray(aResult, newItems);
+    return true;
+  }
+  return false;
+}
+
+bool
+JSONDecodeFromRoundtripIterator::decodeItem(
+  const store::Item_t& anItem,
+  store::Item_t& aResult,
+  CallParameters& someParams)
+{
+  if (anItem->isJSONObject())
+  {
+    return decodeObject(anItem, aResult, someParams);
+  }
+  else if (anItem->isJSONArray())
+  {
+    return decodeArray(anItem, aResult, someParams);
+  }
+  else
+  {
+    return false;
+  }
+}
+
 bool
 JSONDecodeFromRoundtripIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+  store::Item_t& aResult,
+  PlanState& aPlanState) const
 {
-  store::Item_t input;
-  //store::Item_t key;
+  store::Item_t lInput;
+  CallParameters lParams(theSctx, GENV_ITEMFACTORY, loc);
+  store::Item_t lDecParams;
 
-  JSONDecodeFromRoundtripIteratorState* state;
-  DEFAULT_STACK_INIT(JSONDecodeFromRoundtripIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  consumeNext(input, theChildren.at(0).getp(), planState);
+  lParams.thePrefix = "Q{http://jsoniq.org/roundtrip}"; // TODO move into params
+  lParams.theDiag = aPlanState.theCompilerCB->theXQueryDiagnostics;
 
-  state->theNames = input->getObjectKeys();
-  state->theNames->open();
+  consumeNext(lInput, theChildren.at(0), aPlanState);
 
-  //while (state->theNames->next(key))
-  //{
-    result = input;
-    STACK_PUSH (true, state);
-  //}
-  //state->theNames = NULL;
+  // get decoding parameters
+  if (theChildren.size() == 2
+      && consumeNext(lDecParams, theChildren.at(1), aPlanState))
+  {
+    // the signature says that the second parameter has to be exactly one object
+    store::Item_t lPrefixKey;
+    zstring lPrefixName = "prefix";
+    lParams.theFactory->createString(lPrefixKey, lPrefixName);
+    store::Item_t lPrefixValue = lDecParams->getObjectValue(lPrefixKey);
+    if (! lPrefixValue.isNull())
+    {
+      if (lPrefixValue->getTypeCode() != store::XS_STRING)
+      {
+        // TODO exception
+        throw lPrefixValue;
+      }
+      lPrefixValue->getStringValue2(lParams.thePrefix);
+    }
+  }
+
+  if (! decodeItem(lInput, aResult, lParams))
+  {
+    aResult = lInput;
+  }
+
+  STACK_PUSH (true, state);
 
   STACK_END(state);
 }
@@ -209,7 +392,7 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
     zstring typeKey = someParams.thePrefix + "type";
     const zstring ns = typeName->getNamespace();
     const zstring local = typeName->getLocalName();
-    zstring typeValue = ns.compare("http://www.w3.org/2001/XMLSchema")
+    zstring typeValue = ns.compare(XS_URI)
         ? "Q{" + ns + "}" + local : "xs:" + local;
 
     someParams.theFactory->createString(names.at(0), typeKey);

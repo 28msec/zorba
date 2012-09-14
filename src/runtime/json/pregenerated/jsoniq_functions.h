@@ -71,6 +71,10 @@ public:
 
   virtual ~JSONDecodeFromRoundtripIterator();
 
+public:
+  static bool decodeObject(const store::Item_t& anObj, store::Item_t& aResult, CallParameters& someParams);
+  static bool decodeArray(const store::Item_t& anArray, store::Item_t& aResult, CallParameters& someParams);
+  static bool decodeItem(const store::Item_t& anItem, store::Item_t& aResult, CallParameters& someParams);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

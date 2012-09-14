@@ -44,6 +44,24 @@
     <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
   </zorba:state>
 
+  <zorba:method static="true" name="decodeObject" return="bool">
+    <zorba:param type="const store::Item_t&amp;" name="anObj"/>
+    <zorba:param type="store::Item_t&amp;" name="aResult"/>
+    <zorba:param type="CallParameters&amp;" name="someParams"/>
+  </zorba:method>
+
+  <zorba:method static="true" name="decodeArray" return="bool">
+    <zorba:param type="const store::Item_t&amp;" name="anArray"/>
+    <zorba:param type="store::Item_t&amp;" name="aResult"/>
+    <zorba:param type="CallParameters&amp;" name="someParams"/>
+  </zorba:method>
+
+  <zorba:method static="true" name="decodeItem" return="bool">
+    <zorba:param type="const store::Item_t&amp;" name="anItem"/>
+    <zorba:param type="store::Item_t&amp;" name="aResult"/>
+    <zorba:param type="CallParameters&amp;" name="someParams"/>
+  </zorba:method>
+
 </zorba:iterator>
 
 
