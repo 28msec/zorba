@@ -21,7 +21,7 @@
 #include <vector>
 
 #include <zorba/config.h>
-#include <zorbautils/hashmap_cstring.h>
+#include "util/unordered_map.h"
 
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
@@ -241,8 +241,36 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  CSTRING_HASH_MAP(csize, Keys);
+  class ConstCharStarHash
+  {
+  public:
+    typedef size_t result_type;
+    size_t operator()(const char* a) const
+    {
+      size_t hash = 5381;
+      int c;
 
+      while ((c = *a++))
+        hash = ((hash << 5) + hash) + c;
+
+      return hash;
+    }
+  };
+
+  class ConstCharStarComparator
+  {
+  public:
+    bool operator()(const char* a, const char* b) const
+    {
+      return strcmp(a, b) == 0;
+    }
+  };
+
+  typedef std::unordered_map<
+    const char*,
+    csize,
+    ConstCharStarHash,
+    ConstCharStarComparator> Keys;
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
@@ -271,8 +299,6 @@ private:
 
 public:
   SimpleJSONObject()
-    :
-    theKeys(11, false)
   {
   }
 
