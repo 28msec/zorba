@@ -44,6 +44,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1046559 (dynamic resolution between function invocation and jsoniq
     navigation)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
+  * Fixed bug #1046415 (pair name cast to string)
   * Fixed bug #1045902 (file:last-modified returns current date time)
   * Fixed bug #1043976 (compiler warning in serialiser code)
 
