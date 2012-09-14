@@ -103,8 +103,75 @@ parseQName(store::Item_t& aResult,
   }
   else
   {
-    throw "illegal type identifier"; // TODO error
+    aFactory->createQName(aResult, "", "", aQNameString);
   }
+}
+
+bool
+JSONDecodeFromRoundtripIterator::decodeXDM(
+  const store::Item_t& anObj,
+  store::Item_t& aResult,
+  CallParameters& someParams)
+{
+  store::Item_t lItem;
+
+  zstring lTypeKey = someParams.thePrefix + "type";
+  someParams.theFactory->createString(lItem, lTypeKey);
+  store::Item_t lTypeValueItem = anObj->getObjectValue(lItem);
+  if (lTypeValueItem.isNull())
+  {
+    return false;
+  }
+
+  zstring lValueKey = someParams.thePrefix + "value";
+  someParams.theFactory->createString(lItem, lValueKey);
+  store::Item_t lValueValueItem = anObj->getObjectValue(lItem);
+  if (lValueValueItem.isNull())
+  {
+    return false;
+  }
+
+  zstring lTypeNameString;
+  lTypeValueItem->getStringValue2(lTypeNameString);
+  if (lTypeNameString == "node()")
+  {
+    // TODO parse XML
+    throw "No angle brackets! (yet)";
+  }
+  else
+  {
+    store::Item_t lTypeQName;
+    parseQName(lTypeQName, lTypeNameString, "", someParams.theFactory);
+    if (lTypeQName->getLocalName() == "QName"
+        && lTypeQName->getNamespace() == XS_URI)
+    {
+      zstring lPrefixKey = someParams.thePrefix + "prefix";
+      someParams.theFactory->createString(lItem, lPrefixKey);
+      store::Item_t lPrefixValue = anObj->getObjectValue(lItem);
+      zstring lPrefixString;
+      if (! lPrefixValue.isNull())
+      {
+        lPrefixValue->getStringValue2(lPrefixString);
+      }
+      zstring lValueValue;
+      lValueValueItem->getStringValue2(lValueValue);
+      parseQName(aResult, lValueValue, lPrefixString, someParams.theFactory);
+    }
+    else
+    {
+      TypeManager* lTypeMgr = someParams.theSctx->get_typemanager();
+      xqtref_t lTargetType = lTypeMgr->create_named_type(
+            lTypeQName.getp(), TypeConstants::QUANT_ONE, someParams.theLoc);
+      namespace_context lTmpNsCtx(someParams.theSctx);
+      GenericCast::castToAtomic(aResult,
+                                lValueValueItem,
+                                lTargetType.getp(),
+                                lTypeMgr,
+                                &lTmpNsCtx,
+                                someParams.theLoc);
+    }
+  }
+  return true;
 }
 
 bool
@@ -113,60 +180,11 @@ JSONDecodeFromRoundtripIterator::decodeObject(
   store::Item_t& aResult,
   CallParameters& someParams)
 {
-  zstring lTypeKey = someParams.thePrefix + "type";
-  store::Item_t lItem;
-  someParams.theFactory->createString(lItem, lTypeKey);
-  store::Item_t lTypeValueItem = anObj->getObjectValue(lItem);
-  if (! lTypeValueItem.isNull())
+  if (decodeXDM(anObj, aResult, someParams))
   {
-    zstring lValueKey = someParams.thePrefix + "value";
-    someParams.theFactory->createString(lItem, lValueKey);
-    store::Item_t lValueValueItem = anObj->getObjectValue(lItem);
-    if (! lValueValueItem.isNull())
-    {
-      zstring lTypeNameString;
-      lTypeValueItem->getStringValue2(lTypeNameString);
-      if (lTypeNameString == "node()")
-      {
-        // TODO parse XML
-        throw "No angle brackets! (yet)";
-      }
-      else
-      {
-        store::Item_t lTypeQName;
-        parseQName(lTypeQName, lTypeNameString, "", someParams.theFactory);
-        if (lTypeQName->getLocalName() == "QName"
-            && lTypeQName->getNamespace() == XS_URI)
-        {
-          zstring lPrefixKey = someParams.thePrefix + "prefix";
-          someParams.theFactory->createString(lItem, lPrefixKey);
-          store::Item_t lPrefixValue = anObj->getObjectValue(lItem);
-          zstring lPrefixString;
-          if (! lPrefixValue.isNull())
-          {
-            lPrefixValue->getStringValue2(lPrefixString);
-          }
-          zstring lValueValue;
-          lValueValueItem->getStringValue2(lValueValue);
-          parseQName(aResult, lValueValue, lPrefixString, someParams.theFactory);
-        }
-        else
-        {
-          TypeManager* lTypeMgr = someParams.theSctx->get_typemanager();
-          xqtref_t lTargetType = lTypeMgr->create_named_type(
-                lTypeQName.getp(), TypeConstants::QUANT_ONE, someParams.theLoc);
-          namespace_context lTmpNsCtx(someParams.theSctx);
-          GenericCast::castToAtomic(aResult,
-                                    lValueValueItem,
-                                    lTargetType.getp(),
-                                    lTypeMgr,
-                                    &lTmpNsCtx,
-                                    someParams.theLoc);
-        }
-      }
-      return true;
-    }
+    return true;
   }
+
   std::vector<store::Item_t> newNames;
   std::vector<store::Item_t> newValues;
   bool modified = false;

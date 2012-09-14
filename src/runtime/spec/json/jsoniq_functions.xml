@@ -44,6 +44,12 @@
     <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
   </zorba:state>
 
+  <zorba:method static="true" name="decodeXDM" return="bool">
+    <zorba:param type="const store::Item_t&amp;" name="anObj"/>
+    <zorba:param type="store::Item_t&amp;" name="aResult"/>
+    <zorba:param type="CallParameters&amp;" name="someParams"/>
+  </zorba:method>
+
   <zorba:method static="true" name="decodeObject" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>

@@ -72,6 +72,7 @@ public:
   virtual ~JSONDecodeFromRoundtripIterator();
 
 public:
+  static bool decodeXDM(const store::Item_t& anObj, store::Item_t& aResult, CallParameters& someParams);
   static bool decodeObject(const store::Item_t& anObj, store::Item_t& aResult, CallParameters& someParams);
   static bool decodeArray(const store::Item_t& anArray, store::Item_t& aResult, CallParameters& someParams);
   static bool decodeItem(const store::Item_t& anItem, store::Item_t& aResult, CallParameters& someParams);
