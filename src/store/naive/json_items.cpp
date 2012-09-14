@@ -294,7 +294,7 @@ bool SimpleJSONObject::add(
   ASSERT_INVARIANT();
   zstring lName = aName->getStringValue();
 
-  Keys::iterator ite = theKeys.find(lName);
+  Keys::iterator ite = theKeys.find(lName.c_str());
 
   if (ite == theKeys.end())
   {
@@ -308,7 +308,7 @@ bool SimpleJSONObject::add(
     }
     
     csize lPosition = thePairs.size();
-    theKeys.insert(lName, lPosition);
+    theKeys.insert(lName.c_str(), lPosition);
     thePairs.push_back(std::make_pair(aName.getp(), lValue));
     aName->addReference();
     lValue->addReference();
@@ -363,7 +363,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   csize lPosition = 0;
   store::Item_t lValue;
 
-  if (!theKeys.get(lName, lPosition))
+  if (!theKeys.get(lName.c_str(), lPosition))
   {
     ASSERT_INVARIANT();
     return 0;
@@ -385,7 +385,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   lValue->removeReference();
 
   thePairs.erase(thePairs.begin() + lPosition);
-  theKeys.erase(lName);
+  theKeys.erase(lName.c_str());
 
   if (lPosition < thePairs.size())
   {
@@ -417,7 +417,7 @@ store::Item_t SimpleJSONObject::setValue(
   zstring lName = aName->getStringValue();
   csize lPosition = 0;
 
-  if (!theKeys.get(lName, lPosition))
+  if (!theKeys.get(lName.c_str(), lPosition))
   {
     ASSERT_INVARIANT();
     return NULL;
@@ -464,13 +464,13 @@ bool SimpleJSONObject::rename(
   zstring lName = aName->getStringValue();
   zstring lNewName = aNewName->getStringValue();
 
-  if (theKeys.exists(lNewName))
+  if (theKeys.exists(lNewName.c_str()))
   {
     ASSERT_INVARIANT();
     return false;
   }
 
-  Keys::iterator ite = theKeys.find(lName);
+  Keys::iterator ite = theKeys.find(lName.c_str());
 
   if (ite == theKeys.end())
   {
@@ -485,7 +485,7 @@ bool SimpleJSONObject::rename(
   aNewName->addReference();
   thePairs[lPosition].first = aNewName.getp();
   theKeys.erase(ite);
-  theKeys.insert(lNewName, lPosition);
+  theKeys.insert(lNewName.c_str(), lPosition);
 
   ASSERT_INVARIANT();
   return true;
@@ -563,7 +563,7 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
   zstring lName = aKey->getStringValue();
 
   csize lPosition = 0;
-  if (!theKeys.get(lName, lPosition))
+  if (!theKeys.get(lName.c_str(), lPosition))
   {
     return NULL;
   }

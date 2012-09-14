@@ -10920,7 +10920,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   xqtref_t srcType = sourceExpr->get_return_type();
 
   if (!theSctx->is_feature_set(feature::hof) ||
-      (!TypeOps::is_subtype(tm, *srcType, *theRTM.ANY_FUNCTION_TYPE_STAR)))
+      (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR)))
   {
     if (numArgs != 1)
     {
