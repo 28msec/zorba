@@ -28,6 +28,10 @@ data:init();
     count(idml:probe-index-range-value-skip($data:idx-age-range-val,
                                             2, 3, 4, 
                                             true(), true(), true(), true()))
-  }</four>
+  }</four>,
+  <five>{
+    local:order(idml:probe-index-range-value-skip($data:idx-age-range-val,  
+                                      10, 2, 3, true(), true(), true(), true()))
+  }</five> 
 )
 

@@ -497,6 +497,15 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond,
 ********************************************************************************/
 void ProbeValueHashIndexIterator::open()
 {
+  reset();
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void ProbeValueHashIndexIterator::reset()
+{
   if (theResultSet)
   {
     theIte = theResultSet->begin();
@@ -509,16 +518,6 @@ void ProbeValueHashIndexIterator::open()
       theIte += to_xs_long(theSkip);
     }
   }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void ProbeValueHashIndexIterator::reset()
-{
-  if (theResultSet)
-    theIte = theResultSet->begin(); 
 }
 
 
@@ -976,23 +975,7 @@ void ProbeValueTreeIndexIterator::initBox()
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::open()
 {
-  if (theMapBegin != theIndex->theMap.end())
-  {
-    theMapIte = theMapBegin;
-
-    theResultSet = theMapBegin->second;
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
-
-    if (theSkip > theResultSet->size())
-    {
-      theIte = theEnd;
-    }
-    else
-    {
-      theIte += to_xs_long(theSkip);
-    }
-  }
+  reset();
 }
 
 
@@ -1008,6 +991,17 @@ void ProbeValueTreeIndexIterator::reset()
     theResultSet = theMapIte->second;
     theIte = theResultSet->begin();
     theEnd = theResultSet->end();
+
+    // primitive skip
+    store::Item_t lDummy;
+    for (long l = 0; l < to_xs_long(theSkip); ++l)
+    {
+      if(!next(lDummy))
+      {
+        // no more values
+        break;
+      }
+    }
   }
 }
 
