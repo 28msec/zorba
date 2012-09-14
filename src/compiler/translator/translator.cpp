@@ -735,7 +735,6 @@ const QName* getDotPosVarName() const
   return theRootTranslator->theDotPosVarName.getp();
 }
 
-
 const QName* getLastIdxVarName() const
 {
   return theRootTranslator->theLastIdxVarName.getp();
@@ -2336,7 +2335,17 @@ void* begin_visit(const MainModule& v)
                             DOT_VARNAME,
                             var_expr::prolog_var,
                             theSctx->get_context_item_type());
+  var_expr_t var2 = bind_var(loc,
+                            DOT_POS_VARNAME,
+                            var_expr::prolog_var, 
+                            theRTM.INTEGER_TYPE_ONE);
+  var_expr_t var3 = bind_var(loc,
+                            LAST_IDX_VARNAME,
+                            var_expr::prolog_var,
+                            theRTM.INTEGER_TYPE_ONE);
   var->set_unique_id(1);
+  var2->set_unique_id(2);
+  var3->set_unique_id(3);
 
   //GlobalBinding b(var, NULL, true);
   //declare_var(b, theModulesInfo->theInitExprs);

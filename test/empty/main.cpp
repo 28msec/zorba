@@ -31,7 +31,7 @@ using namespace zorba;
  */
 bool example_1(Zorba* aZorba)
 {
-  XQuery_t lQuery = aZorba->compileQuery("declare variable $hello external; declare variable $world external; $hello");
+  XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; $var + $var");
 
   ItemFactory* lFactory = aZorba->getItemFactory();
 
@@ -41,13 +41,7 @@ bool example_1(Zorba* aZorba)
   DynamicContext* lCtx = lQuery->getDynamicContext();
 
   /* Actually perform the binding. */
-  //lCtx->setVariable("var", lItem);
-  lCtx->setContextPosition(lItem);
-  lCtx->setContextItem(lItem);
-  Item xItem;
-  Iterator_t iter;
-  lCtx->getVariable("", "world", xItem, iter);
-  //lCtx->getContextItem(xItem);
+  lCtx->setVariable("var", lItem);
 
   try {
 
