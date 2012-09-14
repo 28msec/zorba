@@ -2188,6 +2188,21 @@ void PrinterVisitor::endVisit ( const JSONArrayAppendIterator& ) {
 // </JSONArrayAppendIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
+// <JSONBoxIterator>
+void PrinterVisitor::beginVisit ( const JSONBoxIterator& a) {
+  thePrinter.startBeginVisit("JSONBoxIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONBoxIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONBoxIterator>
+
+#endif
 
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {
@@ -3195,6 +3210,20 @@ void PrinterVisitor::endVisit ( const FnPathIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPathIterator>
+
+
+// <NodeCopyIterator>
+void PrinterVisitor::beginVisit ( const NodeCopyIterator& a) {
+  thePrinter.startBeginVisit("NodeCopyIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeCopyIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeCopyIterator>
 
 
 // <AbsIterator>

@@ -1,1 +1,1 @@
-<sch:a xmlns:sch="http://www.zorba-xquery.com/modules/theschema">1</sch:a>
+<sch:a xmlns:sch="http://zorba-tests.28msec.us/modules/theschema">1</sch:a>

@@ -813,8 +813,6 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0008_BAD_VALUE;
 namespace jerr {
 
 #if defined(ZORBA_WITH_JSON)
-extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0001;
-
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0002;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0003;
@@ -841,6 +839,8 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNSE0013;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNSE0014;
 
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNSE0022;
+
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNUP0016;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNUP0017;
@@ -850,6 +850,10 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0018;
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0003;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0040;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0020;
+
+extern ZORBA_DLL_PUBLIC JSONiqErrorCode JSDY0021;
 #endif
 
 } // namespace jerr

@@ -29,6 +29,12 @@
   #SWIG Java: Generating XQJ Tests
   FILE(GLOB ZORBA_XQJ_TESTS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/managers/" "${CMAKE_CURRENT_SOURCE_DIR}/managers/*.*")
   FOREACH(ZORBA_XQJ_TEST ${ZORBA_XQJ_TESTS})
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/managers/${ZORBA_XQJ_TEST}"  "${CMAKE_CURRENT_BINARY_DIR}/managers/${ZORBA_XQJ_TEST}" COPYONLY)
+  ENDFOREACH(ZORBA_XQJ_TEST ${ZORBA_API_HEADERS})
+
+  #SWIG Java: Processing XQ
+  FILE(GLOB ZORBA_XQJ_TESTS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/managers/" "${CMAKE_CURRENT_SOURCE_DIR}/managers/*.xq")
+  FOREACH(ZORBA_XQJ_TEST ${ZORBA_XQJ_TESTS})
     CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/managers/${ZORBA_XQJ_TEST}"  "${CMAKE_CURRENT_BINARY_DIR}/managers/${ZORBA_XQJ_TEST}")
   ENDFOREACH(ZORBA_XQJ_TEST ${ZORBA_API_HEADERS})
   
@@ -100,7 +106,7 @@ IF (Java_Development_FOUND)
                      COMMAND cmake -E echo "Compiling XQJ files..."
                      COMMAND ${Java_JAVAC_EXECUTABLE} -cp ${XQJ_CLASSPATH} *.java -d ${CMAKE_CURRENT_BINARY_DIR}
                      COMMAND cmake -E echo "Creating jar file..."
-                     COMMAND ${Java_JAR_EXECUTABLE} cvf zorba_xqj.jar org
+                     COMMAND ${Java_JAR_EXECUTABLE} cf zorba_xqj.jar org
     )
   ENDIF (${RESULT} GREATER -1)
 

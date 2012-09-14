@@ -15,38 +15,34 @@
  * limitations under the License.
  */
 
-//require '@phpPath@/Zorba/zorba_api_wrapper.php';
-require 'C:/dev/zapi/build/swig/php/Zorba/zorba_api_wrapper.php';
+require '@phpPath@/Zorba/zorba_api_wrapper.php';
 
-class MyDiagnosticHandler(zorba_api.DiagnosticHandler): 
-  def error(self, *args):
-    print "Error args: ", args
+class MyDiagnosticHandler(DiagnosticHandler handler) {
+  funtion error(self, *args) {
+    print "Error args: ", args;
+  }
+}
 
-def test(zorba):
-  #Read and write result
-  print 'Executing: compilerHints.xq'
-  f = open('compilerHints.xq', 'r')
-  lines = f.read()
-  f.close()
+function test(Zorba $aZorba)
+{
   diagnosticHandler = MyDiagnosticHandler()
-  compilerHints = zorba_api.CompilerHints()
-  compilerHints.setOptimizationLevel(0)
-  xquery = zorba.compileQuery(lines, compilerHints, diagnosticHandler)
-  
-  result = xquery.execute()
-  print result
+  try {
+    xquery = zorba.compileQuery("1 div 0", diagnosticHandler);
+    print xquery.execute()
+  } catch (Exception e) {
+    print "Caught error: ";
+  }
   return
+}
 
+$store = InMemoryStore::getInstance();
+$zorba = Zorba::getInstance($store);
 
-store = zorba_api.InMemoryStore_getInstance()
-zorba = zorba_api.Zorba_getInstance(store)
+print "Running: Compile query string using Diagnostic Handler"
+test($zorba);
+print "Success";
 
-print "Running: CompileQuery string + Dignostinc handler + CompilerHint - with optimization 0"
-test(zorba)
-print "Success"
-
-
-zorba.shutdown()
-zorba_api.InMemoryStore_shutdown(store)
+$zorba->shutdown();
+InMemoryStore::shutdown($store);
 
 ?>

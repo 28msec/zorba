@@ -5,6 +5,13 @@ import module namespace ref = "http://www.zorba-xquery.com/modules/node-referenc
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
+declare function local:order($items)
+{
+  for $item in $items
+  order by fn:local-name($item)
+  return $item
+};
+
 declare %ann:sequential function local:test()
 {
   ddl:create(xs:QName("ns:test2"));
@@ -12,12 +19,11 @@ declare %ann:sequential function local:test()
   dml:insert-nodes(xs:QName("ns:test2"), <b/>);
   dml:insert-nodes(xs:QName("ns:test2"), (<c/>, <d/>, <e/>));
   (
-    dml:collection(xs:QName("ns:test2"), 3), <delim/>,
-    dml:collection(xs:QName("ns:test2"), -1), <delim/>,
+    local:order(dml:collection(xs:QName("ns:test2"), 3)), <delim/>,
+    local:order(dml:collection(xs:QName("ns:test2"), -1)), <delim/>,
     let $ref := ref:node-reference(dml:collection(xs:QName("ns:test2"))[3])
-    return dml:collection(xs:QName("ns:test2"), $ref, 0)
+    return local:order(dml:collection(xs:QName("ns:test2"), $ref, 0))
   )
 };
 
 local:test()
-

@@ -180,6 +180,10 @@
         <value>the first parameter to the format-number() function is of type $2, which is not allowed</value>
       </entry>
 
+      <entry key="JSONIQ_SELECTOR">
+        <value>Cannot atomize and/or cast value of type $2 to a string.</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPTY0018">
@@ -2551,11 +2555,6 @@
 
     <!--////////// JSONiq ///////////////////////////////////////////-->
 
-    <diagnostic code="JNTY0001" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.</comment>
-      <value>Cannot atomize and/or cast value of type $1 to a string.</value>
-    </diagnostic>
-
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
       <value>Pair value returns no, or more than one, item.</value>
@@ -2568,7 +2567,7 @@
     
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
-      <value>$1 items do not have typed value</value>
+      <value>Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item).</value>
     </diagnostic>
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
@@ -2666,6 +2665,13 @@
       <value>Cannot serialize a function item as JSON</value>
     </diagnostic>
 
+    <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a sequence that does
+        not exist of exactly one document node with XML, HTML, XHTML, Text.
+      </comment>
+      <value>$1: invalid serialization method for item type ($2)</value>
+    </diagnostic>
+
     <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
 
@@ -2704,6 +2710,16 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error for invalid option type</comment>
+      <value>$1: invalid option type for option $2 (expected $3)</value>
+    </diagnostic>
+
+
+    <diagnostic code="JSDY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error raised by jn:parse-json</comment>
+      <value>$1</value>
+    </diagnostic>
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -3949,6 +3965,10 @@
 
     <entry key="JSON_UNTERMINATED_STRING">
       <value>unterminated JSON string${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_UNEXPECTED_EXTRA_CONTENT">
+      <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
     </entry>
 
   </subvalues>

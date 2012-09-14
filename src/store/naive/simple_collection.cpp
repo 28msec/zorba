@@ -49,7 +49,7 @@ SimpleCollection::SimpleCollection(
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
-  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
 
 
@@ -62,7 +62,7 @@ SimpleCollection::SimpleCollection()
   theIsDynamic(false),
   theNodeType(NULL)
 {
-  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
 
 

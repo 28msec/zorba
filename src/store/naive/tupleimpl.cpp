@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "store/naive/tupleimpl.h"
-#include "store/naive/simple_store.h"
-#include "store/naive/store_defs.h"
+#include "tupleimpl.h"
+#include "simple_store.h"
+#include "store_defs.h"
 
 namespace zorba {
 

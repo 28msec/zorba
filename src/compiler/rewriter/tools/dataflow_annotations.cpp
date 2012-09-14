@@ -1311,7 +1311,7 @@ void SourceFinder::findNodeSourcesRec(
 
 
 /*******************************************************************************
-
+  This method is called when we serialize a udf, if the query has an eval expr.
 ********************************************************************************/
 void SourceFinder::findLocalNodeSources(
     expr* node,
@@ -1493,6 +1493,17 @@ void SourceFinder::findLocalNodeSources(
   {
     return;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_direct_object_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    // TODO? We need to drill inside a json pair or array constructor only
+    // if we are coming from an unbox or flatten call ????
+    break;
+  }
+#endif
 
   case relpath_expr_kind:
   {

@@ -39,7 +39,8 @@ TreeId SimpleTreeIdGenerator::create()
 /*******************************************************************************
 
 *******************************************************************************/
-TreeIdGenerator* SimpleTreeIdGeneratorFactory::createTreeGenerator()
+TreeIdGenerator* SimpleTreeIdGeneratorFactory::createTreeGenerator(
+    ulong aCollectionId)
 {
   return new SimpleTreeIdGenerator();
 }
