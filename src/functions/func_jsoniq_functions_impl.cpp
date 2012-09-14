@@ -134,24 +134,6 @@ bool op_zorba_json_array_append::mustCopyInputNodes(expr* fo, csize producer) co
 }
 
 
-#if 1
-/*******************************************************************************
-
-********************************************************************************/
-bool op_zorba_json_box::mustCopyInputNodes(expr* fo, csize producer) const
-{
-  static_context* sctx = fo->get_sctx();
-
-  if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
-      sctx->construction_mode() != StaticContextConsts::cons_preserve)
-  {
-    return true;
-  }
-
-  return false;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -167,7 +149,6 @@ xqtref_t op_zorba_json_box::getReturnType(const fo_expr* fo) const
 
   return theSignature.returnType();
 }
-#endif
 
 
 /*******************************************************************************

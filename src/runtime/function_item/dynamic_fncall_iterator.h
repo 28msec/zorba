@@ -65,10 +65,11 @@ public:
     (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
   }
 
+public:
   DynamicFnCallIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& args)
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& args)
     :
     NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args)
   {

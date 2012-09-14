@@ -773,6 +773,9 @@ namespace zorba {
     void beginVisit( const FnPathIterator& );
     void endVisit  ( const FnPathIterator& );
 
+    void beginVisit( const NodeCopyIterator& );
+    void endVisit  ( const NodeCopyIterator& );
+
     void beginVisit( const AbsIterator& );
     void endVisit  ( const AbsIterator& );
 
