@@ -86,22 +86,9 @@ declare %an:variadic function idml:probe-index-point-value(
 
 
 (:~
- : <p>The probe-index-point-value-skip function retrieves from an index the domain 
- : nodes associated by value equality with a given <strong>search tuple</strong>.
- : The search tuple consists of a number of <strong>search keys</strong>, where
- : each search key is either an atomic item or the empty sequence.  The number
- : of search keys given must be equal to the number of keys declared for the 
- : index. Since the number of keys differs from one index to another, this 
- : function is variadic.</p>
- :
- : <p>The result of the function is either an error or the set of domain nodes for 
- : which the following xquery expression returns true:</p>
- :
- : <pre>
- : $key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
- : </pre>
- : where keyExpr<sub>i</sub> is the expression specified in the i-th keyspec 
- : of the index.
+ : <p>The probe-index-point-value-skip function is an extension of the
+ : probe-index-point-value function. Additionally, it allows to skip index
+ : items. 
  :
  : @param $name The QName of the index to probe
  : @param $skip The number of index items to skip.
@@ -117,7 +104,7 @@ declare %an:variadic function idml:probe-index-point-value(
  :        the sequence type specified in the corresponding keyspec.
  :
  :)
-declare %an:variadic function idml:probe-index-point-value(
+declare %an:variadic function idml:probe-index-point-value-skip(
   $name as xs:QName, 
   $key_i as xs:anyAtomicType?) as node()*  external; 
 
@@ -235,42 +222,9 @@ declare %an:variadic function idml:probe-index-range-value(
 
 
 (:~
- : <p>The probe-index-range-value-skip function retrieves the domain nodes associated
- : by value order-comparison (operators le, lt, ge, gt) with a given <strong>search 
- : box</strong>. The search box is specified as a number M of <strong>rangespecs
- : </strong>, where each rangespec consists of six values. The number M must be 
- : greater than 0 and less than or equal to the number N of keyspecs found in the 
- : index declaration. If M is less than N, then the "missing" rangespecs are 
- : assumed to have the following value: [(), (), false, false, false, false]. 
- : As a result, we can assume that M is equal to N (Remember that for general 
- : indexes, there can be only one IndexKeySpec, and as a result, for general 
- : indexes, M = N = 1). Since the number of keys differs from one index to 
- : another, this function is variadic.</p>
- :
- : <p>The i<sup>th</sup> rangespec corresponds to the i<sup>th</sup> keyspec, and 
- : specifies a search condition on the key values that are produced by evaluating
- : that keyspec for every domain node. Specifically, we define the i<sup>th</sup>
- : <strong>rangespec result</strong> as the set of domain nodes for which the 
- : following xquery expression returns true:</p>
- :
- :<pre>
- : if ($haveLowerBound-i and $haveUpperBound-i) then
- :   $lowerBound-i lop $node/keyExpr-i and $node/keyExpr-i uop $upperBound-i
- : else if ($haveLowerBound-i) then
- :   $lowerBound-i lop $node/keyExpr-i
- : else if ($haveUpperBound-i) then
- :   $node/keyExpr-i uop $upperBound-i
- : else
- :   fn:true()
- :</pre>
- :
- : <p>where keyExpr-i is the expression specified by the i<sup>th</sup> keyspec 
- : of the index, lop is either the le or the lt operator depending on whether 
- : $lowerBoundsIncluded-i is true or false, and uop is either the le or the 
- : lt operator depending on whether $upperBoundsIncluded-i is true or false.</p>
- :
- : <p>The result of the probe-index-range-value function is either an error,
- : or the intersection of all the rangespec results.</p>
+ : <p>The probe-index-range-value-skip function is an extension of the
+ : probe-index-range-value function. Additionally, it allows to skip index
+ : items. 
  :
  : @param $name The QName of the index to probe
  : @param $skip The number of index items to skip.
@@ -308,7 +262,7 @@ declare %an:variadic function idml:probe-index-range-value(
  :        lower and upper bound, neither T1 is a subtype of T2 nor T2 is a 
  :        subtype of T1.   
  :)
-declare %an:variadic function idml:probe-index-range-value(
+declare %an:variadic function idml:probe-index-range-value-skip(
   $name                 as xs:QName, 
   $lowerBound-i         as xs:anyAtomicType?,
   $upperBound-i         as xs:anyAtomicType?,
