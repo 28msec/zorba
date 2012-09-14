@@ -672,6 +672,34 @@ FnPathIterator::~FnPathIterator() {}
 // </FnPathIterator>
 
 
+// <NodeCopyIterator>
+SERIALIZABLE_CLASS_VERSIONS(NodeCopyIterator)
+
+void NodeCopyIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<NodeCopyIterator, PlanIteratorState>*)this);
+}
+
+
+void NodeCopyIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+NodeCopyIterator::~NodeCopyIterator() {}
+
+// </NodeCopyIterator>
+
+
 
 }
 

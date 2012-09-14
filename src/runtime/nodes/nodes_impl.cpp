@@ -19,11 +19,13 @@
 #include "zorbamisc/ns_consts.h"
 
 #include "system/globalenv.h"
+#include "context/static_context.h"
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include "store/api/copymode.h"
 
 #include "util/string_util.h"
 #include "util/uri_util.h"
@@ -678,6 +680,7 @@ IsAncestorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 /*******************************************************************************
 ********************************************************************************/
 int getNodePosition(store::Item_t aNode, store::Item_t aNodeName)
@@ -784,6 +787,31 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, path), state);
+  }
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+NodeCopyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lItem;
+  store::CopyMode lCopyMode;
+  lCopyMode.set(true, 
+    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
+    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  while (consumeNext(lItem, theChildren[0].getp(), planState))
+  {
+    result = lItem->copy(0, lCopyMode);
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);

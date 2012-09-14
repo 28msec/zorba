@@ -434,9 +434,15 @@ void serializer::emitter::emit_item(store::Item* item)
 #ifdef ZORBA_WITH_JSON
   if (item->isJSONItem())
   {
-    throw XQUERY_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
+    zstring lMethod;
+    ser->getSerializationMethod(lMethod);
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS(lMethod, item->getType()->getStringValue())
+      );
   }
 #endif
+
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -581,8 +587,8 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   }
   default:
   {
-    ZORBA_ASSERT(false);
-    tr << "node of type: " << item->getNodeKind();
+    int k = static_cast<int>(item->getNodeKind());
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
   }
   }
 }
@@ -1034,7 +1040,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       tr << (item->getBooleanValue() ? "true" : "false");
       break;
 
-    case store::JDM_NULL:
+    case store::JS_NULL:
       tr << "null";
       break;
 
@@ -1469,11 +1475,16 @@ void serializer::html_emitter::emit_node(
 {
   const store::Item* element_parent = item->getParent();
 
-  if( item->getNodeKind() == store::StoreConsts::documentNode)
+  store::NodeKind kind = item->getNodeKind();
+
+  switch (kind)
+  {
+  case store::StoreConsts::documentNode:
   {
     emit_node_children(item, depth);
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::elementNode)
+  case store::StoreConsts::elementNode:
   {
     store::Item* qnameItem = item->getNodeName();
 
@@ -1562,8 +1573,10 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  case store::StoreConsts::attributeNode:
   {
     // The HTML output method MUST output boolean attributes (that is attributes
     // with only a single allowed value that is equal to the name of the
@@ -1587,8 +1600,10 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::textNode)
+  case store::StoreConsts::textNode:
   {
     bool expand = true;
 
@@ -1617,23 +1632,27 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  case store::StoreConsts::piNode:
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else
+  default:
   {
-    tr << "node of type: " << item->getNodeKind();
-    assert(0);
+    int k = static_cast<int>(kind);
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
+  }
   }
 }
 
@@ -2119,6 +2138,16 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::text_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS("text", item->getType()->getStringValue())
+      );
+  }
+#endif
+
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -2238,6 +2267,15 @@ serializer::binary_emitter::binary_emitter(
 ********************************************************************************/
 void serializer::binary_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS("binary", item->getType()->getStringValue())
+      );
+  }
+#endif
   if (item->isStreamable())
   {
     std::istream& stream = item->getStream();
@@ -2546,6 +2584,25 @@ void serializer::setParameter(const char* aName, const char* aValue)
   else
   {
     throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::getSerializationMethod(zstring& m) const
+{
+  switch (getSerializationMethod())
+  {
+    case PARAMETER_VALUE_XML: m = "xml"; break;
+    case PARAMETER_VALUE_HTML: m = "html"; break;
+    case PARAMETER_VALUE_XHTML: m = "xhtml"; break;
+    case PARAMETER_VALUE_TEXT: m = "text"; break;
+    case PARAMETER_VALUE_BINARY: m = "binary"; break;
+    case PARAMETER_VALUE_JSON: m = "json"; break;
+    case PARAMETER_VALUE_JSONIQ: m = "jsoniq"; break;
+    default: ZORBA_ASSERT(false);
   }
 }
 
