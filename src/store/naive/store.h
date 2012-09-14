@@ -136,7 +136,7 @@ public:
   static const char* XS_URI;
   static const char* XML_URI;
   static const char* ZXSE_URI;
-  static const char* JDM_URI;
+  static const char* JS_URI;
 
   static const ulong XML_URI_LEN;
 
@@ -159,9 +159,9 @@ public:
   store::Item_t                 XS_ANY_SIMPLE_QNAME;
 
 #ifdef ZORBA_WITH_JSON
-  store::Item_t                 JDM_OBJECT_QNAME;
-  store::Item_t                 JDM_ARRAY_QNAME;
-  store::Item_t                 JDM_NULL_QNAME;
+  store::Item_t                 JS_OBJECT_QNAME;
+  store::Item_t                 JS_ARRAY_QNAME;
+  store::Item_t                 JS_NULL_QNAME;
 #endif
 
 protected:

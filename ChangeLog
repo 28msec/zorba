@@ -12,6 +12,7 @@ New Features:
     functions. jn:object is also supported.
   * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
     takes options to parameterize the parsing process (see bug #1047547)
+  * Implemented semantics of null for comparison and arithmetics operations.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
@@ -44,6 +45,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1046559 (dynamic resolution between function invocation and jsoniq
     navigation)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
+  * Fixed bug #1046415 (pair name cast to string)
   * Fixed bug #1045902 (file:last-modified returns current date time)
   * Fixed bug #1043976 (compiler warning in serialiser code)
 

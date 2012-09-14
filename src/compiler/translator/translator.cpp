@@ -11433,12 +11433,10 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
   nameExpr = wrap_in_atomization(nameExpr);
 
   nameExpr = theExprManager->
-  create_promote_expr(theRootSctx,
-                      nameExpr->get_loc(),
-                      nameExpr,
-                      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                      PromoteIterator::JSONIQ_PAIR_NAME, // JNTY0001
-                      NULL);
+  create_cast_expr(theRootSctx,
+                   nameExpr->get_loc(),
+                   nameExpr,
+                   GENV_TYPESYSTEM.STRING_TYPE_ONE);
 
   valueExpr = theExprManager->
   create_fo_expr(theRootSctx,

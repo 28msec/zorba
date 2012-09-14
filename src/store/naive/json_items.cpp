@@ -38,7 +38,7 @@ namespace json
 *******************************************************************************/
 store::Item* JSONNull::getType() const
 {
-  return GET_STORE().JDM_NULL_QNAME;
+  return GET_STORE().JS_NULL_QNAME;
 }
 
 
@@ -50,7 +50,7 @@ bool JSONNull::equals(
     long /* timezone */,
     const XQPCollator* /* collation */) const
 {
-  return other->getTypeCode() == store::JDM_NULL;
+  return other->getTypeCode() == store::JS_NULL;
 }
 
 
@@ -204,7 +204,7 @@ void JSONItem::assertInvariant() const
 *******************************************************************************/
 store::Item* JSONObject::getType() const
 {
-  return GET_STORE().JDM_OBJECT_QNAME;
+  return GET_STORE().JS_OBJECT_QNAME;
 }
 
 
@@ -737,7 +737,7 @@ void SimpleJSONObject::KeyIterator::close()
 *******************************************************************************/
 store::Item* JSONArray::getType() const
 {
-  return GET_STORE().JDM_ARRAY_QNAME;
+  return GET_STORE().JS_ARRAY_QNAME;
 }
 
 

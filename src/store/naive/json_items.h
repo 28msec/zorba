@@ -67,7 +67,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  store::SchemaTypeCode getTypeCode() const { return store::JDM_NULL; }
+  store::SchemaTypeCode getTypeCode() const { return store::JS_NULL; }
 
   store::Item* getType() const; 
 

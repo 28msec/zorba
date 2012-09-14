@@ -327,6 +327,31 @@ JSONNullIterator::~JSONNullIterator() {}
 
 #endif
 #ifdef ZORBA_WITH_JSON
+// <JSONIsNullIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONIsNullIterator)
+
+void JSONIsNullIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>*)this);
+}
+
+
+void JSONIsNullIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONIsNullIterator::~JSONIsNullIterator() {}
+
+// </JSONIsNullIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONArrayInsertIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONArrayInsertIterator)
 
