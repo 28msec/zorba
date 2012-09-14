@@ -143,7 +143,7 @@ bool DynamicFnCallIterator::nextImpl(
 {
   store::Item_t item;
   store::Item_t targetItem;
-#if 0
+#ifdef ZORBA_WITH_JSON
   store::Item_t selectorItem1;
   store::Item_t selectorItem2;
   store::Item_t selectorItem3;
@@ -221,7 +221,7 @@ bool DynamicFnCallIterator::nextImpl(
     state->thePlan->close(planState);
     state->theIsOpen = false;
   }
-#if 0 //def ZORBA_WITH_JSON
+#ifdef ZORBA_WITH_JSON
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
     if (theChildren.size() != 2)

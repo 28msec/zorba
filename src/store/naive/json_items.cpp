@@ -362,13 +362,13 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   const char* lName = aName->getStringValue().c_str();
   store::Item_t lValue;
 
-  Keys::iterator lIterator = theKeys.find(lName);
-  if (lIterator == theKeys.end())
+  Keys::iterator lIter = theKeys.find(lName);
+  if (lIter == theKeys.end())
   {
     ASSERT_INVARIANT();
     return 0;
   }
-  csize lPosition = lIterator->second;
+  csize lPosition = lIter->second;
   
   store::Item* lKey;
 
@@ -386,7 +386,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   lValue->removeReference();
 
   thePairs.erase(thePairs.begin() + lPosition);
-  theKeys.erase(lName);
+  theKeys.erase(lIter);
 
   if (lPosition < thePairs.size())
   {
@@ -417,13 +417,13 @@ store::Item_t SimpleJSONObject::setValue(
   ASSERT_INVARIANT();
   const char* lName = aName->getStringValue().c_str();
 
-  Keys::iterator lIterator = theKeys.find(lName);
-  if (lIterator == theKeys.end())
+  Keys::const_iterator lIter = theKeys.find(lName);
+  if (lIter == theKeys.end())
   {
     ASSERT_INVARIANT();
     return 0;
   }
-  csize lPosition = lIterator->second;
+  csize lPosition = lIter->second;
 
   assert(thePairs[lPosition].first->getStringValue() == lName);
 
@@ -466,7 +466,8 @@ bool SimpleJSONObject::rename(
   const char* lName = aName->getStringValue().c_str();
   const char* lNewName = aNewName->getStringValue().c_str();
 
-  if (theKeys.find(lNewName) != theKeys.end())
+  Keys::const_iterator lIter = theKeys.find(lNewName);
+  if (lIter != theKeys.end())
   {
     ASSERT_INVARIANT();
     return false;
@@ -564,12 +565,13 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
   ASSERT_INVARIANT();
   const char* lName = aKey->getStringValue().c_str();
 
-  Keys::const_iterator lIterator = theKeys.find(lName);
-  if (lIterator == theKeys.end())
+  Keys::const_iterator lIter = theKeys.find(lName);
+
+  if (lIter == theKeys.end())
   {
     return NULL;
   }
-  csize lPosition = lIterator->second;
+  csize lPosition = lIter->second;
 
   assert(thePairs[lPosition].first->equals(aKey));
   return thePairs[lPosition].second;
@@ -604,8 +606,7 @@ void SimpleJSONObject::assertInvariant() const
     assert(lPosition < thePairs.size());
     assert(thePairs[lPosition].first != NULL);
     assert(thePairs[lPosition].first->isAtomic());
-    assert(thePairs[lPosition].first->getStringValue().c_str() ==
-           lIter->first);
+    assert(thePairs[lPosition].first->getStringValue() == lIter->first);
     assert(thePairs[lPosition].second != NULL);
   }
 }
