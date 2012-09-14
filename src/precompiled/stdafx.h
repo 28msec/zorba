@@ -24,11 +24,8 @@
   #include <memory>
 
   #include <sstream>
-  #include <xfwrap>
-  #include <xfwrap1>
   #include <istream>
   #include <cstdio>
-  #include <xxshared>
   #include <crtdefs.h>
   #include <map>
   #include <set>
