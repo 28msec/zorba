@@ -272,7 +272,7 @@ private:
 public:
   SimpleJSONObject()
     :
-    theKeys(64, false)
+    theKeys(11, false)
   {
   }
 
