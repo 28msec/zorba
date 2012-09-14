@@ -38,11 +38,6 @@ module namespace jerr = 'http://www.jsoniq.org/errors';
 declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
 
 (:~
- :It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.
-:)
-declare variable $jerr:JNTY0001 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0001");
-
-(:~
  :It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.
 :)
 declare variable $jerr:JNTY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0002");
@@ -149,3 +144,13 @@ declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003
  :parser errors raised by the JSONIQLoader
 :)
 declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
+
+(:~
+ :parser error for invalid option type
+:)
+declare variable $jerr:JSDY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0020");
+
+(:~
+ :parser error raised by jn:parse-json
+:)
+declare variable $jerr:JSDY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0021");

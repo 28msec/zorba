@@ -21,7 +21,7 @@
 #include <vector>
 
 #include <zorba/config.h>
-#include <zorbautils/hashmap_zstring.h>
+#include <zorbautils/hashmap_cstring.h>
 
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
@@ -66,7 +66,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  store::SchemaTypeCode getTypeCode() const { return store::JDM_NULL; }
+  store::SchemaTypeCode getTypeCode() const { return store::JS_NULL; }
 
   store::Item* getType() const; 
 
@@ -238,7 +238,8 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  ZSTRING_HASH_MAP(csize, Keys);
+  CSTRING_HASH_MAP(csize, Keys);
+
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
@@ -392,23 +393,22 @@ protected:
 
   class ValuesIterator : public store::Iterator
   {
-    protected:
-      SimpleJSONArray_t theArray;
-      Members::iterator theIter;
+  protected:
+    SimpleJSONArray_t theArray;
+    Members::iterator theIter;
 
-    public:
-      ValuesIterator(const SimpleJSONArray_t& anArray)
-        : theArray(anArray) {}
+  public:
+    ValuesIterator(const SimpleJSONArray_t& anArray) : theArray(anArray) {}
 
-      virtual ~ValuesIterator();
+    virtual ~ValuesIterator();
+    
+    virtual void open();
 
-      virtual void open();
+    virtual bool next(store::Item_t&);
 
-      virtual bool next(store::Item_t&);
+    virtual void reset();
 
-      virtual void reset();
-
-      virtual void close();
+    virtual void close();
   };
 
 private:

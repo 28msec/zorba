@@ -37,7 +37,7 @@ TEST 0:
 ,
 try
 {
-  idml:probe-index-point-value($u:PersonCars, "vw")
+  idml:probe-index-point-value($u:PersonCars, "vw")/.
 }
 catch * 
 {
@@ -136,7 +136,7 @@ TEST 4:
 {
 delete nodes dml:collection($u:c1)[1]/car[1];
 
-idml:probe-index-point-value($u:PersonCars, "vw")
+idml:probe-index-point-value($u:PersonCars, "vw")/.
 }
 ,
 "

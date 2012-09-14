@@ -211,7 +211,7 @@
     <zorba:type zorbaType="JSON_ITEM">json-item()</zorba:type>
     <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
     <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>
-    <zorba:type zorbaType="JDM_NULL">jdm:null</zorba:type>
+    <zorba:type zorbaType="JS_NULL">js:null</zorba:type>
   </zorba:types>
 
   <!-- XQuery Occurrence Indicators -->

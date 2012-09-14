@@ -39,7 +39,7 @@ SERIALIZABLE_CLASS_VERSIONS(JSONParseIterator)
 void JSONParseIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<JSONParseIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>*)this);
 
     ar & theRelativeLocation;
 }
@@ -59,6 +59,8 @@ void JSONParseIterator::accept(PlanIterVisitor& v) const
 }
 
 JSONParseIterator::~JSONParseIterator() {}
+
+JSONParseIteratorState::JSONParseIteratorState() {}
 
 // </JSONParseIterator>
 
@@ -325,6 +327,31 @@ JSONNullIterator::~JSONNullIterator() {}
 
 #endif
 #ifdef ZORBA_WITH_JSON
+// <JSONIsNullIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONIsNullIterator)
+
+void JSONIsNullIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>*)this);
+}
+
+
+void JSONIsNullIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONIsNullIterator::~JSONIsNullIterator() {}
+
+// </JSONIsNullIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONArrayInsertIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONArrayInsertIterator)
 
@@ -469,6 +496,31 @@ void JSONArrayAppendIterator::accept(PlanIterVisitor& v) const
 JSONArrayAppendIterator::~JSONArrayAppendIterator() {}
 
 // </JSONArrayAppendIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONBoxIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONBoxIterator)
+
+void JSONBoxIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>*)this);
+}
+
+
+void JSONBoxIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONBoxIterator::~JSONBoxIterator() {}
+
+// </JSONBoxIterator>
 
 #endif
 

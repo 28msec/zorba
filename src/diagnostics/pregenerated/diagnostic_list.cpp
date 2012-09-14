@@ -1103,6 +1103,9 @@ ZorbaErrorCode ZSTR0060_RANGE_EXCEPTION( "ZSTR0060" );
 ZorbaErrorCode ZSTR0065_STRINGS_IN_POOL( "ZSTR0065" );
 
 
+ZorbaErrorCode ZSTR0066_REFERENCED_NODE_NOT_IN_COLLECTION( "ZSTR0066" );
+
+
 ZorbaErrorCode XSST0001( "XSST0001" );
 
 
@@ -1192,9 +1195,6 @@ ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
 namespace jerr {
 
 #if defined(ZORBA_WITH_JSON)
-JSONiqErrorCode JNTY0001( "JNTY0001" );
-
-
 JSONiqErrorCode JNTY0002( "JNTY0002" );
 
 
@@ -1250,6 +1250,12 @@ JSONiqErrorCode JNTY0003( "JNTY0003" );
 
 
 JSONiqErrorCode JSDY0040( "JSDY0040" );
+
+
+JSONiqErrorCode JSDY0020( "JSDY0020" );
+
+
+JSONiqErrorCode JSDY0021( "JSDY0021" );
 #endif
 
 
