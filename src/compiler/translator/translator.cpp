@@ -1367,16 +1367,18 @@ void normalize_fo(fo_expr* foExpr)
       if (n > 0)
         qname = foExpr->get_arg(0)->getQName(theSctx);
 
+      zstring lMsgPart;
+      ztd::to_string(nStarterParams, &lMsgPart);
+      lMsgPart += " + multiple of 6";
       if (qname != NULL)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qname->getStringValue(), "index", n-nStarterParams,
-                     "multiple of 6"));
+        ERROR_PARAMS(qname->getStringValue(), "index", n, lMsgPart));
       }
       else
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS("anonymous", "index", n-nStarterParams, "multiple of 6"));
+        ERROR_PARAMS("anonymous", "index", n, lMsgPart));
       }
     }
   }
