@@ -1006,15 +1006,13 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
     case store::XS_DOUBLE:
     case store::XS_FLOAT:
       if (item->isNaN()) {
-        emit_jsoniq_value(type == store::XS_DOUBLE ? "double" : "float",
-                               "NaN", depth);
+        emit_json_string("NaN");
         break;
       }
       else if (item->isPosOrNegInf()) {
         // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
         // I tell which I have?
-        emit_jsoniq_value(type == store::XS_DOUBLE ? "double" : "float",
-                               "INF", depth);
+        emit_json_string("INF");
         break;
       }
       // else fall through
@@ -1045,8 +1043,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       break;
 
     default: {
-      emit_jsoniq_value(item->getType()->getStringValue(),
-                        item->getStringValue(), depth);
+      emit_json_string(item->getStringValue());
       break;
     }
     }
@@ -1104,7 +1101,6 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 ********************************************************************************/
 void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 {
-  store::Item_t member;
   xs_integer size = array->getArraySize();
   tr << "[ ";
   for (xs_integer i = xs_integer(1); i <= size; ++i) {
@@ -1121,64 +1117,16 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_jsoniq_value(
-    zstring type,
-    zstring value,
-    int depth)
-{
-  // First make sure we should be doing these extended values
-  if (ser->jsoniq_extensions == PARAMETER_VALUE_NO) {
-    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS(value));
-  }
-
-  // Create items for constant strings, if not already done
-  if (!theJSONiqValueName)
-  {
-    zstring jsoniqvaluestring("JSONiq value");
-    zstring typestring("type");
-    zstring valuestring("value");
-    GENV_ITEMFACTORY->createString(theJSONiqValueName, jsoniqvaluestring);
-    GENV_ITEMFACTORY->createString(theTypeName, typestring);
-    GENV_ITEMFACTORY->createString(theValueName, valuestring);
-  }
-
-  // Create the inner JSON object, which contains two pairs
-  std::vector<store::Item_t> names(2);
-  std::vector<store::Item_t> values(2);
-
-  names[0] = theTypeName;
-  names[1] = theValueName;
-
-  GENV_ITEMFACTORY->createString(values[0], type);
-  GENV_ITEMFACTORY->createString(values[1], value);
-
-  store::Item_t inner;
-  GENV_ITEMFACTORY->createJSONObject(inner, names, values);
-
-  // Create the outer JSON object with one pair
-  names.resize(1);
-  values.resize(1);
-  names[0] = theJSONiqValueName;
-  values[0] = inner;
-
-  store::Item_t outer;
-  GENV_ITEMFACTORY->createJSONObject(outer, names, values);
-
-  emit_json_object(outer, depth);
-}
-
 void serializer::json_emitter::emit_jsoniq_xdm_node(
     store::Item* item,
-    int depth)
+    int)
 {
-  // First make sure we should be doing these extended values
-  if (ser->jsoniq_extensions == PARAMETER_VALUE_NO) {
-    // QQQ probably should put "XML node" in diagnostics_en.xml
-    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS("XML node"));
+  if (true) {
+    // It could be useful to have some form of serialization of nested XML nodes
+    // (if only for debugging purposes). However as this is not (yet?) specified
+    // we throw an error here.
+    throw XQUERY_EXCEPTION(jerr::JNSE0014);
   }
-
-  // OK, we've got a non-atomic non-JDM Item here, so serialize it as XML
-  // and output it as a "JSONiq XDM node".
   if (!theXMLEmitter) {
     theXMLStringStream = new std::stringstream();
     ser->attach_transcoder(*theXMLStringStream);
@@ -1188,24 +1136,7 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
   zstring xml(theXMLStringStream->str());
   theXMLStringStream->str("");
 
-  // Create item for constant string, if not already done
-  if (!theJSONiqValueName)
-  {
-    zstring xdmnodestring("JSONiq XDM node");
-    GENV_ITEMFACTORY->createString(theJSONiqXDMNodeName, xdmnodestring);
-  }
-
-  // Create the JSON object, which contains one pair
-  std::vector<store::Item_t> names(1);
-  std::vector<store::Item_t> values(1);
-
-  names[0] = theJSONiqXDMNodeName;
-  GENV_ITEMFACTORY->createString(values[0], xml);
-
-  store::Item_t object;
-  GENV_ITEMFACTORY->createJSONObject(object, names, values);
-
-  emit_json_object(object, depth);
+  emit_json_string(xml);
 }
 
 
@@ -1220,11 +1151,11 @@ void serializer::json_emitter::emit_json_string(zstring const &string)
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  JSONiq emitter (auto-detects JSON or XML)                                 //
+//  hybrid emitter (auto-detects JSON or XML)                                 //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-serializer::jsoniq_emitter::jsoniq_emitter(
+serializer::hybrid_emitter::hybrid_emitter(
   serializer* the_serializer,
   std::ostream& the_stream,
   bool aEmitAttributes)
@@ -1236,46 +1167,29 @@ serializer::jsoniq_emitter::jsoniq_emitter(
 {
 }
 
-serializer::jsoniq_emitter::~jsoniq_emitter()
+serializer::hybrid_emitter::~hybrid_emitter()
 {
   delete theXMLEmitter;
   delete theJSONEmitter;
 }
 
-void serializer::jsoniq_emitter::emit_declaration()
+void serializer::hybrid_emitter::emit_declaration()
 {
 }
 
-void serializer::jsoniq_emitter::emit_item(store::Item *item)
+void serializer::hybrid_emitter::emit_item(store::Item *item)
 {
-  
-  bool isJson = item->isJSONItem();
-  
-  if (ser->jsoniq_allow_mixed_xdm_jdm == PARAMETER_VALUE_NO)
-  {
-    if ((isJson && theEmitterState == JESTATE_XDM) ||
-        (!isJson && theEmitterState == JESTATE_JDM))
-    {
-      throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
-    }
-  }
-
-  if (isJson) {
+  if (item->isJSONItem()) {
     theEmitterState = JESTATE_JDM;
     theJSONEmitter->emit_item(item);
   }
   else {
-    if (theEmitterState == JESTATE_UNDETERMINED &&
-        ser->jsoniq_allow_mixed_xdm_jdm == PARAMETER_VALUE_NO)
-    {
-      theXMLEmitter->emit_declaration();
-    }
     theEmitterState = JESTATE_XDM;
     theXMLEmitter->emit_item(item);
   }
 }
 
-void serializer::jsoniq_emitter::emit_end()
+void serializer::hybrid_emitter::emit_end()
 {
   switch(theEmitterState)
   {
@@ -2371,11 +2285,9 @@ void serializer::reset()
 
   // This default should match the default for ser_method in Zorba_SerializerOptions
 #ifdef ZORBA_WITH_JSON
-  method = PARAMETER_VALUE_JSONIQ;
-  jsoniq_multiple_items = PARAMETER_VALUE_NO;
-  jsoniq_extensions = PARAMETER_VALUE_NO;
+  method = PARAMETER_VALUE_JSON_XML_HYBRID;
+  jsoniq_multiple_items = PARAMETER_VALUE_YES;
   jsoniq_xdm_method = PARAMETER_VALUE_XML;
-  jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_NO;
 #else
   method = PARAMETER_VALUE_XML;
 #endif
@@ -2410,8 +2322,8 @@ convertMethodString(const char* aValue, const char* aName) {
 #ifdef ZORBA_WITH_JSON
   else if (!strcmp(aValue, "json"))
     return serializer::PARAMETER_VALUE_JSON;
-  else if (!strcmp(aValue, "jsoniq"))
-    return serializer::PARAMETER_VALUE_JSONIQ;
+  else if (!strcmp(aValue, "json-xml-hybrid"))
+    return serializer::PARAMETER_VALUE_JSON_XML_HYBRID;
 #endif
   else
     throw XQUERY_EXCEPTION(
@@ -2541,25 +2453,12 @@ void serializer::setParameter(const char* aName, const char* aValue)
     cdata_section_elements = aValue;
   }
 #ifdef ZORBA_WITH_JSON
-  else if (!strcmp(aName, "jsoniq-extensions"))
-  {
-    if (!strcmp(aValue, "yes"))
-      jsoniq_extensions = PARAMETER_VALUE_YES;
-    else if (!strcmp(aValue, "no"))
-      jsoniq_extensions = PARAMETER_VALUE_NO;
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
-      );
-  }
   else if (!strcmp(aName, "jsoniq-multiple-items"))
   {
     if (!strcmp(aValue, "no"))
       jsoniq_multiple_items = PARAMETER_VALUE_NO;
-    else if (!strcmp(aValue, "array"))
-      jsoniq_multiple_items = PARAMETER_VALUE_ARRAY;
-    else if (!strcmp(aValue, "appended"))
-      jsoniq_multiple_items = PARAMETER_VALUE_APPENDED;
+    else if (!strcmp(aValue, "yes"))
+      jsoniq_multiple_items = PARAMETER_VALUE_YES;
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
@@ -2568,17 +2467,6 @@ void serializer::setParameter(const char* aName, const char* aValue)
   else if (!strcmp(aName, "jsoniq-xdm-node-output-method"))
   {
     jsoniq_xdm_method = convertMethodString(aValue, aName);
-  }
-  else if (!strcmp(aName, "jsoniq-allow-mixed-xdm-jdm"))
-  {
-    if (!strcmp(aValue, "yes"))
-      jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_YES;
-    else if (!strcmp(aValue, "no"))
-      jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_NO;
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
-      );
   }
 #endif /* ZORBA_WITH_JSON */
   else
@@ -2601,7 +2489,7 @@ void serializer::getSerializationMethod(zstring& m) const
     case PARAMETER_VALUE_TEXT: m = "text"; break;
     case PARAMETER_VALUE_BINARY: m = "binary"; break;
     case PARAMETER_VALUE_JSON: m = "json"; break;
-    case PARAMETER_VALUE_JSONIQ: m = "jsoniq"; break;
+    case PARAMETER_VALUE_JSON_XML_HYBRID: m = "json-xml-hybrid"; break;
     default: ZORBA_ASSERT(false);
   }
 }
@@ -2693,8 +2581,8 @@ bool serializer::setup(std::ostream& os, bool aEmitAttributes)
 #ifdef ZORBA_WITH_JSON
   else if (method == PARAMETER_VALUE_JSON)
     e = new json_emitter(this, *tr);
-  else if (method == PARAMETER_VALUE_JSONIQ)
-    e = new jsoniq_emitter(this, *tr, aEmitAttributes);
+  else if (method == PARAMETER_VALUE_JSON_XML_HYBRID)
+    e = new hybrid_emitter(this, *tr, aEmitAttributes);
 #endif
   else
   {
@@ -2769,12 +2657,12 @@ serializer::serialize(
     if (aHandler)
     {
       // Only allow XML-based methods for SAX notifications. For now at least,
-      // the "JSONIQ" method is consider "XML-based", although you will
-      // certainly get errors if you attempt to serialize JDM this way.
+      // the "JSON-XML-hybrid" method is considerd "XML-based", although you
+      // will certainly get errors if you attempt to serialize JDM this way.
       if (method != PARAMETER_VALUE_XML &&
           method != PARAMETER_VALUE_XHTML
 #ifdef ZORBA_WITH_JSON
-          && method != PARAMETER_VALUE_JSONIQ
+          && method != PARAMETER_VALUE_JSON_XML_HYBRID
 #endif
         ) {
         throw ZORBA_EXCEPTION(

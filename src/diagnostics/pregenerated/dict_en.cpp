@@ -104,10 +104,7 @@ extern entry const dict_en[] = {
   { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0013", "Cannot serialize value as JSON: $1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JNSE0014", "Cannot serialize a function item as JSON" },
+  { "JNSE0014", "Cannot serialize a node or function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
