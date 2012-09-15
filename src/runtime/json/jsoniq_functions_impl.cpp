@@ -511,7 +511,7 @@ JSONItemAccessorIterator::nextImpl(
 
 
 /*******************************************************************************
-  j:null()) as jdm:null
+  jn:null() as jn:null
 ********************************************************************************/
 bool
 JSONNullIterator::nextImpl(
@@ -528,7 +528,31 @@ JSONNullIterator::nextImpl(
 
 
 /*******************************************************************************
-  updating function op-zorba:json-object-insert(
+  jn:is-null(xs:anyAtomicType) as xs:boolean
+********************************************************************************/
+bool
+JSONIsNullIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  PlanIteratorState* state;
+  store::Item_t lItem;
+  bool lIsNull;
+
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lItem, theChild.getp(), planState);
+
+  lIsNull = (lItem->getTypeCode() == store::JS_NULL);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lIsNull), state);
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  updating function op-zorba:object-insert(
       $o as object(),
       $c as object())
 ********************************************************************************/

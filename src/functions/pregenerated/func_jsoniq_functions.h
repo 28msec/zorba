@@ -234,6 +234,22 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//fn-jsoniq:is-null
+class fn_jsoniq_is_null : public function
+{
+public:
+  fn_jsoniq_is_null(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //op-zorba:json-object-insert
 class op_zorba_json_object_insert : public function
 {

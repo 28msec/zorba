@@ -238,7 +238,7 @@
   <zorba:state generateReset="false">
     <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack" brief=""/>
   </zorba:state>
-    
+
 </zorba:iterator>
 
 
@@ -271,21 +271,41 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONNullIterator" arity="noary"
-  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+  <zorba:iterator name="JSONNullIterator" arity="noary"
+    preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
-  <zorba:function isDeterministic="true">
-    <zorba:signature localname="null" prefix="fn-jsoniq">
-      <zorba:output>jdm:null</zorba:output>
-    </zorba:signature>
+    <zorba:function isDeterministic="true">
+      <zorba:signature localname="null" prefix="fn-jsoniq">
+        <zorba:output>js:null</zorba:output>
+      </zorba:signature>
 
-  </zorba:function>
+    </zorba:function>
 
-</zorba:iterator>
+  </zorba:iterator>
 
 
+<!--
 /*******************************************************************************
 ********************************************************************************/
+-->
+  <zorba:iterator name="JSONIsNullIterator" arity="unary"
+    preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+    <zorba:function isDeterministic="true">
+      <zorba:signature localname="is-null" prefix="fn-jsoniq">
+        <zorba:param>xs:anyAtomicType</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+  </zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONObjectInsertIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
