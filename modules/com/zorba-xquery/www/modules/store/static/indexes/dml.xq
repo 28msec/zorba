@@ -106,6 +106,7 @@ declare %an:variadic function idml:probe-index-point-value(
  :)
 declare %an:variadic function idml:probe-index-point-value-skip(
   $name as xs:QName, 
+  $skip as xs:integer,
   $key_i as xs:anyAtomicType?) as node()*  external; 
 
 
@@ -264,6 +265,7 @@ declare %an:variadic function idml:probe-index-range-value(
  :)
 declare %an:variadic function idml:probe-index-range-value-skip(
   $name                 as xs:QName, 
+  $skip                 as xs:integer,
   $lowerBound-i         as xs:anyAtomicType?,
   $upperBound-i         as xs:anyAtomicType?,
   $haveLowerBound-i     as xs:boolean,
