@@ -13167,10 +13167,8 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  csize numPairs = v.numPairs();
-  std::vector<expr*> args(1 + 2 * numPairs);
-
   expr* targetExpr = pop_nodestack();
+  expr* contentExpr = pop_nodestack();
 
   targetExpr = wrap_in_type_match(targetExpr,
                                   rtm.JSON_OBJECT_TYPE_ONE,
@@ -13178,21 +13176,24 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                                   TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
+  contentExpr = wrap_in_type_match(contentExpr,
+                                  rtm.JSON_OBJECT_TYPE_STAR,
+                                  loc,
+                                  TreatIterator::JSONIQ_OBJECT_UPDATE_CONTENT, // JNUP0019
+                                  NULL);
+
+  std::vector<expr*> args(2);
   args[0] = targetExpr;
-
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    expr* nameExpr = pop_nodestack();
-    expr* valueExpr = pop_nodestack();
-
-    args[2 * (numPairs - 1 - i) + 1] = nameExpr;
-    args[2 * (numPairs - 1 - i) + 2] = valueExpr;
-  }
+  args[1] = theExprManager->create_json_object_expr(
+      theRootSctx,
+      loc,
+      contentExpr,
+      false);
 
   expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_OBJECT_INSERT_2),
                  args);
 
   push_nodestack(updExpr);

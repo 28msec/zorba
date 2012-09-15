@@ -2693,8 +2693,14 @@
     
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
-
+      
       <value>Object or array selection needs exactly one parameter.</value>
+    </diagnostic>
+    
+    <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
+      
+      <value>The content of an insert expression must evaluate to a sequence of objects.</value>
     </diagnostic>
     
     <!--////////// JSONIQ ///////////////////////////////////////////-->
