@@ -49,6 +49,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1045902 (file:last-modified returns current date time)
   * Fixed bug #1043976 (compiler warning in serialiser code)
   * Fixed bug #866994 (a better error message when collection iterator not open)
+  * Fixed bug #1039254 (allow empty sequence as position value in positional LET
+    var iterator)
 
 
 version 2.6
