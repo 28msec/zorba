@@ -1731,7 +1731,7 @@ class IntItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  int32_t theValue;
+  xs_int theValue;
 
 protected:
   IntItem(xs_int aValue) : theValue(aValue) {}
@@ -1747,7 +1747,7 @@ public:
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  int32_t getIntValue() const { return theValue; }
+  xs_int getIntValue() const { return theValue; }
 
   store::SchemaTypeCode getTypeCode() const { return store::XS_INT; }
 

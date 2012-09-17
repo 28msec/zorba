@@ -123,8 +123,8 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData a pointer to the base6c4 binary data.
-       * @param aLength the length of the base64 binary data.
+       * @param aBinData a pointer to the base64 encoded data. The data is copied from aBinData.
+       * @param aLength the length of the base64 encoded data.
        * @return The Base64Binary Item.
        */
       virtual Item
@@ -133,7 +133,7 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aStream A stream containing the Base64 encoded data.
+       * @param aStream A stream containing the Base64 encoded data. The data is copied from aStream imediately.
        * @return the Base64Binary Item.
        */
       virtual Item
@@ -142,11 +142,11 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData the data in binary form. The data is copied from aBinData.
-       * @param aLength the length of the data
+       * @param aBinData the data in binary form (not encoded). The data is copied from aBinData.
+       * @param aLength the length of the binary data
        * @return the Base64Binary Item.
        */
-      virtual Item 
+      virtual Item
       createBase64Binary(const unsigned char* aBinData, size_t aLength) = 0;
 
       /** \brief Creates a streamable Base64Binary Item
@@ -720,7 +720,7 @@ namespace zorba {
        * @param aNames A vector containing the name and value of each pair.
        */
       virtual Item createJSONObject(std::vector<std::pair<Item, Item> >& aNames) = 0;
-      
+
       /**
        * Create a JSON Array containing the specified items.
        *
