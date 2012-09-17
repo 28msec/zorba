@@ -48,6 +48,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1046415 (pair name cast to string)
   * Fixed bug #1045902 (file:last-modified returns current date time)
   * Fixed bug #1043976 (compiler warning in serialiser code)
+  * Fixed bug #866994 (a better error message when collection iterator not open)
 
 
 version 2.6
