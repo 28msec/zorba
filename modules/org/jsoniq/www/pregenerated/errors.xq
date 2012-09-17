@@ -38,11 +38,6 @@ module namespace jerr = 'http://www.jsoniq.org/errors';
 declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
 
 (:~
- :It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.
-:)
-declare variable $jerr:JNTY0001 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0001");
-
-(:~
  :It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.
 :)
 declare variable $jerr:JNTY0002 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0002");
@@ -139,6 +134,11 @@ declare variable $jerr:JNUP0017 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0017
  :It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.
 :)
 declare variable $jerr:JNTY0018 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0018");
+
+(:~
+ :It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.
+:)
+declare variable $jerr:JNUP0019 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0019");
 
 (:~
  :objects or arrays don't have a string value
