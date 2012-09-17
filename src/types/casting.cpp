@@ -1818,7 +1818,7 @@ const int GenericCast::theMapping[store::XS_LAST] =
   20,  // 42 XS_ANY_URI
   21,  // 43 XS_QNAME
   22,  // 44 XS_NOTATION
-  23   // 45 JDM_NULL
+  23   // 45 JS_NULL
 };
 
 
@@ -2159,7 +2159,7 @@ bool GenericCast::castToAtomic(
       sourceTypeCode != store::XS_UNTYPED_ATOMIC)
     throwTypeException(err::XPTY0004, errorInfo);
 
-  if (targetTypeCode == store::JDM_NULL)
+  if (targetTypeCode == store::JS_NULL)
     throwTypeException(err::XPTY0004, errorInfo);
 
   CastFunc castFunc = theCastMatrix[theMapping[sourceTypeCode]]

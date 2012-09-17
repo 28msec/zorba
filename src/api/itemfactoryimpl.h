@@ -278,6 +278,9 @@ namespace zorba {
 
 #endif /* ZORBA_WITH_JSON */
 
+      virtual Item
+      createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName);
+
     protected:
       store::ItemFactory* theItemFactory;
 

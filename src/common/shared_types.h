@@ -98,9 +98,6 @@ class flwor_clause;
 class forletwin_clause;
 class for_clause;
 class let_clause;
-typedef rchandle<flwor_clause> flwor_clause_t;
-typedef rchandle<for_clause> for_clause_t;
-typedef rchandle<let_clause> let_clause_t;
 
 class ItemVariableIterator;
 typedef rchandle<ItemVariableIterator> ItemVariableIterator_t;

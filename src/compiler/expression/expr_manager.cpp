@@ -33,16 +33,58 @@
 namespace zorba
 {
 
+#if 0
 //A simple expression that can just be deallocated without calling the
 //destructor.
 class NullExpr : public expr
 {
 public:
-  NullExpr() : expr(NULL, NULL, QueryLoc(), unknown_expr_kind){}
-  void accept(expr_visitor& v){}
-  void compute_scripting_kind(){}
+  NullExpr() : expr(NULL, NULL, QueryLoc(), unknown_expr_kind) {}
+
+  void accept(expr_visitor& v) {}
+
+  void compute_scripting_kind() {}
+
+  std::ostream& put(std::ostream& stream) const { return stream; }
+};
+
+
+class NullFlworClause : public flwor_clause
+{
+public:
+  //it being a let clause is arbitrary, it doesn't matter what type it is.
+  NullFlworClause() :flwor_clause(NULL, NULL, QueryLoc(), flwor_clause::let_clause) {}
+
+  std::ostream& put(std::ostream& stream) const { return stream; }
+
+  flwor_clause* clone(expr::substitution_t &) const { return NULL; }
+};
+
+
+class NullWincond : public flwor_wincond
+{
+public:
+  NullWincond() : flwor_wincond(NULL, NULL, false, vars(), vars(), NULL) {}
+
+  std::ostream& put(std::ostream& stream) const { return stream; }
+};
+
+
+class NullCatchClause : public catch_clause
+{
+public:
+  NullCatchClause() : catch_clause(NULL) {}
+
   std::ostream& put(std::ostream& stream) const{return stream;}
 };
+
+
+class NullCopyClause : public copy_clause
+{
+public:
+  NullCopyClause() : copy_clause(NULL, NULL, NULL) {}
+};
+#endif
 
 
 ExprManager::ExprManager(CompilerCB* ccb)
@@ -50,6 +92,7 @@ ExprManager::ExprManager(CompilerCB* ccb)
   theCCB(ccb)
 {
   theExprs.reserve(1024);
+  theFlworClauses.reserve(1024);
 }
 
 
@@ -60,8 +103,8 @@ ExprManager::~ExprManager()
       iter != theExprs.end();
       ++iter)
   {
-    //Here we delete all remaining exprs, we assume that they may be "held"
-    //by a reference somewhere.
+    //We assume that the exprs being deleted they may be "held"
+    //by a reference or pointer somewhere and will try deleting them again.
     //To prevent deleting an already deleted expr, we replace them with
     //a NullExpr
 
@@ -70,27 +113,87 @@ ExprManager::~ExprManager()
     exp->~expr();
 
     //constructs a new NULLExpr where the old expr existed
-    new (exp) NullExpr();
+    //new (exp) NullExpr();
+  }
+
+  for(std::vector<flwor_clause*>::iterator iter = theFlworClauses.begin();
+      iter != theFlworClauses.end();
+      ++iter)
+  {
+    flwor_clause* clause = *iter;
+    clause->~flwor_clause();
+    // new (clause) NullFlworClause();
+  }
+
+  for(std::vector<flwor_wincond*>::iterator iter = theWinconds.begin();
+      iter != theWinconds.end();
+      ++iter)
+  {
+    flwor_wincond* wincond = *iter;
+    wincond->~flwor_wincond();
+    // new (wincond) NullWincond();
+  }
+
+  for(std::vector<catch_clause*>::iterator iter = theCatchClauses.begin();
+      iter != theCatchClauses.end();
+      ++iter)
+  {
+    catch_clause* clause = *iter;
+    clause->~catch_clause();
+    // new (clause) NullCatchClause();
+  }
+
+  for(std::vector<copy_clause*>::iterator iter = theCopyClauses.begin();
+      iter != theCopyClauses.end();
+      ++iter)
+  {
+    copy_clause* clause = *iter;
+    clause->~copy_clause();
+    // new (clause) NullCopyClause();
   }
 }
 
 
-expr* ExprManager::reg(expr* exp)
+void ExprManager::reg(expr* exp)
 {
   theExprs.push_back(exp);
-  return exp;
+}
+
+
+void ExprManager::reg(flwor_clause* clause)
+{
+  theFlworClauses.push_back(clause);
+}
+
+
+void ExprManager::reg(flwor_wincond* wincond)
+{
+  theWinconds.push_back(wincond);
+}
+
+
+void ExprManager::reg(catch_clause* clause)
+{
+  theCatchClauses.push_back(clause);
+}
+
+
+void ExprManager::reg(copy_clause* clause)
+{
+  theCopyClauses.push_back(clause);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define CREATE_AND_RETURN_EXPR(EXPRTYPE, ...) \
+#define CREATE_AND_RETURN_EXPR(EXPRTYPE, ...)                          \
   EXPRTYPE* EXPPTR = new (theMemoryMgr) EXPRTYPE(theCCB, __VA_ARGS__); \
-  reg(EXPPTR); \
+  reg(EXPPTR);                                                         \
   return EXPPTR
 
-#define CREATE_AND_RETURN(TYPE, ...) \
+#define CREATE_AND_RETURN(TYPE, ...)                   \
   TYPE* EXPPTR = new (theMemoryMgr) TYPE(__VA_ARGS__); \
+  reg(EXPPTR);                                         \
   return EXPPTR
 
 
@@ -368,7 +471,7 @@ extension_expr* ExprManager::create_extension_expr(
 
 catch_clause* ExprManager::create_catch_clause()
 {
-  CREATE_AND_RETURN(catch_clause);
+  CREATE_AND_RETURN(catch_clause, theCCB);
 }
 
 
@@ -402,8 +505,9 @@ function_trace_expr* ExprManager::create_function_trace_expr(
 function_trace_expr* ExprManager::create_function_trace_expr(expr* aExpr)
 {
   //this function gets the ExprManager from the expression it recieves.
-  return static_cast<function_trace_expr*>
-      (reg(new (theMemoryMgr) function_trace_expr(aExpr)));
+  function_trace_expr* e = new (theMemoryMgr) function_trace_expr(aExpr);
+  reg(e);
+  return e;
 }
 
 
@@ -447,7 +551,9 @@ var_expr* ExprManager::create_var_expr(
 
 var_expr* ExprManager::create_var_expr(const var_expr& source)
 {
-  return static_cast<var_expr*>(reg(new (theMemoryMgr) var_expr(source)));
+  var_expr* e = new (theMemoryMgr) var_expr(source);
+  reg(e);
+  return e;
 }
 
 
@@ -534,7 +640,7 @@ rename_expr* ExprManager::create_rename_expr(
 
 copy_clause* ExprManager::create_copy_clause(var_expr* aVar, expr* aExpr)
 {
-  CREATE_AND_RETURN(copy_clause, aVar, aExpr);
+  CREATE_AND_RETURN(copy_clause, theCCB,  aVar, aExpr);
 }
 
 
@@ -771,8 +877,8 @@ window_clause* ExprManager::create_window_clause(
     window_clause::window_t winKind,
     var_expr* varExpr,
     expr* domainExpr,
-    flwor_wincond_t winStart,
-    flwor_wincond_t winStop,
+    flwor_wincond* winStart,
+    flwor_wincond* winStop,
     bool lazy)
 {
   CREATE_AND_RETURN(window_clause,
@@ -796,7 +902,7 @@ group_clause* ExprManager::create_group_clause(
     flwor_clause::rebind_list_t ngvars,
     const std::vector<std::string>& collations)
 {
-  CREATE_AND_RETURN(group_clause, sctx, loc, gvars, ngvars, collations);
+  CREATE_AND_RETURN(group_clause, sctx, theCCB,  loc, gvars, ngvars, collations);
 }
 
 orderby_clause* ExprManager::create_orderby_clause(
@@ -806,25 +912,25 @@ orderby_clause* ExprManager::create_orderby_clause(
   const std::vector<OrderModifier>& modifiers,
   const std::vector<expr*>& orderingExprs)
 {
-  CREATE_AND_RETURN(orderby_clause, sctx, loc, stable, modifiers, orderingExprs);
+  CREATE_AND_RETURN(orderby_clause, sctx, theCCB, loc, stable, modifiers, orderingExprs);
 }
 
 materialize_clause* ExprManager::create_materialize_clause(
       static_context* sctx, const QueryLoc& loc)
 {
-  CREATE_AND_RETURN(materialize_clause, sctx, loc);
+  CREATE_AND_RETURN(materialize_clause, sctx, theCCB, loc);
 }
 
 count_clause* ExprManager::create_count_clause(
       static_context* sctx, const QueryLoc& loc, var_expr* var)
 {
-  CREATE_AND_RETURN(count_clause, sctx, loc, var);
+  CREATE_AND_RETURN(count_clause, sctx, theCCB, loc, var);
 }
 
 where_clause* ExprManager::create_where_clause(
       static_context* sctx, const QueryLoc& loc, expr* where)
 {
-  CREATE_AND_RETURN(where_clause, sctx, loc, where);
+  CREATE_AND_RETURN(where_clause, sctx, theCCB, loc, where);
 }
 
 flwor_expr* ExprManager::create_flwor_expr(

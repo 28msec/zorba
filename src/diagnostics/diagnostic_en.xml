@@ -180,6 +180,10 @@
         <value>the first parameter to the format-number() function is of type $2, which is not allowed</value>
       </entry>
 
+      <entry key="JSONIQ_SELECTOR">
+        <value>Cannot atomize and/or cast value of type $2 to a string.</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPTY0018">
@@ -2433,6 +2437,10 @@
       <value>Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks.</value>
     </diagnostic>
 
+    <diagnostic code="ZSTR0066" name="REFERENCED_NODE_NOT_IN_COLLECTION">
+      <value>$1: does not reference a node in collection $2.</value>
+    </diagnostic>
+
     <!--////////// XQuery Scripting ////////////////////////////////////////-->
 
     <diagnostic code="XSST0001">
@@ -2547,11 +2555,6 @@
 
     <!--////////// JSONiq ///////////////////////////////////////////-->
 
-    <diagnostic code="JNTY0001" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.</comment>
-      <value>Cannot atomize and/or cast value of type $1 to a string.</value>
-    </diagnostic>
-
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
       <value>Pair value returns no, or more than one, item.</value>
@@ -2564,7 +2567,7 @@
     
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
-      <value>$1 items do not have typed value</value>
+      <value>Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item).</value>
     </diagnostic>
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
@@ -2662,6 +2665,13 @@
       <value>Cannot serialize a function item as JSON</value>
     </diagnostic>
 
+    <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a sequence that does
+        not exist of exactly one document node with XML, HTML, XHTML, Text.
+      </comment>
+      <value>$1: invalid serialization method for item type ($2)</value>
+    </diagnostic>
+
     <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
 
@@ -2683,8 +2693,14 @@
     
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
-
+      
       <value>Object or array selection needs exactly one parameter.</value>
+    </diagnostic>
+    
+    <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
+      
+      <value>The content of an insert expression must evaluate to a sequence of objects.</value>
     </diagnostic>
     
     <!--////////// JSONIQ ///////////////////////////////////////////-->
@@ -2700,6 +2716,16 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error for invalid option type</comment>
+      <value>$1: invalid option type for option $2 (expected $3)</value>
+    </diagnostic>
+
+
+    <diagnostic code="JSDY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error raised by jn:parse-json</comment>
+      <value>$1</value>
+    </diagnostic>
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -3697,7 +3723,43 @@
     <entry key="JSONiq error">
       <value>JSONIQ error</value>
     </entry>
-
+    
+    <entry key="JSONiq type error">
+      <value>JSONIQ type error</value>
+    </entry>
+    
+    <entry key="JSONiq static error">
+      <value>JSONIQ static error</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic error">
+      <value>JSONIQ dynamic error</value>
+    </entry>
+    
+    <entry key="JSONiq serialization error">
+      <value>JSONIQ serialization error</value>
+    </entry>
+    
+    <entry key="JSONiq warning">
+      <value>JSONIQ warning</value>
+    </entry>
+    
+    <entry key="JSONiq type warning">
+      <value>JSONIQ type warning</value>
+    </entry>
+    
+    <entry key="JSONiq static warning">
+      <value>JSONIQ static warning</value>
+    </entry>
+    
+    <entry key="JSONiq dynamic warning">
+      <value>JSONIQ dynamic warning</value>
+    </entry>
+    
+    <entry key="JSONiq serialization warning">
+      <value>JSONIQ serialization warning</value>
+    </entry>
+    
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
@@ -3909,6 +3971,10 @@
 
     <entry key="JSON_UNTERMINATED_STRING">
       <value>unterminated JSON string${ at 2}</value>
+    </entry>
+
+    <entry key="JSON_UNEXPECTED_EXTRA_CONTENT">
+      <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
     </entry>
 
   </subvalues>

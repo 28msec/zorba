@@ -211,6 +211,7 @@ class QVarInDecl;
 class QVarInDeclList;
 class RangeExpr;
 class RelativePathExpr;
+class SimpleMapExpr;
 class RenameExpr;
 class ReplaceExpr;
 class RevalidationDecl;
@@ -3397,11 +3398,10 @@ protected:
   bool sign;
 
 public:
-  SignList(
-    const QueryLoc&,
-    bool _sign);
+  SignList(const QueryLoc&, bool sign);
 
   bool get_sign() const { return sign; }
+
   void negate() { sign = !sign; }
 
   void accept(parsenode_visitor&) const;
@@ -3409,7 +3409,7 @@ public:
 
 
 /*******************************************************************************
-  [82] ValueExpr ::= ValidateExpr | PathExpr | ExtensionExpr
+  [82] ValueExpr ::= ValidateExpr | SimpleMapExpr | ExtensionExpr
 ********************************************************************************/
 
 
@@ -3504,6 +3504,35 @@ public:
 
   rchandle<QName> get_name() const { return name_h; }
   zstring const& get_pragma_lit() const { return pragma_lit; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  SimpleMapExpr :: PathExpr |
+                   SimpleMapExpr "!" PathExpr
+
+  This creates a left-deep tree of SimpleMapExpr nodes: the right child of each
+  such node is a PathExpr, and the left child is another SimpleMapExpr except
+  from the left-most SimpleMapExpr node, whose left chils is a PathExpr.
+********************************************************************************/
+class SimpleMapExpr : public exprnode
+{
+protected:
+  rchandle<exprnode> left_expr_h;
+  rchandle<exprnode> right_expr_h;
+
+public:
+  SimpleMapExpr(
+    const QueryLoc&,
+    rchandle<exprnode>,
+    rchandle<exprnode>
+  );
+
+  rchandle<exprnode> get_left_expr() const { return left_expr_h; }
+
+  rchandle<exprnode> get_right_expr() const { return right_expr_h; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -6621,18 +6650,16 @@ public:
 class JSONObjectInsertExpr : public exprnode
 {
 protected:
-  const JSONPairList * thePairs;
+  const exprnode     * theContentExpr;
   const exprnode     * theTargetExpr;
 
 public:
   JSONObjectInsertExpr(
     const QueryLoc& loc,
-    const JSONPairList* pairs,
+    const exprnode* contentExpr,
     const exprnode* targetExpr);
 
   ~JSONObjectInsertExpr();
-
-  csize numPairs() const { return thePairs->size(); }
 
   void accept(parsenode_visitor&) const;
 };
