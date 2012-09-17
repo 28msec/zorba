@@ -211,6 +211,7 @@ class QVarInDecl;
 class QVarInDeclList;
 class RangeExpr;
 class RelativePathExpr;
+class SimpleMapExpr;
 class RenameExpr;
 class ReplaceExpr;
 class RevalidationDecl;
@@ -950,29 +951,23 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class VarDecl : public VarDeclWithInit
+class GlobalVarDecl : public VarDeclWithInit
 {
 protected:
   bool theIsExternal;
-  bool theIsGlobal;
 
   rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
-  VarDecl(
+  GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
     SequenceType* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
-    bool global,
     bool external);
 
   bool is_extern() const { return theIsExternal; }
-
-  bool is_global() const { return theIsGlobal; }
-
-  void set_global(bool global) { theIsGlobal = global; }
 
   void set_annotations(rchandle<AnnotationListParsenode> annotations)
   {
@@ -1058,7 +1053,7 @@ public:
 
   rchandle<ParamList> get_paramlist() const { return theParams; }
 
-  ulong get_param_count() const;
+  csize get_param_count() const;
 
   rchandle<SequenceType> get_return_type() const { return theReturnType; }
 
@@ -1640,7 +1635,9 @@ public:
 
 
 /*******************************************************************************
-
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
 class VarDeclStmt : public exprnode
 {
@@ -1656,6 +1653,33 @@ public:
   csize size() const { return theDecls.size(); }
 
   parsenode* getDecl(csize i) const { return theDecls[i].getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class LocalVarDecl : public VarDeclWithInit
+{
+protected:
+  rchandle<AnnotationListParsenode> theAnnotations;
+
+public:
+  LocalVarDecl(
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceType* type_decl,
+    exprnode* init_expr,
+    AnnotationListParsenode* annotations);
+
+  void set_annotations(rchandle<AnnotationListParsenode> annotations)
+  {
+    theAnnotations = annotations;
+  }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3374,11 +3398,10 @@ protected:
   bool sign;
 
 public:
-  SignList(
-    const QueryLoc&,
-    bool _sign);
+  SignList(const QueryLoc&, bool sign);
 
   bool get_sign() const { return sign; }
+
   void negate() { sign = !sign; }
 
   void accept(parsenode_visitor&) const;
@@ -3386,7 +3409,7 @@ public:
 
 
 /*******************************************************************************
-  [82] ValueExpr ::= ValidateExpr | PathExpr | ExtensionExpr
+  [82] ValueExpr ::= ValidateExpr | SimpleMapExpr | ExtensionExpr
 ********************************************************************************/
 
 
@@ -3487,6 +3510,35 @@ public:
 
 
 /*******************************************************************************
+  SimpleMapExpr :: PathExpr |
+                   SimpleMapExpr "!" PathExpr
+
+  This creates a left-deep tree of SimpleMapExpr nodes: the right child of each
+  such node is a PathExpr, and the left child is another SimpleMapExpr except
+  from the left-most SimpleMapExpr node, whose left chils is a PathExpr.
+********************************************************************************/
+class SimpleMapExpr : public exprnode
+{
+protected:
+  rchandle<exprnode> left_expr_h;
+  rchandle<exprnode> right_expr_h;
+
+public:
+  SimpleMapExpr(
+    const QueryLoc&,
+    rchandle<exprnode>,
+    rchandle<exprnode>
+  );
+
+  rchandle<exprnode> get_left_expr() const { return left_expr_h; }
+
+  rchandle<exprnode> get_right_expr() const { return right_expr_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
 
   [91] PathExpr ::= ("/" RelativePathExpr?) |
                     ("//" RelativePathExpr) |
@@ -3579,9 +3631,9 @@ public:
 
   enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 
-  rchandle<exprnode> get_step_expr() const { return step_expr_h; }
+  exprnode* get_step_expr() const { return step_expr_h.getp(); }
 
-  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
+  exprnode* get_relpath_expr() const { return relpath_expr_h.getp(); }
 
   bool is_implicit() const { return is_implicit_b; }
 
@@ -3615,11 +3667,11 @@ public:
     rchandle<ReverseStep>,
     rchandle<PredicateList>);
 
-  rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
+  ForwardStep* get_forward_step() const { return forward_step_h.getp(); }
 
-  rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
+  ReverseStep* get_reverse_step() const { return reverse_step_h.getp(); }
 
-  rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
+  PredicateList* get_predicate_list() const { return predicate_list_h.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -3647,11 +3699,11 @@ public:
     const QueryLoc&,
     rchandle<AbbrevForwardStep>);
 
-  rchandle<ForwardAxis> get_forward_axis() const { return theForwardAxis; }
+  ForwardAxis* get_forward_axis() const { return theForwardAxis.getp(); }
 
-  rchandle<parsenode> get_node_test() const { return node_test_h; }
+  parsenode* get_node_test() const { return node_test_h.getp(); }
 
-  rchandle<AbbrevForwardStep> get_abbrev_step() const { return theAbbrevStep; }
+  AbbrevForwardStep* get_abbrev_step() const { return theAbbrevStep.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 

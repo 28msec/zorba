@@ -45,7 +45,7 @@ static bool hoist_expressions(
     const ExprVarsMap&,
     struct PathHolder*);
 
-static expr_t try_hoisting(
+static expr* try_hoisting(
     RewriterContext&,
     expr*,
     const VarIdMap&,
@@ -74,12 +74,13 @@ static bool containsUpdates(const expr*);
 struct PathHolder
 {
   struct PathHolder  * prev;
-  expr_t               expr;
+  expr               * theExpr;
   long                 clauseCount;
 
-  PathHolder() 
+  PathHolder()
     :
     prev(NULL),
+    theExpr(NULL),
     clauseCount(0)
   {
   }
@@ -90,7 +91,7 @@ struct PathHolder
   This rule looks for exprs that are inside a for loop but do not depend on the
   loop variable, and then moves such exprs outside the loop.
 ********************************************************************************/
-expr_t HoistRule::apply(
+expr* HoistRule::apply(
     RewriterContext& rCtx,
     expr* node,
     bool& modified)
@@ -109,12 +110,12 @@ expr_t HoistRule::apply(
   PathHolder root;
   modified = hoist_expressions(rCtx, node, varmap, freevarMap, &root);
 
-  if (modified && root.expr != NULL)
+  if (modified && root.theExpr != NULL)
   {
-    assert(root.expr->get_expr_kind() == flwor_expr_kind);
+    assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
-    static_cast<flwor_expr*>(root.expr.getp())->set_return_expr(node);
-    return root.expr;
+    static_cast<flwor_expr*>(root.theExpr)->set_return_expr(node);
+    return root.theExpr;
   }
 
   return node;
@@ -139,7 +140,7 @@ static bool hoist_expressions(
 
     PathHolder step;
     step.prev = path;
-    step.expr = e;
+    step.theExpr = e;
 
     csize numForLetClauses = flwor->num_forlet_clauses();
     csize i = 0;
@@ -149,32 +150,32 @@ static bool hoist_expressions(
       forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i));
       expr* domainExpr = flc->get_expr();
 
-      expr_t unhoistExpr = 
+      expr* unhoistExpr =
       try_hoisting(rCtx, domainExpr, varmap, freevarMap, &step);
 
       if (unhoistExpr != NULL)
       {
-        flc->set_expr(unhoistExpr.getp());
+        flc->set_expr(unhoistExpr);
         status = true;
         numForLetClauses = flwor->num_forlet_clauses();
         // TODO: the expr that was just hoisted here, may contain sub-exprs that
-        // can be hoisted even earlier. 
+        // can be hoisted even earlier.
       }
       else if (domainExpr->is_sequential())
       {
         PathHolder root;
 
-        bool hoisted = 
+        bool hoisted =
         hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &root);
 
         if (hoisted)
         {
-          if (root.expr != NULL)
+          if (root.theExpr != NULL)
           {
-            assert(root.expr->get_expr_kind() == flwor_expr_kind);
+            assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
-            static_cast<flwor_expr*>(root.expr.getp())->set_return_expr(domainExpr);
-            flc->set_expr(root.expr.getp());
+            static_cast<flwor_expr*>(root.theExpr)->set_return_expr(domainExpr);
+            flc->set_expr(root.theExpr);
           }
 
           status = true;
@@ -183,7 +184,7 @@ static bool hoist_expressions(
       }
       else
       {
-        bool hoisted = 
+        bool hoisted =
         hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &step);
 
         if (hoisted)
@@ -198,16 +199,16 @@ static bool hoist_expressions(
       assert(numForLetClauses == flwor->num_forlet_clauses());
     }
 
-    expr_t we = flwor->get_where();
+    expr* we = flwor->get_where();
     if (we != NULL)
     {
       ZORBA_ASSERT(!we->is_sequential());
 
-      expr_t unhoistExpr = try_hoisting(rCtx, we, varmap, freevarMap, &step);
+      expr* unhoistExpr = try_hoisting(rCtx, we, varmap, freevarMap, &step);
 
       if (unhoistExpr != NULL)
       {
-        flwor->set_where(unhoistExpr.getp());
+        flwor->set_where(unhoistExpr);
         status = true;
       }
       else
@@ -218,12 +219,12 @@ static bool hoist_expressions(
 
     // TODO: hoist orderby exprs
 
-    expr_t re = flwor->get_return_expr();
-    expr_t unhoistExpr = try_hoisting(rCtx, re, varmap, freevarMap, &step);
+    expr* re = flwor->get_return_expr();
+    expr* unhoistExpr = try_hoisting(rCtx, re, varmap, freevarMap, &step);
 
     if (unhoistExpr != NULL)
     {
-      flwor->set_return_expr(unhoistExpr.getp());
+      flwor->set_return_expr(unhoistExpr);
       status = true;
     }
     else if (re->is_sequential())
@@ -231,12 +232,12 @@ static bool hoist_expressions(
       PathHolder root;
       bool nestedModified = hoist_expressions(rCtx, re, varmap, freevarMap, &root);
 
-      if (nestedModified && root.expr != NULL)
+      if (nestedModified && root.theExpr != NULL)
       {
-        assert(root.expr->get_expr_kind() == flwor_expr_kind);
+        assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
-        static_cast<flwor_expr*>(root.expr.getp())->set_return_expr(re);
-        flwor->set_return_expr(root.expr.getp());
+        static_cast<flwor_expr*>(root.theExpr)->set_return_expr(re);
+        flwor->set_return_expr(root.theExpr);
       }
 
       status = nestedModified || status;
@@ -251,19 +252,19 @@ static bool hoist_expressions(
   {
     PathHolder step;
     step.prev = path;
-    step.expr = e;
+    step.theExpr = e;
 
     ExprIterator iter(e);
 
     while(!iter.done())
     {
-      expr* ce = &*(*iter);
+      expr* ce = **iter;
       if (ce)
       {
-        expr_t unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, &step);
+        expr* unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, &step);
         if (unhoistExpr != NULL)
         {
-          *iter = unhoistExpr.getp();
+          **iter = unhoistExpr;
           status = true;
         }
         else
@@ -285,17 +286,17 @@ static bool hoist_expressions(
       // TODO: if no updating child exprs have been encountered so far, subexprs
       // of the current child expr may be hoisted outside the sequential expr as
       // long as they don't reference any local vars.
-      expr_t ce = *iter;
+      expr* ce = **iter;
 
       PathHolder root;
       bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
 
-      if (nestedModified && root.expr != NULL)
+      if (nestedModified && root.theExpr != NULL)
       {
-        assert(root.expr->get_expr_kind() == flwor_expr_kind);
+        assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
 
-        static_cast<flwor_expr*>(root.expr.getp())->set_return_expr(ce);
-        (*iter) = root.expr;
+        static_cast<flwor_expr*>(root.theExpr)->set_return_expr(ce);
+        (**iter) = root.theExpr;
       }
 
       status = nestedModified || status;
@@ -317,13 +318,13 @@ static bool hoist_expressions(
 
     while(!iter.done())
     {
-      expr* ce = &*(*iter);
+      expr* ce = **iter;
       if (ce)
       {
-        expr_t unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, path);
+        expr* unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, path);
         if (unhoistExpr != NULL)
         {
-          *iter = unhoistExpr.getp();
+          **iter = unhoistExpr;
           status = true;
         }
         else
@@ -345,7 +346,7 @@ static bool hoist_expressions(
   flwor expr inside the stack of flwor exprs that is accessible via the "holder"
   param.
 ********************************************************************************/
-static expr_t try_hoisting(
+static expr* try_hoisting(
     RewriterContext& rCtx,
     expr* e,
     const VarIdMap& varmap,
@@ -369,37 +370,38 @@ static expr_t try_hoisting(
   int i = 0;
 
   // step->prev == NULL means that expr e is not inside any flwor expr, and as a
-  // result, there is nothing to hoist. 
+  // result, there is nothing to hoist.
   while (step->prev != NULL)
   {
-    if (step->expr->get_expr_kind() == trycatch_expr_kind)
+    if (step->theExpr->get_expr_kind() == trycatch_expr_kind)
     {
       // Should not hoist an expr out of a try-catch if it contains any try-catch vars
-      trycatch_expr* trycatch = static_cast<trycatch_expr*>(step->expr.getp());
+      trycatch_expr* trycatch = static_cast<trycatch_expr*>(step->theExpr);
       csize numClauses = trycatch->clause_count();
 
       for (csize i = 0; i < numClauses; ++i)
       {
-        const catch_clause_t& clause = (*trycatch)[i];
+        const catch_clause* clause = (*trycatch)[i];
 
-        catch_clause::var_map_t& trycatchVars = clause->get_vars();
+        catch_clause::var_map_t& trycatchVars =
+          const_cast<catch_clause*>(clause)->get_vars();
 
         catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
         catch_clause::var_map_t::const_iterator end = trycatchVars.end();
         for (; ite != end; ++ite)
         {
-          const var_expr_t& trycatchVar = (*ite).second;
+          var_expr* trycatchVar = (*ite).second;
 
-          if (contains_var(trycatchVar.getp(), varmap, varset))
+          if (contains_var(trycatchVar, varmap, varset))
             return NULL;
-        } 
+        }
       }
     }
     else
     {
-      assert(step->expr->get_expr_kind() == flwor_expr_kind);
+      assert(step->theExpr->get_expr_kind() == flwor_expr_kind);
 
-      flwor_expr* flwor = static_cast<flwor_expr*>(step->expr.getp());
+      flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
       group_clause* gc = flwor->get_group_clause();
 
       // If any free variable is a group-by variable, give up.
@@ -410,29 +412,29 @@ static expr_t try_hoisting(
 
         for (csize i = 0; i < numGroupVars; ++i)
         {
-          if (contains_var(gvars[i].second.getp(), varmap, varset))
+          if (contains_var(gvars[i].second, varmap, varset))
             return NULL;
         }
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
         csize numNonGroupVars = ngvars.size();
-        
+
         for (csize i = 0; i < numNonGroupVars; ++i)
         {
-          if (contains_var(ngvars[i].second.getp(), varmap, varset))
+          if (contains_var(ngvars[i].second, varmap, varset))
             return NULL;
         }
       }
 
       // Check whether expr e references any variables from the current flwor. If
-      // not, then e can be hoisted out of the current flwor and we repeat the 
+      // not, then e can be hoisted out of the current flwor and we repeat the
       // while-loop to see if e can be hoisted w.r.t. the previous (outer) flwor.
       // If yes, then let V be the inner-most var referenced by e. If there are any
       // FOR vars after V, e can be hoisted out of any such FOR vars. Otherwise, e
       // cannot be hoisted.
       for (i = step->clauseCount - 1; i >= 0; --i)
       {
-        const forletwin_clause* flc = 
+        const forletwin_clause* flc =
         static_cast<const forletwin_clause*>(flwor->get_clause(i));
 
         if (flc->get_expr()->is_sequential())
@@ -448,7 +450,7 @@ static expr_t try_hoisting(
           foundReferencedFLWORVar = true;
           break;
         }
-        
+
         inloop = (inloop ||
                   (flc->get_kind() == flwor_clause::for_clause &&
                    flc->get_expr()->get_return_type()->max_card() >= 2));
@@ -471,9 +473,9 @@ static expr_t try_hoisting(
   // var: $$temp := op:hoist(e) (b) we place the $$temp declaration right after
   // variable V, and (c) we replace e with op:unhoist($$temp).
 
-  var_expr_t letvar(rCtx.createTempVar(e->get_sctx(), e->get_loc(), var_expr::let_var));
+  var_expr* letvar(rCtx.createTempVar(e->get_sctx(), e->get_loc(), var_expr::let_var));
 
-  expr_t hoisted = new fo_expr(e->get_sctx(),
+  expr* hoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
                                e->get_loc(),
                                GET_BUILTIN_FUNCTION(OP_HOIST_1),
                                e);
@@ -481,44 +483,46 @@ static expr_t try_hoisting(
   hoisted->setFlags(e->getFlags());
   letvar->setFlags(e->getFlags());
 
-  let_clause_t flref(new let_clause(e->get_sctx(), e->get_loc(), letvar, hoisted));
+  let_clause* flref(
+    rCtx.theEM->create_let_clause(e->get_sctx(), e->get_loc(), letvar, hoisted));
 
-  letvar->set_flwor_clause(flref.getp());
+  letvar->set_flwor_clause(flref);
 
   if (step->prev == NULL)
   {
-    if (step->expr == NULL)
+    if (step->theExpr == NULL)
     {
-      step->expr = new flwor_expr(e->get_sctx(), e->get_loc(), false);
+      step->theExpr= rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
     }
-    static_cast<flwor_expr*>(step->expr.getp())->add_clause(flref);
+    static_cast<flwor_expr*>(step->theExpr)->add_clause(flref);
   }
-  else if (step->expr->get_expr_kind() == flwor_expr_kind)
+  else if (step->theExpr->get_expr_kind() == flwor_expr_kind)
   {
-    static_cast<flwor_expr*>(step->expr.getp())->add_clause(i + 1, flref);
+    static_cast<flwor_expr*>(step->theExpr)->add_clause(i + 1, flref);
     ++step->clauseCount;
   }
   else
   {
-    assert(step->expr->get_expr_kind() == trycatch_expr_kind);
-    trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->expr.getp());
+    assert(step->theExpr->get_expr_kind() == trycatch_expr_kind);
 
-    flwor_expr_t flwor = new flwor_expr(e->get_sctx(), e->get_loc(), false);
+    trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->theExpr);
+
+    flwor_expr* flwor = rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
     flwor->add_clause(flref);
     flwor->set_return_expr(trycatchExpr->get_try_expr());
 
     trycatchExpr->set_try_expr(flwor);
   }
 
-  expr_t unhoisted = new fo_expr(e->get_sctx(),
+  expr* unhoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
                                  e->get_loc(),
                                  GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
-                                 new wrapper_expr(e->get_sctx(),
+                                 rCtx.theEM->create_wrapper_expr(e->get_sctx(),
                                                   e->get_loc(),
-                                                  letvar.getp()));
+                                                  letvar));
   unhoisted->setFlags(e->getFlags());
 
-  return unhoisted.getp();
+  return unhoisted;
 }
 
 
@@ -556,7 +560,7 @@ static bool non_hoistable(const expr* e)
       k == const_expr_kind ||
       k == axis_step_expr_kind ||
       k == match_expr_kind ||
-      (k == wrapper_expr_kind && 
+      (k == wrapper_expr_kind &&
        non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
       is_already_hoisted(e) ||
       is_enclosed_expr(e) ||

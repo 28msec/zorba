@@ -370,11 +370,25 @@ void *begin_visit(const ValueComp &n)
 
 NO_END_TAG (ValueComp)
 
-void *begin_visit(const VarDecl &n)
+void* begin_visit(const GlobalVarDecl &n)
 {
     INDENT;
 
     os << "<VarDecl pos='" << n.get_location() << "' var='"
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC; NL;
+    return no_state;
+}
+
+
+void* begin_visit(const LocalVarDecl &n)
+{
+    INDENT;
+
+    os << "<LocalVarDecl pos='" << n.get_location() << "' var='"
        << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
@@ -543,6 +557,19 @@ void *begin_visit(const RelativePathExpr &n)
 
 END_TAG(RelativePathExpr)
 
+void *begin_visit(const SimpleMapExpr &n)
+{
+  INDENT;
+
+  os << "<SimpleMapExpr pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+
+  os << ">";
+
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(SimpleMapExpr)
 
 void *begin_visit(const TypeswitchExpr &n)
 {
@@ -808,7 +835,8 @@ BEGIN_END_TAG (AST_IndexDecl)
 BEGIN_END_TAG (IndexKeySpec)
 BEGIN_END_TAG (IndexKeyList)
 BEGIN_END_TAG (IntegrityConstraintDecl)
-END_TAG (VarDecl)
+END_TAG (GlobalVarDecl)
+END_TAG (LocalVarDecl)
 END_TAG (VarGetsDecl)
 BEGIN_END_TAG (VarGetsDeclList)
 END_TAG (VarInDecl)

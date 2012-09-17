@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@
 #include "zorbaserialization/serialize_zorba_types.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
@@ -80,7 +80,7 @@ CompilerCB::config::config()
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::config::config(::zorba::serialization::Archiver& ar) 
+CompilerCB::config::config(::zorba::serialization::Archiver& ar)
   :
   parse_cb(NULL),
   translate_cb(NULL),
@@ -119,8 +119,10 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsSequential(false),
   theHaveTimeout(false),
   theTimeout(timeout),
-  theTempIndexCounter(0)
+  theTempIndexCounter(0),
+  theEM(new ExprManager(this))
 {
+
   if (timeout >= 0)
     theHaveTimeout = true;
 }
@@ -128,7 +130,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 
 /*******************************************************************************
   Used by the eval iterator to create a new ccb as a copy of the ccb of the
-  enclosing query. 
+  enclosing query.
 *******************************************************************************/
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
@@ -146,7 +148,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
-  theConfig(cb.theConfig)
+  theConfig(cb.theConfig),
+  theEM(new ExprManager(this))
 {
 }
 
@@ -163,7 +166,8 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   theDebuggerCommons(NULL),
 #endif
   theHasEval(false),
-  theIsEval(false)
+  theIsEval(false),
+  theEM(new ExprManager(this))
 {
 }
 
@@ -171,8 +175,10 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::~CompilerCB() 
+CompilerCB::~CompilerCB()
 {
+  delete theEM;
+  theSctxMap.clear();
 }
 
 
@@ -181,6 +187,8 @@ CompilerCB::~CompilerCB()
 ********************************************************************************/
 void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
+  ar.set_ccb(this);
+
   ar & theHasEval;
   ar & theIsEval;
   ar & theIsLoadProlog;
@@ -190,7 +198,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   ar & theDebuggerCommons;
 #endif
-  if (!ar.is_serializing_out()) 
+  if (!ar.is_serializing_out())
   {
     //don't serialize this
     theXQueryDiagnostics = NULL;

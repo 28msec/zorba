@@ -303,8 +303,8 @@ bool DynamicContextImpl::setVariable(
         TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
         (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001, 
-      ERROR_PARAMS(zstring("#x") + 
+      throw XQUERY_EXCEPTION(err::FOCH0001,
+      ERROR_PARAMS(zstring("#x") +
       BUILD_STRING(std::uppercase << std::hex
                    << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
     }
@@ -618,7 +618,7 @@ DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
 /****************************************************************************//**
 
 ********************************************************************************/
-bool 
+bool
 DynamicContextImpl::isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const
 {
   ZORBA_DCTX_TRY

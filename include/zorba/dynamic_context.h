@@ -280,7 +280,7 @@ protected:
   /** \brief Destructor
    */
   virtual ~DynamicContext( ) {}
-  
+
 public:
 
   /** \brief Defines the context item size.
