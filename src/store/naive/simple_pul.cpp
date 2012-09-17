@@ -1106,6 +1106,31 @@ void PULImpl::addRemoveFromHashMap(
 void PULImpl::addJSONObjectInsert(
      const QueryLoc* loc,
      store::Item_t& target,
+     store::Item_t& content)
+{
+  assert(content->isJSONObject());
+  assert(dynamic_cast<json::JSONObject*>(content.getp()));
+  json::JSONObject* lObject = static_cast<json::JSONObject*>(content.getp());
+  store::Iterator_t lIterator = lObject->getObjectKeys();
+  lIterator->open();
+  store::Item_t lKey;
+  std::vector<store::Item_t> lKeys;
+  std::vector<store::Item_t> lValues;
+  while(lIterator->next(lKey))
+  {
+    lKeys.push_back(lKey);
+    lValues.push_back(lObject->getObjectValue(lKey));
+  }
+  lIterator->close();
+  this->addJSONObjectInsert(loc, target, lKeys, lValues);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectInsert(
+     const QueryLoc* loc,
+     store::Item_t& target,
      std::vector<store::Item_t>& names,
      std::vector<store::Item_t>& values)
 {

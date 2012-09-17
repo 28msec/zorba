@@ -77,7 +77,7 @@ probe 1:
 
 try
 { 
-  index_dml:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))
+  index_dml:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))/.
 }
 catch * 
 {
@@ -91,7 +91,7 @@ probe 2:
 
 try
 {
-  index_dml:probe-index-point-value($auctions:AuctionDates, 10)
+  index_dml:probe-index-point-value($auctions:AuctionDates, 10)/.
 }
 catch * 
 {
@@ -273,7 +273,7 @@ probe 1:
 
 try
 {
-  index_dml:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))
+  index_dml:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))/.
 }
 catch * 
 {
@@ -287,7 +287,7 @@ probe 2:
 
 try
 {
-  index_dml:probe-index-point-value($auctions:AuctionDates2, 10)
+  index_dml:probe-index-point-value($auctions:AuctionDates2, 10)/.
 }
 catch * 
 {
@@ -394,7 +394,7 @@ for $person in index_dml:probe-index-range-value($auctions:PersonIncome2,
                                                  fn:true(),
                                                  fn:false(),
                                                  fn:true(),
-                                                 fn:true())
+                                                 fn:true())/.
 return <person>{$person/@id, $person//@income}</person>
 }
 catch *
@@ -414,7 +414,7 @@ for $person in index_dml:probe-index-range-value($auctions:PersonIncome2,
                                                  fn:true(),
                                                  fn:true(),
                                                  fn:true(),
-                                                 fn:true())
+                                                 fn:true())/.
 return <person>{$person/@id, $person//@income}</person>,
 
 "
@@ -429,7 +429,7 @@ for $person in index_dml:probe-index-range-value($auctions:PersonIncome2,
                                                  fn:true(),
                                                  fn:false(),
                                                  fn:true(),
-                                                 fn:true())
+                                                 fn:true())/.
 return <person>{$person/@id, $person//@income}</person>,
 
 "
@@ -444,7 +444,7 @@ for $person in index_dml:probe-index-range-value($auctions:PersonIncome2,
                                                  fn:true(),
                                                  fn:true(),
                                                  fn:true(),
-                                                 fn:true())
+                                                 fn:true())/.
 return <person>{$person/@id, $person//@income}</person>,
 
 "
@@ -474,7 +474,7 @@ for $person in index_dml:probe-index-range-value($auctions:PersonIncome2,
                                                  fn:false(),
                                                  fn:false(),
                                                  fn:true(),
-                                                 fn:false())
+                                                 fn:false())/.
 return <person>{$person/@id, $person//@income}</person>,
 
 
