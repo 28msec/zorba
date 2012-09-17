@@ -112,7 +112,7 @@ public:
   bool nameOrKindTest(
       static_context* sctx,
       const store::Item* node,
-      PlanState& planState) const;
+      const QueryLoc& loc) const;
 };
 
 

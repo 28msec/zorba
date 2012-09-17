@@ -143,11 +143,23 @@ class PromoteIterator : public UnaryBaseIterator<PromoteIterator,
 {
   friend class PrinterVisitor;
 
+public:
+  typedef enum
+  {
+    FUNC_RETURN,
+    FUNC_PARAM,
+    TYPE_PROMOTION,
+    JSONIQ_PAIR_NAME,
+    JSONIQ_ARRAY_SELECTOR,
+    JSONIQ_OBJECT_SELECTOR,
+    JSONIQ_SELECTOR
+  } ErrorKind;
+
 private:
   xqtref_t                    thePromoteType;
   TypeConstants::quantifier_t theQuantifier;
-  store::Item_t								theFnQName;      // Stores the QName of the function, if the promote expr
-                                               // is used to cast the function's body to its result type
+  ErrorKind                   theErrorKind;
+  store::Item_t								theQName; 
 
 public:
   SERIALIZABLE_CLASS(PromoteIterator);
@@ -159,16 +171,20 @@ public:
 public:
   PromoteIterator(
       static_context* sctx,
-      const QueryLoc&,
-      PlanIter_t&,
-      const xqtref_t& aPromoteType,
-      store::Item_t fnQName = NULL);
+      const QueryLoc& loc,
+      PlanIter_t& child,
+      const xqtref_t& promoteType,
+      ErrorKind err,
+      store::Item_t qname = NULL);
 
   ~PromoteIterator();
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+protected:
+  void raiseError(const zstring& valueType) const;
 };
 
 
@@ -187,12 +203,30 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator,
 {
   friend class PrinterVisitor;
 
+public:
+  typedef enum
+  {
+    FUNC_RETURN,
+    FUNC_PARAM,
+    TYPE_MATCH,
+    TREAT_EXPR,
+    INDEX_DOMAIN,
+    INDEX_KEY,
+    PATH_STEP,
+    PATH_DOT,
+    JSONIQ_VALUE,
+    JSONIQ_UPDATE_TARGET,
+    JSONIQ_OBJECT_UPDATE_TARGET,
+    JSONIQ_ARRAY_UPDATE_TARGET,
+    JSONIQ_OBJECT_UPDATE_VALUE
+  } ErrorKind;
+
 private:
   xqtref_t                    theTreatType;
   TypeConstants::quantifier_t theQuantifier;
   bool                        theCheckPrime;
-  const Error               * theErrorCode;
-  store::Item_t								theFnQName;
+  ErrorKind                   theErrorKind;
+  store::Item_t								theQName;
 
 public:
   SERIALIZABLE_CLASS(TreatIterator);
@@ -203,17 +237,20 @@ public:
 
 public:
   TreatIterator(
-        static_context* sctx,
-        const QueryLoc&,
-        PlanIter_t& aChild,
-        const xqtref_t& aTreatType,
-        bool check_prime,
-        Error const&,
-        store::Item_t fnQName = NULL);
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& child,
+      const xqtref_t& treatType,
+      bool check_prime,
+      ErrorKind errorKind,
+      store::Item_t qname);
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+protected:
+  void raiseError(const zstring& valueType) const;
 };
 
 

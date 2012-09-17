@@ -21,21 +21,17 @@
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #include "types/typeops.h"
 
 #include "context/static_context.h"
-
-#include "zorbaserialization/serialize_zorba_types.h"
-#include "zorbaserialization/serialize_template_types.h"
 
 #include "diagnostics/assert.h"
 
 
 namespace zorba
 {
-
-SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
 
 /*******************************************************************************
@@ -72,12 +68,13 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 
 ********************************************************************************/
 var_expr::var_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)
   :
-  expr(sctx, loc, var_expr_kind),
+  expr(ccb, sctx, loc, var_expr_kind),
   theUniqueId(0),
   theVarKind(k),
   theName(name),
@@ -86,6 +83,7 @@ var_expr::var_expr(
   theCopyClause(NULL),
   theParamPos(0),
   theUDF(NULL),
+  theVarInfo(NULL),
   theIsExternal(false),
   theIsPrivate(false),
   theIsMutable(true),
@@ -111,6 +109,7 @@ var_expr::var_expr(const var_expr& source)
   theCopyClause(NULL),
   theParamPos(source.theParamPos),
   theUDF(source.theUDF),
+  theVarInfo(NULL),
   theIsExternal(source.theIsExternal),
   theIsPrivate(source.theIsPrivate),
   theIsMutable(source.theIsMutable),
@@ -119,42 +118,26 @@ var_expr::var_expr(const var_expr& source)
 }
 
 
-var_expr::var_expr(::zorba::serialization::Archiver& ar)
-  :
-  theFlworClause(NULL),
-  theCopyClause(NULL),
-  theUDF(NULL)
+/*******************************************************************************
+
+********************************************************************************/
+var_expr::~var_expr()
 {
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->clearVar();
+  }
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::serialize(::zorba::serialization::Archiver& ar)
+void var_expr::set_var_info(VarInfo* v)
 {
-  ar & theSctx;
-  ar & theLoc;
-  ar & theType;
-  theKind = var_expr_kind;
-  ar & theScriptingKind;
-  ar & theFlags1;
-
-  SERIALIZE_ENUM(var_kind, theVarKind);
-
-  serialize_ulong(ar, theUniqueId);
-
-  ar & theName;
-  ar & theDeclaredType;
-  //ar & theFlworClause;
-  //ar & theCopyClause;
-  //ar & theParamPos;
-  //ar & theUDF;
-  //ar & theSetExprs;
-  ar & theIsPrivate;
-  ar & theIsExternal;
-  ar & theIsMutable;
-  ar & theHasInitializer;
+  assert(theVarInfo == NULL);
+  theVarInfo = v;
 }
 
 
@@ -170,9 +153,48 @@ store::Item* var_expr::get_name() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t var_expr::get_type() const
+void var_expr::set_unique_id(ulong v)
 {
-  return theDeclaredType;
+  assert(theUniqueId == 0);
+
+  theUniqueId = v;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setId(v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_external(bool v)
+{
+  assert(theVarKind == prolog_var);
+  theIsExternal = v;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setIsExternal(v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_has_initializer(bool v)
+{
+  theHasInitializer = v;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setHasInitializer(v);
+  }
 }
 
 
@@ -182,6 +204,21 @@ xqtref_t var_expr::get_type() const
 void var_expr::set_type(xqtref_t t)
 {
   theDeclaredType = t;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setType(t);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t var_expr::get_type() const
+{
+  return theDeclaredType;
 }
 
 
@@ -257,7 +294,7 @@ for_clause* var_expr::get_for_clause() const
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::remove_set_expr(expr* e) 
+void var_expr::remove_set_expr(expr* e)
 {
   assert(theVarKind == local_var || theVarKind == prolog_var);
 
@@ -299,7 +336,7 @@ void var_expr::compute_scripting_kind()
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr_t var_expr::clone(expr::substitution_t& subst) const
+expr* var_expr::clone(expr::substitution_t& subst) const
 {
   expr::subst_iter_t i = subst.find(this);
 

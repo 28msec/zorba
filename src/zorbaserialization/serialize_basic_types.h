@@ -23,6 +23,7 @@
 
 #include "zorbamisc/config/platform.h"
 
+#include "store/api/shared_types.h"
 
 
 class MAPM;
@@ -38,23 +39,23 @@ namespace serialization
 class Archiver;
 
 
-void operator&(Archiver& ar, int64_t& obj);
+void operator&(Archiver& ar, short& obj);
 
-void operator&(Archiver& ar, uint64_t& obj);
+void operator&(Archiver& ar, unsigned short& obj);
 
-void serialize_long(Archiver& ar, long& obj);
+void operator&(Archiver& ar, int& obj);
 
-void serialize_ulong(Archiver& ar, ulong& obj);
+void operator&(Archiver& ar, unsigned int& obj);
 
-void operator&(Archiver& ar, int32_t& obj);
+void operator&(Archiver& ar, long& obj);
 
-void operator&(Archiver& ar, uint32_t& obj);
+void operator&(Archiver& ar, ulong& obj);
+
+void operator&(Archiver& ar, long long& obj);
+
+void operator&(Archiver& ar, unsigned long long& obj);
 
 void serialize_enum(Archiver& ar, uint32_t& obj);
-
-void operator&(Archiver& ar, int16_t& obj);
-
-void operator&(Archiver& ar, uint16_t& obj);
 
 void operator&(Archiver& ar, char& obj);
 
@@ -84,6 +85,34 @@ void operator&(Archiver& ar, MAPM& obj);
   if (!ar.is_serializing_out())                     \
     obj = (enum_type)int_enum;                      \
 }
+
+#define SERIALIZE_BOOL_VEC(vec)                   \
+  {                                               \
+    ar.set_is_temp_field_one_level(true);         \
+    csize lSize = 0;                              \
+    if (ar.is_serializing_out())                  \
+    {                                             \
+      lSize = vec.size();                         \
+      ar & lSize;                 \
+      for (csize i = 0; i < lSize; ++i)           \
+      {                                           \
+        bool b = vec[i];                          \
+        ar & b;                                   \
+      }                                           \
+    }                                             \
+    else                                          \
+    {                                             \
+      ar & lSize;                 \
+      vec.reserve(lSize);                         \
+      for (csize i = 0; i < lSize; ++i)           \
+      {                                           \
+        bool b;                                   \
+        ar & b;                                   \
+        vec.push_back(b);                         \
+      }                                           \
+    }                                             \
+    ar.set_is_temp_field_one_level(false);        \
+  }
 
 
 } // namespace serialization

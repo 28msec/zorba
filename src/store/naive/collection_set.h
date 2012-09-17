@@ -26,7 +26,8 @@ namespace zorba {
 namespace simplestore {
 
 class CollectionIterator;
-    
+
+
 /*******************************************************************************
   Collections container to ease the implementation of stores which contain 
   a different kind of memory management.
@@ -35,31 +36,29 @@ class CollectionSet
 {
 public:
   virtual ~CollectionSet() {}
-      
+
   virtual void
   clear() = 0;
     
   virtual bool
-  insert(
-      const zorba::store::Item* aName,
-      zorba::store::Collection_t& aCollection) = 0;
+  insert(const store::Item* name, store::Collection_t& collection) = 0;
     
   virtual bool
   get(
-      const zorba::store::Item* aName,
-      zorba::store::Collection_t& aCollection,
-      bool aDynamicCollection = false) = 0;
+      const store::Item* name,
+      store::Collection_t& collection,
+      bool isDynamic) = 0;
     
   virtual bool
-  remove(const zorba::store::Item* aName, bool aDynamicCollection = false) = 0;
+  remove(const store::Item* name, bool isDynamic) = 0;
   
-  virtual zorba::store::Iterator_t
-  names(bool aDynamicCollection = false) = 0;
+  virtual store::Iterator_t
+  names(bool dynamic) = 0;
     
   virtual CollectionSetIterator_t
-  collections(bool aDynamicCollection = false) = 0;
   
-}; /* class CollectionSet */
+  collections(bool dynamic) = 0;
+};
     
 
 /*******************************************************************************
@@ -70,12 +69,12 @@ class CollectionSetIterator : public SimpleRCObject
 {
 public:
   virtual ~CollectionSetIterator() {}
-  
+
   virtual void
   open() = 0;
     
   virtual bool
-  next(zorba::store::Collection_t&) = 0;
+  next(store::Collection_t&) = 0;
     
   virtual void
   reset() = 0;
@@ -83,7 +82,7 @@ public:
   virtual void
   close() throw() = 0;
 };
-  
+
 
 } /* namespace simplestore */
 } /* namespace zorba */

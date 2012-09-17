@@ -12,17 +12,20 @@ declare variable $auctions:PersonId1 := xs:QName("auctions:PersonId1");
 declare variable $auctions:auctions2 := xs:QName("auctions:auctions2");
 declare variable $auctions:PersonId2 := xs:QName("auctions:PersonId2");
 
+
 declare %an:ordered collection auctions:auctions1 as node()*;
 
 declare %an:automatic %an:value-equality index auctions:PersonId1
 on nodes dml:collection(xs:QName("auctions:auctions1"))
 by xs:string(./@key) as xs:string;
 
+
 declare %an:ordered collection auctions:auctions2 as node()*;
 
 declare %an:unique %an:automatic %an:value-range index auctions:PersonId2
 on nodes dml:collection(xs:QName("auctions:auctions2"))
 by xs:string(./@id) as xs:string;
+
 
 declare %an:sequential function auctions:create-db()
 {

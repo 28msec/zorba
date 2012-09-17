@@ -344,7 +344,7 @@ void operator&(Archiver& ar, std::vector<T>& obj)
 
     typename std::vector<T>::iterator it = obj.begin();
     typename std::vector<T>::iterator end = obj.end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -358,7 +358,7 @@ void operator&(Archiver& ar, std::vector<T>& obj)
 
     typename std::vector<T>::iterator it = obj.begin();
     typename std::vector<T>::iterator end = obj.end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -379,7 +379,7 @@ void operator&(Archiver& ar, std::vector<T*>& obj)
 
     typename std::vector<T*>::iterator it = obj.begin();
     typename std::vector<T*>::iterator end = obj.end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -394,7 +394,7 @@ void operator&(Archiver& ar, std::vector<T*>& obj)
     typename std::vector<T*>::iterator it = obj.begin();
     typename std::vector<T*>::iterator end = obj.end();
 
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -429,7 +429,7 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
 
     typename std::vector<T>::iterator it = obj->begin();
     typename std::vector<T>::iterator end = obj->end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -464,7 +464,7 @@ void operator&(Archiver& ar, std::vector<T>*& obj)
 
     typename std::vector<T>::iterator it = obj->begin();
     typename std::vector<T>::iterator end = obj->end();
-    for(; it != end; ++it)
+    for (; it != end; ++it)
     {
       ar & (*it);
     }
@@ -496,6 +496,7 @@ void operator&(Archiver& ar, std::list<T>& obj)
   {
     csize size;
     ar & size;
+
     obj.resize(size);
 
     typename std::list<T>::iterator it = obj.begin();

@@ -69,6 +69,8 @@ archive_field::archive_field(
 {
   assert(theKind == ARCHIVE_FIELD_NORMAL);
 
+  theValue.uint64v = 0;
+
   switch (type)
   {
   case TYPE_INT64:
@@ -179,7 +181,10 @@ archive_field::archive_field(
   theOnlyForEval(only_for_eval),
   theAllowDelay2(allow_delay)
 {
+  assert(type != TYPE_ENUM);
   assert(type != TYPE_UNKNOWN);
+
+  theValue.uint64v = 0;
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   theBytesSaved = 0;
@@ -924,7 +929,7 @@ archive_field* Archiver::replace_with_null(archive_field* current_field)
                                                   false,
                                                   ALLOW_DELAY,
                                                   current_field->theLevel);
-    null_field->theId = ++theFieldCounter;
+    null_field->theId = 0;
     replace_field(null_field, current_field);
     current_field->theParent = NULL;
     current_field->theNextSibling = NULL;

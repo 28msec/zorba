@@ -38,13 +38,12 @@ namespace zorba
 class static_context;
 
 class expr;
-typedef rchandle<expr> expr_t;
 
 class wrapper_expr;
-typedef rchandle<wrapper_expr> wrapper_expr_t;
 
 class expr_visitor;
 
+class CompilerCB;
 
 enum expr_kind_t
 {
@@ -85,7 +84,7 @@ enum expr_kind_t
   order_expr_kind,
 
 #ifndef ZORBA_NO_FULL_TEXT
-	ft_expr_kind,
+  ft_expr_kind,
 #endif /* ZORBA_NO_FULL_TEXT */
 
   delete_expr_kind,
@@ -108,6 +107,12 @@ enum expr_kind_t
   wrapper_expr_kind,
   function_trace_expr_kind,
 
+#ifdef ZORBA_WITH_JSON
+  json_direct_object_expr_kind,
+  json_object_expr_kind,
+  json_array_expr_kind,
+#endif
+
   unknown_expr_kind
 };
 
@@ -115,7 +120,7 @@ enum expr_kind_t
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public SimpleRCObject
+class expr
 {
   friend class expr_iterator_data;
   friend class ExprIterator;
@@ -126,9 +131,7 @@ class expr : public SimpleRCObject
   friend class function_trace_expr;
 
 public:
-  typedef rchandle<expr> expr_t;
-
-  typedef std::map<const expr *, expr_t> substitution_t;
+  typedef std::map<const expr *, expr*> substitution_t;
 
   typedef substitution_t::iterator subst_iter_t;
 
@@ -164,8 +167,8 @@ public:
 
 
 protected:
-  static expr_t      iter_end_expr;
-  static expr_t    * iter_done;
+  static expr*      iter_end_expr;
+  static expr*    * iter_done;
 
 protected:
   static_context   * theSctx;
@@ -181,6 +184,8 @@ protected:
 
   FreeVars           theFreeVars;
 
+  CompilerCB       * theCCB;
+
 public:
   static bool is_sequential(unsigned short theScriptingKind);
 
@@ -188,12 +193,17 @@ public:
 
   static void checkNonUpdating(const expr* e);
 
+  virtual void free() {}
+
+protected:
+  expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
+
+  expr() : theSctx(NULL), theFlags1(0), theCCB(NULL) {}
+
 public:
-  expr() : theSctx(NULL), theFlags1(0) {}
-
-  expr(static_context*, const QueryLoc&, expr_kind_t);
-
   virtual ~expr();
+
+  CompilerCB* get_ccb() {return theCCB;}
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 
@@ -231,9 +241,9 @@ public:
 
   xqtref_t get_return_type();
 
-  expr_t clone() const;
+  expr* clone() const;
 
-  virtual expr_t clone(substitution_t& substitution) const;
+  virtual expr* clone(substitution_t& substitution) const;
 
   virtual void accept(expr_visitor& v) = 0;
 
@@ -321,7 +331,7 @@ public:
 
   bool is_nondeterministic() const;
 
-  void replace_expr(const expr* oldExpr, const expr* newExpr);
+  void replace_expr(expr* oldExpr, expr* newExpr);
 
   bool contains_expr(const expr* e) const;
 

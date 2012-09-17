@@ -156,6 +156,27 @@ long GeneralIndexCompareFunction::compare(
 /******************************************************************************
 
 *******************************************************************************/
+bool GeneralIndexValue::removeNode(const store::Item_t& node)
+{
+  GeneralIndexValue::iterator ite = theNodes.begin();
+  GeneralIndexValue::iterator end = theNodes.end();
+
+  for (; ite != end; ++ite)
+  {
+    if ((*ite).theNode == node)
+    {
+      theNodes.erase(ite);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 void GeneralIndexValue::addNode(store::Item_t& node, bool untyped)
 {
   csize numNodes = theNodes.size();
@@ -191,8 +212,8 @@ GeneralIndex::GeneralIndex(
   IndexImpl(qname, spec),
   theKeyTypeCode(store::XS_LAST),
   theCompFunction(spec.theTimezone, spec.theCollations[0]),
-  theUntypedFlag(false),
-  theMultiKeyFlag(false)
+  theNumUntypedEntries(0),
+  theNumMultiKeyNodes(0)
 {
   store::Item* typeName = spec.theKeyTypes[0].getp();
 
@@ -216,7 +237,7 @@ GeneralIndex::~GeneralIndex()
 /******************************************************************************
 
 *******************************************************************************/
-const XQPCollator* GeneralIndex::getCollator(ulong i) const
+const XQPCollator* GeneralIndex::getCollator(csize i) const
 {
   ZORBA_ASSERT(i == 0);
   return theCompFunction.getCollator();
@@ -226,7 +247,7 @@ const XQPCollator* GeneralIndex::getCollator(ulong i) const
 /******************************************************************************
 
 *******************************************************************************/
-ulong GeneralIndex::size() const
+csize GeneralIndex::size() const
 {
   assert(false);
   return 0;
@@ -348,6 +369,7 @@ bool GeneralIndex::insert(store::Item_t& key, store::Item_t& node)
   {
     // try lossless cast to xs:long
     keyItem->castToLong(castItem);
+
     if (castItem != NULL)
     {
       keyItem = static_cast<AtomicItem*>(castItem.getp());
@@ -363,7 +385,8 @@ bool GeneralIndex::insert(store::Item_t& key, store::Item_t& node)
     if (lossy)
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DECIMAL, false);
+      if (insertInMap(castItem, node2, store::XS_DECIMAL, false))
+        found = true;
     }
 
     return found;
@@ -389,10 +412,18 @@ longmap:
 
       if (lossy)
       {
+        /*
+        std::cout << "Lossy LONG insertion in index" << getName()->getStringValue()
+                  << std::endl
+                  << "long value = " << longValue
+                  << " double value = " << castItem->getDoubleValue()
+                  << std::endl << std::endl;
+        */
         node2 = node;
         found = insertInMap(key, node2, store::XS_LONG, false);
 
-        found = found || insertInMap(castItem, node, store::XS_DOUBLE, false);
+        if (insertInMap(castItem, node, store::XS_DOUBLE, false))
+          found = true;
       }
       else
       {
@@ -440,7 +471,8 @@ longmap:
       xs_long longValue = longItem->getLongValue();
 
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_LONG, true);
+      if (insertInMap(castItem, node2, store::XS_LONG, true))
+        found = true;
 
       if (longValue > theMaxLong || longValue < theMinLong)
       {
@@ -458,7 +490,8 @@ longmap:
         if (lossy)
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_DOUBLE, true);
+          if (insertInMap(castItem, node2, store::XS_DOUBLE, true))
+            found = true;
         }
       }
 
@@ -468,19 +501,22 @@ longmap:
         if (untypedItem->castToGYear(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_GYEAR, true);
+          if (insertInMap(castItem, node2, store::XS_GYEAR, true))
+            found = true;
         }
 
         if (untypedItem->castToHexBinary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_HEXBINARY, true);
+          if (insertInMap(castItem, node2, store::XS_HEXBINARY, true))
+            found = true;
         }
 
         if (untypedItem->castToBase64Binary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_BASE64BINARY, true);
+          if (insertInMap(castItem, node2, store::XS_BASE64BINARY, true))
+            found = true;
         }
       }
     }
@@ -494,13 +530,15 @@ longmap:
       decimalItem->coerceToDouble(castItem, true, lossy);
 
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DOUBLE, true);
+      if (insertInMap(castItem, node2, store::XS_DOUBLE, true))
+        found = true;
 
       if (lossy)
       {
         castItem.transfer(decimalItem);
         node2 = node;
-        found = found || insertInMap(castItem, node2, store::XS_DECIMAL, true);
+        if (insertInMap(castItem, node2, store::XS_DECIMAL, true))
+          found = true;
       }
 
       // may also be hexBinary or base64Binary
@@ -509,13 +547,15 @@ longmap:
         if (untypedItem->castToHexBinary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_HEXBINARY, true);
+          if (insertInMap(castItem, node2, store::XS_HEXBINARY, true))
+            found = true;
         }
 
         if (untypedItem->castToBase64Binary(castItem))
         {
           node2 = node;
-          found = found || insertInMap(castItem, node2, store::XS_BASE64BINARY, true);
+          if (insertInMap(castItem, node2, store::XS_BASE64BINARY, true))
+            found = true;
         }
       }
     }
@@ -524,77 +564,88 @@ longmap:
     else if (untypedItem->castToDouble(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DOUBLE, true);
+      if (insertInMap(castItem, node2, store::XS_DOUBLE, true))
+        found = true;
     }
 
     // try casting to xs:datetime
     else if (untypedItem->castToDateTime(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DATETIME, true);
+      if (insertInMap(castItem, node2, store::XS_DATETIME, true))
+        found = true;
     }
 
     // try casting to xs:date
     else if (untypedItem->castToDate(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DATE, true);
+      if (insertInMap(castItem, node2, store::XS_DATE, true))
+        found = true;
     }
 
     // try casting to xs:time
     else if (untypedItem->castToTime(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_TIME, true);
+      if (insertInMap(castItem, node2, store::XS_TIME, true))
+        found = true;
     }
 
     // try casting to xs:gYearMonth
     if (!sorted && untypedItem->castToGYearMonth(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GYEAR_MONTH, true);
+      if (insertInMap(castItem, node2, store::XS_GYEAR_MONTH, true))
+        found = true;
     }
 
     // try casting to xs:gMonthDay
     else if (!sorted && untypedItem->castToGMonthDay(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GMONTH_DAY, true);
+      if (insertInMap(castItem, node2, store::XS_GMONTH_DAY, true))
+        found = true;
     }
 
     // try casting to xs:gDay
     else if (!sorted && untypedItem->castToGDay(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GDAY, true);
+      if (insertInMap(castItem, node2, store::XS_GDAY, true))
+        found = true;
     }
 
     // try casting to xs:gMonth
     else if (!sorted && untypedItem->castToGMonth(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_GMONTH, true);
+      if (insertInMap(castItem, node2, store::XS_GMONTH, true))
+        found = true;
     }
 
     // try casting to xs:duration
     else if (untypedItem->castToDuration(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_DURATION, true);
+      if (insertInMap(castItem, node2, store::XS_DURATION, true))
+        found = true;
     }
 
     // try casting to xs:hexBinary
     else if (!sorted && untypedItem->castToHexBinary(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_HEXBINARY, true);
+      if (insertInMap(castItem, node2, store::XS_HEXBINARY, true))
+        found = true;
     }
 
     // try casting to xs:base64Binary
     else if (!sorted && untypedItem->castToBase64Binary(castItem))
     {
       node2 = node;
-      found = found || insertInMap(castItem, node2, store::XS_BASE64BINARY, true);
+      if (insertInMap(castItem, node2, store::XS_BASE64BINARY, true))
+        found = true;
     }
 
     return found;
@@ -620,7 +671,7 @@ bool GeneralIndex::insertInMap(
     bool untyped)
 {
   if (untyped)
-    theUntypedFlag = true;
+    ++theNumUntypedEntries;
 
   if (isSorted())
   {
@@ -631,6 +682,409 @@ bool GeneralIndex::insertInMap(
   {
     GeneralHashIndex* idx = static_cast<GeneralHashIndex*>(this);
     return idx->insertInMap(key, node, idx->theMaps[targetMap], untyped);
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralIndex::remove(const store::Item_t& key, const store::Item_t& node)
+{
+  bool lossy = false;
+  bool found = false;
+  store::Item_t castItem;
+
+  bool sorted = isSorted();
+
+  AtomicItem* keyItem = static_cast<AtomicItem*>(key.getp());
+
+  if (keyItem == NULL)
+  {
+    std::vector<store::Item_t>::iterator ite =
+    std::find(theEmptyKeyNodes.begin(), theEmptyKeyNodes.end(), node);
+
+    ZORBA_ASSERT(ite != theEmptyKeyNodes.end());
+
+    theEmptyKeyNodes.erase(ite);
+    return true;
+  }
+
+  if (keyItem->getBaseItem() != NULL)
+  {
+    keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+  }
+
+  if (isTyped())
+  {
+    return removeFromMap(key, node, theKeyTypeCode, false);
+  }
+
+  store::SchemaTypeCode keyType = keyItem->getTypeCode();
+
+  switch (keyType)
+  {
+  case store::XS_BASE64BINARY:
+  case store::XS_HEXBINARY:
+
+  case store::XS_QNAME:
+  case store::XS_NOTATION:
+
+  case store::XS_GYEAR_MONTH:
+  case store::XS_GYEAR:
+  case store::XS_GMONTH_DAY:
+  case store::XS_GDAY:
+  case store::XS_GMONTH:
+  {
+    assert(!sorted);
+    // falth through
+  }
+
+  case store::XS_ANY_URI:
+
+  case store::XS_BOOLEAN:
+
+  case store::XS_DATETIME:
+  case store::XS_DATE:
+  case store::XS_TIME:
+  {
+    return removeFromMap(key, node, keyType, false);
+  }
+
+  case store::XS_DURATION:
+  case store::XS_YM_DURATION:
+  case store::XS_DT_DURATION:
+  {
+    return removeFromMap(key, node, store::XS_DURATION, false);
+  }
+
+  case store::XS_STRING:
+  case store::XS_NORMALIZED_STRING:
+  case store::XS_TOKEN:
+  case store::XS_NMTOKEN:
+  case store::XS_LANGUAGE:
+  case store::XS_NAME:
+  case store::XS_NCNAME:
+  case store::XS_ID:
+  case store::XS_IDREF:
+  case store::XS_ENTITY:
+  {
+    return removeFromMap(key, node, store::XS_STRING, false);
+  }
+
+  case store::XS_DOUBLE:
+  case store::XS_FLOAT:
+  {
+    return removeFromMap(key, node, store::XS_DOUBLE, false);
+  }
+
+  case store::XS_DECIMAL:
+  case store::XS_INTEGER:
+  case store::XS_NON_POSITIVE_INTEGER:
+  case store::XS_NEGATIVE_INTEGER:
+  case store::XS_NON_NEGATIVE_INTEGER:
+  case store::XS_POSITIVE_INTEGER:
+  case store::XS_UNSIGNED_LONG:
+  {
+    // try lossless cast to xs:long
+    keyItem->castToLong(castItem);
+
+    if (castItem != NULL)
+    {
+      keyItem = static_cast<AtomicItem*>(castItem.getp());
+      goto longmap;
+    }
+
+    // Coerce to xs:double 
+    keyItem->coerceToDouble(castItem, true, lossy);
+
+    found = removeFromMap(key, node, store::XS_DOUBLE, false);
+
+    if (lossy)
+    {
+      if (removeFromMap(castItem, node, store::XS_DECIMAL, false))
+        found = true;
+    }
+
+    return found;
+  }
+
+  case store::XS_LONG:
+  {
+    // NOTE: here we use KeyItem, instead of key, as arg to removeFromMap, because
+    // we can reach here from the store::XS_DECIMAL case.
+longmap:
+    xs_long longValue = static_cast<LongItem*>(keyItem)->getLongValue();
+
+    if (longValue > theMaxLong || longValue < theMinLong)
+    {
+      if (sorted)
+      {
+        lossy = true;
+        xs_double doubleValue(longValue);
+        GET_FACTORY().createDouble(castItem, doubleValue);
+      }
+      else
+      {
+        keyItem->coerceToDouble(castItem, false, lossy);
+      }
+
+      if (lossy)
+      {
+        /*
+        std::cout << "Lossy LONG insertion in index" << getName()->getStringValue()
+                  << std::endl
+                  << "long value = " << longValue
+                  << " double value = " << castItem->getDoubleValue()
+                  << std::endl << std::endl;
+        */
+        found = removeFromMap(keyItem, node, store::XS_LONG, false);
+
+        if (removeFromMap(castItem, node, store::XS_DOUBLE, false))
+          found = true;
+      }
+      else
+      {
+        found = removeFromMap(keyItem, node, store::XS_LONG, false);
+      }
+    }
+    else
+    {
+      found = removeFromMap(keyItem, node, store::XS_LONG, false);
+    }
+
+    return found;
+  }
+
+  case store::XS_INT:
+  case store::XS_SHORT:
+  case store::XS_BYTE:
+  case store::XS_UNSIGNED_INT:
+  case store::XS_UNSIGNED_SHORT:
+  case store::XS_UNSIGNED_BYTE:
+  {
+    return removeFromMap(key, node, store::XS_LONG, false);
+  }
+
+  case store::XS_UNTYPED_ATOMIC:
+  {
+    store::ItemHandle<UntypedAtomicItem> untypedItem = 
+    static_cast<UntypedAtomicItem*>(key.getp());
+
+    // cast to xs:string
+    untypedItem->castToString(castItem);
+
+    found = removeFromMap(castItem, node, store::XS_STRING, false);
+
+    // try casting to xs:long
+    if (untypedItem->castToLong(castItem))
+    {
+      store::ItemHandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+
+      xs_long longValue = longItem->getLongValue();
+
+      if (removeFromMap(castItem, node, store::XS_LONG, true))
+        found = true;
+
+      if (longValue > theMaxLong || longValue < theMinLong)
+      {
+        if (sorted)
+        {
+          lossy = true;
+          xs_double doubleValue(longValue);
+          GET_FACTORY().createDouble(castItem, doubleValue);
+        }
+        else
+        {
+          longItem->coerceToDouble(castItem, false, lossy);
+        }
+
+        if (lossy)
+        {
+          if (removeFromMap(castItem, node, store::XS_DOUBLE, true))
+            found = true;
+        }
+      }
+
+      // may also be gYear, hexBinary, base64Binary, or boolean
+      if (!sorted)
+      {
+        if (untypedItem->castToGYear(castItem))
+        {
+          if (removeFromMap(castItem, node, store::XS_GYEAR, true))
+            found = true;
+        }
+
+        if (untypedItem->castToHexBinary(castItem))
+        {
+          if (removeFromMap(castItem, node, store::XS_HEXBINARY, true))
+            found = true;
+        }
+
+        if (untypedItem->castToBase64Binary(castItem))
+        {
+          if (removeFromMap(castItem, node, store::XS_BASE64BINARY, true))
+            found = true;
+        }
+      }
+    }
+
+    // try casting to xs:decimal
+    else if (untypedItem->castToDecimal(castItem))
+    {
+      store::ItemHandle<DecimalItem> decimalItem = 
+      static_cast<DecimalItem*>(castItem.getp());
+
+      decimalItem->coerceToDouble(castItem, true, lossy);
+
+      if (removeFromMap(castItem, node, store::XS_DOUBLE, true))
+        found = true;
+
+      if (lossy)
+      {
+        castItem.transfer(decimalItem);
+        if (removeFromMap(castItem, node, store::XS_DECIMAL, true))
+          found = true;
+      }
+
+      // may also be hexBinary or base64Binary
+      if (sorted)
+      {
+        if (untypedItem->castToHexBinary(castItem))
+        {
+          if (removeFromMap(castItem, node, store::XS_HEXBINARY, true))
+            found = true;
+        }
+
+        if (untypedItem->castToBase64Binary(castItem))
+        {
+          if (removeFromMap(castItem, node, store::XS_BASE64BINARY, true))
+            found = true;
+        }
+      }
+    }
+
+    // try casting to xs:double
+    else if (untypedItem->castToDouble(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_DOUBLE, true))
+        found = true;
+    }
+
+    // try casting to xs:datetime
+    else if (untypedItem->castToDateTime(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_DATETIME, true))
+        found = true;
+    }
+
+    // try casting to xs:date
+    else if (untypedItem->castToDate(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_DATE, true))
+        found = true;
+    }
+
+    // try casting to xs:time
+    else if (untypedItem->castToTime(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_TIME, true))
+        found = true;
+    }
+
+    // try casting to xs:gYearMonth
+    if (!sorted && untypedItem->castToGYearMonth(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_GYEAR_MONTH, true))
+        found = true;
+    }
+
+    // try casting to xs:gMonthDay
+    else if (!sorted && untypedItem->castToGMonthDay(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_GMONTH_DAY, true))
+        found = true;
+    }
+
+    // try casting to xs:gDay
+    else if (!sorted && untypedItem->castToGDay(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_GDAY, true))
+        found = true;
+    }
+
+    // try casting to xs:gMonth
+    else if (!sorted && untypedItem->castToGMonth(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_GMONTH, true))
+        found = true;
+    }
+
+    // try casting to xs:duration
+    else if (untypedItem->castToDuration(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_DURATION, true))
+        found = true;
+    }
+
+    // try casting to xs:hexBinary
+    else if (!sorted && untypedItem->castToHexBinary(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_HEXBINARY, true))
+        found = true;
+    }
+
+    // try casting to xs:base64Binary
+    else if (!sorted && untypedItem->castToBase64Binary(castItem))
+    {
+      if (removeFromMap(castItem, node, store::XS_BASE64BINARY, true))
+        found = true;
+    }
+
+    return found;
+  }
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  return true;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralIndex::remove(
+    const store::IndexKey* key,
+    const store::Item_t& node,
+    bool all)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralIndex::removeFromMap(
+    const store::Item_t& key,
+    const store::Item_t& node,
+    store::SchemaTypeCode targetMap,
+    bool untyped)
+{
+  if (untyped)
+    --theNumUntypedEntries;
+
+  if (isSorted())
+  {
+    GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(this);
+    return idx->removeFromMap(key, node, idx->theMaps[targetMap]);
+  }
+  else
+  {
+    GeneralHashIndex* idx = static_cast<GeneralHashIndex*>(this);
+    return idx->removeFromMap(key, node, idx->theMaps[targetMap]);
   }
 }
 
@@ -670,7 +1124,7 @@ GeneralHashIndex::GeneralHashIndex(
 *******************************************************************************/
 GeneralHashIndex::~GeneralHashIndex()
 {
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     if (theMaps[i] == NULL)
       continue;
@@ -695,10 +1149,36 @@ GeneralHashIndex::~GeneralHashIndex()
 /******************************************************************************
 
 *******************************************************************************/
+void GeneralHashIndex::clear()
+{
+  for (csize i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    IndexMap::iterator ite = theMaps[i]->begin();
+    IndexMap::iterator end = theMaps[i]->end();
+ 
+    for (; ite != end; ++ite)
+    {
+      //std::cout << "Index Entry Delete [" << (*ite).first << "," 
+      //          << (*ite).second << "]" << std::endl;
+      
+      const_cast<store::Item*>((*ite).first)->removeReference();
+      delete (*ite).second;
+    }
+
+    theMaps[i]->clear();
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 store::Index::KeyIterator_t GeneralHashIndex::keys() const
 {
-  assert(false);
-  return 0;
+  return new KeyIterator(theMaps);
 }
 
 
@@ -745,33 +1225,33 @@ bool GeneralHashIndex::insertInMap(
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralHashIndex::remove(
+bool GeneralHashIndex::removeFromMap(
     const store::Item_t& key,
-    store::Item_t& item,
-    bool all)
+    const store::Item_t& node,
+    IndexMap* targetMap)
 {
-  assert(false);
+  assert(targetMap);
+  assert(key != NULL);
+
+  IndexMap::iterator pos = targetMap->find(key);
+
+  if (pos != targetMap->end())
+  {
+    GeneralIndexValue* valueSet = (*pos).second;
+
+    bool found = valueSet->removeNode(node);
+
+    if (valueSet->empty())
+    {
+      const_cast<store::Item*>((*pos).first)->removeReference();
+      delete valueSet;
+      targetMap->erase(pos);
+    }
+
+    return found;
+  }
+
   return false;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void GeneralHashIndex::clear()
-{
-  for (ulong i = 0; i < store::XS_LAST; ++i)
-  {
-    if (theMaps[i] == NULL)
-      continue;
-
-    theMaps[i]->clear();
-  }
-
-  if (isTyped())
-  {
-    theSingleMap->clear();
-  }
 }
 
 
@@ -781,6 +1261,14 @@ void GeneralHashIndex::clear()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/*******************************************************************************
+
+********************************************************************************/
+GeneralHashIndex::KeyIterator::KeyIterator(IndexMap* const* aMaps)
+  :
+  theMaps(aMaps)
+{
+}
 
 /******************************************************************************
 
@@ -789,23 +1277,60 @@ GeneralHashIndex::KeyIterator::~KeyIterator()
 {
 }
 
+/******************************************************************************
+ * moves theIterator to the next available iterator from theMaps
+*******************************************************************************/
+void GeneralHashIndex::KeyIterator::setNextIter()
+{
+  for ( ;
+    theCurType < store::XS_LAST && theMaps[theCurType] == 0; 
+    ++theCurType)
+  {}
+
+  if (theCurType != store::XS_LAST)
+    theIterator = theMaps[theCurType]->begin();
+}
 
 /******************************************************************************
 
 *******************************************************************************/
 void GeneralHashIndex::KeyIterator::open()
 {
-  assert(false);
+  // start with first type from zorba::store::SchemaTypeCode enum
+  theCurType = 0;
+  // Index doesn't contain keys from all atomic types -> we need to skip the
+  // empty ones.
+  setNextIter();
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
+bool GeneralHashIndex::KeyIterator::next(store::IndexKey& aKey)
 {
-  assert(false);
-  return false;
+  // XS_LAST marks the end of the type list -> we stop
+  if (theCurType == store::XS_LAST)
+    return false;
+
+  const store::Item* lKeyItem = (*theIterator).first;
+  // the general index doesn't return an IndexKey object because
+  // it doesn't support multi-value keys -> we push the key directly
+  // into the passed IndexKey.
+  aKey.empty();
+  aKey.push_back(const_cast<zorba::store::Item*>(lKeyItem));
+
+  ++theIterator;
+
+  if (theIterator == theMaps[theCurType]->end())
+  {
+    // iteration of the keys of the current type is done.
+    // increase type and search for the next valid iterator.
+    ++theCurType;
+    setNextIter();
+  }
+
+  return true;
 }
 
 
@@ -814,7 +1339,7 @@ bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
 *******************************************************************************/
 void GeneralHashIndex::KeyIterator::close()
 {
-  assert(false);
+  theCurType = store::XS_LAST;
 }
 
 
@@ -853,7 +1378,7 @@ GeneralTreeIndex::GeneralTreeIndex(
 *******************************************************************************/
 GeneralTreeIndex::~GeneralTreeIndex()
 {
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     if (theMaps[i] == NULL)
       continue;
@@ -871,6 +1396,33 @@ GeneralTreeIndex::~GeneralTreeIndex()
     }
 
     delete theMaps[i];
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralTreeIndex::clear()
+{
+  for (csize i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    IndexMap::iterator ite = theMaps[i]->begin();
+    IndexMap::iterator end = theMaps[i]->end();
+ 
+    for (; ite != end; ++ite)
+    {
+      //std::cout << "Index Entry Delete [" << (*ite).first << "," 
+      //          << (*ite).second << "]" << std::endl;
+      
+      const_cast<store::Item*>((*ite).first)->removeReference();
+      delete (*ite).second;
+    }
+
+    theMaps[i]->clear();
   }
 }
 
@@ -920,32 +1472,33 @@ bool GeneralTreeIndex::insertInMap(
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralTreeIndex::remove(
+bool GeneralTreeIndex::removeFromMap(
     const store::Item_t& key,
-    store::Item_t& item,
-    bool all)
+    const store::Item_t& node,
+    IndexMap* targetMap)
 {
-  return true;
-}
+  assert(targetMap);
+  assert(key != NULL);
 
+  IndexMap::iterator pos = targetMap->find(key);
 
-/******************************************************************************
-
-*******************************************************************************/
-void GeneralTreeIndex::clear()
-{
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  if (pos != targetMap->end())
   {
-    if (theMaps[i] == NULL)
-      continue;
+    GeneralIndexValue* valueSet = (*pos).second;
 
-    theMaps[i]->clear();
+    bool found = valueSet->removeNode(node);
+
+    if (valueSet->empty())
+    {
+      const_cast<store::Item*>((*pos).first)->removeReference();
+      delete valueSet;
+      targetMap->erase(pos);
+    }
+
+    return found;
   }
 
-  if (isTyped())
-  {
-    theSingleMap->clear();
-  }
+  return false;
 }
 
 
@@ -1123,13 +1676,13 @@ void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond)
   if (theProbeKind == store::IndexCondition::POINT_VALUE ||
       theProbeKind == store::IndexCondition::BOX_VALUE)
   {
-    if (theIndex->theMultiKeyFlag)
+    if (theIndex->theNumMultiKeyNodes > 0)
     {
       RAISE_ERROR_NO_LOC(err::XPTY0004,
       ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2), theIndex->getName()->getStringValue()));
     }
 
-    if (theIndex->theUntypedFlag)
+    if (theIndex->theNumUntypedEntries > 0)
     {
       checkStringKeyType(theCondition->theKey.getp());
       checkStringKeyType(theCondition->theLowerBound.getp());
@@ -1871,7 +2424,7 @@ void ProbeGeneralIndexIterator::initBox()
   {
     theIsFullProbe = true;
 
-    for (ulong i = 0; i < store::XS_LAST; ++i)
+    for (csize i = 0; i < store::XS_LAST; ++i)
     {
       if (idx->theMaps[i] == NULL)
         continue;

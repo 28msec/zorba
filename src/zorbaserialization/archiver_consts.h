@@ -149,7 +149,11 @@ enum TypeCode
   TYPE_EitherNodesOrAtomicsIterator,
 
   TYPE_AtomicXQType,
+  TYPE_StructuredItemXQType,
   TYPE_NodeXQType,
+#ifdef ZORBA_WITH_JSON
+  TYPE_JSONXQType,
+#endif
   TYPE_FunctionXQType,
   TYPE_ItemXQType,
   TYPE_AnyXQType,
@@ -225,6 +229,7 @@ enum TypeCode
   TYPE_GroupByIterator,
 
   TYPE_user_function,
+  TYPE_function,
   TYPE_external_function,
   TYPE_signature,
   TYPE_AnnotationInternal,
@@ -267,6 +272,13 @@ enum TypeCode
   TYPE_ReplaceIterator,
   TYPE_DeleteIterator,
   TYPE_InsertIterator,
+
+#ifdef ZORBA_WITH_JSON
+  TYPE_JSONObjectInsertIterator,
+  TYPE_JSONObjectIterator,
+  TYPE_JSONDirectObjectIterator,
+  TYPE_JSONArrayIterator,
+#endif
 
   TYPE_EvalIterator,
 
@@ -351,6 +363,7 @@ enum TypeCode
   TYPE_DecimalFormat,
 
   TYPE_BaseUriInfo,
+  TYPE_VarInfo,
   TYPE_FunctionInfo,
   TYPE_PrologOption,
   TYPE_sctx_module,

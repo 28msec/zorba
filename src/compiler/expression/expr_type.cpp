@@ -18,6 +18,7 @@
 #include <zorba/config.h>
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
@@ -79,7 +80,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     ExprIterator iter(this);
     while (!iter.done())
     {
-      (*iter)->compute_return_type(deep, modified);
+      (**iter)->compute_return_type(deep, modified);
       iter.next();
     }
   }
@@ -89,6 +90,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   expr_kind_t kind = get_expr_kind();
 
+  xqtref_t contentType;
   xqtref_t newType;
 
   switch (kind)
@@ -166,7 +168,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     var_expr::var_kind varKind = e->get_kind();
 
     xqtref_t derivedType;
-    expr* domainExpr;
+    expr* domainExpr = NULL;
 
     // The translator has already set theDeclaredType of pos_vars, count_vars,
     // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
@@ -244,8 +246,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       xqtref_t sourceType = e->theSteps[0]->get_return_type();
 
-      if (TypeOps::is_empty(get_type_manager(), *sourceType) ||
-          TypeOps::is_none(get_type_manager(), *sourceType))
+      if (sourceType->is_empty() || sourceType->is_none())
       {
         newType = sourceType;
       }
@@ -257,9 +258,9 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         xqtref_t stepType = sourceType;
 
-        for (ulong i = 1; i < e->size(); ++i)
+        for (csize i = 1; i < e->size(); ++i)
         {
-          const axis_step_expr* axisStep = e->theSteps[i].cast<axis_step_expr>();
+          const axis_step_expr* axisStep = static_cast<axis_step_expr*>(e->theSteps[i]);
 
           stepType = axis_step_type(theSctx,
                                     axisStep,
@@ -303,7 +304,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     switch (funcKind)
     {
-    case FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1:
+    case FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1:
     {
       const store::Item* qname = e->theArgs[0]->getQName(theSctx);
 
@@ -316,18 +317,15 @@ void expr::compute_return_type(bool deep, bool* modified)
         }
         else
         {
-          throw XQUERY_EXCEPTION(
-            zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-            ERROR_PARAMS( qname->getStringValue() ),
-            ERROR_LOC( get_loc() )
-          );
+          RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, get_loc(),
+          ERROR_PARAMS(qname->getStringValue()));
         }
       }
       break;
     }
     case FunctionConsts::FN_SUBSEQUENCE_3:
     {
-      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2].getp());
+      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2]);
 
       if (lenExpr != NULL)
       {
@@ -385,8 +383,8 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
-                             TypeOps::quantifier(*e->theTargetType));
+    TypeOps::intersect_quant(input_type->get_quantifier(),
+                             e->theTargetType->get_quantifier());
 
     if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype, get_loc()))
     {
@@ -408,8 +406,8 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*in_type),
-                             TypeOps::quantifier(*e->theTargetType));
+    TypeOps::intersect_quant(in_type->get_quantifier(),
+                             e->theTargetType->get_quantifier());
 
     if (TypeOps::is_subtype(tm, *in_ptype, *target_ptype, get_loc()))
     {
@@ -466,13 +464,13 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case doc_expr_kind:
   {
-    doc_expr* e = static_cast<doc_expr*>(this);
+    contentType = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                   rtm.ANY_TYPE :
+                   rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::documentNode,
                                    NULL,
-                                   (e->theContent == NULL ?
-                                    NULL :
-                                    e->theContent->get_return_type()),
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -481,14 +479,13 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case elem_expr_kind:
   {
-    xqtref_t typeName =
-      (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-       rtm.ANY_TYPE :
-       rtm.UNTYPED_TYPE);
+    contentType = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                   rtm.ANY_TYPE :
+                   rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::elementNode,
                                    NULL,
-                                   typeName,
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -497,13 +494,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case attr_expr_kind:
   {
-    attr_expr* e = static_cast<attr_expr*>(this);
-
     newType = tm->create_node_type(store::StoreConsts::attributeNode,
                                    NULL,
-                                   (e->theValueExpr == NULL ?
-                                    NULL :
-                                    e->theValueExpr->get_return_type()),
+                                   rtm.UNTYPED_ATOMIC_TYPE_ONE,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -524,10 +517,10 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       xqtref_t t = e->get_text()->get_return_type();
 
-      if (TypeOps::is_empty(get_type_manager(), *t))
+      if (t->is_empty())
         newType = t;
 
-      else if (TypeOps::type_min_cnt(tm, *t) == 0)
+      else if (t->min_card() == 0)
         q = TypeConstants::QUANT_QUESTION;
 
       nodeKind = store::StoreConsts::textNode;
@@ -546,7 +539,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     if (newType == NULL)
       newType = tm->create_node_type(nodeKind,
                                      NULL,
-                                     NULL,
+                                     contentType,
                                      q,
                                      false,
                                      false);
@@ -557,12 +550,27 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     newType = tm->create_node_type(store::StoreConsts::piNode,
                                    NULL,
-                                   NULL,
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
     break;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  {
+    newType = rtm.JSON_OBJECT_TYPE_ONE;
+    break;
+  }
+
+  case json_array_expr_kind:
+  {
+    newType = rtm.JSON_ARRAY_TYPE_ONE;
+    break;
+  }
+#endif
 
   case const_expr_kind:
   {
@@ -789,7 +797,7 @@ static xqtref_t axis_step_type(
     {
       const NodeXQType* rootElemType = reinterpret_cast<const NodeXQType*>(
                                        inContentType.getp());
-      if (rootElemType->get_content_type() == RTM.UNTYPED_TYPE)
+      if (rootElemType->get_content_type() == RTM.UNTYPED_TYPE.getp())
         inUntyped = true;
     }
   }

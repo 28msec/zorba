@@ -235,9 +235,9 @@ bool lexer::next( token *t ) {
         t->loc_ = cur_loc_;
         parse_number( c, &t->value_ );
         return true;
-      case 'f':
-      case 'n':
-      case 't':
+      case 'f': // false
+      case 'n': // null
+      case 't': // true
         t->type_ = parse_literal( c, &t->value_ );
         t->loc_ = cur_loc_;
         return true;
@@ -259,20 +259,55 @@ bool lexer::next( token *t ) {
 unicode::code_point lexer::parse_codepoint() {
   static char const hex_digits[] = "0123456789ABCDEF";
 
+  char c;
   zstring cp_string( "\\u" );           // needed only for error message
+  unicode::code_point high_surrogate = 0;
 
-  unicode::code_point cp = 0;
-  for ( int i = 1; i <= 4; ++i ) {
-    char c;
-    if ( !get_char( &c ) || !ascii::is_xdigit( c ) )
+  while ( true ) {
+    unicode::code_point cp = 0;
+    for ( int i = 1; i <= 4; ++i ) {
+      if ( !get_char( &c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      cp_string += c;
+      if ( !ascii::is_xdigit( c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      c = ascii::to_upper( c );
+      char const *const p = std::strchr( hex_digits, c );
+      assert( p );
+      cp = (cp << 4) | (p - hex_digits);
+    }
+
+    if ( unicode::is_high_surrogate( cp ) ) {
+      if ( high_surrogate )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      //
+      // It's easier to parse the \u for the low surrogate here rather than
+      // trying to manage state in parse_string().
+      //
+      if ( !get_char( &c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      cp_string += c;
+      if ( c != '\\' )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      if ( !get_char( &c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      cp_string += c;
+      if ( c != 'u' )
+        throw illegal_codepoint( cur_loc_, cp_string );
+
+      high_surrogate = cp;
+      continue;
+    }
+    if ( unicode::is_low_surrogate( cp ) ) {
+      if ( !high_surrogate )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      return unicode::convert_surrogate( high_surrogate, cp );
+    }
+    if ( high_surrogate )
       throw illegal_codepoint( cur_loc_, cp_string );
-    cp_string += c;
-    c = ascii::to_upper( c );
-    char const *const p = std::strchr( hex_digits, c );
-    assert( p );
-    cp = (cp << 4) | (p - hex_digits);
+
+    return cp;
   }
-  return cp;
 }
 
 token::type lexer::parse_literal( char first_c, token::value_type *value ) {

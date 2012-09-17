@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cstring>
 #include <string>
 #include <sstream>
 #include <assert.h>
@@ -41,8 +42,20 @@ static void parse_content_type( std::string const &s, std::string *mime_type,
   std::string::size_type pos = s.find( ';' );
   *mime_type = s.substr( 0, pos );
 
-  // The HTTP/1.1 spec says that the default charset is ISO-8859-1.
-  *charset = "ISO-8859-1";
+  if ( std::strncmp( mime_type->c_str(), "text/", 5 ) == 0 ) {
+    //
+    // RFC 2616: "Hypertext Transfer Protocol -- HTTP/1.1," section 3.7.1,
+    // "Canonicalization and Text Defaults":
+    //
+    //    The "charset" parameter is used with some media types to define the
+    //    character set (section 3.4) of the data. When no explicit charset
+    //    parameter is provided by the sender, media subtypes of the "text"
+    //    type are defined to have a default charset value of "ISO-8859-1" when
+    //    received via HTTP.
+    //
+    *charset = "ISO-8859-1";
+  } else
+    charset->clear();
 
   if ( pos != std::string::npos ) {
     //
@@ -74,7 +87,6 @@ namespace http_client {
   theHandler(aHandler),
   theCurl(aCurl),
   theErrorThrower(aErrorThrower),
-  theCurrentCharset("ISO-8859-1"),      // HTTP/1.1 says this is the default
   theStatus(-1),
   theStreamBuffer(0),
   theInsideRead(false),
@@ -109,7 +121,8 @@ namespace http_client {
 
       std::auto_ptr<std::istream> lStream;
       try {
-        if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+        if ( !theCurrentCharset.empty() &&
+             transcode::is_necessary( theCurrentCharset.c_str() ) ) {
           lStream.reset(
             new transcode::stream<std::istream>(
               theCurrentCharset.c_str(), theStreamBuffer

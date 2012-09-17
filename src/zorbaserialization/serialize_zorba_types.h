@@ -68,8 +68,8 @@ void operator&(Archiver& ar, const XQType*& obj);
 #ifdef ZORBA_WITH_BIG_INTEGER
 void operator&(Archiver& ar, IntegerImpl& obj);
 #else
-template<typename IntType>
-void operator&(Archiver& ar, IntegerImpl<IntType>& obj);
+void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj);
+void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj);
 #endif
 
 void operator&(Archiver& ar, Decimal& obj);
