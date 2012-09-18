@@ -127,6 +127,7 @@ static expr* translate_aux(
     StaticContextConsts::xquery_version_t maxLibModuleVersion =
       StaticContextConsts::xquery_version_unknown);
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2386,9 +2387,11 @@ void* begin_visit(const MainModule& v)
   // treat_as expr as well, so the ctx item will always appear as being used,
   // and as a result it will always have to be set.
   var_expr* var = bind_var(loc,
-                            DOT_VARNAME,
-                            var_expr::prolog_var,
-                            theSctx->get_context_item_type());
+                           DOT_VARNAME,
+                           var_expr::prolog_var,
+                           theSctx->get_context_item_type());
+
+  var->set_external(true);
   var->set_unique_id(1);
 
   //GlobalBinding b(var, NULL, true);

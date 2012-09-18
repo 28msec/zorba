@@ -1318,7 +1318,12 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
     for (csize i = 0; i < numVars; ++i)
     {
-      markForSerialization(e->get_arg_expr(i));
+      expr* arg = e->get_arg_expr(i);
+
+      if (arg == NULL)
+        continue;
+
+      markForSerialization(arg);
     }
 #if 1
     std::vector<VarInfo*> globalVars;
