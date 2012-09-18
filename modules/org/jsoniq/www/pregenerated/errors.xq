@@ -136,6 +136,11 @@ declare variable $jerr:JNUP0017 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0017
 declare variable $jerr:JNTY0018 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0018");
 
 (:~
+ :It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.
+:)
+declare variable $jerr:JNUP0019 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0019");
+
+(:~
  :objects or arrays don't have a string value
 :)
 declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003");

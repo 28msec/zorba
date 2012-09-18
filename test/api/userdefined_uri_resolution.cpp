@@ -46,7 +46,7 @@ class MySchemaURIMapper : public URIMapper
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
-      oUris.push_back("http://zorba-xquery.com/tutorials/helloworld.xsd");
+      oUris.push_back("http://www.zorba-xquery.com/tutorials/helloworld.xsd");
     }
   }
 };

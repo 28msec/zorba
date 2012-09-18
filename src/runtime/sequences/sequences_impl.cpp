@@ -88,10 +88,9 @@ static XQPCollator* getCollator(
       ERROR_LOC( loc )
     );
 
-  xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
-
   return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
