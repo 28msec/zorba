@@ -27,8 +27,9 @@ DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/A" VERSION 1.0
 DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/B" VERSION 1.0
   FILE "${CMAKE_CURRENT_SOURCE_DIR}/module-B.xq" TEST_ONLY)
 
+# This one also has a CONFIG_FILE
 DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/ext"
-  VERSION 2.0 FILE "ext2.xq" TEST_ONLY)
+  VERSION 2.0 FILE "ext2.xq" TEST_ONLY CONFIG_FILES ext2_config.txt.in)
 DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/ext"
   VERSION 1.0 FILE "ext.xq" TEST_ONLY)
 
