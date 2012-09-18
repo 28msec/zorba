@@ -129,9 +129,10 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lCodeItem, lIgnoreItem;
+  store::Item_t lCodeItem, lEnableElem;
   zstring lFileName;
   bool lIgnoreComments = true;
+  uint32_t lXQDocOptions;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
@@ -148,11 +149,44 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   // retrieve the module code to generate xqdoc for
   consumeNext(lCodeItem, theChildren[0].getp(), planState);
 
-  // retrieve ignore comments flag if available
   if (theChildren.size() > 1)
   {
-    consumeNext(lIgnoreItem, theChildren[1].getp(), planState);
-    lIgnoreComments = lIgnoreItem->getBooleanValue();
+    lXQDocOptions = XQueryCompiler::XQDocNone;
+
+    // retrieve enable config
+    consumeNext(lEnableElem, theChildren[1].getp(), planState);
+    store::Iterator_t lAttrIter = lEnableElem->getAttributes();
+    lAttrIter->open();
+    store::Item_t lAttr;
+
+    while (lAttrIter->next(lAttr))
+    {
+      zstring lLocalName = lAttr->getNodeName()->getLocalName();
+      zstring lValue = lAttr->getStringValue();
+
+      if(lValue != "true")
+        continue;
+
+      if (lLocalName == "comments")
+        lXQDocOptions |= XQueryCompiler::XQDocComments;
+      else if (lLocalName == "imports")
+        lXQDocOptions |= XQueryCompiler::XQDocImports;
+      else if (lLocalName == "variables")
+        lXQDocOptions |= XQueryCompiler::XQDocVariables;
+      else if (lLocalName == "functions")
+        lXQDocOptions |= XQueryCompiler::XQDocFunctions;
+      else if (lLocalName == "collections")
+        lXQDocOptions |= XQueryCompiler::XQDocCollections;
+      else if (lLocalName == "indexes")
+        lXQDocOptions |= XQueryCompiler::XQDocIndexes;
+
+    }
+
+  }
+  else
+  {
+    // if no option passed, everything is printed
+    lXQDocOptions = 0xFFFFFFFF;
   }
 
   try 
@@ -164,7 +198,7 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                     lFileName,
                     result,
                     planState.theLocalDynCtx->get_current_date_time(),
-                    lIgnoreComments);
+                    lXQDocOptions);
   }
   catch (XQueryException& e) 
   {

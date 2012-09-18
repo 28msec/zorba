@@ -45,7 +45,7 @@
   <zorba:function>
     <zorba:signature localname="xqdoc-content-sub" prefix="fn-zorba-xqdoc">
       <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:boolean</zorba:param>
+      <zorba:param>element()</zorba:param>
       <zorba:output>element()</zorba:output>
     </zorba:signature>
   </zorba:function>

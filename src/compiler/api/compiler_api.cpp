@@ -113,12 +113,12 @@ void XQueryCompiler::xqdoc(
     const zstring&        aFileName,
     store::Item_t&        aResult,
     const store::Item_t&  aDateTime,
-    bool                  aIgnoreComments)
+    uint32_t              aOptions)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
   print_parsetree_xqdoc(aResult, lAST.getp(),
-                        aFileName.c_str(), aDateTime, aIgnoreComments);
+                        aFileName.c_str(), aDateTime, aOptions);
 }
 
 

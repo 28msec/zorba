@@ -25,10 +25,19 @@
 
 namespace zorba {
 
-
 class XQueryCompiler
 {
 public:
+  enum XQDocOptions
+  {
+    XQDocNone = 0,
+    XQDocComments = 1,
+    XQDocImports = 2,
+    XQDocVariables = 4,
+    XQDocFunctions = 8,
+    XQDocCollections = 16,
+    XQDocIndexes = 32
+  };
 
   CompilerCB  * theCompilerCB;
 
@@ -44,7 +53,7 @@ public:
       const zstring& aFileName,
       store::Item_t& aResult,
       const store::Item_t& aDateTime,
-      bool aIgnoreComments);
+      uint32_t aOptions);
 
   parsenode_t parse(std::istream& aXQuery, const zstring& aFileName);
 
