@@ -67,7 +67,7 @@
         <value>"try/catch" expressions only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="Anotations">
+      <entry key="Annotations">
         <value>function and variable annotations only available in XQuery 3.0 or later</value>
       </entry>
 
@@ -156,32 +156,32 @@
 
       <value>$1</value>
 
-      <entry key="FuncReturn">
+      <entry key="NoReturnTypePromote_234">
         <value>$2 can not be promoted to return type $3 of function $4()</value>
       </entry>
 
-      <entry key="FuncParam">
+      <entry key="NoParamTypePromote_234">
         <value>$2 can not be promoted to parameter type $3 of function $4()</value>
       </entry>
 
-      <entry key="TypePromotion">
+      <entry key="NoTypePromote_23">
         <value>$2 can not be promoted to type $3</value>
       </entry>
 
-      <entry key="NoMultiSeqTypePromotion">
+      <entry key="NoMultiSeqTypePromotion_2">
         <value>sequence of more than one item can not be promoted to type $2</value>
       </entry>
 
-      <entry key="TypeMatch">
+      <entry key="NoTreatAs_23">
         <value>$2 can not be treated as type $3</value>
       </entry>
 
       <entry key="FormatNumber_2">
-        <value>the first parameter to the format-number() function is of type $2, which is not allowed</value>
+        <value>first parameter to format-number() function is type $2 that is not allowed</value>
       </entry>
 
       <entry key="JSONIQ_SELECTOR">
-        <value>Cannot atomize and/or cast value of type $2 to a string.</value>
+        <value>can not atomize and/or cast value of type $2 to string</value>
       </entry>
 
     </diagnostic>
@@ -2971,6 +2971,10 @@
       <value>collection iterator not open</value>
     </entry>
 
+    <entry key="DefaultCollection">
+      <value>default collection</value>
+    </entry>
+
     <entry key="DefaultCollation">
       <value>default collation</value>
     </entry>
@@ -3237,6 +3241,14 @@
 
     <entry key="NoSerializationCallbackForDocColMod">
       <value>document, collection, or module resolver required but no SerializationCallback given</value>
+    </entry>
+
+    <entry key="NoExternalFunction_2">
+      <value>"$2": external function not found</value>
+    </entry>
+
+    <entry key="NoExternalModuleFromDLL">
+      <value>required external module "$2" not found</value>
     </entry>
 
     <entry key="NoSerializationCallbackForModule">

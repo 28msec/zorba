@@ -28,7 +28,7 @@ declare function local:make-zed-defines( $doc ) as xs:string*
         if ( $entry/parent::diagnostic )
         then concat( $entry/parent::diagnostic/@code, "_", $key )
         else $key
-      return concat( "#define ZORBA_ZED_", $full_key, ' "~', $full_key, '"' )
+      return concat( "#define ZED_", $full_key, ' "~', $full_key, '"' )
 };
 
 declare variable $input external;

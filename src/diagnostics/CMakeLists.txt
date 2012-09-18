@@ -25,6 +25,7 @@ SET(DIAGNOSTICS_SRCS
    xquery_stack_trace.cpp
    user_error.cpp
    user_exception.cpp 
+   dict_zed_keys.h
    )
 
 ZORBA_DIAGNOSTIC_GENERATOR(

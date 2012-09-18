@@ -708,7 +708,7 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
         throw ZORBA_EXCEPTION(
           zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(
-                ZED( NoExternalFunction ),
+                ZED( NoExternalFunction_2 ),
                 BUILD_STRING( '{', theNamespace, '}', lLocalname )
                 )
         );

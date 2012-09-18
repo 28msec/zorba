@@ -42,7 +42,7 @@ namespace dict {
  * \endcode
  * \hideinitializer
  */
-#define ZED(DICT_KEY) ZORBA_ZED_##DICT_KEY
+#define ZED(DICT_KEY) ZED_##DICT_KEY
 
 /**
  * Looks up the given key in the language dictionary.

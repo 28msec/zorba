@@ -177,7 +177,7 @@ bool DynamicFnCallIterator::nextImpl(
     if (consumeNext(item, theChildren[0], planState))
     {
       RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
+      ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion_2),
                    GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
     }
 

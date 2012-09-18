@@ -468,7 +468,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
+    ERROR_PARAMS(ZED(XPTY0004_NoReturnTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
@@ -477,7 +477,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
+    ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
@@ -670,7 +670,7 @@ void TreatIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
+    ERROR_PARAMS(ZED(XPTY0004_NoReturnTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
@@ -679,14 +679,14 @@ void TreatIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
+    ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
   case TYPE_MATCH:
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypeMatch), valueType, targetType));
+    ERROR_PARAMS(ZED(XPTY0004_NoTreatAs_23), valueType, targetType));
     break;
   }
   case TREAT_EXPR:

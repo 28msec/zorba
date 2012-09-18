@@ -284,7 +284,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       if (!module)
       {
         throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-        ERROR_PARAMS(ZED(NoExternalModuleFromDLL), lURI));
+        ERROR_PARAMS(ZED(NoExternalModuleFromDLL_2), lURI));
       }
     }
     else
