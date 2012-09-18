@@ -365,6 +365,7 @@ public:
 
   ~ProbeIndexPointValueIterator();
 
+  bool isCountOnly() const { return theCountOnly; }
   bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
@@ -493,6 +494,7 @@ public:
 
   ~ProbeIndexRangeValueIterator();
 
+  bool isCountOnly() const { return theCountOnly; }
   bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;

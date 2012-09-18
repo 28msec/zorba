@@ -1449,10 +1449,34 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_VISITOR_DEFINITION(RefreshIndexIterator);
   PRINTER_VISITOR_DEFINITION(ValueIndexEntryBuilderIterator);
   PRINTER_VISITOR_DEFINITION(GeneralIndexEntryBuilderIterator);
-  PRINTER_VISITOR_DEFINITION(ProbeIndexPointValueIterator);
   PRINTER_VISITOR_DEFINITION(ProbeIndexPointGeneralIterator);
-  PRINTER_VISITOR_DEFINITION(ProbeIndexRangeValueIterator);
   PRINTER_VISITOR_DEFINITION(ProbeIndexRangeGeneralIterator);
+
+#define PRINTER_INDEX_PROBE_VISITOR_DEFINITION(class)                \
+  void PrinterVisitor::beginVisit ( const class& a )                 \
+  {                                                                  \
+    thePrinter.startBeginVisit(#class, ++theId);                     \
+    if (a.isCountOnly())                                             \
+    {                                                                \
+      thePrinter.addAttribute("count", "true");                      \
+    }                                                                \
+    if (a.hasSkip())                                                 \
+    {                                                                \
+      thePrinter.addAttribute("skip", "true");                       \
+    }                                                                \
+    printCommons(  &a, theId );                                      \
+    thePrinter.endBeginVisit( theId);                                \
+  }                                                                  \
+  void PrinterVisitor::endVisit ( const class& )                     \
+  {                                                                  \
+    thePrinter.startEndVisit();                                      \
+    thePrinter.endEndVisit();                                        \
+  }
+
+  PRINTER_INDEX_PROBE_VISITOR_DEFINITION(ProbeIndexPointValueIterator);
+  PRINTER_INDEX_PROBE_VISITOR_DEFINITION(ProbeIndexRangeValueIterator);
+
+#undef PRINTER_INDEX_PROBE_VISITOR_DEFINITION
 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
 
