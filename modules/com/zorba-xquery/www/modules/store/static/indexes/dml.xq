@@ -88,7 +88,7 @@ declare %an:variadic function idml:probe-index-point-value(
 (:~
  : <p>The probe-index-point-value-skip function is an extension of the
  : probe-index-point-value function. Additionally, it allows to skip index
- : items. 
+ : items.</p>
  :
  : @param $name The QName of the index to probe
  : @param $skip The number of index items to skip.
@@ -225,7 +225,7 @@ declare %an:variadic function idml:probe-index-range-value(
 (:~
  : <p>The probe-index-range-value-skip function is an extension of the
  : probe-index-range-value function. Additionally, it allows to skip index
- : items. 
+ : items.</p>
  :
  : @param $name The QName of the index to probe
  : @param $skip The number of index items to skip.
