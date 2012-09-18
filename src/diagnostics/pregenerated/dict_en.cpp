@@ -101,16 +101,16 @@ extern entry const dict_en[] = {
   { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
+  { "JNSE0012", "can not serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0013", "Cannot serialize value as JSON: $1" },
+  { "JNSE0013", "can not serialize value as JSON: $1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0014", "Cannot serialize a function item as JSON" },
+  { "JNSE0014", "can not serialize a function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
+  { "JNSE0022", "\"$1\": invalid serialization method for item type ($2)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0002", "pair value returns no, or more than one, item" },
@@ -457,7 +457,7 @@ extern entry const dict_en[] = {
   { "ZSTR0066", "$1: does not reference a node in collection $2" },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
-  { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
+  { "ZWST0004", "sequential FLWOR expr may not have the semantics you expect" },
   { "ZWST0005", "\"$1\": function caching not possible; $2" },
   { "ZWST0006", "\"$1\": function caching might not give the intended result because the function is declared as $2" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
@@ -593,8 +593,8 @@ extern entry const dict_en[] = {
   { "~FormatNumberIntegerPart", ": the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign" },
   { "~FormatNumberPercentPermille", ": a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
-  { "~FunctionFailedErrorCodeMessage_123", "$2 failed (error $3): $4" },
-  { "~FunctionFailed_12o", "$2 failed${: 3}" },
+  { "~FunctionFailedErrorCodeMessage_234", "$2 failed (error $3): $4" },
+  { "~FunctionFailed_23o", "$2 failed${: 3}" },
   { "~FunctionUndeclared_3", "function with arity $3 not declared" },
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
@@ -863,15 +863,15 @@ extern entry const dict_en[] = {
   { "~VariabledUndeclared", "undeclared variable" },
   { "~XMLSchema", "XML schema" },
   { "~XPST0003_Annotations", "function and variable annotations only available in XQuery 3.0 or later" },
-  { "~XPST0003_CountClause11", "\"count\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_CountClause30", "\"count\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_ModuleDeclNotInMain", "module declaration must not be in main module" },
-  { "~XPST0003_OuterForClause11", "\"outer-for\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_OuterForClause30", "\"outer-for\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_PiTarget", "\"XML\" not allowed as target of a direct processing-instruction constructor" },
   { "~XPST0003_Scripting", "scripting feature not available" },
   { "~XPST0003_StartEndTagMismatch_23", "start tag \"$2\" does not match end tag \"$3\"" },
-  { "~XPST0003_SwitchExpr11", "\"switch\" expressions only available in XQuery 3.0 or later" },
-  { "~XPST0003_TryCatchExpr11", "\"try/catch\" expressions only available in XQuery 3.0 or later" },
-  { "~XPST0003_WindowClause11", "\"window\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_SwitchExpr30", "\"switch\" expressions only available in XQuery 3.0 or later" },
+  { "~XPST0003_TryCatchExpr30", "\"try/catch\" expressions only available in XQuery 3.0 or later" },
+  { "~XPST0003_WindowClause30", "\"window\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_XQueryVersionAtLeast30_2", "\"$2\": XQuery version must be at least 3.0" },
   { "~XPTY0004_FormatNumber_2", "first parameter to format-number() function is type $2 that is not allowed" },
   { "~XPTY0004_JSONIQ_SELECTOR", "can not atomize and/or cast value of type $2 to string" },

@@ -47,23 +47,23 @@
         <value>"$2": XQuery version must be at least 3.0</value>
       </entry>
 
-      <entry key="OuterForClause11">
+      <entry key="OuterForClause30">
         <value>"outer-for" clause only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="WindowClause11">
+      <entry key="WindowClause30">
         <value>"window" clause only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="CountClause11">
+      <entry key="CountClause30">
         <value>"count" clause only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="SwitchExpr11">
+      <entry key="SwitchExpr30">
         <value>"switch" expressions only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="TryCatchExpr11">
+      <entry key="TryCatchExpr30">
         <value>"try/catch" expressions only available in XQuery 3.0 or later</value>
       </entry>
 
@@ -2515,6 +2515,7 @@
     <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
       <value>illegal empty string</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0010" name="JSONML_ARRAY_REQUIRES_BRACKET">
       <value>JsonML (array form) must start with '['</value>
     </diagnostic>
@@ -2651,7 +2652,7 @@
       jsoniq-serialization-multiple-items is set to no.
       </comment>
 
-      <value>Cannot serialize multiple top-level items as JSON</value>
+      <value>can not serialize multiple top-level items as JSON</value>
     </diagnostic>
 
     <diagnostic code="JNSE0013" if="defined(ZORBA_WITH_JSON)">
@@ -2660,20 +2661,20 @@
       the jsoniq-serialization-extensions serialization parameter
       set to false.</comment>
 
-      <value>Cannot serialize value as JSON: $1</value>
+      <value>can not serialize value as JSON: $1</value>
     </diagnostic>
 
     <diagnostic code="JNSE0014" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error to serialize a function with the
       JSON output method.</comment>
-      <value>Cannot serialize a function item as JSON</value>
+      <value>can not serialize a function item as JSON</value>
     </diagnostic>
 
     <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error to serialize a sequence that does
         not exist of exactly one document node with XML, HTML, XHTML, Text.
       </comment>
-      <value>$1: invalid serialization method for item type ($2)</value>
+      <value>"$1": invalid serialization method for item type ($2)</value>
     </diagnostic>
 
     <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
@@ -2751,7 +2752,7 @@
     </diagnostic>
 
     <diagnostic code="ZWST0004" name="AMBIGUOUS_SEQUENTIAL_FLWOR">
-      <value>Sequential FLWOR expr may not have the semantics you expect</value>
+      <value>sequential FLWOR expr may not have the semantics you expect</value>
     </diagnostic>
 
     <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
@@ -3075,11 +3076,11 @@
       <value>full-text was not enabled in this build</value>
     </entry>
 
-    <entry key="FunctionFailedErrorCodeMessage_123">
+    <entry key="FunctionFailedErrorCodeMessage_234">
       <value>$2 failed (error $3): $4</value>
     </entry>
 
-    <entry key="FunctionFailed_12o">
+    <entry key="FunctionFailed_23o">
       <value>$2 failed${: 3}</value>
     </entry>
 

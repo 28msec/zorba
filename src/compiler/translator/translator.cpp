@@ -6143,7 +6143,7 @@ void* begin_visit(const ForClause& v)
   if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause11)));
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause30)));
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -6362,7 +6362,7 @@ void* begin_visit(const WindowClause& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause30)));
 
   return no_state;
 }
@@ -7060,7 +7060,7 @@ void* begin_visit(const CountClause& v)
   TRACE_VISIT ();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause30)));
 
   return no_state;
 }
@@ -7124,7 +7124,7 @@ void* begin_visit(const SwitchExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr30)));
   }
 
   v.get_switch_expr()->accept(*this);
@@ -7523,7 +7523,7 @@ void* begin_visit(const TryExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr30)));
   }
 
   theTryStack.push_back(&v);
