@@ -98,7 +98,7 @@ extern entry const dict_en[] = {
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
+  { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
@@ -113,28 +113,28 @@ extern entry const dict_en[] = {
   { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0002", "Pair value returns no, or more than one, item." },
+  { "JNTY0002", "pair value returns no, or more than one, item" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0003", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0004", "Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)." },
+  { "JNTY0004", "can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0018", "Object or array selection needs exactly one parameter." },
+  { "JNTY0018", "object or array selection needs exactly one parameter" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0006", "\"$1\": pair to insert already exists in object." },
+  { "JNUP0006", "\"$1\": pair to insert already exists in object" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0007", "$1 - wrong type for object/array selector in update expression." },
+  { "JNUP0007", "\"$1\": wrong type for object/array selector in update expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0008", "$1" },
@@ -149,10 +149,10 @@ extern entry const dict_en[] = {
   { "JNUP0016", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0017", "Cannot replace with less or more than an item." },
+  { "JNUP0017", "can not replace with less or more than an item" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0019", "The content of an insert expression must evaluate to a sequence of objects." },
+  { "JNUP0019", "content of insert expression must evaluate to a sequence of objects" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
@@ -319,8 +319,8 @@ extern entry const dict_en[] = {
   { "ZAPI0043", "cannot serialize JSON item using current output method" },
   { "ZAPI0045", "cannot serialize sequence containing both JSON and XML items" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
-  { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },
-  { "ZAPI0090", "a non root element cannot be validated in place." },
+  { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection" },
+  { "ZAPI0090", "non root element cannot be validated in place" },
   { "ZCSE0001", "\"$1\": nonexistent input field" },
   { "ZCSE0002", "\"$1\": incompatible input field${: type=2}${, class=3}" },
   { "ZCSE0003", "\"$1\": unrecognized class field" },
@@ -454,7 +454,7 @@ extern entry const dict_en[] = {
   { "ZSTR0055", "streamable string has already been consumed" },
   { "ZSTR0060", "out of range: $1" },
   { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
-  { "ZSTR0066", "$1: does not reference a node in collection $2." },
+  { "ZSTR0066", "$1: does not reference a node in collection $2" },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
@@ -608,10 +608,10 @@ extern entry const dict_en[] = {
   { "~JNUP0007_Object", "\"$2\": can not be promoted to type xs:string" },
   { "~JNUP0007_ObjectArray", "\"$2\": can not be promoted to type xs:anyAtomicType" },
   { "~JNUP0008_Array", "\"$2\": target of an appending expression or of a position-inserting expression is not an array" },
-  { "~JNUP0008_Object", "\"$2\": target of a renaming expression or of a non-position-inserting expression is not an object." },
-  { "~JNUP0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item." },
-  { "~JNUP0016_Array", "\"$2\": selector cannot be resolved against supplied array." },
-  { "~JNUP0016_Object", "\"$2\": selector cannot be resolved against supplied object." },
+  { "~JNUP0008_Object", "\"$2\": target of a renaming expression or of a non-position-inserting expression is not an object" },
+  { "~JNUP0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item" },
+  { "~JNUP0016_Array", "\"$2\": selector cannot be resolved against supplied array" },
+  { "~JNUP0016_Object", "\"$2\": selector cannot be resolved against supplied object" },
   { "~JSON parser error", "JSON parser error" },
   { "~JSON serialization error", "JSON serialization error" },
   { "~JSON_ILLEGAL_CHARACTER", "'$2': illegal JSON character${ at 3}" },

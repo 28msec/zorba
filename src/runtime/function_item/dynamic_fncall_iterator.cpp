@@ -167,7 +167,7 @@ bool DynamicFnCallIterator::nextImpl(
   if (!consumeNext(targetItem, theChildren[0], planState))
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
+    ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                  "empty-sequence()",
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
@@ -308,7 +308,7 @@ bool DynamicFnCallIterator::nextImpl(
     xqtref_t type = tm->create_value_type(targetItem);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
+    ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                  type->toSchemaString(),
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }

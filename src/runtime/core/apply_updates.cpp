@@ -239,6 +239,7 @@ void apply_updates(
          e.diagnostic() == err::XUDY0017 ||
          e.diagnostic() == err::XUDY0014)) 
     {
+#if 0 /* pjl */
       XQueryException lNewE = 
       XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc));
 
@@ -250,6 +251,7 @@ void apply_updates(
       lNewE.set_diagnostic(e.diagnostic());
 
       throw lNewE;
+#endif
     }
     else
     {

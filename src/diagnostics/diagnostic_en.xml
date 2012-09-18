@@ -1964,11 +1964,11 @@
     </diagnostic>
 
     <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
-      <value>can not retrieve node-reference for a node that is not in a collection.</value>
+      <value>can not retrieve node-reference for a node that is not in a collection</value>
     </diagnostic>
      
     <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
-      <value>a non root element cannot be validated in place.</value>
+      <value>non root element cannot be validated in place</value>
     </diagnostic>
 
     <!--////////// Zorba Class Serialization Errors ////////////////////////-->
@@ -2442,7 +2442,7 @@
     </diagnostic>
 
     <diagnostic code="ZSTR0066" name="REFERENCED_NODE_NOT_IN_COLLECTION">
-      <value>$1: does not reference a node in collection $2.</value>
+      <value>$1: does not reference a node in collection $2</value>
     </diagnostic>
 
     <!--////////// XQuery Scripting ////////////////////////////////////////-->
@@ -2561,17 +2561,17 @@
 
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
-      <value>Pair value returns no, or more than one, item.</value>
+      <value>pair value returns no, or more than one, item</value>
     </diagnostic>
     
     <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if two pairs in an object constructor or in a simple object union have the same name.</comment>
-      <value>"$1": pair with the same name already exists in object.</value>
+      <value>"$1": pair with the same name already exists in object</value>
     </diagnostic>
     
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
-      <value>Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item).</value>
+      <value>can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)</value>
     </diagnostic>
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
@@ -2584,14 +2584,14 @@
     <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if upd:applyUpdates causes an object to contain two pairs with the same name.</comment>
 
-      <value>"$1": pair to insert already exists in object.</value>
+      <value>"$1": pair to insert already exists in object</value>
 
     </diagnostic>
     
     <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.</comment>
       
-      <value>$1 - wrong type for object/array selector in update expression.</value>
+      <value>"$1": wrong type for object/array selector in update expression</value>
       
       <entry key="Object">
         <value>"$2": can not be promoted to type xs:string</value>
@@ -2617,7 +2617,7 @@
       <value>$1</value>
 
       <entry key="Object">
-        <value>"$2": target of a renaming expression or of a non-position-inserting expression is not an object.</value>
+        <value>"$2": target of a renaming expression or of a non-position-inserting expression is not an object</value>
       </entry>
 
       <entry key="Array">
@@ -2625,7 +2625,7 @@
       </entry>
 
       <entry key="ObjectArray">
-        <value>"$2": target of a deleting or replacing expression is not a JSON item.</value>
+        <value>"$2": target of a deleting or replacing expression is not a JSON item</value>
       </entry>
 
     </diagnostic>
@@ -2682,29 +2682,29 @@
       <value>$1</value>
       
       <entry key="Object">
-        <value>"$2": selector cannot be resolved against supplied object.</value>
+        <value>"$2": selector cannot be resolved against supplied object</value>
       </entry>
 
       <entry key="Array">
-        <value>"$2": selector cannot be resolved against supplied array.</value>
+        <value>"$2": selector cannot be resolved against supplied array</value>
       </entry>
     </diagnostic>
     
     <diagnostic code="JNUP0017" if="defined(ZORBA_WITH_JSON)">
       <comment> It is a dynamic error if the value in a replace expression is not exactly a single item.</comment>
-      <value>Cannot replace with less or more than an item.</value>
+      <value>can not replace with less or more than an item</value>
     </diagnostic>
     
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
       
-      <value>Object or array selection needs exactly one parameter.</value>
+      <value>object or array selection needs exactly one parameter</value>
     </diagnostic>
     
     <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
       
-      <value>The content of an insert expression must evaluate to a sequence of objects.</value>
+      <value>content of insert expression must evaluate to a sequence of objects</value>
     </diagnostic>
     
     <!--////////// JSONIQ ///////////////////////////////////////////-->

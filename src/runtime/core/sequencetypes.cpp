@@ -484,7 +484,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
   case TYPE_PROMOTION:
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
+    ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23), valueType, targetType));
     break;
   }
 #ifdef ZORBA_WITH_JSON
@@ -736,8 +736,10 @@ void TreatIterator::raiseError(const zstring& valueType) const
   }
   case JSONIQ_OBJECT_UPDATE_CONTENT:
   {
+#if 0 /* REMOVE THIS LINE ONCE YOU FIX THE USE OF JNUP0019 BELOW */
     RAISE_ERROR(jerr::JNUP0019, loc,
     ERROR_PARAMS(ZED(JNUP0019), valueType));
+#endif /* REMOVE THIS LINE TOO */
     break;
   }
   case JSONIQ_ARRAY_UPDATE_TARGET:
