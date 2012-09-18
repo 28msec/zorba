@@ -495,6 +495,7 @@ protected:
 
   // helper vars to compute index sources
   bool                 theIsIndexDecl;
+  bool                 theWaitForIndexSourceLiteral;
   std::vector<zstring> theIndexSources;
 
 public:
@@ -511,7 +512,8 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult,
   theVersion("1.0"),
   theFactory(GENV_ITEMFACTORY),
   theIgnoreComments(aIgnoreComments),
-  theIsIndexDecl(false)
+  theIsIndexDecl(false),
+  theWaitForIndexSourceLiteral(false)
 {
   theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
   theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
@@ -883,10 +885,35 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theInvokedFunc.clear();
 }
 
-XQDOC_NO_BEGIN_TAG (FunctionCall)
+XQDOC_NO_BEGIN_TAG (StringLiteral)
+void end_visit(const StringLiteral& n, void*)
+{
+  if (theWaitForIndexSourceLiteral)
+  {
+    theIndexSources.push_back(n.get_strval());
+    theWaitForIndexSourceLiteral = false;
+  }
+}
+
+
+void *begin_visit(const FunctionCall& n)
+{
+  // search for index sources if function call is in an index declaration
+  if (theIsIndexDecl)
+  {
+    if (is_collection_call(n))
+    {
+      theWaitForIndexSourceLiteral = true;
+    }
+  }
+  return no_state;
+}
 
 void end_visit(const FunctionCall& n, void*)
 {
+  if (theIsIndexDecl)
+    theWaitForIndexSourceLiteral = false;
+
   rchandle<QName> lFuncName = n.get_fname();
 
   add_invoked_function(
@@ -897,47 +924,27 @@ void end_visit(const FunctionCall& n, void*)
       n.get_location());
 }
 
-void collect_index_sources(
-    const FunctionCall& n,
-    const zstring& aNS,
-    const zstring& aLocalName)
+bool is_collection_call(
+    const FunctionCall& n)
 {
-  if (aLocalName != "collection")
-    return;
+  zstring lLocalName = n.get_fname()->get_localname();
+  zstring lPrefix = n.get_fname()->get_prefix();
+  map<zstring, zstring>::iterator ite = theNamespaceMap.find(lPrefix);
+  if (ite == theNamespaceMap.end())
+    return false;
 
-  if (aNS != "http://www.zorba-xquery.com/modules/store/static/collections/dml"
-   && aNS != "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
-   && aNS != "http://www.w3.org/2005/xpath-functions"
+  zstring lNS = ite->second;
+
+  if (lLocalName != "collection")
+    return false;
+
+  if (lNS != "http://www.zorba-xquery.com/modules/store/static/collections/dml"
+   && lNS != "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
+   && lNS != "http://www.w3.org/2005/xpath-functions"
   )
-    return;
+    return false;
 
-  const ArgList& lCollCallArgList = *n.get_arg_list();
-  if (lCollCallArgList.size() != 1)
-    return;
-
-  const exprnode& lQNameCallExprNode = *(lCollCallArgList[0]);
-  if (typeid(lQNameCallExprNode) != typeid(FunctionCall))
-    return;
-
-  const FunctionCall& lQNameCast
-    = static_cast<const FunctionCall&>(lQNameCallExprNode);
-
-  if (lQNameCast.get_fname()->get_prefix() != "xs"
-   || lQNameCast.get_fname()->get_localname() != "QName")
-    return;
-
-  const ArgList& lQNameCastArgList = *lQNameCast.get_arg_list();
-  if (lQNameCastArgList.size() != 1)
-    return;
-
-  const exprnode& lStringLiteralExprNode = *(lQNameCastArgList[0]);
-  if (typeid(lStringLiteralExprNode) != typeid(StringLiteral))
-    return;
-
-  const StringLiteral& lStringLiteral
-    = static_cast<const StringLiteral&>(lStringLiteralExprNode);
-   
-  theIndexSources.push_back(lStringLiteral.get_strval());
+  return true;
 }
 
 void add_invoked_function (
@@ -974,12 +981,11 @@ void add_invoked_function (
   }
 
   zstring lNS = ite->second;
-  zstring lNS2 = lNS;
 
   ostringstream lKey;
-  lKey << lNS2 << aLocalName << "#" << aArity;
+  lKey << lNS << aLocalName << "#" << aArity;
 
-  theFactory->createTextNode(lUriText, lUriElem.getp(), lNS2);
+  theFactory->createTextNode(lUriText, lUriElem.getp(), lNS);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -1001,12 +1007,6 @@ void add_invoked_function (
 
   // collect distinct invocation elements
   theInvokedFunc[lKey.str()] = lInvokedElem;
-
-  // compute index sources if necessary
-  if (theIsIndexDecl)
-  {
-    collect_index_sources(n, lNS, aLocalName);
-  }
 }
 
 
@@ -1195,9 +1195,8 @@ void end_visit(const CollectionDecl& n, void*)
   print_annotations(lAnns, lCollectionElem);
 }
 
-XQDOC_NO_BEGIN_END_TAG (StringLiteral)
-
-void *begin_visit(const AST_IndexDecl& n) {
+void *begin_visit(const AST_IndexDecl& n)
+{
   theIndexSources.clear();
   theIsIndexDecl = true;
   return no_state;
