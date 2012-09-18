@@ -14,6 +14,45 @@
  !  limitations under the License.
  -->
 
+<!--
+ ! Please use the following convention for sub-message keys.
+ !
+ ! If a sub-message key has at least one $n number in it (where 'n' is [1-9]),
+ ! append an underscore ('_') followed by all the number(s) used in the value.
+ ! If the last $n is optional, append a lowercase 'o'.
+ !
+ ! For example, given this "throw" in C++ code:
+ !
+ !    throw XQUERY_EXCEPTION(
+ !      err::XPTY0004,
+ !      ERROR_PARAMS(
+ !        ZED( BadType_23o ), *domainType,
+ !        ZED( NoTreatAs_4 ), *declaredType
+ !      ),
+ !      ERROR_LOC( get_loc() )
+ !    );
+ !
+ ! The "bad type" and "no treat as" keys are defined as:
+ !
+ !    <entry key="BadType_23o">
+ !      <value>"$2": invalid type${: 3}</value>
+ !    </entry>
+ !
+ !    <entry key="NoTreatAs_4">
+ !      <value>can not treat as "$4"</value>
+ !    </entry>
+ !
+ ! In the "throw" above, you can tell just by looking at it that all the
+ ! required parameters are given and that each has the correct number/position.
+ !
+ !      ERROR_PARAMS(
+ !        ZED( BadType_23o ), // #1
+ !        *domainType,        // #2
+ !        ZED( NoTreatAs_4 ), // #3
+ !        *declaredType       // #4
+ !      ),
+ -->
+
 <diagnostic-list lang="en">
 
   <namespace prefix="err">
