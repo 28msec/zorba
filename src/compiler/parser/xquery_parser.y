@@ -1016,8 +1016,9 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RBRACE
 
 
-%right AT FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%right FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
 %right DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%right AT
 %right MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
 
@@ -6526,22 +6527,32 @@ JSONPairList :
     ;
 
 JSONInsertExpr :
-        INSERT JSON LBRACE JSONPairList RBRACE INTO ExprSingle
+        INSERT JSON ExprSingle INTO ExprSingle
         {
           $$ = new JSONObjectInsertExpr(LOC(@$),
-                                        static_cast<JSONPairList*>($4),
-                                        $7);
+                                        $3,
+                                        $5);
         }
-    |   INSERT JSON LBRACK Expr RBRACK INTO ExprSingle AT POSITION ExprSingle
+    |   INSERT JSON JSONPairList INTO ExprSingle
         {
-          $$ = new JSONArrayInsertExpr(LOC(@$), $4, $7, $10);
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($3);
+          $$ = new JSONObjectInsertExpr(
+              LOC(@$),
+              new JSONDirectObjectConstructor(
+                  LOC(@$),
+                  jpl),
+              $5);
+        }
+    |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
+        {
+          $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
     ;
 
 JSONAppendExpr :
-        APPEND JSON LBRACK Expr RBRACK TO ExprSingle
+        APPEND JSON ExprSingle INTO ExprSingle
         {
-          $$ = new JSONArrayAppendExpr(LOC(@$), $4, $7);
+          $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
         }
     ;
 

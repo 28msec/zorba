@@ -609,6 +609,7 @@ SimpleCollection::CollectionIter::~CollectionIter()
     theCollection->theLatch.unlock();)
 }
 
+
 void SimpleCollection::CollectionIter::skip()
 {
   // skip by position
@@ -645,8 +646,8 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (!theHaveLock) 
   {
-    throw ZORBA_EXCEPTION(zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
-    ERROR_PARAMS(ZED(CollectionIteratorNotOpen)));
+    throw ZORBA_EXCEPTION(zerr::ZDDY0019_COLLECTION_ITERATOR_NOT_OPEN,
+    ERROR_PARAMS(theCollection->getName()->getStringValue()));
   }
 
   if (theIterator == theEnd) 
