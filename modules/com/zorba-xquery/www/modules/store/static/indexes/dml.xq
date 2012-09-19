@@ -86,6 +86,31 @@ declare %an:variadic function idml:probe-index-point-value(
 
 
 (:~
+ : <p>The probe-index-point-value-skip function is an extension of the
+ : probe-index-point-value function. Additionally, it allows to skip index
+ : items.</p>
+ :
+ : @param $name The QName of the index to probe
+ : @param $skip The number of index items to skip.
+ : @param $key_i the search keys used to probe the index with. The i-th search
+ :        key corresponds to the i-th key expression in the index declaration.
+ : @return The set of domain nodes that satisfy the search condition.
+ :
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
+ : @error zerr:ZDDY0025 if the number of search keys passed as arguments is not
+ :        the same as the number of keys declared for the index.
+ : @error err:XPTY0004 if a non-empty seach key is given, whose type does not match 
+ :        the sequence type specified in the corresponding keyspec.
+ :
+ :)
+declare %an:variadic function idml:probe-index-point-value-skip(
+  $name as xs:QName, 
+  $skip as xs:integer,
+  $key_i as xs:anyAtomicType?) as node()*  external; 
+
+
+(:~
  : <p>The probe-index-point-general function retrieves from an index the domain
  : nodes associated by general equality with a given <strong>search sequence
  : </strong>. The search sequence consists of an arbitrary number of <strong>
@@ -189,6 +214,58 @@ declare function idml:probe-index-point-general(
  :)
 declare %an:variadic function idml:probe-index-range-value(
   $name                 as xs:QName, 
+  $lowerBound-i         as xs:anyAtomicType?,
+  $upperBound-i         as xs:anyAtomicType?,
+  $haveLowerBound-i     as xs:boolean,
+  $haveUpperBound-i     as xs:boolean,
+  $lowerBoundIncluded-i as xs:boolean,
+  $upperBoundIncluded-i as xs:boolean) as node()*  external;
+
+
+(:~
+ : <p>The probe-index-range-value-skip function is an extension of the
+ : probe-index-range-value function. Additionally, it allows to skip index
+ : items.</p>
+ :
+ : @param $name The QName of the index to probe
+ : @param $skip The number of index items to skip.
+ : @param $lowerBound-i The lower bound in a range of key values.
+ : @param $upperBound-i The upper bound in a range of key values.
+ : @param $haveLowerBound-i If false, then there is no lower bound, or 
+ :        equivalently, the lower bound is -INFINITY. Otherwise, the lower 
+ :        bound is the one given by the lowerBound-i value. 
+ : @param $haveUpperBound-i If false, then there is no upper bound, or 
+ :        equivalently, the upper bound is +INFINITY. Otherwise, the upper 
+ :        bound is the one given by the upperBound-i value. 
+ : @param $lowerBoundIncluded-i If false, then the range is open from below, 
+ :        i.e., the lowerBound-i value is not considered part of the 
+ :        range. Otherwise, the range is closed from below, i.e., the 
+ :        lowerBound-i value is part of the range. 
+ : @param $upperBoundIncluded-i If false, then the range is open from above, 
+ :        i.e., the upperBound-i value is not considered part of the 
+ :        range. Otherwise, the range is closed from above, i.e., the 
+ :        upperBound-i value is part of the range.
+ : @return The set of domain nodes that satisfy the search condition.
+ :
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
+ : @error zerr:ZDDY0025 if the number of rangespecs passed as arguments
+ :        is zero or greater than the number of keys declared for the index.
+ : @error zerr:ZDDY0026 if the index is not a range index.
+ : @error err:XPTY0004  if $haveLowerBound-i is true and $lowerBound-i is an
+ :        atomic item whose type does not match the sequence type specified
+ :        by the i<sup>th</sup> keyspec, or $haveUpperBound-i is true and 
+ :        $upperBound-i is an atomic item whose type does not match the 
+ :        sequence type specified by the i<sup>th</sup> keyspec.
+ : @error zerr:ZDDY0034 if (a) the index is general (in which case there is 
+ :        only one rangespac), (b) the index is untyped, (c) there is both a
+ :        lower and an upper bound, and (d) if T1 and T2 are the types of the 
+ :        lower and upper bound, neither T1 is a subtype of T2 nor T2 is a 
+ :        subtype of T1.   
+ :)
+declare %an:variadic function idml:probe-index-range-value-skip(
+  $name                 as xs:QName, 
+  $skip                 as xs:integer,
   $lowerBound-i         as xs:anyAtomicType?,
   $upperBound-i         as xs:anyAtomicType?,
   $haveLowerBound-i     as xs:boolean,
