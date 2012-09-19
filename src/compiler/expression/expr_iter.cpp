@@ -120,7 +120,7 @@ void ExprIterator::next()
 
     for (; theClausesIter != theClausesEnd; ++(theClausesIter))
     {
-      c = (theClausesIter)->getp();
+      c = *theClausesIter;
 
       if (c->get_kind() == flwor_clause::for_clause)
       {
@@ -136,17 +136,17 @@ void ExprIterator::next()
       {
         for (theWincondIter = 0; theWincondIter < 2; ++theWincondIter)
         {
-          wc = static_cast<window_clause *>(theClausesIter->getp());
+          wc = static_cast<window_clause *>(*theClausesIter);
 
           wincond = (theWincondIter == 0 ?
-                     wc->theWinStartCond.getp() :
-                     wc->theWinStopCond.getp());
+                     wc->theWinStartCond :
+                     wc->theWinStopCond );
 
           if (wincond != 0)
             EXPR_ITER_NEXT(wincond->theCondExpr);
         }
 
-        wc = static_cast<window_clause *>(theClausesIter->getp());
+        wc = static_cast<window_clause *>(*theClausesIter);
 
         EXPR_ITER_NEXT(wc->theDomainExpr);
       }

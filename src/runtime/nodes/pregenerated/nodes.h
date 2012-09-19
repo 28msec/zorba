@@ -738,6 +738,36 @@ public:
 };
 
 
+/**
+ * 
+ * Author: Zorba Team
+ */
+class NodeCopyIterator : public NaryBaseIterator<NodeCopyIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(NodeCopyIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeCopyIterator,
+    NaryBaseIterator<NodeCopyIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  NodeCopyIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<NodeCopyIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~NodeCopyIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

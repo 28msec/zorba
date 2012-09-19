@@ -472,7 +472,7 @@ expr* MarkConsumerNodeProps::apply(
       if (rCtx.theIsInOrderedMode)
         (**iter)->setIgnoresSortedNodes(ANNOTATION_FALSE);
 
-      (**iter)->setIgnoresDuplicateNodes(ANNOTATION_TRUE);
+      (**iter)->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
 
       iter.next();
     }
@@ -858,8 +858,8 @@ void MarkNodeCopyProps::applyInternal(
 
     if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
     {
-      std::vector<copy_clause_t>::const_iterator ite = e->begin();
-      std::vector<copy_clause_t>::const_iterator end = e->end();
+      std::vector<copy_clause*>::const_iterator ite = e->begin();
+      std::vector<copy_clause*>::const_iterator end = e->end();
 
       for (; ite != end; ++ite)
       {
@@ -1318,12 +1318,17 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
     for (csize i = 0; i < numVars; ++i)
     {
-      markForSerialization(e->get_arg_expr(i));
+      expr* arg = e->get_arg_expr(i);
+
+      if (arg == NULL)
+        continue;
+
+      markForSerialization(arg);
     }
 #if 1
     std::vector<VarInfo*> globalVars;
     e->get_sctx()->getVariables(globalVars, true, true);
-  
+
     FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
     {
       var_expr* globalVar = (*ite)->getVar();

@@ -397,8 +397,8 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 #ifdef ZORBA_WITH_JSON
 
 const char*
-static_context::JSONIQ_NS =
-"http://www.jsoniq.org/";
+static_context::JSONIQ_DM_NS =
+"http://www.jsoniq.org/types";
 
 const char*
 static_context::JSONIQ_FN_NS =
@@ -538,6 +538,9 @@ bool static_context::is_builtin_module(const zstring& ns)
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
+#ifdef ZORBA_WITH_JSON
+            ns == JSONIQ_FN_NS ||
+#endif /* ZORBA_WITH_JSON */
             ns == ZORBA_XML_FN_NS);
   }
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
@@ -1039,8 +1042,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     else
       ar & theParent;
 
-    if(theParent)
-      theParent->addReference(theParent->getSharedRefCounter() SYNC_PARAM2(theParent->getRCLock()));
+    if (theParent)
+      theParent->addReference(SYNC_CODE(theParent->getRCLock()));
   }
 
   ar & theModuleNamespace;

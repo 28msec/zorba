@@ -922,7 +922,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (!consumeNext(posItem, theTargetPosIter, planState))
     {
-      ZORBA_ASSERT(false);
+      goto done;
     }
 
     startPos = posItem->getIntegerValue();
@@ -1006,6 +1006,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
+ done:
   STACK_END(state);
 }
 

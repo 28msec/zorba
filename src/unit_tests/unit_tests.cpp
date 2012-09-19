@@ -61,6 +61,8 @@ void initializeTestList()
   libunittests["unique_ptr"] = test_unique_ptr;
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
 
+  libunittests["uuid"] = test_uuid;
+
 #ifndef ZORBA_HAVE_UNORDERED_MAP
   libunittests["unordered_map"] = test_unordered_map;
 #endif /* ZORBA_HAVE_UNORDERED_MAP */
