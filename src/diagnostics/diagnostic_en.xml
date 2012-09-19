@@ -2120,6 +2120,10 @@
       <value>"$1": index domain expression yields nodes that are not in collection</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0019" name="COLLECTION_ITERATOR_NOT_OPEN">
+      <value>"$1": iterator on collection is not open</value>
+    </diagnostic>
+
     <diagnostic code="ZDDY0021" name="INDEX_NOT_DECLARED">
       <value>"$1": undeclared index</value>
     </diagnostic>

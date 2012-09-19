@@ -790,13 +790,16 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
       ite->second.getp()->getVariables(vars, false, false, true);
     }
     
-    std::vector<VarInfo*>::const_iterator lVarIte = vars.begin();
-    std::vector<VarInfo*>::const_iterator lVarEnd = vars.end();
+    std::vector<VarInfo*>::const_iterator varIte = vars.begin();
+    std::vector<VarInfo*>::const_iterator varEnd = vars.end();
     std::vector<store::Item_t> extVars;
    
-    for(; lVarIte != lVarEnd; ++lVarIte)
-    { 
-      extVars.push_back((*lVarIte)->getName());
+    for(; varIte != varEnd; ++varIte)
+    {
+      if ((*varIte)->getName()->getStringValue() == static_context::DOT_VAR_NAME)
+        continue;
+
+      extVars.push_back((*varIte)->getName());
     } 
 
    Iterator_t vIter = new VectorIterator(extVars, theDiagnosticHandler);
