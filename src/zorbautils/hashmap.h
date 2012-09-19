@@ -983,7 +983,7 @@ virtual void garbageCollect()
 };
 
 template <class T, class V, class C>
-const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.6;
+const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.7;
 
 } // namespace zorba
 

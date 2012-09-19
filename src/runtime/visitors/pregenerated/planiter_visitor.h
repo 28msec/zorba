@@ -339,6 +339,12 @@ namespace zorba{
     class JSONNullIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
+    class JSONIsNullIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONObjectInsertIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
     class JSONArrayInsertIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -499,6 +505,8 @@ namespace zorba{
     class LeastCommonAncestor;
 
     class FnPathIterator;
+
+    class NodeCopyIterator;
 
     class AbsIterator;
 
@@ -1177,6 +1185,14 @@ public:
     virtual void endVisit   ( const JSONNullIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONIsNullIterator& ) = 0;
+    virtual void endVisit   ( const JSONIsNullIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONObjectInsertIterator& ) = 0;
+    virtual void endVisit   ( const JSONObjectInsertIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONArrayInsertIterator& ) = 0;
     virtual void endVisit   ( const JSONArrayInsertIterator& ) = 0;
 #endif
@@ -1415,6 +1431,9 @@ public:
 
     virtual void beginVisit ( const FnPathIterator& ) = 0;
     virtual void endVisit   ( const FnPathIterator& ) = 0;
+
+    virtual void beginVisit ( const NodeCopyIterator& ) = 0;
+    virtual void endVisit   ( const NodeCopyIterator& ) = 0;
 
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;

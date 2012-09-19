@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "expr_manager.h"
 
 #include "mem_manager.h"

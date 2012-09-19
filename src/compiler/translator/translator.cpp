@@ -128,6 +128,7 @@ static expr* translate_aux(
     StaticContextConsts::xquery_version_t maxLibModuleVersion =
       StaticContextConsts::xquery_version_unknown);
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1356,23 +1357,33 @@ void normalize_fo(fo_expr* foExpr)
 
   const function* func = foExpr->get_func();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N &&
-      (n < 7 || (n - 1) % 6 != 0))
+  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
+      func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
   {
-    const store::Item* qname = NULL;
+    csize nStarterParams =
+      (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N 
+       ? 1 : 2);
 
-    if (n > 0)
-      qname = foExpr->get_arg(0)->getQName(theSctx);
+    if  (n < (6 + nStarterParams) || (n - nStarterParams) % 6 != 0)
+    {
+      const store::Item* qname = NULL;
 
-    if (qname != NULL)
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue(), "index", n-1, "multiple of 6"));
-    }
-    else
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS("anonymous", "index", n-1, "multiple of 6"));
+      if (n > 0)
+        qname = foExpr->get_arg(0)->getQName(theSctx);
+
+      zstring lMsgPart;
+      ztd::to_string(nStarterParams, &lMsgPart);
+      lMsgPart += " + multiple of 6";
+      if (qname != NULL)
+      {
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS(qname->getStringValue(), "index", n, lMsgPart));
+      }
+      else
+      {
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS("anonymous", "index", n, lMsgPart));
+      }
     }
   }
 
@@ -1389,11 +1400,27 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
+    {
+      if (i <= 1)
+        paramType = sign[i];
+      else
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+    }
     else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
       else if (i % 6 == 1 || i % 6 == 2)
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+      else
+        paramType = theRTM.BOOLEAN_TYPE_ONE;
+    }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+    {
+      if (i <= 1)
+        paramType = sign[i];
+      else if (i % 6 == 2 || i % 6 == 3)
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
@@ -2363,9 +2390,11 @@ void* begin_visit(const MainModule& v)
   // treat_as expr as well, so the ctx item will always appear as being used,
   // and as a result it will always have to be set.
   var_expr* var = bind_var(loc,
-                            DOT_VARNAME,
-                            var_expr::prolog_var,
-                            theSctx->get_context_item_type());
+                           DOT_VARNAME,
+                           var_expr::prolog_var,
+                           theSctx->get_context_item_type());
+
+  var->set_external(true);
   var->set_unique_id(1);
 
   //GlobalBinding b(var, NULL, true);
@@ -8519,6 +8548,43 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  SimpleMapExpr :: PathExpr |
+                   SimpleMapExpr "!" PathExpr
+
+  This creates a left-deep tree of SimpleMapExpr nodes: the right child of each
+  such node is a PathExpr, and the left child is another SimpleMapExpr except
+  from the left-most SimpleMapExpr node, whose left chils is a PathExpr.
+********************************************************************************/
+void* begin_visit(const SimpleMapExpr& v)
+{
+  TRACE_VISIT();
+
+  v.get_left_expr()->accept(*this); 
+
+  expr* left  = pop_nodestack();
+
+  flwor_expr* flworExpr = wrap_expr_in_flwor(left, true);
+
+  v.get_right_expr()->accept(*this); 
+
+  expr* right = pop_nodestack();
+
+  flworExpr->set_return_expr(right);
+
+  pop_scope();
+
+  push_nodestack(flworExpr);
+
+  return NULL;
+}
+
+void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  PathExpr                                                                   //
@@ -8855,7 +8921,7 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
 
 /*******************************************************************************
 
-  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+  RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
   Note: If a RelativePathExpr consists of a single StepExpr, a RelativePathExpr
   node is generated whose left child is a ContextItemExpr and its right child
@@ -10570,17 +10636,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     FunctionConsts::FunctionKind lKind = f->getKind();
     switch (lKind)
     {
-      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N:
-      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
-      {
-        FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
-
-        resultExpr = theExprManager->create_fo_expr(theRootSctx,
-                                 foExpr->get_loc(),
-                                 BuiltinFunctionLibrary::getFunction(fkind),
-                                 foExpr);
-        break;
-      }
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N:
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N:
       {
@@ -10915,7 +10970,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   xqtref_t srcType = sourceExpr->get_return_type();
 
   if (!theSctx->is_feature_set(feature::hof) ||
-      (!TypeOps::is_subtype(tm, *srcType, *theRTM.ANY_FUNCTION_TYPE_STAR)))
+      (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR)))
   {
     if (numArgs != 1)
     {
@@ -11428,12 +11483,10 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
   nameExpr = wrap_in_atomization(nameExpr);
 
   nameExpr = theExprManager->
-  create_promote_expr(theRootSctx,
-                      nameExpr->get_loc(),
-                      nameExpr,
-                      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                      PromoteIterator::JSONIQ_PAIR_NAME, // JNTY0001
-                      NULL);
+  create_cast_expr(theRootSctx,
+                   nameExpr->get_loc(),
+                   nameExpr,
+                   GENV_TYPESYSTEM.STRING_TYPE_ONE);
 
   valueExpr = theExprManager->
   create_fo_expr(theRootSctx,
@@ -13164,10 +13217,8 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 #ifdef ZORBA_WITH_JSON
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  csize numPairs = v.numPairs();
-  std::vector<expr*> args(1 + 2 * numPairs);
-
   expr* targetExpr = pop_nodestack();
+  expr* contentExpr = pop_nodestack();
 
   targetExpr = wrap_in_type_match(targetExpr,
                                   rtm.JSON_OBJECT_TYPE_ONE,
@@ -13175,21 +13226,24 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                                   TreatIterator::JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
                                   NULL);
 
+  contentExpr = wrap_in_type_match(contentExpr,
+                                  rtm.JSON_OBJECT_TYPE_STAR,
+                                  loc,
+                                  TreatIterator::JSONIQ_OBJECT_UPDATE_CONTENT, // JNUP0019
+                                  NULL);
+
+  std::vector<expr*> args(2);
   args[0] = targetExpr;
-
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    expr* nameExpr = pop_nodestack();
-    expr* valueExpr = pop_nodestack();
-
-    args[2 * (numPairs - 1 - i) + 1] = nameExpr;
-    args[2 * (numPairs - 1 - i) + 2] = valueExpr;
-  }
+  args[1] = theExprManager->create_json_object_expr(
+      theRootSctx,
+      loc,
+      contentExpr,
+      false);
 
   expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_OBJECT_INSERT_N),
+                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_OBJECT_INSERT_2),
                  args);
 
   push_nodestack(updExpr);
