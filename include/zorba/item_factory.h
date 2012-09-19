@@ -778,6 +778,17 @@ namespace zorba {
       assignElementTypedValue(Item& aElement,
                               std::vector<Item>& aTypedValue) = 0;
 
+      /**
+       * Create an atomic item having a user-defined atomic type.
+       *
+       * @param aBaseItem the base item of the item to create.
+       * @param aTypeName the name of the type of the item to create.
+       *
+       * @return a new atomic item having the given user-defined atomic type.
+       */
+      virtual Item
+      createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName) = 0;
+
   }; // class ItemFactory
 
 } // namespace zorba

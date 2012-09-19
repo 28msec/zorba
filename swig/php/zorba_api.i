@@ -31,6 +31,7 @@ TSRMLS_FETCH();
 
 %}
 
+%include "std_string.i"
 
 %{
 #include "zend_exceptions.h"

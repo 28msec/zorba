@@ -23,19 +23,11 @@
 
 std::string ZorbaCMDProperties::check_args () {
 
-  if(qBeforeF()){
-     return "Extra arguments found on command line. Possible reason: misplaced -f option (try '-f -q filename' instead of '-q -f filename'). Use -h for help.";
-  }
-
-  if(unknownOption()){
-    return "Extra arguments found on command line. Use -h for help.";
-  }
-
   if(queriesOrFilesBegin() == queriesOrFilesEnd()) {
     return "No queries submitted \nUsage: zorba -q '1 + 1' execute an inline query \n zorba -f -q file.xq execute a query from a file \n Use -h for help.";
   }
 
-  /*if (getPositionalArgs ().size () != 0) {
+  if (getPositionalArgs ().size () != 0) {
     QueriesOrFiles_t::const_iterator lIter;
     for (lIter = queriesOrFilesBegin(); lIter != queriesOrFilesEnd();
          ++lIter)
@@ -45,7 +37,7 @@ std::string ZorbaCMDProperties::check_args () {
     }
     
     return "Extra arguments found on command line. Use -h for help.";
-  }*/
+  }
 
   if ( theBoundarySpace.size() != 0 )
   {

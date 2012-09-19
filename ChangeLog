@@ -2,11 +2,57 @@ Zorba - The XQuery Processor
 
 version 2.7
 
+New Features:
+  * New XQuery 3.0 simple map operator http://www.w3.org/TR/xquery-30/#id-map-operator
+  * New node copy function added to the node module
+  * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
+  * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
+    beginning of the XML document (requested in bug #1016606).
+  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq
+    functions. jn:object is also supported.
+  * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
+    takes options to parameterize the parsing process (see bug #1047547)
+  * Implemented semantics of null for comparison and arithmetics operations.
+  * Positional pagination support for index probes 
+
+Optimizations:
+  * New memory management for compiler expressions (no more ref counting)
+  * Exteneded some optimization rules (variable inlining/elimination and positional
+    predicate rewrite) to general flwor expressions.
+  * Use char* instead of zstring as the hashmap key in json objects
+  * Removed document-order sorting after the index value probe functions.
+
 Bug Fixes/Other Changes:
+  * Fixed bug #867227 (Improved error message for missing commas)
+  * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
+  * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
+  * Fixed bug #1034990 (text serialization with jsoniq fails)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
+  * Now using native UUID libraries.
+  * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
+  * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
+  * Fixed bug #1046411 (automatic boxing of mutli-item sequence appearing as the
+    value of an object pair)
+  * Fixed bug #1046410 (automatic conversion to null of empty sequence appearing
+    as the value of an object pair)
+  * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
+  * Fixed bug #1042840 (qname pool free-list corruption)
+  * Fixed bug #866984 (better error message for an eval error)
+  * Fixed bug #1047538 (jsoniq: SourceFinder::findLocalNodeSources missing
+    json expressions)
+  * Fixed #1052383 (accessing context item in eval expr)
+  * Fixed bug #1046559 (dynamic resolution between function invocation and jsoniq
+    navigation)
+  * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
+  * Fixed bug #1046415 (pair name cast to string)
+  * Fixed bug #1045902 (file:last-modified returns current date time)
+  * Fixed bug #1043976 (compiler warning in serialiser code)
+  * Fixed bug #866994 (a better error message when collection iterator not open)
+  * Fixed bug #1039254 (allow empty sequence as position value in positional LET
+    var iterator)
 
 
 version 2.6
