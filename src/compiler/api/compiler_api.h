@@ -28,17 +28,6 @@ namespace zorba {
 class XQueryCompiler
 {
 public:
-  enum XQDocOptions
-  {
-    XQDocNone = 0,
-    XQDocComments = 1,
-    XQDocImports = 2,
-    XQDocVariables = 4,
-    XQDocFunctions = 8,
-    XQDocCollections = 16,
-    XQDocIndexes = 32
-  };
-
   CompilerCB  * theCompilerCB;
 
 public:

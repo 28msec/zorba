@@ -32,6 +32,7 @@
 #include "context/uri_resolver.h"
 
 #include "compiler/api/compiler_api.h"
+#include "compiler/api/compiler_api_consts.h"
 #include "compiler/api/compilercb.h"
 #include "context/dynamic_context.h"
 
@@ -151,7 +152,7 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (theChildren.size() > 1)
   {
-    lXQDocOptions = XQueryCompiler::XQDocNone;
+    lXQDocOptions = xqdoc_component_none;
 
     // retrieve enable config
     consumeNext(lEnableElem, theChildren[1].getp(), planState);
@@ -168,17 +169,17 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         continue;
 
       if (lLocalName == "comments")
-        lXQDocOptions |= XQueryCompiler::XQDocComments;
+        lXQDocOptions |= xqdoc_component_comments;
       else if (lLocalName == "imports")
-        lXQDocOptions |= XQueryCompiler::XQDocImports;
+        lXQDocOptions |= xqdoc_component_imports;
       else if (lLocalName == "variables")
-        lXQDocOptions |= XQueryCompiler::XQDocVariables;
+        lXQDocOptions |= xqdoc_component_variables;
       else if (lLocalName == "functions")
-        lXQDocOptions |= XQueryCompiler::XQDocFunctions;
+        lXQDocOptions |= xqdoc_component_functions;
       else if (lLocalName == "collections")
-        lXQDocOptions |= XQueryCompiler::XQDocCollections;
+        lXQDocOptions |= xqdoc_component_collections;
       else if (lLocalName == "indexes")
-        lXQDocOptions |= XQueryCompiler::XQDocIndexes;
+        lXQDocOptions |= xqdoc_component_indexes;
 
     }
 

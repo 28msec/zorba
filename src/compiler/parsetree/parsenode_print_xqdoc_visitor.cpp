@@ -20,7 +20,7 @@
 #include <ostream>
 #include <map>
 
-#include <compiler/api/compiler_api.h>
+#include <compiler/api/compiler_api_consts.h>
 #include <compiler/parsetree/parsenode_print_xquery_visitor.h>
 #include <compiler/parsetree/parsenode_visitor.h>
 
@@ -276,7 +276,7 @@ void print_namespaces()
 
 store::Item_t print_comment(store::Item_t& result, const XQDocComment* aComment)
 {
-  if (theOptions & XQueryCompiler::XQDocComments || aComment == 0) {
+  if (theOptions & xqdoc_component_comments || aComment == 0) {
     return NULL;
   }
   list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
@@ -563,7 +563,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
                                 lModuleQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
-  if (theOptions & XQueryCompiler::XQDocImports)
+  if (theOptions & xqdoc_component_imports)
   {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(theImports, theResult,
@@ -571,7 +571,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
                                   true, false, theNSBindings, theBaseURI);
   }
 
-  if (theOptions & XQueryCompiler::XQDocVariables)
+  if (theOptions & xqdoc_component_variables)
   {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(theVariables, theResult,
@@ -579,7 +579,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
                                   true, false, theNSBindings, theBaseURI);
   }
 
-  if (theOptions & XQueryCompiler::XQDocCollections)
+  if (theOptions & xqdoc_component_collections)
   {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(theCollections, theResult,
@@ -587,7 +587,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
                                   true, false, theNSBindings, theBaseURI);
   }
 
-  if (theOptions & XQueryCompiler::XQDocIndexes)
+  if (theOptions & xqdoc_component_indexes)
   {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(theIndexes, theResult,
@@ -595,7 +595,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
                                   true, false, theNSBindings, theBaseURI);
   }
 
-  if (theOptions & XQueryCompiler::XQDocFunctions)
+  if (theOptions & xqdoc_component_functions)
   {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(theFunctions, theResult,
@@ -741,7 +741,7 @@ XQDOC_NO_BEGIN_TAG (FunctionDecl)
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
-  if (theOptions & XQueryCompiler::XQDocFunctions)
+  if (theOptions & xqdoc_component_functions)
   {
     store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName, lParamsQName;
     store::Item_t lFuncElem, lNameElem, lSigElem, lParamsElem, lFuncText, lNameText, lSigText;
@@ -918,7 +918,7 @@ void end_visit(const StringLiteral& n, void*)
 void *begin_visit(const FunctionCall& n)
 {
   // search for index sources if function call is in an index declaration
-  if (theOptions & XQueryCompiler::XQDocIndexes && theIsIndexDecl)
+  if (theOptions & xqdoc_component_indexes && theIsIndexDecl)
   {
     if (is_collection_call(n))
     {
@@ -930,10 +930,10 @@ void *begin_visit(const FunctionCall& n)
 
 void end_visit(const FunctionCall& n, void*)
 {
-  if (theOptions & XQueryCompiler::XQDocIndexes && theIsIndexDecl)
+  if (theOptions & xqdoc_component_indexes && theIsIndexDecl)
     theWaitForIndexSourceLiteral = false;
 
-  if (theOptions & XQueryCompiler::XQDocFunctions)
+  if (theOptions & xqdoc_component_functions)
   {
     rchandle<QName> lFuncName = n.get_fname();
 
@@ -1036,7 +1036,7 @@ XQDOC_NO_BEGIN_TAG (GlobalVarDecl)
 
 void end_visit(const GlobalVarDecl& n, void*)
 {
-  if (theOptions & XQueryCompiler::XQDocVariables)
+  if (theOptions & xqdoc_component_variables)
   {
     store::Item_t lVariableQName, lUriQName;
     store::Item_t lVariableElem, lUriElem, lUriText;
@@ -1091,7 +1091,7 @@ XQDOC_NO_BEGIN_TAG (ModuleImport)
 
 void end_visit(const ModuleImport& n, void*)
 {
-  // info: (theOptions & XQueryCompiler::XQDocImports) check not done
+  // info: (theOptions & xqdoc_component_imports) check not done
   //       because imported namespaces are needed by other components
 
   store::Item_t lImportQName, lUriQName, lTypeQName;
@@ -1136,7 +1136,7 @@ XQDOC_NO_BEGIN_TAG (SchemaImport)
 
 void end_visit(const SchemaImport& n, void*)
 {
-  // info: (theOptions & XQueryCompiler::XQDocImports) check not done
+  // info: (theOptions & xqdoc_component_imports) check not done
   //       because imported namespaces are needed by other components
   
   store::Item_t lImportQName, lUriQName, lTypeQName;
@@ -1193,7 +1193,7 @@ XQDOC_NO_BEGIN_TAG (CollectionDecl)
 
 void end_visit(const CollectionDecl& n, void*)
 {
-  if (theOptions & XQueryCompiler::XQDocCollections)
+  if (theOptions & xqdoc_component_collections)
   {
     store::Item_t lCollectionQName, lUriQName;
     store::Item_t lCollectionElem, lUriElem, lUriText;
@@ -1231,7 +1231,7 @@ void end_visit(const CollectionDecl& n, void*)
 
 void *begin_visit(const AST_IndexDecl& n)
 {
-  if (theOptions & XQueryCompiler::XQDocIndexes)
+  if (theOptions & xqdoc_component_indexes)
   {
     theIndexSources.clear();
     theIsIndexDecl = true;
@@ -1241,7 +1241,7 @@ void *begin_visit(const AST_IndexDecl& n)
 
 void end_visit(const AST_IndexDecl& n, void*)
 {
-  if (theOptions & XQueryCompiler::XQDocIndexes)
+  if (theOptions & xqdoc_component_indexes)
   {
     theIsIndexDecl = false;
 
