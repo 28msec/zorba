@@ -76,6 +76,43 @@ context_test_2(Zorba* aZorba)
   return result;
 }
 
+
+bool
+context_test_3(Zorba* aZorba)
+{
+  XQuery_t lQuery = aZorba->compileQuery("declare variable $x := 2; $x + position()");
+
+  ItemFactory* lFactory = aZorba->getItemFactory();
+
+  Item lItem = lFactory->createInteger(4);
+
+  DynamicContext* lDCtx = lQuery->getDynamicContext();
+
+  try 
+  {
+    (void)lDCtx->setContextPosition(lItem);
+
+    std::ostringstream stream;
+    stream << lQuery;
+
+    std::string result = stream.str();
+
+    if (result != "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n6")
+    {
+      std::cout << result << std::endl;
+      return false;
+    }
+  }
+  catch (ZorbaException &e)
+  {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+
 int
 test_dynamic_context(int argc, char* argv[])
 {
@@ -91,6 +128,11 @@ test_dynamic_context(int argc, char* argv[])
 
   std::cout << "executing Context Size test 2" << std::endl;
   res = context_test_2(lZorba);
+  if (!res) return 1;
+  std::cout << "Passed" << std::endl;
+
+  std::cout << "executing Context Size test 3" << std::endl;
+  res = context_test_3(lZorba);
   if (!res) return 1;
   std::cout << "Passed" << std::endl;
 

@@ -357,6 +357,9 @@ void EvalIterator::setExternalVariables(
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 
+    if (!evalDctx->is_set_variable(outerVar->getId()))
+      continue;
+
     evalDctx->get_variable(outerVar->getId(),
                            outerVar->getName(),
                            loc,

@@ -13,6 +13,7 @@ New Features:
   * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
     takes options to parameterize the parsing process (see bug #1047547)
   * Implemented semantics of null for comparison and arithmetics operations.
+  * Positional pagination support for index probes 
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
@@ -42,12 +43,16 @@ Bug Fixes/Other Changes:
   * Fixed bug #866984 (better error message for an eval error)
   * Fixed bug #1047538 (jsoniq: SourceFinder::findLocalNodeSources missing
     json expressions)
+  * Fixed #1052383 (accessing context item in eval expr)
   * Fixed bug #1046559 (dynamic resolution between function invocation and jsoniq
     navigation)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
   * Fixed bug #1046415 (pair name cast to string)
   * Fixed bug #1045902 (file:last-modified returns current date time)
   * Fixed bug #1043976 (compiler warning in serialiser code)
+  * Fixed bug #866994 (a better error message when collection iterator not open)
+  * Fixed bug #1039254 (allow empty sequence as position value in positional LET
+    var iterator)
 
 
 version 2.6

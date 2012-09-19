@@ -356,6 +356,7 @@ extern entry const dict_en[] = {
   { "ZDDY0016", "\"$1\": multiple attemps to create a collection in the same snapshot" },
   { "ZDDY0017", "node does not belong to any collection" },
   { "ZDDY0018", "all nodes must be in same collection" },
+  { "ZDDY0019", "\"$1\": iterator on collection is not open" },
   { "ZDDY0020", "\"$1\": index domain expression yields nodes that are not in collection" },
   { "ZDDY0021", "\"$1\": undeclared index" },
   { "ZDDY0022", "\"$1\": index already exists" },
