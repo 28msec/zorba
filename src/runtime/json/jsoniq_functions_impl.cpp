@@ -135,8 +135,20 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
   lTypeValueItem->getStringValue2(lTypeNameString);
   if (lTypeNameString == "node()")
   {
-    // TODO parse XML
-    throw "No angle brackets! (yet)";
+    store::LoadProperties lProperties;
+    lProperties.setStoreDocument(false);
+    if (lValueValueItem->isStreamable())
+    {
+      aResult = GENV.getStore().loadDocument(
+            "", "", &(lValueValueItem->getStream()), lProperties);
+    }
+    else
+    {
+      zstring lXmlString;
+      lValueValueItem->getStringValue2(lXmlString);
+      std::istringstream lStream(lXmlString.c_str());
+      aResult = GENV.getStore().loadDocument("", "", lStream, lProperties);
+    }
   }
   else
   {
