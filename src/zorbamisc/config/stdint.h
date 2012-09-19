@@ -29,17 +29,17 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef _MSC_STDINT_H_ // [
+#define _MSC_STDINT_H_
+
 #ifndef _MSC_VER // [
 #include <stdint.h>
 #else
 
-#ifndef _MSC_STDINT_H_ // [
-#define _MSC_STDINT_H_
-
 // Exclude this file for Visual Studio > 2010 (_MSC_VER == 1600 for Visual Studio 2010)
-#if _MSC_VER <= 1600 // [
+//#if _MSC_VER <= 1600 // [
 
-#if _MSC_VER > 1000
+#if (_MSC_VER > 1000)
 #pragma once
 #endif
 
@@ -51,7 +51,7 @@
 #if (_MSC_VER < 1300) && defined(__cplusplus)
    extern "C++" {
 #endif
-#     include <wchar.h>
+#include <wchar.h>
 #if (_MSC_VER < 1300) && defined(__cplusplus)
    }
 #endif
@@ -60,7 +60,7 @@
 
 // 7.18.1.1 Exact-width integer types
 #ifndef U_HAVE_INT8_T
-#if _MSC_VER < 1600 // Visual Studio 10 already defines this type
+#if (_MSC_VER < 1600) // Visual Studio 10 already defines this type
 typedef __int8            int8_t;
 #endif //_MSC_VER < 1600
 #define U_HAVE_INT8_T  1
@@ -75,7 +75,9 @@ typedef unsigned __int32  uint32_t;
 typedef unsigned __int64  uint64_t;
 
 // 7.18.1.2 Minimum-width integer types
+#if (_MSC_VER < 1600) // Visual Studio 10 already defines this type
 typedef int8_t    int_least8_t;
+#endif
 typedef int16_t   int_least16_t;
 typedef int32_t   int_least32_t;
 typedef int64_t   int_least64_t;
@@ -239,7 +241,7 @@ typedef uint64_t  uintmax_t;
 
 #endif // __STDC_CONSTANT_MACROS ]
 
-#endif // _MSC_VER < 1600 ]
+//#endif // _MSC_VER < 1600 ]
 
 #endif // _MSC_STDINT_H_ ]
 
