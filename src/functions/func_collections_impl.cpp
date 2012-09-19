@@ -40,6 +40,29 @@ hasNoCopyPragma(expr& e)
 /*******************************************************************************
 
 ********************************************************************************/
+void
+processPragma(zorba::expr* e, const std::vector<zorba::pragma*>& p)
+{
+  for (std::vector<zorba::pragma*>::const_iterator lIter = p.begin();
+       lIter != p.end();
+       ++lIter)
+  {
+    pragma* p = *lIter;
+    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
+    {
+      if (p->theQName->getLocalName() == "no-copy")
+      {
+        e->get_ccb()->add_pragma(e, p);
+        e->setContainsPragma(ANNOTATION_TRUE);
+      }
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t static_collections_dml_collection::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -116,6 +139,14 @@ PlanIter_t static_collections_ddl_delete::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_insert_nodes::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_insert_nodes::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -137,6 +168,14 @@ PlanIter_t static_collections_dml_insert_nodes::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_insert_nodes_first::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_insert_nodes_first::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -158,6 +197,14 @@ PlanIter_t static_collections_dml_insert_nodes_first::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_insert_nodes_last::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_insert_nodes_last::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -179,6 +226,14 @@ PlanIter_t static_collections_dml_insert_nodes_last::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_insert_nodes_before::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_insert_nodes_before::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -200,6 +255,14 @@ PlanIter_t static_collections_dml_insert_nodes_before::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_insert_nodes_after::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_insert_nodes_after::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -221,6 +284,14 @@ PlanIter_t static_collections_dml_insert_nodes_after::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_apply_insert_nodes::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -250,6 +321,14 @@ bool static_collections_dml_apply_insert_nodes::propagatesInputNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_apply_insert_nodes_first::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
     CompilerCB* cb,
     static_context* sctx,
@@ -284,20 +363,7 @@ zorba::static_collections_dml_apply_insert_nodes_last::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  for (std::vector<zorba::pragma*>::const_iterator lIter = p.begin();
-       lIter != p.end();
-       ++lIter)
-  {
-    pragma* p = *lIter;
-    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
-    {
-      if (p->theQName->getLocalName() == "no-copy")
-      {
-        e->get_ccb()->add_pragma(e, p);
-        e->setContainsPragma(ANNOTATION_TRUE);
-      }
-    }
-  }
+  processPragma(e, p);
 }
 
 PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
@@ -329,6 +395,14 @@ bool static_collections_dml_apply_insert_nodes_last::propagatesInputNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_apply_insert_nodes_before::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
   CompilerCB* cb,
   static_context* sctx,
@@ -359,6 +433,14 @@ static_collections_dml_apply_insert_nodes_before::propagatesInputNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+void
+zorba::static_collections_dml_apply_insert_nodes_after::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragma(e, p);
+}
+
 PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
   CompilerCB* cb,
   static_context* sctx,

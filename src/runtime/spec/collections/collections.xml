@@ -416,6 +416,7 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -475,6 +476,7 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -533,6 +535,7 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -595,6 +598,7 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -657,6 +661,7 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -714,6 +719,7 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -782,6 +788,7 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -923,6 +930,7 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
@@ -995,6 +1003,7 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
