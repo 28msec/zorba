@@ -99,7 +99,7 @@ parseQName(store::Item_t& aResult,
     aFactory->createQName(aResult,
                           aQNameString.substr(2, lPos - 2),
                           aPrefix,
-                          aQNameString.substr(lPos));
+                          aQNameString.substr(lPos + 1));
   }
   else
   {
