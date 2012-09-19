@@ -523,7 +523,6 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS ||
             ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS ||
             ns == ZORBA_SCHEMA_FN_NS ||
-            ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_REFLECTION_FN_NS ||
@@ -592,6 +591,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_XQDOC_FN_NS ||
 #ifdef ZORBA_WITH_JSON
             ns == JSONIQ_FN_NS ||
 #endif

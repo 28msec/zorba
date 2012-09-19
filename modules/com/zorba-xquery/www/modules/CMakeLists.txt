@@ -82,6 +82,8 @@ DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xml")
 DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc")
+DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd 
+  URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
 IF(NOT ZORBA_NO_FULL_TEXT)
   DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0

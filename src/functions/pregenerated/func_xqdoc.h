@@ -69,11 +69,11 @@ public:
 };
 
 
-//fn-zorba-xqdoc:xqdoc-content-sub
-class fn_zorba_xqdoc_xqdoc_content_sub : public function
+//fn-zorba-xqdoc:xqdoc-content-options-impl
+class fn_zorba_xqdoc_xqdoc_content_options_impl : public function
 {
 public:
-  fn_zorba_xqdoc_xqdoc_content_sub(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xqdoc_xqdoc_content_options_impl(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

@@ -61,6 +61,11 @@ xquery version "3.0";
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
+import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+
+import schema namespace opt =
+  "http://www.zorba-xquery.com/modules/xqdoc-options";
+
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 
@@ -98,3 +103,20 @@ declare %an:nondeterministic function xqd:xqdoc(
 declare function xqd:xqdoc-content(
   $module as xs:string
 ) as element() external;
+
+declare %private function xqd:xqdoc-content-options-impl(
+  $module as xs:string,
+  $options as element()
+) as element() external;
+
+declare function xqd:xqdoc-content(
+  $module as xs:string,
+  $options as element(opt:enable)
+) as element()
+{
+  let $xqdoc-options := if ( schema:is-validated( $options ) ) then
+                              $options
+                            else
+                              validate { $options }
+  return xqd:xqdoc-content-options-impl($module, $xqdoc-options)
+};
