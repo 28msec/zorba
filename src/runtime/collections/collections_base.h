@@ -162,6 +162,10 @@ public:
     ar & theIsDynamic;
     ar & theNeedToCopy;
   }
+
+  bool isDynamic() const { return theIsDynamic; }
+
+  bool needToCopy() const { return theNeedToCopy; }
 };
 
 } // namespace zorba
