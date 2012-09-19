@@ -10,6 +10,8 @@ New Features:
   * jn:parse-json can parse multiple top-level JSON items
   * New semantics of null for comparison and arithmetics operations
   * Positional pagination support for index probes 
+  * Recognize the {http://www.zorba-xquery.com/extensions}no-copy pragma to avoid
+  copying nodes before insertion into a collection.
 
 Optimizations:
   * Improved memory management for compiler expressions (no more ref counting)

@@ -1163,7 +1163,7 @@ void flwor_expr::compute_scripting_kind()
 /*******************************************************************************
 
 ********************************************************************************/
-expr* flwor_expr::clone(substitution_t& subst) const
+expr* flwor_expr::cloneImpl(substitution_t& subst) const
 {
   ulong numClauses = num_clauses();
 
