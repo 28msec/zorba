@@ -796,7 +796,11 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
    
     for(; varIte != varEnd; ++varIte)
     {
-      if ((*varIte)->getName()->getStringValue() == static_context::DOT_VAR_NAME)
+      zstring varName = (*varIte)->getName()->getStringValue();
+
+      if (varName == static_context::DOT_VAR_NAME ||
+          varName == static_context::DOT_POS_VAR_NAME ||
+          varName == static_context::DOT_SIZE_VAR_NAME)
         continue;
 
       extVars.push_back((*varIte)->getName());
