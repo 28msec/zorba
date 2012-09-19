@@ -1011,10 +1011,11 @@ void extendCollisionArea()
   csize numCollisionEntries = oldSize - theNumBuckets;
   csize newSize = theNumBuckets + 2 * numCollisionEntries;
 
+  /*
   std::cout << "Extending collision area" << std::endl
             << "numBuckets = " << theNumBuckets << " numCollisionEntries = "
             << numCollisionEntries << std::endl << std::endl;
-
+  */
   //foo();  for setting a breakpoint
 
   theHashTab.resize(newSize);
