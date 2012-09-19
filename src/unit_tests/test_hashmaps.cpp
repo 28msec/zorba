@@ -146,6 +146,7 @@ int test_hashmaps(int argc, char* argv[])
     std::cout << "Load factor = " << load_factor << std::endl
               << "Num zstring insertions = " << num << std::endl
               << "HashMap entries = " << map2.size() << std::endl
+              << "HashMap buckets = " << map2.bucket_count() << std::endl
               << "HashMap capacity = " << map2.capacity() << std::endl
               << "Time = " << time << std::endl;
   }
@@ -191,8 +192,8 @@ int test_hashmaps(int argc, char* argv[])
 
     std::cout << "Load factor = " << load_factor << std::endl
               << "Num zstring insertions = " << num << std::endl
-              << "HashMap entries = " << map4.size() << std::endl
-              << "HashMap capacity = " << map4.bucket_count() << std::endl
+              << "UnorderedMap entries = " << map4.size() << std::endl
+              << "UnorderedMap buckets = " << map4.bucket_count() << std::endl
               << "Time = " << time << std::endl;
   }
   else if (test_id == 5)
@@ -244,6 +245,9 @@ int test_hashmaps(int argc, char* argv[])
     std::cout << "Invalid test id" << std::endl;
     return 2;
   }
+
+  delete [] int_buf;
+  delete [] str_buf;
 
   return 0;
 }

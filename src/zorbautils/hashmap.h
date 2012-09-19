@@ -67,6 +67,17 @@ public:
   {
   }
 
+  HashEntry(const HashEntry<T, V>& other)
+  {
+    theIsFree = other.theIsFree;
+    theNext = other.theNext;
+    if (!theIsFree)
+    {
+      new (&theKey) T(other.key());
+      new (&theValue) V(other.value());
+    }
+  }
+
   ~HashEntry()
   {
     if (!theIsFree)
@@ -78,10 +89,35 @@ public:
 
   HashEntry<T, V>& operator = (const HashEntry<T, V>& other)
   {
+    if (theIsFree)
+    {
+      assert(false);
+
+      if (!other.theIsFree)
+      {
+        new (&theKey) T(other.key());
+        new (&theValue) V(other.value());
+      }
+    }
+    else
+    {
+      if (!other.theIsFree)
+      {
+        key() = other.key();
+        value() = other.value();
+      }
+      else
+      {
+        assert(false);
+
+        key().~T();
+        value().~V();
+      }
+    }
+
     theIsFree = other.theIsFree;
     theNext = other.theNext;
-    key() = other.key();
-    value() = other.value();
+
     return *this;
   }
 
@@ -788,7 +824,7 @@ protected:
 ********************************************************************************/
 csize computeCapacity(csize size) const
 {
-  return size + 32 + size / (5 - (theLoadFactor - 0.7)) ;
+  return size + 32 + size / (5 - 10 * (theLoadFactor - 0.7)) ;
 }
 
 
