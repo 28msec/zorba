@@ -56,7 +56,7 @@ std::ostringstream __oss;
 #define OUTDENT     std::string(printdepth--, ' ')
 #define UNDENT      printdepth--
 
-#define BEGIN_VISITOR() void *visitor_state; if (NULL == (visitor_state = v.begin_visit (*this))) return
+#define BEGIN_VISITOR() void* visitor_state; if (NULL == (visitor_state = v.begin_visit(*this))) return
 #define END_VISITOR() v.end_visit (*this, visitor_state)
 #define ACCEPT( m ) do { if ((m) != NULL) (m)->accept (v); } while (0)
 #define ACCEPT_CHK( m ) do { ZORBA_ASSERT ((m) != NULL);  (m)->accept (v); } while (0)
@@ -628,11 +628,19 @@ void ModuleImport::accept( parsenode_visitor &v ) const
 
   VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
 ********************************************************************************/
-VFO_DeclList::VFO_DeclList(
-    const QueryLoc& loc_)
+VFO_DeclList::VFO_DeclList(const QueryLoc& loc)
   :
-  parsenode(loc_)
+  parsenode(loc)
 {
+}
+
+
+void VFO_DeclList::push_back(const rchandle<parsenode>& decl)
+{
+  theDecls.push_back(decl);
+
+  bool isIndexDecl = (dynamic_cast<AST_IndexDecl*>(decl.getp()) != NULL);
+  theIndexDeclFlags.push_back(isIndexDecl);
 }
 
 
@@ -640,12 +648,24 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
-  for (std::vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
-       it != vfo_hv.end();
-       ++it)
+  csize numDecls = theDecls.size();
+
+  for (csize i = 0; i < numDecls; ++i)
   {
-    ACCEPT_CHK (*it);
+    if (theIndexDeclFlags[i])
+      continue;
+
+    ACCEPT_CHK(theDecls[i]);
   }
+
+  for (csize i = 0; i < numDecls; ++i)
+  {
+    if (!theIndexDeclFlags[i])
+      continue;
+
+    ACCEPT_CHK(theDecls[i]);
+  }
+
   END_VISITOR();
 }
 
@@ -700,36 +720,25 @@ void CtxItemDecl::accept(parsenode_visitor& v) const
   VarValue ::= ExprSingle
 
   VarDefaultValue ::= ExprSingle
-
-
-  Local declarations:
-  -------------------
-
-  VarDeclStatement ::= ("local" Annotation*)? "variable"
-                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
-VarDecl::VarDecl(
+GlobalVarDecl::GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
     SequenceType* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
-    bool global,
     bool external)
   :
   VarDeclWithInit(loc, varname, type_decl, init_expr),
   theIsExternal(external),
-  theIsGlobal(global),
   theAnnotations(annotations)
 {
 }
 
 
-void VarDecl::accept(parsenode_visitor& v) const
+void GlobalVarDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(theAnnotations);
   ACCEPT(theType);
   ACCEPT(theExpr);
   END_VISITOR();
@@ -769,9 +778,9 @@ void FunctionDecl::accept(parsenode_visitor& v) const
 }
 
 
-ulong FunctionDecl::get_param_count() const
+csize FunctionDecl::get_param_count() const
 {
-  return theParams == NULL ? 0 : (ulong)theParams->size();
+  return theParams == NULL ? 0 : theParams->size();
 }
 
 
@@ -1196,9 +1205,9 @@ void BlockBody::add(parsenode* statement)
   {
     VarDeclStmt* vdecl = static_cast<VarDeclStmt*>(statement);
 
-    ulong numDecls = vdecl->size();
+    csize numDecls = vdecl->size();
 
-    for (ulong i = 0; i < numDecls; ++i)
+    for (csize i = 0; i < numDecls; ++i)
     {
       theStatements.push_back(vdecl->getDecl(i));
     }
@@ -1222,9 +1231,10 @@ VarDeclStmt::VarDeclStmt(const QueryLoc& loc, AnnotationListParsenode* annotatio
 {
 }
 
+
 void VarDeclStmt::add(parsenode* decl)
 {
-  VarDecl* varDecl = dynamic_cast<VarDecl*>(decl);
+  LocalVarDecl* varDecl = dynamic_cast<LocalVarDecl*>(decl);
   if (varDecl != NULL)
   {
     varDecl->set_annotations(theAnnotations);
@@ -1233,9 +1243,41 @@ void VarDeclStmt::add(parsenode* decl)
   theDecls.push_back(decl);
 }
 
+
 void VarDeclStmt::accept(parsenode_visitor& v) const
 {
   assert(false);
+}
+
+
+/*******************************************************************************
+  Local declarations:
+  -------------------
+
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
+********************************************************************************/
+LocalVarDecl::LocalVarDecl(
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceType* type_decl,
+    exprnode* init_expr,
+    AnnotationListParsenode* annotations)
+  :
+  VarDeclWithInit(loc, varname, type_decl, init_expr),
+  theAnnotations(annotations)
+{
+}
+
+
+void LocalVarDecl::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theAnnotations);
+  ACCEPT(theType);
+  ACCEPT(theExpr);
+  END_VISITOR();
 }
 
 
@@ -2863,6 +2905,32 @@ void Pragma::accept( parsenode_visitor &v ) const
 // [67] PragmaContents
 // -------------------
 /* folded into [66] */
+
+
+/*******************************************************************************
+
+********************************************************************************/
+SimpleMapExpr::SimpleMapExpr(
+    const QueryLoc& loc,
+    rchandle<exprnode> left,
+    rchandle<exprnode> right)
+  :
+  exprnode(loc),
+  left_expr_h(left),
+  right_expr_h(right)
+{
+}
+
+
+void SimpleMapExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+
+  ACCEPT(left_expr_h);
+  ACCEPT(right_expr_h);
+
+  END_VISITOR();
+}
 
 
 /*******************************************************************************
@@ -5811,11 +5879,11 @@ void JSON_Test::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONObjectInsertExpr::JSONObjectInsertExpr(
     const QueryLoc& loc,
-    const JSONPairList* pairs,
+    const exprnode* contentExpr,
     const exprnode* targetExpr)
   :
   exprnode(loc),
-  thePairs(pairs),
+  theContentExpr(contentExpr),
   theTargetExpr(targetExpr)
 {
 }
@@ -5823,7 +5891,7 @@ JSONObjectInsertExpr::JSONObjectInsertExpr(
 
 JSONObjectInsertExpr::~JSONObjectInsertExpr()
 {
-  delete thePairs;
+  delete theContentExpr;
   delete theTargetExpr;
 }
 
@@ -5831,7 +5899,7 @@ JSONObjectInsertExpr::~JSONObjectInsertExpr()
 void JSONObjectInsertExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(thePairs);
+  ACCEPT(theContentExpr);
   ACCEPT(theTargetExpr);
   END_VISITOR();
 }

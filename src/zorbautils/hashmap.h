@@ -427,6 +427,9 @@ bool exists(const T& item) const
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
+  if (empty())
+    return false;
+
   const HashEntry<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
@@ -455,6 +458,9 @@ iterator find(const T& item)
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
+  if (empty())
+    return end();
+
   const HashEntry<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
@@ -481,6 +487,9 @@ bool get(const T& item, V& value) const
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
+
+  if (empty())
+    return false;
 
   const HashEntry<T, V>* entry = bucket(hval);
 
@@ -974,7 +983,7 @@ virtual void garbageCollect()
 };
 
 template <class T, class V, class C>
-const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.6;
+const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.7;
 
 } // namespace zorba
 

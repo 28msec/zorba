@@ -367,6 +367,12 @@ void ZorbaCollectionIteratorState::reset(PlanState& planState)
   }
 }
 
+bool ZorbaCollectionIterator::isCountOptimizable() const
+{
+  // if ref is passed to the collections function, count cannot be 
+  // optimized anymore.
+  return theChildren.size() <= 2;
+}
 
 bool ZorbaCollectionIterator::nextImpl(
     store::Item_t& result,
@@ -375,6 +381,7 @@ bool ZorbaCollectionIterator::nextImpl(
   store::Item_t name;
   store::Collection_t collection;
   xs_integer lSkip;
+  zstring lStart;
 
   ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
@@ -383,21 +390,42 @@ bool ZorbaCollectionIterator::nextImpl(
 
   (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
-  if (theChildren.size() > 1)
+  if (theChildren.size() == 1)
   {
-    // skip parameter passed
-    store::Item_t lSkipItem;
-    consumeNext(lSkipItem, theChildren[1].getp(), planState);
-    lSkip = lSkipItem->getIntegerValue(); 
-    // negative is transformed into 0
-    state->theIterator = ( lSkip > xs_integer::zero() 
-                             ? collection->getIterator(lSkip)
-                             : collection->getIterator()
-                         );
+    state->theIterator = collection->getIterator();
   }
   else
   {
-    state->theIterator = collection->getIterator();
+    bool lRefPassed = theChildren.size() >= 3;
+    
+    // read positional skip parameter
+    store::Item_t lSkipItem;
+    consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
+    lSkip = lSkipItem->getIntegerValue(); 
+    // negative skip is not allowed
+    if (lSkip < xs_integer::zero())
+    {
+      lSkip = xs_integer::zero();
+    }
+    if (!lRefPassed)
+    {
+      state->theIterator = collection->getIterator(lSkip);
+    }
+    else
+    {
+      store::Item_t lRefItem;
+      consumeNext(lRefItem, theChildren[1].getp(), planState);
+      lStart = lRefItem->getString(); 
+      try
+      {
+        state->theIterator = collection->getIterator(lSkip, lStart);
+      }
+      catch (ZorbaException& e)
+      {
+        set_source(e, loc);
+        throw;
+      }
+    }
   }
 
   ZORBA_ASSERT(state->theIterator != NULL);

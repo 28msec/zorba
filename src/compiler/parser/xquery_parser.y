@@ -404,6 +404,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token SEMI                             "';'"
 %token SLASH                            "'/'"
 %token SLASH_SLASH                      "'//'"
+%token BANG                             "'!'"
 %token STAR                             "'*'"
 %token START_TAG_END                    "'</ (start tag end)'"
 %token STRIP                            "'strip'"
@@ -773,6 +774,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> UnorderedExpr
 %type <expr> ValidateExpr
 %type <expr> ValueExpr
+%type <expr> SimpleMapExpr
 %type <expr> VarRef
 %type <expr> ExitStatement
 %type <expr> WhileStatement
@@ -924,7 +926,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -988,6 +990,14 @@ template<typename T> inline void release_hack( T *ref ) {
 /*_____________________________________________________________________
  *
  * resolve shift-reduce conflict for
+ * SimpleMapExpr ::= PathExpr ("!" PathExpr)*
+ *_____________________________________________________________________*/
+%nonassoc SIMPLEMAPEXPR_REDUCE
+%left BANG
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
  * [51] MultiplicativeExpr ::= UnionExpr ( ("*" | "div" | "idiv" | "mod") UnionExpr )*
  *_____________________________________________________________________*/
 %nonassoc MULTIPLICATIVE_REDUCE
@@ -1006,8 +1016,9 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RBRACE
 
 
-%right AT FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%right FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
 %right DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%right AT
 %right MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
 
@@ -1048,7 +1059,7 @@ Module :
       {
         $$ = $3;
       }
-  
+
 
 ;
 
@@ -1365,7 +1376,7 @@ Import :
     SchemaImport
   |
     ModuleImport
-    //  ============================ Improved error messages ============================
+  //  ============================ Improved error messages ============================
   |
     IMPORT QNAME_SVAL error
     {
@@ -1513,7 +1524,7 @@ VFO_DeclList :
       ((VFO_DeclList*)$1)->push_back( $3 );
       $$ = $1;
     }
-//  ============================ Improved error messages ============================
+  //  ============================ Improved error messages ============================
   |
     VFO_DeclList ERROR VFO_Decl    //error catching
     {
@@ -1665,45 +1676,42 @@ VarDecl :
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       $4,
-                       nt->get_annotations(),
-                       true,    // global
-                       false);  // not external
+      $$ = new GlobalVarDecl(LOC(@$),
+                             nt->theName,
+                             nt->theType,
+                             $4,
+                             nt->get_annotations(),
+                             false);  // not external
 
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      static_cast<GlobalVarDecl*>($$)->setComment(SYMTAB($1));
     }
   |
     DECLARE VarNameAndType EXTERNAL
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       NULL,   // no init expr
-                       nt->get_annotations(),
-                       true,   // global
-                       true);  // external
+      $$ = new GlobalVarDecl(LOC(@$),
+                             nt->theName,
+                             nt->theType,
+                             NULL,   // no init expr
+                             nt->get_annotations(),
+                             true);  // external
 
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      static_cast<GlobalVarDecl*>($$)->setComment(SYMTAB($1));
     }
   |
     DECLARE VarNameAndType EXTERNAL GETS ExprSingle
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       $5,     // init expr
-                       nt->get_annotations(),
-                       true,   // global
-                       true);  // external
+      $$ = new GlobalVarDecl(LOC(@$),
+                             nt->theName,
+                             nt->theType,
+                             $5,     // init expr
+                             nt->get_annotations(),
+                             true);  // external
 
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      static_cast<GlobalVarDecl*>($$)->setComment(SYMTAB($1));
     }
 ;
 
@@ -2271,7 +2279,8 @@ BlockVarDeclList :
   |
     AnnotationList VARIABLE BlockVarDecl
     {
-      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), static_cast<AnnotationListParsenode*>($1));
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$),
+                                           static_cast<AnnotationListParsenode*>($1));
       vdecl->add($3);
       $$ = vdecl;
     }
@@ -2281,51 +2290,38 @@ BlockVarDeclList :
 BlockVarDecl :
     DOLLAR QNAME
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                NULL,  // no type
-                                NULL,  // no init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          NULL,  // no type
+                                          NULL,  // no init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   | DOLLAR QNAME TypeDeclaration
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                dynamic_cast<SequenceType*>($3), // type
-                                NULL,  // no init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          dynamic_cast<SequenceType*>($3), // type
+                                          NULL,  // no init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   | DOLLAR QNAME GETS ExprSingle
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                NULL,  // no type
-                                $4,    // init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          NULL,  // no type
+                                          $4,    // init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   | DOLLAR QNAME TypeDeclaration GETS ExprSingle
     {
-      VarDecl* vd = new VarDecl(LOC(@$),
-                                static_cast<QName*>($2),
-                                dynamic_cast<SequenceType*>($3), // type
-                                $5,    // init expr
-                                NULL,  // no annotations
-                                false, // not global
-                                false);// not external
-      vd->set_global(false);
+      LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
+                                          static_cast<QName*>($2),
+                                          dynamic_cast<SequenceType*>($3), // type
+                                          $5,    // init expr
+                                          NULL); // no annotations
       $$ = vd;
     }
   ;
@@ -2491,6 +2487,23 @@ Expr :
       }
       expr->push_back( $3 );
       $$ = expr;
+    }
+  //  ============================ Improved error messages ============================
+  | Expr error ExprSingle error
+    {
+      $$ = $1; // to prevent the Bison warning
+      $$ = $3; // to prevent the Bison warning
+      error(@2, "syntax error, unexpected ExprSingle (missing comma \",\" between expressions?)");
+      YYERROR;
+    }
+  | Expr ERROR ExprSingle
+    {
+      // This rule will never be reached, as the ERROR rule will stop the parser,
+      // but it is nevertheless needed to fix a testcase with an unterminated comment which
+      // would otherwise cycle indefinitely
+      $$ = $1; // to prevent the Bison warning
+      $$ = $3; // to prevent the Bison warning
+      YYERROR;
     }
 ;
 
@@ -2675,6 +2688,7 @@ ForClause :
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected QName \""
           + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      delete $3;
       YYERROR;
     }
   |
@@ -2690,14 +2704,14 @@ ForClause :
 VarInDeclList :
     VarInDecl
     {
-      VarInDeclList *vdl = new VarInDeclList( LOC(@$) );
+      VarInDeclList* vdl = new VarInDeclList( LOC(@$) );
       vdl->push_back( dynamic_cast<VarInDecl*>($1) );
       $$ = vdl;
     }
   |
     VarInDeclList COMMA DOLLAR VarInDecl
     {
-      if ( VarInDeclList *vdl = dynamic_cast<VarInDeclList*>($1) )
+      if ( VarInDeclList* vdl = dynamic_cast<VarInDeclList*>($1) )
         vdl->push_back( dynamic_cast<VarInDecl*>($4) );
       $$ = $1;
     }
@@ -2708,6 +2722,7 @@ VarInDeclList :
       $$ = $1; // to prevent the Bison warning
       error(@3, "syntax error, unexpected QName \""
           + static_cast<VarInDecl*>($3)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      delete $1;
       YYERROR;
     }
 ;
@@ -3794,7 +3809,7 @@ ValueExpr :
         {
             $$ = $1;
         }
-    |   PathExpr
+    |   SimpleMapExpr
         {
             $$ = $1;
         }
@@ -3802,6 +3817,18 @@ ValueExpr :
         {
             $$ = $1;
         }
+    ;
+
+SimpleMapExpr :
+      PathExpr %prec SIMPLEMAPEXPR_REDUCE
+      {
+        $$ = $1;
+      }
+    |
+      SimpleMapExpr BANG PathExpr
+      {
+        $$ = new SimpleMapExpr(LOC(@$), $1, $3);
+      }
     ;
 
 // [61]
@@ -6500,11 +6527,21 @@ JSONPairList :
     ;
 
 JSONInsertExpr :
-        INSERT JSON LBRACE JSONPairList RBRACE INTO ExprSingle
+        INSERT JSON ExprSingle INTO ExprSingle
         {
           $$ = new JSONObjectInsertExpr(LOC(@$),
-                                        static_cast<JSONPairList*>($4),
-                                        $7);
+                                        $3,
+                                        $5);
+        }
+    |   INSERT JSON JSONPairList INTO ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($3);
+          $$ = new JSONObjectInsertExpr(
+              LOC(@$),
+              new JSONDirectObjectConstructor(
+                  LOC(@$),
+                  jpl),
+              $5);
         }
     |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
         {
@@ -6513,16 +6550,16 @@ JSONInsertExpr :
     ;
 
 JSONAppendExpr :
-        APPEND JSON LBRACK Expr RBRACK TO ExprSingle
+        APPEND JSON ExprSingle INTO ExprSingle
         {
-          $$ = new JSONArrayAppendExpr(LOC(@$), $4, $7);
+          $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
         }
     ;
 
 JSONDeleteExpr :
         _DELETE JSON FilterExpr
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($3);
 
           if (lDynamicFunctionInvocation == NULL)
@@ -6551,10 +6588,10 @@ JSONDeleteExpr :
 JSONRenameExpr :
         RENAME JSON FilterExpr AS ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($3);
 
-          if(lDynamicFunctionInvocation == NULL) 
+          if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;
@@ -6580,10 +6617,10 @@ JSONRenameExpr :
 JSONReplaceExpr :
         REPLACE JSON VALUE OF FilterExpr WITH ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation = 
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($5);
 
-          if(lDynamicFunctionInvocation == NULL) 
+          if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
             YYERROR;

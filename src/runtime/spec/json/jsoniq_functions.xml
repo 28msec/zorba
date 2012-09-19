@@ -18,8 +18,14 @@
 
   <zorba:function isDeterministic="true" generateCodegen="false">
     <zorba:signature localname="parse-json" prefix="fn-jsoniq">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:output>json-item()?</zorba:output>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>json-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="parse-json" prefix="fn-jsoniq">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>json-item()*</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
@@ -29,11 +35,23 @@
 
   </zorba:function>
 
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="bool" name="theAllowMultiple" brief=""/>
+    <zorba:member type="store::Item_t" name="theInput" brief=""/>
+    <zorba:member type="std::istream*" name="theInputStream" brief=""/>
+    <zorba:member type="bool" name="theGotOne"/>
+  </zorba:state>
+
   <zorba:constructor>
     <zorba:parameter type="QueryLoc" name="aRelativeLocation" />
   </zorba:constructor>
 
   <zorba:member type="QueryLoc" name="theRelativeLocation" />
+
+  <zorba:method return="void" name="processOptions" const="true">
+    <zorba:param type="const store::Item_t&amp;" name="aOptions"/>
+    <zorba:param type="bool&amp;" name="aAllowMultiple"/>
+  </zorba:method>
 
 </zorba:iterator>
 
@@ -220,7 +238,7 @@
   <zorba:state generateReset="false">
     <zorba:member type="std::stack&lt;store::Iterator_t>" name="theStack" brief=""/>
   </zorba:state>
-    
+
 </zorba:iterator>
 
 
@@ -253,22 +271,41 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONNullIterator" arity="noary"
-  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+  <zorba:iterator name="JSONNullIterator" arity="noary"
+    preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
-  <zorba:function isDeterministic="true">
-    <zorba:signature localname="null" prefix="fn-jsoniq">
-      <zorba:output>jdm:null</zorba:output>
-    </zorba:signature>
+    <zorba:function isDeterministic="true">
+      <zorba:signature localname="null" prefix="fn-jsoniq">
+        <zorba:output>js:null</zorba:output>
+      </zorba:signature>
 
-  </zorba:function>
+    </zorba:function>
 
-</zorba:iterator>
+  </zorba:iterator>
 
 
 <!--
 /*******************************************************************************
 ********************************************************************************/
+-->
+  <zorba:iterator name="JSONIsNullIterator" arity="unary"
+    preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+    <zorba:function isDeterministic="true">
+      <zorba:signature localname="is-null" prefix="fn-jsoniq">
+        <zorba:param>xs:anyAtomicType</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+  </zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="JSONObjectInsertIterator" arity="nary"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
@@ -278,7 +315,8 @@
 
   <zorba:function>
 
-    <zorba:signature localname="object-insert" prefix="op-zorba" variadic="true">
+    <zorba:signature localname="json-object-insert" prefix="op-zorba">
+      <zorba:param>object()</zorba:param>
       <zorba:param>object()</zorba:param>
       <zorba:output>empty-sequence()</zorba:output>
     </zorba:signature>
@@ -291,14 +329,7 @@
 
   </zorba:function>
 
-  <zorba:constructor>
-    <zorba:parameter type="bool" name="copyInput" />
-  </zorba:constructor>
-
-  <zorba:member type="std::vector&lt;bool&gt;" name="theCopyInputs" />
-
 </zorba:iterator>
--->
 
 
 <!--
@@ -460,5 +491,36 @@
     </zorba:function>
     
   </zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONBoxIterator" 
+                arity="unary"
+                preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+
+    <zorba:description author="Zorba Team">
+      
+    </zorba:description>
+      internal function
+    <zorba:function>
+
+      <zorba:signature localname="json-box" prefix="op-zorba">
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>item()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getReturnType/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:propagatesInputNodes value="true"/>
+        <zorba:mustCopyInputNodes value="false"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
 
 </zorba:iterators>

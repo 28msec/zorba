@@ -50,6 +50,7 @@
 #include "runtime/full_text/ft_module.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
+#include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
@@ -1571,6 +1572,20 @@ void PrinterVisitor::endVisit ( const CheckICIterator& ) {
 // </CheckICIterator>
 
 
+// <IndexKeysIterator>
+void PrinterVisitor::beginVisit ( const IndexKeysIterator& a) {
+  thePrinter.startBeginVisit("IndexKeysIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IndexKeysIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IndexKeysIterator>
+
+
 // <StaticNamespacesIterator>
 void PrinterVisitor::beginVisit ( const StaticNamespacesIterator& a) {
   thePrinter.startBeginVisit("StaticNamespacesIterator", ++theId);
@@ -2099,6 +2114,36 @@ void PrinterVisitor::endVisit ( const JSONNullIterator& ) {
 
 #endif
 #ifdef ZORBA_WITH_JSON
+// <JSONIsNullIterator>
+void PrinterVisitor::beginVisit ( const JSONIsNullIterator& a) {
+  thePrinter.startBeginVisit("JSONIsNullIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONIsNullIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONIsNullIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONObjectInsertIterator>
+void PrinterVisitor::beginVisit ( const JSONObjectInsertIterator& a) {
+  thePrinter.startBeginVisit("JSONObjectInsertIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONObjectInsertIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONObjectInsertIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
 // <JSONArrayInsertIterator>
 void PrinterVisitor::beginVisit ( const JSONArrayInsertIterator& a) {
   thePrinter.startBeginVisit("JSONArrayInsertIterator", ++theId);
@@ -2171,6 +2216,21 @@ void PrinterVisitor::endVisit ( const JSONArrayAppendIterator& ) {
   thePrinter.endEndVisit();
 }
 // </JSONArrayAppendIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONBoxIterator>
+void PrinterVisitor::beginVisit ( const JSONBoxIterator& a) {
+  thePrinter.startBeginVisit("JSONBoxIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONBoxIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONBoxIterator>
 
 #endif
 
@@ -3180,6 +3240,20 @@ void PrinterVisitor::endVisit ( const FnPathIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPathIterator>
+
+
+// <NodeCopyIterator>
+void PrinterVisitor::beginVisit ( const NodeCopyIterator& a) {
+  thePrinter.startBeginVisit("NodeCopyIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeCopyIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeCopyIterator>
 
 
 // <AbsIterator>

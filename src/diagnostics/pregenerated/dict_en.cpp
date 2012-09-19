@@ -110,7 +110,7 @@ extern entry const dict_en[] = {
   { "JNSE0014", "Cannot serialize a function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0001", "Cannot atomize and/or cast value of type $1 to a string." },
+  { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0002", "Pair value returns no, or more than one, item." },
@@ -119,10 +119,13 @@ extern entry const dict_en[] = {
   { "JNTY0003", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0004", "$1 items do not have typed value" },
+  { "JNTY0004", "Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)." },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0018", "Object or array selection needs exactly one parameter." },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
@@ -147,6 +150,15 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0017", "Cannot replace with less or more than an item." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0019", "The content of an insert expression must evaluate to a sequence of objects." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0021", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JSDY0040", "$1" },
@@ -235,6 +247,7 @@ extern entry const dict_en[] = {
   { "XQST0093", "\"$1\": module must not depend on itself" },
   { "XQST0098", "properties \"$1\" and \"$2\", representing characters used in picture string, do not have distinct values" },
   { "XQST0099", "module contains more than one context item declaration" },
+  { "XQST0103", "$1: non-distinct variable in window clause" },
   { "XQST0106", "$1: multiple annotations with $2 names" },
   { "XQST0111", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
@@ -343,6 +356,7 @@ extern entry const dict_en[] = {
   { "ZDDY0016", "\"$1\": multiple attemps to create a collection in the same snapshot" },
   { "ZDDY0017", "node does not belong to any collection" },
   { "ZDDY0018", "all nodes must be in same collection" },
+  { "ZDDY0019", "\"$1\": iterator on collection is not open" },
   { "ZDDY0020", "\"$1\": index domain expression yields nodes that are not in collection" },
   { "ZDDY0021", "\"$1\": undeclared index" },
   { "ZDDY0022", "\"$1\": index already exists" },
@@ -364,7 +378,7 @@ extern entry const dict_en[] = {
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },
   { "ZDST0004", "collection multiple property values" },
-  { "ZDST0006", "collection invalid property value" },
+  { "ZDST0006", "\"$1\": invalid annotation for collection \"$2\"" },
   { "ZDST0007", "\"$1\": collection declaration in foreign module" },
   { "ZDST0021", "\"$1\": index already declared" },
   { "ZDST0022", "\"$1\": index already imported into module \"$2\"" },
@@ -380,7 +394,7 @@ extern entry const dict_en[] = {
   { "ZDST0032", "\"$1\": index references context item" },
   { "ZDST0033", "\"$1\": index non-simple expression" },
   { "ZDST0034", "\"$1\": index can not do automatic maintenance" },
-  { "ZDST0035", "\"$1\": index general multikey" },
+  { "ZDST0035", "\"$1\": number of key expressions for general indexes is restricted to one expression" },
   { "ZDST0036", "\"$1\": index declaration in foreign module" },
   { "ZDST0041", "\"$1\": integrity constraint already declared" },
   { "ZDST0044", "\"$1\": integrity constraint declaration not allowed in main module" },
@@ -440,6 +454,7 @@ extern entry const dict_en[] = {
   { "ZSTR0055", "streamable string has already been consumed" },
   { "ZSTR0060", "out of range: $1" },
   { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
+  { "ZSTR0066", "$1: does not reference a node in collection $2." },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
@@ -603,9 +618,19 @@ extern entry const dict_en[] = {
   { "~JSON_ILLEGAL_ESCAPE", "'\\$2': illegal JSON character escape${ at 3}" },
   { "~JSON_ILLEGAL_LITERAL", "illegal JSON literal${ at 2}" },
   { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
+  { "~JSON_UNEXPECTED_EXTRA_CONTENT", "unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)" },
   { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
   { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
+  { "~JSONiq dynamic error", "JSONIQ dynamic error" },
+  { "~JSONiq dynamic warning", "JSONIQ dynamic warning" },
   { "~JSONiq error", "JSONIQ error" },
+  { "~JSONiq serialization error", "JSONIQ serialization error" },
+  { "~JSONiq serialization warning", "JSONIQ serialization warning" },
+  { "~JSONiq static error", "JSONIQ static error" },
+  { "~JSONiq static warning", "JSONIQ static warning" },
+  { "~JSONiq type error", "JSONIQ type error" },
+  { "~JSONiq type warning", "JSONIQ type warning" },
+  { "~JSONiq warning", "JSONIQ warning" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
@@ -848,6 +873,7 @@ extern entry const dict_en[] = {
   { "~XPTY0004_FormatNumber_2", "the first parameter to the format-number() function is of type $2, which is not allowed" },
   { "~XPTY0004_FuncParam", "$2 can not be promoted to parameter type $3 of function $4()" },
   { "~XPTY0004_FuncReturn", "$2 can not be promoted to return type $3 of function $4()" },
+  { "~XPTY0004_JSONIQ_SELECTOR", "Cannot atomize and/or cast value of type $2 to a string." },
   { "~XPTY0004_NoMultiSeqTypePromotion", "sequence of more than one item can not be promoted to type $2" },
   { "~XPTY0004_TypeMatch", "$2 can not be treated as type $3" },
   { "~XPTY0004_TypePromotion", "$2 can not be promoted to type $3" },

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ protected:
   ulong                   theVisitId;
 
 public:
-  UDFNode(user_function* udf) 
+  UDFNode(user_function* udf)
     :
     theUDF(udf),
     theVisitId(0)
@@ -71,7 +71,7 @@ public:
 
 
 /******************************************************************************
-  UDFGraph represents the call-graph among all the UDFs that may be invoked 
+  UDFGraph represents the call-graph among all the UDFs that may be invoked
   during the evaluation of a given expr E. We call this graph the "call-graph
   of E".
 
@@ -88,7 +88,7 @@ public:
 
   theRoot:
   --------
-  A "dummy" udf node representing theExpr 
+  A "dummy" udf node representing theExpr
 
   theVisitId:
   -----------
@@ -99,14 +99,14 @@ public:
   traversal reaches a node, we check whether the visit id of the node is == to
   the traversal visit id. If true, we know that the node has been visited already
   by the current traversal. Otherwise, we set its visit id to the visit id of
-  the traversal.   
+  the traversal.
 *******************************************************************************/
-class UDFGraph 
+class UDFGraph
 {
   typedef HashMap<user_function*, UDFNode*, UDFHashMapCmp> UDFMap;
 
 protected:
-  expr_t     theExpr;
+  expr     * theExpr;
   UDFMap     theNodes;
   UDFNode  * theRoot;
   ulong      theVisitId;

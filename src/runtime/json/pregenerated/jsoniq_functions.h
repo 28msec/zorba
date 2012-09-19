@@ -38,7 +38,23 @@ namespace zorba {
  * 
  * Author: 
  */
-class JSONParseIterator : public NaryBaseIterator<JSONParseIterator, PlanIteratorState>
+class JSONParseIteratorState : public PlanIteratorState
+{
+public:
+  bool theAllowMultiple; //
+  store::Item_t theInput; //
+  std::istream* theInputStream; //
+  bool theGotOne; //
+
+  JSONParseIteratorState();
+
+  ~JSONParseIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONParseIterator : public NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>
 { 
 protected:
   QueryLoc theRelativeLocation; //
@@ -46,7 +62,7 @@ public:
   SERIALIZABLE_CLASS(JSONParseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONParseIterator,
-    NaryBaseIterator<JSONParseIterator, PlanIteratorState>);
+    NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -56,12 +72,14 @@ public:
     std::vector<PlanIter_t>& children,
     QueryLoc aRelativeLocation)
     : 
-    NaryBaseIterator<JSONParseIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>(sctx, loc, children),
     theRelativeLocation(aRelativeLocation)
   {}
 
   virtual ~JSONParseIterator();
 
+public:
+  void processOptions(const store::Item_t& aOptions, bool& aAllowMultiple) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -400,6 +418,72 @@ public:
 #ifdef ZORBA_WITH_JSON
 /**
  * 
+ * Author: 
+ */
+class JSONIsNullIterator : public UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONIsNullIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONIsNullIterator,
+    UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONIsNullIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~JSONIsNullIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ *      internal function
+ *  
+ * Author: Zorba Team
+ */
+class JSONObjectInsertIterator : public NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONObjectInsertIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectInsertIterator,
+    NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONObjectInsertIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONObjectInsertIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
  *      internal function 
  *    
  * Author: Zorba Team
@@ -560,6 +644,40 @@ public:
   {}
 
   virtual ~JSONArrayAppendIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ *      
+ *    
+ * Author: Zorba Team
+ */
+class JSONBoxIterator : public UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONBoxIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONBoxIterator,
+    UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONBoxIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<JSONBoxIterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~JSONBoxIterator();
 
   void accept(PlanIterVisitor& v) const;
 

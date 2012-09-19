@@ -23,7 +23,6 @@
 #include <zorba/options.h>
 
 #include "zorbatypes/schema_types.h"
-#include "zorbatypes/transcoder.h"
 
 #include "common/shared_types.h"
 
@@ -124,7 +123,7 @@ protected:
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
   rchandle<emitter>    e;
-  rchandle<transcoder> tr;
+  std::ostream         *tr;
 
   // Used to hold the QNames of the cdata section elements after they have been tokenized
   std::vector<zstring> cdata_section_elements_tokens;
@@ -186,6 +185,13 @@ public:
    */
   short getSerializationMethod() const;
 
+  /**
+   * Get the serialization method as a string
+   *
+   * @return the value of the serialization method as string
+   */
+  void getSerializationMethod(zstring&) const;
+
 protected:
   void reset();
 
@@ -193,7 +199,7 @@ protected:
 
   bool setup(std::ostream& os, bool aEmitAttributes = false);
 
-  transcoder* create_transcoder(std::ostream& os);
+  void attach_transcoder(std::ostream& os);
 
   ///////////////////////////////////////////////////////////
   //                                                       //
@@ -210,12 +216,12 @@ protected:
      * Creates a new emitter object.
      *
      * @param the_serializer The parent serializer object.
-     * @param output_stream Target output stream.
+     * @param the_stream Target output stream.
      * @param aEmitAttributes If true, attributes are emitted.
      */
     emitter(
         serializer* the_serializer, 
-        transcoder& the_transcoder,
+        std::ostream& the_stream,
         bool aEmitAttributes = false);
 
     /**
@@ -319,7 +325,7 @@ protected:
 
   protected:
     serializer                          * ser;
-    transcoder                          & tr;
+    std::ostream                        & tr;
     std::vector<store::NsBindings>        theBindings;
 
     enum ItemState
@@ -349,7 +355,7 @@ protected:
   public:
     xml_emitter(
         serializer* the_serializer, 
-        transcoder& the_transcoder, 
+        std::ostream& the_stream, 
         bool aEmitAttributes = false
     );
 
@@ -373,7 +379,7 @@ protected:
   class json_emitter : public emitter
   {
   public:
-    json_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    json_emitter(serializer* the_serializer, std::ostream& the_stream);
 
     virtual ~json_emitter();
 
@@ -402,7 +408,7 @@ protected:
 
     void emit_jsoniq_xdm_node(store::Item *item, int depth);
 
-    void emit_json_string(zstring string);
+    void emit_json_string(zstring const &string);
 
     store::Item_t theJSONiqValueName;
     store::Item_t theTypeName;
@@ -410,7 +416,6 @@ protected:
     store::Item_t theJSONiqXDMNodeName;
 
     rchandle<emitter> theXMLEmitter;
-    rchandle<transcoder> theXMLTranscoder;
     std::stringstream* theXMLStringStream;
     bool theMultipleItems;
   };
@@ -425,7 +430,10 @@ protected:
   class jsoniq_emitter : public emitter
   {
   public:
-    jsoniq_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    jsoniq_emitter(
+        serializer* the_serializer, 
+        std::ostream& the_stream,
+        bool aEmitAttributes = false);
 
     virtual ~jsoniq_emitter();
 
@@ -459,7 +467,7 @@ protected:
   class xhtml_emitter : public xml_emitter
   {
   public:
-    xhtml_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    xhtml_emitter(serializer* the_serializer, std::ostream& the_stream);
 
   protected:
     virtual void emit_node(const store::Item* item, int depth);
@@ -475,7 +483,7 @@ protected:
   class html_emitter : public emitter
   {
   public:
-    html_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    html_emitter(serializer* the_serializer, std::ostream& the_stream);
 
     virtual void emit_declaration();
     virtual void emit_end();
@@ -495,7 +503,7 @@ protected:
   class text_emitter : public emitter
   {
   public:
-    text_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    text_emitter(serializer* the_serializer, std::ostream& the_stream);
 
     virtual void emit_declaration();
 
@@ -530,7 +538,7 @@ protected:
   public:
     sax2_emitter(
           serializer* the_serializer,
-          transcoder& the_transcoder,
+          std::ostream& the_stream,
           std::stringstream& aSStream,
           SAX2_ContentHandler* aSAX2ContentHandler);
 
@@ -574,7 +582,7 @@ protected:
   class binary_emitter : public emitter
   {
   public:
-    binary_emitter(serializer* the_serializer, transcoder& the_transcoder);
+    binary_emitter(serializer* the_serializer, std::ostream& the_stream);
 
     void emit_item(store::Item* item);
   };

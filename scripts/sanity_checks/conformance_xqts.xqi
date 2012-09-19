@@ -63,13 +63,21 @@ declare %private variable $conf:XQTSX_submission as xs:string :=
 declare %private variable $conf:XQuery   as xs:string := "XQuery";
 declare %private variable $conf:XQueryX  as xs:string := "XQueryX";
 
+declare %private variable $conf:infos    := <infos/>;
 declare %private variable $conf:features := <features/>;
+declare %private variable $conf:numbers  := <numbers/>;
 
-declare %private variable $conf:numbers := <numbers/>;
+declare %private %ann:sequential function conf:collect-info(
+  $name     as xs:string,
+  $version  as xs:string,
+  $info     as xs:string) 
+{
+  insert node <info name ="{$name}" version="{$version}" info="{$info}"/> as last into $conf:infos;
+};
 
 declare %private %ann:sequential function conf:collect-feature(
-  $name as xs:string, 
-  $supported as xs:string) 
+  $name       as xs:string, 
+  $supported  as xs:string) 
 {
   insert node <feature name ="{$name}" supported="{$supported}" /> as last into $conf:features;
 };
@@ -341,10 +349,17 @@ declare %ann:sequential function conf:create-collection-submissions()
   ddl:create($conf:submissionXquery);
   
   variable $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTS_submission)));
-
+  
   for $test in $doc/xqRes:test-suite-result//xqRes:test-case
   return dml:apply-insert-nodes($conf:submissionXquery, $test);
 
+  conf:collect-info("Zorba",
+                    data($doc/xqRes:test-suite-result/xqRes:implementation/@version),
+                    "");
+  conf:collect-info("XQTS",
+                    data($doc/xqRes:test-suite-result/xqRes:test-run/xqRes:test-suite/@version),
+                    normalize-space(data($doc/xqRes:test-suite-result/xqRes:test-run/xqRes:otherComments)));
+  
   (: collect features :)
   for $feature in $doc/xqRes:test-suite-result/xqRes:implementation/xqRes:features/xqRes:feature
   return
@@ -413,13 +428,12 @@ declare %private function conf:create-summary-string() as xs:string
 {
   let $minConf := for $number in $conf:numbers/number where xs:string($number/@name) eq "Minimal Conformance" return xs:string(data($number/@value))
   return
-    concat("Zorba achieves ",
+    concat( "Zorba achieves ",
             $minConf, 
-            "% on Minimal conformance (", 
+            "% on minimal conformance (and ", 
             string-join(( for $number in $conf:numbers/number where xs:string($number/@name) eq "Optional Features" 
                           return concat(xs:string(data($number/@value)),"% on ",xs:string(data($number/@name)))),", "),
-            ") for the W3C XML Query Test Suite.
-            
+            ") for the W3C XML Query Test Suite.            
 Please see the table below for more details.")
 
 };
@@ -443,11 +457,22 @@ declare %ann:sequential function conf:test()
   conf:create-collection($conf:XQuery, $XQTS_catalog);
   conf:create-collection($conf:XQueryX, $XQTS_catalog);
   
+  variable $details := concat("In generating the report we used Zorba version ",
+                               tokenize(data($conf:infos//info[@name="Zorba"]/@version),"/")[last()],
+                               " that can be downloaded from ",
+                               data($conf:infos//info[@name="Zorba"]/@version),
+                               " and XQTS version '",
+                               data($conf:infos//info[@name="XQTS"]/@version),
+                               "' (",
+                               data($conf:infos//info[@name="XQTS"]/@info),
+                               ").");
   variable $pageNameSummary := "conformanceXQTSSummary";
   variable $pathSummary := fn:concat($conf:XQTS_PATH, file:directory-separator(), $pageNameSummary, ".dox");
   file:write(trace($pathSummary,"output summary file path"),
              ("/** \page conformanceXQTSSummary  Summary W3C XQuery 1.0 conformance
 
+",
+             {$details},"
 ",
              {conf:generate-features-table()},"
 ",
@@ -460,8 +485,10 @@ declare %ann:sequential function conf:test()
   variable $pathDetailed := fn:concat($conf:XQTS_PATH, file:directory-separator(), $pageNameDetailed, ".dox");
 
   file:write(trace($pathDetailed,"output detailed file path"),
-             ("/** \page conformanceXQTS  W3C XQuery 1.0 Conformance.
+             ("/** \page conformanceXQTS  W3C XQuery 1.0 Conformance
 
+",
+             {$details},"
 ",
              {conf:create-summary-string()},"
 ",

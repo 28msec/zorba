@@ -176,18 +176,31 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   assert(target->isNode());
 #endif
 
-  const XmlNode* n = static_cast<const XmlNode*>(target);
-
-  const store::Collection* collection = n->getCollection();
-
-  if (collection != NULL)
+  const store::Collection* lCollection;
+  
+  if (target->isNode())
   {
-    collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
+    assert(dynamic_cast<const XmlNode*>(target));
+    const XmlNode* lNode = static_cast<const XmlNode*>(target);
+    lCollection = lNode->getCollection();
+#ifdef ZORBA_WITH_JSON
+  }
+  else if (target->isJSONItem())
+  {
+    assert(dynamic_cast<const json::JSONItem*>(target));
+    const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(target);
+    lCollection = lJSONItem->getCollection();
+#endif
+  }
+
+  if (lCollection != NULL)
+  {
+    collName = static_cast<const QNameItem*>(lCollection->getName())->getNormalized();
 
     if (collName == theLastCollection)
       return theLastPul;
 
-    return getCollectionPulByName(collName, collection->isDynamic());
+    return getCollectionPulByName(collName, lCollection->isDynamic());
   }
   else if (theNoCollectionPul != NULL)
   {
@@ -1093,6 +1106,31 @@ void PULImpl::addRemoveFromHashMap(
 void PULImpl::addJSONObjectInsert(
      const QueryLoc* loc,
      store::Item_t& target,
+     store::Item_t& content)
+{
+  assert(content->isJSONObject());
+  assert(dynamic_cast<json::JSONObject*>(content.getp()));
+  json::JSONObject* lObject = static_cast<json::JSONObject*>(content.getp());
+  store::Iterator_t lIterator = lObject->getObjectKeys();
+  lIterator->open();
+  store::Item_t lKey;
+  std::vector<store::Item_t> lKeys;
+  std::vector<store::Item_t> lValues;
+  while(lIterator->next(lKey))
+  {
+    lKeys.push_back(lKey);
+    lValues.push_back(lObject->getObjectValue(lKey));
+  }
+  lIterator->close();
+  this->addJSONObjectInsert(loc, target, lKeys, lValues);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectInsert(
+     const QueryLoc* loc,
+     store::Item_t& target,
      std::vector<store::Item_t>& names,
      std::vector<store::Item_t>& values)
 {
@@ -1532,7 +1570,8 @@ void PULImpl::addJSONArrayDelete(
 
     for (; ite != end; ++ite)
     {
-      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE)
+      if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE &&
+          (*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
         continue;
 
       UpdJSONArrayUpdate* upd = static_cast<UpdJSONArrayUpdate*>(*ite);
@@ -1612,7 +1651,7 @@ void PULImpl::addJSONArrayReplaceValue(
         
         if (upd->thePosition == pos)
         {
-          return;
+          ite = updates->erase(ite);
         }
       }
     }
@@ -1736,6 +1775,10 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONArrayReplaceValueList,
                                otherPul->theJSONArrayReplaceValueList);
+
+      mergeTargetedUpdateLists(thisPul,
+                               thisPul->theJSONArrayAppendList,
+                               otherPul->theJSONArrayAppendList);
 #endif
 
       ++thisIte;
@@ -2095,7 +2138,8 @@ void PULImpl::mergeTargetedUpdateLists(
 
         for (; ite != end; ++ite)
         {
-          if ((*ite)->getKind() != otherUpdKind)
+          if ((*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_DELETE &&
+              (*ite)->getKind() != store::UpdateConsts::UP_JSON_ARRAY_REPLACE_VALUE)
             continue;
 
           UpdJSONArrayUpdate* myUpd = static_cast<UpdJSONArrayUpdate*>(*ite);
@@ -2134,8 +2178,7 @@ void PULImpl::mergeTargetedUpdateLists(
           {
             if (myUpd->thePosition == otherUpd2->thePosition)
             {
-              merged = true;
-              break;
+              ite = targetUpdates->erase(ite);
             }
           }
         }
@@ -2229,23 +2272,52 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
     NodeToUpdatesMap::iterator it = pul->theNodeToUpdatesMap.begin();
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
 
+    bool found = false;
+    
     for (; it != end; ++it)
     {
-      const XmlNode* targetNode = static_cast<XmlNode*>((*it).first);
-
-      bool found = false;
-
-      for (csize i = 0; i < numRoots; i++)
+      zorba::store::Item* lItem = (*it).first;
+      if (lItem->isNode())
       {
-        XmlNode* rootNode = static_cast<XmlNode*>(rootNodes[i]);
-        
-        if (targetNode->getTree() == rootNode->getTree())
+        assert(dynamic_cast<const XmlNode*>(lItem));
+        const XmlNode* lNode = static_cast<const XmlNode*>(lItem);
+        for (csize i = 0; i < numRoots; i++)
         {
-          found = true;
-          break;
+          if (rootNodes[i]->isNode())
+          {
+            assert(dynamic_cast<const XmlNode*>(rootNodes[i]));
+            XmlNode* lRootNode = static_cast<XmlNode*>(rootNodes[i]);
+            
+            if (lNode->getTree() == lRootNode->getTree())
+            {
+              found = true;
+              break;
+            }
+          }
         }
+#ifdef ZORBA_WITH_JSON
       }
-
+      else if (lItem->isJSONItem())
+      {
+        assert(dynamic_cast<const json::JSONItem*>(lItem));
+        const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(lItem);
+        for (csize i = 0; i < numRoots; i++)
+        {
+          if (rootNodes[i]->isJSONItem())
+          {
+            assert(dynamic_cast<const json::JSONItem*>(rootNodes[i]));
+            json::JSONItem* lRootJSONItem = static_cast<json::JSONItem*>(rootNodes[i]);
+            
+            if (lJSONItem->getTree() == lRootJSONItem->getTree())
+            {
+              found = true;
+              break;
+            }
+          }
+        }
+#endif
+      }
+        
       if (!found)
         throw XQUERY_EXCEPTION(err::XUDY0014);
     }
@@ -2632,6 +2704,7 @@ CollectionPul::~CollectionPul()
   cleanList(theJSONArrayInsertList);
   cleanList(theJSONArrayDeleteList);
   cleanList(theJSONArrayReplaceValueList);
+  cleanList(theJSONArrayAppendList);
 #endif
 
   cleanIndexDeltas();
@@ -2660,6 +2733,7 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theJSONArrayInsertList);
   switchPulInPrimitivesList(theJSONArrayDeleteList);
   switchPulInPrimitivesList(theJSONArrayReplaceValueList);
+  switchPulInPrimitivesList(theJSONArrayAppendList);
 #endif
 
   switchPulInPrimitivesList(theCreateCollectionList);
@@ -2963,7 +3037,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
   std::vector<store::Item_t>::iterator keyIte;
   std::vector<store::Item_t>::iterator keyEnd;
 
-  STORE_TRACE2("before-delta size = " << deletedDelta.size());
+  STORE_TRACE2("before-delta size = " << beforeDelta.size());
 
   ite = beforeDelta.begin();
   end = beforeDelta.end();
@@ -2995,7 +3069,7 @@ void CollectionPul::refreshGeneralIndex(csize idx)
     }
   }
 
-  STORE_TRACE2("after-delta size = " << deletedDelta.size());
+  STORE_TRACE2("after-delta size = " << afterDelta.size());
 
   ite = afterDelta.begin();
   end = afterDelta.end();

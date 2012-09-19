@@ -94,6 +94,8 @@ SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
 
+SERIALIZABLE_CLASS_VERSIONS(VarInfo)
+
 SERIALIZABLE_CLASS_VERSIONS(PrologOption)
 
 SERIALIZABLE_CLASS_VERSIONS_2(static_context::ctx_module_t, TYPE_sctx_module)
@@ -162,6 +164,75 @@ void FunctionInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theFunction;
   ar & theIsDisabled;
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+VarInfo::VarInfo()
+  :
+  theId(0),
+  theKind(var_expr::unknown_var),
+  theVarExpr(NULL)
+{
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+VarInfo::VarInfo(::zorba::serialization::Archiver& ar)
+  :
+  SimpleRCObject(ar)
+{
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+VarInfo::~VarInfo()
+{
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+VarInfo::VarInfo(var_expr* v)
+  :
+  theName(v->get_name()),
+  theId(v->get_unique_id()),
+  theKind(v->get_kind()),
+  theType(v->get_type()),
+  theIsExternal(v->is_external()),
+  theHasInitializer(v->has_initializer()),
+  theVarExpr(v)
+{
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+void VarInfo::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theName;
+  ar & theId;
+  ar & theKind;
+  ar & theType;
+  ar & theIsExternal;
+  ar & theHasInitializer;
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+void VarInfo::setType(const xqtref_t& t)
+{
+  theType = t;
 }
 
 
@@ -326,8 +397,8 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 #ifdef ZORBA_WITH_JSON
 
 const char*
-static_context::JSONIQ_NS =
-"http://www.jsoniq.org/";
+static_context::JSONIQ_DM_NS =
+"http://www.jsoniq.org/types";
 
 const char*
 static_context::JSONIQ_FN_NS =
@@ -467,8 +538,11 @@ bool static_context::is_builtin_module(const zstring& ns)
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
+#ifdef ZORBA_WITH_JSON
+            ns == JSONIQ_FN_NS ||
+#endif /* ZORBA_WITH_JSON */
             ns == ZORBA_XML_FN_NS);
-  } 
+  }
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
@@ -491,11 +565,7 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
   }
-  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS
-//#ifdef ZORBA_WITH_JSON
-//      || ns == JSONIQ_FN_NS
-//#endif
-      )
+  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
   }
@@ -582,6 +652,7 @@ static_context::static_context()
   :
   theParent(NULL),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -628,6 +699,7 @@ static_context::static_context(static_context* parent)
   :
   theParent(parent),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -679,6 +751,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   SimpleRCObject(ar),
   theParent(NULL),
   theTraceStream(NULL),
+  theQueryExpr(NULL),
   theBaseUriInfo(NULL),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
@@ -739,11 +812,17 @@ static_context::~static_context()
     delete theExternalModulesMap;
   }
 
-  if (theVariablesMap)
-    delete theVariablesMap;
+  if (theW3CCollectionMap)
+    delete theW3CCollectionMap;
 
-  if (theImportedPrivateVariablesMap)
-    delete theImportedPrivateVariablesMap;
+  if (theCollectionMap)
+    delete theCollectionMap;
+
+  if (theIndexMap)
+    delete theIndexMap;
+
+  if (theICMap)
+    delete theICMap;
 
   if (theFunctionMap)
     delete theFunctionMap;
@@ -760,17 +839,17 @@ static_context::~static_context()
     delete theFunctionArityMap;
   }
 
-  if (theW3CCollectionMap)
-    delete theW3CCollectionMap;
+  if (theVariablesMap)
+  {
+    delete theVariablesMap;
+    theVariablesMap = NULL;
+  }
 
-  if (theCollectionMap)
-    delete theCollectionMap;
-
-  if (theIndexMap)
-    delete theIndexMap;
-
-  if (theICMap)
-    delete theICMap;
+  if (theImportedPrivateVariablesMap)
+  {
+    delete theImportedPrivateVariablesMap;
+    theImportedPrivateVariablesMap = NULL;
+  }
 
   if (theNamespaceBindings)
     delete theNamespaceBindings;
@@ -845,12 +924,12 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       ERROR_PARAMS(ZED(NoSerializationCallbackForDocColMod)));
     }
 
-    if (lNumURIMappers) 
+    if (lNumURIMappers)
     {
-      for (size_t i = 0; i < lNumURIMappers; ++i) 
+      for (size_t i = 0; i < lNumURIMappers; ++i)
       {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
-        if (!lURIMapper) 
+        if (!lURIMapper)
         {
           throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(ZED(NoModuleURIResolver)));
@@ -860,12 +939,12 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       }
     }
 
-    if (lNumURLResolvers) 
+    if (lNumURLResolvers)
     {
-      for (size_t i = 0; i < lNumURLResolvers; ++i) 
+      for (size_t i = 0; i < lNumURLResolvers; ++i)
       {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
-        if (!lURLResolver) 
+        if (!lURLResolver)
         {
           throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(ZED(NoModuleURIResolver)));
@@ -963,8 +1042,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     else
       ar & theParent;
 
-    if(theParent)
-      theParent->addReference(theParent->getSharedRefCounter() SYNC_PARAM2(theParent->getRCLock()));
+    if (theParent)
+      theParent->addReference(SYNC_CODE(theParent->getRCLock()));
   }
 
   ar & theModuleNamespace;
@@ -1081,7 +1160,7 @@ void static_context::set_parent_as_root()
 /***************************************************************************//**
 
 ********************************************************************************/
-expr_t static_context::get_query_expr() const
+expr* static_context::get_query_expr() const
 {
   return theQueryExpr;
 }
@@ -1090,7 +1169,7 @@ expr_t static_context::get_query_expr() const
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_query_expr(expr_t expr)
+void static_context::set_query_expr(expr* expr)
 {
   theQueryExpr = expr;
 }
@@ -1651,7 +1730,7 @@ void static_context::apply_url_resolvers(
         }
         catch (const std::exception& e)
         {
-          if (oErrorMessage.empty()) 
+          if (oErrorMessage.empty())
           {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();
@@ -2109,22 +2188,39 @@ void static_context::get_namespace_bindings(store::NsBindings& bindings) const
 
 ********************************************************************************/
 void static_context::bind_var(
-    var_expr_t& varExpr,
+    var_expr* varExpr,
     const QueryLoc& loc,
     const Error& err)
 {
   if (theVariablesMap == NULL)
   {
-    theVariablesMap = new VariableMap(HashMapItemPointerCmp(0, NULL), 8, false);
+    theVariablesMap = new VariableMap(HashMapItemPointerCmp(0, NULL), 16, false);
   }
 
   store::Item* qname = varExpr->get_name();
 
-  if (!theVariablesMap->insert(qname, varExpr))
+  VarInfo_t vi = varExpr->get_var_info();
+
+  if (vi == NULL)
   {
-    throw XQUERY_EXCEPTION_VAR(
-      err, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
-    );
+    vi = new VarInfo(varExpr);
+
+    if (!theVariablesMap->insert(qname, vi))
+    {
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(qname->getStringValue()), ERROR_LOC(loc));
+    }
+
+    if (varExpr->get_kind() == var_expr::prolog_var)
+      varExpr->set_var_info(vi);
+  }
+  else
+  {
+    if (!theVariablesMap->insert(qname, vi))
+    {
+      throw XQUERY_EXCEPTION_VAR(err,
+      ERROR_PARAMS(qname->getStringValue()), ERROR_LOC(loc));
+    }
   }
 }
 
@@ -2137,35 +2233,23 @@ void static_context::bind_var(
   If var is not found, the method raises the given error, unless the given error
   is ZXQP0000_NO_ERROR, in which case it returns NULL.
 ********************************************************************************/
-var_expr* static_context::lookup_var(
-    const store::Item* qname,
-    const QueryLoc& loc,
-    const Error& error) const
+VarInfo* static_context::lookup_var(const store::Item* qname) const
 {
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
+  VarInfo_t var;
+
   const static_context* sctx = this;
-  var_expr_t varExpr;
 
   while (sctx != NULL)
   {
     if (sctx->theVariablesMap != NULL &&
-        sctx->theVariablesMap->get(qname2, varExpr))
+        sctx->theVariablesMap->get(qname2, var))
     {
-      return varExpr.getp();
+      return var.getp();
     }
 
     sctx = sctx->theParent;
-  }
-
-  if (error != zerr::ZXQP0000_NO_ERROR)
-  {
-    zstring lVarName = var_name(qname);
-    throw XQUERY_EXCEPTION_VAR(
-      error,
-      ERROR_PARAMS( lVarName, ZED( VariabledUndeclared ) ),
-      ERROR_LOC( loc )
-    );
   }
 
   return NULL;
@@ -2176,8 +2260,8 @@ var_expr* static_context::lookup_var(
   This method is used by introspection and debugger
 ********************************************************************************/
 void static_context::getVariables(
-    std::vector<var_expr_t>& vars,
-    bool aLocalsOnly,
+    std::vector<VarInfo*>& vars,
+    bool localsOnly,
     bool returnPrivateVars,
     bool externalVarsOnly) const
 {
@@ -2196,7 +2280,7 @@ void static_context::getVariables(
         csize i = 0;
         for (; i < numVars; ++i)
         {
-          if (vars[i]->get_name()->equals((*ite).first))
+          if (vars[i]->getName()->equals((*ite).first))
             break;
         }
 
@@ -2204,12 +2288,12 @@ void static_context::getVariables(
         {
           if (externalVarsOnly)
           {
-            if((*ite).second->is_external())
-              vars.push_back((*ite).second);
+            if ((*ite).second->isExternal())
+              vars.push_back((*ite).second.getp());
           }
           else
           {
-            vars.push_back((*ite).second);
+            vars.push_back((*ite).second.getp());
           }
         }
       }
@@ -2226,24 +2310,24 @@ void static_context::getVariables(
         csize i = 0;
         for (; i < numVars; ++i)
         {
-          if (vars[i]->get_name()->equals((*ite).first))
+          if (vars[i]->getName()->equals((*ite).first))
             break;
         }
 
         if (i == numVars)
         {
-          if(externalVarsOnly)
+          if (externalVarsOnly)
           {
-            if((*ite).second->is_external())
-              vars.push_back((*ite).second);
+            if((*ite).second->isExternal())
+              vars.push_back((*ite).second.getp());
           }
           else
-            vars.push_back((*ite).second);
+            vars.push_back((*ite).second.getp());
         }
       }
     }
 
-    if (aLocalsOnly)
+    if (localsOnly)
     {
       break;
     }
@@ -2334,7 +2418,7 @@ void static_context::bind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL), 16, false);
     }
 
@@ -2342,8 +2426,8 @@ void static_context::bind_fn(
 
     if (theFunctionArityMap->get(qname, fv))
     {
-      ulong numFunctions = (ulong)fv->size();
-      for (ulong i = 0; i < numFunctions; ++i)
+      csize numFunctions = fv->size();
+      for (csize i = 0; i < numFunctions; ++i)
       {
         if ((*fv)[i].theFunction == f)
         {
@@ -2399,7 +2483,7 @@ void static_context::unbind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL), 16, false);
     }
 
@@ -2458,7 +2542,7 @@ function* static_context::lookup_fn(
       {
         if (fi.theIsDisabled && skipDisabled)
           return NULL;
-        
+
         return f;
       }
 
@@ -2509,7 +2593,7 @@ function* static_context::lookup_local_fn(
     {
       if (fi.theIsDisabled && skipDisabled)
         return NULL;
-        
+
       return f;
     }
 
@@ -4003,7 +4087,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     if (theVariablesMap == NULL)
     {
       theVariablesMap = new VariableMap(HashMapItemPointerCmp(0, NULL),
-                                        (ulong)module->theVariablesMap->capacity(),
+                                        module->theVariablesMap->capacity(),
                                         false);
     }
 
@@ -4011,7 +4095,8 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     VariableMap::iterator end = module->theVariablesMap->end();
     for (; ite != end; ++ite)
     {
-      var_expr_t ve = ite.getValue();
+      var_expr* ve = (*ite).second->getVar();
+
       if (!ve->is_private())
       {
         bind_var(ve, loc, err::XQST0049);
@@ -4020,13 +4105,17 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       {
         if (theImportedPrivateVariablesMap == NULL)
         {
-          theImportedPrivateVariablesMap = 
+          theImportedPrivateVariablesMap =
           new VariableMap(HashMapItemPointerCmp(0, NULL), 8, false);
         }
 
-        if (!theImportedPrivateVariablesMap->insert(ve->get_name(), ve))
+        VarInfo_t vi = ve->get_var_info();
+
+        assert (vi != NULL);
+
+        if (!theImportedPrivateVariablesMap->insert(ve->get_name(), vi))
         {
-          RAISE_ERROR(err::XQST0049, loc, 
+          RAISE_ERROR(err::XQST0049, loc,
           ERROR_PARAMS(ve->get_name()->getStringValue()));
         }
       }
@@ -4056,7 +4145,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   {
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL),
                            (ulong)module->theFunctionArityMap->capacity(),
                            false);
