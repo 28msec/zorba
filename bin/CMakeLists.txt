@@ -59,6 +59,12 @@ IF(UNIX)
 ENDIF(UNIX)
 
 # test the basic features of the command line tool
+ZORBA_ADD_TEST(bin/zorba_f1 zorbacmd blub.xq)
+ZORBA_SET_TEST_PROPERTY(bin/zorba_f1 PASS_REGULAR_EXPRESSION ".*file {blub.xq} not found or not readable.*")
+
+ZORBA_ADD_TEST(bin/zorba_f2 zorbacmd "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" --option "{http://www.zorba-xquery.com}option=highly_unique")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_f2 PASS_REGULAR_EXPRESSION "highly_unique")
+
 ZORBA_ADD_TEST(bin/zorba1 zorbacmd --omit-xml-declaration -q "1+1")
 ZORBA_SET_TEST_PROPERTY(bin/zorba1 PASS_REGULAR_EXPRESSION "2")
 
