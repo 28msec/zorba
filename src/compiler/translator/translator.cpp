@@ -8497,10 +8497,7 @@ void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   size_t lNumPragmas = v.get_pragma_list()->get_pragmas().size();
-  for (size_t i = 0; i < lNumPragmas; ++i)
-  {
-    theScopedPragmas.erase(theScopedPragmas.end() - 1);
-  }
+  theScopedPragmas.resize(theScopedPragmas.size() - lNumPragmas);
 }
 
 

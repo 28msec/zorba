@@ -41,7 +41,7 @@ hasNoCopyPragma(expr& e)
 
 ********************************************************************************/
 void
-processPragma(zorba::expr* e, const std::vector<zorba::pragma*>& p)
+processPragmaInternal(zorba::expr* e, const std::vector<zorba::pragma*>& p)
 {
   for (std::vector<zorba::pragma*>::const_iterator lIter = p.begin();
        lIter != p.end();
@@ -144,7 +144,7 @@ zorba::static_collections_dml_insert_nodes::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_insert_nodes::codegen(
@@ -173,7 +173,7 @@ zorba::static_collections_dml_insert_nodes_first::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_insert_nodes_first::codegen(
@@ -202,7 +202,7 @@ zorba::static_collections_dml_insert_nodes_last::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_insert_nodes_last::codegen(
@@ -231,7 +231,7 @@ zorba::static_collections_dml_insert_nodes_before::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_insert_nodes_before::codegen(
@@ -260,7 +260,7 @@ zorba::static_collections_dml_insert_nodes_after::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_insert_nodes_after::codegen(
@@ -289,7 +289,7 @@ zorba::static_collections_dml_apply_insert_nodes::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
@@ -326,7 +326,7 @@ zorba::static_collections_dml_apply_insert_nodes_first::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
@@ -363,7 +363,7 @@ zorba::static_collections_dml_apply_insert_nodes_last::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
@@ -400,7 +400,7 @@ zorba::static_collections_dml_apply_insert_nodes_before::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
@@ -438,7 +438,7 @@ zorba::static_collections_dml_apply_insert_nodes_after::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
-  processPragma(e, p);
+  processPragmaInternal(e, p);
 }
 
 PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
