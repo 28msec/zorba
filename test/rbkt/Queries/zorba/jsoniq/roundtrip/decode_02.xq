@@ -1,14 +1,6 @@
-let $obj := jn:decode-from-roundtrip(
-  {
-    "serialized XML" : {
-      "Q{http://jsoniq.org/roundtrip}type" : "node()",
-      "Q{http://jsoniq.org/roundtrip}value" : "<para>
-         A pair named &quot;[$prefix]value&quot; (where [$prefix] is replaced with the
-         value of the parameter $prefix) and whose value is a serialization
-         of the XML node according to the XML output method and with the
-         serialization parameters specified by $param.
-         </para>"
-    }
-  })
+import module namespace f = "http://expath.org/ns/file";
+
+let $json := jn:parse-json(f:read-text(fn:resolve-uri("encoded_01.json")))
+let $obj := jn:decode-from-roundtrip($json)
 return
   $obj("serialized XML")
