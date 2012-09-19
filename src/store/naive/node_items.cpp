@@ -3284,7 +3284,8 @@ void ElementNode::checkUniqueAttrs() const
 
       if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
       {
-        throw XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(ZED(XUDY0021_Original), attrName->getStringValue()));
+        throw XQUERY_EXCEPTION(err::XUDY0021,
+            ERROR_PARAMS(ZED(XUDY0021_AttributeName), "", attrName->getStringValue()));
       }
     }
   }

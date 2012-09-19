@@ -235,13 +235,7 @@ void apply_updates(
   {
     if (e.has_source() && (e.diagnostic() == err::XUDY0021))
     {
-#if 0
-    XQueryException x = XQUERY_EXCEPTION(
-        err::XUDY0021,
-       ERROR_PARAMS(ZED(XUDY0021_AppliedAt), "foo", loc));
-      e.set_diagnostic(x.diagnostic());
-#endif
-      throw;
+      throw XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(e.what(), ZED(XUDY0021_AppliedAt), loc));
     }
     else
     {
