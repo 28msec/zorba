@@ -433,7 +433,7 @@ void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHin
 
     // 0 is reserved as an invalid var id, and 1 is taken by the context item
     // in the main module.
-    ulong nextVarId = 2;
+    ulong nextVarId = 4;
 
     doCompile(lQueryStream, aHints, true, nextVarId);
   }
@@ -457,7 +457,7 @@ void XQueryImpl::compile(
 
     // 0 is reserved as an invalid var id, and 1 is taken by the context item
     // in the main module.
-    ulong nextVarId = 2;
+    ulong nextVarId = 4;
 
     doCompile(aQuery, aHints, true, nextVarId);
   }
