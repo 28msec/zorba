@@ -152,7 +152,7 @@ extern entry const dict_en[] = {
   { "JNUP0017", "can not replace with less or more than an item" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0019", "content of insert expression must evaluate to a sequence of objects" },
+  { "JNUP0019", "\"$1\": content of insert expression must evaluate to a sequence of objects" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },

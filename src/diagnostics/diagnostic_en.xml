@@ -2744,7 +2744,7 @@
     <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
       
-      <value>content of insert expression must evaluate to a sequence of objects</value>
+      <value>"$1": invalid type (content of insert expression must evaluate to a sequence of objects)</value>
     </diagnostic>
     
     <!--////////// JSONIQ ///////////////////////////////////////////-->

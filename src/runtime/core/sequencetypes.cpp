@@ -736,10 +736,7 @@ void TreatIterator::raiseError(const zstring& valueType) const
   }
   case JSONIQ_OBJECT_UPDATE_CONTENT:
   {
-#if 0 /* REMOVE THIS LINE ONCE YOU FIX THE USE OF JNUP0019 BELOW */
-    RAISE_ERROR(jerr::JNUP0019, loc,
-    ERROR_PARAMS(ZED(JNUP0019), valueType));
-#endif /* REMOVE THIS LINE TOO */
+    RAISE_ERROR(jerr::JNUP0019, loc, ERROR_PARAMS(valueType));
     break;
   }
   case JSONIQ_ARRAY_UPDATE_TARGET:
