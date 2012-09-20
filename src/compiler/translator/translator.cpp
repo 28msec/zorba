@@ -9706,8 +9706,10 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
     var_expr* sizeVar = sizeClause->get_var();
     var_expr* posVar = dotClause->get_pos_var();
+    var_expr* dotVar = dotClause->get_var();
 
-    if (expr_tools::count_variable_uses(predExpr, posVar, 1) == 0)
+    if (expr_tools::count_variable_uses(predExpr, posVar, 1) == 0 &&
+        expr_tools::count_variable_uses(predExpr, dotVar, 1) == 0)
     {
       flworExpr->remove_clause(2);
 
