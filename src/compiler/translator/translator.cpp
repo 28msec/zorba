@@ -77,6 +77,7 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
+#include "context/dynamic_context.h"
 
 #include "types/node_test.h"
 #include "types/casting.h"
@@ -2401,10 +2402,10 @@ void* begin_visit(const MainModule& v)
   var1->set_external(true);
   var2->set_external(true);
   var3->set_external(true);
-
-  var1->set_unique_id(1);
-  var2->set_unique_id(2);
-  var3->set_unique_id(3);
+  
+  var1->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
+  var2->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
+  var3->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
 
   //GlobalBinding b(var, NULL, true);
   //declare_var(b, theModulesInfo->theInitExprs);
