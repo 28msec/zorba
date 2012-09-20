@@ -553,10 +553,10 @@ JSONEncodeForRoundtripIterator::nextImpl(
   consumeNext(lInput, theChildren.at(0), aPlanState);
 
   // get encoding parameters
-  if (theChildren.size() == 2
-      && consumeNext(lEncParams, theChildren.at(1), aPlanState))
+  if (theChildren.size() == 2)
   {
     // the signature says that the second parameter has to be exactly one object
+    consumeNext(lEncParams, theChildren.at(1), aPlanState);
     store::Item_t lPrefixKey;
     zstring lPrefixName = "prefix";
     lParams.theFactory->createString(lPrefixKey, lPrefixName);
@@ -570,7 +570,6 @@ JSONEncodeForRoundtripIterator::nextImpl(
       }
       lPrefixValue->getStringValue2(lParams.thePrefix);
     }
-
 
     store::Item_t lSerParamKey;
     zstring lSerParamName = "serialization-parameters";
