@@ -1471,7 +1471,15 @@
        [XQuery 1.0 and XPath 2.0 Data Model]. In this case, none of the updates
        in the query are made effective.
       </comment>
-      <value>updates violate constraint</value>
+      <value>$1${ 2}</value>
+        
+      <entry key="AttributeName">
+        <value>"$3": attribute with the same name already exists</value>
+      </entry>
+
+      <entry key="AppliedAt">
+        <value>(applied at $3)</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XUTY0022">

@@ -152,7 +152,7 @@ extern entry const dict_en[] = {
   { "JNUP0017", "can not replace with less or more than an item" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNUP0019", "\"$1\": content of insert expression must evaluate to a sequence of objects" },
+  { "JNUP0019", "\"$1\": invalid type (content of insert expression must evaluate to a sequence of objects)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
@@ -273,7 +273,7 @@ extern entry const dict_en[] = {
   { "XUDY0017", "node is target of multiple \"replace value of\" expressions in same query" },
   { "XUDY0018", "\"$1\": function declared external, non-updating returns non-empty pending update list" },
   { "XUDY0019", "\"$1\": function declated external, updating returns non-empty data model instance" },
-  { "XUDY0021", "updates violate constraint" },
+  { "XUDY0021", "$1${ 2}" },
   { "XUDY0023", "\"$1\": namespace binding conflicts with $2=$3" },
   { "XUDY0024", "\"$1\": namespace binding conflicts with $2=$3" },
   { "XUDY0027", "target expression is empty sequence" },
@@ -882,6 +882,8 @@ extern entry const dict_en[] = {
   { "~XPTY0004_NoTypePromote_23", "$2 can not be promoted to type $3" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
+  { "~XUDY0021_AppliedAt", "(applied at $3)" },
+  { "~XUDY0021_AttributeName", "\"$3\": attribute with the same name already exists" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },
   { "~XUST0001_IF", "conditional expression with updating and non-updating branch" },

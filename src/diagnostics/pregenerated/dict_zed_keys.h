@@ -51,6 +51,8 @@
 #define ZED_XUST0001_Generic "~XUST0001_Generic"
 #define ZED_XUST0001_IF "~XUST0001_IF"
 #define ZED_XUST0001_UDF_2 "~XUST0001_UDF_2"
+#define ZED_XUDY0021_AttributeName "~XUDY0021_AttributeName"
+#define ZED_XUDY0021_AppliedAt "~XUDY0021_AppliedAt"
 #define ZED_ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes"
 #define ZED_ZXQP0025_RESOURCE_NOT_FOUND "~ZXQP0025_RESOURCE_NOT_FOUND"
 #define ZED_ZXQD0004_NON_NEGATIVE "~ZXQD0004_NON_NEGATIVE"
