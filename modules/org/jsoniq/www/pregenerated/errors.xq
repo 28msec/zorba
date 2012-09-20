@@ -100,15 +100,7 @@ declare variable $jerr:JNTY0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0011
 declare variable $jerr:JNSE0012 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0012");
 
 (:~
- :It is a dynamic error to serialize an atomic value not
- : supported by JSON or a node with the JSON output method and with
- : the jsoniq-serialization-extensions serialization parameter
- : set to false.
-:)
-declare variable $jerr:JNSE0013 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0013");
-
-(:~
- :It is a dynamic error to serialize a function with the
+ :It is a dynamic error to serialize a function or a node with the
  : JSON output method.
 :)
 declare variable $jerr:JNSE0014 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0014");

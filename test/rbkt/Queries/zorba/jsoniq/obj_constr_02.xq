@@ -4,11 +4,10 @@ declare variable $xdoc :=
 <node>20</node>
 </nodes>;
 
-variable $obj :=  
-{| 
-  for $node at $pos in $xdoc//node 
-  return { concat("n", $pos) : $node } 
+variable $obj :=
+{|
+  for $node at $pos in $xdoc//node
+  return { concat("n", $pos) : $node }
 |};
 
-$obj
-
+jn:encode-for-roundtrip($obj, { "prefix" : "" })
