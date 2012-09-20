@@ -70,6 +70,9 @@ declare function jn:decode-from-roundtrip(
  :
  : @param $items the items to be decoded.
  : @param $options the decoding options.
+ :
+ : @error jerr:JNTY0023 if $options("prefix") is not a string
+ :
  : @return the decoded items.
  :)
 declare function jn:decode-from-roundtrip(
@@ -111,6 +114,9 @@ declare function jn:encode-for-roundtrip(
  :
  : @param $items the items to be encoded.
  : @param $options the encoding options.
+ :
+ : @error jerr:JNTY0023 if $options("prefix") is not a string
+ :
  : @return the encoded items.
  :)
 declare function jn:encode-for-roundtrip(

@@ -299,8 +299,8 @@ JSONDecodeFromRoundtripIterator::nextImpl(
     {
       if (lPrefixValue->getTypeCode() != store::XS_STRING)
       {
-        // TODO exception
-        throw lPrefixValue;
+        RAISE_ERROR(jerr::JNTY0023, loc,
+                    ERROR_PARAMS(lPrefixValue->getStringValue()));
       }
       lPrefixValue->getStringValue2(lParams.thePrefix);
     }
@@ -565,8 +565,8 @@ JSONEncodeForRoundtripIterator::nextImpl(
     {
       if (lPrefixValue->getTypeCode() != store::XS_STRING)
       {
-        // TODO exception
-        throw lPrefixValue;
+        RAISE_ERROR(jerr::JNTY0023, loc,
+                    ERROR_PARAMS(lPrefixValue->getStringValue()));
       }
       lPrefixValue->getStringValue2(lParams.thePrefix);
     }

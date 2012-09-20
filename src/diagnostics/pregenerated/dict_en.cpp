@@ -125,6 +125,9 @@ extern entry const dict_en[] = {
   { "JNTY0018", "Object or array selection needs exactly one parameter." },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNTY0023", "$1: prefix is not a string" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
 #endif
 #if defined(ZORBA_WITH_JSON)

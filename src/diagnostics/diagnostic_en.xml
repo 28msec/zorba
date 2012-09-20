@@ -2698,6 +2698,11 @@
       <value>The content of an insert expression must evaluate to a sequence of objects.</value>
     </diagnostic>
     
+    <diagnostic code="JNTY0023" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error if the prefix is not a string.</comment>
+      <value>$1: prefix is not a string</value>
+    </diagnostic>
+
     <!--////////// JSONIQ ///////////////////////////////////////////-->
 
     <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
