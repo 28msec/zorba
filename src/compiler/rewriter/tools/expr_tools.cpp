@@ -51,7 +51,6 @@ static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 bool count_variable_uses_rec(
     const expr* e,
     const var_expr* var,
-    RewriterContext* rCtx,
     int limit,
     int& count)
 {
@@ -73,16 +72,16 @@ bool count_variable_uses_rec(
     int thenCount = 0;
     int elseCount = 0;
 
-    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, rCtx, limit, count))
+    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, limit, count))
         return false;
 
-    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, rCtx, limit, thenCount))
+    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, limit, thenCount))
     {
       count = thenCount;
       return false;
     }
 
-    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, rCtx, limit, elseCount))
+    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, limit, elseCount))
     {
       count = elseCount;
       return false;
@@ -95,7 +94,7 @@ bool count_variable_uses_rec(
     ExprConstIterator iter(e);
     while (!iter.done())
     {
-      if (!count_variable_uses_rec(iter.get_expr(), var, rCtx, limit, count))
+      if (!count_variable_uses_rec(iter.get_expr(), var, limit, count))
         return false;
 
       iter.next();
@@ -109,15 +108,11 @@ bool count_variable_uses_rec(
 /*******************************************************************************
 
 ********************************************************************************/
-int count_variable_uses(
-    const expr* root,
-    const var_expr* var,
-    RewriterContext* rCtx,
-    int limit = 0)
+int count_variable_uses(const expr* root, const var_expr* var, int limit = 0)
 {
   int count = 0;
 
-  count_variable_uses_rec(root, var, rCtx, limit, count);
+  count_variable_uses_rec(root, var, limit, count);
 
   return count;
 }
