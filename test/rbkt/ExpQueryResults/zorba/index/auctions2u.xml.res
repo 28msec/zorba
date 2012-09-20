@@ -256,7 +256,7 @@ TEST 5:
 
 TEST 6 (undo without do):
 
-<exception>err:XUDY0021 : updates violate constraint</exception><person id="person1"><watches>
+<exception>err:XUDY0021 : "id": attribute with the same name already exists</exception><person id="person1"><watches>
 <watch open_auction="open_auction2"/>
 <watch open_auction="open_auction4"/>
 <watch open_auction="open_auction5"/>
