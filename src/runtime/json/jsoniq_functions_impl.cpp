@@ -28,7 +28,6 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/json/jsoniq_functions.h"
-#include "runtime/json/jsoniq_functions_impl.h"
 #include "runtime/parsing_and_serializing/parsing_and_serializing.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -402,7 +401,7 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   case store::XS_INTEGER:
   case store::XS_DECIMAL:
   case store::XS_BOOLEAN:
-  case store::JDM_NULL:
+  case store::JS_NULL:
     if (aValue->getBaseItem() == NULL)
     {
       // nothing to do - no modification necessary
@@ -1060,7 +1059,7 @@ JSONItemAccessorIterator::nextImpl(
 
 
 /*******************************************************************************
-  j:null()) as jdm:null
+  jn:null() as jn:null
 ********************************************************************************/
 bool
 JSONNullIterator::nextImpl(
@@ -1077,91 +1076,62 @@ JSONNullIterator::nextImpl(
 
 
 /*******************************************************************************
+  jn:is-null(xs:anyAtomicType) as xs:boolean
+********************************************************************************/
+bool
+JSONIsNullIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  PlanIteratorState* state;
+  store::Item_t lItem;
+  bool lIsNull;
+
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lItem, theChild.getp(), planState);
+
+  lIsNull = (lItem->getTypeCode() == store::JS_NULL);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lIsNull), state);
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
   updating function op-zorba:object-insert(
       $o as object(),
-      $name1 as xs:string, $value1 as item(), 
-      ..., 
-      $nameN as xs:string, $valueN as item())
+      $c as object())
 ********************************************************************************/
-JSONObjectInsertIterator::JSONObjectInsertIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& args,
-    bool copyInput)
-  :
-  NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>(sctx, loc, args)
-{
-  csize numPairs = (args.size() - 1) / 2;
-
-  theCopyInputs.resize(numPairs);
-
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    if (theChildren[2 + 2*i]->isConstructor())
-    {
-      theCopyInputs[i] = false;
-    }
-    else
-    {
-      theCopyInputs[i] = copyInput;
-    }
-  }
-}
-
-
-void JSONObjectInsertIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, 
-  (NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>*)this);
-
-  SERIALIZE_BOOL_VEC(theCopyInputs);
-}
-
-
 bool JSONObjectInsertIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t object;
-  store::Item_t name;
-  store::Item_t value;
-  std::vector<store::Item_t> names;
-  std::vector<store::Item_t> values;
+  store::Item_t target;
+  store::Item_t content;
   store::PUL_t pul;
   store::CopyMode copymode;
-  csize numPairs;
-
   PlanIteratorState* state;
+
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(object, theChildren[0].getp(), planState);
+  consumeNext(target, theChildren[0].getp(), planState);
 
-  copymode.set(true, 
+  consumeNext(content, theChildren[1].getp(), planState);
+
+  copymode.set(true,
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
                theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
                theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
-
-  numPairs = (theChildren.size() - 1) / 2;
-
-  names.resize(numPairs);
-  values.resize(numPairs);
-
-  for (csize i = 0; i < numPairs; ++i)
+  if (content->isNode() || content->isJSONItem())
   {
-    consumeNext(name, theChildren[2 * i + 1].getp(), planState);
-    consumeNext(value, theChildren[2 * i + 2].getp(), planState);
-
-    names[i].transfer(name);
-
-    if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
-      value = value->copy(NULL, copymode);
-
-    values[i].transfer(value);
+    content = content->copy(NULL, copymode);
   }
 
   pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  pul->addJSONObjectInsert(&loc, object, names, values);
+  pul->addJSONObjectInsert(&loc, target, content);
 
   result.transfer(pul);
 
@@ -1169,11 +1139,6 @@ bool JSONObjectInsertIterator::nextImpl(
 
   STACK_END(state);
 }
-
-
-NARY_ACCEPT(JSONObjectInsertIterator);
-
-SERIALIZABLE_CLASS_VERSIONS(JSONObjectInsertIterator)
 
 
 /*******************************************************************************

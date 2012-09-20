@@ -93,7 +93,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

@@ -274,6 +274,44 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//fn-jsoniq:is-null
+class fn_jsoniq_is_null : public function
+{
+public:
+  fn_jsoniq_is_null(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
+//op-zorba:json-object-insert
+class op_zorba_json_object_insert : public function
+{
+public:
+  op_zorba_json_object_insert(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //op-zorba:json-array-insert
 class op_zorba_json_array_insert : public function
 {

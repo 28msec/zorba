@@ -35,11 +35,9 @@ module namespace jn = "http://www.jsoniq.org/functions";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
-declare namespace jdm = "http://www.jsoniq.org/";
-
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-
 declare namespace jerr = "http://www.jsoniq.org/errors";
+declare namespace js = "http://www.jsoniq.org/types";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
@@ -255,3 +253,22 @@ declare function jn:flatten($a as array()) as item()* external;
  : @error jerr:JNDY0003 if there is a pair collision.
  :)
 declare function jn:object($o as object()*) as object() external;
+
+(:~
+ : Returns the JSON null.
+ :
+ : @return The JSON null.
+ :)
+declare function jn:null() as js:null external;
+
+(:~
+ : Tests whether the supplied atomic item is a JSON null.
+ :
+ : @param An atomic item.
+ :
+ : @return true if the item is of type js:null.
+ :)
+declare function jn:is-null($i as xs:anyAtomicType) as xs:boolean external;
+
+
+

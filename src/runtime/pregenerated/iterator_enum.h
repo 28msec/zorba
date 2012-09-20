@@ -163,6 +163,8 @@
   TYPE_JSONArrayFlattenIterator,
   TYPE_JSONItemAccessorIterator,
   TYPE_JSONNullIterator,
+  TYPE_JSONIsNullIterator,
+  TYPE_JSONObjectInsertIterator,
   TYPE_JSONArrayInsertIterator,
   TYPE_JSONDeleteIterator,
   TYPE_JSONReplaceValueIterator,

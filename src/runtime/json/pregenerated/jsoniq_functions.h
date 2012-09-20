@@ -506,6 +506,72 @@ public:
 #ifdef ZORBA_WITH_JSON
 /**
  * 
+ * Author: 
+ */
+class JSONIsNullIterator : public UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONIsNullIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONIsNullIterator,
+    UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONIsNullIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~JSONIsNullIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ *      internal function
+ *  
+ * Author: Zorba Team
+ */
+class JSONObjectInsertIterator : public NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONObjectInsertIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectInsertIterator,
+    NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONObjectInsertIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONObjectInsertIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONObjectInsertIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
  *      internal function 
  *    
  * Author: Zorba Team

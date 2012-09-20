@@ -439,7 +439,6 @@ public:
   Feature flags that are used when a particular feature (e.g. scripting
   or ddl) is enabled. The definition of the features is located in
   context/featueres.h.
-
 ********************************************************************************/
 
 class static_context : public SimpleRCObject
@@ -527,7 +526,7 @@ public:
   static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
 
 #ifdef ZORBA_WITH_JSON
-  static const char* JSONIQ_NS;
+  static const char* JSONIQ_DM_NS;
   static const char* JSONIQ_FN_NS;
 #endif
 
@@ -980,7 +979,6 @@ public:
   XQPCollator* get_default_collator(const QueryLoc& loc) const;
 
   void get_collations(std::vector<std::string>& collations) const;
-
 
   //
   // Options

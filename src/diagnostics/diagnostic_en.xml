@@ -2120,6 +2120,10 @@
       <value>"$1": index domain expression yields nodes that are not in collection</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0019" name="COLLECTION_ITERATOR_NOT_OPEN">
+      <value>"$1": iterator on collection is not open</value>
+    </diagnostic>
+
     <diagnostic code="ZDDY0021" name="INDEX_NOT_DECLARED">
       <value>"$1": undeclared index</value>
     </diagnostic>
@@ -2555,11 +2559,6 @@
 
     <!--////////// JSONiq ///////////////////////////////////////////-->
 
-    <diagnostic code="JNTY0001" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.</comment>
-      <value>Cannot atomize and/or cast value of type $1 to a string.</value>
-    </diagnostic>
-
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
       <value>Pair value returns no, or more than one, item.</value>
@@ -2572,7 +2571,7 @@
     
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
-      <value>$1 items do not have typed value</value>
+      <value>Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item).</value>
     </diagnostic>
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
@@ -2698,8 +2697,14 @@
     
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
-
+      
       <value>Object or array selection needs exactly one parameter.</value>
+    </diagnostic>
+    
+    <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
+      
+      <value>The content of an insert expression must evaluate to a sequence of objects.</value>
     </diagnostic>
     
     <!--////////// JSONIQ ///////////////////////////////////////////-->

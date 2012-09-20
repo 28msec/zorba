@@ -265,7 +265,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& subst) const;
+  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 

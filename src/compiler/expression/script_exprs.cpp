@@ -166,7 +166,7 @@ void block_expr::compute_scripting_kind2(
 }
 
 
-expr* block_expr::clone(substitution_t& subst) const
+expr* block_expr::cloneImpl(substitution_t& subst) const
 {
   checked_vector<expr*> seq2;
   for (csize i = 0; i < theArgs.size(); ++i)
@@ -205,7 +205,7 @@ void apply_expr::compute_scripting_kind()
 }
 
 
-expr* apply_expr::clone(substitution_t& subst) const
+expr* apply_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
 }
@@ -262,7 +262,7 @@ void var_decl_expr::compute_scripting_kind()
 }
 
 
-expr* var_decl_expr::clone(substitution_t& s) const
+expr* var_decl_expr::cloneImpl(substitution_t& s) const
 {
   var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
   s[theVarExpr] = varCopy;
@@ -319,7 +319,7 @@ void var_set_expr::compute_scripting_kind()
 }
 
 
-expr* var_set_expr::clone(substitution_t& s) const
+expr* var_set_expr::cloneImpl(substitution_t& s) const
 {
   expr* varClone = theVarExpr->clone(s);
 
@@ -368,7 +368,7 @@ void exit_expr::compute_scripting_kind()
 }
 
 
-expr* exit_expr::clone(substitution_t& subst) const
+expr* exit_expr::cloneImpl(substitution_t& subst) const
 {
   expr* clone = theCCB->theEM->create_exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
 
@@ -438,7 +438,7 @@ void exit_catcher_expr::removeExitExpr(const expr* exitExpr)
 }
 
 
-expr* exit_catcher_expr::clone(substitution_t& subst) const
+expr* exit_catcher_expr::cloneImpl(substitution_t& subst) const
 {
   expr* clonedInput = get_expr()->clone(subst);
 
@@ -479,7 +479,7 @@ void flowctl_expr::compute_scripting_kind()
 }
 
 
-expr* flowctl_expr::clone(substitution_t& subst) const
+expr* flowctl_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_flowctl_expr(theSctx, get_loc(), get_action());
 }
@@ -524,7 +524,7 @@ void while_expr::compute_scripting_kind()
 }
 
 
-expr* while_expr::clone(substitution_t& subst) const
+expr* while_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_while_expr(theSctx, get_loc(), get_body()->clone(subst));
 }

@@ -1550,8 +1550,11 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
   std::vector<VarInfo*>::const_iterator end = vars.end();
   std::vector<store::Item_t> extVars;
 
-  for (; ite != end; ++ite) 
-  { 
+  for (; ite != end; ++ite)
+  {
+    if ((*ite)->getName()->getStringValue() == static_context::DOT_VAR_NAME)
+      continue;
+
     extVars.push_back((*ite)->getName());        
   }
 
