@@ -5,11 +5,11 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare variable $local:dir :=
   let $base-uri := fn:static-base-uri()
+  let $filename := tokenize($base-uri, "/")[last()]
   return fn:substring(
            $base-uri,
            1,
-           fn:string-length($base-uri) - fn:string-length("basic.xs"));
-
+           fn:string-length($base-uri) - fn:string-length($filename));
 
 declare %ann:sequential function local:remove-date($xqdoc)
 {

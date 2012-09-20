@@ -106,7 +106,7 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (theChildren.size() > 2)
   {
     // retrieve the options
-    consumeNext(lOptionsItem, theChildren[1].getp(), planState);
+    consumeNext(lOptionsItem, theChildren[2].getp(), planState);
     readOptions(lXQDocOptions, *lOptionsItem);
   }
   else
