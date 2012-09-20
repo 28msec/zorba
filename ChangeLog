@@ -14,6 +14,7 @@ New Features:
     takes options to parameterize the parsing process (see bug #1047547)
   * Implemented semantics of null for comparison and arithmetics operations.
   * Positional pagination support for index probes 
+  * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
   * Adding new external module read-pdf, it converts PDF documents to text or rendered images.
 
 Optimizations:
