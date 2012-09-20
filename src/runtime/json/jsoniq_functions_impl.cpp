@@ -139,7 +139,7 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
     if (lValueValueItem->isStreamable())
     {
       aResult = GENV.getStore().loadDocument(
-            "", "", &(lValueValueItem->getStream()), lProperties);
+            "", "", lValueValueItem->getStream(), lProperties);
     }
     else
     {
