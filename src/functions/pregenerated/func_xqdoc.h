@@ -38,37 +38,6 @@ void populate_context_xqdoc(static_context* sctx);
 
 
 
-//fn-zorba-xqdoc:xqdoc
-class fn_zorba_xqdoc_xqdoc : public function
-{
-public:
-  fn_zorba_xqdoc_xqdoc(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-setDeterministic(false);
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-xqdoc:xqdoc-options-impl
-class fn_zorba_xqdoc_xqdoc_options_impl : public function
-{
-public:
-  fn_zorba_xqdoc_xqdoc_options_impl(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-zorba-xqdoc:xqdoc-content
 class fn_zorba_xqdoc_xqdoc_content : public function
 {

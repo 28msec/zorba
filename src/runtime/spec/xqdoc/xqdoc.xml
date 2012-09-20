@@ -14,31 +14,6 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="XQDocIterator" arity="nary">
-
-  <zorba:description author="Zorba Team">zorba:XQDoc</zorba:description>
-
-  <zorba:function isDeterministic="false">
-    <zorba:signature localname="xqdoc" prefix="fn-zorba-xqdoc">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:output>element()</zorba:output>
-    </zorba:signature>
-  </zorba:function>
-
-  <zorba:function>
-    <zorba:signature localname="xqdoc-options-impl" prefix="fn-zorba-xqdoc">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:param>element()</zorba:param>
-      <zorba:output>element()</zorba:output>
-    </zorba:signature>
-  </zorba:function>
-    
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
 <zorba:iterator name="XQDocContentIterator" arity="nary">
 
   <zorba:description author="Zorba Team">zorba:XQDoc</zorba:description>

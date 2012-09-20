@@ -4682,20 +4682,6 @@ void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
 // </DecodeURIIterator>
 
 
-// <XQDocIterator>
-void PrinterVisitor::beginVisit ( const XQDocIterator& a) {
-  thePrinter.startBeginVisit("XQDocIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const XQDocIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </XQDocIterator>
-
-
 // <XQDocContentIterator>
 void PrinterVisitor::beginVisit ( const XQDocContentIterator& a) {
   thePrinter.startBeginVisit("XQDocContentIterator", ++theId);

@@ -37,36 +37,6 @@ namespace zorba {
  * zorba:XQDoc
  * Author: Zorba Team
  */
-class XQDocIterator : public NaryBaseIterator<XQDocIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(XQDocIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(XQDocIterator,
-    NaryBaseIterator<XQDocIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  XQDocIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<XQDocIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~XQDocIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * zorba:XQDoc
- * Author: Zorba Team
- */
 class XQDocContentIterator : public NaryBaseIterator<XQDocContentIterator, PlanIteratorState>
 { 
 public:

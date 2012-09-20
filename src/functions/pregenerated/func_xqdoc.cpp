@@ -31,26 +31,6 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_xqdoc_xqdoc::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new XQDocIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_xqdoc_xqdoc_options_impl::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new XQDocIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_zorba_xqdoc_xqdoc_content::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -73,31 +53,6 @@ PlanIter_t fn_zorba_xqdoc_xqdoc_content_options_impl::codegen(
 
 void populate_context_xqdoc(static_context* sctx)
 {
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc,
-        (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_XQDOC_XQDOC_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc_options_impl,
-        (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc-options-impl"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_XQDOC_XQDOC_OPTIONS_IMPL_2);
-
-  }
-
-
 
 
       {

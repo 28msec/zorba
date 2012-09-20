@@ -1083,9 +1083,6 @@ namespace zorba {
     void beginVisit( const DecodeURIIterator& );
     void endVisit  ( const DecodeURIIterator& );
 
-    void beginVisit( const XQDocIterator& );
-    void endVisit  ( const XQDocIterator& );
-
     void beginVisit( const XQDocContentIterator& );
     void endVisit  ( const XQDocContentIterator& );
 

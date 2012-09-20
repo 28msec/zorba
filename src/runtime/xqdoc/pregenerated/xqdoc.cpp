@@ -32,34 +32,6 @@
 
 namespace zorba {
 
-// <XQDocIterator>
-SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
-
-void XQDocIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<XQDocIterator, PlanIteratorState>*)this);
-}
-
-
-void XQDocIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-XQDocIterator::~XQDocIterator() {}
-
-// </XQDocIterator>
-
-
 // <XQDocContentIterator>
 SERIALIZABLE_CLASS_VERSIONS(XQDocContentIterator)
 

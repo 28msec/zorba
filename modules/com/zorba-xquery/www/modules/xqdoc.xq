@@ -61,6 +61,8 @@ xquery version "3.0";
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
+import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import schema namespace opt =
@@ -87,23 +89,23 @@ declare option ver:module-version "2.0";
  :)
 declare %an:nondeterministic function xqd:xqdoc(
   $module-uri as xs:string
-) as element() external;
-
-declare %private function xqd:xqdoc-options-impl(
-  $module-uri as xs:string,
-  $options as element()
-) as element() external;
+) as element()
+{
+  let $content := fetch:content($module-uri)
+  return xqd:xqdoc-content($content)
+};
 
 declare function xqd:xqdoc(
   $module-uri as xs:string,
   $options as element(opt:enable)
 ) as element()
 {
+  let $content := fetch:content($module-uri)
   let $xqdoc-options := if ( schema:is-validated( $options ) ) then
                               $options
                             else
                               validate { $options }
-  return xqd:xqdoc-options-impl($module-uri, $xqdoc-options)
+  return xqd:xqdoc-content($content, $xqdoc-options)
 };
 
 (:~

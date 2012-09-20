@@ -344,7 +344,6 @@
   TYPE_StringIsStreamableIterator,
   TYPE_StringSplitIterator,
   TYPE_DecodeURIIterator,
-  TYPE_XQDocIterator,
   TYPE_XQDocContentIterator,
 
 
