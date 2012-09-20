@@ -74,10 +74,6 @@ declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare option ver:module-version "2.0";
 
-declare %private %an:nondeterministic function xqd:xqdoc-impl(
-  $module-uri as xs:string
-) as element() external;
-
 (:~
  : Generated an XQDoc XML document for the module located
  : at the URI provided as parameter to this function.
@@ -91,10 +87,7 @@ declare %private %an:nondeterministic function xqd:xqdoc-impl(
  :)
 declare %an:nondeterministic function xqd:xqdoc(
   $module-uri as xs:string
-) as element()
-{
-  xqd:xqdoc-impl($module-uri)
-};
+) as element() external;
 
 declare %private function xqd:xqdoc-options-impl(
   $module-uri as xs:string,
@@ -113,10 +106,6 @@ declare function xqd:xqdoc(
   return xqd:xqdoc-options-impl($module-uri, $xqdoc-options)
 };
 
-declare %private function xqd:xqdoc-content-impl(
-  $module as xs:string
-) as element() external;
-
 (:~
  : Generated the an XQDoc XML document for the module provided
  : as parameter to this function.
@@ -130,10 +119,7 @@ declare %private function xqd:xqdoc-content-impl(
  :)
 declare function xqd:xqdoc-content(
   $module as xs:string
-) as element()
-{
-  xqd:xqdoc-content-impl($module)
-};
+) as element() external;
 
 declare %private function xqd:xqdoc-content-options-impl(
   $module as xs:string,

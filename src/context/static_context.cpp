@@ -528,6 +528,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
+            ns == ZORBA_XQDOC_FN_NS ||
 
             ns == ZORBA_URI_FN_NS ||
 
