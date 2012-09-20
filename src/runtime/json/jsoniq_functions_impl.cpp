@@ -63,6 +63,7 @@ public:
                  const QueryLoc& aLoc)
     : theSctx(aSctx),
       theFactory(aFactory),
+      thePrefix("Q{http://jsoniq.org/roundtrip}"),
       theLoc(aLoc)
   {}
 
@@ -281,7 +282,6 @@ JSONDecodeFromRoundtripIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  lParams.thePrefix = "Q{http://jsoniq.org/roundtrip}"; // TODO move into params
   lParams.theDiag = aPlanState.theCompilerCB->theXQueryDiagnostics;
 
   consumeNext(lInput, theChildren.at(0), aPlanState);
