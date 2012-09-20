@@ -120,6 +120,7 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
   store::Item_t lTypeValueItem = anObj->getObjectValue(lItem);
   if (lTypeValueItem.isNull())
   {
+    // nothing to change, aResult is not set, the caller needs to use anObj
     return false;
   }
 
@@ -128,6 +129,7 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
   store::Item_t lValueValueItem = anObj->getObjectValue(lItem);
   if (lValueValueItem.isNull())
   {
+    // nothing to change, aResult is not set, the caller needs to use anObj
     return false;
   }
 
@@ -137,9 +139,10 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
   {
     store::LoadProperties lProperties;
     lProperties.setStoreDocument(false);
+    store::Item_t lDoc;
     if (lValueValueItem->isStreamable())
     {
-      aResult = GENV.getStore().loadDocument(
+      lDoc = GENV.getStore().loadDocument(
             "", "", lValueValueItem->getStream(), lProperties);
     }
     else
@@ -147,8 +150,17 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
       zstring lXmlString;
       lValueValueItem->getStringValue2(lXmlString);
       std::istringstream lStream(lXmlString.c_str());
-      aResult = GENV.getStore().loadDocument("", "", lStream, lProperties);
+      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
     }
+    store::Iterator_t lIt = lDoc->getChildren();
+    bool lFound = false;
+    lIt->open();
+    while (! lFound && lIt->next(aResult))
+    {
+       lFound = aResult->getNodeKind() == store::StoreConsts::elementNode;
+    }
+    lIt->close();
+    ZORBA_ASSERT(lFound);
   }
   else
   {
@@ -220,6 +232,7 @@ JSONDecodeFromRoundtripIterator::decodeObject(
     someParams.theFactory->createJSONObject(aResult, newNames, newValues);
     return true;
   }
+  // nothing to change, aResult is not set, the caller needs to use anObj
   return false;
 }
 
@@ -247,6 +260,7 @@ JSONDecodeFromRoundtripIterator::decodeArray(
     someParams.theFactory->createJSONArray(aResult, newItems);
     return true;
   }
+  // nothing to change, aResult is not set, the caller needs to use anArray
   return false;
 }
 
@@ -266,6 +280,7 @@ JSONDecodeFromRoundtripIterator::decodeItem(
   }
   else
   {
+    // nothing to change, aResult is not set, the caller needs to use anItem
     return false;
   }
 }
@@ -353,6 +368,7 @@ JSONEncodeForRoundtripIterator::encodeObject(
     someParams.theFactory->createJSONObject(aResult, newNames, newValues);
     return true;
   }
+  // nothing to change, aResult is not set, the caller needs to use anObj
   return false;
 }
 
@@ -380,6 +396,7 @@ JSONEncodeForRoundtripIterator::encodeArray(
     someParams.theFactory->createJSONArray(aResult, newItems);
     return true;
   }
+  // nothing to change, aResult is not set, the caller needs to use anArray
   return false;
 }
 
@@ -396,7 +413,7 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
     if (aValue->getBaseItem() == NULL
         && ! aValue->isNaN() && ! aValue->isPosOrNegInf())
     {
-      // nothing to do - no modification necessary
+      // nothing to change, aResult is not set, the caller needs to use aValue
       return false;
     }
     break;
@@ -407,7 +424,7 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   case store::JS_NULL:
     if (aValue->getBaseItem() == NULL)
     {
-      // nothing to do - no modification necessary
+      // nothing to change, aResult is not set, the caller needs to use aValue
       return false;
     }
     break;
@@ -471,6 +488,16 @@ JSONEncodeForRoundtripIterator::encodeNode(
     store::Item_t& aResult,
     CallParameters& someParams)
 {
+  if (aNode->getNodeKind() != store::StoreConsts::elementNode)
+  {
+    // this is a temporary solution until we decide if/how we encode
+    // node kinds
+    throw ZORBA_EXCEPTION(
+      zerr::ZXQP0004_NOT_IMPLEMENTED,
+      ERROR_PARAMS(store::StoreConsts::toString(aNode->getNodeKind()))
+    );
+  }
+
   std::vector<store::Item_t> names(2);
   std::vector<store::Item_t> values(2);
 
