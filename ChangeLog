@@ -18,6 +18,9 @@ Optimizations:
   * New memory management for compiler expressions (no more ref counting)
   * Exteneded some optimization rules (variable inlining/elimination and positional
     predicate rewrite) to general flwor expressions.
+  * Early optimization of positional predicates to subsequence expressions: now
+    done at translation time, if possible.
+  * For non-mutable global variables, assign a type based on their initializing expr.
   * Use char* instead of zstring as the hashmap key in json objects
   * Removed document-order sorting after the index value probe functions.
 

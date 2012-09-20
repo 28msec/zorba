@@ -46,11 +46,7 @@ namespace zorba
 namespace expr_tools
 {
 
-int count_variable_uses(
-    const expr* root,
-    const var_expr* var,
-    RewriterContext* rCtx,
-    int limit);
+int count_variable_uses(const expr* root, const var_expr* var, int limit);
 
 
 /*******************************************************************************

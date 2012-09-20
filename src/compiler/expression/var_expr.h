@@ -257,6 +257,10 @@ public:
 
   void remove_set_expr(expr* e);
 
+  csize num_set_exprs() const { return theSetExprs.size(); }
+
+  expr* get_set_expr(csize i) const { return theSetExprs[i]; }
+
   std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
 
   std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
