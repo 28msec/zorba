@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_xqdoc_xqdoc_content::codegen(
+PlanIter_t fn_zorba_xqdoc_xqdoc_content_impl::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -56,11 +56,12 @@ void populate_context_xqdoc(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc_content,
-        (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc-content"), 
+    DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc_content_impl,
+        (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc-content-impl"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_1);
+        FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_IMPL_2);
 
   }
 
@@ -71,9 +72,10 @@ void populate_context_xqdoc(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc_content_options_impl,
         (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc-content-options-impl"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_OPTIONS_IMPL_2);
+        FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_OPTIONS_IMPL_3);
 
   }
 

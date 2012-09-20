@@ -92,7 +92,7 @@ declare %an:nondeterministic function xqd:xqdoc(
 ) as element()
 {
   let $content := fetch:content($module-uri)
-  return xqd:xqdoc-content($content)
+  return xqd:xqdoc-content-impl($content, $module-uri)
 };
 
 declare function xqd:xqdoc(
@@ -105,8 +105,13 @@ declare function xqd:xqdoc(
                               $options
                             else
                               validate { $options }
-  return xqd:xqdoc-content($content, $xqdoc-options)
+  return xqd:xqdoc-content-options-impl($content, $module-uri, $xqdoc-options)
 };
+
+declare %private function xqd:xqdoc-content-impl(
+  $module as xs:string,
+  $filename as xs:string
+) as element() external;
 
 (:~
  : Generated the an XQDoc XML document for the module provided
@@ -121,10 +126,14 @@ declare function xqd:xqdoc(
  :)
 declare function xqd:xqdoc-content(
   $module as xs:string
-) as element() external;
+) as element()
+{
+  xqd:xqdoc-content-impl($module, "")
+};
 
 declare %private function xqd:xqdoc-content-options-impl(
   $module as xs:string,
+  $filename as xs:string,
   $options as element()
 ) as element() external;
 
@@ -137,5 +146,5 @@ declare function xqd:xqdoc-content(
                               $options
                             else
                               validate { $options }
-  return xqd:xqdoc-content-options-impl($module, $xqdoc-options)
+  return xqd:xqdoc-content-options-impl($module, "", $xqdoc-options)
 };

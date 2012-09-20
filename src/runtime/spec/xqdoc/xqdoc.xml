@@ -19,7 +19,8 @@
   <zorba:description author="Zorba Team">zorba:XQDoc</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="xqdoc-content" prefix="fn-zorba-xqdoc">
+    <zorba:signature localname="xqdoc-content-impl" prefix="fn-zorba-xqdoc">
+      <zorba:param>xs:string</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>element()</zorba:output>
     </zorba:signature>
@@ -27,6 +28,7 @@
 
   <zorba:function>
     <zorba:signature localname="xqdoc-content-options-impl" prefix="fn-zorba-xqdoc">
+      <zorba:param>xs:string</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:param>element()</zorba:param>
       <zorba:output>element()</zorba:output>

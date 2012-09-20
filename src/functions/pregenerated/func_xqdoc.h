@@ -38,11 +38,11 @@ void populate_context_xqdoc(static_context* sctx);
 
 
 
-//fn-zorba-xqdoc:xqdoc-content
-class fn_zorba_xqdoc_xqdoc_content : public function
+//fn-zorba-xqdoc:xqdoc-content-impl
+class fn_zorba_xqdoc_xqdoc_content_impl : public function
 {
 public:
-  fn_zorba_xqdoc_xqdoc_content(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xqdoc_xqdoc_content_impl(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

@@ -82,8 +82,7 @@ void readOptions(uint32_t& aOptions, const store::Item& aOptionItem)
 bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lCodeItem, lOptionsItem;
-  zstring lFileName;
+  store::Item_t lCodeItem, lFileNameItem, lOptionsItem;
   bool lIgnoreComments = true;
   uint32_t lXQDocOptions;
 
@@ -102,7 +101,9 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   // retrieve the module code to generate xqdoc for
   consumeNext(lCodeItem, theChildren[0].getp(), planState);
 
-  if (theChildren.size() > 1)
+  consumeNext(lFileNameItem, theChildren[1].getp(), planState);
+
+  if (theChildren.size() > 2)
   {
     // retrieve the options
     consumeNext(lOptionsItem, theChildren[1].getp(), planState);
@@ -120,7 +121,7 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     // retrieve the xqdoc elements
     lCompiler.xqdoc(is,
-                    lFileName,
+                    lFileNameItem->getStringValue(),
                     result,
                     planState.theLocalDynCtx->get_current_date_time(),
                     lXQDocOptions);
