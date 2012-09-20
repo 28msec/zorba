@@ -125,7 +125,7 @@ extern entry const dict_en[] = {
   { "JNTY0018", "Object or array selection needs exactly one parameter." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0023", "$1: prefix is not a string" },
+  { "JNTY0023", "$1: value of \"$2\" is not a $3" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
@@ -564,6 +564,7 @@ extern entry const dict_en[] = {
   { "~EBVNotDefSeq_5", "effective boolean value not defined for sequence of more than one item that starts with \"$5\"" },
   { "~EffectiveBooleanValue", "effective boolean value" },
   { "~ElementName", "element name" },
+  { "~ElementNode", "element node" },
   { "~EmptyPath", "empty path" },
   { "~EmptySeqNoCastToQName", "empty sequence can not be cast to QName" },
   { "~EmptySeqNoCastToTypeWithQuantOne", "empty sequence can not be cast to type with quantifier '1'" },

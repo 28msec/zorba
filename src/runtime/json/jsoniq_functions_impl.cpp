@@ -292,15 +292,18 @@ JSONDecodeFromRoundtripIterator::nextImpl(
   {
     // the signature says that the second parameter has to be exactly one object
     store::Item_t lPrefixKey;
-    zstring lPrefixName = "prefix";
-    lParams.theFactory->createString(lPrefixKey, lPrefixName);
+    const char * lPrefixName = "prefix";
+    zstring lPrefixNameStr = lPrefixName;
+    lParams.theFactory->createString(lPrefixKey, lPrefixNameStr);
     store::Item_t lPrefixValue = lDecParams->getObjectValue(lPrefixKey);
     if (! lPrefixValue.isNull())
     {
       if (lPrefixValue->getTypeCode() != store::XS_STRING)
       {
         RAISE_ERROR(jerr::JNTY0023, loc,
-                    ERROR_PARAMS(lPrefixValue->getStringValue()));
+                    ERROR_PARAMS(lPrefixValue->getStringValue(),
+                                 lPrefixName,
+                                 "string"));
       }
       lPrefixValue->getStringValue2(lParams.thePrefix);
     }
@@ -558,29 +561,36 @@ JSONEncodeForRoundtripIterator::nextImpl(
     // the signature says that the second parameter has to be exactly one object
     consumeNext(lEncParams, theChildren.at(1), aPlanState);
     store::Item_t lPrefixKey;
-    zstring lPrefixName = "prefix";
-    lParams.theFactory->createString(lPrefixKey, lPrefixName);
+    const char * lPrefixName = "prefix";
+    zstring lPrefixNameStr = lPrefixName;
+    lParams.theFactory->createString(lPrefixKey, lPrefixNameStr);
     store::Item_t lPrefixValue = lEncParams->getObjectValue(lPrefixKey);
     if (! lPrefixValue.isNull())
     {
       if (lPrefixValue->getTypeCode() != store::XS_STRING)
       {
         RAISE_ERROR(jerr::JNTY0023, loc,
-                    ERROR_PARAMS(lPrefixValue->getStringValue()));
+                    ERROR_PARAMS(lPrefixValue->getStringValue(),
+                                 lPrefixName,
+                                 "string"));
       }
       lPrefixValue->getStringValue2(lParams.thePrefix);
     }
 
     store::Item_t lSerParamKey;
-    zstring lSerParamName = "serialization-parameters";
-    lParams.theFactory->createString(lSerParamKey, lSerParamName);
+    const char * lSerParamName = "serialization-parameters";
+    zstring lSerParamNameStr = lSerParamName;
+    lParams.theFactory->createString(lSerParamKey, lSerParamNameStr);
     store::Item_t lSerParamValue = lEncParams->getObjectValue(lSerParamKey);
     if (! lSerParamValue.isNull())
     {
-      if (! lSerParamValue->isNode())
+      if (! lSerParamValue->isNode()
+          || lSerParamValue->getNodeKind() != store::StoreConsts::elementNode)
       {
-        // TODO exception
-        throw lSerParamValue; 
+        RAISE_ERROR(jerr::JNTY0023, loc,
+                    ERROR_PARAMS(lSerParamValue->getStringValue(),
+                                 lSerParamName,
+                                 ZED(ElementNode)));
       }
       lParams.theSerParams = lSerParamValue;
     }

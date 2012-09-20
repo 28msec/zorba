@@ -2699,8 +2699,9 @@
     </diagnostic>
     
     <diagnostic code="JNTY0023" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a type error if the prefix is not a string.</comment>
-      <value>$1: prefix is not a string</value>
+      <comment>It is a type error if the prefix is not a string or if the 
+        serialization parameters are not an element.</comment>
+      <value>$1: value of "$2" is not a $3</value>
     </diagnostic>
 
     <!--////////// JSONIQ ///////////////////////////////////////////-->
@@ -2993,6 +2994,10 @@
 
     <entry key="ElementName">
       <value>element name</value>
+    </entry>
+
+    <entry key="ElementNode">
+      <value>element node</value>
     </entry>
 
     <entry key="EmptyPath">

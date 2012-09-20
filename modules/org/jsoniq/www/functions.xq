@@ -115,8 +115,10 @@ declare function jn:encode-for-roundtrip(
  : @param $items the items to be encoded.
  : @param $options the encoding options.
  :
- : @error jerr:JNTY0023 if $options("prefix") is not a string
- :
+ : @error jerr:JNTY0023 if $options("prefix") is not a string or
+          $options("serialization-parameters") is not an element node
+ : @error err:XQDY0027 if $options("serialization-parameters") is not a valid
+ :        serialization-parameters element
  : @return the encoded items.
  :)
 declare function jn:encode-for-roundtrip(

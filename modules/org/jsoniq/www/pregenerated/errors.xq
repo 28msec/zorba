@@ -133,7 +133,8 @@ declare variable $jerr:JNTY0018 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0018
 declare variable $jerr:JNUP0019 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0019");
 
 (:~
- :It is a type error if the prefix is not a string.
+ :It is a type error if the prefix is not a string or if the 
+ : serialization parameters are not an element.
 :)
 declare variable $jerr:JNTY0023 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0023");
 
