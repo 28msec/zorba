@@ -1668,7 +1668,8 @@ void ProbeGeneralIndexIterator::doubleToLongProbe(
 /*******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond,
+                                     const xs_integer& aSkip)
 {
   theProbeKind = cond->getKind();
   theCondition = static_cast<GeneralIndexCondition*>(cond.getp());

@@ -43,7 +43,8 @@ protected:
   );
 
 public:
-  expr* clone( substitution_t& ) const;
+  expr* cloneImpl( substitution_t& ) const;
+
   void compute_scripting_kind();
 
   expr* get_range() const { return range_; }

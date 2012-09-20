@@ -439,7 +439,6 @@ public:
   Feature flags that are used when a particular feature (e.g. scripting
   or ddl) is enabled. The definition of the features is located in
   context/featueres.h.
-
 ********************************************************************************/
 
 class static_context : public SimpleRCObject
@@ -981,7 +980,6 @@ public:
   XQPCollator* get_default_collator(const QueryLoc& loc) const;
 
   void get_collations(std::vector<std::string>& collations) const;
-
 
   //
   // Options

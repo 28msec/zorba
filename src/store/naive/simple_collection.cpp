@@ -613,8 +613,6 @@ SimpleCollection::CollectionIter::~CollectionIter()
 void SimpleCollection::CollectionIter::skip()
 {
   // skip by position
-  long lToSkip = to_xs_long(theSkip);
-
   if (theSkip >= theCollection->size())
   {
     // we need to skip more then possible -> jump to the end
