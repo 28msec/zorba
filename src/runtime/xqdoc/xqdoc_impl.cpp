@@ -40,6 +40,42 @@
 
 namespace zorba {
 
+/**
+ * Helper function to transfrom the option item optionally passed to the
+ * xqdoc functions into an uint32_t option value.
+ */
+void readOptions(uint32_t& aOptions, const store::Item& aOptionItem)
+{
+  aOptions = xqdoc_component_none;
+
+  store::Iterator_t lAttrIter = aOptionItem.getAttributes();
+  lAttrIter->open();
+  store::Item_t lAttr;
+
+  while (lAttrIter->next(lAttr))
+  {
+    zstring lLocalName = lAttr->getNodeName()->getLocalName();
+    zstring lValue = lAttr->getStringValue();
+
+    if(lValue != "true")
+      continue;
+
+    if (lLocalName == "comments")
+      aOptions |= xqdoc_component_comments;
+    else if (lLocalName == "imports")
+      aOptions |= xqdoc_component_imports;
+    else if (lLocalName == "variables")
+      aOptions |= xqdoc_component_variables;
+    else if (lLocalName == "functions")
+      aOptions |= xqdoc_component_functions;
+    else if (lLocalName == "collections")
+      aOptions |= xqdoc_component_collections;
+    else if (lLocalName == "indexes")
+      aOptions |= xqdoc_component_indexes;
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -50,6 +86,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring lFileName;
   store::Item_t lItem;
   store::Item_t lURIItem = 0;
+  store::Item_t lOptionsItem;
   zstring strval;
   std::string uriStr;
   static_context* lSctx;
@@ -57,6 +94,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   internal::StreamResource* lStream;
   std::istream* lFile;
   zstring lErrorMessage;
+  uint32_t lXQDocOptions;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
@@ -94,6 +132,18 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // now, do the real work
   if (lFile && lFile->good())
   {
+    if (theChildren.size() > 1)
+    {
+      // retrieve the options
+      consumeNext(lOptionsItem, theChildren[1].getp(), planState);
+      readOptions(lXQDocOptions, *lOptionsItem);
+    }
+    else
+    {
+      // if no option passed, everything is printed
+      lXQDocOptions = 0xFFFFFFFF;
+    }
+
     try 
     {
       // retrieve the xqdoc elements 
@@ -101,7 +151,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                       lFileName,
                       result,
                       planState.theLocalDynCtx->get_current_date_time(),
-                      false);
+                      lXQDocOptions);
     }
     catch (XQueryException& e)
     {
@@ -130,7 +180,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lCodeItem, lEnableElem;
+  store::Item_t lCodeItem, lOptionsItem;
   zstring lFileName;
   bool lIgnoreComments = true;
   uint32_t lXQDocOptions;
@@ -152,37 +202,9 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (theChildren.size() > 1)
   {
-    lXQDocOptions = xqdoc_component_none;
-
-    // retrieve enable config
-    consumeNext(lEnableElem, theChildren[1].getp(), planState);
-    store::Iterator_t lAttrIter = lEnableElem->getAttributes();
-    lAttrIter->open();
-    store::Item_t lAttr;
-
-    while (lAttrIter->next(lAttr))
-    {
-      zstring lLocalName = lAttr->getNodeName()->getLocalName();
-      zstring lValue = lAttr->getStringValue();
-
-      if(lValue != "true")
-        continue;
-
-      if (lLocalName == "comments")
-        lXQDocOptions |= xqdoc_component_comments;
-      else if (lLocalName == "imports")
-        lXQDocOptions |= xqdoc_component_imports;
-      else if (lLocalName == "variables")
-        lXQDocOptions |= xqdoc_component_variables;
-      else if (lLocalName == "functions")
-        lXQDocOptions |= xqdoc_component_functions;
-      else if (lLocalName == "collections")
-        lXQDocOptions |= xqdoc_component_collections;
-      else if (lLocalName == "indexes")
-        lXQDocOptions |= xqdoc_component_indexes;
-
-    }
-
+    // retrieve the options
+    consumeNext(lOptionsItem, theChildren[1].getp(), planState);
+    readOptions(lXQDocOptions, *lOptionsItem);
   }
   else
   {

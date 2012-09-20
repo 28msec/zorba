@@ -276,7 +276,7 @@ void print_namespaces()
 
 store::Item_t print_comment(store::Item_t& result, const XQDocComment* aComment)
 {
-  if (theOptions & xqdoc_component_comments || aComment == 0) {
+  if (!(theOptions & xqdoc_component_comments) || aComment == 0) {
     return NULL;
   }
   list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
