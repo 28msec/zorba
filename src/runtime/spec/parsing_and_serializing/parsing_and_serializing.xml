@@ -77,6 +77,13 @@
       <zorba:param type="std::istream*" name="stream"/>
     </zorba:method>
 
+    <zorba:method static="true" name="setSerializationParams" return="void">
+      <zorba:param type="zorba::serializer&amp;" name="aSerializer"/>
+      <zorba:param type="store::Item_t&amp;" name="aParamElem"/>
+      <zorba:param type="static_context*" name="aSctx"/>
+      <zorba:param type="const QueryLoc&amp;" name="aLoc"/>
+    </zorba:method>
+
   </zorba:iterator>
 
 

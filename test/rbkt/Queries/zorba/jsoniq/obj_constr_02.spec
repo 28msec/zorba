@@ -1,1 +1,1 @@
-Serialization: method=json jsoniq-extensions=yes
+Serialization: method=json

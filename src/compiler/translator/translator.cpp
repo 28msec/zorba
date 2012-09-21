@@ -56,8 +56,10 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/pragma.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
+#include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/xqddf/value_index.h"
 #include "compiler/xqddf/value_ic.h"
 #include "compiler/xqddf/collection_decl.h"
@@ -641,6 +643,8 @@ protected:
   rchandle<QName>                      theLastIdxVarName;
 
   std::vector<var_expr*>              theScopedVars;
+
+  std::vector<pragma*>                theScopedPragmas;
 
   StaticContextConsts::xquery_version_t theMaxLibModuleVersion;
 
@@ -3381,6 +3385,10 @@ void* begin_visit(const VFO_DeclList& v)
           ve->set_mutable(theSctx->is_feature_set(feature::scripting));
         }
       }
+      else
+      {
+        ve->set_mutable(theSctx->is_feature_set(feature::scripting));
+      }
 
       theAnnotations = NULL;
 
@@ -3965,28 +3973,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
       RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
 
-    if (theAnnotations)
-    {
-      if (ZANN_CONTAINS(fn_private))
-        ve->set_private(true);
-
-      if (ZANN_CONTAINS(zann_assignable))
-      {
-        ve->set_mutable(true);
-      }
-      else if (ZANN_CONTAINS(zann_nonassignable))
-      {
-        ve->set_mutable(false);
-      }
-      else
-      {
-        ve->set_mutable(theSctx->is_feature_set(feature::scripting));
-      }
-    }
-    else
-    {
-      ve->set_mutable(theSctx->is_feature_set(feature::scripting));
-    }
+    ve->set_mutable(false);
 
     theAnnotations = NULL;
 
@@ -4003,11 +3990,11 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
       bind_var(ve, export_sctx);
   }
 
-  xqtref_t type;
+  xqtref_t declaredType;
   if (v.get_var_type() != NULL)
   {
-    type = pop_tstack();
-    ve->set_type(type);
+    declaredType = pop_tstack();
+    ve->set_type(declaredType);
   }
 
   // Make sure the initExpr is a simple expr.
@@ -4015,6 +4002,16 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
   {
     expr::checkSimpleExpr(initExpr);
     ve->set_has_initializer(true);
+
+    if (!ve->is_mutable())
+    {
+      xqtref_t derivedType = initExpr->get_return_type();
+
+      if (declaredType == NULL)
+      {
+        ve->set_type(initExpr->get_return_type());
+      }
+    }
   }
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -4817,8 +4814,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     **********************/
 
     // "example:coll1"
-    expr* qnameStrExpr = theExprManager->create_const_expr(theRootSctx, loc,
-                                         ic.getCollName()->get_qname().str());
+    expr* qnameStrExpr = theExprManager->
+    create_const_expr(theRootSctx, loc, ic.getCollName()->get_qname().str());
 
     zstring prefixStr = ic.getCollName()->get_prefix();
     zstring uriStr;
@@ -4827,26 +4824,29 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     expr* uriStrExpr = theExprManager->create_const_expr(theRootSctx, loc, uriStr);
 
     // fn:QName("uri", "example:coll1")
-    fo_expr* qnameExpr = theExprManager->create_fo_expr(theRootSctx, loc,
-                                      GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                      uriStrExpr, qnameStrExpr);
+    fo_expr* qnameExpr = theExprManager->
+    create_fo_expr(theRootSctx,
+                   loc,
+                   GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                   uriStrExpr,
+                   qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
     function* fn_collection = GET_BUILTIN_FUNCTION(STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
-    fo_expr* collExpr = theExprManager->create_fo_expr(theRootSctx, loc, fn_collection, argColl);
+
+    fo_expr* collExpr = theExprManager->
+    create_fo_expr(theRootSctx, loc, fn_collection, argColl);
 
     // $x
     const QName* varQName = ic.getCollVarName();
     var_expr* varExpr = bind_var(loc, varQName, var_expr::let_var, NULL);
 
     // let $x := dc:collection(xs:QName("example:coll1"))
-    let_clause* lc = theExprManager->create_let_clause(theRootSctx,
-                                    loc,
-                                    varExpr,
-                                    collExpr);
+    let_clause* lc = theExprManager->
+    create_let_clause(theRootSctx, loc, varExpr, collExpr);
 
     flwor_expr* flworExpr = theExprManager->create_flwor_expr(theRootSctx, loc, false);
     flworExpr->add_clause(lc);
@@ -8493,14 +8493,21 @@ void end_visit(const ValidateExpr& v, void* /*visit_state*/)
 void* begin_visit(const ExtensionExpr& v)
 {
   TRACE_VISIT();
+
+  if (v.get_expr() == NULL)
+  {
+    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC(loc) );
+  }
+
   return no_state;
 }
 
 void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-  if (v.get_expr() == NULL)
-    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC(loc) );
+
+  size_t lNumPragmas = v.get_pragma_list()->get_pragmas().size();
+  theScopedPragmas.resize(theScopedPragmas.size() - lNumPragmas);
 }
 
 
@@ -8526,19 +8533,25 @@ void end_visit(const PragmaList& v, void* /*visit_state*/)
 void* begin_visit(const Pragma& v)
 {
   TRACE_VISIT();
+  store::Item_t lQName;
+  expand_no_default_qname(lQName, v.get_name(), v.get_name()->get_location());
+
+  if (lQName->getPrefix().empty() && lQName->getNamespace().empty())
+  {
+    RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(lQName->getStringValue()));
+  }
+
+  pragma* lPragma = theExprManager->create_pragma(lQName, v.get_pragma_lit());
+
+  // popped in end_visit(ExtensionExpr)
+  theScopedPragmas.push_back(lPragma);
+
   return no_state;
 }
 
 void end_visit(const Pragma& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
-  // may raise XPST0081
-  if (!v.get_name()->is_eqname())
-  {
-    zstring ns;
-    theSctx->lookup_ns(ns, v.get_name()->get_prefix(), loc);
-  }
 }
 
 
@@ -9696,8 +9709,10 @@ void end_visit(const PredicateList& v, void* /*visit_state*/)
 
 void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 {
-  // This method is called from PredicateList::accept(), before calling accept()
-  // on each predicate in the list
+  // This method is called from PredicateList::accept(). It is called once
+  // for each predicate in the list, before calling accept() on the predicate
+  // expression itself.
+
 
   // get the predicate input seq
   expr* inputSeqExpr = pop_nodestack();
@@ -9713,18 +9728,105 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
 void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 {
-  // This method is called from PredicateList::accept(), after calling accept()
-  // on each predicate in the list
+  // This method is called from PredicateList::accept(). It is called once
+  // for each predicate in the list, after calling accept() on the predicate
+  // expression itself.
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = CTX_TM;
 
   expr* predExpr = pop_nodestack();
 
   expr* f = pop_nodestack();
   flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(f);
-  ZORBA_ASSERT(flworExpr != NULL);
+  ZORBA_ASSERT(flworExpr != NULL && flworExpr->num_clauses() == 3);
 
   const QueryLoc& loc = predExpr->get_loc();
+
+  xqtref_t predType = predExpr->get_return_type();
+
+  if (TypeOps::is_subtype(tm, *predType, *rtm.INTEGER_TYPE_QUESTION, loc))
+  {
+    flwor_clause* clause = flworExpr->get_clause(0);
+    ZORBA_ASSERT(clause->get_kind() == flwor_clause::let_clause);
+    let_clause* sourceClause = static_cast<let_clause*>(clause);
+
+    clause = flworExpr->get_clause(1);
+    ZORBA_ASSERT(clause->get_kind() == flwor_clause::let_clause);
+    let_clause* sizeClause = static_cast<let_clause*>(clause);
+
+    clause = flworExpr->get_clause(2);
+    ZORBA_ASSERT(clause->get_kind() == flwor_clause::for_clause);
+    for_clause* dotClause = static_cast<for_clause*>(clause);
+
+    var_expr* sizeVar = sizeClause->get_var();
+    var_expr* posVar = dotClause->get_pos_var();
+    var_expr* dotVar = dotClause->get_var();
+
+    if (expr_tools::count_variable_uses(predExpr, posVar, 1) == 0 &&
+        expr_tools::count_variable_uses(predExpr, dotVar, 1) == 0)
+    {
+      flworExpr->remove_clause(2);
+
+      if (expr_tools::count_variable_uses(predExpr, sizeVar, 1) == 0)
+      {
+        expr* sourceExpr = sourceClause->get_expr();
+
+        fo_expr* pointExpr = theExprManager->
+        create_fo_expr(sourceExpr->get_sctx(),
+                       sourceExpr->get_loc(),
+                       GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                       sourceExpr,
+                       predExpr);
+
+        push_nodestack(pointExpr);
+      }
+      else
+      {
+        expr* sourceExpr = sourceClause->get_var();
+
+        fo_expr* pointExpr = theExprManager->
+        create_fo_expr(sourceExpr->get_sctx(),
+                       sourceExpr->get_loc(),
+                       GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                       sourceExpr,
+                       predExpr);
+
+        flworExpr->set_return_expr(pointExpr);
+
+        push_nodestack(flworExpr);
+      }
+    }
+    else
+    {
+      // let $predVar := predExpr
+      let_clause* lcPred = wrap_in_letclause(predExpr);
+      var_expr* predvar = lcPred->get_var();
+
+      flworExpr->add_clause(lcPred);
+
+      // return if ($$dot eq $$predVar) then $$dot else ()
+      fo_expr* eqExpr = theExprManager->
+      create_fo_expr(theRootSctx,
+                     loc,
+                     GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
+                     lookup_ctx_var(DOT_POS_VARNAME, loc),
+                     predvar);
+
+      normalize_fo(eqExpr);
+
+      expr* retExpr = theExprManager->
+      create_if_expr(theRootSctx, loc, eqExpr, DOT_REF, create_empty_seq(loc));
+
+      flworExpr->set_return_expr(retExpr);
+
+      push_nodestack(flworExpr);
+    }
+
+    pop_scope();
+
+    return;
+  }
 
   // let $predVar := predExpr
   let_clause* lcPred = wrap_in_letclause(predExpr);
@@ -9746,42 +9848,40 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr* condExpr = NULL;
   std::vector<expr*> condOperands(3);
 
-  condOperands[0] =
-  theExprManager->create_instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
+  condOperands[0] = theExprManager->
+  create_instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
 
-  condOperands[1] =
-  theExprManager->create_instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
+  condOperands[1] = theExprManager->
+  create_instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
 
-  condOperands[2] =
-  theExprManager->create_instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
+  condOperands[2] = theExprManager->
+  create_instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
-  condExpr = theExprManager->create_fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
+  condExpr = theExprManager->
+  create_fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
-  fo_expr* eqExpr = theExprManager->create_fo_expr(theRootSctx,
-                                 loc,
-                                 GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
-                                 lookup_ctx_var(DOT_POS_VARNAME, loc),
-                                 predvar);
+  fo_expr* eqExpr = theExprManager->
+  create_fo_expr(theRootSctx,
+                 loc,
+                 GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
+                 lookup_ctx_var(DOT_POS_VARNAME, loc),
+                 predvar);
+
   normalize_fo(eqExpr);
 
-  expr* thenExpr = theExprManager->create_if_expr(theRootSctx,
-                                loc,
-                                eqExpr,
-                                DOT_REF,
-                                create_empty_seq(loc));
+  expr* thenExpr = theExprManager->
+  create_if_expr(theRootSctx, loc, eqExpr, DOT_REF, create_empty_seq(loc));
 
   // Else, return $dot if the the value of the pred expr is true, otherwise
   // return the empty seq.
-  expr* elseExpr = theExprManager->create_if_expr(theRootSctx,
-                                loc,
-                                predvar,
-                                DOT_REF,
-                                create_empty_seq(loc));
+  expr* elseExpr = theExprManager->
+  create_if_expr(theRootSctx, loc, predvar, DOT_REF, create_empty_seq(loc));
 
   // The outer if
-  expr* ifExpr = theExprManager->create_if_expr(theRootSctx, loc, condExpr, thenExpr, elseExpr);
+  expr* ifExpr = theExprManager->
+  create_if_expr(theRootSctx, loc, condExpr, thenExpr, elseExpr);
 
   flworExpr->set_return_expr(ifExpr);
 
@@ -10897,6 +10997,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       default: {}
 
     } // switch
+
+    f->processPragma(resultExpr, theScopedPragmas);
 
     push_nodestack(resultExpr);
   }

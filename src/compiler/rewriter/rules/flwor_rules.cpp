@@ -282,7 +282,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       for(; ite != end; ++ite)
       {
         var_expr* var = ite->second;
-        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+        int uses = expr_tools::count_variable_uses(&flwor, var, 2);
 
         if (uses == 0 && !ite->first->isNonDiscardable())
         {
@@ -304,7 +304,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       const var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL &&
-          expr_tools::count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
+          expr_tools::count_variable_uses(&flwor, pvar, 1) == 0)
       {
         fc->set_pos_var(NULL);
         pvar = NULL;
@@ -355,7 +355,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           }
         }
 
-        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+        int uses = expr_tools::count_variable_uses(&flwor, var, 2);
 
         if (uses > 1 &&
             is_trivial_expr(domainExpr) &&
@@ -404,7 +404,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (domainExpr->is_sequential())
         continue;
 
-      int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+      int uses = expr_tools::count_variable_uses(&flwor, var, 2);
 
       if (uses > 1 && is_trivial_expr(domainExpr))
       {
@@ -767,7 +767,7 @@ static bool safe_to_fold_single_use(
         return false;
 
       // If X is referenced in the current FOR clause .....
-      if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(domExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
@@ -793,7 +793,7 @@ static bool safe_to_fold_single_use(
 
       assert(varQuant == TypeConstants::QUANT_ONE);
 
-      if (expr_tools::count_variable_uses(clause->get_expr(), var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(clause->get_expr(), var, 1) == 1)
       {
         referencingExpr = clause->get_expr();
         break;
@@ -815,7 +815,7 @@ static bool safe_to_fold_single_use(
 
       for (; ite != end; ++ite)
       {
-        if (expr_tools::count_variable_uses(*ite, var, NULL, 1) == 1)
+        if (expr_tools::count_variable_uses(*ite, var, 1) == 1)
         {
           referencingExpr = *ite;
           break;
@@ -839,7 +839,7 @@ static bool safe_to_fold_single_use(
       for (; ite != end; ++ite)
       {
         expr* inputExpr = ite->first;
-        if (expr_tools::count_variable_uses(inputExpr, var, NULL, 1) == 1)
+        if (expr_tools::count_variable_uses(inputExpr, var, 1) == 1)
         {
           referencingExpr = inputExpr;
           break;
@@ -852,7 +852,7 @@ static bool safe_to_fold_single_use(
       for (; ite != end; ++ite)
       {
         expr* inputExpr = ite->first;
-        if (expr_tools::count_variable_uses(inputExpr, var, NULL, 1) == 1)
+        if (expr_tools::count_variable_uses(inputExpr, var, 1) == 1)
         {
           referencingExpr = inputExpr;
           break;
@@ -878,7 +878,7 @@ static bool safe_to_fold_single_use(
       if (domExpr->is_sequential())
         return false;
 
-      if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(domExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
@@ -887,13 +887,13 @@ static bool safe_to_fold_single_use(
       if (domExpr->get_return_type()->max_card() > 1)
         return false;
 
-      if (expr_tools::count_variable_uses(startExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(startExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
       }
 
-      if (expr_tools::count_variable_uses(stopExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(stopExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
@@ -923,7 +923,7 @@ static bool safe_to_fold_single_use(
     if (retExpr->is_sequential())
       return false;
 
-    if (expr_tools::count_variable_uses(retExpr, var, NULL, 1) == 1)
+    if (expr_tools::count_variable_uses(retExpr, var, 1) == 1)
     {
       if (varQuant != TypeConstants::QUANT_ONE)
       {
@@ -1395,7 +1395,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       var_expr* posVar = NULL;
 
       if (is_subseq_pred(rCtx, flwor, clausePos, whereExpr, posVar, posExpr) &&
-          expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+          expr_tools::count_variable_uses(flwor, posVar, 2) <= 1)
       {
         for_clause* forClause = posVar->get_for_clause();
         expr* domainExpr = forClause->get_expr();
