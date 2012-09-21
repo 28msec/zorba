@@ -101,10 +101,10 @@ extern entry const dict_en[] = {
   { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
+  { "JNSE0012", "can not serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0014", "Cannot serialize a node or function item as JSON" },
+  { "JNSE0014", "can not serialize a node or function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNSE0022", "$1: invalid serialization method for item type ($2)" },

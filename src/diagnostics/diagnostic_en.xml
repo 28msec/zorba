@@ -2651,13 +2651,13 @@
       jsoniq-serialization-multiple-items is set to no.
       </comment>
 
-      <value>Cannot serialize multiple top-level items as JSON</value>
+      <value>can not serialize multiple top-level items as JSON</value>
     </diagnostic>
 
     <diagnostic code="JNSE0014" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error to serialize a function or a node with the
       JSON output method.</comment>
-      <value>Cannot serialize a node or function item as JSON</value>
+      <value>can not serialize a node or function item as JSON</value>
     </diagnostic>
 
     <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
