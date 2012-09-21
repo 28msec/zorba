@@ -55,7 +55,7 @@ declare option ver:module-version "1.0";
  : @return the decoded items.
  :)
 declare function jn:decode-from-roundtrip(
-    $items as json-item()*) as structured-item()* external;
+    $items as item()*) as item()* external;
 
 
 (:~
@@ -92,8 +92,8 @@ declare function jn:decode-from-roundtrip(
  : @return the decoded items.
  :)
 declare function jn:decode-from-roundtrip(
-    $items as json-item()*,
-    $options as object()) as structured-item()* external;
+    $items as item()*,
+    $options as object()) as item()* external;
 
 
 (:~
@@ -114,7 +114,7 @@ declare function jn:decode-from-roundtrip(
  : @return the encoded items.
  :)
 declare function jn:encode-for-roundtrip(
-    $items as structured-item()*) as json-item()* external;
+    $items as item()*) as item()* external;
 
 
 (:~
@@ -142,8 +142,8 @@ declare function jn:encode-for-roundtrip(
  : @return the encoded items.
  :)
 declare function jn:encode-for-roundtrip(
-    $items as structured-item()*,
-    $options as object()) as json-item()* external;
+    $items as item()*,
+    $options as object()) as item()* external;
 
 
 (:~

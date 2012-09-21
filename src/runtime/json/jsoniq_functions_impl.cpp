@@ -482,8 +482,9 @@ JSONEncodeForRoundtripIterator::encodeNode(
   {
     // this is a temporary solution until we decide if/how we encode
     // node kinds
-    throw ZORBA_EXCEPTION(
+    RAISE_ERROR(
       zerr::ZXQP0004_NOT_IMPLEMENTED,
+      loc,
       ERROR_PARAMS(store::StoreConsts::toString(aNode->getNodeKind()))
     );
   }
