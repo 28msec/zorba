@@ -99,7 +99,7 @@ declare %an:nondeterministic function xqd:xqdoc(
  : at the URI provided as parameter to this function.
  : In comparison to the single parameter version, this function does not
  : generate XQDoc for all language components. By default, the 
- : the following components are deactivated: XQuery comments, import
+ : following components are deactivated: XQuery comments, import
  : statements, variable declarations, function declarations, collection
  : declarations,  and index declarations. The second parameter is used to
  : enable the XQDoc generation of those components.
@@ -112,7 +112,7 @@ declare %an:nondeterministic function xqd:xqdoc(
  :   comments="true"
  :   functions="true"
  :   indexes="true"
- : &gt;
+ : /&gt;
  : </pre>
  : @return An element according to the xqdoc schema
  :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
@@ -160,7 +160,7 @@ declare function xqd:xqdoc-content(
  : as parameter to this function.
  : In comparison to the single parameter version, this function does not
  : generate XQDoc for all language components. By default, the 
- : the following components are deactivated: XQuery comments, import
+ : following components are deactivated: XQuery comments, import
  : statements, variable declarations, function declarations, collection
  : declarations,  and index declarations. The second parameter is used to
  : enable the XQDoc generation of those components.
