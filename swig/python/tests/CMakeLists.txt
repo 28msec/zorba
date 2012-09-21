@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-MESSAGE(STATUS "Adding tests for Python Binding")
   
 SET(pythonPath ${CMAKE_BINARY_DIR}/swig/python)
 
@@ -61,9 +60,9 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test10.py.in ${CMAKE_CURRENT_BINARY_D
 ADD_TEST("python_test10" ${PYTHON_EXECUTABLE} test10.py)
 SET_TESTS_PROPERTIES("python_test10" PROPERTIES PASS_REGULAR_EXPRESSION "Success")
 
-#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test11.py.in ${CMAKE_CURRENT_BINARY_DIR}/test11.py)
-#ADD_TEST("python_test11" ${PYTHON_EXECUTABLE} test11.py)
-#SET_TESTS_PROPERTIES("python_test11" PROPERTIES PASS_REGULAR_EXPRESSION "Success")
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test11.py.in ${CMAKE_CURRENT_BINARY_DIR}/test11.py)
+ADD_TEST("python_test11" ${PYTHON_EXECUTABLE} test11.py)
+SET_TESTS_PROPERTIES("python_test11" PROPERTIES PASS_REGULAR_EXPRESSION "Success")
 
 #CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test12.py.in ${CMAKE_CURRENT_BINARY_DIR}/test12.py)
 #ADD_TEST("python_test12" ${PYTHON_EXECUTABLE} test12.py)

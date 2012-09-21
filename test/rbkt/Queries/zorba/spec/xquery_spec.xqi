@@ -2,6 +2,7 @@ module namespace util = "http://www.zorba-xquery.com/util";
 
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
+import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
 
 (: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
 import module namespace file = "http://expath.org/ns/file";
@@ -28,9 +29,13 @@ declare %ann:sequential function util:download-and-write-spec($specVersion as xs
       </output:serialization-parameters>
   return
   if ($specVersion = $util:xquery_version_1_0) then
-    file:write($docPath, http:get("http://www.w3.org/TR/xpath-functions/")[2], $serParams)
+    file:write( $docPath,
+                html:parse(http:get("http://www.w3.org/TR/xpath-functions/")[2]),
+                $serParams)
   else
-    file:write($docPath, http:get("http://www.w3.org/TR/xpath-functions-30/")[2], $serParams)
+    file:write( $docPath,
+                html:parse(http:get("http://www.w3.org/TR/xpath-functions-30/")[2]),
+                $serParams)
 };
 
 

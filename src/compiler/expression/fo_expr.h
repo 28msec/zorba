@@ -21,8 +21,6 @@
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbaserialization/class_serializer.h"
-
 
 namespace zorba
 {
@@ -38,39 +36,41 @@ class fo_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
-  checked_vector<expr_t>   theArgs;
+  checked_vector<expr*>    theArgs;
   function               * theFunction;
 
 public:
-  SERIALIZABLE_CLASS(fo_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(fo_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
+
+protected:
+  static fo_expr* create_seq(CompilerCB* theExpMan, static_context* sctx, const QueryLoc &);
+
+protected:
+  fo_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    const function* f,
+    expr* arg);
+
+  fo_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    const function* f,
+    expr* arg1,
+    expr* arg2);
+
+  fo_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    const function* f,
+    const std::vector<expr*>& args);
 
 public:
-  static fo_expr* create_seq(static_context* sctx, const QueryLoc &);
-
-public:
-  fo_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    const function* f,
-    const expr* arg);
-
-  fo_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    const function* f,
-    const expr* arg1,
-    const expr* arg2);
-
-  fo_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    const function* f,
-    const std::vector<expr_t>& args);
-
   function* get_func() const { return theFunction; }
 
   void set_func(function* f) { theFunction = f; }
@@ -81,56 +81,52 @@ public:
 
   csize num_args() const { return theArgs.size(); }
 
-  expr* get_arg(csize i) const { return theArgs[i].getp(); }
+  expr* get_arg(csize i) const { return theArgs[i]; }
+
+  const std::vector<expr*>& get_args() const { return theArgs; }
 
   void set_arg(csize i, expr* e) { theArgs[i] = e; }
 
+  void add_arg(expr* e);
+
+  void add_args(const std::vector<expr*>& args);
+
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
 
 private:
-  fo_expr(static_context* sctx, const QueryLoc& loc, const function* f);
+  fo_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, const function* f);
 };
+
 
 ////////// The following expressions in the AST "decay" into an fo_expr ///////
 
 typedef fo_expr additive_expr;
-typedef rchandle<additive_expr> additive_expr_t;
 
 typedef fo_expr and_expr;
-typedef rchandle<and_expr> and_expr_t;
 
 typedef fo_expr comparison_expr;
-typedef rchandle<comparison_expr> comparison_expr_t;
 
 typedef fo_expr enclosed_expr;
-typedef rchandle<enclosed_expr> enclosed_expr_t;
 
 typedef fo_expr intersect_except_expr;
-typedef rchandle<intersect_except_expr> intersect_except_expr_t;
 
 typedef fo_expr multiplicative_expr;
-typedef rchandle<multiplicative_expr> multiplicative_expr_t;
 
 typedef fo_expr or_expr;
-typedef rchandle<or_expr> or_expr_t;
 
 typedef fo_expr quantified_expr;
-typedef rchandle<quantified_expr> quantified_expr_t;
 
 typedef fo_expr range_expr;
-typedef rchandle<range_expr> range_expr_t;
 
 typedef fo_expr unary_expr;
-typedef rchandle<unary_expr> unary_expr_t;
 
 typedef fo_expr union_expr;
-typedef rchandle<union_expr> union_expr_t;
 
 } // namespace zorba
 

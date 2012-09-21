@@ -12,12 +12,13 @@
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
 <zorba:source>
-    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
-    <zorba:include  form="Quoted">store/api/index.h</zorba:include>
+    <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+    <zorba:include form="Quoted">store/api/index.h</zorba:include>
 </zorba:source>
 
 <zorba:header>
-    <zorba:include  form="Quoted">store/api/index.h</zorba:include>
+    <zorba:include form="Quoted">store/api/index.h</zorba:include>
+    <zorba:include form="Angle-bracket">vector</zorba:include>
 </zorba:header>
   
 
@@ -30,11 +31,40 @@
     <zorba:description author="Matthias Brantner">
     </zorba:description>
 
-    <zorba:function> 
+    <zorba:function>
 
       <zorba:signature
         variadic="true"
         localname="create"
+        prefix="zorba-store-data-structure-unordered-map">
+        <zorba:param>xs:QName</zorba:param> <!-- name of the hashmap -->
+        <zorba:param>xs:QName</zorba:param> <!-- list of key types -->
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="SEQUENTIAL_FUNC_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapCreateTransientIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature
+        variadic="true"
+        localname="create-transient"
         prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param> <!-- name of the hashmap -->
         <zorba:param>xs:QName</zorba:param> <!-- list of key types -->
@@ -238,9 +268,39 @@
     </zorba:function>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
+      <zorba:member type="store::Iterator_t"
+        name="persistentMapNamesIter"
+        brief="the current iterator"/>
+      <zorba:member type="std::vector&lt;store::Item_t>"
+        name="transientMapNames" brief="all the transient map names"/>
+      <zorba:member type="std::vector&lt;store::Item_t>::const_iterator"
+        name="transientMapNamesIter"
+        brief="the current iterator"/>
     </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapIsTransientIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="is-transient" prefix="zorba-store-data-structure-unordered-map">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
 
 </zorba:iterator>
 

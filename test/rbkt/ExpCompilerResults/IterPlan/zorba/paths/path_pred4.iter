@@ -1,10 +1,3 @@
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
 Iterator tree for main query:
 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,d)" typename="*" nill allowed="0">
   <flwor::FLWORIterator>

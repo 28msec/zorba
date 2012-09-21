@@ -115,13 +115,14 @@ public:
     // QQQ Is this reinterpret_cast necessary? Is it safe? Can I just
     // pump the chars from read() to the XMLBytes Xerces wants?
     char* const lToFill = reinterpret_cast<char*>(toFill);
+    TRACE("lToFill: " << lToFill );
     theStream->read(lToFill, maxToRead);
     return static_cast<unsigned int>(theStream->gcount());
   }
 
   virtual const XMLCh* getContentType() const
   {
-    // Unless we know it, do what Xerces' implemtation does: return 0
+    // Unless we know it, do what Xerces' implementation does: return 0
     return 0;
   }
 
@@ -232,7 +233,7 @@ public:
       
       try
       {
-        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved);
+        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved << " thePhysURI: " << StrX(thePhysicalURI));
         zstring lErrorMessage;
         lResource = theSctx->resolve_uri(lResolved, internal::EntityData::SCHEMA, lErrorMessage);
         internal::StreamResource* lStream =
@@ -244,11 +245,15 @@ public:
               (lStream->getStream(), lStream->getStreamReleaser());
           lStream->setStreamReleaser(nullptr);
           
+          XMLCh * lResolvedXMLCh = XMLString::transcode(lResolved.c_str());
           if (isSystemId)
-            lRetval->setSystemId(thePhysicalURI);
+            lRetval->setSystemId(lResolvedXMLCh);
           
           if (isPublicId)
-            lRetval->setPublicId(thePhysicalURI);
+            lRetval->setPublicId(lResolvedXMLCh);
+
+          // release lResolvedXMLCh since setSystemId and setPublicId are makeing their own copies
+          XMLString::release(&lResolvedXMLCh);
             
           return lRetval;
         }
@@ -353,7 +358,8 @@ Schema::Schema(TypeManager* tm)
 #ifndef ZORBA_NO_XMLSCHEMA
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
   // QQQ should be zstring
-  theUdTypesCache = new serializable_hashmap<std::string, xqtref_t>;
+  theUdTypesCache = 
+  new HashMap<zstring, xqtref_t, HashMapZStringCmp>(64, false);
 #endif
 }
 
@@ -636,7 +642,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   key += " ";
   key += TypeOps::decode_quantifier(TypeConstants::QUANT_ONE);
 
-  if( theUdTypesCache->get(key.str(), res))
+  if( theUdTypesCache->get(key, res))
     return res;
 
     // not found in cache, make a new one
@@ -659,9 +665,8 @@ xqtref_t Schema::createXQTypeFromTypeName(
     TRACE("lookingFor: key:'" << key);
     checkForAnonymousTypes(typeManager);
 
-    if( theUdTypesCache->get(key.str(), res))
+    if( theUdTypesCache->get(key, res))
       return res;
-
 
     res = NULL;
     TRACE("No type definition for " << xml_local << "@" << xml_uri);
@@ -669,7 +674,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
           << ( res==NULL ? "NULL" :
                TypeOps::decode_quantifier(res->get_quantifier())) );
     // stick it in the cache even if it's NULL
-    theUdTypesCache->put(key.str(), res);
+    theUdTypesCache->insert(key, res);
   }
   else
   {
@@ -1547,10 +1552,10 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   key += TypeOps::decode_quantifier(itemXQType->get_quantifier());
 
   xqtref_t res;
-  if( !theUdTypesCache->get(key.str(), res) )
+  if( !theUdTypesCache->get(key, res) )
   {
     TRACE("key: '" << key << "'");
-    theUdTypesCache->put(key.str(), itemXQType);
+    theUdTypesCache->insert(key, itemXQType);
   }
 }
 
@@ -2049,7 +2054,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
 
    ar & is_grammar_NULL;
 
-   unsigned long size_of_size_t = sizeof(size_t);
+   csize size_of_size_t = sizeof(size_t);
 
    union
    {
@@ -2067,31 +2072,29 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
      if (!is_grammar_NULL)
      {
        BinMemOutputStream binmemoutputstream;
-       unsigned int  size = 0;
-       unsigned char* binchars = NULL;
+       zstring binstr;
 
        try
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
-         size = (unsigned int)binmemoutputstream.getSize();
-         binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
+         binstr.assign((char*)binmemoutputstream.getRawBuffer(),
+                       binmemoutputstream.getSize());
        }
        catch (...)
        {
        }
 
-       ar & size;
-
-       if(size)
-         serialize_array(ar, binchars, size);
+       ar & binstr;
      }
    }
    else
    {
-     unsigned long size_of_size_t2;
+     csize size_of_size_t2;
      unsigned char le_be_value_first_char;
+
      ar & size_of_size_t2;
      ar & le_be_value_first_char;
+
      if (size_of_size_t2 != size_of_size_t ||
          le_be_value_first_char != le_be_value.cvalue[0])
      {
@@ -2100,18 +2103,14 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
 
      if (!is_grammar_NULL)
      {
-       unsigned int size;
-       unsigned char* binchars;
+       zstring binstr;
 
-       ar & size;
-       if(size)
+       ar & binstr;
+
+       if (!binstr.empty())
        {
-         binchars = (unsigned char*)malloc(size+8);
-         serialize_array(ar, binchars, size);
-         BinMemInputStream   binmeminputstream((XMLByte*)binchars, size);
+         BinMemInputStream binmeminputstream((XMLByte*)binstr.c_str(), binstr.size());
          theGrammarPool->deserializeGrammars(&binmeminputstream);
-
-         free(binchars);
        }
      }
      else

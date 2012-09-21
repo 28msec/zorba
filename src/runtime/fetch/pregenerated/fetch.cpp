@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <FetchContentIterator>
-FetchContentIterator::class_factory<FetchContentIterator>
-FetchContentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FetchContentIterator)
+
+void FetchContentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FetchContentIterator, PlanIteratorState>*)this);
+}
 
 
-void FetchContentIterator::accept(PlanIterVisitor& v) const {
+void FetchContentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -54,12 +60,46 @@ FetchContentIterator::~FetchContentIterator() {}
 // </FetchContentIterator>
 
 
+// <FetchContentBinaryIterator>
+SERIALIZABLE_CLASS_VERSIONS(FetchContentBinaryIterator)
+
+void FetchContentBinaryIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FetchContentBinaryIterator, PlanIteratorState>*)this);
+}
+
+
+void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FetchContentBinaryIterator::~FetchContentBinaryIterator() {}
+
+// </FetchContentBinaryIterator>
+
+
 // <FetchContentTypeIterator>
-FetchContentTypeIterator::class_factory<FetchContentTypeIterator>
-FetchContentTypeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FetchContentTypeIterator)
+
+void FetchContentTypeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FetchContentTypeIterator, PlanIteratorState>*)this);
+}
 
 
-void FetchContentTypeIterator::accept(PlanIterVisitor& v) const {
+void FetchContentTypeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

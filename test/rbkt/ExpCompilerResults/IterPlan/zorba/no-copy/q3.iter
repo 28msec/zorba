@@ -1,32 +1,4 @@
 Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">
   <SingletonIterator value="xs:integer(2)"/>
 </PromoteIterator>
@@ -72,15 +44,15 @@ Iterator tree for main query:
           <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
               <flwor::FLWORIterator>
-                <LetVariable name="$$temp5" materialize="true">
+                <LetVariable name="$$temp4" materialize="true">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
                     <ForVarIterator varname="b"/>
                   </ChildAxisIterator>
                 </LetVariable>
                 <ReturnClause>
-                  <LetVarIterator varname="$$temp5">
+                  <LetVarIterator varname="$$temp4">
                     <FnCountIterator>
-                      <LetVarIterator varname="$$temp5"/>
+                      <LetVarIterator varname="$$temp4"/>
                     </FnCountIterator>
                   </LetVarIterator>
                 </ReturnClause>
@@ -113,15 +85,15 @@ Iterator tree for main query:
                 <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
                     <flwor::FLWORIterator>
-                      <LetVariable name="$$temp11" materialize="true">
+                      <LetVariable name="$$temp8" materialize="true">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
                           <ForVarIterator varname="b"/>
                         </ChildAxisIterator>
                       </LetVariable>
                       <ReturnClause>
-                        <LetVarIterator varname="$$temp11">
+                        <LetVarIterator varname="$$temp8">
                           <FnCountIterator>
-                            <LetVarIterator varname="$$temp11"/>
+                            <LetVarIterator varname="$$temp8"/>
                           </FnCountIterator>
                         </LetVarIterator>
                       </ReturnClause>

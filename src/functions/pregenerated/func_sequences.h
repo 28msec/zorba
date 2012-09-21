@@ -319,7 +319,7 @@ public:
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
-  bool isMap(ulong producer) const { return producer == 0; }
+  bool isMap(csize producer) const { return producer == 0; }
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 

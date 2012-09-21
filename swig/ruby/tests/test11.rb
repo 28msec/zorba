@@ -12,38 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-sys.path.insert(0, '@pythonPath@')
-import zorba_api
+require '@rubyPath@/zorba_api'
 
-class MyDiagnosticHandler(zorba_api.DiagnosticHandler): 
-  def error(self, *args):
-    print "Error args: ", args
+store = Zorba_api::InMemoryStore.getInstance()
+zorba = Zorba_api::Zorba.getInstance(store)
 
-def test(zorba):
-  #Read and write result
-  print 'Executing: compilerHints.xq'
-  f = open('compilerHints.xq', 'r')
-  lines = f.read()
-  f.close()
-  diagnosticHandler = MyDiagnosticHandler()
-  compilerHints = zorba_api.CompilerHints()
-  compilerHints.setOptimizationLevel(0)
-  xquery = zorba.compileQuery(lines, compilerHints, diagnosticHandler)
-  
-  result = xquery.execute()
-  print result
-  return
+print "Running: CompileQuery CollectionManager\n"
 
+xmlManager = zorba.getXmlDataManager()
+collectionManager = xmlManager.getCollectionManager()
+itemFactory = zorba.getItemFactory()
+name = itemFactory.createQName("http://www.zorba-xquery.com/", "aaa")
+collectionManager.createCollection(name)
+isAdded = collectionManager.isAvailableCollection(name)
 
-store = zorba_api.InMemoryStore_getInstance()
-zorba = zorba_api.Zorba_getInstance(store)
+if isAdded :
+  collection = collectionManager.getCollection(name)
+  data = xmlManager.parseXMLtoItem("<books><book>Book 1</book><book>Book 2</book></books>")
+  itemSequence = Zorba_api::ItemSequence.new(data)
+  collection.insertNodesLast(itemSequence)
+end
 
-print "Running: CompileQuery string + Dignostinc handler + CompilerHint - with optimization 0"
-test(zorba)
 print "Success"
 
-
 zorba.shutdown()
-zorba_api.InMemoryStore_shutdown(store)
-
+Zorba_api::InMemoryStore.shutdown(store)

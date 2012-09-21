@@ -26,6 +26,7 @@
 
 #include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
+#include "runtime/indexing/index_ddl.h"
 
 #include "system/globalenv.h"
 
@@ -60,7 +61,8 @@ xqtref_t op_concatenate::getReturnType(const fo_expr* caller) const
     {
       t = TypeOps::union_type(*t, *caller->get_arg(i)->get_return_type(), tm);
 
-      TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
+      TypeConstants::quantifier_t pq = t->get_quantifier();
+
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
     }
@@ -541,19 +543,18 @@ PlanIter_t fn_count::codegen(
     ZorbaCollectionIterator& collection =
     static_cast<ZorbaCollectionIterator&>(*argv[0]);
 
-    if (collection.isDynamic())
+    if (collection.isCountOptimizable())
     {
-      return new CountCollectionIterator(sctx,
-                                         loc,
-                                         collection.getChildren(),
-                                         CountCollectionIterator::ZORBADYNAMIC);
-    }
-    else
-    {
-      return new CountCollectionIterator(sctx,
-                                         loc,
-                                         collection.getChildren(),
-                                         CountCollectionIterator::ZORBASTATIC);
+      return new CountCollectionIterator(
+                   sctx,
+                   loc,
+                   collection.getChildren(),
+                   (
+                     collection.isDynamic()
+                       ? CountCollectionIterator::ZORBADYNAMIC
+                       : CountCollectionIterator::ZORBASTATIC
+                   )
+                 );
     }
   }
   else if (typeid(FnCollectionIterator) == counted_type)
@@ -566,10 +567,41 @@ PlanIter_t fn_count::codegen(
                                        collection.getChildren(),
                                        CountCollectionIterator::W3C);
   }
-  else
+  else if (typeid(ProbeIndexPointValueIterator) == counted_type)
   {
-    return new FnCountIterator(sctx, loc, argv);
+    ProbeIndexPointValueIterator& lIter
+      = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
+
+    return new ProbeIndexPointValueIterator(
+        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
   }
+  else if (typeid(ProbeIndexRangeValueIterator) == counted_type)
+  {
+    ProbeIndexRangeValueIterator& lIter
+      = static_cast<ProbeIndexRangeValueIterator&>(*argv[0]);
+
+    return new ProbeIndexRangeValueIterator(
+        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
+  }
+  else if (typeid(ProbeIndexPointGeneralIterator) == counted_type)
+  {
+    ProbeIndexPointGeneralIterator& lIter
+      = static_cast<ProbeIndexPointGeneralIterator&>(*argv[0]);
+
+    return new ProbeIndexPointGeneralIterator(
+        sctx, loc, lIter.getChildren(), true);
+  }
+  else if (typeid(ProbeIndexRangeGeneralIterator) == counted_type)
+  {
+    ProbeIndexRangeGeneralIterator& lIter
+      = static_cast<ProbeIndexRangeGeneralIterator&>(*argv[0]);
+
+    return new ProbeIndexRangeGeneralIterator(
+        sctx, loc, lIter.getChildren(), true);
+  }
+  
+  // fallback
+  return new FnCountIterator(sctx, loc, argv);
 }
 
 

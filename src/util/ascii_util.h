@@ -141,6 +141,25 @@ bool is_alnum( CharType c ) {
 }
 
 /**
+ * Checks whether the given character is a control character.  This function
+ * exists to make a proper function out of the standard iscntrl(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a control character.
+ */
+template<typename CharType> inline
+bool is_cntrl( CharType c ) {
+#ifdef WIN32
+  // Windows' iscntrl() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && iscntrl( c );
+#else
+  return iscntrl( c );
+#endif
+}
+
+/**
  * Checks whether the given character is a decimal digit.  This function exists
  * to make a proper function out of the standard isdigit(3) that may be
  * implemented as a macro.
@@ -156,6 +175,25 @@ bool is_digit( CharType c ) {
   return __isascii( c ) && isdigit( c );
 #else
   return isdigit( c );
+#endif
+}
+
+/**
+ * Checks whether the given character is a printing character.  This function
+ * exists to make a proper function out of the standard isprint(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a printing character.
+ */
+template<typename CharType> inline
+bool is_print( CharType c ) {
+#ifdef WIN32
+  // Windows' isprint() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isprint( c );
+#else
+  return isprint( c );
 #endif
 }
 
@@ -646,6 +684,29 @@ void normalize_whitespace( StringType &s ) {
   StringType temp;
   normalize_whitespace( s, &temp );
   s = temp;
+}
+
+/**
+ * Removes all specified characters by shifting the contents of the buffer to
+ * the left.
+ *
+ * @param s The string.
+ * @param s_len The length of \a s.
+ * @param chars The characters to remove.
+ * @return Returns the new length of \a s with all \a chars removed.
+ */
+size_type remove_chars( char *s, size_type s_len, char const *chars );
+
+/**
+ * Removes all whitespace characters by shifting the contents of the buffer to
+ * the left.
+ *
+ * @param s The string.
+ * @param s_len The length of \a s.
+ * @return Returns the new length of \a s with all whitespace removed.
+ */
+inline size_type remove_whitespace( char *s, size_type s_len ) {
+  return remove_chars( s, s_len, whitespace );
 }
 
 /**

@@ -58,20 +58,21 @@ typedef zorba::xquery_parser::token_type token_type;
    |______________________________________________________________________*/
 
 #define PUSH_STATE(state) \
-    do { \
-        yy_push_state(state); \
-    } while(0)
+  do { \
+    yy_push_state(state); \
+  } while(0)
 
 #define POP_STATE() \
-    do { \
-        yy_pop_state(); \
-    } while(0)
+  do { \
+    if (yy_get_start_stack_ptr() > 0) \
+      yy_pop_state(); \
+  } while(0)
 
 #define PUSH_AND_BEGIN( pushed, new ) \
-    do { \
-        BEGIN new; \
-        PUSH_STATE(pushed); \
-    } while(0)
+  do { \
+    BEGIN new; \
+    PUSH_STATE(pushed); \
+  } while(0)
 
 
   /*______________________________________________________________________
@@ -242,10 +243,12 @@ UTF8_MultiByte  ({UTF8_2Bytes}|{UTF8_3Bytes}|{UTF8_4Bytes})
 CommentChars    ([^:]|":"+[^:)])*":)"
 Comment         "(:"{CommentChars}
 blank           [ \t]
-S1              [ \t\r\n\f]
-S               {S1}*
-SP              ({S1}|{Comment})+
-SPNoComment     {S1}+
+WS              [ \t\r\n\f]
+WSstar          {WS}*
+WSplus          {WS}+
+WSOrComment     ({WS}|{Comment})+
+WSOrCommentStar ({WS}|{Comment})*
+
 
   /*_____________________________________________________________________
    |
@@ -278,15 +281,7 @@ NCName                ({NCNameStartChar}{NCNameChar}*)
    |
    |  QName definition
    |______________________________________________________________________*/
-QName       ({NCName}":")?{NCName}
-
-  /*_____________________________________________________________________
-   |
-   |  Annotation QName definition
-   |______________________________________________________________________*/
-AnnotationQName  "%"({NCName}":")?{NCName}
-
-AnnotationEQName "%"{StringLiteral}":"{NCName}
+QName                 ({NCName}":")?{NCName}
 
   /*_____________________________________________________________________
    |
@@ -295,6 +290,20 @@ AnnotationEQName "%"{StringLiteral}":"{NCName}
 CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
 PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
+
+  /*_____________________________________________________________________
+   |
+   |  EQName definition
+   |______________________________________________________________________*/
+BracedURILiteral      "Q{"({PredefinedEntityRef}|{CharRef}|[^&{}])*"}"
+EQName                {BracedURILiteral}{NCName}
+
+  /*_____________________________________________________________________
+   |
+   |  Annotation QName definition
+   |______________________________________________________________________*/
+AnnotationQName       "%"({NCName}":")?{NCName}
+AnnotationEQName      "%"{EQName}
 
   /*_____________________________________________________________________
    |
@@ -352,6 +361,8 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  Exclusive start states
    |______________________________________________________________________*/
 
+%x MODE_SHEBANG
+%x INITIAL_ACCUMULATOR
 %x MODE_APOS_ATTRIBUTE_CONTENT
 %x MODE_QUOTE_ATTRIBUTE_CONTENT
 %x MODE_ELEM_COMP_CONSTR
@@ -376,7 +387,33 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 %}
 
 
+  /*______________________________________________________________________
+   |
+   |  Override Flex's starting state here.
+   |______________________________________________________________________*/
+%{
+#define YY_USER_INIT      \
+{                         \
+  BEGIN MODE_SHEBANG;     \
+}
+%}
+
+
 %%
+
+
+  /*______________________________________________________________________
+   |
+   |  MODE_SHEBANG state
+   |
+   |  Accepts the "#!/path/interpreter" unix script shebang string
+   |______________________________________________________________________*/
+
+<MODE_SHEBANG>{
+"#!".*[\n]  { return token::SHEBANG; }
+.|[\n]      { BEGIN INITIAL; yyless(0); }
+}
+
 
   /*______________________________________________________________________
    |
@@ -386,6 +423,8 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  expression or subexpression.
    |______________________________________________________________________*/
 
+<INITIAL,INITIAL_ACCUMULATOR>{
+
 "(" { return token::LPAR; }
 ";" { return token::SEMI; }
 "," { return token::COMMA; }
@@ -393,13 +432,13 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "+" { return token::PLUS; }
 "/" { return token::SLASH; }
 "//" { return token::SLASH_SLASH; }
+"!" { return token::BANG; }
 "@" { return token::AT_SIGN; }
 ")" { return token::RPAR; }
 "*" { return token::STAR; }
 ".." { return token::DOT_DOT; }
 "." { return token::DOT; }
 "?" { return token::HOOK; }
-"]" { return token::RBRACK; }
 "$" { return token::DOLLAR; }
 "#" { return token::HASH; }
 ":" { return token::COLON; }
@@ -420,6 +459,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
   theDriver->theDocComment.str("");
   return token::MODULE;
 }
+
     /* Tokens with state transitions */
 "element" {  PUSH_STATE(MODE_ELEM_COMP_CONSTR); }
 "attribute" { PUSH_STATE(MODE_ATTR_COMP_CONSTR); }
@@ -545,6 +585,44 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "keys" { return token::KEYS; }
 
 
+  /*______________________________________________________________________
+   |
+   |  JSONIQ tokens
+   |______________________________________________________________________*/
+
+  /* "[" and "]" are not JSONiq tokens, but they have been moved here because
+     of the "{[ ]}" grammar construct */
+"[" { PUSH_STATE(INITIAL); return token::LBRACK; }
+"]" { POP_STATE(); return token::RBRACK; }
+
+"{[" { PUSH_STATE(INITIAL_ACCUMULATOR); return token::L_ACCUMULATOR_OBJ_UNION; }
+"]}"  {
+        // This if() disambiguates between the "{[ ]}" grammar construct and the
+        // plain "[ ]" predicate
+        if (YY_START == INITIAL_ACCUMULATOR)
+        {
+          POP_STATE();
+          return token::R_ACCUMULATOR_OBJ_UNION;
+        }
+        else
+        {
+          POP_STATE();
+          yyless(1);
+          return token::RBRACK;
+        }
+      }
+
+"{|" { return token::L_SIMPLE_OBJ_UNION; }
+"|}" { return token::R_SIMPLE_OBJ_UNION; }
+"json" { return token::JSON; }
+"append" { return token::APPEND; }
+"position" { return token::POSITION; }
+"json-item" { return token::JSON_ITEM; }
+"structured-item" { return token::STRUCTURED_ITEM; }
+"array" {  return token::ARRAY; }
+"object" {  return token::OBJECT; }
+
+
     /*______________________________________________________________________
      |
      | FT tokens
@@ -613,7 +691,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "idiv" { return token::IDIV; }
 "intersect" { return token::INTERSECT; }
 "is" { return token::IS; }
-"[" { return token::LBRACK; }
 "<=" { return token::LE; }
 "<<" { return token::PRECEDES; }
 "mod" { return token::MOD; }
@@ -718,9 +795,11 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 {NCName}":*"                  { TRY_SVAL_TOKEN(ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext); }
 
-{StringLiteral}":*"           { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+1, yyleng-4), yytext+1); }
+{BracedURILiteral}"*"         { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+2, yyleng-4), yytext+2); }
 
 {QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
+
+{EQName}                      { TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, false, false, true), yytext); }
 
 {AnnotationQName}             { TRY_SVAL_TOKEN(ANNOTATION_QNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
 
@@ -773,6 +852,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
   /* -------------------- */
 "(#" { BEGIN MODE_PRAGMA; return token::PRAGMA_BEGIN;}
 
+
   /* push initial state */
   /* ------------------ */
 "{" { PUSH_STATE(INITIAL); return token::LBRACE; }
@@ -780,57 +860,15 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
   /* pop previous state */
   /* ------------------ */
-"}" {
-  if (yy_get_start_stack_ptr() > 0)   // The lexer will catch the unexpected right brace and generate a syntax error
-    POP_STATE();
-  return token::RBRACE;
-}
+"}" { POP_STATE(); return token::RBRACE; }
 
 
-{S} {
+{WSstar} {
   /* eat up whitespace */
 }
 
-  /* END <MODE INITIAL> */
+} /* END <MODE INITIAL,INITIAL_ACCUMULATOR> */
 
-
-  /*______________________________________________________________________
-   |
-   | OCCURRENCE_INDICATOR State
-   |
-   | This special state is needed to distinguish occurrence indicators
-   | that appear in the SequenceType production. For instance, compare
-   | "foo instance of baz*" to "baz*foo". In the first case, the "*" is
-   | interpreted as an occurrence indicator, and in the second case, it
-   | must be interpreted as a multiplication operator. But, when in the
-   | OCCURRENCEINDICATOR state, if anything else other than "?", "*",
-   | "+", those symbols must be interpreted in the OPERATOR state. For
-   | instance, this would occur with the expression "foo instance of baz
-   | and $x", with the operator "and".
-   |______________________________________________________________________*/
-
-  /* <MODE_OCCURRENCE_INDICATOR>{ */
-
-  /* transition to OPERATOR */
-  /* ---------------------- */
-
-  /* "?" {
-  // TODO:
-  return token::OCCURS_HOOK;
-}
-
-"*" {
-  // TODO:
-  return token::OCCURS_STAR;
-}
-
-"+" {
-  // TODO:
-  return token::OCCURS_PLUS;
-} */
-
-
-  /* } */ /* MODE_OCCURRENCE_INDICATOR> */
 
    /*______________________________________________________________________
     |
@@ -869,7 +907,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
   }
 }
 <MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>"(:"       { PUSH_STATE(MODE_EXPR_COMMENT); }
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{S}        { /* continue lexing */ }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{WSstar}   { /* continue lexing */ }
 <MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR><<EOF>>    { COMP_CONSTR_ROLLBACK(false); }
 <MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{CatchAll} { COMP_CONSTR_ROLLBACK(true); }
 
@@ -883,11 +921,11 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    | OPERATOR state.
    |______________________________________________________________________*/
 
-<MODE_PRAGMA>{QName}{SPNoComment}                    { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
-<MODE_PRAGMA>{StringLiteral}":"{NCName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{QName}{WSplus}                         { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{EQName}{WSplus}                        { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
 <MODE_PRAGMA>{QName}"#)"                             { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA,  put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{StringLiteral}":"{NCName}"#)"          { BEGIN INITIAL; TRY_SVAL_TOKEN(EQNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
-<MODE_PRAGMA>{S} { /* continue lexing */ }
+<MODE_PRAGMA>{WSplus}                                { /* continue lexing */ }
 
 
   /*______________________________________________________________________
@@ -916,7 +954,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 <MODE_START_TAG>\" { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 <MODE_START_TAG>\' { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
 <MODE_START_TAG>"=" { return token::EQUALS; }
-<MODE_START_TAG>{S} { return token::BLANK; }
+<MODE_START_TAG>{WSstar} { return token::BLANK; }
 <MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
 <MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 <MODE_START_TAG>{CatchAll} { yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc); return token::UNRECOGNIZED; }
@@ -960,7 +998,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |______________________________________________________________________*/
 
 <MODE_END_TAG>">" { POP_STATE(); return token::TAG_END; }
-<MODE_END_TAG>{QName}{S} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
+<MODE_END_TAG>{QName}{WSstar} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
 <MODE_END_TAG><<EOF>> { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 
 
@@ -1015,7 +1053,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    | instruction name are recognized.
    |______________________________________________________________________*/
 
-<MODE_PROCESSING_INSTRUCTION>{SP} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
+<MODE_PROCESSING_INSTRUCTION>{WSOrComment} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 <MODE_PROCESSING_INSTRUCTION>"?>" { POP_STATE(); return token::PI_END; }
 <MODE_PROCESSING_INSTRUCTION>{NCName} /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng), yytext); }
 
@@ -1111,6 +1149,8 @@ std::string start_state(int state)
   switch (state)
   {
     case INITIAL: return "INITIAL";
+    case MODE_SHEBANG: return "MODE_SHEBANG";
+    case INITIAL_ACCUMULATOR: return "INITIAL_ACCUMULATOR";
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
     case MODE_ELEM_COMP_CONSTR: return "MODE_ELEM_COMP_CONSTR";
     case MODE_ATTR_COMP_CONSTR: return "MODE_ATTR_COMP_CONSTR";

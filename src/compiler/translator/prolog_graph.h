@@ -77,6 +77,10 @@ public:
 
   Kind getKind() const { return theKind; }
 
+  bool isVar() const { return theKind == VAR; }
+
+  bool isUDF() const { return theKind == FUN; }
+
   const function* getFunction() const
   {
     assert(theKind == FUN);
@@ -166,10 +170,7 @@ public:
     theFuncDecls.push_back(v);
   }
 
-  void addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2)
-  {
-    addEdge(theGraph, v1, v2);
-  }
+  void addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2);
 
   void reorder_globals(std::list<GlobalBinding>& prologVarBindings);
 

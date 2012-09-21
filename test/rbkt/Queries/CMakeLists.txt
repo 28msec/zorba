@@ -110,17 +110,6 @@ SET(FOUND_XQFTTS 0)
 # way to do the lookup just once - ideally by moving those tests which
 # depend on module features into the modules themselves.
 
-
-# Check if WordNet thesaurus is installed
-SET(WORDNET_THESAURUS_FILE 
-  "${CMAKE_BINARY_DIR}/LIB_PATH/edu/princeton/wordnet/wordnet-en.zth")
-IF(EXISTS "${WORDNET_THESAURUS_FILE}")
-  SET(ZORBA_WORDNET_FOUND 1)
-  # Kind of a weird place to put this directive, but convenient
-  INSTALL(FILES "${WORDNET_THESAURUS_FILE}"
-    DESTINATION "${ZORBA_CORE_LIB_DIR}/edu/princeton/wordnet")
-ENDIF(EXISTS "${WORDNET_THESAURUS_FILE}")
-
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
 ELSE(ZORBA_SUPPRESS_CURL)
@@ -152,6 +141,17 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
+
+  IF (NOT ZORBA_WITH_JSON)
+    STRING(REGEX MATCH "jsoniq/" NEEDS_FILE "${TESTNAME}")
+    IF(NEEDS_FILE)
+      SET(SKIP_TEST 1)
+    ENDIF(NEEDS_FILE)
+    STRING(REGEX MATCH "cloudscript/" NEEDS_FILE "${TESTNAME}")
+    IF(NEEDS_FILE)
+      SET(SKIP_TEST 1)
+    ENDIF(NEEDS_FILE)
+  ENDIF(NOT ZORBA_WITH_JSON)
 
   IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
     IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
@@ -185,13 +185,13 @@ FOREACH(TESTFILE ${TESTFILES})
   ENDIF(WIN32)
 
   # If WordNet thesaurus not found, skip ft-thesaurus-true tests
-  IF (NOT ZORBA_WORDNET_FOUND)
+  IF (NOT ZORBA_WITH_THESAURUS)
     STRING(REGEX MATCH "zorba/fulltext/ft-thesaurus-true" NEEDS_WORDNET
       "${TESTNAME}")
     IF (NEEDS_WORDNET)
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_WORDNET)
-  ENDIF (NOT ZORBA_WORDNET_FOUND)
+  ENDIF (NOT ZORBA_WITH_THESAURUS)
 
   IF(NOT SKIP_TEST)
 
@@ -230,23 +230,31 @@ MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 ####
 IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
+  #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
+
+  IF (NOT ZORBA_WITH_BIG_INTEGER)
+    # These test will never pass without big integers beause the integers used
+    # in the queries exceed a 63-bit signed integer.
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
+    #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
+  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
+
+  IF(ZORBA_WITH_JSON)
+    # These tests fail because of the JSONiq extension which has array constructors.
+    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 3141592)
+    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 3141592)
+  ENDIF(ZORBA_WITH_JSON)
 
   IF (ZORBA_TEST_XQUERYX)
 
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
-  
+    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemContent/K2-DirectConElemContent-27 909303)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemWhitespace/K2-DirectConElemWhitespace-25 909303)
 
-    IF(NOT ZORBA_WITH_BIG_INTEGER)
-      # These tests fail due to integer overflow.
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
-      EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQueryX/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
-    ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
     #w3c bug
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes011 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes012 3355019)
@@ -258,16 +266,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   #this is marked as expected failure because the RQ uses XQTS_1_0_3. In that version the expected result is err:FODC0004 instead of err:FODC0002.
   #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
   #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
-
-  IF (NOT ZORBA_WITH_BIG_INTEGER)
-    # These test will never pass without big integers beause the integers used
-    # in the queries exceed a 63-bit signed integer.
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-22 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 867059)
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
-  ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
 
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
@@ -522,6 +520,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
+EXPECTED_FAILURE(test/rbkt/zorba/xmlid/valid-ncname 1010728)
+
 # Failing test due to the new scripting spec. The test should be
 # removed as it does not make sense any longer
 EXPECTED_FAILURE(test/rbkt/zorba/scripting/exit4 666)
@@ -534,11 +534,15 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 IF(NOT ZORBA_NO_ICU)
   IF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
-    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err17 974477)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m40 866874)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m41 866874)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err17 1023168)
+  ELSE ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err10 994610)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err15 866874)
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err16 1023168)
   ENDIF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
   EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
-  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m40 866874)
-  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m41 866874)
 ENDIF(NOT ZORBA_NO_ICU)
 
 IF(ZORBA_NO_ICU)
@@ -551,25 +555,6 @@ ENDIF(ZORBA_NO_ICU)
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
 # external variable default expected failures
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-010 900688) # forward references not implemented
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-011 900688) # forward references not implemented -> cycles cannot be detected
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-022 900688) # forward references not implemented
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
-
-# Failing windowing tests.
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling22 899363)
-
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling44 899366)
-
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling14 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling16 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling15 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling18 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling19 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling20 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling17 899364)
-EXPECTED_FAILURE(test/rbkt/zorba/windowing/tumbling21 899364)
-
-

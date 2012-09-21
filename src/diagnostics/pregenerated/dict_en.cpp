@@ -75,7 +75,7 @@ extern entry const dict_en[] = {
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
   { "FOUT1170", "\"$1\": error retrieving resource containing text" },
-  { "FOUT1190", "\"$1\": Cannot decode resource retrieved" },
+  { "FOUT1190", "\"$1\": can not decode resource retrieved" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
 #endif
@@ -97,6 +97,72 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0013", "Cannot serialize value as JSON: $1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0014", "Cannot serialize a function item as JSON" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0002", "Pair value returns no, or more than one, item." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0003", "$1 items do not have string value" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0004", "Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0005", "\"$1\": duplicate pair to insert" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0006", "\"$1\": pair to insert already exists in object." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0007", "$1 - wrong type for object/array selector in update expression." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0008", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0009", "\"$1\": duplicate pair to replace" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0010", "\"$1\": duplicate pair to rename" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0016", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0017", "Cannot replace with less or more than an item." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNUP0019", "The content of an insert expression must evaluate to a sequence of objects." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0021", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JSDY0040", "$1" },
+#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -113,7 +179,7 @@ extern entry const dict_en[] = {
   { "SESU0011", "\"$1\": unsupported normalization form" },
   { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
   { "XPDY0002", "\"$1\": $2" },
-  { "XPDY0050", "invalid treat expression type" },
+  { "XPDY0050", "\"$1\" cannot be treated as type $2" },
   { "XPST0001", "${\"1\": }undefined value${: 2}" },
   { "XPST0003", "invalid expression${: 1}" },
   { "XPST0005", "static type must not be empty-sequence()" },
@@ -125,8 +191,8 @@ extern entry const dict_en[] = {
   { "XPST0083", "\"$1\": not a string literal" },
   { "XPTY0004", "$1" },
   { "XPTY0018", "path expression last step must not have nodes and atomic values" },
-  { "XPTY0019", "path expression non-last step must not be an atomic value" },
-  { "XPTY0020", "axis step context item is not a node" },
+  { "XPTY0019", "a non-last axis step produces non-node items" },
+  { "XPTY0020", "context item in axis step is not a node" },
   { "XQDY0025", "\"$1\": duplicate attribute name" },
   { "XQDY0026", "computed processing instrucion must not contain \"?>\"" },
   { "XQDY0027", "\"$1\": unexpected validity property${: 2}" },
@@ -181,6 +247,7 @@ extern entry const dict_en[] = {
   { "XQST0093", "\"$1\": module must not depend on itself" },
   { "XQST0098", "properties \"$1\" and \"$2\", representing characters used in picture string, do not have distinct values" },
   { "XQST0099", "module contains more than one context item declaration" },
+  { "XQST0103", "$1: non-distinct variable in window clause" },
   { "XQST0106", "$1: multiple annotations with $2 names" },
   { "XQST0111", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
@@ -225,7 +292,7 @@ extern entry const dict_en[] = {
   { "XUTY0010", "replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes" },
   { "XUTY0011", "replacement sequence does not consist of zero or more attribute nodes" },
   { "XUTY0012", "multiple elements, attributes, or processing-instruction nodes returned" },
-  { "XUTY0013", "source expression of \"copy\" clause must return a single node" },
+  { "XUTY0013", "source expression of \"copy\" clause must return a single node or json-item" },
   { "XUTY0022", "insertion of attribute node into document node" },
   { "ZAPI0002", "XQuery compilation failed${: 1}" },
   { "ZAPI0003", "XQuery not compiled" },
@@ -249,6 +316,8 @@ extern entry const dict_en[] = {
   { "ZAPI0040", "iterator is not open" },
   { "ZAPI0041", "iterator is already open" },
   { "ZAPI0042", "iterator is closed" },
+  { "ZAPI0043", "cannot serialize JSON item using current output method" },
+  { "ZAPI0045", "cannot serialize sequence containing both JSON and XML items" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
   { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },
   { "ZAPI0090", "a non root element cannot be validated in place." },
@@ -287,7 +356,7 @@ extern entry const dict_en[] = {
   { "ZDDY0016", "\"$1\": multiple attemps to create a collection in the same snapshot" },
   { "ZDDY0017", "node does not belong to any collection" },
   { "ZDDY0018", "all nodes must be in same collection" },
-  { "ZDDY0019", "\"$1\": collection $2 cannot be undone" },
+  { "ZDDY0019", "\"$1\": iterator on collection is not open" },
   { "ZDDY0020", "\"$1\": index domain expression yields nodes that are not in collection" },
   { "ZDDY0021", "\"$1\": undeclared index" },
   { "ZDDY0022", "\"$1\": index already exists" },
@@ -309,7 +378,7 @@ extern entry const dict_en[] = {
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },
   { "ZDST0004", "collection multiple property values" },
-  { "ZDST0006", "collection invalid property value" },
+  { "ZDST0006", "\"$1\": invalid annotation for collection \"$2\"" },
   { "ZDST0007", "\"$1\": collection declaration in foreign module" },
   { "ZDST0021", "\"$1\": index already declared" },
   { "ZDST0022", "\"$1\": index already imported into module \"$2\"" },
@@ -325,15 +394,15 @@ extern entry const dict_en[] = {
   { "ZDST0032", "\"$1\": index references context item" },
   { "ZDST0033", "\"$1\": index non-simple expression" },
   { "ZDST0034", "\"$1\": index can not do automatic maintenance" },
-  { "ZDST0035", "\"$1\": index general multikey" },
+  { "ZDST0035", "\"$1\": number of key expressions for general indexes is restricted to one expression" },
   { "ZDST0036", "\"$1\": index declaration in foreign module" },
   { "ZDST0041", "\"$1\": integrity constraint already declared" },
   { "ZDST0044", "\"$1\": integrity constraint declaration not allowed in main module" },
   { "ZDST0048", "\"$1\": integrity constraint declaration in foreign module" },
   { "ZDST0060", "\"$1\": feature not supported; $2" },
-  { "ZDTY0001", "\"$1\": invalid node type in collection \"$2\"" },
-  { "ZDTY0010", "\"$1\": index domain expression yields a non-node item" },
-  { "ZDTY0011", "result of some key expression of index $1 does not match its declared type" },
+  { "ZDTY0001", "\"$1\": invalid item type in collection \"$2\"" },
+  { "ZDTY0010", "non-node item in domain expression of index $1" },
+  { "ZDTY0011", "item type \"$1\" does not match declared type \"$2\" for key expression of index $3" },
   { "ZDTY0012", "\"$1\": general range index key item has type for which no ordering relationship exists" },
 #if defined(ZORBA_WITH_DEBUGGER)
   { "ZGDB0001", "" },
@@ -347,6 +416,7 @@ extern entry const dict_en[] = {
   { "ZJPE0007", "unterminated JSON string" },
   { "ZJPE0008", "\"$1\": illegal QName" },
   { "ZJPE0009", "illegal empty string" },
+  { "ZJPE0010", "JsonML (array form) must start with '['" },
   { "ZJSE0001", "JSON serialization requires document or element node" },
   { "ZJSE0002", "\"$1\" element missing required \"$2\" attribute" },
   { "ZJSE0003", "\"$1\": illegal value for attribute \"$2\"" },
@@ -371,6 +441,7 @@ extern entry const dict_en[] = {
   { "ZSTR0010", "can not insert node into colletion \"$1\" because it already belongs to collection \"$2\"" },
   { "ZSTR0011", "non-root node can not be inserted into collection \"$1\"" },
   { "ZSTR0012", "non-node item used with collection \"$1\"" },
+  { "ZSTR0013", "an item that is not a node, object, or array is used with collection \"$1\"" },
   { "ZSTR0015", "\"$1\": integrity constraint already exists" },
   { "ZSTR0016", "\"$1\": integrity constraint does not exist" },
   { "ZSTR0020", "loader I/O error${: 1}" },
@@ -383,6 +454,7 @@ extern entry const dict_en[] = {
   { "ZSTR0055", "streamable string has already been consumed" },
   { "ZSTR0060", "out of range: $1" },
   { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
+  { "ZSTR0066", "$1: does not reference a node in collection $2." },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
@@ -411,7 +483,7 @@ extern entry const dict_en[] = {
   { "ZXQP0020", "\"$1\": invalid URI${: 2}" },
   { "ZXQP0021", "user error" },
   { "ZXQP0024", "XML does not match schema${: \"1\"}${ 2}" },
-  { "ZXQP0025", "item creation failed" },
+  { "ZXQP0025", "\"$1\": could not fetch resource${; reason: 2}" },
   { "ZXQP0026", "\"$1\": invalid enumerated value for $2" },
   { "ZXQP0028", "\"$1\": target namespace not provided by module from $2" },
   { "ZXQP0029", "\"$1\": URI access not allowed" },
@@ -477,8 +549,6 @@ extern entry const dict_en[] = {
   { "~BadXMLNoOpeningTag", "closing tag without matching opening tag" },
   { "~BadXQueryVersion", "unsupported XQuery version" },
   { "~Base64BadChar", "invalid Base64 character" },
-  { "~Base64Equals", "in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]" },
-  { "~Base64EqualsEquals", "in Base64, \"==\" must be at the end and followed by one of [AQgw]" },
   { "~Base64Multiple4", "Base64 data must be a multiple of 4 characters" },
   { "~BaseURI", "base URI" },
   { "~BoxCondTooManyColumns", "box condition has more columns than index" },
@@ -498,12 +568,9 @@ extern entry const dict_en[] = {
   { "~EmptySeqNoCastToQName", "empty sequence can not be cast to QName" },
   { "~EmptySeqNoCastToTypeWithQuantOne", "empty sequence can not be cast to type with quantifier '1'" },
   { "~EmptySeqNoFnRemoveArg", "empty sequence not allowed as 2nd argument of fn:remove()" },
-  { "~EmptySeqNoPromoteTo", "empty sequence can not be promoted to type \"$2\"" },
   { "~EmptySeqNoSearchItem", "empty sequence not allowed as search item of fn:index-of()" },
-  { "~EmptySeqNotAsFunctionResult_23", "empty sequence not allowed as result of function $2() that returns \"$3\"" },
   { "~EmptySequence", "empty sequence" },
   { "~ErrorCodeMessage_12", "error $2: $3" },
-  { "~Eval11", "\"eval\" only available in XQuery 1.1 or later" },
   { "~ExpectedNumericOrDurationType", "expected numeric or duration type" },
   { "~ExpectedNumericType", "expected numeric type" },
   { "~ExpectedType_5", "expected type \"$5\"" },
@@ -529,17 +596,42 @@ extern entry const dict_en[] = {
   { "~FunctionFailed_12o", "$2 failed${: 3}" },
   { "~FunctionUndeclared_3", "function with arity $3 not declared" },
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
-  { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary" },
+  { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
   { "~GroupByVarHasMoreThanOneItem_2", "\"$2\": value of groupby variable has more than one item" },
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
+  { "~JNUP0007_Array", "\"$2\": can not be promoted to type xs:integer" },
+  { "~JNUP0007_Object", "\"$2\": can not be promoted to type xs:string" },
+  { "~JNUP0007_ObjectArray", "\"$2\": can not be promoted to type xs:anyAtomicType" },
+  { "~JNUP0008_Array", "\"$2\": target of an appending expression or of a position-inserting expression is not an array" },
+  { "~JNUP0008_Object", "\"$2\": target of a renaming expression or of a non-position-inserting expression is not an object." },
+  { "~JNUP0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item." },
+  { "~JNUP0016_Array", "\"$2\": selector cannot be resolved against supplied array." },
+  { "~JNUP0016_Object", "\"$2\": selector cannot be resolved against supplied object." },
   { "~JSON parser error", "JSON parser error" },
   { "~JSON serialization error", "JSON serialization error" },
+  { "~JSON_ILLEGAL_CHARACTER", "'$2': illegal JSON character${ at 3}" },
+  { "~JSON_ILLEGAL_CODEPOINT", "\"$2\": illegal Unicode code-point${ at 3}" },
+  { "~JSON_ILLEGAL_ESCAPE", "'\\$2': illegal JSON character escape${ at 3}" },
+  { "~JSON_ILLEGAL_LITERAL", "illegal JSON literal${ at 2}" },
+  { "~JSON_ILLEGAL_NUMBER", "illegal JSON number${ at 2}" },
+  { "~JSON_UNEXPECTED_EXTRA_CONTENT", "unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)" },
+  { "~JSON_UNEXPECTED_TOKEN", "\"$2\": unexpected JSON token${ at 3}" },
+  { "~JSON_UNTERMINATED_STRING", "unterminated JSON string${ at 2}" },
+  { "~JSONiq dynamic error", "JSONIQ dynamic error" },
+  { "~JSONiq dynamic warning", "JSONIQ dynamic warning" },
+  { "~JSONiq error", "JSONIQ error" },
+  { "~JSONiq serialization error", "JSONIQ serialization error" },
+  { "~JSONiq serialization warning", "JSONIQ serialization warning" },
+  { "~JSONiq static error", "JSONIQ static error" },
+  { "~JSONiq static warning", "JSONIQ static warning" },
+  { "~JSONiq type error", "JSONIQ type error" },
+  { "~JSONiq type warning", "JSONIQ type warning" },
+  { "~JSONiq warning", "JSONIQ warning" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
-  { "~ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
   { "~MustBeNCName", "must be an xs:NCName" },
@@ -569,8 +661,6 @@ extern entry const dict_en[] = {
   { "~NoSeqForFnOp_2", "sequence of more than one item can not be operand for function \"$2()\"" },
   { "~NoSeqInValueComp", "sequnce of more than one item can not be in value comparisons" },
   { "~NoSeqTestedForAtomicEquiv", "sequence of more than one item can not be tested for atomic value equivalence" },
-  { "~NoSeqTypePromotion", "type promotion not possible on sequence of more than one item" },
-  { "~NoSeqTypePromotion_23", "sequence of more than one item can not be promoted to the return type \"$2\" of function $3()" },
   { "~NoSerializationCallbackForDocColMod", "document, collection, or module resolver required but no SerializationCallback given" },
   { "~NoSerializationCallbackForModule", "no SerializationCallback for required external module \"$2\"" },
   { "~NoSerializationCallbackForTraceStream", "no SerializationCallback for required trace stream" },
@@ -579,8 +669,6 @@ extern entry const dict_en[] = {
   { "~NoTypeInCtx", "undefined type in current context" },
   { "~NoTypeInMainModule_4", "type of variable \"$4\" is not among the in-scope types of the main module" },
   { "~NoTypeInModule_45", "type of variable \"$4\" is not among the in-scope types module \"$5\"" },
-  { "~NoTypePromotion_23", "\"$2\": can not promote to type \"$3\"" },
-  { "~NoTypePromotion_234", "\"$2\": can not promote to return type \"$3\" of function $4()" },
   { "~NoURIAuthority", "no authority" },
   { "~NoURIInStore", "URI for document not found in store" },
   { "~NoURIScheme", "no URI scheme" },
@@ -607,7 +695,9 @@ extern entry const dict_en[] = {
   { "~OpNodeBeforeMustHaveNodes", "op:node-before() must have nodes as parameters" },
   { "~OperationNotDef_23", "$2 not defined for type \"$3\"" },
   { "~OperationNotPossibleWithTypes_234", "\"$2\": operation not possible with parameters of type \"$3\" and \"$4\"" },
-  { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must in the schema target namespace" },
+  { "~ParseFragmentDoctypeNotAllowed", "a DOCTYPE declaration is not allowed" },
+  { "~ParseFragmentDoctypeNotAllowedHere", "a DOCTYPE declaration must appear before any element or text node, and at most once" },
+  { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace" },
   { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schema-validate/>, <DTD-validate/> or <parse-external-parsed-entity/> options can be specified" },
   { "~ParserInitFailed", "parser initialization failed" },
   { "~ParserNoCreateTree", "XML tree creation failed" },
@@ -689,7 +779,6 @@ extern entry const dict_en[] = {
   { "~SeqNoCastToQName", "sequence of more than one item can not be cast to QName" },
   { "~SingletonExpected_2o", "singleton expected${ (2)}" },
   { "~StackOverflow", "stack overflow" },
-  { "~StartEndTagMismatch_23", "start tag \"$2\" does not match end tag \"$3\"" },
   { "~StingLiteral", "string literal" },
   { "~StringValue", "string value" },
   { "~SumImpossibleWithTypes_23", "sum not possible with parameters of type \"$2\" and \"$3\"" },
@@ -772,19 +861,28 @@ extern entry const dict_en[] = {
   { "~XMLSchema", "XML schema" },
   { "~XPST0003_Anotations", "function and variable annotations only available in XQuery 3.0 or later" },
   { "~XPST0003_CountClause11", "\"count\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~XPST0003_OuterForClause11", "\"outer-for\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_PiTarget", "\"XML\" not allowed as target of a direct processing-instruction constructor" },
   { "~XPST0003_Scripting", "scripting feature not available" },
+  { "~XPST0003_StartEndTagMismatch_23", "start tag \"$2\" does not match end tag \"$3\"" },
   { "~XPST0003_SwitchExpr11", "\"switch\" expressions only available in XQuery 3.0 or later" },
   { "~XPST0003_TryCatchExpr11", "\"try/catch\" expressions only available in XQuery 3.0 or later" },
   { "~XPST0003_WindowClause11", "\"window\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_XQueryVersionAtLeast30_2", "\"$2\": XQuery version must be at least 3.0" },
-  { "~XPTY0004_FormatNumber_2", "\"the first parameter to the format-number() function is of type $2, which is not allowed" },
+  { "~XPTY0004_FormatNumber_2", "the first parameter to the format-number() function is of type $2, which is not allowed" },
+  { "~XPTY0004_FuncParam", "$2 can not be promoted to parameter type $3 of function $4()" },
+  { "~XPTY0004_FuncReturn", "$2 can not be promoted to return type $3 of function $4()" },
+  { "~XPTY0004_JSONIQ_SELECTOR", "Cannot atomize and/or cast value of type $2 to a string." },
+  { "~XPTY0004_NoMultiSeqTypePromotion", "sequence of more than one item can not be promoted to type $2" },
+  { "~XPTY0004_TypeMatch", "$2 can not be treated as type $3" },
+  { "~XPTY0004_TypePromotion", "$2 can not be promoted to type $3" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },
   { "~XUST0001_IF", "conditional expression with updating and non-updating branch" },
+  { "~XUST0001_TRYCATCH", "try-catch expression with updating and non-updating clauses" },
   { "~XUST0001_UDF_2", "\"$2\": function declared simple but body is updating" },
   { "~XUST0002_Transform", "transform expression witn non-updating or vacuous modify clause" },
   { "~XUST0002_UDF_2", "\"$2\": function declared updating but body is not updating or vacuous" },
@@ -797,6 +895,7 @@ extern entry const dict_en[] = {
   { "~ZXQD0004_NON_NEGATIVE", "given value must be non-negative ($2)" },
   { "~ZXQD0004_NOT_WITHIN_RANGE", "not within allowed range ($2)" },
   { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },
+  { "~ZXQP0025_RESOURCE_NOT_FOUND", "resource not found" },
   { "~ZeroLenURI", "zero-length URI (and no base URI given)" },
   { "~Zorba API error", "Zorba API error" },
   { "~Zorba data-definition error", "Zorba data-definition error" },

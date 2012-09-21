@@ -1224,8 +1224,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   auto_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
     uri, internal::EntityData::THESAURUS, error_msg
   );
-  if ( !rsrc.get() )
-    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
+  ZORBA_ASSERT( rsrc.get() );
 
   internal::ThesaurusProvider const *const t_provider =
     dynamic_cast<internal::ThesaurusProvider const*>( rsrc.get() );
@@ -1251,11 +1250,11 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   FTTokenSeqIterator::FTTokens synonyms;
   thesaurus_callback cb( qt0.pos(), qt0.lang(), synonyms );
 
-  Tokenizer::Numbers t_num;
+  Tokenizer::State t_state;
   TokenizerProvider const *const provider = GENV_STORE.getTokenizerProvider();
   ZORBA_ASSERT( provider );
   Tokenizer::ptr tokenizer;
-  if ( !provider->getTokenizer( qt0.lang(), &t_num, &tokenizer ) )
+  if ( !provider->getTokenizer( qt0.lang(), &t_state, &tokenizer ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009,
       ERROR_PARAMS(

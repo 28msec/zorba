@@ -284,9 +284,9 @@ is deterministic or not.
 As an example, the following snippet declares a nondeterministic random function.
 
 \code
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
-declare %ann:nondeterministic function random:random() as xs:integer external;
+declare %an:nondeterministic function random:random() as xs:integer external;
 \endcode
 
 If not specified otherwise, all functions are being treated as deterministic.
@@ -300,15 +300,15 @@ Zorba Scripting programs may have side effects.
 Side effects can be made with statements.
 An expression is sequential if it contains statements that have side effects (updating some XML, assigning a variable in scope outside of the expression) or that affect the control flow (break, continue, exit returning), or if it invokes a sequential function.
 Analogously to nondeterministic functions, the compiler needs to be able to infer if an expression is sequential.
-In order to do so, Zorba provides the <tt>%ann:sequential</tt> and <tt>%ann:nonsequential</tt> annotations.
-The <tt>%ann:sequential</tt> annotation must be used to declare (external) functions that have side effects.
-If non of these annotations is present, the default for a function is to be annotated as <tt>%ann:nonsequential</tt>.
-If a function invokes a sequential function but is itself not declared sequential (i.e. no annotation or <tt>%ann:nonsequential</tt>), an error is raised (zerr:XSST0004).
+In order to do so, Zorba provides the <tt>%an:sequential</tt> and <tt>%an:nonsequential</tt> annotations.
+The <tt>%an:sequential</tt> annotation must be used to declare (external) functions that have side effects.
+If non of these annotations is present, the default for a function is to be annotated as <tt>%an:nonsequential</tt>.
+If a function invokes a sequential function but is itself not declared sequential (i.e. no annotation or <tt>%an:nonsequential</tt>), an error is raised (zerr:XSST0004).
 
 For example, the <tt>http:post</tt> function of the http-client module is declared as sequential because invoking it might cause a side effect (e.g. a payment with paypal).
 
 \code
-declare %ann:sequential function http:post(
+declare %an:sequential function http:post(
   $href as xs:string,
   $body as item(),
   $content-type as xs:string) as item()+ { ... }
@@ -318,25 +318,25 @@ declare %ann:sequential function http:post(
 In plain XQuery without scripting, global variables (i.e. those declared in the prolog of a module) can not be assigned a value.
 In scripting (i.e. if the scripting feature is enabled), however, values can be assigned to a variable.
 
-In order to allow the developer to prevent variable assignments (even with scripting), Zorba provides the <tt>%ann:nonassignable</tt> annotation.
+In order to allow the developer to prevent variable assignments (even with scripting), Zorba provides the <tt>%an:nonassignable</tt> annotation.
 
 For example, preventing a variable from being assigned in scripting mode could be done as follows:
 
 \code
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
-declare %ann:nonassignable variable $var := 3;
+declare %an:nonassignable variable $var := 3;
 \endcode
 
 If a value is assigned to a nonassignable variable, the error <tt>XSST0007</tt> in the Zorba error namespace is raised.
 
 \paragraph variadic_annotation Variadic Functions
-A function annotated with the <tt>%ann:variadic</tt> annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments.  
+A function annotated with the <tt>%an:variadic</tt> annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments.  
 
-For example, the function to create an unordered map with an arbitrary number of key types (see module http://www.zorba-xquery.com/modules/store/data-structures/unordered-map) is declared as follow:
+For example, the function to create an unordered map with an arbitrary number of key types (see module <a href="http://www.zorba-xquery.com/html/modules/zorba/store/data-structures/unordered-map">http://www.zorba-xquery.com/modules/store/data-structures/unordered-map</a>) is declared as follow:
 
 \code
-declare %ann:variadic %ann:sequential function map:create(
+declare %an:variadic %an:sequential function map:create(
   $name as xs:QName,
   $key-type as xs:QName) as empty-sequence() external;
 \endcode
@@ -360,7 +360,7 @@ file:read-text("big_file.txt")
 
 However, the disadvantage is that a streamable string can only be consumed exactly once.
 If a streamable string is consumed more than once, an error is raised.
-In order to enable multiple consumers of a streamable string, the materialize function of the string module (http://www.zorba-xquery.com/modules/string) should be used to materialize the entire contents in an (regular) xs:string item.
+In order to enable multiple consumers of a streamable string, the materialize function of the string module (<a href="http://www.zorba-xquery.com/html/modules/zorba/xdm/atomic/string">http://www.zorba-xquery.com/modules/string</a>) should be used to materialize the entire contents in an (regular) xs:string item.
 
 \code
 import module namespace file = "http://expath.org/ns/file";
@@ -396,17 +396,17 @@ Specifically, this optimization reduces the complexity of the function from
 O(1.6^n) to O(n).
 
 In order to explicitly disable function caching, the user can specify the 
-<tt>%ann:no-cache</tt> annotation.
+<tt>%an:no-cache</tt> annotation.
 
-In addition, the user can use the <tt>%ann:cache</tt> annotation to cache the 
+In addition, the user can use the <tt>%an:cache</tt> annotation to cache the 
 results of functions other than the ones that are automatically cached. However, 
 this will only work if the function is not updating and its parameter and return
 types are subtypes of xs:anyAtomicType; otherwise, Zorba will raise a warning 
-(zwarn:ZWST0005) and simply ignore the %ann:cache annotation.
+(zwarn:ZWST0005) and simply ignore the %an:cache annotation.
 
 Please note, that explicitly enforcing caching for sequential or nondeterministic
 functions might not give the intended result. In such cases, Zorba will raise a
-warning (zwarn:ZWST0006) but obey the %ann:cache annotation.
+warning (zwarn:ZWST0006) but obey the %an:cache annotation.
 
 
 \paragraph no_copy_rule_annotation Avoiding Node Copying in Node Constructors.
@@ -432,7 +432,7 @@ with in order to help the optimizer determine whether to copy nodes or not.
 
 <ul>
 <li>
-<b>%ann:must-copy-input-nodes</b>. This annotation has an associated value, which
+<b>%an:must-copy-input-nodes</b>. This annotation has an associated value, which
 is a list of integer literals. The meaning of the annotation is the following:
 If a number N appears in the value, then the function requires that any nodes
 that are bound to the N-th parameter when the function is called, must belong to
@@ -442,7 +442,7 @@ optimizer makes sure that node copying is done during any node constructor whose
 result (or any subtree of it) may be given as input to such an external function.
 </li>
 <li>
-<b>%ann:propagates-input-nodes</b>. This annotation has an associated value, which
+<b>%an:propagates-input-nodes</b>. This annotation has an associated value, which
 is a list of integer literals. The meaning of the annotation is the following:
 If a number N appears in the value, then the function may return to its caller
 a node n that is bound to the N-th parameter, or a node in the subtree of n. This
@@ -466,17 +466,17 @@ The semantics of each of the annotations is given in the documentation about the
 However, for completeness, we also list all of the annotations here.
 
 <ul>
-  <li><b>%ann:mutable, %ann:queue, %ann:append-only, %ann:const</b> Determines whether a collection is mutable, queue (FIFO), append-only, or const (not mutable). The default annotation is mutable. </li>
+  <li><b>%an:mutable, %an:queue, %an:append-only, %an:const</b> Determines whether a collection is mutable, queue (FIFO), append-only, or const (not mutable). The default annotation is mutable. </li>
 
-  <li><b>%ann:ordered, %ann:unordered</b>  Annotations to specify whether the order of nodes in a collection must be preserved. The default is ordered.</li>
+  <li><b>%an:ordered, %an:unordered</b>  Annotations to specify whether the order of nodes in a collection must be preserved. The default is ordered.</li>
 
-  <li><b>%ann:read-only-nodes, %ann:mutable-nodes</b> If a collection is annotated with read-only-nodes, the nodes in the collection can not be modified using the XQuery Update Facility. The default is %ann:mutable-nodes.</li>
+  <li><b>%an:read-only-nodes, %an:mutable-nodes</b> If a collection is annotated with read-only-nodes, the nodes in the collection can not be modified using the XQuery Update Facility. The default is %an:mutable-nodes.</li>
 
-  <li><b>%ann:unique, %ann:nonunique</b> Unique indexes make sure that the relationship between index keys and values is one-to-one. The default is %ann:nonunique.</li>
+  <li><b>%an:unique, %an:nonunique</b> Unique indexes make sure that the relationship between index keys and values is one-to-one. The default is %an:nonunique.</li>
 
-  <li><b>%ann:value-equality, %ann:value-range, %ann:general-range, %ann:general-equality</b> Determine whether the index is a value or general equality or value range index, respectively. The default is %ann:value-equality.</li>
+  <li><b>%an:value-equality, %an:value-range, %an:general-range, %an:general-equality</b> Determine whether the index is a value or general equality or value range index, respectively. The default is %an:value-equality.</li>
 
-  <li><b>%ann:automatic, %ann:manual</b> If an index is declared as automatic, Zorba guarantees that the index is maintained automatically. The default is %ann:manual.</li>
+  <li><b>%an:automatic, %an:manual</b> If an index is declared as automatic, Zorba guarantees that the index is maintained automatically. The default is %an:manual.</li>
 
 </ul>
 
@@ -490,5 +490,27 @@ declare function sctx:function-annotations(
   $name as xs:QName,
   $arity as xs:integer) as xs:QName* external;
 \endcode
+
+\section pragma_introduction Extension Expressions
+
+An extension expression consists of one or more pragmas, followed by an expression enclosed in curly braces.
+A pragma might be used to modify the behavior or semantics of the expression enclosed in curly braces.
+Pragmas are denoted by the delimiters (# and #), and consists of an identifying EQName.
+Zorba recognizes pragmas having the namespace <tt>http://www.zorba-xquery.com/extensions</tt>.
+Specifically, Zorba recognizes the following pragmas:
+
+<ul>
+  <li><b>no-copy</b> In order to indicate that a node that should be inserted into a collection does not need to be copied before inserting it. Not copying a node improves performance. However, the user needs to make sure that the node does not have a parent and is not modified in any other expression. For example, in the following example snippet, the node refered to by <tt>$n</tt> will not be copied before insertion into the collection.
+\code
+import module namespace db = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+
+declare namespace ext = "http://www.zorba-xquery.com/extensions";
+
+let $n := <a/>
+return (# ext:no-copy #) { $n is  db:apply-insert-last(xs:QName("local:bar"), $n) }
+\endcode
+  </li>
+</ul>
+
 
 */

@@ -43,12 +43,29 @@
 
 namespace zorba {
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<AddOperation>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<SubtractOperation>, 2)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<MultiplyOperation>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<DivideOperation>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<IntegerDivideOperation>, 5)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<ModOperation>, 6)
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<AddOperation>,
+                               1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<SubtractOperation>,
+                               2)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<MultiplyOperation>,
+                               3)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<DivideOperation>,
+                               4)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<IntegerDivideOperation>,
+                               5)
+
+SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,
+                               GenericArithIterator<ModOperation>,
+                               6)
 
 void ArithOperationsCommons::createError(
     const TypeManager* tm,
@@ -59,11 +76,9 @@ void ArithOperationsCommons::createError(
 {
   xqtref_t t0 = tm->create_builtin_atomic_type(aType0,TypeConstants::QUANT_ONE);
   xqtref_t t1 = tm->create_builtin_atomic_type(aType1,TypeConstants::QUANT_ONE);
-  throw XQUERY_EXCEPTION(
-    err::XPTY0004,
-    ERROR_PARAMS( ZED( OperationNotPossibleWithTypes_234 ), aOp, *t0, *t1 ),
-    ERROR_LOC( aLoc )
-  );
+
+  RAISE_ERROR(err::XPTY0004, aLoc,
+  ERROR_PARAMS(ZED(OperationNotPossibleWithTypes_234), aOp, *t0, *t1 ));
 }
 
 
@@ -100,24 +115,28 @@ bool GenericArithIterator<Operation>::nextImpl(
   {
     if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
-      status = compute(result,
-                       planState.theLocalDynCtx,
-                       this->theSctx->get_typemanager(),
-                       this->loc,
-                       n0,
-                       n1);
-      /*
-      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
-          this->consumeNext(n1, this->theChild1.getp(), planState))
+      if (n0->getTypeCode() != store::JS_NULL &&
+          n1->getTypeCode() != store::JS_NULL)
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
-          ERROR_LOC( this->loc )
-        );
+        status = compute(result,
+                         planState.theLocalDynCtx,
+                         this->theSctx->get_typemanager(),
+                         this->loc,
+                         n0,
+                         n1);
+        /*
+        if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
+            this->consumeNext(n1, this->theChild1.getp(), planState))
+        {
+          throw XQUERY_EXCEPTION(
+            err::XPTY0004,
+            ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
+            ERROR_LOC( this->loc )
+          );
+        }
+        */
+        STACK_PUSH ( status, state );
       }
-      */
-      STACK_PUSH ( status, state );
     }
   }
 

@@ -55,6 +55,38 @@ public:
 };
 
 
+//fn-zorba-ref:has-node-reference
+class fn_zorba_ref_has_node_reference : public function
+{
+public:
+  fn_zorba_ref_has_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ref:assign-node-reference
+class fn_zorba_ref_assign_node_reference : public function
+{
+public:
+  fn_zorba_ref_assign_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-ref:node-by-reference
 class fn_zorba_ref_node_by_reference : public function
 {
@@ -382,6 +414,39 @@ public:
   {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:copy
+class fn_zorba_node_copy : public function
+{
+public:
+  fn_zorba_node_copy(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };

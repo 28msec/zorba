@@ -1,6 +1,6 @@
 (: This module has an illegal version specification :)
 
-module namespace vm = "http://www.flworfound.org/modules/bad-ver";
+module namespace vm = "http://zorba-tests.28msec.us/modules/bad-ver";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.4.";

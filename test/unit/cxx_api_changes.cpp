@@ -121,6 +121,7 @@ cxx_api_changes_test3(Zorba* aZorba)
     for (; lIte != lEnd; ++lIte) 
     {
       String name = lIte->getStringValue();
+
       if (name != "a" && name != "b")
         return false;
     }
@@ -210,8 +211,6 @@ cxx_api_changes_test5(Zorba* aZorba)
     
     XQuery_t lQuery = aZorba->compileQuery(lIn);
 
-    Zorba* lZorba = Zorba::getInstance(0);
-
     std::vector<Item> lVars;
     Iterator_t varsIte;
     lQuery->getExternalVariables(varsIte);
@@ -267,8 +266,6 @@ cxx_api_changes_test6(Zorba* aZorba)
     std::string lIn = "1+1";
     
     XQuery_t lQuery = aZorba->compileQuery(lIn);
-
-    Zorba* lZorba = Zorba::getInstance(0);  
 
     bool isBound1;
     bool isBound2;
