@@ -62,7 +62,6 @@ xquery version "3.0";
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
 import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
-
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import schema namespace opt =

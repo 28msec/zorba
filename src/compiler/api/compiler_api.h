@@ -25,9 +25,11 @@
 
 namespace zorba {
 
+
 class XQueryCompiler
 {
 public:
+
   CompilerCB  * theCompilerCB;
 
 public:
