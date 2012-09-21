@@ -33,9 +33,9 @@ xquery version "3.0";
  : Generating a user friendly presentation of the documentation is
  : accomplished in the following steps:
  : <ol>
- :  <li>Module-, variable-, and function declarations need to be commented
- :      using the xqDoc commenting conventions. For example, this module
- :      contains xqDoc-style comments</li>
+ :  <li>Module, variable, function, collection, and index declarations need
+ :      to be commented using the xqDoc commenting conventions. For example,
+ :      this module contains xqDoc-style comments</li>
  :  <li>A xqDoc-enabled processor can parse such documentation and generate
  :      a vendor neutral XML document which stores all the information about
  :      the code and the comments. Such a document adheres to the xqDoc
@@ -55,7 +55,7 @@ xquery version "3.0";
  :
  : @see <a href="http://xqdoc.org/" target="_blank">xqDoc specification</a>
  : @see <a href="http://www.zorba-xquery.com/tutorials/xqdoc.html" target="_blank">xqDoc tutorial with Zorba</a>
- : @author Gabriel Petrovay
+ : @author Zorba Team
  : @project xqdoc
  :
  :)
@@ -77,7 +77,7 @@ declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare option ver:module-version "2.0";
 
 (:~
- : Generated an XQDoc XML document for the module located
+ : Generates an XQDoc XML document for the module located
  : at the URI provided as parameter to this function.
  :
  : @param $module-uri The URL of the module for which to
@@ -95,6 +95,31 @@ declare %an:nondeterministic function xqd:xqdoc(
   return xqd:xqdoc-content-impl($content, $module-uri)
 };
 
+(:~
+ : Generates an XQDoc XML document for the module located
+ : at the URI provided as parameter to this function.
+ : In comparison to the single parameter version, this function does not
+ : generate XQDoc for all language components. By default, the 
+ : the following components are deactivated: XQuery comments, import
+ : statements, variable declarations, function declarations, collection
+ : declarations,  and index declarations. The second parameter is used to
+ : enable the XQDoc generation of those components.
+ :
+ : @param $module-uri The URL of the module for which to
+ :        generate XQDoc.
+ : @param $options XQDoc generation options, e.g.:
+ : <pre>
+ : &lt;enable xmlns="http://www.zorba-xquery.com/modules/xqdoc-options"
+ :   comments="true"
+ :   functions="true"
+ :   indexes="true"
+ : &gt;
+ : </pre>
+ : @return An element according to the xqdoc schema
+ :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ : @error zerr::ZXQD0002 if the xqdoc comments in the
+ :  module contain invalid XML
+ :)
 declare function xqd:xqdoc(
   $module-uri as xs:string,
   $options as element(opt:enable)
@@ -131,12 +156,31 @@ declare function xqd:xqdoc-content(
   xqd:xqdoc-content-impl($module, "")
 };
 
-declare %private function xqd:xqdoc-content-options-impl(
-  $module as xs:string,
-  $filename as xs:string,
-  $options as element()
-) as element() external;
-
+(:~
+ : Generated the an XQDoc XML document for the module provided
+ : as parameter to this function.
+ : In comparison to the single parameter version, this function does not
+ : generate XQDoc for all language components. By default, the 
+ : the following components are deactivated: XQuery comments, import
+ : statements, variable declarations, function declarations, collection
+ : declarations,  and index declarations. The second parameter is used to
+ : enable the XQDoc generation of those components.
+ :
+ : @param $module The module (as string) for which to generate
+ :  the XQDoc documentation.
+ : @param $options XQDoc generation options, e.g.:
+ : <pre>
+ : &lt;enable xmlns="http://www.zorba-xquery.com/modules/xqdoc-options"
+ :   comments="true"
+ :   functions="true"
+ :   indexes="true"
+ : &gt;
+ : </pre>
+ : @return An element according to the xqdoc schema
+ :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ : @error zerr::ZXQD0002 if the xqdoc comments in the
+ :  module contain invalid XML
+ :)
 declare function xqd:xqdoc-content(
   $module as xs:string,
   $options as element(opt:enable)
@@ -148,3 +192,10 @@ declare function xqd:xqdoc-content(
                               validate { $options }
   return xqd:xqdoc-content-options-impl($module, "", $xqdoc-options)
 };
+
+declare %private function xqd:xqdoc-content-options-impl(
+  $module as xs:string,
+  $filename as xs:string,
+  $options as element()
+) as element() external;
+
