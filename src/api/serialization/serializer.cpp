@@ -1184,6 +1184,9 @@ void serializer::hybrid_emitter::emit_item(store::Item *item)
     theJSONEmitter->emit_item(item);
   }
   else {
+    if (theEmitterState == JESTATE_UNDETERMINED) {
+      theXMLEmitter->emit_declaration();
+    }
     theEmitterState = JESTATE_XDM;
     theXMLEmitter->emit_item(item);
   }
