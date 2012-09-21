@@ -19,12 +19,12 @@
   <zorba:function isDeterministic="true">
 
     <zorba:signature localname="decode-from-roundtrip" prefix="fn-jsoniq">
-      <zorba:param>json-item()*</zorba:param>
+      <zorba:param>item()*</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
     <zorba:signature localname="decode-from-roundtrip" prefix="fn-jsoniq">
-      <zorba:param>json-item()*</zorba:param>
+      <zorba:param>item()*</zorba:param>
       <zorba:param>object()</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
@@ -78,13 +78,13 @@
 
     <zorba:signature localname="encode-for-roundtrip" prefix="fn-jsoniq">
       <zorba:param>item()*</zorba:param>
-      <zorba:output>json-item()*</zorba:output>
+      <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
     <zorba:signature localname="encode-for-roundtrip" prefix="fn-jsoniq">
       <zorba:param>item()*</zorba:param>
       <zorba:param>object()</zorba:param>
-      <zorba:output>json-item()*</zorba:output>
+      <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
