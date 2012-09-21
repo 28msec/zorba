@@ -15,13 +15,6 @@ Iterator tree for const-folded expr:
 </NameCastIterator>
 
 Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
 <QNameIterator>
   <SingletonIterator value="xs:string(http://www.w3.org/2001/XMLSchema)"/>
   <SingletonIterator value="xs:string(string)"/>
