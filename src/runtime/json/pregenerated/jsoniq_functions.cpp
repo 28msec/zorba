@@ -80,7 +80,7 @@ SERIALIZABLE_CLASS_VERSIONS(JSONEncodeForRoundtripIterator)
 void JSONEncodeForRoundtripIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<JSONEncodeForRoundtripIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>*)this);
 }
 
 
@@ -99,6 +99,18 @@ void JSONEncodeForRoundtripIterator::accept(PlanIterVisitor& v) const
 
 JSONEncodeForRoundtripIterator::~JSONEncodeForRoundtripIterator() {}
 
+JSONEncodeForRoundtripIteratorState::JSONEncodeForRoundtripIteratorState() {}
+
+JSONEncodeForRoundtripIteratorState::~JSONEncodeForRoundtripIteratorState() {}
+
+
+void JSONEncodeForRoundtripIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONEncodeForRoundtripIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </JSONEncodeForRoundtripIterator>
 
 #endif

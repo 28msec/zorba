@@ -9,10 +9,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
-<zorba:header>
-    <zorba:fwd-decl ns="zorba">CallParameters</zorba:fwd-decl>
-</zorba:header>
-
 <!--
 /*******************************************************************************
 ********************************************************************************/
@@ -41,31 +37,31 @@
   </zorba:function>
 
   <zorba:state>
-    <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
+    <zorba:member type="zstring" name="thePrefix" brief=""/>
   </zorba:state>
 
-  <zorba:method static="true" name="decodeXDM" return="bool">
+  <zorba:method const="true" name="decodeXDM" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONDecodeFromRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
-  <zorba:method static="true" name="decodeObject" return="bool">
+  <zorba:method const="true" name="decodeObject" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONDecodeFromRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
-  <zorba:method static="true" name="decodeArray" return="bool">
+  <zorba:method const="true" name="decodeArray" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anArray"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONDecodeFromRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
-  <zorba:method static="true" name="decodeItem" return="bool">
+  <zorba:method const="true" name="decodeItem" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anItem"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONDecodeFromRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
 </zorba:iterator>
@@ -98,34 +94,40 @@
 
   </zorba:function>
 
-  <zorba:method static="true" name="encodeObject" return="bool">
+  <zorba:state>
+    <zorba:member type="zstring" name="thePrefix" brief=""/>
+    <zorba:member type="store::Item_t" name="theSerParams" brief=""/>
+    <zorba:member type="XQueryDiagnostics*" name="theDiag" brief=""/>
+  </zorba:state>
+
+  <zorba:method const="true" name="encodeObject" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONEncodeForRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
-  <zorba:method static="true" name="encodeArray" return="bool">
+  <zorba:method const="true" name="encodeArray" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anArray"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONEncodeForRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
-  <zorba:method static="true" name="encodeAtomic" return="bool">
+  <zorba:method const="true" name="encodeAtomic" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="aValue"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONEncodeForRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
-  <zorba:method static="true" name="encodeNode" return="bool">
+  <zorba:method const="true" name="encodeNode" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="aNode"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONEncodeForRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
-  <zorba:method static="true" name="encodeItem" return="bool">
+  <zorba:method const="true" name="encodeItem" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anItem"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
-    <zorba:param type="CallParameters&amp;" name="someParams"/>
+    <zorba:param type="JSONEncodeForRoundtripIteratorState*" name="aState"/>
   </zorba:method>
 
 </zorba:iterator>

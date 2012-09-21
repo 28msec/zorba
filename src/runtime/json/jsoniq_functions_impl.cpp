@@ -56,26 +56,16 @@
 
 namespace zorba {
 
-class CallParameters {
-public:
-  CallParameters(static_context* aSctx,
-                 store::ItemFactory* aFactory,
-                 const QueryLoc& aLoc)
-    : theSctx(aSctx),
-      theFactory(aFactory),
-      thePrefix("Q{http://jsoniq.org/roundtrip}"),
-      theLoc(aLoc)
-  {}
-
-  static_context* theSctx;
-  store::ItemFactory* theFactory;
-  zstring thePrefix;
-  store::Item_t theSerParams;
-  XQueryDiagnostics* theDiag;
-  const QueryLoc& theLoc;
-};
-
 const zstring XS_URI("http://www.w3.org/2001/XMLSchema");
+
+const zstring ENCODE_DECODE_DEFAULT_PREFIX("Q{http://jsoniq.org/roundtrip}");
+
+const zstring NS_PREFIX_KEY("prefix");
+const zstring TYPE_KEY("type");
+const zstring VALUE_KEY("value");
+
+const char * OPTIONS_KEY_PREFIX = "prefix";
+const char * OPTIONS_KEY_SER_PARAMS = "serialization-parameters";
 
 /*******************************************************************************
   json:decode-from-roundtrip($items as json-item()*,
@@ -111,12 +101,12 @@ bool
 JSONDecodeFromRoundtripIterator::decodeXDM(
   const store::Item_t& anObj,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONDecodeFromRoundtripIteratorState* aState) const
 {
   store::Item_t lItem;
 
-  zstring lTypeKey = someParams.thePrefix + "type";
-  someParams.theFactory->createString(lItem, lTypeKey);
+  zstring lTypeKey = aState->thePrefix + TYPE_KEY;
+  GENV_ITEMFACTORY->createString(lItem, lTypeKey);
   store::Item_t lTypeValueItem = anObj->getObjectValue(lItem);
   if (lTypeValueItem.isNull())
   {
@@ -124,8 +114,8 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
     return false;
   }
 
-  zstring lValueKey = someParams.thePrefix + "value";
-  someParams.theFactory->createString(lItem, lValueKey);
+  zstring lValueKey = aState->thePrefix + VALUE_KEY;
+  GENV_ITEMFACTORY->createString(lItem, lValueKey);
   store::Item_t lValueValueItem = anObj->getObjectValue(lItem);
   if (lValueValueItem.isNull())
   {
@@ -165,12 +155,12 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
   else
   {
     store::Item_t lTypeQName;
-    parseQName(lTypeQName, lTypeNameString, "", someParams.theFactory);
+    parseQName(lTypeQName, lTypeNameString, "", GENV_ITEMFACTORY);
     if (lTypeQName->getLocalName() == "QName"
         && lTypeQName->getNamespace() == XS_URI)
     {
-      zstring lPrefixKey = someParams.thePrefix + "prefix";
-      someParams.theFactory->createString(lItem, lPrefixKey);
+      zstring lPrefixKey = aState->thePrefix + NS_PREFIX_KEY;
+      GENV_ITEMFACTORY->createString(lItem, lPrefixKey);
       store::Item_t lPrefixValue = anObj->getObjectValue(lItem);
       zstring lPrefixString;
       if (! lPrefixValue.isNull())
@@ -179,20 +169,20 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
       }
       zstring lValueValue;
       lValueValueItem->getStringValue2(lValueValue);
-      parseQName(aResult, lValueValue, lPrefixString, someParams.theFactory);
+      parseQName(aResult, lValueValue, lPrefixString, GENV_ITEMFACTORY);
     }
     else
     {
-      TypeManager* lTypeMgr = someParams.theSctx->get_typemanager();
+      TypeManager* lTypeMgr = theSctx->get_typemanager();
       xqtref_t lTargetType = lTypeMgr->create_named_type(
-            lTypeQName.getp(), TypeConstants::QUANT_ONE, someParams.theLoc);
-      namespace_context lTmpNsCtx(someParams.theSctx);
+            lTypeQName.getp(), TypeConstants::QUANT_ONE, loc);
+      namespace_context lTmpNsCtx(theSctx);
       GenericCast::castToAtomic(aResult,
                                 lValueValueItem,
                                 lTargetType.getp(),
                                 lTypeMgr,
                                 &lTmpNsCtx,
-                                someParams.theLoc);
+                                loc);
     }
   }
   return true;
@@ -202,9 +192,9 @@ bool
 JSONDecodeFromRoundtripIterator::decodeObject(
   const store::Item_t& anObj,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONDecodeFromRoundtripIteratorState* aState) const
 {
-  if (decodeXDM(anObj, aResult, someParams))
+  if (decodeXDM(anObj, aResult, aState))
   {
     return true;
   }
@@ -222,14 +212,14 @@ JSONDecodeFromRoundtripIterator::decodeObject(
   {
     newNames.push_back(key);
     value = anObj->getObjectValue(key);
-    const bool gotNew = decodeItem(value, newValue, someParams);
+    const bool gotNew = decodeItem(value, newValue, aState);
     newValues.push_back(gotNew ? newValue : value);
     modified = modified || gotNew;
   }
   it->close();
   if (modified)
   {
-    someParams.theFactory->createJSONObject(aResult, newNames, newValues);
+    GENV_ITEMFACTORY->createJSONObject(aResult, newNames, newValues);
     return true;
   }
   // nothing to change, aResult is not set, the caller needs to use anObj
@@ -240,7 +230,7 @@ bool
 JSONDecodeFromRoundtripIterator::decodeArray(
   const store::Item_t& anArray,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONDecodeFromRoundtripIteratorState* aState) const
 {
   std::vector<store::Item_t> newItems;
   bool modified = false;
@@ -250,14 +240,14 @@ JSONDecodeFromRoundtripIterator::decodeArray(
   it->open();
   while (it->next(item))
   {
-    const bool gotNew = decodeItem(item, newItem, someParams);
+    const bool gotNew = decodeItem(item, newItem, aState);
     newItems.push_back(gotNew ? newItem : item);
     modified = modified || gotNew;
   }
   it->close();
   if (modified)
   {
-    someParams.theFactory->createJSONArray(aResult, newItems);
+    GENV_ITEMFACTORY->createJSONArray(aResult, newItems);
     return true;
   }
   // nothing to change, aResult is not set, the caller needs to use anArray
@@ -268,15 +258,15 @@ bool
 JSONDecodeFromRoundtripIterator::decodeItem(
   const store::Item_t& anItem,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONDecodeFromRoundtripIteratorState* aState) const
 {
   if (anItem->isJSONObject())
   {
-    return decodeObject(anItem, aResult, someParams);
+    return decodeObject(anItem, aResult, aState);
   }
   else if (anItem->isJSONArray())
   {
-    return decodeArray(anItem, aResult, someParams);
+    return decodeArray(anItem, aResult, aState);
   }
   else
   {
@@ -291,25 +281,19 @@ JSONDecodeFromRoundtripIterator::nextImpl(
   PlanState& aPlanState) const
 {
   store::Item_t lInput;
-  CallParameters lParams(theSctx, GENV_ITEMFACTORY, loc);
   store::Item_t lDecParams;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  lParams.theDiag = aPlanState.theCompilerCB->theXQueryDiagnostics;
-
-  consumeNext(lInput, theChildren.at(0), aPlanState);
+  JSONDecodeFromRoundtripIteratorState* lState;
+  DEFAULT_STACK_INIT(JSONDecodeFromRoundtripIteratorState, lState, aPlanState);
 
   // get decoding parameters
-  if (theChildren.size() == 2
-      && consumeNext(lDecParams, theChildren.at(1), aPlanState))
+  if (theChildren.size() == 2)
   {
     // the signature says that the second parameter has to be exactly one object
+    consumeNext(lDecParams, theChildren.at(1), aPlanState);
     store::Item_t lPrefixKey;
-    const char * lPrefixName = "prefix";
-    zstring lPrefixNameStr = lPrefixName;
-    lParams.theFactory->createString(lPrefixKey, lPrefixNameStr);
+    zstring lPrefixNameStr = OPTIONS_KEY_PREFIX;
+    GENV_ITEMFACTORY->createString(lPrefixKey, lPrefixNameStr);
     store::Item_t lPrefixValue = lDecParams->getObjectValue(lPrefixKey);
     if (! lPrefixValue.isNull())
     {
@@ -317,21 +301,27 @@ JSONDecodeFromRoundtripIterator::nextImpl(
       {
         RAISE_ERROR(jerr::JNTY0023, loc,
                     ERROR_PARAMS(lPrefixValue->getStringValue(),
-                                 lPrefixName,
+                                 OPTIONS_KEY_PREFIX,
                                  "string"));
       }
-      lPrefixValue->getStringValue2(lParams.thePrefix);
+      lPrefixValue->getStringValue2(lState->thePrefix);
     }
   }
-
-  if (! decodeItem(lInput, aResult, lParams))
+  else
   {
-    aResult = lInput;
+    lState->thePrefix = ENCODE_DECODE_DEFAULT_PREFIX;
   }
 
-  STACK_PUSH (true, state);
+  while (consumeNext(lInput, theChildren.at(0), aPlanState))
+  {
+    if (! decodeItem(lInput, aResult, lState))
+    {
+      aResult = lInput;
+    }
+    STACK_PUSH (true, lState);
+  }
 
-  STACK_END(state);
+  STACK_END(lState);
 }
 
 
@@ -343,7 +333,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeObject(
   const store::Item_t& anObj,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONEncodeForRoundtripIteratorState* aState) const
 {
   std::vector<store::Item_t> newNames;
   std::vector<store::Item_t> newValues;
@@ -358,14 +348,14 @@ JSONEncodeForRoundtripIterator::encodeObject(
   {
     newNames.push_back(key);
     value = anObj->getObjectValue(key);
-    const bool gotNew = encodeItem(value, newValue, someParams);
+    const bool gotNew = encodeItem(value, newValue, aState);
     newValues.push_back(gotNew ? newValue : value);
     modified = modified || gotNew;
   }
   it->close();
   if (modified)
   {
-    someParams.theFactory->createJSONObject(aResult, newNames, newValues);
+    GENV_ITEMFACTORY->createJSONObject(aResult, newNames, newValues);
     return true;
   }
   // nothing to change, aResult is not set, the caller needs to use anObj
@@ -376,7 +366,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeArray(
   const store::Item_t& anArray,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONEncodeForRoundtripIteratorState* aState) const
 {
   std::vector<store::Item_t> newItems;
   bool modified = false;
@@ -386,14 +376,14 @@ JSONEncodeForRoundtripIterator::encodeArray(
   it->open();
   while (it->next(item))
   {
-    const bool gotNew = encodeItem(item, newItem, someParams);
+    const bool gotNew = encodeItem(item, newItem, aState);
     newItems.push_back(gotNew ? newItem : item);
     modified = modified || gotNew;
   }
   it->close();
   if (modified)
   {
-    someParams.theFactory->createJSONArray(aResult, newItems);
+    GENV_ITEMFACTORY->createJSONArray(aResult, newItems);
     return true;
   }
   // nothing to change, aResult is not set, the caller needs to use anArray
@@ -404,7 +394,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeAtomic(
   const store::Item_t& aValue,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONEncodeForRoundtripIteratorState* aState) const
 {
   store::SchemaTypeCode typeCode = aValue->getTypeCode();
   switch (typeCode) {
@@ -438,18 +428,18 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   {
     const store::Item_t& typeName = aValue->getType();
 
-    zstring typeKey = someParams.thePrefix + "type";
+    zstring typeKey = aState->thePrefix + TYPE_KEY;
     const zstring ns = typeName->getNamespace();
     const zstring local = typeName->getLocalName();
     zstring typeValue = ns.compare(XS_URI)
         ? "Q{" + ns + "}" + local : "xs:" + local;
 
-    someParams.theFactory->createString(names.at(0), typeKey);
-    someParams.theFactory->createString(values.at(0), typeValue);
+    GENV_ITEMFACTORY->createString(names.at(0), typeKey);
+    GENV_ITEMFACTORY->createString(values.at(0), typeValue);
   }
 
   {
-    zstring valueKey = someParams.thePrefix + "value";
+    zstring valueKey = aState->thePrefix + VALUE_KEY;
     zstring valueValue;
     if (typeCode == store::XS_QNAME)
     {
@@ -458,11 +448,11 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
       zstring prefixValue = aValue->getPrefix();
       if (prefixValue.length() > 0)
       {
-        zstring prefixKey = someParams.thePrefix + "prefix";
+        zstring prefixKey = aState->thePrefix + NS_PREFIX_KEY;
         store::Item_t lItem;
-        someParams.theFactory->createString(lItem, prefixKey);
+        GENV_ITEMFACTORY->createString(lItem, prefixKey);
         names.push_back(lItem);
-        someParams.theFactory->createString(lItem, prefixValue);
+        GENV_ITEMFACTORY->createString(lItem, prefixValue);
         values.push_back(lItem);
       }
 
@@ -474,11 +464,11 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
     {
       aValue->getStringValue2(valueValue);
     }
-    someParams.theFactory->createString(names.at(1), valueKey);
-    someParams.theFactory->createString(values.at(1), valueValue);
+    GENV_ITEMFACTORY->createString(names.at(1), valueKey);
+    GENV_ITEMFACTORY->createString(values.at(1), valueValue);
   }
 
-  someParams.theFactory->createJSONObject(aResult, names, values);
+  GENV_ITEMFACTORY->createJSONObject(aResult, names, values);
   return true;
 }
 
@@ -486,7 +476,7 @@ bool
 JSONEncodeForRoundtripIterator::encodeNode(
     const store::Item_t& aNode,
     store::Item_t& aResult,
-    CallParameters& someParams)
+    JSONEncodeForRoundtripIteratorState* aState) const
 {
   if (aNode->getNodeKind() != store::StoreConsts::elementNode)
   {
@@ -502,27 +492,27 @@ JSONEncodeForRoundtripIterator::encodeNode(
   std::vector<store::Item_t> values(2);
 
   {
-    zstring typeKey = someParams.thePrefix + "type";
+    zstring typeKey = aState->thePrefix + TYPE_KEY;
     zstring typeValue = "node()";
-    someParams.theFactory->createString(names.at(0), typeKey);
-    someParams.theFactory->createString(values.at(0), typeValue);
+    GENV_ITEMFACTORY->createString(names.at(0), typeKey);
+    GENV_ITEMFACTORY->createString(values.at(0), typeValue);
   }
 
   {
-    zstring valueKey = someParams.thePrefix + "value";
+    zstring valueKey = aState->thePrefix + VALUE_KEY;
 
     store::Iterator_t lItemIt = new ItemIterator(aNode);
-    zorba::serializer lSerializer(someParams.theDiag);
+    zorba::serializer lSerializer(aState->theDiag);
     // TODO what do we set, if nothing is passed?
     lSerializer.setParameter("omit-xml-declaration", "yes");
 
-    if (! someParams.theSerParams.isNull())
+    if (! aState->theSerParams.isNull())
     {
       FnSerializeIterator::setSerializationParams(
           lSerializer,
-          someParams.theSerParams,
-          someParams.theSctx,
-          someParams.theLoc);
+          aState->theSerParams,
+          theSctx,
+          loc);
     }
 
     // and now serialize
@@ -531,13 +521,13 @@ JSONEncodeForRoundtripIterator::encodeNode(
     lSerializer.serialize(lItemIt, *lResultStream.get());
     lItemIt->close();
 
-    someParams.theFactory->createString(names.at(1), valueKey);
-    someParams.theFactory->createStreamableString(
+    GENV_ITEMFACTORY->createString(names.at(1), valueKey);
+    GENV_ITEMFACTORY->createStreamableString(
         values.at(1), *lResultStream.release(),
         FnSerializeIterator::streamReleaser, true);
   }
 
-  someParams.theFactory->createJSONObject(aResult, names, values);
+  GENV_ITEMFACTORY->createJSONObject(aResult, names, values);
   return true;
 }
 
@@ -545,23 +535,23 @@ bool
 JSONEncodeForRoundtripIterator::encodeItem(
   const store::Item_t& anItem,
   store::Item_t& aResult,
-  CallParameters& someParams)
+  JSONEncodeForRoundtripIteratorState* aState) const
 {
   if (anItem->isJSONObject())
   {
-    return encodeObject(anItem, aResult, someParams);
+    return encodeObject(anItem, aResult, aState);
   }
   else if (anItem->isJSONArray())
   {
-    return encodeArray(anItem, aResult, someParams);
+    return encodeArray(anItem, aResult, aState);
   }
   else if (anItem->isAtomic())
   {
-    return encodeAtomic(anItem, aResult, someParams);
+    return encodeAtomic(anItem, aResult, aState);
   }
   else
   {
-    return encodeNode(anItem, aResult, someParams);
+    return encodeNode(anItem, aResult, aState);
   }
 }
 
@@ -571,26 +561,22 @@ JSONEncodeForRoundtripIterator::nextImpl(
   PlanState& aPlanState) const
 {
   store::Item_t lInput;
-  CallParameters lParams(theSctx, GENV_ITEMFACTORY, loc);
-  store::Item_t lEncParams;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  JSONEncodeForRoundtripIteratorState* lState;
+  DEFAULT_STACK_INIT(JSONEncodeForRoundtripIteratorState, lState, aPlanState);
 
-  lParams.thePrefix = "Q{http://jsoniq.org/roundtrip}";
-  lParams.theDiag = aPlanState.theCompilerCB->theXQueryDiagnostics;
-
-  consumeNext(lInput, theChildren.at(0), aPlanState);
+  lState->thePrefix = ENCODE_DECODE_DEFAULT_PREFIX;
+  lState->theDiag = aPlanState.theCompilerCB->theXQueryDiagnostics;
 
   // get encoding parameters
   if (theChildren.size() == 2)
   {
     // the signature says that the second parameter has to be exactly one object
+    store::Item_t lEncParams;
     consumeNext(lEncParams, theChildren.at(1), aPlanState);
     store::Item_t lPrefixKey;
-    const char * lPrefixName = "prefix";
-    zstring lPrefixNameStr = lPrefixName;
-    lParams.theFactory->createString(lPrefixKey, lPrefixNameStr);
+    zstring lPrefixNameStr = OPTIONS_KEY_PREFIX;
+    GENV_ITEMFACTORY->createString(lPrefixKey, lPrefixNameStr);
     store::Item_t lPrefixValue = lEncParams->getObjectValue(lPrefixKey);
     if (! lPrefixValue.isNull())
     {
@@ -598,16 +584,15 @@ JSONEncodeForRoundtripIterator::nextImpl(
       {
         RAISE_ERROR(jerr::JNTY0023, loc,
                     ERROR_PARAMS(lPrefixValue->getStringValue(),
-                                 lPrefixName,
+                                 OPTIONS_KEY_PREFIX,
                                  "string"));
       }
-      lPrefixValue->getStringValue2(lParams.thePrefix);
+      lPrefixValue->getStringValue2(lState->thePrefix);
     }
 
     store::Item_t lSerParamKey;
-    const char * lSerParamName = "serialization-parameters";
-    zstring lSerParamNameStr = lSerParamName;
-    lParams.theFactory->createString(lSerParamKey, lSerParamNameStr);
+    zstring lSerParamNameStr = OPTIONS_KEY_SER_PARAMS;
+    GENV_ITEMFACTORY->createString(lSerParamKey, lSerParamNameStr);
     store::Item_t lSerParamValue = lEncParams->getObjectValue(lSerParamKey);
     if (! lSerParamValue.isNull())
     {
@@ -616,21 +601,22 @@ JSONEncodeForRoundtripIterator::nextImpl(
       {
         RAISE_ERROR(jerr::JNTY0023, loc,
                     ERROR_PARAMS(lSerParamValue->getStringValue(),
-                                 lSerParamName,
+                                 OPTIONS_KEY_SER_PARAMS,
                                  ZED(ElementNode)));
       }
-      lParams.theSerParams = lSerParamValue;
+      lState->theSerParams = lSerParamValue;
     }
   }
 
-  if (! encodeItem(lInput, aResult, lParams))
+  while(consumeNext(lInput, theChildren.at(0), aPlanState))
   {
-    aResult = lInput;
+    if (! encodeItem(lInput, aResult, lState))
+    {
+      aResult = lInput;
+    }
+    STACK_PUSH (true, lState);
   }
-
-  STACK_PUSH (true, state);
-
-  STACK_END(state);
+  STACK_END(lState);
 }
 
 

@@ -32,7 +32,7 @@
 
 
 namespace zorba {
-class CallParameters;
+
 #ifdef ZORBA_WITH_JSON
 /**
  * 
@@ -41,7 +41,7 @@ class CallParameters;
 class JSONDecodeFromRoundtripIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t theNames; //
+  zstring thePrefix; //
 
   JSONDecodeFromRoundtripIteratorState();
 
@@ -72,10 +72,10 @@ public:
   virtual ~JSONDecodeFromRoundtripIterator();
 
 public:
-  static bool decodeXDM(const store::Item_t& anObj, store::Item_t& aResult, CallParameters& someParams);
-  static bool decodeObject(const store::Item_t& anObj, store::Item_t& aResult, CallParameters& someParams);
-  static bool decodeArray(const store::Item_t& anArray, store::Item_t& aResult, CallParameters& someParams);
-  static bool decodeItem(const store::Item_t& anItem, store::Item_t& aResult, CallParameters& someParams);
+  bool decodeXDM(const store::Item_t& anObj, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
+  bool decodeObject(const store::Item_t& anObj, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
+  bool decodeArray(const store::Item_t& anArray, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
+  bool decodeItem(const store::Item_t& anItem, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -88,13 +88,28 @@ public:
  * 
  * Author: 
  */
-class JSONEncodeForRoundtripIterator : public NaryBaseIterator<JSONEncodeForRoundtripIterator, PlanIteratorState>
+class JSONEncodeForRoundtripIteratorState : public PlanIteratorState
+{
+public:
+  zstring thePrefix; //
+  store::Item_t theSerParams; //
+  XQueryDiagnostics* theDiag; //
+
+  JSONEncodeForRoundtripIteratorState();
+
+  ~JSONEncodeForRoundtripIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONEncodeForRoundtripIterator : public NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONEncodeForRoundtripIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONEncodeForRoundtripIterator,
-    NaryBaseIterator<JSONEncodeForRoundtripIterator, PlanIteratorState>);
+    NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -103,17 +118,17 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<JSONEncodeForRoundtripIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>(sctx, loc, children)
   {}
 
   virtual ~JSONEncodeForRoundtripIterator();
 
 public:
-  static bool encodeObject(const store::Item_t& anObj, store::Item_t& aResult, CallParameters& someParams);
-  static bool encodeArray(const store::Item_t& anArray, store::Item_t& aResult, CallParameters& someParams);
-  static bool encodeAtomic(const store::Item_t& aValue, store::Item_t& aResult, CallParameters& someParams);
-  static bool encodeNode(const store::Item_t& aNode, store::Item_t& aResult, CallParameters& someParams);
-  static bool encodeItem(const store::Item_t& anItem, store::Item_t& aResult, CallParameters& someParams);
+  bool encodeObject(const store::Item_t& anObj, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeArray(const store::Item_t& anArray, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeAtomic(const store::Item_t& aValue, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeNode(const store::Item_t& aNode, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeItem(const store::Item_t& anItem, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
