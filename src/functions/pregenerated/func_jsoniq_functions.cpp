@@ -31,6 +31,30 @@ namespace zorba{
 
 
 #ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_decode_from_roundtrip::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONDecodeFromRoundtripIterator(sctx, loc, argv);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
+PlanIter_t fn_jsoniq_encode_for_roundtrip::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONEncodeForRoundtripIterator(sctx, loc, argv);
+}
+
+#endif
+#ifdef ZORBA_WITH_JSON
 
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -231,6 +255,72 @@ PlanIter_t op_zorba_json_box::codegen(
 
 void populate_context_jsoniq_functions(static_context* sctx)
 {
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_decode_from_roundtrip,
+        (createQName("http://www.jsoniq.org/functions","","decode-from-roundtrip"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_DECODE_FROM_ROUNDTRIP_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_decode_from_roundtrip,
+        (createQName("http://www.jsoniq.org/functions","","decode-from-roundtrip"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_DECODE_FROM_ROUNDTRIP_2);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_encode_for_roundtrip,
+        (createQName("http://www.jsoniq.org/functions","","encode-for-roundtrip"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_ENCODE_FOR_ROUNDTRIP_1);
+
+  }
+
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_encode_for_roundtrip,
+        (createQName("http://www.jsoniq.org/functions","","encode-for-roundtrip"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_ENCODE_FOR_ROUNDTRIP_2);
+
+  }
+
+
+#endif
+
 
 #ifdef ZORBA_WITH_JSON
 
