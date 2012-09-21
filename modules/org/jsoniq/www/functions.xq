@@ -65,8 +65,24 @@ declare function jn:decode-from-roundtrip(
  : Currently the only supported option is "prefix". It specifies the prefix
  : that determines if this function decodes an item.
  :
- : TODO add example
- : TODO add errors
+ : Example:
+ :   jn:decode-from-roundtrip(
+ :     { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
+ :     { "prefix" : "pre-" }
+ :   )
+ : returns the same instance that would be constructed by
+ :   { "nan" : xs:double("NaN") }
+ :
+ : So
+ :   let $decoded := jn:decode-from-roundtrip(
+ :           { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
+ :           { "prefix" : "pre-" }
+ :       )
+ :   let $nan := $decoded("nan")
+ :   return
+ :       ($nan instance of xs:double, $nan)
+ : returns
+ :   true NaN
  :
  : @param $items the items to be decoded.
  : @param $options the decoding options.
@@ -108,9 +124,13 @@ declare function jn:encode-for-roundtrip(
  : Note: The computations are made with respect to the static context of the
  : caller, so that the schema type definitions are available.
  :
- : TODO more text
- : TODO add example
- : TODO add errors
+ : Example:
+ :   jn:encode-for-roundtrip(
+ :     { "nan" : xs:double("NaN") },
+ :     { "prefix" : "pre-" }
+ :   )
+ : returns
+ :   { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } }
  :
  : @param $items the items to be encoded.
  : @param $options the encoding options.
