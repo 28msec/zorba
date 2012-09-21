@@ -70,9 +70,7 @@ public:
     PARAMETER_VALUE_BINARY,
 #ifdef ZORBA_WITH_JSON
     PARAMETER_VALUE_JSON,
-    PARAMETER_VALUE_JSONIQ,
-    PARAMETER_VALUE_ARRAY,
-    PARAMETER_VALUE_APPENDED,
+    PARAMETER_VALUE_JSON_XML_HYBRID,
 #endif
 
     PARAMETER_VALUE_UTF_8,
@@ -115,10 +113,8 @@ protected:
   zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
 #ifdef ZORBA_WITH_JSON
-  short int jsoniq_multiple_items;  // "no", "array", "appended", implemented
-  short int jsoniq_extensions;      // implemented
+  short int jsoniq_multiple_items;  // "no", "yes", implemented
   short int jsoniq_xdm_method;      // A legal value for "method", implemented
-  short int jsoniq_allow_mixed_xdm_jdm; // "yes" or "no", implemented
 #endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
@@ -404,8 +400,6 @@ protected:
 
     void emit_json_value(store::Item* value, int depth);
 
-    void emit_jsoniq_value(zstring type, zstring value, int depth);
-
     void emit_jsoniq_xdm_node(store::Item *item, int depth);
 
     void emit_json_string(zstring const &string);
@@ -427,15 +421,15 @@ protected:
   //                                                       //
   ///////////////////////////////////////////////////////////
 
-  class jsoniq_emitter : public emitter
+  class hybrid_emitter : public emitter
   {
   public:
-    jsoniq_emitter(
+    hybrid_emitter(
         serializer* the_serializer, 
         std::ostream& the_stream,
         bool aEmitAttributes = false);
 
-    virtual ~jsoniq_emitter();
+    virtual ~hybrid_emitter();
 
     virtual void emit_declaration();
 
