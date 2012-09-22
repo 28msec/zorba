@@ -276,9 +276,9 @@ void print_namespaces()
 
 store::Item_t print_comment(store::Item_t& result, const XQDocComment* aComment)
 {
-  if (!(theOptions & xqdoc_component_comments) || aComment == 0) {
+  if (!(theOptions & xqdoc_component_comments) || aComment == 0)
     return NULL;
-  }
+
   list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
   list<XQDocAnnotation>::const_iterator lIt;
 
@@ -741,167 +741,167 @@ XQDOC_NO_BEGIN_TAG (FunctionDecl)
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
-  if (theOptions & xqdoc_component_functions)
-  {
-    store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName, lParamsQName;
-    store::Item_t lFuncElem, lNameElem, lSigElem, lParamsElem, lFuncText, lNameText, lSigText;
-    store::Item_t lArityAttr, lArityValue;
+  if (!(theOptions & xqdoc_component_functions))
+    return;
 
-    theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
-    theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
-    theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
-    theFactory->createQName(lParamsQName, theXQDocNS, theXQDocPrefix, "parameters");
-    theFactory->createQName(lArityQName, "", "", "arity");
+  store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName, lParamsQName;
+  store::Item_t lFuncElem, lNameElem, lSigElem, lParamsElem, lFuncText, lNameText, lSigText;
+  store::Item_t lArityAttr, lArityValue;
 
-    store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lFuncElem, theFunctions, lFuncQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
+  theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
+  theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
+  theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
+  theFactory->createQName(lParamsQName, theXQDocNS, theXQDocPrefix, "parameters");
+  theFactory->createQName(lArityQName, "", "", "arity");
 
-    print_comment(lFuncElem, n.getComment());
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lFuncElem, theFunctions, lFuncQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
 
+  print_comment(lFuncElem, n.getComment());
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lNameElem, lFuncElem, lNameQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  ostringstream lAttr;
+  lAttr << (n.get_param_count());
+
+  zstring lAttrString(lAttr.str().c_str());
+  theFactory->createString(lArityValue, lAttrString);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createAttributeNode(
+      lArityQName, lFuncElem, lArityQName, lTypeName, lArityValue);
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lFuncElem);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lSigElem, lFuncElem, lSigQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+     
+  const ParamList* paramList = n.get_paramlist();
+  if(paramList != NULL) {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lNameElem, lFuncElem, lNameQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
+    theFactory->createElementNode(lParamsElem, lFuncElem, lParamsQName, lTypeName, true, false, theNSBindings, theBaseURI);
+    store::Item_t lParamQName;
+    for (vector<rchandle<Param> >::const_iterator it = paramList->begin();
+         it != paramList->end();
+         ++it)
+    {
+      const Param* lParam = &**it;
 
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    ostringstream lAttr;
-    lAttr << (n.get_param_count());
-
-    zstring lAttrString(lAttr.str().c_str());
-    theFactory->createString(lArityValue, lAttrString);
-
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createAttributeNode(
-        lArityQName, lFuncElem, lArityQName, lTypeName, lArityValue);
-
-    AnnotationListParsenode* lAnns = n.get_annotations();
-    print_annotations(lAnns, lFuncElem);
-
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lSigElem, lFuncElem, lSigQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-       
-    const ParamList* paramList = n.get_paramlist();
-    if(paramList != NULL) {
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createElementNode(lParamsElem, lFuncElem, lParamsQName, lTypeName, true, false, theNSBindings, theBaseURI);
-      store::Item_t lParamQName;
-      for (vector<rchandle<Param> >::const_iterator it = paramList->begin();
-           it != paramList->end();
-           ++it)
-      {
-        const Param* lParam = &**it;
-
-        store::Item_t lParamElem;
-        theFactory->createQName(lParamQName, theXQDocNS, theXQDocPrefix, "parameter");
-        theFactory->createElementNode(lParamElem, lParamsElem, lParamQName, lTypeName, true, false, theNSBindings, theBaseURI);
-       
-        store::Item_t lParamNameElem, lParamNameQName;
-        theFactory->createQName(lParamNameQName, theXQDocNS, theXQDocPrefix, "name");
-        theFactory->createElementNode(lParamNameElem, lParamElem, lParamNameQName, lTypeName, true, false, theNSBindings, theBaseURI);
-        
-        zstring lParamNameVal(lParam->get_name()->get_qname());
-        store::Item_t lParamNameText;
-        theFactory->createTextNode(lParamNameText, lParamNameElem, lParamNameVal);
-        
-        if(lParam->get_typedecl()) {
-          if(lParam->get_typedecl()->get_itemtype()) {
-            ostringstream lType;
-            print_parsetree_xquery(lType, lParam->get_typedecl()->get_itemtype());
-            zstring lParamTypeStr(lType.str());
-            
-            store::Item_t lParamTypeElem, lParamTypeQName;
-            theFactory->createQName(lParamTypeQName, theXQDocNS, theXQDocPrefix, "type");
-            theFactory->createElementNode(lParamTypeElem, lParamElem, lParamTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
-        
-            store::Item_t lParamTypeText;
-            theFactory->createTextNode(lParamTypeText, lParamTypeElem, lParamTypeStr);
-            
-            if(lParam->get_typedecl()->get_occur()){
-              stringstream os;
-              print_parsetree_xquery(os, lParam->get_typedecl()->get_occur());
-              if(os.str().size() == 1) {
-                zstring lOccur(os.str());
-                store::Item_t lOccurValue, lOccurAttrQName;
-                theFactory->createString(lOccurValue, lOccur);
-                theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
-                theFactory->createAttributeNode(
-                  lOccurAttrQName, lParamTypeElem, lOccurAttrQName, lTypeName, lOccurValue
-                );
-              }
+      store::Item_t lParamElem;
+      theFactory->createQName(lParamQName, theXQDocNS, theXQDocPrefix, "parameter");
+      theFactory->createElementNode(lParamElem, lParamsElem, lParamQName, lTypeName, true, false, theNSBindings, theBaseURI);
+     
+      store::Item_t lParamNameElem, lParamNameQName;
+      theFactory->createQName(lParamNameQName, theXQDocNS, theXQDocPrefix, "name");
+      theFactory->createElementNode(lParamNameElem, lParamElem, lParamNameQName, lTypeName, true, false, theNSBindings, theBaseURI);
+      
+      zstring lParamNameVal(lParam->get_name()->get_qname());
+      store::Item_t lParamNameText;
+      theFactory->createTextNode(lParamNameText, lParamNameElem, lParamNameVal);
+      
+      if(lParam->get_typedecl()) {
+        if(lParam->get_typedecl()->get_itemtype()) {
+          ostringstream lType;
+          print_parsetree_xquery(lType, lParam->get_typedecl()->get_itemtype());
+          zstring lParamTypeStr(lType.str());
+          
+          store::Item_t lParamTypeElem, lParamTypeQName;
+          theFactory->createQName(lParamTypeQName, theXQDocNS, theXQDocPrefix, "type");
+          theFactory->createElementNode(lParamTypeElem, lParamElem, lParamTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
+      
+          store::Item_t lParamTypeText;
+          theFactory->createTextNode(lParamTypeText, lParamTypeElem, lParamTypeStr);
+          
+          if(lParam->get_typedecl()->get_occur()){
+            stringstream os;
+            print_parsetree_xquery(os, lParam->get_typedecl()->get_occur());
+            if(os.str().size() == 1) {
+              zstring lOccur(os.str());
+              store::Item_t lOccurValue, lOccurAttrQName;
+              theFactory->createString(lOccurValue, lOccur);
+              theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
+              theFactory->createAttributeNode(
+                lOccurAttrQName, lParamTypeElem, lOccurAttrQName, lTypeName, lOccurValue
+              );
             }
           }
         }
       }
     }
-
-    if(n.get_return_type()) {
-      
-      store::Item_t lReturnElem, lReturnQName, lTypeElem, lTypeQName;
-      theFactory->createQName(lReturnQName, theXQDocNS, theXQDocPrefix, "return");
-      theFactory->createElementNode(
-        lReturnElem, lFuncElem, lReturnQName, lTypeName, true, false, theNSBindings, theBaseURI     
-      );
-
-      ostringstream lType;
-      print_parsetree_xquery(lType, n.get_return_type());
-      zstring lReturnType(lType.str());
-
-      store::Item_t lReturnTypeElem, lReturnTypeQName;
-      theFactory->createQName(lReturnTypeQName, theXQDocNS, theXQDocPrefix, "type");
-      theFactory->createElementNode(lReturnTypeElem, lReturnElem, lReturnTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
-    
-      store::Item_t lReturnTypeText;
-      theFactory->createTextNode(lReturnTypeText, lReturnTypeElem, lReturnType);
-            
-      if(n.get_return_type()->get_occur()){
-        stringstream os;
-        print_parsetree_xquery(os, n.get_return_type()->get_occur());
-        if(os.str().size() == 1) {
-          zstring lOccur(os.str());
-          store::Item_t lOccurValue, lOccurAttrQName;
-          theFactory->createString(lOccurValue, lOccur);
-          theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
-          theFactory->createAttributeNode(
-            lOccurAttrQName, lReturnTypeElem, lOccurAttrQName, lTypeName, lOccurValue
-          );
-        }
-        }
-   }
-   zstring lNameString = n.get_name()->get_qname();
-    theFactory->createTextNode(lNameText, lNameElem, lNameString);
-
-    ostringstream lSig;
-
-    FunctionDecl lFunctionDeclClone(n.get_location(),
-                                    n.get_name(),
-                                    n.get_paramlist(),
-                                    n.get_return_type(),
-                                    0,
-                                    n.is_updating(),
-                                    n.is_external());
-
-    lFunctionDeclClone.set_annotations(n.get_annotations());
-
-    FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
-
-    zstring lSigString = lSig.str();
-    theFactory->createTextNode(lSigText, lSigElem, lSigString);
-
-    // add all invoked function elements as children to the end of the current
-    // function element. After this, clear the set of invoked functions
-    // to be prepared for the next function declaration
-    for (map<string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
-         lIter != theInvokedFunc.end(); ++lIter)
-    {
-      store::CopyMode lCopyMode;
-      (*lIter).second->copy(lFuncElem.getp(), lCopyMode);
-    }
-    theInvokedFunc.clear();
   }
+
+  if(n.get_return_type()) {
+    
+    store::Item_t lReturnElem, lReturnQName, lTypeElem, lTypeQName;
+    theFactory->createQName(lReturnQName, theXQDocNS, theXQDocPrefix, "return");
+    theFactory->createElementNode(
+      lReturnElem, lFuncElem, lReturnQName, lTypeName, true, false, theNSBindings, theBaseURI     
+    );
+
+    ostringstream lType;
+    print_parsetree_xquery(lType, n.get_return_type());
+    zstring lReturnType(lType.str());
+
+    store::Item_t lReturnTypeElem, lReturnTypeQName;
+    theFactory->createQName(lReturnTypeQName, theXQDocNS, theXQDocPrefix, "type");
+    theFactory->createElementNode(lReturnTypeElem, lReturnElem, lReturnTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
+  
+    store::Item_t lReturnTypeText;
+    theFactory->createTextNode(lReturnTypeText, lReturnTypeElem, lReturnType);
+          
+    if(n.get_return_type()->get_occur()){
+      stringstream os;
+      print_parsetree_xquery(os, n.get_return_type()->get_occur());
+      if(os.str().size() == 1) {
+        zstring lOccur(os.str());
+        store::Item_t lOccurValue, lOccurAttrQName;
+        theFactory->createString(lOccurValue, lOccur);
+        theFactory->createQName(lOccurAttrQName, "", "", "occurrence");
+        theFactory->createAttributeNode(
+          lOccurAttrQName, lReturnTypeElem, lOccurAttrQName, lTypeName, lOccurValue
+        );
+      }
+      }
+ }
+ zstring lNameString = n.get_name()->get_qname();
+  theFactory->createTextNode(lNameText, lNameElem, lNameString);
+
+  ostringstream lSig;
+
+  FunctionDecl lFunctionDeclClone(n.get_location(),
+                                  n.get_name(),
+                                  n.get_paramlist(),
+                                  n.get_return_type(),
+                                  0,
+                                  n.is_updating(),
+                                  n.is_external());
+
+  lFunctionDeclClone.set_annotations(n.get_annotations());
+
+  FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
+
+  zstring lSigString = lSig.str();
+  theFactory->createTextNode(lSigText, lSigElem, lSigString);
+
+  // add all invoked function elements as children to the end of the current
+  // function element. After this, clear the set of invoked functions
+  // to be prepared for the next function declaration
+  for (map<string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
+       lIter != theInvokedFunc.end(); ++lIter)
+  {
+    store::CopyMode lCopyMode;
+    (*lIter).second->copy(lFuncElem.getp(), lCopyMode);
+  }
+  theInvokedFunc.clear();
 }
 
 XQDOC_NO_BEGIN_TAG (StringLiteral)
@@ -933,17 +933,17 @@ void end_visit(const FunctionCall& n, void*)
   if (theOptions & xqdoc_component_indexes && theIsIndexDecl)
     theWaitForIndexSourceLiteral = false;
 
-  if (theOptions & xqdoc_component_functions)
-  {
-    rchandle<QName> lFuncName = n.get_fname();
+  if (!(theOptions & xqdoc_component_functions))
+    return;
 
-    add_invoked_function(
-        n,
-        lFuncName->get_localname(),
-        lFuncName->get_prefix(),
-        (n.get_arg_list()?n.get_arg_list()->size():0),
-        n.get_location());
-  }
+  rchandle<QName> lFuncName = n.get_fname();
+
+  add_invoked_function(
+      n,
+      lFuncName->get_localname(),
+      lFuncName->get_prefix(),
+      (n.get_arg_list()?n.get_arg_list()->size():0),
+      n.get_location());
 }
 
 bool is_collection_call(
@@ -1036,54 +1036,54 @@ XQDOC_NO_BEGIN_TAG (GlobalVarDecl)
 
 void end_visit(const GlobalVarDecl& n, void*)
 {
-  if (theOptions & xqdoc_component_variables)
+  if (!(theOptions & xqdoc_component_variables))
+    return;
+
+  store::Item_t lVariableQName, lUriQName;
+  store::Item_t lVariableElem, lUriElem, lUriText;
+
+  theFactory->createQName(lVariableQName, theXQDocNS, theXQDocPrefix, "variable");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lVariableElem, theVariables, lVariableQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lUriElem, lVariableElem, lUriQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  zstring lUriString(n.get_var_name()->get_qname());
+
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
+
+  store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
+
+  if (n.get_var_type())
   {
-    store::Item_t lVariableQName, lUriQName;
-    store::Item_t lVariableElem, lUriElem, lUriText;
-
-    theFactory->createQName(lVariableQName, theXQDocNS, theXQDocPrefix, "variable");
-    theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
-
-    store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lVariableElem, theVariables, lVariableQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lUriElem, lVariableElem, lUriQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-
-    zstring lUriString(n.get_var_name()->get_qname());
-
-    theFactory->createTextNode(lUriText, lUriElem, lUriString);
-
-    store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
-
-    if (n.get_var_type())
-    {
-      std::stringstream os;
-      print_parsetree_xquery(os , &*n.get_var_type());
-      print_custom(lCommentElem, "type", os.str());
-    }
-
-    if (n.is_extern())
-      print_custom(lCommentElem, "isExternal", "true");
-
-    // add all invoked function elements as children to the end of the current
-    // function element. After this, clear the set of invoked functions
-    // to be prepared for the next function declaration
-    for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
-         lIter != theInvokedFunc.end(); ++lIter)
-    {
-      store::CopyMode lCopyMode;
-      (*lIter).second->copy(lVariableElem.getp(), lCopyMode);
-    }
-    theInvokedFunc.clear();
-
-    AnnotationListParsenode* lAnns = n.get_annotations();
-    print_annotations(lAnns, lVariableElem);
+    std::stringstream os;
+    print_parsetree_xquery(os , &*n.get_var_type());
+    print_custom(lCommentElem, "type", os.str());
   }
+
+  if (n.is_extern())
+    print_custom(lCommentElem, "isExternal", "true");
+
+  // add all invoked function elements as children to the end of the current
+  // function element. After this, clear the set of invoked functions
+  // to be prepared for the next function declaration
+  for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
+       lIter != theInvokedFunc.end(); ++lIter)
+  {
+    store::CopyMode lCopyMode;
+    (*lIter).second->copy(lVariableElem.getp(), lCopyMode);
+  }
+  theInvokedFunc.clear();
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lVariableElem);
 }
 
 
@@ -1194,39 +1194,39 @@ XQDOC_NO_BEGIN_TAG (CollectionDecl)
 void end_visit(const CollectionDecl& n, void*)
 {
   if (theOptions & xqdoc_component_collections)
+    return;
+
+  store::Item_t lCollectionQName, lUriQName;
+  store::Item_t lCollectionElem, lUriElem, lUriText;
+
+  theFactory->createQName(lCollectionQName, theXQDocNS, theXQDocPrefix, "collection");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lCollectionElem, theCollections, lCollectionQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lUriElem, lCollectionElem, lUriQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  zstring lUriString(n.getName()->get_qname());
+
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
+
+  store::Item_t lCommentElem = print_comment(lCollectionElem, n.getComment());
+
+  if (n.getType())
   {
-    store::Item_t lCollectionQName, lUriQName;
-    store::Item_t lCollectionElem, lUriElem, lUriText;
-
-    theFactory->createQName(lCollectionQName, theXQDocNS, theXQDocPrefix, "collection");
-    theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
-
-    store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lCollectionElem, theCollections, lCollectionQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lUriElem, lCollectionElem, lUriQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-
-    zstring lUriString(n.getName()->get_qname());
-
-    theFactory->createTextNode(lUriText, lUriElem, lUriString);
-
-    store::Item_t lCommentElem = print_comment(lCollectionElem, n.getComment());
-
-    if (n.getType())
-    {
-      std::stringstream os;
-      print_parsetree_xquery(os , &*n.getType());
-      print_custom(lCommentElem, "type", os.str());
-    }
-
-    AnnotationListParsenode* lAnns = n.get_annotations();
-    print_annotations(lAnns, lCollectionElem);
+    std::stringstream os;
+    print_parsetree_xquery(os , &*n.getType());
+    print_custom(lCommentElem, "type", os.str());
   }
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lCollectionElem);
 }
 
 void *begin_visit(const AST_IndexDecl& n)
@@ -1242,54 +1242,54 @@ void *begin_visit(const AST_IndexDecl& n)
 void end_visit(const AST_IndexDecl& n, void*)
 {
   if (theOptions & xqdoc_component_indexes)
+    return;
+
+  theIsIndexDecl = false;
+
+  store::Item_t lIndexQName, lUriQName, lSourcesQName, lSourceQName;
+  store::Item_t lIndexElem, lUriElem, lUriText, lSourcesElem, lSourceElem,
+                lSourceText;
+
+  theFactory->createQName(lIndexQName, theXQDocNS, theXQDocPrefix, "index");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+  theFactory->createQName(lSourcesQName, theXQDocNS, theXQDocPrefix, "sources");
+  theFactory->createQName(lSourceQName, theXQDocNS, theXQDocPrefix, "source");
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lIndexElem, theIndexes, lIndexQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lUriElem, lIndexElem, lUriQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lSourcesElem, lIndexElem, lSourcesQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  zstring lUriString(n.getName()->get_qname());
+
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
+
+  for (std::vector<zstring>::iterator lIter = theIndexSources.begin();
+       lIter != theIndexSources.end();
+       ++lIter)
   {
-    theIsIndexDecl = false;
-
-    store::Item_t lIndexQName, lUriQName, lSourcesQName, lSourceQName;
-    store::Item_t lIndexElem, lUriElem, lUriText, lSourcesElem, lSourceElem,
-                  lSourceText;
-
-    theFactory->createQName(lIndexQName, theXQDocNS, theXQDocPrefix, "index");
-    theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
-    theFactory->createQName(lSourcesQName, theXQDocNS, theXQDocPrefix, "sources");
-    theFactory->createQName(lSourceQName, theXQDocNS, theXQDocPrefix, "source");
-
     store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(
-        lIndexElem, theIndexes, lIndexQName, lTypeName,
+        lSourceElem, lSourcesElem, lSourceQName, lTypeName,
         true, false, theNSBindings, theBaseURI);
-
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lUriElem, lIndexElem, lUriQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lSourcesElem, lIndexElem, lSourcesQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-
-    zstring lUriString(n.getName()->get_qname());
-
-    theFactory->createTextNode(lUriText, lUriElem, lUriString);
-
-    for (std::vector<zstring>::iterator lIter = theIndexSources.begin();
-         lIter != theIndexSources.end();
-         ++lIter)
-    {
-      store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createElementNode(
-          lSourceElem, lSourcesElem, lSourceQName, lTypeName,
-          true, false, theNSBindings, theBaseURI);
-      theFactory->createTextNode(lSourceText, lSourceElem, *lIter);
-    }
-    theIndexSources.clear();
-
-    store::Item_t lCommentElem = print_comment(lIndexElem, n.getComment());
-
-    AnnotationListParsenode* lAnns = n.get_annotations();
-    print_annotations(lAnns, lIndexElem);
+    theFactory->createTextNode(lSourceText, lSourceElem, *lIter);
   }
+  theIndexSources.clear();
+
+  store::Item_t lCommentElem = print_comment(lIndexElem, n.getComment());
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lIndexElem);
 }
 
 
