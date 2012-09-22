@@ -497,7 +497,8 @@ protected:
   // helper vars to compute index sources
   bool                 theIsIndexDecl;
   bool                 theWaitForIndexSourceLiteral;
-  std::vector<zstring> theIndexSources;
+  std::vector<pair<zstring,zstring> >
+                       theIndexSources;
 
 public:
 
@@ -909,8 +910,22 @@ void end_visit(const StringLiteral& n, void*)
 {
   if (theWaitForIndexSourceLiteral)
   {
-    theIndexSources.push_back(n.get_strval());
-    theWaitForIndexSourceLiteral = false;
+    zstring qname = n.get_strval();
+    zstring ns;
+    zstring local;
+    zstring::size_type colPos = qname.find(':');
+    if (colPos != zstring::npos)
+    {
+      zstring prefix = qname.substr(0, colPos);
+      zstring local = qname.substr(colPos + 1);
+      map<zstring, zstring>::iterator
+        ite = theNamespaceMap.find(prefix);
+      if (ite != theNamespaceMap.end())
+      {
+        theIndexSources.push_back(make_pair(ite->second, local));
+        theWaitForIndexSourceLiteral = false;
+      }
+    }
   }
 }
 
@@ -1193,14 +1208,14 @@ XQDOC_NO_BEGIN_TAG (CollectionDecl)
 
 void end_visit(const CollectionDecl& n, void*)
 {
-  if (theOptions & xqdoc_component_collections)
+  if ((!theOptions & xqdoc_component_collections))
     return;
 
-  store::Item_t lCollectionQName, lUriQName;
-  store::Item_t lCollectionElem, lUriElem, lUriText;
+  store::Item_t lCollectionQName, lNameQName;
+  store::Item_t lCollectionElem, lNameElem, lNameText;
 
   theFactory->createQName(lCollectionQName, theXQDocNS, theXQDocPrefix, "collection");
-  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+  theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -1209,12 +1224,12 @@ void end_visit(const CollectionDecl& n, void*)
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lCollectionElem, lUriQName, lTypeName,
+      lNameElem, lCollectionElem, lNameQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  zstring lUriString(n.getName()->get_qname());
+  zstring lNameString(n.getName()->get_localname());
 
-  theFactory->createTextNode(lUriText, lUriElem, lUriString);
+  theFactory->createTextNode(lNameText, lNameElem, lNameString);
 
   store::Item_t lCommentElem = print_comment(lCollectionElem, n.getComment());
 
@@ -1241,18 +1256,17 @@ void *begin_visit(const AST_IndexDecl& n)
 
 void end_visit(const AST_IndexDecl& n, void*)
 {
-  if (theOptions & xqdoc_component_indexes)
+  if (!(theOptions & xqdoc_component_indexes))
     return;
 
   theIsIndexDecl = false;
 
-  store::Item_t lIndexQName, lUriQName, lSourcesQName, lSourceQName;
-  store::Item_t lIndexElem, lUriElem, lUriText, lSourcesElem, lSourceElem,
-                lSourceText;
+  store::Item_t lIndexQName, lNSQName, lNameQName, lSourcesQName, lSourceQName;
+  store::Item_t lIndexElem, lNSElem, lNameElem, lNSText, lNameText,
+                lSourceElem;
 
   theFactory->createQName(lIndexQName, theXQDocNS, theXQDocPrefix, "index");
-  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
-  theFactory->createQName(lSourcesQName, theXQDocNS, theXQDocPrefix, "sources");
+  theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSourceQName, theXQDocNS, theXQDocPrefix, "source");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -1262,27 +1276,38 @@ void end_visit(const AST_IndexDecl& n, void*)
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lIndexElem, lUriQName, lTypeName,
+      lNameElem, lIndexElem, lNameQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lSourcesElem, lIndexElem, lSourcesQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  zstring lNameString(n.getName()->get_localname());
 
-  zstring lUriString(n.getName()->get_qname());
+  theFactory->createTextNode(lNameText, lNameElem, lNameString);
 
-  theFactory->createTextNode(lUriText, lUriElem, lUriString);
-
-  for (std::vector<zstring>::iterator lIter = theIndexSources.begin();
+  for (std::vector<pair<zstring,zstring> >::iterator
+         lIter = theIndexSources.begin();
        lIter != theIndexSources.end();
        ++lIter)
   {
+    theFactory->createQName(lNSQName, theXQDocNS, theXQDocPrefix, "namespace");
+    theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
+
     store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(
-        lSourceElem, lSourcesElem, lSourceQName, lTypeName,
+        lSourceElem, lIndexElem, lSourceQName, lTypeName,
         true, false, theNSBindings, theBaseURI);
-    theFactory->createTextNode(lSourceText, lSourceElem, *lIter);
+
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(
+        lNSElem, lSourceElem, lNSQName, lTypeName,
+        true, false, theNSBindings, theBaseURI);
+    
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(
+        lNameElem, lSourceElem, lNameQName, lTypeName,
+        true, false, theNSBindings, theBaseURI);
+
+    theFactory->createTextNode(lNSText, lNSElem, lIter->first);
+    theFactory->createTextNode(lNameText, lNameElem, lIter->second);
   }
   theIndexSources.clear();
 

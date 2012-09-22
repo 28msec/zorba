@@ -220,7 +220,7 @@
       <xsd:element name="collection" minOccurs="0" maxOccurs="unbounded">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="uri" type="uri"/>
+            <xsd:element name="name" type="name"/>
             <xsd:element name="type" type="type" minOccurs="0"/>
             <xsd:element name="comment" type="comment" minOccurs="0"/>
           </xsd:sequence>
@@ -236,12 +236,12 @@
       <xsd:element name="index" minOccurs="0" maxOccurs="unbounded">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="uri" type="uri"/>
-            <xsd:element name="sources">
+            <xsd:element name="name" type="name"/>
+            <xsd:element name="source" minOccurs="0" maxOccurs="unbounded">
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element name="source" type="uri"
-                               minOccurs="0" maxOccurs="unbounded"/>
+                  <xsd:element name="uri" type="uri"/>
+                  <xsd:element name="name" type="name"/>
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
