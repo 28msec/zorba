@@ -90,7 +90,7 @@ declare %an:nondeterministic function xqd:xqdoc(
   $module-uri as xs:string
 ) as element()
 {
-  let $content := fetch:content($module-uri)
+  let $content := fetch:content($module-uri, "MODULE")
   return xqd:xqdoc-content-impl($content, $module-uri)
 };
 
@@ -124,7 +124,7 @@ declare function xqd:xqdoc(
   $options as element(opt:enable)
 ) as element()
 {
-  let $content := fetch:content($module-uri)
+  let $content := fetch:content($module-uri, "MODULE")
   let $xqdoc-options := if ( schema:is-validated( $options ) ) then
                               $options
                             else
