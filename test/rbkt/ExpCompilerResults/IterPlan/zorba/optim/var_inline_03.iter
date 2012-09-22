@@ -1,13 +1,13 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="foo">
+  <CtxVarDeclareIterator varid="4" varname="foo">
     <FnConcatIterator>
       <SingletonIterator value="xs:integer(1)"/>
       <SingletonIterator value="xs:integer(2)"/>
       <SingletonIterator value="xs:integer(3)"/>
     </FnConcatIterator>
   </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="3" varname="boo">
+  <CtxVarDeclareIterator varid="5" varname="boo">
     <FnConcatIterator>
       <SingletonIterator value="xs:integer(1)"/>
       <SingletonIterator value="xs:integer(2)"/>
@@ -18,12 +18,12 @@ Iterator tree for main query:
     <AndIterator>
       <TypedValueCompareIterator_INTEGER>
         <FnCountIterator>
-          <CtxVarIterator varid="3" varname="boo" varkind="global"/>
+          <CtxVarIterator varid="5" varname="boo" varkind="global"/>
         </FnCountIterator>
         <SingletonIterator value="xs:integer(3)"/>
       </TypedValueCompareIterator_INTEGER>
       <FnExactlyOneIterator>
-        <CtxVarIterator varid="2" varname="foo" varkind="global">
+        <CtxVarIterator varid="4" varname="foo" varkind="global">
           <SingletonIterator value="xs:integer(3)"/>
           <SingletonIterator value="xs:integer(2)"/>
         </CtxVarIterator>
