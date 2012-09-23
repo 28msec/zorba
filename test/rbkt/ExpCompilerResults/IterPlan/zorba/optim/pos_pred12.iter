@@ -1,0 +1,224 @@
+Iterator tree for const-folded expr:
+<OpNumericUnaryIterator>
+  <SingletonIterator value="xs:integer(1)"/>
+</OpNumericUnaryIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<SpecificNumArithIterator_SubtractOperation_INTEGER>
+  <SingletonIterator value="xs:integer(2)"/>
+  <SingletonIterator value="xs:integer(1)"/>
+</SpecificNumArithIterator_SubtractOperation_INTEGER>
+
+Iterator tree for const-folded expr:
+<SpecificNumArithIterator_SubtractOperation_INTEGER>
+  <SingletonIterator value="xs:integer(-1)"/>
+  <SingletonIterator value="xs:integer(1)"/>
+</SpecificNumArithIterator_SubtractOperation_INTEGER>
+
+Iterator tree for const-folded expr:
+<SpecificNumArithIterator_SubtractOperation_INTEGER>
+  <SingletonIterator value="xs:integer(2)"/>
+  <SingletonIterator value="xs:integer(1)"/>
+</SpecificNumArithIterator_SubtractOperation_INTEGER>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="doc">
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,doc)"/>
+      <FnConcatIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(1)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(2)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(3)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(4)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(5)"/>
+          </AttributeIterator>
+        </ElementIterator>
+      </FnConcatIterator>
+    </ElementIterator>
+  </CtxVarDeclareIterator>
+  <FnConcatIterator>
+    <SubsequenceIntIterator>
+      <NodeSortIterator distinct="true" ascending="true">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+          </TreatIterator>
+        </ChildAxisIterator>
+      </NodeSortIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(1)"/>
+    </SubsequenceIntIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+    <SubsequenceIntIterator>
+      <NodeSortIterator distinct="true" ascending="true">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+          </TreatIterator>
+        </ChildAxisIterator>
+      </NodeSortIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(2)"/>
+    </SubsequenceIntIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+    <SubsequenceIntIterator>
+      <NodeSortIterator distinct="true" ascending="true">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+          </TreatIterator>
+        </ChildAxisIterator>
+      </NodeSortIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(-2)"/>
+    </SubsequenceIntIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+    <SubsequenceIntIterator>
+      <NodeSortIterator distinct="true" ascending="true">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+          </TreatIterator>
+        </ChildAxisIterator>
+      </NodeSortIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(1)"/>
+    </SubsequenceIntIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+    <SubsequenceIntIterator>
+      <NodeSortIterator distinct="true" ascending="true">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+          </TreatIterator>
+        </ChildAxisIterator>
+      </NodeSortIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(2)"/>
+    </SubsequenceIntIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+    <flwor::FLWORIterator>
+      <ForVariable name="$$dot">
+        <NodeSortIterator distinct="true" ascending="true">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+              <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            </TreatIterator>
+          </ChildAxisIterator>
+        </NodeSortIterator>
+      </ForVariable>
+      <WhereClause>
+        <TypedValueCompareIterator_INTEGER>
+          <SingletonIterator value="xs:integer(2)"/>
+          <ForVarIterator varname="$$pos"/>
+        </TypedValueCompareIterator_INTEGER>
+      </WhereClause>
+      <ReturnClause>
+        <ForVarIterator varname="$$dot"/>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+    <flwor::FLWORIterator>
+      <ForVariable name="$$dot">
+        <NodeSortIterator distinct="true" ascending="true">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+              <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            </TreatIterator>
+          </ChildAxisIterator>
+        </NodeSortIterator>
+      </ForVariable>
+      <WhereClause>
+        <TypedValueCompareIterator_INTEGER>
+          <SingletonIterator value="xs:integer(2)"/>
+          <ForVarIterator varname="$$pos"/>
+        </TypedValueCompareIterator_INTEGER>
+      </WhereClause>
+      <ReturnClause>
+        <ForVarIterator varname="$$dot"/>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+  </FnConcatIterator>
+</SequentialIterator>
+

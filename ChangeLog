@@ -23,6 +23,7 @@ Optimizations:
   * For non-mutable global variables, assign a type based on their initializing expr.
   * Use char* instead of zstring as the hashmap key in json objects
   * Removed document-order sorting after the index value probe functions.
+  * Optimize positional predicates involving inequality (convert them to subsequence)
 
 Bug Fixes/Other Changes:
   * Fixed bug #867227 (Improved error message for missing commas)
