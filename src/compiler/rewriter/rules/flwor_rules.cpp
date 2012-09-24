@@ -1384,7 +1384,6 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // TODO: we should be able to apply the rule if all the sequential clauses
   // are before the clause that defines the pos var.
   // TODO: consider more than one positional preds in CNF
-  // TODO: Consider $pos > <expr> preds
   if (! flwor->has_sequential_clauses())
   {
     csize numClauses = flwor->num_clauses();
@@ -1541,6 +1540,38 @@ static void rewrite_positional_pred(
                    args);
     break;
   }
+  case CompareConsts::GENERAL_GREATER_EQUAL:
+  case CompareConsts::VALUE_GREATER_EQUAL:
+  {
+    result = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   domainExpr,
+                   posExpr);
+    break;
+  }
+  case CompareConsts::GENERAL_GREATER:
+  case CompareConsts::VALUE_GREATER:
+  {
+    expr* oneExpr = rCtx.theEM->
+    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+
+    posExpr = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_INTEGER_2),
+                   posExpr,
+                   oneExpr);
+
+    result = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   domainExpr,
+                   posExpr);
+    break;
+  }
   default:
   {
     ZORBA_ASSERT(false);
@@ -1631,7 +1662,25 @@ static bool is_positional_pred(
     case CompareConsts::GENERAL_LESS_EQUAL:
     {
       if (i == 1)
-        return false;
+      {
+        switch (compKind)
+        {
+        case CompareConsts::VALUE_LESS:
+          compKind = CompareConsts::VALUE_GREATER;
+          break;
+        case CompareConsts::VALUE_LESS_EQUAL:
+          compKind = CompareConsts::VALUE_GREATER_EQUAL;
+          break;
+        case CompareConsts::GENERAL_LESS:
+          compKind = CompareConsts::GENERAL_GREATER;
+          break;
+        case CompareConsts::GENERAL_LESS_EQUAL:
+          compKind = CompareConsts::GENERAL_GREATER_EQUAL;
+          break;
+        default:
+          ZORBA_ASSERT(false);
+        }
+      }
 
       break;
     }
@@ -1640,25 +1689,25 @@ static bool is_positional_pred(
     case CompareConsts::GENERAL_GREATER:
     case CompareConsts::GENERAL_GREATER_EQUAL:
     {
-      if (i == 0)
-        return false;
-
-      switch (compKind)
+      if (i == 1)
       {
-      case CompareConsts::VALUE_GREATER:
-        compKind = CompareConsts::VALUE_LESS;
-        break;
-      case CompareConsts::VALUE_GREATER_EQUAL:
-        compKind = CompareConsts::VALUE_LESS_EQUAL;
-        break;
-      case CompareConsts::GENERAL_GREATER:
-        compKind = CompareConsts::GENERAL_LESS;
-        break;
-      case CompareConsts::GENERAL_GREATER_EQUAL:
-        compKind = CompareConsts::GENERAL_LESS_EQUAL;
-        break;
-      default:
-        ZORBA_ASSERT(false);
+        switch (compKind)
+        {
+        case CompareConsts::VALUE_GREATER:
+          compKind = CompareConsts::VALUE_LESS;
+          break;
+        case CompareConsts::VALUE_GREATER_EQUAL:
+          compKind = CompareConsts::VALUE_LESS_EQUAL;
+          break;
+        case CompareConsts::GENERAL_GREATER:
+          compKind = CompareConsts::GENERAL_LESS;
+          break;
+        case CompareConsts::GENERAL_GREATER_EQUAL:
+          compKind = CompareConsts::GENERAL_LESS_EQUAL;
+          break;
+        default:
+          ZORBA_ASSERT(false);
+        }
       }
       break;
     }
