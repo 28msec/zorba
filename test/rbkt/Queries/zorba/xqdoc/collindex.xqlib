@@ -13,14 +13,28 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-(:~
- : some comment
- :)
-declare %an:ordered collection cil:entries as node()*;
+(:~ some comment :)
+declare %an:ordered collection cil:entries as element(el)*;
+
+(:~ some comment2 :)
+declare %an:ordered collection cil:entries2;
+
+(:~ some comment3 :)
+declare collection cil:entries3 as element(el)*;
+
+(:~ some comment4 :)
+declare collection cil:entries4;
 
 declare variable $cil:entries as xs:QName := xs:QName("cil:entries");
 
+(:~ some comment5 :)
 declare %an:automatic %an:unique %an:value-equality index cil:idx         
   on nodes dml:collection(xs:QName("cil:entries"))                         
   by xs:string(@author) as xs:string;                                           
+
+(:~ some comment6 :)
+declare index cil:idx         
+  on nodes dml:collection(xs:QName("cil:entries"))                         
+  by xs:string(@author) as xs:string;                                           
+
 declare variable $cil:idx as xs:QName := xs:QName("cil:idx");

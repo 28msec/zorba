@@ -1940,6 +1940,8 @@ CollectionDecl :
                               static_cast<QName*>($3),
                               NULL,
                               NULL);
+
+      static_cast<CollectionDecl*>($$)->setComment(SYMTAB($1));
     }
   | DECLARE COLLECTION QNAME AS CollectionTypeDecl
     {
@@ -1947,6 +1949,8 @@ CollectionDecl :
                               static_cast<QName*>($3),
                               0,
                               static_cast<SequenceType*>($5));
+
+      static_cast<CollectionDecl*>($$)->setComment(SYMTAB($1));
     }
   | DECLARE AnnotationList COLLECTION QNAME
     {
@@ -1954,6 +1958,8 @@ CollectionDecl :
                                static_cast<QName*>($4),
                                static_cast<AnnotationListParsenode*>($2),
                                0);
+
+      static_cast<CollectionDecl*>($$)->setComment(SYMTAB($1));
     }
   | DECLARE AnnotationList COLLECTION QNAME AS CollectionTypeDecl
     {
@@ -1961,6 +1967,8 @@ CollectionDecl :
                                static_cast<QName*>($4),
                                static_cast<AnnotationListParsenode*>($2),
                                static_cast<SequenceType*>($6));
+
+      static_cast<CollectionDecl*>($$)->setComment(SYMTAB($1));
     }
 ;
 
@@ -1996,6 +2004,8 @@ IndexDecl :
                              $6,
                              dynamic_cast<IndexKeyList*>($8),
                              NULL);
+
+      static_cast<AST_IndexDecl*>($$)->setComment( SYMTAB($1) );
     }
   | DECLARE AnnotationList INDEX QNAME ON NODES PathExpr BY IndexKeyList
     {
@@ -2004,6 +2014,8 @@ IndexDecl :
                              $7,
                              dynamic_cast<IndexKeyList*>($9),
                              static_cast<AnnotationListParsenode*>($2));
+
+      static_cast<AST_IndexDecl*>($$)->setComment( SYMTAB($1) );
     }
   ;
 

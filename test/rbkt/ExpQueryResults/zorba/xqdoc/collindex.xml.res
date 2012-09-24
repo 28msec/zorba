@@ -60,9 +60,39 @@
   <xqdoc:collections>
     <xqdoc:collection>
       <xqdoc:name>entries</xqdoc:name>
+      <xqdoc:comment>
+        <xqdoc:description> some comment
+</xqdoc:description>
+        <xqdoc:custom tag="type">element(el)*</xqdoc:custom>
+      </xqdoc:comment>
       <xqdoc:annotations>
         <xqdoc:annotation prefix="an" namespace="" localname="ordered" value=""/>
       </xqdoc:annotations>
+    </xqdoc:collection>
+    <xqdoc:collection>
+      <xqdoc:name>entries2</xqdoc:name>
+      <xqdoc:comment>
+        <xqdoc:description> some comment2
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="" localname="ordered" value=""/>
+      </xqdoc:annotations>
+    </xqdoc:collection>
+    <xqdoc:collection>
+      <xqdoc:name>entries3</xqdoc:name>
+      <xqdoc:comment>
+        <xqdoc:description> some comment3
+</xqdoc:description>
+        <xqdoc:custom tag="type">element(el)*</xqdoc:custom>
+      </xqdoc:comment>
+    </xqdoc:collection>
+    <xqdoc:collection>
+      <xqdoc:name>entries4</xqdoc:name>
+      <xqdoc:comment>
+        <xqdoc:description> some comment4
+</xqdoc:description>
+      </xqdoc:comment>
     </xqdoc:collection>
   </xqdoc:collections>
   <xqdoc:indexes>
@@ -72,11 +102,26 @@
         <xqdoc:uri>http://www.zorba-xquery.com/collindex</xqdoc:uri>
         <xqdoc:name>entries</xqdoc:name>
       </xqdoc:source>
+      <xqdoc:comment>
+        <xqdoc:description> some comment5
+</xqdoc:description>
+      </xqdoc:comment>
       <xqdoc:annotations>
         <xqdoc:annotation prefix="an" namespace="" localname="automatic" value=""/>
         <xqdoc:annotation prefix="an" namespace="" localname="unique" value=""/>
         <xqdoc:annotation prefix="an" namespace="" localname="value-equality" value=""/>
       </xqdoc:annotations>
+    </xqdoc:index>
+    <xqdoc:index>
+      <xqdoc:name>idx</xqdoc:name>
+      <xqdoc:source>
+        <xqdoc:uri>http://www.zorba-xquery.com/collindex</xqdoc:uri>
+        <xqdoc:name>entries</xqdoc:name>
+      </xqdoc:source>
+      <xqdoc:comment>
+        <xqdoc:description> some comment6
+</xqdoc:description>
+      </xqdoc:comment>
     </xqdoc:index>
   </xqdoc:indexes>
   <xqdoc:functions/>

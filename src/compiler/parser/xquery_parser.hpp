@@ -31,18 +31,18 @@
    version 2.2 of Bison.  */
 
 /**
- ** \file /home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp
+ ** \file /Users/dagraf/work/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp
  ** Define the zorba::parser class.
  */
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef ZORBA_HOME_COLEA_XQUERY_BZR_ERROR_MESSAGES_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
-# define ZORBA_HOME_COLEA_XQUERY_BZR_ERROR_MESSAGES_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+#ifndef ZORBA_USERS_DAGRAF_WORK_28MSEC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+# define ZORBA_USERS_DAGRAF_WORK_28MSEC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
 
 /* "%code requires" blocks.  */
 /* Line 36 of lalr1.cc  */
-#line 35 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
+#line 35 "/Users/dagraf/work/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -87,7 +87,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 36 of lalr1.cc  */
-#line 91 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 91 "/Users/dagraf/work/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -103,7 +103,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 namespace zorba {
 /* Line 36 of lalr1.cc  */
-#line 107 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 107 "/Users/dagraf/work/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -114,7 +114,7 @@ namespace zorba {
     union semantic_type
     {
 /* Line 36 of lalr1.cc  */
-#line 155 "/home/colea/xquery_bzr/error-messages/src/compiler/parser/xquery_parser.y"
+#line 155 "/Users/dagraf/work/28msec/zorba/sandbox/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -137,7 +137,7 @@ namespace zorba {
 
 
 /* Line 36 of lalr1.cc  */
-#line 141 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 141 "/Users/dagraf/work/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -652,8 +652,8 @@ namespace zorba {
 
 } // zorba
 /* Line 36 of lalr1.cc  */
-#line 656 "/home/colea/xquery_bzr/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 656 "/Users/dagraf/work/28msec/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
-#endif /* !ZORBA_HOME_COLEA_XQUERY_BZR_ERROR_MESSAGES_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */
+#endif /* !ZORBA_USERS_DAGRAF_WORK_28MSEC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */
