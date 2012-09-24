@@ -19,7 +19,7 @@
 COMPARE_VERSION_STRINGS (${CMAKE_VERSION} "2.8.6" RESULT)
 IF (${RESULT} GREATER -1)
   FIND_PACKAGE (Java COMPONENTS Development)
-  IF (Java_Development_FOUND)
+  IF (Java_JAVAC_EXECUTABLE)
     INCLUDE (UseJava)
 
     # Declare two "different" jars, for testing
