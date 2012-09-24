@@ -101,6 +101,12 @@ extern entry const dict_en[] = {
   { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
 #endif
 #if defined(ZORBA_WITH_JSON)
+  { "JNDY0021", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNDY0040", "$1" },
+#endif
+#if defined(ZORBA_WITH_JSON)
   { "JNSE0012", "can not serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
@@ -123,6 +129,9 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0020", "$1: invalid option type for option $2 (expected $3)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0023", "$1: value of \"$2\" is not a $3" },
@@ -153,15 +162,6 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0019", "The content of an insert expression must evaluate to a sequence of objects." },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSDY0021", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSDY0040", "$1" },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },

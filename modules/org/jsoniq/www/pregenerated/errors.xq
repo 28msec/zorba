@@ -146,14 +146,14 @@ declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003
 (:~
  :parser errors raised by the JSONIQLoader
 :)
-declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
+declare variable $jerr:JNDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0040");
 
 (:~
  :parser error for invalid option type
 :)
-declare variable $jerr:JSDY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0020");
+declare variable $jerr:JNTY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0020");
 
 (:~
  :parser error raised by jn:parse-json
 :)
-declare variable $jerr:JSDY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0021");
+declare variable $jerr:JNDY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0021");
