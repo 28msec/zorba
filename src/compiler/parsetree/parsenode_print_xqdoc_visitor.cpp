@@ -1211,8 +1211,8 @@ void end_visit(const CollectionDecl& n, void*)
   if ((!theOptions & xqdoc_component_collections))
     return;
 
-  store::Item_t lCollectionQName, lNameQName;
-  store::Item_t lCollectionElem, lNameElem, lNameText;
+  store::Item_t lCollectionQName, lNameQName, lTypeQName;
+  store::Item_t lCollectionElem, lNameElem, lTypeElem, lNameText, lTypeText;
 
   theFactory->createQName(lCollectionQName, theXQDocNS, theXQDocPrefix, "collection");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
@@ -1231,14 +1231,23 @@ void end_visit(const CollectionDecl& n, void*)
 
   theFactory->createTextNode(lNameText, lNameElem, lNameString);
 
-  store::Item_t lCommentElem = print_comment(lCollectionElem, n.getComment());
-
   if (n.getType())
   {
+    theFactory->createQName(lTypeQName, theXQDocNS, theXQDocPrefix, "type");
+
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(
+        lTypeElem, lCollectionElem, lTypeQName, lTypeName,
+        true, false, theNSBindings, theBaseURI);
+
     std::stringstream os;
     print_parsetree_xquery(os , &*n.getType());
-    print_custom(lCommentElem, "type", os.str());
+
+    zstring lTypeString(os.str());
+    theFactory->createTextNode(lTypeText, lTypeElem, lTypeString);
   }
+
+  store::Item_t lCommentElem = print_comment(lCollectionElem, n.getComment());
 
   AnnotationListParsenode* lAnns = n.get_annotations();
   print_annotations(lAnns, lCollectionElem);

@@ -60,10 +60,10 @@
   <xqdoc:collections>
     <xqdoc:collection>
       <xqdoc:name>entries</xqdoc:name>
+      <xqdoc:type>element(el)*</xqdoc:type>
       <xqdoc:comment>
         <xqdoc:description> some comment
 </xqdoc:description>
-        <xqdoc:custom tag="type">element(el)*</xqdoc:custom>
       </xqdoc:comment>
       <xqdoc:annotations>
         <xqdoc:annotation prefix="an" namespace="" localname="ordered" value=""/>
@@ -81,10 +81,10 @@
     </xqdoc:collection>
     <xqdoc:collection>
       <xqdoc:name>entries3</xqdoc:name>
+      <xqdoc:type>element(el)*</xqdoc:type>
       <xqdoc:comment>
         <xqdoc:description> some comment3
 </xqdoc:description>
-        <xqdoc:custom tag="type">element(el)*</xqdoc:custom>
       </xqdoc:comment>
     </xqdoc:collection>
     <xqdoc:collection>
