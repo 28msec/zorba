@@ -85,6 +85,7 @@ declare option ver:module-version "2.0";
  :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
  : @error zerr::ZXQD0002 if the xqdoc comments in the
  :  module contain invalid XML
+ : @deprecated please use the fetch:content#1 and xqd:xqdoc-content#1 function
  :)
 declare %an:nondeterministic function xqd:xqdoc(
   $module-uri as xs:string
@@ -118,6 +119,7 @@ declare %an:nondeterministic function xqd:xqdoc(
  :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
  : @error zerr::ZXQD0002 if the xqdoc comments in the
  :  module contain invalid XML
+ : @deprecated please use the fetch:content#1 and xqd:xqdoc-content#2 function
  :)
 declare function xqd:xqdoc(
   $module-uri as xs:string,
