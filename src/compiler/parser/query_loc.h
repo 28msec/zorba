@@ -49,9 +49,8 @@ public:
 public:
   QueryLoc();
 
-  QueryLoc(const QueryLoc& aQueryLoc);
-
-  virtual ~QueryLoc() {}
+  QueryLoc( zstring const &filename, unsigned lineBegin, unsigned lineEnd,
+            unsigned columnBegin = 0, unsigned columnEnd = 0 );
 
 public:
   const zstring& getFilename() const { return theFilename; }

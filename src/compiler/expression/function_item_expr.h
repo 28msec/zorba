@@ -38,29 +38,32 @@ class dynamic_function_invocation_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
-  expr_t                 theExpr;
-  std::vector<expr_t>    theArgs;
+  expr                * theExpr;
+  std::vector<expr*>    theArgs;
 
-public:
+protected:
   dynamic_function_invocation_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& anExpr,
-      const std::vector<expr_t>& args);
+      expr* anExpr,
+      const std::vector<expr*>& args);
 
-	const expr_t get_function() const { return theExpr; }
+public:
+  const expr* get_function() const { return theExpr; }
 
-  const std::vector<expr_t>& get_args() const { return theArgs; }
+  const std::vector<expr*>& get_args() const { return theArgs; }
 
-	void compute_scripting_kind();
+  void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
-	void accept(expr_visitor&);
+  void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream& os) const;
+  std::ostream& put(std::ostream& os) const;
 };
 
 
@@ -99,15 +102,19 @@ class function_item_expr: public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 private:
   store::Item_t        theQName;
-	function_t           theFunction;
+  function_t           theFunction;
   uint32_t             theArity;
-  std::vector<expr_t>  theScopedVariables;
+  std::vector<expr*>  theScopedVariables;
 
 public:
-	function_item_expr(
+
+protected:
+  function_item_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       const store::Item* aQName,
@@ -115,30 +122,32 @@ public:
       uint32_t aArity);
 
   function_item_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc);
 
+public:
   ~function_item_expr();
 
   void add_variable(expr* var);
 
   void set_function(user_function_t& udf);
 
-	function* get_function() const { return theFunction.getp(); }
+  function* get_function() const { return theFunction.getp(); }
 
   const store::Item_t& get_qname() const { return theQName; }
 
   uint32_t get_arity() const { return theArity; }
 
-  const std::vector<expr_t>& get_vars() const;
+  const std::vector<expr*>& get_vars() const;
 
-	void compute_scripting_kind();
+  void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
-	void accept(expr_visitor&);
+  void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream& os) const;
+  std::ostream& put(std::ostream& os) const;
 };
 
 } //end of namespace

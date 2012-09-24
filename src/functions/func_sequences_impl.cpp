@@ -543,16 +543,19 @@ PlanIter_t fn_count::codegen(
     ZorbaCollectionIterator& collection =
     static_cast<ZorbaCollectionIterator&>(*argv[0]);
 
-    return new CountCollectionIterator(
-                 sctx,
-                 loc,
-                 collection.getChildren(),
-                 (
-                   collection.isDynamic()
-                     ? CountCollectionIterator::ZORBADYNAMIC
-                     : CountCollectionIterator::ZORBASTATIC
-                 )
-               );
+    if (collection.isCountOptimizable())
+    {
+      return new CountCollectionIterator(
+                   sctx,
+                   loc,
+                   collection.getChildren(),
+                   (
+                     collection.isDynamic()
+                       ? CountCollectionIterator::ZORBADYNAMIC
+                       : CountCollectionIterator::ZORBASTATIC
+                   )
+                 );
+    }
   }
   else if (typeid(FnCollectionIterator) == counted_type)
   {
@@ -570,7 +573,7 @@ PlanIter_t fn_count::codegen(
       = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
 
     return new ProbeIndexPointValueIterator(
-        sctx, loc, lIter.getChildren(), true);
+        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
   }
   else if (typeid(ProbeIndexRangeValueIterator) == counted_type)
   {
@@ -578,7 +581,7 @@ PlanIter_t fn_count::codegen(
       = static_cast<ProbeIndexRangeValueIterator&>(*argv[0]);
 
     return new ProbeIndexRangeValueIterator(
-        sctx, loc, lIter.getChildren(), true);
+        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
   }
   else if (typeid(ProbeIndexPointGeneralIterator) == counted_type)
   {

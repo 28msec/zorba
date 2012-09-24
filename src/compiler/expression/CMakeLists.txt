@@ -26,7 +26,10 @@ SET(EXPRESSION_SRCS
     fo_expr.cpp
     script_exprs.cpp
     update_exprs.cpp
-    function_item_expr.cpp)
+    function_item_expr.cpp
+    pragma.cpp
+    mem_manager.cpp
+    expr_manager.cpp)
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND EXPRESSION_SRCS

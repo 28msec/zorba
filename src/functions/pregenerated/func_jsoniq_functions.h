@@ -38,6 +38,46 @@ void populate_context_jsoniq_functions(static_context* sctx);
 
 #ifdef ZORBA_WITH_JSON
 
+//fn-jsoniq:decode-from-roundtrip
+class fn_jsoniq_decode_from_roundtrip : public function
+{
+public:
+  fn_jsoniq_decode_from_roundtrip(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
+//fn-jsoniq:encode-for-roundtrip
+class fn_jsoniq_encode_for_roundtrip : public function
+{
+public:
+  fn_jsoniq_encode_for_roundtrip(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //fn-jsoniq:parse-json
 class fn_jsoniq_parse_json : public function
 {
@@ -234,6 +274,44 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//fn-jsoniq:is-null
+class fn_jsoniq_is_null : public function
+{
+public:
+  fn_jsoniq_is_null(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
+//op-zorba:json-object-insert
+class op_zorba_json_object_insert : public function
+{
+public:
+  op_zorba_json_object_insert(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //op-zorba:json-array-insert
 class op_zorba_json_array_insert : public function
 {
@@ -334,6 +412,30 @@ public:
   bool accessesDynCtx() const { return true; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const;
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
+//op-zorba:json-box
+class op_zorba_json_box : public function
+{
+public:
+  op_zorba_json_box(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };

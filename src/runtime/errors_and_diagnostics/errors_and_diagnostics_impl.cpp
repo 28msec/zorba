@@ -19,6 +19,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/user_exception.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 
@@ -77,9 +78,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  throw USER_EXCEPTION(
-    err_qname, description.c_str(), ERROR_LOC( loc ), &lErrorObject
-  );
+  throw USER_EXCEPTION(err_qname, description.c_str(), ERROR_LOC(loc), &lErrorObject);
 
   STACK_END(state);
 }
@@ -98,20 +97,19 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(state->theTagItem, theChildren[1], planState)) 
   {
-    throw XQUERY_EXCEPTION(err::FORG0006,
-      ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), ZED(EmptySequence), "fn:trace"),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FORG0006, loc,
+    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), ZED(EmptySequence), "fn:trace"));
   }
 
-  if (state->theSerializer.get() == 0) {
-    state->theSerializer.reset(new serializer(0));
+  if (state->theSerializer == NULL)
+  {
+    state->theSerializer = new serializer(0);
+
     Zorba_SerializerOptions options;
     options.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    SerializerImpl::setSerializationParameters(
-                        *(state->theSerializer), 
-                        options);
+    SerializerImpl::setSerializationParameters(*(state->theSerializer), options);
   }
+
   state->theOS = theSctx->get_trace_stream();
 
   while (consumeNext(result, theChildren[0], planState)) 
@@ -136,10 +134,7 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       store::TempSeq_t lSequence = GENV_STORE.createTempSeq(lTmp);
       store::Iterator_t seq_iter = lSequence->getIterator();
       seq_iter->open();
-      state->theSerializer->serialize(
-          seq_iter,
-          (*state->theOS),
-          true);
+      state->theSerializer->serialize(seq_iter, (*state->theOS), true);
       seq_iter->close(); 
     }
 

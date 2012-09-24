@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,6 @@ static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 bool count_variable_uses_rec(
     const expr* e,
     const var_expr* var,
-    RewriterContext* rCtx,
     int limit,
     int& count)
 {
@@ -73,16 +72,16 @@ bool count_variable_uses_rec(
     int thenCount = 0;
     int elseCount = 0;
 
-    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, rCtx, limit, count))
+    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, limit, count))
         return false;
 
-    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, rCtx, limit, thenCount))
+    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, limit, thenCount))
     {
       count = thenCount;
       return false;
     }
 
-    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, rCtx, limit, elseCount))
+    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, limit, elseCount))
     {
       count = elseCount;
       return false;
@@ -95,9 +94,9 @@ bool count_variable_uses_rec(
     ExprConstIterator iter(e);
     while (!iter.done())
     {
-      if (!count_variable_uses_rec(iter.get_expr(), var, rCtx, limit, count))
+      if (!count_variable_uses_rec(iter.get_expr(), var, limit, count))
         return false;
-      
+
       iter.next();
     }
   }
@@ -109,15 +108,11 @@ bool count_variable_uses_rec(
 /*******************************************************************************
 
 ********************************************************************************/
-int count_variable_uses(
-    const expr* root,
-    const var_expr* var,
-    RewriterContext* rCtx,
-    int limit = 0)
+int count_variable_uses(const expr* root, const var_expr* var, int limit = 0)
 {
   int count = 0;
 
-  count_variable_uses_rec(root, var, rCtx, limit, count);
+  count_variable_uses_rec(root, var, limit, count);
 
   return count;
 }
@@ -126,11 +121,11 @@ int count_variable_uses(
 /*******************************************************************************
   copy annotations when wrapping an expression in a new one
 ********************************************************************************/
-expr_t fix_annotations(expr* new_expr, const expr* old_expr) 
+expr* fix_annotations(expr* new_expr, const expr* old_expr)
 {
-  if (old_expr == NULL) 
+  if (old_expr == NULL)
   {
-    switch (new_expr->get_expr_kind()) 
+    switch (new_expr->get_expr_kind())
     {
     case fo_expr_kind:
       old_expr = static_cast<const fo_expr*>(new_expr)->get_arg(0);
@@ -140,7 +135,7 @@ expr_t fix_annotations(expr* new_expr, const expr* old_expr)
       return NULL;
     }
   }
-  
+
   const expr::FreeVars& old_set = old_expr->getFreeVars();
   const expr::FreeVars& new_set = new_expr->getFreeVars();
 
@@ -177,7 +172,7 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
   ExprIterator iter(e);
   while (!iter.done())
   {
-    replace_var((*iter), oldVar, newVar);
+    replace_var((**iter), oldVar, newVar);
     iter.next();
   }
 }
@@ -198,7 +193,7 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
   in FV(e).
 
   Given 2 vars v1 and v2 in FV(e), their prefix ids allows to check if v1 is
-  defined before v2: v1 is defined before v2 iff id(v1) < id(v2). 
+  defined before v2: v1 is defined before v2 iff id(v1) < id(v2).
 ********************************************************************************/
 void index_flwor_vars(
     const expr* e,
@@ -207,13 +202,13 @@ void index_flwor_vars(
     IdVarMap* idvarmap)
 {
   if (e->get_expr_kind() == flwor_expr_kind ||
-      e->get_expr_kind() == gflwor_expr_kind) 
+      e->get_expr_kind() == gflwor_expr_kind)
   {
     const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
     for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
          i != flwor->clause_end();
-         ++i) 
+         ++i)
     {
       const flwor_clause* c = *i;
 
@@ -262,7 +257,7 @@ void index_flwor_vars(
 
         for (csize i = 0; i < numGroupVars; ++i)
         {
-          add_var(gvars[i].second.getp(), numVars, varidmap, idvarmap);
+          add_var(gvars[i].second, numVars, varidmap, idvarmap);
         }
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
@@ -270,7 +265,7 @@ void index_flwor_vars(
 
         for (csize i = 0; i < numNonGroupVars; ++i)
         {
-          add_var(ngvars[i].second.getp(), numVars, varidmap, idvarmap);
+          add_var(ngvars[i].second, numVars, varidmap, idvarmap);
         }
       }
       else if (c->get_kind() == flwor_clause::count_clause)
@@ -308,16 +303,17 @@ void index_flwor_vars(
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const catch_clause_t& clause = (*trycatch)[i];
-      
-      catch_clause::var_map_t& trycatchVars = clause->get_vars();
-      
+      const catch_clause* clause = (*trycatch)[i];
+
+      catch_clause::var_map_t& trycatchVars =
+        const_cast<catch_clause*>(clause)->get_vars();
+
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();
       for (; ite != end; ++ite)
       {
-        const var_expr_t& trycatchVar = (*ite).second;
-        add_var(trycatchVar.getp(), numVars, varidmap, idvarmap);
+        var_expr* trycatchVar = (*ite).second;
+        add_var(trycatchVar, numVars, varidmap, idvarmap);
       }
 
       index_flwor_vars(trycatch->get_catch_expr(i), numVars, varidmap, idvarmap);
@@ -326,10 +322,10 @@ void index_flwor_vars(
   else
   {
     ExprConstIterator iter(e);
-    while(!iter.done()) 
+    while(!iter.done())
     {
       const expr* ce = iter.get_expr();
-      if (ce) 
+      if (ce)
       {
         index_flwor_vars(ce, numVars, varidmap, idvarmap);
       }
@@ -350,18 +346,18 @@ static void add_wincond_vars(
 {
   const flwor_wincond::vars& inVars = cond->get_in_vars();
   const flwor_wincond::vars& outVars = cond->get_out_vars();
-          
-  add_var(inVars.posvar.getp(), numVars, varidmap, idvarmap);
-  add_var(inVars.curr.getp(), numVars, varidmap, idvarmap);
-  add_var(inVars.prev.getp(), numVars, varidmap, idvarmap);
-  add_var(inVars.next.getp(), numVars, varidmap, idvarmap);
+
+  add_var(inVars.posvar, numVars, varidmap, idvarmap);
+  add_var(inVars.curr, numVars, varidmap, idvarmap);
+  add_var(inVars.prev, numVars, varidmap, idvarmap);
+  add_var(inVars.next, numVars, varidmap, idvarmap);
 
   index_flwor_vars(cond->get_cond(), numVars, varidmap, idvarmap);
 
-  add_var(outVars.posvar.getp(), numVars, varidmap, idvarmap);
-  add_var(outVars.curr.getp(), numVars, varidmap, idvarmap);
-  add_var(outVars.prev.getp(), numVars, varidmap, idvarmap);
-  add_var(outVars.next.getp(), numVars, varidmap, idvarmap);
+  add_var(outVars.posvar, numVars, varidmap, idvarmap);
+  add_var(outVars.curr, numVars, varidmap, idvarmap);
+  add_var(outVars.prev, numVars, varidmap, idvarmap);
+  add_var(outVars.next, numVars, varidmap, idvarmap);
 }
 
 
@@ -388,7 +384,7 @@ static void add_var(
   of variables that belong to FV(e) and are referenced by E. Let V(E) be this
   set. V(E) is implemented as a bitset ("freeset") whose size is equal to the
   size of FV(e) and whose i-th bit is on iff the var with prefix id i belongs
-  to V(E). The mapping between E and V(E) is stored in "freevarMap".  
+  to V(E). The mapping between E and V(E) is stored in "freevarMap".
 ********************************************************************************/
 void build_expr_to_vars_map(
     expr* e,
@@ -396,7 +392,7 @@ void build_expr_to_vars_map(
     DynamicBitset& freeset,
     ExprVarsMap& freevarMap)
 {
-  if (e->get_expr_kind() == var_expr_kind) 
+  if (e->get_expr_kind() == var_expr_kind)
   {
     set_bit(static_cast<var_expr *>(e), varmap, freeset, true);
     freevarMap[e] = freeset;
@@ -407,10 +403,10 @@ void build_expr_to_vars_map(
 
   DynamicBitset eFreeset(numVars);
   ExprIterator iter(e);
-  while(!iter.done()) 
+  while(!iter.done())
   {
-    expr* ce = &*(*iter);
-    if (ce) 
+    expr* ce = **iter;
+    if (ce)
     {
       eFreeset.reset();
       build_expr_to_vars_map(ce, varmap, eFreeset, freevarMap);
@@ -423,7 +419,7 @@ void build_expr_to_vars_map(
   // so remove these vars from the freeset of the flwor, if they have been added
   // there.
   if (e->get_expr_kind() == flwor_expr_kind ||
-      e->get_expr_kind() == gflwor_expr_kind) 
+      e->get_expr_kind() == gflwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -472,15 +468,15 @@ void build_expr_to_vars_map(
 
         for (csize i = 0; i < numGroupVars; ++i)
         {
-          set_bit(gvars[i].second.getp(), varmap, freeset, false);
+          set_bit(gvars[i].second, varmap, freeset, false);
         }
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
         csize numNonGroupVars = ngvars.size();
-        
+
         for (csize i = 0; i < numNonGroupVars; ++i)
         {
-          set_bit(ngvars[i].second.getp(), varmap, freeset, false);
+          set_bit(ngvars[i].second, varmap, freeset, false);
         }
       }
       else if (c->get_kind() == flwor_clause::count_clause)
@@ -499,16 +495,17 @@ void build_expr_to_vars_map(
 
     for (csize i = 0; i < numClauses; ++i)
     {
-      const catch_clause_t& clause = (*trycatch)[i];
-      
-      catch_clause::var_map_t& trycatchVars = clause->get_vars();
-      
+      const catch_clause* clause = (*trycatch)[i];
+
+      catch_clause::var_map_t& trycatchVars =
+        const_cast<catch_clause*>(clause)->get_vars();
+
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();
       for (; ite != end; ++ite)
       {
-        const var_expr_t& trycatchVar = (*ite).second;
-        set_bit(trycatchVar.getp(), varmap, freeset, false);
+        var_expr* trycatchVar = (*ite).second;
+        set_bit(trycatchVar, varmap, freeset, false);
       }
     }
   }
@@ -528,15 +525,15 @@ static void remove_wincond_vars(
   const flwor_wincond::vars& inVars = cond->get_in_vars();
   const flwor_wincond::vars& outVars = cond->get_out_vars();
 
-  set_bit(inVars.posvar.getp(), varmap, freeset, false);
-  set_bit(inVars.curr.getp(), varmap, freeset, false);
-  set_bit(inVars.prev.getp(), varmap, freeset, false);
-  set_bit(inVars.next.getp(), varmap, freeset, false);
+  set_bit(inVars.posvar, varmap, freeset, false);
+  set_bit(inVars.curr, varmap, freeset, false);
+  set_bit(inVars.prev, varmap, freeset, false);
+  set_bit(inVars.next, varmap, freeset, false);
 
-  set_bit(outVars.posvar.getp(), varmap, freeset, false);
-  set_bit(outVars.curr.getp(), varmap, freeset, false);
-  set_bit(outVars.prev.getp(), varmap, freeset, false);
-  set_bit(outVars.next.getp(), varmap, freeset, false);
+  set_bit(outVars.posvar, varmap, freeset, false);
+  set_bit(outVars.curr, varmap, freeset, false);
+  set_bit(outVars.prev, varmap, freeset, false);
+  set_bit(outVars.next, varmap, freeset, false);
 }
 
 
@@ -569,7 +566,7 @@ static void set_bit(
 /*******************************************************************************
 
 ********************************************************************************/
-static void set_must_copy(expr* target, BoolAnnotationValue v) 
+static void set_must_copy(expr* target, BoolAnnotationValue v)
 {
   assert(v != ANNOTATION_UNKNOWN);
 
@@ -608,7 +605,7 @@ static void set_must_copy(expr* target, BoolAnnotationValue v)
   already, set it to the value of the no-node-copy annotations of the
   source expr.
 ********************************************************************************/
-static void pushdown_must_copy(expr* src, expr* target) 
+static void pushdown_must_copy(expr* src, expr* target)
 {
   set_must_copy(target, src->getMustCopyNodes());
 }
@@ -617,29 +614,29 @@ static void pushdown_must_copy(expr* src, expr* target)
 /*******************************************************************************
 
 ********************************************************************************/
-static void pushdown_window_vars(const flwor_wincond* cond, expr* target) 
+static void pushdown_window_vars(const flwor_wincond* cond, expr* target)
 {
   const flwor_wincond::vars& inVars = cond->get_in_vars();
 
   if (inVars.curr)
-    pushdown_must_copy(inVars.curr.getp(), target);
+    pushdown_must_copy(inVars.curr, target);
 
   if (inVars.prev)
-    pushdown_must_copy(inVars.prev.getp(), target);
+    pushdown_must_copy(inVars.prev, target);
 
   if (inVars.next)
-    pushdown_must_copy(inVars.next.getp(), target);
+    pushdown_must_copy(inVars.next, target);
 
   const flwor_wincond::vars& outVars = cond->get_out_vars();
 
   if (outVars.curr)
-    pushdown_must_copy(outVars.curr.getp(), target);
+    pushdown_must_copy(outVars.curr, target);
 
   if (outVars.prev)
-    pushdown_must_copy(outVars.prev.getp(), target);
-  
+    pushdown_must_copy(outVars.prev, target);
+
   if (outVars.next)
-    pushdown_must_copy(outVars.next.getp(), target);
+    pushdown_must_copy(outVars.next, target);
 }
 
 
@@ -648,7 +645,7 @@ static void pushdown_window_vars(const flwor_wincond* cond, expr* target)
 ********************************************************************************/
 void computeMustCopyProperty(expr* inExpr)
 {
-  switch(inExpr->get_expr_kind()) 
+  switch(inExpr->get_expr_kind())
   {
   case const_expr_kind:
   {
@@ -685,12 +682,12 @@ void computeMustCopyProperty(expr* inExpr)
       //pushdown_no_node_copy(inExpr, argExpr);
     }
 
-    case var_expr::prolog_var: 
+    case var_expr::prolog_var:
     case var_expr::local_var:
     {
       // TODO: pass into this function a map with one entry per in-scope var.
-      // The entry maps the var to the most recently encountered assignment 
-      // expr for this var. 
+      // The entry maps the var to the most recently encountered assignment
+      // expr for this var.
       return;
     }
 
@@ -754,12 +751,12 @@ void computeMustCopyProperty(expr* inExpr)
   {
     const relpath_expr* e = static_cast<const relpath_expr*>(inExpr);
 
-    std::vector<expr_t>::const_iterator ite = e->begin();
-    std::vector<expr_t>::const_iterator end = e->end();
+    std::vector<expr*>::const_iterator ite = e->begin();
+    std::vector<expr*>::const_iterator end = e->end();
 
     for (++ite; ite != end; ++ite)
     {
-      axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite).getp());
+      axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite));
       axis_kind_t axisKind = axisExpr->getAxis();
 
       if (axisKind != axis_kind_child &&
@@ -767,7 +764,7 @@ void computeMustCopyProperty(expr* inExpr)
           axisKind != axis_kind_self &&
           axisKind != axis_kind_attribute)
       {
-        set_must_copy((*e)[0].getp(), ANNOTATION_TRUE_FIXED);
+        set_must_copy((*e)[0], ANNOTATION_TRUE_FIXED);
         break;
       }
     }
@@ -849,7 +846,7 @@ void computeMustCopyProperty(expr* inExpr)
 
         for (; ite != end; ++ite)
         {
-          pushdown_must_copy((*ite).second.getp(), (*ite).first.getp());
+          pushdown_must_copy((*ite).second, (*ite).first);
         }
 
         ite = gc->beginNonGroupVars();
@@ -857,7 +854,7 @@ void computeMustCopyProperty(expr* inExpr)
 
         for (; ite != end; ++ite)
         {
-          pushdown_must_copy((*ite).second.getp(), (*ite).first.getp());
+          pushdown_must_copy((*ite).second, (*ite).first);
         }
 
         break;
@@ -866,8 +863,8 @@ void computeMustCopyProperty(expr* inExpr)
       {
         orderby_clause* ob = static_cast<orderby_clause*>(clause);
 
-        std::vector<expr_t>::iterator ite = ob->begin();
-        std::vector<expr_t>::iterator end = ob->end();
+        std::vector<expr*>::iterator ite = ob->begin();
+        std::vector<expr*>::iterator end = ob->end();
 
         for (; ite != end; ++ite)
         {

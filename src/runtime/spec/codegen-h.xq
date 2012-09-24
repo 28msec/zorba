@@ -326,6 +326,11 @@ declare function local:add-methods($function) as xs:string*
         string-join(($gen:newline, $gen:indent,
                      'bool mustCopyInputNodes(expr* fo, csize producer) const;',
                      $gen:newline),'')
+      else if (name($meth) eq 'zorba:processPragma')
+      then
+      string-join(($gen:newline, $gen:indent,
+        'void processPragma(expr*, const std::vector<pragma*>&amp;) const;',
+        $gen:newline), '')
       else
         ()
   else

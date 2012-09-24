@@ -56,6 +56,7 @@
 #define ZORBA_FEATURES_NS       ZORBA_NS "features"
 #define ZORBA_ANNOTATIONS_NS    ZORBA_NS "annotations"
 #define ZORBA_COLLATION_NS_BASE ZORBA_NS "collations/"
+#define ZORBA_EXTENSIONS_NS     ZORBA_NS "extensions"
 
 // TODO these probably should not be in "ns_consts"
 #define ZORBA_OPTION_ENABLE_DTD "enable-dtd"
