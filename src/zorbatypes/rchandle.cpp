@@ -17,6 +17,9 @@
 
 #include "zorbatypes/rchandle.h"
 
+#include "zorbaserialization/archiver.h"
+
+#include "diagnostics/assert.h"
 
 namespace zorba 
 {
@@ -35,17 +38,30 @@ namespace zorba
   reference count becomes 0.
 
 ********************************************************************************/
-void RCObject::addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const
+
+SERIALIZABLE_CLASS_VERSIONS(RCObject)
+
+SERIALIZABLE_CLASS_VERSIONS_2(SimpleRCObject, TYPE_RCObject)
+
+
+void RCObject::serialize(::zorba::serialization::Archiver& ar)
+{
+  ZORBA_ASSERT(false);
+
+  if (!ar.is_serializing_out())
+    theRefCount = 0;
+}
+
+
+void RCObject::addReference(SYNC_CODE(RCLock* lock)) const
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
   if(lock)
   {
-    if (sharedCounter) InterlockedIncrement(sharedCounter);
     InterlockedIncrement(&theRefCount);
   }
   else
   {
-    if (sharedCounter) ++(*sharedCounter);
     ++theRefCount;
   }
 
@@ -53,7 +69,6 @@ void RCObject::addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const
 
   SYNC_CODE(if (lock) lock->acquire());
 
-  if (sharedCounter) ++(*sharedCounter);
   ++theRefCount;
 
   SYNC_CODE(if (lock) lock->release());
@@ -62,21 +77,12 @@ void RCObject::addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const
 }
 
 
-void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
+void RCObject::removeReference(SYNC_CODE(RCLock* lock))
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
-  if(lock)
+  if (lock)
   {
-    if (sharedCounter)
-    {
-      InterlockedDecrement(&theRefCount);
-      if (!InterlockedDecrement(sharedCounter))
-      {
-        free();
-        return;
-      }
-    }
-    else if (!InterlockedDecrement(&theRefCount))
+    if (!InterlockedDecrement(&theRefCount))
     {
       free();
       return;
@@ -84,16 +90,7 @@ void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
   }
   else
   {
-    if (sharedCounter)
-    {
-      --theRefCount;
-      if (--(*sharedCounter) == 0)
-      {
-        free();
-        return;
-      }
-    }
-    else if (--theRefCount == 0)
+    if (--theRefCount == 0)
     {
       free();
       return; 
@@ -104,17 +101,7 @@ void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
 
   SYNC_CODE(if (lock) lock->acquire());
 
-  if (sharedCounter)
-  {
-    --theRefCount;
-    if (--(*sharedCounter) == 0)
-    {
-      SYNC_CODE(if (lock) lock->release());
-      free();
-      return;
-    }
-  }
-  else if (--theRefCount == 0)
+  if (--theRefCount == 0)
   {
     SYNC_CODE(if (lock) lock->release());
     free();
@@ -124,6 +111,18 @@ void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
   SYNC_CODE(if (lock) lock->release());
 
 #endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleRCObject::serialize(::zorba::serialization::Archiver& ar)
+{
+  ZORBA_ASSERT(false);
+
+  if (!ar.is_serializing_out())
+    theRefCount = 0;
 }
 
 

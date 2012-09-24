@@ -62,13 +62,23 @@ public:
 };
 
 
+/*******************************************************************************
+  A hash-based map mapping item handles to data items of type V. Equality is
+  based on the store::Item::equals() method.
+
+  It is used to map annotation names to annotation ids.
+
+  NOTE: Although the map uses raw item pointers instead of rchandles, reference
+        counting is still done, but done manually (see insert and clear methods)
+********************************************************************************/
 template <class V>
-class ItemHandleHashMap : public HashMap<store::Item*,
-                                         V,
-                                         ItemHandleHashMapCmp>
+class ItemHandleHashMap
 {
 public:
   typedef typename HashMap<store::Item*, V, ItemHandleHashMapCmp>::iterator iterator;
+
+private:
+  HashMap<store::Item*, V, ItemHandleHashMapCmp> theMap;
 
 public:
   ItemHandleHashMap(
@@ -77,27 +87,18 @@ public:
         ulong size,
         bool sync) 
     :
-    HashMap<store::Item*, V, ItemHandleHashMapCmp>(
-            ItemHandleHashMapCmp(timezone, collation),
-            size,
-            sync)
+    theMap(ItemHandleHashMapCmp(timezone, collation), size, sync)
   {
   }
   
  ~ItemHandleHashMap()
   {
-    iterator ite = this->begin();
-    iterator end = this->end();
-
-    for (; ite != end; ++ite)
-    {
-      (*ite).first->removeReference();
-    }
+    clear();
   }
 
   void clear()
   {
-    SYNC_CODE(AutoMutex lock(this->theMutexp);)
+    SYNC_CODE(AutoMutex lock(theMap.get_mutex());)
 
     iterator ite = this->begin();
     iterator end = this->end();
@@ -107,33 +108,38 @@ public:
       (*ite).first->removeReference();
     }
 
-    HashMap<store::Item*, V, ItemHandleHashMapCmp>::clearNoSync();
+    theMap.clearNoSync();
   }
   
-  void eraseEntry(
-      HashEntry<store::Item*, V>* entry,
-      HashEntry<store::Item*, V>* preventry)
-  {
-    entry->theItem->removeReference();
+  iterator begin() const { return theMap.begin(); }
 
-    HashMap<store::Item*, V, ItemHandleHashMapCmp>::eraseEntry(entry, preventry);
-  }
+  iterator end() const { return theMap.end(); }
 
   iterator find(const store::Item_t& item)
   {
-    return HashMap<store::Item*, V, ItemHandleHashMapCmp>::find(item.getp());
+    return theMap.find(item.getp());
   }
 
   bool insert(const store::Item_t& item, V& value)
   {
-    bool inserted = 
-    HashMap<store::Item*, V, ItemHandleHashMapCmp>::insert(item.getp(), value);
+    bool inserted = theMap.insert(item.getp(), value);
                     
     if (inserted)
       item->addReference();
 
     return inserted;
   }
+
+  bool erase(const store::Item_t& key)
+  {
+    bool found = theMap.erase(key.getp());
+
+    if (found)
+      key->removeReference();
+
+    return found;
+  }
+
 };
 
 }

@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseXmlIterator,
     NaryBaseIterator<FnParseXmlIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnParseXmlIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnParseXmlIterator(
     static_context* sctx,
@@ -79,11 +75,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSerializeIterator,
     NaryBaseIterator<FnSerializeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnSerializeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FnSerializeIterator(
     static_context* sctx,
@@ -97,6 +89,7 @@ public:
 
 public:
   static void streamReleaser(std::istream* stream);
+  static void setSerializationParams(zorba::serializer& aSerializer, store::Item_t& aParamElem, static_context* aSctx, const QueryLoc& aLoc);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

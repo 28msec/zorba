@@ -21,6 +21,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/xquery_exception.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/diagnostic_list.h>
 
@@ -45,7 +46,7 @@ class MySchemaURIMapper : public URIMapper
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
-      oUris.push_back("http://zorba-xquery.com/tutorials/helloworld.xsd");
+      oUris.push_back("http://www.zorba-xquery.com/tutorials/helloworld.xsd");
     }
   }
 };
@@ -297,12 +298,16 @@ bool test_deny_external_module_access(Zorba* aZorba)
         "'http://expath.org/ns/file'; "
         "1 + 1", lContext);
     std::cout << lQuery << std::endl;
-  } catch (ZorbaException& e) {
+  } catch (XQueryException& e) {
     std::cout << "Caught exception: " << e.what() << std::endl;
-    if (e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED) {
+    if (e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED
+        && e.has_source()
+        && e.source_line() == 1) {
       std::cout << "...the correct exception!" << std::endl;
       return true;
     }
+  } catch (ZorbaException& e) {
+    std::cout << "Caught unexpected exception: " << e.what() << std::endl;
   }
   return false;
 }

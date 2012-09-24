@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <sstream>
+
 #include "simple_store.h"
 #include "store_defs.h"
 
@@ -30,8 +32,13 @@
 #include "diagnostics/diagnostic.h"
 #include <zorba/diagnostic_list.h>
 
-#include "util/uuid/uuid.h"
+#include "util/uuid.h"
 #include "zorbautils/string_util.h"
+
+#ifdef ZORBA_WITH_JSON
+#include "json_loader.h"
+#endif
+
 
 namespace zorba
 {
@@ -40,6 +47,7 @@ namespace simplestore
 {
 
 typedef rchandle<store::TempSeq> TempSeq_t;
+
 
 /*******************************************************************************
 
@@ -70,6 +78,7 @@ void SimpleStore::init()
 
   Store::init();
 }
+
 
 void SimpleStore::shutdown(bool soft)
 {
@@ -234,20 +243,18 @@ ulong SimpleStore::createCollectionId()
   an error.
 ********************************************************************************/
 store::Collection_t SimpleStore::createCollection(
-    const store::Item_t& aName,
+    const store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& aNodeType,
-    bool aDynamicCollection)
+    const store::Item_t& nodeType,
+    bool isDynamic)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return NULL;
 
-  store::Collection_t collection(
-      new SimpleCollection(
-        aName,
-        annotations,
-        aNodeType,
-        aDynamicCollection));
+  store::Collection_t collection(new SimpleCollection(name,
+                                                      annotations,
+                                                      nodeType,
+                                                      isDynamic));
 
   const store::Item* lName = collection->getName();
 
@@ -283,14 +290,13 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
     return theItemFactory->createAnyURI(result, id);
   }
 
-  uuid_t uuid;
-  uuid_create(&uuid);
-  zstring uuidStr = uuidToURI(uuid);
+  uuid u;
+  uuid::create(&u);
+  std::ostringstream oss;
+  oss << "urn:uuid:" << u;
+  zstring uuidStr = oss.str();
 
-  const_cast<XmlNode*>(xmlNode)->setHaveReference();
-
-  theNodeToReferencesMap.insert(xmlNode, uuidStr);
-  theReferencesToNodeMap[uuidStr] = node;
+  assignReference(xmlNode, uuidStr);
 
   return theItemFactory->createAnyURI(result, uuidStr);
 }
@@ -305,6 +311,24 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
 bool SimpleStore::hasReference(const store::Item* node)
 {
   return static_cast<const XmlNode*>(node)->haveReference();
+}
+
+
+bool SimpleStore::assignReference(const store::Item* node, const zstring& reference)
+{
+  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
+  zstring uuidStr = reference;
+
+  if (xmlNode->haveReference())
+  {
+    return false;
+  }
+  const_cast<XmlNode*>(xmlNode)->setHaveReference();
+
+  theNodeToReferencesMap.insert(xmlNode, uuidStr);
+  theReferencesToNodeMap[uuidStr] = node;
+
+  return true;
 }
 
 
@@ -343,7 +367,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
   @param node XDM node
   @return whether the node was registered or not.
 ********************************************************************************/
-bool SimpleStore::unregisterNode(XmlNode* node)
+bool SimpleStore::unregisterReferenceToUnusedNode(XmlNode* node)
 {
   if (!node->haveReference())
     return false;
@@ -366,6 +390,47 @@ bool SimpleStore::unregisterNode(XmlNode* node)
   }
 }
 
+/*******************************************************************************
+  Does nothing in the simple store.
+
+  @param node XDM node
+  @return whether the node was registered or not.
+********************************************************************************/
+bool SimpleStore::unregisterReferenceToDeletedNode(XmlNode* node)
+{
+  // Does nothing, since there is no persistency layer. A deleted node can still
+  // be retrieved with a reference, so its reference may not be removed from the
+  // cache.
+  // Merely returns true if entry found, false otherwise.
+  
+  if (!node->haveReference())
+    return false;
+
+  NodeRefMap::iterator resIt;
+
+  if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
+#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t SimpleStore::parseJSON(
+    std::istream& stream,
+    internal::diagnostic::location* relative_error_loc)
+{
+  json::JSONLoader lLoader(stream, relative_error_loc);
+  return lLoader.next();
+}
+#endif /* ZORBA_WITH_JSON */
 
 } // namespace simplestore
 } // namespace zorba

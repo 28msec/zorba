@@ -19,7 +19,7 @@
 
 #include "compiler/expression/expr_base.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class flwor_clause;
@@ -27,9 +27,7 @@ class forletwin_clause;
 class for_clause;
 class copy_clause;
 class var_expr;
-
-typedef rchandle<var_expr> var_expr_t;
-
+class VarInfo;
 
 /******************************************************************************
 
@@ -76,7 +74,7 @@ typedef rchandle<var_expr> var_expr_t;
 
   theFlworClause:
   ---------------
-  If this is a var declared in flwor clause, theFlworClause points to the 
+  If this is a var declared in flwor clause, theFlworClause points to the
   defining clause. That clause also contains the defining expr for the var
   and a pointer back to this var_exr.
 
@@ -90,7 +88,7 @@ typedef rchandle<var_expr> var_expr_t;
   ------------
   For arg vars, it is the position, within the param list, of parameter that is
   bound to this arg var.
-  
+
   theUDF:
   -------
   For arg vars, the corresponding UDF.
@@ -119,10 +117,13 @@ typedef rchandle<var_expr> var_expr_t;
 class var_expr : public expr
 {
   friend class expr;
+  friend class ExprManager;
 
 public:
   enum var_kind
   {
+    unknown_var = 0,
+
     eval_var,
 
     for_var,
@@ -146,15 +147,13 @@ public:
 
     local_var,
 
-    arg_var,
-
-    unknown_var  // TODO: get rid
+    arg_var
   };
 
 protected:
   ulong                 theUniqueId;
 
-  var_kind              theKind;
+  var_kind              theVarKind;
 
   store::Item_t         theName;
 
@@ -170,24 +169,22 @@ protected:
 
   std::vector<expr*>    theSetExprs;
 
+  VarInfo             * theVarInfo;
+
   bool                  theIsExternal;
 
-  bool                  theIsPrivate; 
+  bool                  theIsPrivate;
 
   bool                  theIsMutable;
 
   bool                  theHasInitializer;
 
 public:
-  SERIALIZABLE_CLASS(var_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM2(var_expr, expr,theFlworClause,theCopyClause)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   static std::string decode_var_kind(enum var_kind);
 
-public:
+protected:
   var_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       var_kind k,
@@ -195,15 +192,22 @@ public:
 
   var_expr(const var_expr& source);
 
+  virtual ~var_expr();
+
+public:
+  void set_var_info(VarInfo* v);
+
+  VarInfo* get_var_info() const { return theVarInfo; }
+
   ulong get_unique_id() const { return theUniqueId; }
 
-  void set_unique_id(ulong v) { assert(theUniqueId == 0); theUniqueId = v; }
+  void set_unique_id(ulong v);
 
   store::Item* get_name() const;
 
-  var_kind get_kind() const { return theKind; }
+  var_kind get_kind() const { return theVarKind; }
 
-  void set_kind(var_kind k) { theKind = k; }
+  void set_kind(var_kind k) { theVarKind = k; }
 
   bool is_private() const { return theIsPrivate; }
 
@@ -211,11 +215,11 @@ public:
 
   bool is_external() const { return theIsExternal; }
 
-  void set_external(bool v) { theIsExternal = v; }
+  void set_external(bool v);
 
-  bool hasInitializer() const { return theHasInitializer; }
+  bool has_initializer() const { return theHasInitializer; }
 
-  void setHasInitializer(bool v) { theHasInitializer = v; }
+  void set_has_initializer(bool v);
 
   bool is_mutable() const { return theIsMutable; }
 
@@ -253,15 +257,19 @@ public:
 
   void remove_set_expr(expr* e);
 
+  csize num_set_exprs() const { return theSetExprs.size(); }
+
+  expr* get_set_expr(csize i) const { return theSetExprs[i]; }
+
   std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
 
   std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
-  
+
   bool is_context_item() const;
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& subst) const;
+  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -269,22 +277,19 @@ public:
 };
 
 
-struct GlobalBinding : public std::pair<var_expr_t, expr_t>,
-                       public ::zorba::serialization::SerializeBaseClass
+struct GlobalBinding
 {
-  bool theIsExternal;
-
-public:
-  SERIALIZABLE_CLASS(GlobalBinding)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(GlobalBinding)
-  void serialize(::zorba::serialization::Archiver& ar);
+  var_expr  * theVar;
+  expr      * theExpr;
+  bool        theIsExternal;
 
 public:
   GlobalBinding() : theIsExternal(false) {}
 
-  GlobalBinding(const var_expr_t& v, const expr_t& e, bool external)
+  GlobalBinding(var_expr* v, expr* e, bool external)
     :
-    std::pair<var_expr_t, expr_t>(v, e),
+    theVar(v),
+    theExpr(e),
     theIsExternal(external)
   {
   }

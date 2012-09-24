@@ -127,6 +127,131 @@ FnSerializeIterator::streamReleaser(std::istream* s)
   delete s;
 }
 
+void
+FnSerializeIterator::setSerializationParams(
+    zorba::serializer& aSerializer,
+    store::Item_t& aParamElem,
+    static_context* aSctx,
+    const QueryLoc& aLoc
+)
+{
+  store::Item_t lElemName = aParamElem->getNodeName();
+
+  // make sure the user does not pass children of the serialization-parameters
+  // element which would pass the schema validation below but break the logic after
+  if (lElemName->getLocalName() != "serialization-parameters")
+  {
+    ztd::string_builder lSb;
+    lSb << "the serialization parameters element must have the name \"serialization parameters\". "
+      << "\"" << lElemName->getLocalName() << "\" was found";
+    throw XQUERY_EXCEPTION(
+      err::XQDY0027,
+      ERROR_PARAMS(lSb.str()),
+      ERROR_LOC( aLoc ));
+  }
+
+  // the provided element must be in the correct namespace otherwise
+  // the user can pass a validated element from another namespace
+  // which would make the schema validation below fail
+  if (lElemName->getNamespace() != "http://www.w3.org/2010/xslt-xquery-serialization")
+  {
+    ztd::string_builder lSb;
+    zstring lFoundNs("No");
+    if (lElemName->getNamespace().size() > 0)
+    {
+      lFoundNs = "<";
+      lFoundNs += lElemName->getNamespace();
+      lFoundNs += ">";
+    }
+
+    lSb << "the serialization-parameters element must be in the <http://www.w3.org/2010/xslt-xquery-serialization> namespace. "
+      << lFoundNs << " namespace was found";
+    throw XQUERY_EXCEPTION(
+      err::XQDY0027,
+      ERROR_PARAMS(lSb .str()),
+      ERROR_LOC( aLoc ));
+  }
+
+#ifndef ZORBA_NO_XMLSCHEMA
+  // this will throw an error if the validation fails
+  aSctx->validate(aParamElem, aParamElem, StaticContextConsts::strict_validation);
+#endif
+
+  // get the children iterator
+  store::Iterator_t lElemIter = aParamElem->getChildren();
+  lElemIter->open();
+  store::Item_t lChildElem;
+
+  // iterate over the children
+  while (lElemIter->next(lChildElem))
+  {
+#ifdef ZORBA_NO_XMLSCHEMA
+    // if zorba is compiled without schema support
+    // consider only the child elements
+    if (lChildElem->isNode() && lChildElem->getNodeKind() == store::StoreConsts::elementNode)
+    {
+#endif
+      if (lChildElem->getNodeKind() != store::StoreConsts::elementNode)
+      {
+        continue;
+      }
+
+      store::Item_t lChildName = lChildElem->getNodeName();
+      if (lChildName->getLocalName() == "use-character-maps")
+      {
+        // TODO: once zorba the serializer supports character maps
+      }
+      else
+      {
+        store::Iterator_t lAttrIter = lChildElem->getAttributes();
+        lAttrIter->open();
+        store::Item_t lAttribute;
+        // iterate over the attributes
+        while (lAttrIter->next(lAttribute))
+        {
+          store::Item_t lAttributeQName = lAttribute->getNodeName();
+
+          // the attribute must have the local name "value" (this should be taken care of by the schema)
+          if (lAttributeQName->getLocalName() == "value")
+          {
+            store::Item_t lChildElemQName = lChildElem->getNodeName();
+            // the serializer throws an exception if the parameter name is not correct
+            aSerializer.setParameter(lChildElemQName->getLocalName().c_str(), lAttribute->getStringValue().c_str());
+            break;
+          }
+#ifdef ZORBA_NO_XMLSCHEMA
+          // if zorba is compiled without schema support
+          // consider only the child elements
+          else
+          {
+            ztd::string_builder lSb;
+            lSb << "serialization-parameters element has an invalid attribute: \""
+              << lAttributeQName->getLocalName() << "\"";
+            throw XQUERY_EXCEPTION(
+              err::XQDY0027,
+              ERROR_PARAMS(lSb.str()),
+              ERROR_LOC( loc ));
+          }
+#endif
+        }
+        lAttrIter->close();
+      }
+#ifdef ZORBA_NO_XMLSCHEMA
+    }
+    else
+    {
+      ztd::string_builder lSb;
+      lSb << "serialization-parameters element can only element child nodes";
+      throw XQUERY_EXCEPTION(
+        err::XQDY0027,
+        ERROR_PARAMS(lSb.str()),
+        ERROR_LOC( loc ));
+    }
+#endif
+  }
+  lElemIter->close();
+}
+
 bool
 FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
@@ -145,121 +270,7 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
     // if have serialization parameters
     if (theChildren.size() == 2 && consumeNext(lParams, theChildren[1].getp(), aPlanState))
     {
-      store::Item_t lElemName = lParams->getNodeName();
-
-      // make sure the user does not pass children of the serialization-parameters
-      // element which would pass the schema validation below but break the logic after
-      if (lElemName->getLocalName() != "serialization-parameters")
-      {
-        ztd::string_builder lSb;
-        lSb << "the serialization parameters element must have the name \"serialization parameters\". "
-          << "\"" << lElemName->getLocalName() << "\" was found";
-        throw XQUERY_EXCEPTION(
-          err::XQDY0027,
-          ERROR_PARAMS(lSb.str()),
-          ERROR_LOC( loc ));
-      }
-
-      // the provided element must be in the correct namespace otherwise
-      // the user can pass a validated element from another namespace
-      // which would make the schema validation below fail
-      if (lElemName->getNamespace() != "http://www.w3.org/2010/xslt-xquery-serialization")
-      {
-        ztd::string_builder lSb;
-        zstring lFoundNs("No");
-        if (lElemName->getNamespace().size() > 0)
-        {
-          lFoundNs = "<";
-          lFoundNs += lElemName->getNamespace();
-          lFoundNs += ">";
-        }
-
-        lSb << "the serialization-parameters element must be in the <http://www.w3.org/2010/xslt-xquery-serialization> namespace. "
-          << lFoundNs << " namespace was found";
-        throw XQUERY_EXCEPTION(
-          err::XQDY0027,
-          ERROR_PARAMS(lSb .str()),
-          ERROR_LOC( loc ));
-      }
-
-#ifndef ZORBA_NO_XMLSCHEMA
-      // this will throw an error if te validation fails
-      theSctx->validate(lParams, lParams, StaticContextConsts::strict_validation);
-#endif
-
-      // get the children iterator
-      store::Iterator_t lElemIter = lParams->getChildren();
-      lElemIter->open();
-      store::Item_t lChildElem;
-
-      // iterate over the children
-      while (lElemIter->next(lChildElem))
-      {
-#ifdef ZORBA_NO_XMLSCHEMA
-        // if zorba is compiled without schema support
-        // consider only the child elements
-        if (lChildElem->isNode() && lChildElem->getNodeKind() == store::StoreConsts::elementNode)
-        {
-#endif
-          if (lChildElem->getNodeKind() != store::StoreConsts::elementNode)
-          {
-            continue;
-          }
-
-          store::Item_t lChildName = lChildElem->getNodeName();
-          if (lChildName->getLocalName() == "use-character-maps")
-          {
-            // TODO: once zorba the serializer supports character maps
-          }
-          else
-          {
-            store::Iterator_t lAttrIter = lChildElem->getAttributes();
-            lAttrIter->open();
-            store::Item_t lAttribute;
-            // iterate over the attributes
-            while (lAttrIter->next(lAttribute))
-            {
-              store::Item_t lAttributeQName = lAttribute->getNodeName();
-
-              // the attribute must have the local name "value" (this should be taken care of by the schema)
-              if (lAttributeQName->getLocalName() == "value")
-              {
-                store::Item_t lChildElemQName = lChildElem->getNodeName();
-                // the serializer throws an exception if the parameter name is not correct
-                lSerializer.setParameter(lChildElemQName->getLocalName().c_str(), lAttribute->getStringValue().c_str());
-                break;
-              }
-#ifdef ZORBA_NO_XMLSCHEMA
-              // if zorba is compiled without schema support
-              // consider only the child elements
-              else
-              {
-                ztd::string_builder lSb;
-                lSb << "serialization-parameters element has an invalid attribute: \""
-                  << lAttributeQName->getLocalName() << "\"";
-                throw XQUERY_EXCEPTION(
-                  err::XQDY0027,
-                  ERROR_PARAMS(lSb.str()),
-                  ERROR_LOC( loc ));
-              }
-#endif
-            }
-            lAttrIter->close();
-          }
-#ifdef ZORBA_NO_XMLSCHEMA
-        }
-        else
-        {
-          ztd::string_builder lSb;
-          lSb << "serialization-parameters element can only element child nodes";
-          throw XQUERY_EXCEPTION(
-            err::XQDY0027,
-            ERROR_PARAMS(lSb.str()),
-            ERROR_LOC( loc ));
-        }
-#endif
-      }
-      lElemIter->close();
+      setSerializationParams(lSerializer, lParams, theSctx, loc);
     }
 
     {

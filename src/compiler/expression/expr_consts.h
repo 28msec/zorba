@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,13 +17,13 @@
 #ifndef ZORBA_COMPILER_EXPR_CONSTS_H
 #define ZORBA_COMPILER_EXPR_CONSTS_H
 
-namespace zorba 
+namespace zorba
 {
 
 
 enum axis_kind_t
 {
-  axis_kind_self,
+  axis_kind_self = 0,
   axis_kind_child,
   axis_kind_parent,
   axis_kind_descendant,
@@ -40,7 +40,7 @@ enum axis_kind_t
 
 enum match_test_t
 {
-  match_no_test,
+  match_no_test = 0,
   match_name_test,
   match_anykind_test,
   match_doc_test,
@@ -57,7 +57,7 @@ std::string toString(match_test_t a);
 
 enum match_wild_t
 {
-  match_no_wild,
+  match_no_wild = 0,
   match_all_wild,
   match_prefix_wild,
   match_name_wild
@@ -77,16 +77,16 @@ enum expr_script_kind_t
                                  // expr may return non-empty XDM as well.
 
   VAR_SETTING_EXPR       =   8,  // An expr E during the evaluation of which a
-                                 // var may be set and that var is declared 
+                                 // var may be set and that var is declared
                                  // outside the innermost block that contains E.
 
-  APPLYING_EXPR          =  16,  // An expr during the evaluation of which a 
+  APPLYING_EXPR          =  16,  // An expr during the evaluation of which a
                                  // PUL may get applied.
 
   EXITING_EXPR           =  32,  // An expr during the evaluation of which an
                                  // exit expression may be executed.
 
-  BREAKING_EXPR          =  64,  // An expr E during the evaluation of which 
+  BREAKING_EXPR          =  64,  // An expr E during the evaluation of which
                                  // a break or continue expr may be executed
                                  // and the the while or flwor expr being
                                  // broken or continued contains E.
@@ -105,7 +105,7 @@ enum BoolAnnotationValue
 };
 
 
-class CompareConsts 
+class CompareConsts
 {
 public:
   enum CompareType
@@ -121,7 +121,7 @@ public:
 };
 
 
-class ArithmeticConsts 
+class ArithmeticConsts
 {
 public:
   enum OperationKind

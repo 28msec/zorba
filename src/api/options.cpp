@@ -17,6 +17,7 @@
 
 #include <string.h>
 #include <zorba/options.h>
+#include "diagnostics/xquery_diagnostics.h"
 
 Zorba_CompilerHints::Zorba_CompilerHints()
   :
@@ -36,7 +37,11 @@ void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
 
 Zorba_SerializerOptions::Zorba_SerializerOptions()
   :
+#ifdef ZORBA_WITH_JSON
+  ser_method(ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID),
+#else
   ser_method(ZORBA_SERIALIZATION_METHOD_XML),
+#endif
   byte_order_mark(ZORBA_BYTE_ORDER_MARK_NO),
   escape_uri_attributes(ZORBA_ESCAPE_URI_ATTRIBUTES_NO),
   include_content_type(ZORBA_INCLUDE_CONTENT_TYPE_NO),
@@ -46,9 +51,31 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   standalone(ZORBA_STANDALONE_OMIT),
   undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO),
   encoding(ZORBA_ENCODING_UTF8)
+#ifdef ZORBA_WITH_JSON
+  ,
+    jsoniq_multiple_items(JSONIQ_MULTIPLE_ITEMS_YES),
+    jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML)
+#endif /* ZORBA_WITH_JSON */
 {
 }
 
+Zorba_serialization_method_t convertMethodString(const char* value, const char* parameter)
+{
+  if (strcmp(value, "xml") == 0) return ZORBA_SERIALIZATION_METHOD_XML;
+  else if (strcmp(value, "html") == 0) return ZORBA_SERIALIZATION_METHOD_HTML;
+  else if (strcmp(value, "xhtml") == 0) return ZORBA_SERIALIZATION_METHOD_XHTML;
+  else if (strcmp(value, "text") == 0) return ZORBA_SERIALIZATION_METHOD_TEXT;
+  else if (strcmp(value, "binary") == 0) return ZORBA_SERIALIZATION_METHOD_BINARY;
+#ifdef ZORBA_WITH_JSON
+  else if (strcmp(value, "json") == 0) return ZORBA_SERIALIZATION_METHOD_JSON;
+  else if (strcmp(value, "json-xml-hybrid") == 0) return ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
+#endif
+  else
+  {
+    throw XQUERY_EXCEPTION
+        (err::SEPM0016, ERROR_PARAMS( value, parameter, ZED( GoodValuesAreXMLEtc ) ));
+  }
+}
 
 void Zorba_SerializerOptions::SetSerializerOption(
     const char* parameter,
@@ -59,15 +86,7 @@ void Zorba_SerializerOptions::SetSerializerOption(
 
   if (strcmp(parameter, "method") == 0)
   {
-    if (strcmp(value, "xml") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-    else if (strcmp(value, "html") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
-    else if (strcmp(value, "xhtml") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
-    else if (strcmp(value, "text") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
-    else if (strcmp(value, "binary") == 0) ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
-    else
-    {
-      ; // TODO signal errors for incorrect values?
-    }
+    ser_method = convertMethodString(value, parameter);
   }
   else if (strcmp(parameter, "byte-order-mark") == 0)
   {
@@ -127,6 +146,19 @@ void Zorba_SerializerOptions::SetSerializerOption(
   {
     version = value;
   }
+#ifdef ZORBA_WITH_JSON
+  else if (strcmp(parameter, "jsoniq-multiple-items") == 0)
+  {
+    if (strcmp(value, "no") == 0)
+      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_NO;
+    else if (strcmp(value, "yes") == 0)
+      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_YES;
+  }
+  else if (strcmp(parameter, "jsoniq-xdm-node-output-method") == 0)
+  {
+    jsoniq_xdm_method = convertMethodString(value, parameter);
+  }
+#endif /* ZORBA_WITH_JSON */
 }
 
 

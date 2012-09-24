@@ -1,0 +1,113 @@
+
+module namespace foaf = "http://www.w3.org/TestModules/foaf";
+
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare variable $foaf:network:= xs:QName("foaf:network");
+declare variable $foaf:person:= xs:QName("foaf:person");
+declare variable $foaf:age:= xs:QName("foaf:age");
+declare variable $foaf:friends:= xs:QName("foaf:friends");
+
+declare collection foaf:network as object()*;
+
+
+(:
+  The person index maps each person name with its information.
+:)
+
+declare %ann:unique %ann:automatic index foaf:person
+on nodes dml:collection(xs:QName("foaf:network"))
+by .("name") as xs:string;
+
+
+(:
+  The person index maps each person name with its information.
+:)
+
+declare %ann:value-range %ann:automatic index foaf:age
+on nodes dml:collection(xs:QName("foaf:network"))
+by xs:integer(.("age")) as xs:integer;
+
+
+(:
+  The person index maps each person name with its information.
+:)
+
+declare %ann:manual %ann:general-equality index foaf:friends
+on nodes dml:collection(xs:QName("foaf:network"))
+by jn:members(.("friends")) as xs:string*;
+
+
+(:
+  The person index maps each person with the person of which she is the best friend.
+:)
+
+declare %ann:manual %ann:general-range index foaf:age-range
+on nodes dml:collection(xs:QName("foaf:network"))
+by xs:integer(.("age")) as xs:integer;
+
+
+(:
+  Create and populate the collection, and then create the indexes
+:)
+
+declare %ann:sequential function foaf:create-db()
+{
+  ddl:create($foaf:network);
+
+  dml:insert($foaf:network, (
+    {
+      "name" : "James T. Kirk",
+      "age" : 30,
+      "gender" : "male",
+      "friends" : [ "Mister Spock", "Scotty", "Jean-Luc Picard"]
+    },
+    
+    {
+      "name" : "Jean-Luc Picard",
+      "age" : 40,
+      "gender" : "male",
+      "friends" : [ "James T. Kirk", "Lieutenant Commander Data", "Beverly Crusher" ]
+    },
+    
+    {
+      "name" : "Beverly Crusher",
+      "age" : 38,
+      "gender" : "female",
+      "friends" : [ "Jean-Luc Picard", "Ensign Crusher" ]
+    },
+    
+    {
+      "name" : "Lieutenant Commander Data",
+      "age" : 100,
+      "gender" : "positronic matrix",
+      "friends" : [ "Geordi La Forge" ]
+    }
+  ));
+
+  index_ddl:create($foaf:person);
+  index_ddl:create($foaf:age);
+  index_ddl:create($foaf:friends);
+};
+
+
+declare function foaf:probe-point-id($indexName as xs:QName, $id as xs:string)
+{
+  index_dml:probe-index-point-value($indexName, $id)
+};
+
+declare function foaf:probe-range-id($indexName as xs:QName, $lower as xs:integer, $upper as xs:integer)
+{
+  index_dml:probe-index-range-value($indexName, $lower, $upper, true(), true(), true(), true())
+};
+
+declare function foaf:probe-point-general-id($indexName as xs:QName, $names as xs:string*)
+{
+  index_dml:probe-index-point-general($indexName, $names)
+};
+

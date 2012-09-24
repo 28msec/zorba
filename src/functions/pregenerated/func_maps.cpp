@@ -41,6 +41,16 @@ PlanIter_t zorba_store_data_structure_unordered_map_create::codegen(
   return new MapCreateIterator(sctx, loc, argv);
 }
 
+PlanIter_t zorba_store_data_structure_unordered_map_create_transient::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new MapCreateTransientIterator(sctx, loc, argv);
+}
+
 PlanIter_t zorba_store_data_structure_unordered_map_delete::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -111,14 +121,24 @@ PlanIter_t zorba_store_data_structure_unordered_map_available_maps::codegen(
   return new AvailableMapsIterator(sctx, loc, argv);
 }
 
+PlanIter_t zorba_store_data_structure_unordered_map_is_transient::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new MapIsTransientIterator(sctx, loc, argv);
+}
+
 void populate_context_maps(static_context* sctx)
 {
-  {
+
+
+      {
     std::vector<xqtref_t> lParamTypes;
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
-    lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
-
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_create,
+    lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_create,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","create"), 
         lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
         FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_CREATE_N);
@@ -126,9 +146,22 @@ void populate_context_maps(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
+    std::vector<xqtref_t> lParamTypes;
+    lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
+    lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_create_transient,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","create-transient"), 
+        lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_CREATE_TRANSIENT_N);
+
+  }
+
+
+
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_delete,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","delete"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -138,12 +171,12 @@ void populate_context_maps(static_context* sctx)
   }
 
 
-  {
+
+
+      {
     std::vector<xqtref_t> lParamTypes;
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
-    lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
-
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_get,
+    lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_get,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","get"), 
         lParamTypes, GENV_TYPESYSTEM.ITEM_TYPE_STAR, true),
         FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_GET_N);
@@ -151,13 +184,13 @@ void populate_context_maps(static_context* sctx)
   }
 
 
-  {
+
+
+      {
     std::vector<xqtref_t> lParamTypes;
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
     lParamTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-    lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
-
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_insert,
+    lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_insert,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","insert"), 
         lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
         FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_INSERT_N);
@@ -165,12 +198,12 @@ void populate_context_maps(static_context* sctx)
   }
 
 
-  {
+
+
+      {
     std::vector<xqtref_t> lParamTypes;
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
-    lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
-
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_remove,
+    lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_remove,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","remove"), 
         lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
         FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_REMOVE_N);
@@ -178,9 +211,9 @@ void populate_context_maps(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_keys,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","keys"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -190,9 +223,9 @@ void populate_context_maps(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_size,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","size"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -202,13 +235,25 @@ void populate_context_maps(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_available_maps,
         (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","available-maps"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
         FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_AVAILABLE_MAPS_0);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_is_transient,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","is-transient"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_IS_TRANSIENT_1);
 
   }
 

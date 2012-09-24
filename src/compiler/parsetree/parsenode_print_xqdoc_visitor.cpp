@@ -162,7 +162,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       theFactory->createQName(lLocalnameQName, "", "", "localname");
       store::Item_t lValueQName;
       theFactory->createQName(lValueQName, "", "", "value");
-     
+
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
         lPrefixQName, lAnnotationElem, lPrefixQName,
@@ -198,7 +198,7 @@ bool is_namespace_schema(zstring aPrefix, zstring aNamespace )
 
 void print_namespaces()
 {
-  store::Item_t lTypeName; 
+  store::Item_t lTypeName;
   store::Item_t lNamespaceQName, lCustomElem;
   store::Item_t lPrefixQName, lURIQName, lIsSchemaQName;
   store::Item_t lNamespace, lAttrValue;
@@ -900,10 +900,8 @@ void add_invoked_function (
   map<zstring, zstring>::iterator ite = theNamespaceMap.find(aPrefix);
   if (ite == theNamespaceMap.end())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZXQD0001_PREFIX_NOT_DECLARED,
-      ERROR_PARAMS( aPrefix, aLocalName, aLocation )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZXQD0001_PREFIX_NOT_DECLARED,
+    ERROR_PARAMS(aPrefix, aLocalName, aLocation ));
   }
 
   zstring lNS = ite->second;
@@ -936,13 +934,10 @@ void add_invoked_function (
 }
 
 
-XQDOC_NO_BEGIN_TAG (VarDecl)
+XQDOC_NO_BEGIN_TAG (GlobalVarDecl)
 
-void end_visit(const VarDecl& n, void*)
+void end_visit(const GlobalVarDecl& n, void*)
 {
-  if (!n.is_global())
-    return;
-
   store::Item_t lVariableQName, lUriQName;
   store::Item_t lVariableElem, lUriElem, lUriText;
 
@@ -959,20 +954,20 @@ void end_visit(const VarDecl& n, void*)
       lUriElem, lVariableElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  zstring lUriString(n.get_name()->get_qname());
+  zstring lUriString(n.get_var_name()->get_qname());
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
   store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
 
-  if(n.get_typedecl())
+  if (n.get_var_type())
   {
     std::stringstream os;
-    print_parsetree_xquery(os , &*n.get_typedecl());
+    print_parsetree_xquery(os , &*n.get_var_type());
     print_custom(lCommentElem, "type", os.str());
   }
 
-  if(n.is_extern())
+  if (n.is_extern())
     print_custom(lCommentElem, "isExternal", "true");
 
   // add all invoked function elements as children to the end of the current
@@ -1203,6 +1198,7 @@ XQDOC_NO_BEGIN_END_TAG (InstanceofExpr)
 XQDOC_NO_BEGIN_END_TAG (IntegrityConstraintDecl)
 XQDOC_NO_BEGIN_END_TAG (IntersectExceptExpr)
 XQDOC_NO_BEGIN_END_TAG (ItemType)
+XQDOC_NO_BEGIN_END_TAG (StructuredItemType)
 XQDOC_NO_BEGIN_END_TAG (LetClause)
 XQDOC_NO_BEGIN_END_TAG (LibraryModule)
 XQDOC_NO_BEGIN_END_TAG (Literal)
@@ -1244,6 +1240,7 @@ XQDOC_NO_BEGIN_END_TAG (QVarInDecl)
 XQDOC_NO_BEGIN_END_TAG (QVarInDeclList)
 XQDOC_NO_BEGIN_END_TAG (RangeExpr)
 XQDOC_NO_BEGIN_END_TAG (RelativePathExpr)
+XQDOC_NO_BEGIN_END_TAG (SimpleMapExpr)
 XQDOC_NO_BEGIN_END_TAG (RenameExpr)
 XQDOC_NO_BEGIN_END_TAG (ReplaceExpr)
 XQDOC_NO_BEGIN_END_TAG (RevalidationDecl)
@@ -1275,6 +1272,7 @@ XQDOC_NO_BEGIN_END_TAG (URILiteralList)
 XQDOC_NO_BEGIN_END_TAG (ValidateExpr)
 XQDOC_NO_BEGIN_END_TAG (ValueComp)
 XQDOC_NO_BEGIN_END_TAG (VarBinding)
+XQDOC_NO_BEGIN_END_TAG( LocalVarDecl )
 XQDOC_NO_BEGIN_END_TAG (VarGetsDecl)
 XQDOC_NO_BEGIN_END_TAG (VarGetsDeclList)
 XQDOC_NO_BEGIN_END_TAG (VarInDecl)
@@ -1287,6 +1285,19 @@ XQDOC_NO_BEGIN_END_TAG (Wildcard)
 XQDOC_NO_BEGIN_END_TAG (WindowClause)
 XQDOC_NO_BEGIN_END_TAG (WindowVarDecl)
 XQDOC_NO_BEGIN_END_TAG (WindowVars)
+
+XQDOC_NO_BEGIN_END_TAG (JSONArrayConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONDirectObjectConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONPairConstructor)
+XQDOC_NO_BEGIN_END_TAG (JSONPairList)
+XQDOC_NO_BEGIN_END_TAG (JSON_Test)
+XQDOC_NO_BEGIN_END_TAG (JSONObjectInsertExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayInsertExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayAppendExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONDeleteExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONReplaceExpr)
+XQDOC_NO_BEGIN_END_TAG (JSONRenameExpr)
 
 XQDOC_NO_BEGIN_END_TAG (LiteralFunctionItem)
 XQDOC_NO_BEGIN_END_TAG (InlineFunction)

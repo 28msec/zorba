@@ -124,103 +124,85 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
       }
       got_backslash = false;
 
-      if ( in_char_class ) {
-        //
-        // When in a character class, only single-character escapes are
-        // permitted.
-        //
-        switch ( *xq_c ) {
-          case '(':
-          case ')':
-          case '*':
-          case '+':
-          case '-':
-          case '.':
-          case 'n': // newline
-          case 'r': // carriage return
-          case 't': // tab
-          case '[':
-          case '\\':
-          case ']':
-          case '^':
-          case '{':
-          case '|':
-          case '}':
-            *icu_re += '\\';
-            break;
-          default:
-            throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
-        }
-      } else {
-        switch ( *xq_c ) {
-          case 'c': // NameChar
-            *icu_re += "[" bs_c "]";
-            continue;
-          case 'C': // [^\c]
-            *icu_re += "[^" bs_c "]";
-            continue;
-          case 'i': // initial NameChar
-            *icu_re += "[" bs_i "]";
-            continue;
-          case 'I': // [^\i]
-            *icu_re += "[^" bs_i "]";
-            continue;
-          case '0':
-          case '1':
-          case '2':
-          case '3':
-          case '4':
-          case '5':
-          case '6':
-          case '7':
-          case '8':
-          case '9':
-            backref_no = *xq_c - '0';
-            if ( !backref_no )          // \0 is illegal
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
-            if ( in_char_class ) {
-              //
-              // XQuery 3.0 F&O 5.6.1: Within a character class expression,
-              // \ followed by a digit is invalid.
-              //
-              throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BackRefIllegalInCharClass )
-              );
-            }
-            in_backref = true;
-            // no break;
-          case '$':
-          case '(':
-          case ')':
-          case '*':
-          case '+':
-          case '-':
-          case '.':
-          case '?':
-          case 'd': // [0-9]
-          case 'D': // [^\d]
-          case 'n': // newline
-          case 'p': // category escape
-          case 'P': // [^\p]
-          case 'r': // carriage return
-          case 's': // whitespace
-          case 'S': // [^\s]
-          case 't': // tab
-          case 'w': // word char
-          case 'W': // [^\w]
-          case '[':
-          case '\\':
-          case ']':
-          case '^':
-          case '{':
-          case '|':
-          case '}':
-            *icu_re += '\\';
-            break;
-          default:
-            throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
-        }
-      } // if ( in_char_class )
+      switch ( *xq_c ) {
+
+        ////////// Back-References ////////////////////////////////////////////
+
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+          backref_no = *xq_c - '0';
+          if ( !backref_no )          // \0 is illegal
+            throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
+          if ( in_char_class ) {
+            //
+            // XQuery 3.0 F&O 5.6.1: Within a character class expression,
+            // \ followed by a digit is invalid.
+            //
+            throw INVALID_RE_EXCEPTION(
+              xq_re, ZED( BackRefIllegalInCharClass )
+            );
+          }
+          in_backref = true;
+          // no break;
+
+        ////////// Single Character Escapes ///////////////////////////////////
+
+        case '$': // added in XQuery 3.0 F&O 5.6.1
+        case '(':
+        case ')':
+        case '*':
+        case '+':
+        case '-':
+        case '.':
+        case '?':
+        case '[':
+        case '\\':
+        case ']':
+        case '^':
+        case 'n': // newline
+        case 'r': // carriage return
+        case 't': // tab
+        case '{':
+        case '|':
+        case '}':
+          // no break;
+
+        ////////// Multi-Character & Category Escapes /////////////////////////
+
+        case 'd': // [0-9]
+        case 'D': // [^\d]
+        case 'p': // category escape
+        case 'P': // [^\p]
+        case 's': // whitespace
+        case 'S': // [^\s]
+        case 'w': // word char
+        case 'W': // [^\w]
+          *icu_re += '\\';
+          break;
+        case 'c': // NameChar
+          *icu_re += "[" bs_c "]";
+          continue;
+        case 'C': // [^\c]
+          *icu_re += "[^" bs_c "]";
+          continue;
+        case 'i': // initial NameChar
+          *icu_re += "[" bs_i "]";
+          continue;
+        case 'I': // [^\i]
+          *icu_re += "[^" bs_i "]";
+          continue;
+
+        default:
+          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
+      }
     } else {
       if ( in_backref ) {
         //
@@ -300,6 +282,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             is_first_char = true;
             goto append;
           }
+          break;
         default:
           if ( x_flag && ascii::is_space( *xq_c ) ) {
             if ( !in_char_class )

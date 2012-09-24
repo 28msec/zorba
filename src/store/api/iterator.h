@@ -35,13 +35,6 @@ namespace store
 class Iterator : virtual public SimpleRCObject
 {
  public:
-  SERIALIZABLE_ABSTRACT_CLASS(Iterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(Iterator, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-  }
-
- public:
   Iterator() {}
 
   virtual ~Iterator() {}
@@ -178,7 +171,8 @@ class IndexProbeIterator : public Iterator
 public:
   virtual ~IndexProbeIterator() { }
 
-  virtual void init(const IndexCondition_t& cond) = 0;
+  virtual void init(const IndexCondition_t& cond,
+                    const xs_integer& aSkip = xs_integer::zero()) = 0;
 
   virtual void open() = 0;
   
@@ -213,8 +207,6 @@ public:
   virtual void init(const TempSeq_t& seq, xs_integer startPos, xs_integer endPos) = 0;
 
   virtual void open() = 0;
-  
-  virtual Item* next() = 0;
   
   virtual bool next(Item_t& result) = 0;
   

@@ -46,11 +46,21 @@ private:
   bool theParseExternalParsedEntity;
   unsigned int theSkipRootNodes;
   bool theSkipTopLevelTextNodes;
+  bool theErrorOnDoctype;       // Used by the fragment parser. By default it will allow Doctype 
+                                // declarations. But if a Doctype declaration is
+                                // present, and the flag is set to true, an error will be generated.
+  
   bool theSubstituteEntities;
   bool theXincludeSubstitutions;
   bool theRemoveRedundantNS;
   bool theNoCDATA;
   bool theNoXIncludeNodes;
+  
+  bool theCreateDocParentLink;  // Default true. If set to false, the parsed input
+                                // nodes will not have their parent link set to the 
+                                // the document node. This is used by the parse-fragment
+                                // functions.
+                               
 
 public:
   LoadProperties()
@@ -67,11 +77,13 @@ public:
     theParseExternalParsedEntity(false),
     theSkipRootNodes(0),
     theSkipTopLevelTextNodes(false),
+    theErrorOnDoctype(false),
     theSubstituteEntities(false),
     theXincludeSubstitutions(false),
     theRemoveRedundantNS(false),
     theNoCDATA(false),
-    theNoXIncludeNodes(false)
+    theNoXIncludeNodes(false),
+    theCreateDocParentLink(true)
   {
   }
 
@@ -93,6 +105,7 @@ public:
     theParseExternalParsedEntity = false;
     theSkipRootNodes = 0;
     theSkipTopLevelTextNodes = false;
+    theErrorOnDoctype = false;
     theSubstituteEntities = false;
     theXincludeSubstitutions = false;
     theRemoveRedundantNS = false;
@@ -231,6 +244,16 @@ public:
   {
     return theSkipTopLevelTextNodes;
   }
+  
+  // theSkipTopLevelTextNodes
+  void setErrorOnDoctype(bool aErrorOnDoctype)
+  {
+    theErrorOnDoctype = aErrorOnDoctype;
+  }
+  bool getErrorOnDoctype() const
+  {
+    return theErrorOnDoctype;
+  }
 
   // theSubstituteEntities
   void setSubstituteEntities(bool aSubstituteEntities)
@@ -280,6 +303,16 @@ public:
   bool getNoXIncludeNodes() const
   {
     return theNoXIncludeNodes;
+  }
+  
+  // theNoXIncludeNodes
+  void setCreateDocParentLink(bool aCreateDocParentLink)
+  {
+    theCreateDocParentLink = aCreateDocParentLink;
+  }
+  bool getCreateDocParentLink() const
+  {
+    return theCreateDocParentLink;
   }
 };
 

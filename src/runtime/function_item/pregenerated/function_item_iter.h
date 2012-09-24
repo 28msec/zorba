@@ -51,11 +51,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionNameIterator,
     NaryBaseIterator<FunctionNameIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionNameIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionNameIterator(
     static_context* sctx,
@@ -87,11 +83,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionArityIterator,
     NaryBaseIterator<FunctionArityIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionArityIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionArityIterator(
     static_context* sctx,
@@ -124,11 +116,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PartialApplyIterator,
     NaryBaseIterator<PartialApplyIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<PartialApplyIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   PartialApplyIterator(
     static_context* sctx,

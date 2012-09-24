@@ -50,7 +50,7 @@ SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::EvalIteratorState() 
+EvalIteratorState::EvalIteratorState()
 {
 }
 
@@ -58,7 +58,7 @@ EvalIteratorState::EvalIteratorState()
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::~EvalIteratorState() 
+EvalIteratorState::~EvalIteratorState()
 {
 }
 
@@ -70,16 +70,18 @@ EvalIterator::EvalIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    const std::vector<store::Item_t>& aVarNames,
-    const std::vector<xqtref_t>& aVarTypes,
+    const std::vector<store::Item_t>& varNames,
+    const std::vector<xqtref_t>& varTypes,
+    const std::vector<int>& isGlobalVar,
     expr_script_kind_t scriptingKind,
     const store::NsBindings& localBindings,
     bool doNodeCopy,
     bool forDebugger)
-  : 
+  :
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
-  theVarNames(aVarNames),
-  theVarTypes(aVarTypes),
+  theOuterVarNames(varNames),
+  theOuterVarTypes(varTypes),
+  theIsGlobalVar(isGlobalVar),
   theScriptingKind(scriptingKind),
   theLocalBindings(localBindings),
   theDoNodeCopy(doNodeCopy),
@@ -91,7 +93,7 @@ EvalIterator::EvalIterator(
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIterator::~EvalIterator() 
+EvalIterator::~EvalIterator()
 {
 }
 
@@ -106,8 +108,9 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
 
-  ar & theVarNames;
-  ar & theVarTypes;
+  ar & theOuterVarNames;
+  ar & theOuterVarTypes;
+  ar & theIsGlobalVar;
   SERIALIZE_ENUM(enum expr_script_kind_t, theScriptingKind);
   ar & theLocalBindings;
   ar & theDoNodeCopy;
@@ -128,35 +131,14 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   CONSUME(item, 0);
 
   {
-    csize numEvalVars = theVarNames.size();
-
-    // Create an "outer" sctx and register into it (a) global vars corresponding
-    // to the eval vars and (b) the expression-level ns bindings at the place 
-    // where the eval call appears at.
-    static_context* outerSctx = theSctx->create_child_context();
-
-    for (csize i = 0; i < numEvalVars; ++i)
-    {
-      var_expr_t ve = new var_expr(outerSctx,
-                                   loc,
-                                   var_expr::prolog_var,
-                                   theVarNames[i].getp());
-
-      ve->set_type(theVarTypes[i]);
-
-      outerSctx->bind_var(ve, loc, err::XQST0049);
-    }
-
-    store::NsBindings::const_iterator ite = theLocalBindings.begin();
-    store::NsBindings::const_iterator end = theLocalBindings.end();
-
-    for (; ite != end; ++ite)
-    {
-      outerSctx->bind_ns(ite->first, ite->second, loc);
-    }
+    // Create the "import" sctx. The importOuterEnv() method (called below) will
+    // register into the importSctx (a) the outer vars of the eval query and (b)
+    // the expression-level ns bindings of the outer query at the place where
+    // the eval call appears at.
+    static_context* importSctx = theSctx->create_child_context();
 
     // Create the root sctx for the eval query
-    static_context* evalSctx = outerSctx->create_child_context();
+    static_context* evalSctx = importSctx->create_child_context();
 
     // Create the ccb for the eval query
     CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
@@ -171,30 +153,30 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
     state->dctx.reset(evalDctx);
 
-    // Copy the values of outer vars into the evalDctx
+    // Import the outer environment.
     ulong maxOuterVarId;
-    copyOuterVariables(planState, outerSctx, evalDctx, maxOuterVarId);
+    importOuterEnv(planState, evalCCB, importSctx, evalDctx, maxOuterVarId);
 
-    // If we are here after a reet, we must set state->thePlanWrapper to NULL
+    // If we are here after a reset, we must set state->thePlanWrapper to NULL
     // before reseting the state->thePlan. Otherwise, the current state->thePlan
-    // will be destroyed first, and then we will attempt to close it when 
-    // state->thePlanWrapper is reset later. 
+    // will be destroyed first, and then we will attempt to close it when
+    // state->thePlanWrapper is reset later.
     state->thePlanWrapper = NULL;
 
     // Compile
-    state->thePlan = compile(evalCCB,
-                             item->getStringValue(),
-                             maxOuterVarId);
+    state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId);
 
-    // Set external vars
-    setExternalVariables(evalCCB, outerSctx, evalSctx, evalDctx);
+    // Set the values for the (explicit) external vars of the eval query
+    setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
 
     // Execute
     state->thePlanWrapper = new PlanWrapper(state->thePlan,
                                             evalCCB,
                                             evalDctx,
                                             planState.theQuery,
-                                            planState.theStackDepth + 1);
+                                            planState.theStackDepth + 1,
+                                            state->ccb->theHaveTimeout,
+                                            state->ccb->theTimeout);
 
     state->thePlanWrapper->checkDepth(loc);
 
@@ -213,27 +195,49 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 /****************************************************************************//**
-  Copy the values of all the "outer" vars (i.e., global and eval vars) to the 
-  evalDctx. Also, compute the max varid of all these vars and pass this max varid
-  to the compiler of the eval query so that the varids that will be generated for
-  the eval query will not conflict with the varids of the global and eval vars.
+  This method imports a static and dynamic environment from the quter query into
+  the eval query. In particular:
+
+  (a) imports into the importSctx all the outer vars of the eval query
+  (b) imports into the importSctx all the ns bindings of the outer query at the
+      place where the eval call appears at
+  (c) Copies all the var values from the outer-query global dctx into the eval-
+      query dctx.
+  (d) For each of the non-global outer vars, places its value into the eval dctx.
+      The var value is represented as a PlanIteratorWrapper over the subplan that
+      evaluates the domain expr of the eval var.
+  (e) Computes the max var id of all the var values set in steps (c) and (d). 
+      This max varid will be passed to the compiler of the eval query so that
+      the varids that will be generated for the eval query will not conflict with
+      the varids of the outer vars and the outer-query global vars.
 ********************************************************************************/
-void EvalIterator::copyOuterVariables(
+void EvalIterator::importOuterEnv(
     PlanState& planState,
-    static_context* outerSctx,
+    CompilerCB* evalCCB,
+    static_context* importSctx,
     dynamic_context* evalDctx,
     ulong& maxOuterVarId) const
 {
   maxOuterVarId = 1;
 
+  // Copy all the var values from the outer-query global dctx into the eval-query
+  // dctx. This is need to handle the following scenario: (a) $x is an outer-query
+  // global var that is not among the outer vars of the eval query (because $x was
+  // hidden at the point where the eval call is made inside the outer query), and
+  // (b) foo() is a function decalred in the outer query that accessed $x and is
+  // invoked by the eval query. The copying must be done using the same positions
+  // (i.e., var ids) in the eval dctx as in the outer-query dctx.
+
   dynamic_context* outerDctx = evalDctx->getParent();
 
-  const std::vector<dynamic_context::VarValue>& outerVars = outerDctx->get_variables();
-  csize numOuterVars = outerVars.size();
+  const std::vector<dynamic_context::VarValue>& outerGlobalValues =
+  outerDctx->get_variables();
 
-  for (csize i = 0; i < numOuterVars; ++i)
+  csize numOuterGlobalVars = outerGlobalValues.size();
+
+  for (csize i = 0; i < numOuterGlobalVars; ++i)
   {
-    const dynamic_context::VarValue& outerVar = outerVars[i];
+    const dynamic_context::VarValue& outerVar = outerGlobalValues[i];
 
     if (!outerVar.isSet())
       continue;
@@ -260,23 +264,59 @@ void EvalIterator::copyOuterVariables(
 
   ++maxOuterVarId;
 
-  // For each of the eval vars, place its value into the evalDctx. The var
-  // value is represented as a PlanIteratorWrapper over the subplan that
-  // evaluates the domain expr of the eval var.
-  for (csize i = 0; i < theChildren.size() - 1; ++i)
+  // Import the outer vars. Specifically, for each outer var:
+  // (a) create a declaration inside the importSctx.
+  // (b) Set its var id
+  // (c) If it is not a global one, set its value within the eval dctx.
+
+  csize curChild = 0;
+
+  csize numOuterVars = theOuterVarNames.size();
+
+  for (csize i = 0; i < numOuterVars; ++i)
   {
-    var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
-                                              loc,
-                                              zerr::ZXQP0000_NO_ERROR);
-    ZORBA_ASSERT(evalVar);
+    var_expr* ve = evalCCB->theEM->create_var_expr(importSctx,
+                                                   loc,
+                                                   var_expr::prolog_var,
+                                                   theOuterVarNames[i].getp());
 
-    evalVar->set_unique_id(maxOuterVarId);
+    ve->set_type(theOuterVarTypes[i]);
 
-    store::Iterator_t iter = new PlanIteratorWrapper(theChildren[i + 1], planState);
+    if (!theIsGlobalVar[i])
+    {
+      ++curChild;
 
-    evalDctx->add_variable(maxOuterVarId, iter);
+      store::Iterator_t iter = new PlanIteratorWrapper(theChildren[curChild], planState);
 
-    ++maxOuterVarId;
+      evalDctx->add_variable(maxOuterVarId, iter);
+
+      ve->set_unique_id(maxOuterVarId);
+
+      ++maxOuterVarId;
+    }
+    else
+    {
+      static_context* outerSctx = importSctx->get_parent();
+
+      VarInfo* outerGlobalVar = outerSctx->lookup_var(theOuterVarNames[i]);
+      ZORBA_ASSERT(outerGlobalVar);
+
+      ulong outerGlobalVarId = outerGlobalVar->getId();
+
+      ve->set_unique_id(outerGlobalVarId);
+    }
+
+    importSctx->bind_var(ve, loc, err::XQST0049);
+  }
+
+  // Import the outer-query ns bindings
+
+  store::NsBindings::const_iterator ite = theLocalBindings.begin();
+  store::NsBindings::const_iterator end = theLocalBindings.end();
+
+  for (; ite != end; ++ite)
+  {
+    importSctx->bind_ns(ite->first, ite->second, loc);
   }
 }
 
@@ -286,11 +326,11 @@ void EvalIterator::copyOuterVariables(
 ********************************************************************************/
 void EvalIterator::setExternalVariables(
     CompilerCB* ccb,
-    static_context* outerSctx,
+    static_context* importSctx,
     static_context* evalSctx,
     dynamic_context* evalDctx) const
 {
-  std::vector<var_expr_t> innerVars;
+  std::vector<VarInfo*> innerVars;
 
   CompilerCB::SctxMap::const_iterator sctxIte = ccb->theSctxMap.begin();
   CompilerCB::SctxMap::const_iterator sctxEnd = ccb->theSctxMap.end();
@@ -300,27 +340,28 @@ void EvalIterator::setExternalVariables(
     sctxIte->second->getVariables(innerVars, true, false, true);
   }
 
-  FOR_EACH(std::vector<var_expr_t>, ite, innerVars)
+  FOR_EACH(std::vector<VarInfo*>, ite, innerVars)
   {
-    var_expr* innerVar = (*ite).getp();
+    VarInfo* innerVar = (*ite);
 
-    if (!innerVar->is_external())
+    if (!innerVar->isExternal())
       continue;
 
-    ulong innerVarId = innerVar->get_unique_id();
+    ulong innerVarId = innerVar->getId();
 
-    var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
-                                                loc, 
-                                                zerr::ZXQP0000_NO_ERROR);
+    VarInfo* outerVar = importSctx->lookup_var(innerVar->getName());
 
-    if (globalVar == NULL)
+    if (!outerVar)
       continue;
 
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 
-    evalDctx->get_variable(globalVar->get_unique_id(),
-                           globalVar->get_name(),
+    if (!evalDctx->is_set_variable(outerVar->getId()))
+      continue;
+
+    evalDctx->get_variable(outerVar->getId(),
+                           outerVar->getName(),
                            loc,
                            itemValue,
                            seqValue);
@@ -377,12 +418,13 @@ PlanIter_t EvalIterator::compile(
 
   rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
   if (mm == NULL)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+  {
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(XPST0003_ModuleDeclNotInMain)));
+  }
 
-  expr_t rootExpr;
   PlanIter_t rootIter = compiler.compile(ast,
                                          false, // do not apply PUL
-                                         rootExpr,
                                          maxOuterVarId,
                                          sar);
   if (theScriptingKind == SIMPLE_EXPR)

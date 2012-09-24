@@ -119,7 +119,7 @@ class ParseConstants
     {
       st_step,
       st_slash,
-      st_slashslash	
+      st_slashslash
     };
 
     enum axis_kind_t

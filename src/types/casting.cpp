@@ -166,6 +166,7 @@ SAME_S_AND_T(hxB)
 SAME_S_AND_T(aURI)
 SAME_S_AND_T(QN)
 SAME_S_AND_T(NOT)
+SAME_S_AND_T(NUL)
 SAME_S_AND_T(uint)
 
 #undef SAME_S_AND_T
@@ -1493,6 +1494,13 @@ T1_TO_T2(str, uint)
   return NULL;
 }
 
+T1_TO_T2(NUL, str)
+{
+  zstring val("null");
+  return aFactory->createString(result, val);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1659,11 +1667,13 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_byte const n = ztd::aton<xs_byte>(lString.c_str());
       return aFactory->createByte(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
@@ -1685,11 +1695,13 @@ bool int_down(
   {
     zstring lString;
     aItem->getStringValue2(lString);
-    try {
+    try 
+    {
       xs_unsignedLong const n = ztd::aton<xs_unsignedLong>(lString.c_str());
       return aFactory->createUnsignedLong(result, n);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& ) 
+    {
       // ignore
     }
     break;
@@ -1749,6 +1761,7 @@ bool int_down(
   default:
     ZORBA_ASSERT (false);
   }
+
   throwTypeException( err::FORG0001, aErrorInfo );
   return NULL;
 }
@@ -1804,14 +1817,15 @@ const int GenericCast::theMapping[store::XS_LAST] =
   19,  // 41 XS_HEXBINARY
   20,  // 42 XS_ANY_URI
   21,  // 43 XS_QNAME
-  22   // 44 XS_NOTATION
+  22,  // 44 XS_NOTATION
+  23   // 45 JS_NULL
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[24] =
+const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[25] =
 {
 /*uA*/    0,
 /*str*/   str_down,
@@ -1837,129 +1851,144 @@ const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[24] =
 /*QN*/    0,
 /*NOT*/   0,
 /*uint*/  int_down,
+/*null*/  0
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::CastFunc GenericCast::theCastMatrix[24][24] =
+const GenericCast::CastFunc GenericCast::theCastMatrix[25][25] =
 {
-          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
-          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+// uA        str        flt       dbl         dec        int       dur       yMD
+// dTD       dT         tim       dat         gYM        gYr       gMD       gDay 
+// gMon      bool       b64       hxB         aURI       QN        NOT       uint
+// null
 
-/*uA*/   {&uA_uA,    &uA_str,   &uA_flt,   &uA_dbl,   &uA_dec,   &uA_int,   &uA_dur,   &uA_yMD,   &uA_dTD,   &uA_dT,
-          &uA_tim,   &uA_dat,   &uA_gYM,   &uA_gYr,   &uA_gMD,   &uA_gDay,  &uA_gMon,  &uA_bool,  &uA_b64,   &uA_hxB,
-          &uA_aURI,  0,         0,         &uA_uint},
+{&uA_uA,    &uA_str,   &uA_flt,  &uA_dbl ,   &uA_dec ,  &uA_int,   &uA_dur,  &uA_yMD,
+ &uA_dTD,   &uA_dT,    &uA_tim,  &uA_dat,    &uA_gYM ,  &uA_gYr ,  &uA_gMD,  &uA_gDay,
+ &uA_gMon, &uA_bool,   &uA_b64,  &uA_hxB,    &uA_aURI,  0,         0,        &uA_uint,
+ 0}, // uA
 
-/*str*/  {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur,  &str_yMD,  &str_dTD,  &str_dT,
-          &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD,  &str_gDay, &str_gMon, &str_bool, &str_b64,  &str_hxB,
-          &str_aURI, &str_QN,   &str_NOT,  &str_uint},
+{&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur, &str_yMD,
+ &str_dTD,  &str_dT,   &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD, &str_gDay,
+ &str_gMon, &str_bool, &str_b64,  &str_hxB,  &str_aURI, &str_QN,   &str_NOT, &str_uint,
+ 0}, // str
 
-/*flt*/  {&flt_uA,   &flt_str,  &flt_flt,  &flt_dbl,  &flt_dec,  &flt_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &flt_bool, 0,         0,
-          0,         0,         0,         &flt_uint},
+{&flt_uA,   &flt_str,  &flt_flt,  &flt_dbl,  &flt_dec,  &flt_int,  0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0,         &flt_bool, 0,         0,         0,         0,         0,        &flt_uint,
+ 0}, // flt
 
-/*dbl*/  {&dbl_uA,   &dbl_str,  &dbl_flt,  &dbl_dbl,  &dbl_dec,  &dbl_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &dbl_bool, 0,         0,
-          0,         0,         0,         &dbl_uint},
+{&dbl_uA,   &dbl_str,  &dbl_flt,  &dbl_dbl,  &dbl_dec,  &dbl_int,  0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,  
+ 0,         &dbl_bool, 0,         0,         0,         0,         0,        &dbl_uint,
+ 0}, // dbl
 
-/*dec*/  {&dec_uA,   &dec_str,  &dec_flt,  &dec_dbl,  &dec_dec,  &dec_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &dec_bool, 0,         0,
-          0,         0,         0,         &dec_uint},
+{&dec_uA,   &dec_str,  &dec_flt,  &dec_dbl,  &dec_dec,  &dec_int,  0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0, 
+ 0,         &dec_bool, 0,         0,         0,         0,         0,        &dec_uint,
+ 0}, // dec
 
-          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
-          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+{&int_uA,   &int_str,  &int_flt,  &int_dbl,  &int_dec,  &int_int,  0,        0, 
+ 0,         0,         0,         0,         0,         0,         0,        0, 
+ 0,         &int_bool, 0,         0,         0,         0,         0,        &int_uint,
+ 0}, // int
 
-/*int*/  {&int_uA,   &int_str,  &int_flt,  &int_dbl,  &int_dec,  &int_int,  0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &int_bool, 0,         0,
-          0,         0,         0,         &int_uint},
+{&dur_uA,   &dur_str,  0,         0,         0,         0,         &dur_dur, &dur_yMD,
+ &dur_dTD,  0,         0,         0,         0,         0,         0,        0, 
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // dur
 
-/*dur*/  {&dur_uA,   &dur_str,  0,         0,         0,         0,         &dur_dur,  &dur_yMD,  &dur_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0},
+{&yMD_uA,   &yMD_str,  0,         0,         0,         0,         &yMD_dur, &yMD_yMD,
+ &yMD_dTD,  0,         0,         0,         0,         0,         0,        0, 
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // yMD
 
-/*yMD*/  {&yMD_uA,   &yMD_str,  0,         0,         0,         0,         &yMD_dur,  &yMD_yMD,  &yMD_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0},
+{&dTD_uA,   &dTD_str,  0,         0,         0,         0,         &dTD_dur, &dTD_yMD,
+ &dTD_dTD,  0,         0,         0,         0,         0,         0,        0,  
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // dTD
 
-/*dTD*/  {&dTD_uA,   &dTD_str,  0,         0,         0,         0,         &dTD_dur,  &dTD_yMD,  &dTD_dTD,  0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0},
+{&dT_uA,    &dT_str,   0,         0,         0,         0,         0,        0,
+ 0,         &dT_dT,    &dT_tim,   &dT_dat,   &dT_gYM,   &dT_gYr,   &dT_gMD,  &dT_gDay,
+ &dT_gMon,  0,         0,         0,         0,         0,         0,        0,
+ 0}, // dT
 
-/*dT*/   {&dT_uA,    &dT_str,   0,         0,         0,         0,         0,         0,         0,         &dT_dT,
-          &dT_tim,   &dT_dat,   &dT_gYM,   &dT_gYr,   &dT_gMD,   &dT_gDay,  &dT_gMon,  0,         0,         0,
-          0,         0,         0,         0},
+{&tim_uA,   &tim_str,  0,         0,         0,         0,         0,        0,
+ 0,         0,         &tim_tim,  0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // tim
 
-          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
-          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+{&dat_uA,   &dat_str,  0,         0,         0,         0,         0,        0,
+ 0,         &dat_dT,   0,         &dat_dat,  &dat_gYM,  &dat_gYr,  &dat_gMD, &dat_gDay,
+ &dat_gMon, 0,         0,         0,         0,         0,         0,        0,
+ 0}, // dat
 
-/*tim*/  {&tim_uA,   &tim_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          &tim_tim,  0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0},
+{&gYM_uA,   &gYM_str,  0,         0,         0,         0,         0,        0, 
+ 0,         0,         0,         0,         &gYM_gYM,  0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // gYM
 
-/*dat*/  {&dat_uA,   &dat_str,  0,         0,         0,         0,         0,         0,         0,         &dat_dT,
-          0,         &dat_dat,  &dat_gYM,  &dat_gYr,  &dat_gMD,  &dat_gDay, &dat_gMon, 0,         0,         0,
-          0,         0,         0,         0},
+{&gYr_uA,   &gYr_str,  0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         &gYr_gYr,  0,        0,  
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // gYr
 
-/*gYM*/  {&gYM_uA,   &gYM_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         &gYM_gYM,  0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0},
+{&gMD_uA,   &gMD_str,  0,         0,         0,         0,         0,        0, 
+ 0,         0,         0,         0,         0,         0,         &gMD_gMD, 0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // gMD
 
-/*gYr*/  {&gYr_uA,   &gYr_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         &gYr_gYr,  0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0},
+{&gDay_uA,  &gDay_str, 0,         0,         0,         0,         0,        0, 
+ 0,         0,         0,         0,         0,         0,         0,        &gDay_gDay,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0}, // gDay
 
-/*gMD*/  {&gMD_uA,   &gMD_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         &gMD_gMD,  0,         0,         0,         0,         0,
-          0,         0,         0,         0},
+{&gMon_uA,  &gMon_str, 0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,  
+ &gMon_gMon,0,         0,         0,         0,         0,         0,        0,
+ 0}, // gMon
 
-          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
-          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+{&bool_uA,  &bool_str, &bool_flt, &bool_dbl, &bool_dec, &bool_int, 0,        0, 
+ 0,         0,         0,         0,         0,         0,         0,        0,  
+ 0,         &bool_bool,0,         0,         0,         0,         0,        &bool_uint,
+ 0}, // bool
 
-/*gDay*/ {&gDay_uA,  &gDay_str, 0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         &gDay_gDay,0,         0,         0,         0,
-          0,         0,         0,         0},
+{&b64_uA,   &b64_str,  0,         0,         0,         0,         0,        0, 
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0,         0,         &b64_b64,  &b64_hxB,  0,         0,         0,        0,
+ 0}, // b64
 
-/*gMon*/ {&gMon_uA,  &gMon_str, 0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         &gMon_gMon,0,         0,         0,
-          0,         0,         0,         0},
+{&hxB_uA,   &hxB_str,  0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0,         0,         &hxB_b64,  &hxB_hxB,  0,         0,         0,        0,
+ 0}, // hxB
 
-/*bool*/ {&bool_uA,  &bool_str, &bool_flt, &bool_dbl, &bool_dec, &bool_int, 0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &bool_bool,0,         0,
-          0,         0,         0,         &bool_uint},
+{&aURI_uA,  &aURI_str, 0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,  
+ 0,         0,         0,         0,         &aURI_aURI,0,         0,        0,
+ 0}, // aURI
 
-/*b64*/  {&b64_uA,   &b64_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         &b64_b64,  &b64_hxB,
-          0,         0,         0,         0},
+{&QN_uA,    &QN_str,   0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         &QN_QN,    0,        0,
+ 0}, // QN
 
-/*hxB*/  {&hxB_uA,   &hxB_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         &hxB_b64,  &hxB_hxB,
-          0,         0,         0,         0},
+{&NOT_uA,   &NOT_str,  0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         &NOT_NOT, 0,
+ 0}, // NOT
 
-          /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
-          /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
-          /*aURI*/   /*QN*/     /*NOT*/    /*uint*/
+{&uint_uA,  &uint_str, &uint_flt, &uint_dbl, &uint_dec, &uint_int, 0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ 0,         &uint_bool,0,         0,         0,         0,         0,        &uint_uint,
+ 0},
 
-/*aURI*/ {&aURI_uA,  &aURI_str, 0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          &aURI_aURI,0,         0,         0},
-
-/*QN*/   {&QN_uA,    &QN_str,   0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         &QN_QN,    0,         0},
-
-/*NOT*/  {&NOT_uA,   &NOT_str,  0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         0,         0,         0,
-          0,         0,         &NOT_NOT,  0},
-
-/*uint*/ {&uint_uA,  &uint_str, &uint_flt, &uint_dbl, &uint_dec, &uint_int, 0,         0,         0,         0,
-          0,         0,         0,         0,         0,         0,         0,         &uint_bool,0,         0,
-          0,         0,         0,         &uint_uint},
+{0,         &NUL_str,  0,         0,         0,         0,         0,        0,
+ 0,         0,         0,         0,         0,         0,         0,        0,  
+ 0,         0,         0,         0,         0,         0,         0,        0,
+ &NUL_NUL} // NUL
 };
 
 
@@ -2128,6 +2157,9 @@ bool GenericCast::castToAtomic(
       sourceTypeCode != store::XS_STRING &&
       sourceTypeCode != store::XS_NCNAME &&
       sourceTypeCode != store::XS_UNTYPED_ATOMIC)
+    throwTypeException(err::XPTY0004, errorInfo);
+
+  if (targetTypeCode == store::JS_NULL)
     throwTypeException(err::XPTY0004, errorInfo);
 
   CastFunc castFunc = theCastMatrix[theMapping[sourceTypeCode]]

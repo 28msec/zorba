@@ -19,9 +19,9 @@
 
 
 #include "common/shared_types.h"
+
 #include "runtime/base/unarybase.h"
-
-
+#include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
 
 
@@ -29,7 +29,7 @@ namespace zorba
 {
 
 class IndexDecl;
-class ItemHandleHashSet;
+class NodeHandleHashSet;
 
 
 /*******************************************************************************
@@ -231,12 +231,12 @@ public:
 
 
 /******************************************************************************
-
+  zorba-op:value-index-entry-builder(node(), xs:anyAtomic)
 *******************************************************************************/
 class ValueIndexEntryBuilderIteratorState : public PlanIteratorState
 {
 public:
-  uint32_t theCurChild;
+  csize theCurChild;
 
 public:
   ValueIndexEntryBuilderIteratorState();
@@ -283,50 +283,25 @@ public:
 
 
 /******************************************************************************
-
+  zorba-op:general-index-entry-builder(node(), xs:anyAtomic*)
 *******************************************************************************/
-class GeneralIndexEntryBuilderIteratorState : public PlanIteratorState
-{
-public:
-  uint32_t theCurChild;
-
-public:
-  GeneralIndexEntryBuilderIteratorState();
-
-  ~GeneralIndexEntryBuilderIteratorState();
-
-  void init(PlanState&);
-
-  void reset(PlanState&);
-};
-
-
 class GeneralIndexEntryBuilderIterator :
-public NaryBaseIterator<GeneralIndexEntryBuilderIterator, 
-                        GeneralIndexEntryBuilderIteratorState>
+public BinaryBaseIterator<GeneralIndexEntryBuilderIterator, 
+                          PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(GeneralIndexEntryBuilderIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(GeneralIndexEntryBuilderIterator,
-  NaryBaseIterator<GeneralIndexEntryBuilderIterator,
-                   GeneralIndexEntryBuilderIteratorState>);
+  BinaryBaseIterator<GeneralIndexEntryBuilderIterator,
+                     PlanIteratorState>);
+  void serialize(::zorba::serialization::Archiver& ar);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<GeneralIndexEntryBuilderIterator,
-                      GeneralIndexEntryBuilderIteratorState>*)this);
-  }
-
+public:
   GeneralIndexEntryBuilderIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<GeneralIndexEntryBuilderIterator,
-                     GeneralIndexEntryBuilderIteratorState>(sctx, loc, children)
-  {}
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& child0,
+      PlanIter_t& child1);
 
   virtual ~GeneralIndexEntryBuilderIterator();
 
@@ -371,6 +346,7 @@ class ProbeIndexPointValueIterator
 protected:
   bool theCheckKeyType;
   bool theCountOnly;
+  bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointValueIterator);
@@ -384,9 +360,13 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children,
-        bool aCountOnly = false);
+        bool aCountOnly,
+        bool aSkip);
 
   ~ProbeIndexPointValueIterator();
+
+  bool isCountOnly() const { return theCountOnly; }
+  bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -494,6 +474,7 @@ public NaryBaseIterator<ProbeIndexRangeValueIterator,
 protected:
   bool theCheckKeyType;
   bool theCountOnly;
+  bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeValueIterator);
@@ -508,9 +489,13 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      bool aCountOnly = false);
+      bool aCountOnly,
+      bool aSkip);
 
   ~ProbeIndexRangeValueIterator();
+
+  bool isCountOnly() const { return theCountOnly; }
+  bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -547,7 +532,7 @@ public:
 
   store::IndexProbeIterator_t          theIterator;
 
-  ItemHandleHashSet                  * theNodeHashSet;
+  NodeHandleHashSet                  * theNodeHashSet;
 
 public:
   ProbeIndexRangeGeneralIteratorState();

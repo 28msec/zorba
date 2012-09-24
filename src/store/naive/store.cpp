@@ -58,7 +58,6 @@
 #include "tree_id_generator.h"
 
 #include "util/cxx_util.h"
-#include "util/uuid/uuid.h"
 #include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -87,6 +86,7 @@ const ulong Store::DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE = 32;
 const char* Store::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* Store::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 const char* Store::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
+const char* Store::JS_URI = "http://www.jsoniq.org/types";
 
 const ulong Store::XML_URI_LEN = sizeof(Store::XML_URI);
 
@@ -104,12 +104,11 @@ Store::Store()
   theNodeFactory(NULL),
   thePULFactory(NULL),
   theTreeIdGeneratorFactory(NULL),
-  theTreeIdGenerator(NULL),
   theDocuments(DEFAULT_DOCUMENT_SET_SIZE, true),
   theCollections(0),
-  theIndices(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
-  theICs(0, NULL, DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
-  theHashMaps(0, NULL, DEFAULT_INDICES_SET_SIZE, true),
+  theIndices(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
+  theICs(HashMapItemPointerCmp(0, NULL), DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE, true),
+  theHashMaps(HashMapItemPointerCmp(0, NULL), DEFAULT_INDICES_SET_SIZE, true),
   theTraceLevel(0)
 #ifndef ZORBA_NO_FULL_TEXT
   , theStemmerProvider( nullptr )
@@ -165,8 +164,6 @@ void Store::init()
     
     theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
 
-    theTreeIdGenerator = theTreeIdGeneratorFactory->createTreeGenerator();
-
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
     theCollections = createCollectionSet();
@@ -184,71 +181,73 @@ void Store::init()
 void Store::initTypeNames()
 {
   const char* ns = XS_URI;
-  BasicItemFactory* f = static_cast<BasicItemFactory*>(theItemFactory);
 
   theSchemaTypeNames.resize(store::XS_LAST);
 
-  f->createQName(XS_UNTYPED_QNAME, ns, "xs", "untyped");
+#ifdef ZORBA_WITH_JSON
+  JS_NULL_QNAME = theQNamePool->insert(JS_URI, "js", "null");
+  JS_OBJECT_QNAME = theQNamePool->insert(JS_URI, "js", "object");
+  JS_ARRAY_QNAME = theQNamePool->insert(JS_URI, "js", "array");
+#endif
 
-  f->createQName(XS_ANY_QNAME, ns, "xs", "anyType");
+  XS_UNTYPED_QNAME = theQNamePool->insert(ns, "xs", "untyped");
 
-  f->createQName(XS_ANY_SIMPLE_QNAME, ns, "xs", "anySimpleType");
+  XS_ANY_QNAME = theQNamePool->insert(ns, "xs", "anyType");
 
-  f->createQName(theSchemaTypeNames[store::XS_ANY_ATOMIC],     ns, "xs", "anyAtomicType");
+  theSchemaTypeNames[store::XS_ANY_ATOMIC] =
+      theQNamePool->insert(ns, "xs", "anyAtomicType");
 
-  f->createQName(theSchemaTypeNames[store::XS_UNTYPED_ATOMIC], ns, "xs", "untypedAtomic");
+  theSchemaTypeNames[store::XS_UNTYPED_ATOMIC] =
+      theQNamePool->insert(ns, "xs", "untypedAtomic");
 
-  f->createQName(theSchemaTypeNames[store::XS_ANY_URI],        ns, "xs", "anyURI");
+  theSchemaTypeNames[store::XS_ANY_URI] = theQNamePool->insert(ns, "xs", "anyURI");
+  theSchemaTypeNames[store::XS_QNAME] = theQNamePool->insert(ns, "xs", "QName");
+  theSchemaTypeNames[store::XS_NOTATION] = theQNamePool->insert(ns, "xs", "NOTATION");
+  theSchemaTypeNames[store::XS_STRING] = theQNamePool->insert(ns, "xs", "string");
+  theSchemaTypeNames[store::XS_NORMALIZED_STRING] = theQNamePool->insert(ns, "xs", "normalizedString");
+  theSchemaTypeNames[store::XS_TOKEN] = theQNamePool->insert(ns, "xs", "token");
+  theSchemaTypeNames[store::XS_NMTOKEN] = theQNamePool->insert(ns, "xs", "NMTOKEN");
+  theSchemaTypeNames[store::XS_LANGUAGE] = theQNamePool->insert(ns, "xs", "language");
+  theSchemaTypeNames[store::XS_NAME] = theQNamePool->insert(ns, "xs", "Name");
+  theSchemaTypeNames[store::XS_NCNAME] = theQNamePool->insert(ns, "xs", "NCName");
+  theSchemaTypeNames[store::XS_ID] = theQNamePool->insert(ns, "xs", "ID");
+  theSchemaTypeNames[store::XS_IDREF] = theQNamePool->insert(ns, "xs", "IDREF");
+  theSchemaTypeNames[store::XS_ENTITY] = theQNamePool->insert(ns, "xs", "ENTITY");
 
-  f->createQName(theSchemaTypeNames[store::XS_QNAME],          ns, "xs", "QName");
+  theSchemaTypeNames[store::XS_DATETIME] = theQNamePool->insert(ns, "xs", "dateTime");
+  theSchemaTypeNames[store::XS_DATE] = theQNamePool->insert(ns, "xs", "date");
+  theSchemaTypeNames[store::XS_TIME] = theQNamePool->insert(ns, "xs", "time");
+  theSchemaTypeNames[store::XS_GYEAR_MONTH] = theQNamePool->insert(ns, "xs", "gYearMonth");
+  theSchemaTypeNames[store::XS_GYEAR] = theQNamePool->insert(ns, "xs", "gYear");
+  theSchemaTypeNames[store::XS_GMONTH_DAY] = theQNamePool->insert(ns, "xs", "gMonthDay");
+  theSchemaTypeNames[store::XS_GDAY] = theQNamePool->insert(ns, "xs", "gDay");
+  theSchemaTypeNames[store::XS_GMONTH] = theQNamePool->insert(ns, "xs", "gMonth");
 
-  f->createQName(theSchemaTypeNames[store::XS_NOTATION],       ns, "xs", "NOTATION");
+  theSchemaTypeNames[store::XS_DURATION] = theQNamePool->insert(ns, "xs", "duration");
+  theSchemaTypeNames[store::XS_DT_DURATION] = theQNamePool->insert(ns, "xs", "dayTimeDuration");
+  theSchemaTypeNames[store::XS_YM_DURATION] = theQNamePool->insert(ns, "xs", "yearMonthDuration");
 
-  f->createQName(theSchemaTypeNames[store::XS_STRING],         ns, "xs", "string");
-  f->createQName(theSchemaTypeNames[store::XS_NORMALIZED_STRING], ns, "xs", "normalizedString");
-  f->createQName(theSchemaTypeNames[store::XS_TOKEN],          ns, "xs", "token");
-  f->createQName(theSchemaTypeNames[store::XS_NMTOKEN],        ns, "xs", "NMTOKEN");
-  f->createQName(theSchemaTypeNames[store::XS_LANGUAGE],       ns, "xs", "language");
-  f->createQName(theSchemaTypeNames[store::XS_NAME],           ns, "xs", "Name");
-  f->createQName(theSchemaTypeNames[store::XS_NCNAME],         ns, "xs", "NCName");
-  f->createQName(theSchemaTypeNames[store::XS_ID],             ns, "xs", "ID");
-  f->createQName(theSchemaTypeNames[store::XS_IDREF],          ns, "xs", "IDREF");
-  f->createQName(theSchemaTypeNames[store::XS_ENTITY],         ns, "xs", "ENTITY");
+  theSchemaTypeNames[store::XS_FLOAT] = theQNamePool->insert(ns, "xs", "float");
+  theSchemaTypeNames[store::XS_DOUBLE] = theQNamePool->insert(ns, "xs", "double");
+  theSchemaTypeNames[store::XS_DECIMAL] = theQNamePool->insert(ns, "xs", "decimal");
+  theSchemaTypeNames[store::XS_INTEGER] = theQNamePool->insert(ns, "xs", "integer");
+  theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER] = theQNamePool->insert(ns, "xs", "nonPositiveInteger");
+  theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER] = theQNamePool->insert(ns, "xs", "nonNegativeInteger");
+  theSchemaTypeNames[store::XS_NEGATIVE_INTEGER] = theQNamePool->insert(ns, "xs", "negativeInteger");
+  theSchemaTypeNames[store::XS_POSITIVE_INTEGER] = theQNamePool->insert(ns, "xs", "positiveInteger");
 
-  f->createQName(theSchemaTypeNames[store::XS_DATETIME],       ns, "xs", "dateTime");
-  f->createQName(theSchemaTypeNames[store::XS_DATE],           ns, "xs", "date");
-  f->createQName(theSchemaTypeNames[store::XS_TIME],           ns, "xs", "time");
-  f->createQName(theSchemaTypeNames[store::XS_GYEAR_MONTH],    ns, "xs", "gYearMonth");
-  f->createQName(theSchemaTypeNames[store::XS_GYEAR],          ns, "xs", "gYear");
-  f->createQName(theSchemaTypeNames[store::XS_GMONTH_DAY],     ns, "xs", "gMonthDay");
-  f->createQName(theSchemaTypeNames[store::XS_GDAY],           ns, "xs", "gDay");
-  f->createQName(theSchemaTypeNames[store::XS_GMONTH],         ns, "xs", "gMonth");
+  theSchemaTypeNames[store::XS_LONG] = theQNamePool->insert(ns, "xs", "long");
+  theSchemaTypeNames[store::XS_INT] = theQNamePool->insert(ns, "xs", "int");
+  theSchemaTypeNames[store::XS_SHORT] = theQNamePool->insert(ns, "xs", "short");
+  theSchemaTypeNames[store::XS_BYTE] = theQNamePool->insert(ns, "xs", "byte");
+  theSchemaTypeNames[store::XS_UNSIGNED_LONG] = theQNamePool->insert(ns, "xs", "unsignedLong");
+  theSchemaTypeNames[store::XS_UNSIGNED_INT] = theQNamePool->insert(ns, "xs", "unsignedInt");
+  theSchemaTypeNames[store::XS_UNSIGNED_SHORT] = theQNamePool->insert(ns, "xs", "unsignedShort");
+  theSchemaTypeNames[store::XS_UNSIGNED_BYTE] = theQNamePool->insert(ns, "xs", "unsignedByte");
 
-  f->createQName(theSchemaTypeNames[store::XS_DURATION],       ns, "xs", "duration");
-  f->createQName(theSchemaTypeNames[store::XS_DT_DURATION],    ns, "xs", "dayTimeDuration");
-  f->createQName(theSchemaTypeNames[store::XS_YM_DURATION],    ns, "xs", "yearMonthDuration");
-
-  f->createQName(theSchemaTypeNames[store::XS_FLOAT],          ns, "xs", "float");
-  f->createQName(theSchemaTypeNames[store::XS_DOUBLE],         ns, "xs", "double");
-  f->createQName(theSchemaTypeNames[store::XS_DECIMAL],        ns, "xs", "decimal");
-  f->createQName(theSchemaTypeNames[store::XS_INTEGER],        ns, "xs", "integer");
-  f->createQName(theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER], ns, "xs", "nonPositiveInteger");
-  f->createQName(theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER], ns, "xs", "nonNegativeInteger");
-  f->createQName(theSchemaTypeNames[store::XS_NEGATIVE_INTEGER], ns, "xs", "negativeInteger");
-  f->createQName(theSchemaTypeNames[store::XS_POSITIVE_INTEGER], ns, "xs", "positiveInteger");
-
-  f->createQName(theSchemaTypeNames[store::XS_LONG],           ns, "xs", "long");
-  f->createQName(theSchemaTypeNames[store::XS_INT],            ns, "xs", "int");
-  f->createQName(theSchemaTypeNames[store::XS_SHORT],          ns, "xs", "short");
-  f->createQName(theSchemaTypeNames[store::XS_BYTE],           ns, "xs", "byte");
-  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_LONG],  ns, "xs", "unsignedLong");
-  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_INT],   ns, "xs", "unsignedInt");
-  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_SHORT], ns, "xs", "unsignedShort");
-  f->createQName(theSchemaTypeNames[store::XS_UNSIGNED_BYTE],  ns, "xs", "unsignedByte");
-
-  f->createQName(theSchemaTypeNames[store::XS_BASE64BINARY],   ns, "xs", "base64Binary");
-  f->createQName(theSchemaTypeNames[store::XS_HEXBINARY],      ns, "xs", "hexBinary");
-  f->createQName(theSchemaTypeNames[store::XS_BOOLEAN],        ns, "xs", "boolean");
+  theSchemaTypeNames[store::XS_BASE64BINARY] = theQNamePool->insert(ns, "xs", "base64Binary");
+  theSchemaTypeNames[store::XS_HEXBINARY] = theQNamePool->insert(ns, "xs", "hexBinary");
+  theSchemaTypeNames[store::XS_BOOLEAN] = theQNamePool->insert(ns, "xs", "boolean");
 
   for (ulong i = 0; i < store::XS_LAST; ++i)
   {
@@ -313,12 +312,6 @@ void Store::shutdown(bool soft)
       destroyTreeIdGeneratorFactory(theTreeIdGeneratorFactory);
     }
 
-    if (theTreeIdGenerator)
-    {
-      delete theTreeIdGenerator;
-      theTreeIdGenerator = NULL;
-    }
-
     if (theQNamePool != NULL)
     {
       csize numTypes = theSchemaTypeNames.size();
@@ -328,6 +321,12 @@ void Store::shutdown(bool soft)
       XS_UNTYPED_QNAME = NULL;
       XS_ANY_QNAME = NULL;
       XS_ANY_SIMPLE_QNAME = NULL;
+
+#ifdef ZORBA_WITH_JSON
+      JS_OBJECT_QNAME = NULL;
+      JS_ARRAY_QNAME = NULL;
+      JS_NULL_QNAME = NULL;
+#endif
 
       delete theQNamePool;
       theQNamePool = NULL;
@@ -398,7 +397,7 @@ XmlLoader* Store::getXmlLoader(
 ********************************************************************************/
 TreeId Store::createTreeId()
 {
-  return theTreeIdGenerator->create();
+  return theTreeIdGeneratorFactory->getDefaultTreeIdGenerator().create();
 }
 
 
@@ -424,16 +423,16 @@ void Store::addCollection(store::Collection_t& collection)
   that QName, this method is a NOOP.
 ********************************************************************************/
 void Store::deleteCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
+    const store::Item* name,
+    bool isDynamic)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return;
 
-  if (!theCollections->remove(aName, aDynamicCollection))
+  if (!theCollections->remove(name, isDynamic))
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND,
-    ERROR_PARAMS(aName->getStringValue()));
+    ERROR_PARAMS(name->getStringValue()));
   }
 }
 
@@ -443,14 +442,14 @@ void Store::deleteCollection(
   or NULL if there is no collection with that QName.
 ********************************************************************************/
 store::Collection_t Store::getCollection(
-    const store::Item* aName,
-    bool aDynamicCollection)
+    const store::Item* name,
+    bool isDynamic)
 {
-  if (aName == NULL)
+  if (name == NULL)
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection, aDynamicCollection)) 
+  if (theCollections->get(name, collection, isDynamic)) 
   {
     return collection;
   }
@@ -464,9 +463,9 @@ store::Collection_t Store::getCollection(
 /*******************************************************************************
   Returns an iterator that lists the QName's of all the available collections.
 ********************************************************************************/
-store::Iterator_t Store::listCollectionNames(bool aDynamicCollections)
+store::Iterator_t Store::listCollectionNames(bool dynamic)
 {
-  return theCollections->names(aDynamicCollections);
+  return theCollections->names(dynamic);
 }
 
 
@@ -550,6 +549,7 @@ void Store::populateValueIndex(
         ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
+      // If the index took ownership of the last allocated key, allocate a new one.
       if (key2 == key)
         key = new store::IndexKey(numColumns);
 
@@ -607,7 +607,11 @@ void Store::populateGeneralIndex(
     {
       bool more = true;
 
+#ifdef ZORBA_WITH_JSON
+      assert(domainNode->isNode() || domainNode->isJSONItem());
+#else
       assert(domainNode->isNode());
+#endif
       assert(keyItem == NULL);
 
       // Compute the keys associated with the current domain node. Note: We
@@ -626,7 +630,11 @@ void Store::populateGeneralIndex(
 
         // If current node has no keys, put it in the "null" entry and continue
         // with the next domain node, if nay.
+#ifdef ZORBA_WITH_JSON
+        if (!more || firstKeyItem->isNode() || firstKeyItem->isJSONItem())
+#else
         if (!more || firstKeyItem->isNode())
+#endif
         {
           index->insert(keyItem, domainNode);
 
@@ -639,7 +647,11 @@ void Store::populateGeneralIndex(
 
         // If current domain node has exactly 1 key, insert it in the index
         // and continue with next domain node, if any.
+#ifdef ZORBA_WITH_JSON
+        if (!more || keyItem->isNode() || keyItem->isJSONItem())
+#else
         if (!more || keyItem->isNode())
+#endif
         {
           index->insert(firstKeyItem, domainNode);
 
@@ -650,7 +662,7 @@ void Store::populateGeneralIndex(
         // Current domain node has at least 2 keys. So insert them in the index.
         // Note: we have to copy the domainNode rchandle because index->insert()
         // will transfer the given node.
-        index->setMultiKey();
+        index->addMultiKey();
 
         store::Item_t node = domainNode;
         index->insert(firstKeyItem, node);
@@ -660,7 +672,11 @@ void Store::populateGeneralIndex(
         // Compute next keys or next domain node.
         while ((more = sourceIter->next(keyItem)))
         {
+#ifdef ZORBA_WITH_JSON
+          if (keyItem->isNode() || keyItem->isJSONItem())
+#else
           if (keyItem->isNode())
+#endif
           {
             domainNode.transfer(keyItem);
             break;
@@ -698,10 +714,8 @@ store::Index_t Store::refreshIndex(
 
   if (!theIndices.get(non_const_items, index))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   deleteIndex(qname);
@@ -771,7 +785,7 @@ store::Index* Store::getIndex(const store::Item* qname)
 ********************************************************************************/
 store::Iterator_t Store::listIndexNames()
 {
-  return new NameIterator<IndexSet>(theIndices);
+  return new NameIterator<IndexSet>(theIndices, false);
 }
 
 
@@ -798,7 +812,7 @@ store::IC_t Store::activateIC(
 
   theICs.insert(qname, ic);
 
-  isApplied=true;
+  isApplied = true;
   return ic;
 }
 
@@ -836,8 +850,7 @@ store::IC_t Store::activateForeignKeyIC(
 
 ********************************************************************************/
 store::IC_t
-Store::deactivateIC(const store::Item_t& icQName,
-    bool& isApplied)
+Store::deactivateIC(const store::Item_t& icQName, bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -859,7 +872,7 @@ Store::deactivateIC(const store::Item_t& icQName,
 ********************************************************************************/
 store::Iterator_t Store::listActiveICNames()
 {
-  return new NameIterator<ICSet>(theICs);
+  return new NameIterator<ICSet>(theICs, false);
 }
 
 
@@ -880,7 +893,7 @@ store::IC* Store::getIC(const store::Item* icQName)
 
 ********************************************************************************/
 store::Index_t
-Store::createHashMap(
+Store::createMap(
     const store::Item_t& aQName,
     const store::IndexSpecification& aSpec)
 {
@@ -896,7 +909,7 @@ Store::createHashMap(
 
   lIndex = new ValueHashIndex(aQName, aSpec);
 
-  addHashMap(lIndex);
+  if (!aSpec.theIsTemp) addMap(lIndex);
 
   return lIndex;
 }
@@ -906,7 +919,7 @@ Store::createHashMap(
 
 ********************************************************************************/
 store::Index_t
-Store::destroyHashMap(const store::Item_t& aQName)
+Store::destroyMap(const store::Item_t& aQName)
 {
   store::Index_t lIndex;
   if (!theHashMaps.get(aQName.getp(), lIndex))
@@ -941,7 +954,7 @@ Store::getMap(const store::Item* aQName) const
 
 ********************************************************************************/
 store::Index_t
-Store::getHashMap(const store::Item_t& aQName) const
+Store::getMap(const store::Item_t& aQName) const
 {
   store::Index_t lIndex;
   if (const_cast<IndexSet*>(&theHashMaps)->get(aQName.getp(), lIndex))
@@ -959,7 +972,7 @@ Store::getHashMap(const store::Item_t& aQName) const
 
 ********************************************************************************/
 void
-Store::addHashMap(const store::Index_t& aIndex)
+Store::addMap(const store::Index_t& aIndex)
 {
   store::Item* lName = aIndex->getName();
   store::Index_t lIndex = aIndex;
@@ -972,7 +985,7 @@ Store::addHashMap(const store::Index_t& aIndex)
 ********************************************************************************/
 store::Iterator_t Store::listMapNames()
 {
-  return new NameIterator<IndexSet>(theHashMaps);
+  return new NameIterator<IndexSet>(theHashMaps, false);
 }
 
 

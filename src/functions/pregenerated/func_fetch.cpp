@@ -63,9 +63,9 @@ PlanIter_t fn_zorba_fetch_content_type::codegen(
 
 void populate_context_fetch(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -77,9 +77,9 @@ void populate_context_fetch(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content_binary,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content-binary"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -90,9 +90,9 @@ void populate_context_fetch(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content_type,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content-type"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
