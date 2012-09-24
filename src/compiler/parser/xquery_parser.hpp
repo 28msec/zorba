@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.6.2.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -32,15 +30,19 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file /Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp
+ ** Define the zorba::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+# define ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
 
 /* "%code requires" blocks.  */
-
-/* Line 35 of lalr1.cc  */
-#line 35 "/home/markos/zorba/repo/bug-900688/src/compiler/parser/xquery_parser.y"
+/* Line 36 of lalr1.cc  */
+#line 35 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -84,34 +86,13 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 90 "/home/markos/zorba/repo/bug-900688/build-opt/src/compiler/parser/xquery_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 91 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 104 "/home/markos/zorba/repo/bug-900688/build-opt/src/compiler/parser/xquery_parser.hpp"
-  class position;
-  class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 114 "/home/markos/zorba/repo/bug-900688/build-opt/src/compiler/parser/xquery_parser.hpp"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -119,46 +100,10 @@ namespace zorba {
 # define YYDEBUG 1
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 1
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 162 "/home/markos/zorba/repo/bug-900688/build-opt/src/compiler/parser/xquery_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 107 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -168,9 +113,8 @@ namespace zorba {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/bug-900688/src/compiler/parser/xquery_parser.y"
+/* Line 36 of lalr1.cc  */
+#line 155 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -192,9 +136,8 @@ namespace zorba {
     ft_anyall_mode::type ft_anyall_value;
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 198 "/home/markos/zorba/repo/bug-900688/build-opt/src/compiler/parser/xquery_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 141 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -394,145 +337,147 @@ namespace zorba {
      SEMI = 445,
      SLASH = 446,
      SLASH_SLASH = 447,
-     STAR = 448,
-     START_TAG_END = 449,
-     STRIP = 450,
-     TAG_END = 451,
-     THEN = 452,
-     TO = 453,
-     TREAT = 454,
-     UNION = 455,
-     UNORDERED = 456,
-     VAL_EQ = 457,
-     VAL_GE = 458,
-     VAL_GT = 459,
-     VAL_LE = 460,
-     VAL_LT = 461,
-     VAL_NE = 462,
-     VALUECOMP = 463,
-     VBAR = 464,
-     EMPTY_SEQUENCE = 465,
-     WHERE = 466,
-     XML_COMMENT_BEGIN = 467,
-     XML_COMMENT_END = 468,
-     XQUERY = 469,
-     VERSION = 470,
-     START = 471,
-     AFTER = 472,
-     BEFORE = 473,
-     REVALIDATION = 474,
-     _STRICT = 475,
-     LAX = 476,
-     SKIP = 477,
-     _DELETE = 478,
-     NODE = 479,
-     INSERT = 480,
-     NODES = 481,
-     RENAME = 482,
-     REPLACE = 483,
-     VALUE = 484,
-     OF = 485,
-     FIRST = 486,
-     INTO = 487,
-     LAST = 488,
-     MODIFY = 489,
-     COPY = 490,
-     WITH = 491,
-     BREAK = 492,
-     CONTINUE = 493,
-     EXIT = 494,
-     LOOP = 495,
-     RETURNING = 496,
-     WHILE = 497,
-     TRY = 498,
-     CATCH = 499,
-     USING = 500,
-     ALL = 501,
-     ANY = 502,
-     CONTAINS = 503,
-     CONTENT = 504,
-     DIACRITICS = 505,
-     DIFFERENT = 506,
-     DISTANCE = 507,
-     END = 508,
-     ENTIRE = 509,
-     EXACTLY = 510,
-     FROM = 511,
-     FTAND = 512,
-     FTNOT = 513,
-     NOT = 514,
-     FT_OPTION = 515,
-     FTOR = 516,
-     INSENSITIVE = 517,
-     LANGUAGE = 518,
-     LEVELS = 519,
-     LOWERCASE = 520,
-     OCCURS = 521,
-     PARAGRAPH = 522,
-     PARAGRAPHS = 523,
-     PHRASE = 524,
-     RELATIONSHIP = 525,
-     SAME = 526,
-     SCORE = 527,
-     SENSITIVE = 528,
-     SENTENCE = 529,
-     SENTENCES = 530,
-     STEMMING = 531,
-     STOP = 532,
-     THESAURUS = 533,
-     TIMES = 534,
-     UPPERCASE = 535,
-     WEIGHT = 536,
-     WILDCARDS = 537,
-     WINDOW = 538,
-     WITHOUT = 539,
-     WORDS = 540,
-     COLLECTION = 541,
-     CONSTOPT = 542,
-     APPEND_ONLY = 543,
-     QUEUE = 544,
-     MUTABLE = 545,
-     READ_ONLY = 546,
-     UNIQUE = 547,
-     NON = 548,
-     INDEX = 549,
-     MANUALLY = 550,
-     AUTOMATICALLY = 551,
-     MAINTAINED = 552,
-     ON = 553,
-     RANGE = 554,
-     EQUALITY = 555,
-     GENERAL = 556,
-     INTEGRITY = 557,
-     CONSTRAINT = 558,
-     CHECK = 559,
-     KEY = 560,
-     FOREACH = 561,
-     FOREIGN = 562,
-     KEYS = 563,
-     L_SIMPLE_OBJ_UNION = 564,
-     R_SIMPLE_OBJ_UNION = 565,
-     L_ACCUMULATOR_OBJ_UNION = 566,
-     R_ACCUMULATOR_OBJ_UNION = 567,
-     JSON = 568,
-     APPEND = 569,
-     POSITION = 570,
-     OBJECT = 571,
-     ARRAY = 572,
-     JSON_ITEM = 573,
-     STRUCTURED_ITEM = 574,
-     BYTE_ORDER_MARK_UTF8 = 575,
-     SHEBANG = 576,
-     RANGE_REDUCE = 577,
-     SEQUENCE_TYPE_REDUCE = 578,
-     ADDITIVE_REDUCE = 579,
-     UNION_REDUCE = 580,
-     INTERSECT_EXCEPT_REDUCE = 581,
-     QVARINDECLLIST_REDUCE = 582,
-     COMMA_DOLLAR = 583,
-     UNARY_PREC = 584,
-     STEP_REDUCE = 585,
-     MULTIPLICATIVE_REDUCE = 586
+     BANG = 448,
+     STAR = 449,
+     START_TAG_END = 450,
+     STRIP = 451,
+     TAG_END = 452,
+     THEN = 453,
+     TO = 454,
+     TREAT = 455,
+     UNION = 456,
+     UNORDERED = 457,
+     VAL_EQ = 458,
+     VAL_GE = 459,
+     VAL_GT = 460,
+     VAL_LE = 461,
+     VAL_LT = 462,
+     VAL_NE = 463,
+     VALUECOMP = 464,
+     VBAR = 465,
+     EMPTY_SEQUENCE = 466,
+     WHERE = 467,
+     XML_COMMENT_BEGIN = 468,
+     XML_COMMENT_END = 469,
+     XQUERY = 470,
+     VERSION = 471,
+     START = 472,
+     AFTER = 473,
+     BEFORE = 474,
+     REVALIDATION = 475,
+     _STRICT = 476,
+     LAX = 477,
+     SKIP = 478,
+     _DELETE = 479,
+     NODE = 480,
+     INSERT = 481,
+     NODES = 482,
+     RENAME = 483,
+     REPLACE = 484,
+     VALUE = 485,
+     OF = 486,
+     FIRST = 487,
+     INTO = 488,
+     LAST = 489,
+     MODIFY = 490,
+     COPY = 491,
+     WITH = 492,
+     BREAK = 493,
+     CONTINUE = 494,
+     EXIT = 495,
+     LOOP = 496,
+     RETURNING = 497,
+     WHILE = 498,
+     TRY = 499,
+     CATCH = 500,
+     USING = 501,
+     ALL = 502,
+     ANY = 503,
+     CONTAINS = 504,
+     CONTENT = 505,
+     DIACRITICS = 506,
+     DIFFERENT = 507,
+     DISTANCE = 508,
+     END = 509,
+     ENTIRE = 510,
+     EXACTLY = 511,
+     FROM = 512,
+     FTAND = 513,
+     FTNOT = 514,
+     NOT = 515,
+     FT_OPTION = 516,
+     FTOR = 517,
+     INSENSITIVE = 518,
+     LANGUAGE = 519,
+     LEVELS = 520,
+     LOWERCASE = 521,
+     OCCURS = 522,
+     PARAGRAPH = 523,
+     PARAGRAPHS = 524,
+     PHRASE = 525,
+     RELATIONSHIP = 526,
+     SAME = 527,
+     SCORE = 528,
+     SENSITIVE = 529,
+     SENTENCE = 530,
+     SENTENCES = 531,
+     STEMMING = 532,
+     STOP = 533,
+     THESAURUS = 534,
+     TIMES = 535,
+     UPPERCASE = 536,
+     WEIGHT = 537,
+     WILDCARDS = 538,
+     WINDOW = 539,
+     WITHOUT = 540,
+     WORDS = 541,
+     COLLECTION = 542,
+     CONSTOPT = 543,
+     APPEND_ONLY = 544,
+     QUEUE = 545,
+     MUTABLE = 546,
+     READ_ONLY = 547,
+     UNIQUE = 548,
+     NON = 549,
+     INDEX = 550,
+     MANUALLY = 551,
+     AUTOMATICALLY = 552,
+     MAINTAINED = 553,
+     ON = 554,
+     RANGE = 555,
+     EQUALITY = 556,
+     GENERAL = 557,
+     INTEGRITY = 558,
+     CONSTRAINT = 559,
+     CHECK = 560,
+     KEY = 561,
+     FOREACH = 562,
+     FOREIGN = 563,
+     KEYS = 564,
+     L_SIMPLE_OBJ_UNION = 565,
+     R_SIMPLE_OBJ_UNION = 566,
+     L_ACCUMULATOR_OBJ_UNION = 567,
+     R_ACCUMULATOR_OBJ_UNION = 568,
+     JSON = 569,
+     APPEND = 570,
+     POSITION = 571,
+     OBJECT = 572,
+     ARRAY = 573,
+     JSON_ITEM = 574,
+     STRUCTURED_ITEM = 575,
+     BYTE_ORDER_MARK_UTF8 = 576,
+     SHEBANG = 577,
+     RANGE_REDUCE = 578,
+     SEQUENCE_TYPE_REDUCE = 579,
+     ADDITIVE_REDUCE = 580,
+     UNION_REDUCE = 581,
+     INTERSECT_EXCEPT_REDUCE = 582,
+     QVARINDECLLIST_REDUCE = 583,
+     COMMA_DOLLAR = 584,
+     UNARY_PREC = 585,
+     STEP_REDUCE = 586,
+     SIMPLEMAPEXPR_REDUCE = 587,
+     MULTIPLICATIVE_REDUCE = 588
    };
 
     };
@@ -606,6 +551,14 @@ namespace zorba {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned short int token_number_type;
     /* Tables.  */
@@ -613,7 +566,7 @@ namespace zorba {
     static const short int yypact_[];
     static const short int yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned short int yydefact_[];
@@ -637,18 +590,14 @@ namespace zorba {
     /// For a rule, its LHS.
     static const unsigned short int yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
+    static const unsigned char yyr2_[]; 
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *n);
+
+
     /// For a symbol, its name in clear.
     static const char* const yytname_[];
-#endif
-
-#if YYERROR_VERBOSE
-    /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
-
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
     typedef short int rhs_number_type;
@@ -703,14 +652,10 @@ namespace zorba {
     xquery_driver& driver;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 713 "/home/markos/zorba/repo/bug-900688/build-opt/src/compiler/parser/xquery_parser.hpp"
-
+/* Line 36 of lalr1.cc  */
+#line 658 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */

@@ -434,9 +434,15 @@ void serializer::emitter::emit_item(store::Item* item)
 #ifdef ZORBA_WITH_JSON
   if (item->isJSONItem())
   {
-    throw XQUERY_EXCEPTION(zerr::ZAPI0043_CANNOT_SERIALIZE_JSON_ITEM);
+    zstring lMethod;
+    ser->getSerializationMethod(lMethod);
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS(lMethod, item->getType()->getStringValue())
+      );
   }
 #endif
+
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -581,8 +587,8 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   }
   default:
   {
-    ZORBA_ASSERT(false);
-    tr << "node of type: " << item->getNodeKind();
+    int k = static_cast<int>(item->getNodeKind());
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
   }
   }
 }
@@ -1000,15 +1006,13 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
     case store::XS_DOUBLE:
     case store::XS_FLOAT:
       if (item->isNaN()) {
-        emit_jsoniq_value(type == store::XS_DOUBLE ? "double" : "float",
-                               "NaN", depth);
+        emit_json_string("NaN");
         break;
       }
       else if (item->isPosOrNegInf()) {
         // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
         // I tell which I have?
-        emit_jsoniq_value(type == store::XS_DOUBLE ? "double" : "float",
-                               "INF", depth);
+        emit_json_string("INF");
         break;
       }
       // else fall through
@@ -1034,13 +1038,12 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       tr << (item->getBooleanValue() ? "true" : "false");
       break;
 
-    case store::JDM_NULL:
+    case store::JS_NULL:
       tr << "null";
       break;
 
     default: {
-      emit_jsoniq_value(item->getType()->getStringValue(),
-                        item->getStringValue(), depth);
+      emit_json_string(item->getStringValue());
       break;
     }
     }
@@ -1098,7 +1101,6 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
 ********************************************************************************/
 void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 {
-  store::Item_t member;
   xs_integer size = array->getArraySize();
   tr << "[ ";
   for (xs_integer i = xs_integer(1); i <= size; ++i) {
@@ -1115,64 +1117,16 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_jsoniq_value(
-    zstring type,
-    zstring value,
-    int depth)
-{
-  // First make sure we should be doing these extended values
-  if (ser->jsoniq_extensions == PARAMETER_VALUE_NO) {
-    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS(value));
-  }
-
-  // Create items for constant strings, if not already done
-  if (!theJSONiqValueName)
-  {
-    zstring jsoniqvaluestring("JSONiq value");
-    zstring typestring("type");
-    zstring valuestring("value");
-    GENV_ITEMFACTORY->createString(theJSONiqValueName, jsoniqvaluestring);
-    GENV_ITEMFACTORY->createString(theTypeName, typestring);
-    GENV_ITEMFACTORY->createString(theValueName, valuestring);
-  }
-
-  // Create the inner JSON object, which contains two pairs
-  std::vector<store::Item_t> names(2);
-  std::vector<store::Item_t> values(2);
-
-  names[0] = theTypeName;
-  names[1] = theValueName;
-
-  GENV_ITEMFACTORY->createString(values[0], type);
-  GENV_ITEMFACTORY->createString(values[1], value);
-
-  store::Item_t inner;
-  GENV_ITEMFACTORY->createJSONObject(inner, names, values);
-
-  // Create the outer JSON object with one pair
-  names.resize(1);
-  values.resize(1);
-  names[0] = theJSONiqValueName;
-  values[0] = inner;
-
-  store::Item_t outer;
-  GENV_ITEMFACTORY->createJSONObject(outer, names, values);
-
-  emit_json_object(outer, depth);
-}
-
 void serializer::json_emitter::emit_jsoniq_xdm_node(
     store::Item* item,
-    int depth)
+    int)
 {
-  // First make sure we should be doing these extended values
-  if (ser->jsoniq_extensions == PARAMETER_VALUE_NO) {
-    // QQQ probably should put "XML node" in diagnostics_en.xml
-    throw XQUERY_EXCEPTION(jerr::JNSE0013, ERROR_PARAMS("XML node"));
+  if (true) {
+    // It could be useful to have some form of serialization of nested XML nodes
+    // (if only for debugging purposes). However as this is not (yet?) specified
+    // we throw an error here.
+    throw XQUERY_EXCEPTION(jerr::JNSE0014);
   }
-
-  // OK, we've got a non-atomic non-JDM Item here, so serialize it as XML
-  // and output it as a "JSONiq XDM node".
   if (!theXMLEmitter) {
     theXMLStringStream = new std::stringstream();
     ser->attach_transcoder(*theXMLStringStream);
@@ -1182,24 +1136,7 @@ void serializer::json_emitter::emit_jsoniq_xdm_node(
   zstring xml(theXMLStringStream->str());
   theXMLStringStream->str("");
 
-  // Create item for constant string, if not already done
-  if (!theJSONiqValueName)
-  {
-    zstring xdmnodestring("JSONiq XDM node");
-    GENV_ITEMFACTORY->createString(theJSONiqXDMNodeName, xdmnodestring);
-  }
-
-  // Create the JSON object, which contains one pair
-  std::vector<store::Item_t> names(1);
-  std::vector<store::Item_t> values(1);
-
-  names[0] = theJSONiqXDMNodeName;
-  GENV_ITEMFACTORY->createString(values[0], xml);
-
-  store::Item_t object;
-  GENV_ITEMFACTORY->createJSONObject(object, names, values);
-
-  emit_json_object(object, depth);
+  emit_json_string(xml);
 }
 
 
@@ -1214,11 +1151,11 @@ void serializer::json_emitter::emit_json_string(zstring const &string)
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  JSONiq emitter (auto-detects JSON or XML)                                 //
+//  hybrid emitter (auto-detects JSON or XML)                                 //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-serializer::jsoniq_emitter::jsoniq_emitter(
+serializer::hybrid_emitter::hybrid_emitter(
   serializer* the_serializer,
   std::ostream& the_stream,
   bool aEmitAttributes)
@@ -1230,38 +1167,24 @@ serializer::jsoniq_emitter::jsoniq_emitter(
 {
 }
 
-serializer::jsoniq_emitter::~jsoniq_emitter()
+serializer::hybrid_emitter::~hybrid_emitter()
 {
   delete theXMLEmitter;
   delete theJSONEmitter;
 }
 
-void serializer::jsoniq_emitter::emit_declaration()
+void serializer::hybrid_emitter::emit_declaration()
 {
 }
 
-void serializer::jsoniq_emitter::emit_item(store::Item *item)
+void serializer::hybrid_emitter::emit_item(store::Item *item)
 {
-  
-  bool isJson = item->isJSONItem();
-  
-  if (ser->jsoniq_allow_mixed_xdm_jdm == PARAMETER_VALUE_NO)
-  {
-    if ((isJson && theEmitterState == JESTATE_XDM) ||
-        (!isJson && theEmitterState == JESTATE_JDM))
-    {
-      throw XQUERY_EXCEPTION(zerr::ZAPI0045_CANNOT_SERIALIZE_MIXED_XDM_JDM);
-    }
-  }
-
-  if (isJson) {
+  if (item->isJSONItem()) {
     theEmitterState = JESTATE_JDM;
     theJSONEmitter->emit_item(item);
   }
   else {
-    if (theEmitterState == JESTATE_UNDETERMINED &&
-        ser->jsoniq_allow_mixed_xdm_jdm == PARAMETER_VALUE_NO)
-    {
+    if (theEmitterState == JESTATE_UNDETERMINED) {
       theXMLEmitter->emit_declaration();
     }
     theEmitterState = JESTATE_XDM;
@@ -1269,7 +1192,7 @@ void serializer::jsoniq_emitter::emit_item(store::Item *item)
   }
 }
 
-void serializer::jsoniq_emitter::emit_end()
+void serializer::hybrid_emitter::emit_end()
 {
   switch(theEmitterState)
   {
@@ -1361,28 +1284,6 @@ static bool is_html_empty_content_model_element(const store::Item* item)
       ztd::equals(nodename, "link", 4) ||
       ztd::equals(nodename, "meta", 4) ||
       ztd::equals(nodename, "param", 5))
-    return true;
-  else
-    return false;
-}
-
-
-/*******************************************************************************
-  Returns true for those elements which are not allowed under HTML to have
-  empty tags (more exactly they are required to have both opening and closing
-  tags).
-********************************************************************************/
-static bool is_html_no_empty_tags_element(const store::Item* item)
-{
-  if (item == NULL)
-    return false;
-
-  zstring nodename;
-  utf8::to_lower(item->getNodeName()->getStringValue(), &nodename);
-
-  if (ztd::equals(nodename, "script", 6) ||
-      ztd::equals(nodename, "textarea", 8) ||
-      ztd::equals(nodename, "div", 3))
     return true;
   else
     return false;
@@ -1491,11 +1392,16 @@ void serializer::html_emitter::emit_node(
 {
   const store::Item* element_parent = item->getParent();
 
-  if( item->getNodeKind() == store::StoreConsts::documentNode)
+  store::NodeKind kind = item->getNodeKind();
+
+  switch (kind)
+  {
+  case store::StoreConsts::documentNode:
   {
     emit_node_children(item, depth);
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::elementNode)
+  case store::StoreConsts::elementNode:
   {
     store::Item* qnameItem = item->getNodeName();
 
@@ -1569,33 +1475,25 @@ void serializer::html_emitter::emit_node(
     }
     else
     {
-      // The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
-      // for script, textarea and div tags.
-      if (is_html_no_empty_tags_element(item) ||
-          (ser->include_content_type == PARAMETER_VALUE_YES &&
-           strcasecmp(qname.c_str(), "head") == 0))
+      // The HTML 4.01 and XQuery Serialization specs strongly imply that
+      // ALL empty elements must be serialized as either a matched open-
+      // close tag, or (only for elements with an empty content model) as
+      // an unclosed open tag.
+      if (is_html_empty_content_model_element(item))
       {
         tr << ">";
-        tr << "</" << qname << ">";
       }
       else
       {
-        // The HTML output method MUST NOT output an end-tag for empty elements.
-        // For HTML 4.0, the empty elements are area, base, basefont, br, col,
-        // frame, hr, img, input, isindex, link, meta and param. For example,
-        // an element written as <br/> or <br></br> in an XSLT stylesheet MUST
-        // be output as <br>.
-        if (is_html_empty_content_model_element(item) &&
-            ser->version == PARAMETER_VALUE_VERSION_4_0)
-          tr << ">";
-        else
-          tr << "/>";
+        tr << "></" << qname << ">";
       }
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  case store::StoreConsts::attributeNode:
   {
     // The HTML output method MUST output boolean attributes (that is attributes
     // with only a single allowed value that is equal to the name of the
@@ -1619,8 +1517,10 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::textNode)
+  case store::StoreConsts::textNode:
   {
     bool expand = true;
 
@@ -1649,23 +1549,27 @@ void serializer::html_emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  case store::StoreConsts::piNode:
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else
+  default:
   {
-    tr << "node of type: " << item->getNodeKind();
-    assert(0);
+    int k = static_cast<int>(kind);
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
+  }
   }
 }
 
@@ -2151,6 +2055,16 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::text_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS("text", item->getType()->getStringValue())
+      );
+  }
+#endif
+
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -2270,6 +2184,15 @@ serializer::binary_emitter::binary_emitter(
 ********************************************************************************/
 void serializer::binary_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS("binary", item->getType()->getStringValue())
+      );
+  }
+#endif
   if (item->isStreamable())
   {
     std::istream& stream = item->getStream();
@@ -2365,11 +2288,9 @@ void serializer::reset()
 
   // This default should match the default for ser_method in Zorba_SerializerOptions
 #ifdef ZORBA_WITH_JSON
-  method = PARAMETER_VALUE_JSONIQ;
-  jsoniq_multiple_items = PARAMETER_VALUE_NO;
-  jsoniq_extensions = PARAMETER_VALUE_NO;
+  method = PARAMETER_VALUE_JSON_XML_HYBRID;
+  jsoniq_multiple_items = PARAMETER_VALUE_YES;
   jsoniq_xdm_method = PARAMETER_VALUE_XML;
-  jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_NO;
 #else
   method = PARAMETER_VALUE_XML;
 #endif
@@ -2404,8 +2325,8 @@ convertMethodString(const char* aValue, const char* aName) {
 #ifdef ZORBA_WITH_JSON
   else if (!strcmp(aValue, "json"))
     return serializer::PARAMETER_VALUE_JSON;
-  else if (!strcmp(aValue, "jsoniq"))
-    return serializer::PARAMETER_VALUE_JSONIQ;
+  else if (!strcmp(aValue, "json-xml-hybrid"))
+    return serializer::PARAMETER_VALUE_JSON_XML_HYBRID;
 #endif
   else
     throw XQUERY_EXCEPTION(
@@ -2535,25 +2456,12 @@ void serializer::setParameter(const char* aName, const char* aValue)
     cdata_section_elements = aValue;
   }
 #ifdef ZORBA_WITH_JSON
-  else if (!strcmp(aName, "jsoniq-extensions"))
-  {
-    if (!strcmp(aValue, "yes"))
-      jsoniq_extensions = PARAMETER_VALUE_YES;
-    else if (!strcmp(aValue, "no"))
-      jsoniq_extensions = PARAMETER_VALUE_NO;
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
-      );
-  }
   else if (!strcmp(aName, "jsoniq-multiple-items"))
   {
     if (!strcmp(aValue, "no"))
       jsoniq_multiple_items = PARAMETER_VALUE_NO;
-    else if (!strcmp(aValue, "array"))
-      jsoniq_multiple_items = PARAMETER_VALUE_ARRAY;
-    else if (!strcmp(aValue, "appended"))
-      jsoniq_multiple_items = PARAMETER_VALUE_APPENDED;
+    else if (!strcmp(aValue, "yes"))
+      jsoniq_multiple_items = PARAMETER_VALUE_YES;
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
@@ -2563,21 +2471,29 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     jsoniq_xdm_method = convertMethodString(aValue, aName);
   }
-  else if (!strcmp(aName, "jsoniq-allow-mixed-xdm-jdm"))
-  {
-    if (!strcmp(aValue, "yes"))
-      jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_YES;
-    else if (!strcmp(aValue, "no"))
-      jsoniq_allow_mixed_xdm_jdm = PARAMETER_VALUE_NO;
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
-      );
-  }
 #endif /* ZORBA_WITH_JSON */
   else
   {
     throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::getSerializationMethod(zstring& m) const
+{
+  switch (getSerializationMethod())
+  {
+    case PARAMETER_VALUE_XML: m = "xml"; break;
+    case PARAMETER_VALUE_HTML: m = "html"; break;
+    case PARAMETER_VALUE_XHTML: m = "xhtml"; break;
+    case PARAMETER_VALUE_TEXT: m = "text"; break;
+    case PARAMETER_VALUE_BINARY: m = "binary"; break;
+    case PARAMETER_VALUE_JSON: m = "json"; break;
+    case PARAMETER_VALUE_JSON_XML_HYBRID: m = "json-xml-hybrid"; break;
+    default: ZORBA_ASSERT(false);
   }
 }
 
@@ -2668,8 +2584,8 @@ bool serializer::setup(std::ostream& os, bool aEmitAttributes)
 #ifdef ZORBA_WITH_JSON
   else if (method == PARAMETER_VALUE_JSON)
     e = new json_emitter(this, *tr);
-  else if (method == PARAMETER_VALUE_JSONIQ)
-    e = new jsoniq_emitter(this, *tr, aEmitAttributes);
+  else if (method == PARAMETER_VALUE_JSON_XML_HYBRID)
+    e = new hybrid_emitter(this, *tr, aEmitAttributes);
 #endif
   else
   {
@@ -2744,12 +2660,12 @@ serializer::serialize(
     if (aHandler)
     {
       // Only allow XML-based methods for SAX notifications. For now at least,
-      // the "JSONIQ" method is consider "XML-based", although you will
-      // certainly get errors if you attempt to serialize JDM this way.
+      // the "JSON-XML-hybrid" method is considerd "XML-based", although you
+      // will certainly get errors if you attempt to serialize JDM this way.
       if (method != PARAMETER_VALUE_XML &&
           method != PARAMETER_VALUE_XHTML
 #ifdef ZORBA_WITH_JSON
-          && method != PARAMETER_VALUE_JSONIQ
+          && method != PARAMETER_VALUE_JSON_XML_HYBRID
 #endif
         ) {
         throw ZORBA_EXCEPTION(

@@ -1149,6 +1149,33 @@ GeneralHashIndex::~GeneralHashIndex()
 /******************************************************************************
 
 *******************************************************************************/
+void GeneralHashIndex::clear()
+{
+  for (csize i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    IndexMap::iterator ite = theMaps[i]->begin();
+    IndexMap::iterator end = theMaps[i]->end();
+ 
+    for (; ite != end; ++ite)
+    {
+      //std::cout << "Index Entry Delete [" << (*ite).first << "," 
+      //          << (*ite).second << "]" << std::endl;
+      
+      const_cast<store::Item*>((*ite).first)->removeReference();
+      delete (*ite).second;
+    }
+
+    theMaps[i]->clear();
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 store::Index::KeyIterator_t GeneralHashIndex::keys() const
 {
   return new KeyIterator(theMaps);
@@ -1225,26 +1252,6 @@ bool GeneralHashIndex::removeFromMap(
   }
 
   return false;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void GeneralHashIndex::clear()
-{
-  for (csize i = 0; i < store::XS_LAST; ++i)
-  {
-    if (theMaps[i] == NULL)
-      continue;
-
-    theMaps[i]->clear();
-  }
-
-  if (isTyped())
-  {
-    theSingleMap->clear();
-  }
 }
 
 
@@ -1396,6 +1403,33 @@ GeneralTreeIndex::~GeneralTreeIndex()
 /******************************************************************************
 
 *******************************************************************************/
+void GeneralTreeIndex::clear()
+{
+  for (csize i = 0; i < store::XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    IndexMap::iterator ite = theMaps[i]->begin();
+    IndexMap::iterator end = theMaps[i]->end();
+ 
+    for (; ite != end; ++ite)
+    {
+      //std::cout << "Index Entry Delete [" << (*ite).first << "," 
+      //          << (*ite).second << "]" << std::endl;
+      
+      const_cast<store::Item*>((*ite).first)->removeReference();
+      delete (*ite).second;
+    }
+
+    theMaps[i]->clear();
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 bool GeneralTreeIndex::insertInMap(
     store::Item_t& key,
     store::Item_t& node,
@@ -1465,26 +1499,6 @@ bool GeneralTreeIndex::removeFromMap(
   }
 
   return false;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void GeneralTreeIndex::clear()
-{
-  for (csize i = 0; i < store::XS_LAST; ++i)
-  {
-    if (theMaps[i] == NULL)
-      continue;
-
-    theMaps[i]->clear();
-  }
-
-  if (isTyped())
-  {
-    theSingleMap->clear();
-  }
 }
 
 
@@ -1654,7 +1668,8 @@ void ProbeGeneralIndexIterator::doubleToLongProbe(
 /*******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond,
+                                     const xs_integer& aSkip)
 {
   theProbeKind = cond->getKind();
   theCondition = static_cast<GeneralIndexCondition*>(cond.getp());

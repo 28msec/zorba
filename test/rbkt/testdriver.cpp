@@ -435,7 +435,7 @@ main(int argc, char** argv)
         // testdriver_mt as well
         // Initialize default serialization method
 #ifdef ZORBA_WITH_JSON
-        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSONIQ;
+        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
 #else /* ZORBA_WITH_JSON */
         lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
 #endif /* ZORBA_WITH_JSON */
@@ -541,6 +541,13 @@ main(int argc, char** argv)
         if (lSerOptions.indent == ZORBA_INDENT_YES) {
           std::cout << "testdriver: skipping canonicalization "
             "when testing with indent==yes" << std::endl;
+        }
+        // Also skip canonicalization for tests using method==xhtml or html
+        // (so we can test for correct serialization of empty elements)
+        else if (lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_XHTML ||
+                 lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_HTML) {
+          std::cout << "testdriver: skipping canonicalization "
+            "when testing with method=[x]html" << std::endl;
         }
 #ifdef ZORBA_WITH_JSON
         // Also skip canonicalization for tests using method==json

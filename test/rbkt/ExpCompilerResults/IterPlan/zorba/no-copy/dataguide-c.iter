@@ -15,13 +15,6 @@ Iterator tree for const-folded expr:
 </NameCastIterator>
 
 Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
 <QNameIterator>
   <SingletonIterator value="xs:string(http://www.w3.org/2001/XMLSchema)"/>
   <SingletonIterator value="xs:string(string)"/>
@@ -330,14 +323,11 @@ Iterator tree for local:collapseNodes:
         <ForVariable name="y">
           <LetVarIterator varname="x"/>
         </ForVariable>
-        <LetVariable name="n" materialize="true">
-          <NodeNameIterator>
-            <ForVarIterator varname="y"/>
-          </NodeNameIterator>
-        </LetVariable>
         <GroupByClause>
           <Spec>
-            <LetVarIterator varname="n"/>
+            <NodeNameIterator>
+              <ForVarIterator varname="y"/>
+            </NodeNameIterator>
             <GroupVariable/>
           </Spec>
           <Spec>

@@ -1,10 +1,3 @@
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="2" varname="input">
@@ -105,14 +98,11 @@ Iterator tree for local:collapseNodes:
   <ForVariable name="y">
     <LetVarIterator varname="x"/>
   </ForVariable>
-  <LetVariable name="n" materialize="true">
-    <NodeNameIterator>
-      <ForVarIterator varname="y"/>
-    </NodeNameIterator>
-  </LetVariable>
   <GroupByClause>
     <Spec>
-      <LetVarIterator varname="n"/>
+      <NodeNameIterator>
+        <ForVarIterator varname="y"/>
+      </NodeNameIterator>
       <GroupVariable/>
     </Spec>
     <Spec>

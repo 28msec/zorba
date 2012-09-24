@@ -207,7 +207,8 @@ ccontext_example_4(XQC_Implementation* impl)
   lExpr2->execute(lExpr2, lContext, &lSequence2);
 
   // iterate over the result two times
-  while ( lSequence2->next(lSequence2) != XQC_END_OF_SEQUENCE ) {
+  while ( lSequence2->next(lSequence2) != XQC_END_OF_SEQUENCE ) 
+  {
     lSequence2->string_value(lSequence2, &lStringValue);
     printf("%s ", lStringValue);
   }
@@ -349,7 +350,7 @@ ccontext(int argc, char** argv)
 
   if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
     return 1;
-
+  /*
   printf("executing C example 1\n");
   res = ccontext_example_1(impl);
   if (!res) { impl->free(impl); return 1; };
@@ -364,12 +365,12 @@ ccontext(int argc, char** argv)
   res = ccontext_example_3(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
-
+  */
   printf("executing C example 4\n");
   res = ccontext_example_4(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
-
+  /*
   printf("executing C example 5\n");
   res = ccontext_example_5(impl);
   if (!res) { impl->free(impl); return 1; };
@@ -379,7 +380,7 @@ ccontext(int argc, char** argv)
   res = ccontext_example_6(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
-
+  */
   impl->free(impl);
   shutdown_store(store);
   return 0;

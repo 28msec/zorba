@@ -539,6 +539,10 @@ bool TypeOps::is_subtype(
     switch (subtype.type_kind())
     {
     case XQType::ANY_FUNCTION_TYPE_KIND:
+    {
+      return false;
+    }
+
     case XQType::FUNCTION_TYPE_KIND:
     {
       const FunctionXQType& f1 = static_cast<const FunctionXQType&>(subtype);

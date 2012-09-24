@@ -37,13 +37,9 @@ declare %ann:nondeterministic function local:process-file($file) as xs:string
     string-join (
       for $iter in $doc//zorba:iterator
       return 
-        if( fn:not($iter/@generateVisitor) or
-            $iter/@generateVisitor eq "true")
-        then
           if(fn:not($iter/@name = "")) then
             local:process-iter($iter)
-          else ()
-        else (),
+          else (),
     concat($gen:newline, $gen:newline))
 };
 

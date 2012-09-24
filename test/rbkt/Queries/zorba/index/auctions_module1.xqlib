@@ -116,7 +116,7 @@ declare %ann:sequential function auctions:create-db()
 
 declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:string)
 {
-  index_dml:probe-index-point-value($indexName, $id)
+  index_dml:probe-index-point-value($indexName, $id)/.
 };
 
 
@@ -132,13 +132,13 @@ declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:strin
                                 xs:boolean("true"), 
                                 xs:boolean("false"),
                                 xs:boolean("true"),
-                                xs:boolean("false"))
+                                xs:boolean("false"))/.
 };
 
 
 declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:string?)
 {
-  index_dml:probe-index-point-value($indexName, $city)
+  index_dml:probe-index-point-value($indexName, $city)/.
 };
 
 
@@ -154,7 +154,7 @@ declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:s
                                 xs:boolean("true"),
                                 xs:boolean("false"),
                                 xs:boolean("true"),
-                                xs:boolean("false"))
+                                xs:boolean("false"))/.
 };
 
 
