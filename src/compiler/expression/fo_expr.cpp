@@ -146,6 +146,20 @@ const store::Item* fo_expr::get_fname() const
 }
 
 
+void fo_expr::add_arg(expr* e)
+{
+  theArgs.push_back(e);
+  compute_scripting_kind();
+}
+
+
+void fo_expr::add_args(const std::vector<expr*>& args)
+{
+  theArgs.insert(theArgs.end(), args.begin(), args.end());
+  compute_scripting_kind();
+}
+
+
 void fo_expr::compute_scripting_kind()
 {
   const function* func = get_func();
@@ -252,7 +266,7 @@ void fo_expr::compute_scripting_kind()
 }
 
 
-expr* fo_expr::clone(substitution_t& subst) const
+expr* fo_expr::cloneImpl(substitution_t& subst) const
 {
   if (get_func()->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
   {
@@ -262,7 +276,9 @@ expr* fo_expr::clone(substitution_t& subst) const
       return i->second;
   }
 
-  std::auto_ptr<fo_expr> fo(theCCB->theEM->create_fo_expr(theSctx, get_loc(), get_func()));
+  std::auto_ptr<fo_expr> fo(theCCB->theEM->create_fo_expr(theSctx,
+                                                          get_loc(),
+                                                          get_func()));
 
   for (csize i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));

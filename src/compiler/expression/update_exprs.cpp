@@ -82,7 +82,7 @@ insert_expr::insert_expr(
 }
 
 
-expr* insert_expr::clone(substitution_t& subst) const
+expr* insert_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_insert_expr(theSctx,
                          get_loc(),
@@ -106,7 +106,7 @@ delete_expr::delete_expr(
 }
 
 
-expr* delete_expr::clone(substitution_t& subst) const
+expr* delete_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
 }
@@ -129,7 +129,7 @@ replace_expr::replace_expr(
 }
 
 
-expr* replace_expr::clone(substitution_t& subst) const
+expr* replace_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_replace_expr(theSctx,
                           get_loc(),
@@ -154,7 +154,7 @@ rename_expr::rename_expr(
 }
 
 
-expr* rename_expr::clone(substitution_t& subst) const
+expr* rename_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_rename_expr(theSctx,
                          get_loc(),
@@ -166,10 +166,11 @@ expr* rename_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-copy_clause::copy_clause(var_expr* aVar, expr* aExpr)
+copy_clause::copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr)
   :
   theVar(aVar),
-  theExpr(aExpr)
+  theExpr(aExpr),
+  theCCB(ccb)
 {
   theVar->set_copy_clause(this);
 }
@@ -182,7 +183,7 @@ copy_clause::~copy_clause()
 }
 
 
-copy_clause_t copy_clause::clone(expr::substitution_t& subst) const
+copy_clause* copy_clause::clone(expr::substitution_t& subst) const
 {
   ZORBA_ASSERT(theVar && theExpr);
 
@@ -192,7 +193,7 @@ copy_clause_t copy_clause::clone(expr::substitution_t& subst) const
 
   subst[theVar] = varCopy;
 
-  return new copy_clause(varCopy, domainCopy);
+  return theCCB->theEM->create_copy_clause(varCopy, domainCopy);
 }
 
 
@@ -232,7 +233,7 @@ void transform_expr::setReturnExpr(expr* e)
 }
 
 
-void transform_expr::add_back(copy_clause_t c)
+void transform_expr::add_back(copy_clause* c)
 {
   theCopyClauses.push_back(c);
 
@@ -246,14 +247,14 @@ void transform_expr::compute_scripting_kind()
 }
 
 
-expr* transform_expr::clone(substitution_t& subst) const
+expr* transform_expr::cloneImpl(substitution_t& subst) const 
 {
   ZORBA_ASSERT(theModifyExpr && theReturnExpr);
 
   transform_expr* cloneExpr =
     theCCB->theEM->create_transform_expr(theSctx, get_loc());
 
-  for (std::vector<copy_clause_t>::const_iterator lIter = theCopyClauses.begin();
+  for (std::vector<copy_clause*>::const_iterator lIter = theCopyClauses.begin();
        lIter != theCopyClauses.end();
        ++lIter)
   {

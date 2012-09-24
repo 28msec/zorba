@@ -83,11 +83,17 @@ public:
 
   expr* get_arg(csize i) const { return theArgs[i]; }
 
+  const std::vector<expr*>& get_args() const { return theArgs; }
+
   void set_arg(csize i, expr* e) { theArgs[i] = e; }
+
+  void add_arg(expr* e);
+
+  void add_args(const std::vector<expr*>& args);
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -96,6 +102,7 @@ public:
 private:
   fo_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, const function* f);
 };
+
 
 ////////// The following expressions in the AST "decay" into an fo_expr ///////
 

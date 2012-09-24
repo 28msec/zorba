@@ -248,6 +248,24 @@ expr* expr::clone() const
 
 expr* expr::clone(substitution_t& subst) const
 {
+  expr* lNewExpr = cloneImpl(subst);
+
+  if (containsPragma())
+  {
+    lNewExpr->setContainsPragma(ANNOTATION_TRUE);
+    std::vector<pragma*> lPragmas;
+    theCCB->lookup_pragmas(this, lPragmas);
+    for (size_t i = 0; i < lPragmas.size(); ++i)
+    {
+      theCCB->add_pragma(lNewExpr, lPragmas[i]);
+    }
+  }
+  return lNewExpr;
+}
+
+
+expr* expr::cloneImpl(substitution_t& subst) const
+{
   throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
 
@@ -540,6 +558,30 @@ void expr::setWillBeSerialized(BoolAnnotationValue v)
 bool expr::willBeSerialized() const
 {
   BoolAnnotationValue v = getWillBeSerialized();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue expr::getContainsPragma() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & CONTAINS_PRAGMA_MASK) >> CONTAINS_PRAGMA);
+}
+
+
+void expr::setContainsPragma(BoolAnnotationValue v)
+{
+  theFlags1 &= ~CONTAINS_PRAGMA_MASK;
+  theFlags1 |= (v << CONTAINS_PRAGMA);
+}
+
+
+bool expr::containsPragma() const
+{
+  BoolAnnotationValue v = getContainsPragma();
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 

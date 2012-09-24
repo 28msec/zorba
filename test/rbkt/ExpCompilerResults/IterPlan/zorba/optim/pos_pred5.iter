@@ -1,0 +1,30 @@
+Iterator tree for const-folded expr:
+<SequencePointAccessIterator>
+  <FnConcatIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+    <SingletonIterator value="xs:integer(2)"/>
+    <SingletonIterator value="xs:integer(3)"/>
+    <SingletonIterator value="xs:integer(4)"/>
+    <SingletonIterator value="xs:integer(5)"/>
+    <SingletonIterator value="xs:integer(6)"/>
+    <SingletonIterator value="xs:integer(7)"/>
+    <SingletonIterator value="xs:integer(8)"/>
+    <SingletonIterator value="xs:integer(9)"/>
+    <SingletonIterator value="xs:integer(0)"/>
+  </FnConcatIterator>
+  <SingletonIterator value="xs:integer(4)"/>
+</SequencePointAccessIterator>
+
+Iterator tree for const-folded expr:
+<IfThenElseIterator>
+  <CompareIterator>
+    <SingletonIterator value="xs:integer(4)"/>
+    <SingletonIterator value="xs:integer(4)"/>
+  </CompareIterator>
+  <SingletonIterator value="xs:integer(4)"/>
+  <FnConcatIterator/>
+</IfThenElseIterator>
+
+Iterator tree for main query:
+<SingletonIterator value="xs:integer(4)"/>
+

@@ -491,4 +491,26 @@ declare function sctx:function-annotations(
   $arity as xs:integer) as xs:QName* external;
 \endcode
 
+\section pragma_introduction Extension Expressions
+
+An extension expression consists of one or more pragmas, followed by an expression enclosed in curly braces.
+A pragma might be used to modify the behavior or semantics of the expression enclosed in curly braces.
+Pragmas are denoted by the delimiters (# and #), and consists of an identifying EQName.
+Zorba recognizes pragmas having the namespace <tt>http://www.zorba-xquery.com/extensions</tt>.
+Specifically, Zorba recognizes the following pragmas:
+
+<ul>
+  <li><b>no-copy</b> In order to indicate that a node that should be inserted into a collection does not need to be copied before inserting it. Not copying a node improves performance. However, the user needs to make sure that the node does not have a parent and is not modified in any other expression. For example, in the following example snippet, the node refered to by <tt>$n</tt> will not be copied before insertion into the collection.
+\code
+import module namespace db = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+
+declare namespace ext = "http://www.zorba-xquery.com/extensions";
+
+let $n := <a/>
+return (# ext:no-copy #) { $n is  db:apply-insert-last(xs:QName("local:bar"), $n) }
+\endcode
+  </li>
+</ul>
+
+
 */

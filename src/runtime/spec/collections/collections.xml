@@ -255,6 +255,14 @@
         <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="collection"
+                       prefix="static-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param><!-- start ref -->
+        <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
+        <zorba:output>structured-item()*</zorba:output>
+      </zorba:signature>
+
       <zorba:signature localname="collection" prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>structured-item()*</zorba:output>
@@ -262,6 +270,14 @@
 
       <zorba:signature localname="collection" prefix="dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param><!-- start to skip -->
+        <zorba:output>structured-item()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="collection"
+                       prefix="dynamic-collections-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param><!-- node ref-->
         <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
         <zorba:output>structured-item()*</zorba:output>
       </zorba:signature>
@@ -281,6 +297,10 @@
 
     <zorba:member type="bool" name="theIsDynamic" getterName="isDynamic"/>
 
+    <zorba:method const="true"
+                  name="isCountOptimizable"
+                  return="bool" />
+    
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="store::Iterator_t" name="theIterator"/>
       <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"/>
@@ -364,7 +384,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaInsertNodesIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesIterator, PlanIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesIterator, PlanIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:insert-nodes
@@ -396,12 +417,14 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -417,7 +440,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaInsertNodesFirstIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesFirstIterator, PlanIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesFirstIterator, PlanIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:insert-nodes-first
@@ -454,12 +478,14 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -475,7 +501,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaInsertNodesLastIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesLastIterator, PlanIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesLastIterator, PlanIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:insert-nodes-last
@@ -511,12 +538,14 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -532,7 +561,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaInsertNodesBeforeIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesBeforeIterator, PlanIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesBeforeIterator, PlanIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:insert-nodes-before
@@ -572,12 +602,14 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -593,7 +625,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaInsertNodesAfterIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesAfterIterator, PlanIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesAfterIterator, PlanIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:insert-nodes-after
@@ -633,12 +666,14 @@
         <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:member type="bool" name="theIsDynamic"/>
@@ -656,7 +691,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaApplyInsertNodesIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:apply-insert-nodes
@@ -689,12 +725,14 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -717,7 +755,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaApplyInsertNodesFirstIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:apply-insertnodes-first
@@ -756,12 +795,14 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -784,7 +825,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaApplyInsertNodesLastIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:apply-insertnodes-last
@@ -823,12 +865,14 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="1"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -851,7 +895,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaApplyInsertNodesBeforeIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:apply-insert-nodes-before
@@ -894,12 +939,14 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 
@@ -922,7 +969,8 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaApplyInsertNodesAfterIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>">
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>"
+  generateVisitor="false">
 
     <zorba:description author="Zorba Team">
       zorba:apply-insertnodes-after
@@ -965,12 +1013,14 @@
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:propagatesInputNodes/>
         <zorba:mustCopyInputNodes producer="2"/>
+        <zorba:processPragma/>
       </zorba:methods>
 
     </zorba:function>
 
     <zorba:constructor>
       <zorba:parameter type="bool" name="isDynamic" base="true"/>
+      <zorba:parameter type="bool" name="needToCopy" base="true"/>
     </zorba:constructor>
 
     <zorba:method const="true" name="getCollection" 

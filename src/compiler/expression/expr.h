@@ -46,6 +46,7 @@ class ExprManager;
 class expr_visitor;
 class NodeNameTest;
 class signature;
+class pragma;
 
 /*******************************************************************************
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
@@ -79,7 +80,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -117,7 +118,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -161,7 +162,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -264,7 +265,7 @@ protected:
 public:
   bool is_optional() const;
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -318,7 +319,7 @@ public:
 
   store::Item_t get_qname() const { return theQName; }
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -382,7 +383,7 @@ protected:
       store::Item* qname);
 
 public:
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   PromoteIterator::ErrorKind get_err() const { return theErrorKind; }
 
@@ -436,7 +437,7 @@ protected:
 public:
   bool is_optional() const;
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -474,7 +475,7 @@ protected:
 public:
   bool getCheckPrimeOnly() const { return theCheckPrimeOnly; }
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -518,7 +519,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -551,7 +552,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -629,8 +630,8 @@ public:
   void setCopyInputNodes() { theCopyInputNodes = true; }
 
   void compute_scripting_kind();
-
-  expr* clone(substitution_t& s) const;
+  
+  expr* cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -689,7 +690,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -732,7 +733,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -763,7 +764,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -784,50 +785,34 @@ protected:
   store::Item_t theValue;
 
 protected:
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, zstring& sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, zstring& sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const std::string& sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const std::string& sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* sval);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* sval);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_integer);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_integer);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_decimal);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_decimal);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_double);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_double);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, xs_boolean);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_boolean);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, store::Item_t);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const store::Item_t&);
 
-  const_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
+  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* ns, const char* pre, const char* local);
 
 public:
   store::Item* get_val() const { return theValue.getp(); }
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class pragma : public SimpleRCObject
-{
-  friend class expr;
-
-public:
-  store::Item_t theQName;
-  std::string theContent;
-
-public:
-  pragma(store::Item_t name, std::string const& content);
 };
 
 
@@ -841,8 +826,8 @@ class extension_expr : public expr
   friend class expr;
 
 protected:
-  std::vector<rchandle<pragma> > thePragmas;
-  expr*                         theExpr;
+  std::vector<pragma*> thePragmas;
+  expr*                theExpr;
 
 protected:
   extension_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
@@ -850,13 +835,13 @@ protected:
   extension_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr*);
 
 public:
-  void add(rchandle<pragma> p) { thePragmas.push_back(p); }
+  void add(pragma* p) { thePragmas.push_back(p); }
 
   expr* get_expr() const { return theExpr; }
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& subst) const;
+  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -886,15 +871,12 @@ public:
   [173] CatchErrorList ::= NameTest ("|" NameTest)*
 
 ********************************************************************************/
-class catch_clause;
 
-typedef rchandle<catch_clause> catch_clause_t;
-
-
-class catch_clause : public SimpleRCObject
+class catch_clause
 {
   friend class expr;
   friend class trycatch_expr;
+  friend class ExprManager;
 
 public:
   enum var_type
@@ -914,11 +896,11 @@ public:
   typedef std::map<int, var_expr*> var_map_t;
 
 protected:
-  nt_list_t  theNameTests;
-  var_map_t  theVarMap;
+  nt_list_t         theNameTests;
+  var_map_t         theVarMap;
+  CompilerCB *const theCCB;
 
-public:
-  catch_clause();
+  catch_clause(CompilerCB* ccb);
 
 public:
   void set_nametests(nt_list_t& a) { theNameTests = a; }
@@ -933,7 +915,7 @@ public:
 
   void add_var(var_type v, var_expr* n) { theVarMap[v] = n; }
 
-  catch_clause_t clone(expr::substitution_t& subst) const;
+  catch_clause* clone(expr::substitution_t& subst) const;
 };
 
 
@@ -946,7 +928,7 @@ class trycatch_expr : public expr
 protected:
   expr*                      theTryExpr;
   std::vector<expr*>         theCatchExprs;
-  std::vector<catch_clause_t> theCatchClauses;
+  std::vector<catch_clause*> theCatchClauses;
 
 protected:
   trycatch_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr* tryExpr);
@@ -960,15 +942,15 @@ public:
 
   void add_catch_expr(expr* e);
 
-  void add_clause(catch_clause_t cc);
+  void add_clause(catch_clause* cc);
 
   csize clause_count() const { return theCatchClauses.size(); }
 
-  const catch_clause_t& operator[](csize i) const { return theCatchClauses[i]; }
+  const catch_clause* operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& subst) const;
+  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -1008,7 +990,7 @@ public:
 
   void accept(expr_visitor&);
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -1046,7 +1028,7 @@ public:
 
   void accept(expr_visitor&);
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 
@@ -1170,7 +1152,7 @@ public:
 
   void accept(expr_visitor&);
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };

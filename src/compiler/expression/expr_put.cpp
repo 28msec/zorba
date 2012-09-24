@@ -40,6 +40,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/pragma.h"
 #include "compiler/parser/parse_constants.h"
 
 #include "diagnostics/assert.h"
@@ -125,7 +126,8 @@ static inline string expr_loc(const expr* e)
   if (Properties::instance()->printLocations())
   {
     ostringstream os;
-    os << " (loc: " << e->get_loc().getLineBegin() << ", " << e->get_loc().getColumnBegin() << ")";
+    os << " (loc: " << e->get_loc().getLineBegin() << ", "
+       << e->get_loc().getColumnBegin() << ")";
     return os.str ();
   }
   else
@@ -263,8 +265,8 @@ ostream& window_clause::put(ostream& os) const
   BEGIN_PUT(WINDOW);
   theVarExpr->put(os);
   PUT_SUB("IN", theDomainExpr);
-  PUT_SUB("START", theWinStartCond.getp());
-  PUT_SUB("STOP", theWinStopCond.getp());
+  PUT_SUB("START", theWinStartCond);
+  PUT_SUB("STOP", theWinStopCond);
   END_PUT();
 }
 
@@ -281,7 +283,7 @@ ostream& flwor_wincond::vars::put(ostream& os) const
 
 ostream& flwor_wincond::put(ostream& os) const
 {
-  BEGIN_PUT(flwor_wincond);
+  BEGIN_PUT_NO_LOCATION(flwor_wincond);
   PUT_SUB("IN-VARS", &get_in_vars());
   PUT_SUB("OUT-VARS", &get_out_vars());
   PUT_SUB("WHEN", theCondExpr);
@@ -291,24 +293,33 @@ ostream& flwor_wincond::put(ostream& os) const
 
 ostream& group_clause::put(ostream& os) const
 {
-  BEGIN_PUT(group_clause);
+  os << indent << "GROUP-BY" << expr_addr(this) << " ";
 
-  os << indent << "GROUP BY EXPRS";
+  os << endl << indent << "[\n" << inc_indent;
 
-  for (unsigned i = 0; i < theGroupVars.size(); i++)
+  os << indent << "GROUPING SPECS";
+
+  for (csize i = 0; i < theGroupVars.size(); ++i)
   {
     PUT_SUB("", theGroupVars[i].first);
     os << inc_indent << indent << "-->" << dec_indent;
     theGroupVars[i].second->put(os) << endl;
   }
 
-  os << indent << "NON GROUP BY VARS ";
+  os << indent << "NON GROUPING SPECS ";
 
-  for (unsigned i = 0; i < theNonGroupVars.size(); i++)
+  if (theNonGroupVars.empty())
   {
-    PUT_SUB("", theNonGroupVars[i].first);
-    os << inc_indent << indent << "-->" << dec_indent;
-    theNonGroupVars[i].second->put(os) << endl;
+    os << endl;
+  }
+  else
+  {
+    for (csize i = 0; i < theNonGroupVars.size(); ++i)
+    {
+      PUT_SUB("", theNonGroupVars[i].first);
+      os << inc_indent << indent << "-->" << dec_indent;
+      theNonGroupVars[i].second->put(os) << endl;
+    }
   }
 
   END_PUT();
@@ -442,7 +453,7 @@ ostream& trycatch_expr::put( ostream& os) const
 
   for (ulong i = 0; i < numClauses; ++i)
   {
-    catch_clause_t cc = theCatchClauses[i];
+    catch_clause* cc = theCatchClauses[i];
     os << indent << "CATCH ";
     os << "\n";
     theCatchExprs[i]->put(os);
@@ -917,7 +928,7 @@ ostream& rename_expr::put(ostream& os) const
 
 ostream& copy_clause::put(ostream& os) const
 {
-  BEGIN_PUT(copy);
+  BEGIN_PUT_NO_LOCATION(copy);
   theVar->put(os);
   theExpr->put(os);
   END_PUT();
@@ -928,10 +939,10 @@ ostream& transform_expr::put(ostream& os) const
 {
   BEGIN_PUT(transform_expr);
 
-  for (vector<rchandle<copy_clause> >::const_iterator it = theCopyClauses.begin();
+  for (vector<copy_clause*>::const_iterator it = theCopyClauses.begin();
        it != theCopyClauses.end(); ++it)
   {
-    rchandle<copy_clause> e = *it;
+    copy_clause* e = *it;
     e->put(os);
   }
   theModifyExpr->put(os);

@@ -84,8 +84,8 @@ protected:
 
 public:
   store::UpdateConsts::InsertType getType() const { return theType; }
-
-  expr* clone(substitution_t& s) const;
+  
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -107,7 +107,7 @@ protected:
   delete_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr*);
 
 public:
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -141,7 +141,7 @@ public:
 
   expr* getReplaceExpr() const { return theSourceExpr; }
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -167,9 +167,9 @@ protected:
       expr*);
 
 public:
-  expr* getNameExpr() const { return theSourceExpr; }
+	expr* getNameExpr() const { return theSourceExpr; }
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -182,10 +182,7 @@ public:
                     ("," "$" VarName ":=" ExprSingle)*
                     "modify"  ExprSingle "return" ExprSingle
 ********************************************************************************/
-class copy_clause;
-typedef rchandle<copy_clause> copy_clause_t;
-
-class copy_clause : public SimpleRCObject
+class copy_clause
 {
   friend class expr;
   friend class transform_expr;
@@ -193,12 +190,12 @@ class copy_clause : public SimpleRCObject
   friend class ExprManager;
 
 private:
-  var_expr  * theVar;
-  expr      * theExpr;
-  CompilerCB* theExprManager;
+  var_expr  *       theVar;
+  expr      *       theExpr;
+  CompilerCB *const theCCB;
 
 protected:
-  copy_clause(var_expr* aVar, expr* aExpr);
+  copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr);
 
 public:
   ~copy_clause();
@@ -209,7 +206,7 @@ public:
 
   expr* getExpr() const { return theExpr; }
 
-  copy_clause_t clone(expr::substitution_t& s) const;
+  copy_clause* clone(expr::substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -222,7 +219,7 @@ class transform_expr : public expr
   friend class ExprManager;
 
 protected:
-  std::vector<copy_clause_t> theCopyClauses;
+  std::vector<copy_clause*> theCopyClauses;
   expr                     * theModifyExpr;
   expr                     * theReturnExpr;
 
@@ -238,21 +235,21 @@ public:
 
   void setReturnExpr(expr* e);
 
-  void add_back(copy_clause_t c);
+  void add_back(copy_clause* c);
 
-  copy_clause_t const& operator[](int i) const { return theCopyClauses[i]; }
+  copy_clause* const& operator[](int i) const { return theCopyClauses[i]; }
 
-  std::vector<copy_clause_t>::const_iterator begin() const
+  std::vector<copy_clause*>::const_iterator begin() const
   { return theCopyClauses.begin(); }
 
-  std::vector<copy_clause_t>::const_iterator end() const
+  std::vector<copy_clause*>::const_iterator end() const
   { return theCopyClauses.end(); }
 
   csize size() const { return theCopyClauses.size(); }
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

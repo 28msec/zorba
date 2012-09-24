@@ -166,7 +166,7 @@ void if_expr::compute_scripting_kind()
 }
 
 
-expr* if_expr::clone(substitution_t& subst) const
+expr* if_expr::cloneImpl(substitution_t& subst) const 
 {
   return theCCB->theEM->create_if_expr(theSctx,
                      get_loc(),
@@ -203,7 +203,7 @@ void order_expr::compute_scripting_kind()
 }
 
 
-expr* order_expr::clone(substitution_t& subst) const
+expr* order_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_order_expr(theSctx, get_loc(), get_type(), get_expr()->clone(subst));
 }
@@ -242,7 +242,7 @@ void validate_expr::compute_scripting_kind()
 }
 
 
-expr* validate_expr::clone(substitution_t& subst) const
+expr* validate_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_validate_expr(theSctx,
                            get_loc(),
@@ -363,7 +363,7 @@ bool cast_expr::is_optional() const
 }
 
 
-expr* cast_expr::clone(substitution_t& subst) const
+expr* cast_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_cast_expr(theSctx,
                        get_loc(),
@@ -393,7 +393,7 @@ treat_expr::treat_expr(
 }
 
 
-expr* treat_expr::clone(substitution_t& subst) const
+expr* treat_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_treat_expr(theSctx,
                         get_loc(),
@@ -424,7 +424,7 @@ promote_expr::promote_expr(
 }
 
 
-expr* promote_expr::clone(substitution_t& subst) const
+expr* promote_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_promote_expr(theSctx,
                           get_loc(),
@@ -468,13 +468,13 @@ castable_expr::castable_expr(
 }
 
 
-bool castable_expr::is_optional() const
+bool castable_expr::is_optional() const 
 {
-  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION;
+  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
-expr* castable_expr::clone(substitution_t& subst) const
+expr* castable_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_castable_expr(theSctx,
                            get_loc(),
@@ -500,7 +500,7 @@ instanceof_expr::instanceof_expr(
 }
 
 
-expr* instanceof_expr::clone(substitution_t& subst) const
+expr* instanceof_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_instanceof_expr(theSctx,
                              get_loc(),
@@ -539,7 +539,7 @@ void name_cast_expr::compute_scripting_kind()
 }
 
 
-expr* name_cast_expr::clone(substitution_t& subst) const
+expr* name_cast_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_name_cast_expr(theSctx,
                             get_loc(),
@@ -578,7 +578,7 @@ void doc_expr::compute_scripting_kind()
 }
 
 
-expr* doc_expr::clone(substitution_t& subst) const
+expr* doc_expr::cloneImpl(substitution_t& subst) const
 {
   doc_expr* clone = theCCB->theEM->create_doc_expr(theSctx,
                                  get_loc(),
@@ -660,7 +660,7 @@ void elem_expr::compute_scripting_kind()
 }
 
 
-expr* elem_expr::clone(substitution_t& subst) const
+expr* elem_expr::cloneImpl(substitution_t& subst) const
 {
   elem_expr* clone =  theCCB->theEM->create_elem_expr(theSctx,
                                     get_loc(),
@@ -727,7 +727,7 @@ void attr_expr::compute_scripting_kind()
 }
 
 
-expr* attr_expr::clone(substitution_t& subst) const
+expr* attr_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_attr_expr(theSctx,
                        get_loc(),
@@ -770,7 +770,7 @@ void text_expr::compute_scripting_kind()
 }
 
 
-expr* text_expr::clone(substitution_t& subst) const
+expr* text_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_text_expr(theSctx, get_loc(), get_type(), CLONE(get_text(), subst));
 }
@@ -820,7 +820,7 @@ void pi_expr::compute_scripting_kind()
 }
 
 
-expr* pi_expr::clone(substitution_t& subst) const
+expr* pi_expr::cloneImpl(substitution_t& subst) const
 {
   return theCCB->theEM->create_pi_expr(theSctx,
                      get_loc(),
@@ -849,7 +849,7 @@ void wrapper_expr::compute_scripting_kind()
 }
 
 
-expr* wrapper_expr::clone(substitution_t& subst) const
+expr* wrapper_expr::cloneImpl(substitution_t& subst) const
 {
   expr* e = theWrappedExpr->clone(subst);
 
@@ -943,7 +943,7 @@ const_expr::const_expr(
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
-    store::Item_t v)
+    const store::Item_t& v)
   :
   expr(ccb, sctx, loc, const_expr_kind),
   theValue(v)
@@ -973,7 +973,7 @@ void const_expr::compute_scripting_kind()
 }
 
 
-expr* const_expr::clone(substitution_t&) const
+expr* const_expr::cloneImpl(substitution_t&) const
 {
   return theCCB->theEM->create_const_expr(theSctx, get_loc(), theValue);
 }
@@ -982,14 +982,6 @@ expr* const_expr::clone(substitution_t&) const
 /*******************************************************************************
 
 ********************************************************************************/
-pragma::pragma(store::Item_t name, std::string const& content)
-  :
-  theQName(name),
-  theContent(content)
-{
-}
-
-
 extension_expr::extension_expr(
     CompilerCB* ccb,
     static_context* sctx,
@@ -1025,14 +1017,14 @@ void extension_expr::compute_scripting_kind()
 }
 
 
-expr* extension_expr::clone(substitution_t& subst) const
+expr* extension_expr::cloneImpl(substitution_t& subst) const 
 {
   extension_expr* lClone(0);
   lClone = (
     theExpr == 0 ? theCCB->theEM->create_extension_expr(theSctx, get_loc())
                  : theCCB->theEM->create_extension_expr(theSctx, get_loc(), theExpr->clone()) );
   // pragm doesn't contain expressions. Thus, it is not cloned.
-  for ( std::vector<rchandle<pragma> >::const_iterator lIter = thePragmas.begin();
+  for ( std::vector<pragma*>::const_iterator lIter = thePragmas.begin();
         lIter != thePragmas.end();
         ++lIter )
   {
@@ -1053,7 +1045,8 @@ expr* extension_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-catch_clause::catch_clause()
+catch_clause::catch_clause(CompilerCB* ccb)
+:theCCB(ccb)
 {
 }
 
@@ -1079,7 +1072,7 @@ void trycatch_expr::add_catch_expr(expr* e)
 }
 
 
-void trycatch_expr::add_clause(catch_clause_t cc)
+void trycatch_expr::add_clause(catch_clause* cc)
 {
   theCatchClauses.insert(theCatchClauses.begin(), cc);
 }
@@ -1139,9 +1132,9 @@ void trycatch_expr::compute_scripting_kind()
 }
 
 
-catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
+catch_clause* catch_clause::clone(expr::substitution_t& subst) const
 {
-  catch_clause_t lClause(new catch_clause());
+  catch_clause* lClause = theCCB->theEM->create_catch_clause();
 
   for (nt_list_t::const_iterator lIter = theNameTests.begin();
        lIter != theNameTests.end();
@@ -1156,11 +1149,11 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
     lClause->add_var((catch_clause::var_type)lIter->first, lIter->second);
   }
 
-  return lClause.getp();
+  return lClause;
 }
 
 
-expr* trycatch_expr::clone(substitution_t& subst) const
+expr* trycatch_expr::cloneImpl(substitution_t& subst) const
 {
   std::auto_ptr<trycatch_expr> lTryCatch(
       theCCB->theEM->create_trycatch_expr(theSctx, get_loc(), theTryExpr->clone(subst)));
@@ -1227,7 +1220,7 @@ void eval_expr::compute_scripting_kind()
 }
 
 
-expr* eval_expr::clone(substitution_t& s) const
+expr* eval_expr::cloneImpl(substitution_t& s) const
 {
   eval_expr* new_eval = theCCB->theEM->create_eval_expr(
                                                NULL,
@@ -1319,7 +1312,7 @@ void function_trace_expr::compute_scripting_kind()
 }
 
 
-expr* function_trace_expr::clone(substitution_t& s) const
+expr* function_trace_expr::cloneImpl(substitution_t& s) const
 {
   function_trace_expr* clone = theCCB->theEM->
       create_function_trace_expr(theExpr->clone(s));

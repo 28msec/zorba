@@ -1,0 +1,1 @@
+{ "hatSize" : { "Q{http://jsoniq.org/roundtrip}type" : "Q{http://www.zorba-xquery.com/simple}HatSizeType", "Q{http://jsoniq.org/roundtrip}value" : "10" } }

@@ -59,7 +59,7 @@ void ftcontains_expr::accept( expr_visitor &v ) {
   v.end_visit( *this );
 }
 
-expr* ftcontains_expr::clone( substitution_t &s ) const {
+expr* ftcontains_expr::cloneImpl( substitution_t &s ) const {
   return theCCB->theEM->create_ftcontains_expr(
     theSctx, get_loc(),
     range_->clone( s ),

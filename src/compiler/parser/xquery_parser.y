@@ -404,6 +404,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token SEMI                             "';'"
 %token SLASH                            "'/'"
 %token SLASH_SLASH                      "'//'"
+%token BANG                             "'!'"
 %token STAR                             "'*'"
 %token START_TAG_END                    "'</ (start tag end)'"
 %token STRIP                            "'strip'"
@@ -773,6 +774,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> UnorderedExpr
 %type <expr> ValidateExpr
 %type <expr> ValueExpr
+%type <expr> SimpleMapExpr
 %type <expr> VarRef
 %type <expr> ExitStatement
 %type <expr> WhileStatement
@@ -924,7 +926,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -988,6 +990,14 @@ template<typename T> inline void release_hack( T *ref ) {
 /*_____________________________________________________________________
  *
  * resolve shift-reduce conflict for
+ * SimpleMapExpr ::= PathExpr ("!" PathExpr)*
+ *_____________________________________________________________________*/
+%nonassoc SIMPLEMAPEXPR_REDUCE
+%left BANG
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
  * [51] MultiplicativeExpr ::= UnionExpr ( ("*" | "div" | "idiv" | "mod") UnionExpr )*
  *_____________________________________________________________________*/
 %nonassoc MULTIPLICATIVE_REDUCE
@@ -1006,8 +1016,9 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RBRACE
 
 
-%right AT FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%right FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
 %right DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%right AT
 %right MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
 
@@ -3810,7 +3821,7 @@ ValueExpr :
         {
             $$ = $1;
         }
-    |   PathExpr
+    |   SimpleMapExpr
         {
             $$ = $1;
         }
@@ -3818,6 +3829,18 @@ ValueExpr :
         {
             $$ = $1;
         }
+    ;
+
+SimpleMapExpr :
+      PathExpr %prec SIMPLEMAPEXPR_REDUCE
+      {
+        $$ = $1;
+      }
+    |
+      SimpleMapExpr BANG PathExpr
+      {
+        $$ = new SimpleMapExpr(LOC(@$), $1, $3);
+      }
     ;
 
 // [61]
@@ -6516,22 +6539,32 @@ JSONPairList :
     ;
 
 JSONInsertExpr :
-        INSERT JSON LBRACE JSONPairList RBRACE INTO ExprSingle
+        INSERT JSON ExprSingle INTO ExprSingle
         {
           $$ = new JSONObjectInsertExpr(LOC(@$),
-                                        static_cast<JSONPairList*>($4),
-                                        $7);
+                                        $3,
+                                        $5);
         }
-    |   INSERT JSON LBRACK Expr RBRACK INTO ExprSingle AT POSITION ExprSingle
+    |   INSERT JSON JSONPairList INTO ExprSingle
         {
-          $$ = new JSONArrayInsertExpr(LOC(@$), $4, $7, $10);
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($3);
+          $$ = new JSONObjectInsertExpr(
+              LOC(@$),
+              new JSONDirectObjectConstructor(
+                  LOC(@$),
+                  jpl),
+              $5);
+        }
+    |   INSERT JSON ExprSingle INTO ExprSingle AT POSITION ExprSingle
+        {
+          $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
     ;
 
 JSONAppendExpr :
-        APPEND JSON LBRACK Expr RBRACK TO ExprSingle
+        APPEND JSON ExprSingle INTO ExprSingle
         {
-          $$ = new JSONArrayAppendExpr(LOC(@$), $4, $7);
+          $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
         }
     ;
 

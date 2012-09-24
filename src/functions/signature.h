@@ -56,6 +56,13 @@ public:
 
   signature(
         const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        bool variadic,
+        const xqtref_t& returnType);
+
+  signature(
+        const store::Item_t& name,
         const xqtref_t& returnType);
 
   signature(

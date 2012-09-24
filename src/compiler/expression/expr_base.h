@@ -148,7 +148,8 @@ public:
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
     WILL_BE_SERIALIZED      = 16,
-    MUST_COPY_NODES         = 18
+    MUST_COPY_NODES         = 18,
+    CONTAINS_PRAGMA         = 20
   } Annotationkey;
 
   typedef enum
@@ -162,7 +163,8 @@ public:
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
     WILL_BE_SERIALIZED_MASK       = 0x30000,
-    MUST_COPY_NODES_MASK          = 0xC0000
+    MUST_COPY_NODES_MASK          = 0xC0000,
+    CONTAINS_PRAGMA_MASK          = 0x300000
   } AnnotationMask;
 
 
@@ -184,7 +186,7 @@ protected:
 
   FreeVars           theFreeVars;
 
-  CompilerCB       * theCCB;
+  CompilerCB  *const theCCB;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -192,8 +194,6 @@ public:
   static void checkSimpleExpr(const expr* e);
 
   static void checkNonUpdating(const expr* e);
-
-  virtual void free() {}
 
 protected:
   expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
@@ -243,7 +243,9 @@ public:
 
   expr* clone() const;
 
-  virtual expr* clone(substitution_t& substitution) const;
+  expr* clone(substitution_t&) const;
+
+  virtual expr* cloneImpl(substitution_t& substitution) const;
 
   virtual void accept(expr_visitor& v) = 0;
 
@@ -319,6 +321,13 @@ public:
   void setWillBeSerialized(BoolAnnotationValue v);
 
   bool willBeSerialized() const;
+
+  // Annotation : containsPragma
+  BoolAnnotationValue getContainsPragma() const;
+
+  void setContainsPragma(BoolAnnotationValue v);
+
+  bool containsPragma() const;
 
   // Annotation : free vars
   const FreeVars& getFreeVars() const { return theFreeVars; }

@@ -34,16 +34,31 @@ class CompilerCB;
 class ExprManager
 {
 private:
-  std::vector<expr*>   theExprs;
-  MemoryManager        theMemoryMgr;
-  CompilerCB         * theCCB;
+  std::vector<expr*>          theExprs;
+  std::vector<flwor_clause*>  theFlworClauses;
+  std::vector<flwor_wincond*> theWinconds;
+  std::vector<catch_clause*>  theCatchClauses;
+  std::vector<copy_clause*>   theCopyClauses;
+  std::vector<pragma*>        thePragmas;
+  MemoryManager               theMemoryMgr;
+  CompilerCB           *const theCCB;
 
 public:
   ExprManager(CompilerCB* ccb);
 
   ~ExprManager();
 
-  expr* reg(expr*);
+  void reg(expr*);
+
+  void reg(flwor_clause*);
+
+  void reg(flwor_wincond*);
+
+  void reg(catch_clause*);
+
+  void reg(copy_clause*);
+
+  void reg(pragma*);
 
 private:
   //An ExprManager is the only object to handle a collection of Exprs and
@@ -455,8 +470,8 @@ public:
       window_clause::window_t winKind,
       var_expr* varExpr,
       expr* domainExpr,
-      flwor_wincond_t winStart,
-      flwor_wincond_t winStop,
+      flwor_wincond* winStart,
+      flwor_wincond* winStop,
       bool lazy = false);
 
   flwor_wincond* create_flwor_wincond(
@@ -498,6 +513,10 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       bool general);
+ 
+  pragma* create_pragma(
+      const store::Item_t&,
+      const zstring&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
