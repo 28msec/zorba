@@ -1,0 +1,26 @@
+(:
+ : Copyright 2012 28msec Inc.
+ :)
+
+module namespace cil = "http://www.zorba-xquery.com/collindex";
+
+import module namespace functx = "http://www.functx.com/";
+
+import module namespace req = "http://www.28msec.com/modules/http/request";
+import module namespace resp = "http://www.28msec.com/modules/http/response";
+import module namespace cache = "http://www.28msec.com/modules/http/util/cache";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+(:~
+ : some comment
+ :)
+declare %an:ordered collection cil:entries as node()*;
+
+declare variable $cil:entries as xs:QName := xs:QName("cil:entries");
+
+declare %an:automatic %an:unique %an:value-equality index cil:idx         
+  on nodes dml:collection(xs:QName("cil:entries"))                         
+  by xs:string(@author) as xs:string;                                           
+declare variable $cil:idx as xs:QName := xs:QName("cil:idx");

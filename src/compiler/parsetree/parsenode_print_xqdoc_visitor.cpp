@@ -1261,8 +1261,8 @@ void end_visit(const AST_IndexDecl& n, void*)
 
   theIsIndexDecl = false;
 
-  store::Item_t lIndexQName, lNSQName, lNameQName, lSourcesQName, lSourceQName;
-  store::Item_t lIndexElem, lNSElem, lNameElem, lNSText, lNameText,
+  store::Item_t lIndexQName, lUriQName, lNameQName, lSourcesQName, lSourceQName;
+  store::Item_t lIndexElem, lUriElem, lNameElem, lUriText, lNameText,
                 lSourceElem;
 
   theFactory->createQName(lIndexQName, theXQDocNS, theXQDocPrefix, "index");
@@ -1288,7 +1288,7 @@ void end_visit(const AST_IndexDecl& n, void*)
        lIter != theIndexSources.end();
        ++lIter)
   {
-    theFactory->createQName(lNSQName, theXQDocNS, theXQDocPrefix, "namespace");
+    theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
     theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
 
     store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -1298,7 +1298,7 @@ void end_visit(const AST_IndexDecl& n, void*)
 
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(
-        lNSElem, lSourceElem, lNSQName, lTypeName,
+        lUriElem, lSourceElem, lUriQName, lTypeName,
         true, false, theNSBindings, theBaseURI);
     
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -1306,7 +1306,7 @@ void end_visit(const AST_IndexDecl& n, void*)
         lNameElem, lSourceElem, lNameQName, lTypeName,
         true, false, theNSBindings, theBaseURI);
 
-    theFactory->createTextNode(lNSText, lNSElem, lIter->first);
+    theFactory->createTextNode(lUriText, lUriElem, lIter->first);
     theFactory->createTextNode(lNameText, lNameElem, lIter->second);
   }
   theIndexSources.clear();

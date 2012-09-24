@@ -223,6 +223,7 @@
             <xsd:element name="name" type="name"/>
             <xsd:element name="type" type="type" minOccurs="0"/>
             <xsd:element name="comment" type="comment" minOccurs="0"/>
+            <xsd:element name="annotations" type="annotations" minOccurs="0" maxOccurs="1"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -246,6 +247,7 @@
               </xsd:complexType>
             </xsd:element>
             <xsd:element name="comment" type="comment" minOccurs="0"/>
+            <xsd:element name="annotations" type="annotations" minOccurs="0" maxOccurs="1"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
