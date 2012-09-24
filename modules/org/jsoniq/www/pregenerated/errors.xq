@@ -141,7 +141,7 @@ declare variable $jerr:JNTY0023 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0023
 (:~
  :objects or arrays don't have a string value
 :)
-declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003");
+declare variable $jerr:JNTY0024 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0024");
 
 (:~
  :parser errors raised by the JSONIQLoader

@@ -119,9 +119,6 @@ extern entry const dict_en[] = {
   { "JNTY0002", "Pair value returns no, or more than one, item." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0003", "$1 items do not have string value" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0004", "Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)." },
 #endif
 #if defined(ZORBA_WITH_JSON)
@@ -135,6 +132,9 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0023", "$1: value of \"$2\" is not a $3" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0024", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
