@@ -45,7 +45,7 @@ protected:
 public:
 
 protected:
-  static fo_expr* create_seq(CompilerCB* theExpMan, static_context* sctx, const QueryLoc &);
+  static fo_expr* create_seq(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
 
 protected:
   fo_expr(
@@ -90,6 +90,8 @@ public:
   void add_arg(expr* e);
 
   void add_args(const std::vector<expr*>& args);
+
+  void remove_arg(csize i);
 
   void compute_scripting_kind();
 
