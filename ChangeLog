@@ -12,6 +12,7 @@ New Features:
     functions. jn:object is also supported.
   * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
     takes options to parameterize the parsing process (see bug #1047547)
+	* Added createUntypedAtomic to API's ItemFactory.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
