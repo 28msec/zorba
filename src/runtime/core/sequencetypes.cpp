@@ -716,6 +716,12 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
     break;
   }
+  case MULTI_VALUED_GROUPING_KEY:
+  {
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(XPTY0004_MultiValuedGroupingKey)));
+    break;
+  }
 #ifdef ZORBA_WITH_JSON
   case JSONIQ_VALUE:
   {
