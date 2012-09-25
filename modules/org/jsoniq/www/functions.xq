@@ -157,7 +157,7 @@ declare function jn:encode-for-roundtrip(
  :
  : @return A sequence of JSON Object or Array item.
  :
- : @error jerr:JNDY0040 if the given string is not valid JSON.
+ : @error jerr:JNDY0021 if the given string is not valid JSON.
  :)
 declare function jn:parse-json($j as xs:string?) as json-item()* external;
 
@@ -172,7 +172,7 @@ declare function jn:parse-json($j as xs:string?) as json-item()* external;
  :   <li>jsoniq-multiple-top-level-items: allow parsing of sequences of JSON Objects and Arrays (boolean; default: true)</li>
  : </ul>
  :
- : @error jerr:JNDY0040 if the given string is not valid JSON or
+ : @error jerr:JNDY0021 if the given string is not valid JSON or
  :   if jsoniq-multiple-top-level-items is false and there is additional
  :   content after the first JSON Object or Array.
  : @error jerr:JNTY0020 if the value for the option

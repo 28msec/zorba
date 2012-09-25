@@ -2711,11 +2711,6 @@
       <value>$1 items do not have string value</value>
     </diagnostic>
 
-    <diagnostic code="JNDY0040" if="defined(ZORBA_WITH_JSON)">
-      <comment>parser errors raised by the JSONIQLoader</comment>
-      <value>$1</value>
-    </diagnostic>
-
     <diagnostic code="JNTY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error for invalid option type</comment>
       <value>$1: invalid option type for option $2 (expected $3)</value>

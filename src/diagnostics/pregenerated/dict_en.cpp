@@ -104,9 +104,6 @@ extern entry const dict_en[] = {
   { "JNDY0021", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNDY0040", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0012", "can not serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
