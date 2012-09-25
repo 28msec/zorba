@@ -74,7 +74,11 @@ public:
 
   store::Iterator_t getIterator() const;
   
+#ifndef NDEBUG
   virtual zstring show() const;
+  
+  virtual std::string toString() const;
+#endif    
 };
 
 
@@ -110,7 +114,11 @@ class SimpleTempSeqIter : public store::TempSeqIterator
   void reset();
 
   void close();
- };
+  
+#ifndef NDEBUG
+  virtual std::string toString() const;
+#endif    
+};
 
 
 } // namespace store

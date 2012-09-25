@@ -323,15 +323,6 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UDFunctionCallIteratorState* state;
 
-  /*
-  UDFunctionCallIteratorState* oldState = StateTraitsImpl<UDFunctionCallIteratorState>::
-      getState(planState, theStateOffset);
-
-  std::cerr << "--> UDFunctionCallIterator::openImpl() oldState: " << oldState << std::endl;
-  if (oldState->thePlanState != NULL)
-    std::cerr << "    theBlock: " << (void*)oldState->thePlanState->theBlock << std::endl;
-  */
-
   if (!theIsDynamic)
   {
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
@@ -377,12 +368,13 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
   std::vector<var_expr_t>::const_iterator argVarsIte = theUDF->getArgVars().begin();
   std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
-  std::vector<store::Iterator_t> fnItemWrappers;
-  std::vector<PlanIter_t> fnItemVariables;
+
+  // std::vector<store::Iterator_t> fnItemWrappers;
+  // std::vector<PlanIter_t> fnItemVariables;
   if (theIsDynamic)
   {
-    fnItemVariables = theFunctionItem->getVariables();
-    fnItemWrappers = theFunctionItem->getVariableWrappers();
+    // fnItemVariables = theFunctionItem->getVariables();
+    // fnItemWrappers = theFunctionItem->getVariableWrappers();
   }
 
   for (csize i=0; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte, ++i, ++argVarsIte)
@@ -391,34 +383,25 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
     if (!argVarRefs.empty())
     {
-      // for (csize j=0; j<fnItemVariables.size(); j++)
-        // if ((*argVarRefs) == fnItemVariables[j].getp())
-        // if (theUDF->getArgVar(i)->get_name == static_cast<LetVarIterator*>(fnItemVariables[j].getp())->)
-
       if (theIsDynamic)
       {
-        std::cerr << "--> UDFunctionCallIterator::openImpl() argsIte: " << (*argsIte)->getId() << " = " << (*argsIte)->getClassName()
+        // (*argWrapsIte) = theFunctionItem->getVariableValue(theUDF->getArgVars()[i]->get_name());
+        
+        (*argWrapsIte) = theFunctionItem->getVariablesValues()[i];
+        
+        if ((*argWrapsIte) != NULL)
+          (*argWrapsIte)->reset();
+        
+        
+        std::cerr << "--> UDFunctionCallIterator::openImpl() argsIte: " << (*argsIte)->toString()
             << " var: " << theUDF->getArgVars()[i]->toString();
-        if (fnItemVariables.size() > 0)
-              std::cerr << " fnItem var: " << fnItemVariables[i]->getId() << " = " << fnItemVariables[i]->getClassName()
-              << " wrapper: " << fnItemWrappers[i].getp()->getClassName();
-        std::cerr << std::endl;
-
-        for (csize j=0; j<fnItemVariables.size(); j++)
+        if (theFunctionItem->getVariablesValues().size() > 0)
         {
-          store::Item* var_qname = NULL;
-          PlanIterator* var_iter = fnItemVariables[j].getp();
-          if (dynamic_cast<LetVarIterator*>(var_iter) != NULL)
-            var_qname = dynamic_cast<LetVarIterator*>(var_iter)->getVarName();
-          else if (dynamic_cast<ForVarIterator*>(var_iter) != NULL)
-            var_qname = dynamic_cast<ForVarIterator*>(var_iter)->getVarName();
-
-          if (var_qname != NULL && theUDF->getArgVars()[i]->get_name()->equals(var_qname))
-          {
-            (*argWrapsIte) = fnItemWrappers[j];
-            // std::cerr << "-->                                    assigned wrapper: " <<
-          }
+          std::cerr << "    fnItem var iterator: " << theFunctionItem->getVariablesIterators()[i]->toString()
+                    << " var value: " << theFunctionItem->getVariablesValues()[i]->toString()
+                    << " wrapper: " << (*argWrapsIte);
         }
+        std::cerr << std::endl;
       }
 
       if ((*argWrapsIte) == NULL)

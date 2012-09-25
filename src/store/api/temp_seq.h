@@ -106,9 +106,11 @@ public:
    */
   virtual Iterator_t getIterator() const = 0;
 	
+#ifndef NDEBUG  
   /** Method to print the contents of the sequence
    */
-  virtual zstring show() const = 0;
+  virtual std::string toString() const = 0;
+#endif  
 };
 
 } // namespace store

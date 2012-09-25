@@ -206,18 +206,28 @@ bool SimpleTempSeq::containsItem(xs_integer position)
 
 /*******************************************************************************
 ********************************************************************************/
-zstring SimpleTempSeq::show() const
+std::string SimpleTempSeq::toString() const
 {
-  zstring result = "{";
+  std::stringstream result;
   
+  result << "{";
   for (unsigned int i=0; i < theItems.size(); i++)
   {
     if (i != 0)
-      result += " , ";
-    result += theItems[i]->show();
+      result << " , ";
+    result << theItems[i]->show();
   }
+  result << "}";
   
-  return result + "}";
+  return result.str();
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+zstring SimpleTempSeq::show() const
+{
+  return toString();
 }
 
 
@@ -341,6 +351,21 @@ void SimpleTempSeqIter::reset()
 ********************************************************************************/	
 void SimpleTempSeqIter::close()
 {
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/ 
+std::string SimpleTempSeqIter::toString() const
+{
+  std::stringstream ss;
+  ss << this << " = SimpleTempSeqIter current pos: " << (theIte - theBegin) << " sequence: ";
+  if (theTempSeq.getp() != NULL)
+    ss << theTempSeq->toString();
+  else
+    ss << "NULL";
+  return ss.str();
 }
 
 

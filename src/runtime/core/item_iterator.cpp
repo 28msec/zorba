@@ -17,15 +17,21 @@
 
 #include "diagnostics/assert.h"
 
+#include "compiler/api/compilercb.h"
+#include "compiler/expression/function_item_expr.h"
+#include "functions/udf.h"
+
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/api/plan_wrapper.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/function_item/function_item.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planiter_visitor.h"
 
-#include "store/api/item.h"
+#include "runtime/misc/materialize.h"
 
+#include "store/api/item.h"
 
 
 namespace zorba
@@ -69,42 +75,6 @@ void SingletonIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<PlanIteratorState>::
   createState(planState, theStateOffset, offset);
-
-  if (theValue->isFunction())
-  {
-    FunctionItem* fnItem = static_cast<FunctionItem*>(theValue.getp());
-    const std::vector<PlanIter_t> variableValues = fnItem->getVariables();
-    std::vector<store::Iterator_t> wrappers;
-    wrappers.resize(variableValues.size());
-    for (unsigned int i=0; i<variableValues.size(); i++)
-    {
-      variableValues[i]->open(planState, offset);
-
-      wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
-
-      std::cerr << "--> SingletonIterator::nextImp() " << theId <<" wrapping " << variableValues[i]->getId() << " = " << variableValues[i]->getClassName();
-
-      SingletonIterator* singletonIter = dynamic_cast<SingletonIterator*>(variableValues[i].getp());
-      LetVarIterator* letVarIter = dynamic_cast<LetVarIterator*>(variableValues[i].getp());
-      if (singletonIter != NULL)
-      {
-        std::cerr << " value: " << singletonIter->getValue()->show()
-            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
-      }
-      else if (letVarIter != NULL)
-      {
-        std::cerr << " varName: " << letVarIter->getVarName()->getStringValue()
-            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
-      }
-      else
-      {
-        std::cerr
-            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
-      }
-    }
-
-    fnItem->setVariableWrappers(wrappers);
-  }
 }
 
 
@@ -123,14 +93,6 @@ bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 void SingletonIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
-
-  if (theValue->isFunction())
-  {
-    const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theValue.getp())->getVariables();
-    for (unsigned int i=0; i<variableValues.size(); i++)
-      variableValues[i]->accept(v);
-  }
-
   v.endVisit(*this);
 }
 
@@ -138,14 +100,6 @@ void SingletonIterator::accept(PlanIterVisitor& v) const
 uint32_t SingletonIterator::getStateSizeOfSubtree() const
 {
   int32_t size = this->getStateSize();
-
-  if (theValue->isFunction())
-  {
-    const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theValue.getp())->getVariables();
-    for (unsigned int i=0; i<variableValues.size(); i++)
-      size += variableValues[i]->getStateSizeOfSubtree();
-  }
-
   return size;
 }
 
@@ -157,63 +111,56 @@ void DynamicFunctionIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<DynamicFunctionIterator,
                       PlanIteratorState>*)this);
-  ar & theFunctionItem;
+  ar & theDynamicFunctionInfo;
+  // TODO: add var values?
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFunctionIterator::openImpl(PlanState& planState, uint32_t& offset)
+DynamicFunctionIterator::DynamicFunctionIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      CompilerCB* ccb,
+      function_item_expr* expr,
+      std::vector<store::Item_t>& scopedVarsNames,
+      std::vector<PlanIter_t>& scopedVarsValues)
+  :
+  NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>(sctx, loc, scopedVarsValues),
+  theDynamicFunctionInfo(new DynamicFunctionInfo(ccb, sctx, expr->get_loc(),
+                          expr->get_function(), expr->get_qname(), expr->get_arity(),
+                          scopedVarsNames, scopedVarsValues))
 {
-  StateTraitsImpl<PlanIteratorState>::
-      createState(planState, theStateOffset, offset);
-
-  if (theFunctionItem->isFunction())
-  {
-    FunctionItem* fnItem = static_cast<FunctionItem*>(theFunctionItem.getp());
-    const std::vector<PlanIter_t> variableValues = fnItem->getVariables();
-    std::vector<store::Iterator_t> wrappers;
-    wrappers.resize(variableValues.size());
-    for (unsigned int i=0; i<variableValues.size(); i++)
-    {
-      variableValues[i]->open(planState, offset);
-
-      wrappers[i] = new PlanIteratorWrapper(variableValues[i], planState);
-
-      std::cerr << "--> SingletonIterator::nextImp() " << theId <<" wrapping " << variableValues[i]->getId() << " = " << variableValues[i]->getClassName();
-
-      SingletonIterator* singletonIter = dynamic_cast<SingletonIterator*>(variableValues[i].getp());
-      LetVarIterator* letVarIter = dynamic_cast<LetVarIterator*>(variableValues[i].getp());
-      if (singletonIter != NULL)
-      {
-        std::cerr << " value: " << singletonIter->getValue()->show()
-            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
-      }
-      else if (letVarIter != NULL)
-      {
-        std::cerr << " varName: " << letVarIter->getVarName()->getStringValue()
-            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
-      }
-      else
-      {
-        std::cerr
-            << " with PlanIteratorWrapper: " << wrappers[i] << std::endl;
-      }
-    }
-
-    fnItem->setVariableWrappers(wrappers);
-  }
 }
-
 
 bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
-
+  std::vector<store::Iterator_t> varsValues;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  result = theFunctionItem;
+  varsValues.resize(theChildren.size());
+  for (csize i=0; i<theChildren.size(); i++)
+  {
+    store::Item_t sequence;
+    consumeNext(sequence, theChildren[i], planState);
+    varsValues[i] = const_cast<MaterializeIterator*>(
+            dynamic_cast<const MaterializeIterator*>(theChildren[i].getp()))->getSequenceIterator(planState);
+  }
+  
+  std::cerr << "--> DynamicFunctionIterator::nextImpl() creating function item with params: " << std::endl;
+  for (csize i=0; i<theChildren.size(); i++)
+  {
+    std::cerr << "    " 
+        << (theDynamicFunctionInfo->theScopedVarsNames[i].getp() ?
+                theDynamicFunctionInfo->theScopedVarsNames[i]->show()
+              : "")
+        << ": " << varsValues[i]->toString() << std::endl;
+  }
+  
+  result = new FunctionItem(theDynamicFunctionInfo, varsValues);
+  
   STACK_PUSH ( result != NULL, state );
   STACK_END (state);
 }
@@ -223,28 +170,13 @@ void DynamicFunctionIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  if (theFunctionItem->isFunction())
-  {
-    const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theFunctionItem.getp())->getVariables();
-    for (unsigned int i=0; i<variableValues.size(); i++)
-      variableValues[i]->accept(v);
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
   }
 
   v.endVisit(*this);
-}
-
-uint32_t DynamicFunctionIterator::getStateSizeOfSubtree() const
-{
-  int32_t size = this->getStateSize();
-
-  if (theFunctionItem->isFunction())
-  {
-    const std::vector<PlanIter_t> variableValues = static_cast<FunctionItem*>(theFunctionItem.getp())->getVariables();
-    for (unsigned int i=0; i<variableValues.size(); i++)
-      size += variableValues[i]->getStateSizeOfSubtree();
-  }
-
-  return size;
 }
 
 

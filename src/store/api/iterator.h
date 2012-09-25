@@ -46,6 +46,10 @@ class Iterator : virtual public SimpleRCObject
   virtual void reset() = 0;
 
   virtual void close() = 0;
+  
+#ifndef NDEBUG
+  virtual std::string toString() const { return std::string(); }
+#endif    
 };
 
 

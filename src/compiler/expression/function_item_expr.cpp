@@ -115,15 +115,30 @@ function_item_expr::~function_item_expr()
 }
 
 
-void function_item_expr::add_variable(expr* var)
+void function_item_expr::add_variable(expr* var, const store::Item_t& name)
 {
-  theScopedVariables.push_back(var);
+  theScopedVarsValues.push_back(var);
+  theScopedVarsNames.push_back(name);
 }
 
+
+const std::vector<expr_t>& function_item_expr::get_scoped_vars_values() const
+{
+  return theScopedVarsValues;
+}
+
+
+const std::vector<store::Item_t>& function_item_expr::get_scoped_vars_names() const
+{
+  return theScopedVarsNames;
+}
+
+
+/*
 bool function_item_expr::replace_variable(var_expr_t replacement)
 {
   bool res = false;
-  
+
   for (csize i = 0; i<theScopedVariables.size(); i++)
   {
     var_expr* scopedVar = dynamic_cast<var_expr*>(theScopedVariables[i].getp());
@@ -135,11 +150,7 @@ bool function_item_expr::replace_variable(var_expr_t replacement)
   }
   return res;
 }
-
-const std::vector<expr_t>& function_item_expr::get_vars() const
-{
-  return theScopedVariables;
-}
+*/
 
 
 void function_item_expr::set_function(user_function_t& udf)
@@ -168,11 +179,11 @@ expr_t function_item_expr::clone(substitution_t& s) const
   );
 
   std::vector<expr_t> lNewVariables;
-  for (std::vector<expr_t>::const_iterator lIter = theScopedVariables.begin();
-       lIter != theScopedVariables.end();
-       ++lIter)
+  std::vector<expr_t>::const_iterator valIter = theScopedVarsValues.begin();
+  std::vector<store::Item_t>::const_iterator nameIter = theScopedVarsNames.begin();
+  for ( ; valIter != theScopedVarsValues.end(); ++valIter, ++nameIter)
   {
-    lNewExpr->add_variable((*lIter)->clone(s));
+    lNewExpr->add_variable((*valIter)->clone(s), (*nameIter));
   }
 
   return lNewExpr.release();

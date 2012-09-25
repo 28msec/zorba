@@ -309,18 +309,20 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter()
 
 /*******************************************************************************
 ********************************************************************************/
-zstring SimpleLazyTempSeq::show() const
+std::string SimpleLazyTempSeq::toString() const
 {
-  zstring result = "{";
+  std::stringstream result;
   
+  result << "{";
   for (unsigned int i=0; i < theItems.size(); i++)
   {
     if (i != 0)
-      result += " , ";
-    result += theItems[i]->show();
+      result << " , ";
+    result << theItems[i]->show();
   }
+  result << "}";
   
-  return result + "}";
+  return result.str();
 }
 
 

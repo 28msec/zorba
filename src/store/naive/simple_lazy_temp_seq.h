@@ -97,7 +97,9 @@ class SimpleLazyTempSeq : public store::TempSeq
 
   store::Iterator_t getIterator() const;
   
-  virtual zstring show() const;
+#ifndef NDEBUG  
+  virtual std::string toString() const;
+#endif  
 };
  
  

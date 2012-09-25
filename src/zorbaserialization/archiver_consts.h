@@ -99,6 +99,7 @@ enum TypeCode
   TYPE_SingletonIterator,
 
   TYPE_DynamicFunctionIterator,
+  TYPE_DynamicFunctionInfo,
 
   TYPE_CtxVarDeclareIterator,
   TYPE_CtxVarIterator,

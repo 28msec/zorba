@@ -28,6 +28,40 @@ namespace zorba
 
 class signature;
 class function_item_expr;
+class DynamicFunctionInfo;
+
+typedef rchandle<DynamicFunctionInfo> DynamicFunctionInfo_t;
+
+/*******************************************************************************
+  A class to hold information about a dynamic function. This info is shared
+  between the DynamicFunctionIterator and the FunctionItems it creates.
+********************************************************************************/
+class DynamicFunctionInfo : public SimpleRCObject
+{
+public: // TODO: not public
+
+  CompilerCB                  * theCCB;
+  static_context              * theSctx;
+  const QueryLoc                theLoc;
+  function_t                    theFunction;
+  store::Item_t                 theQName;
+  uint32_t                      theArity;
+
+  std::vector<store::Item_t>    theScopedVarsNames;
+  std::vector<PlanIter_t>       theScopedVarsIterators;
+
+public:
+  SERIALIZABLE_CLASS(DynamicFunctionInfo)
+  DynamicFunctionInfo(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  DynamicFunctionInfo(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc,
+                      function_t function, store::Item_t qname, uint32_t arity,
+                      std::vector<store::Item_t>& varsNames,
+                      std::vector<PlanIter_t>& varsIterators);
+
+};
 
 
 /*******************************************************************************
@@ -42,22 +76,11 @@ class function_item_expr;
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
-  CompilerCB                   * theCCB;
-
-  static_context               * theSctx;
-
-  std::auto_ptr<dynamic_context> theDctx;
-
-  QueryLoc                       theLoc;
-  store::Item_t                  theQName;
-	function_t                     theFunction;
-  uint32_t                       theArity;
-
-  std::vector<PlanIter_t>        theVariableValues;
-
-  std::vector<store::Iterator_t> theVariableWrappers; // TODO: move somewhere else? dctx maybe?
-
-  SYNC_CODE(mutable RCLock       theRCLock;)
+  const DynamicFunctionInfo_t     theDynamicFunctionInfo;
+  
+  std::vector<store::Iterator_t>  theVariablesValues;
+  
+  SYNC_CODE(mutable RCLock        theRCLock;)
 
 public:
   SERIALIZABLE_CLASS(FunctionItem)
@@ -65,34 +88,28 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  FunctionItem(
-      CompilerCB* ccb,
-      static_context* sctx,
-      function_item_expr* expr,
-      const std::vector<PlanIter_t>& varValues);
+  FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo, 
+               const std::vector<store::Iterator_t>& varsValues);
 
-  FunctionItem(
-      CompilerCB* ccb,
-      static_context* sctx,
-      function_item_expr* expr);
+  FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo);
 
   ~FunctionItem();
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  void setVariableWrappers(std::vector<store::Iterator_t>& wrappers);
+  store::Iterator_t getVariableValue(const store::Item_t& variableQName);
+  
+  const std::vector<PlanIter_t>& getVariablesIterators() const;
+  
+  const std::vector<store::Iterator_t>& getVariablesValues() const;
 
-  const std::vector<store::Iterator_t>& getVariableWrappers() const;
+  PlanIter_t getImplementation(std::vector<PlanIter_t>& args);
 
   const store::Item_t getFunctionName() const;
 
   uint32_t getArity() const;
 
   const signature& getSignature() const;
-
-  const std::vector<PlanIter_t>& getVariables() const;
-
-  PlanIter_t getImplementation(std::vector<PlanIter_t>& args);
 
   zstring show() const;
 };

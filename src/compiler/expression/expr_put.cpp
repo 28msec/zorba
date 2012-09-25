@@ -557,13 +557,15 @@ std::ostream& function_item_expr::put(std::ostream& os) const
     os << " inline udf (" << theFunction.getp() << ") [\n";
     if (theFunction.getp() != NULL)
         reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
-
-    // TODO: remove
-    os << indent << "scoped vars: \n" << inc_indent;
-    for (ulong i = 0; i < theScopedVariables.size(); ++i)
-      theScopedVariables[i]->put(os);
-    os << dec_indent;
-
+    
+    for (ulong i = 0; i < theScopedVarsValues.size(); i++)
+    {
+      os << indent << "using $" << theScopedVarsNames[i]->getStringValue() << " := [";
+      os << endl << inc_indent;
+      theScopedVarsValues[i]->put(os);
+      os << dec_indent << indent << "]" << endl;
+    }
+    
     END_PUT();
   }
 }

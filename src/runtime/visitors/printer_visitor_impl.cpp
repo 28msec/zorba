@@ -115,19 +115,7 @@ void PrinterVisitor::endVisit(const SingletonIterator&)
 }
 
 
-void PrinterVisitor::beginVisit(const DynamicFunctionIterator& a)
-{
-  thePrinter.startBeginVisit("DynamicFunctionIterator", ++theId);
-  thePrinter.addAttribute("value", a.getValue()->show().str());
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const DynamicFunctionIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
+PRINTER_VISITOR_DEFINITION(DynamicFunctionIterator);
 
 
 void PrinterVisitor::beginVisit(const EnclosedIterator& a)

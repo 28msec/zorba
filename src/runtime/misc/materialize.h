@@ -70,6 +70,8 @@ public:
   {
   }
 
+  store::Iterator_t getSequenceIterator(PlanState& planState);
+  
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);

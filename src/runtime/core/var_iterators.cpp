@@ -693,7 +693,9 @@ void LetVarState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
 
-  std::cerr << "--> LetVarState::reset() " << this << " theSourceIter: " << theSourceIter.getp() << " theTempSeqIter: " << theTempSeqIter.getp() << std::endl;
+  std::cerr << "--> LetVarState::reset() " << this << " theSourceIter: " 
+      << (theSourceIter.getp()? theSourceIter->toString() : "NULL") << " theTempSeqIter: " 
+      << (theTempSeqIter.getp()? theTempSeqIter->toString() : "NULL") << std::endl;
 
   if (theSourceIter != NULL)
     theSourceIter->reset();
@@ -789,7 +791,7 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
   else if (dynamic_cast<PlanIteratorWrapper*>(it.getp()) != NULL)
     std::cerr << dynamic_cast<PlanIteratorWrapper*>(it.getp())->theIterator->getId();
   else
-    std::cerr << it.getp();
+    std::cerr << it->toString();
   std::cerr << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
       << std::endl;
 }
@@ -805,7 +807,7 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
 
   state->theTempSeq = value;
 
-  std::cerr << "--> LetVarIterator::bind() " << theId << " name: " << theVarName->show() << " tempSequence: " << value->show()
+  std::cerr << "--> LetVarIterator::bind() " << theId << " name: " << theVarName->show() << " tempSequence: " << value->toString()
       << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
       << std::endl;
 
@@ -821,7 +823,7 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
         state->theTempSeqIter = GENV_STORE.getIteratorFactory()->
                                 createTempSeqIterator(false);
 
-      std::cerr << "    state->theTempSeqIter: " << state->theTempSeqIter.getp() /* << ", "
+      std::cerr << "    state->theTempSeqIter: " << state->theTempSeqIter->toString() /* << ", "
                 << *state->theTempSeqIter */ << std::endl;
 
       state->theTempSeqIter->init(value);

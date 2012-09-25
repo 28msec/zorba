@@ -1255,19 +1255,19 @@ bool FLWORIterator::bindVariable(
 
     store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
 
-    std::cerr << "--> binding var: " << flc.theVarName << " to tempSequence: " << tmpSeq.getp() << " varNo: " << varNo;
+    std::cerr << "--> binding var: " << flc.theVarName << " to tempSequence: " << tmpSeq->toString() << " varNo: " << varNo;
     PlanIteratorWrapper* piw = dynamic_cast<PlanIteratorWrapper*>(iterState->theTempSeqIters[varNo].getp());
     if (piw != NULL)
       std::cerr << " iter: " << piw->theIterator->getId() << " = " << piw->theIterator->getClassName();
     else
-      std::cerr << " iter: " << iterState->theTempSeqIters[varNo].getp();
+      std::cerr << " iter: " << iterState->theTempSeqIters[varNo]->toString();
     std::cerr << std::endl;
 
 
     tmpSeq->init(iterState->theTempSeqIters[varNo]);
 
     std::cerr << "--> binding to var: " << flc.theVarName << " tempSeq: "
-        << tmpSeq.getp() << " " << tmpSeq->show()
+        << tmpSeq.getp() << " " << tmpSeq->toString()
         << " theVarRefs count: " << flc.theVarRefs.size()
         << std::endl;
 
@@ -1275,8 +1275,7 @@ bool FLWORIterator::bindVariable(
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
     for (; viter != end; ++viter)
     {
-      static_cast<LetVarIterator*>
-      ((*viter).getp())->bind(tmpSeq, planState);
+      static_cast<LetVarIterator*>((*viter).getp())->bind(tmpSeq, planState);
     }
 
     bindingState = 1;

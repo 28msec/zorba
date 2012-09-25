@@ -151,10 +151,8 @@ bool DynamicFnCallIterator::nextImpl(
   std::vector<PlanIter_t>::iterator ite;
   std::vector<PlanIter_t>::const_iterator ite2;
   std::vector<PlanIter_t>::const_iterator end2;
-  std::vector<store::Iterator_t>::const_iterator wrapperIter;
 
   DynamicFnCallIteratorState* state;
-
   DEFAULT_STACK_INIT(DynamicFnCallIteratorState, state, planState);
 
   // first child must return exactly one item which is a function item
@@ -191,7 +189,7 @@ bool DynamicFnCallIterator::nextImpl(
 
     fnItem = static_cast<FunctionItem*>(funcItem.getp());
 
-    std::cerr << "--> dynamic fncall nextImpl(): " << theId << " theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariables().size() << std::endl;
+    std::cerr << "--> dynamic fncall nextImpl(): " << theId << " theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
 
     if (theChildren.size() - 1 != fnItem->getArity())
     {
@@ -199,14 +197,14 @@ bool DynamicFnCallIterator::nextImpl(
       RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
     }
 
-    argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
+    argIters.resize(theChildren.size() - 1 + fnItem->getVariablesIterators().size());
     ite = argIters.begin();
 
-    ite2 = fnItem->getVariables().begin();
-    end2 = fnItem->getVariables().end();
-    wrapperIter = fnItem->getVariableWrappers().begin();
-
-    for (; ite2 != end2; ++ite2, ++ite, ++wrapperIter)
+    
+    ite2 = fnItem->getVariablesIterators().begin();
+    end2 = fnItem->getVariablesIterators().end();
+    
+    for (; ite2 != end2; ++ite2, ++ite)
     {
       std::cerr << "--> dynamic fncall: argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
       if (dynamic_cast<LetVarIterator*>(ite2->getp()))
@@ -216,10 +214,11 @@ bool DynamicFnCallIterator::nextImpl(
       if (dynamic_cast<SingletonIterator*>(ite2->getp()))
         std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
 
-      (*wrapperIter)->reset(); // TODO: do not reset on the first loop iteration
+      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
       *ite = *ite2;
     }
-
+    
+    
     ite2 = theChildren.begin();
     end2 = theChildren.end();
     ++ite2;
@@ -230,7 +229,7 @@ bool DynamicFnCallIterator::nextImpl(
       if (dynamic_cast<LetVarIterator*>(ite2->getp()))
         std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
 
-      (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
+      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
       *ite = *ite2;
     }
 

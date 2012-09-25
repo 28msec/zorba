@@ -1394,54 +1394,46 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
-  // std::cerr << "-------------- NodeStack top -------------------\n";
-  // if (theNodeStack.top().getp() != NULL)
-  //  std::cerr << theNodeStack.top().getp()->toString() << std::endl;
-  // else
-  //  std::cerr << "--> is NULL, but it shouldn't be" << std::endl;
-
   // Get the function_item_expr and set its function to the udf created above.
-  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
-                               theNodeStack.top().getp());
+  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top().getp());
   assert(fiExpr != NULL);
 
   fiExpr->set_function(udf);
 }
 
 
-// is_function_return is to true when doing coercion to a function's return type. In this particular case
-expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB, bool is_function_return = false)
+expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB)
 {
-//   std::cerr << "--> targetType: " << targetType->toString() << std::endl;
-//   std::cerr << "----------- Argument to coercion ---------------\n";
-//   std::cerr << theExpr->toString() << std::endl;
-//   std::cerr << "------------------------------------------------\n";
+  const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
+  
+  // std::cerr << "--> targetType: " << targetType->toString() << std::endl;
+  // std::cerr << "----------- Argument to coercion ---------------\n";
+  // std::cerr << theExpr->toString() << std::endl;
+  // std::cerr << "------------------------------------------------\n";
 
   // Create the dynamic call body
-  const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
-
-  // Get the in-scope vars of the scope before opening the new scope for the
-  // function devl
-  std::vector<VarInfo*> scopedVars;
-  theSctx->getVariables(scopedVars);
-
-  push_scope();
-
+  
   function_item_expr* fiExpr = new function_item_expr(theRootSctx, loc);
-
   push_nodestack(fiExpr);
 
-  // Arguments to the dynamic function call
-  std::vector<expr_t> arguments;
+  
+  // Get the in-scope vars of the scope before opening the new scope for the
+  // function devl
+  /*
+  std::vector<VarInfo*> scopedVars;
+  theSctx->getVariables(scopedVars);
+  push_scope();
+  */
 
+  
   // handle the function item expression
   flwor_expr_t fnItem_flwor = new flwor_expr(theRootSctx, loc, false);
-  let_clause_t fnItem_lc = wrap_in_letclause(theExpr);
+  for_clause_t fnItem_lc = wrap_in_forclause(theExpr, NULL);
   var_expr_t fnItem_var = fnItem_lc->get_var();
   fnItem_flwor->add_clause(fnItem_lc);
-  fiExpr->add_variable(fnItem_var);
-  // arguments.push_back();
-
+  fiExpr->add_variable(fnItem_var, fnItem_var->get_name());
+  
+  
   // bind the function item variable in the inner flwor
   flwor_expr_t inner_flwor = new flwor_expr(theRootSctx, loc, false);
   var_expr_t inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::arg_var);
@@ -1453,13 +1445,13 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
 
   // Handle parameters. For each parameter, a let binding is added to the inner flwor.
+  std::vector<expr_t> arguments;    // Arguments to the dynamic function call
   for(unsigned i = 0; i<func_type->get_number_params(); i++)
   {
     xqtref_t param_type = func_type->operator[](i);
 
     var_expr_t arg_var = create_temp_var(loc, var_expr::arg_var);
     var_expr_t subst_var = bind_var(loc, arg_var->get_name(), var_expr::let_var);
-
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
     arg_var->set_param_pos(inner_flwor->num_clauses());
@@ -1470,70 +1462,12 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
     arguments.push_back(new wrapper_expr(theRootSctx, loc, subst_var));
   }
 
-  // if (!is_function_return) {
-
-  /*
-  wrapper_expr* theWrapperExpr = dynamic_cast<wrapper_expr*>(theExpr.getp());
-  var_expr* theVarExpr = theWrapperExpr ? dynamic_cast<var_expr*>(theWrapperExpr->get_expr()) : NULL;
-  function_item_expr* theFIExpr = dynamic_cast<function_item_expr*>(theExpr.getp());
-  */
-
-  // Handle inscope variables. For each inscope var, a let binding is added to
-  // the flwor.
-  /*
-  std::vector<var_expr_t>::iterator ite = scopedVars.begin();
-  for(; ite != scopedVars.end(); ++ite)
-  {
-    var_expr* varExpr = (*ite);
-    var_expr::var_kind kind = varExpr->get_kind();
-
-    if (kind == var_expr::prolog_var || kind == var_expr::local_var)
-    {
-      continue;
-    }
-
-    store::Item_t qname = varExpr->get_name();
-
-    var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
-    var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
-
-    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
-
-    arg_var->set_param_pos(flwor->num_clauses());
-    arg_var->set_type(varExpr->get_return_type());
-
-    // TODO: this could probably be done lazily in some cases
-    //lc->setLazyEval(true);
-    flwor->add_clause(lc);
-
-    fiExpr->add_variable(varExpr);
-
-    // ???? What about inscope vars that are hidden by param vars ???
-
-    if (theFIExpr != NULL)
-    {
-      theFIExpr->replace_variable(subst_var);
-    }
-    else if (theVarExpr != NULL && qname->equals(theVarExpr->get_name()))
-    {
-      theWrapperExpr->set_expr(subst_var);
-    }
-  }
-  */
-
-  // }
-
+  
   expr_t body = new dynamic_function_invocation_expr(
                 theRootSctx,
                 loc,
                 new wrapper_expr(theRootSctx, loc, inner_subst_var),
                 arguments);
-
-  // TODO: remove, there will always be a clause
-  /*
-  if (inner_flwor->num_clauses() == 0)
-    inner_flwor = NULL;
-  */
 
   create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
 
@@ -1542,7 +1476,7 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   theExpr = fnItem_flwor;
 
   // pop the scope.
-  pop_scope();
+  // pop_scope();
 
   return theExpr;
 }
@@ -1643,7 +1577,7 @@ void normalize_fo(fo_expr* foExpr)
           // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
           argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
         }
-
+        
         argExpr = wrap_in_type_match(argExpr,
                                      paramType,
                                      loc,
@@ -3896,7 +3830,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // Wrap in coercion if the return type is a function item
     if (returnType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
-      body = wrap_in_coercion(returnType, body, loc, theCCB, true);
+      body = wrap_in_coercion(returnType, body, loc, theCCB);
     }
 
     // If function has any params, they have been wraped in a flwor expr. Set the
@@ -3932,12 +3866,10 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
       body = wrap_in_atomization(body);
-
       body = wrap_in_type_promotion(body,
                                     returnType,
                                     PromoteIterator::FUNC_RETURN,
                                     udf->getName());
-
       body->set_loc(v.get_return_type()->get_location());
     }
     else
@@ -10778,6 +10710,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         for (csize i = 0; i < numVars; ++i)
         {
           var_expr* ve = inscopeVars[i]->getVar();
+          
+          std::cerr << "--> eval_expr inscope var " << i << ": " << ve->toString();
 
           var_expr_t evalVar = create_var(loc,
                                           ve->get_name(),
@@ -11241,6 +11175,8 @@ void* begin_visit(const InlineFunction& v)
   {
     var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
+    
+    std::cerr << "--> eval_expr inscope var " << (ite-scopedVars.begin()) << ": " << varExpr->toString();
 
     if (kind == var_expr::prolog_var || kind == var_expr::local_var)
     {
@@ -11261,7 +11197,7 @@ void* begin_visit(const InlineFunction& v)
     //lc->setLazyEval(true);
     flwor->add_clause(lc);
 
-    fiExpr->add_variable(varExpr);
+    fiExpr->add_variable(varExpr, varExpr->get_name());
 
     // ???? What about inscope vars that are hidden by param vars ???
   }

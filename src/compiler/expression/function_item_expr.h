@@ -51,7 +51,7 @@ public:
       const std::vector<expr_t>& args);
 
 	const expr_t get_function() const { return theExpr; }
-	
+
   const std::vector<expr_t>& get_args() const { return theArgs; }
 
 	void compute_scripting_kind();
@@ -101,10 +101,11 @@ class function_item_expr: public expr
   friend class expr;
 
 private:
-  store::Item_t        theQName;
-	function_t           theFunction;
-  uint32_t             theArity;
-  std::vector<expr_t>  theScopedVariables;
+  store::Item_t               theQName;
+	function_t                  theFunction;
+  uint32_t                    theArity;
+  std::vector<expr_t>         theScopedVarsValues;
+  std::vector<store::Item_t>  theScopedVarsNames;
 
 public:
 	function_item_expr(
@@ -120,9 +121,11 @@ public:
 
   ~function_item_expr();
 
-  void add_variable(expr* var);
-  
-  bool replace_variable(var_expr_t replacement);
+  void add_variable(expr* var, const store::Item_t& name);
+
+  const std::vector<expr_t>& get_scoped_vars_values() const;
+
+  const std::vector<store::Item_t>& get_scoped_vars_names() const;
 
   void set_function(user_function_t& udf);
 
@@ -132,9 +135,7 @@ public:
 
   uint32_t get_arity() const { return theArity; }
 
-  const std::vector<expr_t>& get_vars() const;
-
-	void compute_scripting_kind();
+  void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
 

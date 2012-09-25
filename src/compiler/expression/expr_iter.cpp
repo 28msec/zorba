@@ -507,8 +507,8 @@ void ExprIterator::next()
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theScopedVariables.begin();
-    theArgsEnd = fiExpr->theScopedVariables.end();
+    theArgsIter = fiExpr->theScopedVarsValues.begin();
+    theArgsEnd = fiExpr->theScopedVarsValues.end();
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
       EXPR_ITER_NEXT(*theArgsIter);
