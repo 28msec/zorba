@@ -1,6 +1,6 @@
-import module namespace j = "http://www.jsoniq.org/functions";
+import module namespace j = "http://jsoniq.org/functions";
 
-declare namespace jerr = "http://www.jsoniq.org/errors";
+declare namespace jerr = "http://jsoniq.org/errors";
 
 variable $a := [ 3 ];
 
