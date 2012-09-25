@@ -40,7 +40,6 @@
   
 FIND_PACKAGE (Java COMPONENTS Development)
 
-# This works this way on Windows
 IF (Java_JAVAC_EXECUTABLE)
 
   # TESTING...
