@@ -74,7 +74,7 @@ namespace zorba {
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -100,7 +100,7 @@ StaticContextImpl::StaticContextImpl(
   :
   theCtx(aCtx),
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -123,7 +123,7 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)

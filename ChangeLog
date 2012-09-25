@@ -35,6 +35,9 @@ Bug Fixes/Other Changes:
   * Fixed bug #1034990 (text serialization with jsoniq fails)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
     variables)
+  * Fixed bug #923686 (implicitly declare global context size and context position
+    variables in main module and provide api function to assign values to these
+    variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
   * Now using native UUID libraries.
   * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
