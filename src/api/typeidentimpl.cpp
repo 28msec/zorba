@@ -44,8 +44,9 @@ TypeIdentifier::~TypeIdentifier()
 
 IdentTypes::kind_t TypeIdentifier::getKind() const
 {
-    return m_kind;
+  return m_kind;
 }
+
 
 IdentTypes::quantifier_t TypeIdentifier::getQuantifier() const
 {
