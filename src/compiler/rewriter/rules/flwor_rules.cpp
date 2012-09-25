@@ -560,6 +560,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor.remove_clause(0);
       continue;
     }
+    else if (clause->get_kind() == flwor_clause::materialize_clause)
+    {
+      flwor.remove_clause(0);
+      continue;
+    }
     else
     {
       ZORBA_ASSERT(false);
@@ -1199,6 +1204,10 @@ static bool var_in_try_or_loop(
       case flwor_clause::count_clause:
       {
         break;
+      }
+      case flwor_clause::materialize_clause:
+      {
+        ZORBA_ASSERT(false);
       }
       default:
       {
