@@ -8,7 +8,7 @@ New Features:
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
-  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq
+  * New module http://jsoniq.org/modules/function-library with handy JSONiq
     functions. jn:object is also supported.
   * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
     takes options to parameterize the parsing process (see bug #1047547)
@@ -68,7 +68,7 @@ version 2.6
 
 New Features:
   * Include first-class support for JSON data by implementing the JSONiq spec
-  - see http://www.jsoniq.org/ for more information. This feature is enabled by default.
+  - see http://jsoniq.org/ for more information. This feature is enabled by default.
   * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local)
   * New function Item::isSeekable for streamable content (xs:string and xs:base64Binary)
   * Implemented the latest W3C specification for the group by clause (backwards incompatible)

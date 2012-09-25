@@ -175,7 +175,7 @@ PlanIter_t jn_object::codegen(
 void populate_context_jsoniq_functions_impl(static_context* sctx)
 {
   DECL(sctx, jn_object,
-       (createQName("http://www.jsoniq.org/functions", "", "object"),
+       (createQName("http://jsoniq.org/functions", "", "object"),
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE));
 }

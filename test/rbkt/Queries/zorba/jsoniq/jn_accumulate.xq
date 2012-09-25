@@ -1,4 +1,4 @@
-import module namespace libjn = "http://www.jsoniq.org/function-library";
+import module namespace libjn = "http://jsoniq.org/function-library";
 
 declare variable $xdoc :=
 <nodes>
