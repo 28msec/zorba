@@ -40,7 +40,8 @@
   
 FIND_PACKAGE (Java COMPONENTS Development)
 
-IF (Java_Development_FOUND)
+# This works this way on Windows
+IF (Java_JAVAC_EXECUTABLE)
 
   # TESTING...
   SET (XQJ_LOAD_PATH "${CMAKE_BINARY_DIR}/swig/xqj")
