@@ -263,6 +263,9 @@ namespace zorba {
         Item   parent,
         String content);
 
+      virtual Item
+      createUntypedAtomic(const String& value);
+
 #ifdef ZORBA_WITH_JSON
       virtual Item
       createJSONNull();

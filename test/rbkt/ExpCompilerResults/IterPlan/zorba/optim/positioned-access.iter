@@ -1,13 +1,13 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="n1">
+  <CtxVarDeclareIterator varid="4" varname="n1">
     <FnConcatIterator>
       <SingletonIterator value="xs:integer(2)"/>
       <SingletonIterator value="xs:integer(3)"/>
       <SingletonIterator value="xs:integer(6)"/>
     </FnConcatIterator>
   </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="3" varname="n2">
+  <CtxVarDeclareIterator varid="5" varname="n2">
     <FnConcatIterator>
       <SingletonIterator value="xs:integer(2)"/>
       <SingletonIterator value="xs:integer(3)"/>
@@ -19,7 +19,7 @@ Iterator tree for main query:
         <LetVariable name="x" materialize="true">
           <PromoteIterator type="xs:integer">
             <FnDataIterator>
-              <CtxVarIterator varid="2" varname="n1" varkind="global"/>
+              <CtxVarIterator varid="4" varname="n1" varkind="global"/>
             </FnDataIterator>
           </PromoteIterator>
         </LetVariable>
@@ -37,7 +37,7 @@ Iterator tree for main query:
         <LetVariable name="x" materialize="true">
           <PromoteIterator type="xs:integer">
             <FnDataIterator>
-              <CtxVarIterator varid="3" varname="n2" varkind="global"/>
+              <CtxVarIterator varid="5" varname="n2" varkind="global"/>
             </FnDataIterator>
           </PromoteIterator>
         </LetVariable>

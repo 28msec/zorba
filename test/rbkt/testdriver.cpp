@@ -435,7 +435,7 @@ main(int argc, char** argv)
         // testdriver_mt as well
         // Initialize default serialization method
 #ifdef ZORBA_WITH_JSON
-        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSONIQ;
+        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
 #else /* ZORBA_WITH_JSON */
         lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
 #endif /* ZORBA_WITH_JSON */

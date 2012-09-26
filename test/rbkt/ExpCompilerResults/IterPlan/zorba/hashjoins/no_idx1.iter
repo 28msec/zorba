@@ -32,21 +32,21 @@ Iterator tree for main query:
           </NodeNameIterator>
         </FnStringIterator>
         <flwor::FLWORIterator>
-          <ForVariable name="$$dot">
+          <ForVariable name="$$context-item">
             <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
               <ForVarIterator varname="ancestor"/>
             </ParentAxisIterator>
           </ForVariable>
-          <ForVariable name="$$dot">
+          <ForVariable name="$$context-item">
             <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-              <ForVarIterator varname="$$dot"/>
+              <ForVarIterator varname="$$context-item"/>
             </ChildAxisIterator>
           </ForVariable>
           <WhereClause>
             <TypedValueCompareIterator_STRING>
               <FnStringIterator>
                 <NodeNameIterator>
-                  <ForVarIterator varname="$$dot"/>
+                  <ForVarIterator varname="$$context-item"/>
                 </NodeNameIterator>
               </FnStringIterator>
               <UnhoistIterator>
@@ -55,7 +55,7 @@ Iterator tree for main query:
             </TypedValueCompareIterator_STRING>
           </WhereClause>
           <ReturnClause>
-            <ForVarIterator varname="$$dot"/>
+            <ForVarIterator varname="$$context-item"/>
           </ReturnClause>
         </flwor::FLWORIterator>
       </FnConcatIterator>

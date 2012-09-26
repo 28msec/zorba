@@ -79,6 +79,7 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
+#include "context/dynamic_context.h"
 
 #include "types/node_test.h"
 #include "types/casting.h"
@@ -740,7 +741,6 @@ const QName* getDotPosVarName() const
 {
   return theRootTranslator->theDotPosVarName;
 }
-
 
 const QName* getLastIdxVarName() const
 {
@@ -2026,28 +2026,25 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 
   if (initExpr != NULL && varType != NULL && !b.is_extern())
   {
-    initExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                 loc,
-                                                 initExpr,
-                                                 varType,
-                                                 TreatIterator::TYPE_MATCH);
+    initExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, initExpr, varType, TreatIterator::TYPE_MATCH);
   }
 
-  expr* declExpr =
-  theExprManager->create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
+  expr* declExpr = theExprManager->
+  create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
 
   // check type for vars that are external
   if (varType != NULL && b.is_extern())
   {
-    expr* getExpr = theExprManager->create_fo_expr(theRootSctx, loc, varGet, varExpr);
+    expr* getExpr = theExprManager->
+    create_fo_expr(theRootSctx, loc, varGet, varExpr);
 
-    stmts.push_back(theExprManager->create_treat_expr(theRootSctx,
-                                                      loc,
-                                                      getExpr,
-                                                      varType,
-                                                      TreatIterator::TYPE_MATCH));
+    expr* treatExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, getExpr, varType, TreatIterator::TYPE_MATCH);
+
+    stmts.push_back(treatExpr);
   }
 }
 
@@ -2390,13 +2387,26 @@ void* begin_visit(const MainModule& v)
   // However, do not create a ver_decl expr for it, because this will create a
   // treat_as expr as well, so the ctx item will always appear as being used,
   // and as a result it will always have to be set.
-  var_expr* var = bind_var(loc,
-                           DOT_VARNAME,
-                           var_expr::prolog_var,
-                           theSctx->get_context_item_type());
+  var_expr* var1 = bind_var(loc,
+                            DOT_VARNAME,
+                            var_expr::prolog_var,
+                            theSctx->get_context_item_type());
+  var_expr* var2 = bind_var(loc,
+                            DOT_POS_VARNAME,
+                            var_expr::prolog_var, 
+                            theRTM.INTEGER_TYPE_ONE);
+  var_expr* var3 = bind_var(loc,
+                            LAST_IDX_VARNAME,
+                            var_expr::prolog_var,
+                            theRTM.INTEGER_TYPE_ONE);
 
-  var->set_external(true);
-  var->set_unique_id(1);
+  var1->set_external(true);
+  var2->set_external(true);
+  var3->set_external(true);
+  
+  var1->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
+  var2->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
+  var3->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
 
   //GlobalBinding b(var, NULL, true);
   //declare_var(b, theModulesInfo->theInitExprs);
@@ -6762,17 +6772,19 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     if (j == i)
     {
+      const QueryLoc& specLoc = groupSpec.get_location();
+
       // Since group specs can add let vars, and change the value of the
       // input_expr after the expr has been read, we delegate the actual looking
       // up of the variable until now, to get the most recent and correct value.
 
       store::Item_t varName;
-      expand_no_default_qname(varName, groupSpec.get_var_name(), loc);
+      expand_no_default_qname(varName, groupSpec.get_var_name(), specLoc);
 
       VarInfo* var = sctx->lookup_var(varName.getp());
       if (!var)
       {
-        RAISE_ERROR(err::XPST0008, loc,
+        RAISE_ERROR(err::XPST0008, specLoc,
         ERROR_PARAMS(varName->getStringValue(), ZED(VariabledUndeclared)));
       }
 
@@ -6780,16 +6792,22 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
       if (inputExpr->get_expr_kind() == var_expr_kind)
       {
-        inputExpr = theExprManager->create_wrapper_expr(theRootSctx, loc, inputExpr);
+        inputExpr = theExprManager->
+        create_wrapper_expr(theRootSctx, specLoc, inputExpr);
       }
 
       inputExpr = wrap_in_atomization(inputExpr);
+
+      inputExpr = wrap_in_type_match(inputExpr,
+                                     theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                     specLoc,
+                                     TreatIterator::MULTI_VALUED_GROUPING_KEY);
 
       // We need to do this to handle grouping vars with same names but
       // different collations.
       push_scope();
 
-      var_expr* gVar = bind_var(loc,
+      var_expr* gVar = bind_var(specLoc,
                                 groupSpec.get_var_name(),
                                 var_expr::groupby_var,
                                 inputExpr->get_return_type());
@@ -6801,7 +6819,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
         std::string collationUri = groupSpec.get_collation_spec()->get_uri().str();
 
         if (! theSctx->is_known_collation(collationUri))
-          RAISE_ERROR(err::XQST0076, loc, ERROR_PARAMS(collationUri));
+          RAISE_ERROR(err::XQST0076, specLoc, ERROR_PARAMS(collationUri));
 
         collations.push_back(collationUri);
       }
@@ -6833,11 +6851,13 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
 
-  group_clause* clause = theExprManager->create_group_clause(theRootSctx,
-                                          loc,
-                                          grouping_rebind,
-                                          nongrouping_rebind,
-                                          collations);
+  group_clause* clause = theExprManager->
+  create_group_clause(theRootSctx,
+                      loc,
+                      grouping_rebind,
+                      nongrouping_rebind,
+                      collations);
+
   theFlworClausesStack.push_back(clause);
 }
 
