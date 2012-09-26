@@ -89,6 +89,8 @@ protected:
   }
 
 public:
+  virtual ~flwor_clause();
+
   const QueryLoc& get_loc() const { return theLocation; }
 
   ClauseKind get_kind() const { return theKind; }
