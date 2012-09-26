@@ -534,7 +534,7 @@ void SimpleJSONObject::setTree(JSONTree* aTree)
 zstring SimpleJSONObject::getStringValue() const
 {
   ASSERT_INVARIANT();
-  throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("object"));
+  throw ZORBA_EXCEPTION(jerr::JNTY0024, ERROR_PARAMS("object"));
 }
 
 
@@ -1100,7 +1100,7 @@ store::Item* SimpleJSONArray::copy(
 zstring SimpleJSONArray::getStringValue() const
 {
   ASSERT_INVARIANT();
-  throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("array"));
+  throw ZORBA_EXCEPTION(jerr::JNTY0024, ERROR_PARAMS("array"));
 }
 
 

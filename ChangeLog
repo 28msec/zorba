@@ -20,6 +20,7 @@ New Features:
   * Implemented semantics of null for comparison and arithmetics operations.
   * Positional pagination support for index probes 
   * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
+	* Added createUntypedAtomic to API's ItemFactory.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
@@ -32,6 +33,7 @@ Optimizations:
   * Removed document-order sorting after the index value probe functions.
   * Optimize positional predicates involving inequality (convert them to subsequence)
   * Optimize positional predicate that is in CNF with other predicates.
+  * Optimized runtime group iterator based on latest group-by semntics.
 
 Bug Fixes/Other Changes:
   * Fixed bug #950621 (Removed two-arg version of fn:parse-xml(); use XML module function xml:parse() instead)
@@ -40,6 +42,9 @@ Bug Fixes/Other Changes:
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
   * Fixed bug #1034990 (text serialization with jsoniq fails)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
+    variables)
+  * Fixed bug #923686 (implicitly declare global context size and context position
+    variables in main module and provide api function to assign values to these
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
   * Now using native UUID libraries.

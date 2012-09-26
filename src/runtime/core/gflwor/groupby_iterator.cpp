@@ -199,16 +199,16 @@ void GroupByIterator::accept(PlanIterVisitor& v) const
       
   theTupleIter->accept(v);
 
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
+  csize numSpecs = theGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].accept(v);
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
+  numSpecs = theNonGroupingSpecs.size();
 
-  for (ulong i = 0; i < numSpecs; ++i)
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].accept(v);
   }
@@ -311,39 +311,39 @@ void GroupByIterator::resetImpl(PlanState& planState) const
 /***************************************************************************//**
 
 ********************************************************************************/
-bool GroupByIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
+bool GroupByIterator::nextImpl(store::Item_t& aResult, PlanState& planState) const 
 {
-  GroupByState* lState;
-  DEFAULT_STACK_INIT(GroupByState, lState, aPlanState);
+  GroupByState* state;
+  DEFAULT_STACK_INIT(GroupByState, state, planState);
 
-  while (consumeNext(aResult, theTupleIter, aPlanState)) 
+  while (consumeNext(aResult, theTupleIter, planState)) 
   {
     try 
     {
-      matVarsAndGroupBy(lState, aPlanState);
+      matVarsAndGroupBy(state, planState);
     }
     catch (XQueryException& lError)
     {
-      set_source( lError, loc );
+      set_source(lError, loc);
       throw;
     }
   }
 
-  if (!lState->theGroupMap->empty()) 
+  if (!state->theGroupMap->empty()) 
   {
-    lState->theGroupMapIter = lState->theGroupMap->begin();
+    state->theGroupMapIter = state->theGroupMap->begin();
 
-    while(lState->theGroupMapIter != lState->theGroupMap->end())
+    while (state->theGroupMapIter != state->theGroupMap->end())
     {
-      bindGroupBy(lState->theGroupMapIter, lState, aPlanState);
+      bindGroupBy(state->theGroupMapIter, state, planState);
 
-      ++lState->theGroupMapIter;
+      ++state->theGroupMapIter;
 
-      STACK_PUSH(true, lState);
+      STACK_PUSH(true, state);
     }
   }
 
-  STACK_END(lState);
+  STACK_END(state);
 }
   
 
@@ -358,7 +358,6 @@ void GroupByIterator::matVarsAndGroupBy(
 
   GroupTuple* groupTuple = new GroupTuple();
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
-  std::vector<store::Item_t>& groupTupleValues = groupTuple->theTypedValues;
 
   csize numVars = theGroupingSpecs.size();
 
@@ -366,65 +365,21 @@ void GroupByIterator::matVarsAndGroupBy(
   for (csize i = 0; i < numVars; ++i)
   {
     groupTupleItems.push_back(NULL);
-    groupTupleValues.push_back(NULL);
 
     // Get the 1st item in the value of the current grouping variable. Push this
     // item into the groupTupleItems, and push the typed value of the item into
     // groupTupleValues, making sure that the typed value of the item consists
     // of a single item. 
     store::Item_t& item = groupTupleItems.back();
-    bool status = consumeNext(item, theGroupingSpecs[i].theInput.getp(), aPlanState);
 
-    if (status)
-    {
-      // Check that the value of the current grouping var does not have more
-      // than 1 item.
-      if (consumeNext(temp, theGroupingSpecs[i].theInput.getp(), aPlanState)) 
-      {
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(GroupByVarHasMoreThanOneItem_2)));
-      }
-
-      store::Iterator_t typedValueIter;
-      store::Item_t typedValue;
-      item->getTypedValue(typedValue, typedValueIter);
-      if (typedValueIter == NULL)
-      {
-        groupTupleValues.back().transfer(typedValue);
-      }
-      else
-      {
-        typedValueIter->open();
-
-        try
-        {
-          if (typedValueIter->next(typedValue)) 
-          {
-            groupTupleValues.back().transfer(typedValue);
-            
-            if (typedValueIter->next(temp))
-            {
-              RAISE_ERROR(err::XPTY0004, loc,
-              ERROR_PARAMS(ZED(AtomizationOfGroupByMakesMoreThanOneItem)));
-            }
-          }
-        }
-        catch(...)
-        {
-          typedValueIter->close();
-          throw;
-        }
-
-        typedValueIter->close();
-      }
-    }
+    consumeNext(item, theGroupingSpecs[i].theInput.getp(), aPlanState);
 
     theGroupingSpecs[i].theInput->reset(aPlanState);
   }
 
   GroupHashMap* groupMap = aGroupByState->theGroupMap;
 
-  numVars = (ulong)theNonGroupingSpecs.size();
+  numVars = theNonGroupingSpecs.size();
 
   std::vector<store::TempSeq_t>* nonGroupTuple = NULL;
 
@@ -432,12 +387,11 @@ void GroupByIterator::matVarsAndGroupBy(
   {
     assert(nonGroupTuple != NULL);
 
-    for (ulong i = 0; i < numVars; ++i)
+    for (csize i = 0; i < numVars; ++i)
     {
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
 
-      // FIXME are those settings right? I think copy is correct 
       (*nonGroupTuple)[i]->append(iterWrapper);
 
       theNonGroupingSpecs[i].theInput->reset(aPlanState);
@@ -449,7 +403,7 @@ void GroupByIterator::matVarsAndGroupBy(
   {
     nonGroupTuple = new std::vector<store::TempSeq_t>();
 
-    for (ulong i = 0; i < numVars; ++i)
+    for (csize i = 0; i < numVars; ++i)
     {
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
@@ -476,32 +430,32 @@ void GroupByIterator::bindGroupBy(
     PlanState& aPlanState) const 
 {
   // Bind grouping vars
-  ulong numVars = (ulong)theGroupingSpecs.size();
+  csize numVars = theGroupingSpecs.size();
 
   GroupTuple* groupTuple = (*aGroupMapIter).first;
 
-  for (ulong i = 0; i < numVars; ++i)
+  for (csize i = 0; i < numVars; ++i)
   {
-    ulong numVarRefs = (ulong)theGroupingSpecs[i].theVarRefs.size();
+    csize numVarRefs = theGroupingSpecs[i].theVarRefs.size();
 
-    for (ulong j = 0; j < numVarRefs; ++j)
+    for (csize j = 0; j < numVarRefs; ++j)
     {
       theGroupingSpecs[i].theVarRefs[j]->bind(groupTuple->theItems[i], aPlanState);
     }
   }
 
   // Bind non-grouping vars
-  numVars = (ulong)theNonGroupingSpecs.size();
+  numVars = theNonGroupingSpecs.size();
 
   std::vector<store::TempSeq_t>* nonGroupTuple = (*aGroupMapIter).second;
 
-  for (ulong i = 0; i < numVars; ++i)
+  for (csize i = 0; i < numVars; ++i)
   {
     store::TempSeq_t nonGroupVar = (*nonGroupTuple)[i].getp();
 
-    ulong numVarRefs = (ulong)theNonGroupingSpecs[i].theVarRefs.size();
+    csize numVarRefs = theNonGroupingSpecs[i].theVarRefs.size();
 
-    for (ulong j = 0; j < numVarRefs; ++j)
+    for (csize j = 0; j < numVarRefs; ++j)
     {
       theNonGroupingSpecs[i].theVarRefs[j]->bind(nonGroupVar, aPlanState);
     }
