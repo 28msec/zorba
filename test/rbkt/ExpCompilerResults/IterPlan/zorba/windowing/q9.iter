@@ -75,9 +75,11 @@ Iterator tree for main query:
             </ChildAxisIterator>
           </flwor::LetIterator>
           <Spec>
-            <FnDataIterator>
-              <LetVarIterator varname="person"/>
-            </FnDataIterator>
+            <TreatIterator quant="?">
+              <FnDataIterator>
+                <LetVarIterator varname="person"/>
+              </FnDataIterator>
+            </TreatIterator>
             <GroupVariable/>
           </Spec>
           <Spec>

@@ -184,6 +184,10 @@
         <value>Cannot atomize and/or cast value of type $2 to a string.</value>
       </entry>
 
+      <entry key="MultiValuedGroupingKey">
+        <value>atomization of grouping variable produces more than one item</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPTY0018">
@@ -2820,10 +2824,6 @@
       <value>atomization has more than one value</value>
     </entry>
 
-    <entry key="AtomizationOfGroupByMakesMoreThanOneItem">
-      <value>atomization of groupby variable produces more than one item</value>
-    </entry>
-
     <entry key="AttributeName">
       <value>attribute name</value>
     </entry>
@@ -3114,10 +3114,6 @@
 
     <entry key="GoodValuesAreYesNoOmit">
       <value>valid values are: yes, no, omit</value>
-    </entry>
-
-    <entry key="GroupByVarHasMoreThanOneItem_2">
-      <value>"$2": value of groupby variable has more than one item</value>
     </entry>
 
     <entry key="HexBinaryMustBeEven">
