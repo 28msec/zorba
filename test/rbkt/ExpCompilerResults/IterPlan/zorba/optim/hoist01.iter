@@ -31,7 +31,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="testlib:user">
+  <CtxVarDeclareIterator varid="4" varname="testlib:user">
     <SingletonIterator value="xs:QName(http://www.test.ch,testlib,user)"/>
   </CtxVarDeclareIterator>
   <UDFunctionCallIterator>
@@ -48,11 +48,11 @@ Iterator tree for testlib:searchUser:
       </FnBooleanIterator>
       <FunctionTraceIterator>
         <flwor::FLWORIterator>
-          <ForVariable name="$$dot">
+          <ForVariable name="$$context-item">
             <ZorbaCollectionIterator>
               <PromoteIterator type="xs:QName">
                 <FnDataIterator>
-                  <CtxVarIterator varid="2" varname="testlib:user" varkind="global"/>
+                  <CtxVarIterator varid="4" varname="testlib:user" varkind="global"/>
                 </FnDataIterator>
               </PromoteIterator>
             </ZorbaCollectionIterator>
@@ -64,7 +64,7 @@ Iterator tree for testlib:searchUser:
                   <FnDataIterator>
                     <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,deleted)" typename="*" nill allowed="0">
                       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                        <ForVarIterator varname="$$dot"/>
+                        <ForVarIterator varname="$$context-item"/>
                       </TreatIterator>
                     </AttributeAxisIterator>
                   </FnDataIterator>
@@ -74,7 +74,7 @@ Iterator tree for testlib:searchUser:
             </FnBooleanIterator>
           </WhereClause>
           <ReturnClause>
-            <ForVarIterator varname="$$dot"/>
+            <ForVarIterator varname="$$context-item"/>
           </ReturnClause>
         </flwor::FLWORIterator>
       </FunctionTraceIterator>

@@ -184,6 +184,10 @@
         <value>Cannot atomize and/or cast value of type $2 to a string.</value>
       </entry>
 
+      <entry key="MultiValuedGroupingKey">
+        <value>atomization of grouping variable produces more than one item</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPTY0018">
@@ -1919,6 +1923,22 @@
       <value>"$1": item to load is not a node</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0023" name="NON_ATOMIC_CONTEXT_SIZE_VALUE">
+      <value>non-atomic value can not be assigned to the context size</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0024" name="NON_INTEGER_CONTEXT_SIZE_VALUE">
+      <value>"$1": wrong type for context size value (must be integer)</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0025" name="NON_ATOMIC_CONTEXT_POSITION_VALUE">
+      <value>non-atomic value can not be assigned to the context position</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0026" name="NON_INTEGER_CONTEXT_POSITION_VALUE">
+      <value>"$1": wrong type for context position value (must be integer)</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0027" name="CANNOT_UPDATE_DCTX_WITH_ITERATORS">
       <value>cannot update dynamic context with iterators</value>
     </diagnostic>
@@ -2797,10 +2817,6 @@
       <value>atomization has more than one value</value>
     </entry>
 
-    <entry key="AtomizationOfGroupByMakesMoreThanOneItem">
-      <value>atomization of groupby variable produces more than one item</value>
-    </entry>
-
     <entry key="AttributeName">
       <value>attribute name</value>
     </entry>
@@ -3091,10 +3107,6 @@
 
     <entry key="GoodValuesAreYesNoOmit">
       <value>valid values are: yes, no, omit</value>
-    </entry>
-
-    <entry key="GroupByVarHasMoreThanOneItem_2">
-      <value>"$2": value of groupby variable has more than one item</value>
     </entry>
 
     <entry key="HexBinaryMustBeEven">
