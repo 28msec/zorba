@@ -24,7 +24,10 @@ let $xqdoc as schema-element(xqds:xqdoc) :=
   validate lax {
     xqd:xqdoc(
       $local:dir || "gdata.xqlib",
-      <opt:enable functions="true" indexes="false" />)
+      <opt:enable>
+        <opt:functions>true</opt:functions>
+        <opt:indexes>false</opt:indexes>
+      </opt:enable>)
   }
 return
   local:remove-date($xqdoc)

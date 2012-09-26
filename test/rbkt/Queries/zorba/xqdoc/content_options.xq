@@ -26,7 +26,7 @@ let $content := file:read-text(fn:concat(
 let $xqdoc := 
     xqd:xqdoc-content(
       $content,
-      <opt:enable variables="true" />)
+      <opt:enable><opt:variables>true</opt:variables></opt:enable>)
 return
   local:remove-date($xqdoc)
 

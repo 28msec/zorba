@@ -23,12 +23,16 @@
 
   <xs:element name="enable">
     <xs:complexType>            
-      <xs:attribute name="comments" type="xs:boolean"/>
-      <xs:attribute name="imports" type="xs:boolean"/>
-      <xs:attribute name="variables" type="xs:boolean"/>
-      <xs:attribute name="functions" type="xs:boolean"/>
-      <xs:attribute name="collections" type="xs:boolean"/>
-      <xs:attribute name="indexes" type="xs:boolean"/>
+      <xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="comments" type="xs:boolean"/>
+          <xs:element name="imports" type="xs:boolean"/>
+          <xs:element name="variables" type="xs:boolean"/>
+          <xs:element name="functions" type="xs:boolean"/>
+          <xs:element name="collections" type="xs:boolean"/>
+          <xs:element name="indexes" type="xs:boolean"/>
+        </xs:choice>
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 

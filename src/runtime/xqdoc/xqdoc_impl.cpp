@@ -48,14 +48,14 @@ void readOptions(uint32_t& aOptions, const store::Item& aOptionItem)
 {
   aOptions = xqdoc_component_none;
 
-  store::Iterator_t lAttrIter = aOptionItem.getAttributes();
-  lAttrIter->open();
-  store::Item_t lAttr;
+  store::Iterator_t lChildrenIter = aOptionItem.getChildren();
+  lChildrenIter->open();
+  store::Item_t lChild;
 
-  while (lAttrIter->next(lAttr))
+  while (lChildrenIter->next(lChild))
   {
-    zstring lLocalName = lAttr->getNodeName()->getLocalName();
-    zstring lValue = lAttr->getStringValue();
+    zstring lLocalName = lChild->getNodeName()->getLocalName();
+    zstring lValue = lChild->getStringValue();
 
     if(lValue != "true")
       continue;
