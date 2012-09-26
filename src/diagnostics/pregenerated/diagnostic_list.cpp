@@ -1264,16 +1264,13 @@ JSONiqErrorCode JNUP0019( "JNUP0019" );
 JSONiqErrorCode JNTY0023( "JNTY0023" );
 
 
-JSONiqErrorCode JNTY0003( "JNTY0003" );
+JSONiqErrorCode JNTY0024( "JNTY0024" );
 
 
-JSONiqErrorCode JSDY0040( "JSDY0040" );
+JSONiqErrorCode JNTY0020( "JNTY0020" );
 
 
-JSONiqErrorCode JSDY0020( "JSDY0020" );
-
-
-JSONiqErrorCode JSDY0021( "JSDY0021" );
+JSONiqErrorCode JNDY0021( "JNDY0021" );
 #endif
 
 
