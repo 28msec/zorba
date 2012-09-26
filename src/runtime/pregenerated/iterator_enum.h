@@ -152,6 +152,8 @@
   TYPE_MemSizeIterator,
   TYPE_JSONParseInternal,
   TYPE_JSONSerializeInternal,
+  TYPE_JSONDecodeFromRoundtripIterator,
+  TYPE_JSONEncodeForRoundtripIterator,
   TYPE_JSONParseIterator,
   TYPE_JSONObjectNamesIterator,
   TYPE_JSONObjectValueIterator,

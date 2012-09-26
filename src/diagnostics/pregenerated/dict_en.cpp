@@ -101,13 +101,10 @@ extern entry const dict_en[] = {
   { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
+  { "JNSE0012", "can not serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0013", "Cannot serialize value as JSON: $1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JNSE0014", "Cannot serialize a function item as JSON" },
+  { "JNSE0014", "can not serialize a node or function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
@@ -126,6 +123,9 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0023", "$1: value of \"$2\" is not a $3" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
@@ -564,6 +564,7 @@ extern entry const dict_en[] = {
   { "~EBVNotDefSeq_5", "effective boolean value not defined for sequence of more than one item that starts with \"$5\"" },
   { "~EffectiveBooleanValue", "effective boolean value" },
   { "~ElementName", "element name" },
+  { "~ElementNode", "element node" },
   { "~EmptyPath", "empty path" },
   { "~EmptySeqNoCastToQName", "empty sequence can not be cast to QName" },
   { "~EmptySeqNoCastToTypeWithQuantOne", "empty sequence can not be cast to type with quantifier '1'" },

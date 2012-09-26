@@ -89,6 +89,7 @@ public:
 
 public:
   static void streamReleaser(std::istream* stream);
+  static void setSerializationParams(zorba::serializer& aSerializer, store::Item_t& aParamElem, static_context* aSctx, const QueryLoc& aLoc);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

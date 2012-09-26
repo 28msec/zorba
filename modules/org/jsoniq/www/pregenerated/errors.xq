@@ -20,7 +20,7 @@
   :)
  (:~
  : This module contains one declaration of a variable for each
- : error of the http://www.jsoniq.org/errors namespace.
+ : error of the http://jsoniq.org/errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -33,9 +33,9 @@
 
 xquery version '1.0';
 
-module namespace jerr = 'http://www.jsoniq.org/errors';
+module namespace jerr = 'http://jsoniq.org/errors';
 
-declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
+declare variable $jerr:NS := 'http://jsoniq.org/errors';
 
 (:~
  :It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.
@@ -100,15 +100,7 @@ declare variable $jerr:JNTY0011 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0011
 declare variable $jerr:JNSE0012 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0012");
 
 (:~
- :It is a dynamic error to serialize an atomic value not
- : supported by JSON or a node with the JSON output method and with
- : the jsoniq-serialization-extensions serialization parameter
- : set to false.
-:)
-declare variable $jerr:JNSE0013 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0013");
-
-(:~
- :It is a dynamic error to serialize a function with the
+ :It is a dynamic error to serialize a function or a node with the
  : JSON output method.
 :)
 declare variable $jerr:JNSE0014 as xs:QName := fn:QName($jerr:NS, "jerr:JNSE0014");
@@ -139,6 +131,12 @@ declare variable $jerr:JNTY0018 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0018
  :It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.
 :)
 declare variable $jerr:JNUP0019 as xs:QName := fn:QName($jerr:NS, "jerr:JNUP0019");
+
+(:~
+ :It is a type error if the prefix is not a string or if the 
+ : serialization parameters are not an element.
+:)
+declare variable $jerr:JNTY0023 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0023");
 
 (:~
  :objects or arrays don't have a string value
