@@ -109,8 +109,20 @@ public:
   virtual bool
   setContextItem(const Item& inValue);
 
+  virtual bool 
+  setContextSize(const Item& inValue);
+
+  virtual bool
+  setContextPosition(const Item& inValue);
+
   virtual bool
   getContextItem(Item& outValue) const;
+
+  virtual bool
+  getContextSize(Item& outValue) const;
+
+  virtual bool
+  getContextPosition(Item& outValue) const;
 
   virtual bool
   setCurrentDateTime(const Item& aDateTimeItem);
