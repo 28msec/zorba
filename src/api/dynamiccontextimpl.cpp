@@ -409,7 +409,7 @@ bool DynamicContextImpl::setContextSize(const Item& inValue)
 
     if (!value->isAtomic())
     {
-      throw ZORBA_EXCEPTION(zerr::ZAPI0024_NON_ATOMIC_CONTEXT_SIZE_VALUE);
+      throw ZORBA_EXCEPTION(zerr::ZAPI0023_NON_ATOMIC_CONTEXT_SIZE_VALUE);
     }
 
     store::SchemaTypeCode typeCode = value->getTypeCode();
@@ -418,7 +418,7 @@ bool DynamicContextImpl::setContextSize(const Item& inValue)
     {
       xqtref_t type = GENV_TYPESYSTEM.create_value_type(value);
 
-      throw ZORBA_EXCEPTION(zerr::ZAPI0025_NON_INTEGER_CONTEXT_SIZE_VALUE,
+      throw ZORBA_EXCEPTION(zerr::ZAPI0024_NON_INTEGER_CONTEXT_SIZE_VALUE,
       ERROR_PARAMS(type->toSchemaString()));
     }
   }
@@ -454,7 +454,7 @@ bool DynamicContextImpl::setContextPosition(const Item& inValue)
 
     if (!value->isAtomic())
     {
-      throw ZORBA_EXCEPTION(zerr::ZAPI0026_NON_ATOMIC_CONTEXT_POSITION_VALUE);
+      throw ZORBA_EXCEPTION(zerr::ZAPI0025_NON_ATOMIC_CONTEXT_POSITION_VALUE);
     }
 
     store::SchemaTypeCode typeCode = value->getTypeCode();
@@ -463,7 +463,7 @@ bool DynamicContextImpl::setContextPosition(const Item& inValue)
     {
       xqtref_t type = GENV_TYPESYSTEM.create_value_type(value);
 
-      throw ZORBA_EXCEPTION(zerr::ZAPI0027_NON_INTEGER_CONTEXT_POSITION_VALUE,
+      throw ZORBA_EXCEPTION(zerr::ZAPI0026_NON_INTEGER_CONTEXT_POSITION_VALUE,
       ERROR_PARAMS(type->toSchemaString()));
     }
   }

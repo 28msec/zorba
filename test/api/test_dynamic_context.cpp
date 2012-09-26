@@ -140,7 +140,7 @@ context_test_4(Zorba* aZorba)
   {
     std::cerr << e << std::endl;
 
-    if (e.diagnostic() == zerr::ZAPI0025_NON_INTEGER_CONTEXT_SIZE_VALUE)
+    if (e.diagnostic() == zerr::ZAPI0024_NON_INTEGER_CONTEXT_SIZE_VALUE)
     {
       return true;
     }
