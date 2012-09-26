@@ -22,6 +22,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/xquery_exception.h>
+#include <zorba/diagnostic_list.h>
 
 
 using namespace zorba;
@@ -37,19 +38,23 @@ context_test_1(Zorba* aZorba)
   DynamicContext* lDCtx = lQuery->getDynamicContext();
   bool result;
 
-  try {
+  try 
+  {
     result = lDCtx->setContextPosition(lItem);
     Item rItem;
     result = lDCtx->getContextPosition(rItem);
     if (rItem.getStringValue()!="4") 
       result = false;
-  } catch (ZorbaException &e) {
+  }
+  catch (ZorbaException &e)
+  {
     std::cerr << e << std::endl;
     return false;
   }
 
   return result;
 }
+
 
 bool
 context_test_2(Zorba* aZorba)
@@ -62,13 +67,16 @@ context_test_2(Zorba* aZorba)
   DynamicContext* lDCtx = lQuery->getDynamicContext();
   bool result;
 
-  try {
+  try
+  {
     result = lDCtx->setContextSize(lItem);
     Item rItem;
     result = lDCtx->getContextSize(rItem);
     if (rItem.getStringValue()!="4") 
       result = false;
-  } catch (ZorbaException &e) {
+  }
+  catch (ZorbaException &e)
+  {
     std::cerr << e << std::endl;
     return false;
   }
@@ -113,6 +121,37 @@ context_test_3(Zorba* aZorba)
 }
 
 
+bool
+context_test_4(Zorba* aZorba)
+{
+  XQuery_t lQuery = aZorba->compileQuery(".");
+
+  ItemFactory* lFactory = aZorba->getItemFactory();
+  Item lItem = lFactory->createString("4");
+
+  DynamicContext* lDCtx = lQuery->getDynamicContext();
+  bool result;
+
+  try
+  {
+    result = lDCtx->setContextSize(lItem);
+  }
+  catch (ZorbaException& e)
+  {
+    std::cerr << e << std::endl;
+
+    if (e.diagnostic() == zerr::ZAPI0025_NON_INTEGER_CONTEXT_SIZE_VALUE)
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  return result;
+}
+
+
 int
 test_dynamic_context(int argc, char* argv[])
 {
@@ -133,6 +172,11 @@ test_dynamic_context(int argc, char* argv[])
 
   std::cout << "executing Context Size test 3" << std::endl;
   res = context_test_3(lZorba);
+  if (!res) return 1;
+  std::cout << "Passed" << std::endl;
+
+  std::cout << "executing Context Size test 4" << std::endl;
+  res = context_test_4(lZorba);
   if (!res) return 1;
   std::cout << "Passed" << std::endl;
 

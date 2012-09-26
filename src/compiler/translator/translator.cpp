@@ -2026,28 +2026,25 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 
   if (initExpr != NULL && varType != NULL && !b.is_extern())
   {
-    initExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                 loc,
-                                                 initExpr,
-                                                 varType,
-                                                 TreatIterator::TYPE_MATCH);
+    initExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, initExpr, varType, TreatIterator::TYPE_MATCH);
   }
 
-  expr* declExpr =
-  theExprManager->create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
+  expr* declExpr = theExprManager->
+  create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
 
   // check type for vars that are external
   if (varType != NULL && b.is_extern())
   {
-    expr* getExpr = theExprManager->create_fo_expr(theRootSctx, loc, varGet, varExpr);
+    expr* getExpr = theExprManager->
+    create_fo_expr(theRootSctx, loc, varGet, varExpr);
 
-    stmts.push_back(theExprManager->create_treat_expr(theRootSctx,
-                                                      loc,
-                                                      getExpr,
-                                                      varType,
-                                                      TreatIterator::TYPE_MATCH));
+    expr* treatExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, getExpr, varType, TreatIterator::TYPE_MATCH);
+
+    stmts.push_back(treatExpr);
   }
 }
 

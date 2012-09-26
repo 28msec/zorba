@@ -403,6 +403,41 @@ bool DynamicContextImpl::setContextItem(const Item& inValue)
 ********************************************************************************/
 bool DynamicContextImpl::setContextSize(const Item& inValue)
 {
+  try
+  {
+    store::Item* value = Unmarshaller::getInternalItem(inValue);
+
+    if (!value->isAtomic())
+    {
+      throw ZORBA_EXCEPTION(zerr::ZAPI0024_NON_ATOMIC_CONTEXT_SIZE_VALUE);
+    }
+
+    store::SchemaTypeCode typeCode = value->getTypeCode();
+
+    if (typeCode < store::XS_INTEGER || typeCode > store::XS_POSITIVE_INTEGER)
+    {
+      xqtref_t type = GENV_TYPESYSTEM.create_value_type(value);
+
+      throw ZORBA_EXCEPTION(zerr::ZAPI0025_NON_INTEGER_CONTEXT_SIZE_VALUE,
+      ERROR_PARAMS(type->toSchemaString()));
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e);
+    return false;
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e.what());
+    return false;
+  }
+  catch (...)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler);
+    return false;
+  }
+
   String varName = Unmarshaller::newString(static_context::DOT_SIZE_VAR_NAME);
   return setVariable(varName, inValue);
 }
@@ -413,6 +448,41 @@ bool DynamicContextImpl::setContextSize(const Item& inValue)
 ********************************************************************************/
 bool DynamicContextImpl::setContextPosition(const Item& inValue)
 {
+  try
+  {
+    store::Item* value = Unmarshaller::getInternalItem(inValue);
+
+    if (!value->isAtomic())
+    {
+      throw ZORBA_EXCEPTION(zerr::ZAPI0026_NON_ATOMIC_CONTEXT_POSITION_VALUE);
+    }
+
+    store::SchemaTypeCode typeCode = value->getTypeCode();
+
+    if (typeCode < store::XS_INTEGER || typeCode > store::XS_POSITIVE_INTEGER)
+    {
+      xqtref_t type = GENV_TYPESYSTEM.create_value_type(value);
+
+      throw ZORBA_EXCEPTION(zerr::ZAPI0027_NON_INTEGER_CONTEXT_POSITION_VALUE,
+      ERROR_PARAMS(type->toSchemaString()));
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e);
+    return false;
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e.what());
+    return false;
+  }
+  catch (...)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler);
+    return false;
+  }
+
   String varName = Unmarshaller::newString(static_context::DOT_POS_VAR_NAME);
   return setVariable(varName, inValue);
 }
