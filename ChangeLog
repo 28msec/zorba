@@ -17,6 +17,7 @@ New Features:
   * Implemented semantics of null for comparison and arithmetics operations.
   * Positional pagination support for index probes 
   * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
+	* Added createUntypedAtomic to API's ItemFactory.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
