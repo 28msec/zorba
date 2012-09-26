@@ -6760,7 +6760,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       inputExpr = wrap_in_atomization(inputExpr);
 
       inputExpr = wrap_in_type_match(inputExpr,
-                                     theRTM.ANY_ATOMIC_TYPE_ONE,
+                                     theRTM.ANY_ATOMIC_TYPE_QUESTION,
                                      specLoc,
                                      TreatIterator::MULTI_VALUED_GROUPING_KEY);
 
