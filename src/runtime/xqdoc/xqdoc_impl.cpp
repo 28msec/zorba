@@ -27,6 +27,7 @@
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"
@@ -57,13 +58,6 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   std::istream* lFile;
   zstring lErrorMessage;
 
-  // setup a new CompilerCB and a new XQueryCompiler 
-  CompilerCB lCompilerCB(*planState.theCompilerCB);
-  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-  (planState.theCompilerCB->theSctxMap)[1] = lCompilerCB.theRootSctx; 
-
-  XQueryCompiler lCompiler(&lCompilerCB);
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -76,18 +70,17 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // resolve the uri in the surrounding static context and use
   // the URI resolver to retrieve the module
   lSctx = theSctx;
+
   lItem->getStringValue2(strval);
   lURI = lSctx->resolve_relative_uri(strval);
   lResource = lSctx->resolve_uri(lURI, internal::EntityData::MODULE, lErrorMessage);
+
   lStream = static_cast<internal::StreamResource*>(lResource.get());
   if ( ! lStream )
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0046,
-      ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0046, loc, ERROR_PARAMS(lURI, ZED(ModuleNotFound)));
   }
+
   lFile = lStream->getStream();
 
   // now, do the real work
@@ -95,6 +88,11 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     try 
     {
+      // setup a new CompilerCB and a new XQueryCompiler 
+      CompilerCB lCompilerCB(*planState.theCompilerCB);
+
+      XQueryCompiler lCompiler(&lCompilerCB);
+
       // retrieve the xqdoc elements 
       lCompiler.xqdoc(*lFile,
                       lFileName,
@@ -111,11 +109,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0046,
-      ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0046, loc, ERROR_PARAMS(lURI, ZED(ModuleNotFound)));
   }
 
   STACK_END(state);
@@ -131,15 +125,6 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Item_t lItem;
   zstring lFileName;
 
-  // setup a new CompilerCB and a new XQueryCompiler 
-  CompilerCB lCompilerCB(*planState.theCompilerCB);
-  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-  (planState.theCompilerCB->theSctxMap)[1] = lCompilerCB.theRootSctx; 
-
-  // the XQueryCompiler's constructor destroys the existing type manager 
-  // in the static context. Hence, we create a new one
-  XQueryCompiler lCompiler(&lCompilerCB);
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -149,6 +134,13 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   try 
   {
     std::istringstream is(lItem->getStringValue().c_str());
+
+    // setup a new CompilerCB and a new XQueryCompiler 
+    CompilerCB lCompilerCB(*planState.theCompilerCB);
+
+    // the XQueryCompiler's constructor destroys the existing type manager 
+    // in the static context. Hence, we create a new one
+    XQueryCompiler lCompiler(&lCompilerCB);
 
     // retrieve the xqdoc elements
     lCompiler.xqdoc(is,
