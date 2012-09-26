@@ -38,6 +38,46 @@ void populate_context_jsoniq_functions(static_context* sctx);
 
 #ifdef ZORBA_WITH_JSON
 
+//fn-jsoniq:decode-from-roundtrip
+class fn_jsoniq_decode_from_roundtrip : public function
+{
+public:
+  fn_jsoniq_decode_from_roundtrip(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
+//fn-jsoniq:encode-for-roundtrip
+class fn_jsoniq_encode_for_roundtrip : public function
+{
+public:
+  fn_jsoniq_encode_for_roundtrip(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //fn-jsoniq:parse-json
 class fn_jsoniq_parse_json : public function
 {

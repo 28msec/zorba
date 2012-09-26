@@ -3,7 +3,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="timesequence">
+  <CtxVarDeclareIterator varid="4" varname="timesequence">
     <FnDocIterator>
       <SingletonIterator value="xs:string(temp_events.xml)"/>
     </FnDocIterator>
@@ -15,7 +15,7 @@ Iterator tree for main query:
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
               <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                <CtxVarIterator varid="2" varname="timesequence" varkind="global"/>
+                <CtxVarIterator varid="4" varname="timesequence" varkind="global"/>
               </TreatIterator>
             </ChildAxisIterator>
           </ChildAxisIterator>

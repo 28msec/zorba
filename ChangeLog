@@ -8,31 +8,45 @@ New Features:
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
-  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq
+  * New module http://jsoniq.org/modules/function-library with handy JSONiq
     functions. jn:object is also supported.
   * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
     takes options to parameterize the parsing process (see bug #1047547)
+  * Roundtripping of JSON items has been moved from the serializer to encoding functions.
+  * Best-effort serialization of atomic values in JSON items.
   * Implemented semantics of null for comparison and arithmetics operations.
   * Positional pagination support for index probes 
   * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
+  * Added createUntypedAtomic to API's ItemFactory.
   * Adding new external module read-pdf, it converts PDF documents to text or rendered images.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
   * Exteneded some optimization rules (variable inlining/elimination and positional
     predicate rewrite) to general flwor expressions.
+  * Early optimization of positional predicates to subsequence expressions: now
+    done at translation time, if possible.
+  * For non-mutable global variables, assign a type based on their initializing expr.
   * Use char* instead of zstring as the hashmap key in json objects
   * Removed document-order sorting after the index value probe functions.
+  * Optimize positional predicates involving inequality (convert them to subsequence)
+  * Optimize positional predicate that is in CNF with other predicates.
+  * Optimized runtime group iterator based on latest group-by semntics.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #950621 (Removed two-arg version of fn:parse-xml(); use XML module function xml:parse() instead)
   * Fixed bug #867227 (Improved error message for missing commas)
   * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
   * Fixed bug #1034990 (text serialization with jsoniq fails)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
     variables)
+  * Fixed bug #923686 (implicitly declare global context size and context position
+    variables in main module and provide api function to assign values to these
+    variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
   * Now using native UUID libraries.
+  * Fixed bug in implementation of xqdoc functions
   * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
@@ -43,6 +57,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
   * Fixed bug #1042840 (qname pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
+  * Fixed bug #932374 (FOTS fn:matches failing tests)
   * Fixed bug #1047538 (jsoniq: SourceFinder::findLocalNodeSources missing
     json expressions)
   * Fixed #1052383 (accessing context item in eval expr)
@@ -61,7 +76,7 @@ version 2.6
 
 New Features:
   * Include first-class support for JSON data by implementing the JSONiq spec
-  - see http://www.jsoniq.org/ for more information. This feature is enabled by default.
+  - see http://jsoniq.org/ for more information. This feature is enabled by default.
   * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local)
   * New function Item::isSeekable for streamable content (xs:string and xs:base64Binary)
   * Implemented the latest W3C specification for the group by clause (backwards incompatible)

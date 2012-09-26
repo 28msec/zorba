@@ -56,7 +56,7 @@ Iterator tree for main query:
   </ForVariable>
   <ReturnClause>
     <SequentialIterator>
-      <CtxVarDeclareIterator varid="2" varname="x">
+      <CtxVarDeclareIterator varid="4" varname="x">
         <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
           <ForVarIterator varname="b"/>
         </AttributeAxisIterator>
@@ -76,7 +76,7 @@ Iterator tree for main query:
                 <SingletonIterator value="xs:integer(2)"/>
                 <PromoteIterator type="xs:anyAtomicType">
                   <FnDataIterator>
-                    <CtxVarIterator varid="2" varname="x" varkind="local"/>
+                    <CtxVarIterator varid="4" varname="x" varkind="local"/>
                   </FnDataIterator>
                 </PromoteIterator>
               </GenericArithIterator_MultiplyOperation>
@@ -88,7 +88,7 @@ Iterator tree for main query:
             <SingletonIterator value="xs:integer(1)"/>
             <PromoteIterator type="xs:integer">
               <FnDataIterator>
-                <CtxVarIterator varid="2" varname="x" varkind="local"/>
+                <CtxVarIterator varid="4" varname="x" varkind="local"/>
               </FnDataIterator>
             </PromoteIterator>
           </OpToIterator>

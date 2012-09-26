@@ -309,6 +309,12 @@ namespace zorba{
     class JSONSerializeInternal;
 
 #ifdef ZORBA_WITH_JSON
+    class JSONDecodeFromRoundtripIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONEncodeForRoundtripIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
     class JSONParseIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -1144,6 +1150,14 @@ public:
     virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
     virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONDecodeFromRoundtripIterator& ) = 0;
+    virtual void endVisit   ( const JSONDecodeFromRoundtripIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONEncodeForRoundtripIterator& ) = 0;
+    virtual void endVisit   ( const JSONEncodeForRoundtripIterator& ) = 0;
+#endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONParseIterator& ) = 0;
     virtual void endVisit   ( const JSONParseIterator& ) = 0;

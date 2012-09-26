@@ -1,1 +1,1 @@
-{ "n1" : { "JSONiq XDM node" : "<node>10</node>" }, "n2" : { "JSONiq XDM node" : "<node>20</node>" } }
+{ "n1" : { "type" : "node()", "value" : "<node>10</node>" }, "n2" : { "type" : "node()", "value" : "<node>20</node>" } }
