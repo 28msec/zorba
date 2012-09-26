@@ -45,6 +45,7 @@ Bug Fixes/Other Changes:
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
   * Now using native UUID libraries.
+  * Fixed bug in implementation of xqdoc functions
   * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
