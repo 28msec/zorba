@@ -22,7 +22,7 @@ xquery version "1.0";
  : sections 1.7 (Functions) and 1.10 (Update Primitives). JSONiq extends
  : the XQuery specification to also deal with JSON data natively. See
  :
- :     http://www.jsoniq.org/
+ :     http://jsoniq.org/
  :
  : for details.
  :
@@ -31,13 +31,13 @@ xquery version "1.0";
  :
  : @author Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny
  :)
-module namespace jn = "http://www.jsoniq.org/functions";
+module namespace jn = "http://jsoniq.org/functions";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace jerr = "http://www.jsoniq.org/errors";
-declare namespace js = "http://www.jsoniq.org/types";
+declare namespace jerr = "http://jsoniq.org/errors";
+declare namespace js = "http://jsoniq.org/types";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
@@ -49,7 +49,7 @@ declare option ver:module-version "1.0";
  : Calling this version of the function is equivalent to calling the
  : 2 argument version of the function with the second argument
  :
- :   { "prefix" : "Q{http://www.jsoniq.org/roundtrip}" }
+ :   { "prefix" : "Q{http://jsoniq.org/roundtrip}" }
  :
  : @param $items the items to be decoded.
  : @return the decoded items.
@@ -103,7 +103,7 @@ declare function jn:decode-from-roundtrip(
  : 2 argument version of the function with the second argument
  :
  :  {
- :    "prefix" : "Q{http://www.jsoniq.org/roundtrip}"
+ :    "prefix" : "Q{http://jsoniq.org/roundtrip}"
  :    "serialization-parameters" : <serialization-parameters xmlns="http://www.w3.org/2010/xslt-xquery-serialization"/>
  :  }
  :
@@ -157,7 +157,7 @@ declare function jn:encode-for-roundtrip(
  :
  : @return A sequence of JSON Object or Array item.
  :
- : @error jerr:JSDY0040 if the given string is not valid JSON.
+ : @error jerr:JNDY0021 if the given string is not valid JSON.
  :)
 declare function jn:parse-json($j as xs:string?) as json-item()* external;
 
@@ -172,10 +172,10 @@ declare function jn:parse-json($j as xs:string?) as json-item()* external;
  :   <li>jsoniq-multiple-top-level-items: allow parsing of sequences of JSON Objects and Arrays (boolean; default: true)</li>
  : </ul>
  :
- : @error jerr:JSDY0040 if the given string is not valid JSON or 
- :   if jsoniq-multiple-top-level-items is false and there is additionalx
+ : @error jerr:JNDY0021 if the given string is not valid JSON or
+ :   if jsoniq-multiple-top-level-items is false and there is additional
  :   content after the first JSON Object or Array.
- : @error jerr:JSDY0041 if the value for the option
+ : @error jerr:JNTY0020 if the value for the option
  :   jsoniq-multiple-top-level-items is not of type xs:boolean.
  :
  : @return a sequence of JSON Object or Array item.

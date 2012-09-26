@@ -16,7 +16,7 @@ let $objs := jn:decode-from-roundtrip((
   }, {
     "QName" : {
       "Q{http://jsoniq.org/roundtrip}type" : "xs:QName",
-      "Q{http://jsoniq.org/roundtrip}value" : "Q{http://www.jsoniq.org/functions}encode-for-roundtrip",
+      "Q{http://jsoniq.org/roundtrip}value" : "Q{http://jsoniq.org/functions}encode-for-roundtrip",
       "Q{http://jsoniq.org/roundtrip}prefix" : "jn"
     },
     "EQName" : {

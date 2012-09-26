@@ -93,6 +93,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
   icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
   bool const i_flag = (icu_flags & UREGEX_CASE_INSENSITIVE) != 0;
+  bool const m_flag = (icu_flags & UREGEX_MULTILINE) != 0;
   bool const q_flag = (icu_flags & UREGEX_LITERAL) != 0;
   bool const x_flag = (icu_flags & UREGEX_COMMENTS) != 0;
 
@@ -235,6 +236,28 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '\\':
           got_backslash = true;
           continue;
+        case '$':
+          if ( q_flag )
+            *icu_re += '\\';
+          else if ( !m_flag ) {
+            zstring::const_iterator const temp = xq_c + 1;
+            if ( temp == xq_re.end() ) {
+              //
+              // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
+              // entire string.  [Newlines are treated as any other character.]
+              //
+              // However, in ICU, $ always matches before any trailing
+              // newlines.
+              //
+              // To make ICU work as XQuery needs it to, substitute \z for $
+              // when it is the last character in the regular expression (and
+              // multi-line mode is not set).
+              //
+              icu_re->append( "\\z" );
+              continue;
+            }
+          }
+          break;
         case '(':
           if ( q_flag )
             *icu_re += '\\';

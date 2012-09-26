@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="seq">
+  <CtxVarDeclareIterator varid="4" varname="seq">
     <FnDocIterator>
       <SingletonIterator value="xs:string(person_events.xml)"/>
     </FnDocIterator>
@@ -18,7 +18,7 @@ Iterator tree for main query:
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
                       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                        <CtxVarIterator varid="2" varname="seq" varkind="global"/>
+                        <CtxVarIterator varid="4" varname="seq" varkind="global"/>
                       </TreatIterator>
                     </ChildAxisIterator>
                   </ChildAxisIterator>
@@ -75,9 +75,11 @@ Iterator tree for main query:
             </ChildAxisIterator>
           </flwor::LetIterator>
           <Spec>
-            <FnDataIterator>
-              <LetVarIterator varname="person"/>
-            </FnDataIterator>
+            <TreatIterator quant="?">
+              <FnDataIterator>
+                <LetVarIterator varname="person"/>
+              </FnDataIterator>
+            </TreatIterator>
             <GroupVariable/>
           </Spec>
           <Spec>

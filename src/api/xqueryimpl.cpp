@@ -433,7 +433,7 @@ void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHin
 
     // 0 is reserved as an invalid var id, and 1 is taken by the context item
     // in the main module.
-    ulong nextVarId = 2;
+    ulong nextVarId = dynamic_context::MAX_IDVARS_RESERVED;
 
     doCompile(lQueryStream, aHints, true, nextVarId);
   }
@@ -457,7 +457,7 @@ void XQueryImpl::compile(
 
     // 0 is reserved as an invalid var id, and 1 is taken by the context item
     // in the main module.
-    ulong nextVarId = 2;
+    ulong nextVarId = dynamic_context::MAX_IDVARS_RESERVED;
 
     doCompile(aQuery, aHints, true, nextVarId);
   }
@@ -796,7 +796,11 @@ void XQueryImpl::getExternalVariables(Iterator_t& aVarsIter) const
    
     for(; varIte != varEnd; ++varIte)
     {
-      if ((*varIte)->getName()->getStringValue() == static_context::DOT_VAR_NAME)
+      zstring varName = (*varIte)->getName()->getStringValue();
+
+      if (varName == static_context::DOT_VAR_NAME ||
+          varName == static_context::DOT_POS_VAR_NAME ||
+          varName == static_context::DOT_SIZE_VAR_NAME)
         continue;
 
       extVars.push_back((*varIte)->getName());
