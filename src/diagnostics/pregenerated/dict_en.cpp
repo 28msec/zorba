@@ -510,7 +510,6 @@ extern entry const dict_en[] = {
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
   { "~AtomizationHasMoreThanOneValue", "atomization has more than one value" },
-  { "~AtomizationOfGroupByMakesMoreThanOneItem", "atomization of groupby variable produces more than one item" },
   { "~AttributeName", "attribute name" },
   { "~AttributeNode", "attribute node" },
 #if !defined(ZORBA_NO_ICU)
@@ -599,7 +598,6 @@ extern entry const dict_en[] = {
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
-  { "~GroupByVarHasMoreThanOneItem_2", "\"$2\": value of groupby variable has more than one item" },
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
@@ -874,6 +872,7 @@ extern entry const dict_en[] = {
   { "~XPTY0004_FuncParam", "$2 can not be promoted to parameter type $3 of function $4()" },
   { "~XPTY0004_FuncReturn", "$2 can not be promoted to return type $3 of function $4()" },
   { "~XPTY0004_JSONIQ_SELECTOR", "Cannot atomize and/or cast value of type $2 to a string." },
+  { "~XPTY0004_MultiValuedGroupingKey", "atomization of grouping variable produces more than one item" },
   { "~XPTY0004_NoMultiSeqTypePromotion", "sequence of more than one item can not be promoted to type $2" },
   { "~XPTY0004_TypeMatch", "$2 can not be treated as type $3" },
   { "~XPTY0004_TypePromotion", "$2 can not be promoted to type $3" },

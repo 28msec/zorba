@@ -25,6 +25,7 @@ Optimizations:
   * Removed document-order sorting after the index value probe functions.
   * Optimize positional predicates involving inequality (convert them to subsequence)
   * Optimize positional predicate that is in CNF with other predicates.
+  * Optimized runtime group iterator based on latest group-by semntics.
 
 Bug Fixes/Other Changes:
   * Fixed bug #867227 (Improved error message for missing commas)
