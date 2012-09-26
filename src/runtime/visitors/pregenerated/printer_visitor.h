@@ -473,6 +473,16 @@ namespace zorba {
     void endVisit  ( const JSONSerializeInternal& );
 
 #ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONDecodeFromRoundtripIterator& );
+    void endVisit  ( const JSONDecodeFromRoundtripIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONEncodeForRoundtripIterator& );
+    void endVisit  ( const JSONEncodeForRoundtripIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONParseIterator& );
     void endVisit  ( const JSONParseIterator& );
 #endif
@@ -520,6 +530,16 @@ namespace zorba {
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONNullIterator& );
     void endVisit  ( const JSONNullIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONIsNullIterator& );
+    void endVisit  ( const JSONIsNullIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONObjectInsertIterator& );
+    void endVisit  ( const JSONObjectInsertIterator& );
 #endif
 
 #ifdef ZORBA_WITH_JSON

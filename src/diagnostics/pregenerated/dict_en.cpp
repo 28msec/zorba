@@ -101,22 +101,19 @@ extern entry const dict_en[] = {
   { "JNDY0003", "\"$1\": pair with the same name already exists in object." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0012", "Cannot serialize multiple top-level items as JSON" },
+  { "JNDY0021", "$1" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0013", "Cannot serialize value as JSON: $1" },
+  { "JNSE0012", "can not serialize multiple top-level items as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNSE0014", "Cannot serialize a function item as JSON" },
+  { "JNSE0014", "can not serialize a node or function item as JSON" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNSE0022", "$1: invalid serialization method for item type ($2)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0002", "Pair value returns no, or more than one, item." },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JNTY0003", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0004", "Cannot atomize an $1 item. An $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)." },
@@ -126,6 +123,15 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0018", "Object or array selection needs exactly one parameter." },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0020", "$1: invalid option type for option $2 (expected $3)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0023", "$1: value of \"$2\" is not a $3" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0024", "$1 items do not have string value" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
@@ -152,13 +158,7 @@ extern entry const dict_en[] = {
   { "JNUP0017", "Cannot replace with less or more than an item." },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JSDY0020", "$1: invalid option type for option $2 (expected $3)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSDY0021", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
-  { "JSDY0040", "$1" },
+  { "JNUP0019", "The content of an insert expression must evaluate to a sequence of objects." },
 #endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
@@ -305,6 +305,10 @@ extern entry const dict_en[] = {
   { "ZAPI0019", "\"$1\": external module already registered" },
   { "ZAPI0020", "\"$1\": document already exists in store" },
   { "ZAPI0021", "\"$1\": item to load is not a node" },
+  { "ZAPI0023", "non-atomic value can not be assigned to the context size" },
+  { "ZAPI0024", "\"$1\": wrong type for context size value (must be integer)" },
+  { "ZAPI0025", "non-atomic value can not be assigned to the context position" },
+  { "ZAPI0026", "\"$1\": wrong type for context position value (must be integer)" },
   { "ZAPI0027", "cannot update dynamic context with iterators" },
   { "ZAPI0028", "\"$1\": invalid node URI" },
   { "ZAPI0029", "\"$1\": reference already present in the store" },
@@ -353,6 +357,7 @@ extern entry const dict_en[] = {
   { "ZDDY0016", "\"$1\": multiple attemps to create a collection in the same snapshot" },
   { "ZDDY0017", "node does not belong to any collection" },
   { "ZDDY0018", "all nodes must be in same collection" },
+  { "ZDDY0019", "\"$1\": iterator on collection is not open" },
   { "ZDDY0020", "\"$1\": index domain expression yields nodes that are not in collection" },
   { "ZDDY0021", "\"$1\": undeclared index" },
   { "ZDDY0022", "\"$1\": index already exists" },
@@ -506,7 +511,6 @@ extern entry const dict_en[] = {
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
   { "~AtomizationHasMoreThanOneValue", "atomization has more than one value" },
-  { "~AtomizationOfGroupByMakesMoreThanOneItem", "atomization of groupby variable produces more than one item" },
   { "~AttributeName", "attribute name" },
   { "~AttributeNode", "attribute node" },
 #if !defined(ZORBA_NO_ICU)
@@ -560,6 +564,7 @@ extern entry const dict_en[] = {
   { "~EBVNotDefSeq_5", "effective boolean value not defined for sequence of more than one item that starts with \"$5\"" },
   { "~EffectiveBooleanValue", "effective boolean value" },
   { "~ElementName", "element name" },
+  { "~ElementNode", "element node" },
   { "~EmptyPath", "empty path" },
   { "~EmptySeqNoCastToQName", "empty sequence can not be cast to QName" },
   { "~EmptySeqNoCastToTypeWithQuantOne", "empty sequence can not be cast to type with quantifier '1'" },
@@ -595,7 +600,6 @@ extern entry const dict_en[] = {
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
-  { "~GroupByVarHasMoreThanOneItem_2", "\"$2\": value of groupby variable has more than one item" },
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
@@ -870,6 +874,7 @@ extern entry const dict_en[] = {
   { "~XPTY0004_FuncParam", "$2 can not be promoted to parameter type $3 of function $4()" },
   { "~XPTY0004_FuncReturn", "$2 can not be promoted to return type $3 of function $4()" },
   { "~XPTY0004_JSONIQ_SELECTOR", "Cannot atomize and/or cast value of type $2 to a string." },
+  { "~XPTY0004_MultiValuedGroupingKey", "atomization of grouping variable produces more than one item" },
   { "~XPTY0004_NoMultiSeqTypePromotion", "sequence of more than one item can not be promoted to type $2" },
   { "~XPTY0004_TypeMatch", "$2 can not be treated as type $3" },
   { "~XPTY0004_TypePromotion", "$2 can not be promoted to type $3" },

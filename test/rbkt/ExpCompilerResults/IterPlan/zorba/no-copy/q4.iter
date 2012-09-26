@@ -14,7 +14,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <flwor::FLWORIterator>
     <ForVariable name="b">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
@@ -23,7 +23,7 @@ Iterator tree for main query:
             <FnDocIterator>
               <PromoteIterator type="xs:string">
                 <FnDataIterator>
-                  <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                  <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
                 </FnDataIterator>
               </PromoteIterator>
             </FnDocIterator>
@@ -34,28 +34,28 @@ Iterator tree for main query:
     <LetVariable name="$$opt_temp_0" materialize="true">
       <HoistIterator>
         <flwor::FLWORIterator>
-          <ForVariable name="$$dot">
+          <ForVariable name="$$context-item">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
               <ForVarIterator varname="b"/>
             </ChildAxisIterator>
           </ForVariable>
-          <ForVariable name="$$dot">
+          <ForVariable name="$$context-item">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
-              <ForVarIterator varname="$$dot"/>
+              <ForVarIterator varname="$$context-item"/>
             </ChildAxisIterator>
           </ForVariable>
           <WhereClause>
             <CompareIterator>
               <FnDataIterator>
                 <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$dot"/>
+                  <ForVarIterator varname="$$context-item"/>
                 </AttributeAxisIterator>
               </FnDataIterator>
               <SingletonIterator value="xs:string(person51)"/>
             </CompareIterator>
           </WhereClause>
           <ReturnClause>
-            <ForVarIterator varname="$$dot"/>
+            <ForVarIterator varname="$$context-item"/>
           </ReturnClause>
         </flwor::FLWORIterator>
       </HoistIterator>
@@ -65,28 +65,28 @@ Iterator tree for main query:
         <flwor::FLWORIterator>
           <ForVariable name="pr1">
             <flwor::FLWORIterator>
-              <ForVariable name="$$dot">
+              <ForVariable name="$$context-item">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
                   <ForVarIterator varname="b"/>
                 </ChildAxisIterator>
               </ForVariable>
-              <ForVariable name="$$dot">
+              <ForVariable name="$$context-item">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$dot"/>
+                  <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
               </ForVariable>
               <WhereClause>
                 <CompareIterator>
                   <FnDataIterator>
                     <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$dot"/>
+                      <ForVarIterator varname="$$context-item"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
                   <SingletonIterator value="xs:string(person20)"/>
                 </CompareIterator>
               </WhereClause>
               <ReturnClause>
-                <ForVarIterator varname="$$dot"/>
+                <ForVarIterator varname="$$context-item"/>
               </ReturnClause>
             </flwor::FLWORIterator>
           </ForVariable>

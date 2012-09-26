@@ -309,6 +309,12 @@ namespace zorba{
     class JSONSerializeInternal;
 
 #ifdef ZORBA_WITH_JSON
+    class JSONDecodeFromRoundtripIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONEncodeForRoundtripIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
     class JSONParseIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -337,6 +343,12 @@ namespace zorba{
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONNullIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONIsNullIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONObjectInsertIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
     class JSONArrayInsertIterator;
@@ -1139,6 +1151,14 @@ public:
     virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
 #ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONDecodeFromRoundtripIterator& ) = 0;
+    virtual void endVisit   ( const JSONDecodeFromRoundtripIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONEncodeForRoundtripIterator& ) = 0;
+    virtual void endVisit   ( const JSONEncodeForRoundtripIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONParseIterator& ) = 0;
     virtual void endVisit   ( const JSONParseIterator& ) = 0;
 #endif
@@ -1177,6 +1197,14 @@ public:
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONNullIterator& ) = 0;
     virtual void endVisit   ( const JSONNullIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONIsNullIterator& ) = 0;
+    virtual void endVisit   ( const JSONIsNullIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONObjectInsertIterator& ) = 0;
+    virtual void endVisit   ( const JSONObjectInsertIterator& ) = 0;
 #endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONArrayInsertIterator& ) = 0;

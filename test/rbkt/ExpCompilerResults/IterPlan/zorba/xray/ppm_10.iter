@@ -1,116 +1,4 @@
 Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
 <OpNumericUnaryIterator>
   <SingletonIterator value="xs:integer(1)"/>
 </OpNumericUnaryIterator>
@@ -137,20 +25,6 @@ Iterator tree for const-folded expr:
 
 Iterator tree for const-folded expr:
 <OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
   <SingletonIterator value="xs:boolean(false)"/>
   <SingletonIterator value="xs:boolean(false)"/>
@@ -174,30 +48,9 @@ Iterator tree for const-folded expr:
 </OrIterator>
 
 Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">
   <SingletonIterator value="xs:integer(0)"/>
 </PromoteIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
 
 Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">
@@ -216,35 +69,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for const-folded expr:
 <OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
   <SingletonIterator value="xs:boolean(false)"/>
 </OrIterator>
@@ -276,13 +101,6 @@ Iterator tree for const-folded expr:
 Iterator tree for const-folded expr:
 <OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
   <SingletonIterator value="xs:boolean(false)"/>
 </OrIterator>
@@ -331,13 +149,13 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="width">
+  <CtxVarDeclareIterator varid="4" varname="width">
     <SingletonIterator value="xs:integer(10)"/>
   </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="3" varname="height">
+  <CtxVarDeclareIterator varid="5" varname="height">
     <SingletonIterator value="xs:integer(10)"/>
   </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="4" varname="scene">
+  <CtxVarDeclareIterator varid="6" varname="scene">
     <UDFunctionCallIterator>
       <TreatIterator quant="">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill allowed="0">
@@ -355,10 +173,10 @@ Iterator tree for main query:
         <StringJoinIterator>
           <FnConcatIterator>
             <FnStringIterator>
-              <CtxVarIterator varid="2" varname="width" varkind="global"/>
+              <CtxVarIterator varid="4" varname="width" varkind="global"/>
             </FnStringIterator>
             <FnStringIterator>
-              <CtxVarIterator varid="3" varname="height" varkind="global"/>
+              <CtxVarIterator varid="5" varname="height" varkind="global"/>
             </FnStringIterator>
           </FnConcatIterator>
           <SingletonIterator value="xs:string( )"/>
@@ -368,7 +186,7 @@ Iterator tree for main query:
           <LetVariable name="$$opt_temp_1" materialize="true">
             <HoistIterator>
               <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-                <CtxVarIterator varid="4" varname="scene" varkind="global"/>
+                <CtxVarIterator varid="6" varname="scene" varkind="global"/>
               </TreatIterator>
             </HoistIterator>
           </LetVariable>
@@ -376,20 +194,20 @@ Iterator tree for main query:
             <HoistIterator>
               <OpToIterator>
                 <SingletonIterator value="xs:integer(1)"/>
-                <CtxVarIterator varid="2" varname="width" varkind="global"/>
+                <CtxVarIterator varid="4" varname="width" varkind="global"/>
               </OpToIterator>
             </HoistIterator>
           </LetVariable>
           <ForVariable name="aspect-ratio">
             <SpecificNumArithIterator_DivideOperation_DECIMAL>
-              <CtxVarIterator varid="2" varname="width" varkind="global"/>
-              <CtxVarIterator varid="3" varname="height" varkind="global"/>
+              <CtxVarIterator varid="4" varname="width" varkind="global"/>
+              <CtxVarIterator varid="5" varname="height" varkind="global"/>
             </SpecificNumArithIterator_DivideOperation_DECIMAL>
           </ForVariable>
           <ForVariable name="y">
             <OpToIterator>
               <SingletonIterator value="xs:integer(1)"/>
-              <CtxVarIterator varid="3" varname="height" varkind="global"/>
+              <CtxVarIterator varid="5" varname="height" varkind="global"/>
             </OpToIterator>
           </ForVariable>
           <ForVariable name="y-recentered">
@@ -398,7 +216,7 @@ Iterator tree for main query:
                 <OpNumericUnaryIterator>
                   <ForVarIterator varname="y"/>
                 </OpNumericUnaryIterator>
-                <CtxVarIterator varid="3" varname="height" varkind="global"/>
+                <CtxVarIterator varid="5" varname="height" varkind="global"/>
               </SpecificNumArithIterator_DivideOperation_DECIMAL>
               <SingletonIterator value="xs:decimal(0.5)"/>
             </SpecificNumArithIterator_AddOperation_DECIMAL>
@@ -428,7 +246,7 @@ Iterator tree for main query:
                         <SpecificNumArithIterator_SubtractOperation_DECIMAL>
                           <SpecificNumArithIterator_DivideOperation_DECIMAL>
                             <ForVarIterator varname="x"/>
-                            <CtxVarIterator varid="2" varname="width" varkind="global"/>
+                            <CtxVarIterator varid="4" varname="width" varkind="global"/>
                           </SpecificNumArithIterator_DivideOperation_DECIMAL>
                           <SingletonIterator value="xs:decimal(0.5)"/>
                         </SpecificNumArithIterator_SubtractOperation_DECIMAL>
@@ -1129,26 +947,26 @@ Iterator tree for raytracer:trace-ray:
         <flwor::FLWORIterator>
           <ForVariable name="shape">
             <flwor::FLWORIterator>
-              <ForVariable name="$$dot">
+              <ForVariable name="$$context-item">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill allowed="0">
                   <ForVarIterator varname="scene"/>
                 </ChildAxisIterator>
               </ForVariable>
-              <ForVariable name="$$dot">
+              <ForVariable name="$$context-item">
                 <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$dot"/>
+                  <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
               </ForVariable>
               <WhereClause>
                 <FnBooleanIterator>
                   <IsSameNodeIterator>
-                    <ForVarIterator varname="$$dot"/>
+                    <ForVarIterator varname="$$context-item"/>
                     <LetVarIterator varname="ignore"/>
                   </IsSameNodeIterator>
                 </FnBooleanIterator>
               </WhereClause>
               <ReturnClause>
-                <ForVarIterator varname="$$dot"/>
+                <ForVarIterator varname="$$context-item"/>
               </ReturnClause>
             </flwor::FLWORIterator>
           </ForVariable>
@@ -1580,7 +1398,7 @@ Iterator tree for shapes:intersect-plane:
   </WhereClause>
   <ReturnClause>
     <flwor::FLWORIterator>
-      <ForVariable name="$$dot">
+      <ForVariable name="$$context-item">
         <SpecificNumArithIterator_SubtractOperation_DOUBLE>
           <CastIterator type="xs:double">
             <FnDataIterator>
@@ -1613,12 +1431,12 @@ Iterator tree for shapes:intersect-plane:
       </ForVariable>
       <WhereClause>
         <TypedValueCompareIterator_DOUBLE>
-          <ForVarIterator varname="$$dot"/>
+          <ForVarIterator varname="$$context-item"/>
           <SingletonIterator value="xs:double(0)"/>
         </TypedValueCompareIterator_DOUBLE>
       </WhereClause>
       <ReturnClause>
-        <ForVarIterator varname="$$dot"/>
+        <ForVarIterator varname="$$context-item"/>
       </ReturnClause>
     </flwor::FLWORIterator>
   </ReturnClause>
@@ -1759,7 +1577,7 @@ Iterator tree for shapes:intersect-sphere:
       <ReturnClause>
         <SequencePointAccessIterator>
           <flwor::FLWORIterator>
-            <ForVariable name="$$dot">
+            <ForVariable name="$$context-item">
               <FnConcatIterator>
                 <SpecificNumArithIterator_SubtractOperation_DOUBLE>
                   <OpDoubleUnaryIterator>
@@ -1777,12 +1595,12 @@ Iterator tree for shapes:intersect-sphere:
             </ForVariable>
             <WhereClause>
               <TypedValueCompareIterator_DOUBLE>
-                <ForVarIterator varname="$$dot"/>
+                <ForVarIterator varname="$$context-item"/>
                 <SingletonIterator value="xs:double(0)"/>
               </TypedValueCompareIterator_DOUBLE>
             </WhereClause>
             <ReturnClause>
-              <ForVarIterator varname="$$dot"/>
+              <ForVarIterator varname="$$context-item"/>
             </ReturnClause>
           </flwor::FLWORIterator>
           <SingletonIterator value="xs:integer(1)"/>
@@ -2340,20 +2158,20 @@ Iterator tree for raytracer:test-ray:
   <ForVariable name="ignore">
     <LetVarIterator varname="ignore"/>
   </ForVariable>
-  <ForVariable name="$$dot">
+  <ForVariable name="$$context-item">
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill allowed="0">
       <LetVarIterator varname="scene"/>
     </ChildAxisIterator>
   </ForVariable>
-  <ForVariable name="$$dot">
+  <ForVariable name="$$context-item">
     <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-      <ForVarIterator varname="$$dot"/>
+      <ForVarIterator varname="$$context-item"/>
     </ChildAxisIterator>
   </ForVariable>
   <WhereClause>
     <FnBooleanIterator>
       <IsSameNodeIterator>
-        <ForVarIterator varname="$$dot"/>
+        <ForVarIterator varname="$$context-item"/>
         <ForVarIterator varname="ignore"/>
       </IsSameNodeIterator>
     </FnBooleanIterator>
@@ -2362,7 +2180,7 @@ Iterator tree for raytracer:test-ray:
     <UDFunctionCallIterator>
       <LetVarIterator varname="source"/>
       <LetVarIterator varname="direction"/>
-      <ForVarIterator varname="$$dot"/>
+      <ForVarIterator varname="$$context-item"/>
     </UDFunctionCallIterator>
   </ReturnClause>
 </flwor::FLWORIterator>

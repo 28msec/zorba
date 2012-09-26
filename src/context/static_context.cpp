@@ -314,13 +314,13 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 ********************************************************************************/
 
 const zstring
-static_context::DOT_VAR_NAME = "$$dot";
+static_context::DOT_VAR_NAME = "$$context-item";
 
 const zstring
-static_context::DOT_POS_VAR_NAME = "$$pos";
+static_context::DOT_POS_VAR_NAME = "$$context-position";
 
 const zstring
-static_context::DOT_SIZE_VAR_NAME = "$$last-idx";
+static_context::DOT_SIZE_VAR_NAME = "$$context-size";
 
 const char*
 static_context::W3C_NS_PREFIX = "http://www.w3.org/";
@@ -397,12 +397,12 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 #ifdef ZORBA_WITH_JSON
 
 const char*
-static_context::JSONIQ_NS =
-"http://www.jsoniq.org/";
+static_context::JSONIQ_DM_NS =
+"http://jsoniq.org/types";
 
 const char*
 static_context::JSONIQ_FN_NS =
-"http://www.jsoniq.org/functions";
+"http://jsoniq.org/functions";
 
 #endif
 

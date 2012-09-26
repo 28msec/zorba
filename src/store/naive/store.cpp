@@ -86,7 +86,7 @@ const ulong Store::DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE = 32;
 const char* Store::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* Store::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 const char* Store::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
-const char* Store::JDM_URI = "http://www.jsoniq.org/";
+const char* Store::JS_URI = "http://jsoniq.org/types";
 
 const ulong Store::XML_URI_LEN = sizeof(Store::XML_URI);
 
@@ -185,9 +185,9 @@ void Store::initTypeNames()
   theSchemaTypeNames.resize(store::XS_LAST);
 
 #ifdef ZORBA_WITH_JSON
-  JDM_NULL_QNAME = theQNamePool->insert(JDM_URI, "jdm", "null");
-  JDM_OBJECT_QNAME = theQNamePool->insert(JDM_URI, "jdm", "object");
-  JDM_ARRAY_QNAME = theQNamePool->insert(JDM_URI, "jdm", "array");
+  JS_NULL_QNAME = theQNamePool->insert(JS_URI, "js", "null");
+  JS_OBJECT_QNAME = theQNamePool->insert(JS_URI, "js", "object");
+  JS_ARRAY_QNAME = theQNamePool->insert(JS_URI, "js", "array");
 #endif
 
   XS_UNTYPED_QNAME = theQNamePool->insert(ns, "xs", "untyped");
@@ -323,9 +323,9 @@ void Store::shutdown(bool soft)
       XS_ANY_SIMPLE_QNAME = NULL;
 
 #ifdef ZORBA_WITH_JSON
-      JDM_OBJECT_QNAME = NULL;
-      JDM_ARRAY_QNAME = NULL;
-      JDM_NULL_QNAME = NULL;
+      JS_OBJECT_QNAME = NULL;
+      JS_ARRAY_QNAME = NULL;
+      JS_NULL_QNAME = NULL;
 #endif
 
       delete theQNamePool;

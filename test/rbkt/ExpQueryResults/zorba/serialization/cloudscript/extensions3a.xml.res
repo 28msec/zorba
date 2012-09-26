@@ -1,1 +1,1 @@
-{ "JSONiq XDM node" : "<a/>" }
+<a></a>

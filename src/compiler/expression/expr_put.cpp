@@ -40,6 +40,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/pragma.h"
 #include "compiler/parser/parse_constants.h"
 
 #include "diagnostics/assert.h"

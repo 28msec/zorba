@@ -54,6 +54,9 @@ class dynamic_context
   friend class DebugIterator;
 
 public:
+
+  static enum  ID_VARS { IDVAR_CONTEXT_ITEM=1, IDVAR_CONTEXT_ITEM_POSITION, IDVAR_CONTEXT_ITEM_SIZE, MAX_IDVARS_RESERVED  } IDVARS_RESERVED;
+
   struct VarValue
   {
     typedef enum

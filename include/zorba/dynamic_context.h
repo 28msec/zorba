@@ -138,7 +138,25 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured (e.g. the given Item is not valid).
    */
   virtual bool
-  setContextItem ( const Item& aItem ) = 0;
+  setContextItem(const Item& aItem) = 0;
+
+  /** \brief Defines the context item size.
+   *
+   * @param aItem the Item that is used as value for the context item size.
+   * @return true if the context item size was set, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Item is not valid).
+   */
+  virtual bool 
+  setContextSize(const Item& aItem) = 0;
+
+  /** \brief Defines the context item position.
+   *
+   * @param aItem the Item that is used as value for the context item position.
+   * @return true if the context item position was set, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Item is not valid).
+   */
+  virtual bool
+  setContextPosition(const Item& aItem) = 0;
 
   /** \brief Returns the current value of the context item.
    *
@@ -147,7 +165,25 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured.
    */
   virtual bool
-  getContextItem( Item& aItem ) const = 0;
+  getContextItem(Item& aItem) const = 0;
+
+  /** \brief Returns the current value of the context item size.
+   *
+   * @param aItem an Item representing the current value of the context item size.
+   * @return true if the variable has been retrieved successfully, false otherwise.
+   * @throw ZorbaException if an error occured.
+   */
+  virtual bool
+  getContextSize(Item& aItem) const = 0;
+
+  /** \brief Returns the current value of the context item position.
+   *
+   * @param aItem an Item representing the current value of the context item position.
+   * @return true if the variable has been retrieved successfully, false otherwise.
+   * @throw ZorbaException if an error occured.
+   */
+  virtual bool
+  getContextPosition(Item& aItem) const = 0;
 
   /** \brief Defines the value of the current date time that can be accessed by the
    *         fn:current-dateTime() function at the time the query is executed.
@@ -280,7 +316,6 @@ protected:
   /** \brief Destructor
    */
   virtual ~DynamicContext( ) {}
- 
 };
 
 } /* namespace zorba */

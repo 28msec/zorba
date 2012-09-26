@@ -51,14 +51,22 @@ safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr
 static bool 
 var_in_try_or_loop(const var_expr*, const expr*, bool, bool, bool&);
 
-static bool 
-is_subseq_pred(
+static void 
+rewrite_positional_pred(
     RewriterContext&,
     const flwor_expr*,
-    csize whereClausePos,
+    var_expr*,
+    expr*,
+    CompareConsts::CompareType&);
+
+static bool 
+is_positional_pred(
+    const flwor_expr*,
+    csize,
     const expr*,
     var_expr*&,
-    expr*&);
+    expr*&,
+    CompareConsts::CompareType&);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
@@ -282,7 +290,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       for(; ite != end; ++ite)
       {
         var_expr* var = ite->second;
-        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+        int uses = expr_tools::count_variable_uses(&flwor, var, 2);
 
         if (uses == 0 && !ite->first->isNonDiscardable())
         {
@@ -304,7 +312,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       const var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL &&
-          expr_tools::count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
+          expr_tools::count_variable_uses(&flwor, pvar, 1) == 0)
       {
         fc->set_pos_var(NULL);
         pvar = NULL;
@@ -355,7 +363,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           }
         }
 
-        int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+        int uses = expr_tools::count_variable_uses(&flwor, var, 2);
 
         if (uses > 1 &&
             is_trivial_expr(domainExpr) &&
@@ -404,7 +412,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (domainExpr->is_sequential())
         continue;
 
-      int uses = expr_tools::count_variable_uses(&flwor, var, &rCtx, 2);
+      int uses = expr_tools::count_variable_uses(&flwor, var, 2);
 
       if (uses > 1 && is_trivial_expr(domainExpr))
       {
@@ -548,6 +556,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       continue;
     }
     else if (clause->get_kind() == flwor_clause::order_clause)
+    {
+      flwor.remove_clause(0);
+      continue;
+    }
+    else if (clause->get_kind() == flwor_clause::materialize_clause)
     {
       flwor.remove_clause(0);
       continue;
@@ -767,7 +780,7 @@ static bool safe_to_fold_single_use(
         return false;
 
       // If X is referenced in the current FOR clause .....
-      if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(domExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
@@ -793,7 +806,7 @@ static bool safe_to_fold_single_use(
 
       assert(varQuant == TypeConstants::QUANT_ONE);
 
-      if (expr_tools::count_variable_uses(clause->get_expr(), var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(clause->get_expr(), var, 1) == 1)
       {
         referencingExpr = clause->get_expr();
         break;
@@ -815,7 +828,7 @@ static bool safe_to_fold_single_use(
 
       for (; ite != end; ++ite)
       {
-        if (expr_tools::count_variable_uses(*ite, var, NULL, 1) == 1)
+        if (expr_tools::count_variable_uses(*ite, var, 1) == 1)
         {
           referencingExpr = *ite;
           break;
@@ -839,7 +852,7 @@ static bool safe_to_fold_single_use(
       for (; ite != end; ++ite)
       {
         expr* inputExpr = ite->first;
-        if (expr_tools::count_variable_uses(inputExpr, var, NULL, 1) == 1)
+        if (expr_tools::count_variable_uses(inputExpr, var, 1) == 1)
         {
           referencingExpr = inputExpr;
           break;
@@ -852,7 +865,7 @@ static bool safe_to_fold_single_use(
       for (; ite != end; ++ite)
       {
         expr* inputExpr = ite->first;
-        if (expr_tools::count_variable_uses(inputExpr, var, NULL, 1) == 1)
+        if (expr_tools::count_variable_uses(inputExpr, var, 1) == 1)
         {
           referencingExpr = inputExpr;
           break;
@@ -878,7 +891,7 @@ static bool safe_to_fold_single_use(
       if (domExpr->is_sequential())
         return false;
 
-      if (expr_tools::count_variable_uses(domExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(domExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
@@ -887,13 +900,13 @@ static bool safe_to_fold_single_use(
       if (domExpr->get_return_type()->max_card() > 1)
         return false;
 
-      if (expr_tools::count_variable_uses(startExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(startExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
       }
 
-      if (expr_tools::count_variable_uses(stopExpr, var, NULL, 1) == 1)
+      if (expr_tools::count_variable_uses(stopExpr, var, 1) == 1)
       {
         referencingExpr = domExpr;
         break;
@@ -923,7 +936,7 @@ static bool safe_to_fold_single_use(
     if (retExpr->is_sequential())
       return false;
 
-    if (expr_tools::count_variable_uses(retExpr, var, NULL, 1) == 1)
+    if (expr_tools::count_variable_uses(retExpr, var, 1) == 1)
     {
       if (varQuant != TypeConstants::QUANT_ONE)
       {
@@ -1192,6 +1205,10 @@ static bool var_in_try_or_loop(
       {
         break;
       }
+      case flwor_clause::materialize_clause:
+      {
+        ZORBA_ASSERT(false);
+      }
       default:
       {
         ZORBA_ASSERT(false);
@@ -1301,6 +1318,8 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   bool modified = false;
   flwor_expr* flwor = static_cast<flwor_expr*>(node);
 
+  static_context* sctx = flwor->get_sctx();
+
   // "for $x in ... return if (ce) then te else ()" -->
   // "for $x in ... where ce return te"
   if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
@@ -1352,7 +1371,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         else
         {
           expr* newWhereExpr = rCtx.theEM->
-          create_fo_expr(whereExpr->get_sctx(),
+          create_fo_expr(sctx,
                          whereExpr->get_loc(),
                          GET_BUILTIN_FUNCTION(OP_AND_N),
                          whereExpr,
@@ -1373,11 +1392,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   // referenced more than once?
   // TODO: we should be able to apply the rule if all the sequential clauses
   // are before the clause that defines the pos var.
-  // TODO: apply the rule if where expr consists of multiple preds in CNF.
-  // TODO: It should also consider cases for inequalites, so in the case of
-  // where $p < posExpr -> for $x in fn:subsequence(E, 1, posExpr - 1) and
-  // where $p > posExpr -> for $x in fn:subsequence(E, posExpr + 1) in the
-  // case of >= and <= the -1 and +1 are removed for the previous examples.
+  // TODO: consider more than one positional preds in CNF
   if (! flwor->has_sequential_clauses())
   {
     csize numClauses = flwor->num_clauses();
@@ -1393,30 +1408,54 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
       expr* posExpr = NULL;
       var_expr* posVar = NULL;
+      CompareConsts::CompareType compKind;
 
-      if (is_subseq_pred(rCtx, flwor, clausePos, whereExpr, posVar, posExpr) &&
-          expr_tools::count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
+      FunctionConsts::FunctionKind predFunc = whereExpr->get_function_kind();
+
+      if (predFunc == FunctionConsts::OP_AND_N)
       {
-        for_clause* forClause = posVar->get_for_clause();
-        expr* domainExpr = forClause->get_expr();
+        fo_expr* andExpr = static_cast<fo_expr*>(whereExpr);
+        csize numArgs = andExpr->num_args();
 
-        fo_expr* result = rCtx.theEM->
-        create_fo_expr(whereExpr->get_sctx(),
-                       domainExpr->get_loc(),
-                       GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
-                       domainExpr,
-                       posExpr);
+        for (csize i = 0; i < numArgs; ++i)
+        {
+          expr* arg = andExpr->get_arg(i);
 
-        expr_tools::fix_annotations(result);
+          if (is_positional_pred(flwor, clausePos, arg, posVar, posExpr, compKind) &&
+              expr_tools::count_variable_uses(flwor, posVar, 2) <= 1)
+          {
+            rewrite_positional_pred(rCtx, flwor, posVar, posExpr, compKind);
 
-        forClause->set_expr(result);
-        forClause->set_pos_var(NULL);
+            andExpr->remove_arg(i);
 
-        flwor->remove_clause(clausePos);
-        --clausePos;
-        --numClauses;
+            if (compKind == CompareConsts::GENERAL_EQUAL ||
+                compKind == CompareConsts::VALUE_EQUAL)
+              modified = true;
 
-        modified = true;
+            break;
+          }
+        }
+
+        if (andExpr->num_args() == 1)
+        {
+          clause->set_expr(andExpr->get_arg(0));
+        }
+      }
+      else
+      {
+        if (is_positional_pred(flwor, clausePos, whereExpr, posVar, posExpr, compKind) &&
+            expr_tools::count_variable_uses(flwor, posVar, 2) <= 1)
+        {
+          rewrite_positional_pred(rCtx, flwor, posVar, posExpr, compKind);
+
+          flwor->remove_clause(clausePos);
+          --clausePos;
+          --numClauses;
+
+          if (compKind == CompareConsts::GENERAL_EQUAL ||
+              compKind == CompareConsts::VALUE_EQUAL)
+            modified = true;
+        }
       }
     }
   }
@@ -1431,6 +1470,127 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 RULE_REWRITE_POST(RefactorPredFLWOR)
 {
   return NULL;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+static void rewrite_positional_pred(
+    RewriterContext& rCtx,
+    const flwor_expr* flworExpr,
+    var_expr* posVar,
+    expr* posExpr,
+    CompareConsts::CompareType& compKind)
+{
+  static_context* sctx = flworExpr->get_sctx();
+
+  for_clause* forClause = posVar->get_for_clause();
+  expr* domainExpr = forClause->get_expr();
+
+  fo_expr* result;
+
+  switch (compKind)
+  {
+  case CompareConsts::GENERAL_EQUAL:
+  case CompareConsts::VALUE_EQUAL:
+  {
+    result = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                   domainExpr,
+                   posExpr);
+    break;
+  }
+  case CompareConsts::GENERAL_LESS_EQUAL:
+  case CompareConsts::VALUE_LESS_EQUAL:
+  {
+    expr* oneExpr = rCtx.theEM->
+    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+
+    std::vector<expr*> args(3);
+    args[0] = domainExpr;
+    args[1] = oneExpr;
+    args[2] = posExpr;
+
+    result = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   args);
+    break;
+  }
+  case CompareConsts::GENERAL_LESS:
+  case CompareConsts::VALUE_LESS:
+  {
+    expr* oneExpr1 = rCtx.theEM->
+    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+
+    expr* oneExpr2 = rCtx.theEM->
+    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+
+    posExpr = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_INTEGER_2),
+                   posExpr,
+                   oneExpr2);
+
+    std::vector<expr*> args(3);
+    args[0] = domainExpr;
+    args[1] = oneExpr1;
+    args[2] = posExpr;
+    
+    result = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   args);
+    break;
+  }
+  case CompareConsts::GENERAL_GREATER_EQUAL:
+  case CompareConsts::VALUE_GREATER_EQUAL:
+  {
+    result = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   domainExpr,
+                   posExpr);
+    break;
+  }
+  case CompareConsts::GENERAL_GREATER:
+  case CompareConsts::VALUE_GREATER:
+  {
+    expr* oneExpr = rCtx.theEM->
+    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+
+    posExpr = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_INTEGER_2),
+                   posExpr,
+                   oneExpr);
+
+    result = rCtx.theEM->
+    create_fo_expr(sctx,
+                   domainExpr->get_loc(),
+                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   domainExpr,
+                   posExpr);
+    break;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+  
+  expr_tools::fix_annotations(result);
+
+  forClause->set_expr(result);
+  forClause->set_pos_var(NULL);
 }
 
 
@@ -1450,13 +1610,13 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
   TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses
         are before the clause that defines the pos var.
 ******************************************************************************/
-static bool is_subseq_pred(
-    RewriterContext& rCtx,
+static bool is_positional_pred(
     const flwor_expr* flworExpr,
     const csize whereClausePos,
     const expr* predExpr,
     var_expr*& posVar,
-    expr*& posExpr)
+    expr*& posExpr,
+    CompareConsts::CompareType& compKind)
 {
   static_context* sctx = predExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
@@ -1482,9 +1642,10 @@ static bool is_subseq_pred(
     break;
   }
 
-  if (f->comparisonKind() != CompareConsts::GENERAL_EQUAL &&
-      f->comparisonKind() != CompareConsts::VALUE_EQUAL)
+  if (!f->isComparisonFunction())
     return false;
+
+  compKind = f->comparisonKind();
 
   for (csize i = 0; i < 2; ++i)
   {
@@ -1493,6 +1654,77 @@ static bool is_subseq_pred(
 
     if (posVar == NULL || posVar->get_kind() != var_expr::pos_var)
       continue;
+
+    bool eq = false;
+
+    switch (compKind)
+    {
+    case CompareConsts::GENERAL_EQUAL:
+    case CompareConsts::VALUE_EQUAL:
+    {
+      eq = true;
+      break;
+    }
+    case CompareConsts::VALUE_LESS:
+    case CompareConsts::VALUE_LESS_EQUAL:
+    case CompareConsts::GENERAL_LESS:
+    case CompareConsts::GENERAL_LESS_EQUAL:
+    {
+      if (i == 1)
+      {
+        switch (compKind)
+        {
+        case CompareConsts::VALUE_LESS:
+          compKind = CompareConsts::VALUE_GREATER;
+          break;
+        case CompareConsts::VALUE_LESS_EQUAL:
+          compKind = CompareConsts::VALUE_GREATER_EQUAL;
+          break;
+        case CompareConsts::GENERAL_LESS:
+          compKind = CompareConsts::GENERAL_GREATER;
+          break;
+        case CompareConsts::GENERAL_LESS_EQUAL:
+          compKind = CompareConsts::GENERAL_GREATER_EQUAL;
+          break;
+        default:
+          ZORBA_ASSERT(false);
+        }
+      }
+
+      break;
+    }
+    case CompareConsts::VALUE_GREATER:
+    case CompareConsts::VALUE_GREATER_EQUAL:
+    case CompareConsts::GENERAL_GREATER:
+    case CompareConsts::GENERAL_GREATER_EQUAL:
+    {
+      if (i == 1)
+      {
+        switch (compKind)
+        {
+        case CompareConsts::VALUE_GREATER:
+          compKind = CompareConsts::VALUE_LESS;
+          break;
+        case CompareConsts::VALUE_GREATER_EQUAL:
+          compKind = CompareConsts::VALUE_LESS_EQUAL;
+          break;
+        case CompareConsts::GENERAL_GREATER:
+          compKind = CompareConsts::GENERAL_LESS;
+          break;
+        case CompareConsts::GENERAL_GREATER_EQUAL:
+          compKind = CompareConsts::GENERAL_LESS_EQUAL;
+          break;
+        default:
+          ZORBA_ASSERT(false);
+        }
+      }
+      break;
+    }
+    default:
+    {
+      return false;
+    }
+    }
 
     for_clause* forClause = posVar->get_for_clause();
 
@@ -1507,7 +1739,7 @@ static bool is_subseq_pred(
       checkClause = flworExpr->get_clause(checkClausePos);
 
       if (checkClause->get_kind() == flwor_clause::group_clause ||
-          checkClause->get_kind() == flwor_clause::count_clause)
+          (checkClause->get_kind() == flwor_clause::count_clause && eq))
         return false;
 
       --checkClausePos;

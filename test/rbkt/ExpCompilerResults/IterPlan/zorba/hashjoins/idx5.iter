@@ -14,7 +14,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="tests">
+  <CtxVarDeclareIterator varid="4" varname="tests">
     <ElementIterator copyInputNodes="false">
       <SingletonIterator value="xs:QName(,,tests)"/>
     </ElementIterator>
@@ -23,7 +23,7 @@ Iterator tree for main query:
     <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
       <flwor::FLWORIterator>
         <ForVariable name="$$opt_temp_2">
-          <CtxVarIterator varid="2" varname="tests" varkind="global"/>
+          <CtxVarIterator varid="4" varname="tests" varkind="global"/>
         </ForVariable>
         <ReturnClause>
           <ValueIndexEntryBuilderIterator>
@@ -47,26 +47,26 @@ Iterator tree for main query:
       <LetVariable name="$$opt_temp_1" materialize="true">
         <HoistIterator>
           <flwor::FLWORIterator>
-            <ForVariable name="$$dot">
-              <CtxVarIterator varid="2" varname="tests" varkind="global"/>
+            <ForVariable name="$$context-item">
+              <CtxVarIterator varid="4" varname="tests" varkind="global"/>
             </ForVariable>
             <WhereClause>
               <FnBooleanIterator>
                 <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
                   <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                    <ForVarIterator varname="$$dot"/>
+                    <ForVarIterator varname="$$context-item"/>
                   </TreatIterator>
                 </AttributeAxisIterator>
               </FnBooleanIterator>
             </WhereClause>
             <ReturnClause>
-              <ForVarIterator varname="$$dot"/>
+              <ForVarIterator varname="$$context-item"/>
             </ReturnClause>
           </flwor::FLWORIterator>
         </HoistIterator>
       </LetVariable>
       <ForVariable name="test">
-        <CtxVarIterator varid="2" varname="tests" varkind="global"/>
+        <CtxVarIterator varid="4" varname="tests" varkind="global"/>
       </ForVariable>
       <LetVariable name="$$opt_temp_0" materialize="true">
         <HoistIterator>
@@ -85,7 +85,7 @@ Iterator tree for main query:
       </LetVariable>
       <LetVariable name="test_old" materialize="true">
         <flwor::FLWORIterator>
-          <ForVariable name="$$dot">
+          <ForVariable name="$$context-item">
             <ProbeIndexPointValueIterator>
               <SingletonIterator value="xs:QName(,,tempIndex0)"/>
               <UnhoistIterator>
@@ -94,7 +94,7 @@ Iterator tree for main query:
             </ProbeIndexPointValueIterator>
           </ForVariable>
           <ReturnClause>
-            <ForVarIterator varname="$$dot"/>
+            <ForVarIterator varname="$$context-item"/>
           </ReturnClause>
         </flwor::FLWORIterator>
       </LetVariable>

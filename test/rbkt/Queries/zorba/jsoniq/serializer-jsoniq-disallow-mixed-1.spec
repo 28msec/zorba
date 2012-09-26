@@ -1,1 +1,2 @@
-Error: http://www.zorba-xquery.com/errors:ZAPI0045
+Serialization: method=json
+Error: http://jsoniq.org/errors:JNSE0014

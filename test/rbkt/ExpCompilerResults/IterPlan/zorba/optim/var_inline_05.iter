@@ -1,13 +1,6 @@
 Iterator tree for const-folded expr:
 <SingletonIterator value="xs:boolean(true)"/>
 
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
 Iterator tree for main query:
 <flwor::TupleStreamIterator>
   <flwor::WindowIterator>

@@ -1,12 +1,12 @@
-import module namespace j = "http://www.jsoniq.org/functions";
+import module namespace j = "http://jsoniq.org/functions";
 
-declare namespace jerr = "http://www.jsoniq.org/errors";
+declare namespace jerr = "http://jsoniq.org/errors";
 
 variable $a1 := [ 1, 2, 3 ];
 
 try 
 {
-  insert json [ 1 to 2 ] into $a1 at position -2
+  insert json ( 1 to 2 ) into $a1 at position -2
 } 
 catch jerr:JNUP0016
 {
@@ -15,7 +15,7 @@ catch jerr:JNUP0016
 ,
 try 
 {
-  insert json [ 1 to 2 ] into $a1 at position 5
+  insert json ( 1 to 2 ) into $a1 at position 5
 } 
 catch jerr:JNUP0016
 {
@@ -24,7 +24,7 @@ catch jerr:JNUP0016
 ,
 try 
 {
-  insert json [ 1 to 2 ] into $a1 at position -1
+  insert json ( 1 to 2 ) into $a1 at position -1
 } 
 catch jerr:JNUP0016 
 {
@@ -33,7 +33,7 @@ catch jerr:JNUP0016
 ,
 try 
 {
-  insert json [ 1 to 2 ] into $a1 at position 4
+  insert json ( 1 to 2 ) into $a1 at position 4
 }
 catch jerr:JNUP0016 
 {
