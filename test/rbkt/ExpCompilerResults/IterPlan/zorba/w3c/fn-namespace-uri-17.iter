@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context1"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context1"/>
   <FnStringIterator>
     <FnNamespaceUriIterator>
       <ElementIterator copyInputNodes="false">

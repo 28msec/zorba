@@ -1,12 +1,12 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <flwor::FLWORIterator>
     <ForVariable name="folder">
       <NodeSortIterator distinct="true" ascending="true">
         <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+            <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
           </TreatIterator>
         </DescendantAxisIterator>
       </NodeSortIterator>

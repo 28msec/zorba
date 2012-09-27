@@ -7,9 +7,9 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context1"/>
-  <CtxVarDeclareIterator varid="3" varname="input-context2"/>
-  <CtxVarDeclareIterator varid="4" varname="input-context3"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context1"/>
+  <CtxVarDeclareIterator varid="5" varname="input-context2"/>
+  <CtxVarDeclareIterator varid="6" varname="input-context3"/>
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,result)"/>
     <EnclosedIterator attr_cont="false">
@@ -19,7 +19,7 @@ Iterator tree for main query:
             <NodeSortIterator distinct="true" ascending="true">
               <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill allowed="0">
                 <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                  <CtxVarIterator varid="4" varname="input-context3" varkind="global"/>
+                  <CtxVarIterator varid="6" varname="input-context3" varkind="global"/>
                 </TreatIterator>
               </DescendantAxisIterator>
             </NodeSortIterator>
@@ -52,7 +52,7 @@ Iterator tree for main query:
                   <NodeSortIterator distinct="true" ascending="true">
                     <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,item_tuple)" typename="*" nill allowed="0">
                       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                        <CtxVarIterator varid="2" varname="input-context1" varkind="global"/>
+                        <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
                       </TreatIterator>
                     </DescendantAxisIterator>
                   </NodeSortIterator>
@@ -63,7 +63,7 @@ Iterator tree for main query:
                   <NodeSortIterator distinct="true" ascending="true">
                     <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill allowed="0">
                       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                        <CtxVarIterator varid="3" varname="input-context2" varkind="global"/>
+                        <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
                       </TreatIterator>
                     </DescendantAxisIterator>
                   </NodeSortIterator>
@@ -73,7 +73,7 @@ Iterator tree for main query:
                 <NodeSortIterator distinct="true" ascending="true">
                   <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill allowed="0">
                     <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                      <CtxVarIterator varid="3" varname="input-context2" varkind="global"/>
+                      <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
                     </TreatIterator>
                   </DescendantAxisIterator>
                 </NodeSortIterator>
@@ -136,25 +136,25 @@ Iterator tree for main query:
                     <FnDataIterator>
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill allowed="0">
                         <flwor::FLWORIterator>
-                          <ForVariable name="$$dot">
+                          <ForVariable name="$$context-item">
                             <NodeDistinctIterator allow-atomics="false" check-only="false">
                               <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
                                 <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                                  <CtxVarIterator varid="4" varname="input-context3" varkind="global"/>
+                                  <CtxVarIterator varid="6" varname="input-context3" varkind="global"/>
                                 </TreatIterator>
                               </DescendantSelfAxisIterator>
                             </NodeDistinctIterator>
                           </ForVariable>
-                          <ForVariable name="$$dot">
+                          <ForVariable name="$$context-item">
                             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill allowed="0">
-                              <ForVarIterator varname="$$dot"/>
+                              <ForVarIterator varname="$$context-item"/>
                             </ChildAxisIterator>
                           </ForVariable>
                           <WhereClause>
                             <CompareIterator>
                               <FnDataIterator>
                                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill allowed="0">
-                                  <ForVarIterator varname="$$dot"/>
+                                  <ForVarIterator varname="$$context-item"/>
                                 </ChildAxisIterator>
                               </FnDataIterator>
                               <FnDataIterator>
@@ -165,7 +165,7 @@ Iterator tree for main query:
                             </CompareIterator>
                           </WhereClause>
                           <ReturnClause>
-                            <ForVarIterator varname="$$dot"/>
+                            <ForVarIterator varname="$$context-item"/>
                           </ReturnClause>
                         </flwor::FLWORIterator>
                       </ChildAxisIterator>
