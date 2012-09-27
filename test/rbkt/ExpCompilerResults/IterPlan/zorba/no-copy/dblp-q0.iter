@@ -14,13 +14,13 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <flwor::FLWORIterator>
     <LetVariable name="doc" materialize="true">
       <FnDocIterator>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+            <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
           </FnDataIterator>
         </PromoteIterator>
       </FnDocIterator>
@@ -103,21 +103,21 @@ Iterator tree for main query:
                         <EnclosedIterator attr_cont="false">
                           <FnCountIterator>
                             <flwor::FLWORIterator>
-                              <ForVariable name="$$dot">
+                              <ForVariable name="$$context-item">
                                 <UnhoistIterator>
                                   <LetVarIterator varname="$$opt_temp_0"/>
                                 </UnhoistIterator>
                               </ForVariable>
-                              <ForVariable name="$$dot">
+                              <ForVariable name="$$context-item">
                                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
-                                  <ForVarIterator varname="$$dot"/>
+                                  <ForVarIterator varname="$$context-item"/>
                                 </ChildAxisIterator>
                               </ForVariable>
                               <WhereClause>
                                 <CompareIterator>
                                   <FnDataIterator>
                                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
-                                      <ForVarIterator varname="$$dot"/>
+                                      <ForVarIterator varname="$$context-item"/>
                                     </ChildAxisIterator>
                                   </FnDataIterator>
                                   <ForVarIterator varname="conference"/>
@@ -138,28 +138,28 @@ Iterator tree for main query:
                               <FnDataIterator>
                                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
                                   <flwor::FLWORIterator>
-                                    <ForVariable name="$$dot">
+                                    <ForVariable name="$$context-item">
                                       <UnhoistIterator>
                                         <LetVarIterator varname="$$opt_temp_1"/>
                                       </UnhoistIterator>
                                     </ForVariable>
-                                    <ForVariable name="$$dot">
+                                    <ForVariable name="$$context-item">
                                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
-                                        <ForVarIterator varname="$$dot"/>
+                                        <ForVarIterator varname="$$context-item"/>
                                       </ChildAxisIterator>
                                     </ForVariable>
                                     <WhereClause>
                                       <CompareIterator>
                                         <FnDataIterator>
                                           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
-                                            <ForVarIterator varname="$$dot"/>
+                                            <ForVarIterator varname="$$context-item"/>
                                           </ChildAxisIterator>
                                         </FnDataIterator>
                                         <ForVarIterator varname="conference"/>
                                       </CompareIterator>
                                     </WhereClause>
                                     <ReturnClause>
-                                      <ForVarIterator varname="$$dot"/>
+                                      <ForVarIterator varname="$$context-item"/>
                                     </ReturnClause>
                                   </flwor::FLWORIterator>
                                 </ChildAxisIterator>

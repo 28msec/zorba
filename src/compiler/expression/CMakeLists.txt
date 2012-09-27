@@ -27,6 +27,7 @@ SET(EXPRESSION_SRCS
     script_exprs.cpp
     update_exprs.cpp
     function_item_expr.cpp
+    pragma.cpp
     mem_manager.cpp
     expr_manager.cpp)
 

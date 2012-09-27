@@ -484,7 +484,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
   case TYPE_PROMOTION:
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
+    ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23), valueType, targetType));
     break;
   }
 #ifdef ZORBA_WITH_JSON
@@ -716,6 +716,12 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
     break;
   }
+  case MULTI_VALUED_GROUPING_KEY:
+  {
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(XPTY0004_MultiValuedGroupingKey)));
+    break;
+  }
 #ifdef ZORBA_WITH_JSON
   case JSONIQ_VALUE:
   {
@@ -736,8 +742,7 @@ void TreatIterator::raiseError(const zstring& valueType) const
   }
   case JSONIQ_OBJECT_UPDATE_CONTENT:
   {
-    RAISE_ERROR(jerr::JNUP0019, loc,
-    ERROR_PARAMS(ZED(JNUP0019), valueType));
+    RAISE_ERROR(jerr::JNUP0019, loc, ERROR_PARAMS(valueType));
     break;
   }
   case JSONIQ_ARRAY_UPDATE_TARGET:

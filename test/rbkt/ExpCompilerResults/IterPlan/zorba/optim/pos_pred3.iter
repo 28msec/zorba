@@ -61,14 +61,14 @@ Iterator tree for main query:
     <SingletonIterator value="xs:QName(,,grp)"/>
     <EnclosedIterator attr_cont="false">
       <flwor::FLWORIterator>
-        <ForVariable name="$$dot">
+        <ForVariable name="$$context-item">
           <NodeSortIterator distinct="true" ascending="true">
             <LetVarIterator varname="x"/>
           </NodeSortIterator>
         </ForVariable>
         <ReturnClause>
           <FnDataIterator>
-            <ForVarIterator varname="$$dot"/>
+            <ForVarIterator varname="$$context-item"/>
           </FnDataIterator>
         </ReturnClause>
       </flwor::FLWORIterator>

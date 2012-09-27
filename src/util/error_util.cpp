@@ -61,7 +61,7 @@ string format_err_string( char const *function, char const *err_string ) {
   if ( function && *function ) {
     using namespace internal::diagnostic;
     parameters::value_type result =
-      diagnostic::dict::lookup( ZED( FunctionFailed_12o ) );
+      diagnostic::dict::lookup( ZED( FunctionFailed_23o ) );
     parameters const params( ERROR_PARAMS( function, err_string ) );
     params.substitute( &result );
     return result;
@@ -77,7 +77,7 @@ string format_err_string( char const *function, code_type code,
   parameters::value_type result;
   if ( function && *function ) {
     result = diagnostic::dict::lookup(
-      ZED( FunctionFailedErrorCodeMessage_123 )
+      ZED( FunctionFailedErrorCodeMessage_234 )
     );
     params = ERROR_PARAMS( function, code, err_string );
   } else {

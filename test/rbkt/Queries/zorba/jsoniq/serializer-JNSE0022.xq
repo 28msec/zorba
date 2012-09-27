@@ -2,7 +2,7 @@
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace jerr = "http://www.jsoniq.org/errors";
+declare namespace jerr = "http://jsoniq.org/errors";
 
 let $obj := { "message": "test" }
 return

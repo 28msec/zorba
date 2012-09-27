@@ -39,6 +39,7 @@ private:
   std::vector<flwor_wincond*> theWinconds;
   std::vector<catch_clause*>  theCatchClauses;
   std::vector<copy_clause*>   theCopyClauses;
+  std::vector<pragma*>        thePragmas;
   MemoryManager               theMemoryMgr;
   CompilerCB           *const theCCB;
 
@@ -56,6 +57,8 @@ public:
   void reg(catch_clause*);
 
   void reg(copy_clause*);
+
+  void reg(pragma*);
 
 private:
   //An ExprManager is the only object to handle a collection of Exprs and
@@ -510,6 +513,10 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       bool general);
+ 
+  pragma* create_pragma(
+      const store::Item_t&,
+      const zstring&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

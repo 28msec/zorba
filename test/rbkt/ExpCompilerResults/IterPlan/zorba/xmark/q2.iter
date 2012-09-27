@@ -1,13 +1,6 @@
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(true)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <flwor::FLWORIterator>
     <ForVariable name="b">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
@@ -16,7 +9,7 @@ Iterator tree for main query:
             <FnDocIterator>
               <PromoteIterator type="xs:string">
                 <FnDataIterator>
-                  <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                  <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
                 </FnDataIterator>
               </PromoteIterator>
             </FnDocIterator>
