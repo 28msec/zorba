@@ -24,7 +24,7 @@ New Features:
 
 Optimizations:
   * Improved memory management for compiler expressions (no more ref counting)
-  * Exteneded optimization rules (for variable inlining/elimination and positional
+  * Extended optimization rules (for variable inlining/elimination and positional
     predicate rewrite) to general flwor expressions.
   * Early optimization of positional predicates to subsequence expressions: now
     done at translation time, if possible.
@@ -50,12 +50,12 @@ Bug Fixes/Other Changes:
   * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
-  * Fixed bug #1046411 (automatic boxing of mutli-item sequence appearing as the
+  * Fixed bug #1046411 (automatic boxing of multi-item sequence appearing as the
     value of an object pair)
   * Fixed bug #1046410 (automatic conversion to null of empty sequence appearing
     as the value of an object pair)
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
-  * Fixed bug #1042840 (qname pool free-list corruption)
+  * Fixed bug #1042840 (QName pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
   * Fixed bug #1047538 (SourceFinder::findLocalNodeSources missing json expressions)
   * Fixed bug #932374 (FOTS fn:matches failing tests)
@@ -65,11 +65,10 @@ Bug Fixes/Other Changes:
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
   * Fixed bug #1046415 (pair name cast to string)
   * Fixed bug #1045902 (file:last-modified returns current date time)
-  * Fixed bug #1043976 (compiler warning in serialiser code)
+  * Fixed bug #1043976 (compiler warning in serializer code)
   * Fixed bug #866994 (a better error message when collection iterator not open)
   * Fixed bug #1039254 (allow empty sequence as position value in positional LET
     var iterator)
-  * Use platform's native UUID library
 
 
 version 2.6
