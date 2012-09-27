@@ -29,7 +29,7 @@
 #include <zorba/util/time.h>
 #include <limits>
 
-#include "util/uuid.h"
+#include <zorba/util/uuid.h>
 
 namespace zorba {
 

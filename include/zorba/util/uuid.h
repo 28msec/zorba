@@ -21,8 +21,6 @@
 #include <algorithm>
 #include <iostream>
 
-#include "zorbamisc/config/stdint.h"
-
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,7 +42,7 @@ namespace zorba {
  * section "4.1.2. Layout and Byte Order" due to possible padding.
  */
 struct uuid {
-  typedef uint8_t value_type;
+  typedef unsigned char value_type;
   typedef value_type& reference;
   typedef value_type const& const_reference;
   typedef value_type* pointer;

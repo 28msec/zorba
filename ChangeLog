@@ -13,11 +13,12 @@ New Features:
   * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
     takes options to parameterize the parsing process (see bug #1047547)
   * Roundtripping of JSON items has been moved from the serializer to encoding functions.
+  * Added uuid to public API.
   * Best-effort serialization of atomic values in JSON items.
   * Implemented semantics of null for comparison and arithmetics operations.
   * Positional pagination support for index probes 
   * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
-	* Added createUntypedAtomic to API's ItemFactory.
+  * Added createUntypedAtomic to API's ItemFactory.
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)
