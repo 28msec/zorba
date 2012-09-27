@@ -40,6 +40,18 @@
     <zorba:member type="zstring" name="thePrefix" brief=""/>
   </zorba:state>
 
+  <zorba:method static="true" name="extractChildOfKind" return="void">
+    <zorba:param type="const store::Item_t&amp;" name="aParent"/>
+    <zorba:param type="const store::NodeKind&amp;" name="aKind"/>
+    <zorba:param type="store::Item_t&amp;" name="aChild"/>
+  </zorba:method>
+
+  <zorba:method const="true" name="decodeNode" return="bool">
+    <zorba:param type="const store::Item_t&amp;" name="aSerializedNode"/>
+    <zorba:param type="const store::NodeKind&amp;" name="aKind"/>
+    <zorba:param type="store::Item_t&amp;" name="aResult"/>
+  </zorba:method>
+
   <zorba:method const="true" name="decodeXDM" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
     <zorba:param type="store::Item_t&amp;" name="aResult"/>
