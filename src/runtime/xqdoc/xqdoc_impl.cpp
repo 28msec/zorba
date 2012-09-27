@@ -27,6 +27,7 @@
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"
@@ -86,15 +87,6 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   bool lIgnoreComments = true;
   uint32_t lXQDocOptions;
 
-  // setup a new CompilerCB and a new XQueryCompiler 
-  CompilerCB lCompilerCB(*planState.theCompilerCB);
-  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-  (planState.theCompilerCB->theSctxMap)[1] = lCompilerCB.theRootSctx; 
-
-  // the XQueryCompiler's constructor destroys the existing type manager 
-  // in the static context. Hence, we create a new one
-  XQueryCompiler lCompiler(&lCompilerCB);
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -118,6 +110,13 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   try 
   {
     std::istringstream is(lCodeItem->getStringValue().c_str());
+
+    // setup a new CompilerCB and a new XQueryCompiler 
+    CompilerCB lCompilerCB(*planState.theCompilerCB);
+
+    // the XQueryCompiler's constructor destroys the existing type manager 
+    // in the static context. Hence, we create a new one
+    XQueryCompiler lCompiler(&lCompilerCB);
 
     // retrieve the xqdoc elements
     lCompiler.xqdoc(is,

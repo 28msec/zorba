@@ -17,6 +17,7 @@ New Features:
   * Implemented semantics of null for comparison and arithmetics operations.
   * Positional pagination support for index probes 
   * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
+	* Added createUntypedAtomic to API's ItemFactory.
   * new xqDoc feature; reporting collections and indexes
   * new xqDoc function parameter to enable/disable xqDoc generation of
 	  certain components
@@ -47,6 +48,7 @@ Bug Fixes/Other Changes:
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
   * Now using native UUID libraries.
+  * Fixed bug in implementation of xqdoc functions
   * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
