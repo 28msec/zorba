@@ -20,7 +20,7 @@
   :)
  (:~
  : This module contains one declaration of a variable for each
- : error of the http://www.jsoniq.org/errors namespace.
+ : error of the http://jsoniq.org/errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -33,9 +33,9 @@
 
 xquery version '1.0';
 
-module namespace jerr = 'http://www.jsoniq.org/errors';
+module namespace jerr = 'http://jsoniq.org/errors';
 
-declare variable $jerr:NS := 'http://www.jsoniq.org/errors';
+declare variable $jerr:NS := 'http://jsoniq.org/errors';
 
 (:~
  :It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.
@@ -141,19 +141,14 @@ declare variable $jerr:JNTY0023 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0023
 (:~
  :objects or arrays don't have a string value
 :)
-declare variable $jerr:JNTY0003 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0003");
-
-(:~
- :parser errors raised by the JSONIQLoader
-:)
-declare variable $jerr:JSDY0040 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0040");
+declare variable $jerr:JNTY0024 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0024");
 
 (:~
  :parser error for invalid option type
 :)
-declare variable $jerr:JSDY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0020");
+declare variable $jerr:JNTY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0020");
 
 (:~
  :parser error raised by jn:parse-json
 :)
-declare variable $jerr:JSDY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JSDY0021");
+declare variable $jerr:JNDY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0021");

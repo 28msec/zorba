@@ -669,7 +669,7 @@ JSONParseIterator::processOptions(
     {
       const TypeManager* tm = theSctx->get_typemanager();
       xqtref_t lType = tm->create_value_type(lOptionValue, loc);
-      RAISE_ERROR(jerr::JSDY0020, loc, 
+      RAISE_ERROR(jerr::JNTY0020, loc,
       ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
     }
     aAllowMultiple = lOptionValue->getBooleanValue();
@@ -727,9 +727,9 @@ JSONParseIterator::nextImpl(
       }
       catch (zorba::XQueryException& e)
       {
-        // rethrow with JSDY0021
+        // rethrow with JNDY0021
         XQueryException xq = XQUERY_EXCEPTION(
-            jerr::JSDY0021,
+            jerr::JNDY0021,
             ERROR_PARAMS(e.what()),
             ERROR_LOC(loc));
 
@@ -742,7 +742,7 @@ JSONParseIterator::nextImpl(
       {
         if (!state->theAllowMultiple && state->theGotOne)
         {
-          RAISE_ERROR(jerr::JSDY0021, loc, 
+          RAISE_ERROR(jerr::JNDY0021, loc,
           ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
         }
         state->theGotOne = true;

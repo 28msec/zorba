@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,19 +61,6 @@ void populate_context_parsing_and_serializing(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
         FunctionConsts::FN_PARSE_XML_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_parse_xml_3_0,
-        (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::FN_PARSE_XML_2);
 
   }
 

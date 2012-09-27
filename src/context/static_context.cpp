@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -314,13 +314,13 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 ********************************************************************************/
 
 const zstring
-static_context::DOT_VAR_NAME = "$$dot";
+static_context::DOT_VAR_NAME = "$$context-item";
 
 const zstring
-static_context::DOT_POS_VAR_NAME = "$$pos";
+static_context::DOT_POS_VAR_NAME = "$$context-position";
 
 const zstring
-static_context::DOT_SIZE_VAR_NAME = "$$last-idx";
+static_context::DOT_SIZE_VAR_NAME = "$$context-size";
 
 const char*
 static_context::W3C_NS_PREFIX = "http://www.w3.org/";
@@ -398,11 +398,11 @@ static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 
 const char*
 static_context::JSONIQ_DM_NS =
-"http://www.jsoniq.org/types";
+"http://jsoniq.org/types";
 
 const char*
 static_context::JSONIQ_FN_NS =
-"http://www.jsoniq.org/functions";
+"http://jsoniq.org/functions";
 
 #endif
 
@@ -592,6 +592,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_XQDOC_FN_NS ||
 #ifdef ZORBA_WITH_JSON
             ns == JSONIQ_FN_NS ||
 #endif

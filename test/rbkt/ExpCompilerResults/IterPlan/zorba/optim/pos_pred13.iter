@@ -1,0 +1,84 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<SpecificNumArithIterator_SubtractOperation_INTEGER>
+  <SingletonIterator value="xs:integer(3)"/>
+  <SingletonIterator value="xs:integer(1)"/>
+</SpecificNumArithIterator_SubtractOperation_INTEGER>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="4" varname="doc">
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,doc)"/>
+      <FnConcatIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(1)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(2)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(3)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(4)"/>
+          </AttributeIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,a)"/>
+          <AttributeIterator qname="xs:QName(,,i)">
+            <SingletonIterator value="xs:string(5)"/>
+          </AttributeIterator>
+        </ElementIterator>
+      </FnConcatIterator>
+    </ElementIterator>
+  </CtxVarDeclareIterator>
+  <flwor::FLWORIterator>
+    <ForVariable name="$$context-item">
+      <SubsequenceIntIterator>
+        <NodeSortIterator distinct="true" ascending="true">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+              <CtxVarIterator varid="4" varname="doc" varkind="local"/>
+            </TreatIterator>
+          </ChildAxisIterator>
+        </NodeSortIterator>
+        <SingletonIterator value="xs:integer(1)"/>
+        <SingletonIterator value="xs:integer(2)"/>
+      </SubsequenceIntIterator>
+    </ForVariable>
+    <WhereClause>
+      <CompareIterator>
+        <PromoteIterator type="xs:anyAtomicType">
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,i)" typename="*" nill allowed="0">
+              <ForVarIterator varname="$$context-item"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+        <SingletonIterator value="xs:string(2)"/>
+      </CompareIterator>
+    </WhereClause>
+    <ReturnClause>
+      <ForVarIterator varname="$$context-item"/>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
+

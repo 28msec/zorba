@@ -1,2 +1,2 @@
 Serialization: method=json
-Error: http://www.jsoniq.org/errors:JNSE0014
+Error: http://jsoniq.org/errors:JNSE0014
