@@ -18,6 +18,9 @@ New Features:
   * Positional pagination support for index probes 
   * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
 	* Added createUntypedAtomic to API's ItemFactory.
+  * new xqDoc feature; reporting collections and indexes
+  * new xqDoc function parameter to enable/disable xqDoc generation of
+	  certain components
 
 Optimizations:
   * New memory management for compiler expressions (no more ref counting)

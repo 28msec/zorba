@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,15 +38,14 @@ void populate_context_xqdoc(static_context* sctx);
 
 
 
-//fn-zorba-xqdoc:xqdoc
-class fn_zorba_xqdoc_xqdoc : public function
+//fn-zorba-xqdoc:xqdoc-content-impl
+class fn_zorba_xqdoc_xqdoc_content_impl : public function
 {
 public:
-  fn_zorba_xqdoc_xqdoc(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xqdoc_xqdoc_content_impl(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-setDeterministic(false);
 
   }
 
@@ -54,11 +53,11 @@ setDeterministic(false);
 };
 
 
-//fn-zorba-xqdoc:xqdoc-content
-class fn_zorba_xqdoc_xqdoc_content : public function
+//fn-zorba-xqdoc:xqdoc-content-options-impl
+class fn_zorba_xqdoc_xqdoc_content_options_impl : public function
 {
 public:
-  fn_zorba_xqdoc_xqdoc_content(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xqdoc_xqdoc_content_options_impl(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
