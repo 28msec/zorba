@@ -3,19 +3,19 @@ Zorba - The XQuery Processor
 version 2.7
 
 New Features:
-  * New XQuery 3.0 simple map operator http://www.w3.org/TR/xquery-30/#id-map-operator
-  * New node copy function added to the node module
+  * XQuery 3.0 simple map operator http://www.w3.org/TR/xquery-30/#id-map-operator
+  * Copy function added to the node module
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
+  * Module http://www.jsoniq.org/modules/function-library with handy JSONiq functions
+  * jn:parse-json can parse multiple top-level JSON items
+  * New semantics of null for comparison and arithmetics operations
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
-  * New module http://jsoniq.org/modules/function-library with handy JSONiq
-    functions. jn:object is also supported.
-  * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
-    takes options to parameterize the parsing process (see bug #1047547)
   * Roundtripping of JSON items has been moved from the serializer to encoding functions.
   * Best-effort serialization of atomic values in JSON items.
-  * Implemented semantics of null for comparison and arithmetics operations.
   * Positional pagination support for index probes 
+  * Recognize the {http://www.zorba-xquery.com/extensions}no-copy pragma to avoid
+  copying nodes before insertion into a collection.
   * Recognize the no-copy pragma to avoid copying nodes before insertion into a collection.
 	* Added createUntypedAtomic to API's ItemFactory.
   * new xqDoc feature; reporting collections and indexes
@@ -23,8 +23,8 @@ New Features:
 	  certain components
 
 Optimizations:
-  * New memory management for compiler expressions (no more ref counting)
-  * Exteneded some optimization rules (variable inlining/elimination and positional
+  * Improved memory management for compiler expressions (no more ref counting)
+  * Extended optimization rules (for variable inlining/elimination and positional
     predicate rewrite) to general flwor expressions.
   * Early optimization of positional predicates to subsequence expressions: now
     done at translation time, if possible.
@@ -47,28 +47,25 @@ Bug Fixes/Other Changes:
     variables in main module and provide api function to assign values to these
     variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
-  * Now using native UUID libraries.
-  * Fixed bug in implementation of xqdoc functions
   * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
-  * Fixed bug #1046411 (automatic boxing of mutli-item sequence appearing as the
+  * Fixed bug #1046411 (automatic boxing of multi-item sequence appearing as the
     value of an object pair)
   * Fixed bug #1046410 (automatic conversion to null of empty sequence appearing
     as the value of an object pair)
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
-  * Fixed bug #1042840 (qname pool free-list corruption)
+  * Fixed bug #1042840 (QName pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
+  * Fixed bug #1047538 (SourceFinder::findLocalNodeSources missing json expressions)
   * Fixed bug #932374 (FOTS fn:matches failing tests)
-  * Fixed bug #1047538 (jsoniq: SourceFinder::findLocalNodeSources missing
-    json expressions)
   * Fixed #1052383 (accessing context item in eval expr)
   * Fixed bug #1046559 (dynamic resolution between function invocation and jsoniq
     navigation)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
   * Fixed bug #1046415 (pair name cast to string)
   * Fixed bug #1045902 (file:last-modified returns current date time)
-  * Fixed bug #1043976 (compiler warning in serialiser code)
+  * Fixed bug #1043976 (compiler warning in serializer code)
   * Fixed bug #866994 (a better error message when collection iterator not open)
   * Fixed bug #1039254 (allow empty sequence as position value in positional LET
     var iterator)
