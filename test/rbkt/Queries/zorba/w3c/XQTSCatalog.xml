@@ -1,0 +1,2737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="XQTSCatalog.xsl" ?>
+<!DOCTYPE test-suite [
+
+<!ELEMENT GroupInfo ( title, description ) >
+
+<!ELEMENT citation-spec ( description | note | spec-URI )* >
+<!ATTLIST citation-spec name NMTOKEN #REQUIRED >
+
+<!ELEMENT citations ( citation-spec+ ) >
+
+<!ELEMENT collection ( description, input-document+ ) >
+<!ATTLIST collection Creator CDATA #REQUIRED >
+<!ATTLIST collection ID NMTOKEN #REQUIRED >
+
+<!ELEMENT comparison ( description ) >
+<!ATTLIST comparison name NMTOKEN #REQUIRED >
+
+<!ELEMENT comparisons ( comparison+ ) >
+
+<!ELEMENT context-properties ( context-property+ ) >
+
+<!ELEMENT context-property EMPTY >
+<!ATTLIST context-property context-type ( dynamic | static ) #REQUIRED >
+<!ATTLIST context-property name CDATA #REQUIRED >
+
+<!ELEMENT contextItem ( #PCDATA ) >
+<!ATTLIST contextItem role NMTOKEN #FIXED "principal-data" >
+
+<!ELEMENT defaultCollection ( #PCDATA ) >
+<!ATTLIST defaultCollection role NMTOKEN #REQUIRED >
+
+<!ELEMENT description ( #PCDATA ) >
+<!ATTLIST description last-mod NMTOKEN #IMPLIED >
+
+<!ELEMENT expected-error ( #PCDATA ) >
+<!ATTLIST expected-error input-document NMTOKEN #IMPLIED >
+<!ATTLIST expected-error spec-version NMTOKENS #IMPLIED >
+
+<!ELEMENT feature EMPTY >
+<!ATTLIST feature name CDATA #REQUIRED >
+
+<!ELEMENT features ( feature+ ) >
+
+<!ELEMENT implementation-defined-item ( description ) >
+<!ATTLIST implementation-defined-item name ID #REQUIRED >
+<!ATTLIST implementation-defined-item spec ( DataModel | FuncOps | Serialization | XQuery ) #REQUIRED >
+
+<!ELEMENT implementation-defined-items ( implementation-defined-item+ ) >
+
+<!ELEMENT input-URI ( #PCDATA ) >
+<!ATTLIST input-URI role NMTOKEN #FIXED "principal-data" >
+<!ATTLIST input-URI variable ( input-context | input-context1 | input-context2 ) #REQUIRED >
+
+<!ELEMENT input-document ( #PCDATA ) >
+
+<!ELEMENT input-file ( #PCDATA ) >
+<!ATTLIST input-file role NMTOKEN #FIXED "principal-data" >
+<!ATTLIST input-file variable ( input-context | input-context1 | input-context2 | input-context3 | inputDocument | var ) #REQUIRED >
+
+<!ELEMENT input-query EMPTY >
+<!ATTLIST input-query date CDATA #REQUIRED >
+<!ATTLIST input-query name ID #REQUIRED >
+<!ATTLIST input-query variable NMTOKEN #FIXED "x" >
+
+<!ELEMENT module ( #PCDATA | description )* >
+<!ATTLIST module Creator CDATA #IMPLIED >
+<!ATTLIST module FileName CDATA #IMPLIED >
+<!ATTLIST module ID ID #IMPLIED >
+<!ATTLIST module namespace CDATA #IMPLIED >
+
+<!ELEMENT note ( #PCDATA ) >
+
+<!ELEMENT output-file ( #PCDATA ) >
+<!ATTLIST output-file compare ( Fragment | Ignore | Inspect | Text | XML ) #REQUIRED >
+<!ATTLIST output-file input-document NMTOKEN #IMPLIED >
+<!ATTLIST output-file spec-version NMTOKENS #IMPLIED >
+<!ATTLIST output-file role NMTOKEN #FIXED "principal" >
+
+<!ELEMENT query ( description? ) >
+<!ATTLIST query date CDATA #REQUIRED >
+<!ATTLIST query name NMTOKEN #REQUIRED >
+<!ATTLIST query static-name NMTOKEN #IMPLIED >
+
+<!ELEMENT reflects-resolution ( #PCDATA ) >
+
+<!ELEMENT role ( description, note? ) >
+<!ATTLIST role name NMTOKEN #REQUIRED >
+
+<!ELEMENT roles ( role+ ) >
+
+<!ELEMENT scenario ( description ) >
+<!ATTLIST scenario name NMTOKEN #REQUIRED >
+
+<!ELEMENT scenarios ( scenario+ ) >
+
+<!ELEMENT schema ( description ) >
+<!ATTLIST schema FileName CDATA #REQUIRED >
+<!ATTLIST schema ID ID #REQUIRED >
+<!ATTLIST schema uri CDATA #REQUIRED >
+
+<!ELEMENT source ( description, note* ) >
+<!ATTLIST source Creator CDATA #REQUIRED >
+<!ATTLIST source FileName CDATA #REQUIRED >
+<!ATTLIST source ID ID #REQUIRED >
+<!ATTLIST source schema NMTOKEN #IMPLIED >
+
+<!ELEMENT sources ( source+, schema+, collection+, module+ ) >
+
+<!ELEMENT spec-URI ( #PCDATA ) >
+
+<!ELEMENT spec-citation EMPTY >
+<!ATTLIST spec-citation section-number NMTOKEN #REQUIRED >
+<!ATTLIST spec-citation section-pointer NMTOKEN #REQUIRED >
+<!ATTLIST spec-citation section-title CDATA #REQUIRED >
+<!ATTLIST spec-citation spec ( DataModel | FuncOps | UseCases | XQuery ) #REQUIRED >
+
+<!ELEMENT test-case ( contextItem | defaultCollection | description | expected-error | input-URI | input-file | input-query | module | output-file | query | reflects-resolution | spec-citation )* >
+<!ATTLIST test-case Creator CDATA #REQUIRED >
+<!ATTLIST test-case FilePath CDATA #REQUIRED >
+<!ATTLIST test-case is-XPath2 ( false | true ) #IMPLIED >
+<!ATTLIST test-case name ID #REQUIRED >
+<!ATTLIST test-case scenario ( parse-error | runtime-error | standard ) #REQUIRED >
+
+<!ELEMENT test-group ( GroupInfo | test-case | test-group )* >
+<!ATTLIST test-group featureOwner CDATA #IMPLIED >
+<!ATTLIST test-group is-XPath2 ( false | true ) #IMPLIED >
+<!ATTLIST test-group name ID #REQUIRED >
+<!ATTLIST test-group xmlns CDATA #IMPLIED >
+
+<!ELEMENT test-suite ( test-suite-info, citations, comparisons, roles, scenarios, sources, implementation-defined-items, features, context-properties, test-group+ ) >
+<!ATTLIST test-suite CatalogDesignDate NMTOKEN #REQUIRED >
+<!ATTLIST test-suite ResultOffsetPath CDATA #REQUIRED >
+<!ATTLIST test-suite SourceOffsetPath CDATA #REQUIRED >
+<!ATTLIST test-suite XQueryFileExtension NMTOKEN #REQUIRED >
+<!ATTLIST test-suite XQueryQueryOffsetPath CDATA #REQUIRED >
+<!ATTLIST test-suite XQueryXFileExtension NMTOKEN #REQUIRED >
+<!ATTLIST test-suite XQueryXQueryOffsetPath CDATA #REQUIRED >
+<!ATTLIST test-suite version CDATA #REQUIRED >
+<!ATTLIST test-suite xmlns CDATA #REQUIRED >
+<!ATTLIST test-suite xmlns:xsi CDATA #REQUIRED >
+<!ATTLIST test-suite xsi:schemaLocation CDATA #REQUIRED >
+
+<!ELEMENT test-suite-info ( title, description ) >
+
+<!ELEMENT title ( #PCDATA ) >
+
+<!ENTITY CombinedErrorCodes SYSTEM "cat/CombinedErrorCodes.xml">
+<!ENTITY StaticContext SYSTEM "cat/StaticContext.xml">
+<!ENTITY SequenceTypeSyntax SYSTEM "cat/SequenceTypeSyntax.xml">
+<!ENTITY Literals SYSTEM "cat/Literals.xml">
+<!ENTITY ParenExpr SYSTEM "cat/ParenExpr.xml">
+<!ENTITY ExternalContextExpr SYSTEM "cat/ExternalContextExpr.xml">
+<!ENTITY InternalContextExpr SYSTEM "cat/InternalContextExpr.xml">
+<!ENTITY FunctionCallExpr SYSTEM "cat/FunctionCallExpr.xml">
+<!ENTITY PathExpressions SYSTEM "cat/PathExpressions.xml">
+<!ENTITY Steps SYSTEM "cat/Steps.xml">
+<!ENTITY Axes SYSTEM "cat/Axes.xml">
+<!ENTITY NodeTest SYSTEM "cat/NodeTest.xml">
+<!ENTITY NameTest SYSTEM "cat/NameTest.xml">
+<!ENTITY Predicates SYSTEM "cat/Predicates.xml">
+<!ENTITY UnabbrAxes SYSTEM "cat/UnabbrAxes.xml">
+<!ENTITY AbbrAxes SYSTEM "cat/AbbrAxes.xml">
+<!ENTITY commaOp SYSTEM "cat/commaOp.xml">
+<!ENTITY RangeExpr SYSTEM "cat/RangeExpr.xml">
+<!ENTITY FilterExpr SYSTEM "cat/FilterExpr.xml">
+<!ENTITY CombNodeSeq SYSTEM "cat/CombNodeSeq.xml">
+<!ENTITY NumericAdd SYSTEM "cat/NumericAdd.xml">
+<!ENTITY NumericSubtract SYSTEM "cat/NumericSubtract.xml">
+<!ENTITY NumericMultiply SYSTEM "cat/NumericMultiply.xml">
+<!ENTITY NumericDivide SYSTEM "cat/NumericDivide.xml">
+<!ENTITY NumericIntegerDivide SYSTEM "cat/NumericIntegerDivide.xml">
+<!ENTITY NumericMod SYSTEM "cat/NumericMod.xml">
+<!ENTITY NumericUnaryPlus SYSTEM "cat/NumericUnaryPlus.xml">
+<!ENTITY NumericUnaryMinus SYSTEM "cat/NumericUnaryMinus.xml">
+<!ENTITY YearMonthDurationAdd SYSTEM "cat/YearMonthDurationAdd.xml">
+<!ENTITY YearMonthDurationSubtract SYSTEM "cat/YearMonthDurationSubtract.xml">
+<!ENTITY YearMonthDurationMultiply SYSTEM "cat/YearMonthDurationMultiply.xml">
+<!ENTITY YearMonthDurationDivide SYSTEM "cat/YearMonthDurationDivide.xml">
+<!ENTITY YearMonthDurationDivideYMD SYSTEM "cat/YearMonthDurationDivideYMD.xml">
+<!ENTITY DayTimeDurationAdd SYSTEM "cat/DayTimeDurationAdd.xml">
+<!ENTITY DayTimeDurationSubtract SYSTEM "cat/DayTimeDurationSubtract.xml">
+<!ENTITY DayTimeDurationMultiply SYSTEM "cat/DayTimeDurationMultiply.xml">
+<!ENTITY DayTimeDurationDivide SYSTEM "cat/DayTimeDurationDivide.xml">
+<!ENTITY DayTimeDurationDivideDTD SYSTEM "cat/DayTimeDurationDivideDTD.xml">
+<!ENTITY dateTimesSubtract SYSTEM "cat/dateTimesSubtract.xml">
+<!ENTITY DatesSubtract SYSTEM "cat/DatesSubtract.xml">
+<!ENTITY TimeSubtract SYSTEM "cat/TimeSubtract.xml">
+<!ENTITY YearMonthDurationAddDT SYSTEM "cat/YearMonthDurationAddDT.xml">
+<!ENTITY DateTimeAddDTD SYSTEM "cat/DateTimeAddDTD.xml">
+<!ENTITY DateTimeSubtractYMD SYSTEM "cat/DateTimeSubtractYMD.xml">
+<!ENTITY DateTimeSubtractDTD SYSTEM "cat/DateTimeSubtractDTD.xml">
+<!ENTITY DateAddYMD SYSTEM "cat/DateAddYMD.xml">
+<!ENTITY DateAddDTD SYSTEM "cat/DateAddDTD.xml">
+<!ENTITY DateSubtractYMD SYSTEM "cat/DateSubtractYMD.xml">
+<!ENTITY DateSubtractDTD SYSTEM "cat/DateSubtractDTD.xml">
+<!ENTITY TimeAddDTD SYSTEM "cat/TimeAddDTD.xml">
+<!ENTITY TimeSubtractDTD SYSTEM "cat/TimeSubtractDTD.xml">
+<!ENTITY NumericEqual SYSTEM "cat/NumericEqual.xml">
+<!ENTITY NumericLT SYSTEM "cat/NumericLT.xml">
+<!ENTITY NumericGT SYSTEM "cat/NumericGT.xml">
+<!ENTITY BooleanEqual SYSTEM "cat/BooleanEqual.xml">
+<!ENTITY BooleanLT SYSTEM "cat/BooleanLT.xml">
+<!ENTITY BooleanGT SYSTEM "cat/BooleanGT.xml">
+<!ENTITY YearMonthDurationLT SYSTEM "cat/YearMonthDurationLT.xml">
+<!ENTITY YearMonthDurationGT SYSTEM "cat/YearMonthDurationGT.xml">
+<!ENTITY DayTimeDurationLT SYSTEM "cat/DayTimeDurationLT.xml">
+<!ENTITY DayTimeDurationGT SYSTEM "cat/DayTimeDurationGT.xml">
+<!ENTITY DurationEQ SYSTEM "cat/DurationEQ.xml">
+<!ENTITY DateTimeEQ SYSTEM "cat/DateTimeEQ.xml">
+<!ENTITY DateTimeLT SYSTEM "cat/DateTimeLT.xml">
+<!ENTITY DateTimeGT SYSTEM "cat/DateTimeGT.xml">
+<!ENTITY DateEQ SYSTEM "cat/DateEQ.xml">
+<!ENTITY DateLT SYSTEM "cat/DateLT.xml">
+<!ENTITY DateGT SYSTEM "cat/DateGT.xml">
+<!ENTITY TimeEQ SYSTEM "cat/TimeEQ.xml">
+<!ENTITY TimeLT SYSTEM "cat/TimeLT.xml">
+<!ENTITY TimeGT SYSTEM "cat/TimeGT.xml">
+<!ENTITY gYearMonthEQ SYSTEM "cat/gYearMonthEQ.xml">
+<!ENTITY gYearEQ SYSTEM "cat/gYearEQ.xml">
+<!ENTITY gMonthDayEQ SYSTEM "cat/gMonthDayEQ.xml">
+<!ENTITY gMonthEQ SYSTEM "cat/gMonthEQ.xml">
+<!ENTITY gDayEQ SYSTEM "cat/gDayEQ.xml">
+<!ENTITY YearMonthDurationEQ SYSTEM "cat/YearMonthDurationEQ.xml">
+<!ENTITY DayTimeDurationEQ SYSTEM "cat/DayTimeDurationEQ.xml">
+<!ENTITY QNameEQ SYSTEM "cat/QNameEQ.xml">
+<!ENTITY PrefixFromQName SYSTEM "cat/PrefixFromQName.xml">
+<!ENTITY HexBinaryEQ SYSTEM "cat/HexBinaryEQ.xml">
+<!ENTITY Base64BinaryEQ SYSTEM "cat/Base64BinaryEQ.xml">
+<!ENTITY ValCompTypeChecking SYSTEM "cat/ValCompTypeChecking.xml">
+<!ENTITY StringEqual SYSTEM "cat/StringEqual.xml">
+<!ENTITY StringGT SYSTEM "cat/StringGT.xml">
+<!ENTITY StringLT SYSTEM "cat/StringLT.xml">
+<!ENTITY AnyURIEqual SYSTEM "cat/AnyURIEqual.xml">
+<!ENTITY AnyURILtGt SYSTEM "cat/AnyURILtGt.xml">
+<!ENTITY AnyURILeGe SYSTEM "cat/AnyURILeGe.xml">
+<!ENTITY GenCompEq SYSTEM "cat/GenCompEq.xml">
+<!ENTITY GenCompNE SYSTEM "cat/GenCompNE.xml">
+<!ENTITY GenCompLT SYSTEM "cat/GenCompLT.xml">
+<!ENTITY GenCompLTEQ SYSTEM "cat/GenCompLTEQ.xml">
+<!ENTITY GenCompGT SYSTEM "cat/GenCompGT.xml">
+<!ENTITY GenCompGTEQ SYSTEM "cat/GenCompGTEQ.xml">
+<!ENTITY NodeSame SYSTEM "cat/NodeSame.xml">
+<!ENTITY NodeBefore SYSTEM "cat/NodeBefore.xml">
+<!ENTITY NodeAfter SYSTEM "cat/NodeAfter.xml">
+<!ENTITY SeqUnion SYSTEM "cat/SeqUnion.xml">
+<!ENTITY SeqIntersect SYSTEM "cat/SeqIntersect.xml">
+<!ENTITY SeqExcept SYSTEM "cat/SeqExcept.xml">
+<!ENTITY LogicExpr SYSTEM "cat/LogicExpr.xml">
+<!ENTITY DirectConElem SYSTEM "cat/DirectConElem.xml">
+<!ENTITY DirectConElemXML SYSTEM "cat/XMLEdition.xml">
+<!ENTITY DirectConElemAttr SYSTEM "cat/DirectConElemAttr.xml">
+<!ENTITY DirectConElemNamespace SYSTEM "cat/DirectConElemNamespace.xml">
+<!ENTITY DirectConElemContent SYSTEM "cat/DirectConElemContent.xml">
+<!ENTITY DirectConElemWhitespace SYSTEM "cat/DirectConElemWhitespace.xml">
+<!ENTITY DirectConOther SYSTEM "cat/DirectConOther.xml">
+<!ENTITY ComputeConElem SYSTEM "cat/ComputeConElem.xml">
+<!ENTITY ComputeConAttr SYSTEM "cat/ComputeConAttr.xml">
+<!ENTITY ConDocNode SYSTEM "cat/ConDocNode.xml">
+<!ENTITY ConText SYSTEM "cat/ConText.xml">
+<!ENTITY ComputeConPI SYSTEM "cat/ComputeConPI.xml">
+<!ENTITY ComputeConComment SYSTEM "cat/ComputeConComment.xml">
+<!ENTITY ConInScopeNamespace SYSTEM "cat/ConInScopeNamespace.xml">
+<!ENTITY ForExprWithout SYSTEM "cat/ForExprWithout.xml">
+<!ENTITY ForExprWith SYSTEM "cat/ForExprWith.xml">
+<!ENTITY ForExprPositionalVar SYSTEM "cat/ForExprPositionalVar.xml">
+<!ENTITY LetExprWithout SYSTEM "cat/LetExprWithout.xml">
+<!ENTITY LetExprWith SYSTEM "cat/LetExprWith.xml">
+<!ENTITY WhereExpr SYSTEM "cat/WhereExpr.xml">
+<!ENTITY OrderbyExprWith SYSTEM "cat/OrderbyExprWith.xml">
+<!ENTITY OrderbyExprWithout SYSTEM "cat/OrderbyExprWithout.xml">
+<!ENTITY ReturnExpr SYSTEM "cat/ReturnExpr.xml">
+<!ENTITY OrderExpr SYSTEM "cat/OrderExpr.xml">
+<!ENTITY CondExpr SYSTEM "cat/CondExpr.xml">
+<!ENTITY QuantExprWithout SYSTEM "cat/QuantExprWithout.xml">
+<!ENTITY QuantExprWith SYSTEM "cat/QuantExprWith.xml">
+<!ENTITY SeqExprInstanceOf SYSTEM "cat/SeqExprInstanceOf.xml">
+<!ENTITY sequenceExprTypeswitch SYSTEM "cat/sequenceExprTypeswitch.xml">
+<!ENTITY SeqExprCastToDerived SYSTEM "cat/SeqExprCastToDerived.xml">
+<!ENTITY SeqExprCastToDerivedParents SYSTEM "cat/SeqExprCastToDerivedParents.xml">
+<!ENTITY SeqExprCastWithinBranch SYSTEM "cat/SeqExprCastWithinBranch.xml">
+<!ENTITY SeqExprCast SYSTEM "cat/SeqExprCast.xml">
+<!ENTITY SeqExprCastable SYSTEM "cat/SeqExprCastable.xml">
+<!ENTITY SeqExprTreat SYSTEM "cat/SeqExprTreat.xml">
+<!ENTITY VersionProlog SYSTEM "cat/VersionProlog.xml">
+<!ENTITY BoundarySpaceProlog SYSTEM "cat/BoundarySpaceProlog.xml">
+<!ENTITY CollationProlog SYSTEM "cat/CollationProlog.xml">
+<!ENTITY CopyNamespacesProlog SYSTEM "cat/CopyNamespacesProlog.xml">
+<!ENTITY BaseURIProlog SYSTEM "cat/BaseURIProlog.xml">
+<!ENTITY ConstructionProlog SYSTEM "cat/ConstructionProlog.xml">
+<!ENTITY DefaultNamespaceProlog SYSTEM "cat/DefaultNamespaceProlog.xml">
+<!ENTITY DefaultOrderingProlog SYSTEM "cat/DefaultOrderingProlog.xml">
+<!ENTITY EmptyOrderProlog SYSTEM "cat/EmptyOrderProlog.xml">
+<!ENTITY NamespaceProlog SYSTEM "cat/NamespaceProlog.xml">
+<!ENTITY ExternalVariablesWithout SYSTEM "cat/ExternalVariablesWithout.xml">
+<!ENTITY ExternalVariablesWith SYSTEM "cat/ExternalVariablesWith.xml">
+<!ENTITY InternalVariablesWithout SYSTEM "cat/InternalVariablesWithout.xml">
+<!ENTITY InternalVariablesWith SYSTEM "cat/InternalVariablesWith.xml">
+<!ENTITY FunctionProlog SYSTEM "cat/FunctionProlog.xml">
+<!ENTITY OptionDeclarationProlog SYSTEM "cat/OptionDeclarationProlog.xml">
+<!ENTITY XQueryComment SYSTEM "cat/XQueryComment.xml">
+<!ENTITY ExtensionExpression SYSTEM "cat/ExtensionExpression.xml">
+<!ENTITY NodeNameFunc SYSTEM "cat/NodeNameFunc.xml">
+<!ENTITY NilledFunc SYSTEM "cat/NilledFunc.xml">
+<!ENTITY StringFunc SYSTEM "cat/StringFunc.xml">
+<!ENTITY DataFunc SYSTEM "cat/DataFunc.xml">
+<!ENTITY BaseURIFunc SYSTEM "cat/BaseURIFunc.xml">
+<!ENTITY StaticBaseURIFunc SYSTEM "cat/StaticBaseURIFunc.xml">
+<!ENTITY DocumentURIFunc SYSTEM "cat/DocumentURIFunc.xml">
+<!ENTITY ErrorFunc SYSTEM "cat/ErrorFunc.xml">
+<!ENTITY ErrorsAndOptimization SYSTEM "cat/ErrorsAndOptimization.xml">
+<!ENTITY TraceFunc SYSTEM "cat/TraceFunc.xml">
+<!ENTITY DateTimeFunc SYSTEM "cat/DateTimeFunc.xml">
+<!ENTITY ABSFunc SYSTEM "cat/ABSFunc.xml">
+<!ENTITY CeilingFunc SYSTEM "cat/CeilingFunc.xml">
+<!ENTITY FloorFunc SYSTEM "cat/FloorFunc.xml">
+<!ENTITY RoundFunc SYSTEM "cat/RoundFunc.xml">
+<!ENTITY RoundEvenFunc SYSTEM "cat/RoundEvenFunc.xml">
+<!ENTITY CodepointToStringFunc SYSTEM "cat/CodepointToStringFunc.xml">
+<!ENTITY StringToCodepointFunc SYSTEM "cat/StringToCodepointFunc.xml">
+<!ENTITY CompareFunction SYSTEM "cat/CompareFunction.xml">
+<!ENTITY CodepointEqual SYSTEM "cat/CodepointEqual.xml">
+<!ENTITY CompareFunc SYSTEM "cat/compareFunc.xml">
+<!ENTITY ConcatFunc SYSTEM "cat/ConcatFunc.xml">
+<!ENTITY StringJoinFunc SYSTEM "cat/StringJoinFunc.xml">
+<!ENTITY SubstringFunc SYSTEM "cat/SubstringFunc.xml">
+<!ENTITY StringLengthFunc SYSTEM "cat/StringLengthFunc.xml">
+<!ENTITY NormalizeSpaceFunc SYSTEM "cat/NormalizeSpaceFunc.xml">
+<!ENTITY NormalizeUnicodeFunc SYSTEM "cat/NormalizeUnicodeFunc.xml">
+<!ENTITY UpperCaseFunc SYSTEM "cat/UpperCaseFunc.xml">
+<!ENTITY LowerCaseFunc SYSTEM "cat/LowerCaseFunc.xml">
+<!ENTITY TranslateFunc SYSTEM "cat/TranslateFunc.xml">
+<!ENTITY Surrogates SYSTEM "cat/Surrogates.xml">
+<!ENTITY EncodeURIfunc SYSTEM "cat/EncodeURIfunc.xml">
+<!ENTITY IRIToURIfunc SYSTEM "cat/IRIToURIfunc.xml">
+<!ENTITY EscapeHTMLURIFunc SYSTEM "cat/EscapeHTMLURIFunc.xml">
+<!ENTITY ContainsFunc SYSTEM "cat/ContainsFunc.xml">
+<!ENTITY StartsWithFunc SYSTEM "cat/StartsWithFunc.xml">
+<!ENTITY EndsWithFunc SYSTEM "cat/EndsWithFunc.xml">
+<!ENTITY SubstringBeforeFunc SYSTEM "cat/SubstringBeforeFunc.xml">
+<!ENTITY SubstringAfterFunc SYSTEM "cat/SubstringAfterFunc.xml">
+<!ENTITY MatchesFunc SYSTEM "cat/MatchesFunc.xml">
+<!ENTITY ReplaceFunc SYSTEM "cat/ReplaceFunc.xml">
+<!ENTITY TokenizeFunc SYSTEM "cat/TokenizeFunc.xml">
+<!ENTITY AnalyzeString SYSTEM "cat/AnalyzeString.xml">
+<!ENTITY ResolveURIFunc SYSTEM "cat/ResolveURIFunc.xml">
+<!ENTITY TrueFunc SYSTEM "cat/TrueFunc.xml">
+<!ENTITY FalseFunc SYSTEM "cat/FalseFunc.xml">
+<!ENTITY NotFunc SYSTEM "cat/NotFunc.xml">
+<!ENTITY YearsFromDurationFunc SYSTEM "cat/YearsFromDurationFunc.xml">
+<!ENTITY MonthsFromDurationFunc SYSTEM "cat/MonthsFromDurationFunc.xml">
+<!ENTITY DaysFromDurationFunc SYSTEM "cat/DaysFromDurationFunc.xml">
+<!ENTITY HoursFromDurationFunc SYSTEM "cat/HoursFromDurationFunc.xml">
+<!ENTITY MinutesFromDurationFunc SYSTEM "cat/MinutesFromDurationFunc.xml">
+<!ENTITY SecondsFromDurationFunc SYSTEM "cat/SecondsFromDurationFunc.xml">
+<!ENTITY YearFromDateTimeFunc SYSTEM "cat/YearFromDateTimeFunc.xml">
+<!ENTITY MonthFromDateTimeFunc SYSTEM "cat/MonthFromDateTimeFunc.xml">
+<!ENTITY DayFromDateTimeFunc SYSTEM "cat/DayFromDateTimeFunc.xml">
+<!ENTITY HoursFromDateTimeFunc SYSTEM "cat/HoursFromDateTimeFunc.xml">
+<!ENTITY MinutesFromDateTimeFunc SYSTEM "cat/MinutesFromDateTimeFunc.xml">
+<!ENTITY SecondsFromDateTimeFunc SYSTEM "cat/SecondsFromDateTimeFunc.xml">
+<!ENTITY TimezoneFromDateTimeFunc SYSTEM "cat/TimezoneFromDateTimeFunc.xml">
+<!ENTITY YearFromDateFunc SYSTEM "cat/YearFromDateFunc.xml">
+<!ENTITY MonthFromDateFunc SYSTEM "cat/MonthFromDateFunc.xml">
+<!ENTITY DayFromDateFunc SYSTEM "cat/DayFromDateFunc.xml">
+<!ENTITY TimezoneFromDateFunc SYSTEM "cat/TimezoneFromDateFunc.xml">
+<!ENTITY HoursFromTimeFunc SYSTEM "cat/HoursFromTimeFunc.xml">
+<!ENTITY MinutesFromTimeFunc SYSTEM "cat/MinutesFromTimeFunc.xml">
+<!ENTITY SecondsFromTimeFunc SYSTEM "cat/SecondsFromTimeFunc.xml">
+<!ENTITY TimezoneFromTimeFunc SYSTEM "cat/TimezoneFromTimeFunc.xml">
+<!ENTITY AdjDateTimeToTimezoneFunc SYSTEM "cat/AdjDateTimeToTimezoneFunc.xml">
+<!ENTITY AdjDateToTimezoneFunc SYSTEM "cat/AdjDateToTimezoneFunc.xml">
+<!ENTITY AdjTimeToTimezoneFunc SYSTEM "cat/AdjTimeToTimezoneFunc.xml">
+<!ENTITY ResolveQNameConstructFunc SYSTEM "cat/ResolveQNameConstructFunc.xml">
+<!ENTITY ExpandedQNameConstructFunc SYSTEM "cat/ExpandedQNameConstructFunc.xml">
+<!ENTITY LocalNameFromQNameFunc SYSTEM "cat/LocalNameFromQNameFunc.xml">
+<!ENTITY NamespaceURIFromQNameFunc SYSTEM "cat/NamespaceURIFromQNameFunc.xml">
+<!ENTITY NamespaceURIForPrefixFunc SYSTEM "cat/NamespaceURIForPrefixFunc.xml">
+<!ENTITY InScopePrefixesFunc SYSTEM "cat/InScopePrefixesFunc.xml">
+<!ENTITY NameFunc SYSTEM "cat/NameFunc.xml">
+<!ENTITY NodeLocalNameFunc SYSTEM "cat/NodeLocalNameFunc.xml">
+<!ENTITY NodeNamespaceURIFunc SYSTEM "cat/NodeNamespaceURIFunc.xml">
+<!ENTITY NodeNumberFunc SYSTEM "cat/NodeNumberFunc.xml">
+<!ENTITY NodeLangFunc SYSTEM "cat/NodeLangFunc.xml">
+<!ENTITY NodeRootFunc SYSTEM "cat/NodeRootFunc.xml">
+<!ENTITY SeqBooleanFunc SYSTEM "cat/SeqBooleanFunc.xml">
+<!ENTITY SeqIndexOfFunc SYSTEM "cat/SeqIndexOfFunc.xml">
+<!ENTITY SeqEmptyFunc SYSTEM "cat/SeqEmptyFunc.xml">
+<!ENTITY SeqExistsFunc SYSTEM "cat/SeqExistsFunc.xml">
+<!ENTITY SeqDistinctValuesFunc SYSTEM "cat/SeqDistinctValuesFunc.xml">
+<!ENTITY SeqInsertBeforeFunc SYSTEM "cat/SeqInsertBeforeFunc.xml">
+<!ENTITY SeqRemoveFunc SYSTEM "cat/SeqRemoveFunc.xml">
+<!ENTITY SeqReverseFunc SYSTEM "cat/SeqReverseFunc.xml">
+<!ENTITY SeqSubsequenceFunc SYSTEM "cat/SeqSubsequenceFunc.xml">
+<!ENTITY SeqUnorderedFunc SYSTEM "cat/SeqUnorderedFunc.xml">
+<!ENTITY SeqZeroOrOneFunc SYSTEM "cat/SeqZeroOrOneFunc.xml">
+<!ENTITY SeqOneOrMoreFunc SYSTEM "cat/SeqOneOrMoreFunc.xml">
+<!ENTITY SeqExactlyOneFunc SYSTEM "cat/SeqExactlyOneFunc.xml">
+<!ENTITY SeqDeepEqualFunc SYSTEM "cat/SeqDeepEqualFunc.xml">
+<!ENTITY SeqCountFunc SYSTEM "cat/SeqCountFunc.xml">
+<!ENTITY SeqAVGFunc SYSTEM "cat/SeqAVGFunc.xml">
+<!ENTITY SeqMAXFunc SYSTEM "cat/SeqMAXFunc.xml">
+<!ENTITY SeqMINFunc SYSTEM "cat/SeqMINFunc.xml">
+<!ENTITY SeqSUMFunc SYSTEM "cat/SeqSUMFunc.xml">
+<!ENTITY SeqIDFunc SYSTEM "cat/SeqIDFunc.xml">
+<!ENTITY SeqIDREFFunc SYSTEM "cat/SeqIDREFFunc.xml">
+<!ENTITY SeqDocAvailableFunc SYSTEM "cat/SeqDocAvailableFunc.xml">
+<!ENTITY SeqDocFunc SYSTEM "cat/SeqDocFunc.xml">
+<!ENTITY SeqCollectionFunc SYSTEM "cat/SeqCollectionFunc.xml">
+<!ENTITY ContextPositionFunc SYSTEM "cat/ContextPositionFunc.xml">
+<!ENTITY ContextLastFunc SYSTEM "cat/ContextLastFunc.xml">
+<!ENTITY ContextCurrentDatetimeFunc SYSTEM "cat/ContextCurrentDatetimeFunc.xml">
+<!ENTITY ContextCurrentDateFunc SYSTEM "cat/ContextCurrentDateFunc.xml">
+<!ENTITY ContextCurrentTimeFunc SYSTEM "cat/ContextCurrentTimeFunc.xml">
+<!ENTITY ContextDefaultCollationFunc SYSTEM "cat/ContextDefaultCollationFunc.xml">
+<!ENTITY ContextImplicitTimezoneFunc SYSTEM "cat/ContextImplicitTimezoneFunc.xml">
+<!ENTITY FLWORExprSI SYSTEM "cat/FLWORExprSI.xml">
+<!ENTITY ConstructSI SYSTEM "cat/ConstructSI.xml">
+<!ENTITY versionPrologSI SYSTEM "cat/versionPrologSI.xml">
+<!ENTITY MiscFunctions SYSTEM "cat/MiscFunctions.xml">
+<!ENTITY ElementWithId SYSTEM "cat/ElementWithId.xml">
+<!ENTITY SeqExprCastSI SYSTEM "cat/SeqExprCastSI.xml">
+<!ENTITY NumericEqualSI SYSTEM "cat/NumericEqualSI.xml">
+<!ENTITY NotationEQSI SYSTEM "cat/NotationEQSI.xml">
+<!ENTITY UserDefinedSI SYSTEM "cat/UserDefinedSI.xml">
+<!ENTITY SchemaImportProlog SYSTEM "cat/SchemaImportProlog.xml">
+<!ENTITY ForExprTypeSI SYSTEM "cat/ForExprTypeSI.xml">
+<!ENTITY PathExprSI SYSTEM "cat/PathExprSI.xml">
+<!ENTITY ValidateExpression SYSTEM "cat/ValidateExpression.xml">
+<!ENTITY STAxes SYSTEM "cat/STAxes.xml">
+<!ENTITY STFLWORExpr SYSTEM "cat/STFLWORExpr.xml">
+<!ENTITY STFunctions SYSTEM "cat/STFunctions.xml">
+<!ENTITY ancestorAxis SYSTEM "cat/ancestorAxis.xml">
+<!ENTITY ancestor-or-selfAxis SYSTEM "cat/ancestor-or-selfAxis.xml">
+<!ENTITY followingAxis SYSTEM "cat/followingAxis.xml">
+<!ENTITY following-siblingAxis SYSTEM "cat/following-siblingAxis.xml">
+<!ENTITY precedingAxis SYSTEM "cat/precedingAxis.xml">
+<!ENTITY preceding-siblingAxis SYSTEM "cat/preceding-siblingAxis.xml">
+<!ENTITY ModuleImport SYSTEM "cat/ModuleImport.xml">
+<!ENTITY ModuleProlog SYSTEM "cat/ModuleProlog.xml">
+<!ENTITY Serialization SYSTEM "cat/Serialization.xml">
+<!ENTITY Appendix-A4 SYSTEM "cat/Appendix-A4.xml">
+<!ENTITY Annex-E SYSTEM "cat/Annex-E.xml">
+<!ENTITY UseCaseXMP SYSTEM "cat/UseCaseXMP.xml">
+<!ENTITY UseCaseTREE SYSTEM "cat/UseCaseTREE.xml">
+<!ENTITY UseCaseSEQ SYSTEM "cat/UseCaseSEQ.xml">
+<!ENTITY UseCaseR SYSTEM "cat/UseCaseR.xml">
+<!ENTITY UseCaseSGML SYSTEM "cat/UseCaseSGML.xml">
+<!ENTITY UseCaseSTRING SYSTEM "cat/UseCaseSTRING.xml">
+<!ENTITY UseCaseNS SYSTEM "cat/UseCaseNS.xml">
+<!ENTITY UseCasePARTS SYSTEM "cat/UseCasePARTS.xml">
+<!ENTITY XMark SYSTEM "cat/XMark.xml">
+<!ENTITY functx-fn-abs SYSTEM "cat/functx-fn-abs.xml">
+<!ENTITY functx-fn-adjust-dateTime-to-timezone SYSTEM "cat/functx-fn-adjust-dateTime-to-timezone.xml">
+<!ENTITY functx-fn-adjust-date-to-timezone SYSTEM "cat/functx-fn-adjust-date-to-timezone.xml">
+<!ENTITY functx-fn-adjust-time-to-timezone SYSTEM "cat/functx-fn-adjust-time-to-timezone.xml">
+<!ENTITY functx-fn-avg SYSTEM "cat/functx-fn-avg.xml">
+<!ENTITY functx-fn-base-uri SYSTEM "cat/functx-fn-base-uri.xml">
+<!ENTITY functx-fn-boolean SYSTEM "cat/functx-fn-boolean.xml">
+<!ENTITY functx-fn-ceiling SYSTEM "cat/functx-fn-ceiling.xml">
+<!ENTITY functx-fn-codepoint-equal SYSTEM "cat/functx-fn-codepoint-equal.xml">
+<!ENTITY functx-fn-codepoints-to-string SYSTEM "cat/functx-fn-codepoints-to-string.xml">
+<!ENTITY functx-fn-compare SYSTEM "cat/functx-fn-compare.xml">
+<!ENTITY functx-fn-concat SYSTEM "cat/functx-fn-concat.xml">
+<!ENTITY functx-fn-contains SYSTEM "cat/functx-fn-contains.xml">
+<!ENTITY functx-fn-count SYSTEM "cat/functx-fn-count.xml">
+<!ENTITY functx-fn-data SYSTEM "cat/functx-fn-data.xml">
+<!ENTITY functx-fn-dateTime SYSTEM "cat/functx-fn-dateTime.xml">
+<!ENTITY functx-fn-day-from-dateTime SYSTEM "cat/functx-fn-day-from-dateTime.xml">
+<!ENTITY functx-fn-day-from-date SYSTEM "cat/functx-fn-day-from-date.xml">
+<!ENTITY functx-fn-days-from-duration SYSTEM "cat/functx-fn-days-from-duration.xml">
+<!ENTITY functx-fn-deep-equal SYSTEM "cat/functx-fn-deep-equal.xml">
+<!ENTITY functx-fn-default-collation SYSTEM "cat/functx-fn-default-collation.xml">
+<!ENTITY functx-fn-distinct-values SYSTEM "cat/functx-fn-distinct-values.xml">
+<!ENTITY functx-fn-doc-available SYSTEM "cat/functx-fn-doc-available.xml">
+<!ENTITY functx-fn-empty SYSTEM "cat/functx-fn-empty.xml">
+<!ENTITY functx-fn-encode-for-uri SYSTEM "cat/functx-fn-encode-for-uri.xml">
+<!ENTITY functx-fn-ends-with SYSTEM "cat/functx-fn-ends-with.xml">
+<!ENTITY functx-fn-escape-html-uri SYSTEM "cat/functx-fn-escape-html-uri.xml">
+<!ENTITY functx-fn-exactly-one SYSTEM "cat/functx-fn-exactly-one.xml">
+<!ENTITY functx-fn-exists SYSTEM "cat/functx-fn-exists.xml">
+<!ENTITY functx-fn-false SYSTEM "cat/functx-fn-false.xml">
+<!ENTITY functx-fn-floor SYSTEM "cat/functx-fn-floor.xml">
+<!ENTITY functx-fn-hours-from-dateTime SYSTEM "cat/functx-fn-hours-from-dateTime.xml">
+<!ENTITY functx-fn-hours-from-duration SYSTEM "cat/functx-fn-hours-from-duration.xml">
+<!ENTITY functx-fn-hours-from-time SYSTEM "cat/functx-fn-hours-from-time.xml">
+<!ENTITY functx-fn-index-of SYSTEM "cat/functx-fn-index-of.xml">
+<!ENTITY functx-fn-insert-before SYSTEM "cat/functx-fn-insert-before.xml">
+<!ENTITY functx-fn-iri-to-uri SYSTEM "cat/functx-fn-iri-to-uri.xml">
+<!ENTITY functx-fn-lang SYSTEM "cat/functx-fn-lang.xml">
+<!ENTITY functx-fn-last SYSTEM "cat/functx-fn-last.xml">
+<!ENTITY functx-fn-local-name-from-QName SYSTEM "cat/functx-fn-local-name-from-QName.xml">
+<!ENTITY functx-fn-local-name SYSTEM "cat/functx-fn-local-name.xml">
+<!ENTITY functx-fn-lower-case SYSTEM "cat/functx-fn-lower-case.xml">
+<!ENTITY functx-fn-matches SYSTEM "cat/functx-fn-matches.xml">
+<!ENTITY functx-fn-max SYSTEM "cat/functx-fn-max.xml">
+<!ENTITY functx-fn-minutes-from-dateTime SYSTEM "cat/functx-fn-minutes-from-dateTime.xml">
+<!ENTITY functx-fn-minutes-from-duration SYSTEM "cat/functx-fn-minutes-from-duration.xml">
+<!ENTITY functx-fn-minutes-from-time SYSTEM "cat/functx-fn-minutes-from-time.xml">
+<!ENTITY functx-fn-min SYSTEM "cat/functx-fn-min.xml">
+<!ENTITY functx-fn-month-from-dateTime SYSTEM "cat/functx-fn-month-from-dateTime.xml">
+<!ENTITY functx-fn-month-from-date SYSTEM "cat/functx-fn-month-from-date.xml">
+<!ENTITY functx-fn-months-from-duration SYSTEM "cat/functx-fn-months-from-duration.xml">
+<!ENTITY functx-fn-namespace-uri-for-prefix SYSTEM "cat/functx-fn-namespace-uri-for-prefix.xml">
+<!ENTITY functx-fn-namespace-uri-from-QName SYSTEM "cat/functx-fn-namespace-uri-from-QName.xml">
+<!ENTITY functx-fn-namespace-uri SYSTEM "cat/functx-fn-namespace-uri.xml">
+<!ENTITY functx-fn-name SYSTEM "cat/functx-fn-name.xml">
+<!ENTITY functx-fn-nilled SYSTEM "cat/functx-fn-nilled.xml">
+<!ENTITY functx-fn-node-name SYSTEM "cat/functx-fn-node-name.xml">
+<!ENTITY functx-fn-normalize-space SYSTEM "cat/functx-fn-normalize-space.xml">
+<!ENTITY functx-fn-normalize-unicode SYSTEM "cat/functx-fn-normalize-unicode.xml">
+<!ENTITY functx-fn-not SYSTEM "cat/functx-fn-not.xml">
+<!ENTITY functx-fn-number SYSTEM "cat/functx-fn-number.xml">
+<!ENTITY functx-fn-one-or-more SYSTEM "cat/functx-fn-one-or-more.xml">
+<!ENTITY functx-fn-position SYSTEM "cat/functx-fn-position.xml">
+<!ENTITY functx-fn-prefix-from-QName SYSTEM "cat/functx-fn-prefix-from-QName.xml">
+<!ENTITY functx-fn-QName SYSTEM "cat/functx-fn-QName.xml">
+<!ENTITY functx-fn-remove SYSTEM "cat/functx-fn-remove.xml">
+<!ENTITY functx-fn-replace SYSTEM "cat/functx-fn-replace.xml">
+<!ENTITY functx-fn-resolve-QName SYSTEM "cat/functx-fn-resolve-QName.xml">
+<!ENTITY functx-fn-resolve-uri SYSTEM "cat/functx-fn-resolve-uri.xml">
+<!ENTITY functx-fn-reverse SYSTEM "cat/functx-fn-reverse.xml">
+<!ENTITY functx-fn-root SYSTEM "cat/functx-fn-root.xml">
+<!ENTITY functx-fn-round-half-to-even SYSTEM "cat/functx-fn-round-half-to-even.xml">
+<!ENTITY functx-fn-round SYSTEM "cat/functx-fn-round.xml">
+<!ENTITY functx-fn-seconds-from-dateTime SYSTEM "cat/functx-fn-seconds-from-dateTime.xml">
+<!ENTITY functx-fn-seconds-from-duration SYSTEM "cat/functx-fn-seconds-from-duration.xml">
+<!ENTITY functx-fn-seconds-from-time SYSTEM "cat/functx-fn-seconds-from-time.xml">
+<!ENTITY functx-fn-starts-with SYSTEM "cat/functx-fn-starts-with.xml">
+<!ENTITY functx-fn-string-join SYSTEM "cat/functx-fn-string-join.xml">
+<!ENTITY functx-fn-string-length SYSTEM "cat/functx-fn-string-length.xml">
+<!ENTITY functx-fn-string-to-codepoints SYSTEM "cat/functx-fn-string-to-codepoints.xml">
+<!ENTITY functx-fn-string SYSTEM "cat/functx-fn-string.xml">
+<!ENTITY functx-fn-subsequence SYSTEM "cat/functx-fn-subsequence.xml">
+<!ENTITY functx-fn-substring-after SYSTEM "cat/functx-fn-substring-after.xml">
+<!ENTITY functx-fn-substring-before SYSTEM "cat/functx-fn-substring-before.xml">
+<!ENTITY functx-fn-substring SYSTEM "cat/functx-fn-substring.xml">
+<!ENTITY functx-fn-sum SYSTEM "cat/functx-fn-sum.xml">
+<!ENTITY functx-fn-timezone-from-dateTime SYSTEM "cat/functx-fn-timezone-from-dateTime.xml">
+<!ENTITY functx-fn-timezone-from-date SYSTEM "cat/functx-fn-timezone-from-date.xml">
+<!ENTITY functx-fn-timezone-from-time SYSTEM "cat/functx-fn-timezone-from-time.xml">
+<!ENTITY functx-fn-tokenize SYSTEM "cat/functx-fn-tokenize.xml">
+<!ENTITY functx-fn-translate SYSTEM "cat/functx-fn-translate.xml">
+<!ENTITY functx-fn-true SYSTEM "cat/functx-fn-true.xml">
+<!ENTITY functx-fn-upper-case SYSTEM "cat/functx-fn-upper-case.xml">
+<!ENTITY functx-fn-year-from-dateTime SYSTEM "cat/functx-fn-year-from-dateTime.xml">
+<!ENTITY functx-fn-year-from-date SYSTEM "cat/functx-fn-year-from-date.xml">
+<!ENTITY functx-fn-years-from-duration SYSTEM "cat/functx-fn-years-from-duration.xml">
+<!ENTITY functx-fn-zero-or-one SYSTEM "cat/functx-fn-zero-or-one.xml">
+<!ENTITY functx-functx-add-attributes SYSTEM "cat/functx-functx-add-attributes.xml">
+<!ENTITY functx-functx-add-months SYSTEM "cat/functx-functx-add-months.xml">
+<!ENTITY functx-functx-add-or-update-attributes SYSTEM "cat/functx-functx-add-or-update-attributes.xml">
+<!ENTITY functx-functx-all-whitespace SYSTEM "cat/functx-functx-all-whitespace.xml">
+<!ENTITY functx-functx-are-distinct-values SYSTEM "cat/functx-functx-are-distinct-values.xml">
+<!ENTITY functx-functx-atomic-type SYSTEM "cat/functx-functx-atomic-type.xml">
+<!ENTITY functx-functx-avg-empty-is-zero SYSTEM "cat/functx-functx-avg-empty-is-zero.xml">
+<!ENTITY functx-functx-between-exclusive SYSTEM "cat/functx-functx-between-exclusive.xml">
+<!ENTITY functx-functx-between-inclusive SYSTEM "cat/functx-functx-between-inclusive.xml">
+<!ENTITY functx-functx-camel-case-to-words SYSTEM "cat/functx-functx-camel-case-to-words.xml">
+<!ENTITY functx-functx-capitalize-first SYSTEM "cat/functx-functx-capitalize-first.xml">
+<!ENTITY functx-functx-change-element-names-deep SYSTEM "cat/functx-functx-change-element-names-deep.xml">
+<!ENTITY functx-functx-change-element-ns-deep SYSTEM "cat/functx-functx-change-element-ns-deep.xml">
+<!ENTITY functx-functx-change-element-ns SYSTEM "cat/functx-functx-change-element-ns.xml">
+<!ENTITY functx-functx-chars SYSTEM "cat/functx-functx-chars.xml">
+<!ENTITY functx-functx-contains-any-of SYSTEM "cat/functx-functx-contains-any-of.xml">
+<!ENTITY functx-functx-contains-case-insensitive SYSTEM "cat/functx-functx-contains-case-insensitive.xml">
+<!ENTITY functx-functx-contains-word SYSTEM "cat/functx-functx-contains-word.xml">
+<!ENTITY functx-functx-copy-attributes SYSTEM "cat/functx-functx-copy-attributes.xml">
+<!ENTITY functx-functx-dateTime SYSTEM "cat/functx-functx-dateTime.xml">
+<!ENTITY functx-functx-date SYSTEM "cat/functx-functx-date.xml">
+<!ENTITY functx-functx-day-in-year SYSTEM "cat/functx-functx-day-in-year.xml">
+<!ENTITY functx-functx-day-of-week-abbrev-en SYSTEM "cat/functx-functx-day-of-week-abbrev-en.xml">
+<!ENTITY functx-functx-day-of-week-name-en SYSTEM "cat/functx-functx-day-of-week-name-en.xml">
+<!ENTITY functx-functx-day-of-week SYSTEM "cat/functx-functx-day-of-week.xml">
+<!ENTITY functx-functx-days-in-month SYSTEM "cat/functx-functx-days-in-month.xml">
+<!ENTITY functx-functx-dayTimeDuration SYSTEM "cat/functx-functx-dayTimeDuration.xml">
+<!ENTITY functx-functx-ddmmyyyy-to-date SYSTEM "cat/functx-functx-ddmmyyyy-to-date.xml">
+<!ENTITY functx-functx-depth-of-node SYSTEM "cat/functx-functx-depth-of-node.xml">
+<!ENTITY functx-functx-distinct-attribute-names SYSTEM "cat/functx-functx-distinct-attribute-names.xml">
+<!ENTITY functx-functx-distinct-deep SYSTEM "cat/functx-functx-distinct-deep.xml">
+<!ENTITY functx-functx-distinct-element-names SYSTEM "cat/functx-functx-distinct-element-names.xml">
+<!ENTITY functx-functx-distinct-element-paths SYSTEM "cat/functx-functx-distinct-element-paths.xml">
+<!ENTITY functx-functx-distinct-nodes SYSTEM "cat/functx-functx-distinct-nodes.xml">
+<!ENTITY functx-functx-duration-from-timezone SYSTEM "cat/functx-functx-duration-from-timezone.xml">
+<!ENTITY functx-functx-dynamic-path SYSTEM "cat/functx-functx-dynamic-path.xml">
+<!ENTITY functx-functx-escape-for-regex SYSTEM "cat/functx-functx-escape-for-regex.xml">
+<!ENTITY functx-functx-exclusive-or SYSTEM "cat/functx-functx-exclusive-or.xml">
+<!ENTITY functx-functx-first-day-of-month SYSTEM "cat/functx-functx-first-day-of-month.xml">
+<!ENTITY functx-functx-first-day-of-year SYSTEM "cat/functx-functx-first-day-of-year.xml">
+<!ENTITY functx-functx-first-node SYSTEM "cat/functx-functx-first-node.xml">
+<!ENTITY functx-functx-follows-not-descendant SYSTEM "cat/functx-functx-follows-not-descendant.xml">
+<!ENTITY functx-functx-format-as-title-en SYSTEM "cat/functx-functx-format-as-title-en.xml">
+<!ENTITY functx-functx-fragment-from-uri SYSTEM "cat/functx-functx-fragment-from-uri.xml">
+<!ENTITY functx-functx-get-matches-and-non-matches SYSTEM "cat/functx-functx-get-matches-and-non-matches.xml">
+<!ENTITY functx-functx-get-matches SYSTEM "cat/functx-functx-get-matches.xml">
+<!ENTITY functx-functx-has-element-only-content SYSTEM "cat/functx-functx-has-element-only-content.xml">
+<!ENTITY functx-functx-has-empty-content SYSTEM "cat/functx-functx-has-empty-content.xml">
+<!ENTITY functx-functx-has-mixed-content SYSTEM "cat/functx-functx-has-mixed-content.xml">
+<!ENTITY functx-functx-has-simple-content SYSTEM "cat/functx-functx-has-simple-content.xml">
+<!ENTITY functx-functx-id-from-element SYSTEM "cat/functx-functx-id-from-element.xml">
+<!ENTITY functx-functx-id-untyped SYSTEM "cat/functx-functx-id-untyped.xml">
+<!ENTITY functx-functx-if-absent SYSTEM "cat/functx-functx-if-absent.xml">
+<!ENTITY functx-functx-if-empty SYSTEM "cat/functx-functx-if-empty.xml">
+<!ENTITY functx-functx-index-of-deep-equal-node SYSTEM "cat/functx-functx-index-of-deep-equal-node.xml">
+<!ENTITY functx-functx-index-of-match-first SYSTEM "cat/functx-functx-index-of-match-first.xml">
+<!ENTITY functx-functx-index-of-node SYSTEM "cat/functx-functx-index-of-node.xml">
+<!ENTITY functx-functx-index-of-string-first SYSTEM "cat/functx-functx-index-of-string-first.xml">
+<!ENTITY functx-functx-index-of-string-last SYSTEM "cat/functx-functx-index-of-string-last.xml">
+<!ENTITY functx-functx-index-of-string SYSTEM "cat/functx-functx-index-of-string.xml">
+<!ENTITY functx-functx-insert-string SYSTEM "cat/functx-functx-insert-string.xml">
+<!ENTITY functx-functx-is-absolute-uri SYSTEM "cat/functx-functx-is-absolute-uri.xml">
+<!ENTITY functx-functx-is-ancestor SYSTEM "cat/functx-functx-is-ancestor.xml">
+<!ENTITY functx-functx-is-a-number SYSTEM "cat/functx-functx-is-a-number.xml">
+<!ENTITY functx-functx-is-descendant SYSTEM "cat/functx-functx-is-descendant.xml">
+<!ENTITY functx-functx-is-leap-year SYSTEM "cat/functx-functx-is-leap-year.xml">
+<!ENTITY functx-functx-is-node-among-descendants-deep-equal SYSTEM "cat/functx-functx-is-node-among-descendants-deep-equal.xml">
+<!ENTITY functx-functx-is-node-among-descendants SYSTEM "cat/functx-functx-is-node-among-descendants.xml">
+<!ENTITY functx-functx-is-node-in-sequence-deep-equal SYSTEM "cat/functx-functx-is-node-in-sequence-deep-equal.xml">
+<!ENTITY functx-functx-is-node-in-sequence SYSTEM "cat/functx-functx-is-node-in-sequence.xml">
+<!ENTITY functx-functx-is-value-in-sequence SYSTEM "cat/functx-functx-is-value-in-sequence.xml">
+<!ENTITY functx-functx-last-day-of-month SYSTEM "cat/functx-functx-last-day-of-month.xml">
+<!ENTITY functx-functx-last-day-of-year SYSTEM "cat/functx-functx-last-day-of-year.xml">
+<!ENTITY functx-functx-last-node SYSTEM "cat/functx-functx-last-node.xml">
+<!ENTITY functx-functx-leaf-elements SYSTEM "cat/functx-functx-leaf-elements.xml">
+<!ENTITY functx-functx-left-trim SYSTEM "cat/functx-functx-left-trim.xml">
+<!ENTITY functx-functx-line-count SYSTEM "cat/functx-functx-line-count.xml">
+<!ENTITY functx-functx-lines SYSTEM "cat/functx-functx-lines.xml">
+<!ENTITY functx-functx-max-depth SYSTEM "cat/functx-functx-max-depth.xml">
+<!ENTITY functx-functx-max-determine-type SYSTEM "cat/functx-functx-max-determine-type.xml">
+<!ENTITY functx-functx-max-line-length SYSTEM "cat/functx-functx-max-line-length.xml">
+<!ENTITY functx-functx-max-node SYSTEM "cat/functx-functx-max-node.xml">
+<!ENTITY functx-functx-max-string SYSTEM "cat/functx-functx-max-string.xml">
+<!ENTITY functx-functx-min-determine-type SYSTEM "cat/functx-functx-min-determine-type.xml">
+<!ENTITY functx-functx-min-node SYSTEM "cat/functx-functx-min-node.xml">
+<!ENTITY functx-functx-min-non-empty-string SYSTEM "cat/functx-functx-min-non-empty-string.xml">
+<!ENTITY functx-functx-min-string SYSTEM "cat/functx-functx-min-string.xml">
+<!ENTITY functx-functx-mmddyyyy-to-date SYSTEM "cat/functx-functx-mmddyyyy-to-date.xml">
+<!ENTITY functx-functx-month-abbrev-en SYSTEM "cat/functx-functx-month-abbrev-en.xml">
+<!ENTITY functx-functx-month-name-en SYSTEM "cat/functx-functx-month-name-en.xml">
+<!ENTITY functx-functx-namespaces-in-use SYSTEM "cat/functx-functx-namespaces-in-use.xml">
+<!ENTITY functx-functx-name-test SYSTEM "cat/functx-functx-name-test.xml">
+<!ENTITY functx-functx-next-day SYSTEM "cat/functx-functx-next-day.xml">
+<!ENTITY functx-functx-node-kind SYSTEM "cat/functx-functx-node-kind.xml">
+<!ENTITY functx-functx-non-distinct-values SYSTEM "cat/functx-functx-non-distinct-values.xml">
+<!ENTITY functx-functx-number-of-matches SYSTEM "cat/functx-functx-number-of-matches.xml">
+<!ENTITY functx-functx-ordinal-number-en SYSTEM "cat/functx-functx-ordinal-number-en.xml">
+<!ENTITY functx-functx-pad-integer-to-length SYSTEM "cat/functx-functx-pad-integer-to-length.xml">
+<!ENTITY functx-functx-pad-string-to-length SYSTEM "cat/functx-functx-pad-string-to-length.xml">
+<!ENTITY functx-functx-path-to-node-with-pos SYSTEM "cat/functx-functx-path-to-node-with-pos.xml">
+<!ENTITY functx-functx-path-to-node SYSTEM "cat/functx-functx-path-to-node.xml">
+<!ENTITY functx-functx-precedes-not-ancestor SYSTEM "cat/functx-functx-precedes-not-ancestor.xml">
+<!ENTITY functx-functx-previous-day SYSTEM "cat/functx-functx-previous-day.xml">
+<!ENTITY functx-functx-remove-attributes-deep SYSTEM "cat/functx-functx-remove-attributes-deep.xml">
+<!ENTITY functx-functx-remove-attributes SYSTEM "cat/functx-functx-remove-attributes.xml">
+<!ENTITY functx-functx-remove-elements-deep SYSTEM "cat/functx-functx-remove-elements-deep.xml">
+<!ENTITY functx-functx-remove-elements-not-contents SYSTEM "cat/functx-functx-remove-elements-not-contents.xml">
+<!ENTITY functx-functx-remove-elements SYSTEM "cat/functx-functx-remove-elements.xml">
+<!ENTITY functx-functx-repeat-string SYSTEM "cat/functx-functx-repeat-string.xml">
+<!ENTITY functx-functx-replace-beginning SYSTEM "cat/functx-functx-replace-beginning.xml">
+<!ENTITY functx-functx-replace-element-values SYSTEM "cat/functx-functx-replace-element-values.xml">
+<!ENTITY functx-functx-replace-first SYSTEM "cat/functx-functx-replace-first.xml">
+<!ENTITY functx-functx-replace-multi SYSTEM "cat/functx-functx-replace-multi.xml">
+<!ENTITY functx-functx-reverse-string SYSTEM "cat/functx-functx-reverse-string.xml">
+<!ENTITY functx-functx-right-trim SYSTEM "cat/functx-functx-right-trim.xml">
+<!ENTITY functx-functx-scheme-from-uri SYSTEM "cat/functx-functx-scheme-from-uri.xml">
+<!ENTITY functx-functx-sequence-deep-equal SYSTEM "cat/functx-functx-sequence-deep-equal.xml">
+<!ENTITY functx-functx-sequence-node-equal-any-order SYSTEM "cat/functx-functx-sequence-node-equal-any-order.xml">
+<!ENTITY functx-functx-sequence-node-equal SYSTEM "cat/functx-functx-sequence-node-equal.xml">
+<!ENTITY functx-functx-sequence-type SYSTEM "cat/functx-functx-sequence-type.xml">
+<!ENTITY functx-functx-siblings-same-name SYSTEM "cat/functx-functx-siblings-same-name.xml">
+<!ENTITY functx-functx-siblings SYSTEM "cat/functx-functx-siblings.xml">
+<!ENTITY functx-functx-sort-as-numeric SYSTEM "cat/functx-functx-sort-as-numeric.xml">
+<!ENTITY functx-functx-sort-case-insensitive SYSTEM "cat/functx-functx-sort-case-insensitive.xml">
+<!ENTITY functx-functx-sort-document-order SYSTEM "cat/functx-functx-sort-document-order.xml">
+<!ENTITY functx-functx-sort SYSTEM "cat/functx-functx-sort.xml">
+<!ENTITY functx-functx-substring-after-if-contains SYSTEM "cat/functx-functx-substring-after-if-contains.xml">
+<!ENTITY functx-functx-substring-after-last-match SYSTEM "cat/functx-functx-substring-after-last-match.xml">
+<!ENTITY functx-functx-substring-after-last SYSTEM "cat/functx-functx-substring-after-last.xml">
+<!ENTITY functx-functx-substring-after-match SYSTEM "cat/functx-functx-substring-after-match.xml">
+<!ENTITY functx-functx-substring-before-if-contains SYSTEM "cat/functx-functx-substring-before-if-contains.xml">
+<!ENTITY functx-functx-substring-before-last-match SYSTEM "cat/functx-functx-substring-before-last-match.xml">
+<!ENTITY functx-functx-substring-before-last SYSTEM "cat/functx-functx-substring-before-last.xml">
+<!ENTITY functx-functx-substring-before-match SYSTEM "cat/functx-functx-substring-before-match.xml">
+<!ENTITY functx-functx-time SYSTEM "cat/functx-functx-time.xml">
+<!ENTITY functx-functx-timezone-from-duration SYSTEM "cat/functx-functx-timezone-from-duration.xml">
+<!ENTITY functx-functx-total-days-from-duration SYSTEM "cat/functx-functx-total-days-from-duration.xml">
+<!ENTITY functx-functx-total-hours-from-duration SYSTEM "cat/functx-functx-total-hours-from-duration.xml">
+<!ENTITY functx-functx-total-minutes-from-duration SYSTEM "cat/functx-functx-total-minutes-from-duration.xml">
+<!ENTITY functx-functx-total-months-from-duration SYSTEM "cat/functx-functx-total-months-from-duration.xml">
+<!ENTITY functx-functx-total-seconds-from-duration SYSTEM "cat/functx-functx-total-seconds-from-duration.xml">
+<!ENTITY functx-functx-total-years-from-duration SYSTEM "cat/functx-functx-total-years-from-duration.xml">
+<!ENTITY functx-functx-trim SYSTEM "cat/functx-functx-trim.xml">
+<!ENTITY functx-functx-update-attributes SYSTEM "cat/functx-functx-update-attributes.xml">
+<!ENTITY functx-functx-value-except SYSTEM "cat/functx-functx-value-except.xml">
+<!ENTITY functx-functx-value-intersect SYSTEM "cat/functx-functx-value-intersect.xml">
+<!ENTITY functx-functx-value-union SYSTEM "cat/functx-functx-value-union.xml">
+<!ENTITY functx-functx-word-count SYSTEM "cat/functx-functx-word-count.xml">
+<!ENTITY functx-functx-words-to-camel-case SYSTEM "cat/functx-functx-words-to-camel-case.xml">
+<!ENTITY functx-functx-wrap-values-in-elements SYSTEM "cat/functx-functx-wrap-values-in-elements.xml">
+<!ENTITY functx-functx-yearMonthDuration SYSTEM "cat/functx-functx-yearMonthDuration.xml">
+<!ENTITY functx-functx-yyyyddmm-to-date SYSTEM "cat/functx-functx-yyyyddmm-to-date.xml">
+<!ENTITY functx-functx-yyyymmdd-to-date SYSTEM "cat/functx-functx-yyyymmdd-to-date.xml">
+<!ENTITY EQName SYSTEM "cat/EQName.xml">
+<!ENTITY HigherOrderFunctions SYSTEM "cat/HigherOrderFunctions.xml">
+<!ENTITY HeadTailFunc SYSTEM "cat/HeadTailFunc.xml">
+<!ENTITY SwitchExpr SYSTEM "cat/SwitchExpr.xml">
+<!ENTITY Catalog SYSTEM "cat/Catalog.xml">
+]>
+<test-suite xmlns="http://www.w3.org/2005/02/query-test-XQTSCatalog"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            CatalogDesignDate="2003-04-03"
+            version="1.0.3"
+            SourceOffsetPath="./"
+            ResultOffsetPath="ExpectedTestResults/"
+            XQueryQueryOffsetPath="Queries/XQuery/"
+            XQueryXQueryOffsetPath="Queries/XQueryX/"
+            XQueryFileExtension=".xq"
+            XQueryXFileExtension=".xqx"
+            xsi:schemaLocation="http://www.w3.org/2005/02/query-test-XQTSCatalog XQTSCatalog.xsd">
+   <test-suite-info>
+      <title>XQuery Test Suite 1.0.3 (under development)</title>
+      <description> 
+         Test Suite for XQuery 1.0. 
+         See http://www.w3.org/XML/Query/test-suite/. 
+    </description>
+   </test-suite-info>
+   <citations>
+      <citation-spec name="XQuery">
+         <description last-mod="2007-01-23">XQuery 1.0: An XML Query Language</description>
+         <spec-URI>http://www.w3.org/TR/xquery/</spec-URI>
+      </citation-spec>
+      <citation-spec name="FuncOps">
+         <description last-mod="2007-01-23">XQuery 1.0 and XPath 2.0 Functions and Operators</description>
+         <spec-URI>http://www.w3.org/TR/xpath-functions/</spec-URI>
+      </citation-spec>
+      <citation-spec name="DataModel">
+         <description last-mod="2007-01-23">XQuery 1.0 and XPath 2.0 Data Model</description>
+         <spec-URI>http://www.w3.org/TR/xpath-datamodel/</spec-URI>
+      </citation-spec>
+      <citation-spec name="FormalSemantics">
+         <description last-mod="2007-01-23">XQuery 1.0 and XPath 2.0 Formal Semantics</description>
+         <spec-URI>http://www.w3.org/TR/xquery-semantics/</spec-URI>
+      </citation-spec>
+      <citation-spec name="SchemaPart2">
+         <description last-mod="2003-03-25">XML Schema Part 2: Datatypes</description>
+         <spec-URI>http://www.w3.org/TR/xmlschema-2/</spec-URI>
+      </citation-spec>
+      <citation-spec name="Schema-Errata">
+         <description last-mod="2003-03-25">XML Schema Errata</description>
+         <note>Current practice is to have one Errata document for all parts of Schema.</note>
+         <spec-URI>http://www.w3.org/2001/05/xmlschema-errata</spec-URI>
+      </citation-spec>
+      <citation-spec name="UseCases">
+         <description last-mod="2006-07-12">XML Query Use Cases</description>
+         <spec-URI>http://www.w3c.org/TR/xquery-use-cases/</spec-URI>
+      </citation-spec>
+      <citation-spec name="XQueryX">
+         <description last-mod="2007-01-23">XML Syntax for XQuery 1.0 (XQueryX)</description>
+         <spec-URI>http://www.w3.org/TR/xqueryx/</spec-URI>
+      </citation-spec>
+      <citation-spec name="Serialization">
+         <description last-mod="2007-01-23">XSLT 2.0 and XQuery 1.0 Serialization</description>
+         <spec-URI>http://www.w3.org/TR/xslt-xquery-serialization/</spec-URI>
+      </citation-spec>
+   </citations>
+   <comparisons>
+      <comparison name="XML">
+         <description last-mod="2003-03-25">The XML InfoSets should be canonicalized and compared.</description>
+      </comparison>
+      <comparison name="Fragment">
+         <description last-mod="2004-10-20">
+            A 'fragment' refers to an XML based instance which has multiple top-level elements and NO XML declaration.
+            The comparator for this should simply wrap the entire fragment in a container element and perform XML comparison.
+         </description>
+      </comparison>
+      <comparison name="Text">
+         <description last-mod="2003-03-25">
+            Each line of non-whitespace text should match. New-line sequences
+            may vary and should be neutralized. Due to issues with the XML serialization of certain characters (e.g. '&lt;'),
+            it is not possible to simply compare the actual and expected results. Rather (as is the case with the 'Fragment' comparator)
+            the test harness should convert the results into valid XML (by adding a container element) and perform comparison
+            on the XML canonicalized versions of the results.
+         </description>
+      </comparison>
+      <comparison name="Ignore">
+         <description last-mod="2003-03-25">
+            Only the presence/absence of this file is significant,
+            not its content.
+         </description>
+      </comparison>
+      <comparison name="Inspect">
+         <description last-mod="2003-03-25">
+            Automated comparison is not possible. the output should be
+            inspected by a human.
+         </description>
+      </comparison>
+   </comparisons>
+   <roles>
+      <role name="principal-data">
+         <description last-mod="2003-03-25">
+            This is the source that is handed in to the processor as the
+            initial input sequence, setting the "evaluation context" as described in XQuery chapter 2.
+         </description>
+      </role>
+      <role name="supplemental-data">
+         <description last-mod="2003-03-25">
+            These are sources that may be read by functions such as
+            fn:document() as the query is evaluated.
+         </description>
+      </role>
+      <role name="schema">
+         <description last-mod="2003-03-25">
+            These are schema definitions that may be referenced by sources
+            or in the query.
+         </description>
+      </role>
+      <role name="dtd">
+         <description last-mod="2003-03-25">
+            These are dtd definitions that may be referenced by sources
+            or in the query.
+         </description>
+      </role>
+      <role name="principal">
+         <description last-mod="2003-03-25">
+            This is an output (either text or XML) that will contain the
+            query results. If the processor invocation sequence accepts a filename for results, this name may be
+            passed, possibly prefixed by a partial directory path to allow storage of the results in a separate
+            directory tree.
+         </description>
+      </role>
+      <role name="console-log">
+         <description last-mod="2003-03-25">
+            This is an output (text file tagged .log) that will contain the
+            captured "console" output for a command-line invocation, or equivalent messages from a harness. The
+            main goal is to capture error messages that came from the processor.
+         </description>
+         <note>
+            A test lab may choose to capture console output for every test case, in which case the presence
+            of this element is a signal that the console log of this test contains messages that are significant to
+            the pass/fail determination.
+         </note>
+      </role>
+   </roles>
+   <scenarios>
+      <scenario name="standard">
+         <description last-mod="2005-06-10">
+            A query this is expected to produce valid results. Principal input should always be specified, even if the query doesn't have any PathExpr.
+         </description>
+      </scenario>
+      <scenario name="parse-error">
+         <description last-mod="2005-06-10">
+            A query this is expected to raise a parsing/syntax error at query parse time. Principal input should always be specified, even if the query doesn't have any PathExpr.
+         </description>
+      </scenario>
+      <scenario name="runtime-error">
+         <description last-mod="2005-06-10">
+            A query this is expected to raise a runtime error at query parse time. Runtime errors in this case include those raised by static typing rules. Principal input should always be specified, even if the query doesn't have any PathExpr.
+         </description>
+      </scenario>
+      <scenario name="trivial">
+         <description last-mod="2006-03-29">
+            A query this is expected to produce valid results. Principal input should always be specified, even if the query doesn't have any PathExpr.
+            The initial query returns an &lt;xqx:xquery&gt; element (Trivial Embedding of XQuery).
+            This embedded query is then executed to produce the final result.
+         </description>
+      </scenario>
+   </scenarios>
+   <sources>
+      <source ID="XQTSCatalog" FileName="XQTSCatalog.xml" Creator="XQuery Test Task Force"
+              schema="XQTSCatalogxsd">
+         <description last-mod="2005-04-14">XQuery Test Suite Catalog</description>
+      </source>
+      <source ID="bib2" FileName="TestSources/bib2.xml" Creator="spec-authors">
+         <description last-mod="2003-03-25">Bibliography example with extra comments and PIs.</description>
+      </source>
+      <source ID="emptydoc" FileName="TestSources/emptydoc.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">Contains just a "doc" element, no comments/text/PIs.</description>
+      </source>
+      <source ID="fsx" FileName="TestSources/fsx.xml" Creator="Mike Rorke">
+         <description last-mod="2003-03-25">Data about a filesystem represented in XML.</description>
+      </source>
+      <source ID="fsx_NS" FileName="TestSources/fsx_NS.xml" Creator="Mike Rorke">
+         <description last-mod="2003-03-25">Data about a filesystem represented in XML with namespace-qualified names.</description>
+      </source>
+      <source ID="MixNS" FileName="TestSources/MixNS.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">Small tree with element names in mixed namespaces.</description>
+         <note>Use @index to identify elements precisely.</note>
+      </source>
+      <source ID="nw_Customers" FileName="TestSources/nw_Customers.xml" Creator="Kuen Siew">
+         <description last-mod="2003-03-25">Customer name/address file with some non-ASCII characters.</description>
+      </source>
+      <source ID="TopMany" FileName="TestSources/TopMany.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">Like TreeCompass, but with comments and PIs off the root. PI targets vary.</description>
+         <note>All text nodes must have non-whitespace characters.</note>
+      </source>
+      <source ID="Tree1Child" FileName="TestSources/Tree1Child.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">A "compass" tree that has just one child, of an abnormal name, off the center node.</description>
+         <note>One attribute each on west and center.</note>
+      </source>
+      <source ID="Tree1Text" FileName="TestSources/Tree1Text.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">A "compass" tree that has just a text node and no child element off the center node.</description>
+      </source>
+      <source ID="TreeCompass" FileName="TestSources/TreeCompass.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">A tree intended to allow many kinds of path expressions.</description>
+         <note>Need multiple attributes on center, west, and south, plus @mark scattered around.</note>
+         <note>Mix of text and element children in many places, but east should have only a text node.</note>
+         <note>All text nodes must have non-whitespace characters.</note>
+         <note>Top element is far-north.</note>
+      </source>
+      <source ID="TreeEmpty" FileName="TestSources/TreeEmpty.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">A "compass" tree that has just one "south" element at the top, bearing one "mark" attribute.</description>
+      </source>
+      <source ID="TreeRepeat" FileName="TestSources/TreeRepeat.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">A "compass" tree that has center elements off the real center node.</description>
+         <note>Use @mark to distinguish center elements.</note>
+         <note>"Real" center must have multiple element children, some with duplicate names (south-east).</note>
+         <note>Repeating attribute names used, including same name on elements of the same name.</note>
+         <note>Comments and text nodes are strewn about. All text nodes must have non-whitespace characters.</note>
+      </source>
+      <source ID="TreeStack" FileName="TestSources/TreeStack.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">A "compass" tree that has several "south" elements, some stacked within each other.</description>
+         <note>Use "mark" attributes at several levels and on all south elements.</note>
+      </source>
+      <source ID="TreeTrunc" FileName="TestSources/TreeTrunc.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">A "compass" tree that has no content at all in center or west, no attributes anywhere.</description>
+      </source>
+      <source ID="xq311A" FileName="TestSources/xq311A.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">Data that fits first example in XQuery 3.11.</description>
+      </source>
+      <source ID="xq311B" FileName="TestSources/xq311B.xml" Creator="David Marston">
+         <description last-mod="2003-03-25">Data that fits later examples in XQuery 3.11.</description>
+      </source>
+      <source ID="DupNode" FileName="TestSources/DupNode.xml" Creator="Andreas Behm">
+         <description last-mod="2005-04-26">Simple document with all node kinds</description>
+      </source>
+      <source ID="inscope" FileName="TestSources/inscope.xml" Creator="Andreas Behm">
+         <description last-mod="2005-08-26">Simple document with namespaces</description>
+      </source>
+      <source ID="nsmode" FileName="TestSources/nsmode.xml" Creator="Andreas Behm">
+         <description last-mod="2005-04-26">Source document for namespace copy modes</description>
+      </source>
+      <source ID="works" FileName="TestSources/works.xml" Creator="Carmelo Montanez">
+         <description last-mod="2005-03-04">Data for various NIST tests</description>
+      </source>
+      <source ID="examples" FileName="TestSources/examples.xml" Creator="Carmelo Montanez"
+              schema="examplesxsd">
+         <description last-mod="2006-05-19">Data for fn-data-1 test.</description>
+      </source>
+      <source ID="works-mod" FileName="TestSources/works-mod.xml" Creator="Carmelo Montanez">
+         <description last-mod="2005-03-04">Data for various NIST tests (abbreviated, unabbreviated syntax)</description>
+      </source>
+      <source ID="lang" FileName="TestSources/lang.xml" Creator="Carmelo Montanez">
+         <description last-mod="2005-10-19">Data for fn:lang tests.</description>
+      </source>
+      <source ID="staff" FileName="TestSources/staff.xml" Creator="Carmelo Montanez">
+         <description last-mod="2005-03-04">Data for various NIST tests</description>
+      </source>
+      <source ID="acme_corp" FileName="TestSources/acme_corp.xml"
+              Creator="Ravindranath Chennoju">
+         <description last-mod="2005-08-30">Source document for Function Declaration tests</description>
+      </source>
+      <source ID="bib" FileName="TestSources/bib.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+      </source>
+      <source ID="reviews" FileName="TestSources/reviews.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+      </source>
+      <source ID="books" FileName="TestSources/books.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+      </source>
+      <source ID="prices" FileName="TestSources/prices.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+      </source>
+      <source ID="book" FileName="TestSources/book.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query TREE use cases</description>
+      </source>
+      <source ID="report1" FileName="TestSources/report1.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query SEQ use cases</description>
+      </source>
+      <source ID="items" FileName="TestSources/items.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query RDB use cases</description>
+      </source>
+      <source ID="bids" FileName="TestSources/bids.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query RDB use cases</description>
+      </source>
+      <source ID="users" FileName="TestSources/users.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query RDB use cases</description>
+      </source>
+      <source ID="string" FileName="TestSources/string.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query STRING use cases</description>
+      </source>
+      <source ID="company-data" FileName="TestSources/company-data.xml"
+              Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query STRING use cases</description>
+      </source>
+      <source ID="auction" FileName="TestSources/auction.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query NS use cases</description>
+      </source>
+      <source ID="partlist" FileName="TestSources/partlist.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query PARTS use cases</description>
+      </source>
+      <source ID="sgml" FileName="TestSources/sgml.xml" Creator="XML Query WG">
+         <description last-mod="2005-02-11">Data for the the XML Query SGML use cases</description>
+      </source>
+      <source ID="atomic" FileName="TestSources/atomic.xml" Creator="Carmelo Montanez"
+              schema="atomicxsd">
+         <description last-mod="2005-03-08">A Schema validated xml file, that contains values for data types. Can be used by any test.</description>
+      </source>
+      <source ID="id-idref-dtd" FileName="TestSources/iddtd.xml" Creator="Carmelo Montanez">
+         <description last-mod="2006-06-28">A DTD validated xml file, that contains data for the ID/IDREF function tests.</description>
+      </source>
+      <source ID="atomicns" FileName="TestSources/atomicns.xml" Creator="Carmelo Montanez">
+         <description last-mod="2006-03-15">A non schema validated xml file, that contains values for data types. Can be used by any test.</description>
+      </source>
+      <source ID="orderData" FileName="TestSources/orderData.xml" Creator="Carmelo Montanez"
+              schema="orderDataxsd">
+         <description last-mod="2005-06-01">A Schema validated xml file, that contains values for some of the order by tests generated by NIST.</description>
+      </source>
+      <source ID="id-idref" FileName="TestSources/id.xml" Creator="Carmelo Montanez"
+              schema="idxsd">
+         <description last-mod="2006-05-12">Data for id and idref related functions (schema-based).</description>
+      </source>
+      <source ID="id-idref2" FileName="TestSources/id2.xml" Creator="Michael Kay"
+              schema="idxsd">
+         <description last-mod="2009-03-06">More data for id and idref related functions (schema-based).</description>
+      </source>
+      <source ID="SpecialTypes" FileName="TestSources/SpecialTypes.xml" Creator="Mike Rorke"
+              schema="SpecialTypesXSD">
+         <description last-mod="2005-06-01">A Schema validated XML file containing certain special types e.g. interleave types, union types, anySimpleType</description>
+      </source>
+      <source ID="QNameSource" FileName="TestSources/QName-source.xml" Creator="Mike Rorke"
+              schema="QNameSourceXSD">
+         <description last-mod="2005-09-28">A schema validated XML file containing QName and QName derived types.</description>
+      </source>
+      <source ID="notation" FileName="TestSources/notation.xml" Creator="Andreas Behm"
+              schema="notationschema">
+         <description last-mod="2005-10-10">A Scehma validated xml file with NOTATION elements</description>
+      </source>
+      <source ID="textWithSpaces" FileName="TestSources/textWithSpaces.xml"
+              Creator="Joanne Tong">
+         <description last-mod="2005-09-29">Data for normalize-space functions</description>
+      </source>
+      <source ID="XMarkAuction" FileName="TestSources/XMarkAuction.xml"
+              Creator="Frans Englich">
+         <description last-mod="2007-03-09">Source file generated XML Benchmark Project's xmlgen utility. See http://www.xml-benchmark.org/.</description>
+      </source>
+      <source ID="CPPGlobals" FileName="TestSources/CPPGlobals.xml" Creator="Frans Englich">
+         <description last-mod="2007-06-27">The declarations of a C++ file described in XML.</description>
+      </source>
+      <source ID="MainWindow" FileName="TestSources/MainWindow.ui" Creator="Frans Englich">
+         <description last-mod="2007-07-09">A description of an graphical user interface.</description>
+      </source>
+      <source ID="ComplexWhitespace" FileName="TestSources/ComplexWhitespace.xml"
+              Creator="Frans Englich">
+         <description last-mod="2007-07-09">A file containing different forms of whitespace.</description>
+      </source>
+      <source ID="SpaceBracket" FileName="TestSources/SpaceBracket.xml"
+              Creator="Frans Englich">
+         <description last-mod="2007-12-20">A file containing ' ]' as a text node.</description>
+      </source>
+      <source ID="HighUnicode" FileName="TestSources/HighUnicode.xml" Creator="Frans Englich">
+         <description last-mod="2007-12-20">Corner case unicode codepoints.</description>
+      </source>
+      <source ID="HighUnicode2" FileName="TestSources/HighUnicode2.xml"
+              Creator="Frans Englich">
+         <description last-mod="2007-12-21">Corner case unicode codepoints, second case.</description>
+      </source>
+      <source ID="BCIsInvalid" FileName="TestSources/BCisInvalid.xml" Creator="Frans Englich">
+         <description last-mod="2007-12-21">An element name containing 0xBC.</description>
+      </source>
+      <source ID="InvalidUmlaut" FileName="TestSources/InvalidUmlaut.xml"
+              Creator="Frans Englich">
+         <description last-mod="2007-12-27">Contains the codepoint 188 in an NCName.</description>
+      </source>
+      <source ID="NamespaceSuppliedInternally"
+              FileName="TestSources/NamespaceSuppliedInternally.xml"
+              Creator="Frans Englich">
+         <description last-mod="2007-12-27">A namespace declared with a namespace declaration, as well as in the internal subset.</description>
+      </source>
+      <source ID="XMLIdDuplicated" FileName="TestSources/XMLIdDuplicated.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-01-15">An XML file which has two xml:id attributes with the same value.</description>
+      </source>
+      <source ID="InvalidXMLId" FileName="TestSources/InvalidXMLId.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-01-15">An XML file which has an invalid xml:id attribute.</description>
+      </source>
+      <source ID="UsingXMLId" FileName="TestSources/UsingXMLId.xml" Creator="Frans Englich">
+         <description last-mod="2008-01-15">An XML file which has xml:id attributes.</description>
+      </source>
+      <source ID="Books2" FileName="TestSources/Books2.xml" Creator="Frans Englich">
+         <description last-mod="2008-01-17">An XML which is in ISO-8859-1 encoding.</description>
+      </source>
+      <source ID="QObject" FileName="TestSources/QObject.xml" Creator="Frans Englich">
+         <description last-mod="2008-02-19"/>
+      </source>
+      <source ID="Char010D" FileName="TestSources/0x010D.xml" Creator="Frans Englich">
+         <description last-mod="2008-02-28"/>
+      </source>
+      <source ID="SmallTree" FileName="TestSources/SmallTree.xml" Creator="Frans Englich">
+         <description last-mod="2008-04-03"/>
+      </source>
+      <source ID="AttributesAndElements" FileName="TestSources/AttributesAndElements.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-04-03"/>
+      </source>
+      <source ID="functx_prices" FileName="TestSources/functx_prices.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-05-16"/>
+      </source>
+      <source ID="functx_order" FileName="TestSources/functx_order.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-05-16"/>
+      </source>
+      <source ID="functx_cats" FileName="TestSources/functx_cats.xml" Creator="Frans Englich">
+         <description last-mod="2008-05-16"/>
+      </source>
+      <source ID="functx_catalog" FileName="TestSources/functx_catalog.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-05-16"/>
+      </source>
+      <source ID="functx_book" FileName="TestSources/functx_book.xml" Creator="Frans Englich">
+         <description last-mod="2008-06-25"/>
+      </source>
+      <source ID="badxml" FileName="TestSources/badxml.xml" Creator="Frans Englich">
+         <description last-mod="2008-05-19"/>
+      </source>
+      <source ID="builtinEntities" FileName="TestSources/builtinEntities.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-05-26"/>
+      </source>
+      <source ID="XMLIdWhitespace" FileName="TestSources/XMLIdWhitespace.xml"
+              Creator="Frans Englich">
+         <description last-mod="2008-05-27"/>
+      </source>
+      <source ID="XMLIDMany" FileName="TestSources/XMLIDMany.xml" Creator="Frans Englich">
+         <description last-mod="2008-10-24"/>
+      </source>
+      <source ID="OneTopElement" FileName="TestSources/OneTopElement.xml" Creator="Nicolae Brinza">
+         <description last-mod="2009-04-01"/>
+      </source>
+      <source ID="namespace-sensitive" FileName="TestSources/namespace-sensitive.xml" schema="namespace-sensitive-schema" Creator="Oliver Hallam">
+        <description last-mod="2007-02-26">Document containing namespace-sensitive constructs.</description>
+      </source>
+      <source ID="dm-e005" FileName="TestSources/dm-e005.xml" schema="dm-e005-schema" Creator="Norm Walsh">
+        <description last-mod="2010-03-10">Document to test erratum DM.E05.</description>
+      </source>
+		  <source ID="extendedTypes" FileName="TestSources/extendedTypes.xml" schema="extendedTypes-schema" Creator="Oliver Hallam">
+			  <description last-mod="2010-03-17">Document containing elements with various restricted and extended types.</description>
+		  </source>
+		 	<source ID="mixed" FileName="TestSources/mixed.xml" schema="mixedcontent" Creator="Oliver Hallam">
+		 	 <description last-mod="2010-03-17">Document containing an element with mixed content but statically could have element only content.</description>
+	    </source>
+      <schema ID="XQTSCatalogxsd" uri="http://www.w3.org/2005/02/query-test-XQTSCatalog"
+              FileName="XQTSCatalog.xsd">
+         <description last-mod="2005-04-14">Schema for XQTSCatalog</description>
+      </schema>
+      <schema ID="atomicxsd" uri="http://www.w3.org/XQueryTest"
+              FileName="TestSources/atomic.xsd">
+         <description last-mod="2005-03-08">A Schema for atomic.xml</description>
+      </schema>
+      <schema ID="orderDataxsd" uri="http://www.w3.org/XQueryTestOrderBy"
+              FileName="TestSources/orderData.xsd">
+         <description last-mod="2005-06-01">A Schema for orderData.xml</description>
+      </schema>
+      <schema ID="SpecialTypesXSD" uri="http://www.example.com/typedecl"
+              FileName="TestSources/SpecialTypes.xsd">
+         <description last-mod="2005-06-01">A Schema containing certain special types e.g. interleave types, union types, anySimpleType</description>
+      </schema>
+      <schema ID="QNameSourceXSD" uri="http://www.example.com/QNameXSD"
+              FileName="TestSources/QName-schema.xsd">
+         <description last-mod="2005-09-28">A schema containing QName and QName derived types</description>
+      </schema>
+      <schema ID="notationschema" uri="http://www.example.com/notation"
+              FileName="TestSources/notationschema.xsd">
+         <description last-mod="2005-10-10">A Schema for NOTATION data</description>
+      </schema>
+      <schema ID="idxsd" uri="http://www.w3.org/XQueryTest/ididrefs"
+              FileName="TestSources/id.xsd">
+         <description last-mod="2009-03-06">A schema for the id/idref functions tests</description>
+      </schema>
+      <schema ID="simplexsd" uri="http://www.w3.org/XQueryTest/simple"
+              FileName="TestSources/simple.xsd">
+         <description last-mod="2005-12-07">A schema for simple context tests</description>
+      </schema>
+      <schema ID="examplesxsd" uri="http://www.w3.org/XQueryTest/someExamples"
+              FileName="TestSources/examples.xsd">
+         <description last-mod="2006-05-19">A schema for examples.xml.</description>
+      </schema>
+      <schema ID="userdefined" uri="http://www.w3.org/XQueryTest/userDefinedTypes"
+              FileName="TestSources/userdefined.xsd">
+         <description last-mod="2006-04-03">A schema user defined types and constructor tests</description>
+      </schema>
+      <schema ID="listunion" uri="http://www.w3.org/XQueryTest/ListUnionTypes"
+              FileName="TestSources/listunion.xsd">
+         <description last-mod="2006-06-07">A schema defining a list of unions.</description>
+      </schema>
+      <schema ID="examples2xsd" uri="http://www.w3.org/XQueryTest/someExamples2"
+              FileName="TestSources/examples2.xsd">
+         <description last-mod="2009-10-01">Test schema for Errata XQ.E6.</description>
+      </schema>
+      <schema ID="attribute" uri="http://www.w3.org/XQueryTest/sample"
+         FileName="TestSources/attribute.xsd">
+         <description last-mod="2009-04-01">Test schema that contains an attribute declaration.</description>
+      </schema>
+      <schema ID="mixedcontent" uri="http://www.w3.org/XQueryTest/mixedcontent"
+         FileName="TestSources/mixedcontent.xsd">
+         <description last-mod="2009-04-01">Test schema that contains two complex types, one of them with a mixed content.</description>
+      </schema>
+      <schema ID="simpleContent" uri="http://www.w3.org/query-test/complexSimple"
+              FileName="TestSources/simpleContent.xsd">
+         <description last-mod="2009-11-20">Schema for complex types with
+         simple content</description>
+      </schema>
+      <schema ID="namespace-sensitive-schema" uri="http://www.example.com/test/namespace-sensitive" FileName="TestSources/namespace-sensitive.xsd">
+         <description last-mod="2007-02-26">Schema illustrating various namespace-sensitive constructs.</description>
+      </schema>
+      <schema ID="dm-e005-schema" uri="http://www.example.com/ns/test" FileName="TestSources/dm-e005.xsd">
+         <description last-mod="2010-03-10">Schema to test erratum DM.E05.</description>
+      </schema>
+      <schema ID="xq-e18-schema" uri="http://www.example.com/ns/test/xq-e18" FileName="TestSources/xq-e18.xsd">
+         <description last-mod="2010-03-11">Schema to test erratum XQ.E18.</description>
+      </schema>
+			<schema ID="extendedTypes-schema" uri="http://www.example.com/XQueryTest/extendedTypes" FileName="TestSources/extendedTypes.xsd">
+				<description last-mod="2010-03-17">Schema containing extended and restricted types.</description>
+			</schema>
+			<schema ID="constraints" uri="http://www.w3.org/constraints" FileName="TestSources/constraints.xsd">
+				<description last-mod="2010-06-10">Schema with unique/id/idref constraints.</description>
+			</schema>
+      <collection ID="collection1" Creator="Andrew Eisenberg">
+         <description last-mod="2006-06-07">A simple collection of documents.</description>
+         <input-document>bib</input-document>
+         <input-document>reviews</input-document>
+      </collection>
+      <collection ID="collection2" Creator="Andrew Eisenberg">
+         <description last-mod="2006-06-07">A simple collection of documents.</description>
+         <input-document>bib</input-document>
+         <input-document>reviews</input-document>
+         <input-document>books</input-document>
+      </collection>
+      <module ID="module1-lib" FileName="TestSources/module1-lib" Creator="Carmelo Montanez">
+         <description last-mod="2006-07-13">Library module for "modules-18" query</description>
+      </module>
+      <module ID="module2-lib" FileName="TestSources/module2-lib" Creator="Carmelo Montanez">
+         <description last-mod="2006-07-13">Library module for "modules-18" query</description>
+      </module>
+      <module ID="empty-lib" FileName="TestSources/empty-lib" Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Library module for "modules-none" query</description>
+      </module>
+      <module ID="emptyns-lib" FileName="TestSources/emptyns-lib" Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Library module with empty namespace</description>
+      </module>
+      <module ID="test1-lib" FileName="TestSources/test1-lib" Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Simple library module</description>
+      </module>
+      <module ID="test2-lib" FileName="TestSources/test2-lib" Creator="Carmelo Montanez">
+         <description last-mod="2006-01-19">Library module with namespace URI set to empty string.</description>
+      </module>
+      <module ID="test1a-lib" FileName="TestSources/test1a-lib" Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Simple library module</description>
+      </module>
+      <module ID="test1collide1-lib" FileName="TestSources/test1collide1-lib"
+              Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Library module with colliding definitions</description>
+      </module>
+      <module ID="test1collide2-lib" FileName="TestSources/test1collide2-lib"
+              Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Library module with colliding definitions</description>
+      </module>
+      <module ID="test1c1-lib" FileName="TestSources/test1c1-lib" Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Library module with circular includes</description>
+      </module>
+      <module ID="test2c1-lib" FileName="TestSources/test2c1-lib" Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Library module with circular includes</description>
+      </module>
+      <module ID="context-lib" FileName="TestSources/context-lib" Creator="Mary Holstege">
+         <description last-mod="2005-12-05">Library module with interesting context</description>
+      </module>
+      <module ID="module-defs" FileName="TestSources/moduleDefs-lib"
+              Creator="Carmelo Montanez">
+         <description last-mod="2006-01-06">Library module with definitions for various NIST tests.</description>
+      </module>
+      <module ID="modulewrongprefix-lib" FileName="TestSources/moduleDefs-lib"
+              Creator="Carmelo Montanez">
+         <description last-mod="2006-03-21">Library module with invalid namespace prefix ("xml")</description>
+      </module>
+      <module ID="modulesdiffns" FileName="TestSources/modulesdiffns-lib"
+              Creator="Carmelo Montanez">
+         <description last-mod="2006-04-11">Library module with variable on different namespace than target.</description>
+      </module>
+      <module ID="errata6-module1" FileName="TestSources/errata6-module1" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports a schema and uses types from it.</description>
+      </module>
+      <module ID="errata6-module2" FileName="TestSources/errata6-module2" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports a schema and uses types from it.</description>
+      </module>
+      <module ID="errata6-module4" FileName="TestSources/errata6-module4" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports a schema and uses types from it.</description>
+      </module>
+      <module ID="errata6-module5" FileName="TestSources/errata6-module5" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports a schema and uses types from it.</description>
+      </module>
+      <module ID="errata6-module6" FileName="TestSources/errata6-module6" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports a schema and uses types from it.</description>
+      </module>
+      <module ID="errata6-module7" FileName="TestSources/errata6-module7" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports a schema and uses types from it.</description>
+      </module>
+      <module ID="errata8-module1a" FileName="TestSources/errata8-module1a" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports another module and uses a variable from it, testing circular dependencies.</description>
+      </module>
+      <module ID="errata8-module1b" FileName="TestSources/errata8-module1b" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports another module and uses a function from it, testing circular dependencies.</description>
+      </module>
+      <module ID="errata8-module2a" FileName="TestSources/errata8-module2a" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports another module and uses a variable from it, testing circular dependencies.</description>
+      </module>
+      <module ID="errata8-module2b" FileName="TestSources/errata8-module2b" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports another module and uses a function from it, testing circular dependencies.</description>
+      </module>
+      <module ID="errata8-module3a" FileName="TestSources/errata8-module3a" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports another module and uses a variable from it, testing circular dependencies pass case.</description>
+      </module>
+      <module ID="errata8-module3b" FileName="TestSources/errata8-module3b" Creator="John Snelson">
+         <description last-mod="2009-10-01">Module that imports another module and uses a function from it, testing circular dependencies pass case.</description>
+      </module>
+      <module ID="module3-lib" FileName="TestSources/module3-lib" Creator="Nicolae Brinza">
+         <description last-mod="2009-04-01">Module with simple and schema-element() types, used for functions'parameters and return results.</description>
+      </module>
+      <module ID="module4-lib" FileName="TestSources/module4-lib" Creator="Nicolae Brinza">
+         <description last-mod="2009-04-01">Module with schema-attribute() types, used for functions' parameters and return results.</description>
+      </module>
+      <module ID="modules-recursive1" FileName="TestSources/modules-recursive1" Creator="Nicolae Brinza">
+         <description last-mod="2009-04-01">Module with cyclic recursive imports.</description>
+      </module>
+      <module ID="modules-recursive2" FileName="TestSources/modules-recursive2" Creator="Nicolae Brinza">
+         <description last-mod="2009-04-01">Module with cyclic recursive imports.</description>
+      </module>
+      <module ID="module-pub-priv" FileName="TestSources/module-pub-priv" Creator="Michael Kay">
+         <description last-mod="2009-10-01">Module that contains both private and public function declarations (XQuery 1.1).</description>
+      </module>
+   </sources>
+   <implementation-defined-items>
+      <implementation-defined-item name="expressionUnicode" spec="XQuery">
+         <description last-mod="2005-04-04">The version of Unicode that is used to construct expressions.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="collations" spec="XQuery">
+         <description last-mod="2005-04-04">The statically-known collations.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="implicitTimezone" spec="XQuery">
+         <description last-mod="2005-04-04">The implicit timezone.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="warningsMethod" spec="XQuery">
+         <description last-mod="2005-04-04">The circumstances in which warnings are raised, and the ways in which warnings are handled.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="errorsMethod" spec="XQuery">
+         <description last-mod="2005-04-04">The method by which errors are reported to the external processing environment.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="XMLVersion" spec="XQuery">
+         <description last-mod="2005-10-10">Whether the implementation is based on the rules of [XML 1.0] and [XML Names] or the rules of [XML 1.1] and [XML Names 1.1]. One of these sets of rules must be applied consistently by all aspects of the implementation.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="overwrittenContextComponents" spec="XQuery">
+         <description last-mod="2005-04-04">Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="axes" spec="XQuery">
+         <description last-mod="2005-04-04">Which of the optional axes are supported by the implementation, if the Full-Axis Feature is not supported.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="defaultOrderEmpty" spec="XQuery">
+         <description last-mod="2005-04-04">The default handling of empty sequences returned by an ordering key (sortspec) in an order by clause (empty least or empty greatest).</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="pragmas" spec="XQuery">
+         <description last-mod="2005-04-04">The names and semantics of any extension expressions (pragmas) recognized by the implementation.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="optionDeclarations" spec="XQuery">
+         <description last-mod="2005-04-04">The names and semantics of any option declarations recognized by the implementation.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="externalFunctionProtocols" spec="XQuery">
+         <description last-mod="2005-04-04">Protocols (if any) by which parameters can be passed to an external function, and the result of the function can returned to the invoking query.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="moduleLocationHints" spec="XQuery">
+         <description last-mod="2005-11-01">The process by which the specific modules to be imported by a module import are identified, if the Module Feature is supported (includes processing of location hints, if any.)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="staticTypingExtensions" spec="XQuery">
+         <description last-mod="2005-04-04">Any static typing extensions supported by the implementation, if the Static Typing Feature is supported.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="serializationInvocation" spec="XQuery">
+         <description last-mod="2005-04-04">The means by which serialization is invoked, if the Serialization Feature is supported.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="serializationDefaults" spec="XQuery">
+         <description last-mod="2005-10-10">The default values for the byte-order-mark, encoding, media-type, normalization-form, omit-xml-declaration, standalone, and version parameters, if the Serialization Feature is supported.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="externalFunctionCall" spec="XQuery">
+         <description last-mod="2006-08-09">The result of an unsuccessful call to an external function (for example, if the function implementation cannot be found or does not return a value of the declared type).</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="limits" spec="XQuery">
+         <description last-mod="2005-11-01">Limits on ranges of values for various data types, as enumerated in 5.3 Data Model Conformance.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="traceDestination" spec="FuncOps">
+         <description last-mod="2005-10-10">The destination of the trace output is implementation-defined. See 4 The Trace Function.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="integerOperations" spec="FuncOps">
+         <description last-mod="2005-10-10">For xs:integer operations, implementations that support limited-precision integer operations must either raise an error [err:FOAR0002] or provide an implementation-defined mechanism that allows users to choose between raising an error and returning a result that is modulo the largest representable integer value. See 6.2 Operators on Numeric Values.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="decimalDigits" spec="FuncOps">
+         <description last-mod="2005-11-01">For xs:decimal values the number of digits of precision returned by the numeric operators is implementation-defined. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="roundOrTruncate" spec="FuncOps">
+         <description last-mod="2005-10-10">If the number of digits in the result exceeds the number of digits that the implementation supports, the result is truncated or rounded in an implementation-defined manner. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="Unicode" spec="FuncOps">
+         <description last-mod="2005-11-01">It is implementation-defined which version of Unicode is supported by the features defined in this specification, but it is recommended that the most recent version of Unicode be used. See 7.1 String Types.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="normalizationForms" spec="FuncOps">
+         <description last-mod="2005-10-10">For 7.4.6 fn:normalize-unicode, conforming implementations must support normalization form "NFC" and may support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED". They may also support other normalization forms with implementation-defined semantics.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="collationUnits" spec="FuncOps">
+         <description last-mod="2005-10-10">The ability to decompose strings into collation units suitable for substring matching is an implementation-defined property of a collation. See 7.5 Functions Based on Substring Matching.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="secondsDigits" spec="FuncOps">
+         <description last-mod="2005-10-10">All minimally conforming processors must support year values with a minimum of 4 digits (i.e., YYYY) and a minimum fractional second precision of 1 millisecond or three digits (i.e., s.sss). However, conforming processors may set larger implementation-defined limits on the maximum number of digits they support in these two situations. See 10.1.1 Limits and Precision.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="stringToDecimal" spec="FuncOps">
+         <description last-mod="2006-08-09">The result of casting a string to xs:decimal, when the resulting value is not too large or too small but nevertheless has too many decimal digits to be accurately represented, is implementation-defined. See 17.1.1 Casting from xs:string and xs:untypedAtomic.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="docProcessing" spec="FuncOps">
+         <description last-mod="2005-10-10">Various aspects of the processing provided by 15.5.4 fn:doc are implementation-defined. Implementations may provide external configuration options that allow any aspect of the processing to be controlled by the user.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="weakenStable" spec="FuncOps">
+         <description last-mod="2006-08-09">The manner in which implementations provide options to weaken the stable characteristic of 15.5.6 fn:collection and 15.5.4 fn:doc are implementation-defined.</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="additionalTypes" spec="DataModel">
+         <description last-mod="2005-04-04">Support for additional user-defined or implementation-defined types is implementation-defined. (See 2.6.1 Representation of Types)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="undefinedProperties" spec="DataModel">
+         <description last-mod="2005-04-04">Some typed values in the data model are undefined. Attempting to access an undefined property is always an error. Behavior in these cases is implementation-defined and the host language is responsible for determining the result. (See 5 Accessors)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="sequenceNormalization" spec="Serialization">
+         <description last-mod="2005-04-04">For any implementation-defined output method, it is implementation-defined whether sequence normalization process takes place. (See 2 Sequence Normalization)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="outputMethods" spec="Serialization">
+         <description last-mod="2005-04-04">If the namespace URI is non-null for the method serialization parameter, then the parameter specifies an implementation-defined output method. (See 3 Serialization Parameters)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="normalizationFormBehavior" spec="Serialization">
+         <description last-mod="2005-04-04">If the value of the normalization-form form parameter is not NFC, NFD, NFKC, NFKD, fully-normalized, or none then the meaning of the value and it's effect is implementation-defined. (See 4 Phases of Serialization)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="additionalParams" spec="Serialization">
+         <description last-mod="2005-11-01">The effect of additional serialization parameters on the output of the serializer, where the name of such a parameter must be namespace-qualified, is implementation-defined or implementation-dependent. The extent of this effect on the output must not override the provisions of this specification. (See 3 Serialization Parameters)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="encodingPhase" spec="Serialization">
+         <description last-mod="2005-04-04">The effect of providing an option that allows the encoding phase to be skipped, so that the result of serialization is a stream of Unicode characters, is implementation-defined. The serializer is not required to support such an option. (See 4 Phases of Serialization)</description>
+      </implementation-defined-item>
+      <implementation-defined-item name="CDATASerialization" spec="Serialization">
+         <description last-mod="2005-04-04">An serializer may provide an implementation-defined mechanism to place CDATA sections in the result tree. (See 5.1.4 XML Output Method: the cdata-section-elements Parameter)</description>
+      </implementation-defined-item>
+   </implementation-defined-items>
+   <features>
+      <feature name="Minimal Conformance"/>
+      <feature name="Schema Import"/>
+      <feature name="Schema Validation"/>
+      <feature name="Static Typing"/>
+      <feature name="Static Typing Extensions"/>
+      <feature name="Full Axis"/>
+      <feature name="Module"/>
+      <feature name="Serialization"/>
+   </features>
+   <context-properties>
+      <context-property name="Statically known namespaces" context-type="static"/>
+      <context-property name="Default element/type namespace" context-type="static"/>
+      <context-property name="Default function namespace" context-type="static"/>
+      <context-property name="In-scope schema types" context-type="static"/>
+      <context-property name="In-scope element declarations" context-type="static"/>
+      <context-property name="In-scope attribute declarations" context-type="static"/>
+      <context-property name="In-scope variables" context-type="static"/>
+      <context-property name="Context item static type" context-type="static"/>
+      <context-property name="Function signatures" context-type="static"/>
+      <context-property name="Statically known collations" context-type="static"/>
+      <context-property name="Default collation" context-type="static"/>
+      <context-property name="Construction mode" context-type="static"/>
+      <context-property name="Ordering mode" context-type="static"/>
+      <context-property name="Default order for empty sequences" context-type="static"/>
+      <context-property name="Boundary-space policy" context-type="static"/>
+      <context-property name="Copy-namespaces mode" context-type="static"/>
+      <context-property name="Base URI" context-type="static"/>
+      <context-property name="Statically known documents" context-type="static"/>
+      <context-property name="Statically known collections" context-type="static"/>
+      <context-property name="Statically known default collection type" context-type="static"/>
+      <context-property name="Context item" context-type="dynamic"/>
+      <context-property name="Context position" context-type="dynamic"/>
+      <context-property name="Context size" context-type="dynamic"/>
+      <context-property name="Variable values" context-type="dynamic"/>
+      <context-property name="Function implementations" context-type="dynamic"/>
+      <context-property name="Current dateTime" context-type="dynamic"/>
+      <context-property name="Implicit timezone" context-type="dynamic"/>
+      <context-property name="Available documents" context-type="dynamic"/>
+      <context-property name="Available collections" context-type="dynamic"/>
+      <context-property name="Default collection" context-type="dynamic"/>
+   </context-properties>
+   <test-group name="MinimalConformance" featureOwner="Frans Englich">
+      <GroupInfo>
+         <title>Minimal Conformance</title>
+         <description/>
+      </GroupInfo>
+      <test-group name="OptionalFeatureErrors" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>Optional Feature Errors</title>
+            <description/>
+         </GroupInfo>
+         &CombinedErrorCodes;
+      </test-group>
+      <test-group name="Basics">
+         <GroupInfo>
+            <title>XQuery Basics</title>
+            <description/>
+         </GroupInfo>
+         &StaticContext;
+         <test-group name="Types">
+            <GroupInfo>
+               <title>Query Types</title>
+               <description/>
+            </GroupInfo>
+            &SequenceTypeSyntax;
+         </test-group>
+      </test-group>
+      <test-group name="Expressions" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>XQuery Expressions</title>
+            <description/>
+         </GroupInfo>
+         <test-group name="PrimaryExpr" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Primary Expressions</title>
+               <description/>
+            </GroupInfo>
+            &Literals;
+            &ParenExpr;
+            <test-group name="ContextExpr" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Context Item Expressions</title>
+                  <description/>
+               </GroupInfo>
+               &ExternalContextExpr;
+               &InternalContextExpr;
+            </test-group>
+            &FunctionCallExpr;
+         </test-group>
+         <test-group name="PathExpr" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Path Expressions</title>
+               <description/>
+            </GroupInfo>
+            &PathExpressions;
+            &Steps;
+            &Axes;
+            <test-group name="NodeTestSection" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Node Tests</title>
+                  <description>Tests in this group take the axes as a given and focus on the NodeTest syntax in XQuery 3.2.1.2. Includes explicit names, *, and the various kind tests that look like functions.</description>
+               </GroupInfo>
+               &NodeTest;
+               &NameTest;
+            </test-group>
+            &Predicates;
+            &UnabbrAxes;
+            &AbbrAxes;
+         </test-group>
+         <test-group name="SeqExpr" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Sequence Expressions</title>
+               <description/>
+            </GroupInfo>
+            <test-group name="ConstructSeq" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Constructing Sequences</title>
+                  <description>Tests that construct sequences</description>
+               </GroupInfo>
+               &commaOp;
+               &RangeExpr;
+            </test-group>
+            &FilterExpr;
+            &CombNodeSeq;
+         </test-group>
+         <test-group name="Operators" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Operators</title>
+               <description/>
+            </GroupInfo>
+            <test-group name="ArithExpr" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Arithmetic Operators</title>
+                  <description/>
+               </GroupInfo>
+               <test-group name="NumericOpr" featureOwner="Oracle and Frans Englich">
+                  <GroupInfo>
+                     <title>Arithmetic Operators on Numeric Values</title>
+                     <description/>
+                  </GroupInfo>
+                  &NumericAdd;
+                  &NumericSubtract;
+                  &NumericMultiply;
+                  &NumericDivide;
+                  &NumericIntegerDivide;
+                  &NumericMod;
+                  &NumericUnaryPlus;
+                  &NumericUnaryMinus;
+               </test-group>
+               <test-group name="DurationArith" featureOwner="NIST and Frans Englich">
+                  <GroupInfo>
+                     <title>Arithmetic Operators on Duration Values</title>
+                     <description/>
+                  </GroupInfo>
+                  &YearMonthDurationAdd;
+                  &YearMonthDurationSubtract;
+                  &YearMonthDurationMultiply;
+                  &YearMonthDurationDivide;
+                  &YearMonthDurationDivideYMD;
+                  &DayTimeDurationAdd;
+                  &DayTimeDurationSubtract;
+                  &DayTimeDurationMultiply;
+                  &DayTimeDurationDivide;
+                  &DayTimeDurationDivideDTD;
+               </test-group>
+               <test-group name="DurationDateTimeArith" featureOwner="NIST and Frans Englich">
+                  <GroupInfo>
+                     <title>Arithmetic Operators on Duration and Date Time Values</title>
+                     <description/>
+                  </GroupInfo>
+                  &dateTimesSubtract;
+                  &DatesSubtract;
+                  &TimeSubtract;
+                  &YearMonthDurationAddDT;
+                  &DateTimeAddDTD;
+                  &DateTimeSubtractYMD;
+                  &DateTimeSubtractDTD;
+                  &DateAddYMD;
+                  &DateAddDTD;
+                  &DateSubtractYMD;
+                  &DateSubtractDTD;
+                  &TimeAddDTD;
+                  &TimeSubtractDTD;
+               </test-group>
+            </test-group>
+            <test-group name="CompExpr" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Comparison Operators</title>
+                  <description/>
+               </GroupInfo>
+               <test-group name="ValComp" featureOwner="IBM and Frans Englich">
+                  <GroupInfo>
+                     <title>Value Comparison</title>
+                     <description/>
+                  </GroupInfo>
+                  <test-group name="NumericComp" featureOwner="Frans Englich">
+                     <GroupInfo>
+                        <title>Comparison of Numeric Values</title>
+                        <description/>
+                     </GroupInfo>
+                     &NumericEqual;
+                     &NumericLT;
+                     &NumericGT;
+                  </test-group>
+                  <test-group name="BooleanOp" featureOwner="Oracle and Frans Englich">
+                     <GroupInfo>
+                        <title>Comparison Operators on Boolean Values</title>
+                        <description/>
+                     </GroupInfo>
+                     &BooleanEqual;
+                     &BooleanLT;
+                     &BooleanGT;
+                  </test-group>
+                  <test-group name="DurationDateTimeOp" featureOwner="NIST and Frans Englich">
+                     <GroupInfo>
+                        <title>Comparisons of Duration, Date Time Values</title>
+                        <description/>
+                     </GroupInfo>
+                     &YearMonthDurationLT;
+                     &YearMonthDurationGT;
+                     &DayTimeDurationLT;
+                     &DayTimeDurationGT;
+                     &DurationEQ;
+                     &DateTimeEQ;
+                     &DateTimeLT;
+                     &DateTimeGT;
+                     &DateEQ;
+                     &DateLT;
+                     &DateGT;
+                     &TimeEQ;
+                     &TimeLT;
+                     &TimeGT;
+                     &gYearMonthEQ;
+                     &gYearEQ;
+                     &gMonthDayEQ;
+                     &gMonthEQ;
+                     &gDayEQ;
+                     &YearMonthDurationEQ;
+                     &DayTimeDurationEQ;
+                  </test-group>
+                  <test-group name="QNameOp" featureOwner="NIST and Frans Englich">
+                     <GroupInfo>
+                        <title>Comparison Operators on QName Values</title>
+                        <description/>
+                     </GroupInfo>
+                     &QNameEQ;
+                     &PrefixFromQName;
+                  </test-group>
+                  <test-group name="BinaryOp" featureOwner="Frans Englich">
+                     <GroupInfo>
+                        <title>Comparison Operators on base64Binary and hexBinary Types</title>
+                        <description/>
+                     </GroupInfo>
+                     &HexBinaryEQ;
+                     &Base64BinaryEQ;
+                  </test-group>
+                  <test-group name="NotationOp" featureOwner="Frans Englich">
+                     <GroupInfo>
+                        <title>Comparison Operators on NOTATION Types</title>
+                        <description/>
+                     </GroupInfo>
+                     <test-group name="NotationEQ" featureOwner="Frans Englich">
+                        <GroupInfo>
+                           <title>op:NOTATION-equal</title>
+                           <description/>
+                        </GroupInfo>
+                     </test-group>
+                  </test-group>
+                  &ValCompTypeChecking;
+                  <test-group name="StringComp" featureOwner="Frans Englich">
+                     <GroupInfo>
+                        <title>Comparison of String Values</title>
+                        <description/>
+                     </GroupInfo>
+                     &StringEqual;
+                     &StringGT;
+                     &StringLT;
+                  </test-group>
+                  <test-group name="AnyURIComp" featureOwner="Frans Englich">
+                     <GroupInfo>
+                        <title>Comparison of AnyURI Values</title>
+                        <description/>
+                     </GroupInfo>
+                     &AnyURIEqual;
+                     &AnyURILtGt;
+                     &AnyURILeGe;
+                  </test-group>
+               </test-group>
+               <test-group name="GenComprsn" featureOwner="Frans Englich">
+                  <GroupInfo>
+                     <title>General Comparisons</title>
+                     <description/>
+                  </GroupInfo>
+                  &GenCompEq;
+                  &GenCompNE;
+                  &GenCompLT;
+                  &GenCompLTEQ;
+                  &GenCompGT;
+                  &GenCompGTEQ;
+               </test-group>
+               <test-group name="NodeComp" featureOwner="IBM and Frans Englich">
+                  <GroupInfo>
+                     <title>Node Comparisons</title>
+                     <description/>
+                  </GroupInfo>
+                  &NodeSame;
+                  &NodeBefore;
+                  &NodeAfter;
+               </test-group>
+            </test-group>
+            <test-group name="SeqOp" featureOwner="Oracle and Frans Englich">
+               <GroupInfo>
+                  <title>Operators on Sequences</title>
+                  <description/>
+               </GroupInfo>
+               &SeqUnion;
+               &SeqIntersect;
+               &SeqExcept;
+            </test-group>
+         </test-group>
+         &LogicExpr;
+         <test-group is-XPath2="false" name="Construct" featureOwner="IBM and Frans Englich">
+            <GroupInfo>
+               <title>Constructors</title>
+               <description/>
+            </GroupInfo>
+            &DirectConElem;
+            &DirectConElemAttr;
+            &DirectConElemNamespace;
+            &DirectConElemContent;
+            &DirectConElemWhitespace;
+            &DirectConOther;
+            &DirectConElemXML;
+            <test-group is-XPath2="false" name="ComputeCon" featureOwner="IBM and Frans Englich">
+               <GroupInfo>
+                  <title>Computed Constructors</title>
+                  <description/>
+               </GroupInfo>
+               &ComputeConElem;
+               &ComputeConAttr;
+               &ConDocNode;
+               &ConText;
+               &ComputeConPI;
+               &ComputeConComment;
+            </test-group>
+            &ConInScopeNamespace;
+         </test-group>
+         <test-group name="FLWORExpr" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Tests of For-Let-Where-OrderBy-Return Expressions</title>
+               <description>Tests in this group focus on the FLWOR expressions in XQuery 3.8.</description>
+            </GroupInfo>
+            <test-group name="ForExpr" featureOwner="Microsoft and Frans Englich">
+               <GroupInfo>
+                  <title>FOR Clause</title>
+                  <description>Tests for the FOR part of the FLWOR expression syntax</description>
+               </GroupInfo>
+               &ForExprWithout;
+               &ForExprWith;
+               &ForExprPositionalVar;
+            </test-group>
+            <test-group is-XPath2="false" name="LetExpr" featureOwner="Oracle and Frans Englich">
+               <GroupInfo>
+                  <title>LET Clause</title>
+                  <description>Tests for the LET part of the FLWOR expression syntax</description>
+               </GroupInfo>
+               &LetExprWithout;
+               &LetExprWith;
+            </test-group>
+            &WhereExpr;
+            <test-group is-XPath2="false" name="OrderbyExpr" featureOwner="Microsoft and Frans Englich">
+               <GroupInfo>
+                  <title>ORDER BY Clause</title>
+                  <description>Tests for the ORDER BY part of the FLWOR expression syntax</description>
+               </GroupInfo>
+               &OrderbyExprWith;
+               &OrderbyExprWithout;
+            </test-group>
+            &ReturnExpr;
+         </test-group>
+         &OrderExpr;
+         &CondExpr;
+         <test-group name="QuantExpr" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Quantified Expressions</title>
+               <description/>
+            </GroupInfo>
+            &QuantExprWithout;
+            &QuantExprWith;
+         </test-group>
+         <test-group name="exprSeqTypes" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Expressions on Sequence Types</title>
+               <description/>
+            </GroupInfo>
+            &SeqExprInstanceOf;
+            &sequenceExprTypeswitch;
+            &SeqExprCastToDerived;
+            &SeqExprCastToDerivedParents;
+            &SeqExprCastWithinBranch;
+            &SeqExprCast;
+            &SeqExprCastable;
+            &SeqExprTreat;
+         </test-group>
+         <test-group is-XPath2="false" name="PrologExpr" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Modules and Prologs</title>
+               <description/>
+            </GroupInfo>
+            &VersionProlog;
+            &BoundarySpaceProlog;
+            &CollationProlog;
+            &CopyNamespacesProlog;
+            &BaseURIProlog;
+            &ConstructionProlog;
+            &DefaultNamespaceProlog;
+            &DefaultOrderingProlog;
+            &EmptyOrderProlog;
+            &NamespaceProlog;
+            <test-group is-XPath2="false" name="VariableProlog" featureOwner="Oracle and Frans Englich">
+               <GroupInfo>
+                  <title>Variable Declaration</title>
+                  <description/>
+               </GroupInfo>
+               &ExternalVariablesWithout;
+               &ExternalVariablesWith;
+               &InternalVariablesWithout;
+               &InternalVariablesWith;
+            </test-group>
+            &FunctionProlog;
+            &OptionDeclarationProlog;
+         </test-group>
+         &XQueryComment;
+         &ExtensionExpression;
+         <test-group is-XPath2="false" name="ImplicitContext" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Implicit Context</title>
+               <description>
+                  Implementations are allowed to define an implicit context for their queries. What this means
+                  is that an XQuery expression can use the '.' or '/' axes without specifying any explicit
+                  context to bind these to. The binding of the implicit context to some input document is an
+                  implementation specific detail and should be handled by the individual test harness.
+               </description>
+            </GroupInfo>
+         </test-group>
+      </test-group>
+      <test-group name="Functions" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>Functions</title>
+            <description/>
+         </GroupInfo>
+         <test-group name="AccessorFunc" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Accessor Functions</title>
+               <description/>
+            </GroupInfo>
+            &NodeNameFunc;
+            &NilledFunc;
+            &StringFunc;
+            &DataFunc;
+            &BaseURIFunc;
+            &StaticBaseURIFunc;
+            &DocumentURIFunc;
+         </test-group>
+         &ErrorFunc;
+	 &ErrorsAndOptimization;
+         &TraceFunc;
+         <test-group name="ConstructFunc" featureOwner="IBM/XSLT and Frans Englich">
+            <GroupInfo>
+               <title>Constructor Functions</title>
+               <description/>
+            </GroupInfo>
+            &DateTimeFunc;
+         </test-group>
+         <test-group name="NumericFunc" featureOwner="Oracle and Frans Englich">
+            <GroupInfo>
+               <title>Functions on Numeric Values</title>
+               <description/>
+            </GroupInfo>
+            &ABSFunc;
+            &CeilingFunc;
+            &FloorFunc;
+            &RoundFunc;
+            &RoundEvenFunc;
+         </test-group>
+         <test-group name="AllStringFunc" featureOwner="IBM/XSLT and Frans Englich">
+            <GroupInfo>
+               <title>Functions on Strings</title>
+               <description/>
+            </GroupInfo>
+            <test-group name="AssDisassStringFunc" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Functions to Assemble and Disassemble Strings</title>
+                  <description/>
+               </GroupInfo>
+               &CodepointToStringFunc;
+               &StringToCodepointFunc;
+            </test-group>
+            <test-group name="CompStringFunc" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Equality and Comparison of Strings</title>
+                  <description/>
+               </GroupInfo>
+               &CompareFunction;
+               &CodepointEqual;
+               &CompareFunc;
+            </test-group>
+            <test-group name="GeneralStringFunc" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Functions on String Values</title>
+                  <description/>
+               </GroupInfo>
+               &ConcatFunc;
+               &StringJoinFunc;
+               &SubstringFunc;
+               &StringLengthFunc;
+               &NormalizeSpaceFunc;
+               &NormalizeUnicodeFunc;
+               &UpperCaseFunc;
+               &LowerCaseFunc;
+               &TranslateFunc;
+               &Surrogates;
+               &EncodeURIfunc;
+               &IRIToURIfunc;
+               &EscapeHTMLURIFunc;
+            </test-group>
+            <test-group name="SubstringStringFunc" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Functions Based on Substring Matching</title>
+                  <description/>
+               </GroupInfo>
+               &ContainsFunc;
+               &StartsWithFunc;
+               &EndsWithFunc;
+               &SubstringBeforeFunc;
+               &SubstringAfterFunc;
+            </test-group>
+            <test-group name="MatchStringFunc" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>String Functions that Use Pattern Matching</title>
+                  <description/>
+               </GroupInfo>
+               &MatchesFunc;
+               &ReplaceFunc;
+               &TokenizeFunc;
+               &AnalyzeString;
+            </test-group>
+         </test-group>
+         <test-group name="URIFunc" featureOwner="IBM/XSLT and Frans Englich">
+            <GroupInfo>
+               <title>Functions for anyURI</title>
+               <description/>
+            </GroupInfo>
+            &ResolveURIFunc;
+         </test-group>
+         <test-group name="BooleanFunc" featureOwner="Oracle and Frans Englich">
+            <GroupInfo>
+               <title>Functions on Boolean Values</title>
+               <description/>
+            </GroupInfo>
+            &TrueFunc;
+            &FalseFunc;
+            &NotFunc;
+         </test-group>
+         <test-group name="DurationDateTimeFunc" featureOwner="NIST and Frans Englich">
+            <GroupInfo>
+               <title>Functions on Durations, Dates and Times</title>
+               <description/>
+            </GroupInfo>
+            <test-group name="ComponentExtractionDDT" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Component Extraction Functions on Durations, Dates and Times</title>
+                  <description/>
+               </GroupInfo>
+               &YearsFromDurationFunc;
+               &MonthsFromDurationFunc;
+               &DaysFromDurationFunc;
+               &HoursFromDurationFunc;
+               &MinutesFromDurationFunc;
+               &SecondsFromDurationFunc;
+               &YearFromDateTimeFunc;
+               &MonthFromDateTimeFunc;
+               &DayFromDateTimeFunc;
+               &HoursFromDateTimeFunc;
+               &MinutesFromDateTimeFunc;
+               &SecondsFromDateTimeFunc;
+               &TimezoneFromDateTimeFunc;
+               &YearFromDateFunc;
+               &MonthFromDateFunc;
+               &DayFromDateFunc;
+               &TimezoneFromDateFunc;
+               &HoursFromTimeFunc;
+               &MinutesFromTimeFunc;
+               &SecondsFromTimeFunc;
+               &TimezoneFromTimeFunc;
+            </test-group>
+            <test-group name="TimezoneFunction" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Timezone Adjustment on Dates and Time Values</title>
+                  <description/>
+               </GroupInfo>
+               &AdjDateTimeToTimezoneFunc;
+               &AdjDateToTimezoneFunc;
+               &AdjTimeToTimezoneFunc;
+            </test-group>
+         </test-group>
+         <test-group name="QNameFunc" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Functions Related to QNames</title>
+               <description/>
+            </GroupInfo>
+            <test-group name="QNameConstructFunc" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Additional Constructor Functions for QNames</title>
+                  <description/>
+               </GroupInfo>
+               &ResolveQNameConstructFunc;
+               &ExpandedQNameConstructFunc;
+            </test-group>
+            &LocalNameFromQNameFunc;
+            &NamespaceURIFromQNameFunc;
+            &NamespaceURIForPrefixFunc;
+            &InScopePrefixesFunc;
+         </test-group>
+         <test-group name="NodeFunc" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Functions on Nodes</title>
+               <description/>
+            </GroupInfo>
+            &NameFunc;
+            &NodeLocalNameFunc;
+            &NodeNamespaceURIFunc;
+            &NodeNumberFunc;
+            &NodeLangFunc;
+            &NodeRootFunc;
+         </test-group>
+         <test-group name="SeqFunc" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Functions on Sequences</title>
+               <description/>
+            </GroupInfo>
+            <test-group name="GeneralSeqFunc" featureOwner="Oracle and Frans Englich">
+               <GroupInfo>
+                  <title>General Functions and Operators on Sequences</title>
+                  <description/>
+               </GroupInfo>
+               &SeqBooleanFunc;
+               &SeqIndexOfFunc;
+               &SeqEmptyFunc;
+               &SeqExistsFunc;
+               &SeqDistinctValuesFunc;
+               &SeqInsertBeforeFunc;
+               &SeqRemoveFunc;
+               &SeqReverseFunc;
+               &SeqSubsequenceFunc;
+               &SeqUnorderedFunc;
+            </test-group>
+            <test-group name="CardinalitySeqFunc" featureOwner="Oracle and Frans Englich">
+               <GroupInfo>
+                  <title>Functions That Test the Cardinality of Sequences</title>
+                  <description/>
+               </GroupInfo>
+               &SeqZeroOrOneFunc;
+               &SeqOneOrMoreFunc;
+               &SeqExactlyOneFunc;
+            </test-group>
+            &SeqDeepEqualFunc;
+            <test-group name="AggregateSeqFunc" featureOwner="Oracle and Frans Englich">
+               <GroupInfo>
+                  <title>Aggregate Functions</title>
+                  <description/>
+               </GroupInfo>
+               &SeqCountFunc;
+               &SeqAVGFunc;
+               &SeqMAXFunc;
+               &SeqMINFunc;
+               &SeqSUMFunc;
+            </test-group>
+            <test-group name="NodeSeqFunc" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Functions that Generate Sequences</title>
+                  <description/>
+               </GroupInfo>
+               &SeqIDFunc;
+               &SeqIDREFFunc;
+               &SeqDocAvailableFunc;
+               &SeqDocFunc;
+               &SeqCollectionFunc;
+            </test-group>
+         </test-group>
+         <test-group name="ContextFunc" featureOwner="Frans Englich">
+            <GroupInfo>
+               <title>Context Functions</title>
+               <description/>
+            </GroupInfo>
+            &ContextPositionFunc;
+            &ContextLastFunc;
+            &ContextCurrentDatetimeFunc;
+            &ContextCurrentDateFunc;
+            &ContextCurrentTimeFunc;
+            &ContextDefaultCollationFunc;
+            &ContextImplicitTimezoneFunc;
+         </test-group>
+      </test-group>
+   </test-group>
+   <test-group name="Optional" featureOwner="Frans Englich">
+      <GroupInfo>
+         <title>Optional Features</title>
+         <description/>
+      </GroupInfo>
+      <test-group is-XPath2="false" name="SchemaImport" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>Schema Import Feature</title>
+            <description/>
+         </GroupInfo>
+         &FLWORExprSI;
+         &ConstructSI;
+         &versionPrologSI;
+         &MiscFunctions;
+         &SeqExprCastSI;
+         &NumericEqualSI;
+         &NotationEQSI;
+         &UserDefinedSI;
+         &SchemaImportProlog;
+         &ForExprTypeSI;
+				 &PathExprSI;
+      </test-group>
+      <test-group is-XPath2="false" name="SchemaValidation" featureOwner="NIST and Frans Englich">
+         <GroupInfo>
+            <title>Schema Validation Feature</title>
+            <description/>
+         </GroupInfo>
+         &ValidateExpression;
+      </test-group>
+      <test-group name="StaticTyping" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>Static Typing Feature</title>
+            <description/>
+         </GroupInfo>
+         <test-group name="STPathExpr" featureOwner="Microsoft and Frans Englich">
+            <GroupInfo>
+               <title>Static Typing of Path Expressions</title>
+               <description/>
+            </GroupInfo>
+            <test-group name="STSteps" featureOwner="Frans Englich">
+               <GroupInfo>
+                  <title>Static Typing of Steps Expressions</title>
+                  <description/>
+               </GroupInfo>
+               &STAxes;
+            </test-group>
+         </test-group>
+				 &STFunctions;
+         &STFLWORExpr;
+      </test-group>
+      <test-group name="FullAxis" featureOwner="NIST and Frans Englich">
+         <GroupInfo>
+            <title>Full Axis Feature</title>
+            <description/>
+         </GroupInfo>
+         &ancestorAxis;
+         &ancestor-or-selfAxis;
+         &followingAxis;
+         &following-siblingAxis;
+         &precedingAxis;
+         &preceding-siblingAxis;
+      </test-group>
+      <test-group is-XPath2="false" name="Modules" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>Module Feature</title>
+            <description/>
+         </GroupInfo>
+         &ModuleImport;
+         &ModuleProlog;
+      </test-group>
+      <test-group is-XPath2="false" name="ElementWithId" featureOwner="Michael Kay">
+         <GroupInfo>
+            <title>fn:element-with-id function</title>
+            <description>Tests for fn:element-with-id function (introduced by erratum; implementation is optional for XQuery 1.0)</description>
+         </GroupInfo>
+         &ElementWithId;
+      </test-group>
+      &Serialization;
+   </test-group>
+   <test-group is-XPath2="false" name="Appendices" featureOwner="NIST">
+      <GroupInfo>
+         <title>Tests for the appendices.</title>
+         <description/>
+      </GroupInfo>
+      &Appendix-A4;
+      &Annex-E;
+   </test-group>
+   <test-group name="UseCase" featureOwner="Frans Englich">
+      <GroupInfo>
+         <title>Use Cases</title>
+         <description/>
+      </GroupInfo>
+      &UseCaseXMP;
+      &UseCaseTREE;
+      &UseCaseSEQ;
+      &UseCaseR;
+      &UseCaseSGML;
+      &UseCaseSTRING;
+      &UseCaseNS;
+      &UseCasePARTS;
+   </test-group>
+   &XMark;
+   <test-group name="FunctX">
+      <GroupInfo>
+         <title>FunctX -- A Collection Of Functions</title>
+         <description>This test suite group contains FunctX, a collection of
+                XQuery functions. They were written by Priscilla Walmsley, but
+                is maintained by Frans Englich within the XQTS.</description>
+      </GroupInfo>
+      &functx-fn-abs;
+      &functx-fn-adjust-dateTime-to-timezone;
+      &functx-fn-adjust-date-to-timezone;
+      &functx-fn-adjust-time-to-timezone;
+      &functx-fn-avg;
+      &functx-fn-base-uri;
+      &functx-fn-boolean;
+      &functx-fn-ceiling;
+      &functx-fn-codepoint-equal;
+      &functx-fn-codepoints-to-string;
+      <test-group name="functx-fn-collection" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-collection</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-compare;
+      &functx-fn-concat;
+      &functx-fn-contains;
+      &functx-fn-count;
+      <test-group name="functx-fn-current-dateTime" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-current-dateTime</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-current-date" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-current-date</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-current-grouping-key" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-current-grouping-key</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-current-group" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-current-group</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-current-time" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-current-time</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-current" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-current</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-data;
+      &functx-fn-dateTime;
+      &functx-fn-day-from-dateTime;
+      &functx-fn-day-from-date;
+      &functx-fn-days-from-duration;
+      &functx-fn-deep-equal;
+      &functx-fn-default-collation;
+      &functx-fn-distinct-values;
+      &functx-fn-doc-available;
+      <test-group name="functx-fn-document-uri" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-document-uri</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-document" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-document</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-doc" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-doc</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-element-available" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-element-available</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-empty;
+      &functx-fn-encode-for-uri;
+      &functx-fn-ends-with;
+      <test-group name="functx-fn-error" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-error</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-escape-html-uri;
+      &functx-fn-exactly-one;
+      &functx-fn-exists;
+      &functx-fn-false;
+      &functx-fn-floor;
+      <test-group name="functx-fn-format-dateTime" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-format-dateTime</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-format-date" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-format-date</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-format-number" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-format-number</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-format-time" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-format-time</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-function-available" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-function-available</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-generate-id" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-generate-id</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-hours-from-dateTime;
+      &functx-fn-hours-from-duration;
+      &functx-fn-hours-from-time;
+      <test-group name="functx-fn-idref" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-idref</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-id" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-id</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-implicit-timezone" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-implicit-timezone</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-index-of;
+      <test-group name="functx-fn-in-scope-prefixes" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-in-scope-prefixes</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-insert-before;
+      &functx-fn-iri-to-uri;
+      <test-group name="functx-fn-key" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-key</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-lang;
+      &functx-fn-last;
+      &functx-fn-local-name-from-QName;
+      &functx-fn-local-name;
+      &functx-fn-lower-case;
+      &functx-fn-matches;
+      &functx-fn-max;
+      &functx-fn-minutes-from-dateTime;
+      &functx-fn-minutes-from-duration;
+      &functx-fn-minutes-from-time;
+      &functx-fn-min;
+      &functx-fn-month-from-dateTime;
+      &functx-fn-month-from-date;
+      &functx-fn-months-from-duration;
+      &functx-fn-namespace-uri-for-prefix;
+      &functx-fn-namespace-uri-from-QName;
+      &functx-fn-namespace-uri;
+      &functx-fn-name;
+      &functx-fn-nilled;
+      &functx-fn-node-name;
+      &functx-fn-normalize-space;
+      &functx-fn-normalize-unicode;
+      &functx-fn-not;
+      &functx-fn-number;
+      &functx-fn-one-or-more;
+      &functx-fn-position;
+      &functx-fn-prefix-from-QName;
+      &functx-fn-QName;
+      <test-group name="functx-fn-regex-group" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-regex-group</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-remove;
+      &functx-fn-replace;
+      &functx-fn-resolve-QName;
+      &functx-fn-resolve-uri;
+      &functx-fn-reverse;
+      &functx-fn-root;
+      &functx-fn-round-half-to-even;
+      &functx-fn-round;
+      &functx-fn-seconds-from-dateTime;
+      &functx-fn-seconds-from-duration;
+      &functx-fn-seconds-from-time;
+      &functx-fn-starts-with;
+      <test-group name="functx-fn-static-base-uri" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-static-base-uri</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-string-join;
+      &functx-fn-string-length;
+      &functx-fn-string-to-codepoints;
+      &functx-fn-string;
+      &functx-fn-subsequence;
+      &functx-fn-substring-after;
+      &functx-fn-substring-before;
+      &functx-fn-substring;
+      &functx-fn-sum;
+      <test-group name="functx-fn-system-property" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-system-property</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-timezone-from-dateTime;
+      &functx-fn-timezone-from-date;
+      &functx-fn-timezone-from-time;
+      &functx-fn-tokenize;
+      <test-group name="functx-fn-trace" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-trace</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-translate;
+      &functx-fn-true;
+      <test-group name="functx-fn-type-available" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-type-available</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-unordered" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-unordered</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-unparsed-entity-public-id" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-unparsed-entity-public-id</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-unparsed-entity-uri" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-unparsed-entity-uri</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-unparsed-text-available" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-unparsed-text-available</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      <test-group name="functx-fn-unparsed-text" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-fn-unparsed-text</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-fn-upper-case;
+      &functx-fn-year-from-dateTime;
+      &functx-fn-year-from-date;
+      &functx-fn-years-from-duration;
+      &functx-fn-zero-or-one;
+      &functx-functx-add-attributes;
+      &functx-functx-add-months;
+      &functx-functx-add-or-update-attributes;
+      &functx-functx-all-whitespace;
+      &functx-functx-are-distinct-values;
+      &functx-functx-atomic-type;
+      &functx-functx-avg-empty-is-zero;
+      &functx-functx-between-exclusive;
+      &functx-functx-between-inclusive;
+      &functx-functx-camel-case-to-words;
+      &functx-functx-capitalize-first;
+      &functx-functx-change-element-names-deep;
+      &functx-functx-change-element-ns-deep;
+      &functx-functx-change-element-ns;
+      &functx-functx-chars;
+      &functx-functx-contains-any-of;
+      &functx-functx-contains-case-insensitive;
+      &functx-functx-contains-word;
+      &functx-functx-copy-attributes;
+      &functx-functx-dateTime;
+      &functx-functx-date;
+      &functx-functx-day-in-year;
+      &functx-functx-day-of-week-abbrev-en;
+      &functx-functx-day-of-week-name-en;
+      &functx-functx-day-of-week;
+      &functx-functx-days-in-month;
+      &functx-functx-dayTimeDuration;
+      &functx-functx-ddmmyyyy-to-date;
+      &functx-functx-depth-of-node;
+      &functx-functx-distinct-attribute-names;
+      &functx-functx-distinct-deep;
+      &functx-functx-distinct-element-names;
+      &functx-functx-distinct-element-paths;
+      &functx-functx-distinct-nodes;
+      &functx-functx-duration-from-timezone;
+      &functx-functx-dynamic-path;
+      &functx-functx-escape-for-regex;
+      &functx-functx-exclusive-or;
+      &functx-functx-first-day-of-month;
+      &functx-functx-first-day-of-year;
+      &functx-functx-first-node;
+      &functx-functx-follows-not-descendant;
+      &functx-functx-format-as-title-en;
+      &functx-functx-fragment-from-uri;
+      &functx-functx-get-matches-and-non-matches;
+      &functx-functx-get-matches;
+      &functx-functx-has-element-only-content;
+      &functx-functx-has-empty-content;
+      &functx-functx-has-mixed-content;
+      &functx-functx-has-simple-content;
+      &functx-functx-id-from-element;
+      &functx-functx-id-untyped;
+      &functx-functx-if-absent;
+      &functx-functx-if-empty;
+      &functx-functx-index-of-deep-equal-node;
+      &functx-functx-index-of-match-first;
+      &functx-functx-index-of-node;
+      &functx-functx-index-of-string-first;
+      &functx-functx-index-of-string-last;
+      &functx-functx-index-of-string;
+      &functx-functx-insert-string;
+      &functx-functx-is-absolute-uri;
+      &functx-functx-is-ancestor;
+      &functx-functx-is-a-number;
+      &functx-functx-is-descendant;
+      &functx-functx-is-leap-year;
+      &functx-functx-is-node-among-descendants-deep-equal;
+      &functx-functx-is-node-among-descendants;
+      &functx-functx-is-node-in-sequence-deep-equal;
+      &functx-functx-is-node-in-sequence;
+      &functx-functx-is-value-in-sequence;
+      &functx-functx-last-day-of-month;
+      &functx-functx-last-day-of-year;
+      &functx-functx-last-node;
+      &functx-functx-leaf-elements;
+      &functx-functx-left-trim;
+      &functx-functx-line-count;
+      &functx-functx-lines;
+      &functx-functx-max-depth;
+      &functx-functx-max-determine-type;
+      &functx-functx-max-line-length;
+      &functx-functx-max-node;
+      &functx-functx-max-string;
+      &functx-functx-min-determine-type;
+      &functx-functx-min-node;
+      &functx-functx-min-non-empty-string;
+      &functx-functx-min-string;
+      &functx-functx-mmddyyyy-to-date;
+      &functx-functx-month-abbrev-en;
+      &functx-functx-month-name-en;
+      &functx-functx-namespaces-in-use;
+      &functx-functx-name-test;
+      &functx-functx-next-day;
+      &functx-functx-node-kind;
+      &functx-functx-non-distinct-values;
+      &functx-functx-number-of-matches;
+      <test-group name="functx-functx-open-ref-document" featureOwner="Frans Englich">
+         <GroupInfo>
+            <title>functx-functx-open-ref-document</title>
+            <description/>
+         </GroupInfo>
+      </test-group>
+      &functx-functx-ordinal-number-en;
+      &functx-functx-pad-integer-to-length;
+      &functx-functx-pad-string-to-length;
+      &functx-functx-path-to-node-with-pos;
+      &functx-functx-path-to-node;
+      &functx-functx-precedes-not-ancestor;
+      &functx-functx-previous-day;
+      &functx-functx-remove-attributes-deep;
+      &functx-functx-remove-attributes;
+      &functx-functx-remove-elements-deep;
+      &functx-functx-remove-elements-not-contents;
+      &functx-functx-remove-elements;
+      &functx-functx-repeat-string;
+      &functx-functx-replace-beginning;
+      &functx-functx-replace-element-values;
+      &functx-functx-replace-first;
+      &functx-functx-replace-multi;
+      &functx-functx-reverse-string;
+      &functx-functx-right-trim;
+      &functx-functx-scheme-from-uri;
+      &functx-functx-sequence-deep-equal;
+      &functx-functx-sequence-node-equal-any-order;
+      &functx-functx-sequence-node-equal;
+      &functx-functx-sequence-type;
+      &functx-functx-siblings-same-name;
+      &functx-functx-siblings;
+      &functx-functx-sort-as-numeric;
+      &functx-functx-sort-case-insensitive;
+      &functx-functx-sort-document-order;
+      &functx-functx-sort;
+      &functx-functx-substring-after-if-contains;
+      &functx-functx-substring-after-last-match;
+      &functx-functx-substring-after-last;
+      &functx-functx-substring-after-match;
+      &functx-functx-substring-before-if-contains;
+      &functx-functx-substring-before-last-match;
+      &functx-functx-substring-before-last;
+      &functx-functx-substring-before-match;
+      &functx-functx-time;
+      &functx-functx-timezone-from-duration;
+      &functx-functx-total-days-from-duration;
+      &functx-functx-total-hours-from-duration;
+      &functx-functx-total-minutes-from-duration;
+      &functx-functx-total-months-from-duration;
+      &functx-functx-total-seconds-from-duration;
+      &functx-functx-total-years-from-duration;
+      &functx-functx-trim;
+      &functx-functx-update-attributes;
+      &functx-functx-value-except;
+      &functx-functx-value-intersect;
+      &functx-functx-value-union;
+      &functx-functx-word-count;
+      &functx-functx-words-to-camel-case;
+      &functx-functx-wrap-values-in-elements;
+      &functx-functx-yearMonthDuration;
+      &functx-functx-yyyyddmm-to-date;
+      &functx-functx-yyyymmdd-to-date;
+   </test-group>
+   <test-group name="XQuery11" featureOwner="Michael Kay">
+      <GroupInfo>
+         <title>XQuery 1.1 test cases</title>
+         <description/>
+      </GroupInfo>
+      &EQName;
+      &HigherOrderFunctions;
+      &HeadTailFunc;
+      &SwitchExpr;
+   </test-group>
+   &Catalog;
+</test-suite>

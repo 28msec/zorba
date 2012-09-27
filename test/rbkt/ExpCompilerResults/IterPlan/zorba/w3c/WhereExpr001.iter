@@ -1,0 +1,60 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <IfThenElseIterator>
+    <TypedValueCompareIterator_INTEGER>
+      <FnCountIterator>
+        <flwor::FLWORIterator>
+          <ForVariable name="f">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <DescendantAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                  <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                </TreatIterator>
+              </DescendantAxisIterator>
+            </NodeDistinctIterator>
+          </ForVariable>
+          <WhereClause>
+            <FnBooleanIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill allowed="0">
+                <ForVarIterator varname="f"/>
+              </ChildAxisIterator>
+            </FnBooleanIterator>
+          </WhereClause>
+          <ReturnClause>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill allowed="0" target_position="0">
+              <ForVarIterator varname="f"/>
+            </ChildAxisIterator>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </FnCountIterator>
+      <FnCountIterator>
+        <NodeDistinctIterator allow-atomics="false" check-only="false">
+          <flwor::FLWORIterator>
+            <ForVariable name="$$dot">
+              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                  <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                    <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                  </TreatIterator>
+                </DescendantSelfAxisIterator>
+              </NodeDistinctIterator>
+            </ForVariable>
+            <ReturnClause>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill allowed="0" target_position="0">
+                <ForVarIterator varname="$$dot"/>
+              </ChildAxisIterator>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+        </NodeDistinctIterator>
+      </FnCountIterator>
+    </TypedValueCompareIterator_INTEGER>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,Same)"/>
+    </ElementIterator>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,notSame)"/>
+    </ElementIterator>
+  </IfThenElseIterator>
+</SequentialIterator>
+
