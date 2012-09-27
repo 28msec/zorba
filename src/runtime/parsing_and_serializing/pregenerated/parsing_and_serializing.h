@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,6 +89,7 @@ public:
 
 public:
   static void streamReleaser(std::istream* stream);
+  static void setSerializationParams(zorba::serializer& aSerializer, store::Item_t& aParamElem, static_context* aSctx, const QueryLoc& aLoc);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

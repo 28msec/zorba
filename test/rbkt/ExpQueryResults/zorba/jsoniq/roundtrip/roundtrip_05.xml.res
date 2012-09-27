@@ -1,0 +1,1 @@
+[ true, true, true, true, true, "NaN", 5, 1.2, "string", "xs:QName" ]

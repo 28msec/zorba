@@ -56,6 +56,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/pragma.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/rewriter/tools/expr_tools.h"
@@ -78,6 +79,7 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
+#include "context/dynamic_context.h"
 
 #include "types/node_test.h"
 #include "types/casting.h"
@@ -642,6 +644,8 @@ protected:
 
   std::vector<var_expr*>              theScopedVars;
 
+  std::vector<pragma*>                theScopedPragmas;
+
   StaticContextConsts::xquery_version_t theMaxLibModuleVersion;
 
 public:
@@ -737,7 +741,6 @@ const QName* getDotPosVarName() const
 {
   return theRootTranslator->theDotPosVarName;
 }
-
 
 const QName* getLastIdxVarName() const
 {
@@ -1355,23 +1358,33 @@ void normalize_fo(fo_expr* foExpr)
 
   const function* func = foExpr->get_func();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N &&
-      (n < 7 || (n - 1) % 6 != 0))
+  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
+      func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
   {
-    const store::Item* qname = NULL;
+    csize nStarterParams =
+      (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N 
+       ? 1 : 2);
 
-    if (n > 0)
-      qname = foExpr->get_arg(0)->getQName(theSctx);
+    if  (n < (6 + nStarterParams) || (n - nStarterParams) % 6 != 0)
+    {
+      const store::Item* qname = NULL;
 
-    if (qname != NULL)
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue(), "index", n-1, "multiple of 6"));
-    }
-    else
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS("anonymous", "index", n-1, "multiple of 6"));
+      if (n > 0)
+        qname = foExpr->get_arg(0)->getQName(theSctx);
+
+      zstring lMsgPart;
+      ztd::to_string(nStarterParams, &lMsgPart);
+      lMsgPart += " + multiple of 6";
+      if (qname != NULL)
+      {
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS(qname->getStringValue(), "index", n, lMsgPart));
+      }
+      else
+      {
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS("anonymous", "index", n, lMsgPart));
+      }
     }
   }
 
@@ -1388,11 +1401,27 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
+    {
+      if (i <= 1)
+        paramType = sign[i];
+      else
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+    }
     else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
       else if (i % 6 == 1 || i % 6 == 2)
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+      else
+        paramType = theRTM.BOOLEAN_TYPE_ONE;
+    }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+    {
+      if (i <= 1)
+        paramType = sign[i];
+      else if (i % 6 == 2 || i % 6 == 3)
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
@@ -1997,28 +2026,25 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 
   if (initExpr != NULL && varType != NULL && !b.is_extern())
   {
-    initExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                 loc,
-                                                 initExpr,
-                                                 varType,
-                                                 TreatIterator::TYPE_MATCH);
+    initExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, initExpr, varType, TreatIterator::TYPE_MATCH);
   }
 
-  expr* declExpr =
-  theExprManager->create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
+  expr* declExpr = theExprManager->
+  create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
 
   // check type for vars that are external
   if (varType != NULL && b.is_extern())
   {
-    expr* getExpr = theExprManager->create_fo_expr(theRootSctx, loc, varGet, varExpr);
+    expr* getExpr = theExprManager->
+    create_fo_expr(theRootSctx, loc, varGet, varExpr);
 
-    stmts.push_back(theExprManager->create_treat_expr(theRootSctx,
-                                                      loc,
-                                                      getExpr,
-                                                      varType,
-                                                      TreatIterator::TYPE_MATCH));
+    expr* treatExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, getExpr, varType, TreatIterator::TYPE_MATCH);
+
+    stmts.push_back(treatExpr);
   }
 }
 
@@ -2361,13 +2387,26 @@ void* begin_visit(const MainModule& v)
   // However, do not create a ver_decl expr for it, because this will create a
   // treat_as expr as well, so the ctx item will always appear as being used,
   // and as a result it will always have to be set.
-  var_expr* var = bind_var(loc,
-                           DOT_VARNAME,
-                           var_expr::prolog_var,
-                           theSctx->get_context_item_type());
+  var_expr* var1 = bind_var(loc,
+                            DOT_VARNAME,
+                            var_expr::prolog_var,
+                            theSctx->get_context_item_type());
+  var_expr* var2 = bind_var(loc,
+                            DOT_POS_VARNAME,
+                            var_expr::prolog_var, 
+                            theRTM.INTEGER_TYPE_ONE);
+  var_expr* var3 = bind_var(loc,
+                            LAST_IDX_VARNAME,
+                            var_expr::prolog_var,
+                            theRTM.INTEGER_TYPE_ONE);
 
-  var->set_external(true);
-  var->set_unique_id(1);
+  var1->set_external(true);
+  var2->set_external(true);
+  var3->set_external(true);
+  
+  var1->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
+  var2->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
+  var3->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
 
   //GlobalBinding b(var, NULL, true);
   //declare_var(b, theModulesInfo->theInitExprs);
@@ -8461,14 +8500,21 @@ void end_visit(const ValidateExpr& v, void* /*visit_state*/)
 void* begin_visit(const ExtensionExpr& v)
 {
   TRACE_VISIT();
+
+  if (v.get_expr() == NULL)
+  {
+    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC(loc) );
+  }
+
   return no_state;
 }
 
 void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-  if (v.get_expr() == NULL)
-    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC(loc) );
+
+  size_t lNumPragmas = v.get_pragma_list()->get_pragmas().size();
+  theScopedPragmas.resize(theScopedPragmas.size() - lNumPragmas);
 }
 
 
@@ -8494,19 +8540,25 @@ void end_visit(const PragmaList& v, void* /*visit_state*/)
 void* begin_visit(const Pragma& v)
 {
   TRACE_VISIT();
+  store::Item_t lQName;
+  expand_no_default_qname(lQName, v.get_name(), v.get_name()->get_location());
+
+  if (lQName->getPrefix().empty() && lQName->getNamespace().empty())
+  {
+    RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(lQName->getStringValue()));
+  }
+
+  pragma* lPragma = theExprManager->create_pragma(lQName, v.get_pragma_lit());
+
+  // popped in end_visit(ExtensionExpr)
+  theScopedPragmas.push_back(lPragma);
+
   return no_state;
 }
 
 void end_visit(const Pragma& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
-  // may raise XPST0081
-  if (!v.get_name()->is_eqname())
-  {
-    zstring ns;
-    theSctx->lookup_ns(ns, v.get_name()->get_prefix(), loc);
-  }
 }
 
 
@@ -10952,6 +11004,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       default: {}
 
     } // switch
+
+    f->processPragma(resultExpr, theScopedPragmas);
 
     push_nodestack(resultExpr);
   }

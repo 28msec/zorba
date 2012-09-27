@@ -273,7 +273,7 @@ void fo_expr::compute_scripting_kind()
 }
 
 
-expr* fo_expr::clone(substitution_t& subst) const
+expr* fo_expr::cloneImpl(substitution_t& subst) const
 {
   if (get_func()->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
   {

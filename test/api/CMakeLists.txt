@@ -17,6 +17,7 @@ CREATE_TEST_SOURCELIST(APITests
   itemfactory.cpp
   xmldatamanager.cpp
   test_static_context.cpp
+  test_dynamic_context.cpp
   serializer.cpp
   annotations.cpp
   external_function_errors.cpp

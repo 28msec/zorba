@@ -21,13 +21,13 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <flwor::FLWORIterator>
     <LetVariable name="auction" materialize="true">
       <FnDocIterator>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+            <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
           </FnDataIterator>
         </PromoteIterator>
       </FnDocIterator>
@@ -41,7 +41,7 @@ Iterator tree for main query:
             <EnclosedIterator attr_cont="false">
               <FnCountIterator>
                 <flwor::FLWORIterator>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
@@ -50,16 +50,16 @@ Iterator tree for main query:
                       </ChildAxisIterator>
                     </ChildAxisIterator>
                   </ForVariable>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$dot"/>
+                      <ForVarIterator varname="$$context-item"/>
                     </ChildAxisIterator>
                   </ForVariable>
                   <WhereClause>
                     <CompareIterator>
                       <FnDataIterator>
                         <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
-                          <ForVarIterator varname="$$dot"/>
+                          <ForVarIterator varname="$$context-item"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
                       <SingletonIterator value="xs:integer(100000)"/>
@@ -77,7 +77,7 @@ Iterator tree for main query:
             <EnclosedIterator attr_cont="false">
               <FnCountIterator>
                 <flwor::FLWORIterator>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
@@ -86,9 +86,9 @@ Iterator tree for main query:
                       </ChildAxisIterator>
                     </ChildAxisIterator>
                   </ForVariable>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$dot"/>
+                      <ForVarIterator varname="$$context-item"/>
                     </ChildAxisIterator>
                   </ForVariable>
                   <WhereClause>
@@ -96,7 +96,7 @@ Iterator tree for main query:
                       <CompareIterator>
                         <FnDataIterator>
                           <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
-                            <ForVarIterator varname="$$dot"/>
+                            <ForVarIterator varname="$$context-item"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
                         <SingletonIterator value="xs:integer(100000)"/>
@@ -104,7 +104,7 @@ Iterator tree for main query:
                       <CompareIterator>
                         <FnDataIterator>
                           <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
-                            <ForVarIterator varname="$$dot"/>
+                            <ForVarIterator varname="$$context-item"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
                         <SingletonIterator value="xs:integer(30000)"/>
@@ -123,7 +123,7 @@ Iterator tree for main query:
             <EnclosedIterator attr_cont="false">
               <FnCountIterator>
                 <flwor::FLWORIterator>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
@@ -132,16 +132,16 @@ Iterator tree for main query:
                       </ChildAxisIterator>
                     </ChildAxisIterator>
                   </ForVariable>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$dot"/>
+                      <ForVarIterator varname="$$context-item"/>
                     </ChildAxisIterator>
                   </ForVariable>
                   <WhereClause>
                     <CompareIterator>
                       <FnDataIterator>
                         <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
-                          <ForVarIterator varname="$$dot"/>
+                          <ForVarIterator varname="$$context-item"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
                       <SingletonIterator value="xs:integer(30000)"/>

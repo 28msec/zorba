@@ -27,30 +27,30 @@ Iterator tree for main query:
       <LetVariable name="y" materialize="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
           <flwor::FLWORIterator>
-            <ForVariable name="$$dot">
+            <ForVariable name="$$context-item">
               <FnDocIterator>
                 <SingletonIterator value="xs:string(../hashjoins/min_ic1980.xml)"/>
               </FnDocIterator>
             </ForVariable>
-            <ForVariable name="$$dot">
+            <ForVariable name="$$context-item">
               <flwor::FLWORIterator>
-                <ForVariable name="$$dot">
+                <ForVariable name="$$context-item">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,ipeds)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="$$dot"/>
+                    <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ForVariable>
                 <WhereClause>
                   <CompareIterator>
                     <FnDataIterator>
                       <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,year)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="$$dot"/>
+                        <ForVarIterator varname="$$context-item"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
                     <SingletonIterator value="xs:integer(1980)"/>
                   </CompareIterator>
                 </WhereClause>
                 <ReturnClause>
-                  <ForVarIterator varname="$$dot"/>
+                  <ForVarIterator varname="$$context-item"/>
                 </ReturnClause>
               </flwor::FLWORIterator>
             </ForVariable>
@@ -58,14 +58,14 @@ Iterator tree for main query:
               <CompareIterator>
                 <FnDataIterator>
                   <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,file)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="$$dot"/>
+                    <ForVarIterator varname="$$context-item"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
                 <SingletonIterator value="xs:string(ic1980)"/>
               </CompareIterator>
             </WhereClause>
             <ReturnClause>
-              <ForVarIterator varname="$$dot"/>
+              <ForVarIterator varname="$$context-item"/>
             </ReturnClause>
           </flwor::FLWORIterator>
         </ChildAxisIterator>
@@ -108,7 +108,7 @@ Iterator tree for main query:
               <HoistIterator>
                 <AttributeAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
                   <flwor::FLWORIterator>
-                    <ForVariable name="$$dot">
+                    <ForVariable name="$$context-item">
                       <NodeSortIterator distinct="true" ascending="true">
                         <ProbeIndexPointGeneralIterator>
                           <SingletonIterator value="xs:QName(,,tempIndex0)"/>
@@ -119,7 +119,7 @@ Iterator tree for main query:
                       </NodeSortIterator>
                     </ForVariable>
                     <ReturnClause>
-                      <ForVarIterator varname="$$dot"/>
+                      <ForVarIterator varname="$$context-item"/>
                     </ReturnClause>
                   </flwor::FLWORIterator>
                 </AttributeAxisIterator>
