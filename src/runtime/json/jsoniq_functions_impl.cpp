@@ -67,6 +67,72 @@ const zstring VALUE_KEY("value");
 const char * OPTIONS_KEY_PREFIX = "prefix";
 const char * OPTIONS_KEY_SER_PARAMS = "serialization-parameters";
 
+const char * SEQTYPE_ANYNODE  = "node()";
+const char * SEQTYPE_COMMENT  = "comment()";
+const char * SEQTYPE_DOCUMENT = "document-node()";
+const char * SEQTYPE_ELEMENT  = "element()";
+const char * SEQTYPE_PROCINST = "processing-instruction()";
+const char * SEQTYPE_TEXT     = "text()";
+
+const char * kind2str(const store::NodeKind& aKind)
+{
+  // we do not support attibutes and namespaces as they cannot be serialized
+  switch (aKind)
+  {
+  case store::StoreConsts::anyNode:      return SEQTYPE_ANYNODE;
+  case store::StoreConsts::commentNode:  return SEQTYPE_COMMENT;
+  case store::StoreConsts::documentNode: return SEQTYPE_DOCUMENT;
+  case store::StoreConsts::elementNode:  return SEQTYPE_ELEMENT;
+  case store::StoreConsts::piNode:       return SEQTYPE_PROCINST;
+  case store::StoreConsts::textNode:     return SEQTYPE_TEXT;
+  default: return "";
+  }
+}
+
+bool str2kind(const zstring& aString, store::NodeKind& aKind)
+{
+  switch(aString.at(0))
+  {
+  case 'c':
+    if (aString == SEQTYPE_COMMENT)
+    {
+      aKind = store::StoreConsts::commentNode;
+      return true;
+    }
+    break;
+  case 'd':
+    if (aString == SEQTYPE_DOCUMENT)
+    {
+      aKind = store::StoreConsts::documentNode;
+      return true;
+    }
+    break;
+  case 'e':
+  case 'n': // "node()" maps to element for backwards compatibility
+    if (aString == SEQTYPE_ELEMENT || aString == SEQTYPE_ANYNODE)
+    {
+      aKind = store::StoreConsts::elementNode;
+      return true;
+    }
+    break;
+  case 'p':
+    if (aString == SEQTYPE_PROCINST)
+    {
+      aKind = store::StoreConsts::piNode;
+      return true;
+    }
+    break;
+  case 't':
+    if (aString == SEQTYPE_TEXT)
+    {
+      aKind = store::StoreConsts::textNode;
+      return true;
+    }
+    break;
+  }
+  return false;
+}
+
 /*******************************************************************************
   json:decode-from-roundtrip($items as json-item()*,
                              $options as object()) as structured-item()*
@@ -125,32 +191,75 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
 
   zstring lTypeNameString;
   lTypeValueItem->getStringValue2(lTypeNameString);
-  if (lTypeNameString == "node()")
+  store::NodeKind lNodeKind;
+  if (str2kind(lTypeNameString, lNodeKind))
   {
     store::LoadProperties lProperties;
     lProperties.setStoreDocument(false);
     store::Item_t lDoc;
-    if (lValueValueItem->isStreamable())
+    zstring lXmlString;
+    switch (lNodeKind)
     {
-      lDoc = GENV.getStore().loadDocument(
-            "", "", lValueValueItem->getStream(), lProperties);
+    case store::StoreConsts::commentNode:
+    case store::StoreConsts::piNode:
+    case store::StoreConsts::textNode:
+      {
+        // we have to wrap these 3 node kinds, so we cannot care about streams
+        lValueValueItem->getStringValue2(lXmlString);
+        lXmlString = "<a>" + lXmlString + "</a>";
+        std::istringstream lStream(lXmlString.c_str());
+        lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
+      }
+      break;
+    default:
+      if (lValueValueItem->isStreamable())
+      {
+        lDoc = GENV.getStore().loadDocument(
+              "", "", lValueValueItem->getStream(), lProperties);
+      }
+      else
+      {
+        lValueValueItem->getStringValue2(lXmlString);
+        std::istringstream lStream(lXmlString.c_str());
+        lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
+      }
+      break;
+    }
+    if (lNodeKind == store::StoreConsts::documentNode)
+    {
+      aResult = lDoc;
     }
     else
     {
-      zstring lXmlString;
-      lValueValueItem->getStringValue2(lXmlString);
-      std::istringstream lStream(lXmlString.c_str());
-      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
+      store::Item_t lRootElem;
+      store::Iterator_t lIt = lDoc->getChildren();
+      bool lFound = false;
+      lIt->open();
+      while (! lFound && lIt->next(lRootElem))
+      {
+        lFound = lRootElem->getNodeKind() == store::StoreConsts::elementNode;
+      }
+      lIt->close();
+      ZORBA_ASSERT(lFound);
+      if (lNodeKind == store::StoreConsts::elementNode)
+      {
+        // if we needed an element we're done
+        aResult = lRootElem;
+      }
+      else
+      {
+        // otherwise we have to pass through the wrapper that we've created
+        store::Iterator_t lIt = lRootElem->getChildren();
+        bool lFound = false;
+        lIt->open();
+        while (! lFound && lIt->next(aResult))
+        {
+          lFound = aResult->getNodeKind() == lNodeKind;
+        }
+        lIt->close();
+        ZORBA_ASSERT(lFound);
+      }
     }
-    store::Iterator_t lIt = lDoc->getChildren();
-    bool lFound = false;
-    lIt->open();
-    while (! lFound && lIt->next(aResult))
-    {
-       lFound = aResult->getNodeKind() == store::StoreConsts::elementNode;
-    }
-    lIt->close();
-    ZORBA_ASSERT(lFound);
   }
   else
   {
@@ -478,23 +587,12 @@ JSONEncodeForRoundtripIterator::encodeNode(
     store::Item_t& aResult,
     JSONEncodeForRoundtripIteratorState* aState) const
 {
-  if (aNode->getNodeKind() != store::StoreConsts::elementNode)
-  {
-    // this is a temporary solution until we decide if/how we encode
-    // node kinds
-    RAISE_ERROR(
-      zerr::ZXQP0004_NOT_IMPLEMENTED,
-      loc,
-      ERROR_PARAMS(store::StoreConsts::toString(aNode->getNodeKind()))
-    );
-  }
-
   std::vector<store::Item_t> names(2);
   std::vector<store::Item_t> values(2);
 
   {
     zstring typeKey = aState->thePrefix + TYPE_KEY;
-    zstring typeValue = "node()";
+    zstring typeValue = kind2str(aNode->getNodeKind());
     GENV_ITEMFACTORY->createString(names.at(0), typeKey);
     GENV_ITEMFACTORY->createString(values.at(0), typeValue);
   }
