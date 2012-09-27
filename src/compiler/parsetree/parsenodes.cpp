@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -913,7 +913,7 @@ CollectionDecl::CollectionDecl(
     rchandle<AnnotationListParsenode> aAnnotations,
     SequenceType* aTypeDecl)
   :
-  parsenode(aLoc),
+  XQDocumentable(aLoc),
   theName(aName),
   theTypeDecl(aTypeDecl),
   theAnnotations(aAnnotations)
@@ -953,7 +953,7 @@ AST_IndexDecl::AST_IndexDecl(
     IndexKeyList* key,
     rchandle<AnnotationListParsenode> aAnnotations)
   :
-  parsenode(loc),
+  XQDocumentable(loc),
   theName(name),
   theDomainExpr(domainExpr),
   theKey(key),

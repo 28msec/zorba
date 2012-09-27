@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,11 +112,13 @@ void XQueryCompiler::xqdoc(
     std::istream&         aXQuery,
     const zstring&        aFileName,
     store::Item_t&        aResult,
-    const store::Item_t&  aDateTime)
+    const store::Item_t&  aDateTime,
+    uint32_t              aOptions)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
-  print_parsetree_xqdoc(aResult, lAST.getp(), aFileName.c_str(), aDateTime);
+  print_parsetree_xqdoc(aResult, lAST.getp(),
+                        aFileName.c_str(), aDateTime, aOptions);
 }
 
 

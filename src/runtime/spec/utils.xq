@@ -40,7 +40,7 @@ declare function zi:indent() as xs:string
 declare function zi:add-copyright() as xs:string
 {
 "/*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
