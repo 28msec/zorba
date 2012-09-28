@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -592,6 +592,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_XQDOC_FN_NS ||
 #ifdef ZORBA_WITH_JSON
             ns == JSONIQ_FN_NS ||
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -726,8 +726,6 @@ namespace zorba{
     class StringSplitIterator;
 
     class DecodeURIIterator;
-
-    class XQDocIterator;
 
     class XQDocContentIterator;
 
@@ -1767,9 +1765,6 @@ public:
 
     virtual void beginVisit ( const DecodeURIIterator& ) = 0;
     virtual void endVisit   ( const DecodeURIIterator& ) = 0;
-
-    virtual void beginVisit ( const XQDocIterator& ) = 0;
-    virtual void endVisit   ( const XQDocIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocContentIterator& ) = 0;
     virtual void endVisit   ( const XQDocContentIterator& ) = 0;

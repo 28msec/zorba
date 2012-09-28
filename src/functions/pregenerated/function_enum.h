@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -472,8 +472,8 @@
   FN_ZORBA_STRING_IS_STREAMABLE_1,
   FN_ZORBA_STRING_SPLIT_2,
   FN_ZORBA_URI_DECODE_3,
-  FN_ZORBA_XQDOC_XQDOC_1,
-  FN_ZORBA_XQDOC_XQDOC_CONTENT_1,
+  FN_ZORBA_XQDOC_XQDOC_CONTENT_IMPL_2,
+  FN_ZORBA_XQDOC_XQDOC_CONTENT_OPTIONS_IMPL_3,
 
 
 
