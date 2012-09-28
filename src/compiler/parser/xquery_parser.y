@@ -6579,14 +6579,12 @@ JSONDeleteExpr :
           if (lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
-            delete $3;
             YYERROR;
           }
 
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $3;
             YYERROR;
           }
 
@@ -6606,7 +6604,6 @@ JSONRenameExpr :
           if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
-            delete $3;
             delete $5;
             YYERROR;
           }
@@ -6614,7 +6611,6 @@ JSONRenameExpr :
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $3;
             delete $5;
             YYERROR;
           }
@@ -6636,7 +6632,6 @@ JSONReplaceExpr :
           if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
-            delete $5;
             delete $7;
             YYERROR;
           }
@@ -6644,7 +6639,6 @@ JSONReplaceExpr :
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $5;
             delete $7;
             YYERROR;
           }

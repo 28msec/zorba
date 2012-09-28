@@ -9258,14 +9258,12 @@ namespace zorba {
           if (lDynamicFunctionInvocation == NULL)
           {
             error((yylocation_stack_[(3) - (3)]), "An object invocation is expected. A filter was found instead.");
-            delete (yysemantic_stack_[(3) - (3)].expr);
             YYERROR;
           }
 
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error((yylocation_stack_[(3) - (3)]), "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete (yysemantic_stack_[(3) - (3)].expr);
             YYERROR;
           }
 
@@ -9278,7 +9276,7 @@ namespace zorba {
 
   case 782:
 /* Line 661 of lalr1.cc  */
-#line 6602 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6600 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(5) - (3)].expr));
@@ -9286,7 +9284,6 @@ namespace zorba {
           if(lDynamicFunctionInvocation == NULL)
           {
             error((yylocation_stack_[(5) - (3)]), "An object invocation is expected. A filter was found instead.");
-            delete (yysemantic_stack_[(5) - (3)].expr);
             delete (yysemantic_stack_[(5) - (5)].expr);
             YYERROR;
           }
@@ -9294,7 +9291,6 @@ namespace zorba {
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error((yylocation_stack_[(5) - (3)]), "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete (yysemantic_stack_[(5) - (3)].expr);
             delete (yysemantic_stack_[(5) - (5)].expr);
             YYERROR;
           }
@@ -9309,7 +9305,7 @@ namespace zorba {
 
   case 783:
 /* Line 661 of lalr1.cc  */
-#line 6632 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6628 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(7) - (5)].expr));
@@ -9317,7 +9313,6 @@ namespace zorba {
           if(lDynamicFunctionInvocation == NULL)
           {
             error((yylocation_stack_[(7) - (3)]), "An object invocation is expected. A filter was found instead.");
-            delete (yysemantic_stack_[(7) - (5)].expr);
             delete (yysemantic_stack_[(7) - (7)].expr);
             YYERROR;
           }
@@ -9325,7 +9320,6 @@ namespace zorba {
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error((yylocation_stack_[(7) - (3)]), "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete (yysemantic_stack_[(7) - (5)].expr);
             delete (yysemantic_stack_[(7) - (7)].expr);
             YYERROR;
           }
@@ -9340,7 +9334,7 @@ namespace zorba {
 
   case 784:
 /* Line 661 of lalr1.cc  */
-#line 6662 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6656 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9348,7 +9342,7 @@ namespace zorba {
 
   case 785:
 /* Line 661 of lalr1.cc  */
-#line 6666 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6660 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9356,7 +9350,7 @@ namespace zorba {
 
   case 786:
 /* Line 661 of lalr1.cc  */
-#line 6670 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6664 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9364,7 +9358,7 @@ namespace zorba {
 
   case 787:
 /* Line 661 of lalr1.cc  */
-#line 6677 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6671 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonItem);
         }
@@ -9372,7 +9366,7 @@ namespace zorba {
 
   case 788:
 /* Line 661 of lalr1.cc  */
-#line 6684 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6678 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonObject);
         }
@@ -9380,7 +9374,7 @@ namespace zorba {
 
   case 789:
 /* Line 661 of lalr1.cc  */
-#line 6691 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6685 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonArray);
         }
@@ -9388,7 +9382,7 @@ namespace zorba {
 
   case 792:
 /* Line 661 of lalr1.cc  */
-#line 6708 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6702 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     {
           auto_ptr<QName> lQName( static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
           zstring const &tmp = lQName->get_qname();
@@ -9402,1333 +9396,1333 @@ namespace zorba {
 
   case 794:
 /* Line 661 of lalr1.cc  */
-#line 6721 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6715 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("attribute"))); }
     break;
 
   case 795:
 /* Line 661 of lalr1.cc  */
-#line 6722 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6716 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("comment"))); }
     break;
 
   case 796:
 /* Line 661 of lalr1.cc  */
-#line 6723 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6717 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document-node"))); }
     break;
 
   case 797:
 /* Line 661 of lalr1.cc  */
-#line 6724 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6718 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("element"))); }
     break;
 
   case 798:
 /* Line 661 of lalr1.cc  */
-#line 6725 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6719 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("item"))); }
     break;
 
   case 799:
 /* Line 661 of lalr1.cc  */
-#line 6726 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6720 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("if"))); }
     break;
 
   case 800:
 /* Line 661 of lalr1.cc  */
-#line 6727 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6721 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("node"))); }
     break;
 
   case 801:
 /* Line 661 of lalr1.cc  */
-#line 6728 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6722 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
     break;
 
   case 802:
 /* Line 661 of lalr1.cc  */
-#line 6729 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6723 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-attribute"))); }
     break;
 
   case 803:
 /* Line 661 of lalr1.cc  */
-#line 6730 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6724 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-element"))); }
     break;
 
   case 804:
 /* Line 661 of lalr1.cc  */
-#line 6731 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6725 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("text"))); }
     break;
 
   case 805:
 /* Line 661 of lalr1.cc  */
-#line 6732 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6726 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("typeswitch"))); }
     break;
 
   case 806:
 /* Line 661 of lalr1.cc  */
-#line 6733 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6727 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("switch"))); }
     break;
 
   case 807:
 /* Line 661 of lalr1.cc  */
-#line 6734 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6728 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
     break;
 
   case 808:
 /* Line 661 of lalr1.cc  */
-#line 6735 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6729 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("while"))); }
     break;
 
   case 810:
 /* Line 661 of lalr1.cc  */
-#line 6740 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6734 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))); }
     break;
 
   case 811:
 /* Line 661 of lalr1.cc  */
-#line 6741 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6735 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("xquery"))); }
     break;
 
   case 812:
 /* Line 661 of lalr1.cc  */
-#line 6742 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6736 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty"))); }
     break;
 
   case 813:
 /* Line 661 of lalr1.cc  */
-#line 6743 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6737 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("boundary-space"))); }
     break;
 
   case 814:
 /* Line 661 of lalr1.cc  */
-#line 6744 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6738 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ft-option"))); }
     break;
 
   case 815:
 /* Line 661 of lalr1.cc  */
-#line 6745 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6739 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("base-uri"))); }
     break;
 
   case 816:
 /* Line 661 of lalr1.cc  */
-#line 6746 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6740 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lax"))); }
     break;
 
   case 817:
 /* Line 661 of lalr1.cc  */
-#line 6747 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6741 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strict"))); }
     break;
 
   case 818:
 /* Line 661 of lalr1.cc  */
-#line 6748 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6742 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("idiv"))); }
     break;
 
   case 819:
 /* Line 661 of lalr1.cc  */
-#line 6749 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6743 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document"))); }
     break;
 
   case 820:
 /* Line 661 of lalr1.cc  */
-#line 6750 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6744 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ftnot"))); }
     break;
 
   case 821:
 /* Line 661 of lalr1.cc  */
-#line 6751 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6745 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("not"))); }
     break;
 
   case 822:
 /* Line 661 of lalr1.cc  */
-#line 6752 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6746 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sensitive"))); }
     break;
 
   case 823:
 /* Line 661 of lalr1.cc  */
-#line 6753 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6747 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("insensitive"))); }
     break;
 
   case 824:
 /* Line 661 of lalr1.cc  */
-#line 6754 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6748 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("diacritics"))); }
     break;
 
   case 825:
 /* Line 661 of lalr1.cc  */
-#line 6755 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6749 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("without"))); }
     break;
 
   case 826:
 /* Line 661 of lalr1.cc  */
-#line 6756 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6750 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stemming"))); }
     break;
 
   case 827:
 /* Line 661 of lalr1.cc  */
-#line 6757 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6751 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("thesaurus"))); }
     break;
 
   case 828:
 /* Line 661 of lalr1.cc  */
-#line 6758 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6752 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stop"))); }
     break;
 
   case 829:
 /* Line 661 of lalr1.cc  */
-#line 6759 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6753 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("wildcards"))); }
     break;
 
   case 830:
 /* Line 661 of lalr1.cc  */
-#line 6760 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6754 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("entire"))); }
     break;
 
   case 831:
 /* Line 661 of lalr1.cc  */
-#line 6761 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6755 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("content"))); }
     break;
 
   case 832:
 /* Line 661 of lalr1.cc  */
-#line 6762 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6756 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("word"))); }
     break;
 
   case 833:
 /* Line 661 of lalr1.cc  */
-#line 6763 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6757 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("start"))); }
     break;
 
   case 834:
 /* Line 661 of lalr1.cc  */
-#line 6764 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6758 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("end"))); }
     break;
 
   case 835:
 /* Line 661 of lalr1.cc  */
-#line 6765 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6759 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("most"))); }
     break;
 
   case 836:
 /* Line 661 of lalr1.cc  */
-#line 6766 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6760 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("skip"))); }
     break;
 
   case 837:
 /* Line 661 of lalr1.cc  */
-#line 6767 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6761 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy"))); }
     break;
 
   case 838:
 /* Line 661 of lalr1.cc  */
-#line 6768 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6762 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("general"))); }
     break;
 
   case 839:
 /* Line 661 of lalr1.cc  */
-#line 6769 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6763 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("value"))); }
     break;
 
   case 840:
 /* Line 661 of lalr1.cc  */
-#line 6770 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6764 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("eq"))); }
     break;
 
   case 841:
 /* Line 661 of lalr1.cc  */
-#line 6771 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6765 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ne"))); }
     break;
 
   case 842:
 /* Line 661 of lalr1.cc  */
-#line 6772 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6766 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lt"))); }
     break;
 
   case 843:
 /* Line 661 of lalr1.cc  */
-#line 6773 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6767 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("le"))); }
     break;
 
   case 844:
 /* Line 661 of lalr1.cc  */
-#line 6774 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6768 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("gt"))); }
     break;
 
   case 845:
 /* Line 661 of lalr1.cc  */
-#line 6775 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6769 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ge"))); }
     break;
 
   case 846:
 /* Line 661 of lalr1.cc  */
-#line 6776 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6770 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("at"))); }
     break;
 
   case 847:
 /* Line 661 of lalr1.cc  */
-#line 6777 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6771 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("context"))); }
     break;
 
   case 848:
 /* Line 661 of lalr1.cc  */
-#line 6778 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6772 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("variable"))); }
     break;
 
   case 849:
 /* Line 661 of lalr1.cc  */
-#line 6779 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6773 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("return"))); }
     break;
 
   case 850:
 /* Line 661 of lalr1.cc  */
-#line 6780 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6774 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("for"))); }
     break;
 
   case 851:
 /* Line 661 of lalr1.cc  */
-#line 6781 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6775 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("allowing"))); }
     break;
 
   case 852:
 /* Line 661 of lalr1.cc  */
-#line 6782 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6776 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sliding"))); }
     break;
 
   case 853:
 /* Line 661 of lalr1.cc  */
-#line 6783 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6777 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("tumbling"))); }
     break;
 
   case 854:
 /* Line 661 of lalr1.cc  */
-#line 6784 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6778 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("previous"))); }
     break;
 
   case 855:
 /* Line 661 of lalr1.cc  */
-#line 6785 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6779 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("next"))); }
     break;
 
   case 856:
 /* Line 661 of lalr1.cc  */
-#line 6786 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6780 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("only"))); }
     break;
 
   case 857:
 /* Line 661 of lalr1.cc  */
-#line 6787 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6781 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("when"))); }
     break;
 
   case 858:
 /* Line 661 of lalr1.cc  */
-#line 6788 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6782 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("count"))); }
     break;
 
   case 859:
 /* Line 661 of lalr1.cc  */
-#line 6789 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6783 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("in"))); }
     break;
 
   case 860:
 /* Line 661 of lalr1.cc  */
-#line 6790 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6784 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("let"))); }
     break;
 
   case 861:
 /* Line 661 of lalr1.cc  */
-#line 6791 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6785 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("where"))); }
     break;
 
   case 862:
 /* Line 661 of lalr1.cc  */
-#line 6792 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6786 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("by"))); }
     break;
 
   case 863:
 /* Line 661 of lalr1.cc  */
-#line 6793 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6787 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("group"))); }
     break;
 
   case 864:
 /* Line 661 of lalr1.cc  */
-#line 6794 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6788 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("order"))); }
     break;
 
   case 865:
 /* Line 661 of lalr1.cc  */
-#line 6795 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6789 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stable"))); }
     break;
 
   case 866:
 /* Line 661 of lalr1.cc  */
-#line 6796 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6790 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ascending"))); }
     break;
 
   case 867:
 /* Line 661 of lalr1.cc  */
-#line 6797 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6791 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descending"))); }
     break;
 
   case 868:
 /* Line 661 of lalr1.cc  */
-#line 6798 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6792 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("greatest"))); }
     break;
 
   case 869:
 /* Line 661 of lalr1.cc  */
-#line 6799 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6793 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("least"))); }
     break;
 
   case 870:
 /* Line 661 of lalr1.cc  */
-#line 6800 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6794 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collation"))); }
     break;
 
   case 871:
 /* Line 661 of lalr1.cc  */
-#line 6801 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6795 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("some"))); }
     break;
 
   case 872:
 /* Line 661 of lalr1.cc  */
-#line 6802 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6796 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("every"))); }
     break;
 
   case 873:
 /* Line 661 of lalr1.cc  */
-#line 6803 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6797 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("satisfies"))); }
     break;
 
   case 874:
 /* Line 661 of lalr1.cc  */
-#line 6804 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6798 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("case"))); }
     break;
 
   case 875:
 /* Line 661 of lalr1.cc  */
-#line 6805 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6799 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("as"))); }
     break;
 
   case 876:
 /* Line 661 of lalr1.cc  */
-#line 6806 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6800 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("then"))); }
     break;
 
   case 877:
 /* Line 661 of lalr1.cc  */
-#line 6807 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6801 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("else"))); }
     break;
 
   case 878:
 /* Line 661 of lalr1.cc  */
-#line 6808 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6802 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("or"))); }
     break;
 
   case 879:
 /* Line 661 of lalr1.cc  */
-#line 6809 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6803 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("and"))); }
     break;
 
   case 880:
 /* Line 661 of lalr1.cc  */
-#line 6810 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6804 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("instance"))); }
     break;
 
   case 881:
 /* Line 661 of lalr1.cc  */
-#line 6811 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6805 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("of"))); }
     break;
 
   case 882:
 /* Line 661 of lalr1.cc  */
-#line 6812 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6806 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("castable"))); }
     break;
 
   case 883:
 /* Line 661 of lalr1.cc  */
-#line 6813 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6807 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("to"))); }
     break;
 
   case 884:
 /* Line 661 of lalr1.cc  */
-#line 6814 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6808 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("div"))); }
     break;
 
   case 885:
 /* Line 661 of lalr1.cc  */
-#line 6815 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6809 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mod"))); }
     break;
 
   case 886:
 /* Line 661 of lalr1.cc  */
-#line 6816 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6810 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("union"))); }
     break;
 
   case 887:
 /* Line 661 of lalr1.cc  */
-#line 6817 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6811 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("intersect"))); }
     break;
 
   case 888:
 /* Line 661 of lalr1.cc  */
-#line 6818 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6812 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("except"))); }
     break;
 
   case 889:
 /* Line 661 of lalr1.cc  */
-#line 6819 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6813 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("validate"))); }
     break;
 
   case 890:
 /* Line 661 of lalr1.cc  */
-#line 6820 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6814 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("type"))); }
     break;
 
   case 891:
 /* Line 661 of lalr1.cc  */
-#line 6821 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6815 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("cast"))); }
     break;
 
   case 892:
 /* Line 661 of lalr1.cc  */
-#line 6822 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6816 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("treat"))); }
     break;
 
   case 893:
 /* Line 661 of lalr1.cc  */
-#line 6823 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6817 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("is"))); }
     break;
 
   case 894:
 /* Line 661 of lalr1.cc  */
-#line 6824 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6818 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preserve"))); }
     break;
 
   case 895:
 /* Line 661 of lalr1.cc  */
-#line 6825 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6819 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strip"))); }
     break;
 
   case 896:
 /* Line 661 of lalr1.cc  */
-#line 6826 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6820 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("namespace"))); }
     break;
 
   case 897:
 /* Line 661 of lalr1.cc  */
-#line 6827 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6821 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("external"))); }
     break;
 
   case 898:
 /* Line 661 of lalr1.cc  */
-#line 6828 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6822 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("encoding"))); }
     break;
 
   case 899:
 /* Line 661 of lalr1.cc  */
-#line 6829 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6823 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-preserve"))); }
     break;
 
   case 900:
 /* Line 661 of lalr1.cc  */
-#line 6830 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6824 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("inherit"))); }
     break;
 
   case 901:
 /* Line 661 of lalr1.cc  */
-#line 6831 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6825 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-inherit"))); }
     break;
 
   case 902:
 /* Line 661 of lalr1.cc  */
-#line 6832 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6826 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("declare"))); }
     break;
 
   case 903:
 /* Line 661 of lalr1.cc  */
-#line 6833 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6827 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("construction"))); }
     break;
 
   case 904:
 /* Line 661 of lalr1.cc  */
-#line 6834 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6828 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordering"))); }
     break;
 
   case 905:
 /* Line 661 of lalr1.cc  */
-#line 6835 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6829 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("default"))); }
     break;
 
   case 906:
 /* Line 661 of lalr1.cc  */
-#line 6836 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6830 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy-namespaces"))); }
     break;
 
   case 907:
 /* Line 661 of lalr1.cc  */
-#line 6837 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6831 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("option"))); }
     break;
 
   case 908:
 /* Line 661 of lalr1.cc  */
-#line 6838 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6832 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("version"))); }
     break;
 
   case 909:
 /* Line 661 of lalr1.cc  */
-#line 6839 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6833 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("import"))); }
     break;
 
   case 910:
 /* Line 661 of lalr1.cc  */
-#line 6840 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6834 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema"))); }
     break;
 
   case 911:
 /* Line 661 of lalr1.cc  */
-#line 6841 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6835 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("module"))); }
     break;
 
   case 912:
 /* Line 661 of lalr1.cc  */
-#line 6842 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6836 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("function"))); }
     break;
 
   case 913:
 /* Line 661 of lalr1.cc  */
-#line 6843 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6837 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("score"))); }
     break;
 
   case 914:
 /* Line 661 of lalr1.cc  */
-#line 6844 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6838 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("contains"))); }
     break;
 
   case 915:
 /* Line 661 of lalr1.cc  */
-#line 6845 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6839 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("weight"))); }
     break;
 
   case 916:
 /* Line 661 of lalr1.cc  */
-#line 6846 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6840 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("window"))); }
     break;
 
   case 917:
 /* Line 661 of lalr1.cc  */
-#line 6847 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6841 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("distance"))); }
     break;
 
   case 918:
 /* Line 661 of lalr1.cc  */
-#line 6848 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6842 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("occurs"))); }
     break;
 
   case 919:
 /* Line 661 of lalr1.cc  */
-#line 6849 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6843 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("times"))); }
     break;
 
   case 920:
 /* Line 661 of lalr1.cc  */
-#line 6850 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6844 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("same"))); }
     break;
 
   case 921:
 /* Line 661 of lalr1.cc  */
-#line 6851 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6845 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("different"))); }
     break;
 
   case 922:
 /* Line 661 of lalr1.cc  */
-#line 6852 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6846 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lowercase"))); }
     break;
 
   case 923:
 /* Line 661 of lalr1.cc  */
-#line 6853 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6847 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("uppercase"))); }
     break;
 
   case 924:
 /* Line 661 of lalr1.cc  */
-#line 6854 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6848 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("relationship"))); }
     break;
 
   case 925:
 /* Line 661 of lalr1.cc  */
-#line 6855 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6849 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("levels"))); }
     break;
 
   case 926:
 /* Line 661 of lalr1.cc  */
-#line 6856 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6850 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("language"))); }
     break;
 
   case 927:
 /* Line 661 of lalr1.cc  */
-#line 6857 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6851 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("any"))); }
     break;
 
   case 928:
 /* Line 661 of lalr1.cc  */
-#line 6858 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6852 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("all"))); }
     break;
 
   case 929:
 /* Line 661 of lalr1.cc  */
-#line 6859 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6853 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exactly"))); }
     break;
 
   case 930:
 /* Line 661 of lalr1.cc  */
-#line 6860 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6854 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("from"))); }
     break;
 
   case 931:
 /* Line 661 of lalr1.cc  */
-#line 6861 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6855 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("words"))); }
     break;
 
   case 932:
 /* Line 661 of lalr1.cc  */
-#line 6862 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6856 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentences"))); }
     break;
 
   case 933:
 /* Line 661 of lalr1.cc  */
-#line 6863 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6857 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentence"))); }
     break;
 
   case 934:
 /* Line 661 of lalr1.cc  */
-#line 6864 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6858 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("phrase"))); }
     break;
 
   case 935:
 /* Line 661 of lalr1.cc  */
-#line 6865 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6859 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraph"))); }
     break;
 
   case 936:
 /* Line 661 of lalr1.cc  */
-#line 6866 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6860 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraphs"))); }
     break;
 
   case 937:
 /* Line 661 of lalr1.cc  */
-#line 6867 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6861 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("replace"))); }
     break;
 
   case 938:
 /* Line 661 of lalr1.cc  */
-#line 6868 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6862 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("modify"))); }
     break;
 
   case 939:
 /* Line 661 of lalr1.cc  */
-#line 6869 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6863 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("first"))); }
     break;
 
   case 940:
 /* Line 661 of lalr1.cc  */
-#line 6870 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6864 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("insert"))); }
     break;
 
   case 941:
 /* Line 661 of lalr1.cc  */
-#line 6871 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6865 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("before"))); }
     break;
 
   case 942:
 /* Line 661 of lalr1.cc  */
-#line 6872 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6866 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("after"))); }
     break;
 
   case 943:
 /* Line 661 of lalr1.cc  */
-#line 6873 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6867 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("revalidation"))); }
     break;
 
   case 944:
 /* Line 661 of lalr1.cc  */
-#line 6874 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6868 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("with"))); }
     break;
 
   case 945:
 /* Line 661 of lalr1.cc  */
-#line 6875 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6869 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("nodes"))); }
     break;
 
   case 946:
 /* Line 661 of lalr1.cc  */
-#line 6876 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6870 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("rename"))); }
     break;
 
   case 947:
 /* Line 661 of lalr1.cc  */
-#line 6877 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6871 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("last"))); }
     break;
 
   case 948:
 /* Line 661 of lalr1.cc  */
-#line 6878 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6872 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("delete"))); }
     break;
 
   case 949:
 /* Line 661 of lalr1.cc  */
-#line 6879 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6873 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("into"))); }
     break;
 
   case 950:
 /* Line 661 of lalr1.cc  */
-#line 6880 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6874 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("simple"))); }
     break;
 
   case 951:
 /* Line 661 of lalr1.cc  */
-#line 6881 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6875 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sequential"))); }
     break;
 
   case 952:
 /* Line 661 of lalr1.cc  */
-#line 6882 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6876 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("updating"))); }
     break;
 
   case 953:
 /* Line 661 of lalr1.cc  */
-#line 6883 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6877 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordered"))); }
     break;
 
   case 954:
 /* Line 661 of lalr1.cc  */
-#line 6884 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6878 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unordered"))); }
     break;
 
   case 955:
 /* Line 661 of lalr1.cc  */
-#line 6885 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6879 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("returning"))); }
     break;
 
   case 956:
 /* Line 661 of lalr1.cc  */
-#line 6886 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6880 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exit"))); }
     break;
 
   case 957:
 /* Line 661 of lalr1.cc  */
-#line 6887 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6881 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("loop"))); }
     break;
 
   case 958:
 /* Line 661 of lalr1.cc  */
-#line 6888 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6882 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("break"))); }
     break;
 
   case 959:
 /* Line 661 of lalr1.cc  */
-#line 6889 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6883 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("continue"))); }
     break;
 
   case 960:
 /* Line 661 of lalr1.cc  */
-#line 6890 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6884 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("try"))); }
     break;
 
   case 961:
 /* Line 661 of lalr1.cc  */
-#line 6891 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6885 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("catch"))); }
     break;
 
   case 962:
 /* Line 661 of lalr1.cc  */
-#line 6892 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6886 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("using"))); }
     break;
 
   case 963:
 /* Line 661 of lalr1.cc  */
-#line 6893 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6887 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("set"))); }
     break;
 
   case 964:
 /* Line 661 of lalr1.cc  */
-#line 6894 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6888 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("index"))); }
     break;
 
   case 965:
 /* Line 661 of lalr1.cc  */
-#line 6895 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6889 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unique"))); }
     break;
 
   case 966:
 /* Line 661 of lalr1.cc  */
-#line 6896 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6890 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("non"))); }
     break;
 
   case 967:
 /* Line 661 of lalr1.cc  */
-#line 6897 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6891 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("on"))); }
     break;
 
   case 968:
 /* Line 661 of lalr1.cc  */
-#line 6898 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6892 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("range"))); }
     break;
 
   case 969:
 /* Line 661 of lalr1.cc  */
-#line 6899 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6893 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("equality"))); }
     break;
 
   case 970:
 /* Line 661 of lalr1.cc  */
-#line 6900 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6894 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("manually"))); }
     break;
 
   case 971:
 /* Line 661 of lalr1.cc  */
-#line 6901 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6895 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("automatically"))); }
     break;
 
   case 972:
 /* Line 661 of lalr1.cc  */
-#line 6902 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6896 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("maintained"))); }
     break;
 
   case 973:
 /* Line 661 of lalr1.cc  */
-#line 6903 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6897 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-format"))); }
     break;
 
   case 974:
 /* Line 661 of lalr1.cc  */
-#line 6904 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6898 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-separator"))); }
     break;
 
   case 975:
 /* Line 661 of lalr1.cc  */
-#line 6905 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6899 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("grouping-separator"))); }
     break;
 
   case 976:
 /* Line 661 of lalr1.cc  */
-#line 6906 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6900 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("infinity"))); }
     break;
 
   case 977:
 /* Line 661 of lalr1.cc  */
-#line 6907 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6901 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("minus-sign"))); }
     break;
 
   case 978:
 /* Line 661 of lalr1.cc  */
-#line 6908 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6902 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("NaN"))); }
     break;
 
   case 979:
 /* Line 661 of lalr1.cc  */
-#line 6909 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6903 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("percent"))); }
     break;
 
   case 980:
 /* Line 661 of lalr1.cc  */
-#line 6910 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6904 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("per-mille"))); }
     break;
 
   case 981:
 /* Line 661 of lalr1.cc  */
-#line 6911 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6905 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("zero-digit"))); }
     break;
 
   case 982:
 /* Line 661 of lalr1.cc  */
-#line 6912 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6906 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("digit"))); }
     break;
 
   case 983:
 /* Line 661 of lalr1.cc  */
-#line 6913 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6907 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("pattern-separator"))); }
     break;
 
   case 984:
 /* Line 661 of lalr1.cc  */
-#line 6914 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6908 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collection"))); }
     break;
 
   case 985:
 /* Line 661 of lalr1.cc  */
-#line 6915 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6909 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("const"))); }
     break;
 
   case 986:
 /* Line 661 of lalr1.cc  */
-#line 6916 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6910 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("append-only"))); }
     break;
 
   case 987:
 /* Line 661 of lalr1.cc  */
-#line 6917 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6911 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("queue"))); }
     break;
 
   case 988:
 /* Line 661 of lalr1.cc  */
-#line 6918 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6912 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mutable"))); }
     break;
 
   case 989:
 /* Line 661 of lalr1.cc  */
-#line 6919 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6913 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("read-only"))); }
     break;
 
   case 990:
 /* Line 661 of lalr1.cc  */
-#line 6920 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6914 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("integrity"))); }
     break;
 
   case 991:
 /* Line 661 of lalr1.cc  */
-#line 6921 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6915 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("constraint"))); }
     break;
 
   case 992:
 /* Line 661 of lalr1.cc  */
-#line 6922 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6916 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("check"))); }
     break;
 
   case 993:
 /* Line 661 of lalr1.cc  */
-#line 6923 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6917 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("key"))); }
     break;
 
   case 994:
 /* Line 661 of lalr1.cc  */
-#line 6924 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6918 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreach"))); }
     break;
 
   case 995:
 /* Line 661 of lalr1.cc  */
-#line 6925 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6919 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreign"))); }
     break;
 
   case 996:
 /* Line 661 of lalr1.cc  */
-#line 6926 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6920 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("keys"))); }
     break;
 
   case 997:
 /* Line 661 of lalr1.cc  */
-#line 6927 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6921 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor"))); }
     break;
 
   case 998:
 /* Line 661 of lalr1.cc  */
-#line 6928 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6922 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("child"))); }
     break;
 
   case 999:
 /* Line 661 of lalr1.cc  */
-#line 6929 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6923 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant"))); }
     break;
 
   case 1000:
 /* Line 661 of lalr1.cc  */
-#line 6930 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6924 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("parent"))); }
     break;
 
   case 1001:
 /* Line 661 of lalr1.cc  */
-#line 6931 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6925 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding"))); }
     break;
 
   case 1002:
 /* Line 661 of lalr1.cc  */
-#line 6932 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6926 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("self"))); }
     break;
 
   case 1003:
 /* Line 661 of lalr1.cc  */
-#line 6933 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6927 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following"))); }
     break;
 
   case 1004:
 /* Line 661 of lalr1.cc  */
-#line 6934 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6928 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor-or-self"))); }
     break;
 
   case 1005:
 /* Line 661 of lalr1.cc  */
-#line 6935 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6929 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     break;
 
   case 1006:
 /* Line 661 of lalr1.cc  */
-#line 6936 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6930 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     break;
 
   case 1007:
 /* Line 661 of lalr1.cc  */
-#line 6937 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6931 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
     break;
 
   case 1008:
 /* Line 661 of lalr1.cc  */
-#line 6938 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6932 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("json"))); }
     break;
 
   case 1009:
 /* Line 661 of lalr1.cc  */
-#line 6939 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6933 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("append"))); }
     break;
 
   case 1010:
 /* Line 661 of lalr1.cc  */
-#line 6940 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6934 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("position"))); }
     break;
 
   case 1011:
 /* Line 661 of lalr1.cc  */
-#line 6941 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6935 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("json-item"))); }
     break;
 
   case 1012:
 /* Line 661 of lalr1.cc  */
-#line 6942 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6936 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("array"))); }
     break;
 
   case 1013:
 /* Line 661 of lalr1.cc  */
-#line 6943 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6937 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("object"))); }
     break;
 
   case 1014:
 /* Line 661 of lalr1.cc  */
-#line 6944 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6938 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("structured-item"))); }
     break;
 
   case 1015:
 /* Line 661 of lalr1.cc  */
-#line 6949 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6943 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true); }
     break;
 
 
 /* Line 661 of lalr1.cc  */
-#line 10732 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.cpp"
+#line 10726 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.cpp"
 	default:
           break;
       }
@@ -15954,30 +15948,30 @@ namespace zorba {
     6352,  6360,  6372,  6380,  6384,  6392,  6396,  6400,  6408,  6416,
     6420,  6424,  6428,  6436,  6444,  6456,  6460,  6468,  6482,  6486,
     6493,  6498,  6506,  6511,  6520,  6528,  6534,  6544,  6550,  6560,
-    6567,  6574,  6601,  6631,  6661,  6665,  6669,  6676,  6683,  6690,
-    6702,  6706,  6707,  6720,  6721,  6722,  6723,  6724,  6725,  6726,
-    6727,  6728,  6729,  6730,  6731,  6732,  6733,  6734,  6735,  6739,
-    6740,  6741,  6742,  6743,  6744,  6745,  6746,  6747,  6748,  6749,
-    6750,  6751,  6752,  6753,  6754,  6755,  6756,  6757,  6758,  6759,
-    6760,  6761,  6762,  6763,  6764,  6765,  6766,  6767,  6768,  6769,
-    6770,  6771,  6772,  6773,  6774,  6775,  6776,  6777,  6778,  6779,
-    6780,  6781,  6782,  6783,  6784,  6785,  6786,  6787,  6788,  6789,
-    6790,  6791,  6792,  6793,  6794,  6795,  6796,  6797,  6798,  6799,
-    6800,  6801,  6802,  6803,  6804,  6805,  6806,  6807,  6808,  6809,
-    6810,  6811,  6812,  6813,  6814,  6815,  6816,  6817,  6818,  6819,
-    6820,  6821,  6822,  6823,  6824,  6825,  6826,  6827,  6828,  6829,
-    6830,  6831,  6832,  6833,  6834,  6835,  6836,  6837,  6838,  6839,
-    6840,  6841,  6842,  6843,  6844,  6845,  6846,  6847,  6848,  6849,
-    6850,  6851,  6852,  6853,  6854,  6855,  6856,  6857,  6858,  6859,
-    6860,  6861,  6862,  6863,  6864,  6865,  6866,  6867,  6868,  6869,
-    6870,  6871,  6872,  6873,  6874,  6875,  6876,  6877,  6878,  6879,
-    6880,  6881,  6882,  6883,  6884,  6885,  6886,  6887,  6888,  6889,
-    6890,  6891,  6892,  6893,  6894,  6895,  6896,  6897,  6898,  6899,
-    6900,  6901,  6902,  6903,  6904,  6905,  6906,  6907,  6908,  6909,
-    6910,  6911,  6912,  6913,  6914,  6915,  6916,  6917,  6918,  6919,
-    6920,  6921,  6922,  6923,  6924,  6925,  6926,  6927,  6928,  6929,
-    6930,  6931,  6932,  6933,  6934,  6935,  6936,  6937,  6938,  6939,
-    6940,  6941,  6942,  6943,  6944,  6949
+    6567,  6574,  6599,  6627,  6655,  6659,  6663,  6670,  6677,  6684,
+    6696,  6700,  6701,  6714,  6715,  6716,  6717,  6718,  6719,  6720,
+    6721,  6722,  6723,  6724,  6725,  6726,  6727,  6728,  6729,  6733,
+    6734,  6735,  6736,  6737,  6738,  6739,  6740,  6741,  6742,  6743,
+    6744,  6745,  6746,  6747,  6748,  6749,  6750,  6751,  6752,  6753,
+    6754,  6755,  6756,  6757,  6758,  6759,  6760,  6761,  6762,  6763,
+    6764,  6765,  6766,  6767,  6768,  6769,  6770,  6771,  6772,  6773,
+    6774,  6775,  6776,  6777,  6778,  6779,  6780,  6781,  6782,  6783,
+    6784,  6785,  6786,  6787,  6788,  6789,  6790,  6791,  6792,  6793,
+    6794,  6795,  6796,  6797,  6798,  6799,  6800,  6801,  6802,  6803,
+    6804,  6805,  6806,  6807,  6808,  6809,  6810,  6811,  6812,  6813,
+    6814,  6815,  6816,  6817,  6818,  6819,  6820,  6821,  6822,  6823,
+    6824,  6825,  6826,  6827,  6828,  6829,  6830,  6831,  6832,  6833,
+    6834,  6835,  6836,  6837,  6838,  6839,  6840,  6841,  6842,  6843,
+    6844,  6845,  6846,  6847,  6848,  6849,  6850,  6851,  6852,  6853,
+    6854,  6855,  6856,  6857,  6858,  6859,  6860,  6861,  6862,  6863,
+    6864,  6865,  6866,  6867,  6868,  6869,  6870,  6871,  6872,  6873,
+    6874,  6875,  6876,  6877,  6878,  6879,  6880,  6881,  6882,  6883,
+    6884,  6885,  6886,  6887,  6888,  6889,  6890,  6891,  6892,  6893,
+    6894,  6895,  6896,  6897,  6898,  6899,  6900,  6901,  6902,  6903,
+    6904,  6905,  6906,  6907,  6908,  6909,  6910,  6911,  6912,  6913,
+    6914,  6915,  6916,  6917,  6918,  6919,  6920,  6921,  6922,  6923,
+    6924,  6925,  6926,  6927,  6928,  6929,  6930,  6931,  6932,  6933,
+    6934,  6935,  6936,  6937,  6938,  6943
   };
 
   // Print the state stack on the debug stream.
@@ -16098,9 +16092,9 @@ namespace zorba {
 
 } // zorba
 /* Line 1106 of lalr1.cc  */
-#line 16102 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.cpp"
+#line 16096 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.cpp"
 /* Line 1107 of lalr1.cc  */
-#line 6953 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
+#line 6947 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
 
 
 namespace zorba {
