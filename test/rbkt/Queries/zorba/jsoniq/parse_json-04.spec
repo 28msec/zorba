@@ -1,1 +1,1 @@
-Error: http://jsoniq.org/errors:JSDY0020
+Error: http://jsoniq.org/errors:JNTY0020

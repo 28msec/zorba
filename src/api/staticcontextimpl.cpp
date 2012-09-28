@@ -74,7 +74,7 @@ namespace zorba {
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -100,7 +100,7 @@ StaticContextImpl::StaticContextImpl(
   :
   theCtx(aCtx),
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -123,7 +123,7 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)
@@ -1552,7 +1552,11 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 
   for (; ite != end; ++ite)
   {
-    if ((*ite)->getName()->getStringValue() == static_context::DOT_VAR_NAME)
+    zstring varName = (*ite)->getName()->getStringValue();
+
+    if (varName == static_context::DOT_VAR_NAME ||
+        varName == static_context::DOT_POS_VAR_NAME ||
+        varName == static_context::DOT_SIZE_VAR_NAME)
       continue;
 
     extVars.push_back((*ite)->getName());        

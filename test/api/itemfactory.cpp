@@ -560,6 +560,13 @@ itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
+    /** String */
+    lItem = lFactory->createUntypedAtomic("abc");
+    UNIT_ASSERT ( checkType(lItem.getType(), "untypedAtomic") );
+    UNIT_ASSERT ( lItem.isAtomic() );
+    UNIT_ASSERT ( lItem.getStringValue() == "abc" );
+    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
+
   } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return 1;

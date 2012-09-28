@@ -713,6 +713,13 @@ namespace zorba {
         Item   parent,
         String content) = 0;
 
+      /** \brief Creates a UntypedAtomic Item
+       *
+       * @param value String representation of the UntypedAtomic Item.
+       * @return The UntypedAtomic Item
+       */
+      virtual Item createUntypedAtomic(const String& value) = 0;
+
 #ifdef ZORBA_WITH_JSON
 
       /**

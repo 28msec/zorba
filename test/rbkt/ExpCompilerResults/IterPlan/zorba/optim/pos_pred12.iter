@@ -78,7 +78,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="doc">
+  <CtxVarDeclareIterator varid="4" varname="doc">
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,doc)"/>
       <FnConcatIterator>
@@ -120,7 +120,7 @@ Iterator tree for main query:
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            <CtxVarIterator varid="4" varname="doc" varkind="local"/>
           </TreatIterator>
         </ChildAxisIterator>
       </NodeSortIterator>
@@ -133,7 +133,7 @@ Iterator tree for main query:
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            <CtxVarIterator varid="4" varname="doc" varkind="local"/>
           </TreatIterator>
         </ChildAxisIterator>
       </NodeSortIterator>
@@ -146,7 +146,7 @@ Iterator tree for main query:
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            <CtxVarIterator varid="4" varname="doc" varkind="local"/>
           </TreatIterator>
         </ChildAxisIterator>
       </NodeSortIterator>
@@ -159,7 +159,7 @@ Iterator tree for main query:
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            <CtxVarIterator varid="4" varname="doc" varkind="local"/>
           </TreatIterator>
         </ChildAxisIterator>
       </NodeSortIterator>
@@ -172,7 +172,7 @@ Iterator tree for main query:
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            <CtxVarIterator varid="4" varname="doc" varkind="local"/>
           </TreatIterator>
         </ChildAxisIterator>
       </NodeSortIterator>
@@ -185,7 +185,7 @@ Iterator tree for main query:
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            <CtxVarIterator varid="4" varname="doc" varkind="local"/>
           </TreatIterator>
         </ChildAxisIterator>
       </NodeSortIterator>
@@ -197,7 +197,7 @@ Iterator tree for main query:
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-            <CtxVarIterator varid="2" varname="doc" varkind="local"/>
+            <CtxVarIterator varid="4" varname="doc" varkind="local"/>
           </TreatIterator>
         </ChildAxisIterator>
       </NodeSortIterator>

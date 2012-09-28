@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -4629,20 +4629,6 @@ void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DecodeURIIterator>
-
-
-// <XQDocIterator>
-void PrinterVisitor::beginVisit ( const XQDocIterator& a) {
-  thePrinter.startBeginVisit("XQDocIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const XQDocIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </XQDocIterator>
 
 
 // <XQDocContentIterator>

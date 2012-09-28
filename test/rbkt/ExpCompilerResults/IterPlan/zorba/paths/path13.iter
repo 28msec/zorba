@@ -7,7 +7,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <flwor::FLWORIterator>
-  <ForVariable name="$$dot">
+  <ForVariable name="$$context-item">
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
       <ElementIterator>
         <SingletonIterator value="xs:QName(,,a)"/>
@@ -43,12 +43,12 @@ Iterator tree for main query:
   <WhereClause>
     <FnBooleanIterator>
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0">
-        <ForVarIterator varname="$$dot"/>
+        <ForVarIterator varname="$$context-item"/>
       </ChildAxisIterator>
     </FnBooleanIterator>
   </WhereClause>
   <ReturnClause>
-    <ForVarIterator varname="$$dot"/>
+    <ForVarIterator varname="$$context-item"/>
   </ReturnClause>
 </flwor::FLWORIterator>
 

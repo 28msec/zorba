@@ -79,6 +79,7 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
+#include "context/dynamic_context.h"
 
 #include "types/node_test.h"
 #include "types/casting.h"
@@ -740,7 +741,6 @@ const QName* getDotPosVarName() const
 {
   return theRootTranslator->theDotPosVarName;
 }
-
 
 const QName* getLastIdxVarName() const
 {
@@ -2026,28 +2026,25 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 
   if (initExpr != NULL && varType != NULL && !b.is_extern())
   {
-    initExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                 loc,
-                                                 initExpr,
-                                                 varType,
-                                                 TreatIterator::TYPE_MATCH);
+    initExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, initExpr, varType, TreatIterator::TYPE_MATCH);
   }
 
-  expr* declExpr =
-  theExprManager->create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
+  expr* declExpr = theExprManager->
+  create_var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
   stmts.push_back(declExpr);
 
   // check type for vars that are external
   if (varType != NULL && b.is_extern())
   {
-    expr* getExpr = theExprManager->create_fo_expr(theRootSctx, loc, varGet, varExpr);
+    expr* getExpr = theExprManager->
+    create_fo_expr(theRootSctx, loc, varGet, varExpr);
 
-    stmts.push_back(theExprManager->create_treat_expr(theRootSctx,
-                                                      loc,
-                                                      getExpr,
-                                                      varType,
-                                                      TreatIterator::TYPE_MATCH));
+    expr* treatExpr = theExprManager->
+    create_treat_expr(theRootSctx, loc, getExpr, varType, TreatIterator::TYPE_MATCH);
+
+    stmts.push_back(treatExpr);
   }
 }
 
@@ -2390,13 +2387,26 @@ void* begin_visit(const MainModule& v)
   // However, do not create a ver_decl expr for it, because this will create a
   // treat_as expr as well, so the ctx item will always appear as being used,
   // and as a result it will always have to be set.
-  var_expr* var = bind_var(loc,
-                           DOT_VARNAME,
-                           var_expr::prolog_var,
-                           theSctx->get_context_item_type());
+  var_expr* var1 = bind_var(loc,
+                            DOT_VARNAME,
+                            var_expr::prolog_var,
+                            theSctx->get_context_item_type());
+  var_expr* var2 = bind_var(loc,
+                            DOT_POS_VARNAME,
+                            var_expr::prolog_var, 
+                            theRTM.INTEGER_TYPE_ONE);
+  var_expr* var3 = bind_var(loc,
+                            LAST_IDX_VARNAME,
+                            var_expr::prolog_var,
+                            theRTM.INTEGER_TYPE_ONE);
 
-  var->set_external(true);
-  var->set_unique_id(1);
+  var1->set_external(true);
+  var2->set_external(true);
+  var3->set_external(true);
+  
+  var1->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
+  var2->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
+  var3->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
 
   //GlobalBinding b(var, NULL, true);
   //declare_var(b, theModulesInfo->theInitExprs);
