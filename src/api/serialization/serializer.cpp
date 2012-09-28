@@ -956,14 +956,12 @@ serializer::json_emitter::json_emitter(
   serializer* the_serializer,
   std::ostream& the_stream)
   : emitter(the_serializer, the_stream),
-    theXMLStringStream(nullptr),
     theMultipleItems(false)
 {
 }
 
 serializer::json_emitter::~json_emitter()
 {
-  delete theXMLStringStream;
 }
 
 void serializer::json_emitter::emit_item(store::Item *item)
@@ -1117,26 +1115,9 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_jsoniq_xdm_node(
-    store::Item* item,
-    int)
+void serializer::json_emitter::emit_jsoniq_xdm_node(store::Item*, int)
 {
-  if (true) {
-    // It could be useful to have some form of serialization of nested XML nodes
-    // (if only for debugging purposes). However as this is not (yet?) specified
-    // we throw an error here.
-    throw XQUERY_EXCEPTION(jerr::JNSE0014);
-  }
-  if (!theXMLEmitter) {
-    theXMLStringStream = new std::stringstream();
-    ser->attach_transcoder(*theXMLStringStream);
-    theXMLEmitter = new serializer::xml_emitter(ser, *theXMLStringStream);
-  }
-  theXMLEmitter->emit_item(item);
-  zstring xml(theXMLStringStream->str());
-  theXMLStringStream->str("");
-
-  emit_json_string(xml);
+  throw XQUERY_EXCEPTION(jerr::JNSE0014);
 }
 
 
@@ -1159,18 +1140,17 @@ serializer::hybrid_emitter::hybrid_emitter(
   serializer* the_serializer,
   std::ostream& the_stream,
   bool aEmitAttributes)
-  :
-    emitter(the_serializer, the_stream),
+  : json_emitter(the_serializer, the_stream),
     theEmitterState(JESTATE_UNDETERMINED),
     theXMLEmitter(new xml_emitter(the_serializer, the_stream, aEmitAttributes)),
-    theJSONEmitter(new json_emitter(the_serializer, the_stream))
+    theNestedXMLStringStream(nullptr)
 {
 }
 
 serializer::hybrid_emitter::~hybrid_emitter()
 {
+  delete theNestedXMLStringStream;
   delete theXMLEmitter;
-  delete theJSONEmitter;
 }
 
 void serializer::hybrid_emitter::emit_declaration()
@@ -1181,7 +1161,7 @@ void serializer::hybrid_emitter::emit_item(store::Item *item)
 {
   if (item->isJSONItem()) {
     theEmitterState = JESTATE_JDM;
-    theJSONEmitter->emit_item(item);
+    json_emitter::emit_item(item);
   }
   else {
     if (theEmitterState == JESTATE_UNDETERMINED) {
@@ -1197,7 +1177,7 @@ void serializer::hybrid_emitter::emit_end()
   switch(theEmitterState)
   {
     case JESTATE_JDM:
-      theJSONEmitter->emit_end();
+      json_emitter::emit_end();
       return;
     case JESTATE_XDM:
     default:
@@ -1205,6 +1185,22 @@ void serializer::hybrid_emitter::emit_end()
   }
 }
 
+void serializer::hybrid_emitter::emit_jsoniq_xdm_node(
+    store::Item* item,
+    int)
+{
+  if (! theNestedXMLEmitter) {
+    theNestedXMLStringStream = new std::stringstream();
+    ser->attach_transcoder(*theNestedXMLStringStream);
+    theNestedXMLEmitter
+        = new serializer::xml_emitter(ser, *theNestedXMLStringStream);
+  }
+  theNestedXMLEmitter->emit_item(item);
+  zstring xml(theNestedXMLStringStream->str());
+  theNestedXMLStringStream->str("");
+
+  emit_json_string(xml);
+}
 
 #endif /* ZORBA_WITH_JSON */
 
