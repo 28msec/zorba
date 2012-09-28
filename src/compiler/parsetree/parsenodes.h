@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1251,7 +1251,7 @@ public:
 
   [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
-class CollectionDecl : public parsenode
+class CollectionDecl : public XQDocumentable
 {
 protected:
   rchandle<QName>                             theName;
@@ -1296,7 +1296,7 @@ public:
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 *******************************************************************************/
-class AST_IndexDecl : public parsenode
+class AST_IndexDecl : public XQDocumentable
 {
 protected:
   rchandle<QName>                   theName;

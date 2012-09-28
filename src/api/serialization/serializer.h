@@ -216,9 +216,9 @@ protected:
      * @param aEmitAttributes If true, attributes are emitted.
      */
     emitter(
-        serializer* the_serializer, 
-        std::ostream& the_stream,
-        bool aEmitAttributes = false);
+        serializer* serializer, 
+        std::ostream& stream,
+        bool emitAttributes = false);
 
     /**
      * Outputs the start of the serialized document, which, depending on
@@ -329,13 +329,13 @@ protected:
       INVALID_ITEM,
       PREVIOUS_ITEM_WAS_TEXT,
       PREVIOUS_ITEM_WAS_NODE
-    }                                     previous_item;
+    }                                     thePreviousItemKind;
 
     std::vector<store::ChildrenIterator*> theChildIters;
     ulong                                 theFirstFreeChildIter;
     store::AttributesIterator           * theAttrIter;
 
-    bool                                  isFirstElementNode;
+    bool                                  theIsFirstElementNode;
     bool                                  theEmitAttributes;
   };
 
@@ -359,9 +359,6 @@ protected:
 
   protected:
     virtual void emit_doctype(const zstring& elementName);
-
-  protected:
-    bool theEmitAttributes;
   };
 
   ///////////////////////////////////////////////////////////

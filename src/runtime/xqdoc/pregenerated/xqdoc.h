@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,36 +32,6 @@
 
 
 namespace zorba {
-
-/**
- * zorba:XQDoc
- * Author: Zorba Team
- */
-class XQDocIterator : public NaryBaseIterator<XQDocIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(XQDocIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(XQDocIterator,
-    NaryBaseIterator<XQDocIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  XQDocIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<XQDocIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~XQDocIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
 
 /**
  * zorba:XQDoc

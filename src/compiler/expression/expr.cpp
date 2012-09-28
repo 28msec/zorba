@@ -421,6 +421,9 @@ promote_expr::promote_expr(
   theErrorKind(err),
   theQName(qname)
 {
+  assert(TypeOps::is_subtype(sctx->get_typemanager(),
+                             *type,
+                             *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 }
 
 
