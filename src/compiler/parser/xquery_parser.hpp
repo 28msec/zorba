@@ -31,18 +31,18 @@
    version 2.2 of Bison.  */
 
 /**
- ** \file /Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp
+ ** \file /home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp
  ** Define the zorba::parser class.
  */
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
-# define ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+#ifndef ZORBA_HOME_COLEA_XQUERY_BZR_BUGS2_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+# define ZORBA_HOME_COLEA_XQUERY_BZR_BUGS2_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
 
 /* "%code requires" blocks.  */
 /* Line 36 of lalr1.cc  */
-#line 35 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -87,7 +87,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 36 of lalr1.cc  */
-#line 91 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+#line 91 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -103,7 +103,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 namespace zorba {
 /* Line 36 of lalr1.cc  */
-#line 107 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+#line 107 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -114,7 +114,7 @@ namespace zorba {
     union semantic_type
     {
 /* Line 36 of lalr1.cc  */
-#line 155 "/Users/zorba/Code/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -137,7 +137,7 @@ namespace zorba {
 
 
 /* Line 36 of lalr1.cc  */
-#line 141 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+#line 141 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -654,8 +654,8 @@ namespace zorba {
 
 } // zorba
 /* Line 36 of lalr1.cc  */
-#line 658 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+#line 658 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
-#endif /* !ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */
+#endif /* !ZORBA_HOME_COLEA_XQUERY_BZR_BUGS2_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */

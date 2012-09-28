@@ -2494,6 +2494,8 @@ Expr :
       $$ = $1; // to prevent the Bison warning
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected ExprSingle (missing comma \",\" between expressions?)");
+      delete $1; // these need to be deleted here because the parser deallocator will skip them
+      delete $3;
       YYERROR;
     }
   | Expr ERROR ExprSingle
@@ -6565,23 +6567,21 @@ JSONDeleteExpr :
           if (lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
+            delete $3;
             YYERROR;
           }
 
-          rchandle<exprnode> lPrimaryExpr =
-          lDynamicFunctionInvocation->getPrimaryExpr().release();
-
-          rchandle<ArgList> lArgList =
-          lDynamicFunctionInvocation->getArgList().release();
-
-          if (lArgList->size() != 1)
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            delete $3;
             YYERROR;
           }
 
-          rchandle<exprnode> lKey = (*lArgList)[0].release();
-          $$ = new JSONDeleteExpr(LOC(@$), lPrimaryExpr.release(), lKey.release());
+          $$ = new JSONDeleteExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0));
         }
     ;
 
@@ -6594,23 +6594,24 @@ JSONRenameExpr :
           if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
+            delete $3;
+            delete $5;
             YYERROR;
           }
 
-          rchandle<exprnode> lPrimaryExpr =
-          lDynamicFunctionInvocation->getPrimaryExpr().release();
-
-          rchandle<ArgList> lArgList =
-          lDynamicFunctionInvocation->getArgList().release();
-
-          if (lArgList->size() != 1)
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            delete $3;
+            delete $5;
             YYERROR;
           }
 
-          rchandle<exprnode> lKey = (*lArgList)[0].release();
-          $$ = new JSONRenameExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $5);
+          $$ = new JSONRenameExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                $5);
         }
     ;
 
@@ -6623,23 +6624,24 @@ JSONReplaceExpr :
           if(lDynamicFunctionInvocation == NULL)
           {
             error(@3, "An object invocation is expected. A filter was found instead.");
+            delete $5;
+            delete $7;
             YYERROR;
           }
 
-          rchandle<exprnode> lPrimaryExpr =
-          lDynamicFunctionInvocation->getPrimaryExpr().release();
-
-          rchandle<ArgList> lArgList =
-          lDynamicFunctionInvocation->getArgList().release();
-
-          if (lArgList->size() != 1)
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            delete $5;
+            delete $7;
             YYERROR;
           }
 
-          rchandle<exprnode> lKey = (*lArgList)[0].release();
-          $$ = new JSONReplaceExpr(LOC(@$), lPrimaryExpr.release(), lKey.release(), $7);
+          $$ = new JSONReplaceExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                $7);
         }
     ;
 
