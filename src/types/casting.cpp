@@ -2813,6 +2813,9 @@ bool GenericCast::promote(
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
+  assert(item->isAtomic());
+
+  // If the target type is a builtin atomic type
   if (targetType->type_kind() == XQType::ATOMIC_TYPE_KIND)
   {
     return promote(result, 
