@@ -504,7 +504,7 @@ declare %private function oauth:signature($base-string as xs:string, $oauth-sign
    : uses the hmac-sha1 algorithm found here @see http://tools.ietf.org/html/rfc2104
    :)
   if($oauth-signature-method = "HMAC-SHA1")
-  then hmac:sha1($base-string, $key)
+  then xs:string(hmac:sha1($base-string, $key))
   (:
    : RSA-SHA1
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.3  
