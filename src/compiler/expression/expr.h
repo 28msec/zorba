@@ -202,8 +202,8 @@ class cast_or_castable_base_expr : public expr
   friend class expr;
 
 protected:
-  expr*   theInputExpr;
-  xqtref_t theTargetType;
+  expr     * theInputExpr;
+  xqtref_t   theTargetType;
 
 protected:
   cast_or_castable_base_expr(
@@ -333,17 +333,20 @@ public:
   1. Let "input sequence" be the result of theInputExpr, and "output sequence"
      be the result of the promote_expr.
 
-  2. Raise error if the cardinality of the input sequence is not compatible with
+  2. The input sequence is assumed to be mepty or consist of atomic items only.
+
+  4. theTargetType is always a subtype of xs:anyAtomicType*
+
+  5. Raise error if the cardinality of the input sequence is not compatible with
      the quantifier of theTargetType.
 
-  3. For each item I in the input sequence, let F(I) be the result of the
+  6. For each item I in the input sequence, let F(I) be the result of the
      function defined as follows:
 
      - Let "actual type" be the dynamic type of I, and "target type" be the prime
        type of theTargetType.
-     - If the target type is the NONE type, F(I) = error, else
+     - If the target type is the NONE type, F(I) = raise error, else
      - If the actual type is a subtype of the target type, F(I) = I, else
-     - If the target type is not an atomic type, F(I) = error, else
      - If the actual type is untypedAtomic and the target type is not QName,
        F(I) = cast(I, target type), else
      - If the actual type is (subtype of) decimal and the target type is float,
@@ -352,7 +355,7 @@ public:
        F(I) = cast(I, target type), else
      - If the actual type is anyURI and the target type is string,
        F(I) = cast(I, string), else
-     - F(I) = error
+     - F(I) = raise error
 
   4. Put F(I) in the output sequence.
 

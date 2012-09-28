@@ -1450,7 +1450,6 @@ void normalize_fo(fo_expr* foExpr)
                               *theRTM.ANY_ATOMIC_TYPE_STAR,
                               loc))
       {
-        argExpr = wrap_in_atomization(argExpr);
         argExpr = wrap_in_type_promotion(argExpr,
                                          paramType,
                                          PromoteIterator::FUNC_PARAM,
@@ -1477,9 +1476,9 @@ void normalize_fo(fo_expr* foExpr)
 expr* wrap_in_atomization(expr* e)
 {
   return theExprManager->create_fo_expr(theRootSctx,
-                     e->get_loc(),
-                     GET_BUILTIN_FUNCTION(FN_DATA_1),
-                     e);
+                                        e->get_loc(),
+                                        GET_BUILTIN_FUNCTION(FN_DATA_1),
+                                        e);
 }
 
 
@@ -1492,6 +1491,8 @@ expr* wrap_in_type_promotion(
     PromoteIterator::ErrorKind errorKind,
     store::Item* qname = NULL)
 {
+  e = wrap_in_atomization(e);
+
   return theExprManager->create_promote_expr(theRootSctx,
                                              e->get_loc(),
                                              e,
@@ -3780,8 +3781,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
-      body = wrap_in_atomization(body);
-
       body = wrap_in_type_promotion(body,
                                     returnType,
                                     PromoteIterator::FUNC_RETURN,
@@ -10874,10 +10873,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         flwor_expr* flworExpr = theExprManager->create_flwor_expr(theRootSctx, loc, false);
 
         // wrap function's QName
-        expr* qnameExpr = wrap_in_atomization(arguments[0]);
-        qnameExpr        = wrap_in_type_promotion(arguments[0],
-                                                  theRTM.QNAME_TYPE_ONE,
-                                                  PromoteIterator::TYPE_PROMOTION);
+        expr* qnameExpr = wrap_in_type_promotion(arguments[0],
+                                                 theRTM.QNAME_TYPE_ONE,
+                                                 PromoteIterator::TYPE_PROMOTION);
 
         for (csize i = 0; i < numArgs ; ++i)
         {
@@ -11325,7 +11323,6 @@ void end_visit(const InlineFunction& v, void* aState)
 
   if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
   {
-    body = wrap_in_atomization(body);
     body = wrap_in_type_promotion(body, returnType, PromoteIterator::TYPE_PROMOTION);
   }
   else
@@ -11502,9 +11499,6 @@ void end_visit(const JSONObjectConstructor& v, void* /*visit_state*/)
   DirectObjectConstructor ::= "{" PairConstructor ("," PairConstructor )* "}"
 
   PairConstructor ::= ExprSingle ":" ExprSingle
-
-  The 1st ExprSingle must return exactly one string.
-  The 2nd ExprSingle must contain exactly one item of any kind.
 ********************************************************************************/
 void* begin_visit(const JSONDirectObjectConstructor& v)
 {
@@ -11559,8 +11553,10 @@ void end_visit(const JSONPairList& v, void* /*visit_state*/)
   The PairConstructor production can appear only on the RHS of a 
   DirectObjectConstructor or in the source list of a JSONObjectInsertExpr
 
-  The 1st ExprSingle must return exactly one string.
-  The 2nd ExprSingle must contain exactly one item of any kind.
+  The 1st ExprSingle must return exactly one item castable to string after
+  atomization. The 2nd ExprSingle may return any kind of sequence; if the 
+  sequence is empty, it is replaced by the null item; if the sequence contains
+  more than one item, it is boxed into an array.
 ********************************************************************************/
 void* begin_visit(const JSONPairConstructor& v)
 {
@@ -13377,8 +13373,6 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   expr* targetExpr = pop_nodestack();
   expr* sourceExpr = pop_nodestack();
 
-  posExpr = wrap_in_atomization(posExpr);
-
   posExpr = wrap_in_type_promotion(posExpr,
                                    rtm.INTEGER_TYPE_ONE,
                                    PromoteIterator::JSONIQ_ARRAY_SELECTOR); // JNUP0007
@@ -14010,9 +14004,10 @@ void end_visit (const FTIgnoreOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   expr* e( pop_nodestack() );
-  push_nodestack( wrap_in_type_promotion(e,
-                                         theRTM.ANY_NODE_TYPE_STAR,
-                                         PromoteIterator::TYPE_PROMOTION));
+  push_nodestack( wrap_in_type_match(e,
+                                     theRTM.ANY_NODE_TYPE_STAR,
+                                     e->get_loc(),
+                                     TreatIterator::TYPE_MATCH));
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -14187,13 +14182,11 @@ void end_visit (const FTRange& v, void* /*visit_state*/) {
   }
 
   if ( e1 ) {
-    e1 = wrap_in_atomization( e1 );
     e1 = wrap_in_type_promotion(e1,
                                 theRTM.INTEGER_TYPE_ONE,
                                 PromoteIterator::TYPE_PROMOTION);
   }
   if ( e2 ) {
-    e2 = wrap_in_atomization( e2 );
     e2 = wrap_in_type_promotion(e2,
                                 theRTM.INTEGER_TYPE_ONE,
                                 PromoteIterator::TYPE_PROMOTION);
@@ -14454,7 +14447,6 @@ void end_visit (const FTWeight& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   expr* e( pop_nodestack() );
-  e = wrap_in_atomization( e );
   e = wrap_in_type_promotion(e,
                              theRTM.DOUBLE_TYPE_ONE,
                              PromoteIterator::TYPE_PROMOTION);
@@ -14491,7 +14483,6 @@ void end_visit (const FTWindow& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   expr* e( pop_nodestack() );
-  e = wrap_in_atomization( e );
   e = wrap_in_type_promotion(e,
                              theRTM.INTEGER_TYPE_ONE,
                              PromoteIterator::TYPE_PROMOTION);
@@ -14509,7 +14500,6 @@ void end_visit (const FTWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   expr* e( pop_nodestack() );
-  e = wrap_in_atomization( e );
   e = wrap_in_type_promotion(e,
                              theRTM.STRING_TYPE_STAR,
                              PromoteIterator::TYPE_PROMOTION);

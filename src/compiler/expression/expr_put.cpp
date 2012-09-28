@@ -449,11 +449,12 @@ ostream& trycatch_expr::put( ostream& os) const
 
   theTryExpr->put(os);
 
-  ulong numClauses = (ulong)theCatchClauses.size();
+  csize numClauses = theCatchClauses.size();
 
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
-    catch_clause* cc = theCatchClauses[i];
+    // TODO: print the error codes and vars of the catch clause
+    //catch_clause* cc = theCatchClauses[i];
     os << indent << "CATCH ";
     os << "\n";
     theCatchExprs[i]->put(os);
@@ -465,7 +466,7 @@ ostream& trycatch_expr::put( ostream& os) const
 ostream& eval_expr::put(ostream& os) const
 {
   BEGIN_PUT( eval_expr );
-  for (ulong i = 0; i < theArgs.size(); i++)
+  for (csize i = 0; i < theArgs.size(); i++)
   {
     os << indent << "using $" << theVars[i]->get_name()->getStringValue() << " := [";
     os << endl << inc_indent;
