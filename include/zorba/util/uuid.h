@@ -21,6 +21,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <zorba/config.h>
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,7 +43,7 @@ namespace zorba {
  * guarantee that the \c struct fields will be laid out in memory as shown in
  * section "4.1.2. Layout and Byte Order" due to possible padding.
  */
-struct uuid {
+struct ZORBA_DLL_PUBLIC uuid {
   typedef unsigned char value_type;
   typedef value_type& reference;
   typedef value_type const& const_reference;
