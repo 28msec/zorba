@@ -83,6 +83,7 @@ LIST(APPEND FUNCTIONS_SRCS
     func_apply.cpp
     func_serialize_impl.cpp
     func_parse_fragment_impl.cpp
+    func_schema_impl.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

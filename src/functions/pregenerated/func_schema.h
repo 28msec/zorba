@@ -87,7 +87,7 @@ public:
 
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };
