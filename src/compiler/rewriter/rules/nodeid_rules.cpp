@@ -926,7 +926,7 @@ void MarkNodeCopyProps::applyInternal(
     // Conservatively assume that, when executed, the eval query will apply
     // a "node-id-sensitive" operation on each of the in-scope variables, so
     // these variables must be bound to statndalone trees.
-    csize numEvalVars = e->var_count();
+    csize numEvalVars = e->num_vars();
 
     for (csize i = 0; i < numEvalVars; ++i)
     {
@@ -939,22 +939,7 @@ void MarkNodeCopyProps::applyInternal(
       theSourceFinder->findNodeSources(arg, &udfCaller, sources);
       markSources(sources);
     }
-#if 1
-    std::vector<VarInfo*> globalVars;
-    node->get_sctx()->getVariables(globalVars, false, true);
 
-    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
-    {
-      var_expr* globalVar = (*ite)->getVar();
-
-      if (globalVar == NULL)
-        continue;
-
-      std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(globalVar, &udfCaller, sources);
-      markSources(sources);
-    }
-#endif
     break;
   }
 
@@ -1154,7 +1139,6 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     case var_expr::pos_var:
     case var_expr::score_var:
     case var_expr::count_var:
-    case var_expr::eval_var:
     default:
     {
       ZORBA_ASSERT(false);
@@ -1314,7 +1298,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   {
     eval_expr* e = static_cast<eval_expr*>(node);
 
-    csize numVars = e->var_count();
+    csize numVars = e->num_vars();
 
     for (csize i = 0; i < numVars; ++i)
     {
@@ -1325,16 +1309,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
       markForSerialization(arg);
     }
-#if 1
-    std::vector<VarInfo*> globalVars;
-    e->get_sctx()->getVariables(globalVars, true, true);
 
-    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
-    {
-      var_expr* globalVar = (*ite)->getVar();
-      markForSerialization(globalVar);
-    }
-#endif
     return;
   }
 

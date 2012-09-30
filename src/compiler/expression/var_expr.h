@@ -124,7 +124,7 @@ public:
   {
     unknown_var = 0,
 
-    eval_var,
+    eval_var,  // TODO: remove (it is used only in the debugger_expr)
 
     for_var,
     let_var,

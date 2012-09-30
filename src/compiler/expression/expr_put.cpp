@@ -435,6 +435,7 @@ ostream& flwor_expr::put(ostream& os) const
   END_PUT();
 }
 
+
 ostream& promote_expr::put(ostream& os) const
 {
   os << indent << "promote_expr " << theTargetType->toString()
@@ -443,7 +444,8 @@ ostream& promote_expr::put(ostream& os) const
   END_PUT();
 }
 
-ostream& trycatch_expr::put( ostream& os) const
+
+ostream& trycatch_expr::put(ostream& os) const
 {
   BEGIN_PUT( trycatch_expr );
 
@@ -463,20 +465,28 @@ ostream& trycatch_expr::put( ostream& os) const
   return os;
 }
 
+
 ostream& eval_expr::put(ostream& os) const
 {
   BEGIN_PUT( eval_expr );
+
   for (csize i = 0; i < theArgs.size(); i++)
   {
-    os << indent << "using $" << theVars[i]->get_name()->getStringValue() << " := [";
-    os << endl << inc_indent;
+    os << indent << "using $"
+       << theOuterVarNames[i]->getStringValue()
+       << " := [" << endl << inc_indent;
+
     if (theArgs[i])
       theArgs[i]->put(os);
+
     os << dec_indent << indent << "]" << endl;
   }
-  theExpr->put (os);
+
+  theExpr->put(os);
+
   END_PUT();
 }
+
 
 ostream& function_trace_expr::put(ostream& os) const
 {
